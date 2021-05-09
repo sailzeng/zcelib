@@ -1,6 +1,6 @@
 #include "zealot_predefine.h"
 
-int test_nonr_thread_mutex(int,char *[])
+int test_nonr_thread_mutex(int, char* [])
 {
     ZCE_Thread_NONR_Mutex  abc;
     abc.lock();
@@ -75,19 +75,19 @@ protected:
     size_t number_prc_;
 };
 
-int test_msgqueue_condi(int /*argc*/,char * /*argv*/[])
+int test_msgqueue_condi(int /*argc*/, char* /*argv*/[])
 {
     Task_Producer a1;
 
     Task_Consumer b1;
     Task_Consumer b2;
 
-    ZCE_THREAD_ID threadid_a1,threadid_b1,threadid_b2;
+    ZCE_THREAD_ID threadid_a1, threadid_b1, threadid_b2;
 
-    a1.activate(1,&threadid_a1);
+    a1.activate(1, &threadid_a1);
 
-    b1.activate(2,&threadid_b1);
-    b2.activate(2,&threadid_b2);
+    b1.activate(2, &threadid_b1);
+    b2.activate(2, &threadid_b2);
 
     a1.wait_join();
     b1.wait_join();

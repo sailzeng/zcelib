@@ -111,7 +111,7 @@ struct pthread_mutex_t
         //临界区性能好，如果不要超时，而且不要多进程，不要非递归时选择
         CRITICAL_SECTION thr_nontimeout_mutex_;
         //非递归锁，用信号灯模拟，
-        sem_t *non_recursive_mutex_;
+        sem_t* non_recursive_mutex_;
     };
 };
 
@@ -140,11 +140,11 @@ struct win_simulate_cv_t
     pthread_mutex_t      waiters_lock_;
 
     /// 信号灯，阻塞排队等待的线程直到 signaled.
-    sem_t *block_sema_ = NULL;
+    sem_t* block_sema_ = NULL;
 
     ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
     ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
-    sem_t *finish_broadcast_ = NULL;
+    sem_t* finish_broadcast_ = NULL;
 };
 
 struct pthread_cond_t
@@ -360,18 +360,18 @@ typedef SOCKET ZCE_SOCKET;
 struct iovec
 {
     //Starting address
-    void *iov_base;
+    void* iov_base;
     //Number of bytes
     size_t iov_len;
 };
 
 struct msghdr
 {
-    void *msg_name;       /* optional address */
+    void* msg_name;       /* optional address */
     socklen_t     msg_namelen;    /* size of address */
-    struct iovec *msg_iov;        /* scatter/gather array */
+    struct iovec* msg_iov;        /* scatter/gather array */
     size_t        msg_iovlen;     /* # elements in msg_iov */
-    void *msg_control;    /* ancillary data, see below */
+    void* msg_control;    /* ancillary data, see below */
     socklen_t     msg_controllen; /* ancillary data buffer len */
     int           msg_flags;      /* flags on received message */
 };
@@ -650,7 +650,7 @@ typedef void (*sighandler_t)(int);
 //epoll的这些变量提供出来不是为了模拟epoll，是方便我编译测试的
 typedef union epoll_data
 {
-    void *ptr;
+    void* ptr;
     ZCE_HANDLE fd;
     uint32_t u32;
     uint64_t u64;
@@ -802,13 +802,13 @@ typedef pthread_t   ZCE_THREAD_ID;
 //
 typedef pthread_t   ZCE_THREAD_HANDLE;
 //
-typedef void *ZCE_THR_FUNC_RETURN;
+typedef void* ZCE_THR_FUNC_RETURN;
 
 typedef int   ZCE_HANDLE;
 
 typedef struct stat   zce_os_stat;
 
-typedef void *ZCE_SHLIB_HANDLE;
+typedef void* ZCE_SHLIB_HANDLE;
 
 #if !defined (ZCE_INVALID_HANDLE)
 # define ZCE_INVALID_HANDLE -1

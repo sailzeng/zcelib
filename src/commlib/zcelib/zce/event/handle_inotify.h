@@ -7,9 +7,9 @@
 *
 * @brief      一个用于在Linux，Windows，Inotify的事件句柄基类，监控目录下的文件变化的封装，
 *             可以监听多个目录的反映，用于监控文件系统的变化。
-*             这个类的目的是和Reactor类兼容，而且更加自然
-*             Linux 可以使用EPOLL Reactor，Select Reactor
-*             Windows 下只能使用WFMO Reactor
+*             这个类的目的是和ZCE_Reactor类兼容，而且更加自然
+*             Linux 可以使用EPOLL ZCE_Reactor，Select ZCE_Reactor
+*             Windows 下只能使用WFMO ZCE_Reactor
 *
 * @details    Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
 *             由于Windows和LINUX在监控文件变化上差别实在有点大。
@@ -37,12 +37,12 @@
 *             和inotify的函数一比，这组Windows API的设计者应该掩面跳楼。
 *
 *
-*             而且想和Select 和Epoll Reactor一起使用，ZCE_Event_INotify是更好的选择。
+*             而且想和Select 和Epoll ZCE_Reactor一起使用，Event_INotify是更好的选择。
 *             Kliu提醒，Epoll也可以用于处理Inotify的时间反应器，特此修正，表示感谢。
 *
 *
 * @note      原来为Inotify单独写了一个反应器和event 代码，但在Kliu的劝解下考虑再三，还是考虑
-*            在Linux下先用反应器使用了这个event handle，后面慢慢实现了WFMO 的Reactor，
+*            在Linux下先用反应器使用了这个event handle，后面慢慢实现了WFMO 的ZCE_Reactor，
 *            就把Windows 部分的代码也统一过来了，
 *
 *
@@ -67,20 +67,18 @@
 * 对世界说　什么是光明和磊落
 *
 */
-
-#ifndef ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
-#define ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
+#pragma once
 
 #include "zce/event/handle_base.h"
 
-class ZCE_Reactor;
-
+namespace zce
+{
 /*!
-@brief      INotify 事件处理的句柄，在Linux下使用，可以使用ZCE_Select_Reactor，ZCE_Epoll_Reactor
+@brief      INotify 事件处理的句柄，在Linux下使用，可以使用Select_Reactor，Epoll_Reactor
             作为反应器，被调用
-            在Windows 下，要用ZCE_WFMO_Reactor，
+            在Windows 下，要用zce::WFMO_Reactor，
 */
-class ZCE_Event_INotify: public ZCE_Event_Handler
+class Event_INotify:public zce::Event_Handler
 {
 public:
 
@@ -88,11 +86,11 @@ public:
     @brief      构造函数，同时设置香港的反应器指针
     @param      reactor 句柄相关的反应器指针
     */
-    ZCE_Event_INotify(void);
+    Event_INotify(void);
     /*!
     @brief      析构函数
     */
-    virtual ~ZCE_Event_INotify();
+    virtual ~Event_INotify();
 
 public:
 
@@ -101,7 +99,7 @@ public:
     @param      reactor_base 句柄相关的反应器指针,
     @return     返回0表示成功，否则失败
     */
-    int open(ZCE_Reactor *reactor_base);
+    int open(zce::ZCE_Reactor* reactor_base);
 
     /*!
     @brief      关闭监控句柄等，取消绑定reactor等
@@ -111,7 +109,7 @@ public:
 
     /*!
     @brief      取回对应的ZCE_SOCKET 句柄
-    @return     int ZCE_Event_INotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
+    @return     int Event_INotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
     */
     virtual ZCE_HANDLE get_handle(void) const
     {
@@ -130,9 +128,9 @@ public:
     @param[out] watch_handle  返回的监控对应的句柄
     @param[in]  watch_sub_dir 是否监控子目录，此参数只在Windows下有用，
     */
-    int add_watch(const char *pathname,
+    int add_watch(const char* pathname,
                   uint32_t mask,
-                  ZCE_HANDLE *watch_handle,
+                  ZCE_HANDLE* watch_handle,
                   bool watch_sub_dir = false);
 
     /*!
@@ -169,8 +167,8 @@ protected:
     */
     virtual int inotify_create(ZCE_HANDLE watch_handle,
                                uint32_t watch_mask,
-                               const char *watch_path,
-                               const char *active_path)
+                               const char* watch_path,
+                               const char* active_path)
     {
         ZCE_UNUSED_ARG(watch_handle);
         ZCE_UNUSED_ARG(watch_mask);
@@ -182,8 +180,8 @@ protected:
     ///监测到有删除文件或者目录,对应掩码IN_DELETE，参数说明参考@fun inotify_create
     virtual int inotify_delete(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
-                               const char * /*watch_path*/,
-                               const char * /*active_path*/)
+                               const char* /*watch_path*/,
+                               const char* /*active_path*/)
     {
         return 0;
     }
@@ -191,8 +189,8 @@ protected:
     ///监测到有文件被修改,对应掩码IN_MODIFY，参数说明参考@fun inotify_create
     virtual int inotify_modify(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
-                               const char * /*watch_path*/,
-                               const char * /*active_path*/)
+                               const char* /*watch_path*/,
+                               const char* /*active_path*/)
     {
         return 0;
     }
@@ -200,8 +198,8 @@ protected:
     ///监控文件从某个目录移动出去，IN_MOVED_FROM,参数说明参考@fun inotify_create
     virtual int inotify_moved_from(ZCE_HANDLE /*watch_handle*/,
                                    uint32_t /*watch_mask*/,
-                                   const char * /*watch_path*/,
-                                   const char * /*active_path*/)
+                                   const char* /*watch_path*/,
+                                   const char* /*active_path*/)
     {
         return 0;
     }
@@ -210,8 +208,8 @@ protected:
     ///参数说明参考@fun inotify_create
     virtual int inotify_moved_to(ZCE_HANDLE /*watch_handle*/,
                                  uint32_t /*watch_mask*/,
-                                 const char * /*watch_path*/,
-                                 const char * /*active_path*/)
+                                 const char* /*watch_path*/,
+                                 const char* /*active_path*/)
     {
         return 0;
     }
@@ -219,8 +217,8 @@ protected:
     ///发生监控目录下文件被访问时被回调，IN_ACCESS,参数说明参考@fun inotify_create
     virtual int inotify_access(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
-                               const char * /*watch_path*/,
-                               const char * /*active_path*/)
+                               const char* /*watch_path*/,
+                               const char* /*active_path*/)
     {
         return 0;
     }
@@ -228,8 +226,8 @@ protected:
     ///发生监控目录下文件被打开时被回调，IN_OPEN,参数说明参考@fun inotify_create
     virtual int inotify_open(ZCE_HANDLE /*watch_handle*/,
                              uint32_t /*watch_mask*/,
-                             const char * /*watch_path*/,
-                             const char * /*active_path*/)
+                             const char* /*watch_path*/,
+                             const char* /*active_path*/)
     {
         return 0;
     }
@@ -238,8 +236,8 @@ protected:
     ///参数说明参考@fun inotify_create
     virtual int inotify_close(ZCE_HANDLE /*watch_handle*/,
                               uint32_t /*watch_mask*/,
-                              const char * /*watch_path*/,
-                              const char * /*active_path*/)
+                              const char* /*watch_path*/,
+                              const char* /*active_path*/)
     {
         return 0;
     }
@@ -249,8 +247,8 @@ protected:
     ///参数说明参考@fun inotify_create
     virtual int inotify_attrib(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
-                               const char * /*watch_path*/,
-                               const char * /*active_path*/)
+                               const char* /*watch_path*/,
+                               const char* /*active_path*/)
     {
         return 0;
     }
@@ -258,8 +256,8 @@ protected:
     ///发生监控的目录被移动时被回调，IN_MOVE_SELF,参数说明参考@fun inotify_create
     virtual int inotify_move_slef(ZCE_HANDLE /*watch_handle*/,
                                   uint32_t /*watch_mask*/,
-                                  const char * /*watch_path*/,
-                                  const char * /*active_path*/)
+                                  const char* /*watch_path*/,
+                                  const char* /*active_path*/)
     {
         return 0;
     }
@@ -267,8 +265,8 @@ protected:
     ///发生监控的目录被删除时被回调，IN_DELETE_SELF,参数说明参考@fun inotify_create
     virtual int inotify_delete_slef(ZCE_HANDLE /*watch_handle*/,
                                     uint32_t /*watch_mask*/,
-                                    const char * /*watch_path*/,
-                                    const char * /*active_path*/)
+                                    const char* /*watch_path*/,
+                                    const char* /*active_path*/)
     {
         return 0;
     }
@@ -278,7 +276,7 @@ protected:
     ///进行文件监控的节点
     struct EVENT_INOTIFY_NODE
     {
-        EVENT_INOTIFY_NODE():
+        EVENT_INOTIFY_NODE() :
             watch_handle_(ZCE_INVALID_HANDLE),
             watch_mask_(0)
         {
@@ -305,7 +303,7 @@ protected:
 
 #if defined ZCE_OS_LINUX
     ///EINN是Event，Inotify Node的缩写
-    typedef std::unordered_map<ZCE_HANDLE,EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
+    typedef std::unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
     ///反应器管理的目录节点信息的MAP,
     HDL_TO_EIN_MAP     watch_event_map_;
 
@@ -327,7 +325,6 @@ protected:
 #endif
 
     ///读取的Buffer，
-    char *read_buffer_;
+    char* read_buffer_;
 };
-
-#endif //ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
+}

@@ -29,7 +29,7 @@ protected:
 public:
 
     //增加调用register_func_cmd
-    virtual int app_start(int argc,const char *argv[]);
+    virtual int app_start(int argc, const char* argv[]);
 
     //运行处理,
     virtual int app_run();

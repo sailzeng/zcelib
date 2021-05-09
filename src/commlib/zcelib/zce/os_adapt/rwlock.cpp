@@ -8,8 +8,8 @@
 #include "zce/os_adapt/rwlock.h"
 
 //读写锁的对象的初始化
-int zce::pthread_rwlock_init(pthread_rwlock_t *rwlock,
-                             const pthread_rwlockattr_t *attr)
+int zce::pthread_rwlock_init(pthread_rwlock_t* rwlock,
+                             const pthread_rwlockattr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -34,14 +34,14 @@ int zce::pthread_rwlock_init(pthread_rwlock_t *rwlock,
     //初始化几个同步对象
 
     //一些数据区改写的保护
-    if ((result = zce::pthread_mutex_init(&rwlock->rw_mutex_,&mutex_attr)) != 0)
+    if ((result = zce::pthread_mutex_init(&rwlock->rw_mutex_, &mutex_attr)) != 0)
     {
         return EINVAL;
     }
 
     //等待读取的条件变量初始化
     if ((result = zce::pthread_cond_initex(&rwlock->rw_condreaders_,
-        false)) != 0)
+                                           false)) != 0)
     {
         zce::pthread_mutex_destroy(&rwlock->rw_mutex_);
         return EINVAL;
@@ -49,7 +49,7 @@ int zce::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
     //等待写入的条件变量初始化
     if ((result = zce::pthread_cond_initex(&rwlock->rw_condwriters_,
-        false)) != 0)
+                                           false)) != 0)
     {
         zce::pthread_cond_destroy(&rwlock->rw_condreaders_);
         zce::pthread_mutex_destroy(&rwlock->rw_mutex_);
@@ -64,12 +64,12 @@ int zce::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    return ::pthread_rwlock_init(rwlock,attr);
+    return ::pthread_rwlock_init(rwlock, attr);
 #endif
 }
 
 //初始化读写锁对象
-int zce::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
+int zce::pthread_rwlock_initex(pthread_rwlock_t* rwlock,
                                bool  priority_to_write)
 {
     int result = 0;
@@ -90,7 +90,7 @@ int zce::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
         return result;
     }
 
-    result = ::pthread_rwlockattr_setpshared(&attr,PTHREAD_PROCESS_PRIVATE);
+    result = ::pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_PRIVATE);
     if (result != 0)
     {
         return result;
@@ -98,7 +98,7 @@ int zce::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
 
 #endif
 
-    result = zce::pthread_rwlock_init(rwlock,&attr);
+    result = zce::pthread_rwlock_init(rwlock, &attr);
 
     if (result != 0)
     {
@@ -109,7 +109,7 @@ int zce::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
 }
 
 //读写锁的对象的销毁
-int zce::pthread_rwlock_destroy(pthread_rwlock_t *rwlock)
+int zce::pthread_rwlock_destroy(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -142,7 +142,7 @@ int zce::pthread_rwlock_destroy(pthread_rwlock_t *rwlock)
 }
 
 //获得读取的锁
-int zce::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
+int zce::pthread_rwlock_rdlock(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -189,7 +189,7 @@ int zce::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 }
 
 //尝试获取读取锁
-int zce::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
+int zce::pthread_rwlock_tryrdlock(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -220,8 +220,8 @@ int zce::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 }
 
 //读取锁的超时锁定，这个代码UNP V2并没有给出，
-int zce::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
-                                    const ::timespec *abs_timeout_spec)
+int zce::pthread_rwlock_timedrdlock(pthread_rwlock_t* rwlock,
+                                    const ::timespec* abs_timeout_spec)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -261,21 +261,21 @@ int zce::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
     return (result);
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_rwlock_timedrdlock(rwlock,abs_timeout_spec);
+    return ::pthread_rwlock_timedrdlock(rwlock, abs_timeout_spec);
 #endif
 }
 
 //非标准，读取锁的超时锁定，时间参数调整成timeval，
-int zce::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
-                                    const timeval *abs_timeout_val)
+int zce::pthread_rwlock_timedrdlock(pthread_rwlock_t* rwlock,
+                                    const timeval* abs_timeout_val)
 {
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::pthread_rwlock_timedrdlock(rwlock,&abs_timeout_spec);
+    return zce::pthread_rwlock_timedrdlock(rwlock, &abs_timeout_spec);
 }
 
 //获取写锁
-int zce::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
+int zce::pthread_rwlock_wrlock(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -315,7 +315,7 @@ int zce::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
 }
 
 //尝试能否拥有写锁，非阻塞方式
-int zce::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
+int zce::pthread_rwlock_trywrlock(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -347,12 +347,12 @@ int zce::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
 }
 
 //获取写锁，并且等待到超时为止，
-int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
-                                    const ::timespec *abs_timeout_spec)
+int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
+                                    const ::timespec* abs_timeout_spec)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    int result = zce::pthread_mutex_timedlock(&rwlock->rw_mutex_,abs_timeout_spec);
+    int result = zce::pthread_mutex_timedlock(&rwlock->rw_mutex_, abs_timeout_spec);
     if (result != 0)
     {
         return (result);
@@ -383,21 +383,21 @@ int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
     return (result);
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_rwlock_timedwrlock(rwlock,abs_timeout_spec);
+    return ::pthread_rwlock_timedwrlock(rwlock, abs_timeout_spec);
 #endif
 }
 
 //非标准，读取锁的超时锁定，时间参数调整成timeval，
-int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
-                                    const timeval *abs_timeout_val)
+int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
+                                    const timeval* abs_timeout_val)
 {
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::pthread_rwlock_timedwrlock(rwlock,&abs_timeout_spec);
+    return zce::pthread_rwlock_timedwrlock(rwlock, &abs_timeout_spec);
 }
 
 //解除锁定，这个函数可以解除读取锁定和写入锁定，不需要特别指明
-int zce::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
+int zce::pthread_rwlock_unlock(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 

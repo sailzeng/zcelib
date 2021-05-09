@@ -23,7 +23,7 @@ int zce::dlclose(ZCE_SHLIB_HANDLE handle)
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-const char *zce::dlerror(void)
+const char* zce::dlerror(void)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -32,7 +32,7 @@ const char *zce::dlerror(void)
     static char error_buf[ERROR_BUFFER_LEN + 1];
     error_buf[ERROR_BUFFER_LEN] = '\0';
 
-    snprintf(error_buf,ERROR_BUFFER_LEN,"error code %d",::GetLastError());
+    snprintf(error_buf, ERROR_BUFFER_LEN, "error code %d", ::GetLastError());
     return error_buf;
 
 #endif //#if defined (ZCE_OS_WINDOWS)
@@ -42,7 +42,7 @@ const char *zce::dlerror(void)
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-ZCE_SHLIB_HANDLE  zce::dlopen(const char *fname,
+ZCE_SHLIB_HANDLE  zce::dlopen(const char* fname,
                               int mode)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -51,18 +51,18 @@ ZCE_SHLIB_HANDLE  zce::dlopen(const char *fname,
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::dlopen((fname),mode);
+    return ::dlopen((fname), mode);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-void *zce::dlsym(ZCE_SHLIB_HANDLE handle,
-                 const char *symbolname)
+void* zce::dlsym(ZCE_SHLIB_HANDLE handle,
+                 const char* symbolname)
 {
 #if defined (ZCE_OS_WINDOWS)
-    return ::GetProcAddress(handle,symbolname);
+    return ::GetProcAddress(handle, symbolname);
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::dlsym(handle,symbolname);
+    return ::dlsym(handle, symbolname);
 #endif //
 }

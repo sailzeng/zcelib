@@ -30,10 +30,10 @@ zce::STATUS_ITEM_WITHNAME  SERVER_STATUS_2[] =
 
 #define ZEALOT_FILE_NAME "ZEALOT.STATUS"
 
-int test_server_status(int,char *[])
+int test_server_status(int, char* [])
 {
-    zce::Server_Status::instance()->initialize(ZEALOT_FILE_NAME,3,SERVER_STATUS_1,true);
-    zce::Server_Status::instance()->add_status_item(3,SERVER_STATUS_1);
-    zce::Server_Status::instance()->add_status_item(3,SERVER_STATUS_2);
+    zce::Server_Status::instance()->initialize(ZEALOT_FILE_NAME, 3, SERVER_STATUS_1, true);
+    zce::Server_Status::instance()->add_status_item(3, SERVER_STATUS_1);
+    zce::Server_Status::instance()->add_status_item(3, SERVER_STATUS_2);
     return 0;
 }

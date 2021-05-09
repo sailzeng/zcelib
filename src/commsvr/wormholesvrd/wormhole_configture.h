@@ -16,7 +16,7 @@ public:
     virtual int read_cfgfile();
 
     ///从配置中读取Wormhole svrd的配置
-    int get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    int get_wormhole_cfg(const zce::PropertyTree* conf_tree);
 
 public:
 
@@ -24,7 +24,7 @@ public:
     Interface_WH_Proxy::PROXY_TYPE  proxy_type_ = Interface_WH_Proxy::INVALID_PROXY_TYPE;
 
     ///代理的配置数据要
-    ZCE_Conf_PropertyTree proxy_conf_tree_;
+    zce::PropertyTree proxy_conf_tree_;
 };
 
 #endif //WORMHOLE_SERVER_CONFIGTURE_H_

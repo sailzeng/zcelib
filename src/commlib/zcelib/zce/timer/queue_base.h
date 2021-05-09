@@ -61,7 +61,7 @@ protected:
 
         void clear()
         {
-            interval_time_.set(0,0);
+            interval_time_.set(0, 0);
 
             action_ = NULL;
             timer_handle_ = NULL;
@@ -78,10 +78,10 @@ protected:
         zce::Time_Value      interval_time_ = {0,0};
 
         ///回调的时候返回的指针，我只是保存他，给你用的。你自己把握好
-        const void *action_ = NULL;
+        const void* action_ = NULL;
 
         ///对应的时间句柄的的指针
-        zce::Timer_Handler *timer_handle_ = NULL;
+        zce::Timer_Handler* timer_handle_ = NULL;
 
         ///下一次触发点，可能是一个绝度时间，也可能是一个CPU TICK的计数,但都是一个绝对值
         uint64_t            next_trigger_point_ = 0;
@@ -118,10 +118,10 @@ public:
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
                               如果参数等于zce::Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(zce::Timer_Handler *timer_hdl,
-                               const void *action,
-                               const zce::Time_Value &delay_time,
-                               const zce::Time_Value &interval_time = zce::Time_Value::ZERO_TIME_VALUE) = 0;
+    virtual int schedule_timer(zce::Timer_Handler* timer_hdl,
+                               const void* action,
+                               const zce::Time_Value& delay_time,
+                               const zce::Time_Value& interval_time = zce::Time_Value::ZERO_TIME_VALUE) = 0;
 
     /*!
     @brief      取消定时器，你继承后必须实现这个接口
@@ -137,7 +137,7 @@ protected:
     @return     int   0标识成功，否则失败
     @param[out] timer_node_id
     */
-    virtual int get_frist_nodeid(int &timer_node_id) = 0;
+    virtual int get_frist_nodeid(int& timer_node_id) = 0;
 
     /*!
     @brief      分发定时器
@@ -147,7 +147,7 @@ protected:
                                   触发模式是 @a TRIGGER_MODE::SYSTEM_CLOCK 那么表示墙上时钟的mesc数量
                                   触发模式是 @a TRIGGER_MODE::CPU_TICK 那么标识CPU Tick的毫秒数量
     */
-    virtual size_t dispatch_timer(const zce::Time_Value &now_time,
+    virtual size_t dispatch_timer(const zce::Time_Value& now_time,
                                   uint64_t now_trigger_msec) = 0;
 
     /*!
@@ -157,7 +157,7 @@ protected:
     @param      now_trigger_msec 当前的触发点的毫秒数，不同模式下表达不太一样
     @note
     */
-    virtual int reschedule_timer(int timer_id,uint64_t now_trigger_msec) = 0;
+    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) = 0;
 
     //---------------------------------------------------------------------------------------
 public:
@@ -177,7 +177,7 @@ public:
     @return     int       返回0表示成功，否则失败
     @param      timer_hdl 定时器句柄的指针
     */
-    virtual int cancel_timer(const zce::Timer_Handler *timer_hdl);
+    virtual int cancel_timer(const zce::Timer_Handler* timer_hdl);
 
     /*!
     @brief      扩张相关定时器的NODE的数量，
@@ -187,7 +187,7 @@ public:
     @param[out] old_num_node   返回原来的定时器NODE数量
     */
     virtual int extend_node(size_t num_timer_node,
-                            size_t &old_num_node) = 0;
+                            size_t& old_num_node) = 0;
 
     /*!
     @brief      关闭定时器队列
@@ -222,12 +222,12 @@ protected:
     @param[out] time_node_id    返回的分配的ID
     @param[out] alloc_time_node 返回的分配的TIMER NODE的指针
     */
-    int alloc_timernode(Timer_Handler *timer_hdl,
-                        const void *action,
-                        const zce::Time_Value &delay_time_,
-                        const zce::Time_Value &interval_time_,
-                        int &time_node_id,
-                        ZCE_TIMER_NODE *&alloc_time_node);
+    int alloc_timernode(Timer_Handler* timer_hdl,
+                        const void* action,
+                        const zce::Time_Value& delay_time_,
+                        const zce::Time_Value& interval_time_,
+                        int& time_node_id,
+                        ZCE_TIMER_NODE*& alloc_time_node);
 
     /*!
     @brief      计算下一个触发点，当一个定时器到期触发后，需要计算她下一次的触发点，
@@ -237,7 +237,7 @@ protected:
     */
     void calc_next_trigger(int time_node_id,
                            uint64_t now_trigger_msec,
-                           bool &continue_trigger);
+                           bool& continue_trigger);
 
     /*!
     @brief      释放Timer Node
@@ -251,15 +251,15 @@ protected:
     @return     int           0表示成，否则失败
     @param      first_timeout 最快的时间长度，（不是时间点）
     */
-    int get_first_timeout(zce::Time_Value *first_timeout);
+    int get_first_timeout(zce::Time_Value* first_timeout);
 
 public:
     //这个地方的单子使用，和其他地方略有不同，要先调用赋值的函数，将子类指针付给这个函数
 
     //
-    static Timer_Queue *instance();
+    static Timer_Queue* instance();
     //
-    static void instance(Timer_Queue *pinstatnce);
+    static void instance(Timer_Queue* pinstatnce);
     //
     static void clean_instance();
 
@@ -304,7 +304,7 @@ protected:
 protected:
 
     ///单子实例指针
-    static Timer_Queue *instance_;
+    static Timer_Queue* instance_;
 };
 }
 

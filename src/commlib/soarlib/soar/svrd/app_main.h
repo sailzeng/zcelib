@@ -5,8 +5,8 @@
 
 namespace soar
 {
-template <class application_class,class  config_class,class timer_class >
-int svrd_main(int argc,const char *argv[])
+template <class application_class, class  config_class, class timer_class >
+int svrd_main(int argc, const char* argv[])
 {
     //不处理异常，因为处理了不好调试,特别是在Win32下调试。
 
@@ -19,11 +19,11 @@ int svrd_main(int argc,const char *argv[])
     //ZCE_LOG(RS_INFO,"[framework] App init_instance start");
 
     //初始化
-    int ret = application_class::instance()->app_start(argc,argv);
+    int ret = application_class::instance()->app_start(argc, argv);
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] App name [%s] class [%s] init_instance fail:%d|%s",
+        ZCE_LOG(RS_ERROR, "[framework] App name [%s] class [%s] init_instance fail:%d|%s",
                 application_class::instance()->get_app_runname(),
                 typeid(*application_class::instance()).name(),
                 ret,
@@ -31,11 +31,11 @@ int svrd_main(int argc,const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] init_instance sucess.",
+    ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] init_instance sucess.",
             application_class::instance()->get_app_runname(),
             typeid(*application_class::instance()).name());
 
-    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] run_instance start.",
             application_class::instance()->get_app_runname(),
             typeid(*application_class::instance()).name());
     //运行
@@ -44,7 +44,7 @@ int svrd_main(int argc,const char *argv[])
     //标示运行失败
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
+        ZCE_LOG(RS_ERROR, "[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
                 application_class::instance()->get_app_runname(),
                 typeid(*application_class::instance()).name(),
                 ret,
@@ -54,18 +54,18 @@ int svrd_main(int argc,const char *argv[])
     }
     else
     {
-        ZCE_LOG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance sucess.",
+        ZCE_LOG(RS_ERROR, "[framework] App name [%s] class [%s] run_instance sucess.",
                 application_class::instance()->get_app_runname(),
                 typeid(*application_class::instance()).name());
     }
 
-    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] exit_instance start.",
+    ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] exit_instance start.",
             application_class::instance()->get_app_runname(),
             typeid(*application_class::instance()).name());
     //退出处理
     application_class::instance()->app_exit();
 
-    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] exit_instance start.",
+    ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] exit_instance start.",
             application_class::instance()->get_app_runname(),
             typeid(*application_class::instance()).name());
 

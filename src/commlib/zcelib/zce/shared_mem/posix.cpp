@@ -14,7 +14,7 @@
 #include "zce/shared_mem/posix.h"
 
 //构造函数
-ZCE_ShareMem_Posix::ZCE_ShareMem_Posix():
+ZCE_ShareMem_Posix::ZCE_ShareMem_Posix() :
     mmap_addr_(NULL),
     mmap_handle_(ZCE_INVALID_HANDLE),
     shm_size_(0)
@@ -30,11 +30,11 @@ ZCE_ShareMem_Posix::~ZCE_ShareMem_Posix()
 }
 
 //打开文件，进行映射
-int ZCE_ShareMem_Posix::open(const char *shm_name,
+int ZCE_ShareMem_Posix::open(const char* shm_name,
                              std::size_t shm_size,
                              int file_open_mode,
                              int file_perms_mode,
-                             const void *want_address,
+                             const void* want_address,
                              int mmap_prot,
                              int mmap_flags,
                              std::size_t offset)
@@ -47,12 +47,12 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
 
     //带入参数是INVALID_HANDLE_VALUE 时，可以使用不用文件映射的共享内存
     //MMAP文件的句柄
-    mmap_handle_ = zce::shm_open(shm_name,file_open_mode,file_perms_mode);
+    mmap_handle_ = zce::shm_open(shm_name, file_open_mode, file_perms_mode);
 
     //如果没有成功打开文件
     if (mmap_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] Posix memory open fail, name=%s ,zce::shm_open fail. last error =%d",
+        ZCE_LOG(RS_ERROR, "[zcelib] Posix memory open fail, name=%s ,zce::shm_open fail. last error =%d",
                 shm_name,
                 zce::last_error());
         return -1;
@@ -63,18 +63,18 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
     //如果打开模式使用了O_TRUNC，表示重新打开
     if (file_open_mode & O_TRUNC)
     {
-        zce::ftruncate(mmap_handle_,static_cast<long>(shm_size + offset));
+        zce::ftruncate(mmap_handle_, static_cast<long>(shm_size + offset));
     }
     else
     {
         //对文件的尺寸进行检查，如果不对，也不进行处理
         size_t filelen = 0;
-        ret = zce::filesize(mmap_handle_,&filelen);
+        ret = zce::filesize(mmap_handle_, &filelen);
 
         //不能得到文件尺寸
         if (0 != ret)
         {
-            ZCE_LOG(RS_ERROR,"[zcelib] Posix memory open fail, name=%s ,zce::filesize ret =%ld last error=%d",
+            ZCE_LOG(RS_ERROR, "[zcelib] Posix memory open fail, name=%s ,zce::filesize ret =%ld last error=%d",
                     shm_name,
                     filelen,
                     zce::last_error());
@@ -85,7 +85,7 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
         //文件是一个新文件，或者空文件，
         else if (0 == filelen)
         {
-            zce::ftruncate(mmap_handle_,static_cast<long>(shm_size + offset));
+            zce::ftruncate(mmap_handle_, static_cast<long>(shm_size + offset));
         }
         //文件已经存在，而且还有数据(大小)，
         else
@@ -93,7 +93,7 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
             //文件的空间都不够的情况
             if (filelen < static_cast<size_t> (shm_size + offset))
             {
-                ZCE_LOG(RS_ERROR,"[zcelib] Posix memory open fail, name=%s, old file size(%lu) < request file size(%lu). ",
+                ZCE_LOG(RS_ERROR, "[zcelib] Posix memory open fail, name=%s, old file size(%lu) < request file size(%lu). ",
                         shm_name,
                         filelen,
                         shm_size + offset);
@@ -105,7 +105,7 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
     }
 
     //进行共享内存映射
-    void *nonconst_addr = const_cast<void *>(want_address);
+    void* nonconst_addr = const_cast<void*>(want_address);
     mmap_addr_ = zce::mmap(nonconst_addr,
                            shm_size,
                            mmap_prot,
@@ -126,12 +126,12 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
 }
 
 //打开文件，进行映射, 简单
-int ZCE_ShareMem_Posix::open(const char *shm_name,
+int ZCE_ShareMem_Posix::open(const char* shm_name,
                              std::size_t shm_size,
                              bool if_restore,
                              bool read_only,
                              bool share_file,
-                             const void *want_address,
+                             const void* want_address,
                              std::size_t  offset)
 {
     int file_open_mode = (O_CREAT);
@@ -193,7 +193,7 @@ int ZCE_ShareMem_Posix::close()
     ZCE_ASSERT(mmap_handle_ != ZCE_INVALID_HANDLE);
 
     int ret = 0;
-    ret = zce::munmap(mmap_addr_,shm_size_);
+    ret = zce::munmap(mmap_addr_, shm_size_);
     mmap_addr_ = NULL;
     shm_size_ = 0;
 
@@ -217,11 +217,11 @@ int ZCE_ShareMem_Posix::remove()
 //同步文件
 int ZCE_ShareMem_Posix::flush()
 {
-    return zce::msync(mmap_addr_,shm_size_,MS_SYNC);
+    return zce::msync(mmap_addr_, shm_size_, MS_SYNC);
 }
 
 //返回映射的内存地址
-void *ZCE_ShareMem_Posix::addr()
+void* ZCE_ShareMem_Posix::addr()
 {
     return mmap_addr_;
 }

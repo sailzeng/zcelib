@@ -17,7 +17,7 @@
 //都是WIN SERVER 2008后，WINDOWS自己的条件变量的封装，
 
 //
-int zce::pthread_condattr_init(pthread_condattr_t *attr)
+int zce::pthread_condattr_init(pthread_condattr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -33,7 +33,7 @@ int zce::pthread_condattr_init(pthread_condattr_t *attr)
 }
 
 //
-int zce::pthread_condattr_destroy(pthread_condattr_t *attr)
+int zce::pthread_condattr_destroy(pthread_condattr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(attr);
@@ -44,8 +44,8 @@ int zce::pthread_condattr_destroy(pthread_condattr_t *attr)
 }
 
 //条件变量对象的初始化
-int zce::pthread_cond_init(pthread_cond_t *cond,
-                           const pthread_condattr_t *attr)
+int zce::pthread_cond_init(pthread_cond_t* cond,
+                           const pthread_condattr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -75,8 +75,8 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
     cond->simulate_cv_.waiters_ = 0;
     cond->simulate_cv_.was_broadcast_ = false;
 
-    char *sem_block_ptr = NULL,*sem_finish_ptr = NULL;
-    char sem_block_name[PATH_MAX + 1],sem_finish_name[PATH_MAX + 1];
+    char* sem_block_ptr = NULL, * sem_finish_ptr = NULL;
+    char sem_block_name[PATH_MAX + 1], sem_finish_name[PATH_MAX + 1];
     sem_block_name[PATH_MAX] = '\0';
     sem_finish_name[PATH_MAX] = '\0';
 
@@ -126,14 +126,14 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_cond_init(cond,attr);
+    return ::pthread_cond_init(cond, attr);
 #endif
 }
 
 //初始化条件变量对象，不同的平台给不同的默认定义
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_condattr_t放入共享内存
-int zce::pthread_cond_initex(pthread_cond_t *cond,
+int zce::pthread_cond_initex(pthread_cond_t* cond,
                              bool win_mutex_or_sema)
 {
     //前面有错误返回，
@@ -159,14 +159,14 @@ int zce::pthread_cond_initex(pthread_cond_t *cond,
 #elif defined (ZCE_OS_LINUX)
     ZCE_UNUSED_ARG(win_mutex_or_sema);
 
-    result = ::pthread_condattr_setpshared(&attr,PTHREAD_PROCESS_PRIVATE);
+    result = ::pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_PRIVATE);
     if (0 != result)
     {
         return result;
     }
 #endif
 
-    result = zce::pthread_cond_init(cond,&attr);
+    result = zce::pthread_cond_init(cond, &attr);
     zce::pthread_condattr_destroy(&attr);
 
     if (0 != result)
@@ -178,7 +178,7 @@ int zce::pthread_cond_initex(pthread_cond_t *cond,
 }
 
 //条件变量对象的销毁
-int zce::pthread_cond_destroy(pthread_cond_t *cond)
+int zce::pthread_cond_destroy(pthread_cond_t* cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -214,9 +214,9 @@ int zce::pthread_cond_destroy(pthread_cond_t *cond)
 }
 
 //条件变量等待一段时间，超时后继续
-int zce::pthread_cond_timedwait(pthread_cond_t *cond,
-                                pthread_mutex_t *external_mutex,
-                                const ::timespec *abs_timespec_out)
+int zce::pthread_cond_timedwait(pthread_cond_t* cond,
+                                pthread_mutex_t* external_mutex,
+                                const ::timespec* abs_timespec_out)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -241,7 +241,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
             timeval now_time = zce::gettimeofday();
             timeval abs_time = zce::make_timeval(abs_timespec_out);
 
-            timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
+            timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
             wait_msec = static_cast<DWORD>(zce::total_milliseconds(timeout_time));
         }
 
@@ -340,9 +340,9 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 }
 
 //条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
-int zce::pthread_cond_timedwait(pthread_cond_t *cond,
-                                pthread_mutex_t *external_mutex,
-                                const timeval *abs_timeout_val)
+int zce::pthread_cond_timedwait(pthread_cond_t* cond,
+                                pthread_mutex_t* external_mutex,
+                                const timeval* abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
@@ -353,12 +353,12 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 }
 
 //条件变量等待
-int zce::pthread_cond_wait(pthread_cond_t *cond,
-                           pthread_mutex_t *external_mutex)
+int zce::pthread_cond_wait(pthread_cond_t* cond,
+                           pthread_mutex_t* external_mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
     //这样写是为了避免函数冲突告警，
-    const ::timespec *abs_timespec_out = NULL;
+    const ::timespec* abs_timespec_out = NULL;
     return zce::pthread_cond_timedwait(cond,
                                        external_mutex,
                                        abs_timespec_out);
@@ -370,7 +370,7 @@ int zce::pthread_cond_wait(pthread_cond_t *cond,
 }
 
 //
-int zce::pthread_cond_broadcast(pthread_cond_t *cond)
+int zce::pthread_cond_broadcast(pthread_cond_t* cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -410,7 +410,7 @@ int zce::pthread_cond_broadcast(pthread_cond_t *cond)
     {
         //ACE比较喜欢这种if的方式，我不是特别习惯，但在多层处理的过程中这个方法也还凑合
         //唤醒所有的等待者,
-        if (zce::sem_post(cond->simulate_cv_.block_sema_,cond->simulate_cv_.waiters_) != 0)
+        if (zce::sem_post(cond->simulate_cv_.block_sema_, cond->simulate_cv_.waiters_) != 0)
         {
             result = EINVAL;
         }
@@ -440,7 +440,7 @@ int zce::pthread_cond_broadcast(pthread_cond_t *cond)
 }
 
 //发信号
-int zce::pthread_cond_signal(pthread_cond_t *cond)
+int zce::pthread_cond_signal(pthread_cond_t* cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 

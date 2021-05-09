@@ -9,7 +9,7 @@
 
 namespace zce
 {
-Timer_Queue *Timer_Queue::instance_ = NULL;
+Timer_Queue* Timer_Queue::instance_ = NULL;
 /******************************************************************************************
 ZCE_Timer_Queue ，定时器的基类
 ******************************************************************************************/
@@ -17,7 +17,7 @@ ZCE_Timer_Queue ，定时器的基类
 Timer_Queue::Timer_Queue(size_t num_timer_node,
                          unsigned int timer_precision_mesc,
                          TRIGGER_MODE trigger_mode,
-                         bool dynamic_expand_node):
+                         bool dynamic_expand_node) :
     dynamic_expand_node_(dynamic_expand_node),
     free_node_id_head_(INVALID_TIMER_ID)
 {
@@ -57,7 +57,7 @@ int Timer_Queue::initialize(size_t num_timer_node,
 
     //
     size_t old_num_node = 0;
-    extend_node(num_timer_node,old_num_node);
+    extend_node(num_timer_node, old_num_node);
 
     //触发模式
     if (trigger_mode_ == TRIGGER_MODE::SYSTEM_CLOCK)
@@ -95,7 +95,7 @@ int Timer_Queue::close()
         if (time_node_ary_[i].timer_handle_)
         {
             //为什么要赋值再使用呢，我担心timer_close会被你调用来清理
-            zce::Timer_Handler *time_hdl = time_node_ary_[i].timer_handle_;
+            zce::Timer_Handler* time_hdl = time_node_ary_[i].timer_handle_;
             time_hdl->timer_close();
         }
     }
@@ -105,7 +105,7 @@ int Timer_Queue::close()
 
 //扩张的NODE的数量，
 int Timer_Queue::extend_node(size_t num_timer_node,
-                             size_t &old_num_node)
+                             size_t& old_num_node)
 {
     //总不能比原来还小吧
     assert(num_timer_node > num_timer_node_);
@@ -155,7 +155,7 @@ int Timer_Queue::cancel_timer(int timer_id)
 }
 
 //取消定时器，超级超级，超级慢的函数，平均时间复杂度O(N),N是队列的长度
-int Timer_Queue::cancel_timer(const zce::Timer_Handler *timer_hdl)
+int Timer_Queue::cancel_timer(const zce::Timer_Handler* timer_hdl)
 {
     assert(timer_hdl);
 
@@ -187,12 +187,12 @@ int Timer_Queue::cancel_timer(const zce::Timer_Handler *timer_hdl)
 }
 
 //分配Timer Node
-int Timer_Queue::alloc_timernode(zce::Timer_Handler *timer_hdl,
-                                 const void *action,
-                                 const zce::Time_Value &delay_time,
-                                 const zce::Time_Value &interval_time,
-                                 int &time_node_id,
-                                 ZCE_TIMER_NODE *&alloc_time_node)
+int Timer_Queue::alloc_timernode(zce::Timer_Handler* timer_hdl,
+                                 const void* action,
+                                 const zce::Time_Value& delay_time,
+                                 const zce::Time_Value& interval_time,
+                                 int& time_node_id,
+                                 ZCE_TIMER_NODE*& alloc_time_node)
 {
     //TIME HANDLE不能为NULL
     assert(timer_hdl != NULL);
@@ -214,7 +214,7 @@ int Timer_Queue::alloc_timernode(zce::Timer_Handler *timer_hdl,
         {
             //如果希望动态扩张，我帮你扩张
             size_t old_num_node = 0;
-            ret = extend_node(num_timer_node_ + ONCE_EXTEND_NODE_NUMBER,old_num_node);
+            ret = extend_node(num_timer_node_ + ONCE_EXTEND_NODE_NUMBER, old_num_node);
 
             if (ret != 0)
             {
@@ -281,11 +281,11 @@ int Timer_Queue::alloc_timernode(zce::Timer_Handler *timer_hdl,
 //计算下一个触发点，
 void Timer_Queue::calc_next_trigger(int time_node_id,
                                     uint64_t now_trigger_msec,
-                                    bool &continue_trigger)
+                                    bool& continue_trigger)
 {
     continue_trigger = false;
 
-    ZCE_TIMER_NODE *prc_time_node = &(time_node_ary_[time_node_id]);
+    ZCE_TIMER_NODE* prc_time_node = &(time_node_ary_[time_node_id]);
 
     //如果间隔时间为0，且这个定时器还没有触发过，already_trigger_ 判定其实是检查定时器是否被重新设置过
     if (prc_time_node->interval_time_ == zce::Time_Value::ZERO_TIME_VALUE)
@@ -335,7 +335,7 @@ int Timer_Queue::free_timernode(int time_node_id)
 }
 
 //得到最快将在多少时间后触发
-int Timer_Queue::get_first_timeout(zce::Time_Value *first_timeout)
+int Timer_Queue::get_first_timeout(zce::Time_Value* first_timeout)
 {
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
@@ -404,17 +404,17 @@ size_t Timer_Queue::expire()
         ZCE_ASSERT(false);
     }
 
-    return dispatch_timer(now_time,now_trigger_msec);
+    return dispatch_timer(now_time, now_trigger_msec);
 }
 
 //得到唯一的单子实例
-Timer_Queue *Timer_Queue::instance()
+Timer_Queue* Timer_Queue::instance()
 {
     return instance_;
 }
 
 //赋值唯一的单子实例
-void Timer_Queue::instance(Timer_Queue *pinstatnce)
+void Timer_Queue::instance(Timer_Queue* pinstatnce)
 {
     clean_instance();
     instance_ = pinstatnce;

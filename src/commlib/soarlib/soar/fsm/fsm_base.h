@@ -49,7 +49,7 @@ protected:
 
 public:
     //构造函数
-    FSM_Base(FSM_Manager *pmngr,
+    FSM_Base(FSM_Manager* pmngr,
              uint32_t create_cmd,
              bool trans_locker = false);
 protected:
@@ -67,16 +67,16 @@ public:
     * @param      recv_frame
     * @param      continue_run
     */
-    virtual void trans_run(soar::Zerg_Frame *recv_frame,
-                           bool &continue_run) = 0;
+    virtual void trans_run(soar::Zerg_Frame* recv_frame,
+                           bool& continue_run) = 0;
 
     /*!
     * @brief      ，默认continue_run返回false，让系统回收，
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void trans_timeout(const zce::Time_Value &now_time,
-                               bool &continue_run) = 0;
+    virtual void trans_timeout(const zce::Time_Value& now_time,
+                               bool& continue_run) = 0;
 
 protected:
 
@@ -85,17 +85,17 @@ protected:
     virtual void on_start() final;
 
     ///事物的on_run函数，重载的FSM的，把调用转向到trans_run
-    virtual void on_run(void *outer_data,bool &continue_run) final;
+    virtual void on_run(void* outer_data, bool& continue_run) final;
 
     ///状态机对象超时处理，重载的FSM的（异步对象的），把调用转向到trans_timeout
-    virtual void on_timeout(const zce::Time_Value &now_time,
-                            bool &continue_run) final;
+    virtual void on_timeout(const zce::Time_Value& now_time,
+                            bool& continue_run) final;
 
     /*!
     * @brief      根据Frame初始化得到对方发送的信息
     * @param      recv_frame 初始化接收的FRAME数据,
     */
-    void create_init(soar::Zerg_Frame *recv_frame);
+    void create_init(soar::Zerg_Frame* recv_frame);
 
     //lock其实不是真正的锁，目的是保证在同一时刻，只处理一个用户的一个请求。
     //对当前用户的，当前事务命令字进行加锁
@@ -111,13 +111,13 @@ protected:
     ///用于检查请求的IP地址是否是内部IP地址
     int check_request_internal() const;
     ///检查接受到的FRAME的数据和命令
-    int check_receive_frame(const soar::Zerg_Frame *recv_frame,
+    int check_receive_frame(const soar::Zerg_Frame* recv_frame,
                             uint32_t wait_cmd);
 
     //DUMP所有的事物的信息
-    void dump_transa_info(std::ostringstream &strstream) const;
+    void dump_transa_info(std::ostringstream& strstream) const;
     //DUMP输出事务的所有信息
-    void output_trans_info(const char *outstr = "Output Transaction Info") const;
+    void output_trans_info(const char* outstr = "Output Transaction Info") const;
 
 protected:
 
@@ -127,16 +127,16 @@ protected:
     //请求发送数据到soar::SERVICES_ID服务器(不能是Proxy),使用请求的UIN，
     template< class T>
     int  request_peer(uint32_t cmd,
-                      const soar::SERVICES_ID &rcv_svc,
-                      const T &msg,
+                      const soar::SERVICES_ID& rcv_svc,
+                      const T& msg,
                       uint32_t option = 0);
 
     //请求发送数据到soar::SERVICES_ID服务器(不能是Proxy),指定特定UIN,赠送这些命令使用
     template< class T>
     int request_peer(uint32_t cmd,
                      uint32_t user_id,
-                     const soar::SERVICES_ID &rcv_svc,
-                     const T &msg,
+                     const soar::SERVICES_ID& rcv_svc,
+                     const T& msg,
                      uint32_t option = 0);
 
     //请求发送数据到soar::SERVICES_ID服务器,可以指定UIN和，回填的事务ID
@@ -144,35 +144,35 @@ protected:
     int request_peer(uint32_t cmd,
                      uint32_t user_id,
                      uint32_t backfill_fsm_id,
-                     const soar::SERVICES_ID &rcv_svc,
-                     const T &msg,
+                     const soar::SERVICES_ID& rcv_svc,
+                     const T& msg,
                      uint32_t option = 0);
 
     //--------------------------------------------------------------------------------------
     //请求发送数据到代理服务器,用请求的USER ID发送
     template< class T>
     int request_proxy(uint32_t cmd,
-                      const soar::SERVICES_ID &proxy_svc,
+                      const soar::SERVICES_ID& proxy_svc,
                       uint16_t rcv_type,
-                      const T &msg,
+                      const T& msg,
                       uint32_t option = 0);
 
     //请求发送数据到代理服务器,用指定UIN发送
     template< class T>
     int request_proxy(uint32_t cmd,
                       uint32_t user_id,
-                      const soar::SERVICES_ID &proxy_svc,
+                      const soar::SERVICES_ID& proxy_svc,
                       uint16_t rcv_type,
-                      const T &msg,
+                      const T& msg,
                       uint32_t option = 0);
 
     //请求发送数据到代理服务器,,使用请求的USER ID,RCV SERVICESID(比如用代理中转到指定服务器),
     template< class T>
     int request_proxy(uint32_t cmd,
                       uint32_t user_id,
-                      const soar::SERVICES_ID &proxy_svc,
-                      const soar::SERVICES_ID &recvsvc,
-                      const T &msg,
+                      const soar::SERVICES_ID& proxy_svc,
+                      const soar::SERVICES_ID& recvsvc,
+                      const T& msg,
                       uint32_t option = 0);
 
     //请求发送数据到代理服务器,,使用请求的USER ID,,RCV SERVICESID(比如用代理中转到指定服务器),回填的事务ID
@@ -180,16 +180,16 @@ protected:
     int request_proxy(uint32_t cmd,
                       uint32_t user_id,
                       uint32_t backfill_fsm_id,
-                      const soar::SERVICES_ID &proxy_svc,
-                      const soar::SERVICES_ID &recvsvc,
-                      const T &msg,
+                      const soar::SERVICES_ID& proxy_svc,
+                      const soar::SERVICES_ID& recvsvc,
+                      const T& msg,
                       uint32_t option = 0);
 
     //--------------------------------------------------------------------------------------
     //应答，向回发送数据,只能是除了接受命令的时候才可以调用这个函数,否则....
     template< class T>
     int response_sendback(uint32_t cmd,
-                          const T &msg,
+                          const T& msg,
                           uint32_t option = 0);
 
     //回送信息,应答一个请求,但是可以指定回应的USER ID,只能是除了接受命令的时候才可以调用这个函数,否则....
@@ -198,7 +198,7 @@ protected:
     template< class T>
     int response_sendback2(uint32_t cmd,
                            uint32_t user_id,
-                           const T &msg,
+                           const T& msg,
                            uint32_t option = 0);
 
     //--------------------------------------------------------------------------------------
@@ -208,10 +208,10 @@ protected:
                            uint32_t user_id,
                            uint32_t fsm_id,
                            uint32_t backfill_fsm_id,
-                           const soar::SERVICES_ID &rcv_svc,
-                           const soar::SERVICES_ID &proxy_svc,
-                           const soar::SERVICES_ID &snd_svc,
-                           const T &msg,
+                           const soar::SERVICES_ID& rcv_svc,
+                           const soar::SERVICES_ID& proxy_svc,
+                           const soar::SERVICES_ID& snd_svc,
+                           const T& msg,
                            uint32_t option);
 
 public:
@@ -220,7 +220,7 @@ public:
 protected:
 
     //事件管理器
-    FSM_Manager *trans_manager_ = nullptr;
+    FSM_Manager* trans_manager_ = nullptr;
 
     //是否加事务锁
     bool                    trans_locker_ = false;
@@ -248,11 +248,11 @@ protected:
 //请求发送消息的Service,
 template <class T>
 int FSM_Base::request_peer(uint32_t cmd,
-                           const soar::SERVICES_ID &rcv_svc,
-                           const T &msg,
+                           const soar::SERVICES_ID& rcv_svc,
+                           const T& msg,
                            uint32_t option)
 {
-    soar::SERVICES_ID proxy_svc(0,0);
+    soar::SERVICES_ID proxy_svc(0, 0);
     return sendmsg_to_service(cmd,
                               req_zerg_head_.user_id_,
                               this->asyncobj_id_,
@@ -269,11 +269,11 @@ template <class T>
 int FSM_Base::request_peer(uint32_t cmd,
                            uint32_t user_id,
                            uint32_t backfill_fsm_id,
-                           const soar::SERVICES_ID &rcv_svc,
-                           const T &msg,
+                           const soar::SERVICES_ID& rcv_svc,
+                           const T& msg,
                            uint32_t option)
 {
-    soar::SERVICES_ID proxy_svc(0,0);
+    soar::SERVICES_ID proxy_svc(0, 0);
     return sendmsg_to_service(cmd,
                               user_id,
                               this->asyncobj_id_,
@@ -289,11 +289,11 @@ int FSM_Base::request_peer(uint32_t cmd,
 template< class T>
 int FSM_Base::request_peer(uint32_t cmd,
                            uint32_t user_id,
-                           const soar::SERVICES_ID &rcv_svc,
-                           const T &msg,
+                           const soar::SERVICES_ID& rcv_svc,
+                           const T& msg,
                            uint32_t option)
 {
-    soar::SERVICES_ID proxy_svc(0,0);
+    soar::SERVICES_ID proxy_svc(0, 0);
     return sendmsg_to_service(cmd,
                               user_id,
                               this->asyncobj_id_,
@@ -309,12 +309,12 @@ int FSM_Base::request_peer(uint32_t cmd,
 //请求发送数据到代理服务器,用请求的USER ID发送
 template< class T>
 int FSM_Base::request_proxy(uint32_t cmd,
-                            const soar::SERVICES_ID &proxy_svc,
+                            const soar::SERVICES_ID& proxy_svc,
                             uint16_t rcv_type,
-                            const T &msg,
+                            const T& msg,
                             uint32_t option)
 {
-    soar::SERVICES_ID rcv_svc(rcvtype,0);
+    soar::SERVICES_ID rcv_svc(rcvtype, 0);
     return sendmsg_to_service(cmd,
                               this->req_zerg_head_.user_id_,
                               this->asyncobj_id_,
@@ -330,12 +330,12 @@ int FSM_Base::request_proxy(uint32_t cmd,
 template< class T>
 int FSM_Base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
-                            const soar::SERVICES_ID &proxy_svc,
+                            const soar::SERVICES_ID& proxy_svc,
                             uint16_t rcv_type,
-                            const T &msg,
+                            const T& msg,
                             uint32_t option)
 {
-    soar::SERVICES_ID rcv_svc(rcv_type,0);
+    soar::SERVICES_ID rcv_svc(rcv_type, 0);
     return sendmsg_to_service(cmd,
                               user_id,
                               this->asyncobj_id_,
@@ -352,9 +352,9 @@ int FSM_Base::request_proxy(uint32_t cmd,
 template< class T>
 int FSM_Base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
-                            const soar::SERVICES_ID &proxy_svc,
-                            const soar::SERVICES_ID &recvsvc,
-                            const T &msg,
+                            const soar::SERVICES_ID& proxy_svc,
+                            const soar::SERVICES_ID& recvsvc,
+                            const T& msg,
                             uint32_t option)
 {
     return sendmsg_to_service(cmd,
@@ -374,9 +374,9 @@ template< class T>
 int FSM_Base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
                             uint32_t backfill_fsm_id,
-                            const soar::SERVICES_ID &recvsvc,
-                            const soar::SERVICES_ID &proxy_svc,
-                            const T &msg,
+                            const soar::SERVICES_ID& recvsvc,
+                            const soar::SERVICES_ID& proxy_svc,
+                            const T& msg,
                             uint32_t option)
 {
     return sendmsg_to_service(cmd,
@@ -394,7 +394,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
 //回送信息,应答一个请求,只能是除了接受命令的时候才可以调用这个函数,否则....
 template< class T>
 int FSM_Base::response_sendback(uint32_t cmd,
-                                const T &msg,
+                                const T& msg,
                                 uint32_t option)
 {
     //加入UDP返回的代码部分
@@ -421,7 +421,7 @@ int FSM_Base::response_sendback(uint32_t cmd,
 template< class T>
 int FSM_Base::response_sendback2(uint32_t cmd,
                                  uint32_t user_id,
-                                 const T &msg,
+                                 const T& msg,
                                  uint32_t option)
 {
     //加入UDP返回的代码部分
@@ -449,10 +449,10 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                  uint32_t user_id,
                                  uint32_t fsm_id,
                                  uint32_t backfill_fsm_id,
-                                 const soar::SERVICES_ID &rcv_svc,
-                                 const soar::SERVICES_ID &proxy_svc,
-                                 const soar::SERVICES_ID &snd_svc,
-                                 const T &msg,
+                                 const soar::SERVICES_ID& rcv_svc,
+                                 const soar::SERVICES_ID& proxy_svc,
+                                 const soar::SERVICES_ID& snd_svc,
+                                 const T& msg,
                                  uint32_t option)
 {
     //如果请求的命令要求要监控，后面的处理进行监控

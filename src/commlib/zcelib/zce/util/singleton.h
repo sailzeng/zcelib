@@ -45,7 +45,7 @@ class ZCE_Singleton
 {
 public:
     ///实例函数
-    inline static T *instance()
+    inline static T* instance()
     {
         static T obj;
         return &obj;
@@ -55,7 +55,7 @@ private:
     /// ctor is hidden
     ZCE_Singleton();
     /// copy ctor is hidden
-    ZCE_Singleton(ZCE_Singleton const &);
+    ZCE_Singleton(ZCE_Singleton const&);
 };
 
 //========================================================================================================
@@ -90,7 +90,7 @@ private:
 public:
 
     //
-    static T *instance()
+    static T* instance()
     {
         static T obj;
         //do_nothing 是必要的，do_nothing的作用有点意思，

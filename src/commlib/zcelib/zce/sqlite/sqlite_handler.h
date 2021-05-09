@@ -26,7 +26,7 @@
 */
 #pragma once
 
-#include "zce/os_adapt/string.h"
+#include "zce/string/from_string.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -57,7 +57,7 @@ public:
     @param      read_only 只读
     @param      create_db 是否需要创建数据库，(db不存在时)
     */
-    int open_database(const char *db_file,
+    int open_database(const char* db_file,
                       bool read_only,
                       bool create_db);
 
@@ -65,12 +65,12 @@ public:
     void close_database();
 
     //!取得错误语句Str
-    const char *error_message();
+    const char* error_message();
     //!取得DB返回的错误ID
     int error_code();
 
     //!取得SQLite的句柄
-    inline sqlite3 *get_sqlite_handler()
+    inline sqlite3* get_sqlite_handler()
     {
         return sqlite3_handler_;
     };
@@ -84,7 +84,7 @@ public:
     int turn_off_synch();
 
     //!执行DDL等不需要结果的SQL
-    int execute(const char *sql_string);
+    int execute(const char* sql_string);
 
     /*!
     * @brief      执行SQL查下的封装,（二进制的不行）
@@ -96,13 +96,13 @@ public:
     *             执行查询，确实比sqlite3_exec，方便
     *             另外，这个函数应该不能处理二进制数据，因为你无法得知结果长度
     */
-    int get_table(const char *sql_string,
-                  SQLite_Result *result);
+    int get_table(const char* sql_string,
+                  SQLite_Result* result);
 
 protected:
 
     //!sqlite3的处理Handler
-    sqlite3 *sqlite3_handler_;
+    sqlite3* sqlite3_handler_;
 };
 
 //==============================================================================================
@@ -135,7 +135,7 @@ public:
     * @return     const char* 字段的名称
     * @param      column 字段的列号,从1开始
     */
-    const char *field_name(int column)
+    const char* field_name(int column)
     {
         return result_[column - 1];
     }
@@ -146,7 +146,7 @@ public:
     * @param      row    字段的列号,从1开始
     * @param      column 字段的行号,从1开始
     */
-    const char *field_cstr(int row,int column)
+    const char* field_cstr(int row, int column)
     {
         return result_[row * column_ + column - 1];
     }
@@ -160,9 +160,9 @@ public:
     * @note
     */
     template <typename value_type>
-    value_type field_data(int row,int column)
+    value_type field_data(int row, int column)
     {
-        return zce::str_to_value<value_type>(result_[row * column_ + column - 1]);
+        return zce::from_str<value_type>(result_[row * column_ + column - 1]);
     }
 
     //!行的数量
@@ -180,7 +180,7 @@ public:
 protected:
 
     //! Results of the query
-    char **result_ = NULL;
+    char** result_ = NULL;
     //! Number of result rows written here ，row_也是从1开始
     int row_ = 0;
 

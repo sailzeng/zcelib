@@ -25,6 +25,6 @@ int Server_Config_FSM::read_cfgfile()
     }
 
     // 配置加载成功
-    ZCE_LOG(RS_INFO,"Comm_Svrd_Config load framework config succ.");
+    ZCE_LOG(RS_INFO, "Comm_Svrd_Config load framework config succ.");
     return 0;
 }

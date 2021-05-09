@@ -39,15 +39,15 @@ public:
         * @param      bind_data 二进制数据BUFFER,const 常量数据
         * @param      bind_size  数据长度，
         */
-        BLOB_bind(const void *bind_data,int bind_size):
+        BLOB_bind(const void* bind_data, int bind_size) :
             bind_data_(bind_data)
-            ,bind_size_(bind_size)
+            , bind_size_(bind_size)
         {
         }
         ~BLOB_bind() = default;
 
         //!2进制数据的指针
-        const void *bind_data_;
+        const void* bind_data_;
         //!二进制数据的长度,
         int   bind_size_;
     };
@@ -60,9 +60,9 @@ public:
         * @param      binary_data 二进制数据BUFFER
         * @param      binary_len  数据长度，初始化为数据长度，使用后记录数据结果长度
         */
-        BLOB_column(void *binary_data,int *binary_len)
+        BLOB_column(void* binary_data, int* binary_len)
             : binary_data_(binary_data)
-            ,binary_len_(binary_len)
+            , binary_len_(binary_len)
         {
         }
         ~BLOB_column()
@@ -70,9 +70,9 @@ public:
         }
 
         //!2进制数据的指针
-        void *binary_data_;
+        void* binary_data_;
         //!二进制数据的长度,注意绑定结果时，这个数值座位结果绑定的时候，会辅助返回长度
-        int *binary_len_;
+        int* binary_len_;
     };
 
 public:
@@ -80,7 +80,7 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    SQLite_STMT(SQLite_Handler *sqlite3_handler);
+    SQLite_STMT(SQLite_Handler* sqlite3_handler);
     /*!
     * @brief      析构函数
     */
@@ -93,7 +93,7 @@ public:
     * @return     int
     * @param      sql_string
     */
-    int prepare(const char *sql_string);
+    int prepare(const char* sql_string);
 
     /*!
     * @brief      重新初始化STMT的Handler
@@ -113,16 +113,16 @@ public:
     * @param[out] has_result 返回值,如果有结果返回，置为true
     * note        要执行多次，第一次得到结果集合，后面移动游标。
     */
-    int step(bool &has_result);
+    int step(bool& has_result);
 
     //!
-    sqlite3_stmt *get_sqlite3_stmt_handler()
+    sqlite3_stmt* get_sqlite3_stmt_handler()
     {
         return prepared_statement_;
     }
 
     //!错误语句Str
-    inline const char *error_message()
+    inline const char* error_message()
     {
         return sqlite_handler_->error_message();
     }
@@ -140,7 +140,7 @@ public:
     */
     inline int column_bytes(int result_col)
     {
-        return ::sqlite3_column_bytes(prepared_statement_,result_col);
+        return ::sqlite3_column_bytes(prepared_statement_, result_col);
     }
 
     /*!
@@ -156,7 +156,7 @@ public:
     //!当前column的数据长度
     inline int cur_column_bytes()
     {
-        return ::sqlite3_column_bytes(prepared_statement_,current_col_);
+        return ::sqlite3_column_bytes(prepared_statement_, current_col_);
     }
 
     /*!
@@ -170,7 +170,7 @@ public:
     *             如需要bind blob数据，使用BLOB_bind
     */
     template <class bind_type>
-    int bind(int bind_col,bind_type val);
+    int bind(int bind_col, bind_type val);
 
     /*!
     * @brief      取得列的结果
@@ -181,37 +181,37 @@ public:
     *             如需要column blob数据,使用BLOB_column
     */
     template <class column_type>
-    void column(int result_col,column_type val);
+    void column(int result_col, column_type val);
 
     //!导出结果,列号自动++
     template <class value_type>
-    SQLite_STMT &operator >> (value_type &val)
+    SQLite_STMT& operator >> (value_type& val)
     {
-        column<value_type &>(current_col_,val);
+        column<value_type&>(current_col_, val);
         ++current_col_;
         return *this;
     }
 
     //!bind绑定参数,列号自动++
     template <class bind_type>
-    SQLite_STMT &operator << (bind_type val)
+    SQLite_STMT& operator << (bind_type val)
     {
-        bind<bind_type>(current_bind_,val);
+        bind<bind_type>(current_bind_, val);
         ++current_bind_;
         return *this;
     }
 
     //这两个类型的<<函数使用的是引用，所以重载一下，
-    SQLite_STMT &operator << (const SQLite_STMT::BLOB_bind &val);
-    SQLite_STMT &operator << (const std::string &val);
+    SQLite_STMT& operator << (const SQLite_STMT::BLOB_bind& val);
+    SQLite_STMT& operator << (const std::string& val);
 
 protected:
 
     //!SQLite的DB句柄
-    SQLite_Handler *sqlite_handler_;
+    SQLite_Handler* sqlite_handler_;
 
     //!SQLite原声的STMT的句柄
-    sqlite3_stmt *prepared_statement_;
+    sqlite3_stmt* prepared_statement_;
 
     //!当前取结果的列,用于>>函数,从0开始
     int current_col_;

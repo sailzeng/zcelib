@@ -119,7 +119,7 @@ namespace zce
 * @return     int 0成功，-1失败
 * @param      zce_system_info  返回的系统信息 @ref ZCE_SYSTEM_INFO
 */
-int get_system_info(ZCE_SYSTEM_INFO *zce_system_info);
+int get_system_info(ZCE_SYSTEM_INFO* zce_system_info);
 
 //
 /*!
@@ -127,15 +127,15 @@ int get_system_info(ZCE_SYSTEM_INFO *zce_system_info);
 * @return     int  0成功，-1失败
 * @param      zce_system_perf  返回的系统性能信息  @ref ZCE_SYSTEM_PERFORMANCE
 */
-int get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf);
+int get_system_perf(ZCE_SYSTEM_PERFORMANCE* zce_system_perf);
 
 #if defined ZCE_OS_LINUX
 
 ///LINUX下读取proc目录得到系统的性能信息
-int read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info);
+int read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE* info);
 
 ///通过系统函数得到系统的性能信息，内部没有使用这个函数，写它主要是为了熟悉相关知识。
-int read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info);
+int read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE* info);
 
 #endif //end of #if define ZCE_OS_LINUX
 };

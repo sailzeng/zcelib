@@ -25,9 +25,9 @@
 //}
 
 //格式化double
-void zce::fmt_double(char *buffer,
+void zce::fmt_double(char* buffer,
                      size_t max_len,
-                     size_t &use_len,
+                     size_t& use_len,
                      double fvalue,
                      size_t width,
                      size_t precision,
@@ -55,7 +55,7 @@ void zce::fmt_double(char *buffer,
     tmp_out_buf[LEN_OF_TMP_OUT_BUF] = '\0';
 
     //输出要用的字符串
-    int decimal = 0,sign = 0;
+    int decimal = 0, sign = 0;
 
     if (flags & FMT_EXPONENT)
     {
@@ -121,45 +121,45 @@ void zce::fmt_double(char *buffer,
     {
         for (int i = 0; i < space_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
         }
     }
 
     //取出符号，进行判断，//如果浮点小于0，填写负数标示
     if (sign)
     {
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,'-');
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, '-');
     }
     else if (flags & FMT_PLUS)
     {
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,'+');
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, '+');
     }
     else if (flags & FMT_SPACE)
     {
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
     }
 
     //用指数的方式输出
     if (flags & FMT_EXPONENT)
     {
         //输出第一个数字和.
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,tmp_out_buf[0]);
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,'.');
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[0]);
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, '.');
 
         //将小数部分输出
         for (size_t i = 0; i < precision; ++i)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,tmp_out_buf[i + 1]);
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i + 1]);
         }
 
         //输出指数部分，根据大小写输出指数E
         if (flags & FMT_UP)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'E');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, 'E');
         }
         else
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'e');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, 'e');
         }
 
         //下面这段代码即使snprintf(bufbuffer+use_len,max_len-use_len,"%+0.3d",decimal);
@@ -170,15 +170,15 @@ void zce::fmt_double(char *buffer,
 
         if (i_exponent >= 0)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'+');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '+');
         }
         else
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'-');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '-');
         }
 
         //绝对值，因为我
-        int u_exponent = i_exponent >= 0?i_exponent:-i_exponent;
+        int u_exponent = i_exponent >= 0 ? i_exponent : -i_exponent;
         int out_dec = 0;
 
         //输出百位
@@ -186,7 +186,7 @@ void zce::fmt_double(char *buffer,
         {
             out_dec = u_exponent / 100;
             u_exponent = u_exponent - out_dec * 100;
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'0' + static_cast<char>(out_dec));
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '0' + static_cast<char>(out_dec));
         }
 
         //输出10位和个位
@@ -196,9 +196,9 @@ void zce::fmt_double(char *buffer,
         {
             out_dec = u_exponent / 10;
             u_exponent = u_exponent - out_dec * 10;
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'0' + static_cast<char>(out_dec));
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '0' + static_cast<char>(out_dec));
         }
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,'0' + static_cast<char>(u_exponent));
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, '0' + static_cast<char>(u_exponent));
     }
     else
     {
@@ -208,33 +208,33 @@ void zce::fmt_double(char *buffer,
             //将整数部分输出
             for (size_t i = 0; i < cvt_str_len - precision; ++i)
             {
-                FMT_DOPR_OUTCH(buffer,use_len,max_len,tmp_out_buf[i]);
+                FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i]);
             }
 
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'.');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '.');
 
             //将小数部分输出
             for (size_t i = 0; i < precision; ++i)
             {
-                FMT_DOPR_OUTCH(buffer,use_len,max_len,tmp_out_buf[i + cvt_str_len - precision]);
+                FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i + cvt_str_len - precision]);
             }
         }
         //纯小数输出
         else
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'0');
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'.');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '.');
 
             //补充好0
             for (size_t i = 0; i < precision - cvt_str_len; ++i)
             {
-                FMT_DOPR_OUTCH(buffer,use_len,max_len,'0');
+                FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
             }
 
             //将小数部分输出
             for (int i = 0; i < cvt_str_len; ++i)
             {
-                FMT_DOPR_OUTCH(buffer,use_len,max_len,tmp_out_buf[i]);
+                FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i]);
             }
         }
     }
@@ -244,12 +244,12 @@ void zce::fmt_double(char *buffer,
     {
         for (int i = 0; i < space_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
         }
     }
 }
 
-void zce::fmt_double(std::string &stdstr,
+void zce::fmt_double(std::string& stdstr,
                      double fvalue,
                      size_t width,
                      size_t precision,
@@ -267,7 +267,7 @@ void zce::fmt_double(std::string &stdstr,
     tmp_out_buf[LEN_OF_TMP_OUT_BUF] = '\0';
 
     //输出要用的字符串
-    int decimal = 0,sign = 0;
+    int decimal = 0, sign = 0;
 
     if (flags & FMT_EXPONENT)
     {
@@ -331,44 +331,44 @@ void zce::fmt_double(std::string &stdstr,
     //如果要右对齐,
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
-        stdstr.append(space_pad_len,' ');
+        stdstr.append(space_pad_len, ' ');
     }
 
     //取出符号，进行判断，//如果浮点小于0，填写负数标示
     if (sign)
     {
-        stdstr.append(1,'-');
+        stdstr.append(1, '-');
     }
     else if (flags & FMT_PLUS)
     {
-        stdstr.append(1,'+');
+        stdstr.append(1, '+');
     }
     else if (flags & FMT_SPACE)
     {
-        stdstr.append(1,' ');
+        stdstr.append(1, ' ');
     }
 
     //用指数的方式输出
     if (flags & FMT_EXPONENT)
     {
         //输出第一个数字和.
-        stdstr.append(1,tmp_out_buf[0]);
-        stdstr.append(1,'.');
+        stdstr.append(1, tmp_out_buf[0]);
+        stdstr.append(1, '.');
 
         //将小数部分输出
         for (size_t i = 0; i < precision; ++i)
         {
-            stdstr.append(1,tmp_out_buf[i + 1]);
+            stdstr.append(1, tmp_out_buf[i + 1]);
         }
 
         //输出指数部分，根据大小写输出指数E
         if (flags & FMT_UP)
         {
-            stdstr.append(1,'E');
+            stdstr.append(1, 'E');
         }
         else
         {
-            stdstr.append(1,'e');
+            stdstr.append(1, 'e');
         }
 
         //下面这段代码即使snprintf(bufbuffer+use_len,max_len-use_len,"%+0.3d",decimal);
@@ -379,15 +379,15 @@ void zce::fmt_double(std::string &stdstr,
 
         if (i_exponent >= 0)
         {
-            stdstr.append(1,'+');
+            stdstr.append(1, '+');
         }
         else
         {
-            stdstr.append(1,'-');
+            stdstr.append(1, '-');
         }
 
         //绝对值，因为我
-        int u_exponent = i_exponent >= 0?i_exponent:-i_exponent;
+        int u_exponent = i_exponent >= 0 ? i_exponent : -i_exponent;
         int out_dec = 0;
 
         //输出百位
@@ -395,7 +395,7 @@ void zce::fmt_double(std::string &stdstr,
         {
             out_dec = u_exponent / 100;
             u_exponent = u_exponent - out_dec * 100;
-            stdstr.append(1,'0' + static_cast<char>(out_dec));
+            stdstr.append(1, '0' + static_cast<char>(out_dec));
         }
 
         //输出10位和个位
@@ -405,9 +405,9 @@ void zce::fmt_double(std::string &stdstr,
         {
             out_dec = u_exponent / 10;
             u_exponent = u_exponent - out_dec * 10;
-            stdstr.append(1,'0' + static_cast<char>(out_dec));
+            stdstr.append(1, '0' + static_cast<char>(out_dec));
         }
-        stdstr.append(1,'0' + static_cast<char>(u_exponent));
+        stdstr.append(1, '0' + static_cast<char>(u_exponent));
     }
     else
     {
@@ -417,32 +417,32 @@ void zce::fmt_double(std::string &stdstr,
             //将整数部分输出
             for (size_t i = 0; i < cvt_str_len - precision; ++i)
             {
-                stdstr.append(1,tmp_out_buf[i]);
+                stdstr.append(1, tmp_out_buf[i]);
             }
-            stdstr.append(1,'.');
+            stdstr.append(1, '.');
 
             //将小数部分输出
             for (size_t i = 0; i < precision; ++i)
             {
-                stdstr.append(1,tmp_out_buf[i + cvt_str_len - precision]);
+                stdstr.append(1, tmp_out_buf[i + cvt_str_len - precision]);
             }
         }
         //纯小数输出
         else
         {
-            stdstr.append(1,'0');
-            stdstr.append(1,'.');
+            stdstr.append(1, '0');
+            stdstr.append(1, '.');
 
             //补充好0
             for (size_t i = 0; i < precision - cvt_str_len; ++i)
             {
-                stdstr.append(1,'0');
+                stdstr.append(1, '0');
             }
 
             //将小数部分输出
             for (int i = 0; i < cvt_str_len; ++i)
             {
-                stdstr.append(1,tmp_out_buf[i]);
+                stdstr.append(1, tmp_out_buf[i]);
             }
         }
     }
@@ -450,15 +450,15 @@ void zce::fmt_double(std::string &stdstr,
     //如果要左对齐，在尾巴上补气空格
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
-        stdstr.append(space_pad_len,' ');
+        stdstr.append(space_pad_len, ' ');
     }
 }
 
 //--------------------------------------------------------------------------------------------------------------------
 //用于int64的格式化输出，注意这个函数在BUFFER末尾不添加\0,从BSD的openssh snprintf代码移植
-void zce::fmt_int64(char *buffer,
+void zce::fmt_int64(char* buffer,
                     size_t max_len,
-                    size_t &use_len,
+                    size_t& use_len,
                     int64_t value,
                     BASE_NUMBER base,
                     size_t width,
@@ -524,7 +524,7 @@ void zce::fmt_int64(char *buffer,
     const char BASE_LOWERCASE_OUTCHAR[] = {"0123456789abcdef"};
 
     //如果是大写,16进制的转换全部用大写
-    const char *use_char_ary = BASE_LOWERCASE_OUTCHAR;
+    const char* use_char_ary = BASE_LOWERCASE_OUTCHAR;
 
     if (flags & FMT_UP)
     {
@@ -539,7 +539,7 @@ void zce::fmt_int64(char *buffer,
 
     //计算要填补多少0或者空格
     zero_pad_len = static_cast<int>(precision - place);
-    space_pad_len = static_cast<int>(width - FMT_MAX(precision,place) - (signvalue?1:0) - prefix_len);
+    space_pad_len = static_cast<int>(width - FMT_MAX(precision, place) - (signvalue ? 1 : 0) - prefix_len);
 
     //如果精度空间有多的，但是没有要求填写0，那么仍然填写' '
     if (flags & FMT_ZERO)
@@ -558,14 +558,14 @@ void zce::fmt_int64(char *buffer,
     {
         for (int i = 0; i < space_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
         }
     }
 
     //填补符号
     if (signvalue)
     {
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,static_cast<char>(signvalue));
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, static_cast<char>(signvalue));
     }
 
     if (flags & FMT_PREFIX)
@@ -573,22 +573,22 @@ void zce::fmt_int64(char *buffer,
         //十六进制添加0x
         if (BASE_NUMBER::HEXADECIMAL == base)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'0');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
 
             if (flags & FMT_UP)
             {
-                FMT_DOPR_OUTCH(buffer,use_len,max_len,'X');
+                FMT_DOPR_OUTCH(buffer, use_len, max_len, 'X');
             }
             else
             {
-                FMT_DOPR_OUTCH(buffer,use_len,max_len,'x');
+                FMT_DOPR_OUTCH(buffer, use_len, max_len, 'x');
             }
         }
 
         //8进制添加0
         if (BASE_NUMBER::OCTAL == base)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'0');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
         }
     }
 
@@ -597,7 +597,7 @@ void zce::fmt_int64(char *buffer,
     {
         for (int i = 0; i < zero_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,'0');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
         }
     }
 
@@ -605,7 +605,7 @@ void zce::fmt_int64(char *buffer,
     while (place > 0)
     {
         --place;
-        FMT_DOPR_OUTCH(buffer,use_len,max_len,convert[place]);
+        FMT_DOPR_OUTCH(buffer, use_len, max_len, convert[place]);
     }
 
     //左对齐，在末尾添加空格
@@ -613,12 +613,12 @@ void zce::fmt_int64(char *buffer,
     {
         for (int i = 0; i < space_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
         }
     }
 }
 
-void zce::fmt_int64(std::string &stdstr,
+void zce::fmt_int64(std::string& stdstr,
                     int64_t value,
                     BASE_NUMBER base,
                     size_t width,
@@ -677,7 +677,7 @@ void zce::fmt_int64(std::string &stdstr,
     const char BASE_LOWERCASE_OUTCHAR[] = {"0123456789abcdef"};
 
     //如果是大写,16进制的转换全部用大写
-    const char *use_char_ary = BASE_LOWERCASE_OUTCHAR;
+    const char* use_char_ary = BASE_LOWERCASE_OUTCHAR;
 
     if (flags & FMT_UP)
     {
@@ -693,7 +693,7 @@ void zce::fmt_int64(std::string &stdstr,
 
     //计算要填补多少0或者空格
     zero_pad_len = static_cast<int>(precision - place);
-    space_pad_len = static_cast<int>(width - FMT_MAX(precision,place) - (signvalue?1:0) - prefix_len);
+    space_pad_len = static_cast<int>(width - FMT_MAX(precision, place) - (signvalue ? 1 : 0) - prefix_len);
 
     //如果精度空间有多的，但是没有要求填写0，那么仍然填写' '
     if (flags & FMT_ZERO)
@@ -710,13 +710,13 @@ void zce::fmt_int64(std::string &stdstr,
     //右对齐填补空格
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
-        stdstr.append(space_pad_len,' ');
+        stdstr.append(space_pad_len, ' ');
     }
 
     //填补符号
     if (signvalue)
     {
-        stdstr.append(1,signvalue);
+        stdstr.append(1, signvalue);
     }
 
     if (flags & FMT_PREFIX)
@@ -724,50 +724,50 @@ void zce::fmt_int64(std::string &stdstr,
         //十六进制添加0x
         if (BASE_NUMBER::HEXADECIMAL == base)
         {
-            stdstr.append(1,'0');
+            stdstr.append(1, '0');
             if (flags & FMT_UP)
             {
-                stdstr.append(1,'X');
+                stdstr.append(1, 'X');
             }
             else
             {
-                stdstr.append(1,'x');
+                stdstr.append(1, 'x');
             }
         }
 
         //8进制添加0
         if (BASE_NUMBER::OCTAL == base)
         {
-            stdstr.append(1,'0');
+            stdstr.append(1, '0');
         }
     }
 
     //在精度范围输出0，如果没有0标识符号，填写' '
     if (zero_pad_len > 0)
     {
-        stdstr.append(zero_pad_len,'0');
+        stdstr.append(zero_pad_len, '0');
     }
 
     //输出数字
     while (place > 0)
     {
         --place;
-        stdstr.append(1,convert[place]);
+        stdstr.append(1, convert[place]);
     }
 
     //左对齐，在末尾添加空格
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
-        stdstr.append(space_pad_len,' ');
+        stdstr.append(space_pad_len, ' ');
     }
 }
 
 //--------------------------------------------------------------------------------------------------------------------
 //用于字符串的格式化输出，注意这个函数末尾不添加\0
-void zce::fmt_str(char *buffer,
+void zce::fmt_str(char* buffer,
                   size_t max_len,
-                  size_t &use_len,
-                  const char *value,
+                  size_t& use_len,
+                  const char* value,
                   size_t str_len,
                   size_t width,
                   size_t precision,
@@ -788,7 +788,7 @@ void zce::fmt_str(char *buffer,
         str_len = 6;
     }
 
-    size_t out_len = FMT_MIN(str_len,precision);
+    size_t out_len = FMT_MIN(str_len, precision);
     //输出的空格数量
     int space_pad_len = static_cast<int>(width - out_len);
 
@@ -797,12 +797,12 @@ void zce::fmt_str(char *buffer,
     {
         for (int i = 0; i < space_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
         }
     }
 
-    size_t copy_len = FMT_MIN(out_len,max_len);
-    memcpy(buffer + use_len,value,copy_len);
+    size_t copy_len = FMT_MIN(out_len, max_len);
+    memcpy(buffer + use_len, value, copy_len);
     use_len += copy_len;
     max_len -= copy_len;
     /*while (out_cnt < out_len)
@@ -816,13 +816,13 @@ void zce::fmt_str(char *buffer,
     {
         for (int i = 0; i < space_pad_len; i++)
         {
-            FMT_DOPR_OUTCH(buffer,use_len,max_len,' ');
+            FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
         }
     }
 }
 
-void zce::fmt_str(std::string &stdstr,
-                  const char *value,
+void zce::fmt_str(std::string& stdstr,
+                  const char* value,
                   size_t str_len,
                   size_t width,
                   size_t precision,
@@ -840,20 +840,20 @@ void zce::fmt_str(std::string &stdstr,
         value = "<NULL>";
         str_len = 6;
     }
-    size_t out_len = FMT_MIN(str_len,precision);
+    size_t out_len = FMT_MIN(str_len, precision);
     //输出的空格数量
     int space_pad_len = static_cast<int>(width - out_len);
 
     //右对齐填补空格(非左对齐)
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
-        stdstr.append(space_pad_len,' ');
+        stdstr.append(space_pad_len, ' ');
     }
-    stdstr.append(value,out_len);
+    stdstr.append(value, out_len);
 
     //左对齐，在末尾添加空格
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
-        stdstr.append(space_pad_len,' ');
+        stdstr.append(space_pad_len, ' ');
     }
 }

@@ -10,14 +10,14 @@
 //为ZCE_Thread_Light_Mutex做的特化
 //等待
 template <>
-void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait(ZCE_Thread_Light_Mutex *external_mutex)
+void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait(ZCE_Thread_Light_Mutex* external_mutex)
 {
     int ret = zce::pthread_cond_wait(&lock_,
                                      external_mutex->get_lock());
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_init",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_init", ret);
         return;
     }
 }
@@ -26,8 +26,8 @@ void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait(ZCE_Thread_Light_Mutex *
 
 //绝对时间超时的的等待，超时后解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light_Mutex *external_mutex,
-                                                                const zce::Time_Value &abs_time)
+bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light_Mutex* external_mutex,
+                                                                const zce::Time_Value& abs_time)
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -35,7 +35,7 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_init",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_init", ret);
         return false;
     }
 
@@ -44,25 +44,25 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
 
 //相对时间的超时锁定等待，超时后，解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex *external_mutex,const zce::Time_Value &relative_time)
+bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex* external_mutex, const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
-    return systime_wait(external_mutex,abs_time);
+    return systime_wait(external_mutex, abs_time);
 }
 
 //---------------------------------------------------------------------------------------
 //为ZCE_Thread_Light_Mutex做的特化
 //等待
 template <>
-void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait(ZCE_Thread_Recursive_Mutex *external_mutex)
+void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait(ZCE_Thread_Recursive_Mutex* external_mutex)
 {
     int ret = zce::pthread_cond_wait(&lock_,
                                      external_mutex->get_lock());
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_init",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_init", ret);
         return;
     }
 }
@@ -71,8 +71,8 @@ void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait(ZCE_Thread_Recursive
 
 //绝对时间超时的的等待，超时后解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
-                                                                    const zce::Time_Value &abs_time)
+bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_Recursive_Mutex* external_mutex,
+                                                                    const zce::Time_Value& abs_time)
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -80,7 +80,7 @@ bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_R
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_init",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_init", ret);
         return false;
     }
 
@@ -89,10 +89,10 @@ bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_R
 
 //相对时间的超时锁定等待，超时后，解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::duration_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
-                                                                     const zce::Time_Value &relative_time)
+bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::duration_wait(ZCE_Thread_Recursive_Mutex* external_mutex,
+                                                                     const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
-    return systime_wait(external_mutex,abs_time);
+    return systime_wait(external_mutex, abs_time);
 }

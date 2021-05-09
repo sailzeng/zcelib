@@ -34,7 +34,7 @@ pid_t zce::getppid(void)
         ULONG InheritedFromUniqueProcessId;
     }   PROCESS_BASIC_INFORMATION;
 
-    typedef LONG(WINAPI *PROCNTQSIP)(HANDLE,UINT,PVOID,ULONG,PULONG);
+    typedef LONG(WINAPI* PROCNTQSIP)(HANDLE, UINT, PVOID, ULONG, PULONG);
 
     DWORD dwId = ::GetCurrentProcessId();
 
@@ -61,7 +61,7 @@ pid_t zce::getppid(void)
     }
 
     // Get process handle
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION,FALSE,dwId);
+    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwId);
 
     if (!hProcess)
     {
@@ -115,7 +115,7 @@ pid_t zce::setsid(void)
 }
 
 //取得某个环境变量
-char *zce::getenv(const char *name)
+char* zce::getenv(const char* name)
 {
     //两个环境都有，这个封装有点多余
     return ::getenv(name);
@@ -132,11 +132,11 @@ sighandler_t zce::signal(int signum,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    return ::signal(signum,func);
+    return ::signal(signum, func);
 
 #elif defined (ZCE_OS_LINUX)
 
-    return ::signal(signum,func);
+    return ::signal(signum, func);
 #endif
 }
 
@@ -145,24 +145,24 @@ sighandler_t zce::signal(int signum,
 namespace zce
 {
 //
-static int read_proc_get_processstat(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_perf_info)
+static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_perf_info)
 {
     //得到进程的文件名称
-    const char *PROC_PROCESS_STAT = "/proc/%u/stat";
+    const char* PROC_PROCESS_STAT = "/proc/%u/stat";
     char file_name[PATH_MAX + 1];
     file_name[PATH_MAX] = '\0';
-    snprintf(file_name,PATH_MAX,PROC_PROCESS_STAT,read_pid);
+    snprintf(file_name, PATH_MAX, PROC_PROCESS_STAT, read_pid);
 
     //读取/proc下的文件
     size_t read_len = 0;
-    auto pair = zce::read_file_all(file_name,&read_len);
+    auto pair = zce::read_file_all(file_name, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
     in_para = zce::skip_token(in_para);              /* skip  pid*/
     in_para = zce::skip_token(in_para);              /* skip  name*/
     in_para = zce::skip_token(in_para);              /* skip  state*/
@@ -185,13 +185,13 @@ static int read_proc_get_processstat(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_per
 #endif
     uint64_t read_data = 0;
     // utime
-    read_data = ::strtoull(in_para,&out_para,10);
+    read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->run_utime_.tv_sec = static_cast<time_t>(read_data / cpu_tick_precision);
     prc_perf_info->run_utime_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     // stime
-    read_data = ::strtoull(in_para,&out_para,10);
+    read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->run_stime_.tv_sec = static_cast<time_t>(read_data / cpu_tick_precision);
     prc_perf_info->run_stime_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
@@ -200,23 +200,23 @@ static int read_proc_get_processstat(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_per
     in_para = skip_token(in_para);              /* skip cstime */
 
     //* priority
-    prc_perf_info->priority_ = ::strtol(in_para,&out_para,10);
+    prc_perf_info->priority_ = ::strtol(in_para, &out_para, 10);
     in_para = out_para;
     //* nice
-    prc_perf_info->nice_ = ::strtol(in_para,&out_para,10);
+    prc_perf_info->nice_ = ::strtol(in_para, &out_para, 10);
     in_para = out_para;
 
     in_para = skip_token(in_para);              /* skip number_threads */
     in_para = skip_token(in_para);              /* skip it_real_value */
 
     // 获取进程的启动时间start_time(unit：jiffies)
-    read_data = ::strtoull(in_para,&out_para,10);
+    read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->start_time_.tv_sec = static_cast<time_t>(read_data / cpu_tick_precision);
     prc_perf_info->start_time_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     // 计算running_time，uptime可以读取/proc/uptime得到, 这里使用系统zcelib自带的zce::get_uptime()
-    prc_perf_info->running_time_ = zce::timeval_sub(zce::get_uptime(),prc_perf_info->start_time_);
+    prc_perf_info->running_time_ = zce::timeval_sub(zce::get_uptime(), prc_perf_info->start_time_);
 
     //内存信息我从另外一个文件读取
 
@@ -224,21 +224,21 @@ static int read_proc_get_processstat(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_per
 }
 
 //
-static int read_proc_get_processmem(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_perf_info)
+static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_perf_info)
 {
-    const char *PROC_PROCESS_MEM = "/proc/%u/statm";
+    const char* PROC_PROCESS_MEM = "/proc/%u/statm";
     char file_name[PATH_MAX + 1];
     file_name[PATH_MAX] = '\0';
-    snprintf(file_name,PATH_MAX,PROC_PROCESS_MEM,read_pid);
+    snprintf(file_name, PATH_MAX, PROC_PROCESS_MEM, read_pid);
     size_t read_len = 0;
-    auto pair = zce::read_file_all(file_name,&read_len);
+    auto pair = zce::read_file_all(file_name, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
 
     //64位下应该是8096
     long page_size = 4096;
@@ -247,21 +247,21 @@ static int read_proc_get_processmem(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_perf
 #endif
 
     //total program size
-    prc_perf_info->vm_size_ = static_cast<size_t>(::strtol(in_para,&out_para,10) * page_size);
+    prc_perf_info->vm_size_ = static_cast<size_t>(::strtol(in_para, &out_para, 10) * page_size);
     in_para = out_para;
     //resident set size
-    prc_perf_info->resident_set_ = static_cast<size_t>(::strtol(in_para,&out_para,10) * page_size);
+    prc_perf_info->resident_set_ = static_cast<size_t>(::strtol(in_para, &out_para, 10) * page_size);
     in_para = out_para;
     //shared pages (from shared mappings)
-    prc_perf_info->shared_size_ = static_cast<size_t>(::strtol(in_para,&out_para,10) * page_size);
+    prc_perf_info->shared_size_ = static_cast<size_t>(::strtol(in_para, &out_para, 10) * page_size);
     in_para = out_para;
     //text (code)
-    prc_perf_info->text_size_ = static_cast<size_t>(::strtol(in_para,&out_para,10) * page_size);
+    prc_perf_info->text_size_ = static_cast<size_t>(::strtol(in_para, &out_para, 10) * page_size);
     in_para = out_para;
     // skip library (unused in Linux 2.6)
     in_para = skip_token(in_para);
     //data + stack
-    prc_perf_info->data_size_ = static_cast<size_t>(::strtol(in_para,&out_para,10) * page_size);
+    prc_perf_info->data_size_ = static_cast<size_t>(::strtol(in_para, &out_para, 10) * page_size);
     in_para = out_para;
 
     return 0;
@@ -271,15 +271,15 @@ static int read_proc_get_processmem(pid_t read_pid,ZCE_PROCESS_PERFORM *prc_perf
 #endif //#if defined ZCE_OS_LINUX
 
 //得到进程允许的性能信息，包括CPU时间，内存使用情况等信息
-int zce::get_self_perf(ZCE_PROCESS_PERFORM *prc_perf_info)
+int zce::get_self_perf(ZCE_PROCESS_PERFORM* prc_perf_info)
 {
     pid_t process_id = zce::getpid();
 
-    return zce::get_process_perf(process_id,prc_perf_info);
+    return zce::get_process_perf(process_id, prc_perf_info);
 }
 
 //取得谋个进程的性能信息
-int zce::get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info)
+int zce::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM* prc_perf_info)
 {
     prc_perf_info->process_id_ = process_id;
 
@@ -295,7 +295,7 @@ int zce::get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info)
 
     if (ZCE_INVALID_HANDLE == process_handle)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] OpenProcess error, reson is:%u.",::GetLastError());
+        ZCE_LOG(RS_ERROR, "[zcelib] OpenProcess error, reson is:%u.", ::GetLastError());
         return -1;
     }
 
@@ -313,14 +313,14 @@ int zce::get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info)
     //如果返回成功
     if (bret == FALSE)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] GetProcessTimes error, reson is:%u.",::GetLastError());
+        ZCE_LOG(RS_ERROR, "[zcelib] GetProcessTimes error, reson is:%u.", ::GetLastError());
         return -1;
     }
 
     timeval start_time = zce::make_timeval(&ft_start_time);
     timeval now_time = zce::gettimeofday();
 
-    prc_perf_info->running_time_ = zce::timeval_sub(now_time,start_time);
+    prc_perf_info->running_time_ = zce::timeval_sub(now_time, start_time);
     prc_perf_info->run_stime_ = zce::make_timeval2(&ru_stime);
     prc_perf_info->run_utime_ = zce::make_timeval2(&ru_utime);
 
@@ -334,7 +334,7 @@ int zce::get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info)
 
     if (bret == FALSE)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] GetProcessMemoryInfo error, reson is:%u, %s.",
+        ZCE_LOG(RS_ERROR, "[zcelib] GetProcessMemoryInfo error, reson is:%u, %s.",
                 ::GetLastError(),
                 ::strerror(::GetLastError()));
         return -1;
@@ -344,7 +344,7 @@ int zce::get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info)
 
     if (0 == priority)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] GetPriorityClass error, reson is:%u, %s.",
+        ZCE_LOG(RS_ERROR, "[zcelib] GetPriorityClass error, reson is:%u, %s.",
                 ::GetLastError(),
                 ::strerror(::GetLastError()));
         return -1;
@@ -366,14 +366,14 @@ int zce::get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info)
 #elif defined (ZCE_OS_LINUX)
 
     int ret = 0;
-    ret = read_proc_get_processstat(process_id,prc_perf_info);
+    ret = read_proc_get_processstat(process_id, prc_perf_info);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    ret = read_proc_get_processmem(process_id,prc_perf_info);
+    ret = read_proc_get_processmem(process_id, prc_perf_info);
 
     if (0 != ret)
     {

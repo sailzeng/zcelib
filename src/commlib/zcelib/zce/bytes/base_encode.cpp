@@ -14,13 +14,13 @@ static const unsigned char BASE64_ENC_MAP[64] =
 };
 
 //对一个内存块进行BASE64编码，
-int zce::base64_encode(const char *in,
+int zce::base64_encode(const char* in,
                        size_t in_len,
-                       char *out,
-                       size_t *out_len)
+                       char* out,
+                       size_t* out_len)
 {
-    size_t i,leven;
-    char *p;
+    size_t i, leven;
+    char* p;
 
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
 
@@ -47,11 +47,11 @@ int zce::base64_encode(const char *in,
     if (i < in_len)
     {
         unsigned a = in[0];
-        unsigned b = (i + 1 < in_len)?in[1]:0;
+        unsigned b = (i + 1 < in_len) ? in[1] : 0;
 
         *p++ = BASE64_ENC_MAP[(a >> 2) & 0x3F];
         *p++ = BASE64_ENC_MAP[(((a & 3) << 4) + (b >> 4)) & 0x3F];
-        *p++ = (i + 1 < in_len)?BASE64_ENC_MAP[(((b & 0xf) << 2)) & 0x3F]:'=';
+        *p++ = (i + 1 < in_len) ? BASE64_ENC_MAP[(((b & 0xf) << 2)) & 0x3F] : '=';
         *p++ = '=';
     }
 
@@ -88,12 +88,12 @@ static const unsigned char BASE64_DECODE_MAP[256] =
 };
 
 //对一个内存块进行base64的解码
-int zce::base64_decode(const char *in,
+int zce::base64_decode(const char* in,
                        size_t in_len,
-                       char *out,
-                       size_t *out_len)
+                       char* out,
+                       size_t* out_len)
 {
-    size_t t,x,y,z;
+    size_t t, x, y, z;
     unsigned char c;
     int           g;
 
@@ -161,10 +161,10 @@ static const char BASE16_ENC_LOWER_MAP[] = "0123456789abcdef";
 static const char BASE16_ENC_UPPER_MAP[] = "0123456789ABCDEF";
 
 //BASE16的编码
-int zce::base16_encode(const char *in,
+int zce::base16_encode(const char* in,
                        size_t in_len,
-                       char *out,
-                       size_t *out_len)
+                       char* out,
+                       size_t* out_len)
 {
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
 
@@ -176,8 +176,8 @@ int zce::base16_encode(const char *in,
         return -1;
     }
 
-    const char *p = in;
-    char *q = out;
+    const char* p = in;
+    char* q = out;
 
     for (size_t i = 0; i < in_len; i++)
     {
@@ -191,10 +191,10 @@ int zce::base16_encode(const char *in,
 }
 
 //BASE64的解码
-int zce::base16_decode(const char *in,
+int zce::base16_decode(const char* in,
                        size_t in_len,
-                       char *out,
-                       size_t *out_len)
+                       char* out,
+                       size_t* out_len)
 {
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL && in_len % 2 == 0);
     size_t need_len = in_len / 2;
@@ -206,7 +206,7 @@ int zce::base16_decode(const char *in,
     }
 
     char ch = 0;
-    char data1 = 0,data2 = 0;
+    char data1 = 0, data2 = 0;
     for (size_t i = 0; i < in_len;)
     {
         ch = in[i];

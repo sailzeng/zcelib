@@ -88,16 +88,16 @@ typedef enum uri_parse_state_tag
     parse_state_read_resource
 } uri_parse_state;
 
-int http_uri_parse(char *a_string,http_uri *a_uri)
+int http_uri_parse(char* a_string, http_uri* a_uri)
 {
     /* Everyone chant... "we love state machines..." */
     uri_parse_state l_state = parse_state_read_host;
-    char *l_start_string = NULL;
-    char *l_end_string = NULL;
+    char* l_start_string = NULL;
+    char* l_end_string = NULL;
     char  l_temp_port[6];
 
     /* init the array */
-    memset(l_temp_port,0,6);
+    memset(l_temp_port, 0, 6);
     /* check the parameters */
     if (a_string == NULL)
     {
@@ -107,7 +107,7 @@ int http_uri_parse(char *a_string,http_uri *a_uri)
     {
         a_uri->full = strdup(a_string);
     }
-    l_start_string = strchr(a_string,':');
+    l_start_string = strchr(a_string, ':');
     /* check to make sure that there was a : in the string */
     if (!l_start_string)
     {
@@ -115,12 +115,12 @@ int http_uri_parse(char *a_string,http_uri *a_uri)
     }
     if (a_uri)
     {
-        a_uri->proto = (char *)malloc(l_start_string - a_string + 1);
-        memcpy(a_uri->proto,a_string,(l_start_string - a_string));
+        a_uri->proto = (char*)malloc(l_start_string - a_string + 1);
+        memcpy(a_uri->proto, a_string, (l_start_string - a_string));
         a_uri->proto[l_start_string - a_string] = '\0';
     }
     /* check to make sure it starts with "http://" */
-    if (strncmp(l_start_string,"://",3) != 0)
+    if (strncmp(l_start_string, "://", 3) != 0)
     {
         goto ec;
     }
@@ -145,9 +145,9 @@ int http_uri_parse(char *a_string,http_uri *a_uri)
                 /* only do this if a uri was passed in */
                 if (a_uri)
                 {
-                    a_uri->host = (char *)malloc(l_end_string - l_start_string + 1);
+                    a_uri->host = (char*)malloc(l_end_string - l_start_string + 1);
                     /* copy the data */
-                    memcpy(a_uri->host,l_start_string,(l_end_string - l_start_string));
+                    memcpy(a_uri->host, l_start_string, (l_end_string - l_start_string));
                     /* terminate */
                     a_uri->host[l_end_string - l_start_string] = '\0';
                 }
@@ -165,8 +165,8 @@ int http_uri_parse(char *a_string,http_uri *a_uri)
                 }
                 if (a_uri)
                 {
-                    a_uri->host = (char *)malloc(l_end_string - l_start_string + 1);
-                    memcpy(a_uri->host,l_start_string,(l_end_string - l_start_string));
+                    a_uri->host = (char*)malloc(l_end_string - l_start_string + 1);
+                    memcpy(a_uri->host, l_start_string, (l_end_string - l_start_string));
                     a_uri->host[l_end_string - l_start_string] = '\0';
                 }
                 l_start_string = l_end_string;
@@ -189,7 +189,7 @@ int http_uri_parse(char *a_string,http_uri *a_uri)
                     goto ec;
                 }
                 /* copy the port into a temp buffer */
-                memcpy(l_temp_port,l_start_string,l_end_string - l_start_string);
+                memcpy(l_temp_port, l_start_string, l_end_string - l_start_string);
                 /* convert it. */
                 if (a_uri)
                 {
@@ -217,8 +217,8 @@ int http_uri_parse(char *a_string,http_uri *a_uri)
         }
         if (a_uri)
         {
-            a_uri->host = (char *)malloc(l_end_string - l_start_string + 1);
-            memcpy(a_uri->host,l_start_string,(l_end_string - l_start_string));
+            a_uri->host = (char*)malloc(l_end_string - l_start_string + 1);
+            memcpy(a_uri->host, l_start_string, (l_end_string - l_start_string));
             a_uri->host[l_end_string - l_start_string] = '\0';
             /* for a "/" */
             a_uri->resource = strdup("/");
@@ -265,11 +265,11 @@ ec:
     return -1;
 }
 
-http_uri *http_uri_new(void)
+http_uri* http_uri_new(void)
 {
-    http_uri *l_return = NULL;
+    http_uri* l_return = NULL;
 
-    l_return = (http_uri *)malloc(sizeof(http_uri));
+    l_return = (http_uri*)malloc(sizeof(http_uri));
     l_return->full = NULL;
     l_return->proto = NULL;
     l_return->host = NULL;
@@ -278,7 +278,7 @@ http_uri *http_uri_new(void)
     return l_return;
 }
 
-void http_uri_destroy(http_uri *a_uri)
+void http_uri_destroy(http_uri* a_uri)
 {
     if (a_uri->full)
     {
@@ -305,17 +305,17 @@ void http_uri_destroy(http_uri *a_uri)
 
 //================================================================================================
 
-ghttp_request *ghttp_request_new(void)
+ghttp_request* ghttp_request_new(void)
 {
-    struct _ghttp_request *l_return = NULL;
+    struct _ghttp_request* l_return = NULL;
 
     /* create everything */
-    l_return = (_ghttp_request *)malloc(sizeof(struct _ghttp_request));
+    l_return = (_ghttp_request*)malloc(sizeof(struct _ghttp_request));
     if (!l_return)
     {
         return NULL;
     }
-    memset(l_return,0,sizeof(struct _ghttp_request));
+    memset(l_return, 0, sizeof(struct _ghttp_request));
     l_return->uri = http_uri_new();
     l_return->proxy = http_uri_new();
     l_return->req = http_req_new();
@@ -324,7 +324,7 @@ ghttp_request *ghttp_request_new(void)
     return l_return;
 }
 
-void ghttp_request_destroy(ghttp_request *a_request)
+void ghttp_request_destroy(ghttp_request* a_request)
 {
     if (!a_request)
     {
@@ -396,10 +396,10 @@ void ghttp_request_destroy(ghttp_request *a_request)
     return;
 }
 
-int ghttp_set_uri(ghttp_request *a_request,char *a_uri)
+int ghttp_set_uri(ghttp_request* a_request, char* a_uri)
 {
     int l_rv = 0;
-    http_uri *l_new_uri = NULL;
+    http_uri* l_new_uri = NULL;
 
     if ((!a_request) || (!a_uri))
     {
@@ -407,7 +407,7 @@ int ghttp_set_uri(ghttp_request *a_request,char *a_uri)
     }
     /* set the uri */
     l_new_uri = http_uri_new();
-    l_rv = http_uri_parse(a_uri,l_new_uri);
+    l_rv = http_uri_parse(a_uri, l_new_uri);
     if (l_rv < 0)
     {
         http_uri_destroy(l_new_uri);
@@ -421,7 +421,7 @@ int ghttp_set_uri(ghttp_request *a_request,char *a_uri)
             a_request->uri->resource)
         {
             /* check to see if we just need to change the resource */
-            if ((!strcmp(a_request->uri->host,l_new_uri->host)) &&
+            if ((!strcmp(a_request->uri->host, l_new_uri->host)) &&
                 (a_request->uri->port == l_new_uri->port))
             {
                 free(a_request->uri->resource);
@@ -444,18 +444,18 @@ int ghttp_set_uri(ghttp_request *a_request,char *a_uri)
     return 0;
 }
 
-void ghttp_set_header(ghttp_request *a_request,
-                      const char *a_hdr,const char *a_val)
+void ghttp_set_header(ghttp_request* a_request,
+                      const char* a_hdr, const char* a_val)
 {
     http_hdr_set_value(a_request->req->headers,
-                       a_hdr,a_val);
+                       a_hdr, a_val);
 }
 
-int ghttp_prepare(ghttp_request *a_request)
+int ghttp_prepare(ghttp_request* a_request)
 {
     /* only allow http requests if no proxy has been set */
     if (!a_request->proxy->host && a_request->uri->proto &&
-        strcmp(a_request->uri->proto,"http"))
+        strcmp(a_request->uri->proto, "http"))
     {
         return 1;
     }

@@ -19,7 +19,7 @@ public:
              std::size_t shm_size,
              int shmget_flg = IPC_CREAT | SHM_R | SHM_W,
              int shmat_flg = 0,
-             const void *want_address = NULL
+             const void* want_address = NULL
     );
 
     //打开文件，进行映射, 简单，推荐使用这个函数
@@ -27,7 +27,7 @@ public:
              std::size_t shm_size,
              bool fail_if_exist,
              bool read_only = false,
-             const void *want_address = NULL
+             const void* want_address = NULL
     );
 
     //关闭映射(文件)
@@ -37,7 +37,7 @@ public:
     int remove();
 
     //返回映射的内存地址
-    void *addr();
+    void* addr();
 
 protected:
 
@@ -51,7 +51,7 @@ protected:
     std::size_t         shm_size_;
 
     //映射的内存地址
-    void *shm_addr_;
+    void* shm_addr_;
 };
 
 #endif //ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_

@@ -26,14 +26,14 @@ class ZCE_Lock_Ptr_Guard: public zce::NON_Copyable
 public:
 
     //构造，得到锁，进行锁定
-    ZCE_Lock_Ptr_Guard(ZCE_Lock_Base *lock_ptr):
+    ZCE_Lock_Ptr_Guard(ZCE_Lock_Base* lock_ptr) :
         lock_ptr_(lock_ptr)
     {
         lock_ptr_->lock();
     }
 
     ///构造，得到锁，根据要求决定是否进行锁定操作
-    ZCE_Lock_Ptr_Guard(ZCE_Lock_Base *lock_ptr,bool block):
+    ZCE_Lock_Ptr_Guard(ZCE_Lock_Base* lock_ptr, bool block) :
         lock_ptr_(lock_ptr)
     {
         if (block)
@@ -69,5 +69,5 @@ public:
 protected:
 
     ///用来GUARD保护的锁,利用C++特性实现锁差异
-    ZCE_Lock_Base *lock_ptr_;
+    ZCE_Lock_Base* lock_ptr_;
 };

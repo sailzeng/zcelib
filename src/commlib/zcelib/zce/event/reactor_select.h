@@ -5,14 +5,14 @@
 * @version
 * @date       2011年9月1日
 * @brief      SELECT 的IO反应器，IO多路复用模型
-*             更多的突出性能第一的前提，你从ZCE_Event_Handler上继承得到处理的句柄
+*             更多的突出性能第一的前提，你从zce::Event_Handler上继承得到处理的句柄
 *             封装，各种事件的处理都已经封装了，而且整体是和LINUX平台一致。
 *
 *             他的优点是在Windows平台也可以用，缺点就是SELECT函数所有的缺点，
 *             当然我们通过封装，已经保证了在个个平台都有不错的性能。
 *             不容易。
 *
-* @details    这个和ACE的Reactor有点像，但我们简化了很多地方，我们不融入定时器，
+* @details    这个和ACE的ZCE_Reactor有点像，但我们简化了很多地方，我们不融入定时器，
 *             我们也不融入消息队列，他简简单单就是为了IO触发。
 *
 *             请参考：
@@ -21,34 +21,35 @@
 * @note
 *
 */
-#ifndef ZCE_LIB_EVENT_REACTOR_SELECT_H_
-#define ZCE_LIB_EVENT_REACTOR_SELECT_H_
+#pragma once
 
 #include "zce/event/reactor_base.h"
 
+namespace zce
+{
 /*!
 * @brief      SELECT 的IO反应器，IO多路复用模型
 *
 */
-class ZCE_Select_Reactor: public ZCE_Reactor
+class Select_Reactor: public zce::ZCE_Reactor
 {
 public:
 
     /*!
     * @brief    构造函数
     */
-    ZCE_Select_Reactor();
+    Select_Reactor();
 
     /*!
     * @brief      构造函数和析构函数
     * @param      max_event_number 最大的句柄数量，用于初始化一些容器的大小，加快处理
     */
-    ZCE_Select_Reactor(size_t max_event_number);
+    Select_Reactor(size_t max_event_number);
 
     /*!
     * @brief      和析构函数 virtual的喔。
     */
-    virtual ~ZCE_Select_Reactor();
+    virtual ~Select_Reactor();
 
 public:
 
@@ -65,7 +66,7 @@ public:
     * @param      event_handler  操作的句柄
     * @param      cancel_mask    要取消的MASK值
     */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler,int cancel_mask) override;
+    virtual int cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask) override;
 
     /*!
     * @brief      打开某些mask标志，
@@ -73,7 +74,7 @@ public:
     * @param      event_handler  操作的句柄
     * @param      event_mask     要增加的MASK值
     */
-    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler,int event_mask) override;
+    virtual int schedule_wakeup(zce::Event_Handler* event_handler, int event_mask) override;
 
     /*!
     * @brief      事件触发
@@ -81,7 +82,7 @@ public:
     * @param      time_out      超时时长
     * @param      size_event    触发的句柄数量
     */
-    virtual int handle_events(zce::Time_Value *time_out,size_t *size_event) override;
+    virtual int handle_events(zce::Time_Value* time_out, size_t* size_event) override;
 
 protected:
 
@@ -90,8 +91,8 @@ protected:
     * @param      out_fds    句柄的fd set
     * @param      proc_mask  要处理的MASK值，内部会按照，读，写，异常的顺序进行处理，
     */
-    void process_ready(const fd_set *out_fds,
-                       ZCE_Event_Handler::EVENT_MASK proc_mask);
+    void process_ready(const fd_set* out_fds,
+                       zce::Event_Handler::EVENT_MASK proc_mask);
 
 protected:
 
@@ -113,5 +114,4 @@ protected:
     ///
     fd_set       para_exception_fd_set_;
 };
-
-#endif //ZCE_LIB_EVENT_REACTOR_EPOLL_H_
+}

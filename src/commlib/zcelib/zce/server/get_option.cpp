@@ -77,7 +77,7 @@
   Class           : ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION
   ************************************************************************************************************/
 ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
-    const char *name,
+    const char* name,
     ZCE_Get_Option::OPTION_ARG_MODE has_arg,
     int val)
     : name_(name),
@@ -86,7 +86,7 @@ ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
 {
 }
 
-ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(void):
+ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(void) :
     has_arg_(ZCE_Get_Option::OPTION_ARG_MODE::NO_ARG),
     val_(0)
 {
@@ -100,8 +100,8 @@ ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::~ZCE_GETOPT_LONG_OPTION(void)
 Class           : ZCE_Get_Option
 ************************************************************************************************************/
 ZCE_Get_Option::ZCE_Get_Option(int argc,
-                               char **argv,
-                               const char *optstring,
+                               char** argv,
+                               const char* optstring,
                                int skip,
                                int report_errors,
                                int ordering,
@@ -122,7 +122,7 @@ ZCE_Get_Option::ZCE_Get_Option(int argc,
 {
     // First check to see if POSIXLY_CORRECT was set.
     // Win32 is the only platform capable of wide-char env var.
-    const char *env_check = "POSIXLY_CORRECT";
+    const char* env_check = "POSIXLY_CORRECT";
 
     if (zce::getenv(env_check) != 0)
     {
@@ -226,7 +226,7 @@ ZCE_Get_Option::nextchar_i(void)
 int
 ZCE_Get_Option::long_option_i(void)
 {
-    char *s = this->nextchar_;
+    char* s = this->nextchar_;
     int hits = 0;
     int exact = 0;
 
@@ -241,18 +241,18 @@ ZCE_Get_Option::long_option_i(void)
 
     size_t len = s - this->nextchar_;
     // set last_option_ to nextchar_, up to the '='.
-    this->last_option_.assign(this->nextchar_,len);
+    this->last_option_.assign(this->nextchar_, len);
 
     size_t size = this->long_opts_.size();
     u_int option_index = 0;
 
-    ZCE_GETOPT_LONG_OPTION *pfound = 0;
+    ZCE_GETOPT_LONG_OPTION* pfound = 0;
 
     for (option_index = 0; option_index < size; option_index++)
     {
         ZCE_GETOPT_LONG_OPTION p = this->long_opts_[option_index];
 
-        if (!::strncmp(p.name_.c_str(),this->nextchar_,len))
+        if (!::strncmp(p.name_.c_str(), this->nextchar_, len))
         {
             // Got at least a partial match.
             pfound = &p;
@@ -274,7 +274,7 @@ ZCE_Get_Option::long_option_i(void)
         // one and it wasn't exact.
         if (this->opterr)
         {
-            ZCE_LOG(RS_ERROR,"[zcelib] %s: option `%s' is ambiguous",
+            ZCE_LOG(RS_ERROR, "[zcelib] %s: option `%s' is ambiguous",
                     this->argv_[0],
                     this->argv_[this->optind]);
         }
@@ -305,7 +305,7 @@ ZCE_Get_Option::long_option_i(void)
                 // don't want one.
                 if (this->opterr)
                 {
-                    ZCE_LOG(RS_ERROR,"[zcelib] "
+                    ZCE_LOG(RS_ERROR, "[zcelib] "
                             "%s: long option `--%s' doesn't allow "
                             "an argument",
                             this->argv_[0],
@@ -331,14 +331,14 @@ ZCE_Get_Option::long_option_i(void)
                 // All out of elements, so we have to punt...
                 if (this->opterr)
                 {
-                    ZCE_LOG(RS_ERROR,"[zcelib] %s: long option '--%s' requires an argument\n",
+                    ZCE_LOG(RS_ERROR, "[zcelib] %s: long option '--%s' requires an argument\n",
                             this->argv_[0],
                             pfound->name_.c_str());
                 }
 
                 this->nextchar_ = 0;
                 this->optopt_ = pfound->val_;   // Remember matching short equiv
-                return this->has_colon_?':':'?';
+                return this->has_colon_ ? ':' : '?';
             }
         }
 
@@ -358,7 +358,7 @@ ZCE_Get_Option::long_option_i(void)
         // signature was passed, e.g. "--", or it's not a short (not sure when
         // this could happen) it's an error.
         if (this->opterr)
-            ZCE_LOG(RS_ERROR,"[zcelib] %s: illegal long option '--%s'",
+            ZCE_LOG(RS_ERROR, "[zcelib] %s: illegal long option '--%s'",
                     this->argv_[0],
                     this->nextchar_);
 
@@ -378,9 +378,9 @@ ZCE_Get_Option::short_option_i(void)
     // Set last_option_ to opt
     this->last_option_ = opt;
 
-    char *oli = 0;
+    char* oli = 0;
     oli =
-        const_cast<char *> (::strchr(this->optstring_.c_str(),opt));
+        const_cast<char*> (::strchr(this->optstring_.c_str(), opt));
 
     /* Increment `optind' when we start to process its last character.  */
     if (*this->nextchar_ == '\0')
@@ -392,7 +392,7 @@ ZCE_Get_Option::short_option_i(void)
     {
         if (this->opterr)
         {
-            ZCE_LOG(RS_ERROR,"[zcelib] %s: illegal short option -- %c\n",
+            ZCE_LOG(RS_ERROR, "[zcelib] %s: illegal short option -- %c\n",
                     this->argv_[0],
                     opt);
         }
@@ -445,12 +445,12 @@ ZCE_Get_Option::short_option_i(void)
                 // Ran out of arguments before finding required argument.
                 if (this->opterr)
                 {
-                    ZCE_LOG(RS_ERROR,"[zcelib] %s: short option requires an argument -- %c",
+                    ZCE_LOG(RS_ERROR, "[zcelib] %s: short option requires an argument -- %c",
                             this->argv_[0],
                             opt);
                 }
 
-                opt = this->has_colon_?':':'?';
+                opt = this->has_colon_ ? ':' : '?';
             }
             // Use the next argv-element as the argument.
             else
@@ -492,7 +492,7 @@ ZCE_Get_Option::operator () (void)
     }
 
     if (((this->argv_[this->optind][0] == '-')
-        && (this->argv_[this->optind][1] == '-')) || this->long_only_)
+         && (this->argv_[this->optind][1] == '-')) || this->long_only_)
     {
         return this->long_option_i();
     }
@@ -501,14 +501,14 @@ ZCE_Get_Option::operator () (void)
 }
 
 int
-ZCE_Get_Option::long_option(const char *name,
+ZCE_Get_Option::long_option(const char* name,
                             OPTION_ARG_MODE has_arg)
 {
-    return this->long_option(name,0,has_arg);
+    return this->long_option(name, 0, has_arg);
 }
 
 int
-ZCE_Get_Option::long_option(const char *name,
+ZCE_Get_Option::long_option(const char* name,
                             int short_option,
                             OPTION_ARG_MODE has_arg)
 {
@@ -521,11 +521,11 @@ ZCE_Get_Option::long_option(const char *name,
     {
         // If the short_option already exists, make sure it matches, otherwise
         // add it.
-        char *s = 0;
+        char* s = 0;
 
-        if ((s = const_cast<char *> (
+        if ((s = const_cast<char*> (
             ::strchr(this->optstring_.c_str(),
-            short_option))) != 0)
+                     short_option))) != 0)
         {
             // Short option exists, so verify the argument options
             if (s[1] == ':')
@@ -536,7 +536,7 @@ ZCE_Get_Option::long_option(const char *name,
                     {
                         if (this->opterr)
                         {
-                            ZCE_LOG(RS_ERROR,"[zcelib] "
+                            ZCE_LOG(RS_ERROR, "[zcelib] "
                                     "Existing short option '%c' takes optional argument; adding %s requires ARG_OPTIONAL\n",
                                     short_option,
                                     name);
@@ -549,7 +549,7 @@ ZCE_Get_Option::long_option(const char *name,
                 {
                     if (this->opterr)
                     {
-                        ZCE_LOG(RS_ERROR,"[zcelib] "
+                        ZCE_LOG(RS_ERROR, "[zcelib] "
                                 "Existing short option '%c' requires an argument; adding %s requires ARG_REQUIRED.\n",
                                 short_option,
                                 name);
@@ -562,7 +562,7 @@ ZCE_Get_Option::long_option(const char *name,
             {
                 if (this->opterr)
                 {
-                    ZCE_LOG(RS_ERROR,"[zcelib] "
+                    ZCE_LOG(RS_ERROR, "[zcelib] "
                             "Existing short option '%c' does not accept an argument; adding %s requires NO_ARG\n",
                             short_option,
                             name);
@@ -587,14 +587,14 @@ ZCE_Get_Option::long_option(const char *name,
         }
     }
 
-    ZCE_GETOPT_LONG_OPTION option(name,has_arg,short_option);
+    ZCE_GETOPT_LONG_OPTION option(name, has_arg, short_option);
 
     this->long_opts_.push_back(option);
 
     return 0;
 }
 
-const char *
+const char*
 ZCE_Get_Option::long_option(void) const
 {
     if (this->long_option_)
@@ -608,14 +608,14 @@ ZCE_Get_Option::long_option(void) const
 void
 ZCE_Get_Option::permute_args(void)
 {
-    u_long cyclelen,i,j,ncycle,nnonopts,nopts;
+    u_long cyclelen, i, j, ncycle, nnonopts, nopts;
     u_long opt_end = this->optind;
-    int cstart,pos = 0;
-    char *swap = 0;
+    int cstart, pos = 0;
+    char* swap = 0;
 
     nnonopts = this->nonopt_end_ - this->nonopt_start_;
     nopts = opt_end - this->nonopt_end_;
-    ncycle = zce::gcd(nnonopts,nopts);
+    ncycle = zce::gcd(nnonopts, nopts);
     cyclelen = (opt_end - this->nonopt_start_) / ncycle;
 
     this->optind = this->optind - nnonopts;
@@ -638,9 +638,9 @@ ZCE_Get_Option::permute_args(void)
 
             swap = this->argv_[pos];
 
-            ((char **)this->argv_)[pos] = argv_[cstart];
+            ((char**)this->argv_)[pos] = argv_[cstart];
 
-            ((char **)this->argv_)[cstart] = swap;
+            ((char**)this->argv_)[cstart] = swap;
         }
     }
 }
@@ -660,7 +660,7 @@ ZCE_Get_Option::permute(void)
     // Skip over args untill we find the next option.
     while (this->optind < this->argc_
            && (this->argv_[this->optind][0] != '-'
-           || this->argv_[this->optind][1] == '\0'))
+               || this->argv_[this->optind][1] == '\0'))
     {
         this->optind++;
     }
@@ -670,7 +670,7 @@ ZCE_Get_Option::permute(void)
 
     if (this->optind != this->argc_
         && ::strcmp(this->argv_[this->optind],
-        ("--")) == 0)
+                    ("--")) == 0)
     {
         // We found the marker for the end of the options.
         ++this->optind;

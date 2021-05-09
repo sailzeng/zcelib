@@ -10,7 +10,7 @@ namespace zce
 /************************************************************************************************************
 Class           : Progress_Timer 用于记录一个事件用时的计时器
 ************************************************************************************************************/
-Progress_Timer::Progress_Timer():
+Progress_Timer::Progress_Timer() :
     start_time_(0),
     end_time_(0),
     addup_time_(0)
@@ -90,10 +90,10 @@ HR_Progress_Timer::HR_Progress_Timer()
     end_time_.tv_nsec = 0;
     addup_time_ = 0;
 
-    int ret = ::clock_getres(CLOCK_MONOTONIC,&precision_);
+    int ret = ::clock_getres(CLOCK_MONOTONIC, &precision_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"::clock_getres return fail. error is %d.",zce::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_getres return fail. error is %d.", zce::last_error());
     }
 
 #endif
@@ -110,7 +110,7 @@ void HR_Progress_Timer::restart()
     //如果更讲究一点你可以用GetProcessAffinityMask替换ONLY_YOU_PROCESSOR
 
     //如果设置不成功，会返回0
-    old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(),ONLY_YOU_PROCESSOR);
+    old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //
     ::QueryPerformanceFrequency(&frequency_);
     ::QueryPerformanceCounter(&start_time_);
@@ -118,10 +118,10 @@ void HR_Progress_Timer::restart()
     addup_time_.QuadPart = 0;
 #elif defined ZCE_OS_LINUX
 
-    int ret = ::clock_gettime(CLOCK_MONOTONIC,&start_time_);
+    int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"::clock_gettime return fail. error is %d.",zce::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -138,7 +138,7 @@ void HR_Progress_Timer::addup_start()
 
     addup_time_.QuadPart += end_time_.QuadPart - start_time_.QuadPart;
     //如果设置不成功，会返回0
-    old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(),ONLY_YOU_PROCESSOR);
+    old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //
     ::QueryPerformanceFrequency(&frequency_);
     ::QueryPerformanceCounter(&start_time_);
@@ -151,10 +151,10 @@ void HR_Progress_Timer::addup_start()
     addup_time_ += ((end_time_.tv_sec * NSEC_PER_SEC + end_time_.tv_nsec) -
                     (start_time_.tv_sec * NSEC_PER_SEC + start_time_.tv_nsec));
 
-    int ret = ::clock_gettime(CLOCK_MONOTONIC,&start_time_);
+    int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"::clock_gettime return fail. error is %d.",zce::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -172,15 +172,15 @@ void HR_Progress_Timer::end()
     //还原线程的处理器绑定关系
     if (old_affinity_mask_ != 0)
     {
-        ::SetThreadAffinityMask(GetCurrentThread(),old_affinity_mask_);
+        ::SetThreadAffinityMask(GetCurrentThread(), old_affinity_mask_);
     }
 
 #elif defined ZCE_OS_LINUX
 
-    int ret = ::clock_gettime(CLOCK_MONOTONIC,&end_time_);
+    int ret = ::clock_gettime(CLOCK_MONOTONIC, &end_time_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"::clock_gettime return fail. error is %d.",zce::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
     }
 #endif
 }
@@ -219,7 +219,7 @@ Class           : ZCE_TSC_Progress_Timer TSC计时器，
 uint64_t TSC_Progress_Timer::cpu_hz_ = 0;
 
 //构造函数
-TSC_Progress_Timer::TSC_Progress_Timer():
+TSC_Progress_Timer::TSC_Progress_Timer() :
     start_time_(0),
     end_time_(0),
     addup_time_(0)
@@ -284,7 +284,7 @@ double TSC_Progress_Timer::elapsed_usec() const
         }
         else
         {
-            ZCE_LOG(RS_ERROR,"zce::get_system_info return fail. cpu use default 1G.");
+            ZCE_LOG(RS_ERROR, "zce::get_system_info return fail. cpu use default 1G.");
             //用1G作为作为默认值
             cpu_hz_ = DEFAULT_CPU_HZ;
         }
@@ -296,7 +296,7 @@ double TSC_Progress_Timer::elapsed_usec() const
 /************************************************************************************************************
 Class           : ZCE_Chrono_HR_Timer C++ 11 chrono的定时器，
 ************************************************************************************************************/
-Chrono_HR_Timer::Chrono_HR_Timer():
+Chrono_HR_Timer::Chrono_HR_Timer() :
     addup_time_(std::chrono::high_resolution_clock::duration::zero())
 {
 }

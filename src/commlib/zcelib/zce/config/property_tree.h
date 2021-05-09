@@ -18,18 +18,13 @@
 *
 */
 
-#ifndef ZCE_LIB_CONFIG_PROPERTY_TREE_H_
-#define ZCE_LIB_CONFIG_PROPERTY_TREE_H_
+#pragma once
 
-//
-//
+#include "zce/string/from_string.h"
+#include "zce/string/to_string.h"
+
 namespace zce
 {
-class Sockaddr_In;
-class Sockaddr_In6;
-class Time_Value;
-}
-
 /*!
 * @brief      配置文件读取后存放的树
 *             将配置文件读取工具读取数据内容后都生成放入ZCE_Conf_PropertyTree中，
@@ -41,27 +36,27 @@ class Time_Value;
 * @note       因为有2棵树，所以内部也有两个迭代器，
 *
 */
-class ZCE_Conf_PropertyTree
+class PropertyTree
 {
 protected:
 
     ///叶子节点,以及相应的迭代器
-    typedef std::multimap<std::string,std::string> LEAF_NOTE_TYPE;
+    typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
     typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
     typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
 
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
-    typedef std::multimap<std::string,ZCE_Conf_PropertyTree > CHILDREN_NOTE_TYPE;
+    typedef std::multimap<std::string, zce::PropertyTree > CHILDREN_NOTE_TYPE;
     typedef CHILDREN_NOTE_TYPE::iterator child_iterator;
     typedef CHILDREN_NOTE_TYPE::const_iterator const_child_iterator;
     //
 public:
 
     ///构造函数
-    ZCE_Conf_PropertyTree();
-    ~ZCE_Conf_PropertyTree();
+    PropertyTree();
+    ~PropertyTree();
 
     /*!
     * @brief      根据路径得到一个CHILD 子树节点的迭代器
@@ -70,11 +65,11 @@ public:
     * @param      child_iter 返回的迭代器，注意内部在没有找到的情况下，没有将其置为end，用
     *                        return 的返回值判断是否成功，不要用这个参数。
     */
-    int path_get_childiter(const std::string &path_str,
-                           child_iterator &child_iter);
+    int path_get_childiter(const std::string& path_str,
+                           child_iterator& child_iter);
     ///同上，只是const的
-    int path_get_childiter(const std::string &path_str,
-                           const_child_iterator &child_iter) const;
+    int path_get_childiter(const std::string& path_str,
+                           const_child_iterator& child_iter) const;
 
     /*!
     * @brief      取得叶子节点的迭代器
@@ -83,20 +78,20 @@ public:
     * @param      key_str  访问val的key
     * @param      str_ptr  得到val的指针
     */
-    int path_get_leafiter(const std::string &path_str,
-                          const std::string &key_str,
-                          leaf_iterator &leaf_iter);
+    int path_get_leafiter(const std::string& path_str,
+                          const std::string& key_str,
+                          leaf_iterator& leaf_iter);
     ///同上，只是const的
-    int path_get_leafiter(const std::string &path_str,
-                          const std::string &key_str,
-                          const_leaf_iterator &leaf_iter) const;
+    int path_get_leafiter(const std::string& path_str,
+                          const std::string& key_str,
+                          const_leaf_iterator& leaf_iter) const;
 
     ///得到path对应的那个child note的指针
-    int path_get_childptr(const std::string &path_str,
-                          ZCE_Conf_PropertyTree *&child_ptr);
+    int path_get_childptr(const std::string& path_str,
+                          zce::PropertyTree*& child_ptr);
     ///同上，只是const的
-    int path_get_childptr(const std::string &path_str,
-                          const ZCE_Conf_PropertyTree *&child_ptr) const;
+    int path_get_childptr(const std::string& path_str,
+                          const zce::PropertyTree*& child_ptr) const;
 
     ///得到（当前node）叶子节点的begin 位置的迭代器
     leaf_iterator leaf_begin();
@@ -108,6 +103,10 @@ public:
     ///得到（当前node）子树节点的begin 位置的迭代器
     child_iterator child_end();
 
+    int path_get_leaf(const std::string& path_str,
+                      const std::string& key_str,
+                      std::string& val) const;
+
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
     * @tparam     val_type 被特化成 zce::Sockaddr_In，Sockaddr_In6，zce::Time_Value
@@ -117,27 +116,46 @@ public:
     * @param      val      读取返回的值
     */
     template<typename val_type>
-    int path_get_leaf(const std::string &path_str,
-                      const std::string &key_str,
-                      val_type &val) const;
+    int path_get_leaf(const std::string& path_str,
+                      const std::string& key_str,
+                      val_type& val) const
+    {
+        std::string value_data;
+        int ret = path_get_leaf(path_str, key_str, value_data);
+        if (0 != ret)
+        {
+            return ret;
+        }
+        if (value_data.empty())
+        {
+            ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                    path_str.c_str(), key_str.c_str());
+            return -2;
+        }
+        else
+        {
+            val = zce::from_string<val_type>(value_data);
+            return 0;
+        }
+    }
 
     /*!
-    * @brief      上面的函数的扩展函数，
+    * @brief      上面的函数的扩展函数，用于读取KEY1，KEY2，KEY3这种情况
     * @tparam     val_type 参考上面函数
     * @return     int
     * @param      path_str 参考上面函数
     * @param      key_str  参考上面函数
-    * @param      key_sequence key的序列号
+    * @param      key_sequence key的序列号,比如1,2,3……
     * @note
     */
     template<typename val_type>
-    int pathseq_get_leaf(const std::string &path_str,
-                         const std::string &key_str,
+    int pathseq_get_leaf(const std::string& path_str,
+                         const std::string& key_str,
                          size_t key_sequence,
-                         val_type &val) const
+                         val_type& val) const
     {
         std::string seqkey_str = key_str + std::to_string(key_sequence);
-        return path_get_leaf(path_str,seqkey_str,val);
+        return path_get_leaf(path_str, seqkey_str, val);
     }
 
     /*!
@@ -148,12 +166,17 @@ public:
     * @param      val
     */
     template<typename val_type>
-    void set_leaf(const std::string &key_str,
-                  val_type val);
+    void set_leaf(const std::string& key_str,
+                  const val_type& val)
+    {
+        std::string val_str;
+        zce::to_string(val_str, val);
+        this->leaf_node_.insert(std::make_pair(key_str, val_str));
+    }
 
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
-    void add_child(const std::string &key_str,
-                   ZCE_Conf_PropertyTree *&new_child_note);
+    void add_child(const std::string& key_str,
+                   zce::PropertyTree*& new_child_note);
 
     ///清理
     void clear();
@@ -176,5 +199,4 @@ protected:
     ///子树节点的MAP
     CHILDREN_NOTE_TYPE     child_node_;
 };
-
-#endif //ZCE_LIB_CONFIG_PROPERTY_H_
+}

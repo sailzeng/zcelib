@@ -80,7 +80,7 @@ public:
     STATUS_ITEM_ID() = default;
     ~STATUS_ITEM_ID() = default;
 
-    bool operator == (const STATUS_ITEM_ID &others) const;
+    bool operator == (const STATUS_ITEM_ID& others) const;
 
 public:
 
@@ -101,7 +101,7 @@ struct HASH_ZCE_STATUS_ITEM_ID
 {
 public:
     //就把3个数值相+，这样冲突感觉还小一点，（左移反而感觉不好）
-    size_t operator()(const STATUS_ITEM_ID &stat_item) const
+    size_t operator()(const STATUS_ITEM_ID& stat_item) const
     {
         return static_cast<size_t>(stat_item.statics_id_)
             + static_cast<size_t>(stat_item.classify_id_)
@@ -148,7 +148,7 @@ public:
     //
     STATUS_ITEM_WITHNAME(unsigned int,
                          STATUS_STATICS,
-                         const char *);
+                         const char*);
     STATUS_ITEM_WITHNAME();
     ~STATUS_ITEM_WITHNAME();
 
@@ -206,9 +206,9 @@ protected:
     ///存放统计数据的共享内存数组，
     typedef zce::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
     ///统计ID到数组的下标的hash map
-    typedef unordered_map<STATUS_ITEM_ID,size_t,HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
+    typedef unordered_map<STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<uint32_t,STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+    typedef unordered_map<uint32_t, STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
@@ -231,7 +231,7 @@ protected:
     * @param[in]  restore_mmap  是否用于恢复MMAP，如果是恢复，文件必须是存在的,
     * @param[in]  multi_thread  是否是多线程环境使用
     */
-    int initialize(const char *stat_filename,
+    int initialize(const char* stat_filename,
                    bool restore_mmap,
                    bool multi_thread);
 
@@ -246,7 +246,7 @@ protected:
     int find_insert_idx(uint32_t statics_id,
                         uint32_t classify_id,
                         uint32_t subclassing_id,
-                        size_t *idx);
+                        size_t* idx);
 
 public:
 
@@ -257,7 +257,7 @@ public:
     * @param[in]  stat_filename MMAP影射的状态文件名称
     * @param[in]  multi_thread  是否多线程
     */
-    int initialize(const char *stat_filename,
+    int initialize(const char* stat_filename,
                    bool multi_thread);
 
     /*!
@@ -270,7 +270,7 @@ public:
     * @param[in]  multi_thread  是否多线程
     * @note       注意统计项目数量不是监控ID的数量，监控ID数量默认是固定的 @ref MAX_MONITOR_STAT_ITEM
     */
-    int initialize(const char *stat_filename,
+    int initialize(const char* stat_filename,
                    size_t num_stat_item,
                    const STATUS_ITEM_WITHNAME item_ary[],
                    bool multi_thread);
@@ -289,7 +289,7 @@ public:
 
     ///监控项是否已经存在
     bool is_exist_stat_id(unsigned int stat_id,
-                          STATUS_ITEM_WITHNAME *status_item_withname) const;
+                          STATUS_ITEM_WITHNAME* status_item_withname) const;
 
     /*!
     * @brief      使用统计ID和分类ID作为key,对统计值增加1
@@ -302,7 +302,7 @@ public:
                        uint32_t classify_id,
                        uint32_t subclassing_id)
     {
-        return add_number(statics_id,classify_id,subclassing_id,1);
+        return add_number(statics_id, classify_id, subclassing_id, 1);
     }
 
     /*!
@@ -356,11 +356,11 @@ public:
     void copy_stat_counter();
 
     ///由于将内部数据全部取出，用于你外部打包之类
-    void dump_all(ARRAY_OF_STATUS_WITHNAME &array_status,
+    void dump_all(ARRAY_OF_STATUS_WITHNAME& array_status,
                   bool dump_copy = false);
 
     ///Dump所有的数据
-    void dump_status_info(std::ostringstream &strstream,
+    void dump_status_info(std::ostringstream& strstream,
                           bool dump_copy = false);
 
     ///Dump所有的数据
@@ -368,7 +368,7 @@ public:
                           bool dump_copy = false);
 
     ///得到文件的头部信息
-    void get_stat_head(ZCE_STATUS_HEAD *stat_head);
+    void get_stat_head(ZCE_STATUS_HEAD* stat_head);
 
     ///记录监控的上报时间
     void report_monitor_time(uint64_t report_time = static_cast<uint64_t>(time(NULL)));
@@ -379,9 +379,9 @@ public:
 public:
 
     //得到单子实例
-    static Server_Status *instance();
+    static Server_Status* instance();
     //单子实例赋值
-    static void instance(Server_Status *);
+    static void instance(Server_Status*);
     //清理单子实例
     static void clean_instance();
 
@@ -403,23 +403,23 @@ protected:
 protected:
 
     //多态的锁,
-    ZCE_Lock_Base *stat_lock_;
+    ZCE_Lock_Base* stat_lock_;
 
     //MMAP内存影射的数据文件
     ZCE_ShareMem_Posix        stat_file_;
 
     //内存文件头
-    ZCE_STATUS_HEAD *stat_file_head_;
+    ZCE_STATUS_HEAD* stat_file_head_;
 
     //mandy和sandy是原来代码中间为了区分用数组定位，hash定位两个数据区的东东，
     //后来代码全部改为了用hansh定位，不好意思，两个小MM，怪蜀黍就是步放过你们，
     //http://t.qq.com/angelbaby22
 
     // 存放状态计数器的数组
-    ARRYA_OF_SHM_STATUS *status_stat_sandy_;
+    ARRYA_OF_SHM_STATUS* status_stat_sandy_;
 
     //状态计数器的一份拷贝(备份)，数据放在共享内存中，我们可以用考虑用mandy读取数据，所以可以讲每个
-    ARRYA_OF_SHM_STATUS *status_copy_mandy_;
+    ARRYA_OF_SHM_STATUS* status_copy_mandy_;
 
     //记录配置的的统计数据SET，用于记录配置的统计项目，也用于防止重复插入和dump 输出时有名称信息
     STATUS_WITHNAME_MAP       conf_stat_map_;
@@ -436,6 +436,6 @@ protected:
 protected:
 
     //单子实例
-    static Server_Status *instance_;
+    static Server_Status* instance_;
 };
 }

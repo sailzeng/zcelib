@@ -62,7 +62,7 @@ pid_t getppid(void);
 pid_t fork(void);
 
 ///取得某个环境变量
-char *getenv(const char *name);
+char* getenv(const char* name);
 
 ///
 pid_t setsid(void);
@@ -75,10 +75,10 @@ sighandler_t signal(int signum,
 //非标准函数，得到进程的各种性能数据
 
 ///得到进程允许的性能信息，包括CPU时间，内存使用情况等信息
-int get_self_perf(ZCE_PROCESS_PERFORM *prc_perf_info);
+int get_self_perf(ZCE_PROCESS_PERFORM* prc_perf_info);
 
 ///取得谋个进程的性能信息
-int get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info);
+int get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM* prc_perf_info);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_TIME_H_

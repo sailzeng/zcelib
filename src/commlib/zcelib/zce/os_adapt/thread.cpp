@@ -6,7 +6,7 @@
 
 //----------------------------------------------------------------------------------------
 //
-int zce::pthread_attr_init(pthread_attr_t *attr)
+int zce::pthread_attr_init(pthread_attr_t* attr)
 {
     //我暂时只关注这几个变量
 #if defined (ZCE_OS_WINDOWS)
@@ -23,7 +23,7 @@ int zce::pthread_attr_init(pthread_attr_t *attr)
 }
 
 //
-int zce::pthread_attr_destroy(pthread_attr_t *attr)
+int zce::pthread_attr_destroy(pthread_attr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(attr);
@@ -36,10 +36,10 @@ int zce::pthread_attr_destroy(pthread_attr_t *attr)
 
 //设置，或者获得线程属性变量属性
 //你可以设置，线程的的分离，JOIN属性，堆栈大小，线程的调度优先级
-int zce::pthread_attr_getex(const pthread_attr_t *attr,
-                            int *detachstate,
-                            size_t *stacksize,
-                            int *threadpriority
+int zce::pthread_attr_getex(const pthread_attr_t* attr,
+                            int* detachstate,
+                            size_t* stacksize,
+                            int* threadpriority
 )
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -51,7 +51,7 @@ int zce::pthread_attr_getex(const pthread_attr_t *attr,
 
 #elif defined (ZCE_OS_LINUX)
     int ret = 0;
-    ret = ::pthread_attr_getdetachstate(attr,detachstate);
+    ret = ::pthread_attr_getdetachstate(attr, detachstate);
 
     if (ret != 0)
     {
@@ -59,7 +59,7 @@ int zce::pthread_attr_getex(const pthread_attr_t *attr,
     }
 
     sched_param param;
-    ret = ::pthread_attr_getschedparam(attr,&param);
+    ret = ::pthread_attr_getschedparam(attr, &param);
 
     if (ret != 0)
     {
@@ -67,7 +67,7 @@ int zce::pthread_attr_getex(const pthread_attr_t *attr,
     }
 
     *threadpriority = param.sched_priority;
-    ret = ::pthread_attr_getstacksize(attr,stacksize);
+    ret = ::pthread_attr_getstacksize(attr, stacksize);
 
     if (ret != 0)
     {
@@ -78,7 +78,7 @@ int zce::pthread_attr_getex(const pthread_attr_t *attr,
 #endif
 }
 
-int zce::pthread_attr_setex(pthread_attr_t *attr,
+int zce::pthread_attr_setex(pthread_attr_t* attr,
                             int detachstate,
                             size_t stacksize,
                             int threadpriority
@@ -96,7 +96,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 
 #elif defined (ZCE_OS_LINUX)
     int ret = 0;
-    ret = ::pthread_attr_setdetachstate(attr,detachstate);
+    ret = ::pthread_attr_setdetachstate(attr, detachstate);
 
     if (ret != 0)
     {
@@ -104,7 +104,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
     }
 
     //注意这儿，要先设置是否遵守不从夫进程得到调度方案
-    ret = ::pthread_attr_setinheritsched(attr,PTHREAD_EXPLICIT_SCHED);
+    ret = ::pthread_attr_setinheritsched(attr, PTHREAD_EXPLICIT_SCHED);
 
     if (ret != 0)
     {
@@ -113,7 +113,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 
     sched_param param;
     param.sched_priority = threadpriority;
-    ret = ::pthread_attr_setschedparam(attr,&param);
+    ret = ::pthread_attr_setschedparam(attr, &param);
 
     if (ret != 0)
     {
@@ -126,7 +126,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
         stacksize = PTHREAD_STACK_MIN;
     }
 
-    ret = ::pthread_attr_setstacksize(attr,stacksize);
+    ret = ::pthread_attr_setstacksize(attr, stacksize);
 
     if (ret != 0)
     {
@@ -141,16 +141,16 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 class THREAD_START_FUN_ADAPT
 {
 protected:
-    typedef void (*START_ROUTINE_FUN)(void *);
+    typedef void (*START_ROUTINE_FUN)(void*);
 
     //线程启动函数
     START_ROUTINE_FUN   start_routine_;
     //线程启动参数
-    void *arg_;
+    void* arg_;
 
 public:
     //构造函数和析构函数
-    THREAD_START_FUN_ADAPT(void (*start_routine)(void *),void *arg):
+    THREAD_START_FUN_ADAPT(void (*start_routine)(void*), void* arg) :
         start_routine_(start_routine),
         arg_(arg)
     {
@@ -161,9 +161,9 @@ public:
     }
 #if defined (ZCE_OS_WINDOWS)
     //
-    static unsigned int __stdcall adapt_svc_run(void *adapt_svc)
+    static unsigned int __stdcall adapt_svc_run(void* adapt_svc)
     {
-        THREAD_START_FUN_ADAPT *my_adapt = static_cast<THREAD_START_FUN_ADAPT *>(adapt_svc);
+        THREAD_START_FUN_ADAPT* my_adapt = static_cast<THREAD_START_FUN_ADAPT*>(adapt_svc);
         my_adapt->start_routine_(my_adapt->arg_);
         delete my_adapt;
         unsigned int return_data = 0;
@@ -171,12 +171,12 @@ public:
     }
 #elif defined (ZCE_OS_LINUX)
     //
-    static void *adapt_svc_run(void *adapt_svc)
+    static void* adapt_svc_run(void* adapt_svc)
     {
-        THREAD_START_FUN_ADAPT *my_adapt = static_cast<THREAD_START_FUN_ADAPT *>(adapt_svc);
+        THREAD_START_FUN_ADAPT* my_adapt = static_cast<THREAD_START_FUN_ADAPT*>(adapt_svc);
         my_adapt->start_routine_(my_adapt->arg_);
         delete my_adapt;
-        void *return_dword = 0;
+        void* return_dword = 0;
         return return_dword;
     }
 #endif //
@@ -189,16 +189,16 @@ public:
 //而我选择谁也不去迁就，不提供返回值给你，如果你需要返回值，请用线程类的封装，而不是API
 //因为WIN32下返回unsigned int，LINUX下返回void *，我要考虑平台兼容性，将谁转换给谁都不合适,所以我放弃
 //所以统一没有返回值，给你出错的可能，反而害死自己
-int zce::pthread_create(ZCE_THREAD_ID *threadid,
-                        const pthread_attr_t *attr,
-                        void (*start_routine)(void *),
-                        void *arg)
+int zce::pthread_create(ZCE_THREAD_ID* threadid,
+                        const pthread_attr_t* attr,
+                        void (*start_routine)(void*),
+                        void* arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     //这个参数new了之后，在创建了线程后才能delete,
     //所以真正的删除点在，THREAD_START_FUN_ADAPT::adapt_svc_run这个地方，
-    THREAD_START_FUN_ADAPT *adapt_object = new THREAD_START_FUN_ADAPT(start_routine,arg);
+    THREAD_START_FUN_ADAPT* adapt_object = new THREAD_START_FUN_ADAPT(start_routine, arg);
     //用CRT的线程创建函数创建线程
     HANDLE thread_handle = (HANDLE)::_beginthreadex(NULL,
                                                     static_cast<unsigned int>(attr->stacksize),
@@ -232,8 +232,8 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 
 #elif defined (ZCE_OS_LINUX)
 
-    THREAD_START_FUN_ADAPT *adapt_object = new THREAD_START_FUN_ADAPT(start_routine,arg);
-    return ::pthread_create(threadid,attr,
+    THREAD_START_FUN_ADAPT* adapt_object = new THREAD_START_FUN_ADAPT(start_routine, arg);
+    return ::pthread_create(threadid, attr,
                             THREAD_START_FUN_ADAPT::adapt_svc_run,
                             adapt_object);
 
@@ -242,9 +242,9 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 
 //这个不是POSIX的封装，但推荐使用
 //还是提供一个简单一点的封装吧，这个不用处理pthread_attr_t
-int zce::pthread_createex(void (*start_routine)(void *),
-                          void *arg,
-                          ZCE_THREAD_ID *threadid,
+int zce::pthread_createex(void (*start_routine)(void*),
+                          void* arg,
+                          ZCE_THREAD_ID* threadid,
                           int detachstate,
                           size_t stacksize,
                           int threadpriority
@@ -297,7 +297,7 @@ void zce::pthread_exit(void)
     return;
 
 #elif defined (ZCE_OS_LINUX)
-    void *return_data = NULL;
+    void* return_data = NULL;
     return ::pthread_exit(return_data);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -306,7 +306,7 @@ void zce::pthread_exit(void)
 int zce::pthread_join(ZCE_THREAD_ID threadid)
 {
     ZCE_THR_FUNC_RETURN ret_val;
-    return zce::pthread_join(threadid,&ret_val);
+    return zce::pthread_join(threadid, &ret_val);
 }
 
 //==========================================================================================
@@ -318,16 +318,16 @@ int zce::pthread_join(ZCE_THREAD_ID threadid)
 class WIN_THREAD_STARTFUN_ADAPT
 {
 protected:
-    typedef unsigned int (*WIN_START_ROUTINE_FUN)(void *);
+    typedef unsigned int (*WIN_START_ROUTINE_FUN)(void*);
 
     //线程启动函数
     WIN_START_ROUTINE_FUN start_routine_;
     //线程启动参数
-    void *arg_;
+    void* arg_;
 
 public:
     //构造函数和析构函数
-    WIN_THREAD_STARTFUN_ADAPT(unsigned int (*start_routine)(void *),void *arg):
+    WIN_THREAD_STARTFUN_ADAPT(unsigned int (*start_routine)(void*), void* arg) :
         start_routine_(start_routine),
         arg_(arg)
     {
@@ -338,9 +338,9 @@ public:
     }
 
     //
-    static unsigned int __stdcall adapt_svc_run(void *adapt_svc)
+    static unsigned int __stdcall adapt_svc_run(void* adapt_svc)
     {
-        WIN_THREAD_STARTFUN_ADAPT *my_adapt = static_cast<WIN_THREAD_STARTFUN_ADAPT *>(adapt_svc);
+        WIN_THREAD_STARTFUN_ADAPT* my_adapt = static_cast<WIN_THREAD_STARTFUN_ADAPT*>(adapt_svc);
         unsigned int return_data = my_adapt->start_routine_(my_adapt->arg_);
         return return_data;
     }
@@ -349,14 +349,14 @@ public:
 #endif //
 
 //创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值
-int zce::pthread_create(ZCE_THREAD_ID *threadid,
-                        const pthread_attr_t *attr,
-                        ZCE_THR_FUNC_RETURN(*start_routine)(void *),
-                        void *arg)
+int zce::pthread_create(ZCE_THREAD_ID* threadid,
+                        const pthread_attr_t* attr,
+                        ZCE_THR_FUNC_RETURN(*start_routine)(void*),
+                        void* arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    WIN_THREAD_STARTFUN_ADAPT adapt_object(start_routine,arg);
+    WIN_THREAD_STARTFUN_ADAPT adapt_object(start_routine, arg);
     //用CRT的线程创建函数创建线程
     HANDLE thread_handle = (HANDLE)::_beginthreadex(NULL,
                                                     static_cast<unsigned int>(attr->stacksize),
@@ -407,7 +407,7 @@ void zce::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
 }
 
 //等待某个JOIN的线程结束,并且得到线程回调函数的返回值
-int zce::pthread_join(ZCE_THREAD_ID threadid,ZCE_THR_FUNC_RETURN *ret_val)
+int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN* ret_val)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -422,8 +422,8 @@ int zce::pthread_join(ZCE_THREAD_ID threadid,ZCE_THR_FUNC_RETURN *ret_val)
     }
     DWORD thread_ret;
 
-    if (::WaitForSingleObject(thr_handle,INFINITE) == WAIT_OBJECT_0
-        && ::GetExitCodeThread(thr_handle,&thread_ret) != FALSE)
+    if (::WaitForSingleObject(thr_handle, INFINITE) == WAIT_OBJECT_0
+        && ::GetExitCodeThread(thr_handle, &thread_ret) != FALSE)
     {
         *ret_val = thread_ret;
         //此处不要关闭handle（  ::CloseHandle (thr_handle);），因为我们调用的是_endthreadex 结束的线程
@@ -434,7 +434,7 @@ int zce::pthread_join(ZCE_THREAD_ID threadid,ZCE_THR_FUNC_RETURN *ret_val)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_join(threadid,ret_val);
+    return ::pthread_join(threadid, ret_val);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
@@ -470,7 +470,7 @@ int zce::pthread_cancel(ZCE_THREAD_ID threadid)
         return -1;
     }
     //强制退出
-    BOOL bret = ::TerminateThread(thr_handle,0);
+    BOOL bret = ::TerminateThread(thr_handle, 0);
     if (!bret)
     {
         return -1;
@@ -531,7 +531,7 @@ int zce::pthread_yield(void)
 
 //destructor 参数对于WIN32平台没有用，建议不用。
 //
-int zce::pthread_key_create(pthread_key_t *key,void (*destructor)(void *))
+int zce::pthread_key_create(pthread_key_t* key, void (*destructor)(void*))
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -550,7 +550,7 @@ int zce::pthread_key_create(pthread_key_t *key,void (*destructor)(void *))
 
 #elif defined (ZCE_OS_LINUX)
     //
-    return ::pthread_key_create(key,destructor);
+    return ::pthread_key_create(key, destructor);
 #endif
 }
 
@@ -576,11 +576,11 @@ int zce::pthread_key_delete(pthread_key_t key)
 #endif
 }
 
-int zce::pthread_setspecific(pthread_key_t key,const void *data)
+int zce::pthread_setspecific(pthread_key_t key, const void* data)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    BOOL bool_ret = ::TlsSetValue(key,(LPVOID)(data));
+    BOOL bool_ret = ::TlsSetValue(key, (LPVOID)(data));
 
     //如果返回FALSE标识失败
     if (!bool_ret)
@@ -593,11 +593,11 @@ int zce::pthread_setspecific(pthread_key_t key,const void *data)
 
 #elif defined (ZCE_OS_LINUX)
     //
-    return ::pthread_setspecific(key,data);
+    return ::pthread_setspecific(key, data);
 #endif
 }
 
-void *zce::pthread_getspecific(pthread_key_t key)
+void* zce::pthread_getspecific(pthread_key_t key)
 {
 #if defined (ZCE_OS_WINDOWS)
 

@@ -9,12 +9,12 @@ namespace zce
 * @param      str_ary
 * @note
 */
-int backtrace_stack(std::vector<std::string> &str_ary);
+int backtrace_stack(std::vector<std::string>& str_ary);
 
-int backtrace_stack(FILE *stream);
+int backtrace_stack(FILE* stream);
 
 int backtrace_stack(zce::LOG_PRIORITY dbg_lvl,
-                    const char *dbg_info);
+                    const char* dbg_info);
 };
 
 #endif //

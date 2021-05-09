@@ -437,7 +437,7 @@ inline int last_error(void)
     // to shield the rest of ACE from having to know about this.
     int lerror = ::GetLastError();
     int lerrno = errno;
-    return (lerrno == 0)?lerror:lerrno;
+    return (lerrno == 0) ? lerror : lerrno;
 #elif defined (ZCE_OS_LINUX)
     return errno;
 #endif /* ACE_WIN32 */

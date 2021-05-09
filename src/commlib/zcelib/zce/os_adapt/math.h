@@ -22,7 +22,7 @@ namespace zce
 /*!
 * @brief      计算两个数字的最大公约数
 */
-uint32_t gcd(uint32_t x,uint32_t y);
+uint32_t gcd(uint32_t x, uint32_t y);
 
 /*!
 * @brief      检查一个数值是否是质数
@@ -62,7 +62,7 @@ inline int scanbit_lsb2msb32(uint32_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanForward(&index,mask);
+    ::_BitScanForward(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_ctz(mask);
@@ -78,7 +78,7 @@ inline int scanbit_msb2lsb32(uint32_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanReverse(&index,mask);
+    ::_BitScanReverse(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_clz(mask);
@@ -98,7 +98,7 @@ inline int scanbit_lsb2msb64(uint64_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanForward64(&index,mask);
+    ::_BitScanForward64(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_ctzll(mask);
@@ -114,7 +114,7 @@ inline int scanbit_msb2lsb64(uint64_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanReverse64(&index,mask);
+    ::_BitScanReverse64(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_clzll(mask);

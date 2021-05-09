@@ -17,7 +17,7 @@ public:
 public:
 
     ///初始化,根据启动参数启动
-    virtual int app_start(int argc,const char *argv[]);
+    virtual int app_start(int argc, const char* argv[]);
 
     ///处理退出的清理工作
     virtual int app_exit();
@@ -28,7 +28,7 @@ public:
 public:
 
     ///通信管理器
-    zerg::Comm_Manager *zerg_comm_mgr_;
+    zerg::Comm_Manager* zerg_comm_mgr_;
 
     ///OP KEY文件的时间戳
     time_t             conf_timestamp_;

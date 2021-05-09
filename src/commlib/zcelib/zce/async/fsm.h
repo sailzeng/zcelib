@@ -36,7 +36,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_FSM(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd);
+    Async_FSM(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -48,17 +48,17 @@ protected:
     * @param[in]  outer_data 传入参数，外部调用数据
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(const void *outer_data,
+    virtual void on_run(const void* outer_data,
                         size_t data_len,
-                        bool &continue_run) = 0;
+                        bool& continue_run) = 0;
 
     /*!
     * @brief      状态机对象超时处理，默认continue_run返回false，让系统回收，
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const zce::Time_Value &now_time,
-                            bool &continue_run) override;
+    virtual void on_timeout(const zce::Time_Value& now_time,
+                            bool& continue_run) override;
 
     /*!
     * @brief      设置的状态机阶段，

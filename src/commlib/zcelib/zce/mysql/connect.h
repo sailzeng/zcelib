@@ -47,10 +47,10 @@ public:
     * @param[in]  timeout      链接的超时时间，s
     * @param[in]  if_multi_sql 是否使用MULTI SQL语句
     */
-    int connect_by_host(const char *host_name,
-                        const char *user = "mysql",
-                        const char *pwd = "",
-                        const char *db = NULL,
+    int connect_by_host(const char* host_name,
+                        const char* user = "mysql",
+                        const char* pwd = "",
+                        const char* db = NULL,
                         const unsigned int port = MYSQL_PORT,
                         unsigned int timeout = 0,
                         bool if_multi_sql = false);
@@ -65,10 +65,10 @@ public:
     * @param      timeout       链接的超时时间，s
     * @param      if_multi_sql  是否使用MULTI SQL语句
     */
-    int connect_by_socketfile(const char *socket_file,
-                              const char *user = "mysql",
-                              const char *pwd = "",
-                              const char *db = NULL,
+    int connect_by_socketfile(const char* socket_file,
+                              const char* user = "mysql",
+                              const char* pwd = "",
+                              const char* db = NULL,
                               unsigned int timeout = 0,
                               bool if_multi_sql = false);
 
@@ -78,7 +78,7 @@ public:
     * @param      optfile
     * @param      group
     */
-    int connect_by_optionfile(const char *optfile,const char *group);
+    int connect_by_optionfile(const char* optfile, const char* group);
 
     /*!
     * @brief      断开数据服务器
@@ -96,7 +96,7 @@ public:
     * @return     int   返回0标识成功
     * @param      char* 数据库的名称
     */
-    int select_database(const char *);
+    int select_database(const char*);
 
     /*!
     * @brief      如果连接断开，重新连接，低成本的好方法,否则什么都不做，
@@ -110,13 +110,13 @@ public:
     * @brief      得到数据服务器状态
     * @return     const char* 返回的状态描述
     */
-    const char *get_mysql_status();
+    const char* get_mysql_status();
 
     /*!
     * @brief      返回错误消息
     * @return     const char* 返回错误描述消息
     */
-    inline const char *get_error_message();
+    inline const char* get_error_message();
 
     /*!
     * @brief      返回错误号
@@ -128,7 +128,7 @@ public:
     * @brief      得到MYSQL的句柄
     * @return     MYSQL* 返回的MYSQL句柄
     */
-    inline MYSQL *get_mysql_handle();
+    inline MYSQL* get_mysql_handle();
 
     //这些函数都是4.1后的版本功能
 #if MYSQL_VERSION_ID > 40100
@@ -164,8 +164,8 @@ public:
     * @param      fromstr      进行转换的字符串
     * @param      fromlen      转换的字符串长度
     */
-    unsigned int make_real_escape_string(char *tostr,
-                                         const char *fromstr,
+    unsigned int make_real_escape_string(char* tostr,
+                                         const char* fromstr,
                                          unsigned int fromlen);
 
 protected:
@@ -182,11 +182,11 @@ protected:
     * @param      timeout  连接数据库的超时时间，默认为0,表示不设置
     * @param      bmultisql 是否使用多语句同时执行的方式,默认为false,可能在事物等处理上有些效果
     */
-    int connect_i(const char *host_name,
-                  const char *socket_file,
-                  const char *user = "mysql",
-                  const char *pwd = "",
-                  const char *db = NULL,
+    int connect_i(const char* host_name,
+                  const char* socket_file,
+                  const char* user = "mysql",
+                  const char* pwd = "",
+                  const char* db = NULL,
                   const unsigned int port = MYSQL_PORT,
                   unsigned int timeout = 0,
                   bool bmultisql = false);
@@ -202,8 +202,8 @@ public:
     * @param      fromstr      进行转换的字符串
     * @param      fromlen      转换的字符串长度
     */
-    static unsigned int make_escape_string(char *tostr,
-                                           const char *fromstr,
+    static unsigned int make_escape_string(char* tostr,
+                                           const char* fromstr,
                                            unsigned int fromlen);
 
 private:
@@ -215,7 +215,7 @@ private:
 };
 
 //得到MYSQL的句柄
-inline MYSQL *ZCE_Mysql_Connect::get_mysql_handle()
+inline MYSQL* ZCE_Mysql_Connect::get_mysql_handle()
 {
     return &mysql_handle_;
 }
@@ -226,7 +226,7 @@ inline bool ZCE_Mysql_Connect::is_connected()
 }
 
 //得到错误信息
-inline const char *ZCE_Mysql_Connect::get_error_message()
+inline const char* ZCE_Mysql_Connect::get_error_message()
 {
     return mysql_error(&mysql_handle_);
 }

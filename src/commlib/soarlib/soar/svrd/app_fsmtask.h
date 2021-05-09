@@ -27,7 +27,7 @@ protected:
 public:
 
     //增加调用register_func_cmd
-    virtual int app_start(int argc,const char *argv[]);
+    virtual int app_start(int argc, const char* argv[]);
 
     //运行处理,
     virtual int app_run();
@@ -45,9 +45,9 @@ protected:
     //clone_task，麻烦你new一个给我
     //task_num 不要用太多的线程，合理就OK，除非有大量的阻塞
     //task_stack_size 如果线程数量较多，切记控制堆栈大小
-    virtual int register_notify_task(soar::FSMTask_TaskBase *&clone_task,
-                                     size_t &task_num,
-                                     size_t &task_stack_size) = 0;
+    virtual int register_notify_task(soar::FSMTask_TaskBase*& clone_task,
+                                     size_t& task_num,
+                                     size_t& task_stack_size) = 0;
 };
 
 #endif //#ifndef SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_

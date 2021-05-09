@@ -6,7 +6,7 @@
 
 namespace zce
 {
-Server_Status *Server_Status::instance_ = NULL;
+Server_Status* Server_Status::instance_ = NULL;
 
 /******************************************************************************************
 class ZCE_STATUS_ITEM_ID
@@ -14,14 +14,14 @@ class ZCE_STATUS_ITEM_ID
 
 STATUS_ITEM_ID::STATUS_ITEM_ID(uint32_t statics_id,
                                uint32_t classify_id,
-                               uint32_t subclassing_id):
+                               uint32_t subclassing_id) :
     statics_id_(statics_id),
     classify_id_(classify_id),
     subclassing_id_(subclassing_id)
 {
 }
 
-bool STATUS_ITEM_ID::operator == (const STATUS_ITEM_ID &others) const
+bool STATUS_ITEM_ID::operator == (const STATUS_ITEM_ID& others) const
 {
     if (this->statics_id_ == others.statics_id_
         && this->classify_id_ == others.classify_id_
@@ -37,8 +37,8 @@ struct ZCE_STATUS_ITEM 状态计数器项
 ******************************************************************************************/
 
 ZCE_STATUS_ITEM::ZCE_STATUS_ITEM(unsigned int statics_id,
-                                 STATUS_STATICS statics_type):
-    item_id_(statics_id,0,0),
+                                 STATUS_STATICS statics_type) :
+    item_id_(statics_id, 0, 0),
     statics_type_(statics_type),
     counter_(0)
 {
@@ -49,10 +49,10 @@ class ZCE_STATUS_ITEM_WITHNAME 状态计数器+名字，用于配置，DUMP输�
 ******************************************************************************************/
 STATUS_ITEM_WITHNAME::STATUS_ITEM_WITHNAME(unsigned int statics_id,
                                            STATUS_STATICS statics_type,
-                                           const char *stat_name):
-    statics_item_(statics_id,statics_type)
+                                           const char* stat_name) :
+    statics_item_(statics_id, statics_type)
 {
-    strncpy(item_name_,stat_name,MAX_COUNTER_NAME_LEN);
+    strncpy(item_name_, stat_name, MAX_COUNTER_NAME_LEN);
     item_name_[MAX_COUNTER_NAME_LEN] = '\0';
 }
 
@@ -70,7 +70,7 @@ Server_Status
 ******************************************************************************************/
 
 //构造函数,也给你单独使用的机会，所以不用protected
-Server_Status::Server_Status():
+Server_Status::Server_Status() :
     stat_lock_(NULL),
     stat_file_head_(NULL),
     status_stat_sandy_(NULL),
@@ -106,7 +106,7 @@ Server_Status::~Server_Status()
 //初始化的方法,通用的底层，
 //Param1: char* statfilename MMAP影射的状态文件名称
 //Param2: bool restore_mmap 是否用于恢复MMAP，如果是恢复，文件必须是存在的,
-int Server_Status::initialize(const char *stat_filename,
+int Server_Status::initialize(const char* stat_filename,
                               bool restore_mmap,
                               bool multi_thread)
 {
@@ -132,7 +132,7 @@ int Server_Status::initialize(const char *stat_filename,
         return ret;
     }
 
-    stat_file_head_ = static_cast<ZCE_STATUS_HEAD *>(stat_file_.addr());
+    stat_file_head_ = static_cast<ZCE_STATUS_HEAD*>(stat_file_.addr());
 
     //如果在这儿出现断言，就是你代码使用错误了.
     ZCE_ASSERT(NULL == status_stat_sandy_
@@ -140,7 +140,7 @@ int Server_Status::initialize(const char *stat_filename,
                && NULL == stat_lock_);
 
     // 统计数据区初始化
-    char *stat_ptr = static_cast<char *>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);
+    char* stat_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);
     status_stat_sandy_ = ARRYA_OF_SHM_STATUS::initialize(MAX_MONITOR_STAT_ITEM,
                                                          stat_ptr,
                                                          restore_mmap);
@@ -151,7 +151,7 @@ int Server_Status::initialize(const char *stat_filename,
     }
 
     // 拷贝数据区初始化
-    char *copy_ptr = static_cast<char *>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD) + size_alloc;
+    char* copy_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD) + size_alloc;
     status_copy_mandy_ = ARRYA_OF_SHM_STATUS::initialize(MAX_MONITOR_STAT_ITEM,
                                                          copy_ptr,
                                                          restore_mmap);
@@ -183,11 +183,11 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
         if (iter == conf_stat_map_.end())
         {
             conf_stat_map_.insert(STATUS_WITHNAME_MAP::value_type(item_ary[i].statics_item_.item_id_.statics_id_,
-                                  item_ary[i]));
+                                                                  item_ary[i]));
         }
         else
         {
-            ZCE_LOG(RS_ERROR,"Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
+            ZCE_LOG(RS_ERROR, "Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
                     item_ary[i].statics_item_.item_id_.statics_id_,
                     item_ary[i].item_name_);
             continue;
@@ -196,7 +196,7 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
 }
 
 bool Server_Status::is_exist_stat_id(unsigned int stat_id,
-                                     STATUS_ITEM_WITHNAME *status_item_withname) const
+                                     STATUS_ITEM_WITHNAME* status_item_withname) const
 {
     //能写auto正好
     STATUS_WITHNAME_MAP::const_iterator iter = conf_stat_map_.find(stat_id);
@@ -236,11 +236,11 @@ void Server_Status::multi_thread_guard(bool multi_thread)
 int Server_Status::find_insert_idx(uint32_t statics_id,
                                    uint32_t classify_id,
                                    uint32_t subclassing_id,
-                                   size_t *sandy_idx)
+                                   size_t* sandy_idx)
 {
     *sandy_idx = static_cast<size_t>(-1);
 
-    STATUS_ITEM_ID stat_item_id(statics_id,classify_id,subclassing_id);
+    STATUS_ITEM_ID stat_item_id(statics_id, classify_id, subclassing_id);
     STATID_TO_INDEX_MAP::iterator iter_tmp = statid_to_index_.find(stat_item_id);
 
     if (iter_tmp != statid_to_index_.end())
@@ -253,7 +253,7 @@ int Server_Status::find_insert_idx(uint32_t statics_id,
     STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(statics_id);
     if (iter == conf_stat_map_.end())
     {
-        ZCE_LOG(RS_ERROR,"Use one statics_id_,it don't config [%u] ,please check your code.",
+        ZCE_LOG(RS_ERROR, "Use one statics_id_,it don't config [%u] ,please check your code.",
                 statics_id);
         return -1;
     }
@@ -261,7 +261,7 @@ int Server_Status::find_insert_idx(uint32_t statics_id,
     //如果已经满了，也算了
     if (status_stat_sandy_->full())
     {
-        ZCE_LOG(RS_ERROR,"Statics array is full,please extend in start. ary size is [%lu]",
+        ZCE_LOG(RS_ERROR, "Statics array is full,please extend in start. ary size is [%lu]",
                 status_stat_sandy_->size());
         return -1;
     }
@@ -283,13 +283,13 @@ int Server_Status::find_insert_idx(uint32_t statics_id,
 }
 
 //根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
-int Server_Status::initialize(const char *stat_filename,bool multi_thread)
+int Server_Status::initialize(const char* stat_filename, bool multi_thread)
 {
     ZCE_ASSERT(stat_filename != NULL);
 
     int ret = 0;
     //
-    ret = initialize(stat_filename,true,multi_thread);
+    ret = initialize(stat_filename, true, multi_thread);
 
     if (0 != ret)
     {
@@ -304,7 +304,7 @@ int Server_Status::initialize(const char *stat_filename,bool multi_thread)
 //Param2: size_t num_stat_ary     状态计数器的个数,
 //Param3: ZCE_STATUS_ITEM item_ary[] 状态技术器的
 //Param4: multi_thread 多线程环境
-int Server_Status::initialize(const char *stat_filename,
+int Server_Status::initialize(const char* stat_filename,
                               size_t num_stat_item,
                               const STATUS_ITEM_WITHNAME item_ary[],
                               bool multi_thread)
@@ -313,14 +313,14 @@ int Server_Status::initialize(const char *stat_filename,
     ZCE_ASSERT(stat_filename != NULL);
     //
     int ret = 0;
-    ret = initialize(stat_filename,false,multi_thread);
+    ret = initialize(stat_filename, false, multi_thread);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    add_status_item(num_stat_item,item_ary);
+    add_status_item(num_stat_item, item_ary);
 
     //多增加一些空间，目标是减小冲突，空间换时间
     statid_to_index_.rehash(static_cast<size_t>(MAX_MONITOR_STAT_ITEM * 1.2));
@@ -353,7 +353,7 @@ int Server_Status::add_number(uint32_t statics_id,
 
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
-    ret = find_insert_idx(statics_id,classify_id,subclassing_id,&sandy_idx);
+    ret = find_insert_idx(statics_id, classify_id, subclassing_id, &sandy_idx);
 
     if (0 != ret)
     {
@@ -383,7 +383,7 @@ int Server_Status::set_counter(uint32_t statics_id,
 
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
-    ret = find_insert_idx(statics_id,classify_id,subclassing_id,&sandy_idx);
+    ret = find_insert_idx(statics_id, classify_id, subclassing_id, &sandy_idx);
 
     if (0 != ret)
     {
@@ -400,7 +400,7 @@ uint64_t Server_Status::get_counter(uint32_t statics_id,
                                     uint32_t classify_id,
                                     uint32_t subclassing_id)
 {
-    STATUS_ITEM_ID stat_item_id(statics_id,classify_id,subclassing_id);
+    STATUS_ITEM_ID stat_item_id(statics_id, classify_id, subclassing_id);
     STATID_TO_INDEX_MAP::iterator iter_tmp = statid_to_index_.find(stat_item_id);
 
     if (iter_tmp != statid_to_index_.end())
@@ -475,7 +475,7 @@ void Server_Status::check_overtime(time_t now_time)
 
     for (size_t i = 0; i < num_of_counter; ++i)
     {
-        ZCE_STATUS_ITEM *cur_item = status_stat_sandy_->begin() + i;
+        ZCE_STATUS_ITEM* cur_item = status_stat_sandy_->begin() + i;
 
         if (clear_type >= cur_item->statics_type_)
         {
@@ -491,7 +491,7 @@ void Server_Status::check_overtime(time_t now_time)
 
 //由于将内部数据全部取出，用于你外部打包之类
 //由于是一个较少调用的函数，我降低了他的性能，保证记录使用的内存空间更小
-void Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME &array_status,bool dump_copy)
+void Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_copy)
 {
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
@@ -532,9 +532,9 @@ void Server_Status::copy_stat_counter()
     //将备份数据数据去赋值
     size_t num_of_counter = status_stat_sandy_->size();
     status_copy_mandy_->resize(num_of_counter);
-    ZCE_STATUS_ITEM *stat_sandy_begin = status_stat_sandy_->begin();
-    ZCE_STATUS_ITEM *stat_mandy_begin = status_copy_mandy_->begin();
-    std::copy_n(stat_sandy_begin,num_of_counter,stat_mandy_begin);
+    ZCE_STATUS_ITEM* stat_sandy_begin = status_stat_sandy_->begin();
+    ZCE_STATUS_ITEM* stat_mandy_begin = status_copy_mandy_->begin();
+    std::copy_n(stat_sandy_begin, num_of_counter, stat_mandy_begin);
 
     //刷新备份时间
     ZCE_ASSERT(stat_file_head_ != NULL);
@@ -542,12 +542,12 @@ void Server_Status::copy_stat_counter()
 }
 
 //Dump所有的数据
-void Server_Status::dump_status_info(std::ostringstream &strstream,bool dump_copy)
+void Server_Status::dump_status_info(std::ostringstream& strstream, bool dump_copy)
 {
     size_t num_of_counter = 0;
     strstream << "Statistics Number:" << static_cast<unsigned int>(num_of_counter) << std::endl;
 
-    ZCE_STATUS_ITEM *stat_process_iter = NULL;
+    ZCE_STATUS_ITEM* stat_process_iter = NULL;
 
     //根据确定是从哪个数据区读取数据
     if (dump_copy)
@@ -593,10 +593,10 @@ void Server_Status::dump_status_info(std::ostringstream &strstream,bool dump_cop
 }
 
 //Dump所有的数据
-void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority,bool dump_copy)
+void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_copy)
 {
     size_t num_of_counter = 0;
-    ZCE_STATUS_ITEM *stat_process_iter = NULL;
+    ZCE_STATUS_ITEM* stat_process_iter = NULL;
 
     //记录监控配置的名字的变量
     char statics_item_name[STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN + 1];
@@ -614,8 +614,8 @@ void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority,bool dump_co
         stat_process_iter = status_copy_mandy_->begin();
     }
 
-    ZCE_LOG(RS_INFO,"Statistics Number: %u",num_of_counter);
-    ZCE_LOG(RS_INFO,"index.<statics id,classify id> name                            :number");
+    ZCE_LOG(RS_INFO, "Statistics Number: %u", num_of_counter);
+    ZCE_LOG(RS_INFO, "index.<statics id,classify id> name                            :number");
 
     STATUS_ITEM_WITHNAME tmp_check;
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
@@ -637,7 +637,7 @@ void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority,bool dump_co
             ZCE_ASSERT(false);
         }
 
-        ZCE_LOG(log_priority,"%5u.<%10u, %10u, %10u> %32s : %llu ",
+        ZCE_LOG(log_priority, "%5u.<%10u, %10u, %10u> %32s : %llu ",
                 i,
                 (stat_process_iter + i)->item_id_.statics_id_,
                 (stat_process_iter + i)->item_id_.classify_id_,
@@ -649,7 +649,7 @@ void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority,bool dump_co
 }
 
 //得到文件的头部信息
-void Server_Status::get_stat_head(ZCE_STATUS_HEAD *stat_head)
+void Server_Status::get_stat_head(ZCE_STATUS_HEAD* stat_head)
 {
     *stat_head = *stat_file_head_;
 }
@@ -661,7 +661,7 @@ void Server_Status::report_monitor_time(uint64_t report_time)
 }
 
 //得到唯一的单子实例
-Server_Status *Server_Status::instance()
+Server_Status* Server_Status::instance()
 {
     if (instance_ == NULL)
     {
@@ -672,7 +672,7 @@ Server_Status *Server_Status::instance()
 }
 
 //赋值唯一的单子实例
-void Server_Status::instance(Server_Status *pinstatnce)
+void Server_Status::instance(Server_Status* pinstatnce)
 {
     clean_instance();
     instance_ = pinstatnce;

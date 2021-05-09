@@ -7,7 +7,7 @@
 #include "soar/fsm/fsmtask_fsmbase.h"
 #include "soar/svrd/app_fsmtask.h"
 
-Comm_SvrdApp_FSMTask::Comm_SvrdApp_FSMTask():
+Comm_SvrdApp_FSMTask::Comm_SvrdApp_FSMTask() :
     soar::Svrd_Appliction()
 {
 };
@@ -17,11 +17,11 @@ Comm_SvrdApp_FSMTask::~Comm_SvrdApp_FSMTask()
 };
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSMTask::app_start(int argc,const char *argv[])
+int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
 {
     int ret = 0;
 
-    ret = soar::Svrd_Appliction::app_start(argc,argv);
+    ret = soar::Svrd_Appliction::app_start(argc, argv);
     if (0 != ret)
     {
         return ret;
@@ -29,8 +29,8 @@ int Comm_SvrdApp_FSMTask::app_start(int argc,const char *argv[])
 
     THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
 
-    Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
-    soar::FSMTask_Manger *trans_mgr = new soar::FSMTask_Manger();
+    Server_Config_FSM* svd_config = dynamic_cast<Server_Config_FSM*>(config_base_);
+    soar::FSMTask_Manger* trans_mgr = new soar::FSMTask_Manger();
     soar::FSM_Manager::instance(trans_mgr);
     zce::Time_Value enqueue_timeout;
     enqueue_timeout.sec(svd_config->framework_config_.task_info_.enqueue_timeout_sec_);
@@ -52,7 +52,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc,const char *argv[])
         return ret;
     }
 
-    soar::FSMTask_TaskBase *clone_task = NULL;
+    soar::FSMTask_TaskBase* clone_task = NULL;
     size_t task_num = 0;
     size_t task_stack_size = 0;
 
@@ -72,7 +72,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc,const char *argv[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_INFO,"[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u",ret);
+        ZCE_LOG(RS_INFO, "[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u", ret);
         return ret;
     }
 
@@ -83,8 +83,8 @@ int Comm_SvrdApp_FSMTask::app_start(int argc,const char *argv[])
 int Comm_SvrdApp_FSMTask::app_run()
 {
     // fix me add log
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
             get_app_basename(),
             typeid(*this).name());
 
@@ -98,24 +98,24 @@ int Comm_SvrdApp_FSMTask::app_run()
     const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
-    size_t all_proc_frame = 0,all_gen_trans = 0;
-    size_t prcframe_queue = 0,gentrans_queue = 0,num_timer_expire = 0,num_io_event = 0;
+    size_t all_proc_frame = 0, all_gen_trans = 0;
+    size_t prcframe_queue = 0, gentrans_queue = 0, num_timer_expire = 0, num_io_event = 0;
     size_t idle = 0;
 
-    soar::FSMTask_Manger *notify_trans_mgr = static_cast<soar::FSMTask_Manger *>(soar::FSM_Manager::instance());
-    zce::Time_Value select_interval(0,0);
+    soar::FSMTask_Manger* notify_trans_mgr = static_cast<soar::FSMTask_Manger*>(soar::FSM_Manager::instance());
+    zce::Time_Value select_interval(0, 0);
 
-    zce::Timer_Queue *time_queue = zce::Timer_Queue::instance();
-    ZCE_Reactor *reactor = ZCE_Reactor::instance();
+    zce::Timer_Queue* time_queue = zce::Timer_Queue::instance();
+    zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance();
 
     for (; app_run_;)
     {
         // 检查是否需要重新加载配置
 
         //从PIPE处理收到的命令
-        notify_trans_mgr->process_pipe_frame(all_proc_frame,all_gen_trans);
+        notify_trans_mgr->process_pipe_frame(all_proc_frame, all_gen_trans);
         //从RECV QUEUE处理命令
-        notify_trans_mgr->process_recvqueue_frame(prcframe_queue,gentrans_queue);
+        notify_trans_mgr->process_recvqueue_frame(prcframe_queue, gentrans_queue);
         all_proc_frame += prcframe_queue;
         all_gen_trans += gentrans_queue;
 
@@ -123,7 +123,7 @@ int Comm_SvrdApp_FSMTask::app_run()
         num_timer_expire = time_queue->expire();
 
         // 处理网络包
-        reactor->handle_events(&select_interval,&num_io_event);
+        reactor->handle_events(&select_interval, &num_io_event);
 
         if ((all_proc_frame + num_timer_expire + num_io_event) <= 0)
         {
@@ -152,7 +152,7 @@ int Comm_SvrdApp_FSMTask::app_run()
         }
     }
 
-    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO, "======================================================================================================");
     return 0;
 }
 
@@ -160,8 +160,8 @@ int Comm_SvrdApp_FSMTask::app_run()
 int Comm_SvrdApp_FSMTask::app_exit()
 {
     //通知所有的线程退出
-    soar::FSMTask_Manger *notify_trans_mgr =
-        static_cast<soar::FSMTask_Manger *>(soar::FSM_Manager::instance());
+    soar::FSMTask_Manger* notify_trans_mgr =
+        static_cast<soar::FSMTask_Manger*>(soar::FSM_Manager::instance());
     notify_trans_mgr->stop_notify_task();
 
     int ret = 0;

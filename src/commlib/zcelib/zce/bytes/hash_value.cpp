@@ -8,7 +8,7 @@
 //MD5的算法
 
 //初始化MD5的context，内容
-void ZCE_Hash_MD5::initialize(context *ctx)
+void ZCE_Hash_MD5::initialize(context* ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
@@ -55,8 +55,8 @@ void ZCE_Hash_MD5::initialize(context *ctx)
 void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                                  const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
-    uint32_t a,b,c,d;
-    const uint32_t *x = NULL;
+    uint32_t a, b, c, d;
+    const uint32_t* x = NULL;
     a = state[0];
     b = state[1];
     c = state[2];
@@ -70,77 +70,77 @@ void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
 #else
     //注意下面的转换同时也避免了对齐偏移的拷贝问题
     uint32_t  wblock[PROCESS_BLOCK_SIZE / 4];
-    endian_copy(wblock,block,PROCESS_BLOCK_SIZE);
+    endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
     x = wblock;
 #endif
 
-    MD5_ROUND1(a,b,c,d,x[0],7,0xd76aa478);
-    MD5_ROUND1(d,a,b,c,x[1],12,0xe8c7b756);
-    MD5_ROUND1(c,d,a,b,x[2],17,0x242070db);
-    MD5_ROUND1(b,c,d,a,x[3],22,0xc1bdceee);
-    MD5_ROUND1(a,b,c,d,x[4],7,0xf57c0faf);
-    MD5_ROUND1(d,a,b,c,x[5],12,0x4787c62a);
-    MD5_ROUND1(c,d,a,b,x[6],17,0xa8304613);
-    MD5_ROUND1(b,c,d,a,x[7],22,0xfd469501);
-    MD5_ROUND1(a,b,c,d,x[8],7,0x698098d8);
-    MD5_ROUND1(d,a,b,c,x[9],12,0x8b44f7af);
-    MD5_ROUND1(c,d,a,b,x[10],17,0xffff5bb1);
-    MD5_ROUND1(b,c,d,a,x[11],22,0x895cd7be);
-    MD5_ROUND1(a,b,c,d,x[12],7,0x6b901122);
-    MD5_ROUND1(d,a,b,c,x[13],12,0xfd987193);
-    MD5_ROUND1(c,d,a,b,x[14],17,0xa679438e);
-    MD5_ROUND1(b,c,d,a,x[15],22,0x49b40821);
+    MD5_ROUND1(a, b, c, d, x[0], 7, 0xd76aa478);
+    MD5_ROUND1(d, a, b, c, x[1], 12, 0xe8c7b756);
+    MD5_ROUND1(c, d, a, b, x[2], 17, 0x242070db);
+    MD5_ROUND1(b, c, d, a, x[3], 22, 0xc1bdceee);
+    MD5_ROUND1(a, b, c, d, x[4], 7, 0xf57c0faf);
+    MD5_ROUND1(d, a, b, c, x[5], 12, 0x4787c62a);
+    MD5_ROUND1(c, d, a, b, x[6], 17, 0xa8304613);
+    MD5_ROUND1(b, c, d, a, x[7], 22, 0xfd469501);
+    MD5_ROUND1(a, b, c, d, x[8], 7, 0x698098d8);
+    MD5_ROUND1(d, a, b, c, x[9], 12, 0x8b44f7af);
+    MD5_ROUND1(c, d, a, b, x[10], 17, 0xffff5bb1);
+    MD5_ROUND1(b, c, d, a, x[11], 22, 0x895cd7be);
+    MD5_ROUND1(a, b, c, d, x[12], 7, 0x6b901122);
+    MD5_ROUND1(d, a, b, c, x[13], 12, 0xfd987193);
+    MD5_ROUND1(c, d, a, b, x[14], 17, 0xa679438e);
+    MD5_ROUND1(b, c, d, a, x[15], 22, 0x49b40821);
 
-    MD5_ROUND2(a,b,c,d,x[1],5,0xf61e2562);
-    MD5_ROUND2(d,a,b,c,x[6],9,0xc040b340);
-    MD5_ROUND2(c,d,a,b,x[11],14,0x265e5a51);
-    MD5_ROUND2(b,c,d,a,x[0],20,0xe9b6c7aa);
-    MD5_ROUND2(a,b,c,d,x[5],5,0xd62f105d);
-    MD5_ROUND2(d,a,b,c,x[10],9,0x2441453);
-    MD5_ROUND2(c,d,a,b,x[15],14,0xd8a1e681);
-    MD5_ROUND2(b,c,d,a,x[4],20,0xe7d3fbc8);
-    MD5_ROUND2(a,b,c,d,x[9],5,0x21e1cde6);
-    MD5_ROUND2(d,a,b,c,x[14],9,0xc33707d6);
-    MD5_ROUND2(c,d,a,b,x[3],14,0xf4d50d87);
-    MD5_ROUND2(b,c,d,a,x[8],20,0x455a14ed);
-    MD5_ROUND2(a,b,c,d,x[13],5,0xa9e3e905);
-    MD5_ROUND2(d,a,b,c,x[2],9,0xfcefa3f8);
-    MD5_ROUND2(c,d,a,b,x[7],14,0x676f02d9);
-    MD5_ROUND2(b,c,d,a,x[12],20,0x8d2a4c8a);
+    MD5_ROUND2(a, b, c, d, x[1], 5, 0xf61e2562);
+    MD5_ROUND2(d, a, b, c, x[6], 9, 0xc040b340);
+    MD5_ROUND2(c, d, a, b, x[11], 14, 0x265e5a51);
+    MD5_ROUND2(b, c, d, a, x[0], 20, 0xe9b6c7aa);
+    MD5_ROUND2(a, b, c, d, x[5], 5, 0xd62f105d);
+    MD5_ROUND2(d, a, b, c, x[10], 9, 0x2441453);
+    MD5_ROUND2(c, d, a, b, x[15], 14, 0xd8a1e681);
+    MD5_ROUND2(b, c, d, a, x[4], 20, 0xe7d3fbc8);
+    MD5_ROUND2(a, b, c, d, x[9], 5, 0x21e1cde6);
+    MD5_ROUND2(d, a, b, c, x[14], 9, 0xc33707d6);
+    MD5_ROUND2(c, d, a, b, x[3], 14, 0xf4d50d87);
+    MD5_ROUND2(b, c, d, a, x[8], 20, 0x455a14ed);
+    MD5_ROUND2(a, b, c, d, x[13], 5, 0xa9e3e905);
+    MD5_ROUND2(d, a, b, c, x[2], 9, 0xfcefa3f8);
+    MD5_ROUND2(c, d, a, b, x[7], 14, 0x676f02d9);
+    MD5_ROUND2(b, c, d, a, x[12], 20, 0x8d2a4c8a);
 
-    MD5_ROUND3(a,b,c,d,x[5],4,0xfffa3942);
-    MD5_ROUND3(d,a,b,c,x[8],11,0x8771f681);
-    MD5_ROUND3(c,d,a,b,x[11],16,0x6d9d6122);
-    MD5_ROUND3(b,c,d,a,x[14],23,0xfde5380c);
-    MD5_ROUND3(a,b,c,d,x[1],4,0xa4beea44);
-    MD5_ROUND3(d,a,b,c,x[4],11,0x4bdecfa9);
-    MD5_ROUND3(c,d,a,b,x[7],16,0xf6bb4b60);
-    MD5_ROUND3(b,c,d,a,x[10],23,0xbebfbc70);
-    MD5_ROUND3(a,b,c,d,x[13],4,0x289b7ec6);
-    MD5_ROUND3(d,a,b,c,x[0],11,0xeaa127fa);
-    MD5_ROUND3(c,d,a,b,x[3],16,0xd4ef3085);
-    MD5_ROUND3(b,c,d,a,x[6],23,0x4881d05);
-    MD5_ROUND3(a,b,c,d,x[9],4,0xd9d4d039);
-    MD5_ROUND3(d,a,b,c,x[12],11,0xe6db99e5);
-    MD5_ROUND3(c,d,a,b,x[15],16,0x1fa27cf8);
-    MD5_ROUND3(b,c,d,a,x[2],23,0xc4ac5665);
+    MD5_ROUND3(a, b, c, d, x[5], 4, 0xfffa3942);
+    MD5_ROUND3(d, a, b, c, x[8], 11, 0x8771f681);
+    MD5_ROUND3(c, d, a, b, x[11], 16, 0x6d9d6122);
+    MD5_ROUND3(b, c, d, a, x[14], 23, 0xfde5380c);
+    MD5_ROUND3(a, b, c, d, x[1], 4, 0xa4beea44);
+    MD5_ROUND3(d, a, b, c, x[4], 11, 0x4bdecfa9);
+    MD5_ROUND3(c, d, a, b, x[7], 16, 0xf6bb4b60);
+    MD5_ROUND3(b, c, d, a, x[10], 23, 0xbebfbc70);
+    MD5_ROUND3(a, b, c, d, x[13], 4, 0x289b7ec6);
+    MD5_ROUND3(d, a, b, c, x[0], 11, 0xeaa127fa);
+    MD5_ROUND3(c, d, a, b, x[3], 16, 0xd4ef3085);
+    MD5_ROUND3(b, c, d, a, x[6], 23, 0x4881d05);
+    MD5_ROUND3(a, b, c, d, x[9], 4, 0xd9d4d039);
+    MD5_ROUND3(d, a, b, c, x[12], 11, 0xe6db99e5);
+    MD5_ROUND3(c, d, a, b, x[15], 16, 0x1fa27cf8);
+    MD5_ROUND3(b, c, d, a, x[2], 23, 0xc4ac5665);
 
-    MD5_ROUND4(a,b,c,d,x[0],6,0xf4292244);
-    MD5_ROUND4(d,a,b,c,x[7],10,0x432aff97);
-    MD5_ROUND4(c,d,a,b,x[14],15,0xab9423a7);
-    MD5_ROUND4(b,c,d,a,x[5],21,0xfc93a039);
-    MD5_ROUND4(a,b,c,d,x[12],6,0x655b59c3);
-    MD5_ROUND4(d,a,b,c,x[3],10,0x8f0ccc92);
-    MD5_ROUND4(c,d,a,b,x[10],15,0xffeff47d);
-    MD5_ROUND4(b,c,d,a,x[1],21,0x85845dd1);
-    MD5_ROUND4(a,b,c,d,x[8],6,0x6fa87e4f);
-    MD5_ROUND4(d,a,b,c,x[15],10,0xfe2ce6e0);
-    MD5_ROUND4(c,d,a,b,x[6],15,0xa3014314);
-    MD5_ROUND4(b,c,d,a,x[13],21,0x4e0811a1);
-    MD5_ROUND4(a,b,c,d,x[4],6,0xf7537e82);
-    MD5_ROUND4(d,a,b,c,x[11],10,0xbd3af235);
-    MD5_ROUND4(c,d,a,b,x[2],15,0x2ad7d2bb);
-    MD5_ROUND4(b,c,d,a,x[9],21,0xeb86d391);
+    MD5_ROUND4(a, b, c, d, x[0], 6, 0xf4292244);
+    MD5_ROUND4(d, a, b, c, x[7], 10, 0x432aff97);
+    MD5_ROUND4(c, d, a, b, x[14], 15, 0xab9423a7);
+    MD5_ROUND4(b, c, d, a, x[5], 21, 0xfc93a039);
+    MD5_ROUND4(a, b, c, d, x[12], 6, 0x655b59c3);
+    MD5_ROUND4(d, a, b, c, x[3], 10, 0x8f0ccc92);
+    MD5_ROUND4(c, d, a, b, x[10], 15, 0xffeff47d);
+    MD5_ROUND4(b, c, d, a, x[1], 21, 0x85845dd1);
+    MD5_ROUND4(a, b, c, d, x[8], 6, 0x6fa87e4f);
+    MD5_ROUND4(d, a, b, c, x[15], 10, 0xfe2ce6e0);
+    MD5_ROUND4(c, d, a, b, x[6], 15, 0xa3014314);
+    MD5_ROUND4(b, c, d, a, x[13], 21, 0x4e0811a1);
+    MD5_ROUND4(a, b, c, d, x[4], 6, 0xf7537e82);
+    MD5_ROUND4(d, a, b, c, x[11], 10, 0xbd3af235);
+    MD5_ROUND4(c, d, a, b, x[2], 15, 0x2ad7d2bb);
+    MD5_ROUND4(b, c, d, a, x[9], 21, 0xeb86d391);
 
     state[0] += a;
     state[1] += b;
@@ -152,7 +152,7 @@ void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
 //SHA1的算法
 
 //SHA1算法的上下文的初始化
-void ZCE_Hash_SHA1::initialize(context *ctx)
+void ZCE_Hash_SHA1::initialize(context* ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
@@ -170,14 +170,14 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 {
     size_t        t;
     uint32_t      wblock[80];
-    uint32_t      a,b,c,d,e,temp;
+    uint32_t      a, b, c, d, e, temp;
 
-    endian_copy(wblock,block,PROCESS_BLOCK_SIZE);
+    endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
 
     //处理
     for (t = 16; t < 80; t++)
     {
-        wblock[t] = ZCE_ROTL32(wblock[t - 3] ^ wblock[t - 8] ^ wblock[t - 14] ^ wblock[t - 16],1);
+        wblock[t] = ZCE_ROTL32(wblock[t - 3] ^ wblock[t - 8] ^ wblock[t - 14] ^ wblock[t - 16], 1);
     }
 
     a = hash[0];
@@ -189,42 +189,42 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
     for (t = 0; t < 20; t++)
     {
         /* the following is faster than ((B & C) | ((~B) & D)) */
-        temp = ZCE_ROTL32(a,5) + (((c ^ d) & b) ^ d)
+        temp = ZCE_ROTL32(a, 5) + (((c ^ d) & b) ^ d)
             + e + wblock[t] + 0x5A827999;
         e = d;
         d = c;
-        c = ZCE_ROTL32(b,30);
+        c = ZCE_ROTL32(b, 30);
         b = a;
         a = temp;
     }
 
     for (t = 20; t < 40; t++)
     {
-        temp = ZCE_ROTL32(a,5) + (b ^ c ^ d) + e + wblock[t] + 0x6ED9EBA1;
+        temp = ZCE_ROTL32(a, 5) + (b ^ c ^ d) + e + wblock[t] + 0x6ED9EBA1;
         e = d;
         d = c;
-        c = ZCE_ROTL32(b,30);
+        c = ZCE_ROTL32(b, 30);
         b = a;
         a = temp;
     }
 
     for (t = 40; t < 60; t++)
     {
-        temp = ZCE_ROTL32(a,5) + ((b & c) | (b & d) | (c & d))
+        temp = ZCE_ROTL32(a, 5) + ((b & c) | (b & d) | (c & d))
             + e + wblock[t] + 0x8F1BBCDC;
         e = d;
         d = c;
-        c = ZCE_ROTL32(b,30);
+        c = ZCE_ROTL32(b, 30);
         b = a;
         a = temp;
     }
 
     for (t = 60; t < 80; t++)
     {
-        temp = ZCE_ROTL32(a,5) + (b ^ c ^ d) + e + wblock[t] + 0xCA62C1D6;
+        temp = ZCE_ROTL32(a, 5) + (b ^ c ^ d) + e + wblock[t] + 0xCA62C1D6;
         e = d;
         d = c;
-        c = ZCE_ROTL32(b,30);
+        c = ZCE_ROTL32(b, 30);
         b = a;
         a = temp;
     }
@@ -264,7 +264,7 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
     }
 
 //SHA256算法的上下文的初始化
-void ZCE_Hash_SHA256::initialize(context *ctx)
+void ZCE_Hash_SHA256::initialize(context* ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
@@ -284,9 +284,9 @@ void ZCE_Hash_SHA256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
                                     const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
     uint32_t  wblock[64];
-    uint32_t a,b,c,d,e,f,g,h,temp1,temp2;
+    uint32_t a, b, c, d, e, f, g, h, temp1, temp2;
 
-    endian_copy(wblock,block,PROCESS_BLOCK_SIZE);
+    endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
 
     a = hash[0];
     b = hash[1];
@@ -297,70 +297,70 @@ void ZCE_Hash_SHA256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
     g = hash[6];
     h = hash[7];
 
-    SHA2_P(a,b,c,d,e,f,g,h,wblock[0],0x428A2F98);
-    SHA2_P(h,a,b,c,d,e,f,g,wblock[1],0x71374491);
-    SHA2_P(g,h,a,b,c,d,e,f,wblock[2],0xB5C0FBCF);
-    SHA2_P(f,g,h,a,b,c,d,e,wblock[3],0xE9B5DBA5);
-    SHA2_P(e,f,g,h,a,b,c,d,wblock[4],0x3956C25B);
-    SHA2_P(d,e,f,g,h,a,b,c,wblock[5],0x59F111F1);
-    SHA2_P(c,d,e,f,g,h,a,b,wblock[6],0x923F82A4);
-    SHA2_P(b,c,d,e,f,g,h,a,wblock[7],0xAB1C5ED5);
-    SHA2_P(a,b,c,d,e,f,g,h,wblock[8],0xD807AA98);
-    SHA2_P(h,a,b,c,d,e,f,g,wblock[9],0x12835B01);
-    SHA2_P(g,h,a,b,c,d,e,f,wblock[10],0x243185BE);
-    SHA2_P(f,g,h,a,b,c,d,e,wblock[11],0x550C7DC3);
-    SHA2_P(e,f,g,h,a,b,c,d,wblock[12],0x72BE5D74);
-    SHA2_P(d,e,f,g,h,a,b,c,wblock[13],0x80DEB1FE);
-    SHA2_P(c,d,e,f,g,h,a,b,wblock[14],0x9BDC06A7);
-    SHA2_P(b,c,d,e,f,g,h,a,wblock[15],0xC19BF174);
-    SHA2_P(a,b,c,d,e,f,g,h,SHA2_R(16),0xE49B69C1);
-    SHA2_P(h,a,b,c,d,e,f,g,SHA2_R(17),0xEFBE4786);
-    SHA2_P(g,h,a,b,c,d,e,f,SHA2_R(18),0x0FC19DC6);
-    SHA2_P(f,g,h,a,b,c,d,e,SHA2_R(19),0x240CA1CC);
-    SHA2_P(e,f,g,h,a,b,c,d,SHA2_R(20),0x2DE92C6F);
-    SHA2_P(d,e,f,g,h,a,b,c,SHA2_R(21),0x4A7484AA);
-    SHA2_P(c,d,e,f,g,h,a,b,SHA2_R(22),0x5CB0A9DC);
-    SHA2_P(b,c,d,e,f,g,h,a,SHA2_R(23),0x76F988DA);
-    SHA2_P(a,b,c,d,e,f,g,h,SHA2_R(24),0x983E5152);
-    SHA2_P(h,a,b,c,d,e,f,g,SHA2_R(25),0xA831C66D);
-    SHA2_P(g,h,a,b,c,d,e,f,SHA2_R(26),0xB00327C8);
-    SHA2_P(f,g,h,a,b,c,d,e,SHA2_R(27),0xBF597FC7);
-    SHA2_P(e,f,g,h,a,b,c,d,SHA2_R(28),0xC6E00BF3);
-    SHA2_P(d,e,f,g,h,a,b,c,SHA2_R(29),0xD5A79147);
-    SHA2_P(c,d,e,f,g,h,a,b,SHA2_R(30),0x06CA6351);
-    SHA2_P(b,c,d,e,f,g,h,a,SHA2_R(31),0x14292967);
-    SHA2_P(a,b,c,d,e,f,g,h,SHA2_R(32),0x27B70A85);
-    SHA2_P(h,a,b,c,d,e,f,g,SHA2_R(33),0x2E1B2138);
-    SHA2_P(g,h,a,b,c,d,e,f,SHA2_R(34),0x4D2C6DFC);
-    SHA2_P(f,g,h,a,b,c,d,e,SHA2_R(35),0x53380D13);
-    SHA2_P(e,f,g,h,a,b,c,d,SHA2_R(36),0x650A7354);
-    SHA2_P(d,e,f,g,h,a,b,c,SHA2_R(37),0x766A0ABB);
-    SHA2_P(c,d,e,f,g,h,a,b,SHA2_R(38),0x81C2C92E);
-    SHA2_P(b,c,d,e,f,g,h,a,SHA2_R(39),0x92722C85);
-    SHA2_P(a,b,c,d,e,f,g,h,SHA2_R(40),0xA2BFE8A1);
-    SHA2_P(h,a,b,c,d,e,f,g,SHA2_R(41),0xA81A664B);
-    SHA2_P(g,h,a,b,c,d,e,f,SHA2_R(42),0xC24B8B70);
-    SHA2_P(f,g,h,a,b,c,d,e,SHA2_R(43),0xC76C51A3);
-    SHA2_P(e,f,g,h,a,b,c,d,SHA2_R(44),0xD192E819);
-    SHA2_P(d,e,f,g,h,a,b,c,SHA2_R(45),0xD6990624);
-    SHA2_P(c,d,e,f,g,h,a,b,SHA2_R(46),0xF40E3585);
-    SHA2_P(b,c,d,e,f,g,h,a,SHA2_R(47),0x106AA070);
-    SHA2_P(a,b,c,d,e,f,g,h,SHA2_R(48),0x19A4C116);
-    SHA2_P(h,a,b,c,d,e,f,g,SHA2_R(49),0x1E376C08);
-    SHA2_P(g,h,a,b,c,d,e,f,SHA2_R(50),0x2748774C);
-    SHA2_P(f,g,h,a,b,c,d,e,SHA2_R(51),0x34B0BCB5);
-    SHA2_P(e,f,g,h,a,b,c,d,SHA2_R(52),0x391C0CB3);
-    SHA2_P(d,e,f,g,h,a,b,c,SHA2_R(53),0x4ED8AA4A);
-    SHA2_P(c,d,e,f,g,h,a,b,SHA2_R(54),0x5B9CCA4F);
-    SHA2_P(b,c,d,e,f,g,h,a,SHA2_R(55),0x682E6FF3);
-    SHA2_P(a,b,c,d,e,f,g,h,SHA2_R(56),0x748F82EE);
-    SHA2_P(h,a,b,c,d,e,f,g,SHA2_R(57),0x78A5636F);
-    SHA2_P(g,h,a,b,c,d,e,f,SHA2_R(58),0x84C87814);
-    SHA2_P(f,g,h,a,b,c,d,e,SHA2_R(59),0x8CC70208);
-    SHA2_P(e,f,g,h,a,b,c,d,SHA2_R(60),0x90BEFFFA);
-    SHA2_P(d,e,f,g,h,a,b,c,SHA2_R(61),0xA4506CEB);
-    SHA2_P(c,d,e,f,g,h,a,b,SHA2_R(62),0xBEF9A3F7);
-    SHA2_P(b,c,d,e,f,g,h,a,SHA2_R(63),0xC67178F2);
+    SHA2_P(a, b, c, d, e, f, g, h, wblock[0], 0x428A2F98);
+    SHA2_P(h, a, b, c, d, e, f, g, wblock[1], 0x71374491);
+    SHA2_P(g, h, a, b, c, d, e, f, wblock[2], 0xB5C0FBCF);
+    SHA2_P(f, g, h, a, b, c, d, e, wblock[3], 0xE9B5DBA5);
+    SHA2_P(e, f, g, h, a, b, c, d, wblock[4], 0x3956C25B);
+    SHA2_P(d, e, f, g, h, a, b, c, wblock[5], 0x59F111F1);
+    SHA2_P(c, d, e, f, g, h, a, b, wblock[6], 0x923F82A4);
+    SHA2_P(b, c, d, e, f, g, h, a, wblock[7], 0xAB1C5ED5);
+    SHA2_P(a, b, c, d, e, f, g, h, wblock[8], 0xD807AA98);
+    SHA2_P(h, a, b, c, d, e, f, g, wblock[9], 0x12835B01);
+    SHA2_P(g, h, a, b, c, d, e, f, wblock[10], 0x243185BE);
+    SHA2_P(f, g, h, a, b, c, d, e, wblock[11], 0x550C7DC3);
+    SHA2_P(e, f, g, h, a, b, c, d, wblock[12], 0x72BE5D74);
+    SHA2_P(d, e, f, g, h, a, b, c, wblock[13], 0x80DEB1FE);
+    SHA2_P(c, d, e, f, g, h, a, b, wblock[14], 0x9BDC06A7);
+    SHA2_P(b, c, d, e, f, g, h, a, wblock[15], 0xC19BF174);
+    SHA2_P(a, b, c, d, e, f, g, h, SHA2_R(16), 0xE49B69C1);
+    SHA2_P(h, a, b, c, d, e, f, g, SHA2_R(17), 0xEFBE4786);
+    SHA2_P(g, h, a, b, c, d, e, f, SHA2_R(18), 0x0FC19DC6);
+    SHA2_P(f, g, h, a, b, c, d, e, SHA2_R(19), 0x240CA1CC);
+    SHA2_P(e, f, g, h, a, b, c, d, SHA2_R(20), 0x2DE92C6F);
+    SHA2_P(d, e, f, g, h, a, b, c, SHA2_R(21), 0x4A7484AA);
+    SHA2_P(c, d, e, f, g, h, a, b, SHA2_R(22), 0x5CB0A9DC);
+    SHA2_P(b, c, d, e, f, g, h, a, SHA2_R(23), 0x76F988DA);
+    SHA2_P(a, b, c, d, e, f, g, h, SHA2_R(24), 0x983E5152);
+    SHA2_P(h, a, b, c, d, e, f, g, SHA2_R(25), 0xA831C66D);
+    SHA2_P(g, h, a, b, c, d, e, f, SHA2_R(26), 0xB00327C8);
+    SHA2_P(f, g, h, a, b, c, d, e, SHA2_R(27), 0xBF597FC7);
+    SHA2_P(e, f, g, h, a, b, c, d, SHA2_R(28), 0xC6E00BF3);
+    SHA2_P(d, e, f, g, h, a, b, c, SHA2_R(29), 0xD5A79147);
+    SHA2_P(c, d, e, f, g, h, a, b, SHA2_R(30), 0x06CA6351);
+    SHA2_P(b, c, d, e, f, g, h, a, SHA2_R(31), 0x14292967);
+    SHA2_P(a, b, c, d, e, f, g, h, SHA2_R(32), 0x27B70A85);
+    SHA2_P(h, a, b, c, d, e, f, g, SHA2_R(33), 0x2E1B2138);
+    SHA2_P(g, h, a, b, c, d, e, f, SHA2_R(34), 0x4D2C6DFC);
+    SHA2_P(f, g, h, a, b, c, d, e, SHA2_R(35), 0x53380D13);
+    SHA2_P(e, f, g, h, a, b, c, d, SHA2_R(36), 0x650A7354);
+    SHA2_P(d, e, f, g, h, a, b, c, SHA2_R(37), 0x766A0ABB);
+    SHA2_P(c, d, e, f, g, h, a, b, SHA2_R(38), 0x81C2C92E);
+    SHA2_P(b, c, d, e, f, g, h, a, SHA2_R(39), 0x92722C85);
+    SHA2_P(a, b, c, d, e, f, g, h, SHA2_R(40), 0xA2BFE8A1);
+    SHA2_P(h, a, b, c, d, e, f, g, SHA2_R(41), 0xA81A664B);
+    SHA2_P(g, h, a, b, c, d, e, f, SHA2_R(42), 0xC24B8B70);
+    SHA2_P(f, g, h, a, b, c, d, e, SHA2_R(43), 0xC76C51A3);
+    SHA2_P(e, f, g, h, a, b, c, d, SHA2_R(44), 0xD192E819);
+    SHA2_P(d, e, f, g, h, a, b, c, SHA2_R(45), 0xD6990624);
+    SHA2_P(c, d, e, f, g, h, a, b, SHA2_R(46), 0xF40E3585);
+    SHA2_P(b, c, d, e, f, g, h, a, SHA2_R(47), 0x106AA070);
+    SHA2_P(a, b, c, d, e, f, g, h, SHA2_R(48), 0x19A4C116);
+    SHA2_P(h, a, b, c, d, e, f, g, SHA2_R(49), 0x1E376C08);
+    SHA2_P(g, h, a, b, c, d, e, f, SHA2_R(50), 0x2748774C);
+    SHA2_P(f, g, h, a, b, c, d, e, SHA2_R(51), 0x34B0BCB5);
+    SHA2_P(e, f, g, h, a, b, c, d, SHA2_R(52), 0x391C0CB3);
+    SHA2_P(d, e, f, g, h, a, b, c, SHA2_R(53), 0x4ED8AA4A);
+    SHA2_P(c, d, e, f, g, h, a, b, SHA2_R(54), 0x5B9CCA4F);
+    SHA2_P(b, c, d, e, f, g, h, a, SHA2_R(55), 0x682E6FF3);
+    SHA2_P(a, b, c, d, e, f, g, h, SHA2_R(56), 0x748F82EE);
+    SHA2_P(h, a, b, c, d, e, f, g, SHA2_R(57), 0x78A5636F);
+    SHA2_P(g, h, a, b, c, d, e, f, SHA2_R(58), 0x84C87814);
+    SHA2_P(f, g, h, a, b, c, d, e, SHA2_R(59), 0x8CC70208);
+    SHA2_P(e, f, g, h, a, b, c, d, SHA2_R(60), 0x90BEFFFA);
+    SHA2_P(d, e, f, g, h, a, b, c, SHA2_R(61), 0xA4506CEB);
+    SHA2_P(c, d, e, f, g, h, a, b, SHA2_R(62), 0xBEF9A3F7);
+    SHA2_P(b, c, d, e, f, g, h, a, SHA2_R(63), 0xC67178F2);
 
     hash[0] += a;
     hash[1] += b;
@@ -411,12 +411,12 @@ static const uint32_t ZCE_CRC32_TABLE[256] =
     0xb3667a2e,0xc4614ab8,0x5d681b02,0x2a6f2b94,0xb40bbe37,0xc30c8ea1,0x5a05df1b,0x2d02ef8d,
 };
 
-void ZCE_Hash_CRC32::initialize(context *ctx)
+void ZCE_Hash_CRC32::initialize(context* ctx)
 {
     *ctx = 0;
 }
 
-void ZCE_Hash_CRC32::process(context *ctx,const unsigned char *buf,size_t buf_size)
+void ZCE_Hash_CRC32::process(context* ctx, const unsigned char* buf, size_t buf_size)
 {
     uint32_t crc = *ctx;
     while (buf_size--)
@@ -426,8 +426,8 @@ void ZCE_Hash_CRC32::process(context *ctx,const unsigned char *buf,size_t buf_si
     *ctx = crc;
 }
 
-void ZCE_Hash_CRC32::finalize(context *ctx,
-                              const unsigned char *buf,
+void ZCE_Hash_CRC32::finalize(context* ctx,
+                              const unsigned char* buf,
                               size_t buf_size,
                               unsigned char result[HASH_RESULT_SIZE])
 {
@@ -437,16 +437,16 @@ void ZCE_Hash_CRC32::finalize(context *ctx,
         crc = ZCE_CRC32_TABLE[(crc ^ *buf++) & 0xFF] ^ (crc >> 8);
     }
     *ctx = crc;
-    *((uint32_t *)result) = *(ctx);
+    *((uint32_t*)result) = *(ctx);
 }
 
 //CRC32的函数，
 
 //求一个buffer的CRC32值，可以用于一些要求速度的简单校验,
 
-uint32_t zce::crc32(uint32_t crcinit,const unsigned char *buf,size_t buf_size)
+uint32_t zce::crc32(uint32_t crcinit, const unsigned char* buf, size_t buf_size)
 {
-    const unsigned char *p = buf;
+    const unsigned char* p = buf;
     uint32_t crc = crcinit;
 
     //默认采用一种快速的读取方法，一次取16个字节读取的版本，
@@ -456,33 +456,33 @@ uint32_t zce::crc32(uint32_t crcinit,const unsigned char *buf,size_t buf_size)
     //我理解快速CRC32计算为什么快，但不理解两者为啥含义相同。天生不具备数据计算的脑子呀。
 
     //处理不对齐的内存地址部分，
-    for (; (3 & (p - (unsigned char *)0)) && buf_size > 0; p++,buf_size--)
+    for (; (3 & (p - (unsigned char*)0)) && buf_size > 0; p++, buf_size--)
     {
         crc = ZCE_CRC32_TABLE[(crc ^ *p) & 0xFF] ^ (crc >> 8);
     }
 
     // 一次处理16个字节的数据，当作4个DWORD计算，
-    for (const unsigned char *e = p + (buf_size & ~15); p < e; p += 16)
+    for (const unsigned char* e = p + (buf_size & ~15); p < e; p += 16)
     {
-        crc ^= ZINDEX_TO_LEUINT32(p,0);
+        crc ^= ZINDEX_TO_LEUINT32(p, 0);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
 
-        crc ^= ZINDEX_TO_LEUINT32(p,1);
+        crc ^= ZINDEX_TO_LEUINT32(p, 1);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
 
-        crc ^= ZINDEX_TO_LEUINT32(p,2);
+        crc ^= ZINDEX_TO_LEUINT32(p, 2);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
 
-        crc ^= ZINDEX_TO_LEUINT32(p,3);
+        crc ^= ZINDEX_TO_LEUINT32(p, 3);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
@@ -490,7 +490,7 @@ uint32_t zce::crc32(uint32_t crcinit,const unsigned char *buf,size_t buf_size)
     }
 
     // 处理非对齐的尾部信息。
-    for (const unsigned char *e = p + (buf_size & 15); p < e; p++)
+    for (const unsigned char* e = p + (buf_size & 15); p < e; p++)
     {
         crc = ZCE_CRC32_TABLE[(crc ^ *p) & 0xFF] ^ (crc >> 8);
     }
@@ -544,11 +544,11 @@ static const uint16_t ZCE_CRC16_TABLE[256] =
 
 //计算CRC16的值。
 uint16_t zce::crc16(uint16_t crcinit,
-                    const unsigned char *buf,
+                    const unsigned char* buf,
                     size_t buf_size)
 {
     uint16_t crc = crcinit;
-    const unsigned char *p = buf;
+    const unsigned char* p = buf;
     while (buf_size--)
     {
         crc = ZCE_CRC16_TABLE[(crc ^ *p++) & 0xFF] ^ (crc >> 8);
@@ -560,7 +560,7 @@ uint16_t zce::crc16(uint16_t crcinit,
 //================================================================================================
 
 // BKDR Hash Function
-size_t zce::bkdr_hash(const unsigned char *str,size_t str_len)
+size_t zce::bkdr_hash(const unsigned char* str, size_t str_len)
 {
     // 31 131 1313 13131 131313 etc..
     static const size_t seed = 131;
@@ -574,7 +574,7 @@ size_t zce::bkdr_hash(const unsigned char *str,size_t str_len)
 }
 
 // AP Hash Function
-size_t zce::ap_hash(const unsigned char *str,size_t str_len)
+size_t zce::ap_hash(const unsigned char* str, size_t str_len)
 {
     size_t hash = 0;
 
@@ -594,7 +594,7 @@ size_t zce::ap_hash(const unsigned char *str,size_t str_len)
 }
 
 // JS Hash Function
-size_t zce::js_hash(const unsigned char *str,size_t str_len)
+size_t zce::js_hash(const unsigned char* str, size_t str_len)
 {
     size_t hash = 1315423911;
 
@@ -607,7 +607,7 @@ size_t zce::js_hash(const unsigned char *str,size_t str_len)
 }
 
 // DJB Hash Function
-size_t zce::djb_hash(const unsigned char *str,size_t str_len)
+size_t zce::djb_hash(const unsigned char* str, size_t str_len)
 {
     size_t hash = 5381;
 

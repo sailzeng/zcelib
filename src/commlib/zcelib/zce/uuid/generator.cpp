@@ -7,7 +7,7 @@ namespace zce
 /************************************************************************************************************
 Class           : UUID64
 ************************************************************************************************************/
-UUID64::UUID64():
+UUID64::UUID64() :
     u_uint64_(0)
 {
 }
@@ -17,7 +17,7 @@ UUID64::~UUID64()
 }
 
 // < 运算符
-bool UUID64::operator < (const UUID64 &others) const
+bool UUID64::operator < (const UUID64& others) const
 {
     if (this->u_uint64_ < others.u_uint64_)
     {
@@ -28,7 +28,7 @@ bool UUID64::operator < (const UUID64 &others) const
 }
 
 // == 运算符
-bool UUID64::operator == (const UUID64 &others) const
+bool UUID64::operator == (const UUID64& others) const
 {
     if (this->u_uint64_ == others.u_uint64_)
     {
@@ -39,7 +39,7 @@ bool UUID64::operator == (const UUID64 &others) const
 }
 
 //转换为字符串
-const char *UUID64::to_string(char *buffer,size_t buf_len,size_t &use_buf) const
+const char* UUID64::to_string(char* buffer, size_t buf_len, size_t& use_buf) const
 {
     //如果传递的BUFFER空间不够，直接返回NULL
     if (buf_len < LEN_OF_ZCE_UUID64_STR + 1)
@@ -47,7 +47,7 @@ const char *UUID64::to_string(char *buffer,size_t buf_len,size_t &use_buf) const
         return NULL;
     }
 
-    int ret = snprintf(buffer,buf_len,"%08x-%08x",this->u_2uint32_[1],this->u_2uint32_[0]);
+    int ret = snprintf(buffer, buf_len, "%08x-%08x", this->u_2uint32_[1], this->u_2uint32_[0]);
     if (ret < 0 || ret > static_cast<int>(buf_len))
     {
         return NULL;
@@ -67,10 +67,10 @@ Class           : UUID64_Generator
 ************************************************************************************************************/
 
 //实例指针
-UUID64_Generator *UUID64_Generator::instance_ = NULL;
+UUID64_Generator* UUID64_Generator::instance_ = NULL;
 
 //构造函数
-UUID64_Generator::UUID64_Generator():
+UUID64_Generator::UUID64_Generator() :
     generator_type_(UUID_GENERATOR::INVALID)
 {
 }
@@ -102,7 +102,7 @@ UUID64 UUID64_Generator::random_gen()
 }
 
 //以时间为基数的初始化，
-void UUID64_Generator::time_radix(uint16_t identity,uint32_t radix)
+void UUID64_Generator::time_radix(uint16_t identity, uint32_t radix)
 {
     generator_type_ = UUID_GENERATOR::TIME;
 
@@ -135,7 +135,7 @@ UUID128::~UUID128()
 }
 
 // < 运算符
-bool UUID128::operator < (const UUID128 &others) const
+bool UUID128::operator < (const UUID128& others) const
 {
     if (u_4uint32_[3] < others.u_4uint32_[3])
     {
@@ -181,7 +181,7 @@ bool UUID128::operator < (const UUID128 &others) const
 }
 
 // == 运算符
-bool UUID128::operator == (const UUID128 &others) const
+bool UUID128::operator == (const UUID128& others) const
 {
     if (this->u_4uint32_[0] == others.u_4uint32_[0] &&
         this->u_4uint32_[1] == others.u_4uint32_[1] &&
@@ -195,7 +195,7 @@ bool UUID128::operator == (const UUID128 &others) const
 }
 
 //转换为字符串,这儿采用的格式是标准的8-4-4-4-12，而不是GUID的8-4-4-16的格式
-const char *UUID128::to_string(char *buffer,size_t buf_len,size_t &use_buf) const
+const char* UUID128::to_string(char* buffer, size_t buf_len, size_t& use_buf) const
 {
     //如果传递的BUFFER空间不够，干脆什么都不做,直接返回NULL,长度要考虑'\0'
     if (buf_len < LEN_OF_ZCE_UUID128_STR + 1)
@@ -204,7 +204,7 @@ const char *UUID128::to_string(char *buffer,size_t buf_len,size_t &use_buf) cons
     }
 
     //输出8-4-4-4-12的格式
-    int ret = snprintf(buffer,buf_len,"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+    int ret = snprintf(buffer, buf_len, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
                        this->u_16uint8_[15],
                        this->u_16uint8_[14],
                        this->u_16uint8_[13],
@@ -235,10 +235,10 @@ Class           : UUID128_Generator
 ************************************************************************************************************/
 
 //实例指针
-UUID128_Generator *UUID128_Generator::instance_ = NULL;
+UUID128_Generator* UUID128_Generator::instance_ = NULL;
 
 //构造函数
-UUID128_Generator::UUID128_Generator():
+UUID128_Generator::UUID128_Generator() :
     generator_type_(UUID_GENERATOR::INVALID)
 {
 }
@@ -272,7 +272,7 @@ UUID128 UUID128_Generator::random_gen()
 }
 
 //以时间为基数的初始化，
-void UUID128_Generator::time_radix(uint32_t identity,uint32_t radix)
+void UUID128_Generator::time_radix(uint32_t identity, uint32_t radix)
 {
     generator_type_ = UUID_GENERATOR::TIME;
 

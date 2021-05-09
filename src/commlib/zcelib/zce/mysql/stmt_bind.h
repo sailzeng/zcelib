@@ -52,7 +52,7 @@ public:
         * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
         * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
         */
-        BinData_Param(enum_field_types data_type,void *pdata,unsigned long data_len):
+        BinData_Param(enum_field_types data_type, void* pdata, unsigned long data_len) :
             stmt_data_type_(data_type),
             stmt_pdata_(pdata),
             stmt_data_length_(data_len)
@@ -68,7 +68,7 @@ public:
         //
         enum_field_types  stmt_data_type_;
         //
-        void *stmt_pdata_;
+        void* stmt_pdata_;
         //
         unsigned long     stmt_data_length_;
     };
@@ -89,7 +89,7 @@ public:
         * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
         * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
         */
-        BinData_Result(enum_field_types data_type,void *pdata,unsigned long *data_len):
+        BinData_Result(enum_field_types data_type, void* pdata, unsigned long* data_len) :
             stmt_data_type_(data_type),
             stmt_pdata_(pdata),
             stmt_data_length_(data_len)
@@ -105,9 +105,9 @@ public:
         //
         enum_field_types  stmt_data_type_;
         //
-        void *stmt_pdata_;
+        void* stmt_pdata_;
         //
-        unsigned long *stmt_data_length_;
+        unsigned long* stmt_data_length_;
     };
 
     /*!
@@ -119,7 +119,7 @@ public:
         friend class ZCE_Mysql_STMT_Bind;
     public:
         //
-        TimeData(enum_field_types timetype,MYSQL_TIME *pstmttime):
+        TimeData(enum_field_types timetype, MYSQL_TIME* pstmttime) :
             stmt_timetype_(timetype),
             stmt_ptime_(pstmttime)
         {
@@ -138,7 +138,7 @@ public:
         //
         enum_field_types  stmt_timetype_;
         //
-        MYSQL_TIME *stmt_ptime_;
+        MYSQL_TIME* stmt_ptime_;
     };
 
     /*!
@@ -151,7 +151,7 @@ public:
         friend class ZCE_Mysql_STMT_Bind;
 
     public:
-        NULL_Param(my_bool *is_null):
+        NULL_Param(my_bool* is_null) :
             is_null_(is_null)
         {
         };
@@ -159,13 +159,13 @@ public:
         {
         };
 
-        my_bool *is_null_;
+        my_bool* is_null_;
     };
 
 protected:
 
     //定义出来不实现,让你无法用,有很多地方有我分配的指针,不能给你浅度复制
-    ZCE_Mysql_STMT_Bind &operator=(const ZCE_Mysql_STMT_Bind &others);
+    ZCE_Mysql_STMT_Bind& operator=(const ZCE_Mysql_STMT_Bind& others);
 
 public:
 
@@ -188,8 +188,8 @@ public:
     */
     int bind_one_param(size_t paramno,
                        ::enum_field_types paramtype,
-                       my_bool *is_null,
-                       void *paramdata,
+                       my_bool* is_null,
+                       void* paramdata,
                        unsigned long szparam = 0);
 
     /*!
@@ -202,16 +202,16 @@ public:
     */
     int bind_one_result(size_t paramno,
                         ::enum_field_types paramtype,
-                        void *paramdata,
-                        unsigned long *szparam);
+                        void* paramdata,
+                        unsigned long* szparam);
 
     ///得到STMT HANDLE
-    inline MYSQL_BIND *get_stmt_bind_handle()
+    inline MYSQL_BIND* get_stmt_bind_handle()
     {
         return stmt_bind_;
     }
 
-    inline MYSQL_BIND *operator[](size_t paramno) const
+    inline MYSQL_BIND* operator[](size_t paramno) const
     {
         return &stmt_bind_[paramno];
     }
@@ -220,35 +220,35 @@ public:
     void reset();
 
     ///将变量绑定
-    void bind(size_t bind_col,char &val);
-    void bind(size_t bind_col,short &val);
-    void bind(size_t bind_col,int &val);
-    void bind(size_t bind_col,long &val);
-    void bind(size_t bind_col,long long &val);
+    void bind(size_t bind_col, char& val);
+    void bind(size_t bind_col, short& val);
+    void bind(size_t bind_col, int& val);
+    void bind(size_t bind_col, long& val);
+    void bind(size_t bind_col, long long& val);
 
-    void bind(size_t bind_col,unsigned char &val);
-    void bind(size_t bind_col,unsigned short &val);
-    void bind(size_t bind_col,unsigned int &val);
-    void bind(size_t bind_col,unsigned long &val);
-    void bind(size_t bind_col,unsigned long long &val);
+    void bind(size_t bind_col, unsigned char& val);
+    void bind(size_t bind_col, unsigned short& val);
+    void bind(size_t bind_col, unsigned int& val);
+    void bind(size_t bind_col, unsigned long& val);
+    void bind(size_t bind_col, unsigned long long& val);
 
-    void bind(size_t bind_col,float &val);
-    void bind(size_t bind_col,double &val);
+    void bind(size_t bind_col, float& val);
+    void bind(size_t bind_col, double& val);
 
     ///为了使用几个类型的适配器
     ///绑定二进制数据，的适配器
-    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::BinData_Param &val);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Param& val);
     ///绑定二进制结果的适配器
-    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::BinData_Result &val);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result& val);
     ///绑定时间的适配器
-    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::TimeData &val);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData& val);
     ///绑定空的适配器
-    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::NULL_Param &val);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param& val);
 
     template <typename bind_type>
-    ZCE_Mysql_STMT_Bind &operator << (bind_type &val)
+    ZCE_Mysql_STMT_Bind& operator << (bind_type& val)
     {
-        bind(current_bind_,val);
+        bind(current_bind_, val);
         ++current_bind_;
         return *this;
     }
@@ -262,7 +262,7 @@ protected:
     size_t            current_bind_;
 
     ///BIND MySQL的封装方式让我不能用vector,
-    MYSQL_BIND *stmt_bind_;
+    MYSQL_BIND* stmt_bind_;
 };
 
 #if defined (ZCE_OS_WINDOWS)

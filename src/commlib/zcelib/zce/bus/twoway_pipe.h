@@ -65,7 +65,7 @@ protected:
 
 protected:
     //instance函数使用的东西
-    static TwoWay_BusPipe *two_way_instance_;
+    static TwoWay_BusPipe* two_way_instance_;
 
 public:
 
@@ -77,7 +77,7 @@ public:
 public:
 
     //初始化部分参数,
-    int initialize(const char *bus_mmap_name,
+    int initialize(const char* bus_mmap_name,
                    size_t size_recv_pipe,
                    size_t size_send_pipe,
                    size_t max_frame_len,
@@ -86,9 +86,9 @@ public:
 public:
 
     //实例的赋值
-    static void instance(TwoWay_BusPipe *);
+    static void instance(TwoWay_BusPipe*);
     //实例的获得
-    static TwoWay_BusPipe *instance();
+    static TwoWay_BusPipe* instance();
     //清除实例
     static void clean_instance();
 };

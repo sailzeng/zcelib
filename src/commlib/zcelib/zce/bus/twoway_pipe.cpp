@@ -8,7 +8,7 @@
 
 namespace zce
 {
-TwoWay_BusPipe *TwoWay_BusPipe::two_way_instance_ = NULL;
+TwoWay_BusPipe* TwoWay_BusPipe::two_way_instance_ = NULL;
 
 const char  TwoWay_BusPipe::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
 {
@@ -25,7 +25,7 @@ TwoWay_BusPipe::~TwoWay_BusPipe()
 {
 }
 
-int TwoWay_BusPipe::initialize(const char *bus_mmap_name,
+int TwoWay_BusPipe::initialize(const char* bus_mmap_name,
                                size_t size_recv_pipe,
                                size_t size_send_pipe,
                                size_t max_frame_len,
@@ -51,7 +51,7 @@ int TwoWay_BusPipe::initialize(const char *bus_mmap_name,
 }
 
 //得到唯一的单子实例
-TwoWay_BusPipe *TwoWay_BusPipe::instance()
+TwoWay_BusPipe* TwoWay_BusPipe::instance()
 {
     if (two_way_instance_ == NULL)
     {
@@ -62,7 +62,7 @@ TwoWay_BusPipe *TwoWay_BusPipe::instance()
 }
 
 //赋值唯一的单子实例
-void TwoWay_BusPipe::instance(TwoWay_BusPipe *pinstatnce)
+void TwoWay_BusPipe::instance(TwoWay_BusPipe* pinstatnce)
 {
     clean_instance();
     two_way_instance_ = pinstatnce;

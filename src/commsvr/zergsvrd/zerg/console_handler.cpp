@@ -3,7 +3,7 @@
 //#include "zerg/application.h"
 //#include "zerg/configure.h"
 //
-//Zerg_Console_Handler::Zerg_Console_Handler(ZCE_Reactor *reactor_inst):
+//Zerg_Console_Handler::Zerg_Console_Handler(zce::ZCE_Reactor *reactor_inst):
 //    MML_Console_Handler(reactor_inst)
 //{
 //}

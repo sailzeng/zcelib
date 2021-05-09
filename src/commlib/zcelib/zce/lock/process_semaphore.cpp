@@ -8,7 +8,7 @@
 
 //构造函数,
 ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
-                                             const char *sem_name):
+                                             const char* sem_name) :
     lock_(NULL)
 {
     ZCE_ASSERT(sem_name);
@@ -20,14 +20,14 @@ ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
 
     //玩有名的信号灯,名字可以考虑用unique_name函数获得
 
-    strncpy(sema_name_,sem_name,PATH_MAX);
+    strncpy(sema_name_, sem_name, PATH_MAX);
 
-    lock_ = zce::sem_open(sem_name,O_CREAT,ZCE_DEFAULT_FILE_PERMS,init_value);
+    lock_ = zce::sem_open(sem_name, O_CREAT, ZCE_DEFAULT_FILE_PERMS, init_value);
 
     if (!lock_)
     {
         ret = -1;
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_open fail.",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_open fail.", ret);
     }
 }
 
@@ -65,7 +65,7 @@ void ZCE_Process_Semaphore::lock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_wait",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_wait", ret);
         return;
     }
 }
@@ -91,22 +91,22 @@ void ZCE_Process_Semaphore::unlock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_post",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_post", ret);
         return;
     }
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool ZCE_Process_Semaphore::systime_lock(const zce::Time_Value &abs_time)
+bool ZCE_Process_Semaphore::systime_lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
-    ret = zce::sem_timedwait(lock_,abs_time);
+    ret = zce::sem_timedwait(lock_, abs_time);
 
     if (0 != ret)
     {
         if (errno != ETIMEDOUT)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_timedwait",ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_timedwait", ret);
         }
 
         return false;
@@ -116,9 +116,9 @@ bool ZCE_Process_Semaphore::systime_lock(const zce::Time_Value &abs_time)
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool ZCE_Process_Semaphore::duration_lock(const zce::Time_Value &relative_time)
+bool ZCE_Process_Semaphore::duration_lock(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
-    abs_time = zce::timeval_add(abs_time,relative_time);
+    abs_time = zce::timeval_add(abs_time, relative_time);
     return systime_lock(abs_time);
 }

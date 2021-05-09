@@ -3,7 +3,7 @@
 #include "zce/util/random.h"
 
 //仅仅用于测试，不实现完全了
-class random_libc: public zce::t_random_base<0,0x00007FFF>
+class random_libc: public zce::t_random_base<0, 0x00007FFF>
 {
 public:
 
@@ -28,11 +28,11 @@ public:
 };
 
 //仅仅用于测试，不实现完全了
-class random_pet2: public zce::t_random_base<0,0xFFFFFFFF>
+class random_pet2: public zce::t_random_base<0, 0xFFFFFFFF>
 {
 public:
 
-    random_pet2(uint32_t seed):
+    random_pet2(uint32_t seed) :
         seed_(seed)
     {
     }
@@ -74,7 +74,7 @@ protected:
     uint32_t   seed_;
 };
 
-int test_random_example(int /*argc*/,char * /*argv*/[])
+int test_random_example(int /*argc*/, char* /*argv*/[])
 {
     const uint32_t TEST_SEED = 1010123;
     zce::random_mt11213b  mt11231b_gen(TEST_SEED);
@@ -257,18 +257,18 @@ int test_random_example(int /*argc*/,char * /*argv*/[])
 //}
 
 //随机分布能力测试
-int test_random_distribution(zce::random_base *rand_gen)
+int test_random_distribution(zce::random_base* rand_gen)
 {
     const size_t TEST_SIZE = 0xFFFFF; //10*1000*1000;
     const size_t TEST_NUMBER = TEST_SIZE;
 
-    char *coverage_chart = NULL;
+    char* coverage_chart = NULL;
     coverage_chart = new char[TEST_SIZE];
 
     uint32_t u32_data = 0;
     size_t conflict_count = 0;
 
-    memset(coverage_chart,0,TEST_SIZE);
+    memset(coverage_chart, 0, TEST_SIZE);
     conflict_count = 0;
 
     for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -298,7 +298,7 @@ int test_random_distribution2()
     const size_t TEST_SIZE = 100 * 100;
     const size_t TEST_NUMBER = TEST_SIZE * 10;
 
-    char *coverage_chart = NULL;
+    char* coverage_chart = NULL;
     coverage_chart = new char[TEST_SIZE];
 
     uint32_t u32_data = 0;
@@ -306,7 +306,7 @@ int test_random_distribution2()
     size_t non_repeat_size = 0;
     size_t i = 0;
 
-    memset(coverage_chart,0,TEST_SIZE);
+    memset(coverage_chart, 0, TEST_SIZE);
     conflict_count = 0;
     non_repeat_size = 0;
 
@@ -387,20 +387,20 @@ int test_random_elapsed_t()
     return 0;
 }
 
-int test_random_variance(const char *rand_fun_name,
-                         zce::random_base *rand_gen)
+int test_random_variance(const char* rand_fun_name,
+                         zce::random_base* rand_gen)
 {
     const size_t TEST_SIZE = 1000 * 1000; //10*1000*1000;
     const size_t TEST_LUN = 100;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
 
-    int *coverage_chart = NULL;
+    int* coverage_chart = NULL;
     coverage_chart = new int[TEST_SIZE];
 
-    memset(coverage_chart,0,TEST_SIZE * sizeof(int));
+    memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
 
     double fangcai = 0.0;
-    uint32_t max_caizhi = 0,u32_data = 0;
+    uint32_t max_caizhi = 0, u32_data = 0;
 
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -415,7 +415,7 @@ int test_random_variance(const char *rand_fun_name,
             max_caizhi = (uint32_t) ::abs(double(coverage_chart[j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart[j]) - TEST_LUN,2);
+        fangcai += pow(double(coverage_chart[j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -439,13 +439,13 @@ int test_random_variance_t()
     const size_t TEST_LUN = 100;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
 
-    int *coverage_chart = NULL;
+    int* coverage_chart = NULL;
     coverage_chart = new int[TEST_SIZE];
 
-    memset(coverage_chart,0,TEST_SIZE * sizeof(int));
+    memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
 
     double fangcai = 0.0;
-    uint32_t max_caizhi = 0,u32_data = 0;
+    uint32_t max_caizhi = 0, u32_data = 0;
 
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -460,7 +460,7 @@ int test_random_variance_t()
             max_caizhi = (uint32_t) ::abs(double(coverage_chart[j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart[j]) - TEST_LUN,2);
+        fangcai += pow(double(coverage_chart[j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -485,13 +485,13 @@ int test_die_variance_t()
     const size_t TEST_LUN = 1000000;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
 
-    int *coverage_chart = NULL;
+    int* coverage_chart = NULL;
     coverage_chart = new int[TEST_SIZE];
 
-    memset(coverage_chart,0,TEST_SIZE * sizeof(int));
+    memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
 
     double fangcai = 0.0;
-    uint32_t max_caizhi = 0,u32_data = 0;
+    uint32_t max_caizhi = 0, u32_data = 0;
 
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -506,7 +506,7 @@ int test_die_variance_t()
             max_caizhi = (uint32_t) ::abs(double(coverage_chart[j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart[j]) - TEST_LUN,2);
+        fangcai += pow(double(coverage_chart[j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -514,9 +514,9 @@ int test_die_variance_t()
     std::cout << "normal die " << typeid(rand_gen_t).name() << " variance " << (uint32_t)fangcai << " max caizhi :" << max_caizhi << std::endl;
 
     //放大骰子，取得骰子后再去其中的高位
-    memset(coverage_chart,0,TEST_SIZE * sizeof(int));
+    memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
     fangcai = 0.0;
-    max_caizhi = 0,u32_data = 0;
+    max_caizhi = 0, u32_data = 0;
 
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -531,7 +531,7 @@ int test_die_variance_t()
             max_caizhi = (uint32_t) ::abs(double(coverage_chart[j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart[j]) - TEST_LUN,2);
+        fangcai += pow(double(coverage_chart[j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -545,7 +545,7 @@ int test_die_variance_t()
 }
 
 //计算几个随机数函数的耗时情况
-int test_random_elapsed_time(int /*argc*/,char * /*argv*/[])
+int test_random_elapsed_time(int /*argc*/, char* /*argv*/[])
 {
     test_random_elapsed_t<random_libc>();
     test_random_elapsed_t<random_pet2>();
@@ -579,7 +579,7 @@ int test_random_elapsed_time(int /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_random_variance(int /*argc*/,char * /*argv*/[])
+int test_random_variance(int /*argc*/, char* /*argv*/[])
 {
     test_random_vargen<zce::random_bsdrand>();
     test_random_vargen<zce::random_rand48>();
@@ -610,7 +610,7 @@ int test_random_variance(int /*argc*/,char * /*argv*/[])
 }
 
 //使用模版函数的测试
-int test_template_random(int /*argc*/,char * /*argv*/[])
+int test_template_random(int /*argc*/, char* /*argv*/[])
 {
     test_die_variance_t<random_libc>();
     test_die_variance_t<random_pet2>();
@@ -629,7 +629,7 @@ int test_template_random(int /*argc*/,char * /*argv*/[])
 }
 
 //使用OO方法的测试
-int test_oo_random(int /*argc*/,char * /*argv*/[])
+int test_oo_random(int /*argc*/, char* /*argv*/[])
 {
     const uint32_t TEST_SEED = (uint32_t)time(NULL);
 
@@ -644,16 +644,16 @@ int test_oo_random(int /*argc*/,char * /*argv*/[])
     zce::random_ranlux223   ranlux223_gen(TEST_SEED);
     zce::random_ranlux389   ranlux389_gen(TEST_SEED);
 
-    test_random_variance(typeid(&randbsd_gen).name(),&randbsd_gen);
-    test_random_variance(typeid(&randbsd_gen).name(),&rand48_gen);
-    test_random_variance(typeid(&randbsd_gen).name(),&taus88_gen);
+    test_random_variance(typeid(&randbsd_gen).name(), &randbsd_gen);
+    test_random_variance(typeid(&randbsd_gen).name(), &rand48_gen);
+    test_random_variance(typeid(&randbsd_gen).name(), &taus88_gen);
 
-    test_random_variance(typeid(&mt11213a_gen).name(),&mt11213a_gen);
-    test_random_variance(typeid(&mt11213b_gen).name(),&mt11213b_gen);
-    test_random_variance(typeid(&mt19937_gen).name(),&mt19937_gen);
+    test_random_variance(typeid(&mt11213a_gen).name(), &mt11213a_gen);
+    test_random_variance(typeid(&mt11213b_gen).name(), &mt11213b_gen);
+    test_random_variance(typeid(&mt19937_gen).name(), &mt19937_gen);
 
-    test_random_variance(typeid(&ranlux223_gen).name(),&ranlux223_gen);
-    test_random_variance(typeid(&ranlux389_gen).name(),&ranlux389_gen);
+    test_random_variance(typeid(&ranlux223_gen).name(), &ranlux223_gen);
+    test_random_variance(typeid(&ranlux389_gen).name(), &ranlux389_gen);
 
     return 0;
 }
@@ -687,7 +687,7 @@ int test_random_repeat_t()
 }
 
 //计算几个随机数函数的重复情况
-int test_random_repeat_number(int /*argc*/,char * /*argv*/[])
+int test_random_repeat_number(int /*argc*/, char* /*argv*/[])
 {
     test_random_repeat_t<random_libc>();
     test_random_repeat_t<random_pet2>();
@@ -704,7 +704,7 @@ int test_random_repeat_number(int /*argc*/,char * /*argv*/[])
 }
 
 //计算几个随机数函数的重复情况
-int test_random_var_obj_speed(int /*argc*/,char * /*argv*/[])
+int test_random_var_obj_speed(int /*argc*/, char* /*argv*/[])
 {
     zce::Progress_Timer rand_timer;
     const size_t TEST_SIZE = 10000 * 10000;

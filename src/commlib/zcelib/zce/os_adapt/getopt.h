@@ -11,11 +11,11 @@
 struct option
 {
     //
-    const char *name;
+    const char* name;
     //
     int          has_arg;
     //
-    int *flag;
+    int* flag;
     //
     int          val;
 };
@@ -27,7 +27,7 @@ extern int     optind;
 /* character checked for validity */
 extern int     optopt;
 /* argument associated with option */
-extern const char *optarg;
+extern const char* optarg;
 /* reset getopt */
 extern int     optreset;
 
@@ -48,22 +48,22 @@ namespace zce
 
 //
 int getopt(int argc,
-           char *const argv[],
-           const char *optstring);
+           char* const argv[],
+           const char* optstring);
 
 //
 int getopt_long(int argc,
-                char *const argv[],
-                const char *optstring,
-                const struct option *longopts,
-                int *longindex);
+                char* const argv[],
+                const char* optstring,
+                const struct option* longopts,
+                int* longindex);
 
 //
 int getopt_long_only(int argc,
-                     char *const argv[],
-                     const char *optstring,
-                     const struct option *longopts,
-                     int *longindex);
+                     char* const argv[],
+                     const char* optstring,
+                     const struct option* longopts,
+                     int* longindex);
 }; // end of namespace zce
 
 #endif //ZCE_LIB_OS_ADAPT_GET_OPT_H_

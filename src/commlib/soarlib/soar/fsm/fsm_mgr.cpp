@@ -10,7 +10,7 @@ namespace soar
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-FSM_Manager *FSM_Manager::instance_ = NULL;
+FSM_Manager* FSM_Manager::instance_ = NULL;
 
 FSM_Manager::FSM_Manager()
 {
@@ -21,11 +21,11 @@ FSM_Manager::~FSM_Manager()
 {
 }
 
-int FSM_Manager::initialize(zce::Timer_Queue *timer_queue,
+int FSM_Manager::initialize(zce::Timer_Queue* timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
-                            const soar::SERVICES_INFO &selfsvr,
-                            soar::App_BusPipe *zerg_mmap_pipe,
+                            const soar::SERVICES_INFO& selfsvr,
+                            soar::App_BusPipe* zerg_mmap_pipe,
                             size_t max_frame_len,
                             bool init_inner_queue,
                             bool init_lock_pool)
@@ -48,11 +48,11 @@ int FSM_Manager::initialize(zce::Timer_Queue *timer_queue,
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
     trans_send_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    trans_send_buffer_->init_head(max_frame_len,CMD_INVALID_CMD);
+    trans_send_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
     trans_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    trans_recv_buffer_->init_head(max_frame_len,CMD_INVALID_CMD);
+    trans_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
     fake_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    fake_recv_buffer_->init_head(max_frame_len,CMD_INVALID_CMD);
+    fake_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
     if (init_inner_queue)
@@ -109,11 +109,11 @@ void FSM_Manager::finish()
 }
 
 int FSM_Manager::register_fsmobj(uint32_t create_cmd,
-                                 FSM_Base *fsm_base,
+                                 FSM_Base* fsm_base,
                                  bool usr_only_one)
 {
     int ret = 0;
-    ret = register_asyncobj(create_cmd,fsm_base);
+    ret = register_asyncobj(create_cmd, fsm_base);
     if (ret != 0)
     {
         return ret;
@@ -126,13 +126,13 @@ int FSM_Manager::register_fsmobj(uint32_t create_cmd,
 }
 
 //
-int FSM_Manager::process_pipe_frame(size_t &proc_frame,
-                                    size_t &create_num)
+int FSM_Manager::process_pipe_frame(size_t& proc_frame,
+                                    size_t& create_num)
 {
     int ret = 0;
     create_num = 0;
 
-    soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(trans_recv_buffer_);
+    soar::Zerg_Frame* tmp_frame = reinterpret_cast<soar::Zerg_Frame*>(trans_recv_buffer_);
 
     for (proc_frame = 0; zerg_mmap_pipe_->is_empty_recvbus() == false
          && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
@@ -144,12 +144,12 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
             return 0;
         }
 
-        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV PIPE FRAME",tmp_frame);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV PIPE FRAME", tmp_frame);
 
         //是否创建一个事务，
         bool create_fsm = false;
         //tmp_frame不用回收
-        ret = process_appframe(tmp_frame,create_fsm);
+        ret = process_appframe(tmp_frame, create_fsm);
 
         //
         if (ret != 0)
@@ -169,7 +169,7 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
+int FSM_Manager::process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm)
 {
     create_fsm = false;
     int ret = 0;
@@ -177,7 +177,7 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
     //如果是跟踪命令，打印出来
     if (zerg_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
     {
-        DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][TRANS PROCESS]",zerg_frame);
+        DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]", zerg_frame);
     }
 
     bool is_reg_cmd = is_register_cmd(zerg_frame->command_);
@@ -188,46 +188,46 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
     {
         unsigned int id = 0;
 
-        ret = create_asyncobj(zerg_frame->command_,zerg_frame,frame_len,id,continue_running);
+        ret = create_asyncobj(zerg_frame->command_, zerg_frame, frame_len, id, continue_running);
         create_fsm = true;
         //统计技术器
         ++gen_ksm_counter_;
-        ZCE_LOG(RS_DEBUG,"Create Trascation ,Command:%u Transaction ID:%u .",
-                zerg_frame->command_,id);
+        ZCE_LOG(RS_DEBUG, "Create Trascation ,Command:%u Transaction ID:%u .",
+                zerg_frame->command_, id);
     }
     else
     {
-        ret = active_asyncobj(zerg_frame->backfill_fsm_id_,zerg_frame,frame_len,continue_running);
+        ret = active_asyncobj(zerg_frame->backfill_fsm_id_, zerg_frame, frame_len, continue_running);
         if (ret != 0)
         {
-            DUMP_ZERG_FRAME_HEAD(RS_ERROR,"No use frame:",zerg_frame);
+            DUMP_ZERG_FRAME_HEAD(RS_ERROR, "No use frame:", zerg_frame);
             return ret;
         }
 
-        ZCE_LOG(RS_DEBUG,"Find raw Transaction ID: %u. ",zerg_frame->backfill_fsm_id_);
+        ZCE_LOG(RS_DEBUG, "Find raw Transaction ID: %u. ", zerg_frame->backfill_fsm_id_);
     }
     return 0;
 }
 
 //直接发送一个buffer to services。
-int FSM_Manager::sendfame_to_pipe(const soar::Zerg_Frame *send_frame)
+int FSM_Manager::sendfame_to_pipe(const soar::Zerg_Frame* send_frame)
 {
     return zerg_mmap_pipe_->push_back_sendbus(send_frame);
 }
 
 //打开性能统计
-void FSM_Manager::enable_trans_statistics(const zce::Time_Value *stat_clock)
+void FSM_Manager::enable_trans_statistics(const zce::Time_Value* stat_clock)
 {
     statistics_clock_ = stat_clock;
 }
 
-int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head &zerg_head,
-                                 const char *buf,
+int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
+                                 const char* buf,
                                  size_t buf_len)
 {
-    soar::Zerg_Frame *send_frame = trans_send_buffer_;
+    soar::Zerg_Frame* send_frame = trans_send_buffer_;
     send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
-    ::memcpy(send_frame,&zerg_head,soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD);
+    ::memcpy(send_frame, &zerg_head, soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD);
     if (buf_len)
     {
         ::memcpy(send_frame->frame_appdata_,
@@ -239,13 +239,13 @@ int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head &zerg_head,
     return 0;
 }
 
-int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame *post_frame)
+int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame* post_frame)
 {
     int ret = 0;
-    soar::Zerg_Frame *tmp_frame = NULL;
+    soar::Zerg_Frame* tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
-    inner_frame_mallocor_->clone_appframe(post_frame,tmp_frame);
+    inner_frame_mallocor_->clone_appframe(post_frame, tmp_frame);
 
     //理论上不用等待任何时间
     ret = message_queue_->enqueue(tmp_frame);
@@ -253,11 +253,11 @@ int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame *post_frame)
     //返回值小于0表示失败
     if (ret < 0)
     {
-        ZCE_LOG(RS_DEBUG,"Post message to send queue fail.ret =%d"
+        ZCE_LOG(RS_DEBUG, "Post message to send queue fail.ret =%d"
                 "Send queue message_count:%u message_bytes:%u. ",
                 ret,
                 message_queue_->size(),
-                message_queue_->size() * sizeof(soar::Zerg_Frame *));
+                message_queue_->size() * sizeof(soar::Zerg_Frame*));
         //出错了以后还回去
         inner_frame_mallocor_->free_appframe(tmp_frame);
 
@@ -268,7 +268,7 @@ int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame *post_frame)
 }
 
 //处理从接收队列取出的FRAME
-int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
+int FSM_Manager::process_queue_frame(size_t& proc_frame, size_t& create_trans)
 {
     int ret = 0;
     create_trans = 0;
@@ -276,23 +276,23 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
     //处理队列
     for (proc_frame = 0; message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-        soar::Zerg_Frame *tmp_frame = NULL;
+        soar::Zerg_Frame* tmp_frame = NULL;
         //
         ret = message_queue_->dequeue(tmp_frame);
 
         //如果小于0表示错误，到这个地方应该是一个错误，因为上面还有一个判断
         if (ret < 0)
         {
-            ZCE_LOG(RS_ERROR,"[framework] Recv queue dequeue fail ,ret=%u,",ret);
+            ZCE_LOG(RS_ERROR, "[framework] Recv queue dequeue fail ,ret=%u,", ret);
             return 0;
         }
 
-        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV QUEUE FRAME:",tmp_frame);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame);
 
         //是否创建一个事务，
         bool bcrtcx = false;
         //tmp_frame  马上回收
-        ret = process_appframe(tmp_frame,bcrtcx);
+        ret = process_appframe(tmp_frame, bcrtcx);
         //释放内存
         inner_frame_mallocor_->free_appframe(tmp_frame);
 
@@ -314,16 +314,16 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
 }
 
 // recv_svr填的是自己，就假装收到一个包，如其名fake
-int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame *fake_recv)
+int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame* fake_recv)
 {
     int ret = 0;
 
-    soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(fake_recv_buffer_);
+    soar::Zerg_Frame* tmp_frame = reinterpret_cast<soar::Zerg_Frame*>(fake_recv_buffer_);
     size_t buff_size = fake_recv->length_;
-    memcpy(tmp_frame->frame_appdata_,fake_recv,buff_size);
+    memcpy(tmp_frame->frame_appdata_, fake_recv, buff_size);
 
     bool crttx = false;
-    ret = process_appframe(tmp_frame,crttx);
+    ret = process_appframe(tmp_frame, crttx);
 
     if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
@@ -333,7 +333,7 @@ int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame *fake_recv)
 }
 
 //得到实例
-FSM_Manager *FSM_Manager::instance()
+FSM_Manager* FSM_Manager::instance()
 {
     if (instance_ == NULL)
     {
@@ -354,7 +354,7 @@ int FSM_Manager::lock_only_one(uint32_t cmd,
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second)
     {
-        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
+        ZCE_LOG(RS_ERROR, "[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
                 cmd,
                 lock_id);
         return -1;
@@ -379,7 +379,7 @@ bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
 }
 
 //实例赋值
-void FSM_Manager::instance(FSM_Manager *pinstatnce)
+void FSM_Manager::instance(FSM_Manager* pinstatnce)
 {
     clean_instance();
     instance_ = pinstatnce;

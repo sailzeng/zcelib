@@ -24,8 +24,8 @@ public:
     * @param[in]  item_ary      统计项队列，包括名称
     * @param[in]  mutli_thread  是否在多线程环境下使用
     */
-    int initialize(const char *app_base_name,
-                   const soar::SERVICES_INFO &service_info,
+    int initialize(const char* app_base_name,
+                   const soar::SERVICES_INFO& service_info,
                    size_t num_stat_item,
                    const zce::STATUS_ITEM_WITHNAME item_ary[],
                    bool mutli_thread);
@@ -38,22 +38,22 @@ public:
     * @param[out] app_base_name  进程的名称
     * @note
     */
-    static int get_info_from_fname(const char *stat_file_name,
-                                   unsigned int *business_id,
-                                   soar::SERVICES_ID *service_info,
-                                   char *app_base_name);
+    static int get_info_from_fname(const char* stat_file_name,
+                                   unsigned int* business_id,
+                                   soar::SERVICES_ID* service_info,
+                                   char* app_base_name);
 
 protected:
 
     //生产stat文件名称
-    void create_stat_fname(const char *app_base_name,
-                           const soar::SERVICES_INFO &service_info);
+    void create_stat_fname(const char* app_base_name,
+                           const soar::SERVICES_INFO& service_info);
 
     //单子的函数群，不是我不知道可以用BOOST的模板使用单子，是这样更加直接清爽，容易扩张修改一些
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
 public:
     //
-    static Stat_Monitor *instance();
+    static Stat_Monitor* instance();
     //
     static void clean_instance();
 
@@ -67,6 +67,6 @@ protected:
 
 protected:
     //单子实例
-    static Stat_Monitor *instance_;
+    static Stat_Monitor* instance_;
 };
 }

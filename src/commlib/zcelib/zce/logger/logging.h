@@ -70,17 +70,17 @@
 
 _ACRTIMP int __cdecl _CrtDbgReport(
     _In_       int         _ReportType,
-    _In_opt_z_ char const *_FileName,
+    _In_opt_z_ char const* _FileName,
     _In_       int         _Linenumber,
-    _In_opt_z_ char const *_ModuleName,
-    _In_opt_z_ char const *_Format,
+    _In_opt_z_ char const* _ModuleName,
+    _In_opt_z_ char const* _Format,
     ...);
 #endif
 
 #if defined (ZCE_OS_LINUX)
 //__assert_fail这个函数是extern的，必须在这儿extern引用，linux自己只在非NDEBUG版本下才有extern引用
-extern "C"  void __assert_fail(__const char *__assertion,__const char *__file,
-                               unsigned int __line,__const char *__function)
+extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
+                               unsigned int __line, __const char* __function)
     __THROW __attribute__((__noreturn__));
 #endif //#if defined (ZCE_OS_LINUX)
 
@@ -112,7 +112,7 @@ extern "C"  void __assert_fail(__const char *__assertion,__const char *__file,
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL_EX
 
-//如果没有定义实用ZCE内部的日志输出，使用printf作为输出方法，
+//如果没有定义使用ZCE内部的日志输出，使用printf作为输出方法，
 #else
 
 #include "zce_log_priority.h"
@@ -124,7 +124,7 @@ public:
 
     //输出va_list的参数信息
     void vwrite_logmsg(zce::LOG_PRIORITY outlevel,
-                       const char *str_format,
+                       const char* str_format,
                        va_list args)
     {
         //如果日志输出开关关闭
@@ -140,16 +140,16 @@ public:
         }
 
         //得到打印信息,_vsnprintf为特殊函数
-        vfprintf(stderr,str_format,args);
-        fprintf(stderr,"\n");
+        vfprintf(stderr, str_format, args);
+        fprintf(stderr, "\n");
     }
 
     //写日志
-    void write_logmsg(zce::LOG_PRIORITY outlevel,const char *str_format,...)
+    void write_logmsg(zce::LOG_PRIORITY outlevel, const char* str_format, ...)
     {
         va_list args;
-        va_start(args,str_format);
-        vwrite_logmsg(outlevel,str_format,args);
+        va_start(args, str_format);
+        vwrite_logmsg(outlevel, str_format, args);
         va_end(args);
     }
 
@@ -169,19 +169,19 @@ public:
 
     //!利用单子对象，打印日志信息
     static void debug_output(zce::LOG_PRIORITY dbglevel,
-                             const char *str_format,
+                             const char* str_format,
                              ...)
     {
         va_list args;
-        va_start(args,str_format);
+        va_start(args, str_format);
 
-        ZCE_Trace_Printf::instance()->vwrite_logmsg(dbglevel,str_format,args);
+        ZCE_Trace_Printf::instance()->vwrite_logmsg(dbglevel, str_format, args);
 
         va_end(args);
     }
 
     //实例的获得
-    static ZCE_Trace_Printf *instance()
+    static ZCE_Trace_Printf* instance()
     {
         static ZCE_Trace_Printf log_instance;
         return &log_instance;
@@ -261,45 +261,45 @@ class ZCE_Trace_Function
 {
 public:
     //!函数名称
-    const char *func_name_;
+    const char* func_name_;
     //!文件名称
-    const char *codefile_name_;
+    const char* codefile_name_;
     //!文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
     int                code_line_;
     //!输出的日志级别
     zce::LOG_PRIORITY   log_priority_;
 
     //!如果需要跟踪返回值，把返回值的变量的指针作为一个参数
-    int *ret_ptr_ = NULL;
+    int* ret_ptr_ = NULL;
 
 public:
     //利用构造函数显示进入函数的输出
-    ZCE_Trace_Function(const char *func_name,
-                       const char *file_name,
+    ZCE_Trace_Function(const char* func_name,
+                       const char* file_name,
                        int file_line,
-                       zce::LOG_PRIORITY   log_priority):
+                       zce::LOG_PRIORITY   log_priority) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
         log_priority_(log_priority),
         ret_ptr_(NULL)
     {
-        ZCE_LOG(log_priority_,"[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ",func_name_,codefile_name_,code_line_);
+        ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ", func_name_, codefile_name_, code_line_);
     }
 
     //利用构造函数显示进入函数的输出
-    ZCE_Trace_Function(const char *func_name,
-                       const char *file_name,
+    ZCE_Trace_Function(const char* func_name,
+                       const char* file_name,
                        int file_line,
                        zce::LOG_PRIORITY   log_priority,
-                       int *ret_ptr):
+                       int* ret_ptr) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
         log_priority_(log_priority),
         ret_ptr_(ret_ptr)
     {
-        ZCE_LOG(log_priority_,"[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].",
+        ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].",
                 func_name_,
                 codefile_name_,
                 code_line_,
@@ -313,17 +313,17 @@ public:
         if (ret_ptr_)
         {
             //这个地方输出的成功失败文字只有相对参考意义。
-            ZCE_LOG(log_priority_,"[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
+            ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
                     "ret = [%d],return %s.",
                     func_name_,
                     codefile_name_,
                     code_line_,
                     *ret_ptr_,
-                    (*ret_ptr_ == 0)?"success":"fail");
+                    (*ret_ptr_ == 0) ? "success" : "fail");
         }
         else
         {
-            ZCE_LOG(log_priority_,"[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .",
+            ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .",
                     func_name_,
                     codefile_name_,
                     code_line_);

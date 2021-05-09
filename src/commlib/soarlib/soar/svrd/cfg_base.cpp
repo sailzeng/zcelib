@@ -5,7 +5,7 @@
 #include "soar/svrd/app_base.h"
 #include "soar/svrd/cfg_base.h"
 
-Server_Config_Base::Server_Config_Base():
+Server_Config_Base::Server_Config_Base() :
     instance_id_(1)
 {
     //默认定时器的事数量
@@ -20,7 +20,7 @@ Server_Config_Base::Server_Config_Base():
 
     log_config_.log_level_ = RS_DEBUG;
     log_config_.log_div_type_ = LOGFILE_DEVIDE::BY_TIME_DAY;
-    log_config_.log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE,LOG_OUTPUT::ERROUT);
+    log_config_.log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT);
 
     log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
     log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
@@ -30,11 +30,11 @@ Server_Config_Base::~Server_Config_Base()
 {
 }
 
-int Server_Config_Base::read_start_arg(int argc,const char *argv[])
+int Server_Config_Base::read_start_arg(int argc, const char* argv[])
 {
     // 指明RETURN_IN_ORDER 不调整顺序
-    ZCE_Get_Option get_opt(argc,(char **)argv,
-                           "umvndhpi:t:r:a:",1,0,ZCE_Get_Option::RETURN_IN_ORDER);
+    ZCE_Get_Option get_opt(argc, (char**)argv,
+                           "umvndhpi:t:r:a:", 1, 0, ZCE_Get_Option::RETURN_IN_ORDER);
     int c = 0;
     while ((c = get_opt()) != EOF)
     {
@@ -43,7 +43,7 @@ int Server_Config_Base::read_start_arg(int argc,const char *argv[])
         case 'v':
         {
             // 打印版本信息
-            printf("%s\n",TSS_SERVER_VER_DECLARE);
+            printf("%s\n", TSS_SERVER_VER_DECLARE);
             exit(0);
             break;
         }
@@ -65,7 +65,7 @@ int Server_Config_Base::read_start_arg(int argc,const char *argv[])
         case 'r':
         {
             // 指定运行目录, 以服务运行时，需要指定此参数
-            printf("app run dir = %s\n",app_run_dir_.c_str());
+            printf("app run dir = %s\n", app_run_dir_.c_str());
             app_run_dir_ = get_opt.optarg;
             break;
         }
@@ -122,7 +122,7 @@ int Server_Config_Base::read_start_arg(int argc,const char *argv[])
 
         default:
         {
-            printf("unknow argu %c\n",c);
+            printf("unknow argu %c\n", c);
             usage(argv[0]);
             return SOAR_RET::ERR_ZERG_GET_STARTUP_CONFIG_FAIL;
         }
@@ -134,7 +134,7 @@ int Server_Config_Base::read_start_arg(int argc,const char *argv[])
     {
         char cur_dir[PATH_MAX + 1];
         cur_dir[PATH_MAX] = 0;
-        zce::getcwd(cur_dir,sizeof(cur_dir) - 1);
+        zce::getcwd(cur_dir, sizeof(cur_dir) - 1);
 
         app_run_dir_ = cur_dir;
     }
@@ -146,7 +146,7 @@ int Server_Config_Base::read_start_arg(int argc,const char *argv[])
 }
 
 //
-int Server_Config_Base::usage(const char *program_name)
+int Server_Config_Base::usage(const char* program_name)
 {
     std::cout << "usage: " << program_name << std::endl;
     std::cout << "   -z [zergling cfg path]" << std::endl;
@@ -181,10 +181,10 @@ int Server_Config_Base::read_cfgfile()
     // 框架的配置是不会变的
     common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";
 
-    ZCE_Conf_PropertyTree pt_tree;
-    ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(),&pt_tree);
-    ZCE_LOG(RS_INFO,"Application read config file [%s] ret [%d].",
-            common_cfg_file_.c_str(),ret);
+    zce::PropertyTree pt_tree;
+    ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(), &pt_tree);
+    ZCE_LOG(RS_INFO, "Application read config file [%s] ret [%d].",
+            common_cfg_file_.c_str(), ret);
     if (ret != 0)
     {
         return ret;
@@ -201,42 +201,42 @@ int Server_Config_Base::read_cfgfile()
 
 void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
-    ZCE_LOG(out_lvl,"Application base name %s svc id:%hu.%hu",
+    ZCE_LOG(out_lvl, "Application base name %s svc id:%hu.%hu",
             soar::Svrd_Appliction::instance()->get_app_basename(),
             self_svc_info_.svc_id_.services_type_,
             self_svc_info_.svc_id_.services_id_);
-    ZCE_LOG(out_lvl,"Application run dir :%s",app_run_dir_.c_str());
-    ZCE_LOG(out_lvl,"Application log file prefix :%s",log_file_prefix_.c_str());
-    ZCE_LOG(out_lvl,"Application self config file :%s",app_cfg_file_.c_str());
-    ZCE_LOG(out_lvl,"Application frame work config file :%s",common_cfg_file_.c_str());
-    ZCE_LOG(out_lvl,"Application svc id table config file :%s",svc_table_file_.c_str());
-    ZCE_LOG(out_lvl,"Application get  :%s",svc_table_file_.c_str());
-    ZCE_LOG(out_lvl,"[PIPE] if_restore_pipe_ :%s",pipe_cfg_.if_restore_pipe_?"TRUE":"FALSE");
-    ZCE_LOG(out_lvl,"[PIPE]recv_pipe_len_ :%lu ,send_pipe_len_ :%lu",
-            pipe_cfg_.recv_pipe_len_,pipe_cfg_.send_pipe_len_);
+    ZCE_LOG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());
+    ZCE_LOG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
+    ZCE_LOG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
+    ZCE_LOG(out_lvl, "Application frame work config file :%s", common_cfg_file_.c_str());
+    ZCE_LOG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
+    ZCE_LOG(out_lvl, "Application get  :%s", svc_table_file_.c_str());
+    ZCE_LOG(out_lvl, "[PIPE] if_restore_pipe_ :%s", pipe_cfg_.if_restore_pipe_ ? "TRUE" : "FALSE");
+    ZCE_LOG(out_lvl, "[PIPE]recv_pipe_len_ :%lu ,send_pipe_len_ :%lu",
+            pipe_cfg_.recv_pipe_len_, pipe_cfg_.send_pipe_len_);
 }
 
 //从配置中读取self_svc_id_的
-int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
+int Server_Config_Base::get_common_cfg(const zce::PropertyTree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
 
-    ret = conf_tree->path_get_leaf("SELF_SVCID","SERVICES_ID",temp_value);
+    ret = conf_tree->path_get_leaf("SELF_SVCID", "SERVICES_ID", temp_value);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = self_svc_info_.svc_id_.from_str(temp_value.c_str(),true);
+    ret = self_svc_info_.svc_id_.from_str(temp_value.c_str(), true);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = conf_tree->path_get_leaf("PIPE_CONFIG","RECV_PIPE_LEN",
+    ret = conf_tree->path_get_leaf("PIPE_CONFIG", "RECV_PIPE_LEN",
                                    pipe_cfg_.recv_pipe_len_);
     if (0 != ret
         || pipe_cfg_.recv_pipe_len_ < 1024 * 1024
@@ -245,7 +245,7 @@ int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
-    ret = conf_tree->path_get_leaf("PIPE_CONFIG","SEND_PIPE_LEN",
+    ret = conf_tree->path_get_leaf("PIPE_CONFIG", "SEND_PIPE_LEN",
                                    pipe_cfg_.send_pipe_len_);
     if (0 != ret
         || pipe_cfg_.send_pipe_len_ < 1024 * 1024
@@ -259,12 +259,12 @@ int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 }
 
 //从配置中读取日志的配置
-int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
+int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
 
-    ret = conf_tree->path_get_leaf("LOG_CFG","LOG_LEVEL",temp_value);
+    ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_LEVEL", temp_value);
     log_config_.log_level_ = ZCE_LogTrace_Basic::log_priorities(temp_value.c_str());
     if (0 != ret)
     {
@@ -272,7 +272,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = conf_tree->path_get_leaf("LOG_CFG","FILE_DEVIDE",temp_value);
+    ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
     log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
@@ -280,7 +280,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = conf_tree->path_get_leaf("LOG_CFG","RESERVE_FILE_NUM",log_config_.reserve_file_num_);
+    ret = conf_tree->path_get_leaf("LOG_CFG", "RESERVE_FILE_NUM", log_config_.reserve_file_num_);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -288,7 +288,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //仅仅当分割方式是SIZE时有用
-    ret = conf_tree->path_get_leaf("LOG_CFG","MAX_FILE_SIZE",log_config_.max_log_file_size_);
+    ret = conf_tree->path_get_leaf("LOG_CFG", "MAX_FILE_SIZE", log_config_.max_log_file_size_);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);

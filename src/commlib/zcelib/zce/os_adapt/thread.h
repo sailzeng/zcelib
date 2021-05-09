@@ -30,14 +30,14 @@ namespace zce
 * @return     int       0成功，-1失败
 * @param[in]  attr
 */
-int pthread_attr_init(pthread_attr_t *attr);
+int pthread_attr_init(pthread_attr_t* attr);
 
 /*!
 * @brief      销毁线程属性
 * @return     int       0成功，-1失败
 * @param[in]  attr
 */
-int pthread_attr_destroy(pthread_attr_t *attr);
+int pthread_attr_destroy(pthread_attr_t* attr);
 
 /*!
 * @brief      非标准函数，设置线程属性变量属性，你可以设置，线程的的分离，JOIN属性，堆栈大小，线程的调度优先级
@@ -48,7 +48,7 @@ int pthread_attr_destroy(pthread_attr_t *attr);
 * @param[in]  threadpriority 线程优先级，（0是默认值），不太建议你用这个东东，
 * @note       WINDOWS 和LINUX共有的属性并不多
 */
-int pthread_attr_setex(pthread_attr_t *attr,
+int pthread_attr_setex(pthread_attr_t* attr,
                        int detachstate = PTHREAD_CREATE_DETACHED,
                        size_t stacksize = 0,
                        int threadpriority = 0
@@ -62,10 +62,10 @@ int pthread_attr_setex(pthread_attr_t *attr,
 * @param      stacksize
 * @param      threadpriority
 */
-int pthread_attr_getex(const pthread_attr_t *attr,
-                       int *detachstate,
-                       size_t *stacksize,
-                       int *threadpriority
+int pthread_attr_getex(const pthread_attr_t* attr,
+                       int* detachstate,
+                       size_t* stacksize,
+                       int* threadpriority
 );
 
 /*!
@@ -81,10 +81,10 @@ int pthread_attr_getex(const pthread_attr_t *attr,
 * @param[in]  start_routine 运行的线程的回调函数指针，这个函数的返回值是void，我没有迁就任何平台，
 * @param[in]  arg           函数指针的参数
 */
-int pthread_create(ZCE_THREAD_ID *threadid,
-                   const pthread_attr_t *attr,
-                   void (*start_routine)(void *),
-                   void *arg);
+int pthread_create(ZCE_THREAD_ID* threadid,
+                   const pthread_attr_t* attr,
+                   void (*start_routine)(void*),
+                   void* arg);
 
 /*!
 * @brief      创建线程，简单一点的封装，这个不用处理pthread_attr_t
@@ -97,9 +97,9 @@ int pthread_create(ZCE_THREAD_ID *threadid,
 * @param[in]  stacksize      堆栈大小
 * @param[in]  threadpriority 线程优先级 = 0 表示默认
 */
-int pthread_createex(void (*start_routine)(void *),
-                     void *arg,
-                     ZCE_THREAD_ID *threadid,
+int pthread_createex(void (*start_routine)(void*),
+                     void* arg,
+                     ZCE_THREAD_ID* threadid,
                      int detachstate = PTHREAD_CREATE_DETACHED,
                      size_t stacksize = 0,
                      int threadpriority = 0
@@ -131,10 +131,10 @@ int pthread_join(ZCE_THREAD_ID threadid);
 * @param      arg           start_routine 回调函数的参数
 * @note       推荐用上面的函数，下面这组提供出来主要是为了满足一些特殊爱好，但是这样写还是要在不同的平台写奇怪的代码，何必呢，
 */
-int pthread_create(ZCE_THREAD_ID *threadid,
-                   const pthread_attr_t *attr,
-                   ZCE_THR_FUNC_RETURN(*start_routine)(void *),
-                   void *arg);
+int pthread_create(ZCE_THREAD_ID* threadid,
+                   const pthread_attr_t* attr,
+                   ZCE_THR_FUNC_RETURN(*start_routine)(void*),
+                   void* arg);
 
 /*!
 * @brief      等待某个JOIN的线程结束,并且得到线程回调函数的返回值
@@ -142,7 +142,7 @@ int pthread_create(ZCE_THREAD_ID *threadid,
 * @param      threadid 等待退出的线程ID，
 * @param      ret_val  线程的返回值，在LINUX和WINDOWS运行时，并不相同
 */
-int pthread_join(ZCE_THREAD_ID threadid,ZCE_THR_FUNC_RETURN *ret_val);
+int pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN* ret_val);
 
 /*!
 * @brief      退出某个线程，同时通知线程退出的返回值
@@ -204,7 +204,7 @@ int pthread_yield(void);
 * @param      key
 * @param      (*destructor) 析构函数，此参数在Windows 下没有用处，（如果跨平台）不建议使用
 */
-int pthread_key_create(pthread_key_t *key,void (*destructor)(void *));
+int pthread_key_create(pthread_key_t* key, void (*destructor)(void*));
 
 /*!
 * @brief
@@ -220,7 +220,7 @@ int pthread_key_delete(pthread_key_t key);
 * @param      key
 * @note
 */
-void *pthread_getspecific(pthread_key_t key);
+void* pthread_getspecific(pthread_key_t key);
 
 /*!
 * @brief
@@ -229,7 +229,7 @@ void *pthread_getspecific(pthread_key_t key);
 * @param      value
 * @note
 */
-int pthread_setspecific(pthread_key_t key,const void *value);
+int pthread_setspecific(pthread_key_t key, const void* value);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_THREAD_H_

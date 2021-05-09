@@ -26,7 +26,7 @@ protected:
     * @brief      拷贝构造函数
     * @param      socket_hanle
     */
-    explicit Socket_Base(const ZCE_SOCKET &socket_hanle);
+    explicit Socket_Base(const ZCE_SOCKET& socket_hanle);
 
     /*!
     * @brief      析构函数，会调用close，
@@ -40,7 +40,7 @@ protected:
 public:
 
     //设置句柄
-    void set_handle(const ZCE_SOCKET &socket_hanle);
+    void set_handle(const ZCE_SOCKET& socket_hanle);
     //获取句柄
     ZCE_SOCKET get_handle() const;
 
@@ -52,7 +52,7 @@ public:
 
     //Open SOCK句柄，BIND本地地址的方式
     int open(int type,
-             const Sockaddr_Base *local_addr,
+             const Sockaddr_Base* local_addr,
              int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
@@ -72,7 +72,7 @@ public:
     * @return     int
     * @param      add_name
     */
-    int bind(const Sockaddr_Base *add_name) const;
+    int bind(const Sockaddr_Base* add_name) const;
 
     ///打开某些选项，WIN32目前只支持O_NONBLOCK
     int sock_enable(int value) const;
@@ -83,34 +83,34 @@ public:
     //获取Socket的选项
     int getsockopt(int level,
                    int optname,
-                   void *optval,
-                   socklen_t *optlen)  const;
+                   void* optval,
+                   socklen_t* optlen)  const;
 
     //设置Socket的选项
     int setsockopt(int level,
                    int optname,
-                   const void *optval,
+                   const void* optval,
                    int optlen) const;
 
     //取得对端的地址信息
-    int getpeername(Sockaddr_Base *addr)  const;
+    int getpeername(Sockaddr_Base* addr)  const;
 
     //取得本地的地址信息
-    int getsockname(Sockaddr_Base *addr)  const;
+    int getsockname(Sockaddr_Base* addr)  const;
 
     //需要说明的是，UDP也可以用connect函数（UDP的connect并不发起握手,只是记录通信地址），然后可以直接调用send or recv，而不明确要通信的地址
     //所以将connect，send，recv 3个函数放到了base里面，大家都可以使用
 
     //connect某个地址
-    int connect(const Sockaddr_Base *addr) const;
+    int connect(const Sockaddr_Base* addr) const;
 
     //接受数据，根据阻塞状态决定行为
-    ssize_t recv(void *buf,
+    ssize_t recv(void* buf,
                  size_t len,
                  int flags = 0) const;
 
     //发送数据，根据阻塞状态决定行为
-    ssize_t send(const void *buf,
+    ssize_t send(const void* buf,
                  size_t len,
                  int flags = 0) const;
 };

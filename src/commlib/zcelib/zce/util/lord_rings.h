@@ -47,14 +47,14 @@ protected:
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type *pointer;
-    typedef _value_type &reference;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
     typedef _value_type value_type;
     typedef std::random_access_iterator_tag iterator_category;
 
 public:
     ///构造函数
-    _lordrings_iterator():
+    _lordrings_iterator() :
         rings_start_(0),
         rings_capacity_(0),
         rings_value_base_(NULL),
@@ -64,9 +64,9 @@ public:
     ///构造函数
     _lordrings_iterator(size_t rings_start,
                         size_t rings_capacity,
-                        _value_type *rings_value_base,
+                        _value_type* rings_value_base,
                         size_t serial
-    ):
+    ) :
         rings_start_(rings_start),
         rings_capacity_(rings_capacity),
         rings_value_base_(rings_value_base),
@@ -79,19 +79,19 @@ public:
     }
 
     ///*提领操作，
-    _value_type &operator*() const
+    _value_type& operator*() const
     {
         return *(rings_value_base_ + (rings_start_ + serial_) % rings_capacity_);
     }
 
     ///->操作
-    _value_type *operator->() const
+    _value_type* operator->() const
     {
         return rings_value_base_ + (rings_start_ + serial_) % rings_capacity_;
     }
 
     ///前向迭代器
-    iterator &operator++()
+    iterator& operator++()
     {
         serial_++;
         return *this;
@@ -101,12 +101,12 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++ *this;
+        ++* this;
         return tmp;
     }
 
     ///前向迭代器
-    iterator &operator--()
+    iterator& operator--()
     {
         serial_--;
         return *this;
@@ -116,12 +116,12 @@ public:
     iterator operator--(int)
     {
         iterator tmp = *this;
-        -- *this;
+        --* this;
         return tmp;
     }
 
     ///迭代器判定相等
-    bool operator==(const iterator &it) const
+    bool operator==(const iterator& it) const
     {
         if (rings_value_base_ == it.rings_value_base_
             && rings_start_ == it.rings_start_
@@ -135,7 +135,7 @@ public:
     }
 
     ///迭代器判定不相等
-    bool operator!=(const iterator &it) const
+    bool operator!=(const iterator& it) const
     {
         return !(*this == it);
     }
@@ -152,7 +152,7 @@ protected:
     ///魔戒的容量
     size_t                 rings_capacity_;
     ///数据的指针，
-    _value_type *rings_value_base_;
+    _value_type* rings_value_base_;
 
     //序列号,迭代器前进，增加的就是这个值
     size_t                 serial_;
@@ -171,7 +171,7 @@ public:
 
 public:
     ///构造函数，后面必须调用,initialize
-    lordrings():
+    lordrings() :
         cycdeque_start_(0),
         cycdeque_size_(0),
         cycdeque_capacity_(0),
@@ -180,7 +180,7 @@ public:
     }
 
     ///构造函数，同时完成初始化,后面完全 没有必要调用,initialize
-    lordrings(size_t max_len):
+    lordrings(size_t max_len) :
         cycdeque_start_(0),
         cycdeque_size_(0),
         cycdeque_capacity_(max_len),
@@ -295,7 +295,7 @@ public:
             return false;
         }
 
-        _value_type *new_value_ptr = new _value_type[new_max_size];
+        _value_type* new_value_ptr = new _value_type[new_max_size];
 
         //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
@@ -320,7 +320,7 @@ public:
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_back(const _value_type &value_data,bool lay_over = false)
+    bool push_back(const _value_type& value_data, bool lay_over = false)
     {
         //如果已经满了
         if (full())
@@ -350,7 +350,7 @@ public:
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_front(const _value_type &value_data,bool lay_over = false)
+    bool push_front(const _value_type& value_data, bool lay_over = false)
     {
         //如果已经满了
         if (full())
@@ -364,7 +364,7 @@ public:
             else
             {
                 //将第一个位置调整覆盖，并且调整起始和结束位置
-                cycdeque_start_ = (cycdeque_start_ > 0)?cycdeque_start_ - 1:cycdeque_capacity_ - 1;
+                cycdeque_start_ = (cycdeque_start_ > 0) ? cycdeque_start_ - 1 : cycdeque_capacity_ - 1;
                 value_ptr_[cycdeque_start_] = value_data;
 
                 //覆盖，尺寸也不用调整
@@ -374,7 +374,7 @@ public:
         }
 
         //直接放在队尾
-        cycdeque_start_ = (cycdeque_start_ > 0)?cycdeque_start_ - 1:cycdeque_capacity_ - 1;
+        cycdeque_start_ = (cycdeque_start_ > 0) ? cycdeque_start_ - 1 : cycdeque_capacity_ - 1;
         value_ptr_[cycdeque_start_] = value_data;
 
         ++cycdeque_size_;
@@ -383,7 +383,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(_value_type &value_data)
+    bool pop_front(_value_type& value_data)
     {
         //如果是空的返回错误
         if (empty())
@@ -415,7 +415,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(_value_type &value_data)
+    bool pop_back(_value_type& value_data)
     {
         //如果是空的返回错误
         if (empty())
@@ -443,13 +443,13 @@ public:
     }
 
     ///[]数组下标定位,ID不要越界，自己保证，我没兴趣为你干什么
-    _value_type &operator[](size_t id)
+    _value_type& operator[](size_t id)
     {
         return value_ptr_[(cycdeque_start_ + id) % cycdeque_capacity_];
     }
 
     ///[]数组下标定位,ID不要越界，自己保证，我没兴趣为你干什么
-    const _value_type &operator[](size_t id) const
+    const _value_type& operator[](size_t id) const
     {
         return value_ptr_[(cycdeque_start_ + id) % cycdeque_capacity_];
     }
@@ -457,13 +457,13 @@ public:
     ///返回start的迭代器，开始就是序列号为0的位置
     iterator begin()
     {
-        return iterator(cycdeque_start_,cycdeque_capacity_,value_ptr_,0);
+        return iterator(cycdeque_start_, cycdeque_capacity_, value_ptr_, 0);
     }
 
     ///返回end的迭代器，开始就是序列号为cycdeque_size_的位置
     iterator end()
     {
-        return iterator(cycdeque_start_,cycdeque_capacity_,value_ptr_,cycdeque_size_);
+        return iterator(cycdeque_start_, cycdeque_capacity_, value_ptr_, cycdeque_size_);
     }
 
 protected:
@@ -476,7 +476,7 @@ protected:
     ///队列的长度，
     size_t                 cycdeque_capacity_;
     ///存放数据的指针
-    _value_type *value_ptr_;
+    _value_type* value_ptr_;
 };
 };
 

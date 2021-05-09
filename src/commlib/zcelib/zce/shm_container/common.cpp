@@ -59,7 +59,7 @@ static size_t zoomin_nodenum(size_t node_num)
 };
 
 //
-void zce::hash_prime(const size_t node_num,size_t &real_num)
+void zce::hash_prime(const size_t node_num, size_t& real_num)
 {
     real_num = 0;
 #if SUPPORT_BIGBIG_WORLD == 0
@@ -79,7 +79,7 @@ void zce::hash_prime(const size_t node_num,size_t &real_num)
 }
 
 //
-void zce::hash_prime_ary(const size_t num_node,size_t &real_num,size_t row,size_t prime_ary[])
+void zce::hash_prime_ary(const size_t num_node, size_t& real_num, size_t row, size_t prime_ary[])
 {
     //做一定的放大处理
     size_t zoomin_num = zce::zoomin_nodenum(num_node);

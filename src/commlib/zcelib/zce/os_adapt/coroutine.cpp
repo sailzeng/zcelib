@@ -10,37 +10,37 @@
 struct _FIBERS_3PARAFUN_ADAPT
 {
     ///
-    coroutine_t *handle_;
+    coroutine_t* handle_;
     ///是否在退出的时候返回主协程，
     bool                  exit_back_main_;
     ///函数指针
     ZCE_COROUTINE_3PARA   fun_ptr_;
 
     //函数的第1个参数，
-    void *para1_;
+    void* para1_;
     //函数的第2个参数
-    void *para2_;
+    void* para2_;
     //函数的第3个参数
-    void *para3_;
+    void* para3_;
 };
 
 //帮助完成函数适配适配
-VOID  WINAPI _fibers_adapt_fun(VOID *fun_para)
+VOID  WINAPI _fibers_adapt_fun(VOID* fun_para)
 {
-    _FIBERS_3PARAFUN_ADAPT *fun_adapt = (_FIBERS_3PARAFUN_ADAPT *)fun_para;
+    _FIBERS_3PARAFUN_ADAPT* fun_adapt = (_FIBERS_3PARAFUN_ADAPT*)fun_para;
 
-    coroutine_t *handle = fun_adapt->handle_;
+    coroutine_t* handle = fun_adapt->handle_;
     bool exit_back_main = fun_adapt->exit_back_main_;
 
     ZCE_COROUTINE_3PARA treepara_fun = fun_adapt->fun_ptr_;
-    void *para1 = fun_adapt->para1_;
-    void *para2 = fun_adapt->para2_;
-    void *para3 = fun_adapt->para3_;
+    void* para1 = fun_adapt->para1_;
+    void* para2 = fun_adapt->para2_;
+    void* para3 = fun_adapt->para3_;
 
     //这个函数是堆分配的，要清理掉释放
     delete fun_adapt;
 
-    treepara_fun(para1,para2,para3);
+    treepara_fun(para1, para2, para3);
 
     if (exit_back_main)
     {
@@ -51,13 +51,13 @@ VOID  WINAPI _fibers_adapt_fun(VOID *fun_para)
 #endif
 
 //兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
-int zce::make_coroutine(coroutine_t *coroutine_hdl,
+int zce::make_coroutine(coroutine_t* coroutine_hdl,
                         size_t stack_size,
                         bool exit_back_main,
                         ZCE_COROUTINE_3PARA fun_ptr,
-                        void *para1,
-                        void *para2,
-                        void *para3)
+                        void* para1,
+                        void* para2,
+                        void* para3)
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -86,7 +86,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
     }
 
     //使用这个结构完成函数适配
-    struct _FIBERS_3PARAFUN_ADAPT *fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
+    struct _FIBERS_3PARAFUN_ADAPT* fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
     fibers_adapt->exit_back_main_ = exit_back_main;
     fibers_adapt->fun_ptr_ = fun_ptr;
     fibers_adapt->para1_ = para1;
@@ -147,7 +147,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
 }
 
 //非标准函数，
-void zce::delete_coroutine(coroutine_t *coroutine_hdl)
+void zce::delete_coroutine(coroutine_t* coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     //
@@ -159,14 +159,14 @@ void zce::delete_coroutine(coroutine_t *coroutine_hdl)
 #elif defined ZCE_OS_LINUX
 
     //释放zce::makecontext申请的空间
-    delete[](char *) coroutine_hdl->coroutine_.uc_stack.ss_sp;
+    delete[](char*) coroutine_hdl->coroutine_.uc_stack.ss_sp;
     coroutine_hdl->coroutine_.uc_stack.ss_sp = NULL;
     coroutine_hdl->coroutine_.uc_stack.ss_size = 0;
 #endif
 }
 
 //切换到协程
-int zce::yeild_coroutine(coroutine_t *coroutine_hdl)
+int zce::yeild_coroutine(coroutine_t* coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
@@ -189,7 +189,7 @@ int zce::yeild_coroutine(coroutine_t *coroutine_hdl)
 }
 
 //切换到Main
-int zce::yeild_main(coroutine_t *coroutine_hdl)
+int zce::yeild_main(coroutine_t* coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
@@ -210,8 +210,8 @@ int zce::yeild_main(coroutine_t *coroutine_hdl)
 #endif
 }
 
-int zce::exchage_coroutine(coroutine_t *save_hdl,
-                           coroutine_t *goto_hdl)
+int zce::exchage_coroutine(coroutine_t* save_hdl,
+                           coroutine_t* goto_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     //

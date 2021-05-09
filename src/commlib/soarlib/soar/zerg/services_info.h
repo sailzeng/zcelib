@@ -11,7 +11,7 @@ namespace soar
 struct  HASH_OF_SVCID
 {
 public:
-    size_t operator()(const soar::SERVICES_ID &svrinfo) const
+    size_t operator()(const soar::SERVICES_ID& svrinfo) const
     {
         return (size_t(svrinfo.services_type_) << 16) + svrinfo.services_id_;
     }
@@ -25,11 +25,11 @@ struct  SERVICES_INFO
 public:
 
     ///从字符串中获取
-    int from_str(const char *str,
+    int from_str(const char* str,
                  bool check_valid = false);
 
     ///转换string
-    const char *to_str(char *str_buffer,size_t buf_len);
+    const char* to_str(char* str_buffer, size_t buf_len);
 
 public:
 
@@ -50,7 +50,7 @@ public:
 struct  HASH_OF_SVCINFO
 {
 public:
-    size_t operator()(const SERVICES_INFO &svripinfo) const
+    size_t operator()(const SERVICES_INFO& svripinfo) const
     {
         return (size_t(svripinfo.svc_id_.services_type_) << 16) + svripinfo.svc_id_.services_id_;
     }
@@ -60,7 +60,7 @@ struct  EQUAL_OF_SVCINFO
 {
 public:
     //注意判断条件不是所有的变量
-    bool operator()(const SERVICES_INFO &right,const SERVICES_INFO &left) const
+    bool operator()(const SERVICES_INFO& right, const SERVICES_INFO& left) const
     {
         //检查SVC INFO的相等,就认为相等
         if (right.svc_id_ == left.svc_id_)

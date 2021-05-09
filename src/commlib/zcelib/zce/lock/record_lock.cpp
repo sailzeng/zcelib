@@ -20,7 +20,7 @@ ZCE_Record_Lock::~ZCE_Record_Lock()
 }
 
 //打开一个文件,同时初始化关联的lock对象
-int ZCE_Record_Lock::open(const char *file_name,
+int ZCE_Record_Lock::open(const char* file_name,
                           int open_mode,
                           mode_t perms)
 {
@@ -45,7 +45,7 @@ int ZCE_Record_Lock::open(const char *file_name,
 //用一个文件Handle初始化,外部传入的ZCE_HANDLE，我不会关闭，文件
 int ZCE_Record_Lock::open(ZCE_HANDLE file_handle)
 {
-    return zce::file_lock_init(&record_lock_,file_handle);
+    return zce::file_lock_init(&record_lock_, file_handle);
 }
 
 //得到锁文件的句柄

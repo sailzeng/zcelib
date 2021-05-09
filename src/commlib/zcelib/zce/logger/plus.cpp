@@ -3,7 +3,7 @@
 #include "zce/logger/plus.h"
 
 //单子指针
-ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::lpp_instance_ = NULL;
+ZCE_LogTrace_Plus* ZCE_LogTrace_Plus::lpp_instance_ = NULL;
 
 //构造函数
 ZCE_LogTrace_Plus::ZCE_LogTrace_Plus()
@@ -15,7 +15,7 @@ ZCE_LogTrace_Plus::~ZCE_LogTrace_Plus()
 }
 
 //得到唯一的单子实例
-ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::instance()
+ZCE_LogTrace_Plus* ZCE_LogTrace_Plus::instance()
 {
     if (lpp_instance_ == NULL)
     {
@@ -26,7 +26,7 @@ ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::instance()
 }
 
 //赋值唯一的单子实例
-void ZCE_LogTrace_Plus::instance(ZCE_LogTrace_Plus *instatnce)
+void ZCE_LogTrace_Plus::instance(ZCE_LogTrace_Plus* instatnce)
 {
     clean_instance();
     lpp_instance_ = instatnce;

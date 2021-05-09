@@ -7,7 +7,7 @@
 *
 * @note
 */
-class TCP_Accept_Handler: public ZCE_Event_Handler
+class TCP_Accept_Handler: public zce::Event_Handler
 {
 public:
 
@@ -16,8 +16,8 @@ public:
     * @param      svcid  相应的svc id
     * @param      addr   相应的IP地址
     */
-    TCP_Accept_Handler(const soar::SERVICES_ID &svcid,
-                       const zce::Sockaddr_In &addr);
+    TCP_Accept_Handler(const soar::SERVICES_ID& svcid,
+                       const zce::Sockaddr_In& addr);
 
 protected:
     ///监听端口
@@ -52,5 +52,5 @@ protected:
     zce::Sockaddr_In          accept_bind_addr_;
 
     ///IP限制管理器
-    zerg::IPRestrict_Mgr *ip_restrict_;
+    zerg::IPRestrict_Mgr* ip_restrict_;
 };

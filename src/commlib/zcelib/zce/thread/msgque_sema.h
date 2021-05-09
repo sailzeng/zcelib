@@ -39,7 +39,7 @@ template < typename _value_type,
 public:
 
     //
-    explicit Message_Queue(size_t queue_max_size):
+    explicit Message_Queue(size_t queue_max_size) :
         queue_max_size_(queue_max_size),
         queue_cur_size_(0),
         sem_full_(static_cast<unsigned int>(queue_max_size)),
@@ -78,7 +78,7 @@ public:
     }
 
     //放入数据，一直等待
-    int enqueue(const _value_type &value_data)
+    int enqueue(const _value_type& value_data)
     {
         sem_full_.lock();
 
@@ -95,8 +95,8 @@ public:
     }
 
     //放入一个数据，进行超时等待
-    int enqueue(const _value_type &value_data,
-                const zce::Time_Value &wait_time)
+    int enqueue(const _value_type& value_data,
+                const zce::Time_Value& wait_time)
     {
         bool bret = false;
         bret = sem_full_.duration_lock(wait_time);
@@ -120,7 +120,7 @@ public:
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
-    int try_enqueue(const _value_type &value_data)
+    int try_enqueue(const _value_type& value_data)
     {
         bool bret = false;
         bret = sem_full_.try_lock();
@@ -145,8 +145,8 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(_value_type &value_data,
-                const zce::Time_Value &wait_time)
+    int dequeue(_value_type& value_data,
+                const zce::Time_Value& wait_time)
     {
         bool bret = false;
         bret = sem_empty_.duration_lock(wait_time);
@@ -171,7 +171,7 @@ public:
     }
 
     //取出一个数据，一直等待
-    int dequeue(_value_type &value_data)
+    int dequeue(_value_type& value_data)
     {
         sem_empty_.lock();
 
@@ -189,7 +189,7 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int try_dequeue(_value_type &value_data)
+    int try_dequeue(_value_type& value_data)
     {
         bool bret = false;
         bret = sem_empty_.try_lock();
@@ -232,9 +232,9 @@ public:
 protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(_value_type &value_data,
+    int dequeue(_value_type& value_data,
                 bool if_wait_timeout,
-                const zce::Time_Value &wait_time)
+                const zce::Time_Value& wait_time)
     {
         //进行超时等待
         if (if_wait_timeout)
@@ -294,12 +294,12 @@ protected:
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class MsgQueue_List: public Message_Queue<_value_type,std::list<_value_type> >
+class MsgQueue_List: public Message_Queue<_value_type, std::list<_value_type> >
 {
 public:
     //
-    explicit MsgQueue_List(size_t queue_max_size):
-        Message_Queue<_value_type,std::list<_value_type> >(queue_max_size)
+    explicit MsgQueue_List(size_t queue_max_size) :
+        Message_Queue<_value_type, std::list<_value_type> >(queue_max_size)
     {
     }
 
@@ -315,12 +315,12 @@ public:
 * note       封装的主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class MsgQueue_Deque: public Message_Queue<_value_type,std::deque<_value_type> >
+class MsgQueue_Deque: public Message_Queue<_value_type, std::deque<_value_type> >
 {
 public:
     //
-    explicit MsgQueue_Deque(size_t queue_max_size):
-        Message_Queue<_value_type,std::deque<_value_type> >(queue_max_size)
+    explicit MsgQueue_Deque(size_t queue_max_size) :
+        Message_Queue<_value_type, std::deque<_value_type> >(queue_max_size)
     {
     }
 
@@ -336,14 +336,14 @@ public:
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <typename _value_type >
-class MsgQueue_Rings: public Message_Queue<_value_type,zce::lordrings<_value_type> >
+class MsgQueue_Rings: public Message_Queue<_value_type, zce::lordrings<_value_type> >
 {
 public:
     //
-    explicit MsgQueue_Rings(size_t queue_max_size):
-        Message_Queue<_value_type,zce::lordrings<_value_type> >(queue_max_size)
+    explicit MsgQueue_Rings(size_t queue_max_size) :
+        Message_Queue<_value_type, zce::lordrings<_value_type> >(queue_max_size)
     {
-        Message_Queue<_value_type,zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        Message_Queue<_value_type, zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
     ~MsgQueue_Rings()

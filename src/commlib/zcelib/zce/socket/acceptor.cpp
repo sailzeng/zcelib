@@ -12,7 +12,7 @@ Class           : Socket_Acceptor
 namespace zce
 {
 //构造函数
-Socket_Acceptor::Socket_Acceptor():
+Socket_Acceptor::Socket_Acceptor() :
     zce::Socket_Base()
 {
 }
@@ -25,7 +25,7 @@ Socket_Acceptor::~Socket_Acceptor()
 
 //跟进地址参数等，打开一个Accepet的端口 (Bind,并且监听),
 //打开一个监听地址，目前只支持AF_INET,和AFINET6
-int Socket_Acceptor::open(const Sockaddr_Base *local_addr,
+int Socket_Acceptor::open(const Sockaddr_Base* local_addr,
                           bool reuse_addr,
                           int protocol_family,
                           int backlog,
@@ -72,8 +72,8 @@ int Socket_Acceptor::open(const Sockaddr_Base *local_addr,
 }
 
 //非超时处理的accept,NONBLOCK模式下会迅速退出，阻塞模式下会一致等待
-int Socket_Acceptor::accept(Socket_Stream &new_stream,
-                            Sockaddr_Base *remote_addr) const
+int Socket_Acceptor::accept(Socket_Stream& new_stream,
+                            Sockaddr_Base* remote_addr) const
 {
     ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
                                          remote_addr->sockaddr_ptr_,
@@ -89,9 +89,9 @@ int Socket_Acceptor::accept(Socket_Stream &new_stream,
 }
 
 //
-int Socket_Acceptor::accept(Socket_Stream &new_stream,
-                            Time_Value &timeout,
-                            Sockaddr_Base *remote_addr) const
+int Socket_Acceptor::accept(Socket_Stream& new_stream,
+                            Time_Value& timeout,
+                            Sockaddr_Base* remote_addr) const
 {
     int ret = 0;
     ret = zce::handle_ready(socket_handle_,

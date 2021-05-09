@@ -11,9 +11,7 @@
 * @note
 *
 */
-
-#ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
-#define ZCE_LIB_MYSQL_STMT_RESULT_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 
@@ -31,7 +29,7 @@ class ZCE_Mysql_Process: zce::NON_Copyable
 {
 protected:
     //实例子
-    static ZCE_Mysql_Process *instance_;
+    static ZCE_Mysql_Process* instance_;
 
 public:
 
@@ -49,9 +47,9 @@ public:
     * @param      port            端口
     * @param      connect_atonce  是否立即连接服务器
     */
-    int init_mysql_server(const char *host_name,
-                          const char *user,
-                          const char *pwd,
+    int init_mysql_server(const char* host_name,
+                          const char* user,
+                          const char* pwd,
                           unsigned int port = MYSQL_PORT,
                           bool connect_atonce = false);
 
@@ -64,9 +62,9 @@ public:
     * @param      pwd              DB PWD密码
     * @param      connect_atonce   是否立即连接服务器
     */
-    int init_mysql_socketfile(const char *unix_socket_file,
-                              const char *user,
-                              const char *pwd,
+    int init_mysql_socketfile(const char* unix_socket_file,
+                              const char* user,
+                              const char* pwd,
                               bool connect_atonce = false);
 
     ///连接Query 服务器,如果希望初始化后进行连接,使用这个函数
@@ -82,10 +80,10 @@ public:
     * @param      numaffect 返回的收到影响的记录条数
     * @param      insertid  返回的插入的LAST_INSERT_ID
     */
-    int db_process_query(const char *sql,
+    int db_process_query(const char* sql,
                          size_t sqllen,
-                         uint64_t &numaffect,
-                         uint64_t &insertid);
+                         uint64_t& numaffect,
+                         uint64_t& insertid);
 
     /*!
     * @brief      执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
@@ -96,10 +94,10 @@ public:
     * @param      dbresult  返回参数,查询的结果集合
     * @note       几个db_process_query函数连接周期不会关闭链接,ZCE_Mysql_Connect对象再析构时断链接
     */
-    int db_process_query(const char *sql,
+    int db_process_query(const char* sql,
                          size_t sqllen,
-                         uint64_t &numaffect,
-                         ZCE_Mysql_Result &dbresult);
+                         uint64_t& numaffect,
+                         ZCE_Mysql_Result& dbresult);
 
     /*!
     * @brief      用于SELECT语句,用于use_result得到结果集合的方法
@@ -109,33 +107,33 @@ public:
     * @param      dbresult 返回的结果结合
     * @note       用于结果集太多,会占用太多内存的的处理,需要一个个取结果,不推荐使用,
     */
-    int db_process_query(const char *sql,
+    int db_process_query(const char* sql,
                          size_t sqllen,
-                         ZCE_Mysql_Result &dbresult);
+                         ZCE_Mysql_Result& dbresult);
 
     ///得到MYSQL定义的错误返回
-    unsigned int get_return_error(char *szerr,size_t buflen);
+    unsigned int get_return_error(char* szerr, size_t buflen);
 
     ///错误语句Str
-    const char *get_return_error_str();
+    const char* get_return_error_str();
     ///DB返回的错误ID
     unsigned int get_return_error_id();
 
     ///得到DB访问的语句
-    const char *get_query_sql(void);
+    const char* get_query_sql(void);
 
     ///得到Real Escape String ,Real表示根据当前的MYSQL Connet的字符集,得到Escape String
     ///Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
-    unsigned int make_real_escape_string(char *tostr,
-                                         const char *fromstr,
+    unsigned int make_real_escape_string(char* tostr,
+                                         const char* fromstr,
                                          unsigned int fromlen);
 
 public:
     ///为了SingleTon类准备
     ///实例赋值
-    static void instance(ZCE_Mysql_Process *);
+    static void instance(ZCE_Mysql_Process*);
     ///获得实例
-    static ZCE_Mysql_Process *instance();
+    static ZCE_Mysql_Process* instance();
     ///清除实例
     static void clean_instance();
 
@@ -162,5 +160,3 @@ protected:
 };
 
 #endif //#if defined ZCE_USE_MYSQL
-
-#endif //ZCE_LIB_MYSQL_STMT_RESULT_H_

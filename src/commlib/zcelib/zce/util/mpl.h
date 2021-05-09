@@ -19,7 +19,7 @@ struct has_def_typehelper
 // 检测类型T是否具有内部的名为type的typedef
 
 // 用默认模板参数指示默认情况，默认会推导到这儿false
-template<typename T,typename U = void>
+template<typename T, typename U = void>
 struct has_def_type_impl
 {
     static const bool value = false;
@@ -27,7 +27,7 @@ struct has_def_type_impl
 
 //偏特化，优先去适配从T萃取类型， T有内置的type时选择
 template<typename T>
-struct has_def_type_impl < T,typename has_def_typehelper<typename T::type>::type >
+struct has_def_type_impl < T, typename has_def_typehelper<typename T::type>::type >
 {
     static const bool value = true;
 };
@@ -49,26 +49,26 @@ struct container_traits
 
 //对数组容器进行特化
 template <typename T>
-struct container_traits<T *>
+struct container_traits<T*>
 {
-    typedef T *iterator;
+    typedef T* iterator;
     typedef T   value_type;
 };
 
 //----------------------------------------------------------------------------
 
 //std::enable_if的补充，TRUE用类型type_a，FALSE用type_b
-template<bool bool_vale,typename type_a,typename type_b>
+template<bool bool_vale, typename type_a, typename type_b>
 struct if_
 {
 };
-template<typename type_a,typename type_b>
-struct if_ < true,type_a,type_b >
+template<typename type_a, typename type_b>
+struct if_ < true, type_a, type_b >
 {
     typedef type_a type;
 };
-template<typename type_a,typename type_b>
-struct if_ < false,type_a,type_b >
+template<typename type_a, typename type_b>
+struct if_ < false, type_a, type_b >
 {
     typedef type_b type;
 };
@@ -83,15 +83,15 @@ struct is_random_access_iterator
 };
 //----------------------------------------------------------------------------
 
-template<typename fun_t,typename para_tuple,std::size_t... I>
-auto g_func_invoke_impl(fun_t &f,const para_tuple &a,std::index_sequence<I...>)
+template<typename fun_t, typename para_tuple, std::size_t... I>
+auto g_func_invoke_impl(fun_t& f, const para_tuple& a, std::index_sequence<I...>)
 {
     return f(std::get<I>(a)...);
 }
 
 //全局函数调用调用tuple参数
-template<typename fun_t,typename para_tuple>
-auto g_func_tuplearg_invoke(fun_t &&f,const para_tuple &a)
+template<typename fun_t, typename para_tuple>
+auto g_func_tuplearg_invoke(fun_t&& f, const para_tuple& a)
 {
     static constexpr auto t_count = std::tuple_size<para_tuple>::value;
     //make_index_sequence 是得到size_t的序列，方便g_fun_invoke_impl的展开调用
@@ -101,23 +101,23 @@ auto g_func_tuplearg_invoke(fun_t &&f,const para_tuple &a)
                               std::make_index_sequence<t_count>());
 }
 
-template<typename fun_t,typename ...args_type>
-auto g_func_invoke(fun_t &&f,args_type &&...datalist)
+template<typename fun_t, typename ...args_type>
+auto g_func_invoke(fun_t&& f, args_type &&...datalist)
 {
     auto a = std::make_tuple(std::forward<args_type>(datalist)...);
-    g_func_tuplearg_invoke(f,a);
+    g_func_tuplearg_invoke(f, a);
 }
 
-template<typename class_type,typename fun_t,typename para_tuple,std::size_t... I>
-auto mem_func_invoke_impl(class_type *obj,fun_t &f,const para_tuple &a,std::index_sequence<I...>)
+template<typename class_type, typename fun_t, typename para_tuple, std::size_t... I>
+auto mem_func_invoke_impl(class_type* obj, fun_t& f, const para_tuple& a, std::index_sequence<I...>)
 {
     //注意这儿一定要加(),否则编译器会抓狂
     return (obj->*f)(std::get<I>(a)...);
 }
 
 //成员函数调用封装
-template<typename class_type,typename fun_t,typename para_tuple>
-auto mem_func_tuplearg_invoke(class_type *obj,fun_t &f,const para_tuple &a)
+template<typename class_type, typename fun_t, typename para_tuple>
+auto mem_func_tuplearg_invoke(class_type* obj, fun_t& f, const para_tuple& a)
 {
     auto t_count = std::tuple_size<para_tuple>::value;
     return mem_func_invoke_impl(obj,
@@ -126,11 +126,11 @@ auto mem_func_tuplearg_invoke(class_type *obj,fun_t &f,const para_tuple &a)
                                 std::make_index_sequence<t_count>());
 }
 
-template<typename class_type,typename fun_t,typename ...args_type>
-auto mem_func_invoke(class_type *obj,fun_t &f,args_type && ...datalist)
+template<typename class_type, typename fun_t, typename ...args_type>
+auto mem_func_invoke(class_type* obj, fun_t& f, args_type && ...datalist)
 {
     auto a = std::make_tuple(std::forward<args_type>(datalist)...);
-    return mem_func_invoke_impl(obj,f,a);
+    return mem_func_invoke_impl(obj, f, a);
 }
 };
 

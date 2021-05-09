@@ -126,10 +126,10 @@ namespace zce
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
 //STL采用的方式一个查表的方式
 //我原来的算法就是采用STL的算法改进的，
-void hash_prime(const size_t node_num,size_t &real_num);
+void hash_prime(const size_t node_num, size_t& real_num);
 
 //返回大于N的一个质数,,
-void hash_prime_ary(const size_t node_num,size_t &real_num,size_t row,size_t prime_ary[]);
+void hash_prime_ary(const size_t node_num, size_t& real_num, size_t row, size_t prime_ary[]);
 
 #define SHM_INDEX_T_LENGTH 32
 
@@ -141,7 +141,7 @@ void hash_prime_ary(const size_t node_num,size_t &real_num,size_t row,size_t pri
 template <class keytpe> struct smem_hash {};
 
 //这个函数其实是BKDRHash的描述，原有的STLPort中间seed 是5，BKDRHash 推荐使用131等值
-inline size_t _shm_hash_string(const char *str)
+inline size_t _shm_hash_string(const char* str)
 {
     size_t hashval = 0;
 
@@ -155,17 +155,17 @@ inline size_t _shm_hash_string(const char *str)
     return size_t(hashval);
 }
 
-template<> struct smem_hash<char *>
+template<> struct smem_hash<char*>
 {
-    size_t operator()(const char *str) const
+    size_t operator()(const char* str) const
     {
         return _shm_hash_string(str);
     }
 };
 
-template<> struct smem_hash<const char *>
+template<> struct smem_hash<const char*>
 {
-    size_t operator()(const char *str) const
+    size_t operator()(const char* str) const
     {
         return _shm_hash_string(str);
     }
@@ -173,7 +173,7 @@ template<> struct smem_hash<const char *>
 
 template<> struct smem_hash<std::string>
 {
-    size_t operator()(const std::string &str) const
+    size_t operator()(const std::string& str) const
     {
         return _shm_hash_string(str.c_str());
     }
@@ -181,7 +181,7 @@ template<> struct smem_hash<std::string>
 
 template<> struct smem_hash<const std::string>
 {
-    size_t operator()(const std::string &str) const
+    size_t operator()(const std::string& str) const
     {
         return _shm_hash_string(str.c_str());
     }
@@ -262,7 +262,7 @@ template < class _value_type>
 class _default_washout_fun
 {
 public:
-    void operator()(_value_type & /*da*/)
+    void operator()(_value_type& /*da*/)
     {
         return;
     }
@@ -273,7 +273,7 @@ public:
 //identity也不是标准STL,偷,偷,偷, identity其实就是萃取自己
 template <class T> struct smem_identity
 {
-    const T &operator()(const T &x) const
+    const T& operator()(const T& x) const
     {
         return x;
     }
@@ -282,14 +282,14 @@ template <class T> struct smem_identity
 //
 template <class _Pair> struct mmap_select1st
 {
-    typename _Pair::first_type &
-        operator()(_Pair &__x) const
+    typename _Pair::first_type&
+        operator()(_Pair& __x) const
     {
         return __x.first;
     }
 
-    const typename _Pair::first_type &
-        operator()(const _Pair &__x) const
+    const typename _Pair::first_type&
+        operator()(const _Pair& __x) const
     {
         return __x.first;
     }
@@ -298,14 +298,14 @@ template <class _Pair> struct mmap_select1st
 //
 template <class _Pair> struct mmap_select2st
 {
-    typename _Pair::second_type &
-        operator()(_Pair &__x) const
+    typename _Pair::second_type&
+        operator()(_Pair& __x) const
     {
         return __x.second;
     }
 
-    const typename _Pair::second_type &
-        operator()(const _Pair &__x) const
+    const typename _Pair::second_type&
+        operator()(const _Pair& __x) const
     {
         return __x.second;
     }
@@ -323,16 +323,16 @@ public:
 protected:
 
     //内存基础地址
-    char *smem_base_;
+    char* smem_base_;
 
     //构造函数
-    _shm_memory_base():
+    _shm_memory_base() :
         smem_base_(NULL)
     {
     };
 
     //构造函数
-    _shm_memory_base(char *basepoint):
+    _shm_memory_base(char* basepoint) :
         smem_base_(basepoint)
     {
     };
@@ -352,12 +352,12 @@ public:
     ///LiST的前驱索引，
     size_t  idx_prev_;
 
-    _shm_list_index():
+    _shm_list_index() :
         idx_next_(_shm_memory_base::_INVALID_POINT),
         idx_prev_(_shm_memory_base::_INVALID_POINT)
     {
     }
-    _shm_list_index(const size_t &nxt,const size_t &prv):
+    _shm_list_index(const size_t& nxt, const size_t& prv) :
         idx_next_(nxt),
         idx_prev_(prv)
     {

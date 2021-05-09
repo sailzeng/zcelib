@@ -34,15 +34,15 @@ class  SERVICES_ID
 {
 public:
 
-    SERVICES_ID(uint16_t svc_type,uint32_t svc_id):
+    SERVICES_ID(uint16_t svc_type, uint32_t svc_id) :
         services_type_(svc_type),
         services_id_(svc_id)
     {
     }
     SERVICES_ID() = default;
     ~SERVICES_ID() = default;
-    SERVICES_ID(const SERVICES_ID &) = default;
-    SERVICES_ID &operator=(const SERVICES_ID &) = default;
+    SERVICES_ID(const SERVICES_ID&) = default;
+    SERVICES_ID& operator=(const SERVICES_ID&) = default;
 
     void  clear()
     {
@@ -56,21 +56,21 @@ public:
     * @param      str 转换的字符串
     * @param      check_valid 检查是否有效,svcid的type和id 不能是0
     */
-    int from_str(const char *str,
+    int from_str(const char* str,
                  bool check_valid = false);
 
     ///转换string
-    const char *to_str(char *str_buffer,size_t buf_len);
+    const char* to_str(char* str_buffer, size_t buf_len);
 
     ///设置
-    void set_svcid(uint16_t svrtype,uint16_t svrid);
+    void set_svcid(uint16_t svrtype, uint16_t svrid);
 
     ///比较函数,services_type_,services_id_
-    bool operator ==(const SERVICES_ID &others) const;
+    bool operator ==(const SERVICES_ID& others) const;
     ///比较不同函数,
-    bool operator !=(const SERVICES_ID &others) const;
+    bool operator !=(const SERVICES_ID& others) const;
     ///有个排序需求,
-    bool operator <(const SERVICES_ID &others) const;
+    bool operator <(const SERVICES_ID& others) const;
 
 public:
 

@@ -10,13 +10,13 @@ class Ogre_IPRestrict_Mgr;
 *
 * @note
 */
-class Ogre_TCPAccept_Hdl: public ZCE_Event_Handler
+class Ogre_TCPAccept_Hdl: public zce::Event_Handler
 {
 public:
 
     //构造函数
-    Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
-                       ZCE_Reactor *reactor = ZCE_Reactor::instance());
+    Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO& config_info,
+                       zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance());
 protected:
     ~Ogre_TCPAccept_Hdl();
 public:
@@ -41,7 +41,7 @@ protected:
     TCP_PEER_MODULE_INFO   peer_module_info_;
 
     //IP限制管理器
-    Ogre_IPRestrict_Mgr *ip_restrict_;
+    Ogre_IPRestrict_Mgr* ip_restrict_;
 };
 
 #endif //OGRE_TCP_ACCEPT_HANDLER_H_

@@ -94,21 +94,21 @@ namespace zce
 @return     int    等于0标识成功
 @param      attr   销毁condi的属性变量
 */
-int pthread_condattr_destroy(pthread_condattr_t *attr);
+int pthread_condattr_destroy(pthread_condattr_t* attr);
 
 /*!
 @brief      初始化条件变量属性
 @return     int    等于0标识成功
 @param      attr   初始化condi的属性变量
 */
-int pthread_condattr_init(pthread_condattr_t *attr);
+int pthread_condattr_init(pthread_condattr_t* attr);
 
 /*!
  @brief      销毁条件变量对象
  @return     int   等于0标识成功,
  @param      cond  条件变量对象
 */
-int pthread_cond_destroy(pthread_cond_t *cond);
+int pthread_cond_destroy(pthread_cond_t* cond);
 
 /*!
 * @brief      初始化条件变量对象
@@ -116,8 +116,8 @@ int pthread_cond_destroy(pthread_cond_t *cond);
 * @param      cond    条件变量对象
 * @param      attr    条件变量属性
 */
-int pthread_cond_init(pthread_cond_t *cond,
-                      const pthread_condattr_t *attr);
+int pthread_cond_init(pthread_cond_t* cond,
+                      const pthread_condattr_t* attr);
 
 /*!
 * @brief      初始化条件变量对象，不同的平台给不同的默认定义
@@ -126,7 +126,7 @@ int pthread_cond_init(pthread_cond_t *cond,
 * @param      cond              CV对象，条件变量对象
 * @param      win_mutex_or_sema 外部等待的锁，是否有句柄，如果是MUTEX，信号灯就有，如果是临界区就没有
 */
-int pthread_cond_initex(pthread_cond_t *cond,
+int pthread_cond_initex(pthread_cond_t* cond,
                         bool win_mutex_or_sema = false);
 
 /*!
@@ -135,8 +135,8 @@ int pthread_cond_initex(pthread_cond_t *cond,
 * @param      cond           条件变量对象
 * @param      external_mutex 外部的MUTEX对象，进入wait前应该是锁定的
 */
-int pthread_cond_wait(pthread_cond_t *cond,
-                      pthread_mutex_t *external_mutex);
+int pthread_cond_wait(pthread_cond_t* cond,
+                      pthread_mutex_t* external_mutex);
 
 /*!
 * @brief      条件变量等待一段时间，超时后继续
@@ -146,9 +146,9 @@ int pthread_cond_wait(pthread_cond_t *cond,
 * @param      abs_timespec_out  超时的时间，绝对值时间，timespec类型
 * @note
 */
-int pthread_cond_timedwait(pthread_cond_t *cond,
-                           pthread_mutex_t *external_mutex,
-                           const ::timespec *abs_timespec_out);
+int pthread_cond_timedwait(pthread_cond_t* cond,
+                           pthread_mutex_t* external_mutex,
+                           const ::timespec* abs_timespec_out);
 
 /*!
 * @brief      非标准函数，条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
@@ -157,9 +157,9 @@ int pthread_cond_timedwait(pthread_cond_t *cond,
 * @param      external_mutex    外部的MUTEX对象
 * @param      abs_timeval_out   超时的时间，绝对值时间，timeval类型
 */
-int pthread_cond_timedwait(pthread_cond_t *cond,
-                           pthread_mutex_t *external_mutex,
-                           const timeval *abs_timeval_out);
+int pthread_cond_timedwait(pthread_cond_t* cond,
+                           pthread_mutex_t* external_mutex,
+                           const timeval* abs_timeval_out);
 
 /*!
 * @brief      条件变量解锁广播
@@ -169,7 +169,7 @@ int pthread_cond_timedwait(pthread_cond_t *cond,
 *             如果是WIN2008以下版本模拟实现，建议加上，否则会有问题，
 *             如果是真实的条件变量，那么应该是可以不加外部锁，但如果修改的条件是一个共享数据，要加锁
 */
-int pthread_cond_broadcast(pthread_cond_t *cond);
+int pthread_cond_broadcast(pthread_cond_t* cond);
 
 /*!
 * @brief      条件变量解锁发信号。
@@ -177,7 +177,7 @@ int pthread_cond_broadcast(pthread_cond_t *cond);
 * @param      cond 条件变量对象
 * @note       建议参考pthread_cond_broadcast说明段。
 */
-int pthread_cond_signal(pthread_cond_t *cond);
+int pthread_cond_signal(pthread_cond_t* cond);
 
 //====================================================================================================
 };

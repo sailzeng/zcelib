@@ -1,10 +1,10 @@
 ﻿#include "zealot_predefine.h"
 
-int test_sqlite_handle(int /*argc*/,char * /*argv */[])
+int test_sqlite_handle(int /*argc*/, char* /*argv */[])
 {
     zce::SQLite_Handler hdl;
     int ret = 0;
-    ret = hdl.open_database("E:\\134.db",false,true);
+    ret = hdl.open_database("E:\\134.db", false, true);
     if (ret != 0)
     {
         return -1;
@@ -19,7 +19,7 @@ int test_sqlite_handle(int /*argc*/,char * /*argv */[])
     ret = hdl.execute("REPLACE INTO foo(id,name,age,address,salary) VALUES(3,'ccc',22,'ccc.ccc',31000.03)");
     ret = hdl.execute("REPLACE INTO foo(id,name,age,address,salary) VALUES(4,'ddd',25,'ddd.ddd',34000.563)");
     zce::SQLite_Result result;
-    ret = hdl.get_table("SELECT id,name,age,address,salary FROM foo",&result);
+    ret = hdl.get_table("SELECT id,name,age,address,salary FROM foo", &result);
     if (ret != 0)
     {
         return -1;
@@ -28,11 +28,11 @@ int test_sqlite_handle(int /*argc*/,char * /*argv */[])
     std::cout << result.row_number();
     for (size_t i = 1; i <= (size_t)result.row_number(); ++i)
     {
-        int id = result.field_data<int>(i,1);
-        std::string name = result.field_data<std::string>(i,2);
-        int age = result.field_data<int>(i,3);
-        std::string address = result.field_data<std::string>(i,4);
-        double salary = result.field_data<double>(i,5);
+        int id = result.field_data<int>(i, 1);
+        std::string name = result.field_data<std::string>(i, 2);
+        int age = result.field_data<int>(i, 3);
+        std::string address = result.field_data<std::string>(i, 4);
+        double salary = result.field_data<double>(i, 5);
         std::cout << "1." << i
             << " id=" << id
             << " name=" << name
@@ -45,11 +45,11 @@ int test_sqlite_handle(int /*argc*/,char * /*argv */[])
     return 0;
 }
 
-int test_sqlite_stmt(int /*argc*/,char * /*argv */[])
+int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
 {
     zce::SQLite_Handler hdl;
     int ret = 0;
-    ret = hdl.open_database("E:\\134.db",false,true);
+    ret = hdl.open_database("E:\\134.db", false, true);
     if (ret != 0)
     {
         return -1;

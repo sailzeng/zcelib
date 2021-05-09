@@ -6,7 +6,7 @@
 namespace soar
 {
 //
-FSMTask_TaskBase::FSMTask_TaskBase():
+FSMTask_TaskBase::FSMTask_TaskBase() :
     trans_notify_mgr_(NULL),
     once_max_get_sendqueue_(DEFAULT_ONCE_MAX_GET_SENDQUEUE),
     task_run_(false),
@@ -27,7 +27,7 @@ FSMTask_TaskBase::~FSMTask_TaskBase()
 }
 
 //
-int FSMTask_TaskBase::initialize(FSMTask_Manger *trans_notify_mgr,
+int FSMTask_TaskBase::initialize(FSMTask_Manger* trans_notify_mgr,
                                  size_t once_max_get_sendqueue,
                                  soar::SERVICES_ID mgr_svc_id,
                                  soar::SERVICES_ID thread_svc_id)
@@ -59,7 +59,7 @@ void FSMTask_TaskBase::stop_task_run()
 
 int FSMTask_TaskBase::svc(void)
 {
-    ZCE_LOG(RS_INFO,"[framework] Task stop start run. thread id = %u",zce::pthread_self());
+    ZCE_LOG(RS_INFO, "[framework] Task stop start run. thread id = %u", zce::pthread_self());
 
     int ret = 0;
     task_run_ = true;
@@ -73,7 +73,7 @@ int FSMTask_TaskBase::svc(void)
 
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
-            soar::Zerg_Frame *tmp_frame = NULL;
+            soar::Zerg_Frame* tmp_frame = NULL;
 
             //忙的时候只测试，不阻塞等待
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)
@@ -83,8 +83,8 @@ int FSMTask_TaskBase::svc(void)
             //不忙的时候，可以让他等待在队列上
             else
             {
-                zce::Time_Value tv(0,1000000);
-                ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame,tv);
+                zce::Time_Value tv(0, 1000000);
+                ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame, tv);
             }
 
             if (ret != 0)
@@ -94,7 +94,7 @@ int FSMTask_TaskBase::svc(void)
 
             // 一旦不忙时收到数据，idle状态改为忙
             idle = 0;
-            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM SEND QUEUE FRAME:",tmp_frame);
+            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM SEND QUEUE FRAME:", tmp_frame);
 
             ret = taskprocess_appframe(tmp_frame);
             //回收FRAME
@@ -102,7 +102,7 @@ int FSMTask_TaskBase::svc(void)
 
             if (ret != 0)
             {
-                ZCE_LOG(RS_ERROR,"[framework] taskprocess_appframe ret =%u",ret);
+                ZCE_LOG(RS_ERROR, "[framework] taskprocess_appframe ret =%u", ret);
             }
         }
 
@@ -121,7 +121,7 @@ int FSMTask_TaskBase::svc(void)
         }
     }
 
-    ZCE_LOG(RS_INFO,"[framework] Task stop run. thread id = %u",zce::pthread_self());
+    ZCE_LOG(RS_INFO, "[framework] Task stop run. thread id = %u", zce::pthread_self());
 
     return 0;
 }
@@ -138,7 +138,7 @@ int FSMTask_TaskBase::task_finish()
     return 0;
 }
 
-int FSMTask_TaskBase::task_moonlighting(size_t &send_frame_num)
+int FSMTask_TaskBase::task_moonlighting(size_t& send_frame_num)
 {
     send_frame_num = 0;
     return 0;

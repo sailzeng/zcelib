@@ -5,7 +5,7 @@
 /************************************************************************************************************
 Class           : ZCE_Thread_Task
 ************************************************************************************************************/
-ZCE_Thread_Task::ZCE_Thread_Task():
+ZCE_Thread_Task::ZCE_Thread_Task() :
     group_id_(INVALID_GROUP_ID),
     thread_id_(0),
     thread_return_(0)
@@ -17,9 +17,9 @@ ZCE_Thread_Task::~ZCE_Thread_Task()
 }
 
 //
-void ZCE_Thread_Task::svc_run(void *args)
+void ZCE_Thread_Task::svc_run(void* args)
 {
-    ZCE_Thread_Task *t = (ZCE_Thread_Task *)args;
+    ZCE_Thread_Task* t = (ZCE_Thread_Task*)args;
 
     // Call the Task's svc() hook method.
     int const svc_status = t->svc();
@@ -33,7 +33,7 @@ void ZCE_Thread_Task::svc_run(void *args)
 
 //创建一个线程
 int ZCE_Thread_Task::activate(int group_id,
-                              ZCE_THREAD_ID *threadid,
+                              ZCE_THREAD_ID* threadid,
                               int detachstate,
                               size_t stacksize,
                               int threadpriority)
@@ -41,7 +41,7 @@ int ZCE_Thread_Task::activate(int group_id,
     int ret = 0;
     //创建线程
     ret = zce::pthread_createex(ZCE_Thread_Task::svc_run,
-                                static_cast<void *> (this),
+                                static_cast<void*> (this),
                                 threadid,
                                 detachstate,
                                 stacksize,

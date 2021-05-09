@@ -34,8 +34,8 @@ protected:
 private:
 
     ///拷贝构造函数，声明但不实现
-    NON_Copyable(const zce::NON_Copyable &) = delete;
+    NON_Copyable(const zce::NON_Copyable&) = delete;
     ///赋值函数，声明但不实现
-    const NON_Copyable &operator=(const zce::NON_Copyable &) = delete;
+    const NON_Copyable& operator=(const zce::NON_Copyable&) = delete;
 };
 }

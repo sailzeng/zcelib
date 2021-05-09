@@ -42,10 +42,10 @@ public:
     virtual int init_proxy_instance();
 
     /// 通过配置文件取得代理的配置信息,这个函数只取过滤命令部分的代码,要使用指定基类访问
-    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
 
     ///代理的处理,返回生产的帧的个数
-    virtual int process_proxy(Zerg_App_Frame *proc_frame) = 0;
+    virtual int process_proxy(Zerg_App_Frame* proc_frame) = 0;
 
 protected:
 
@@ -64,14 +64,14 @@ public:
     * @return     Interface_WH_Proxy*
     * @param      proxytype
     */
-    static Interface_WH_Proxy *create_proxy_factory(PROXY_TYPE proxytype);
+    static Interface_WH_Proxy* create_proxy_factory(PROXY_TYPE proxytype);
 
     /*!
     * @brief
     * @return     PROXY_TYPE
     * @param      str_proxy
     */
-    static PROXY_TYPE str_to_proxytype(const char *str_proxy);
+    static PROXY_TYPE str_to_proxytype(const char* str_proxy);
 
 protected:
 
@@ -79,7 +79,7 @@ protected:
     static const size_t INIT_PROCESS_FRAME = 64;
 
     //
-    Soar_MMAP_BusPipe *zerg_mmap_pipe_ = NULL;
+    Soar_MMAP_BusPipe* zerg_mmap_pipe_ = NULL;
 };
 
 //====================================================================================
@@ -96,9 +96,9 @@ public:
     Echo_Proxy_Process();
     virtual ~Echo_Proxy_Process();
 
-    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
     // 进行代理的处理
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame* proc_frame);
 };
 
 //====================================================================================
@@ -116,9 +116,9 @@ public:
     virtual ~Transmit_Proxy();
 
     ///处理配置文件
-    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
     //
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame* proc_frame);
 };
 
 //====================================================================================
@@ -135,9 +135,9 @@ public:
     virtual ~Broadcast_ProxyProcess();
 
     ///处理配置文件
-    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
     ///
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame* proc_frame);
 
 protected:
     //
@@ -172,9 +172,9 @@ public:
     virtual ~Modulo_ProxyProcess();
 
     ///处理配置文件
-    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
     ///
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame* proc_frame);
 
 protected:
     //
@@ -234,7 +234,7 @@ protected:
 //    DBModalProxyProcess();
 //    virtual ~DBModalProxyProcess();
 //    //
-//    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+//    virtual int get_proxy_config(const zce::PropertyTree *conf_tree);
 //    //
 //    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 //};
@@ -302,7 +302,7 @@ protected:
 //    DBModalMGProxyProcess();
 //    virtual ~DBModalMGProxyProcess();
 //    //
-//    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+//    virtual int get_proxy_config(const zce::PropertyTree *conf_tree);
 //    //
 //    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 //

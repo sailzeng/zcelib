@@ -33,7 +33,7 @@
 #endif
 
 //互斥量属性初始化
-int zce::pthread_mutexattr_init(pthread_mutexattr_t *attr)
+int zce::pthread_mutexattr_init(pthread_mutexattr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
     //线程独有
@@ -52,7 +52,7 @@ int zce::pthread_mutexattr_init(pthread_mutexattr_t *attr)
 }
 
 //互斥量属性销毁
-int zce::pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
+int zce::pthread_mutexattr_destroy(pthread_mutexattr_t* attr)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(attr);
@@ -63,7 +63,7 @@ int zce::pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 }
 
 //互斥量属性设置共享属性PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
-int zce::pthread_mutexattr_setpshared(pthread_mutexattr_t *attr,
+int zce::pthread_mutexattr_setpshared(pthread_mutexattr_t* attr,
                                       int pshared)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -73,59 +73,59 @@ int zce::pthread_mutexattr_setpshared(pthread_mutexattr_t *attr,
     //如果MUTEX的名字是空的,必须给他赋个值，
     if ('\0' == attr->mutex_name_[0] && PTHREAD_PROCESS_SHARED == pshared)
     {
-        const char *MUTEX_PREFIX = "MUTEX";
-        zce::prefix_unique_name(MUTEX_PREFIX,attr->mutex_name_,PATH_MAX);
+        const char* MUTEX_PREFIX = "MUTEX";
+        zce::prefix_unique_name(MUTEX_PREFIX, attr->mutex_name_, PATH_MAX);
     }
 
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutexattr_setpshared(attr,pshared);
+    return ::pthread_mutexattr_setpshared(attr, pshared);
 #endif
 }
 
 //取得线程的共享属性
-int zce::pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr,
-                                      int *pshared)
+int zce::pthread_mutexattr_getpshared(const pthread_mutexattr_t* attr,
+                                      int* pshared)
 {
 #if defined (ZCE_OS_WINDOWS)
     *pshared = attr->lock_shared_;
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutexattr_getpshared(attr,pshared);
+    return ::pthread_mutexattr_getpshared(attr, pshared);
 #endif
 }
 
 //设置线程的属性，PTHREAD_MUTEX_XXXX的几个值，可以或者|一次设置多个属性
-int zce::pthread_mutexattr_settype(pthread_mutexattr_t *attr,int type)
+int zce::pthread_mutexattr_settype(pthread_mutexattr_t* attr, int type)
 {
 #if defined (ZCE_OS_WINDOWS)
     attr->lock_type_ = type;
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutexattr_settype(attr,type);
+    return ::pthread_mutexattr_settype(attr, type);
 #endif
 }
 
 //取得线程的属性
-int zce::pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
-                                   int *type)
+int zce::pthread_mutexattr_gettype(const pthread_mutexattr_t* attr,
+                                   int* type)
 {
 #if defined (ZCE_OS_WINDOWS)
     *type = attr->lock_type_;
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutexattr_gettype(attr,type);
+    return ::pthread_mutexattr_gettype(attr, type);
 #endif
 }
 
 //设置线程的属性，不同的平台给不同的默认定义
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_mutex_t放入共享内存
-int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
+int zce::pthread_mutex_initex(pthread_mutex_t* mutex,
                               bool process_share,
                               bool recursive,
                               bool need_timeout,
-                              const char *mutex_name)
+                              const char* mutex_name)
 {
     //前面有错误返回，
     int result = 0;
@@ -146,7 +146,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
         if (mutex_name)
         {
 #if defined (ZCE_OS_WINDOWS)
-            strncpy(attr.mutex_name_,mutex_name,PATH_MAX);
+            strncpy(attr.mutex_name_, mutex_name, PATH_MAX);
 #endif
         }
     }
@@ -156,7 +156,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
     }
 
     //设置共享属性
-    result = zce::pthread_mutexattr_setpshared(&attr,lock_shared);
+    result = zce::pthread_mutexattr_setpshared(&attr, lock_shared);
 
     if (0 != result)
     {
@@ -184,7 +184,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
 #endif
 
     //设置属性
-    result = zce::pthread_mutexattr_settype(&attr,lock_type);
+    result = zce::pthread_mutexattr_settype(&attr, lock_type);
 
     if (0 != result)
     {
@@ -192,7 +192,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
         return result;
     }
 
-    result = zce::pthread_mutex_init(mutex,&attr);
+    result = zce::pthread_mutex_init(mutex, &attr);
     zce::pthread_mutexattr_destroy(&attr);
 
     if (0 != result)
@@ -208,19 +208,19 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
 //如果需要非递归锁，那么用信号灯
 //如果是递归的，线程内部递归的，而且不需要超时等待，用轻量级的临界区模拟
 //如果需要递归的，线程内部需要超时的，进程间的，那么选择MUTEX，
-int zce::pthread_mutex_init(pthread_mutex_t *mutex,
-                            const pthread_mutexattr_t *attr)
+int zce::pthread_mutex_init(pthread_mutex_t* mutex,
+                            const pthread_mutexattr_t* attr)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
 
     //根据attr是否为NULL，如果NULL，初始化为默认参数
-    const char *mutex_name = NULL;
+    const char* mutex_name = NULL;
     if (attr)
     {
         mutex->lock_shared_ = attr->lock_shared_;
         mutex->lock_type_ = attr->lock_type_;
-        mutex_name = (('\0' == attr->mutex_name_[0])?NULL:attr->mutex_name_);
+        mutex_name = (('\0' == attr->mutex_name_[0]) ? NULL : attr->mutex_name_);
     }
     else
     {
@@ -314,12 +314,12 @@ int zce::pthread_mutex_init(pthread_mutex_t *mutex,
     //return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutex_init(mutex,attr);
+    return ::pthread_mutex_init(mutex, attr);
 #endif
 }
 
 //销毁MUTEX对象
-int zce::pthread_mutex_destroy(pthread_mutex_t *mutex)
+int zce::pthread_mutex_destroy(pthread_mutex_t* mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -376,7 +376,7 @@ int zce::pthread_mutex_destroy(pthread_mutex_t *mutex)
 #endif
 }
 
-int zce::pthread_mutex_lock(pthread_mutex_t *mutex)
+int zce::pthread_mutex_lock(pthread_mutex_t* mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -402,7 +402,7 @@ int zce::pthread_mutex_lock(pthread_mutex_t *mutex)
     //如果合适MUTEX模拟PTHREAD MUTEX，进程内部，递归而且需要超时 或者进程外部，递归，
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
-        DWORD retsult = ::WaitForSingleObject(mutex->recursive_mutex_,INFINITE);
+        DWORD retsult = ::WaitForSingleObject(mutex->recursive_mutex_, INFINITE);
 
         if (WAIT_OBJECT_0 == retsult || WAIT_ABANDONED == retsult)
         {
@@ -424,8 +424,8 @@ int zce::pthread_mutex_lock(pthread_mutex_t *mutex)
 }
 
 //pthread mutex 超时锁定，
-int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
-                                 const ::timespec *abs_timeout_spec)
+int zce::pthread_mutex_timedlock(pthread_mutex_t* mutex,
+                                 const ::timespec* abs_timeout_spec)
 {
 #if defined (ZCE_OS_WINDOWS)
     //
@@ -435,14 +435,14 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
     timeval now_time = zce::gettimeofday();
     timeval abs_time = zce::make_timeval(abs_timeout_spec);
 
-    timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
+    timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
 
     //如果是可以递归的
-    if (ZCE_BIT_IS_SET(mutex->lock_type_,PTHREAD_MUTEX_RECURSIVE))
+    if (ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_RECURSIVE))
     {
         if ((PTHREAD_PROCESS_SHARED == mutex->lock_shared_)
             || (PTHREAD_PROCESS_PRIVATE == mutex->lock_shared_
-            && ZCE_BIT_IS_SET(mutex->lock_type_,PTHREAD_MUTEX_TIMEOUT))
+                && ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
             )
         {
             //等待时间触发
@@ -464,7 +464,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
         }
         //明确了这种方式是不支持超时的，如果到这儿标识你调用错了初始化函数
         else if (PTHREAD_PROCESS_PRIVATE == mutex->lock_shared_
-                 && !ZCE_BIT_IS_SET(mutex->lock_type_,PTHREAD_MUTEX_TIMEOUT))
+                 && !ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
         {
             return ENOTSUP;
         }
@@ -477,7 +477,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
     else
     {
         //锁定信号灯，超时退出
-        int ret = zce::sem_timedwait(mutex->non_recursive_mutex_,abs_timeout_spec);
+        int ret = zce::sem_timedwait(mutex->non_recursive_mutex_, abs_timeout_spec);
 
         if (0 != ret)
         {
@@ -489,7 +489,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
 
 #elif defined (ZCE_OS_LINUX)
     int result = 0;
-    result = ::pthread_mutex_timedlock(mutex,abs_timeout_spec);
+    result = ::pthread_mutex_timedlock(mutex, abs_timeout_spec);
 
     //ACE的代码里面有一段转换错误ID的，将ETIMEDOUT转换为ETIME，（ETIME和ETIMEDOUT值一般不一样）
     //但我看过LINUX的手册返回的是ETIMEDOUT，ACE的代码是向SUN的线程函数靠齐的，
@@ -505,17 +505,17 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
 }
 
 //pthread mutex 超时锁定，非标准实现,是用我内部的时间变量timeval
-int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
-                                 const timeval *abs_timeout_val)
+int zce::pthread_mutex_timedlock(pthread_mutex_t* mutex,
+                                 const timeval* abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::pthread_mutex_timedlock(mutex,&abs_timeout_spec);
+    return zce::pthread_mutex_timedlock(mutex, &abs_timeout_spec);
 }
 
 //pthread mutex 尝试加锁
-int zce::pthread_mutex_trylock(pthread_mutex_t *mutex)
+int zce::pthread_mutex_trylock(pthread_mutex_t* mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -549,7 +549,7 @@ int zce::pthread_mutex_trylock(pthread_mutex_t *mutex)
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
         //等待0长度时间触发，不会阻塞，就是try
-        DWORD retsult = ::WaitForSingleObject(mutex->recursive_mutex_,0);
+        DWORD retsult = ::WaitForSingleObject(mutex->recursive_mutex_, 0);
 
         if (WAIT_OBJECT_0 == retsult || WAIT_ABANDONED == retsult)
         {
@@ -575,7 +575,7 @@ int zce::pthread_mutex_trylock(pthread_mutex_t *mutex)
 }
 
 //pthread mutex 解锁
-int zce::pthread_mutex_unlock(pthread_mutex_t *mutex)
+int zce::pthread_mutex_unlock(pthread_mutex_t* mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
 

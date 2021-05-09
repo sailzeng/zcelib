@@ -7,7 +7,7 @@ namespace zerg
 /****************************************************************************************************
 class ZByteBuffer
 ****************************************************************************************************/
-Buffer::Buffer():
+Buffer::Buffer() :
     size_of_use_(0),
     size_of_buffer_(0)
 {
@@ -19,16 +19,16 @@ Buffer::~Buffer()
 }
 
 //
-void Buffer::fill_write_data(const size_t szdata,const char *data)
+void Buffer::fill_write_data(const size_t szdata, const char* data)
 {
-    memcpy(buffer_data_,data,szdata);
+    memcpy(buffer_data_, data, szdata);
     size_of_buffer_ += szdata;
     //
 }
 //
-void Buffer::get_read_data(size_t &szdata,char *data)
+void Buffer::get_read_data(size_t& szdata, char* data)
 {
-    memcpy(data,buffer_data_,szdata);
+    memcpy(data, buffer_data_, szdata);
 }
 
 void Buffer::clear_buffer()
@@ -41,9 +41,9 @@ void Buffer::clear_buffer()
 class Buffer_Storage
 ****************************************************************************************************/
 
-Buffer_Storage *Buffer_Storage::instance_ = NULL;
+Buffer_Storage* Buffer_Storage::instance_ = NULL;
 
-Buffer_Storage::Buffer_Storage():
+Buffer_Storage::Buffer_Storage() :
     size_of_bufferalloc_(0)
 {
     //extend_bufferlist(szlist);
@@ -102,7 +102,7 @@ void Buffer_Storage::close()
 }
 
 //分配一个Buffer出来
-Buffer *Buffer_Storage::allocate_buffer()
+Buffer* Buffer_Storage::allocate_buffer()
 {
     //缓冲区使用完了,扩展
     if (true == buffer_deque_.empty())
@@ -110,14 +110,14 @@ Buffer *Buffer_Storage::allocate_buffer()
         extend_bufferlist();
     }
 
-    Buffer *tmppr = buffer_deque_[0];
+    Buffer* tmppr = buffer_deque_[0];
     buffer_deque_[0] = NULL;
     buffer_deque_.pop_front();
     return tmppr;
 }
 
 //
-void Buffer_Storage::free_byte_buffer(Buffer *ptrbuf)
+void Buffer_Storage::free_byte_buffer(Buffer* ptrbuf)
 {
     ZCE_ASSERT(ptrbuf);
     ptrbuf->clear_buffer();
@@ -128,7 +128,7 @@ void Buffer_Storage::free_byte_buffer(Buffer *ptrbuf)
 void Buffer_Storage::extend_bufferlist(size_t szlist)
 {
     //打印占用的内存数量
-    ZCE_LOG(RS_INFO,"[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
+    ZCE_LOG(RS_INFO, "[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
             szlist,
             size_of_bufferalloc_,
             szlist * Buffer::CAPACITY_OF_BUFFER,
@@ -138,7 +138,7 @@ void Buffer_Storage::extend_bufferlist(size_t szlist)
 
     for (size_t i = 0; i < szlist; ++i)
     {
-        Buffer *tmppr = new Buffer();
+        Buffer* tmppr = new Buffer();
         tmppr->clear_buffer();
         buffer_deque_.push_back(tmppr);
     }
@@ -152,7 +152,7 @@ void Buffer_Storage::extend_bufferlist(size_t szlist)
 }
 
 //得到唯一的单子实例
-Buffer_Storage *Buffer_Storage::instance()
+Buffer_Storage* Buffer_Storage::instance()
 {
     if (instance_ == NULL)
     {

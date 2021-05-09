@@ -6,7 +6,7 @@
 /******************************************************************************************
 class Tibetan_SendRecv_Package
 ******************************************************************************************/
-SendRecv_Msg_Base::SendRecv_Msg_Base():
+SendRecv_Msg_Base::SendRecv_Msg_Base() :
     test_frame_len_(0),
     trans_id_builder_(0),
     msg_send_frame_(NULL),
@@ -31,9 +31,9 @@ SendRecv_Msg_Base::~SendRecv_Msg_Base()
     }
 }
 
-void SendRecv_Msg_Base::set_services_id(const soar::SERVICES_ID &recv_service,
-                                        const soar::SERVICES_ID &send_service,
-                                        const soar::SERVICES_ID &proxy_service,
+void SendRecv_Msg_Base::set_services_id(const soar::SERVICES_ID& recv_service,
+                                        const soar::SERVICES_ID& send_service,
+                                        const soar::SERVICES_ID& proxy_service,
                                         size_t frame_len)
 
 {
@@ -51,7 +51,7 @@ void SendRecv_Msg_Base::set_services_id(const soar::SERVICES_ID &recv_service,
 }
 
 //取得收到的事务ID
-void SendRecv_Msg_Base::get_recv_transid(unsigned int &trans_id)
+void SendRecv_Msg_Base::get_recv_transid(unsigned int& trans_id)
 {
     trans_id = recv_trans_id_;
 }
@@ -67,13 +67,13 @@ unsigned int SendRecv_Msg_Base::get_backfill_transid()
 }
 
 //取得测试的APPFRAME
-soar::Zerg_Frame *SendRecv_Msg_Base::get_send_appframe()
+soar::Zerg_Frame* SendRecv_Msg_Base::get_send_appframe()
 {
     return msg_send_frame_;
 }
 
 //取得接收的APPFRAME
-soar::Zerg_Frame *SendRecv_Msg_Base::get_recv_appframe()
+soar::Zerg_Frame* SendRecv_Msg_Base::get_recv_appframe()
 {
     return msg_recv_frame_;
 }

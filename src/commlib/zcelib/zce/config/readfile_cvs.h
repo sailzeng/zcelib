@@ -8,7 +8,7 @@ public:
 public:
 
     //构造函数
-    ReadFile_CVS(const char *file_name,
+    ReadFile_CVS(const char* file_name,
                  size_t read_buf_len = 50 * 1024 * 1024,
                  unsigned char line_delim = '\n',
                  unsigned char word_delim = '|');

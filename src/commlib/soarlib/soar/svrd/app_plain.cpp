@@ -4,7 +4,7 @@
 #include "soar/svrd/app_buspipe.h"
 #include "soar/enum/error_code.h"
 
-SvrdApp_Plain::SvrdApp_Plain():
+SvrdApp_Plain::SvrdApp_Plain() :
     Svrd_Appliction(),
     nonctrl_recv_buffer_(NULL)
 {
@@ -24,8 +24,8 @@ SvrdApp_Plain::~SvrdApp_Plain()
 //运行函数
 int SvrdApp_Plain::app_run()
 {
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
             get_app_basename(),
             typeid(*this).name());
 
@@ -43,19 +43,19 @@ int SvrdApp_Plain::app_run()
     static const size_t MAX_ONCE_PROCESS_FRAME = 2048;
 
     //
-    size_t size_io_event = 0,size_timer_expire = 0;
+    size_t size_io_event = 0, size_timer_expire = 0;
 
-    size_t prc_frame = 0,idle = 0,proc_data_num = 0;
+    size_t prc_frame = 0, idle = 0, proc_data_num = 0;
 
-    zce::Time_Value select_interval(0,0);
+    zce::Time_Value select_interval(0, 0);
 
-    zce::Timer_Queue *time_queue = zce::Timer_Queue::instance();
-    ZCE_Reactor *reactor = ZCE_Reactor::instance();
+    zce::Timer_Queue* time_queue = zce::Timer_Queue::instance();
+    zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance();
 
     for (; app_run_;)
     {
         //处理收到的命令
-        popfront_recvpipe(MAX_ONCE_PROCESS_FRAME,prc_frame);
+        popfront_recvpipe(MAX_ONCE_PROCESS_FRAME, prc_frame);
 
         size_timer_expire = time_queue->expire();
 
@@ -94,17 +94,17 @@ int SvrdApp_Plain::app_run()
         }
 
         //
-        reactor->handle_events(&select_interval,&size_io_event);
+        reactor->handle_events(&select_interval, &size_io_event);
     }
 
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance end.",
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance end.",
             get_app_basename(),
             typeid(*this).name());
     return 0;
 }
 
 //从管道中收取一组数据进行处理
-int SvrdApp_Plain::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
+int SvrdApp_Plain::popfront_recvpipe(size_t max_prc, size_t& proc_frame)
 {
     int ret = 0;
 
@@ -121,7 +121,7 @@ int SvrdApp_Plain::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
             return 0;
         }
 
-        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV PIPE FRAME",nonctrl_recv_buffer_);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV PIPE FRAME", nonctrl_recv_buffer_);
 
         //处理一个收到的数据
         ret = process_recv_frame(nonctrl_recv_buffer_);

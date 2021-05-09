@@ -8,7 +8,7 @@ class Stat_Monitor 单线程版本的实例
 ******************************************************************************************/
 namespace soar
 {
-Stat_Monitor *Stat_Monitor::instance_ = NULL;
+Stat_Monitor* Stat_Monitor::instance_ = NULL;
 
 Stat_Monitor::Stat_Monitor()
 {
@@ -18,7 +18,7 @@ Stat_Monitor::~Stat_Monitor()
 {
 }
 
-Stat_Monitor *Stat_Monitor::instance()
+Stat_Monitor* Stat_Monitor::instance()
 {
     if (instance_ == NULL)
     {
@@ -35,13 +35,13 @@ void Stat_Monitor::clean_instance()
 }
 
 //初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
-int Stat_Monitor::initialize(const char *app_base_name,
-                             const soar::SERVICES_INFO &service_info,
+int Stat_Monitor::initialize(const char* app_base_name,
+                             const soar::SERVICES_INFO& service_info,
                              size_t num_stat_item,
                              const zce::STATUS_ITEM_WITHNAME item_ary[],
                              bool mutli_thread)
 {
-    create_stat_fname(app_base_name,service_info);
+    create_stat_fname(app_base_name, service_info);
 
     // 将stat_mmap_filename_转换为大写
     zce::strupr(stat_mmap_filename_);
@@ -55,8 +55,8 @@ int Stat_Monitor::initialize(const char *app_base_name,
 }
 
 //生产stat文件名称
-void Stat_Monitor::create_stat_fname(const char *app_base_name,
-                                     const soar::SERVICES_INFO &service_info)
+void Stat_Monitor::create_stat_fname(const char* app_base_name,
+                                     const soar::SERVICES_INFO& service_info)
 {
     snprintf(stat_mmap_filename_,
              STAT_MMAP_FILENAME_LEN,
@@ -70,17 +70,17 @@ void Stat_Monitor::create_stat_fname(const char *app_base_name,
 }
 
 //从文件名称中得到相应的信息
-int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
-                                      unsigned int *business_id,
-                                      soar::SERVICES_ID *svc_id,
-                                      char *app_base_name)
+int Stat_Monitor::get_info_from_fname(const char* stat_file_name,
+                                      unsigned int* business_id,
+                                      soar::SERVICES_ID* svc_id,
+                                      char* app_base_name)
 {
     ZCE_ASSERT(stat_file_name != NULL);
     ZCE_ASSERT(svc_id != NULL);
 
     int ret = 0;
     char file_name[STAT_MMAP_FILENAME_LEN + 1];
-    strncpy(file_name,stat_file_name,STAT_MMAP_FILENAME_LEN);
+    strncpy(file_name, stat_file_name, STAT_MMAP_FILENAME_LEN);
     file_name[STAT_MMAP_FILENAME_LEN] = '\0';
 
     //检查文件长度
@@ -92,26 +92,26 @@ int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     }
 
     //检查文件名称前缀
-    if (strncmp(file_name,"STATS_",6) != 0)
+    if (strncmp(file_name, "STATS_", 6) != 0)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
     //检查后缀
-    if (strncmp(file_name + name_len - 4,".SHM",4) != 0)
+    if (strncmp(file_name + name_len - 4, ".SHM", 4) != 0)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
 
     //从后面开始找_
     soar::SERVICES_ID tmp_svc_id;
-    char *find_pos = NULL;
+    char* find_pos = NULL;
     //反向查询的，先解决svc id，
-    find_pos = strrchr(file_name,'_');
+    find_pos = strrchr(file_name, '_');
     if (NULL == find_pos)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
-    ret = sscanf(find_pos + 1,"%hu.%u",
+    ret = sscanf(find_pos + 1, "%hu.%u",
                  &tmp_svc_id.services_type_,
                  &tmp_svc_id.services_id_);
     //!=2 表示没有得到两个数字
@@ -125,12 +125,12 @@ int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     //再处理业务ID
     *find_pos = '\0';
     unsigned int tmp_business_id;
-    find_pos = strrchr(file_name,'_');
+    find_pos = strrchr(file_name, '_');
     if (NULL == find_pos)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
-    ret = sscanf(find_pos + 1,"%u",
+    ret = sscanf(find_pos + 1, "%u",
                  &tmp_business_id);
     if (ret != 1)
     {
@@ -140,7 +140,7 @@ int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
 
     //得到APP的名字
     *find_pos = '\0';
-    strncpy(app_base_name,file_name + 6,STAT_MMAP_FILENAME_LEN);
+    strncpy(app_base_name, file_name + 6, STAT_MMAP_FILENAME_LEN);
 
     return 0;
 }

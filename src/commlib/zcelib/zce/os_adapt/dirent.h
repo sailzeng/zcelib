@@ -47,7 +47,7 @@ struct DIR
     HANDLE            current_handle_;
 
     ///返回的dirent_结果
-    dirent *dirent_;
+    dirent* dirent_;
 
     /// The struct for intermediate results.
     WIN32_FIND_DATAA  fdata_;
@@ -66,7 +66,7 @@ namespace zce
 * @param      dir_name 目录名称
 * @note       可以认为操作数序是opendir，readdir（readdir_r），closedir，参考closedir，readdir
 */
-DIR *opendir(const char *dirname);
+DIR* opendir(const char* dirname);
 
 /*!
 * @brief      关闭打开的目录（的句柄），
@@ -74,7 +74,7 @@ DIR *opendir(const char *dirname);
 * @param      dir_handle DIR的句柄,在读取目录完毕后，必须要关闭，
 * @note       可以认为操作数序是opendir，readdir，closedir
 */
-int closedir(DIR *dir_handle);
+int closedir(DIR* dir_handle);
 
 /*!
 * @brief      读取一个目录项，并且返回，
@@ -87,7 +87,7 @@ int closedir(DIR *dir_handle);
 *             下来，由于返回值是参数dir_handle的一部分数据，所以如果两次调用后，前面一次
 *             的结构就失效了。
 */
-struct dirent *readdir(DIR *dir_handle);
+struct dirent* readdir(DIR* dir_handle);
 
 /*!
 * @brief      read dir 可以重入版本，
@@ -97,9 +97,9 @@ struct dirent *readdir(DIR *dir_handle);
 * @param[out] result 读取到的目录项目指针，如果是已经读取到了最后，*result将被置为NULL
 *                    如果读取到了项目，result指向entry
 */
-int readdir_r(DIR *dir_handle,
-              struct dirent *entry,
-              struct dirent **result);
+int readdir_r(DIR* dir_handle,
+              struct dirent* entry,
+              struct dirent** result);
 
 /*!
 * @brief      根据前缀和后缀，读取目录下面的各种文件，
@@ -111,12 +111,12 @@ int readdir_r(DIR *dir_handle,
 * @param[in]  select_file 选择文件
 * @param[out] file_name_ary 文件名称队列
 */
-int readdir_nameary(const char *dirname,
-                    const char *prefix_name,
-                    const char *ext_name,
+int readdir_nameary(const char* dirname,
+                    const char* prefix_name,
+                    const char* ext_name,
                     bool select_dir,
                     bool select_file,
-                    std::vector<std::string> &file_name_ary);
+                    std::vector<std::string>& file_name_ary);
 
 /*!
 * @brief      扫描一个目录里面的目录项目，就一个函数，看上去简单，而且可以利用选择器等工具加快开发速度，但要注意结果释放
@@ -127,17 +127,17 @@ int readdir_nameary(const char *dirname,
 * @param      (*comparator) 排序器具的函数指针，可以为NULL
 * @note       namelist 返回的数据一定释放，而且是2次释放，可以用free_scandir_list函数释放
 */
-int scandir(const char *dirname,
-            dirent **namelist[],
-            int (*selector)(const struct dirent *),
-            int (*comparator)(const struct dirent **,const struct dirent **));
+int scandir(const char* dirname,
+            dirent** namelist[],
+            int (*selector)(const struct dirent*),
+            int (*comparator)(const struct dirent**, const struct dirent**));
 
 /*!
 * @brief      释放scandir 返回参数的里面的各种分配数据，非标准函数
 * @param      list_number scandir 函数的成功返回值,>0
 * @param      namelist    scandir 函数返回的namelist参数
 */
-void free_scandir_result(int list_number,dirent *namelist[]);
+void free_scandir_result(int list_number, dirent* namelist[]);
 
 /*!
 * @brief      用于目录排序的比较，就是那个comparator参数函数指针的参数
@@ -145,8 +145,8 @@ void free_scandir_result(int list_number,dirent *namelist[]);
 * @param      left  比较的目录项目
 * @param      right 比较的目录项目
 */
-int scandir_namesort(const struct dirent **left,
-                     const struct dirent **right);
+int scandir_namesort(const struct dirent** left,
+                     const struct dirent** right);
 
 /*!
 * @brief      从一个路径得到文件的名称，应该是非标准函数
@@ -156,7 +156,7 @@ int scandir_namesort(const struct dirent **left,
 * @param[in]  buf_len   filename参数BUFFER的长度
 * @note
 */
-const char *basename(const char *pathname,char *filename,size_t buf_len);
+const char* basename(const char* pathname, char* filename, size_t buf_len);
 
 /*!
 * @brief      从一个路径中间得到目录名称
@@ -166,7 +166,7 @@ const char *basename(const char *pathname,char *filename,size_t buf_len);
 * @param[in]  buf_len    dir_name参数BUFFER的长度
 * @note       目录名称的末尾没有带分隔符
 */
-const char *dirname(const char *path_name,char *dir_name,size_t buf_len);
+const char* dirname(const char* path_name, char* dir_name, size_t buf_len);
 
 /*!
 * @brief      得到当前目录
@@ -174,14 +174,14 @@ const char *dirname(const char *path_name,char *dir_name,size_t buf_len);
 * @param      buffer  取回的字符串
 * @param      maxlen  字符串长度
 */
-char *getcwd(char *buffer,int maxlen);
+char* getcwd(char* buffer, int maxlen);
 
 /*!
 * @brief      CD某个目录,改变当前目录
 * @return     int     0成功，-1失败
 * @param[in]  dirname 目录
 */
-int chdir(const char *dirname);
+int chdir(const char* dirname);
 
 /*!
 * @brief      建立某个目录，只能建立一层目录
@@ -189,7 +189,7 @@ int chdir(const char *dirname);
 * @param      pathname 路径字符串，
 * @param      mode     目录的共享模式，WINDOWS下，此参数无效,
 */
-int mkdir(const char *pathname,mode_t mode = ZCE_DEFAULT_DIR_PERMS);
+int mkdir(const char* pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
 * @brief      递归的建立目录，非标准函数，如果想一次建立多层目录，用这个函数
@@ -197,7 +197,7 @@ int mkdir(const char *pathname,mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 * @param      pathname 路径字符串，
 * @param      mode 目录的共享模式，WINDOWS下，此参数无效,
 */
-int mkdir_recurse(const char *pathname,mode_t mode = ZCE_DEFAULT_DIR_PERMS);
+int mkdir_recurse(const char* pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
 * @brief      删除某个目录
@@ -205,7 +205,7 @@ int mkdir_recurse(const char *pathname,mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 * @param      pathname 目录路径
 * @note       理论上上这个目录必须是空的，
 */
-int rmdir(const char *pathname);
+int rmdir(const char* pathname);
 
 /*!
 * @brief      路径拼接
@@ -214,27 +214,27 @@ int rmdir(const char *pathname);
 * @param      src
 * @note
 */
-inline const char *path_str_cat(char *dst,
-                                const char *src)
+inline const char* path_str_cat(char* dst,
+                                const char* src)
 {
     size_t dst_len = ::strlen(dst);
     if (dst_len > 0)
     {
         if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
         {
-            ::strcat(dst,ZCE_DIRECTORY_SEPARATOR_STR);
+            ::strcat(dst, ZCE_DIRECTORY_SEPARATOR_STR);
         }
     }
     else
     {
-        ::strcat(dst,ZCE_CURRENT_DIRECTORY_STR);
+        ::strcat(dst, ZCE_CURRENT_DIRECTORY_STR);
     }
-    ::strcat(dst,src);
+    ::strcat(dst, src);
     return dst;
 }
 
-inline std::string &path_string_cat(std::string &dst,
-                                    const std::string &src)
+inline std::string& path_string_cat(std::string& dst,
+                                    const std::string& src)
 {
     size_t dst_len = dst.length();
     if (dst_len > 0)

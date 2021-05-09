@@ -58,8 +58,8 @@ template <class _value_type> class _shm_list_iterator
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type *pointer;
-    typedef _value_type &reference;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
     typedef _value_type value_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
@@ -71,14 +71,14 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator<_value_type>(size_t seq,smem_list<_value_type> *instance):
+    _shm_list_iterator<_value_type>(size_t seq, smem_list<_value_type>* instance) :
         serial_(seq),
         list_instance_(instance)
     {
     }
 
     ///构造函数
-    _shm_list_iterator<_value_type>():
+    _shm_list_iterator<_value_type>() :
         serial_(_shm_memory_base::_INVALID_POINT),
         list_instance_(NULL)
     {
@@ -89,7 +89,7 @@ public:
     }
 
     ///初始化，
-    void initialize(size_t seq,smem_list<_value_type> *instance)
+    void initialize(size_t seq, smem_list<_value_type>* instance)
     {
         serial_ = seq;
         list_instance_ = instance;
@@ -102,31 +102,31 @@ public:
     }
 
     ///迭代器的判等，
-    bool operator==(const iterator &x) const
+    bool operator==(const iterator& x) const
     {
         return (serial_ == x.serial_ && list_instance_ == x.list_instance_);
     }
 
     /// 迭代器的判定不等
-    bool operator!=(const iterator &x) const
+    bool operator!=(const iterator& x) const
     {
         return !(*this == x);
     }
 
     ///提领操作
-    _value_type &operator*() const
+    _value_type& operator*() const
     {
         return *(operator->());
     }
     //在多线程的环境下提供这个运送符号是不安全的,我没有加锁,原因如说明
-    _value_type *operator->() const
+    _value_type* operator->() const
     {
         //
         return list_instance_->getdatabase() + serial_;
     }
 
     ///++iter，迭代器后向移动操作
-    iterator &operator++()
+    iterator& operator++()
     {
         serial_ = (list_instance_->getindexbase() + serial_)->idx_next_;
         return *this;
@@ -141,7 +141,7 @@ public:
     }
 
     /// --iter操作
-    iterator &operator--()
+    iterator& operator--()
     {
         serial_ = (list_instance_->getindexbase() + serial_)->idx_prev_;
         return *this;
@@ -160,7 +160,7 @@ protected:
     //序列号，相对于数组下标
     size_t                  serial_;
     //对应的list对象指针
-    smem_list<_value_type> *list_instance_;
+    smem_list<_value_type>* list_instance_;
 };
 
 //============================================================================================
@@ -174,7 +174,7 @@ class _shm_list_head
 protected:
 
     ///构造函数
-    _shm_list_head():
+    _shm_list_head() :
         size_of_mmap_(0),
         num_of_node_(0),
         size_free_node_(0),
@@ -226,7 +226,7 @@ public:
 
     ///如果在共享内存使用,没有new,所以统一用initialize 初始化
     ///这个函数,不给你用,就是不给你用
-    smem_list<_value_type>(size_t numnode,void *pmmap,bool if_restore):
+    smem_list<_value_type>(size_t numnode, void* pmmap, bool if_restore) :
         _shm_memory_base(pmmap),
         list_head_(NULL),
         index_base_(NULL),
@@ -236,7 +236,7 @@ public:
     {
     }
 
-    smem_list<_value_type>():
+    smem_list<_value_type>() :
         _shm_memory_base(NULL),
         list_head_(NULL),
         index_base_(NULL),
@@ -251,23 +251,23 @@ public:
     }
 
     //只定义,不实现,
-    const smem_list<_value_type> &operator=(const smem_list<_value_type> &others);
+    const smem_list<_value_type>& operator=(const smem_list<_value_type>& others);
 
 protected:
 
     //得到索引的基础地址
-    inline _shm_list_index *getindexbase()
+    inline _shm_list_index* getindexbase()
     {
         return index_base_;
     }
     //得到数据区的基础地质
-    inline  _value_type *getdatabase()
+    inline  _value_type* getdatabase()
     {
         return data_base_;
     }
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type &val)
+    size_t create_node(const _value_type& val)
     {
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
@@ -321,16 +321,16 @@ public:
         return  sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode;
     }
 
-    smem_list<_value_type> *getinstance()
+    smem_list<_value_type>* getinstance()
     {
         return this;
     }
 
     //初始化
-    static smem_list<_value_type> *initialize(const size_t numnode,char *pmmap,bool if_restore = false)
+    static smem_list<_value_type>* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
-        _shm_list_head *listhead = reinterpret_cast<_shm_list_head *>(pmmap);
+        _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
@@ -347,17 +347,17 @@ public:
         listhead->size_of_mmap_ = getallocsize(numnode);
         listhead->num_of_node_ = numnode;
 
-        smem_list<_value_type> *instance = new smem_list<_value_type>();
+        smem_list<_value_type>* instance = new smem_list<_value_type>();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
         instance->list_head_ = listhead;
-        instance->index_base_ = reinterpret_cast<_shm_list_index *>(pmmap + sizeof(_shm_list_head));
-        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->index_base_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head));
+        instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //这两个家伙用于FREENODE,USENODE的使用
-        instance->freenode_ = reinterpret_cast<_shm_list_index *>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode));
-        instance->usenode_ = reinterpret_cast<_shm_list_index *>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + 1));
+        instance->freenode_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode));
+        instance->usenode_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + 1));
 
         //
         if (if_restore == false)
@@ -387,7 +387,7 @@ public:
         usenode_->idx_next_ = list_head_->num_of_node_ + 1;
         usenode_->idx_prev_ = list_head_->num_of_node_ + 1;
 
-        _shm_list_index *pindex = index_base_;
+        _shm_list_index* pindex = index_base_;
 
         //初始化free数据区
         for (size_t i = 0; i < list_head_->num_of_node_; ++i)
@@ -415,12 +415,12 @@ public:
     //
     iterator begin()
     {
-        return iterator(usenode_->idx_next_,this);
+        return iterator(usenode_->idx_next_, this);
     };
     //容器应该是前闭后开的,usenode_视为为最后一个index
     iterator end()
     {
-        return iterator(list_head_->num_of_node_ + 1,this);
+        return iterator(list_head_->num_of_node_ + 1, this);
     }
 
     //对不起,我不提供反向迭代器,STL的反向迭代器太精彩了,但如果我要用必须定义
@@ -450,7 +450,7 @@ public:
 protected:
     //通过偏移序列号插入,如果你胡乱使用,不是非常安全,FREENODE也是有POS的.
     //插入在这个POS节点的前面
-    size_t insert(size_t pos,const _value_type &val)
+    size_t insert(size_t pos, const _value_type& val)
     {
         size_t node = create_node(val);
 
@@ -473,18 +473,18 @@ public:
 
     //通过迭代器插入,推荐使用这个函数,
     //插入在这个迭代器节点的前面
-    std::pair<iterator,bool> insert(const iterator &pos,const _value_type &val)
+    std::pair<iterator, bool> insert(const iterator& pos, const _value_type& val)
     {
-        size_t tmp = insert(pos.getserial(),val);
+        size_t tmp = insert(pos.getserial(), val);
 
         //插入失败
         if (_INVALID_POINT == tmp)
         {
-            return std::pair<iterator,bool>(end(),false);
+            return std::pair<iterator, bool>(end(), false);
         }
         else
         {
-            return std::pair<iterator,bool>(iterator(tmp,this),true);
+            return std::pair<iterator, bool>(iterator(tmp, this), true);
         }
     }
 
@@ -506,22 +506,22 @@ protected:
 
 public:
     //通过迭代器删除
-    iterator erase(const iterator &pos)
+    iterator erase(const iterator& pos)
     {
         size_t tmp = erase(pos.getserial());
-        return iterator(tmp,this);
+        return iterator(tmp, this);
     }
 
     //有了迭代器,这些函数居然如此简单,想不到吧
-    bool push_front(const _value_type &x)
+    bool push_front(const _value_type& x)
     {
-        std::pair<iterator,bool> tmp = insert(begin(),x);
+        std::pair<iterator, bool> tmp = insert(begin(), x);
         return tmp.second;
     }
 
-    bool push_back(const _value_type &x)
+    bool push_back(const _value_type& x)
     {
-        std::pair<iterator,bool> tmp = insert(end(),x);
+        std::pair<iterator, bool> tmp = insert(end(), x);
         return tmp.second;
     }
 
@@ -537,7 +537,7 @@ public:
 
     //将[first,last)的队列移动到pos的位置,注意:pos,first,last必须是同一个对象的数据.!!!
     //另外不要有交叉.
-    void transfer(const iterator &pos,const iterator &first,const iterator &last)
+    void transfer(const iterator& pos, const iterator& first, const iterator& last)
     {
         //实在不愿意想,
         if (pos != last && pos != first)
@@ -558,24 +558,24 @@ public:
         }
     }
 
-    void move_begin(const iterator &first,const iterator &last)
+    void move_begin(const iterator& first, const iterator& last)
     {
-        transfer(begin(),first,last);
+        transfer(begin(), first, last);
     }
 
-    void move_end(const iterator &first,const iterator &last)
+    void move_end(const iterator& first, const iterator& last)
     {
-        transfer(end(),first,last);
+        transfer(end(), first, last);
     }
 
-    void move_begin(const iterator &itr)
+    void move_begin(const iterator& itr)
     {
-        move_begin(itr,iterator((index_base_ + itr.getserial())->idx_next_,this));
+        move_begin(itr, iterator((index_base_ + itr.getserial())->idx_next_, this));
     }
 
-    void move_end(const iterator &itr)
+    void move_end(const iterator& itr)
     {
-        move_end(itr,iterator((index_base_ + itr.getserial())->idx_next_,this));
+        move_end(itr, iterator((index_base_ + itr.getserial())->idx_next_, this));
     }
 
     //返回链表中已经有的元素个数
@@ -617,16 +617,16 @@ protected:
     //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
 
     //LIST的头部区指针
-    _shm_list_head *list_head_;
+    _shm_list_head* list_head_;
     //索引数据区指针,
-    _shm_list_index *index_base_;
+    _shm_list_index* index_base_;
     //数据区起始指针,
-    _value_type *data_base_;
+    _value_type* data_base_;
 
     //FREE NODE的头指针,N+1个索引位表示
-    _shm_list_index *freenode_;
+    _shm_list_index* freenode_;
     //USE NODE的头指针,N+2个索引位表示
-    _shm_list_index *usenode_;
+    _shm_list_index* usenode_;
 };
 };
 

@@ -23,7 +23,7 @@ ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_initex",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_initex", ret);
         return;
     }
 }
@@ -36,7 +36,7 @@ ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex(void)
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_destroy",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
         return;
     }
 }
@@ -49,7 +49,7 @@ void ZCE_Thread_Spin_Mutex::lock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_lock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
         return;
     }
 }
@@ -76,13 +76,13 @@ void ZCE_Thread_Spin_Mutex::unlock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_unlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);
         return;
     }
 }
 
 //取出内部的锁的指针
-pthread_spinlock_t *ZCE_Thread_Spin_Mutex::get_lock()
+pthread_spinlock_t* ZCE_Thread_Spin_Mutex::get_lock()
 {
     return &lock_;
 }

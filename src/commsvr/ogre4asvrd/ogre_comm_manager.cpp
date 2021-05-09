@@ -8,9 +8,9 @@
 #include "ogre_configure.h"
 #include "ogre_ip_restrict.h"
 
-Ogre_Comm_Manger *Ogre_Comm_Manger::instance_ = NULL;
+Ogre_Comm_Manger* Ogre_Comm_Manger::instance_ = NULL;
 
-Ogre_Comm_Manger::Ogre_Comm_Manger():
+Ogre_Comm_Manger::Ogre_Comm_Manger() :
     ogre_config_(NULL)
 {
 }
@@ -20,7 +20,7 @@ Ogre_Comm_Manger::~Ogre_Comm_Manger()
 }
 
 //检查一个端口是否安全.然后根据配置进行处理
-int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In &inetadd)
+int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In& inetadd)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -32,16 +32,16 @@ int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In &inetadd)
         //如果使用保险打开(TRUE)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
-            ZCE_LOG(RS_ERROR,"Unsafe port [%s],if you need to open this port,please close insurance. \n",
-                    inetadd.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
+            ZCE_LOG(RS_ERROR, "Unsafe port [%s],if you need to open this port,please close insurance. \n",
+                    inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
         else
         {
             //给出警告
-            ZCE_LOG(RS_INFO,"Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
-                    inetadd.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
+            ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
+                    inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         }
     }
     //
@@ -49,7 +49,7 @@ int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In &inetadd)
 }
 
 //得到配置
-int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
+int Ogre_Comm_Manger::get_config(const Ogre_Server_Config* config)
 {
     int ret = 0;
 
@@ -76,7 +76,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 
 //将所有的队列中的数据发送，从SEND管道找到所有的数据去发送,
 //想了想，还是加了一个最多发送的帧的限额
-int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
+int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
 {
     int ret = 0;
 
@@ -85,11 +85,11 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
          Soar_MMAP_BusPipe::instance()->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false &&
          procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
-        Ogre4a_App_Frame *send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
+        Ogre4a_App_Frame* send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
 
         //
         ret = Soar_MMAP_BusPipe::instance()->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                                           reinterpret_cast<zce::lockfree::dequechunk_node *&>(send_frame));
+                                                           reinterpret_cast<zce::lockfree::dequechunk_node*&>(send_frame));
 
         if (ret != 0)
         {
@@ -101,9 +101,9 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //如果FRAME的长度
         if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
         {
-            ZCE_LOG(RS_ALERT,"Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
+            ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
                     send_frame->ogre_frame_len_);
-            DEBUGDUMP_OGRE_HEAD(send_frame,"Ogre_Comm_Manger::get_all_senddata_to_write",RS_ALERT);
+            DEBUGDUMP_OGRE_HEAD(send_frame, "Ogre_Comm_Manger::get_all_senddata_to_write", RS_ALERT);
             ZCE_ASSERT(false);
             return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
         }
@@ -131,7 +131,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //你都不填写，我如何发送？
         else
         {
-            ZCE_LOG(RS_ERROR,"Ogre frame have not send option,Please Check you code.\n");
+            ZCE_LOG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
         }
     }
@@ -148,7 +148,7 @@ int Ogre_Comm_Manger::init_comm_manger()
 
     for (unsigned int i = 0; i < ogre_config_->ogre_cfg_data_.accept_peer_num_; ++i)
     {
-        Ogre_TCPAccept_Hdl *accpet_hd = new Ogre_TCPAccept_Hdl(
+        Ogre_TCPAccept_Hdl* accpet_hd = new Ogre_TCPAccept_Hdl(
             ogre_config_->ogre_cfg_data_.accept_peer_ary_[i]);
 
         ret = accpet_hd->create_listenpeer();
@@ -160,7 +160,7 @@ int Ogre_Comm_Manger::init_comm_manger()
 
     for (unsigned int i = 0; i <= ogre_config_->ogre_cfg_data_.udp_peer_num_; ++i)
     {
-        Ogre_UDPSvc_Hdl *udp_hd = new Ogre_UDPSvc_Hdl(
+        Ogre_UDPSvc_Hdl* udp_hd = new Ogre_UDPSvc_Hdl(
             ogre_config_->ogre_cfg_data_.udp_peer_ary_[i]);
 
         ret = udp_hd->init_udp_peer();
@@ -193,7 +193,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
 }
 
 //得到单子的实例
-Ogre_Comm_Manger *Ogre_Comm_Manger::instance()
+Ogre_Comm_Manger* Ogre_Comm_Manger::instance()
 {
     if (instance_ == NULL)
     {

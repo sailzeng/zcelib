@@ -47,20 +47,20 @@ public:
     //重置FRAME DATA的数据
     inline void reset_framehead();
     //填充数据
-    inline void fill_write_data(const uint32_t size_data,const char *src_data);
+    inline void fill_write_data(const uint32_t size_data, const char* src_data);
     //读取数据
-    inline void get_data(uint32_t &size_data,char *dest_data) const;
+    inline void get_data(uint32_t& size_data, char* dest_data) const;
 
     //增加DATA数据
-    int add_data(uint32_t add_size,char *add_data);
+    int add_data(uint32_t add_size, char* add_data);
 
     //交换自己Rcv ,Snd Peer Info
     void exchange_rcvsnd_peerInfo();
     //和其他人交换Rcv ,Snd Peer Info,
-    void exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe);
+    void exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame* exframe);
 
     //DUMP OGRE FRAME的头部信息
-    void dump_ogre_framehead(const char *outstr,
+    void dump_ogre_framehead(const char* outstr,
                              zce::LOG_PRIORITY log_priority) const;
 
 public:
@@ -68,9 +68,9 @@ public:
     //不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
     ///创建一个Frame
-    static Ogre4a_App_Frame *new_ogre(std::size_t lenframe);
+    static Ogre4a_App_Frame* new_ogre(std::size_t lenframe);
     ///销毁一个frame
-    static void delete_ogre(Ogre4a_App_Frame *frame) noexcept;
+    static void delete_ogre(Ogre4a_App_Frame* frame) noexcept;
 
 public:
 
@@ -78,8 +78,8 @@ public:
     static void set_max_framedata_len(unsigned int  max_framedata);
 
     //DUMP OGRE FRAME的头部信息
-    static void dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
-                                    const char *outstr,
+    static void dump_ogre_framehead(const Ogre4a_App_Frame* proc_frame,
+                                    const char* outstr,
                                     zce::LOG_PRIORITY log_priority);
 
 public:
@@ -102,9 +102,9 @@ public:
     OGRE_PEER_ID rcv_peer_info_;
 
     //帧的选项，见
-    unsigned int ogre_frame_option_:28;
+    unsigned int ogre_frame_option_ : 28;
     //再后4BIT作为发送错误计数
-    unsigned int ogre_send_errnum_:4;
+    unsigned int ogre_send_errnum_ : 4;
 
     //Appdata 是一个变长度的字符串序列标示,
 #ifdef ZCE_OS_WINDOWS
@@ -138,17 +138,17 @@ inline void Ogre4a_App_Frame::reset_framehead()
 }
 
 //填充数据
-inline void Ogre4a_App_Frame::fill_write_data(const unsigned int size_data,const char *src_data)
+inline void Ogre4a_App_Frame::fill_write_data(const unsigned int size_data, const char* src_data)
 {
-    memcpy(frame_data_ + ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD,src_data,size_data);
+    memcpy(frame_data_ + ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD, src_data, size_data);
     ogre_frame_len_ += size_data;
 }
 
 //读取数据
-inline void Ogre4a_App_Frame::get_data(unsigned int &size_data,char *dest_data) const
+inline void Ogre4a_App_Frame::get_data(unsigned int& size_data, char* dest_data) const
 {
     size_data = ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD;
-    memcpy(dest_data,frame_data_ + LEN_OF_OGRE_FRAME_HEAD,size_data);
+    memcpy(dest_data, frame_data_ + LEN_OF_OGRE_FRAME_HEAD, size_data);
 }
 
 /******************************************************************************************
@@ -158,10 +158,10 @@ inline void Ogre4a_App_Frame::get_data(unsigned int &size_data,char *dest_data) 
 //从.so加载函数名称
 static const char STR_JUDGE_RECV_WHOLEFRAME[] = "JudgeRecvWholeFrame";
 //
-typedef int (*FP_JudgeRecv_WholeFrame)(const char *recv_buf,
+typedef int (*FP_JudgeRecv_WholeFrame)(const char* recv_buf,
                                        unsigned int buf_len,
                                        unsigned int max_buf_len,
-                                       bool &if_whole,
-                                       unsigned int &frame_len);
+                                       bool& if_whole,
+                                       unsigned int& frame_len);
 
 #endif //#ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_

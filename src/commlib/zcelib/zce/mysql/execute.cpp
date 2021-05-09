@@ -7,10 +7,10 @@
 
 //-----------------------------------------------------------------
 //实例,为了SingleTon类准备
-ZCE_Mysql_Process *ZCE_Mysql_Process::instance_ = NULL;
+ZCE_Mysql_Process* ZCE_Mysql_Process::instance_ = NULL;
 
 //构造函数，和析构函数
-ZCE_Mysql_Process::ZCE_Mysql_Process():
+ZCE_Mysql_Process::ZCE_Mysql_Process() :
     db_port_(MYSQL_PORT)
 {
 }
@@ -20,9 +20,9 @@ ZCE_Mysql_Process::~ZCE_Mysql_Process()
 }
 
 //初始化服务器,使用hostname进行连接,可以不立即连接和立即连接，你自己控制。
-int ZCE_Mysql_Process::init_mysql_server(const char *host_name,
-                                         const char *user,
-                                         const char *pwd,
+int ZCE_Mysql_Process::init_mysql_server(const char* host_name,
+                                         const char* user,
+                                         const char* pwd,
                                          unsigned int port,
                                          bool connect_atonce)
 {
@@ -40,9 +40,9 @@ int ZCE_Mysql_Process::init_mysql_server(const char *host_name,
 }
 
 //初始化MYSQL，使用UNIX socket file连接(UNIX下)，或者命名管道(Windows下),只初始化也可以了,只能用于本地
-int ZCE_Mysql_Process::init_mysql_socketfile(const char *socket_file,
-                                             const char *user,
-                                             const char *pwd,
+int ZCE_Mysql_Process::init_mysql_socketfile(const char* socket_file,
+                                             const char* user,
+                                             const char* pwd,
                                              bool connect_atonce)
 {
     db_socket_file_ = socket_file;
@@ -88,7 +88,7 @@ int ZCE_Mysql_Process::connect_mysql_server()
         //如果错误
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR,"[zcelib] DB Error : [%u]:%s.",
+            ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
                     db_connect_.get_error_no(),
                     db_connect_.get_error_message()
             );
@@ -112,10 +112,10 @@ void ZCE_Mysql_Process::disconnect_mysql_server()
 }
 
 //用于非SELECT语句(INSERT,UPDATE)，
-int ZCE_Mysql_Process::db_process_query(const char *sql,
+int ZCE_Mysql_Process::db_process_query(const char* sql,
                                         size_t sqllen,
-                                        uint64_t &numaffect,
-                                        uint64_t &insertid)
+                                        uint64_t& numaffect,
+                                        uint64_t& insertid)
 {
     int ret = 0;
 
@@ -131,15 +131,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
     }
 
     //
-    ZCE_LOGMSG_DEBUG(RS_DEBUG,"[db_process_query]SQL:[%.*s].",sqllen,sql);
-    db_command_.set_sql_command(sql,sqllen);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
+    db_command_.set_sql_command(sql, sqllen);
 
-    ret = db_command_.execute(numaffect,insertid);
+    ret = db_command_.execute(numaffect, insertid);
 
     //如果错误
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                 db_connect_.get_error_no(),
                 db_connect_.get_error_message(),
                 sql);
@@ -151,9 +151,9 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
 }
 
 //执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
-int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,
-                                        uint64_t &numaffect,
-                                        ZCE_Mysql_Result &dbresult)
+int ZCE_Mysql_Process::db_process_query(const char* sql, size_t sqllen,
+                                        uint64_t& numaffect,
+                                        ZCE_Mysql_Result& dbresult)
 {
     int ret = 0;
 
@@ -168,15 +168,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,
         db_connect_.ping();
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG,"[db_process_query]SQL:[%.*s]",sqllen,sql);
-    db_command_.set_sql_command(sql,sqllen);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
+    db_command_.set_sql_command(sql, sqllen);
 
-    ret = db_command_.execute(numaffect,dbresult);
+    ret = db_command_.execute(numaffect, dbresult);
 
     //如果错误
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
+        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
                 db_connect_.get_error_no(),
                 db_connect_.get_error_message(),
                 sql);
@@ -188,7 +188,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,
 }
 
 //
-int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,ZCE_Mysql_Result &dbresult)
+int ZCE_Mysql_Process::db_process_query(const char* sql, size_t sqllen, ZCE_Mysql_Result& dbresult)
 {
     int ret = 0;
 
@@ -203,15 +203,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,ZCE_Mysql_
         db_connect_.ping();
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG,"[db_process_query]SQL:[%.*s]",sqllen,sql);
-    db_command_.set_sql_command(sql,sqllen);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
+    db_command_.set_sql_command(sql, sqllen);
 
     ret = db_command_.execute(dbresult);
 
     //如果错误
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                 db_connect_.get_error_no(),
                 db_connect_.get_error_message(),
                 sql);
@@ -223,20 +223,20 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,ZCE_Mysql_
 }
 
 //返回的的DB访问的错误信息
-unsigned int ZCE_Mysql_Process::get_return_error(char *szerr,size_t buflen)
+unsigned int ZCE_Mysql_Process::get_return_error(char* szerr, size_t buflen)
 {
-    snprintf(szerr,buflen,"[%d]:%s ",db_connect_.get_error_no(),db_connect_.get_error_message());
+    snprintf(szerr, buflen, "[%d]:%s ", db_connect_.get_error_no(), db_connect_.get_error_message());
     return db_connect_.get_error_no();
 }
 
 //得到DB访问的语句
-const char *ZCE_Mysql_Process::get_query_sql(void)
+const char* ZCE_Mysql_Process::get_query_sql(void)
 {
     return db_command_.get_sql_command();
 }
 
 //得到错误信息语句
-const char *ZCE_Mysql_Process::get_return_error_str()
+const char* ZCE_Mysql_Process::get_return_error_str()
 {
     return db_connect_.get_error_message();
 }
@@ -249,24 +249,25 @@ unsigned int ZCE_Mysql_Process::get_return_error_id()
 
 //得到Real Escape String ,Real表示根据当前的MYSQL Connet的字符集,得到Escape String
 //Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
-unsigned int ZCE_Mysql_Process::make_real_escape_string(char *tostr,
-                                                        const char *fromstr,
+unsigned int ZCE_Mysql_Process::make_real_escape_string(char* tostr,
+                                                        const char* fromstr,
                                                         unsigned int fromlen)
 {
-    return mysql_real_escape_string(db_connect_.get_mysql_handle(),tostr,fromstr,fromlen);
+    return ::mysql_real_escape_string(db_connect_.get_mysql_handle(),
+                                      tostr, fromstr, fromlen);
 }
 
 //-----------------------------------------------------------------
 //实例,为了SingleTon类准备
 
 //实例赋值
-void ZCE_Mysql_Process::instance(ZCE_Mysql_Process *instance)
+void ZCE_Mysql_Process::instance(ZCE_Mysql_Process* instance)
 {
     clean_instance();
     instance_ = instance;
 }
 //获得实例
-ZCE_Mysql_Process *ZCE_Mysql_Process::instance()
+ZCE_Mysql_Process* ZCE_Mysql_Process::instance()
 {
     if (instance_)
     {

@@ -26,7 +26,7 @@ class _shm_array_head
 protected:
 
     //头部构造函数
-    _shm_array_head():
+    _shm_array_head() :
         size_of_mmap_(0),
         num_of_node_(0),
         num_of_use_(0)
@@ -58,15 +58,15 @@ template <class _value_type> class shm_array:
 public:
 
     ///定义迭代器,这个简单
-    typedef _value_type *iterator;
+    typedef _value_type* iterator;
 
 protected:
 
     //只定义,不实现,
-    const shm_array<_value_type> &operator=(const shm_array<_value_type> &others);
+    const shm_array<_value_type>& operator=(const shm_array<_value_type>& others);
 
     ///默认构造函数,就是不给你用
-    shm_array():
+    shm_array() :
         _shm_memory_base(NULL),
         data_base_(NULL)
     {
@@ -81,11 +81,11 @@ public:
     * @param      pmmap
     * @param      if_restore
     */
-    shm_array(const size_t numnode,char *pmmap,bool if_restore = false):
+    shm_array(const size_t numnode, char* pmmap, bool if_restore = false) :
         _shm_memory_base(pmmap),
         data_base_(NULL)
     {
-        initialize(numnode,pmmap,if_restore);
+        initialize(numnode, pmmap, if_restore);
     }
     ///析构函数
     ~shm_array()
@@ -100,9 +100,9 @@ public:
     }
 
     ///初始化
-    static shm_array<_value_type> *initialize(const size_t numnode,char *pmmap,bool if_restore = false)
+    static shm_array<_value_type>* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
-        _shm_array_head *aryhead = reinterpret_cast<_shm_array_head *>(pmmap);
+        _shm_array_head* aryhead = reinterpret_cast<_shm_array_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
@@ -119,12 +119,12 @@ public:
         aryhead->size_of_mmap_ = getallocsize(numnode);
         aryhead->num_of_node_ = numnode;
 
-        shm_array<_value_type> *instance = new shm_array<_value_type>();
+        shm_array<_value_type>* instance = new shm_array<_value_type>();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
         instance->array_head_ = aryhead;
-        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_array_head));
+        instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_array_head));
 
         if (if_restore == false)
         {
@@ -142,7 +142,7 @@ public:
     }
 
     ///用[]访问数据，越界了自己负责
-    _value_type &operator[](size_t n)
+    _value_type& operator[](size_t n)
     {
         return *(data_base_ + n);
     }
@@ -219,18 +219,18 @@ public:
     }
 
     ///关键位置
-    _value_type &front()
+    _value_type& front()
     {
         return data_base_;
     }
     ///
-    _value_type &back()
+    _value_type& back()
     {
         return *(data_base_ + (array_head_->num_of_use_ - 1));
     }
 
     ///向后添加数据
-    bool push_back(const _value_type &val)
+    bool push_back(const _value_type& val)
     {
         if (array_head_->num_of_use_ == array_head_->num_of_node_)
         {
@@ -262,9 +262,9 @@ public:
 
 protected:
     ///
-    _shm_array_head *array_head_ = nullptr;
+    _shm_array_head* array_head_ = nullptr;
     ///数据区起始指针,
-    _value_type *data_base_ = nullptr;
+    _value_type* data_base_ = nullptr;
 };
 };
 

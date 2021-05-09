@@ -70,10 +70,10 @@ public:
     * @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
     *                           如果参数等于zce::Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(zce::Timer_Handler *timer_hdl,
-                               const void *action,
-                               const zce::Time_Value &delay_time,
-                               const zce::Time_Value &interval_time = zce::Time_Value::ZERO_TIME_VALUE) override;
+    virtual int schedule_timer(zce::Timer_Handler* timer_hdl,
+                               const void* action,
+                               const zce::Time_Value& delay_time,
+                               const zce::Time_Value& interval_time = zce::Time_Value::ZERO_TIME_VALUE) override;
 
     /*!
     * @brief      取消定时器，你继承后必须实现这个接口
@@ -87,7 +87,7 @@ public:
 
     //扩张相关十字链表的NODE的数量，也调用底层的extend_node函数
     virtual int extend_node(size_t num_timer_node,
-                            size_t &old_num_node) override;
+                            size_t& old_num_node) override;
 
 protected:
 
@@ -97,7 +97,7 @@ protected:
     * @param      timer_id         定时器ID
     * @param      now_trigger_msec 当前的触发点的毫秒数，不同模式下表达不太一样
     */
-    virtual int reschedule_timer(int timer_id,uint64_t now_trigger_msec) override;
+    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) override;
 
     /*!
     * @brief      分发定时器
@@ -105,7 +105,7 @@ protected:
     * @param      now_time          当前的时间，墙上时钟
     * @param      now_trigger_msec  当前触发的点的毫秒数，根据触发模式，表达意义不一样
     */
-    virtual size_t dispatch_timer(const zce::Time_Value &now_time,
+    virtual size_t dispatch_timer(const zce::Time_Value& now_time,
                                   uint64_t now_trigger_msec) override;
 
     /*!
@@ -113,7 +113,7 @@ protected:
     * @return     int   0标识成功，否则失败
     * @param[out] timer_node_id
     */
-    virtual int get_frist_nodeid(int &timer_node_id) override;
+    virtual int get_frist_nodeid(int& timer_node_id) override;
 
     //下面是堆处理的函数----------------------------------------------------------
 

@@ -17,19 +17,19 @@ public:
 public:
 
     //打开一个监听地址，目前只支持AF_INET,和AFINET6
-    int open(const Sockaddr_Base *local_addr,
+    int open(const Sockaddr_Base* local_addr,
              bool reuse_addr = true,
              int protocol_family = AF_UNSPEC,
              int backlog = ZCE_DEFAULT_BACKLOG,
              int protocol = 0);
 
     //接受一个SOCKET
-    int accept(Socket_Stream &new_stream,
-               Sockaddr_Base *remote_addr) const;
+    int accept(Socket_Stream& new_stream,
+               Sockaddr_Base* remote_addr) const;
 
     //带有超时的处理的accept
-    int accept(Socket_Stream &new_stream,
-               Time_Value &timeout,
-               Sockaddr_Base *remote_addr) const;
+    int accept(Socket_Stream& new_stream,
+               Time_Value& timeout,
+               Sockaddr_Base* remote_addr) const;
 };
 }

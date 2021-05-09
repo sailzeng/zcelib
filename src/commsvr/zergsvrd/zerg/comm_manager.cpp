@@ -8,9 +8,9 @@
 namespace zerg
 {
 //实例
-Comm_Manager *Comm_Manager::instance_ = NULL;
+Comm_Manager* Comm_Manager::instance_ = NULL;
 
-Comm_Manager::Comm_Manager():
+Comm_Manager::Comm_Manager() :
     error_try_num_(3),
     monitor_size_(0),
     zerg_mmap_pipe_(NULL),
@@ -25,7 +25,7 @@ Comm_Manager::Comm_Manager():
     server_status_ = soar::Stat_Monitor::instance();
     count_start_time_ = static_cast<unsigned int>(zerg::App_Timer::now_time_.sec());
 
-    memset(monitor_cmd_,0,sizeof(monitor_cmd_));
+    memset(monitor_cmd_, 0, sizeof(monitor_cmd_));
 }
 
 Comm_Manager::~Comm_Manager()
@@ -44,13 +44,13 @@ Comm_Manager::~Comm_Manager()
 }
 
 //初始化
-int Comm_Manager::get_config(const Zerg_Config *config)
+int Comm_Manager::get_config(const Zerg_Config* config)
 {
     zerg_config_ = config;
 
     //清理监控命令
     monitor_size_ = 0;
-    memset(monitor_cmd_,0,sizeof(monitor_cmd_));
+    memset(monitor_cmd_, 0, sizeof(monitor_cmd_));
 
     //错误发送数据尝试发送次数
     error_try_num_ = config->zerg_cfg_data_.retry_error_;
@@ -58,7 +58,7 @@ int Comm_Manager::get_config(const Zerg_Config *config)
     //错误发送数据尝试发送次数
     monitor_size_ = config->zerg_cfg_data_.monitor_cmd_count_;
 
-    ZCE_LOG(RS_INFO,"[zergsvr] Comm_Manager::get_config monitor_size_ = %u",monitor_size_);
+    ZCE_LOG(RS_INFO, "[zergsvr] Comm_Manager::get_config monitor_size_ = %u", monitor_size_);
 
     //读取监控的命令，监控的命令数量必须很少，最好等于==0，比较耗时。你可以对单机进行监控。
     //但是最好不要对所有的机器进行监控，
@@ -82,17 +82,16 @@ int Comm_Manager::init_allpeer()
             return ret;
         }
     }
-
     return 0;
 }
 
 //
-int Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
+int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
 {
     int ret = 0;
 
     soar::SERVICES_INFO svc_info;
-    ret = zerg_config_->get_svcinfo_by_svcid(init_svcid,svc_info);
+    ret = zerg_config_->get_svcinfo_by_svcid(init_svcid, svc_info);
     if (0 != ret)
     {
         return ret;
@@ -109,14 +108,14 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
     if (init_svcid.services_type_ < SVC_UDP_SERVER_BEGIN)
     {
         //设置Bind地址
-        TCP_Accept_Handler *ptr_acceptor = new TCP_Accept_Handler(init_svcid,
+        TCP_Accept_Handler* ptr_acceptor = new TCP_Accept_Handler(init_svcid,
                                                                   svc_info.ip_address_);
         //采用同步的方式创建LISTER PEER
         ret = ptr_acceptor->create_listen();
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR,"[zergsvr] Init tcp accept scoket fail ret = %d.error[%u|%s]",
+            ZCE_LOG(RS_ERROR, "[zergsvr] Init tcp accept scoket fail ret = %d.error[%u|%s]",
                     ret,
                     zce::last_error(),
                     strerror(zce::last_error())
@@ -130,7 +129,7 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
     else
     {
         //
-        UDP_Svc_Handler *tmp_udphdl = new UDP_Svc_Handler(init_svcid,
+        UDP_Svc_Handler* tmp_udphdl = new UDP_Svc_Handler(init_svcid,
                                                           svc_info.ip_address_);
 
         //初始化UDP的端口
@@ -138,7 +137,7 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR,"[zergsvr] Init udp scoket fail ret = %d.",ret);
+            ZCE_LOG(RS_ERROR, "[zergsvr] Init udp scoket fail ret = %d.", ret);
             return  SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
         }
 
@@ -149,7 +148,7 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
 }
 
 //检查一个端口是否安全
-int Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
+int Comm_Manager::check_safeport(const zce::Sockaddr_In& inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -167,7 +166,7 @@ int Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
         //如果使用保险打开(TRUE)
         if (zerg_config_->zerg_cfg_data_.zerg_insurance_)
         {
-            ZCE_LOG(RS_ERROR,"[zergsvr] Unsafe port %u,if you need to open this port,please close insurance. ",
+            ZCE_LOG(RS_ERROR, "[zergsvr] Unsafe port %u,if you need to open this port,please close insurance. ",
                     inetadd.get_port_number());
             return SOAR_RET::ERR_ZERG_UNSAFE_PORT_WARN;
         }
@@ -175,7 +174,7 @@ int Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
         else
         {
             //给出警告
-            ZCE_LOG(RS_INFO,"[zergsvr] Warn!Warn! Unsafe port %u.Please notice! ",
+            ZCE_LOG(RS_INFO, "[zergsvr] Warn!Warn! Unsafe port %u.Please notice! ",
                     inetadd.get_port_number());
         }
     }
@@ -185,7 +184,7 @@ int Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
 }
 
 //取得发送数据进行发送
-int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t &num_send_frame)
+int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& num_send_frame)
 {
     num_send_frame = 0;
     int ret = 0;
@@ -193,8 +192,8 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t &num
     while (zerg_mmap_pipe_->is_empty_sendbus() == false
            && num_send_frame < want_send_frame)
     {
-        zerg::Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-        soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
+        zerg::Buffer* tmpbuf = zbuffer_storage_->allocate_buffer();
+        soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
         zerg_mmap_pipe_->pop_front_sendbus(proc_frame);
@@ -204,7 +203,7 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t &num
         //如果是要跟踪的命令
         if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
         {
-            DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][SEND]opt",proc_frame);
+            DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][SEND]opt", proc_frame);
         }
         else
         {
@@ -212,7 +211,7 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t &num
             {
                 if (monitor_cmd_[i] == proc_frame->command_)
                 {
-                    DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][SEND]cmd",proc_frame);
+                    DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][SEND]cmd", proc_frame);
                 }
             }
         }
@@ -292,7 +291,7 @@ void Comm_Manager::check_freamcount(unsigned int now)
 {
     if (now <= count_start_time_)
     {
-        ZCE_LOG(RS_ERROR,"[zergsvr] Comm_Manager::check_freamcount time err.now:%u, count_start_time_:%u",
+        ZCE_LOG(RS_ERROR, "[zergsvr] Comm_Manager::check_freamcount time err.now:%u, count_start_time_:%u",
                 now,
                 count_start_time_);
         return;
@@ -303,14 +302,14 @@ void Comm_Manager::check_freamcount(unsigned int now)
 
     if (frame_per_sec > SEND_FRAME_ALERT_VALUE)
     {
-        ZCE_LOG(RS_ALERT,"[zergsvr] Comm_Manager::check_freamcount ALERT frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
+        ZCE_LOG(RS_ALERT, "[zergsvr] Comm_Manager::check_freamcount ALERT frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
                 frame_per_sec,
                 send_frame_count_,
                 interval);
     }
     else
     {
-        ZCE_LOG(RS_INFO,"[zergsvr] Comm_Manager::check_freamcount frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
+        ZCE_LOG(RS_INFO, "[zergsvr] Comm_Manager::check_freamcount frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
                 frame_per_sec,
                 send_frame_count_,
                 interval);
@@ -321,7 +320,7 @@ void Comm_Manager::check_freamcount(unsigned int now)
 }
 
 //单子实例函数
-Comm_Manager *Comm_Manager::instance()
+Comm_Manager* Comm_Manager::instance()
 {
     //如果没有初始化
     if (instance_ == NULL)
@@ -342,12 +341,12 @@ void Comm_Manager::clean_instance()
     }
 }
 
-int Comm_Manager::send_single_buf(zerg::Buffer *tmpbuf)
+int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
 {
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
 
-    soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
+    soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(tmpbuf->buffer_data_);
 
     //如果失败归还缓存，如果成功的情况下，会放入发送队列，放入发送队列的归还和这个不一样
     if (ret != 0)
@@ -355,7 +354,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer *tmpbuf)
         //记录下来处理
         if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD)
         {
-            ZCE_LOG(RS_ERROR,"[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
+            ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                     proc_frame->length_,
                     proc_frame->command_,
                     proc_frame->command_,
@@ -378,7 +377,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer *tmpbuf)
         {
             // 不应该出现0的services_type
             server_status_->add_one(ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
-                                    proc_frame->business_id_,proc_frame->recv_service_.services_type_);
+                                    proc_frame->business_id_, proc_frame->recv_service_.services_type_);
         }
         //
         zbuffer_storage_->free_byte_buffer(tmpbuf);
@@ -389,7 +388,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer *tmpbuf)
 }
 
 //
-void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
+void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame* recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -400,7 +399,7 @@ void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
     //为了提高效率，先检查标志位，
     if (recv_frame->u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
     {
-        DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]opt",recv_frame);
+        DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][RECV]opt", recv_frame);
     }
     else
     {
@@ -410,7 +409,7 @@ void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
         {
             if (monitor_cmd_[i] == recv_frame->command_)
             {
-                DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]cmd",recv_frame);
+                DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][RECV]cmd", recv_frame);
             }
         }
     }

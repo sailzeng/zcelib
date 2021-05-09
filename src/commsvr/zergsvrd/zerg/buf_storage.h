@@ -32,12 +32,12 @@ public:
     ~Buffer();
 
     //填充数据
-    void fill_write_data(const size_t szdata,const char *data);
+    void fill_write_data(const size_t szdata, const char* data);
     //读取数据
-    void get_read_data(size_t &szdata,char *data);
+    void get_read_data(size_t& szdata, char* data);
 
     //
-    inline char *get_use_point()
+    inline char* get_use_point()
     {
         return buffer_data_ + size_of_buffer_;
     }
@@ -95,10 +95,10 @@ public:
     void close();
 
     //从队列分配一个Buffer出来
-    zerg::Buffer *allocate_buffer();
+    zerg::Buffer* allocate_buffer();
 
     //释放一个Buffer到队列中
-    void free_byte_buffer(zerg::Buffer *ptrbuf);
+    void free_byte_buffer(zerg::Buffer* ptrbuf);
 
     //扩展Buffer队列
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);
@@ -106,13 +106,13 @@ public:
 public:
 
     //单子实例函数
-    static Buffer_Storage *instance();
+    static Buffer_Storage* instance();
     //清理单子实例
     static void clean_instance();
 
 protected:
     //单子实例指针
-    static Buffer_Storage *instance_;
+    static Buffer_Storage* instance_;
 
 protected:
 
@@ -122,7 +122,7 @@ protected:
 protected:
 
     ///存放BUFF 的队列类型
-    typedef zce::lordrings <zerg::Buffer *> ZBUFFER_RINGS;
+    typedef zce::lordrings <zerg::Buffer*> ZBUFFER_RINGS;
 
     ///我担心内存泄露,所以加个总数计数
     size_t                size_of_bufferalloc_;

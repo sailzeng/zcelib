@@ -8,7 +8,7 @@
 //如果就是这个咚咚最后是一个框架，我几乎认为认为这个事务模型不用修改.但是.....
 
 //简单，但是不要太简单.....
-//感觉我的想法是比较简单的,表面看我没有事件队列,其实我用了Reactor进行管理,其实内部实际是由队列的.
+//感觉我的想法是比较简单的,表面看我没有事件队列,其实我用了ZCE_Reactor进行管理,其实内部实际是由队列的.
 
 /************************************************************************************
 2008年12月26日,圣诞的后面一天，这一周简直是浑天黑地,不过还好是周末了
@@ -71,7 +71,7 @@ protected:
     struct HASH_OF_LOCK
     {
     public:
-        size_t operator()(const ONLYONE_LOCK &lock_rec) const
+        size_t operator()(const ONLYONE_LOCK& lock_rec) const
         {
             return (size_t(lock_rec.lock_user_id_) + lock_rec.lock_trans_cmd_);
         }
@@ -80,19 +80,19 @@ protected:
     //判断相等的函数
     struct EQUAL_OF_LOCK
     {
-        bool operator()(const ONLYONE_LOCK &right,
-                        const ONLYONE_LOCK &left) const
+        bool operator()(const ONLYONE_LOCK& right,
+                        const ONLYONE_LOCK& left) const
         {
             return (right.lock_user_id_ == left.lock_user_id_ && right.lock_trans_cmd_ == left.lock_trans_cmd_);
         }
     };
 
     ///内部的APPFRAME的消息队列，
-    typedef zce::MsgQueue_Deque<soar::Zerg_Frame *> Inner_Frame_Queue;
+    typedef zce::MsgQueue_Deque<soar::Zerg_Frame*> Inner_Frame_Queue;
     ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
     typedef ZergFrame_Mallocor<ZCE_Null_Mutex> Inner_Frame_Mallocor;
     //内部的锁的数量
-    typedef std::unordered_set<ONLYONE_LOCK,HASH_OF_LOCK,EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
+    typedef std::unordered_set<ONLYONE_LOCK, HASH_OF_LOCK, EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
 
 public:
 
@@ -110,15 +110,15 @@ protected:
     * @param      crttx 是否创建事务
     * @note
     */
-    int process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm);
+    int process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm);
 
 public:
     //处理管道的数据
-    int process_pipe_frame(size_t &proc_frame,
-                           size_t &create_trans);
+    int process_pipe_frame(size_t& proc_frame,
+                           size_t& create_trans);
     //处理消息队列的数据
-    int process_queue_frame(size_t &proc_frame,
-                            size_t &create_trans);
+    int process_queue_frame(size_t& proc_frame,
+                            size_t& create_trans);
 
     /*!
     * @brief
@@ -129,7 +129,7 @@ public:
     * @note
     */
     int register_fsmobj(uint32_t create_cmd,
-                        FSM_Base *fsm_base,
+                        FSM_Base* fsm_base,
                         bool usr_only_one);
 
     /*!
@@ -161,11 +161,11 @@ public:
     * @param      init_lock_pool
     * @note
     */
-    int initialize(zce::Timer_Queue *timer_queue,
+    int initialize(zce::Timer_Queue* timer_queue,
                    size_t  reg_fsm_num,
                    size_t running_fsm_num,
-                   const soar::SERVICES_INFO &selfsvr,
-                   soar::App_BusPipe *zerg_mmap_pipe,
+                   const soar::SERVICES_INFO& selfsvr,
+                   soar::App_BusPipe* zerg_mmap_pipe,
                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
@@ -174,12 +174,12 @@ public:
     void finish();
 
     //得到一个SvrInfo
-    const soar::SERVICES_INFO *self_svc_info();
+    const soar::SERVICES_INFO* self_svc_info();
     //得到一个SvrID
-    const soar::SERVICES_ID *self_svc_id();
+    const soar::SERVICES_ID* self_svc_id();
 
     //打开Trans统计信息，得到一个当前时钟
-    void enable_trans_statistics(const zce::Time_Value *stat_clock);
+    void enable_trans_statistics(const zce::Time_Value* stat_clock);
 
     //----------------------------------------------------------------------------------------------------------
 
@@ -190,13 +190,13 @@ public:
                            uint32_t user_id,
                            uint32_t fsm_id,
                            uint32_t backfill_fsm_id,
-                           const soar::SERVICES_ID &proxy_svc,
-                           const soar::SERVICES_ID &snd_svc,
-                           const T &info,
+                           const soar::SERVICES_ID& proxy_svc,
+                           const soar::SERVICES_ID& snd_svc,
+                           const T& info,
                            uint32_t option);
 
     //假装收到一个消息(buffer)
-    int fake_receive_frame(const soar::Zerg_Frame *fake_recv);
+    int fake_receive_frame(const soar::Zerg_Frame* fake_recv);
 
     //----------------------------------------------------------------------------------------------------------
 
@@ -206,14 +206,14 @@ public:
                           uint32_t user_id,
                           uint32_t fsm_id,
                           uint32_t backfill_fsm_id,
-                          const soar::SERVICES_ID &rcvsvc,
-                          const soar::SERVICES_ID &proxysvc,
-                          const soar::SERVICES_ID &sndsvc,
-                          const T &msg,
+                          const soar::SERVICES_ID& rcvsvc,
+                          const soar::SERVICES_ID& proxysvc,
+                          const soar::SERVICES_ID& sndsvc,
+                          const T& msg,
                           uint32_t option);
 
     //发送一个数据到QUEUE
-    int postmsg_to_queue(soar::Zerg_Frame *post_frame);
+    int postmsg_to_queue(soar::Zerg_Frame* post_frame);
 
     //----------------------------------------------------------------------------------------------------------
     //管理器发送一个命令给一个服务器
@@ -222,19 +222,19 @@ public:
                            uint32_t user_id,
                            uint32_t fsm_id,
                            uint32_t backfill_fsm_id,
-                           const soar::SERVICES_ID &rcvsvc,
-                           const soar::SERVICES_ID &proxysvc,
-                           const soar::SERVICES_ID &sndsvc,
-                           const T &msg,
+                           const soar::SERVICES_ID& rcvsvc,
+                           const soar::SERVICES_ID& proxysvc,
+                           const soar::SERVICES_ID& sndsvc,
+                           const T& msg,
                            uint32_t option);
 
     //----------------------------------------------------------------------------------------------------------
     //发送一个数据到PIPE
-    int sendfame_to_pipe(const soar::Zerg_Frame *proc_frame);
+    int sendfame_to_pipe(const soar::Zerg_Frame* proc_frame);
 
     //
-    int sendbuf_to_pipe(const soar::Zerg_Head &zerg_head,
-                        const char *buf,
+    int sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
+                        const char* buf,
                         size_t buf_len);
 
 private:
@@ -242,9 +242,9 @@ private:
 public:
     //为了SingleTon类准备
     //实例赋值
-    static void instance(FSM_Manager *);
+    static void instance(FSM_Manager*);
     //获得实例
-    static FSM_Manager *instance();
+    static FSM_Manager* instance();
     //清除实例
     static void clean_instance();
 
@@ -269,26 +269,26 @@ protected:
     soar::SERVICES_INFO self_svc_info_;
 
     //共享内存的管道
-    soar::App_BusPipe *zerg_mmap_pipe_ = nullptr;
+    soar::App_BusPipe* zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
-    const zce::Time_Value *statistics_clock_ = nullptr;
+    const zce::Time_Value* statistics_clock_ = nullptr;
 
     //发送的缓冲区
-    soar::Zerg_Frame *trans_send_buffer_ = nullptr;
+    soar::Zerg_Frame* trans_send_buffer_ = nullptr;
     //接受数据缓冲区
-    soar::Zerg_Frame *trans_recv_buffer_ = nullptr;
+    soar::Zerg_Frame* trans_recv_buffer_ = nullptr;
 
     // fake数据缓冲区
-    soar::Zerg_Frame *fake_recv_buffer_ = nullptr;
+    soar::Zerg_Frame* fake_recv_buffer_ = nullptr;
 
     //内部FRAME分配器
-    Inner_Frame_Mallocor *inner_frame_mallocor_ = nullptr;
+    Inner_Frame_Mallocor* inner_frame_mallocor_ = nullptr;
     //内部FRAME的队列
-    Inner_Frame_Queue *message_queue_ = nullptr;
+    Inner_Frame_Queue* message_queue_ = nullptr;
 
     //ONLY ONE锁的池子
-    ONLY_ONE_LOCK_POOL *only_one_lock_pool_ = nullptr;
+    ONLY_ONE_LOCK_POOL* only_one_lock_pool_ = nullptr;
 
     //如果一个类型的状态机，一个用户对于只能创建一个，记录（命令字）到这个set
     std::unordered_set<uint32_t> onlyone_fms_cmd_set_;
@@ -299,16 +299,16 @@ protected:
 
 protected:
     //SingleTon的指针
-    static FSM_Manager *instance_;
+    static FSM_Manager* instance_;
 };
 
 //
-inline const soar::SERVICES_INFO *FSM_Manager::self_svc_info()
+inline const soar::SERVICES_INFO* FSM_Manager::self_svc_info()
 {
     return &self_svc_info_;
 }
 
-inline const soar::SERVICES_ID *FSM_Manager::self_svc_id()
+inline const soar::SERVICES_ID* FSM_Manager::self_svc_id()
 {
     return &(self_svc_info_.svc_id_);
 }
@@ -319,15 +319,15 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
                                     uint32_t user_id,
                                     uint32_t fsm_id,
                                     uint32_t backfill_fsm_id,
-                                    const soar::SERVICES_ID &proxy_svc,
-                                    const soar::SERVICES_ID &snd_svc,
-                                    const T &info,
+                                    const soar::SERVICES_ID& proxy_svc,
+                                    const soar::SERVICES_ID& snd_svc,
+                                    const T& info,
                                     uint32_t option)
 {
     int ret = 0;
 
-    soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(fake_recv_buffer_);
-    tmp_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,option,cmd);
+    soar::Zerg_Frame* tmp_frame = reinterpret_cast<soar::Zerg_Frame*>(fake_recv_buffer_);
+    tmp_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
     tmp_frame->user_id_ = user_id;
     tmp_frame->send_service_ = snd_svc;
@@ -337,7 +337,7 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
     tmp_frame->fsm_id_ = fsm_id;
     tmp_frame->backfill_fsm_id_ = backfill_fsm_id;
 
-    ret = tmp_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,info);
+    ret = tmp_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0)
     {
@@ -346,7 +346,7 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
 
     //处理一个收到的命令，
     bool create_fsm = false;
-    ret = process_appframe(tmp_frame,create_fsm);
+    ret = process_appframe(tmp_frame, create_fsm);
     if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
         return ret;
@@ -361,10 +361,10 @@ int FSM_Manager::sendmsg_to_service(uint32_t cmd,
                                     uint32_t user_id,
                                     uint32_t fsm_id,
                                     uint32_t backfill_fsm_id,
-                                    const soar::SERVICES_ID &rcvsvc,
-                                    const soar::SERVICES_ID &proxysvc,
-                                    const soar::SERVICES_ID &sndsvc,
-                                    const T &msg,
+                                    const soar::SERVICES_ID& rcvsvc,
+                                    const soar::SERVICES_ID& proxysvc,
+                                    const soar::SERVICES_ID& sndsvc,
+                                    const T& msg,
                                     uint32_t option)
 {
     //[注意]一下这个地方，recv和send参数两边的顺序是反的
@@ -385,14 +385,14 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
                                    uint32_t user_id,
                                    uint32_t fsm_id,
                                    uint32_t backfill_fsm_id,
-                                   const soar::SERVICES_ID &rcvsvc,
-                                   const soar::SERVICES_ID &proxysvc,
-                                   const soar::SERVICES_ID &sndsvc,
-                                   const T &msg,
+                                   const soar::SERVICES_ID& rcvsvc,
+                                   const soar::SERVICES_ID& proxysvc,
+                                   const soar::SERVICES_ID& sndsvc,
+                                   const T& msg,
                                    uint32_t option)
 {
-    soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
-    rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,option,cmd);
+    soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(trans_send_buffer_);
+    rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
     rsp_msg->user_id_ = user_id;
     rsp_msg->fsm_id_ = fsm_id;
@@ -404,7 +404,7 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
     rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
     //拷贝发送的MSG Block
-    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,info);
+    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
     if (ret != 0)
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
@@ -412,10 +412,10 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
 
     //相信这个锁不会占据主循环
     ret = postmsg_to_queue(rsp_msg);
-    DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"TO MESSAGE QUEUE FRAME",rsp_msg);
+    DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
+        ZCE_LOG(RS_ERROR, "[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
         return ret;
     }
     return 0;

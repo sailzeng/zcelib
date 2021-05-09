@@ -12,8 +12,8 @@ public:
 
     //构造函数和析构函数等
     Socket_DataGram();
-    explicit Socket_DataGram(const ZCE_SOCKET &socket_hanle);
-    explicit Socket_DataGram(const Sockaddr_Base &sock_addr);
+    explicit Socket_DataGram(const ZCE_SOCKET& socket_hanle);
+    explicit Socket_DataGram(const Sockaddr_Base& sock_addr);
     ~Socket_DataGram();
 
     //Open SOCK句柄，不BIND本地地址的方式
@@ -23,59 +23,59 @@ public:
 
     ///Open SOCK句柄，BIND本地地址的方式,一般情况下不用这样使用，除非……
     ///protocol_family 参数可以是AF_INET,或者AF_INET6等
-    int open(const Sockaddr_Base *local_addr,
+    int open(const Sockaddr_Base* local_addr,
              int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
 
     //UDP接收
-    inline ssize_t recvfrom(void *buf,
+    inline ssize_t recvfrom(void* buf,
                             size_t len,
                             int flags,
-                            Sockaddr_Base *addr) const;
+                            Sockaddr_Base* addr) const;
 
     //UDP发送
-    inline ssize_t sendto(const void *buf,
+    inline ssize_t sendto(const void* buf,
                           size_t len,
                           int flags,
-                          const Sockaddr_Base *to_addr) const;
+                          const Sockaddr_Base* to_addr) const;
 
     //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用select实现
-    inline ssize_t recvfrom(void *buf,
+    inline ssize_t recvfrom(void* buf,
                             size_t len,
-                            Sockaddr_Base *addr,
-                            zce::Time_Value *timeout_tv,
+                            Sockaddr_Base* addr,
+                            zce::Time_Value* timeout_tv,
                             int flags = 0) const;
 
     //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
     //发送UDP的数据,带超时处理参数，但是实际上进行没有超时处理，
-    inline ssize_t sendto(const void *buf,
+    inline ssize_t sendto(const void* buf,
                           size_t len,
-                          const Sockaddr_Base *addr,
-                          zce::Time_Value *   /*timeout_tv*/,
+                          const Sockaddr_Base* addr,
+                          zce::Time_Value*   /*timeout_tv*/,
                           int flags = 0) const;
 
     //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用SO_RCVTIMEO实现
-    ssize_t recvfrom_timeout(void *buf,
+    ssize_t recvfrom_timeout(void* buf,
                              size_t len,
-                             Sockaddr_Base *addr,
-                             zce::Time_Value &timeout_tv,
+                             Sockaddr_Base* addr,
+                             zce::Time_Value& timeout_tv,
                              int flags = 0) const;
 
     //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
     //发送UDP的数据,带超时处理参数，但是实际上进行没有超时处理
-    ssize_t sendto_timeout(const void *buf,
+    ssize_t sendto_timeout(const void* buf,
                            size_t len,
-                           const Sockaddr_Base *addr,
-                           zce::Time_Value &   /*timeout_tv*/,
+                           const Sockaddr_Base* addr,
+                           zce::Time_Value&   /*timeout_tv*/,
                            int flags = 0) const;
 };
 
 //UDP接收
-inline ssize_t Socket_DataGram::recvfrom(void *buf,
+inline ssize_t Socket_DataGram::recvfrom(void* buf,
                                          size_t len,
                                          int flags,
-                                         Sockaddr_Base *addr)  const
+                                         Sockaddr_Base* addr)  const
 {
     return zce::recvfrom(socket_handle_,
                          buf,
@@ -87,10 +87,10 @@ inline ssize_t Socket_DataGram::recvfrom(void *buf,
 }
 
 //UDP发送
-inline ssize_t Socket_DataGram::sendto(const void *buf,
+inline ssize_t Socket_DataGram::sendto(const void* buf,
                                        size_t len,
                                        int flags,
-                                       const Sockaddr_Base *to_addr)  const
+                                       const Sockaddr_Base* to_addr)  const
 {
     return zce::sendto(socket_handle_,
                        buf,
@@ -101,10 +101,10 @@ inline ssize_t Socket_DataGram::sendto(const void *buf,
 }
 
 //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用select实现
-inline ssize_t Socket_DataGram::recvfrom(void *buf,
+inline ssize_t Socket_DataGram::recvfrom(void* buf,
                                          size_t len,
-                                         Sockaddr_Base *from_addr,
-                                         zce::Time_Value *timeout_tv,
+                                         Sockaddr_Base* from_addr,
+                                         zce::Time_Value* timeout_tv,
                                          int flags)  const
 {
     return zce::recvfrom(socket_handle_,
@@ -118,10 +118,10 @@ inline ssize_t Socket_DataGram::recvfrom(void *buf,
 
 //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
 //发送UDP的数据,带超时处理参数，但是实际上进行没有超时处理，
-inline ssize_t Socket_DataGram::sendto(const void *buf,
+inline ssize_t Socket_DataGram::sendto(const void* buf,
                                        size_t len,
-                                       const Sockaddr_Base *to_addr,
-                                       zce::Time_Value *timeout_tv,
+                                       const Sockaddr_Base* to_addr,
+                                       zce::Time_Value* timeout_tv,
                                        int flags)  const
 {
     return zce::sendto(socket_handle_,

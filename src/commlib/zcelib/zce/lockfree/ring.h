@@ -30,7 +30,7 @@ class rings
 {
 public:
     ///构造函数，后面必须调用,initialize
-    rings():
+    rings() :
         rings_start_(0),
         rings_size_(0),
         rings_capacity_(0),
@@ -39,7 +39,7 @@ public:
     }
 
     ///构造函数，同时完成初始化,后面完全 没有必要调用,initialize
-    rings(size_t max_len):
+    rings(size_t max_len) :
         rings_start_(0),
         rings_size_(0),
         rings_capacity_(max_len),
@@ -72,7 +72,7 @@ public:
             value_ptr_ = NULL;
         }
         //不用new避免过多的构造函数
-        value_ptr_ = (_value_type *)malloc(sizeof(_value_type) * capacity_);
+        value_ptr_ = (_value_type*)malloc(sizeof(_value_type) * capacity_);
     }
 
     ///结束，完成，销毁
@@ -157,7 +157,7 @@ public:
             return false;
         }
 
-        _value_type *new_value_ptr = new _value_type[new_max_size];
+        _value_type* new_value_ptr = new _value_type[new_max_size];
 
         //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
@@ -182,7 +182,7 @@ public:
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_back(const _value_type &value_data,bool lay_over = false)
+    bool push_back(const _value_type& value_data, bool lay_over = false)
     {
         //如果已经满了
         if (full())
@@ -212,7 +212,7 @@ public:
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_front(const _value_type &value_data,bool lay_over = false)
+    bool push_front(const _value_type& value_data, bool lay_over = false)
     {
         //如果已经满了
         if (full())
@@ -226,7 +226,7 @@ public:
             else
             {
                 //将第一个位置调整覆盖，并且调整起始和结束位置
-                rings_start_ = (rings_start_ > 0)?rings_start_ - 1:rings_capacity_ - 1;
+                rings_start_ = (rings_start_ > 0) ? rings_start_ - 1 : rings_capacity_ - 1;
                 value_ptr_[rings_start_] = value_data;
 
                 //覆盖，尺寸也不用调整
@@ -236,7 +236,7 @@ public:
         }
 
         //直接放在队尾
-        rings_start_ = (rings_start_ > 0)?rings_start_ - 1:rings_capacity_ - 1;
+        rings_start_ = (rings_start_ > 0) ? rings_start_ - 1 : rings_capacity_ - 1;
         value_ptr_[rings_start_] = value_data;
 
         ++rings_size_;
@@ -245,7 +245,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(_value_type &value_data)
+    bool pop_front(_value_type& value_data)
     {
         //如果是空的返回错误
         if (empty())
@@ -277,7 +277,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(_value_type &value_data)
+    bool pop_back(_value_type& value_data)
     {
         //如果是空的返回错误
         if (empty())
@@ -314,7 +314,7 @@ protected:
     ///队列的长度，
     size_t rings_capacity_;
     ///存放数据的指针
-    _value_type *value_ptr_;
+    _value_type* value_ptr_;
 };
 };
 

@@ -33,7 +33,7 @@ public:
     * @param      sem_name    信号灯的名称
     */
     ZCE_Process_Semaphore(unsigned int init_value,
-                          const char *sem_name
+                          const char* sem_name
     );
     virtual ~ZCE_Process_Semaphore(void);
 
@@ -51,19 +51,19 @@ public:
     * @return     bool      true获得了锁，false，无法获得锁
     * @param      abs_time  超时的绝对时间
     */
-    virtual bool systime_lock(const zce::Time_Value &abs_time);
+    virtual bool systime_lock(const zce::Time_Value& abs_time);
 
     /*!
     * @brief      相对时间的超时锁定，超时后，解锁
     * @return     bool           true获得了锁，false，无法获得锁
     * @param      relative_time  超时的绝对时间
     */
-    virtual bool duration_lock(const zce::Time_Value &relative_time);
+    virtual bool duration_lock(const zce::Time_Value& relative_time);
 
 protected:
 
     ///信号灯对象
-    sem_t *lock_;
+    sem_t* lock_;
 
     ///信号灯的名称，不得不记录下来，或者是共享内存的文件名称
     char              sema_name_[PATH_MAX + 1];

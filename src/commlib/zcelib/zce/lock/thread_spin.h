@@ -54,7 +54,7 @@ public:
     virtual void unlock() override;
 
     ///取出内部的锁的指针
-    pthread_spinlock_t *get_lock();
+    pthread_spinlock_t* get_lock();
 
 protected:
 

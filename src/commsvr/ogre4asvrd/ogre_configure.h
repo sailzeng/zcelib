@@ -12,7 +12,7 @@ struct TCP_PEER_CONFIG_INFO
 {
 public:
     ///从字符串中转换得到
-    int from_str(const char *peer_info_str);
+    int from_str(const char* peer_info_str);
 
 public:
 
@@ -60,7 +60,7 @@ public:
 struct HASH_OF_PEER_MODULE
 {
 public:
-    size_t operator()(const TCP_PEER_MODULE_INFO &peer_module) const
+    size_t operator()(const TCP_PEER_MODULE_INFO& peer_module) const
     {
         return (size_t(peer_module.peer_id_.peer_port_) << 16) + peer_module.peer_id_.peer_ip_address_;
     }
@@ -70,7 +70,7 @@ struct EQUAL_OF_PEER_MODULE
 {
 public:
     //注意判断条件不是所有的变量
-    bool operator()(const TCP_PEER_MODULE_INFO &left,const TCP_PEER_MODULE_INFO &right) const
+    bool operator()(const TCP_PEER_MODULE_INFO& left, const TCP_PEER_MODULE_INFO& right) const
     {
         //检查SVC INFO的相等,就认为相等
         if (right.peer_id_ == left.peer_id_)
@@ -170,7 +170,7 @@ public:
     virtual int read_cfgfile();
 
     ///从配置中读取OGRE的配置
-    int get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    int get_ogre_cfg(const zce::PropertyTree* conf_tree);
 
 public:
 

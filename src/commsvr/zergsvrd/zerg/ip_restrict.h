@@ -21,20 +21,20 @@ protected:
 public:
 
     ///从配置文件中得到相关的配置
-    int get_config(const Zerg_Config *config);
+    int get_config(const Zerg_Config* config);
     ///检查IP限制
-    int check_iprestrict(const zce::Sockaddr_In &remoteaddress);
+    int check_iprestrict(const zce::Sockaddr_In& remoteaddress);
 
 public:
 
     ///单子实例函数
-    static IPRestrict_Mgr *instance();
+    static IPRestrict_Mgr* instance();
     ///清理单子实例
     static void clean_instance();
 
 protected:
     ///单子实例
-    static IPRestrict_Mgr *instance_;
+    static IPRestrict_Mgr* instance_;
 
 protected:
 

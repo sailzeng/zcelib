@@ -138,12 +138,12 @@ public:
     @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_time_log(LOGFILE_DEVIDE div_log_file,
-                      const char *log_file_prefix,
+                      const char* log_file_prefix,
                       bool if_thread_synchro = false,
                       bool auto_new_line = true,
                       size_t reserve_file_num = DEFAULT_RESERVE_FILENUM,
-                      unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE,LOG_OUTPUT::ERROUT),
-                      unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME,LOG_HEAD::LOGLEVEL)
+                      unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
+                      unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL)
     );
 
     /*!
@@ -157,13 +157,13 @@ public:
     @param[in]  output_way         日志输出的方式，参考 @ref LOG_OUTPUT
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int init_size_log(const char *log_file_prefix,
+    int init_size_log(const char* log_file_prefix,
                       bool if_thread_synchro = false,
                       bool auto_new_line = true,
                       size_t max_size_log_file = DEFAULT_LOG_SIZE,
                       unsigned int reserve_file_num = DEFAULT_RESERVE_FILENUM,
-                      unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE,LOG_OUTPUT::ERROUT),
-                      unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME,LOG_HEAD::LOGLEVEL));
+                      unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
+                      unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
 
     /*!
     @brief      初始化函数，用于标准输出
@@ -192,7 +192,7 @@ public:
     */
     int initialize(unsigned int output_way,
                    LOGFILE_DEVIDE div_log_file,
-                   const char *log_file_prefix,
+                   const char* log_file_prefix,
                    bool if_thread_synchro,
                    bool auto_new_line,
                    size_t max_size_log_file,
@@ -263,8 +263,8 @@ public:
     @param      log_tmp_buffer   输出的buffer，
     @param      sz_use_len       输出的buffer长度
     */
-    void output_log_info(const timeval &now_time,
-                         char *log_tmp_buffer,
+    void output_log_info(const timeval& now_time,
+                         char* log_tmp_buffer,
                          size_t sz_use_len);
 
 protected:
@@ -275,15 +275,15 @@ protected:
     @param      idlogfilename 生成的日志文件名称
     */
     void create_id_logname(size_t logfileid,
-                           std::string &idlogfilename);
+                           std::string& idlogfilename);
 
     /*!
     @brief      根据日期得到文件名称
     @param      tmt         用于生成日志文件名称的时间戳
     @param      logfilename 生成的日志文件名称
     */
-    void create_time_logname(const timeval &cur_time,
-                             std::string &logfilename);
+    void create_time_logname(const timeval& cur_time,
+                             std::string& logfilename);
 
     /*!
     @brief      处理超期的日志文件，
@@ -299,10 +299,10 @@ protected:
     @param[out] sz_use_len     使用了buffer的长度
     */
     void stringbuf_loghead(zce::LOG_PRIORITY outlevel,
-                           const timeval &now_time,
-                           char *log_tmp_buffer,
+                           const timeval& now_time,
+                           char* log_tmp_buffer,
                            size_t sz_buf_len,
-                           size_t &sz_use_len);
+                           size_t& sz_use_len);
 
     /*!
     @brief      生成配置信息,修改错误配置,
@@ -314,15 +314,15 @@ protected:
     @param      init     是否是初始化阶段
     @param      current_time  当前时间
     */
-    void open_new_logfile(bool initiate,const timeval &current_time);
+    void open_new_logfile(bool initiate, const timeval& current_time);
 
 public:
 
     ///根据字符串，得到日志级别
-    static zce::LOG_PRIORITY log_priorities(const char *str_priority);
+    static zce::LOG_PRIORITY log_priorities(const char* str_priority);
 
     ///根据字符串,得到日志分割方式的枚举
-    static LOGFILE_DEVIDE log_file_devide(const char *str_devide);
+    static LOGFILE_DEVIDE log_file_devide(const char* str_devide);
 
 protected:
 

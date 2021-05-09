@@ -24,9 +24,9 @@ namespace zerg
 class Comm_Manager
 {
     //
-    typedef std::vector<TCP_Accept_Handler *> TCPACCEPT_HANDLER_LIST;
+    typedef std::vector<TCP_Accept_Handler*> TCPACCEPT_HANDLER_LIST;
     //
-    typedef std::vector<UDP_Svc_Handler *> UDPSVC_HANDLER_LIST;
+    typedef std::vector<UDP_Svc_Handler*> UDPSVC_HANDLER_LIST;
 
 protected:
 
@@ -41,7 +41,7 @@ public:
     * @return     int
     * @param      config
     */
-    int get_config(const Zerg_Config *config);
+    int get_config(const Zerg_Config* config);
 
     /*!
     * @brief      初始化所有的监听，UDP端口，
@@ -54,14 +54,14 @@ public:
     * @return     int
     * @param      init_svcid 初始化所依据的SVC INFO
     */
-    int init_socketpeer(const soar::SERVICES_ID &init_svcid);
+    int init_socketpeer(const soar::SERVICES_ID& init_svcid);
 
     /*!
     * @brief      检查端口是否安全,安全端口必须不使用保险(FALSE)
     * @return     int
     * @param      inetadd 检查的的地址信息
     */
-    int check_safeport(const zce::Sockaddr_In &inetadd);
+    int check_safeport(const zce::Sockaddr_In& inetadd);
 
     /*!
     * @brief      取得发送数据进行发送
@@ -70,21 +70,21 @@ public:
     * @param      proc_frame_num   实际处理的数量
     * @note
     */
-    int popall_sendpipe_write(size_t want_send_frame,size_t &proc_frame_num);
+    int popall_sendpipe_write(size_t want_send_frame, size_t& proc_frame_num);
 
     //
-    void pushback_recvpipe(soar::Zerg_Frame *recv_frame);
+    void pushback_recvpipe(soar::Zerg_Frame* recv_frame);
 
     //检查发包频率
     void check_freamcount(unsigned int now);
 
     //
-    int send_single_buf(zerg::Buffer *tmpbuf);
+    int send_single_buf(zerg::Buffer* tmpbuf);
 
 public:
 
     //单子实例函数
-    static Comm_Manager *instance();
+    static Comm_Manager* instance();
     //清理单子实例
     static void clean_instance();
 
@@ -98,7 +98,7 @@ protected:
 
 protected:
     //单子实例
-    static Comm_Manager *instance_;
+    static Comm_Manager* instance_;
 
 protected:
 
@@ -116,11 +116,11 @@ protected:
     unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
 
     ///内存管道类的实例对象，保留它仅仅为了加速
-    soar::App_BusPipe *zerg_mmap_pipe_;
+    soar::App_BusPipe* zerg_mmap_pipe_;
     ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
-    zerg::Buffer_Storage *zbuffer_storage_;
+    zerg::Buffer_Storage* zbuffer_storage_;
     ///统计，使用单子类的指针，保留它仅仅为了加速
-    soar::Stat_Monitor *server_status_;
+    soar::Stat_Monitor* server_status_;
 
     ///计数起始时间
     unsigned int count_start_time_;
@@ -128,6 +128,6 @@ protected:
     unsigned int send_frame_count_;
 
     ///配置实例指针
-    const Zerg_Config *zerg_config_;
+    const Zerg_Config* zerg_config_;
 };
 }

@@ -62,7 +62,7 @@ void Zerg_Head::ntoh()
 //---------------------------------------------------------------------------------------------------------
 
 //创建一个Frame
-Zerg_Frame *Zerg_Frame::new_frame(std::size_t frame_len)
+Zerg_Frame* Zerg_Frame::new_frame(std::size_t frame_len)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
     if (frame_len < sizeof(Zerg_Frame))
@@ -72,27 +72,27 @@ Zerg_Frame *Zerg_Frame::new_frame(std::size_t frame_len)
 
     //计算数据加密后的长度
 
-    void *ptr = ::new unsigned char[frame_len];
+    void* ptr = ::new unsigned char[frame_len];
 
 #if defined(DEBUG) || defined(_DEBUG)
     //检查帧的哪个地方出现问题，还是这样好一点
-    memset(ptr,0,frame_len);
+    memset(ptr, 0, frame_len);
 #endif //DEBUG
 
     //没有必要加下面这句，因为实际长度要根据使用决定
     //reinterpret_cast<Zerg_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
-    return static_cast<Zerg_Frame *>(ptr);
+    return static_cast<Zerg_Frame*>(ptr);
 }
 
 //
-void Zerg_Frame::delete_frame(Zerg_Frame *frame)
+void Zerg_Frame::delete_frame(Zerg_Frame* frame)
 {
-    char *ptr = reinterpret_cast<char *>(frame);
+    char* ptr = reinterpret_cast<char*>(frame);
     delete[]ptr;
 }
 
 //填充AppData数据到APPFrame
-int Zerg_Frame::fill_appdata(const size_t szdata,const char *vardata)
+int Zerg_Frame::fill_appdata(const size_t szdata, const char* vardata)
 {
     // 判断长度是否足够
     if (szdata > MAX_LEN_OF_APPFRAME_DATA)
@@ -101,7 +101,7 @@ int Zerg_Frame::fill_appdata(const size_t szdata,const char *vardata)
     }
 
     //填写数据区的长度
-    memcpy(frame_appdata_,vardata,szdata);
+    memcpy(frame_appdata_, vardata, szdata);
     length_ = static_cast<uint32_t>(Zerg_Frame::LEN_OF_APPFRAME_HEAD + szdata);
     return 0;
 }
@@ -114,7 +114,7 @@ void Zerg_Frame::exchange_rcvsnd_svcid(void)
     send_service_ = tmpsvrinfo;
 }
 
-void Zerg_Frame::exchange_rcvsnd_svcid(Zerg_Frame &exframe)
+void Zerg_Frame::exchange_rcvsnd_svcid(Zerg_Frame& exframe)
 {
     recv_service_ = exframe.send_service_;
     send_service_ = exframe.recv_service_;
@@ -124,7 +124,7 @@ void Zerg_Frame::exchange_rcvsnd_svcid(Zerg_Frame &exframe)
     user_id_ = exframe.user_id_;
 }
 
-void Zerg_Frame::fillback_appframe_head(Zerg_Frame &exframe)
+void Zerg_Frame::fillback_appframe_head(Zerg_Frame& exframe)
 {
     recv_service_ = exframe.send_service_;
     send_service_ = exframe.recv_service_;
@@ -137,8 +137,8 @@ void Zerg_Frame::fillback_appframe_head(Zerg_Frame &exframe)
 
 //输出APPFRAME的头部信息
 void Zerg_Frame::dump_frame_head(zce::LOG_PRIORITY log_priority,
-                                 const char *outer_str,
-                                 const Zerg_Frame *proc_frame)
+                                 const char* outer_str,
+                                 const Zerg_Frame* proc_frame)
 {
     const size_t MAX_LEN = 1024;
     char head_str[MAX_LEN + 1];
@@ -162,41 +162,41 @@ void Zerg_Frame::dump_frame_head(zce::LOG_PRIORITY log_priority,
              proc_frame->proxy_service_.services_type_,
              proc_frame->proxy_service_.services_id_
     );
-    ZCE_LOG(log_priority,"[framework] [%s]:%s",outer_str,head_str);
+    ZCE_LOG(log_priority, "[framework] [%s]:%s", outer_str, head_str);
 }
 
 //输出APPFRAME的全部部信息
 void Zerg_Frame::dump_frame_all(zce::LOG_PRIORITY log_priority,
-                                const char *outer_str,
-                                const Zerg_Frame *proc_frame)
+                                const char* outer_str,
+                                const Zerg_Frame* proc_frame)
 {
-    dump_frame_head(log_priority,outer_str,proc_frame);
+    dump_frame_head(log_priority, outer_str, proc_frame);
     char data_str[MAX_LEN_OF_APPFRAME * 2 + 1];
     size_t datalen = proc_frame->length_ - LEN_OF_APPFRAME_HEAD;
     size_t out_len = MAX_LEN_OF_APPFRAME * 2 + 1;
 
-    zce::base16_encode(proc_frame->frame_appdata_,datalen,data_str,&out_len);
-    ZCE_LOG(log_priority,"[framework] [%s] zerg fame data:%s",outer_str,data_str);
+    zce::base16_encode(proc_frame->frame_appdata_, datalen, data_str, &out_len);
+    ZCE_LOG(log_priority, "[framework] [%s] zerg fame data:%s", outer_str, data_str);
 }
 
 //Clone一个APP FRAME
-void Zerg_Frame::clone(Zerg_Frame *dst_frame) const
+void Zerg_Frame::clone(Zerg_Frame* dst_frame) const
 {
-    memcpy(dst_frame,this,length_);
+    memcpy(dst_frame, this, length_);
     return;
 }
 
 //Clone一个APP FRAME 的头部
-void Zerg_Frame::clone_head(Zerg_Frame *clone_frame) const
+void Zerg_Frame::clone_head(Zerg_Frame* clone_frame) const
 {
-    memcpy(clone_frame,this,LEN_OF_APPFRAME_HEAD);
+    memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);
     return;
 }
 
 //取得一个头部信息
-void Zerg_Frame::get_head(Zerg_Head &frame_head) const
+void Zerg_Frame::get_head(Zerg_Head& frame_head) const
 {
-    memcpy(&frame_head,this,LEN_OF_APPFRAME_HEAD);
+    memcpy(&frame_head, this, LEN_OF_APPFRAME_HEAD);
     frame_head.length_ = LEN_OF_APPFRAME_HEAD;
     return;
 }
@@ -205,26 +205,26 @@ void Zerg_Frame::get_head(Zerg_Head &frame_head) const
 
 ///将一个结构进行编码
 int Zerg_Frame::protobuf_encode(size_t szframe_appdata,
-                                const google::protobuf::MessageLite *msg,
+                                const google::protobuf::MessageLite* msg,
                                 size_t data_start,
-                                size_t *sz_code)
+                                size_t* sz_code)
 {
     if (!msg->IsInitialized())
     {
-        ZCE_LOG(RS_ERROR,"");
+        ZCE_LOG(RS_ERROR, "");
         return SOAR_RET::ERROR_DR_ENCODE_FAIL;
     }
     size_t need_size = msg->ByteSize();
     if (data_start + need_size > szframe_appdata)
     {
-        ZCE_LOG(RS_ERROR,"");
+        ZCE_LOG(RS_ERROR, "");
         return SOAR_RET::ERROR_DR_ENCODE_FAIL;
     }
     bool bret = msg->SerializePartialToArray(frame_appdata_ + data_start,
                                              static_cast<int>(szframe_appdata - data_start));
     if (bret == false)
     {
-        ZCE_LOG(RS_ERROR,"Portobuf encode SerializePartialToArray fail.");
+        ZCE_LOG(RS_ERROR, "Portobuf encode SerializePartialToArray fail.");
         return SOAR_RET::ERROR_DR_ENCODE_FAIL;
     }
     if (sz_code)
@@ -235,16 +235,16 @@ int Zerg_Frame::protobuf_encode(size_t szframe_appdata,
 }
 
 ///将一个结构进行解码
-int Zerg_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
+int Zerg_Frame::protobuf_decode(google::protobuf::MessageLite* msg,
                                 size_t data_start,
-                                size_t *sz_code)
+                                size_t* sz_code)
 {
     size_t szframe_appdata = length_;
     bool bret = msg->ParseFromArray(frame_appdata_ + data_start,
                                     static_cast<int>(szframe_appdata - data_start));
     if (bret == false)
     {
-        ZCE_LOG(RS_ERROR,"Portobuf decode ParseFromArray fail.");
+        ZCE_LOG(RS_ERROR, "Portobuf decode ParseFromArray fail.");
         return SOAR_RET::ERROR_DR_DECODE_FAIL;
     }
     if (sz_code)

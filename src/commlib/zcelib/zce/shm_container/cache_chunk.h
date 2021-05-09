@@ -49,7 +49,7 @@ class _shm_cachechunk_head
     friend class shm_cachechunk;
 private:
     ///构造函数
-    _shm_cachechunk_head():
+    _shm_cachechunk_head() :
         size_of_mmap_(0),
         num_of_node_(0),
         usable_of_node_(0),
@@ -109,7 +109,7 @@ protected:
     * @param[in]  size_t    希望申请放入的NODE的长度
     * @param[out] nodeindex 返回参数，申请到的NODE的索引
     */
-    bool create_node(size_t,size_t &nodeindex);
+    bool create_node(size_t, size_t& nodeindex);
 
     /*!
     * @brief      释放一个NODE,将其归还给FREELIST
@@ -128,9 +128,9 @@ public:
     * @param[out] free_chunk   剩余的桶的数量，
     * @param[out] max_room     剩余的空间，最大可以放多大的数据
     */
-    void free_size(size_t &free_node,
-                   size_t &free_chunk,
-                   size_t &max_room);
+    void free_size(size_t& free_node,
+                   size_t& free_chunk,
+                   size_t& max_room);
 
     /*!
     * @brief      检查是否有足够空间存放一个数据
@@ -147,8 +147,8 @@ public:
     * @param[out] nodeindex  NODE放入的NODE的索引，根据这个可以找到这个NODE
     */
     bool set_node(const size_t szdata,
-                  const char *indata,
-                  size_t &nodeindex);
+                  const char* indata,
+                  size_t& nodeindex);
 
     /*!
     * @brief      得到某个NODE的尺寸
@@ -165,8 +165,8 @@ public:
     * @param[out] chunknum   返回参数，存放所用的CHUNK的数量
     */
     void nodesize(const size_t nodeindex,
-                  size_t &nodesize,
-                  size_t &chunknum);
+                  size_t& nodesize,
+                  size_t& chunknum);
 
     /*!
     * @brief      取得一个节点的数据
@@ -175,8 +175,8 @@ public:
     * @param[out] outdata    返回的NODE数据数据空间的尺寸你要自己保证喔，
     */
     void get_node(const size_t nodeindex,
-                  size_t &szdata,
-                  char *outdata);
+                  size_t& szdata,
+                  char* outdata);
 
     /*!
     * @brief      当需要一个个CHUNK取出数据时，得到一个NODE的第N个CHUNK的数据
@@ -187,8 +187,8 @@ public:
     */
     void get_chunk(const size_t nodeindex,
                    size_t chunk_no,
-                   size_t &szdata,
-                   char *outdata);
+                   size_t& szdata,
+                   char* outdata);
 
     /*!
     * @brief      根据数据的起始位置，取得这个位置所在CHUNK的数据,（注意只拷贝一个CHUNK的数据）
@@ -202,9 +202,9 @@ public:
     */
     void get_chunkdata(const size_t nodeindex,
                        const size_t data_start,
-                       size_t &chunk_no,
-                       size_t &szdata,
-                       char *outdata);
+                       size_t& chunk_no,
+                       size_t& szdata,
+                       char* outdata);
 
     /*!
     * @brief      释放某个NODE节点
@@ -229,8 +229,8 @@ public:
     */
     void get_chunk_point(const size_t nodeindex,
                          size_t chunk_no,
-                         size_t &szdata,
-                         char *&chunk_point);
+                         size_t& szdata,
+                         char*& chunk_point);
 
     /*!
     * @brief      用于根据数据的起始位置，取得这个位置所在CHUNK的指针,以及取得
@@ -245,9 +245,9 @@ public:
     */
     void get_chunkdata_point(const size_t nodeindex,
                              const size_t data_start,
-                             size_t &chunk_no,
-                             size_t &szdata,
-                             char *&chunk_data_point);
+                             size_t& chunk_no,
+                             size_t& szdata,
+                             char*& chunk_data_point);
 
 public:
     /*!
@@ -270,25 +270,25 @@ public:
     * @param[in]  pmmap       输入的内存指针
     * @param[in]  if_restore  是否恢复原有内存中数据
     */
-    static shm_cachechunk *initialize(const size_t numnode,
+    static shm_cachechunk* initialize(const size_t numnode,
                                       const size_t numchunk,
                                       const size_t szchunk,
-                                      char *pmmap,
+                                      char* pmmap,
                                       bool if_restore = false);
 
 protected:
 
     ///CACHE的头部，
-    _shm_cachechunk_head *cachechunk_head_ = nullptr;
+    _shm_cachechunk_head* cachechunk_head_ = nullptr;
 
     ///Cache NODE 的BASE指针,NODE表示使用的
-    cachechunk_node_index *cachenode_base_ = nullptr;
+    cachechunk_node_index* cachenode_base_ = nullptr;
 
     ///CHUNK INDEX的BASE指针,
-    size_t *chunkindex_base_ = nullptr;
+    size_t* chunkindex_base_ = nullptr;
 
     ///CHUNK DATA数据区的BASE指针
-    char *chunkdata_base_ = nullptr;
+    char* chunkdata_base_ = nullptr;
 };
 };
 

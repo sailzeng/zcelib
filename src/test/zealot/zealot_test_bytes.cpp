@@ -1,7 +1,7 @@
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-int test_bytes_ntoh(int /*argc*/,char * /*argv*/[])
+int test_bytes_ntoh(int /*argc*/, char* /*argv*/[])
 {
     uint16_t a_16 = 0x1234;
     uint16_t b_16 = ZCE_HTONS(a_16);
@@ -12,16 +12,16 @@ int test_bytes_ntoh(int /*argc*/,char * /*argv*/[])
     uint64_t a_64 = 0x1122334455667788ULL;
     uint64_t b_64 = ZCE_HTONLL(a_64);
 
-    printf("%x %x  %" PRIx64,b_16,b_32,b_64);
+    printf("%x %x  %" PRIx64, b_16, b_32, b_64);
 
     return 0;
 }
 
-int test_bytes_hash(int /*argc*/,char * /*argv*/[])
+int test_bytes_hash(int /*argc*/, char* /*argv*/[])
 {
-    test_bytes_encode(0,NULL);
+    test_bytes_encode(0, NULL);
 
-    test_bytes_ntoh(0,NULL);
+    test_bytes_ntoh(0, NULL);
 
     int ret = 0;
     const size_t TEST_ARRAY_NUMBER = 10;
@@ -63,17 +63,17 @@ int test_bytes_hash(int /*argc*/,char * /*argv*/[])
     };
     unsigned char result[32] = {0};
 
-    zce::md5(test_buf[2],test_buflen[2],result);
+    zce::md5(test_buf[2], test_buflen[2], result);
 
-    zce::sha1(test_buf[2],test_buflen[2],result);
-    zce::md5(test_buf[5],test_buflen[5],result);
-    zce::md5(test_buf[6],test_buflen[6],result);
-    zce::sha1(test_buf[6],test_buflen[6],result);
+    zce::sha1(test_buf[2], test_buflen[2], result);
+    zce::md5(test_buf[5], test_buflen[5], result);
+    zce::md5(test_buf[6], test_buflen[6], result);
+    zce::sha1(test_buf[6], test_buflen[6], result);
 
     for (size_t i = 0; i < TEST_ARRAY_NUMBER; ++i)
     {
-        zce::md5(test_buf[i],test_buflen[i],result);
-        ret = memcmp(result,md5_test_sum[i],16);
+        zce::md5(test_buf[i], test_buflen[i], result);
+        ret = memcmp(result, md5_test_sum[i], 16);
         if (ret != 0)
         {
             abort();
@@ -98,8 +98,8 @@ int test_bytes_hash(int /*argc*/,char * /*argv*/[])
     };
     for (size_t i = 0; i < TEST_ARRAY_NUMBER; ++i)
     {
-        zce::sha1(test_buf[i],test_buflen[i],result);
-        ret = memcmp(result,sha1_test_sum[i],20);
+        zce::sha1(test_buf[i], test_buflen[i], result);
+        ret = memcmp(result, sha1_test_sum[i], 20);
         if (ret != 0)
         {
             abort();
@@ -120,8 +120,8 @@ int test_bytes_hash(int /*argc*/,char * /*argv*/[])
     };
     for (size_t i = 0; i < TEST_ARRAY_NUMBER; ++i)
     {
-        zce::sha256(test_buf[i],test_buflen[i],result);
-        ret = memcmp(result,sha256_test_sum[i],32);
+        zce::sha256(test_buf[i], test_buflen[i], result);
+        ret = memcmp(result, sha256_test_sum[i], 32);
         if (ret != 0)
         {
             abort();
@@ -134,7 +134,7 @@ int test_bytes_hash(int /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_bytes_encode(int /*argc*/,char * /*argv*/[])
+int test_bytes_encode(int /*argc*/, char* /*argv*/[])
 {
     const char test_string[] = "Man is distinguished, not only by his reason,"
         " but by this singular passion from other animals, which is a lust of the mind,"
@@ -142,23 +142,23 @@ int test_bytes_encode(int /*argc*/,char * /*argv*/[])
         " exceeds the short vehemence of any carnal pleasure.";
     char out_buf[1024 + 1];
     size_t buffer_len = 1024;
-    zce::base64_encode(test_string,strlen((const char *)test_string),out_buf,&buffer_len);
+    zce::base64_encode(test_string, strlen((const char*)test_string), out_buf, &buffer_len);
     const char result_string[] = "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz"
         "IHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2Yg"
         "dGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGlu"
         "dWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRo"
         "ZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=";
-    int ret = strcmp((const char *)out_buf,(const char *)result_string);
+    int ret = strcmp((const char*)out_buf, (const char*)result_string);
     if (ret != 0)
     {
         abort();
     }
 
-    size_t in_len = strlen((const char *)result_string);
+    size_t in_len = strlen((const char*)result_string);
     buffer_len = 1024;
-    ret = zce::base64_decode(result_string,in_len,out_buf,&buffer_len);
+    ret = zce::base64_decode(result_string, in_len, out_buf, &buffer_len);
     out_buf[buffer_len] = '\0';
-    ret = strcmp((const char *)out_buf,(const char *)test_string);
+    ret = strcmp((const char*)out_buf, (const char*)test_string);
     if (ret != 0)
     {
         abort();
@@ -167,18 +167,18 @@ int test_bytes_encode(int /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
+int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
 {
     unsigned char test_string[] = "Man is distinguished, not only by his reason,"
         " but by this singular passion from other animals, which is a lust of the mind,"
         " that by a perseverance of delight in the continued and indefatigable generation of knowledge,"
         " exceeds the short vehemence of any carnal pleasure.";
-    size_t str_len = strlen((const char *)test_string);
+    size_t str_len = strlen((const char*)test_string);
 
     const size_t TEST_SIZE = 10000000;
 
     unsigned char buffer[1024];
-    memcpy(buffer,test_string,str_len + 1);
+    memcpy(buffer, test_string, str_len + 1);
 
     size_t abc = 0;
     {
@@ -187,13 +187,13 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
-            abc = zce::bkdr_hash(buffer,str_len);
+            abc = zce::bkdr_hash(buffer, str_len);
         }
     }
-    printf("bkdr_hash = %zu\n",abc);
+    printf("bkdr_hash = %zu\n", abc);
 
     uint32_t uincrc = 0;
-    memcpy(buffer,test_string,str_len + 1);
+    memcpy(buffer, test_string, str_len + 1);
 
     {
         zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
@@ -201,11 +201,11 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
-            uincrc += zce::crc32(buffer,str_len);
+            uincrc += zce::crc32(buffer, str_len);
         }
     }
-    printf("uincrc = %u\n",uincrc);
-    memcpy(buffer,test_string,str_len + 1);
+    printf("uincrc = %u\n", uincrc);
+    memcpy(buffer, test_string, str_len + 1);
     uincrc = 0;
     {
         zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
@@ -213,19 +213,19 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
-            uincrc += zce::crc32(0,buffer,str_len);
+            uincrc += zce::crc32(0, buffer, str_len);
         }
     }
 
-    printf("uincrc = %u\n",uincrc);
-    memcpy(buffer,test_string,str_len + 1);
+    printf("uincrc = %u\n", uincrc);
+    memcpy(buffer, test_string, str_len + 1);
     {
         zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
         unsigned char result[32] = {0};
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
-            zce::sha1(buffer,str_len,result);
+            zce::sha1(buffer, str_len, result);
         }
     }
 
@@ -243,10 +243,10 @@ int test_encrypt()
 
     //为什么写的这样诡异，因为GCC的一个bug，如果source_buffer_1 写成 unsigned char *
     //会出现一个错误，char-array initialized from wide string
-    unsigned char *source_buffer = (unsigned char *)source_buffer_1;
-    unsigned char *key = (unsigned char *)key_1;
+    unsigned char* source_buffer = (unsigned char*)source_buffer_1;
+    unsigned char* key = (unsigned char*)key_1;
 
-    size_t source_len = strlen((const char *)source_buffer) + 1;
+    size_t source_len = strlen((const char*)source_buffer) + 1;
     unsigned char cipher_buf[2048];
     size_t cipher_len = 2048;
 
@@ -255,26 +255,26 @@ int test_encrypt()
     size_t de_len = 2048;
     int ret = 0;
 
-    crypt_class::ecb_encrypt(key,key_len,source_buffer,cipher_buf);
-    crypt_class::ecb_decrypt(key,key_len,cipher_buf,de_buf);
+    crypt_class::ecb_encrypt(key, key_len, source_buffer, cipher_buf);
+    crypt_class::ecb_decrypt(key, key_len, cipher_buf, de_buf);
 
-    ret = memcmp(source_buffer,de_buf,crypt_class::CRYPT_BLOCK_SIZE);
+    ret = memcmp(source_buffer, de_buf, crypt_class::CRYPT_BLOCK_SIZE);
     if (ret != 0)
     {
         abort();
     }
 
-    ret = crypt_class::cbc_encrypt(key,key_len,source_buffer,source_len,cipher_buf,&cipher_len);
+    ret = crypt_class::cbc_encrypt(key, key_len, source_buffer, source_len, cipher_buf, &cipher_len);
     if (ret != 0)
     {
         abort();
     }
-    ret = crypt_class::cbc_decrypt(key,key_len,cipher_buf,cipher_len,de_buf,&de_len);
+    ret = crypt_class::cbc_decrypt(key, key_len, cipher_buf, cipher_len, de_buf, &de_len);
     if (ret != 0)
     {
         abort();
     }
-    ret = memcmp(source_buffer,de_buf,source_len);
+    ret = memcmp(source_buffer, de_buf, source_len);
     if (ret != 0)
     {
         abort();
@@ -293,10 +293,10 @@ int perf_encrypt()
     char key_1[] = "11112222333344445555666677778888";
     //为什么写的这样诡异，因为GCC的一个bug，如果source_buffer_1 写成 unsigned char *
     //会出现一个错误，char-array initialized from wide string
-    unsigned char *source_buffer = (unsigned char *)source_buffer_1;
-    unsigned char *key = (unsigned char *)key_1;
+    unsigned char* source_buffer = (unsigned char*)source_buffer_1;
+    unsigned char* key = (unsigned char*)key_1;
 
-    size_t source_len = strlen((const char *)source_buffer) + 1;
+    size_t source_len = strlen((const char*)source_buffer) + 1;
     unsigned char cipher_buf[2048];
     size_t cipher_len = 2048;
 
@@ -317,7 +317,7 @@ int perf_encrypt()
         source_buffer[0] += 1;
         key[0] += 1;
         cipher_len = 2048;
-        ret = crypt_class::cbc_encrypt(key,key_len,source_buffer,source_len,cipher_buf,&cipher_len);
+        ret = crypt_class::cbc_encrypt(key, key_len, source_buffer, source_len, cipher_buf, &cipher_len);
         if (ret != 0)
         {
             abort();
@@ -332,14 +332,14 @@ int perf_encrypt()
         source_buffer[0] += 1;
         key[0] += 1;
         cipher_len = 2048;
-        ret = crypt_class::cbc_encrypt(key,key_len,source_buffer,source_len,cipher_buf,&cipher_len);
+        ret = crypt_class::cbc_encrypt(key, key_len, source_buffer, source_len, cipher_buf, &cipher_len);
         if (ret != 0)
         {
             abort();
         }
 
         de_len = 2048;
-        ret = crypt_class::cbc_decrypt(key,key_len,cipher_buf,cipher_len,de_buf,&de_len);
+        ret = crypt_class::cbc_decrypt(key, key_len, cipher_buf, cipher_len, de_buf, &de_len);
         if (ret != 0)
         {
             abort();
@@ -348,7 +348,7 @@ int perf_encrypt()
     hr_timer.end();
     double decrypt_usetime = hr_timer.elapsed_usec() - encrypt_usetime;
 
-    typename crypt_class::CRYPT_SUBKEY_STRUCT en_subkey,de_subkey;
+    typename crypt_class::CRYPT_SUBKEY_STRUCT en_subkey, de_subkey;
 
     crypt_class::key_setup(key,
                            key_len,
@@ -367,7 +367,7 @@ int perf_encrypt()
         source_buffer[0] += 1;
         key[0] += 1;
         cipher_len = 2048;
-        ret = crypt_class::cbc_encrypt_skey(&en_subkey,source_buffer,source_len,cipher_buf,&cipher_len);
+        ret = crypt_class::cbc_encrypt_skey(&en_subkey, source_buffer, source_len, cipher_buf, &cipher_len);
         if (ret != 0)
         {
             abort();
@@ -383,14 +383,14 @@ int perf_encrypt()
         source_buffer[0] += 1;
         key[0] += 1;
         cipher_len = 2048;
-        ret = crypt_class::cbc_encrypt_skey(&en_subkey,source_buffer,source_len,cipher_buf,&cipher_len);
+        ret = crypt_class::cbc_encrypt_skey(&en_subkey, source_buffer, source_len, cipher_buf, &cipher_len);
         if (ret != 0)
         {
             abort();
         }
 
         de_len = 2048;
-        ret = crypt_class::cbc_decrypt_skey(&de_subkey,cipher_buf,cipher_len,de_buf,&de_len);
+        ret = crypt_class::cbc_decrypt_skey(&de_subkey, cipher_buf, cipher_len, de_buf, &de_len);
         if (ret != 0)
         {
             abort();
@@ -413,7 +413,7 @@ int perf_encrypt()
     return 0;
 }
 
-int bytes_encrypt_perf(int /*argc*/,char * /*argv*/[])
+int bytes_encrypt_perf(int /*argc*/, char* /*argv*/[])
 {
     perf_encrypt<zce::XOR_Crypt_128_128_1>();
     perf_encrypt<zce::DES_Crypt_64_64_16>();
@@ -447,7 +447,7 @@ int bytes_encrypt_perf(int /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int bytes_encrypt_right(int /*argc*/,char * /*argv*/[])
+int bytes_encrypt_right(int /*argc*/, char* /*argv*/[])
 {
     test_encrypt<zce::XOR_Crypt_128_128_1>();
 
@@ -520,12 +520,12 @@ int bytes_encrypt_right(int /*argc*/,char * /*argv*/[])
 
 int perf_fast_memcpy(size_t test_len)
 {
-    unsigned char *src_buf = new unsigned char[test_len + 8];
-    unsigned char *dst_buf = new unsigned char[test_len + 8];
-    memset(src_buf,0,test_len);
-    unsigned char *cpy_dst = NULL;
-    const unsigned char *cpy_src = NULL;
-    const unsigned char *stop_pos = NULL;
+    unsigned char* src_buf = new unsigned char[test_len + 8];
+    unsigned char* dst_buf = new unsigned char[test_len + 8];
+    memset(src_buf, 0, test_len);
+    unsigned char* cpy_dst = NULL;
+    const unsigned char* cpy_src = NULL;
+    const unsigned char* stop_pos = NULL;
 
     zce::HR_Progress_Timer hr_timer;
 
@@ -535,7 +535,7 @@ int perf_fast_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        memcpy(dst_buf,src_buf,test_len);
+        memcpy(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double libc_use = hr_timer.elapsed_usec();
@@ -544,7 +544,7 @@ int perf_fast_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        ZCE_LZ_FAST_COPY(dst_buf,src_buf,test_len);
+        ZCE_LZ_FAST_COPY(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double marco1_use = hr_timer.elapsed_usec();
@@ -556,7 +556,7 @@ int perf_fast_memcpy(size_t test_len)
         src_buf[0] += 1;
         cpy_dst = dst_buf;
         cpy_src = src_buf;
-        ZCE_LZ_FAST_COPY_STOP(cpy_dst,cpy_src,stop_pos);
+        ZCE_LZ_FAST_COPY_STOP(cpy_dst, cpy_src, stop_pos);
     }
     hr_timer.end();
     double marco2_use = hr_timer.elapsed_usec();
@@ -566,7 +566,7 @@ int perf_fast_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        zce::fast_memcpy(dst_buf,src_buf,test_len);
+        zce::fast_memcpy(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_1_use = hr_timer.elapsed_usec();
@@ -575,7 +575,7 @@ int perf_fast_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        zce::fast_memcpy2(dst_buf,src_buf,test_len);
+        zce::fast_memcpy2(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_2_use = hr_timer.elapsed_usec();
@@ -594,7 +594,7 @@ int perf_fast_memcpy(size_t test_len)
     return 0;
 }
 
-int test_perf_memcpy(int /*argc*/,char * /*argv*/[])
+int test_perf_memcpy(int /*argc*/, char* /*argv*/[])
 {
     perf_fast_memcpy(8);
     perf_fast_memcpy(16);
@@ -612,12 +612,12 @@ int test_perf_memcpy(int /*argc*/,char * /*argv*/[])
 
 int perf_nonalign_memcpy(size_t test_len)
 {
-    unsigned char *src_buf = new unsigned char[test_len + 16];
-    unsigned char *dst_buf = new unsigned char[test_len + 16];
-    memset(src_buf,0,test_len + 16);
-    const unsigned char *cpy_src = NULL;
-    const unsigned char *cpy_dst = NULL;
-    const unsigned char *stop_pos = NULL;
+    unsigned char* src_buf = new unsigned char[test_len + 16];
+    unsigned char* dst_buf = new unsigned char[test_len + 16];
+    memset(src_buf, 0, test_len + 16);
+    const unsigned char* cpy_src = NULL;
+    const unsigned char* cpy_dst = NULL;
+    const unsigned char* stop_pos = NULL;
 
     zce::HR_Progress_Timer hr_timer;
 
@@ -627,7 +627,7 @@ int perf_nonalign_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        memcpy(dst_buf + (i + 1) % 8,src_buf + (i) % 8,test_len);
+        memcpy(dst_buf + (i + 1) % 8, src_buf + (i) % 8, test_len);
     }
     hr_timer.end();
     double libc_use = hr_timer.elapsed_usec();
@@ -636,7 +636,7 @@ int perf_nonalign_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        ZCE_LZ_FAST_COPY(dst_buf,src_buf,test_len);
+        ZCE_LZ_FAST_COPY(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double marco1_use = hr_timer.elapsed_usec();
@@ -648,7 +648,7 @@ int perf_nonalign_memcpy(size_t test_len)
         src_buf[0] += 1;
         cpy_dst = dst_buf;
         cpy_src = src_buf;
-        ZCE_LZ_FAST_COPY_STOP(cpy_dst,cpy_src,stop_pos);
+        ZCE_LZ_FAST_COPY_STOP(cpy_dst, cpy_src, stop_pos);
     }
     hr_timer.end();
     double marco2_use = hr_timer.elapsed_usec();
@@ -658,7 +658,7 @@ int perf_nonalign_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        zce::fast_memcpy(dst_buf,src_buf,test_len);
+        zce::fast_memcpy(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_1_use = hr_timer.elapsed_usec();
@@ -667,7 +667,7 @@ int perf_nonalign_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        zce::fast_memcpy2(dst_buf,src_buf,test_len);
+        zce::fast_memcpy2(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_2_use = hr_timer.elapsed_usec();
@@ -686,7 +686,7 @@ int perf_nonalign_memcpy(size_t test_len)
     return 0;
 }
 
-int test_perf_nonalignmemcpy(int /*argc*/,char * /*argv*/[])
+int test_perf_nonalignmemcpy(int /*argc*/, char* /*argv*/[])
 {
     perf_nonalign_memcpy(8);
     perf_nonalign_memcpy(16);
@@ -702,11 +702,11 @@ int test_perf_nonalignmemcpy(int /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_compress_fun(unsigned char *source_buf,size_t source_len)
+int test_compress_fun(unsigned char* source_buf, size_t source_len)
 {
     int ret = 0;
 
-    size_t compressbuf_len = 0,decompress_len = 0;
+    size_t compressbuf_len = 0, decompress_len = 0;
 
     unsigned char compress_buf[1024];
     unsigned char decompress_buf[1024];
@@ -715,24 +715,24 @@ int test_compress_fun(unsigned char *source_buf,size_t source_len)
     decompress_len = 1024;
 
     zce::ZLZ_Compress zlz_fmt;
-    ret = zlz_fmt.compress(source_buf,source_len,compress_buf,&compressbuf_len);
+    ret = zlz_fmt.compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
-        printf("%s\n","ZLZ compress fail.\n");
+        printf("%s\n", "ZLZ compress fail.\n");
         return ret;
     }
 
-    ret = zlz_fmt.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
+    ret = zlz_fmt.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
-        printf("%s\n","ZLZ decompress fail.\n");
+        printf("%s\n", "ZLZ decompress fail.\n");
         return ret;
     }
 
-    printf("source len %zu,compressed len %zu.\n",source_len,compressbuf_len);
-    printf("%s\n",source_buf);
-    printf("%s\n",decompress_buf);
-    ret = memcmp(source_buf,decompress_buf,source_len);
+    printf("source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
+    printf("%s\n", source_buf);
+    printf("%s\n", decompress_buf);
+    ret = memcmp(source_buf, decompress_buf, source_len);
     if (ret != 0)
     {
         abort();
@@ -741,24 +741,24 @@ int test_compress_fun(unsigned char *source_buf,size_t source_len)
     compressbuf_len = 1024;
     decompress_len = 1024;
     zce::LZ4_Compress lz4_fmt;
-    ret = lz4_fmt.compress(source_buf,source_len,compress_buf,&compressbuf_len);
+    ret = lz4_fmt.compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
-        printf("%s\n","LZ4 compress fail.\n");
+        printf("%s\n", "LZ4 compress fail.\n");
         return ret;
     }
 
-    ret = lz4_fmt.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
+    ret = lz4_fmt.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
-        printf("%s\n","LZ4 decompress fail.\n");
+        printf("%s\n", "LZ4 decompress fail.\n");
         return ret;
     }
 
-    printf("source len %zu,compressed len %zu.\n",source_len,compressbuf_len);
-    printf("%s\n",source_buf);
-    printf("%s\n",decompress_buf);
-    ret = memcmp(source_buf,decompress_buf,source_len);
+    printf("source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
+    printf("%s\n", source_buf);
+    printf("%s\n", decompress_buf);
+    ret = memcmp(source_buf, decompress_buf, source_len);
     if (ret != 0)
     {
         abort();
@@ -767,52 +767,52 @@ int test_compress_fun(unsigned char *source_buf,size_t source_len)
     return 0;
 }
 
-int test_compress_filedata(const char *file_name)
+int test_compress_filedata(const char* file_name)
 {
     const size_t COMPRESS_TEXT_LEN = 120 * 1024 * 1024;
-    auto *file_buffer = new unsigned char[COMPRESS_TEXT_LEN];
+    auto* file_buffer = new unsigned char[COMPRESS_TEXT_LEN];
     size_t file_len;
     int ret = 0;
-    ret = zce::read_file_data(file_name,(char *)file_buffer,COMPRESS_TEXT_LEN,&file_len);
+    ret = zce::read_file_data(file_name, (char*)file_buffer, COMPRESS_TEXT_LEN, &file_len);
     if (ret != 0)
     {
         delete[]file_buffer;
         return -1;
     }
-    size_t compressbuf_len = 0,decompress_len = 0;
+    size_t compressbuf_len = 0, decompress_len = 0;
     size_t source_len = file_len;
 
-    ret = zce::LZ4_Compress::need_compressed_bufsize(file_len,&compressbuf_len);
+    ret = zce::LZ4_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
 
-    unsigned char *compress_buf = new unsigned char[COMPRESS_TEXT_LEN];
-    unsigned char *decompress_buf = new unsigned char[COMPRESS_TEXT_LEN];
+    unsigned char* compress_buf = new unsigned char[COMPRESS_TEXT_LEN];
+    unsigned char* decompress_buf = new unsigned char[COMPRESS_TEXT_LEN];
 
     decompress_len = COMPRESS_TEXT_LEN;
     printf("---------------------------------------------------------\n");
     zce::LZ4_Compress lz4;
-    ret = lz4.compress(file_buffer,source_len,compress_buf,&compressbuf_len);
+    ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
-        printf("%s\n","ZCE Lz4 compress fail.\n");
+        printf("%s\n", "ZCE Lz4 compress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
         delete[] file_buffer;
         return ret;
     }
 
-    ret = lz4.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
+    ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
-        printf("%s\n","ZCE Lz4 decompress fail.\n");
+        printf("%s\n", "ZCE Lz4 decompress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
         delete[]file_buffer;
         return ret;
     }
-    printf("ZCE ZL4 source len %zu,compressed len %zu.\n",source_len,compressbuf_len);
+    printf("ZCE ZL4 source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
 
     //printf("%s\n",decompress_buf);
-    ret = memcmp(file_buffer,decompress_buf,source_len);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
         //找出差异的字节
@@ -820,43 +820,43 @@ int test_compress_filedata(const char *file_name)
         {
             if (file_buffer[i] != decompress_buf[i])
             {
-                printf("bytes [%zu] not eaqual\n.",i);
+                printf("bytes [%zu] not eaqual\n.", i);
             }
         }
-        printf("%s\n","Compress data and  decompress data is not equal.\n");
+        printf("%s\n", "Compress data and  decompress data is not equal.\n");
         //abort();
     }
 
     printf("---------------------------------------------------------\n");
 
-    ret = zce::ZLZ_Compress::need_compressed_bufsize(file_len,&compressbuf_len);
+    ret = zce::ZLZ_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
     decompress_len = COMPRESS_TEXT_LEN;
     zce::ZLZ_Compress zlz;
-    ret = zlz.compress(file_buffer,source_len,compress_buf,&compressbuf_len);
+    ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
-        printf("%s\n","ZCE ZLZ compress fail.\n");
+        printf("%s\n", "ZCE ZLZ compress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
         delete[] file_buffer;
         return ret;
     }
 
-    ret = zlz.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
+    ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
-        printf("%s\n","ZCE ZLZ decompress fail.\n");
+        printf("%s\n", "ZCE ZLZ decompress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
         delete[] file_buffer;
         return ret;
     }
-    printf("ZCE ZLZ source len %zu,compressed len %zu.\n",source_len,compressbuf_len);
+    printf("ZCE ZLZ source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
 
     printf("---------------------------------------------------------\n");
 
     //printf("%s\n",decompress_buf);
-    ret = memcmp(file_buffer,decompress_buf,source_len);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
         //找出差异的字节
@@ -864,10 +864,10 @@ int test_compress_filedata(const char *file_name)
         {
             if (file_buffer[i] != decompress_buf[i])
             {
-                printf("bytes [%zu] not eaqual\n.",i);
+                printf("bytes [%zu] not eaqual\n.", i);
             }
         }
-        printf("%s\n","Compress data and  decompress data is not equal.\n");
+        printf("%s\n", "Compress data and  decompress data is not equal.\n");
         //abort();
     }
 
@@ -883,57 +883,57 @@ int test_compress_filedata(const char *file_name)
     return 0;
 }
 
-int test_bytes_compress2(int /*argc*/,char * /*argv*/[])
+int test_bytes_compress2(int /*argc*/, char* /*argv*/[])
 {
     char test_filename[PATH_MAX + 1];
     for (size_t i = 0; i < 4168; ++i)
     {
-        snprintf(test_filename,PATH_MAX,"D:\\TestDir\\%06d.dat",(int)i);
+        snprintf(test_filename, PATH_MAX, "D:\\TestDir\\%06d.dat", (int)i);
         test_compress_filedata(test_filename);
     }
     return 0;
 }
 
-int test_bytes_compress(int /*argc*/,char * /*argv*/[])
+int test_bytes_compress(int /*argc*/, char* /*argv*/[])
 {
     uint8_t source_buf[1024];
 
 #if 0
-    strcpy((char *)source_buf,"123");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
+    strcpy((char*)source_buf, "123");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
 
-    strcpy((char *)source_buf,"111111111111111111111");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
+    strcpy((char*)source_buf, "111111111111111111111");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
 
-    strcpy((char *)source_buf,"11122221112211122222211211111111222112");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"111");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"11111111111111111");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
+    strcpy((char*)source_buf, "11122221112211122222211211111111222112");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "111");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "11111111111111111");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
 #endif
-    strcpy((char *)source_buf,"12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"1212121212121212121212121212121212121212121212121212121212121212121212121212121212");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"123123123123123123123123123123123123123123123123123123123123123123123123123123123");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"123412341234123412341234123412341234123412341234123412341234123412341234123412341234");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"1234512345123451234512345123451234512345123451234512345123451234512345123451234512345");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-    strcpy((char *)source_buf,"12345671234567123456712345671234567123456712345671234567123456712345671234567123456712345671234567");
-    test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
+    strcpy((char*)source_buf, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "1212121212121212121212121212121212121212121212121212121212121212121212121212121212");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "123123123123123123123123123123123123123123123123123123123123123123123123123123123");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "123412341234123412341234123412341234123412341234123412341234123412341234123412341234");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "1234512345123451234512345123451234512345123451234512345123451234512345123451234512345");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456123456");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
+    strcpy((char*)source_buf, "12345671234567123456712345671234567123456712345671234567123456712345671234567123456712345671234567");
+    test_compress_fun(source_buf, strlen((char*)source_buf) + 1);
 
     //test_compress_filedata("D:\\TestDir\\compress\\txt\\01.txt");
     //test_compress_filedata("D:\\TestDir\\compress\\txt\\02.txt");
@@ -964,10 +964,10 @@ int test_bytes_compress(int /*argc*/,char * /*argv*/[])
 #include "lz4.h"
 #pragma comment(lib, "lz4.lib")
 
-int test_compress_fun3(unsigned char *source_buf,size_t source_len)
+int test_compress_fun3(unsigned char* source_buf, size_t source_len)
 {
     int ret = 0;
-    size_t compressbuf_len1 = 0,compressbuf_len2 = 0,decompress_len = 0;
+    size_t compressbuf_len1 = 0, compressbuf_len2 = 0, decompress_len = 0;
 
     unsigned char compress_buf1[1024];
     unsigned char compress_buf2[1024];
@@ -978,66 +978,66 @@ int test_compress_fun3(unsigned char *source_buf,size_t source_len)
     decompress_len = 1024;
 
     zce::LZ4_Compress_Format zlz;
-    zlz.compress_core(source_buf,source_len,compress_buf1,&compressbuf_len1);
+    zlz.compress_core(source_buf, source_len, compress_buf1, &compressbuf_len1);
     if (ret != 0)
     {
-        printf("%s\n","ZLZ compress fail.\n");
+        printf("%s\n", "ZLZ compress fail.\n");
         return ret;
     }
-    compressbuf_len2 = LZ4_compress((const char *)source_buf,(char *)compress_buf2,(int)source_len);
+    compressbuf_len2 = LZ4_compress((const char*)source_buf, (char*)compress_buf2, (int)source_len);
     return 0;
 }
 
-int test_bytes_compress3(int /*argc*/,char * /*argv*/[])
+int test_bytes_compress3(int /*argc*/, char* /*argv*/[])
 {
     uint8_t source_buf[1024];
-    strcpy((char *)source_buf,"12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678");
+    strcpy((char*)source_buf, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678");
 
-    test_compress_fun3(source_buf,strlen((char *)source_buf) + 1);
+    test_compress_fun3(source_buf, strlen((char*)source_buf) + 1);
 
     return 0;
 }
 
-int benchmark_compress(const char *file_name)
+int benchmark_compress(const char* file_name)
 {
     ZCE_HR_Progress_Timer hr_timer;
 
     const size_t TEST_NUMBER = 32;
     const size_t COMPRESS_TEXT_LEN = 120 * 1024 * 1024;
-    auto *file_buffer = new unsigned char[COMPRESS_TEXT_LEN];
+    auto* file_buffer = new unsigned char[COMPRESS_TEXT_LEN];
     size_t file_len;
     int ret = 0;
-    ret = zce::read_file_data(file_name,(char *)file_buffer,COMPRESS_TEXT_LEN,&file_len);
+    ret = zce::read_file_data(file_name, (char*)file_buffer, COMPRESS_TEXT_LEN, &file_len);
     if (ret != 0)
     {
         delete[]file_buffer;
         return -1;
     }
-    size_t compressbuf_len = 0,decompress_len = 0;
+    size_t compressbuf_len = 0, decompress_len = 0;
     size_t source_len = file_len;
 
-    ret = zce::LZ4_Compress::need_compressed_bufsize(file_len,&compressbuf_len);
+    ret = zce::LZ4_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
     ZCE_ASSERT(compressbuf_len < COMPRESS_TEXT_LEN);
-    ret = zce::ZLZ_Compress::need_compressed_bufsize(file_len,&compressbuf_len);
+    ret = zce::ZLZ_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
     ZCE_ASSERT(compressbuf_len < COMPRESS_TEXT_LEN);
 
-    auto *compress_buf = new unsigned char[COMPRESS_TEXT_LEN];
-    auto *decompress_buf = new unsigned char[COMPRESS_TEXT_LEN];
+    auto* compress_buf = new unsigned char[COMPRESS_TEXT_LEN];
+    auto* decompress_buf = new unsigned char[COMPRESS_TEXT_LEN];
 
     //zce::sleep(1);
 
-    double compress_use = 0.0,decompress_use = 0.0;
+    double compress_use = 0.0, decompress_use = 0.0;
 
     decompress_len = COMPRESS_TEXT_LEN;
     compressbuf_len = COMPRESS_TEXT_LEN;
 
-    compress_use = 0.0,decompress_use = 0.0;
+    compress_use = 0.0, decompress_use = 0.0;
     zce::LZ4_Compress lz4;
     zce::ZLZ_Compress zlz;
 
-    ret = zlz.compress(file_buffer,source_len,compress_buf,&compressbuf_len);
-    ret = zlz.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
-    ret = memcmp(file_buffer,decompress_buf,source_len);
+    ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
         for (size_t j = 0; j < source_len; j++)
@@ -1057,14 +1057,14 @@ int benchmark_compress(const char *file_name)
 
         hr_timer.restart();
 
-        ret = zlz.compress(file_buffer,source_len,compress_buf,&compressbuf_len);
+        ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
 
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
         decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        ret = zlz.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
+        ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
 
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
@@ -1082,14 +1082,14 @@ int benchmark_compress(const char *file_name)
 
     compressbuf_len = COMPRESS_TEXT_LEN;
     decompress_len = COMPRESS_TEXT_LEN;
-    compressbuf_len = LZ4_compress((const char *)file_buffer,(char *)compress_buf,(int)source_len);
-    LZ4_decompress_safe((const char *)compress_buf,(char *)decompress_buf,(int)compressbuf_len,COMPRESS_TEXT_LEN);
-    ret = memcmp(file_buffer,decompress_buf,source_len);
+    compressbuf_len = LZ4_compress((const char*)file_buffer, (char*)compress_buf, (int)source_len);
+    LZ4_decompress_safe((const char*)compress_buf, (char*)decompress_buf, (int)compressbuf_len, COMPRESS_TEXT_LEN);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
         abort();
     }
-    compress_use = 0.0,decompress_use = 0.0;
+    compress_use = 0.0, decompress_use = 0.0;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;
@@ -1097,14 +1097,14 @@ int benchmark_compress(const char *file_name)
 
         hr_timer.restart();
 
-        compressbuf_len = LZ4_compress((const char *)file_buffer,(char *)compress_buf,(int)source_len);
+        compressbuf_len = LZ4_compress((const char*)file_buffer, (char*)compress_buf, (int)source_len);
 
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
         decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        LZ4_decompress_safe((const char *)compress_buf,(char *)decompress_buf,(int)compressbuf_len,COMPRESS_TEXT_LEN);
+        LZ4_decompress_safe((const char*)compress_buf, (char*)decompress_buf, (int)compressbuf_len, COMPRESS_TEXT_LEN);
 
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
@@ -1121,27 +1121,27 @@ int benchmark_compress(const char *file_name)
 
     compressbuf_len = COMPRESS_TEXT_LEN;
     decompress_len = COMPRESS_TEXT_LEN;
-    ret = lz4.compress(file_buffer,source_len,compress_buf,&compressbuf_len);
-    ret = lz4.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
-    ret = memcmp(file_buffer,decompress_buf,source_len);
+    ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
         abort();
     }
-    compress_use = 0.0,decompress_use = 0.0;
+    compress_use = 0.0, decompress_use = 0.0;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;
         compressbuf_len = COMPRESS_TEXT_LEN;
 
         hr_timer.restart();
-        ret = lz4.compress(file_buffer,source_len,compress_buf,&compressbuf_len);
+        ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
         decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        ret = lz4.decompress(compress_buf,compressbuf_len,decompress_buf,&decompress_len);
+        ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
     }
@@ -1160,7 +1160,7 @@ int benchmark_compress(const char *file_name)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;
-        ZCE_LZ_FAST_COPY(decompress_buf,file_buffer,file_len);
+        ZCE_LZ_FAST_COPY(decompress_buf, file_buffer, file_len);
     }
     hr_timer.end();
     double memcpy_use = hr_timer.elapsed_usec();
@@ -1211,27 +1211,27 @@ struct DR_DATA_1
 
     std::list<int> d1_e1_;
 
-    std::map<int,int> d1_f1_;
+    std::map<int, int> d1_f1_;
 
     template<typename serialize_type>
-    void serialize(serialize_type &ss,unsigned int /*version*/ = 0)
+    void serialize(serialize_type& ss, unsigned int /*version*/ = 0)
     {
-        ss &d1_a1_;
-        ss &d1_a2_;
-        ss &d1_a3_;
-        ss &d1_a4_;
+        ss& d1_a1_;
+        ss& d1_a2_;
+        ss& d1_a3_;
+        ss& d1_a4_;
 
-        ss &d1_b1_;
-        ss &d1_b2_;
+        ss& d1_b1_;
+        ss& d1_b2_;
 
-        ss &d1_c1_;
-        ss &d1_c2_;
-        ss &d1_c3_;
-        ss &d1_c4_;
+        ss& d1_c1_;
+        ss& d1_c2_;
+        ss& d1_c3_;
+        ss& d1_c4_;
 
-        ss &d1_d1_;
-        ss &d1_e1_;
-        ss &d1_f1_;
+        ss& d1_d1_;
+        ss& d1_e1_;
+        ss& d1_f1_;
     }
 };
 
@@ -1252,7 +1252,7 @@ struct DR_DATA_2
     std::vector<int> e_vector_;
 };
 
-int test_bytes_data_represent(int /*argc*/,char * /*argv */[])
+int test_bytes_data_represent(int /*argc*/, char* /*argv */[])
 {
     const size_t SIZE_OF_BUFFER = 1024;
     char buffer_data1[SIZE_OF_BUFFER];
@@ -1288,7 +1288,7 @@ int test_bytes_data_represent(int /*argc*/,char * /*argv */[])
     data1.d1_f1_[33] = 5555;
     data1.d1_f1_[333] = 55555;
 
-    ZCE_Serialize_Write ssave(buffer_data1,SIZE_OF_BUFFER);
+    ZCE_Serialize_Write ssave(buffer_data1, SIZE_OF_BUFFER);
     data1.serialize(ssave);
     if (ssave.is_good())
     {
@@ -1300,13 +1300,13 @@ int test_bytes_data_represent(int /*argc*/,char * /*argv */[])
     }
 
     DR_DATA_1 data2;
-    ZCE_Serialize_Read sload(buffer_data1,SIZE_OF_BUFFER);
+    ZCE_Serialize_Read sload(buffer_data1, SIZE_OF_BUFFER);
     data2.serialize(sload);
 
     return 0;
 }
 
-int test_memory_debug(int /*argc*/,char * /*argv */[])
+int test_memory_debug(int /*argc*/, char* /*argv */[])
 {
     static const unsigned char MEM_TEST[160] =
     {
@@ -1321,6 +1321,6 @@ int test_memory_debug(int /*argc*/,char * /*argv */[])
         0x57,0xed,0xf4,0xa2,0x2b,0xe3,0xc9,0x55,0xac,0x49,0xda,0x2e,0x21,0x07,0xb6,0x7a,
         0x35,0x9c,0x47,0x1e,0x86,0x20,0xe2,0x7a,0x41,0xb9,0x64,0x83,0x4c,0x4d,0x5e,0xb2,
     };
-    zce::memory_debug((MEM_TEST),160,stderr);
+    zce::memory_debug((MEM_TEST), 160, stderr);
     return 0;
 }

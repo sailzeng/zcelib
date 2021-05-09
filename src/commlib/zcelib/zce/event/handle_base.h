@@ -14,6 +14,8 @@
 
 #pragma once
 
+namespace zce
+{
 class ZCE_Reactor;
 
 /*!
@@ -21,7 +23,7 @@ class ZCE_Reactor;
 *             被调用
 *             最后考虑再三，没有在反应器里面集成定时器的处理
 */
-class ZCE_Event_Handler
+class Event_Handler
 {
 public:
 
@@ -49,22 +51,22 @@ public:
     /*!
     * @brief      构造函数
     */
-    ZCE_Event_Handler();
+    Event_Handler();
     /*!
     * @brief      构造函数，同时设置香港的反应器指针
     * @param      reactor 句柄相关的反应器指针
     */
-    ZCE_Event_Handler(ZCE_Reactor *reactor);
+    Event_Handler(zce::ZCE_Reactor* reactor);
     /*!
     * @brief      析构函数
     */
-    virtual ~ZCE_Event_Handler();
+    virtual ~Event_Handler();
 
 public:
 
     /*!
     * @brief      取回对应的ZCE_HANDLE 句柄
-    * @return     ZCE_HANDLE ZCE_Event_Handler 对应的ZCE_HANDLE 句柄
+    * @return     ZCE_HANDLE Event_Handler 对应的ZCE_HANDLE 句柄
     */
     virtual ZCE_HANDLE get_handle(void) const = 0;
 
@@ -123,13 +125,13 @@ public:
     * @brief      设置反应器
     * @param      reactor
     */
-    virtual void reactor(ZCE_Reactor *reactor);
+    virtual void reactor(zce::ZCE_Reactor* reactor);
 
     /*!
     * @brief      取得自己所属的反应器
-    * @return     ZCE_Reactor*
+    * @return     zce::ZCE_Reactor*
     */
-    virtual ZCE_Reactor *reactor(void) const;
+    virtual zce::ZCE_Reactor* reactor(void) const;
 
     //超时处理，最后考虑再三，没有在反应器里面集成定时器的处理
     //virtual int timer_timeout (const zce::Time_Value &tv, const void *arg = 0);
@@ -137,31 +139,32 @@ public:
 protected:
 
     ///反应器
-    ZCE_Reactor *zce_reactor_;
+    zce::ZCE_Reactor* zce_reactor_;
 
     ///这个句柄对应要处理的事件MASK
     int                event_mask_;
 };
 
 //取得当前的标志位
-inline int ZCE_Event_Handler::get_mask()
+inline int Event_Handler::get_mask()
 {
     return event_mask_;
 }
 
 //设置当前标志位
-inline void ZCE_Event_Handler::set_mask(int mask)
+inline void Event_Handler::set_mask(int mask)
 {
     event_mask_ = mask;
 }
 
 //enable mask所带的标志位
-inline void ZCE_Event_Handler::enable_mask(int en_mask)
+inline void Event_Handler::enable_mask(int en_mask)
 {
     event_mask_ |= en_mask;
 }
 //disable mask所带的标志位
-inline void ZCE_Event_Handler::disable_mask(int dis_mask)
+inline void Event_Handler::disable_mask(int dis_mask)
 {
     event_mask_ &= (~dis_mask);
+}
 }

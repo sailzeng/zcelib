@@ -15,7 +15,7 @@ public:
 public:
 
     ///初始化,根据启动参数启动
-    virtual int app_start(int argc,const char *argv[]);
+    virtual int app_start(int argc, const char* argv[]);
 
     ///处理退出的清理工作
     virtual int app_exit();

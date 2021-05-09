@@ -150,8 +150,8 @@ public:
 
 public:
     ZCE_Get_Option(int argc,
-                   char **argv,
-                   const char *optstring = (""),
+                   char** argv,
+                   const char* optstring = (""),
                    int skip_args = 1,
                    int report_errors = 0,
                    int ordering = PERMUTE_ARGS,
@@ -203,7 +203,7 @@ public:
      * @c operator() finds an option that takes an argument, the argument
      * value is returned from this method, otherwise it returns 0.
      */
-    char *opt_arg(void) const;
+    char* opt_arg(void) const;
 
     /**
      * Returns the most recently matched option character. Especially
@@ -225,7 +225,7 @@ public:
      * Otherwise, @c opt_ind() communicates from one call to the next how
      * much of @a argv has been scanned so far.
      */
-    int &opt_ind(void);
+    int& opt_ind(void);
 
     /// Adds a long option with no corresponding short option.
     /**
@@ -238,7 +238,7 @@ public:
      * @retval 0  Success
      * @retval -1 The long option can not be added.
      */
-    int long_option(const char *name,
+    int long_option(const char* name,
                     OPTION_ARG_MODE has_arg = OPTION_ARG_MODE::NO_ARG);
 
     /// Adds a long option with a corresponding short option.
@@ -255,19 +255,19 @@ public:
      * @retval 0  Success
      * @retval -1 The long option can not be added.
      */
-    int long_option(const char *name,
+    int long_option(const char* name,
                     int short_option,
                     OPTION_ARG_MODE has_arg = OPTION_ARG_MODE::NO_ARG);
 
     /// Returns the name of the long option found on the last call to
     /// @c operator() or 0 if none was found.
-    const char *long_option(void) const;
+    const char* long_option(void) const;
 
     /// The number of arguments in the internal @c argv_.
     int argc(void) const;
 
     /// Accessor for the internal @c argv_ pointer.
-    char **argv(void) const;
+    char** argv(void) const;
 
 public:
     /*
@@ -292,7 +292,7 @@ public:
      * write code that relies on this member being public; use the
      * @c argv() accessor method instead.
      */
-    char **argv_;
+    char** argv_;
 
     /// Index in @c argv_ of the next element to be scanned.
     /**
@@ -321,7 +321,7 @@ public:
      * write code that relies on this member being public; use the
      * @c opt_arg() accessor method instead.
      */
-    char *optarg;
+    char* optarg;
 
 private:
     /**
@@ -334,14 +334,14 @@ private:
         ZCE_GETOPT_LONG_OPTION();
 
         /// ctor
-        ZCE_GETOPT_LONG_OPTION(const char *name,
+        ZCE_GETOPT_LONG_OPTION(const char* name,
                                ZCE_Get_Option::OPTION_ARG_MODE has_arg,
                                int val = 0);
 
         /// Dtor.
         ~ZCE_GETOPT_LONG_OPTION(void);
 
-        bool operator < (const ZCE_GETOPT_LONG_OPTION &rhs);
+        bool operator < (const ZCE_GETOPT_LONG_OPTION& rhs);
 
         /// Long option name.
         std::string    name_;
@@ -399,7 +399,7 @@ private:
      * If this is zero, or a null string, it means resume the scan
      * by advancing to the next <argv>-element.
      */
-    char *nextchar_;
+    char* nextchar_;
 
     /// Most recently matched short option character.
     int optopt_;
@@ -416,7 +416,7 @@ private:
     int nonopt_end_;
 
     /// Points to the long_option found on last call to <operator()>.
-    ZCE_GETOPT_LONG_OPTION *long_option_;
+    ZCE_GETOPT_LONG_OPTION* long_option_;
 
     /// Array of long options.
     std::vector<ZCE_GETOPT_LONG_OPTION> long_opts_;

@@ -6,13 +6,13 @@
 //ZengXing 22503
 
 //
-ZCE_Trace_LogMsg *ZCE_Trace_LogMsg::log_instance_ = NULL;
+ZCE_Trace_LogMsg* ZCE_Trace_LogMsg::log_instance_ = NULL;
 
 /******************************************************************************************
 class ZCE_Trace_LogMsg
 ******************************************************************************************/
 //析构函数
-ZCE_Trace_LogMsg::ZCE_Trace_LogMsg():
+ZCE_Trace_LogMsg::ZCE_Trace_LogMsg() :
     multiline_buf_(NULL)
 {
 }
@@ -28,7 +28,7 @@ ZCE_Trace_LogMsg::~ZCE_Trace_LogMsg()
 
 //输出va_list的参数信息
 void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
-                                     const char *str_format,
+                                     const char* str_format,
                                      va_list args)
 {
     //如果日志输出开关关闭
@@ -63,7 +63,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
     sz_buf_len -= sz_use_len;
 
     //得到打印信息,_vsnprintf为特殊函数
-    int len_of_out = vsnprintf(log_tmp_buffer + sz_use_len,sz_buf_len,str_format,args);
+    int len_of_out = vsnprintf(log_tmp_buffer + sz_use_len, sz_buf_len, str_format, args);
 
     //如果输出的字符串比想想的长
     if (len_of_out >= static_cast<int>(sz_buf_len) || len_of_out < 0)
@@ -93,21 +93,21 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
 }
 
 //写日志
-void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY outlevel,const char *str_format,...)
+void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY outlevel, const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
-    vwrite_logmsg(outlevel,str_format,args);
+    va_start(args, str_format);
+    vwrite_logmsg(outlevel, str_format, args);
     va_end(args);
 }
 
 //ZASSERT的扩展定义，
-void ZCE_Trace_LogMsg::debug_assert(const char *file_name,
+void ZCE_Trace_LogMsg::debug_assert(const char* file_name,
                                     const int file_line,
-                                    const char *function_name,
-                                    const char *expression_name)
+                                    const char* function_name,
+                                    const char* expression_name)
 {
-    debug_output(RS_FATAL,"Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s].",
+    debug_output(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s].",
                  file_name,
                  file_line,
                  function_name,
@@ -115,13 +115,13 @@ void ZCE_Trace_LogMsg::debug_assert(const char *file_name,
 }
 
 //Aseert调试,增强版本函数
-void ZCE_Trace_LogMsg::debug_assert_ex(const char *file_name,
+void ZCE_Trace_LogMsg::debug_assert_ex(const char* file_name,
                                        const int file_line,
-                                       const char *function_name,
-                                       const char *expression_name,
-                                       const char *out_string)
+                                       const char* function_name,
+                                       const char* expression_name,
+                                       const char* out_string)
 {
-    debug_output(RS_FATAL,"Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s] OutString[%s].",
+    debug_output(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s] OutString[%s].",
                  file_name,
                  file_line,
                  function_name,
@@ -131,22 +131,22 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char *file_name,
 
 //调用vwrite_logmsg完成实际输出
 void ZCE_Trace_LogMsg::debug_output(zce::LOG_PRIORITY dbglevel,
-                                    const char *str_format,...)
+                                    const char* str_format, ...)
 {
     va_list args;
 
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(dbglevel,str_format,args);
+        log_instance_->vwrite_logmsg(dbglevel, str_format, args);
     }
 
     va_end(args);
 }
 
 //得到唯一的单子实例
-ZCE_Trace_LogMsg *ZCE_Trace_LogMsg::instance()
+ZCE_Trace_LogMsg* ZCE_Trace_LogMsg::instance()
 {
     if (log_instance_ == NULL)
     {
@@ -157,7 +157,7 @@ ZCE_Trace_LogMsg *ZCE_Trace_LogMsg::instance()
 }
 
 //赋值唯一的单子实例
-void ZCE_Trace_LogMsg::instance(ZCE_Trace_LogMsg *instatnce)
+void ZCE_Trace_LogMsg::instance(ZCE_Trace_LogMsg* instatnce)
 {
     clean_instance();
     log_instance_ = instatnce;
@@ -180,79 +180,79 @@ void ZCE_Trace_LogMsg::clean_instance()
 #if _MSC_VER <= 1300
 
 //用不用的日志级别输出
-void ZCE_Trace_LogMsg::debug_traceex(const char *str_format,...)
+void ZCE_Trace_LogMsg::debug_traceex(const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(RS_TRACE,str_format,args);
+        log_instance_->vwrite_logmsg(RS_TRACE, str_format, args);
     }
 
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_debugex(const char *str_format,...)
+void ZCE_Trace_LogMsg::debug_debugex(const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(RS_DEBUG,str_format,args);
+        log_instance_->vwrite_logmsg(RS_DEBUG, str_format, args);
     }
 
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_infoex(const char *str_format,...)
+void ZCE_Trace_LogMsg::debug_infoex(const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(RS_INFO,str_format,args);
+        log_instance_->vwrite_logmsg(RS_INFO, str_format, args);
     }
 
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_errorex(const char *str_format,...)
+void ZCE_Trace_LogMsg::debug_errorex(const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(RS_ERROR,str_format,args);
+        log_instance_->vwrite_logmsg(RS_ERROR, str_format, args);
     }
 
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_alertex(const char *str_format,...)
+void ZCE_Trace_LogMsg::debug_alertex(const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(RS_ALERT,str_format,args);
+        log_instance_->vwrite_logmsg(RS_ALERT, str_format, args);
     }
 
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_fatalex(const char *str_format,...)
+void ZCE_Trace_LogMsg::debug_fatalex(const char* str_format, ...)
 {
     va_list args;
-    va_start(args,str_format);
+    va_start(args, str_format);
 
     if (log_instance_)
     {
-        log_instance_->vwrite_logmsg(RS_FATAL,str_format,args);
+        log_instance_->vwrite_logmsg(RS_FATAL, str_format, args);
     }
 
     va_end(args);

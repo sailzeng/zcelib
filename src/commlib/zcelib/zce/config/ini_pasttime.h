@@ -7,6 +7,7 @@
 * @brief      INI 文件的读写的怀旧版，和WINDOWS的API功能类似，
 *             优势在于写回的时候中会保证文件原来的格式和注释，不会破坏文件的格式。
 *             另外，这个API有一些特殊功能，比如读取一个section下所有的字段内容等，
+*             保留这个文件的目的仅仅是留作纪念
 * @details    里面INI文件，一行的最大长度是8K
 *
 * @note       这应该是2002年，2003年在计费项目时，自己在家里写的代码。某种程
@@ -16,21 +17,22 @@
 *             整理注释发现里面还有WIN95的提示，呵呵
 */
 
-#ifndef ZCE_LIB_CONFIG_INI_PASTTIME_H_
-#define ZCE_LIB_CONFIG_INI_PASTTIME_H_
+#pragma once
 
+namespace zce
+{
 /*!
 * @brief      INI文件读写的处理，接口都模仿WIndows的API
 */
-class ZCE_INI_Pt
+class INI_Pt
 {
 public:
 
     ///构造函数,
     ///@param file_name 文件名称
-    ZCE_INI_Pt(const char *file_name);
+    INI_Pt(const char* file_name);
     //析构函数
-    ~ZCE_INI_Pt();
+    ~INI_Pt();
 
 public:
 
@@ -74,29 +76,29 @@ public:
     *             this parameter does not contain a full path to the file, Windows searches
     *             for the file in the Windows directory.
     */
-    size_t get_private_str(const char *sec_name,
-                           const char *key_name,
-                           const char *default_str,
-                           char *return_str,
+    size_t get_private_str(const char* sec_name,
+                           const char* key_name,
+                           const char* default_str,
+                           char* return_str,
                            const size_t size_ret_str);
 
     ///得到所有的section,用'\0'分隔，以'\0\0'结束，参数返回值参考get_privateprofile_string
-    size_t get_private_allsection(char *return_str,
+    size_t get_private_allsection(char* return_str,
                                   const size_t size_ret_str);
 
     ///得到某个Section下所有的Key值，参数返回值参考get_privateprofile_string
-    size_t getprivate_allkey(const char *sec_name,
-                             char *return_str,
+    size_t getprivate_allkey(const char* sec_name,
+                             char* return_str,
                              const size_t size_ret_str);
 
     ///得到Int的 Key值，参数返回值参考get_privateprofile_string
-    int get_private_int(const char *sec_name,
-                        const char *key_name,
+    int get_private_int(const char* sec_name,
+                        const char* key_name,
                         const int default_int);
 
     ///得到bool的 Key值，参数返回值参考get_privateprofile_string
-    bool   get_private_bool(const char *sec_name,
-                            const char *key_name,
+    bool   get_private_bool(const char* sec_name,
+                            const char* key_name,
                             const bool default_int);
 
     /*!
@@ -123,27 +125,27 @@ public:
     * @param      file_name
     *             Points to a null-terminated string that names the initialization file.
     */
-    bool   write_private_string(const char *sec_name,
-                                const char *key_name,
-                                const char *write_string);
+    bool   write_private_string(const char* sec_name,
+                                const char* key_name,
+                                const char* write_string);
 
     ///修改Section
-    bool   write_private_section(const char *sec_name,
-                                 const char *write_string);
+    bool   write_private_section(const char* sec_name,
+                                 const char* write_string);
     ///写入Int
-    bool   write_private_int(const char *sec_name,
-                             const char *key_name,
+    bool   write_private_int(const char* sec_name,
+                             const char* key_name,
                              const int nvalue);
     ///写入Bool变量
-    bool   write_private_bool(const char *sec_name,
-                              const char *key_name,
+    bool   write_private_bool(const char* sec_name,
+                              const char* key_name,
                               const bool bvalue);
 
     ///删除Key
-    bool   del_private_key(const char *sec_name,
-                           const char *key_name);
+    bool   del_private_key(const char* sec_name,
+                           const char* key_name);
     ///删除Section
-    bool   del_private_section(const char *sec_name);
+    bool   del_private_section(const char* sec_name);
 
 protected:
     //每行的最大长度
@@ -155,13 +157,12 @@ protected:
     std::string            file_name_;
 
     //
-    char *one_line_ = NULL;
+    char* one_line_ = NULL;
     //
-    char *str_key_ = NULL;
+    char* str_key_ = NULL;
     //
-    char *str_value_ = NULL;
+    char* str_value_ = NULL;
     //
-    char *write_line_ = NULL;
+    char* write_line_ = NULL;
 };
-
-#endif //ZCE_LIB_CONFIG_INI_PASTTIME_H_
+}

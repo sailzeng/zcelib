@@ -4,7 +4,7 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-ZCE_Mysql_Command::ZCE_Mysql_Command():
+ZCE_Mysql_Command::ZCE_Mysql_Command() :
     mysql_connect_(NULL)
 {
     //保留INITBUFSIZE的空间
@@ -12,7 +12,7 @@ ZCE_Mysql_Command::ZCE_Mysql_Command():
     sql_buffer_ = new char[INITBUFSIZE];
 }
 
-ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect *conn):
+ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect* conn) :
     mysql_connect_(NULL)
 {
     //assert(conn != NULL);
@@ -36,7 +36,7 @@ ZCE_Mysql_Command::~ZCE_Mysql_Command()
 }
 
 //为ZCE_Mysql_Command设置相关的连接对象，而且是必须已经成功连接上数据的
-int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect *conn)
+int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect* conn)
 {
     if (conn != NULL && conn->is_connected())
     {
@@ -48,13 +48,13 @@ int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect *conn)
 }
 
 ///设置SQL Command语句,动态参数版本
-int ZCE_Mysql_Command::set_sql_command(const char *sql_format,...)
+int ZCE_Mysql_Command::set_sql_command(const char* sql_format, ...)
 {
     va_list args;
-    va_start(args,sql_format);
+    va_start(args, sql_format);
 
     //_vsnprintf不是ANSI C标准函数,但是大部分函数库应该实现了它,毕竟vsprintf缺乏基本的安全感
-    int ret = vsnprintf(sql_buffer_,INITBUFSIZE,sql_format,args);
+    int ret = vsnprintf(sql_buffer_, INITBUFSIZE, sql_format, args);
 
     va_end(args);
 
@@ -72,13 +72,13 @@ int ZCE_Mysql_Command::set_sql_command(const char *sql_format,...)
 }
 
 //得到SQL Command. 重载多种形式,用于文本类型
-const char *ZCE_Mysql_Command::get_sql_command() const
+const char* ZCE_Mysql_Command::get_sql_command() const
 {
     return mysql_command_.c_str();
 }
 
 // 得到SQL 语句. 类型数据,传入的char buf长度是否足够自己保证
-int ZCE_Mysql_Command::get_sql_command(char *cmdbuf,size_t &szbuf) const
+int ZCE_Mysql_Command::get_sql_command(char* cmdbuf, size_t& szbuf) const
 {
     if (cmdbuf == NULL)
     {
@@ -94,12 +94,12 @@ int ZCE_Mysql_Command::get_sql_command(char *cmdbuf,size_t &szbuf) const
     }
 
     szbuf = size_sql;
-    memcpy(cmdbuf,mysql_command_.c_str(),szbuf);
+    memcpy(cmdbuf, mysql_command_.c_str(), szbuf);
     return 0;
 }
 
 //
-void ZCE_Mysql_Command::get_sql_command(std::string &strcmd) const
+void ZCE_Mysql_Command::get_sql_command(std::string& strcmd) const
 {
     //预先分配内存,保证效率
     strcmd.reserve(mysql_command_.length());
@@ -108,9 +108,9 @@ void ZCE_Mysql_Command::get_sql_command(std::string &strcmd) const
 
 //int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
 //执行SQL语句，功能全集，不对外使用
-int ZCE_Mysql_Command::execute(uint64_t *num_affect,
-                               uint64_t *last_id,
-                               ZCE_Mysql_Result *sql_result,
+int ZCE_Mysql_Command::execute(uint64_t* num_affect,
+                               uint64_t* last_id,
+                               ZCE_Mysql_Result* sql_result,
                                bool bstore)
 {
     //如果没有设置连接或者没有设置命令
@@ -131,7 +131,7 @@ int ZCE_Mysql_Command::execute(uint64_t *num_affect,
     //如果用户要求转储结果集
     if (sql_result)
     {
-        MYSQL_RES *tmp_res = NULL;
+        MYSQL_RES* tmp_res = NULL;
 
         if (bstore)
         {
@@ -174,31 +174,31 @@ int ZCE_Mysql_Command::execute(uint64_t *num_affect,
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
-int ZCE_Mysql_Command::execute(uint64_t &num_affect,uint64_t &last_id)
+int ZCE_Mysql_Command::execute(uint64_t& num_affect, uint64_t& last_id)
 {
-    return execute(&num_affect,&last_id,NULL,false);
+    return execute(&num_affect, &last_id, NULL, false);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
-int ZCE_Mysql_Command::execute(uint64_t &num_affect,ZCE_Mysql_Result &sql_result)
+int ZCE_Mysql_Command::execute(uint64_t& num_affect, ZCE_Mysql_Result& sql_result)
 {
-    return execute(&num_affect,NULL,&sql_result,true);
+    return execute(&num_affect, NULL, &sql_result, true);
 }
 
 //执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
 //用于结果集太多的处理,如果一次转储结果集会占用太多内存的处理,可以考虑用它,
 //但不推荐使用,一次取一行,交互太多
-int ZCE_Mysql_Command::execute(ZCE_Mysql_Result &sql_result)
+int ZCE_Mysql_Command::execute(ZCE_Mysql_Result& sql_result)
 {
-    return execute(NULL,NULL,&sql_result,false);
+    return execute(NULL, NULL, &sql_result, false);
 }
 
 #if MYSQL_VERSION_ID > 40100
 
 //用于 multiple-statement executions 中得到多个
 //如果
-int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result &sqlresult,bool bstore)
+int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result& sqlresult, bool bstore)
 {
     int tmpret = ::mysql_next_result(mysql_connect_->get_mysql_handle());
 
@@ -208,7 +208,7 @@ int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result &sqlresult,bool 
         return -1;
     }
 
-    MYSQL_RES *tmp_res = NULL;
+    MYSQL_RES* tmp_res = NULL;
 
     if (bstore)
     {

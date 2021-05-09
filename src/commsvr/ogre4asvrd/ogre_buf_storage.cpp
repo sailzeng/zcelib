@@ -3,12 +3,12 @@
 #include "ogre_configure.h"
 
 //instance函数使用的东西
-Ogre_Buffer_Storage *Ogre_Buffer_Storage::instance_ = NULL;
+Ogre_Buffer_Storage* Ogre_Buffer_Storage::instance_ = NULL;
 
 /****************************************************************************************************
 class Ogre_Buffer_Storage
 ****************************************************************************************************/
-Ogre_Buffer_Storage::Ogre_Buffer_Storage():
+Ogre_Buffer_Storage::Ogre_Buffer_Storage() :
     size_buffer_alloc_(0)
 {
     //extend_buffer_list(szlist);
@@ -40,7 +40,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
     size_buffer_alloc_ = 0;
 }
 
-Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
+Ogre4a_App_Frame* Ogre_Buffer_Storage::allocate_byte_buffer()
 {
     //缓冲区使用完了,扩展
     if (true == frame_buffer_ary_.empty())
@@ -48,14 +48,14 @@ Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
         extend_buffer_list();
     }
 
-    Ogre4a_App_Frame *tmppr = frame_buffer_ary_[0];
+    Ogre4a_App_Frame* tmppr = frame_buffer_ary_[0];
     frame_buffer_ary_[0] = NULL;
     frame_buffer_ary_.pop_front();
     return tmppr;
 }
 
 //
-void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
+void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame* ptrbuf)
 {
     ptrbuf->reset_framehead();
     frame_buffer_ary_.push_back(ptrbuf);
@@ -65,7 +65,7 @@ void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
 void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 {
     //
-    ZCE_LOG(RS_INFO,"extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
+    ZCE_LOG(RS_INFO, "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
             szlist,
             size_buffer_alloc_,
             szlist * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
@@ -78,7 +78,7 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     //将新的NEW数据装载进去
     for (size_t i = 0; i < szlist; ++i)
     {
-        Ogre4a_App_Frame *tmppr = Ogre4a_App_Frame::new_ogre(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN);
+        Ogre4a_App_Frame* tmppr = Ogre4a_App_Frame::new_ogre(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN);
         tmppr->reset_framehead();
         frame_buffer_ary_.push_back(tmppr);
     }
@@ -89,13 +89,13 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 
 //为了SingleTon类准备
 //实例的赋值
-void Ogre_Buffer_Storage::instance(Ogre_Buffer_Storage *instance)
+void Ogre_Buffer_Storage::instance(Ogre_Buffer_Storage* instance)
 {
     clean_instance();
     instance_ = instance;
 }
 //实例的获得
-Ogre_Buffer_Storage *Ogre_Buffer_Storage::instance()
+Ogre_Buffer_Storage* Ogre_Buffer_Storage::instance()
 {
     if (NULL == instance_)
     {

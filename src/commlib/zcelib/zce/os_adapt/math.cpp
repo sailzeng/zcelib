@@ -3,7 +3,7 @@
 #include "zce/os_adapt/math.h"
 
 // Euclid's greatest common divisor algorithm.
-uint32_t zce::gcd(uint32_t x,uint32_t y)
+uint32_t zce::gcd(uint32_t x, uint32_t y)
 {
     while (y != 0)
     {

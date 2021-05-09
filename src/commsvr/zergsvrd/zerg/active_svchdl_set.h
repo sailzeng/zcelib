@@ -26,8 +26,8 @@ public:
     * @param[in]  svrinfo    查询的soar::SERVICES_ID,
     * @param[out] svc_handle 返回的对应的handle
     */
-    int find_handle_by_svcid(const soar::SERVICES_ID &svc_id,
-                             TCP_Svc_Handler *&svc_handle);
+    int find_handle_by_svcid(const soar::SERVICES_ID& svc_id,
+                             TCP_Svc_Handler*& svc_handle);
 
     /*!
     * @brief      以负载均衡的方式，根据services type查询一个的SVC，按照序列数组顺序轮询的返回，
@@ -39,8 +39,8 @@ public:
     * @note       这样查询保证发送的数据尽量负载均衡，
     */
     int find_lbseqhdl_by_type(uint16_t services_type,
-                              uint32_t &services_id,
-                              TCP_Svc_Handler *&svc_handle);
+                              uint32_t& services_id,
+                              TCP_Svc_Handler*& svc_handle);
 
     /*!
     * @brief
@@ -52,8 +52,8 @@ public:
     */
     int find_lbfactorhdl_by_type(uint16_t services_type,
                                  uint32_t lb_factor,
-                                 uint32_t &services_id,
-                                 TCP_Svc_Handler *&svc_handle);
+                                 uint32_t& services_id,
+                                 TCP_Svc_Handler*& svc_handle);
 
     /*!
     * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
@@ -67,8 +67,8 @@ public:
     *             注意这样模式，配置的主备服务器不要数量过多(<=4)，
     */
     int find_mshdl_by_type(uint16_t services_type,
-                           uint32_t &find_services_id,
-                           TCP_Svc_Handler *&svc_handle);
+                           uint32_t& find_services_id,
+                           TCP_Svc_Handler*& svc_handle);
 
     /*!
     * @brief      查询类型对应的所有active的SVC ID数组，用于广播等
@@ -77,7 +77,7 @@ public:
     * @param      id_ary    这个类型对应的所有active的SVC ID的services_id数值
     * @note       可以对某个类型进行广播
     */
-    int find_hdlary_by_type(uint16_t services_type,std::vector<uint32_t> *&id_ary);
+    int find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t>*& id_ary);
 
     /*!
     * @brief      增加设置配置信息
@@ -85,8 +85,8 @@ public:
     * @param      svc_id      新增加的服务器的SVC ID
     * @param      new_svchdl  新增加的服务器的句柄
     */
-    int add_services_peerinfo(const soar::SERVICES_ID &svc_id,
-                              TCP_Svc_Handler *new_svchdl);
+    int add_services_peerinfo(const soar::SERVICES_ID& svc_id,
+                              TCP_Svc_Handler* new_svchdl);
 
     /*!
     * @brief
@@ -96,9 +96,9 @@ public:
     * @param      old_svchdl 如果原来有一个svrinfo对应的Hdler,返回通知你,
     * @note       返回的old_svchdl,可以用于清理
     */
-    int replace_services_peerInfo(const soar::SERVICES_ID &svc_id,
-                                  TCP_Svc_Handler *new_svchdl,
-                                  TCP_Svc_Handler *&old_svchdl);
+    int replace_services_peerInfo(const soar::SERVICES_ID& svc_id,
+                                  TCP_Svc_Handler* new_svchdl,
+                                  TCP_Svc_Handler*& old_svchdl);
 
     /*!
     * @brief      根据soar::SERVICES_ID,删除PEER信息,
@@ -106,7 +106,7 @@ public:
     * @param      svc_id   要删除服务器的SVC ID
     * @note
     */
-    int del_services_peerInfo(const soar::SERVICES_ID &svc_id);
+    int del_services_peerInfo(const soar::SERVICES_ID& svc_id);
 
     ///当前的数量
     size_t get_services_peersize();
@@ -129,7 +129,7 @@ protected:
 
     ///
     typedef std::unordered_map<soar::SERVICES_ID,
-        TCP_Svc_Handler *,soar::HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
+        TCP_Svc_Handler*, soar::HASH_OF_SVCID> MAP_OF_SVCID_TO_HDL;
 
     ///用于根据TYPE选择一个任意服务器，或者根据TYPE广播给所有这个类型的服务器
     typedef std::unordered_map<uint16_t,
@@ -139,7 +139,7 @@ protected:
     size_t max_peer_size_ = 0;
 
     ///
-    MAP_OF_SVCPEERINFO  svr_info_set_;
+    MAP_OF_SVCID_TO_HDL  svr_info_set_;
     ///
     MAP_OF_TYPE_TO_IDTABLE type_to_idtable_;
 };

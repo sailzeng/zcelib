@@ -29,7 +29,7 @@ namespace zce
 * @param[in]  max_val     max_val不是标准参数，用默认值修饰了，Windows下特有，可以用于模拟Mutex？
 * @note       对应的销毁函数是 @ref sem_destroy
 */
-int sem_init(sem_t *sem,
+int sem_init(sem_t* sem,
              int pshared,
              unsigned int init_value,
              unsigned int max_val = 0x7FFFFFFF);
@@ -39,7 +39,7 @@ int sem_init(sem_t *sem,
 * @return     int      0成功，-1失败
 * @param      sem      信号灯句柄
 */
-int sem_destroy(sem_t *sem);
+int sem_destroy(sem_t* sem);
 
 /*!
 * @brief      打开(有名)信号灯,max_val最大值不是标准参数，所以用默认只修饰了，这个主要用于创建有名信号灯,
@@ -52,7 +52,7 @@ int sem_destroy(sem_t *sem);
 * @param      max_val    max_val不是标准参数，用默认值修饰了，Windows下特有，
 * @note       打开后，要使用@ref sem_close，@ref sem_unlink
 */
-sem_t *sem_open(const char *name,
+sem_t* sem_open(const char* name,
                 int oflag = O_CREAT,
                 mode_t mode = ZCE_DEFAULT_FILE_PERMS,
                 unsigned int init_value = 1,
@@ -63,7 +63,7 @@ sem_t *sem_open(const char *name,
 * @return     int 0成功，-1失败
 * @param      sem 信号灯对象
 */
-int sem_close(sem_t *sem);
+int sem_close(sem_t* sem);
 
 /*!
 * @brief      删除信号灯
@@ -71,7 +71,7 @@ int sem_close(sem_t *sem);
 * @param      name 信号灯的名字
 * @note
 */
-int sem_unlink(const char *name);
+int sem_unlink(const char* name);
 
 /*!
 * @brief      信号灯的V操作,
@@ -79,7 +79,7 @@ int sem_unlink(const char *name);
 * @param      sem
 * @note
 */
-int sem_post(sem_t *sem);
+int sem_post(sem_t* sem);
 
 /*!
 * @brief      非标准函数，信号灯的release_count次V操作，
@@ -88,7 +88,7 @@ int sem_post(sem_t *sem);
 * @param      release_count
 * @note
 */
-int sem_post(sem_t *sem,
+int sem_post(sem_t* sem,
              u_int release_count);
 
 /*!
@@ -97,14 +97,14 @@ int sem_post(sem_t *sem,
 * @param      sem
 * @note
 */
-int sem_trywait(sem_t *sem);
+int sem_trywait(sem_t* sem);
 
 /*!
 * @brief      信号灯锁定（P操作）,如果信号灯的值小于0，
 * @return     int
 * @param      sem
 */
-int sem_wait(sem_t *sem);
+int sem_wait(sem_t* sem);
 
 /*!
 * @brief      信号灯带超时等待的锁定操作（P操作），时间是绝对值
@@ -113,7 +113,7 @@ int sem_wait(sem_t *sem);
 * @param      abs_timeout_spec 等待的时间点，绝对时间
 * @note
 */
-int sem_timedwait(sem_t *sem,const ::timespec *abs_timeout_spec);
+int sem_timedwait(sem_t* sem, const ::timespec* abs_timeout_spec);
 
 /*!
 * @brief      信号灯带超时等待的锁定操作（P操作）,非标准实现,使用timeval结构，时间是绝对值
@@ -121,7 +121,7 @@ int sem_timedwait(sem_t *sem,const ::timespec *abs_timeout_spec);
 * @param      sem              信号灯对象
 * @param      abs_timeout_time 等待的时间点，绝对时间  timeval是我内部的时长标示通用类型
 */
-int sem_timedwait(sem_t *sem,const timeval *abs_timeout_time);
+int sem_timedwait(sem_t* sem, const timeval* abs_timeout_time);
 
 /*!
 * @brief      返回当前信号灯的当前值,慎用，Windows目前不支持（某种程度上反映出了WINDOWS API的设计的问题）
@@ -130,7 +130,7 @@ int sem_timedwait(sem_t *sem,const timeval *abs_timeout_time);
 * @param      sem   信号灯对象
 * @param      sval  信号灯的值
 */
-int sem_getvalue(sem_t *sem,int *sval);
+int sem_getvalue(sem_t* sem, int* sval);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_SEMAPHORE_H_

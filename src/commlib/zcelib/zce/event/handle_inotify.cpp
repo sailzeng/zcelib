@@ -6,9 +6,11 @@
 #include "zce/logger/logging.h"
 #include "zce/event/reactor_base.h"
 
+namespace zce
+{
 //构造函数和析构函数
-ZCE_Event_INotify::ZCE_Event_INotify():
-    ZCE_Event_Handler(),
+Event_INotify::Event_INotify() :
+    zce::Event_Handler(),
 
     read_buffer_(NULL)
 {
@@ -22,11 +24,11 @@ ZCE_Event_INotify::ZCE_Event_INotify():
     watch_path_[0] = '\0';
     watch_mask_ = 0;
     watch_sub_dir_ = FALSE;
-    memset((void *)&over_lapped_,0,sizeof(OVERLAPPED));
+    memset((void*)&over_lapped_, 0, sizeof(OVERLAPPED));
 #endif
 }
 
-ZCE_Event_INotify::~ZCE_Event_INotify()
+Event_INotify::~Event_INotify()
 {
     if (read_buffer_)
     {
@@ -36,7 +38,7 @@ ZCE_Event_INotify::~ZCE_Event_INotify()
 }
 
 //打开监控句柄等，绑定reactor等
-int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
+int Event_INotify::open(zce::ZCE_Reactor* reactor_base)
 {
 #if defined (ZCE_OS_LINUX)
     int ret = 0;
@@ -49,13 +51,13 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     inotify_handle_ = ::inotify_init();
     if (ZCE_INVALID_HANDLE == inotify_handle_)
     {
-        ZCE_LOG(RS_ERROR,"[%s] invoke ::inotify_init fail,error [%u].",
+        ZCE_LOG(RS_ERROR, "[%s] invoke ::inotify_init fail,error [%u].",
                 __ZCE_FUNC__,
                 zce::last_error());
         return -1;
     }
 
-    ret = reactor_base->register_handler(this,static_cast<int>(EVENT_MASK::INOTIFY_MASK));
+    ret = reactor_base->register_handler(this, static_cast<int>(EVENT_MASK::INOTIFY_MASK));
     if (ret != 0)
     {
         ::close(inotify_handle_);
@@ -69,7 +71,7 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
 }
 
 //关闭监控句柄等，解除绑定reactor等
-int ZCE_Event_INotify::close()
+int Event_INotify::close()
 {
 #if defined (ZCE_OS_LINUX)
 
@@ -86,7 +88,7 @@ int ZCE_Event_INotify::close()
     if (inotify_handle_ != ZCE_INVALID_HANDLE)
     {
         //从反应器移除
-        reactor()->remove_handler(this,false);
+        reactor()->remove_handler(this, false);
 
         ::close(inotify_handle_);
         inotify_handle_ = ZCE_INVALID_HANDLE;
@@ -102,10 +104,10 @@ int ZCE_Event_INotify::close()
 }
 
 //添加监控
-int ZCE_Event_INotify::add_watch(const char *pathname,
-                                 uint32_t mask,
-                                 ZCE_HANDLE *watch_handle,
-                                 bool watch_sub_dir)
+int Event_INotify::add_watch(const char* pathname,
+                             uint32_t mask,
+                             ZCE_HANDLE* watch_handle,
+                             bool watch_sub_dir)
 {
     //检查参数是否有效，
     ZCE_ASSERT(pathname && mask);
@@ -124,10 +126,10 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     EVENT_INOTIFY_NODE watch_note;
     ZCE_HANDLE hdl_dir = ZCE_INVALID_HANDLE;
 
-    hdl_dir = ::inotify_add_watch(inotify_handle_,pathname,mask);
+    hdl_dir = ::inotify_add_watch(inotify_handle_, pathname, mask);
     if (hdl_dir == ZCE_INVALID_HANDLE)
     {
-        ZCE_LOG(RS_ERROR,"[%s] invoke ::inotify_add_watch fail,error [%u].",
+        ZCE_LOG(RS_ERROR, "[%s] invoke ::inotify_add_watch fail,error [%u].",
                 __ZCE_FUNC__,
                 zce::last_error());
         return -1;
@@ -135,10 +137,10 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
     watch_note.watch_handle_ = hdl_dir;
     watch_note.watch_mask_ = mask;
-    strncpy(watch_note.watch_path_,pathname,MAX_PATH);
+    strncpy(watch_note.watch_path_, pathname, MAX_PATH);
 
-    std::pair<HDL_TO_EIN_MAP::iterator,bool>
-        ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir,watch_note));
+    std::pair<HDL_TO_EIN_MAP::iterator, bool>
+        ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
 
     //如果插入不成功，进行各种难过清理工作
     if (ins_ret.second == false)
@@ -146,7 +148,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         //下面这段代码屏蔽的原因是，而LInux下，如果inotify_add_watch 同一个目录，handle是一样的。
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
-        ZCE_LOG(RS_ERROR,"[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
+        ZCE_LOG(RS_ERROR, "[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
                 __ZCE_FUNC__,
                 hdl_dir);
         return -1;
@@ -159,10 +161,10 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     int ret = 0;
     *watch_handle = ZCE_INVALID_HANDLE;
 
-    //已经监控了一个目录，Windows的一个ZCE_Event_INotify不能同时监控两个目录
+    //已经监控了一个目录，Windows的一个Event_INotify不能同时监控两个目录
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]add_watch fail handle[%lu]. Windows one Event_INotify only watch one dir.",
                 __ZCE_FUNC__,
                 watch_handle_);
         return -1;
@@ -180,7 +182,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
     if (watch_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
+        ZCE_LOG(RS_ERROR, "[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
                 __ZCE_FUNC__,
                 pathname,
                 zce::last_error());
@@ -192,7 +194,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     watch_sub_dir_ = watch_sub_dir;
 
     watch_mask_ = mask;
-    strncpy(watch_path_,pathname,MAX_PATH);
+    strncpy(watch_path_, pathname, MAX_PATH);
 
     DWORD bytes_returned = 0;
     BOOL bret = ::ReadDirectoryChangesW(
@@ -216,7 +218,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     //如果读取失败，一般而言，这是这段代码有问题
     if (bret == FALSE)
     {
-        ZCE_LOG(RS_ERROR,"[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
+        ZCE_LOG(RS_ERROR, "[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
                 __ZCE_FUNC__,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -225,7 +227,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
         return -1;
     }
-    ret = reactor()->register_handler(this,static_cast<int>(EVENT_MASK::INOTIFY_MASK));
+    ret = reactor()->register_handler(this, static_cast<int>(EVENT_MASK::INOTIFY_MASK));
     if (ret != 0)
     {
         ::CloseHandle(watch_handle_);
@@ -238,7 +240,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 #endif
 }
 
-int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
+int Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 {
 #if defined (ZCE_OS_LINUX)
     //先用句柄查询
@@ -248,7 +250,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
         return -1;
     }
 
-    int ret = ::inotify_rm_watch(inotify_handle_,iter_del->second.watch_handle_);
+    int ret = ::inotify_rm_watch(inotify_handle_, iter_del->second.watch_handle_);
     if (ret != 0)
     {
         return -1;
@@ -263,7 +265,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
         //从反应器移除
-        reactor()->remove_handler(this,false);
+        reactor()->remove_handler(this, false);
 
         ::CloseHandle(watch_handle_);
         watch_handle_ = ZCE_INVALID_HANDLE;
@@ -274,17 +276,17 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 }
 
 //读取事件触发调用函数
-int ZCE_Event_INotify::handle_input()
+int Event_INotify::handle_input()
 {
 #if defined (ZCE_OS_LINUX)
 
-    ZCE_LOG(RS_DEBUG,"ZCE_Event_INotify::handle_input");
+    ZCE_LOG(RS_DEBUG, "Event_INotify::handle_input");
 
     int detect_ret = 0;
     size_t watch_event_num = 0;
 
     //读取
-    ssize_t read_ret = zce::read(inotify_handle_,read_buffer_,READ_BUFFER_LEN);
+    ssize_t read_ret = zce::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
     if (read_ret <= 0)
     {
         return -1;
@@ -298,7 +300,7 @@ int ZCE_Event_INotify::handle_input()
     {
         detect_ret = 0;
 
-        ::inotify_event *ne_ptr = (::inotify_event *) (read_buffer_ + next_entry_offset);
+        ::inotify_event* ne_ptr = (::inotify_event*)(read_buffer_ + next_entry_offset);
 
         //检查读取的数据是否还有一个，
         read_len -= (sizeof(::inotify_event) + ne_ptr->len);
@@ -313,8 +315,8 @@ int ZCE_Event_INotify::handle_input()
                     ne_ptr->wd);
             continue;
         }
-        EVENT_INOTIFY_NODE *node_ptr = &(active_iter->second);
-        const char *active_path = ne_ptr->name;
+        EVENT_INOTIFY_NODE* node_ptr = &(active_iter->second);
+        const char* active_path = ne_ptr->name;
         //根据返回的mask决定如何处理
 
         //注意下面的代码分支用的if else if ,而不是if if，我的初步看法是这些事件不会一起触发，但也许不对。
@@ -423,7 +425,7 @@ int ZCE_Event_INotify::handle_input()
     //读取结果失败
     if (FALSE == bret)
     {
-        ZCE_LOG(RS_ERROR,"[%s] ::GetOverlappedResult fail,error [%u].",
+        ZCE_LOG(RS_ERROR, "[%s] ::GetOverlappedResult fail,error [%u].",
                 __ZCE_FUNC__,
                 zce::last_error());
         return -1;
@@ -431,12 +433,12 @@ int ZCE_Event_INotify::handle_input()
 
     //记录当前处理的句柄，
 
-    FILE_NOTIFY_INFORMATION *read_ptr = NULL;
+    FILE_NOTIFY_INFORMATION* read_ptr = NULL;
     DWORD next_entry_offset = 0;
     do
     {
         detect_ret = 0;
-        read_ptr = (FILE_NOTIFY_INFORMATION *)(read_buffer_ + next_entry_offset);
+        read_ptr = (FILE_NOTIFY_INFORMATION*)(read_buffer_ + next_entry_offset);
 
         //文件名称进行转换,从宽字节转换为多字节,
         //天杀的Windows在这些地方又埋了陷阱FILE_NOTIFY_INFORMATION里面的长度FileNameLength是字节长度
@@ -452,7 +454,7 @@ int ZCE_Event_INotify::handle_input()
         //Windows 的目录名称最大长度可以到3K，我没有兴趣去搞一套这个玩
         if (length_of_ws >= MAX_PATH)
         {
-            ZCE_LOG(RS_ALERT,"My God ,your path length [%u] more than MAX_PATH [%u],I don't process this.",
+            ZCE_LOG(RS_ALERT, "My God ,your path length [%u] more than MAX_PATH [%u],I don't process this.",
                     length_of_ws,
                     MAX_PATH);
             continue;
@@ -557,7 +559,7 @@ int ZCE_Event_INotify::handle_input()
     );
     if (FALSE == bret)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
+        ZCE_LOG(RS_ERROR, "[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
                 __ZCE_FUNC__,
                 zce::last_error());
     }
@@ -568,7 +570,8 @@ int ZCE_Event_INotify::handle_input()
 }
 
 //关闭监控句柄
-int ZCE_Event_INotify::handle_close()
+int Event_INotify::handle_close()
 {
     return close();
+}
 }

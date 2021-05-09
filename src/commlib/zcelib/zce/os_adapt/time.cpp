@@ -82,7 +82,7 @@ const timeval zce::get_uptime()
     //倒霉的发现LINUX很多版本都没有支持这个gethrtime函数，我靠，，，，，
     struct timespec sp;
     timeval up_time;
-    int ret = ::clock_gettime(CLOCK_MONOTONIC,&sp);
+    int ret = ::clock_gettime(CLOCK_MONOTONIC, &sp);
 
     if (ret == 0)
     {
@@ -90,7 +90,7 @@ const timeval zce::get_uptime()
     }
     else
     {
-        ZCE_LOG(RS_ERROR,"::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d",ret,zce::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d", ret, zce::last_error());
         up_time.tv_sec = 0;
         up_time.tv_usec = 0;
     }
@@ -101,21 +101,21 @@ const timeval zce::get_uptime()
 
 //
 //得到当前的系统时间字符串输出
-const char *zce::timestamp(char *str_date_time,size_t datetime_strlen)
+const char* zce::timestamp(char* str_date_time, size_t datetime_strlen)
 {
     timeval now_time_val(zce::gettimeofday());
-    return zce::timestamp(&now_time_val,str_date_time,datetime_strlen);
+    return zce::timestamp(&now_time_val, str_date_time, datetime_strlen);
 }
 
 //将参数timeval的值作为的时间格格式化后输出打印出来
-const char *zce::timestamp(const timeval *timeval,char *str_date_time,size_t datetime_strlen)
+const char* zce::timestamp(const timeval* timeval, char* str_date_time, size_t datetime_strlen)
 {
     ZCE_ASSERT(datetime_strlen > zce::TIMESTR_ISO_USEC_LEN);
 
     //转换为语句
     time_t now_time = timeval->tv_sec;
     tm tm_data;
-    zce::localtime_r(&now_time,&tm_data);
+    zce::localtime_r(&now_time, &tm_data);
 
     //上面的两行代码我原来用的是这一行代码，但是会出现崩溃(Windows下的断言),你知道为啥吗，呵呵
     //tm now_tm =*localtime(static_cast<time_t *>(&(timeval->tv_sec)));
@@ -147,16 +147,16 @@ int zce::gettimezone()
 //可以控制各种格式输出
 //如果成功，返回参数字符串str_date_time，如果失败返回NULL
 //timeval->tv_usec 千万不要溢出，会导致不可以预期问题
-const char *zce::timeval_to_str(const timeval *timeval,
-                                char *str_date_time,
+const char* zce::timeval_to_str(const timeval* timeval,
+                                char* str_date_time,
                                 size_t str_len,
-                                size_t &use_buf,
+                                size_t& use_buf,
                                 bool uct_time,
                                 TIME_STR_FORMAT fmt
 )
 {
     //这个实现没有使用strftime的原因是，我对输出精度可能有更高的要求，
-    static const char *DAY_OF_WEEK_NAME[] =
+    static const char* DAY_OF_WEEK_NAME[] =
     {
         ("Sun"),
         ("Mon"),
@@ -167,7 +167,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
         ("Sat")
     };
 
-    static const char *MONTH_NAME[] =
+    static const char* MONTH_NAME[] =
     {
         ("Jan"),
         ("Feb"),
@@ -194,7 +194,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
             errno = EINVAL;
             return NULL;
         }
-        zce::gmtime_r(&now_time,&tm_data);
+        zce::gmtime_r(&now_time, &tm_data);
     }
     else
     {
@@ -205,7 +205,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
             errno = EINVAL;
             return NULL;
         }
-        zce::localtime_r(&now_time,&tm_data);
+        zce::localtime_r(&now_time, &tm_data);
     }
 
     //如果是压缩格式，精度到天，20100910
@@ -405,13 +405,13 @@ const char *zce::timeval_to_str(const timeval *timeval,
 }
 
 //通过字符串翻译得到tm时间结构
-void zce::str_to_tm(const char *strtm,
+void zce::str_to_tm(const char* strtm,
                     TIME_STR_FORMAT fmt,
-                    tm *ptr_tm,
-                    time_t *usec,
-                    int *tz)
+                    tm* ptr_tm,
+                    time_t* usec,
+                    int* tz)
 {
-    static const char *MONTH_NAME[] =
+    static const char* MONTH_NAME[] =
     {
         ("Jan"),
         ("Feb"),
@@ -518,7 +518,7 @@ void zce::str_to_tm(const char *strtm,
 
         for (int i = 0; i < 12; i++)
         {
-            if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
+            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
             }
@@ -560,7 +560,7 @@ void zce::str_to_tm(const char *strtm,
 
         for (int i = 0; i < 12; i++)
         {
-            if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
+            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
             }
@@ -590,7 +590,7 @@ void zce::str_to_tm(const char *strtm,
 
         for (int i = 0; i < 12; i++)
         {
-            if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
+            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
             }
@@ -631,10 +631,10 @@ void zce::str_to_tm(const char *strtm,
 }
 
 //从字符串转换得到时间time_t函数
-int zce::str_to_timeval(const char *strtm,
+int zce::str_to_timeval(const char* strtm,
                         TIME_STR_FORMAT fmt,
                         bool uct_time,
-                        timeval *tval)
+                        timeval* tval)
 {
     //
     if (!uct_time && zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
@@ -693,12 +693,12 @@ int zce::str_to_timeval(const char *strtm,
 }
 
 ///本地时间字符串转换为time_t
-int zce::localtimestr_to_time_t(const char *localtime_str,
+int zce::localtimestr_to_time_t(const char* localtime_str,
                                 TIME_STR_FORMAT fmt,
-                                time_t *time_t_val)
+                                time_t* time_t_val)
 {
     timeval tval;
-    int ret = str_to_timeval(localtime_str,fmt,false,&tval);
+    int ret = str_to_timeval(localtime_str, fmt, false, &tval);
     if (ret != 0)
     {
         return ret;
@@ -717,28 +717,28 @@ const timeval zce::timeval_zero()
 }
 
 //将tv修正为0
-void zce::timeval_clear(timeval &tv)
+void zce::timeval_clear(timeval& tv)
 {
     tv.tv_sec = 0;
     tv.tv_sec = 0;
 }
 
 //计算总计是多少毫秒
-uint64_t zce::total_milliseconds(const timeval &tv)
+uint64_t zce::total_milliseconds(const timeval& tv)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
     return static_cast<uint64_t>(tv.tv_sec) * SEC_PER_MSEC + tv.tv_usec / MSEC_PER_USEC;
 }
 
 //计算timeval内部总计是多少微秒10-6
-uint64_t zce::total_microseconds(const timeval &tv)
+uint64_t zce::total_microseconds(const timeval& tv)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
     return static_cast<uint64_t>(tv.tv_sec) * SEC_PER_USEC + tv.tv_usec;
 }
 
 //比较时间是否一致,如果一致返回0，left大，返回整数，right大返回负数
-int zce::timeval_compare(const  timeval &left,const timeval &right)
+int zce::timeval_compare(const  timeval& left, const timeval& right)
 {
     if (left.tv_sec != right.tv_sec)
     {
@@ -751,7 +751,7 @@ int zce::timeval_compare(const  timeval &left,const timeval &right)
 }
 
 //对两个时间进行想减,没有做复杂的溢出检查
-const timeval zce::timeval_add(const timeval &left,const timeval &right)
+const timeval zce::timeval_add(const timeval& left, const timeval& right)
 {
     timeval plus_time_val;
     plus_time_val.tv_sec = left.tv_sec + right.tv_sec;
@@ -768,7 +768,7 @@ const timeval zce::timeval_add(const timeval &left,const timeval &right)
 
 //对两个时间进行相加,没有做复杂的溢出检查,尽量返回>0的数值
 //safe == true保证返回值>=0,
-const  timeval zce::timeval_sub(const timeval &left,const  timeval &right,bool safe)
+const  timeval zce::timeval_sub(const timeval& left, const  timeval& right, bool safe)
 {
     int64_t left_usec_val = (int64_t)left.tv_sec * SEC_PER_USEC + left.tv_usec;
     int64_t right_usec_val = (int64_t)right.tv_sec * SEC_PER_USEC + right.tv_usec;
@@ -794,7 +794,7 @@ const  timeval zce::timeval_sub(const timeval &left,const  timeval &right,bool s
 }
 
 //检查这个TIMEVALUE是否还有剩余的时间
-void zce::timeval_adjust(timeval &tv)
+void zce::timeval_adjust(timeval& tv)
 {
     int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
 
@@ -803,7 +803,7 @@ void zce::timeval_adjust(timeval &tv)
 }
 
 //检查这个TIMEVALUE是否还有剩余的时间
-bool zce::timeval_havetime(const timeval &tv)
+bool zce::timeval_havetime(const timeval& tv)
 {
     int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
 
@@ -816,7 +816,7 @@ bool zce::timeval_havetime(const timeval &tv)
 }
 
 //这只timeval这个结构
-const timeval zce::make_timeval(time_t sec,time_t usec)
+const timeval zce::make_timeval(time_t sec, time_t usec)
 {
     timeval to_timeval;
 #if defined (ZCE_OS_WINDOWS)
@@ -846,7 +846,7 @@ const timeval zce::make_timeval(std::clock_t clock_value)
 }
 
 //转换得到timeval这个结构
-const timeval zce::make_timeval(const ::timespec *timespec_val)
+const timeval zce::make_timeval(const ::timespec* timespec_val)
 {
     //每次我自己看见这段代码都会疑惑好半天，实际我没有错，好吧，写点注释把，
     //NSEC 纳秒 10-9s
@@ -858,42 +858,42 @@ const timeval zce::make_timeval(const ::timespec *timespec_val)
     return to_timeval;
 }
 
-const timeval zce::make_timeval(const std::chrono::hours &val)
+const timeval zce::make_timeval(const std::chrono::hours& val)
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * zce::ONE_HOUR_SECONDS);
     to_timeval.tv_usec = 0;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::minutes &val)
+const timeval zce::make_timeval(const std::chrono::minutes& val)
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * zce::ONE_MINUTE_SECONDS);
     to_timeval.tv_usec = 0;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::seconds &val)
+const timeval zce::make_timeval(const std::chrono::seconds& val)
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count());
     to_timeval.tv_usec = 0;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::milliseconds &val)
+const timeval zce::make_timeval(const std::chrono::milliseconds& val)
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_MSEC);
     to_timeval.tv_usec = (val.count() % SEC_PER_MSEC) * 1000;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::microseconds &val)
+const timeval zce::make_timeval(const std::chrono::microseconds& val)
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_USEC);
     to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>((val.count() % SEC_PER_USEC));
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::nanoseconds &val)
+const timeval zce::make_timeval(const std::chrono::nanoseconds& val)
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_NSEC);
@@ -902,13 +902,13 @@ const timeval zce::make_timeval(const std::chrono::nanoseconds &val)
 }
 
 //将CPP11的time_point的数据结构转换得到timeval结构
-const timeval zce::make_timeval(const std::chrono::system_clock::time_point &val)
+const timeval zce::make_timeval(const std::chrono::system_clock::time_point& val)
 {
     std::chrono::nanoseconds tval =
         std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
     return zce::make_timeval(tval);
 }
-const timeval zce::make_timeval(const std::chrono::steady_clock::time_point &val)
+const timeval zce::make_timeval(const std::chrono::steady_clock::time_point& val)
 {
     std::chrono::nanoseconds tval =
         std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
@@ -918,7 +918,7 @@ const timeval zce::make_timeval(const std::chrono::steady_clock::time_point &val
 #if defined (ZCE_OS_WINDOWS)
 
 //转换FILETIME到timeval
-const timeval zce::make_timeval(const FILETIME *file_time)
+const timeval zce::make_timeval(const FILETIME* file_time)
 {
     timeval to_timeval;
 
@@ -938,15 +938,15 @@ const timeval zce::make_timeval(const FILETIME *file_time)
 }
 
 //转换SYSTEMTIME到timeval
-const timeval zce::make_timeval(const SYSTEMTIME *system_time)
+const timeval zce::make_timeval(const SYSTEMTIME* system_time)
 {
     FILETIME ft;
-    ::SystemTimeToFileTime(system_time,&ft);
+    ::SystemTimeToFileTime(system_time, &ft);
     return make_timeval(&ft);
 }
 
 //转换FILETIME到timeval,这个是把FILETIME当着一个时长看待进行的
-const timeval zce::make_timeval2(const FILETIME *file_time)
+const timeval zce::make_timeval2(const FILETIME* file_time)
 {
     timeval to_timeval;
 
@@ -965,7 +965,7 @@ const timeval zce::make_timeval2(const FILETIME *file_time)
 
 //----------------------------------------------------------------------------------------------------
 //转换得到timeval这个结构
-const ::timespec zce::make_timespec(const ::timeval *timeval_val)
+const ::timespec zce::make_timespec(const ::timeval* timeval_val)
 {
     //每次我自己看见这段代码都会疑惑好半天，实际我没有错，好吧，写点注释把，
     //NSEC 纳秒 10-9s
@@ -979,7 +979,7 @@ const ::timespec zce::make_timespec(const ::timeval *timeval_val)
 }
 
 //计算总计是多少毫秒
-uint64_t zce::total_milliseconds(const ::timespec &ts)
+uint64_t zce::total_milliseconds(const ::timespec& ts)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
     return static_cast<uint64_t>(ts.tv_sec) * SEC_PER_MSEC + ts.tv_nsec / MSEC_PER_NSEC;
@@ -1001,7 +1001,7 @@ int zce::sleep(uint32_t seconds)
 }
 
 //休息一个timeval的时间
-int zce::sleep(const timeval &tv)
+int zce::sleep(const timeval& tv)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
@@ -1035,7 +1035,7 @@ uint64_t zce::rdtsc()
 
 #if defined (ZCE_WIN32) && !defined (ZCE_WIN64)
 
-    uint32_t hiword,loword;
+    uint32_t hiword, loword;
     //#define rdtsc __asm __emit 0fh __asm __emit 031h
     //#define cpuid __asm __emit 0fh __asm __emit 0a2h
     __asm
@@ -1047,22 +1047,22 @@ uint64_t zce::rdtsc()
         __emit 0fh
         __emit 031h
         //读取edx，eax，
-        mov hiword,edx
-        mov loword,eax
+        mov hiword, edx
+        mov loword, eax
     }
     tsc_value = (uint64_t(hiword) << 32) + loword;
     tsc_value = __rdtsc();
 #elif defined (ZCE_WIN64)
 
     int registers[4];
-    __cpuid(registers,0);
+    __cpuid(registers, 0);
     tsc_value = __rdtsc();
 
 #elif defined (ZCE_OS_LINUX)
 
-    uint32_t hiword,loword;
+    uint32_t hiword, loword;
     asm("cpuid");
-    asm volatile("rdtsc" : "=a" (hiword),"=d" (loword));
+    asm volatile("rdtsc" : "=a" (hiword), "=d" (loword));
     tsc_value = (uint64_t(hiword) << 32) + loword;
 #endif
 

@@ -239,7 +239,7 @@
     <ClCompile Include="zce\lockfree\kfifo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\string\helper.cpp">
+    <ClCompile Include="zce\string\to_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\string\format.cpp">
@@ -312,6 +312,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\sqlite\sqlite_stmt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\string\from_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -610,7 +613,7 @@
     <ClInclude Include="zce\lockfree\stack.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\string\helper.h">
+    <ClInclude Include="zce\string\to_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\extend.h">
@@ -704,6 +707,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\sqlite\sqlite_stmt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\string\from_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

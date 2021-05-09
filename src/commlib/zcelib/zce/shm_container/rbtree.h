@@ -33,7 +33,7 @@ enum RB_TREE_COLOR
 //
 typedef char  color_type;
 
-template<class _value_type,class _key_type,class _extract_key,class _compare_key> class shm_rb_tree;
+template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_rb_tree;
 
 //RB TREE的头部数据区
 class _shm_rb_tree_head
@@ -41,9 +41,9 @@ class _shm_rb_tree_head
 protected:
     _shm_rb_tree_head()
         : size_of_mmap_(0)
-        ,num_of_node_(0)
-        ,sz_free_node_(0)
-        ,sz_use_node_(0)
+        , num_of_node_(0)
+        , sz_free_node_(0)
+        , sz_use_node_(0)
     {
     }
     ~_shm_rb_tree_head()
@@ -67,17 +67,17 @@ class _shm_rb_tree_index
 public:
     _shm_rb_tree_index()
         : parent_(_shm_memory_base::_INVALID_POINT)
-        ,left_(_shm_memory_base::_INVALID_POINT)
-        ,right_(_shm_memory_base::_INVALID_POINT)
-        ,color_(RB_TREE_RED)
+        , left_(_shm_memory_base::_INVALID_POINT)
+        , right_(_shm_memory_base::_INVALID_POINT)
+        , color_(RB_TREE_RED)
     {
     }
 
-    _shm_rb_tree_index(const size_t &p,const size_t &l,const size_t &r,char cl)
+    _shm_rb_tree_index(const size_t& p, const size_t& l, const size_t& r, char cl)
         : parent_(p)
-        ,left_(l)
-        ,right_(r)
-        ,color_(cl)
+        , left_(l)
+        , right_(r)
+        , color_(cl)
     {
     }
 
@@ -97,23 +97,23 @@ public:
 };
 
 //RBtree的迭代器
-template <class _value_type,class _key_type,class _extract_key,class _compare_key> class _shm_rb_tree_iterator
+template <class _value_type, class _key_type, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
 {
-    typedef _shm_rb_tree_iterator<_value_type,_key_type,_extract_key,_compare_key> iterator;
+    typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
 
-    typedef shm_rb_tree<_value_type,_key_type,_extract_key,_compare_key> shm_rb_tree_t;
+    typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type *pointer;
-    typedef _value_type &reference;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
     typedef _value_type value_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
-    _shm_rb_tree_iterator(size_t seq,shm_rb_tree_t *instance)
+    _shm_rb_tree_iterator(size_t seq, shm_rb_tree_t* instance)
         : serial_(seq)
-        ,rb_tree_instance_(instance)
+        , rb_tree_instance_(instance)
     {
     }
 
@@ -128,7 +128,7 @@ public:
     }
 
     //初始化
-    void initialize(size_t seq,shm_rb_tree_t *instance)
+    void initialize(size_t seq, shm_rb_tree_t* instance)
     {
         serial_ = seq;
         rb_tree_instance_ = instance;
@@ -140,27 +140,27 @@ public:
         return serial_;
     }
 
-    bool operator==(const iterator &x) const
+    bool operator==(const iterator& x) const
     {
         return (serial_ == x.serial_ && rb_tree_instance_ == x.rb_tree_instance_);
     }
-    bool operator!=(const iterator &x) const
+    bool operator!=(const iterator& x) const
     {
         return !(*this == x);
     }
 
-    _value_type &operator*() const
+    _value_type& operator*() const
     {
         return *(operator->());
     }
 
     //在多线程的环境下提供这个运送符号是不安全的,没有加锁,上层自己保证
-    _value_type *operator->() const
+    _value_type* operator->() const
     {
         return rb_tree_instance_->getdatabase() + serial_;
     }
 
-    iterator &operator++()
+    iterator& operator++()
     {
         increment();
         return *this;
@@ -172,7 +172,7 @@ public:
         return tmp;
     }
 
-    iterator &operator--()
+    iterator& operator--()
     {
         decrement();
         return *this;
@@ -258,7 +258,7 @@ protected:
     //序列号
     size_t          serial_;
     //RBtree的实例指针
-    shm_rb_tree_t *rb_tree_instance_;
+    shm_rb_tree_t* rb_tree_instance_;
 };
 
 /*!
@@ -278,52 +278,52 @@ template < class _value_type,
 {
 public:
     //定义自己
-    typedef shm_rb_tree<_value_type,_key_type,_extract_key,_compare_key> self;
+    typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> self;
 
     //定义迭代器
-    typedef _shm_rb_tree_iterator<_value_type,_key_type,_extract_key,_compare_key> iterator;
+    typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
 
     //迭代器友元
-    friend class _shm_rb_tree_iterator<_value_type,_key_type,_extract_key,_compare_key>;
+    friend class _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
 
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_rb_tree<_value_type,_key_type,_extract_key,_compare_key >(size_t numnode,void *pmmap,bool if_restore)
-        :_shm_memory_base(NULL)
-        ,index_base_(NULL)
-        ,data_base_(NULL)
+    shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void* pmmap, bool if_restore)
+        : _shm_memory_base(NULL)
+        , index_base_(NULL)
+        , data_base_(NULL)
     {
     }
 
-    shm_rb_tree<_value_type,_key_type,_extract_key,_compare_key >()
-        :_shm_memory_base(NULL)
+    shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >()
+        : _shm_memory_base(NULL)
     {
     }
 public:
 
-    ~shm_rb_tree<_value_type,_key_type,_extract_key,_compare_key >()
+    ~shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >()
     {
     }
 
     //只定义,不实现,避免犯错
-    const self &operator=(const self &others);
+    const self& operator=(const self& others);
 
     //得到索引的基础地址
-    inline _shm_rb_tree_index *getindexbase()
+    inline _shm_rb_tree_index* getindexbase()
     {
         return index_base_;
     }
 
     //得到数据区的基础地质
-    inline  _value_type *getdatabase()
+    inline  _value_type* getdatabase()
     {
         return data_base_;
     }
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type &val)
+    size_t create_node(const _value_type& val)
     {
         //如果没有空间可以分配
         if (rb_tree_head_->sz_free_node_ == 0)
@@ -372,10 +372,10 @@ public:
     }
 
     //初始化
-    static self *initialize(const size_t numnode,char *pmmap,bool if_restore = false)
+    static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
-        _shm_rb_tree_head *rb_tree_head = reinterpret_cast<_shm_rb_tree_head *>(pmmap);
+        _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
         if (true == if_restore)
@@ -392,17 +392,17 @@ public:
         rb_tree_head->size_of_mmap_ = getallocsize(numnode);
         rb_tree_head->num_of_node_ = numnode;
 
-        self *instance = new self();
+        self* instance = new self();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
         instance->rb_tree_head_ = rb_tree_head;
-        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index *>(pmmap + sizeof(_shm_rb_tree_head));
-        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head));
+        instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
-        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index *>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
-        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index *>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
+        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
+        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
 
         if (false == if_restore)
         {
@@ -426,7 +426,7 @@ public:
         head_index_->left_ = rb_tree_head_->num_of_node_;
         head_index_->color_ = RB_TREE_RED;
 
-        _shm_rb_tree_index *pindex = index_base_;
+        _shm_rb_tree_index* pindex = index_base_;
 
         free_index_->right_ = 0;
 
@@ -448,13 +448,13 @@ public:
     //找到第一个节点
     iterator begin()
     {
-        return iterator(head_index_->left_,this);
+        return iterator(head_index_->left_, this);
     };
 
     //容器应该是前闭后开的,头节点视为最后一个index
     iterator end()
     {
-        return iterator(rb_tree_head_->num_of_node_,this);
+        return iterator(rb_tree_head_->num_of_node_, this);
     }
 
     //所有节点都在free链上即是空
@@ -500,52 +500,52 @@ protected:
     //本来打算把这段代码全部宏定义的，但考虑了一下，觉得还是inline就足够了。
     //宏毕竟会让代码变得丑陋，算了。而且这些函数的长度应该是可以被inline的。
 
-    inline size_t &header() const
+    inline size_t& header() const
     {
         return rb_tree_head_->num_of_node_;
     }
 
-    inline size_t &root() const
+    inline size_t& root() const
     {
         return head_index_->parent_;
     }
 
-    inline size_t &leftmost() const
+    inline size_t& leftmost() const
     {
         return head_index_->left_;
     }
 
-    inline size_t &rightmost() const
+    inline size_t& rightmost() const
     {
         return head_index_->right_;
     }
 
-    inline size_t &left(size_t x)
+    inline size_t& left(size_t x)
     {
         return (index_base_ + x)->left_;
     }
 
-    inline size_t &right(size_t x)
+    inline size_t& right(size_t x)
     {
         return (index_base_ + x)->right_;
     }
 
-    inline size_t &parent(size_t x)
+    inline size_t& parent(size_t x)
     {
         return (index_base_ + x)->parent_;
     }
 
-    inline color_type &color(size_t x)
+    inline color_type& color(size_t x)
     {
         return (index_base_ + x)->color_;
     }
 
-    inline const _value_type &value(size_t x)
+    inline const _value_type& value(size_t x)
     {
         return *(data_base_ + x);
     }
 
-    inline const _key_type &key(size_t x)
+    inline const _key_type& key(size_t x)
     {
         return _extract_key()(value(x));
     }
@@ -574,16 +574,16 @@ protected:
 
 protected:
     //真正的插入是由这个函数完成的
-    std::pair<iterator,bool>  _insert(size_t x,size_t y,const _value_type &v)
+    std::pair<iterator, bool>  _insert(size_t x, size_t y, const _value_type& v)
     {
         size_t z = create_node(v);
         //如果空间不足，无法插入，返回end,false的pair
         if (_INVALID_POINT == z)
         {
-            return std::pair<iterator,bool>(end(),false);
+            return std::pair<iterator, bool>(end(), false);
         }
 
-        if (y == header() || x != _INVALID_POINT || _compare_key()(_extract_key()(v),key(y)))
+        if (y == header() || x != _INVALID_POINT || _compare_key()(_extract_key()(v), key(y)))
         {
             left(y) = z;
 
@@ -612,14 +612,14 @@ protected:
         right(z) = _INVALID_POINT;
         *(data_base_ + z) = v;
 
-        _rb_tree_rebalance(z,parent(header()));
-        return  std::pair<iterator,bool>(iterator(z,this),true);
+        _rb_tree_rebalance(z, parent(header()));
+        return  std::pair<iterator, bool>(iterator(z, this), true);
     }
 
     //通过旋转和变色，调整整个树，让其符合RBTree要求
     //参数1：新增节点
     //参数2：根节点
-    void _rb_tree_rebalance(size_t x,size_t &root)
+    void _rb_tree_rebalance(size_t x, size_t& root)
     {
         color(x) = RB_TREE_RED;
 
@@ -641,12 +641,12 @@ protected:
                     if (x == right(parent(x)))
                     {
                         x = parent(x);
-                        _rb_tree_rotate_left(x,root);
+                        _rb_tree_rotate_left(x, root);
                     }
 
                     color(parent(x)) = RB_TREE_BLACK;
                     color(parent(parent(x))) = RB_TREE_RED;
-                    _rb_tree_rotate_right(parent(parent(x)),root);
+                    _rb_tree_rotate_right(parent(parent(x)), root);
                 }
             }
             else
@@ -665,12 +665,12 @@ protected:
                     if (x == left(parent(x)))
                     {
                         x = parent(x);
-                        _rb_tree_rotate_right(x,root);
+                        _rb_tree_rotate_right(x, root);
                     }
 
                     color(parent(x)) = RB_TREE_BLACK;
                     color(parent(parent(x))) = RB_TREE_RED;
-                    _rb_tree_rotate_left(parent(parent(x)),root);
+                    _rb_tree_rotate_left(parent(parent(x)), root);
                 }
             }
         }
@@ -681,7 +681,7 @@ protected:
     //左旋函数
     //参数1：左旋节点
     //参数2：根节点
-    void _rb_tree_rotate_left(size_t x,size_t &root)
+    void _rb_tree_rotate_left(size_t x, size_t& root)
     {
         size_t y = right(x);
         right(x) = left(y);
@@ -713,7 +713,7 @@ protected:
     //右旋函数
     //参数1：右旋节点
     //参数2：根节点
-    void _rb_tree_rotate_right(size_t x,size_t &root)
+    void _rb_tree_rotate_right(size_t x, size_t& root)
     {
         size_t y = left(x);
         left(x) = right(y);
@@ -874,7 +874,7 @@ protected:
                     {
                         color(w) = RB_TREE_BLACK;
                         color(x_parent) = RB_TREE_RED;
-                        _rb_tree_rotate_left(x_parent,root());
+                        _rb_tree_rotate_left(x_parent, root());
                         w = right(x_parent);
                     }
 
@@ -895,7 +895,7 @@ protected:
                             }
 
                             color(w) = RB_TREE_RED;
-                            _rb_tree_rotate_right(w,root());
+                            _rb_tree_rotate_right(w, root());
                             w = right(x_parent);
                         }
 
@@ -907,7 +907,7 @@ protected:
                             color(right(w)) = RB_TREE_BLACK;
                         }
 
-                        _rb_tree_rotate_left(x_parent,root());
+                        _rb_tree_rotate_left(x_parent, root());
                         break;
                     }
                 }
@@ -919,7 +919,7 @@ protected:
                     {
                         color(w) = RB_TREE_BLACK;
                         color(x_parent) = RB_TREE_RED;
-                        _rb_tree_rotate_right(x_parent,root());
+                        _rb_tree_rotate_right(x_parent, root());
                         w = left(x_parent);
                     }
 
@@ -940,7 +940,7 @@ protected:
                             }
 
                             color(w) = RB_TREE_RED;
-                            _rb_tree_rotate_left(w,root());
+                            _rb_tree_rotate_left(w, root());
                             w = left(x_parent);
                         }
 
@@ -952,7 +952,7 @@ protected:
                             color(left(w)) = RB_TREE_BLACK;
                         }
 
-                        _rb_tree_rotate_right(x_parent,root());
+                        _rb_tree_rotate_right(x_parent, root());
                         break;
                     }
                 }
@@ -970,7 +970,7 @@ protected:
 public:
 
     //允许重复key插入的插入函数，Multimap、Multimap用这个
-    std::pair<iterator,bool>  insert_equal(const _value_type &v)
+    std::pair<iterator, bool>  insert_equal(const _value_type& v)
     {
         size_t y = header();
         size_t x = root();
@@ -978,14 +978,14 @@ public:
         while (x != _INVALID_POINT)
         {
             y = x;
-            x = _compare_key()(_extract_key()(v),key(x))?left(x):right(x);
+            x = _compare_key()(_extract_key()(v), key(x)) ? left(x) : right(x);
         }
 
-        return _insert(x,y,v);
+        return _insert(x, y, v);
     }
 
     //重复key插入则失败的插入函数，Map、Sap用这个
-    std::pair<iterator,bool> insert_unique(const _value_type &v)
+    std::pair<iterator, bool> insert_unique(const _value_type& v)
     {
         size_t y = header();
         size_t x = root();
@@ -994,17 +994,17 @@ public:
         while (x != _INVALID_POINT)
         {
             y = x;
-            comp = _compare_key()(_extract_key()(v),key(x));
-            x = comp?left(x):right(x);
+            comp = _compare_key()(_extract_key()(v), key(x));
+            x = comp ? left(x) : right(x);
         }
 
-        iterator j = iterator(y,this);
+        iterator j = iterator(y, this);
 
         if (comp)
         {
             if (j == begin())
             {
-                return _insert(x,y,v);
+                return _insert(x, y, v);
             }
             else
             {
@@ -1012,24 +1012,24 @@ public:
             }
         }
 
-        if (_compare_key()(key(j.getserial()),_extract_key()(v)))
+        if (_compare_key()(key(j.getserial()), _extract_key()(v)))
         {
-            return _insert(x,y,v);
+            return _insert(x, y, v);
         }
 
-        return std::pair<iterator,bool>(j,false);
+        return std::pair<iterator, bool>(j, false);
     }
 
     //通过迭代器删除一个节点
-    iterator erase(const iterator &pos)
+    iterator erase(const iterator& pos)
     {
         size_t tmp = _erase(pos.getserial());
         destroy_node(pos.getserial());
-        return iterator(tmp,this);
+        return iterator(tmp, this);
     }
 
     //通过起始迭代器删除一段节点
-    size_t erase(iterator first,iterator last)
+    size_t erase(iterator first, iterator last)
     {
         size_t erase_count = 0;
 
@@ -1053,7 +1053,7 @@ public:
     }
 
     //通过key删除节点，Map和Set用
-    size_t erase_unique(const _key_type &k)
+    size_t erase_unique(const _key_type& k)
     {
         iterator it = find(k);
 
@@ -1067,29 +1067,29 @@ public:
     }
 
     //通过value删除节点，Map和Set用
-    size_t erase_unique_value(const _value_type &v)
+    size_t erase_unique_value(const _value_type& v)
     {
         _extract_key get_key;
         return erase_unique(get_key(v));
     }
 
     //通过key删除节点，Multimap和Multiset用
-    size_t erase_equal(const _key_type &k)
+    size_t erase_equal(const _key_type& k)
     {
         iterator it_l = lower_bound(k);
         iterator it_u = upper_bound(k);
-        return erase(it_l,it_u);
+        return erase(it_l, it_u);
     }
 
     //通过值删除节点，Multimap和Multiset用
-    size_t erase_equal_value(const _value_type &v)
+    size_t erase_equal_value(const _value_type& v)
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
     }
 
     //找到第一个key值相同的节点
-    iterator lower_bound(const _key_type &k)
+    iterator lower_bound(const _key_type& k)
     {
         size_t y = header();
         size_t x = root();
@@ -1097,7 +1097,7 @@ public:
         while (x != _INVALID_POINT)
         {
             //上下两个函数就这行代码不一样，注意先后比较
-            if (!_compare_key()(key(x),k))
+            if (!_compare_key()(key(x), k))
             {
                 y = x;
                 x = left(x);
@@ -1108,11 +1108,11 @@ public:
             }
         }
 
-        return iterator(y,this);
+        return iterator(y, this);
     }
 
     //找到最后一个key值相同的节点
-    iterator upper_bound(const _key_type &k)
+    iterator upper_bound(const _key_type& k)
     {
         size_t y = header();
         size_t x = root();
@@ -1120,7 +1120,7 @@ public:
         while (x != _INVALID_POINT)
         {
             //上下两个函数就这行代码不一样，注意先后比较关系
-            if (_compare_key()(k,key(x)))
+            if (_compare_key()(k, key(x)))
             {
                 y = x;
                 x = left(x);
@@ -1131,18 +1131,18 @@ public:
             }
         }
 
-        return iterator(y,this);
+        return iterator(y, this);
     }
 
     //找key相同的节点
-    iterator find(const _key_type &k)
+    iterator find(const _key_type& k)
     {
         size_t y = header();
         size_t x = root();
 
         while (x != _INVALID_POINT)
         {
-            if (!_compare_key()(key(x),k))
+            if (!_compare_key()(key(x), k))
             {
                 y = x;
                 x = left(x);
@@ -1153,25 +1153,25 @@ public:
             }
         }
 
-        iterator j = iterator(y,this);
-        return (j == end() || _compare_key()(k,key(j.getserial())))?end():j;
+        iterator j = iterator(y, this);
+        return (j == end() || _compare_key()(k, key(j.getserial()))) ? end() : j;
     }
 
     //找value相同的节点
-    iterator find_value(const _value_type &v)
+    iterator find_value(const _value_type& v)
     {
         _extract_key get_key;
         return find(get_key(v));
     }
 
     //找value相同的节点，如未找到则插入
-    _value_type &find_or_insert(const _value_type &v)
+    _value_type& find_or_insert(const _value_type& v)
     {
         iterator iter = find_value(v);
 
         if (iter == end())
         {
-            std::pair<iterator,bool> pair_iter = insert(v);
+            std::pair<iterator, bool> pair_iter = insert(v);
             return (*(pair_iter.first));
         }
 
@@ -1184,77 +1184,77 @@ protected:
 
 protected:
     //RBTree头部
-    _shm_rb_tree_head *rb_tree_head_;
+    _shm_rb_tree_head* rb_tree_head_;
 
     //所有的指针都是根据基地址计算得到的,用于方便计算,每次初始化会重新计算
     //索引数据区,
-    _shm_rb_tree_index *index_base_;
+    _shm_rb_tree_index* index_base_;
 
     //数据区起始指针,
-    _value_type *data_base_;
+    _value_type* data_base_;
 
     //头节点的头指针,N+1个索引位表示
-    _shm_rb_tree_index *head_index_;
+    _shm_rb_tree_index* head_index_;
 
     //空节点的头指针,N+2个索引位表示（这里利用right节点做链接，把空节点串起来）
-    _shm_rb_tree_index *free_index_;
+    _shm_rb_tree_index* free_index_;
 };
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分
-template<class _value_type,class _compare_key = std::less<_value_type> >
+template<class _value_type, class _compare_key = std::less<_value_type> >
 class mmap_set:
-    public shm_rb_tree< _value_type,_value_type,smem_identity<_value_type>,_compare_key >
+    public shm_rb_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    mmap_set<_value_type,_compare_key >(size_t numnode,void *pmmap,bool if_restore):
-        shm_rb_tree<_value_type,_value_type,smem_identity<_value_type>,_compare_key>(numnode,pmmap,if_restore)
+    mmap_set<_value_type, _compare_key >(size_t numnode, void* pmmap, bool if_restore) :
+        shm_rb_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>(numnode, pmmap, if_restore)
     {
-        initialize(numnode,pmmap,if_restore);
+        initialize(numnode, pmmap, if_restore);
     }
 
-    ~mmap_set<_value_type,_compare_key >()
+    ~mmap_set<_value_type, _compare_key >()
     {
     }
 
 public:
-    static mmap_set< _value_type,_compare_key  > *
-        initialize(size_t &numnode,char *pmmap,bool if_restore = false)
+    static mmap_set< _value_type, _compare_key  >*
+        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_set< _value_type,_compare_key  > *>(
-            shm_rb_tree<_value_type,_value_type,smem_identity<_value_type>,_compare_key>::initialize(numnode,pmmap,if_restore));
+        return reinterpret_cast<mmap_set< _value_type, _compare_key  > *>(
+            shm_rb_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
-template<class _key_type,class _value_type,class _extract_key = mmap_select1st <std::pair <_key_type,_value_type> >,class _compare_key = std::less<_value_type>  >
+template<class _key_type, class _value_type, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _compare_key = std::less<_value_type>  >
 class mmap_map:
-    public shm_rb_tree< std::pair <_key_type,_value_type>,_key_type,_extract_key,_compare_key  >
+    public shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    mmap_map<_key_type,_value_type,_extract_key,_compare_key >(size_t numnode,void *pmmap,bool if_restore):
-        shm_rb_tree< std::pair <_key_type,_value_type>,_key_type,_extract_key,_compare_key  >(numnode,pmmap,if_restore)
+    mmap_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void* pmmap, bool if_restore) :
+        shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
-        initialize(numnode,pmmap,if_restore);
+        initialize(numnode, pmmap, if_restore);
     }
 
-    ~mmap_map<_key_type,_value_type,_extract_key,_compare_key >()
+    ~mmap_map<_key_type, _value_type, _extract_key, _compare_key >()
     {
     }
 public:
-    static mmap_map< _key_type,_value_type,_extract_key,_compare_key  > *
-        initialize(size_t &numnode,char *pmmap,bool if_restore = false)
+    static mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*
+        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_map< _key_type,_value_type,_extract_key,_compare_key  > *>(
-            shm_rb_tree< std::pair <_key_type,_value_type>,_key_type,_extract_key,_compare_key>::initialize(numnode,pmmap,if_restore));
+        return reinterpret_cast<mmap_map< _key_type, _value_type, _extract_key, _compare_key  > *>(
+            shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
-    _value_type &operator[](const _key_type &key)
+    _value_type& operator[](const _key_type& key)
     {
-        return (find_or_insert(std::pair<_key_type,_value_type >(key,_value_type()))).second;
+        return (find_or_insert(std::pair<_key_type, _value_type >(key, _value_type()))).second;
     }
 };
 };

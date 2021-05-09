@@ -43,7 +43,7 @@ public:
 
 public:
     ///构造函数
-    ZCE_Null_Mutex(const char *ptr = NULL);
+    ZCE_Null_Mutex(const char* ptr = NULL);
     ///析构函数
     virtual ~ZCE_Null_Mutex(void);
 
@@ -58,9 +58,9 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁，返回是否超时
-    virtual bool systime_lock(const zce::Time_Value & /*abs_time*/);
+    virtual bool systime_lock(const zce::Time_Value& /*abs_time*/);
     ///相对时间
-    virtual bool duration_lock(const zce::Time_Value & /*relative_time*/);
+    virtual bool duration_lock(const zce::Time_Value& /*relative_time*/);
 
     //相对与BOOST的shared的共享-独占锁的叫法，我还是倾向读写锁
 
@@ -70,18 +70,18 @@ public:
     virtual bool try_lock_read();
 
     ///绝对时间超时的读取锁，
-    virtual bool timed_lock_read(const zce::Time_Value & /*abs_time*/);
+    virtual bool timed_lock_read(const zce::Time_Value& /*abs_time*/);
     ///相对时间超时的读取锁，
-    virtual bool duration_lock_read(const zce::Time_Value & /*relative_time*/);
+    virtual bool duration_lock_read(const zce::Time_Value& /*relative_time*/);
 
     ///写锁定
     virtual void lock_write();
     ///尝试读取锁
     virtual bool try_lock_write();
     ///写锁定超时
-    virtual bool timed_lock_write(const zce::Time_Value & /*abs_time*/);
+    virtual bool timed_lock_write(const zce::Time_Value& /*abs_time*/);
     //相对时间
-    virtual bool duration_lock_write(const zce::Time_Value & /*relative_time*/);
+    virtual bool duration_lock_write(const zce::Time_Value& /*relative_time*/);
 
 protected:
     // A dummy lock.
@@ -102,13 +102,13 @@ public:
 private:
 
     ///等待
-    virtual void wait(ZCE_Null_Mutex * /*external_mutex*/);
+    virtual void wait(ZCE_Null_Mutex* /*external_mutex*/);
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(ZCE_Null_Mutex * /*external_mutex*/,const zce::Time_Value & /*abs_time*/);
+    virtual bool systime_wait(ZCE_Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*abs_time*/);
 
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(ZCE_Null_Mutex * /*external_mutex*/,const zce::Time_Value & /*relative_time*/);
+    virtual bool duration_wait(ZCE_Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*relative_time*/);
 
     /// 给一个等待线程发送信号 Signal one waiting thread.
     virtual void signal(void);

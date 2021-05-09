@@ -41,7 +41,7 @@ public:
     zce::LOG_PRIORITY log_level_ = RS_DEBUG;
 
     ///日志输出方式: @ref LOG_OUTPUT ,多种输出方式可以组合
-    uint32_t log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE,LOG_OUTPUT::ERROUT);
+    uint32_t log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT);
 
     // 日志分割方式:101按大小 201按小时 205按天
     LOGFILE_DEVIDE log_div_type_ = LOGFILE_DEVIDE::BY_TIME_DAY;
@@ -80,7 +80,7 @@ public:
     * @param      argc
     * @param      argv
     */
-    virtual int read_start_arg(int argc,const char *argv[]);
+    virtual int read_start_arg(int argc, const char* argv[]);
 
     /*!
     * @brief      加载配置文件的配置
@@ -97,15 +97,15 @@ public:
 protected:
 
     /// 使用帮助
-    virtual int usage(const char *program_name);
+    virtual int usage(const char* program_name);
 
     //由于
 
     ///从配置中读取框架基础的配置,包括self_svc_id_等
-    int get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    int get_common_cfg(const zce::PropertyTree* conf_tree);
 
     ///从配置中读取日志的配置
-    int get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    int get_log_cfg(const zce::PropertyTree* conf_tree);
 
 public:
     //

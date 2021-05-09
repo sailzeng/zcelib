@@ -82,18 +82,18 @@ static const size_t DEFAULT_DOUBLE_PRECISION = 6;
 * @param[in]  precision 精度，就是输出几个字符，相当于printf函数格式化参数%32.16s中间的16。
 * @param[in]  flags     参考 @ref zce::FORMAT_STRING_FLAG
 */
-void fmt_str(char *buffer,
+void fmt_str(char* buffer,
              size_t max_len,
-             size_t &use_len,
-             const char *value,
+             size_t& use_len,
+             const char* value,
              size_t str_len,
              size_t width = 0,
              size_t precision = -1,
              int flags = 0);
 
 ///@brief 用于将字符串格式化后输出（添加）到 @stdstr里面（末尾），参数含义见上面的函数
-void fmt_str(std::string &stdstr,
-             const char *value,
+void fmt_str(std::string& stdstr,
+             const char* value,
              size_t str_len,
              size_t width = 0,
              size_t precision = -1,
@@ -113,9 +113,9 @@ void fmt_str(std::string &stdstr,
 * @param      precision   精度，就是输出几个字符，相当于printf函数格式化参数%32.16d中间的16。整数输出不会截断
 * @param      flags       参考 @ref zce::FORMAT_STRING_FLAG
 */
-void fmt_int64(char *buffer,
+void fmt_int64(char* buffer,
                size_t max_len,
-               size_t &use_len,
+               size_t& use_len,
                int64_t value,
                BASE_NUMBER base = BASE_NUMBER::DECIMAL,
                size_t width = 0,
@@ -123,7 +123,7 @@ void fmt_int64(char *buffer,
                int flags = 0);
 
 ///用于将int64格式化后输出（添加）到 @stdstr里面（末尾），参数含义见上面的函数
-void fmt_int64(std::string &stdstr,
+void fmt_int64(std::string& stdstr,
                int64_t value,
                BASE_NUMBER base,
                size_t width = 0,
@@ -141,16 +141,16 @@ void fmt_int64(std::string &stdstr,
 * @param      flags      参考 @ref zce::FORMAT_STRING_FLAG
 * @note
 */
-void fmt_double(char *buffer,
+void fmt_double(char* buffer,
                 size_t max_len,
-                size_t &use_len,
+                size_t& use_len,
                 double fvalue,
                 size_t width = 0,
                 size_t precision = DEFAULT_DOUBLE_PRECISION,
                 int flags = zce::FMT_EXPONENT | zce::FMT_UP);
 
 ///用于将double格式化后输出（添加）到 @stdstr里面（末尾），参数含义见上面的函数
-void fmt_double(std::string &stdstr,
+void fmt_double(std::string& stdstr,
                 double fvalue,
                 size_t width = 0,
                 size_t precision = DEFAULT_DOUBLE_PRECISION,

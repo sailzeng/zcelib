@@ -7,14 +7,14 @@ class Ogre_Buffer_Storage BUFFER存储的
 class Ogre_Buffer_Storage
 {
     //
-    typedef zce::lordrings <Ogre4a_App_Frame *> SAIL_FRAME_BUFFER_POOL;
+    typedef zce::lordrings <Ogre4a_App_Frame*> SAIL_FRAME_BUFFER_POOL;
 
 protected:
 
     //只声明不实现,避免错误
-    Ogre_Buffer_Storage(const Ogre_Buffer_Storage &);
+    Ogre_Buffer_Storage(const Ogre_Buffer_Storage&);
     //只声明不实现,避免错误
-    Ogre_Buffer_Storage &operator =(const Ogre_Buffer_Storage &);
+    Ogre_Buffer_Storage& operator =(const Ogre_Buffer_Storage&);
 
 public:
     //构造函数和析构函数
@@ -27,9 +27,9 @@ public:
     void uninit_buffer_list();
 
     //分配一个Buffer到List中
-    Ogre4a_App_Frame *allocate_byte_buffer();
+    Ogre4a_App_Frame* allocate_byte_buffer();
     //释放一个Buffer到List中
-    void free_byte_buffer(Ogre4a_App_Frame *ptrbuf);
+    void free_byte_buffer(Ogre4a_App_Frame* ptrbuf);
 
     //扩展BufferList
     void extend_buffer_list(size_t szlist = EXTEND_NUM_OF_LIST);
@@ -38,9 +38,9 @@ public:
 
     //为了SingleTon类准备
     //实例的赋值
-    static void instance(Ogre_Buffer_Storage *);
+    static void instance(Ogre_Buffer_Storage*);
     //实例的获得
-    static Ogre_Buffer_Storage *instance();
+    static Ogre_Buffer_Storage* instance();
     //清除实例
     static void clean_instance();
 
@@ -60,7 +60,7 @@ protected:
 protected:
 
     //instance函数使用的东西
-    static Ogre_Buffer_Storage *instance_;
+    static Ogre_Buffer_Storage* instance_;
 };
 
 #endif //OGRE_BUFFER_STORAGE_H_

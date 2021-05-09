@@ -47,7 +47,7 @@ public:
     * @param[in]  open_mode 打开模式
     * @param[in]  perms     权限参数
     */
-    int open(const char *file_name,
+    int open(const char* file_name,
              int open_mode,
              mode_t perms = ZCE_DEFAULT_FILE_PERMS);
 

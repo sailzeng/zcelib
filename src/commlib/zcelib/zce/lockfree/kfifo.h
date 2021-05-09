@@ -40,15 +40,15 @@ public:
     @param      size_t    new的默认参数
     @param      nodelen   node节点的长度
     */
-    void *operator new (size_t,size_t nodelen);
+    void* operator new (size_t, size_t nodelen);
 
     //养成好习惯,写new,就写delete.
     //void operator delete(void *ptrframe, size_t);
-    void operator delete (void *ptrframe);
+    void operator delete (void* ptrframe);
 
 public:
     ///
-    static void fillin(dequechunk_node *,size_t,char *);
+    static void fillin(dequechunk_node*, size_t, char*);
 
 public:
 
@@ -86,7 +86,7 @@ class _shm_dequechunk_head
 protected:
 
     ///构造函数，不对外提供，
-    _shm_dequechunk_head():
+    _shm_dequechunk_head() :
         size_of_mmap_(0),
         size_of_deque_(0),
         max_len_node_(0),
@@ -130,7 +130,7 @@ class shm_dequechunk: public _shm_memory_base
 protected:
 
     ///只定义不实现
-    const shm_dequechunk &operator=(const shm_dequechunk &);
+    const shm_dequechunk& operator=(const shm_dequechunk&);
 
     /*!
     @brief      得到两个关键指针的快照，用于判定队列里面的数据还有多少，是否为满或者空
@@ -141,7 +141,7 @@ protected:
     @param      pstart  返回的循环队列起始位置
     @param      pend    返回的循环队列结束位置
     */
-    void snap_getpoint(size_t &pstart,size_t &pend);
+    void snap_getpoint(size_t& pstart, size_t& pend);
 
     ///构造函数，用protected保护，避免你用了
 protected:
@@ -168,9 +168,9 @@ public:
     @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
     @note
     */
-    static shm_dequechunk *initialize(size_t size_of_deque,
+    static shm_dequechunk* initialize(size_t size_of_deque,
                                       size_t max_len_node,
-                                      char *pmmap,
+                                      char* pmmap,
                                       bool if_restore = false
     );
 
@@ -178,7 +178,7 @@ public:
     @brief      销毁初始化 initialize 得到的指针
     @param      deque_ptr  销毁的指针，
     */
-    static void finalize(shm_dequechunk *deque_ptr);
+    static void finalize(shm_dequechunk* deque_ptr);
 
     ///清理成没有使用过的状态
     void clear();
@@ -188,21 +188,21 @@ public:
     @return     bool
     @param      node
     */
-    bool push_end(const dequechunk_node *node);
+    bool push_end(const dequechunk_node* node);
 
     /*!
     @brief      将队列一个NODE从队首部取出,要求node!=NULL,已经分配好了数据区
     @return     bool  true表示成功取出，否则表示没有取出
     @param      node  保存pop 数据的的buffer，
     */
-    bool pop_front(dequechunk_node *const node);
+    bool pop_front(dequechunk_node* const node);
 
     /*!
     @brief      读取队列的第一个NODE,但是不取出,要求node!=NULL,我认为你已经分配好了数据区
     @return     bool  true表示成功读取
     @param      node  保存read 数据的的buffer，
     */
-    bool read_front(dequechunk_node *const node);
+    bool read_front(dequechunk_node* const node);
 
     /*!
     @brief      将队列一个NODE从队首部取出,我根据node的长度帮你分配空间,
@@ -210,14 +210,14 @@ public:
     @return     bool      true表示成功读取
     @param      new_node  获得数据的指针，这个数据你要自己释放，我概不负责了
     */
-    bool pop_front_new(dequechunk_node *&new_node);
+    bool pop_front_new(dequechunk_node*& new_node);
 
     /*!
     @brief      读取队列的第一个NODE，我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
     @return     bool      true表示成功读取
     @param      new_node
     */
-    bool read_front_new(dequechunk_node *&new_node);
+    bool read_front_new(dequechunk_node*& new_node);
 
     /*!
     @brief      读取队列的第一个NODE（指针）地址，，如果是折行的数据会特殊处理
@@ -225,7 +225,7 @@ public:
     @return     bool     true表示成功读取
     @param      node_ptr 存放地址的指针
     */
-    bool read_front_ptr(const dequechunk_node *&node_ptr);
+    bool read_front_ptr(const dequechunk_node*& node_ptr);
 
     /*!
     @brief      丢弃队列前面的第一个NODE
@@ -258,13 +258,13 @@ protected:
 protected:
 
     ///内存的头部
-    _shm_dequechunk_head *dequechunk_head_;
+    _shm_dequechunk_head* dequechunk_head_;
 
     ///数据区的头指针,方便计算
-    char *dequechunk_database_;
+    char* dequechunk_database_;
 
     ///如果需要读取node的地址（不取出数据），那么有种特殊情况，折行要考虑
-    dequechunk_node *line_wrap_nodeptr_;
+    dequechunk_node* line_wrap_nodeptr_;
 };
 
 //取队列头的buffer长度,你必须在确认pipe里面有数据才能调用这个函数，否则后果自负。
@@ -272,9 +272,9 @@ protected:
 inline size_t shm_dequechunk::get_front_len()
 {
     //还是要担心长度截断2节,头大,头大,多写好多代码
-    char *tmp1 = dequechunk_database_ + dequechunk_head_->deque_begin_;
+    char* tmp1 = dequechunk_database_ + dequechunk_head_->deque_begin_;
     size_t tmplen = 0;
-    char *tmp2 = reinterpret_cast<char *>(&tmplen);
+    char* tmp2 = reinterpret_cast<char*>(&tmplen);
 
     //如果管道的长度也绕圈，采用野蛮的法子得到长度
     if (tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
@@ -295,7 +295,7 @@ inline size_t shm_dequechunk::get_front_len()
     //
     else
     {
-        tmplen = *(reinterpret_cast<unsigned int *>(tmp1));
+        tmplen = *(reinterpret_cast<unsigned int*>(tmp1));
     }
 
     return tmplen;

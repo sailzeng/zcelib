@@ -14,15 +14,15 @@ class Server_Base
 *********************************************************************************/
 namespace zce
 {
-Server_Base *Server_Base::base_instance_ = NULL;
+Server_Base* Server_Base::base_instance_ = NULL;
 
 // 构造函数,私有,使用单子类的实例,
 Server_Base::Server_Base()
 {
-    memset(&last_process_perf_,0,sizeof(last_process_perf_));
-    memset(&now_process_perf_,0,sizeof(now_process_perf_));
-    memset(&last_system_perf_,0,sizeof(last_system_perf_));
-    memset(&now_system_perf_,0,sizeof(now_system_perf_));
+    memset(&last_process_perf_, 0, sizeof(last_process_perf_));
+    memset(&now_process_perf_, 0, sizeof(now_process_perf_));
+    memset(&last_system_perf_, 0, sizeof(last_system_perf_));
+    memset(&now_system_perf_, 0, sizeof(now_system_perf_));
 }
 
 Server_Base::~Server_Base()
@@ -30,7 +30,7 @@ Server_Base::~Server_Base()
     // 关闭文件
     if (pid_handle_ != ZCE_INVALID_HANDLE)
     {
-        fcntl_unlock(&pidfile_lock_,SEEK_SET,0,PID_FILE_LEN);
+        fcntl_unlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
         close(pid_handle_);
     }
 }
@@ -48,7 +48,7 @@ int Server_Base::socket_init()
 }
 
 //打印输出PID File
-int Server_Base::out_pid_file(const char *pragramname)
+int Server_Base::out_pid_file(const char* pragramname)
 {
     int ret = 0;
 
@@ -59,7 +59,7 @@ int Server_Base::out_pid_file(const char *pragramname)
 
     //检查PID文件是否存在，，
     bool must_create_new = false;
-    ret = access(pidfile_name.c_str(),F_OK);
+    ret = access(pidfile_name.c_str(), F_OK);
     if (0 != ret)
     {
         must_create_new = true;
@@ -74,7 +74,7 @@ int Server_Base::out_pid_file(const char *pragramname)
 
     if (pid_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZCE_LOG(RS_ERROR,"Open pid file [%s]fail.",pidfile_name.c_str());
+        ZCE_LOG(RS_ERROR, "Open pid file [%s]fail.", pidfile_name.c_str());
         return -1;
     }
 
@@ -84,28 +84,28 @@ int Server_Base::out_pid_file(const char *pragramname)
     {
         //我是用WINDOWS下的记录锁是模拟和Linux类似，但Windows的文件锁其实没有对将长度参数设置0，
         //锁定整个文件的功能，所以要先把文件长度调整
-        ftruncate(pid_handle_,PID_FILE_LEN);
+        ftruncate(pid_handle_, PID_FILE_LEN);
     }
 
-    file_lock_init(&pidfile_lock_,pid_handle_);
+    file_lock_init(&pidfile_lock_, pid_handle_);
 
     char tmpbuff[PID_FILE_LEN + 1];
 
-    snprintf(tmpbuff,PID_FILE_LEN + 1,"%*.u",(int)PID_FILE_LEN * (-1),self_pid_);
+    snprintf(tmpbuff, PID_FILE_LEN + 1, "%*.u", (int)PID_FILE_LEN * (-1), self_pid_);
 
     // 尝试锁定全部文件，如果锁定不成功，表示有人正在用这个文件
-    ret = fcntl_trywrlock(&pidfile_lock_,SEEK_SET,0,PID_FILE_LEN);
+    ret = fcntl_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"Trylock pid file [%s]fail. Last error =%d",
-                pidfile_name.c_str(),last_error());
+        ZCE_LOG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
+                pidfile_name.c_str(), last_error());
         return ret;
     }
 
     //写入文件内容, 截断文件为BUFFER_LEN，
-    ftruncate(pid_handle_,PID_FILE_LEN);
-    lseek(pid_handle_,0,SEEK_SET);
-    write(pid_handle_,tmpbuff,PID_FILE_LEN);
+    ftruncate(pid_handle_, PID_FILE_LEN);
+    lseek(pid_handle_, 0, SEEK_SET);
+    write(pid_handle_, tmpbuff, PID_FILE_LEN);
 
     return 0;
 }
@@ -163,7 +163,7 @@ int Server_Base::watch_dog_status(bool first_record)
     if (vary_mem_size >= MEMORY_LEAK_THRESHOLD)
     {
         ++check_leak_times_;
-        ZCE_LOG(RS_ERROR,"[zcelib] [WATCHDOG][PID:%u] Monitor could memory leak,"
+        ZCE_LOG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] Monitor could memory leak,"
                 "mem_checkpoint_size_ =[%u],run_mem_size_=[%u].",
                 self_pid_,
                 mem_checkpoint_size_,
@@ -187,7 +187,7 @@ int Server_Base::watch_dog_status(bool first_record)
                                      last_process_perf_.run_utime_);
     timeval proc_stime = timeval_sub(now_process_perf_.run_stime_,
                                      last_process_perf_.run_stime_);
-    timeval proc_cpu_time = timeval_add(proc_utime,proc_stime);
+    timeval proc_cpu_time = timeval_add(proc_utime, proc_stime);
 
     // 如果间隔时间不为0
     if (total_milliseconds(last_to_now) > 0)
@@ -200,7 +200,7 @@ int Server_Base::watch_dog_status(bool first_record)
         process_cpu_ratio_ = 0;
     }
 
-    ZCE_LOG(RS_INFO,"[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
+    ZCE_LOG(RS_INFO, "[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
             "totoal process user/sys[%lld/%lld] milliseconds "
             "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds "
             "memory use//add [%ld/%ld].",
@@ -217,7 +217,7 @@ int Server_Base::watch_dog_status(bool first_record)
     // 计算系统的CPU时间，非IDLE以外的时间都是消耗时间
     timeval sys_idletime = timeval_sub(now_system_perf_.idle_time_,
                                        last_system_perf_.idle_time_);
-    timeval sys_cputime = timeval_sub(last_to_now,sys_idletime);
+    timeval sys_cputime = timeval_sub(last_to_now, sys_idletime);
 
     // 如果间隔时间不为0
     if (total_milliseconds(last_to_now) > 0)
@@ -228,7 +228,7 @@ int Server_Base::watch_dog_status(bool first_record)
     }
     else
     {
-        ZCE_LOG(RS_ERROR,"system_uptime = %llu, process_start_time = %llu",
+        ZCE_LOG(RS_ERROR, "system_uptime = %llu, process_start_time = %llu",
                 total_milliseconds(now_system_perf_.up_time_),
                 total_milliseconds(now_process_perf_.start_time_));
         system_cpu_ratio_ = 0;
@@ -238,7 +238,7 @@ int Server_Base::watch_dog_status(bool first_record)
     if (process_cpu_ratio_ >= PROCESS_CPU_RATIO_THRESHOLD ||
         system_cpu_ratio_ >= SYSTEM_CPU_RATIO_THRESHOLD)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] [WATCHDOG][PID:%u] point[%u] vm_size[%u] "
+        ZCE_LOG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] point[%u] vm_size[%u] "
                 "process cpu ratio [%f] threshold [%f], system cpu ratio[%f] threshold[%f] "
                 "totoal process user/sys[%lld/%lld] milliseconds "
                 "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds.",
@@ -264,7 +264,7 @@ int Server_Base::watch_dog_status(bool first_record)
     if (now_system_perf_.totalram_size_ > 0)
     {
         mem_use_ratio_ = static_cast<uint32_t>((now_system_perf_.totalram_size_
-                                               - can_use_size_) * 1000 / now_system_perf_.totalram_size_);
+                                                - can_use_size_) * 1000 / now_system_perf_.totalram_size_);
     }
     else
     {
@@ -302,21 +302,21 @@ int Server_Base::watch_dog_status(bool first_record)
 int Server_Base::process_signal(void)
 {
     //忽视部分信号,这样简单
-    signal(SIGHUP,SIG_IGN);
-    signal(SIGPIPE,SIG_IGN);
-    signal(SIGCHLD,SIG_IGN);
+    signal(SIGHUP, SIG_IGN);
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGCHLD, SIG_IGN);
 
 #ifdef ZCE_OS_WINDOWS
     //Windows下设置退出处理函数，可以用Ctrl + C 退出
-    SetConsoleCtrlHandler((PHANDLER_ROUTINE)exit_signal,TRUE);
+    SetConsoleCtrlHandler((PHANDLER_ROUTINE)exit_signal, TRUE);
 #else
     //这个几个信号被认可为退出信号
-    signal(SIGINT,exit_signal);
-    signal(SIGQUIT,exit_signal);
-    signal(SIGTERM,exit_signal);
+    signal(SIGINT, exit_signal);
+    signal(SIGQUIT, exit_signal);
+    signal(SIGTERM, exit_signal);
 
     //重新加载部分配置,用了SIGUSR1 kill -10
-    signal(SIGUSR1,reload_cfg_signal);
+    signal(SIGUSR1, reload_cfg_signal);
 #endif
 
     //SIGUSR1,SIGUSR2你可以用来干点自己的活,
@@ -357,13 +357,13 @@ int Server_Base::daemon_init()
 }
 
 //通过启动参数0，得到app_base_name_，app_run_name_
-int Server_Base::create_app_name(const char *argv_0)
+int Server_Base::create_app_name(const char* argv_0)
 {
     app_run_name_ = argv_0;
     // 取得base name
     char str_base_name[PATH_MAX + 1];
     str_base_name[PATH_MAX] = '\0';
-    basename(argv_0,str_base_name,PATH_MAX);
+    basename(argv_0, str_base_name, PATH_MAX);
 
 #if defined ZCE_OS_WINDOWS
 
@@ -373,12 +373,12 @@ int Server_Base::create_app_name(const char *argv_0)
 
     if (name_len <= WIN_EXE_SUFFIX_LEN)
     {
-        ZCE_LOG(RS_ERROR,"[framework] Exe file name is not expect?Path name[%s].",argv_0);
+        ZCE_LOG(RS_ERROR, "[framework] Exe file name is not expect?Path name[%s].", argv_0);
         return -1;
     }
 
     //如果有后缀才取消，没有就放鸭子
-    if (strcasecmp(str_base_name + name_len - WIN_EXE_SUFFIX_LEN,".EXE") == 0)
+    if (strcasecmp(str_base_name + name_len - WIN_EXE_SUFFIX_LEN, ".EXE") == 0)
     {
         str_base_name[name_len - WIN_EXE_SUFFIX_LEN] = '\0';
     }
@@ -394,10 +394,10 @@ int Server_Base::create_app_name(const char *argv_0)
 
     if (debug_name_len <= DEBUG_SUFFIX_LEN)
     {
-        ZCE_LOG(RS_ERROR,"[framework] Exe file name is not debug _d suffix?str_base_name[%s].",str_base_name);
+        ZCE_LOG(RS_ERROR, "[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
         return -1;
     }
-    if (0 == strcasecmp(str_base_name + debug_name_len - DEBUG_SUFFIX_LEN,"_D"))
+    if (0 == strcasecmp(str_base_name + debug_name_len - DEBUG_SUFFIX_LEN, "_D"))
     {
         str_base_name[debug_name_len - DEBUG_SUFFIX_LEN] = '\0';
     }
@@ -410,8 +410,8 @@ int Server_Base::create_app_name(const char *argv_0)
 }
 
 //windows下设置服务信息
-void Server_Base::set_service_info(const char *svc_name,
-                                   const char *svc_desc)
+void Server_Base::set_service_info(const char* svc_name,
+                                   const char* svc_desc)
 {
     if (svc_name != NULL)
     {
@@ -424,13 +424,13 @@ void Server_Base::set_service_info(const char *svc_name,
 }
 
 //得到运行信息，可能包括路径信息
-const char *Server_Base::get_app_runname()
+const char* Server_Base::get_app_runname()
 {
     return app_run_name_.c_str();
 }
 
 //得到程序进程名称，，去掉了路径，WINDOWS下去掉了后缀
-const char *Server_Base::get_app_basename()
+const char* Server_Base::get_app_basename()
 {
     return app_base_name_.c_str();
 }
@@ -482,7 +482,7 @@ int Server_Base::win_services_run()
 {
     char service_name[PATH_MAX + 1];
     service_name[PATH_MAX] = '\0';
-    strncpy(service_name,app_base_name_.c_str(),PATH_MAX);
+    strncpy(service_name, app_base_name_.c_str(), PATH_MAX);
 
     SERVICE_TABLE_ENTRY st[] =
     {
@@ -511,12 +511,12 @@ int Server_Base::win_services_install()
 {
     if (win_services_isinstalled())
     {
-        printf("install service fail. service %s already exist",app_base_name_.c_str());
+        printf("install service fail. service %s already exist", app_base_name_.c_str());
         return 0;
     }
 
     //打开服务控制管理器
-    SC_HANDLE handle_scm = ::OpenSCManager(NULL,NULL,SC_MANAGER_ALL_ACCESS);
+    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (handle_scm == NULL)
     {
@@ -528,7 +528,7 @@ int Server_Base::win_services_install()
     // Get the executable file path
     char file_path[MAX_PATH + 1];
     file_path[MAX_PATH] = '\0';
-    ::GetModuleFileName(NULL,file_path,MAX_PATH);
+    ::GetModuleFileName(NULL, file_path, MAX_PATH);
 
     //创建服务
     SC_HANDLE handle_services = ::CreateService(
@@ -548,7 +548,7 @@ int Server_Base::win_services_install()
 
     if (handle_services == NULL)
     {
-        printf("install service %s fail. err=%d\n",app_base_name_.c_str(),
+        printf("install service %s fail. err=%d\n", app_base_name_.c_str(),
                GetLastError());
         ::CloseServiceHandle(handle_scm);
         //MessageBox(NULL, _T("Couldn't create service"), app_base_name_.c_str(), MB_OK);
@@ -563,13 +563,13 @@ int Server_Base::win_services_install()
         SERVICE_DESCRIPTION desc;
         desc.lpDescription = (LPSTR)service_desc_.c_str();
 
-        ::ChangeServiceConfig2(handle_services,SERVICE_CONFIG_DESCRIPTION,&desc);
+        ::ChangeServiceConfig2(handle_services, SERVICE_CONFIG_DESCRIPTION, &desc);
         ::UnlockServiceDatabase(handle_scm);
     }
 
     ::CloseServiceHandle(handle_services);
     ::CloseServiceHandle(handle_scm);
-    printf("install service %s success.\n",app_base_name_.c_str());
+    printf("install service %s success.\n", app_base_name_.c_str());
 
     return 0;
 }
@@ -579,11 +579,11 @@ int Server_Base::win_services_uninstall()
 {
     if (!win_services_isinstalled())
     {
-        printf("uninstall fail. service %s is not exist.\n",app_base_name_.c_str());
+        printf("uninstall fail. service %s is not exist.\n", app_base_name_.c_str());
         return 0;
     }
 
-    SC_HANDLE handle_scm = ::OpenSCManager(NULL,NULL,SC_MANAGER_ALL_ACCESS);
+    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (handle_scm == NULL)
     {
@@ -600,12 +600,12 @@ int Server_Base::win_services_uninstall()
     {
         ::CloseServiceHandle(handle_scm);
         //::MessageBox(NULL, _T("Couldn't open service"), app_base_name_.c_str(), MB_OK);
-        printf("can't open service %s\n",app_base_name_.c_str());
+        printf("can't open service %s\n", app_base_name_.c_str());
         return -1;
     }
 
     SERVICE_STATUS status;
-    ::ControlService(handle_services,SERVICE_CONTROL_STOP,&status);
+    ::ControlService(handle_services, SERVICE_CONTROL_STOP, &status);
 
     //删除服务
     BOOL bDelete = ::DeleteService(handle_services);
@@ -613,11 +613,11 @@ int Server_Base::win_services_uninstall()
     ::CloseServiceHandle(handle_scm);
     if (bDelete)
     {
-        printf("uninstall service %s success.\n",app_base_name_.c_str());
+        printf("uninstall service %s success.\n", app_base_name_.c_str());
         return 0;
     }
 
-    printf("uninstall service %s fail.\n",app_base_name_.c_str());
+    printf("uninstall service %s fail.\n", app_base_name_.c_str());
     //LogEvent(_T("Service could not be deleted"));
     return -1;
 }
@@ -628,7 +628,7 @@ bool Server_Base::win_services_isinstalled()
     bool b_result = false;
 
     //打开服务控制管理器
-    SC_HANDLE handle_scm = ::OpenSCManager(NULL,NULL,SC_MANAGER_ALL_ACCESS);
+    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (handle_scm != NULL)
     {
@@ -677,18 +677,18 @@ void WINAPI Server_Base::win_service_main()
         return;
     }
 
-    SetServiceStatus(handle_service_status,&status);
+    SetServiceStatus(handle_service_status, &status);
 
     status.dwWin32ExitCode = S_OK;
     status.dwCheckPoint = 0;
     status.dwWaitHint = 0;
     status.dwCurrentState = SERVICE_RUNNING;
-    SetServiceStatus(handle_service_status,&status);
+    SetServiceStatus(handle_service_status, &status);
 
     //base_instance_->do_run();
 
     status.dwCurrentState = SERVICE_STOPPED;
-    SetServiceStatus(handle_service_status,&status);
+    SetServiceStatus(handle_service_status, &status);
     //LogEvent(_T("Service stopped"));
 }
 
@@ -720,23 +720,23 @@ void WINAPI Server_Base::win_services_ctrl(DWORD op_code)
     }
 }
 
-int Server_Base::log_event(const char *format_str,...)
+int Server_Base::log_event(const char* format_str, ...)
 {
     const size_t BUFFER_LEN = 512;
     char out_msg[BUFFER_LEN];
-    char *one_string[1];
+    char* one_string[1];
     one_string[0] = out_msg;
     HANDLE  event_source = INVALID_HANDLE_VALUE;
     va_list arg_list;
 
-    va_start(arg_list,format_str);
-    vsnprintf(out_msg,BUFFER_LEN - 1,format_str,arg_list);
+    va_start(arg_list, format_str);
+    vsnprintf(out_msg, BUFFER_LEN - 1, format_str, arg_list);
     va_end(arg_list);
 
-    event_source = ::RegisterEventSource(NULL,app_base_name_.c_str());
+    event_source = ::RegisterEventSource(NULL, app_base_name_.c_str());
     if (event_source != NULL)
     {
-        ::ReportEvent(event_source,EVENTLOG_INFORMATION_TYPE,0,0,NULL,1,0,(LPCSTR *)one_string,NULL);
+        ::ReportEvent(event_source, EVENTLOG_INFORMATION_TYPE, 0, 0, NULL, 1, 0, (LPCSTR*)one_string, NULL);
         ::DeregisterEventSource(event_source);
     }
     return 0;

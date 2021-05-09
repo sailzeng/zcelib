@@ -7,8 +7,8 @@ namespace zce
 {
 //=====================================================================================
 //状态机的异步对象
-Async_FSM::Async_FSM(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
-    Async_Object(async_mgr,create_cmd),
+Async_FSM::Async_FSM(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+    Async_Object(async_mgr, create_cmd),
     fsm_stage_(0)
 {
 }
@@ -18,7 +18,7 @@ Async_FSM::~Async_FSM()
 }
 
 //状态机运行的代码，这只是一个参考示例
-void Async_FSM::on_run(const void *outer_data,size_t /*data_len*/,bool &continue_run)
+void Async_FSM::on_run(const void* outer_data, size_t /*data_len*/, bool& continue_run)
 {
     ZCE_UNUSED_ARG(outer_data);
     enum
@@ -60,13 +60,13 @@ void Async_FSM::on_run(const void *outer_data,size_t /*data_len*/,bool &continue
 }
 
 //超时处理
-void Async_FSM::on_timeout(const zce::Time_Value &now_time,
-                           bool &continue_run)
+void Async_FSM::on_timeout(const zce::Time_Value& now_time,
+                           bool& continue_run)
 {
     char time_string[64 + 1];
-    ZCE_LOG(RS_INFO,"Time out event ,fun[%s] ,now time[%s].",
+    ZCE_LOG(RS_INFO, "Time out event ,fun[%s] ,now time[%s].",
             __ZCE_FUNC__,
-            now_time.timestamp(time_string,64));
+            now_time.timestamp(time_string, 64));
     continue_run = false;
     return;
 }
@@ -86,7 +86,7 @@ int Async_FSM::get_stage() const
 //=====================================================================================
 
 //状态机主控管理类
-Async_FSMMgr::Async_FSMMgr():
+Async_FSMMgr::Async_FSMMgr() :
     zce::Async_Obj_Mgr()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;

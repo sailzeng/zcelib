@@ -35,10 +35,10 @@ public:
     */
     Time_Value();
 
-    Time_Value(const Time_Value &) = default;
-    Time_Value(Time_Value &&) = default;
-    Time_Value &operator=(const Time_Value &) = default;
-    Time_Value &operator=(Time_Value &&) = default;
+    Time_Value(const Time_Value&) = default;
+    Time_Value(Time_Value&&) = default;
+    Time_Value& operator=(const Time_Value&) = default;
+    Time_Value& operator=(Time_Value&&) = default;
 
     /*!
     * @brief      析构函数
@@ -49,20 +49,20 @@ public:
     * @brief      构造函数，用timeval
     * @param      time_data
     */
-    Time_Value(const timeval &time_data);
+    Time_Value(const timeval& time_data);
 
     /*!
     * @brief      构造函数，用::timespec
     * @param      timespec_val timespec表示时间
     */
-    Time_Value(const ::timespec &timespec_val);
+    Time_Value(const ::timespec& timespec_val);
 
     /*!
     * @brief      构造函数，几个时间数据数据
     * @param      sec   timeval 中秒数据
     * @param      usec  timeval中的微秒数据
     */
-    Time_Value(time_t sec,time_t usec);
+    Time_Value(time_t sec, time_t usec);
 
     /*!
     * @brief      构造函数，用time_t, usec被置为0
@@ -74,19 +74,19 @@ public:
     * @brief      构造函数，用CPP 11的一些duration的值
     * @param      val CPP11的duration时间
     */
-    Time_Value(const std::chrono::hours &val);
-    Time_Value(const std::chrono::minutes &val);
-    Time_Value(const std::chrono::seconds &val);
-    Time_Value(const std::chrono::milliseconds &val);
-    Time_Value(const std::chrono::microseconds &val);
-    Time_Value(const std::chrono::nanoseconds &val);
+    Time_Value(const std::chrono::hours& val);
+    Time_Value(const std::chrono::minutes& val);
+    Time_Value(const std::chrono::seconds& val);
+    Time_Value(const std::chrono::milliseconds& val);
+    Time_Value(const std::chrono::microseconds& val);
+    Time_Value(const std::chrono::nanoseconds& val);
 
     /*!
     * @brief      构造函数，用CPP 11的一些time_point的值
     * @param      val CPP11的duration时间
     */
-    Time_Value(const std::chrono::system_clock::time_point &val);
-    Time_Value(const std::chrono::steady_clock::time_point &val);
+    Time_Value(const std::chrono::system_clock::time_point& val);
+    Time_Value(const std::chrono::steady_clock::time_point& val);
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -109,20 +109,20 @@ public:
     * @brief      设置Time_Value,用timeval
     * @param      time_data
     */
-    void set(const timeval &time_data);
+    void set(const timeval& time_data);
 
     /*!
     * @brief      设置Time_Value,用::timespec
     * @param      timespec_val
     */
-    void set(const ::timespec &timespec_val);
+    void set(const ::timespec& timespec_val);
 
     /*!
     * @brief      设置Time_Value,几个时间数据数据
     * @param      sec
     * @param      usec
     */
-    void set(time_t sec,time_t usec);
+    void set(time_t sec, time_t usec);
 
     /*!
     * @brief      设置Time_Value,用time_t, usec被置为0
@@ -136,15 +136,15 @@ public:
     */
     void set_by_clock_t(clock_t time);
 
-    void set(const std::chrono::hours &val);
-    void set(const std::chrono::minutes &val);
-    void set(const std::chrono::seconds &val);
-    void set(const std::chrono::milliseconds &val);
-    void set(const std::chrono::microseconds &val);
-    void set(const std::chrono::nanoseconds &val);
+    void set(const std::chrono::hours& val);
+    void set(const std::chrono::minutes& val);
+    void set(const std::chrono::seconds& val);
+    void set(const std::chrono::milliseconds& val);
+    void set(const std::chrono::microseconds& val);
+    void set(const std::chrono::nanoseconds& val);
 
-    void set(const std::chrono::system_clock::time_point &val);
-    void set(const std::chrono::steady_clock::time_point &val);
+    void set(const std::chrono::system_clock::time_point& val);
+    void set(const std::chrono::steady_clock::time_point& val);
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -222,7 +222,7 @@ public:
     * @param      str_date_time
     * @param      datetime_strlen
     */
-    const char *timestamp(char *str_date_time,
+    const char* timestamp(char* str_date_time,
                           size_t datetime_strlen) const;
 
     /*!
@@ -232,9 +232,9 @@ public:
     * @param[in]  datetime_strlen 字符串的长度
     * @param[in]   fromat_type    时间格式，参考@ref TIME_STR_FORMAT 枚举，默认输出ISO格式的本地时间，精度到USEC。
     */
-    const char *to_string(char *str_date_time,
+    const char* to_string(char* str_date_time,
                           size_t datetime_strlen,
-                          size_t &use_buf,
+                          size_t& use_buf,
                           bool uct_time = false,
                           zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC
     )  const;
@@ -246,7 +246,7 @@ public:
     * @param[in]  uct_time    是否转换为UTC时间
     * @param[in]  fromat_type 时间格式，默认为ISO的usec
     */
-    int from_string(const char *strtm,
+    int from_string(const char* strtm,
                     bool uct_time = false,
                     zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC);
 
@@ -257,44 +257,44 @@ public:
     operator timeval () const;
 
     ///返回一个const 的timeval，指针，
-    operator const timeval *() const;
+    operator const timeval* () const;
 
     ///返回timeval的指针，你可以通过这个方法直接修改这个对象内部的数据，在某些函数有用，
-    operator timeval *();
+    operator timeval* ();
 
     ///获取当前时间
     void gettimeofday();
 
     /// 加上 @a tv 的时间
-    Time_Value &operator += (const Time_Value &tv);
+    Time_Value& operator += (const Time_Value& tv);
 
     /// 减去 @a tv的时间
-    Time_Value &operator -= (const Time_Value &tv);
+    Time_Value& operator -= (const Time_Value& tv);
 
     /// 返回true，如果 < @a tv 的时间
-    bool operator < (const Time_Value &tv);
+    bool operator < (const Time_Value& tv);
     /// 返回true，如果 > @a tv 的时间
-    bool operator > (const Time_Value &tv);
+    bool operator > (const Time_Value& tv);
 
     /// 返回true，如果 <= @a tv 的时间
-    bool operator <= (const Time_Value &tv);
+    bool operator <= (const Time_Value& tv);
 
     /// 返回true，如果 >= @a tv 的时间
-    bool operator >= (const Time_Value &tv);
+    bool operator >= (const Time_Value& tv);
 
     /// 返回true，如果 == @a tv 的时间
-    bool operator == (const Time_Value &tv);
+    bool operator == (const Time_Value& tv);
 
     /// 返回true，如果 != @a tv 的时间
-    bool operator != (const Time_Value &tv);
+    bool operator != (const Time_Value& tv);
 
     /// 将两个 Time_Value 对象 @a tv1 和 @a tv2 加起来，返回结果，
-    friend Time_Value operator + (const Time_Value &tv1,
-                                  const Time_Value &tv2);
+    friend Time_Value operator + (const Time_Value& tv1,
+                                  const Time_Value& tv2);
 
     /// 将两个 Time_Value 对象 @a tv1 和 @a tv2 相减，返回结果，
-    friend Time_Value operator - (const Time_Value &tv1,
-                                  const Time_Value &tv2);
+    friend Time_Value operator - (const Time_Value& tv1,
+                                  const Time_Value& tv2);
 
 protected:
 

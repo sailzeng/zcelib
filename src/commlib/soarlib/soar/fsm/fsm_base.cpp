@@ -10,10 +10,10 @@
 namespace soar
 {
 //构造函数
-FSM_Base::FSM_Base(FSM_Manager *pmngr,
+FSM_Base::FSM_Base(FSM_Manager* pmngr,
                    uint32_t create_cmd,
-                   bool trans_locker):
-    zce::Async_FSM(pmngr,create_cmd),
+                   bool trans_locker) :
+    zce::Async_FSM(pmngr, create_cmd),
     trans_manager_(pmngr),
     trans_locker_(trans_locker),
     trans_create_(true)
@@ -41,7 +41,7 @@ void FSM_Base::on_start()
 }
 
 //根据Frame初始化得到对方发送的信息
-void FSM_Base::create_init(soar::Zerg_Frame *proc_frame)
+void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
 {
     proc_frame->get_head(req_zerg_head_);
 
@@ -53,9 +53,9 @@ void FSM_Base::create_init(soar::Zerg_Frame *proc_frame)
     return;
 }
 
-void FSM_Base::on_run(void *outer_data,bool &continue_run)
+void FSM_Base::on_run(void* outer_data, bool& continue_run)
 {
-    soar::Zerg_Frame *recv_frame = (soar::Zerg_Frame *)outer_data;
+    soar::Zerg_Frame* recv_frame = (soar::Zerg_Frame*)outer_data;
 
     //如果是第一次创建事物的时候，
     if (trans_create_)
@@ -63,7 +63,7 @@ void FSM_Base::on_run(void *outer_data,bool &continue_run)
         create_init(recv_frame);
         trans_create_ = false;
 
-        ZCE_LOG(trace_log_pri_,"%s::trans_run create,transaction id:[%u],trans stage:[%u],"
+        ZCE_LOG(trace_log_pri_, "%s::trans_run create,transaction id:[%u],trans stage:[%u],"
                 "request cmd [%u] trans id:[%u].",
                 typeid(*this).name(),
                 asyncobj_id_,
@@ -73,7 +73,7 @@ void FSM_Base::on_run(void *outer_data,bool &continue_run)
         );
     }
 
-    ZCE_LOG(trace_log_pri_,"%s::trans_run start,transaction id:[%u],trans stage:[%u],"
+    ZCE_LOG(trace_log_pri_, "%s::trans_run start,transaction id:[%u],trans stage:[%u],"
             "recv frame cmd [%u] trans id:[%u].",
             typeid(*this).name(),
             asyncobj_id_,
@@ -82,16 +82,16 @@ void FSM_Base::on_run(void *outer_data,bool &continue_run)
             recv_frame->fsm_id_
     );
 
-    trans_run(recv_frame,continue_run);
+    trans_run(recv_frame, continue_run);
 
-    ZCE_LOG(trace_log_pri_,"%s::trans_run end,transaction id:[%u],trans stage:[%u],"
+    ZCE_LOG(trace_log_pri_, "%s::trans_run end,transaction id:[%u],trans stage:[%u],"
             "recv frame cmd [%u] trans id:[%u],continue[%s] ,error [%d].",
             typeid(*this).name(),
             asyncobj_id_,
             fsm_stage_,
             recv_frame->command_,
             recv_frame->fsm_id_,
-            continue_run?"TRUE":"FALSE",
+            continue_run ? "TRUE" : "FALSE",
             running_errno_
     );
 
@@ -117,23 +117,23 @@ void FSM_Base::on_run(void *outer_data,bool &continue_run)
     }
 }
 
-void FSM_Base::on_timeout(const zce::Time_Value &now_time,
-                          bool &continue_run)
+void FSM_Base::on_timeout(const zce::Time_Value& now_time,
+                          bool& continue_run)
 {
-    ZCE_LOG(trace_log_pri_,"%s::trans_timeout start,transaction id:[%u],trans stage:[%u],",
+    ZCE_LOG(trace_log_pri_, "%s::trans_timeout start,transaction id:[%u],trans stage:[%u],",
             typeid(*this).name(),
             asyncobj_id_,
             fsm_stage_
     );
 
-    trans_timeout(now_time,continue_run);
+    trans_timeout(now_time, continue_run);
 
-    ZCE_LOG(trace_log_pri_,"%s::trans_timeout end,transaction id:[%u],trans stage:[%u],"
+    ZCE_LOG(trace_log_pri_, "%s::trans_timeout end,transaction id:[%u],trans stage:[%u],"
             "continue[%s] ,error [%d].",
             typeid(*this).name(),
             asyncobj_id_,
             fsm_stage_,
-            continue_run?"TRUE":"FALSE",
+            continue_run ? "TRUE" : "FALSE",
             running_errno_
     );
 
@@ -160,13 +160,13 @@ void FSM_Base::on_timeout(const zce::Time_Value &now_time,
 }
 
 //检查接受到的FRAME的数据和命令
-int FSM_Base::check_receive_frame(const soar::Zerg_Frame *recv_frame,
+int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
                                   uint32_t wait_cmd)
 {
     //
     if (wait_cmd != CMD_INVALID_CMD && recv_frame->command_ != wait_cmd)
     {
-        ZCE_LOG(RS_ERROR,"[framework] %s:check_receive_frame error,Transaction id [%u] Wait command[%u],"
+        ZCE_LOG(RS_ERROR, "[framework] %s:check_receive_frame error,Transaction id [%u] Wait command[%u],"
                 "Recieve command[%u] transaction ID:[%u].",
                 typeid(*this).name(),
                 asyncobj_id_,
@@ -210,7 +210,7 @@ int FSM_Base::close_request_service() const
     cmd_head.recv_service_ = req_zerg_head_.send_service_;
     cmd_head.proxy_service_ = req_zerg_head_.proxy_service_;
     cmd_head.send_service_ = req_zerg_head_.recv_service_;
-    return trans_manager_->sendbuf_to_pipe(cmd_head,NULL,0);
+    return trans_manager_->sendbuf_to_pipe(cmd_head, NULL, 0);
 }
 
 //对当前用户的，当前事务命令字进行加锁
@@ -227,7 +227,7 @@ void FSM_Base::unlock_cmd_userid()
 }
 
 //DUMP所有的事物的信息
-void FSM_Base::dump_transa_info(std::ostringstream &strstream) const
+void FSM_Base::dump_transa_info(std::ostringstream& strstream) const
 {
     strstream << "ID:" << asyncobj_id_ << " uid:" << req_zerg_head_.user_id_ << " Cmd:" << req_zerg_head_.command_ << " Stage:" << std::dec << fsm_stage_ << " ";
     strstream << "ReqSndSvr:" << req_zerg_head_.send_service_.services_type_ << "|" << req_zerg_head_.send_service_.services_id_ \

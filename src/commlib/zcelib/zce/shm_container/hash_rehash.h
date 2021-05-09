@@ -99,16 +99,16 @@ protected:
     //序列号
     size_t                 serial_;
     //
-    _hashtable_rehash *ht_rehash_instance_;
+    _hashtable_rehash* ht_rehash_instance_;
 
 public:
-    _hash_rehash_iterator():
+    _hash_rehash_iterator() :
         serial_(_shm_memory_base::_INVALID_POINT),
         ht_rehash_instance_(NULL)
     {
     }
 
-    _hash_rehash_iterator(size_t serial,_hashtable_rehash *ht_safe_inst):
+    _hash_rehash_iterator(size_t serial, _hashtable_rehash* ht_safe_inst) :
         serial_(serial),
         ht_rehash_instance_(ht_safe_inst)
     {
@@ -118,12 +118,12 @@ public:
     {
     }
 
-    _value_type &operator*() const
+    _value_type& operator*() const
     {
         return ht_rehash_instance_->value_base_[serial_];
     }
 
-    _value_type *operator->() const
+    _value_type* operator->() const
     {
         return ht_rehash_instance_->value_base_ + serial_;
     }
@@ -131,7 +131,7 @@ public:
     //本来只提供前向迭代器，曾经以为使用可以使用LIST保证迭代的高效，发现不行，
     //可能要提供另外的函数
     //前向迭代器
-    iterator &operator++()
+    iterator& operator++()
     {
         _extract_key get_key;
         _equal_key   equal_key;
@@ -142,7 +142,7 @@ public:
             //这个用无效值对象，对所有元素进行赋值，为什么使用placement new，因为更加上流一点
             //如果不是一个无效值
             if (false == equal_key(get_key(*(ht_rehash_instance_->value_base_ + old_serial)),
-                get_key(ht_rehash_instance_->invalid_data_)))
+                                   get_key(ht_rehash_instance_->invalid_data_)))
             {
                 serial_ = old_serial;
                 break;
@@ -162,11 +162,11 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++ *this;
+        ++* this;
         return tmp;
     }
     //
-    bool operator==(const iterator &it) const
+    bool operator==(const iterator& it) const
     {
         if (ht_rehash_instance_ == it.ht_rehash_instance_ &&
             serial_ == it.serial_)
@@ -177,7 +177,7 @@ public:
         return false;
     }
     //
-    bool operator!=(const iterator &it) const
+    bool operator!=(const iterator& it) const
     {
         return !(*this == it);
     }
@@ -203,7 +203,7 @@ class _hashtable_rehash_head
 {
 protected:
     //构造析构函数
-    _hashtable_rehash_head():
+    _hashtable_rehash_head() :
         size_of_mmap_(0),
         num_of_node_(0),
         sz_freenode_(0),
@@ -212,7 +212,7 @@ protected:
         expire_start_(0)
     {
         //清0
-        memset(primes_ary_,0,sizeof(primes_ary_));
+        memset(primes_ary_, 0, sizeof(primes_ary_));
     }
     ~_hashtable_rehash_head()
     {
@@ -283,17 +283,17 @@ protected:
     _value_type              invalid_data_;
 
     //放在共享内存头部的指针
-    _hashtable_rehash_head *hash_safe_head_;
+    _hashtable_rehash_head* hash_safe_head_;
 
     //数据区指针
-    _value_type *value_base_;
+    _value_type* value_base_;
 
     //优先级的数据指针,用32位的数据保存优先级
-    unsigned int *priority_base_;
+    unsigned int* priority_base_;
 
 protected:
 
-    shm_hash_rehash():
+    shm_hash_rehash() :
         hash_safe_head_(NULL),
         value_base_(NULL),
         priority_base_(NULL)
@@ -309,15 +309,15 @@ public:
 protected:
 
     //从value中取值
-    size_t bkt_num_value(const _value_type &obj,size_t one_primes) const
+    size_t bkt_num_value(const _value_type& obj, size_t one_primes) const
     {
         _extract_key get_key;
-        return static_cast<size_t>(bkt_num_key(get_key(obj),one_primes));
+        return static_cast<size_t>(bkt_num_key(get_key(obj), one_primes));
     }
 
     //为什么不能重载上面的函数,自己考虑一下,
     //重载的话，如果_value_type和_key_type一样，就等着哭吧 ---inmore
-    size_t bkt_num_key(const _key_type &key,size_t one_primes) const
+    size_t bkt_num_key(const _key_type& key, size_t one_primes) const
     {
         _hash_fun hash_fun;
         return static_cast<size_t>(hash_fun(key) % one_primes);
@@ -330,27 +330,27 @@ protected:
     }
 
     //用于自己的内部的初始化处理
-    static self *initialize_i(size_t row_number,
+    static self* initialize_i(size_t row_number,
                               const size_t primes_list[],
                               size_t num_node,
                               size_t sz_alloc,
-                              char *pmmap,
-                              const _value_type &invalid_data,
+                              char* pmmap,
+                              const _value_type& invalid_data,
                               bool if_expire,
                               bool if_restore)
     {
-        self *instance = new shm_hash_rehash < _value_type,
+        self* instance = new shm_hash_rehash < _value_type,
             _key_type,
             _hash_fun,
             _extract_key,
             _equal_key >();
 
         instance->smem_base_ = pmmap;
-        char *tmp_base = instance->smem_base_;
-        instance->hash_safe_head_ = reinterpret_cast<_hashtable_rehash_head *>(tmp_base);
+        char* tmp_base = instance->smem_base_;
+        instance->hash_safe_head_ = reinterpret_cast<_hashtable_rehash_head*>(tmp_base);
         tmp_base = tmp_base + sizeof(_hashtable_rehash_head);
 
-        instance->value_base_ = reinterpret_cast<_value_type *>(tmp_base);
+        instance->value_base_ = reinterpret_cast<_value_type*>(tmp_base);
         tmp_base = tmp_base + (sizeof(_value_type) * (num_node));
 
         //初始化尺寸,如果是恢复，刚才已经比较过了
@@ -362,7 +362,7 @@ protected:
 
         if (if_expire)
         {
-            instance->priority_base_ = reinterpret_cast<unsigned int *>(tmp_base);
+            instance->priority_base_ = reinterpret_cast<unsigned int*>(tmp_base);
             tmp_base = tmp_base + (sizeof(unsigned int) * (num_node));
         }
         else
@@ -409,14 +409,14 @@ public:
     * @note       内存区的构成为 define区,index区,data区,返回所需要的长度,
     */
     static size_t getallocsize(size_t req_num,
-                               size_t &real_num,
+                               size_t& real_num,
                                size_t prime_ary[],
                                bool if_expire,
                                size_t row_prime_ary = DEF_PRIMES_LIST_NUM)
     {
         ZCE_ASSERT(row_prime_ary >= MIN_PRIMES_LIST_NUM && row_prime_ary <= MAX_PRIMES_LIST_NUM);
 
-        zce::hash_prime_ary(req_num,real_num,row_prime_ary,prime_ary);
+        zce::hash_prime_ary(req_num, real_num, row_prime_ary, prime_ary);
 
         size_t sz_alloc = 0;
         //
@@ -445,7 +445,7 @@ public:
     static size_t getallocsize(size_t row_prime_ary,
                                const size_t primes_list[],
                                bool if_expire,
-                               size_t &node_count)
+                               size_t& node_count)
     {
         //列表的最大长度不能大于MAX_PRIMES_LIST_ELEMENT
         ZCE_ASSERT(row_prime_ary <= DEF_PRIMES_LIST_NUM);
@@ -489,10 +489,10 @@ public:
     * @param      if_restore     是否是从一个内存中恢复空间，比如共享内存之类的恢复
     * @note       推荐使用这个函数,你做的事情要少很多
     */
-    static self *initialize(size_t req_num,
-                            size_t &real_num,
-                            char *pmmap,
-                            const _value_type &invalid_data,
+    static self* initialize(size_t req_num,
+                            size_t& real_num,
+                            char* pmmap,
+                            const _value_type& invalid_data,
                             bool if_expire,
                             size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
                             bool if_restore = false)
@@ -501,9 +501,9 @@ public:
 
         //调整,根据你的尺寸，向上找一个合适的空间
         size_t prime_ary[MAX_PRIMES_LIST_NUM];
-        size_t sz_alloc = getallocsize(req_num,real_num,prime_ary,if_expire,row_prime_ary);
+        size_t sz_alloc = getallocsize(req_num, real_num, prime_ary, if_expire, row_prime_ary);
 
-        _hashtable_rehash_head *hashhead = reinterpret_cast<_hashtable_rehash_head *>(pmmap);
+        _hashtable_rehash_head* hashhead = reinterpret_cast<_hashtable_rehash_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,对数据进行检查
         if (if_restore == true)
@@ -575,24 +575,24 @@ public:
         //如果要记录淘汰信息
         if (if_expire)
         {
-            memset(priority_base_,0,(sizeof(unsigned int) * (hash_safe_head_->num_of_node_)));
+            memset(priority_base_, 0, (sizeof(unsigned int) * (hash_safe_head_->num_of_node_)));
         }
     }
 
     //你也可以传递一个质数队列，作为进行多轮HASH取模的质数队列,
-    static self *initialize(size_t primes_number,
+    static self* initialize(size_t primes_number,
                             size_t primes_list[],
-                            char *pmmap,
-                            const _value_type &invalid_data,
+                            char* pmmap,
+                            const _value_type& invalid_data,
                             bool if_expire,
                             bool if_restore = false)
     {
         assert(pmmap != NULL);
 
-        _hashtable_rehash_head *hashhead = reinterpret_cast<_hashtable_rehash_head *>(pmmap);
+        _hashtable_rehash_head* hashhead = reinterpret_cast<_hashtable_rehash_head*>(pmmap);
 
         size_t node_count = 0;
-        size_t sz_alloc = getallocsize(primes_number,primes_list,if_expire,node_count);
+        size_t sz_alloc = getallocsize(primes_number, primes_list, if_expire, node_count);
 
         //如果是恢复,数据都在内存中,对数据进行检查
         if (if_restore == true)
@@ -646,9 +646,9 @@ public:
         for (size_t i = 0; i < hash_safe_head_->num_of_node_; ++i)
         {
             //如果不是一个无效值
-            if (false == equal_key(get_key(*(value_base_ + i)),get_key(invalid_data_)))
+            if (false == equal_key(get_key(*(value_base_ + i)), get_key(invalid_data_)))
             {
-                return iterator(i,this);
+                return iterator(i, this);
             }
         }
 
@@ -658,7 +658,7 @@ public:
     //得到结束位置
     iterator end()
     {
-        return iterator(_INVALID_POINT,this);
+        return iterator(_INVALID_POINT, this);
     }
     //当前使用的节点数量
     size_t size() const
@@ -682,7 +682,7 @@ public:
     }
 
     //插入节点
-    std::pair<iterator,bool> insert(const _value_type &val)
+    std::pair<iterator, bool> insert(const _value_type& val)
     {
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -694,17 +694,17 @@ public:
         //循环进行N此取模操作，
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
-            size_t idx = bkt_num_value(val,hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])),(get_key(val))))
+            if (equal_key((get_key(value_base_[idx_count])), (get_key(val))))
             {
-                return std::pair<iterator,bool>(iterator(idx_count,this),false);
+                return std::pair<iterator, bool>(iterator(idx_count, this), false);
             }
 
             //如果是一个无效数据，表示一个空位置
-            if (equal_key((get_key(value_base_[idx_count])),(get_key(invalid_data_))) == true)
+            if (equal_key((get_key(value_base_[idx_count])), (get_key(invalid_data_))) == true)
             {
                 if (idx_no_use == _INVALID_POINT)
                 {
@@ -720,7 +720,7 @@ public:
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
         if (_INVALID_POINT == idx_no_use)
         {
-            return std::pair<iterator,bool>(end(),false);
+            return std::pair<iterator, bool>(end(), false);
         }
 
         //使用placement new进行赋值
@@ -729,16 +729,16 @@ public:
         ++(hash_safe_head_->sz_usenode_);
         --(hash_safe_head_->sz_freenode_);
 
-        return std::pair<iterator,bool>(iterator(idx_no_use,this),true);
+        return std::pair<iterator, bool>(iterator(idx_no_use, this), true);
     }
 
     //带优先级的插入，开始初始化的时候必须if_expire == true
     //@const _value_type &val 插入的数据
     //@unsigned int priority  插入数据优先级，
     //@unsigned int expire_priority = static_cast<unsigned int>(-1)，淘汰的优先级，默认为最大值，不进行不淘汰，这个修正来自djiang的好建议
-    std::pair<iterator,bool> insert(const _value_type &val,
-                                    unsigned int priority,
-                                    unsigned int expire_priority = 0)
+    std::pair<iterator, bool> insert(const _value_type& val,
+                                     unsigned int priority,
+                                     unsigned int expire_priority = 0)
     {
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -750,17 +750,17 @@ public:
         //循环进行N此取模操作，
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
-            size_t idx = bkt_num_value(val,hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])),(get_key(val))))
+            if (equal_key((get_key(value_base_[idx_count])), (get_key(val))))
             {
-                return std::pair<iterator,bool>(iterator(idx_count,this),false);
+                return std::pair<iterator, bool>(iterator(idx_count, this), false);
             }
 
             //如果是一个无效数据，表示一个空位置
-            if (equal_key((get_key(value_base_[idx_count])),(get_key(invalid_data_))) == true)
+            if (equal_key((get_key(value_base_[idx_count])), (get_key(invalid_data_))) == true)
             {
                 if (idx_no_use == _INVALID_POINT)
                 {
@@ -787,7 +787,7 @@ public:
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
         if (_INVALID_POINT == idx_no_use)
         {
-            return std::pair<iterator,bool>(end(),false);
+            return std::pair<iterator, bool>(end(), false);
         }
 
         //使用placement new进行赋值
@@ -799,12 +799,12 @@ public:
         //如果插入成功了记录优先级
         priority_base_[idx_no_use] = priority;
 
-        return std::pair<iterator,bool>(iterator(idx_no_use,this),true);
+        return std::pair<iterator, bool>(iterator(idx_no_use, this), true);
     }
 
     //查询相应的Key是否有,返回迭代器
     //这个地方有一个陷阱,这个地方返回的迭代器++，不能给你找到相同的key的数据,而开链的HASH实现了这个功能
-    iterator find(const _key_type &key)
+    iterator find(const _key_type& key)
     {
         //使用量函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -816,13 +816,13 @@ public:
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
             //将val取出key，取模
-            size_t idx = bkt_num_key(key,hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_key(key, hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])),key))
+            if (equal_key((get_key(value_base_[idx_count])), key))
             {
-                return iterator(idx_count,this);
+                return iterator(idx_count, this);
             }
 
             //准备在下一个质数列里面找
@@ -833,13 +833,13 @@ public:
     }
 
     //
-    iterator find_value(const _value_type &val)
+    iterator find_value(const _value_type& val)
     {
         _extract_key get_key;
         return find(get_key(val));
     }
 
-    bool erase(const _key_type &key)
+    bool erase(const _key_type& key)
     {
         iterator iter_temp = find(key);
 
@@ -852,7 +852,7 @@ public:
     }
 
     //使用迭代器删除,尽量高效所以不用简化写法
-    bool erase(const iterator &it_del)
+    bool erase(const iterator& it_del)
     {
         //我不做过多的检查
         if (it_del != end())
@@ -871,7 +871,7 @@ public:
     }
 
     //删除某个值
-    bool erase_value(const _value_type &val)
+    bool erase_value(const _value_type& val)
     {
         _extract_key get_key;
         return erase(get_key(val));
@@ -879,7 +879,7 @@ public:
 
     //激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
     //优先级参数可以使用当前的时间
-    bool active(const _key_type &key,
+    bool active(const _key_type& key,
                 unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         iterator  iter_tmp = find(key);
@@ -895,17 +895,17 @@ public:
     }
 
     //
-    bool active_value(const _value_type &val,
+    bool active_value(const _value_type& val,
                       unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         _extract_key get_key;
-        return active(get_key(val),priority);
+        return active(get_key(val), priority);
     }
 
     //淘汰过期的数据,假设LIST中间的数据是按照过期实际排序的，这要求你传入的优先级最好是时间
     //小于等于这个优先级的数据将被淘汰
     //hope_expire_num表示你希望删除多少个值，默认为最大值,全部淘汰
-    size_t expire(unsigned int expire_time,size_t hope_expire_num = static_cast<size_t>(-1))
+    size_t expire(unsigned int expire_time, size_t hope_expire_num = static_cast<size_t>(-1))
     {
         //从尾部开始检查，
         size_t expire_num = 0;
@@ -922,7 +922,7 @@ public:
                 wash_fun(value_base_[del_iter]);
                 ++expire_num;
                 //
-                iterator iter_tmp(del_iter,this);
+                iterator iter_tmp(del_iter, this);
                 erase(iter_tmp);
             }
         }

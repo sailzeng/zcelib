@@ -60,7 +60,7 @@ public:
 protected:
 
     /// 使用帮助
-    virtual int usage(const char *program_name);
+    virtual int usage(const char* program_name);
 
 public:
 
@@ -68,7 +68,7 @@ public:
     FRAMEWORK_CONFIG framework_config_;
 
     ///
-    ZCE_Conf_PropertyTree framework_ptree_;
+    zce::PropertyTree framework_ptree_;
 };
 
 #endif //SOARING_LIB_SERVER_CONFIG_TRANS_H_

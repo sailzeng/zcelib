@@ -14,7 +14,7 @@ class  Zerg_App
 //单子的static实例
 
 //我又要偷偷藏着
-Zerg_App::Zerg_App():
+Zerg_App::Zerg_App() :
     zerg_comm_mgr_(NULL),
     conf_timestamp_(0)
 {
@@ -25,16 +25,16 @@ Zerg_App::~Zerg_App()
 }
 
 //根据启动参数启动
-int Zerg_App::app_start(int argc,const char *argv[])
+int Zerg_App::app_start(int argc, const char* argv[])
 {
     int ret = 0;
 
-    ret = soar::Svrd_Appliction::app_start(argc,argv);
+    ret = soar::Svrd_Appliction::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
     }
-    Zerg_Config *config = reinterpret_cast<Zerg_Config *>(config_base_);
+    Zerg_Config* config = reinterpret_cast<Zerg_Config*>(config_base_);
     ret = zerg::IPRestrict_Mgr::instance()->get_config(config);
     if (0 != ret)
     {
@@ -66,8 +66,8 @@ int Zerg_App::app_start(int argc,const char *argv[])
     //如果是多线程增加这步
     //soar::Stat_Monitor::instance()->multi_thread_guard(false);
 
-    size_t max_accept = 0,max_connect = 0,max_peer = 0;
-    TCP_Svc_Handler::get_max_peer_num(max_accept,max_connect);
+    size_t max_accept = 0, max_connect = 0, max_peer = 0;
+    TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
 
     //设置发送接收缓冲的数量
@@ -77,7 +77,7 @@ int Zerg_App::app_start(int argc,const char *argv[])
     zerg_comm_mgr_ = zerg::Comm_Manager::instance();
 
     //
-    ZCE_LOG(RS_INFO,"[zergsvr] ReloadDynamicConfig Succ.Ooooo!"
+    ZCE_LOG(RS_INFO, "[zergsvr] ReloadDynamicConfig Succ.Ooooo!"
             "Some people believe that God created the world,but.");
 
     //-----------------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ int Zerg_App::app_start(int argc,const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"[zergsvr] init_instance Succ.Have Fun.!!!");
+    ZCE_LOG(RS_INFO, "[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
 
     return 0;
@@ -109,7 +109,7 @@ int Zerg_App::app_start(int argc,const char *argv[])
 
 int Zerg_App::app_exit()
 {
-    ZCE_LOG(RS_INFO,"[zergsvr] exit_instance Succ.Have Fun.!!!");
+    ZCE_LOG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
 
     //释放所有的静态资源，关闭所有的句柄
     TCP_Svc_Handler::uninit_all_staticdata();
@@ -151,15 +151,15 @@ int Zerg_App::app_run()
     //
     const size_t DEFAULT_IO_FIRST_RATIO = 32;
 
-    size_t num_io_event = 0,num_send_frame = 0,want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
+    size_t num_io_event = 0, num_send_frame = 0, want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
 
-    ZCE_LOG(RS_INFO,"[zergsvr] Zerg_App::run_instance start.");
+    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_App::run_instance start.");
 
     //microsecond
-    ZCE_Reactor *preactor = ZCE_Reactor::instance();
-    zce::Timer_Queue *p_timer_queue = zce::Timer_Queue::instance();
+    zce::ZCE_Reactor* preactor = zce::ZCE_Reactor::instance();
+    zce::Timer_Queue* p_timer_queue = zce::Timer_Queue::instance();
 
-    zce::Time_Value run_interval(0,IDLE_REACTOR_WAIT_USEC);
+    zce::Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
 
     for (size_t i = 0; app_run_; ++i)
     {
@@ -200,15 +200,15 @@ int Zerg_App::app_run()
         }
 
         //
-        preactor->handle_events(&run_interval,&num_io_event);
+        preactor->handle_events(&run_interval, &num_io_event);
 
         //每次都在这儿初始化zce::Time_Value不好,其要调整.
-        zerg_comm_mgr_->popall_sendpipe_write(want_send_frame,num_send_frame);
+        zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
 
         //如果发送队列很忙，再进行一次发送
         if ((num_send_frame > SEND_BUSY_JUDGE_STANDARD && num_io_event == 0) || num_send_frame >= NORMAL_MAX_ONCE_SEND_FRAME)
         {
-            zerg_comm_mgr_->popall_sendpipe_write(want_send_frame,num_send_frame);
+            zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
         }
 
         //偶尔处理一下定时器
@@ -218,7 +218,7 @@ int Zerg_App::app_run()
         }
     }
 
-    ZCE_LOG(RS_INFO,"[zergsvr] Zerg_App::run_instance end.");
+    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_App::run_instance end.");
 
     return 0;
 }

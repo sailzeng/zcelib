@@ -48,7 +48,7 @@ public:
     * @note
     */
     int activate(int group_id,
-                 ZCE_THREAD_ID *threadid,
+                 ZCE_THREAD_ID* threadid,
                  int detachstate = PTHREAD_CREATE_JOINABLE,
                  size_t stacksize = 0,
                  int threadpriority = 0);
@@ -79,7 +79,7 @@ protected:
 protected:
 
     ///静态函数，也就是要执行的函数，里面调用svc
-    static void svc_run(void *args);
+    static void svc_run(void* args);
 
 public:
 

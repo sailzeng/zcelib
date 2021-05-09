@@ -10,9 +10,9 @@ size_t Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN = 64 * 1024;
 //最大的FRAME的长度,为MAX_OF_OGRE_DATA_LEN ＋ LEN_OF_OGRE_FRAME_HEAD
 size_t Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN = Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD;
 
-Ogre4a_App_Frame::Ogre4a_App_Frame():
+Ogre4a_App_Frame::Ogre4a_App_Frame() :
     ogre_frame_len_(LEN_OF_OGRE_FRAME_HEAD),
-    snd_peer_info_(0,0),
+    snd_peer_info_(0, 0),
     ogre_frame_option_(0),
     ogre_send_errnum_(0)
 {
@@ -22,7 +22,7 @@ Ogre4a_App_Frame::~Ogre4a_App_Frame()
 {
 }
 
-Ogre4a_App_Frame *Ogre4a_App_Frame::new_ogre(size_t lenframe)
+Ogre4a_App_Frame* Ogre4a_App_Frame::new_ogre(size_t lenframe)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
     if (lenframe < sizeof(Ogre4a_App_Frame))
@@ -31,25 +31,25 @@ Ogre4a_App_Frame *Ogre4a_App_Frame::new_ogre(size_t lenframe)
         lenframe = sizeof(Ogre4a_App_Frame);
     }
 
-    void *ptr = ::new unsigned char[lenframe];
+    void* ptr = ::new unsigned char[lenframe];
 
 #if defined(DEBUG) || defined(_DEBUG)
     //检查帧的哪个地方出现问题，还是这样好一点
-    memset(ptr,0,lenframe);
+    memset(ptr, 0, lenframe);
 #endif //DEBUG
 
     //reinterpret_cast<Zerg_App_Frame*>(ptr)->m_Length = static_cast<unsigned int>(lenframe);
-    return static_cast<Ogre4a_App_Frame *>(ptr);
+    return static_cast<Ogre4a_App_Frame*>(ptr);
 }
 
-void Ogre4a_App_Frame::delete_ogre(Ogre4a_App_Frame *ptrframe) noexcept
+void Ogre4a_App_Frame::delete_ogre(Ogre4a_App_Frame* ptrframe) noexcept
 {
-    char *ptr = reinterpret_cast<char *>(ptrframe);
+    char* ptr = reinterpret_cast<char*>(ptrframe);
     delete[]ptr;
 }
 
 //增加数据
-int Ogre4a_App_Frame::add_data(unsigned int add_size,char *add_data)
+int Ogre4a_App_Frame::add_data(unsigned int add_size, char* add_data)
 {
     if (ogre_frame_len_ + add_size > MAX_OF_OGRE_DATA_LEN)
     {
@@ -57,7 +57,7 @@ int Ogre4a_App_Frame::add_data(unsigned int add_size,char *add_data)
     }
     else
     {
-        memcpy(frame_data_ + ogre_frame_len_,add_data,add_size);
+        memcpy(frame_data_ + ogre_frame_len_, add_data, add_size);
         ogre_frame_len_ += add_size;
         return 0;
     }
@@ -80,7 +80,7 @@ void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
 }
 
 //和其他人交换Rcv ,Snd Peer Info,
-void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe)
+void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame* exframe)
 {
     ogre_frame_option_ = exframe->ogre_frame_option_;
     rcv_peer_info_ = exframe->snd_peer_info_;
@@ -88,11 +88,11 @@ void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe)
 }
 
 //输出APPFRAME的全部部信息
-void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
-                                           const char *outstr,
+void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame* proc_frame,
+                                           const char* outstr,
                                            zce::LOG_PRIORITY log_priority)
 {
-    ZCE_LOG(log_priority,"[framework] [OGRE_FRAME_MONITOR]location:%s ,frame_len:%u,send_ip:%u,send_port:%u,rcv_ip:%u,rcv_port:%u,",
+    ZCE_LOG(log_priority, "[framework] [OGRE_FRAME_MONITOR]location:%s ,frame_len:%u,send_ip:%u,send_port:%u,rcv_ip:%u,rcv_port:%u,",
             outstr,
             proc_frame->ogre_frame_len_,
             proc_frame->snd_peer_info_.peer_ip_address_,
@@ -108,8 +108,8 @@ void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
 }
 
 //输出APPFRAME的全部部信息
-void Ogre4a_App_Frame::dump_ogre_framehead(const char *outstr,
+void Ogre4a_App_Frame::dump_ogre_framehead(const char* outstr,
                                            zce::LOG_PRIORITY log_priority) const
 {
-    this->dump_ogre_framehead(this,outstr,log_priority);
+    this->dump_ogre_framehead(this, outstr, log_priority);
 }

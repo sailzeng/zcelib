@@ -9,7 +9,7 @@ struct SERVICES_IP_INFO 服务ID信息 + IP信息
 ******************************************************************************************/
 
 ///从字符串中获取
-int SERVICES_INFO::from_str(const char *svc_info_str,
+int SERVICES_INFO::from_str(const char* svc_info_str,
                             bool check_valid)
 {
     const size_t SVC_INFO_STR_LEN = 512;
@@ -29,7 +29,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
                          "%hu.%u | %u.%u.%u.%u # %hu | %hu | %hu",
                          &svc_id_.services_type_,
                          &svc_id_.services_id_,
-                         &u[0],&u[1],&u[2],&u[3],
+                         &u[0], &u[1], &u[2], &u[3],
                          &port,
                          &idc_no_,
                          &business_id_);
@@ -40,26 +40,26 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
     }
     if (check_valid &&
         (soar::SERVICES_ID::INVALID_SERVICES_TYPE == svc_id_.services_type_
-        || soar::SERVICES_ID::INVALID_SERVICES_ID == svc_id_.services_id_))
+         || soar::SERVICES_ID::INVALID_SERVICES_ID == svc_id_.services_id_))
     {
         return SOAR_RET::ERROR_STRING_TO_SVCID_FAIL;
     }
 
     uint32_t u32_addr = u[0] << 24 | u[1] << 16 | u[2] << 8 | u[3];
-    ip_address_.set(u32_addr,port);
+    ip_address_.set(u32_addr, port);
     return 0;
 }
 
 ///转换string
-const char *SERVICES_INFO::to_str(char *str_buffer,size_t buf_len)
+const char* SERVICES_INFO::to_str(char* str_buffer, size_t buf_len)
 {
-    char str_svc_id[32],str_inet_add[32];
+    char str_svc_id[32], str_inet_add[32];
     size_t use_buf = 0;
     snprintf(str_buffer,
              buf_len,
              "%16s|%24s|%6hu|%6hu",
-             svc_id_.to_str(str_svc_id,sizeof(str_svc_id) - 1),
-             ip_address_.to_string(str_inet_add,sizeof(str_inet_add) - 1,use_buf),
+             svc_id_.to_str(str_svc_id, sizeof(str_svc_id) - 1),
+             ip_address_.to_string(str_inet_add, sizeof(str_inet_add) - 1, use_buf),
              idc_no_,
              business_id_
     );

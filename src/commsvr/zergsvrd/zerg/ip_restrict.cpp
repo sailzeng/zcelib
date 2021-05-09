@@ -5,7 +5,7 @@
 namespace zerg
 {
 //实例
-IPRestrict_Mgr *IPRestrict_Mgr::instance_ = NULL;
+IPRestrict_Mgr* IPRestrict_Mgr::instance_ = NULL;
 
 /****************************************************************************************************
 class  IPRestrict_Mgr 处理通讯中间的IP限制问题
@@ -19,7 +19,7 @@ IPRestrict_Mgr::~IPRestrict_Mgr()
 }
 
 //从配置文件中得到相关的配置
-int IPRestrict_Mgr::get_config(const Zerg_Config *config)
+int IPRestrict_Mgr::get_config(const Zerg_Config* config)
 {
     int ret = 0;
     //unsigned int tmp_uint= 0;
@@ -28,7 +28,7 @@ int IPRestrict_Mgr::get_config(const Zerg_Config *config)
     reject_ip_set_.clear();
 
     std::vector<std::string> v;
-    zce::str_split(config->zerg_cfg_data_.allow_ip_.c_str(),"|",v);
+    zce::str_split(config->zerg_cfg_data_.allow_ip_.c_str(), "|", v);
     allow_ip_set_.rehash(v.size());
 
     //读取运行连接的服务器IP地址
@@ -36,7 +36,7 @@ int IPRestrict_Mgr::get_config(const Zerg_Config *config)
     {
         zce::Sockaddr_In     inetadd;
         //0是一个默认端口
-        ret = inetadd.set(v[i].c_str(),0);
+        ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
         {
             return -1;
@@ -47,13 +47,13 @@ int IPRestrict_Mgr::get_config(const Zerg_Config *config)
 
     //读取拒绝连接的服务器IP地址
     v.clear();
-    zce::str_split(config->zerg_cfg_data_.reject_ip_.c_str(),"|",v);
+    zce::str_split(config->zerg_cfg_data_.reject_ip_.c_str(), "|", v);
     reject_ip_set_.rehash(v.size());
 
     for (unsigned int i = 0; i < v.size(); ++i)
     {
         zce::Sockaddr_In     inetadd;
-        ret = inetadd.set(v[i].c_str(),0);
+        ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
         {
             return -1;
@@ -64,7 +64,7 @@ int IPRestrict_Mgr::get_config(const Zerg_Config *config)
     return 0;
 }
 
-int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
+int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In& remoteaddress)
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -76,8 +76,8 @@ int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
 
         if (iter == allow_ip_set_.end())
         {
-            ZCE_LOG(RS_INFO,"[zergsvr] A NO Allowed IP|Port : [%s] Connect me.",
-                    remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
+            ZCE_LOG(RS_INFO, "[zergsvr] A NO Allowed IP|Port : [%s] Connect me.",
+                    remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }
     }
@@ -89,8 +89,8 @@ int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
 
         if (iter != reject_ip_set_.end())
         {
-            ZCE_LOG(RS_INFO,"[zergsvr] Reject IP|Port : %s connect me.",
-                    remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
+            ZCE_LOG(RS_INFO, "[zergsvr] Reject IP|Port : %s connect me.",
+                    remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }
     }
@@ -99,7 +99,7 @@ int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
 }
 
 //单子实例函数
-IPRestrict_Mgr *IPRestrict_Mgr::instance()
+IPRestrict_Mgr* IPRestrict_Mgr::instance()
 {
     //如果没有初始化
     if (instance_ == NULL)

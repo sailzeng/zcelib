@@ -26,12 +26,12 @@ Timer_Heap::Timer_Heap(size_t num_timer_node,
     //
     if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] Timer_Heap::initialize fail.");
+        ZCE_LOG(RS_ERROR, "[zcelib] Timer_Heap::initialize fail.");
     }
 }
 
 //构造函数
-Timer_Heap::Timer_Heap():
+Timer_Heap::Timer_Heap() :
     size_heap_(0)
 {
 }
@@ -65,10 +65,10 @@ int Timer_Heap::initialize(size_t num_timer_node,
 
 //扩张相关十字链表的NODE的数量，也调用底层的extend_node函数
 int Timer_Heap::extend_node(size_t num_timer_node,
-                            size_t &old_num_node)
+                            size_t& old_num_node)
 {
     int ret = 0;
-    ret = zce::Timer_Queue::extend_node(num_timer_node,old_num_node);
+    ret = zce::Timer_Queue::extend_node(num_timer_node, old_num_node);
 
     if (ret != 0)
     {
@@ -95,7 +95,7 @@ int Timer_Heap::extend_node(size_t num_timer_node,
 }
 
 //分发定时器
-size_t Timer_Heap::dispatch_timer(const zce::Time_Value &now_time,
+size_t Timer_Heap::dispatch_timer(const zce::Time_Value& now_time,
                                   uint64_t now_trigger_msec)
 {
     int ret = 0;
@@ -126,7 +126,7 @@ size_t Timer_Heap::dispatch_timer(const zce::Time_Value &now_time,
         if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true)
         {
             //重新规划这个TIME NODE的位置等,如果不需要触发了则取消定时器
-            reschedule_timer(timer_node_id,now_trigger_msec);
+            reschedule_timer(timer_node_id, now_trigger_msec);
         }
 
         //
@@ -145,16 +145,16 @@ size_t Timer_Heap::dispatch_timer(const zce::Time_Value &now_time,
 }
 
 //设置定时器
-int Timer_Heap::schedule_timer(zce::Timer_Handler *timer_hdl,
-                               const void *action,
-                               const zce::Time_Value &delay_time,
-                               const zce::Time_Value &interval_time)
+int Timer_Heap::schedule_timer(zce::Timer_Handler* timer_hdl,
+                               const void* action,
+                               const zce::Time_Value& delay_time,
+                               const zce::Time_Value& interval_time)
 {
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
 
     //看能否分配一个TIME NODE
-    ZCE_TIMER_NODE *alloc_time_node = NULL;
+    ZCE_TIMER_NODE* alloc_time_node = NULL;
     ret = alloc_timernode(timer_hdl,
                           action,
                           delay_time,
@@ -204,7 +204,7 @@ int Timer_Heap::cancel_timer(int timer_id)
     return 0;
 }
 
-int Timer_Heap::reschedule_timer(int timer_id,uint64_t now_trigger_msec)
+int Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
 {
     bool contiue_trigger = false;
 
@@ -343,7 +343,7 @@ bool Timer_Heap::reheap_down(size_t heap_id)
     return already_down;
 }
 
-int Timer_Heap::get_frist_nodeid(int &timer_node_id)
+int Timer_Heap::get_frist_nodeid(int& timer_node_id)
 {
     //先附一个无效值
     timer_node_id = INVALID_TIMER_ID;

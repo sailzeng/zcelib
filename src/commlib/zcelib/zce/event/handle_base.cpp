@@ -4,53 +4,56 @@
 #include "zce/event/handle_base.h"
 #include "zce/event/reactor_base.h"
 
+namespace zce
+{
 //构造函数和析构函数
-ZCE_Event_Handler::ZCE_Event_Handler():
+Event_Handler::Event_Handler() :
     zce_reactor_(NULL),
     event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
 {
 }
-ZCE_Event_Handler::ZCE_Event_Handler(ZCE_Reactor *reactor):
+Event_Handler::Event_Handler(zce::ZCE_Reactor* reactor) :
     zce_reactor_(reactor),
     event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
 {
 }
 
-ZCE_Event_Handler::~ZCE_Event_Handler()
+Event_Handler::~Event_Handler()
 {
 }
 
 ////
-int ZCE_Event_Handler::handle_input()
+int Event_Handler::handle_input()
 {
     return 0;
 }
 
 //
-int ZCE_Event_Handler::handle_output()
+int Event_Handler::handle_output()
 {
     return 0;
 }
 ////
-int ZCE_Event_Handler::handle_exception()
+int Event_Handler::handle_exception()
 {
     return 0;
 }
 
-int ZCE_Event_Handler::handle_close()
+int Event_Handler::handle_close()
 {
     //移除自己，但是不判断返回，因为如果代码考虑的不细致，可能出现两次remove_handler
-    reactor()->remove_handler(this,false);
+    reactor()->remove_handler(this, false);
     return 0;
 }
 
-void ZCE_Event_Handler::reactor(ZCE_Reactor *reactor)
+void Event_Handler::reactor(zce::ZCE_Reactor* reactor)
 {
     zce_reactor_ = reactor;
 }
 
 /// Get the event demultiplexors.
-ZCE_Reactor *ZCE_Event_Handler::reactor(void) const
+zce::ZCE_Reactor* Event_Handler::reactor(void) const
 {
     return zce_reactor_;
+}
 }

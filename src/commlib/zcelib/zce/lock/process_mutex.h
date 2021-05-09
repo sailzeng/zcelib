@@ -29,7 +29,7 @@ public:
 
 public:
     ///构造函数
-    ZCE_Process_Mutex(const char *mutex_name,bool recursive = true);
+    ZCE_Process_Mutex(const char* mutex_name, bool recursive = true);
     ///析构函数
     virtual ~ZCE_Process_Mutex(void);
 
@@ -43,18 +43,18 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool systime_lock(const zce::Time_Value &abs_time);
+    virtual bool systime_lock(const zce::Time_Value& abs_time);
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool duration_lock(const zce::Time_Value &relative_time);
+    virtual bool duration_lock(const zce::Time_Value& relative_time);
 
     ///取出内部的锁的指针
-    pthread_mutex_t *get_lock();
+    pthread_mutex_t* get_lock();
 
 protected:
 
     ///进程锁，注意，注意，注意，这个地方用的是一个指针，
-    pthread_mutex_t *lock_;
+    pthread_mutex_t* lock_;
 
 #if defined ZCE_OS_LINUX
     //共享内存，LINUX需要共享内存

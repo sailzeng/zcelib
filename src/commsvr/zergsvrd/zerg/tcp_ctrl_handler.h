@@ -9,7 +9,7 @@
 /****************************************************************************************************
 class  TCP_Svc_Handler
 ****************************************************************************************************/
-class TCP_Svc_Handler: public ZCE_Event_Handler,
+class TCP_Svc_Handler: public zce::Event_Handler,
     public zce::Timer_Handler
 {
 public:
@@ -41,7 +41,7 @@ public:
 protected:
 
     ///句柄的池子，避免每次都new处理
-    typedef zce::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
+    typedef zce::lordrings<TCP_Svc_Handler*> POOL_OF_TCP_HANDLER;
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
@@ -64,9 +64,9 @@ public:
     * @param      socketaddr  对端的地址，其实可以从sockstream中得到，但为了效率和方便.
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
-    void init_tcpsvr_handler(const soar::SERVICES_ID &my_svcinfo,
-                             const zce::Socket_Stream &sockstream,
-                             const zce::Sockaddr_In &socketaddr);
+    void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
+                             const zce::Socket_Stream& sockstream,
+                             const zce::Sockaddr_In& socketaddr);
 
     /*!
     * @brief      主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
@@ -77,13 +77,13 @@ public:
     * @param      socketaddr  对应连接的对端地址信息
     * @note
     */
-    void init_tcpsvr_handler(const soar::SERVICES_ID &my_svcinfo,
-                             const soar::SERVICES_ID &svrinfo,
-                             const zce::Socket_Stream &sockstream,
-                             const zce::Sockaddr_In &socketaddr);
+    void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
+                             const soar::SERVICES_ID& svrinfo,
+                             const zce::Socket_Stream& sockstream,
+                             const zce::Sockaddr_In& socketaddr);
 
     //ZEN的一组要求自己继承的函数.
-    //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
+    //zce::Event_Handler必须重载的函数，取得SOCKET句柄
     virtual ZCE_HANDLE get_handle(void) const;
 
     /*!
@@ -108,17 +108,17 @@ public:
     * @param      time  时间
     * @param      arg   唯一标示参数
     */
-    virtual int timer_timeout(const zce::Time_Value &time,const void *arg);
+    virtual int timer_timeout(const zce::Time_Value& time, const void* arg);
 
     ///得到Handle对应PEER的端口
-    const zce::Sockaddr_In &get_peer();
+    const zce::Sockaddr_In& get_peer();
 
     //得到每个PEER状态信息
     void dump_status_info(zce::LOG_PRIORITY out_lvl);
 
     //发送简单的ZERG命令给对方
     int send_simple_zerg_cmd(uint32_t cmd,
-                             const soar::SERVICES_ID &recv_services_info,
+                             const soar::SERVICES_ID& recv_services_info,
                              uint32_t option = 0);
 
     ///发送心跳
@@ -131,7 +131,7 @@ public:
     unsigned int get_handle_id();
 
     ///得到对端的IP地址信息
-    const zce::Sockaddr_In &get_peer_sockaddr() const;
+    const zce::Sockaddr_In& get_peer_sockaddr() const;
 
     ///取得tptoid_table_id_
     size_t get_tptoid_table_id();
@@ -145,10 +145,10 @@ protected:
     * @return     int
     * @param      szrevc 读取的字节数量
     */
-    int read_data_from_peer(size_t &szrevc);
+    int read_data_from_peer(size_t& szrevc);
 
     //检查收到的数据是否含有一个完整的数据包.
-    int check_recv_full_frame(bool &bfull,unsigned int &whole_frame_len);
+    int check_recv_full_frame(bool& bfull, unsigned int& whole_frame_len);
 
     /*!
     * @brief      将数据写入PEER
@@ -156,7 +156,7 @@ protected:
     * @param      szsend 发送的字节数量
     * @param      bfull  是否完整的发送出去了，
     */
-    int write_data_to_peer(size_t &szsend,bool &bfull);
+    int write_data_to_peer(size_t& szsend, bool& bfull);
 
     /*!
     * @brief      将数据写入PEER，同时处理周边的事情，包括写事件注册,如果发送队列还有数据，继续发送等
@@ -166,7 +166,7 @@ protected:
     int write_all_data_to_peer();
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(soar::Zerg_Frame *proc_frame);
+    int  preprocess_recvframe(soar::Zerg_Frame* proc_frame);
 
     //处理发送的REGISTER数据,连接后发送第一个数据
     int  process_connect_register();
@@ -179,7 +179,7 @@ protected:
     int push_frame_to_comm_mgr();
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(zerg::Buffer *tmpbuf);
+    int put_frame_to_sendlist(zerg::Buffer* tmpbuf);
 
     /*!
     * @brief      合并发送队列
@@ -188,26 +188,26 @@ protected:
     void unite_frame_sendlist();
 
     //处理发送错误
-    int process_send_error(zerg::Buffer *tmpbuf,bool frame_encode);
+    int process_send_error(zerg::Buffer* tmpbuf, bool frame_encode);
 
 public:
     //初始化静态参数
     static int init_all_static_data();
 
     ///读取配置文件
-    static int get_config(const Zerg_Config *config);
+    static int get_config(const Zerg_Config* config);
 
     //注销静态参数
     static int uninit_all_staticdata();
 
     //得到最大的
-    static void get_max_peer_num(size_t &maxaccept,size_t &maxconnect);
+    static void get_max_peer_num(size_t& maxaccept, size_t& maxconnect);
 
     //关闭svr_info相应的PEER
-    static int close_services_peer(const soar::SERVICES_ID &svr_info);
+    static int close_services_peer(const soar::SERVICES_ID& svr_info);
 
     //根据有的SVR ID，查询相应的HDL
-    static int find_services_peer(const soar::SERVICES_ID &svc_id,TCP_Svc_Handler *&svchanle);
+    static int find_services_peer(const soar::SERVICES_ID& svc_id, TCP_Svc_Handler*& svchanle);
 
     ///链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
     static void reconnect_allserver();
@@ -218,7 +218,7 @@ public:
     * @param      handler_mode     所需的句柄的模式，是accept 还是connect的
     & @note       Connect的端口应该永远不发生取不到Hanler的事情
     */
-    static TCP_Svc_Handler *alloce_hdl_from_pool(HANDLER_MODE handler_mode);
+    static TCP_Svc_Handler* alloce_hdl_from_pool(HANDLER_MODE handler_mode);
 
     ///Dump所有的STATIC变量的信息
     static void dump_status_staticinfo(zce::LOG_PRIORITY out_lvl);
@@ -227,12 +227,12 @@ public:
     static void dump_svcpeer_info(zce::LOG_PRIORITY out_lvl);
 
     ///处理发送一个数据
-    static int process_send_data(zerg::Buffer *tmpbuf);
+    static int process_send_data(zerg::Buffer* tmpbuf);
 
     ///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
     ///请参考 @ref Zerg_Auto_Connector
     static int find_conf_ms_svcid_ary(uint16_t services_type,
-                                      std::vector<uint32_t> *&ms_svcid_ary);
+                                      std::vector<uint32_t>*& ms_svcid_ary);
 protected:
 
     //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
@@ -259,13 +259,13 @@ protected:
 protected:
 
     ///通讯管理器,保存是为了加快速度
-    static  zerg::Comm_Manager *zerg_comm_mgr_;
+    static  zerg::Comm_Manager* zerg_comm_mgr_;
 
     ///存储缓存,全局唯一,保存是为了加快速度
-    static zerg::Buffer_Storage *zbuffer_storage_;
+    static zerg::Buffer_Storage* zbuffer_storage_;
 
     ///统计，使用单子类的指针
-    static soar::Stat_Monitor *server_status_;
+    static soar::Stat_Monitor* server_status_;
 
     ///最大能够Accept的PEER数量,
     static size_t max_accept_svr_;
@@ -323,7 +323,7 @@ protected:
     soar::SERVICES_ID                peer_svr_id_;
 
     ///接收数据的缓冲
-    zerg::Buffer *rcv_buffer_;
+    zerg::Buffer* rcv_buffer_;
 
     ///发送队列的大小，如果一个端口接受数据比较缓慢，则可能会先放入发送队列，等端口变为可写才能发送过去，
     ///那么发送队列就要负担缓冲这种危机的任务，发送总缓冲长度实际等于 = 发送队列的长度*每个队列成员BUFFER的大小(64K)，
@@ -331,7 +331,7 @@ protected:
     ///如果是内网，请求数量有限，那么设置成128, 256也是可以接受的，但其实际意义有待观察
 
     ///发送的数据可能要排队
-    zce::lordrings<zerg::Buffer *>  snd_buffer_deque_;
+    zce::lordrings<zerg::Buffer*>  snd_buffer_deque_;
 
     ///下面这4个字段其实是记录一个时间段内的接受和发送的数据总数
     ///接收的次数计数器

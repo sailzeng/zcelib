@@ -31,7 +31,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(zce::Async_Obj_Mgr *async_mgr,unsigned int reg_cmd);
+    ZCE_Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -74,21 +74,21 @@ protected:
     * @return     int
     * @param      time_out
     */
-    int waitfor_timeout(const zce::Time_Value &time_out);
+    int waitfor_timeout(const zce::Time_Value& time_out);
 
     /*!
     * @brief      继承zce::Async_Object的函数，
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(const void *outer_data,size_t data_len,bool &running) override;
+    virtual void on_run(const void* outer_data, size_t data_len, bool& running) override;
 
     /*!
     * @brief      异步对象超时处理
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const zce::Time_Value &now_time,
-                            bool &continue_run) override;
+    virtual void on_timeout(const zce::Time_Value& now_time,
+                            bool& continue_run) override;
 
 protected:
 
@@ -102,7 +102,7 @@ protected:
 public:
 
     ///static 函数，用于协程运行函数，调用协程对象的运行函数
-    static void static_do(void *coroutine,void *,void *);
+    static void static_do(void* coroutine, void*, void*);
 
 protected:
 

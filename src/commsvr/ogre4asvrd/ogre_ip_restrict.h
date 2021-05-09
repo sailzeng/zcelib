@@ -16,14 +16,14 @@ protected:
 public:
 
     ///从配置文件中得到相关的配置
-    int get_config(const Ogre_Server_Config *config);
+    int get_config(const Ogre_Server_Config* config);
     //检查IP限制
-    int check_ip_restrict(const zce::Sockaddr_In &remoteaddress);
+    int check_ip_restrict(const zce::Sockaddr_In& remoteaddress);
 
 public:
 
     //单子实例函数
-    static Ogre_IPRestrict_Mgr *instance();
+    static Ogre_IPRestrict_Mgr* instance();
     //清理单子实例
     static void clean_instance();
 
@@ -36,7 +36,7 @@ protected:
 
 protected:
     //单子实例
-    static Ogre_IPRestrict_Mgr *instance_;
+    static Ogre_IPRestrict_Mgr* instance_;
 };
 
 #endif //OGRE4A_IP_RESTRICT_H_

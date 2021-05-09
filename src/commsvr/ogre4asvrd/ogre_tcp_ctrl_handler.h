@@ -11,7 +11,7 @@ class Soar_MMAP_BusPipe;
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
-class Ogre_TCP_Svc_Handler: public  ZCE_Event_Handler,
+class Ogre_TCP_Svc_Handler: public  zce::Event_Handler,
     public zce::Timer_Handler
 {
 public:
@@ -54,7 +54,7 @@ public:
     * @param      sockstream
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const zce::Socket_Stream &sockstream,
+    void init_tcp_svc_handler(const zce::Socket_Stream& sockstream,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     /*!
@@ -63,8 +63,8 @@ public:
     * @param      socketaddr
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const zce::Socket_Stream &sockstream,
-                              const zce::Sockaddr_In &socketaddr,
+    void init_tcp_svc_handler(const zce::Socket_Stream& sockstream,
+                              const zce::Sockaddr_In& socketaddr,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     //ZEN的一组要求自己继承的函数.
@@ -74,19 +74,19 @@ public:
     //
     virtual int handle_output(ZCE_HANDLE);
     //
-    virtual int timer_timeout(const zce::Time_Value &time,const void *arg);
+    virtual int timer_timeout(const zce::Time_Value& time, const void* arg);
     //
     virtual int handle_close();
 
     //得到Handle对应PEER的IP地址
-    const zce::Sockaddr_In &get_peer();
+    const zce::Sockaddr_In& get_peer();
 
 protected:
 
     //从PEER读取数据
-    int read_data_from_peer(size_t &szrevc);
+    int read_data_from_peer(size_t& szrevc);
     //将数据写入PEER
-    int write_data_to_peer(size_t &szsend,bool &bfull);
+    int write_data_to_peer(size_t& szsend, bool& bfull);
     //将所有可以发送的数据都发送出去
     int write_all_aata_to_peer();
 
@@ -97,7 +97,7 @@ protected:
     int  process_connect_register();
 
     //处理发送错误
-    int process_senderror(Ogre4a_App_Frame *tmpbuf);
+    int process_senderror(Ogre4a_App_Frame* tmpbuf);
 
     //得到一个PEER的状态
     PEER_STATUS  get_peer_status();
@@ -106,7 +106,7 @@ protected:
     int push_frame_to_recvpipe(unsigned int sz_data);
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(Ogre4a_App_Frame *ogre_frame);
+    int put_frame_to_sendlist(Ogre4a_App_Frame* ogre_frame);
 
     //合并发送的帧数据
     void unite_frame_sendlist();
@@ -114,7 +114,7 @@ protected:
 public:
 
     ///读取配置文件
-    static int get_config(const Ogre_Server_Config *config);
+    static int get_config(const Ogre_Server_Config* config);
 
     ///初始化静态参数
     static int init_all_static_data();
@@ -123,13 +123,13 @@ public:
     static int unInit_all_static_data();
 
     //从池子分配一个Handler
-    static Ogre_TCP_Svc_Handler *alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode);
+    static Ogre_TCP_Svc_Handler* alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode);
 
     //取得配置的最大PEER数量
-    static void get_maxpeer_num(size_t &maxaccept,size_t &maxconnect);
+    static void get_maxpeer_num(size_t& maxaccept, size_t& maxconnect);
 
     //将数据从端口发送数据
-    static int process_send_data(Ogre4a_App_Frame *tmpbuf);
+    static int process_send_data(Ogre4a_App_Frame* tmpbuf);
 
     /*!
     * @brief
@@ -137,8 +137,8 @@ public:
     * @param      peer_id  查询的PEER ID
     * @param      svchanle 返回查询到的句柄
     */
-    static int find_services_peer(const OGRE_PEER_ID &peer_id,
-                                  Ogre_TCP_Svc_Handler *&svchanle);
+    static int find_services_peer(const OGRE_PEER_ID& peer_id,
+                                  Ogre_TCP_Svc_Handler*& svchanle);
 
     ///对没有链接的的服务器进行重连
     static int connect_all_server();
@@ -146,7 +146,7 @@ public:
 protected:
 
     ///
-    typedef zce::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
+    typedef zce::lordrings<Ogre_TCP_Svc_Handler*> POOL_OF_TCP_HANDLER;
 
     ///定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
     static const  int      TCPCTRL_TIME_ID[];
@@ -198,10 +198,10 @@ protected:
     OGRE_HANDLER_MODE             handler_mode_;
 
     ///接收数据的缓冲
-    Ogre4a_App_Frame *rcv_buffer_;
+    Ogre4a_App_Frame* rcv_buffer_;
 
     ///发送的数据可能要排队
-    zce::lordrings<Ogre4a_App_Frame *>  \
+    zce::lordrings<Ogre4a_App_Frame*>  \
         snd_buffer_deque_;
 
     ///这个PEER接受数据

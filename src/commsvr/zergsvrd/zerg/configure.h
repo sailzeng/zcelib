@@ -24,20 +24,20 @@ public:
     * @param      business_id 输出参数,服务器编号
     * @note
     */
-    int find_svcinfo(const soar::SERVICES_ID &svc_id,
-                     zce::Sockaddr_In &ip_address,
-                     unsigned int &idc_no,
-                     unsigned int &business_id) const;
+    int find_svcinfo(const soar::SERVICES_ID& svc_id,
+                     zce::Sockaddr_In& ip_address,
+                     unsigned int& idc_no,
+                     unsigned int& business_id) const;
 
     //根据SvrInfo信息查询IP配置信息
-    int find_svcinfo(const soar::SERVICES_ID &svc_id,
-                     soar::SERVICES_INFO &svc_info) const;
+    int find_svcinfo(const soar::SERVICES_ID& svc_id,
+                     soar::SERVICES_INFO& svc_info) const;
 
     //检查是否拥有相应的Services Info
-    bool hash_svcinfo(const soar::SERVICES_ID &svc_id) const;
+    bool hash_svcinfo(const soar::SERVICES_ID& svc_id) const;
 
     //设置配置信息
-    int add_svcinfo(const soar::SERVICES_INFO &svc_info);
+    int add_svcinfo(const soar::SERVICES_INFO& svc_info);
 
     //清理SVR配置信息.
     void clear();
@@ -154,13 +154,13 @@ public:
     virtual void dump_cfg_info(zce::LOG_PRIORITY out_lvl);
 
     //根据SVCID得到SVC INFO地址信息
-    int get_svcinfo_by_svcid(const soar::SERVICES_ID &svc_id,soar::SERVICES_INFO &svc_info) const;
+    int get_svcinfo_by_svcid(const soar::SERVICES_ID& svc_id, soar::SERVICES_INFO& svc_info) const;
 
     ///从配置中读取ZERG的配置
-    int get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    int get_zerg_cfg(const zce::PropertyTree* conf_tree);
 
     ///得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
-    int get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    int get_svcidtable_cfg(const zce::PropertyTree* conf_tree);
 
 public:
     ///ZERG的配置文件

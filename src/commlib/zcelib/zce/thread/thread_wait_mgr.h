@@ -18,7 +18,7 @@ protected:
     {
     public:
 
-        MANAGE_WAIT_INFO(ZCE_THREAD_ID wait_thr_id,int wait_group_id):
+        MANAGE_WAIT_INFO(ZCE_THREAD_ID wait_thr_id, int wait_group_id) :
             wait_thr_id_(wait_thr_id),
             wait_group_id_(wait_group_id)
         {
@@ -38,7 +38,7 @@ protected:
     typedef std::list <MANAGE_WAIT_INFO>   MANAGE_WAIT_THREAD_LIST;
 
     //单子实例
-    static ZCE_Thread_Wait_Manager *instance_;
+    static ZCE_Thread_Wait_Manager* instance_;
 
 protected:
 
@@ -51,9 +51,9 @@ public:
     ~ZCE_Thread_Wait_Manager();
 
     //如果需要管理处理，要自己登记，
-    void record_wait_thread(ZCE_THREAD_ID wait_thr_id,int wait_group_id = 0);
+    void record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id = 0);
     //登记一个要进行等待处理等待线程
-    void record_wait_thread(const ZCE_Thread_Task *wait_thr_task);
+    void record_wait_thread(const ZCE_Thread_Task* wait_thr_task);
 
     //等所有的线程退出
     void wait_all();
@@ -64,7 +64,7 @@ public:
 public:
 
     //单子函数
-    static ZCE_Thread_Wait_Manager *instance();
+    static ZCE_Thread_Wait_Manager* instance();
     //清理单子的函数
     static void clean_instance();
 };

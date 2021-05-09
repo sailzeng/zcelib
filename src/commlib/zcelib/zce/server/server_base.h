@@ -100,7 +100,7 @@ public:
     * @param      lock_pid    是否对PID文件进行加锁处理，
     * @note
     */
-    int out_pid_file(const char *pragramname);
+    int out_pid_file(const char* pragramname);
 
     ///监控进程的运行状态
     int watch_dog_status(bool first_record);
@@ -118,21 +118,21 @@ public:
     void set_reload_sign(bool app_reload);
 
     ///通过启动参数0,得到app_base_name_，app_run_name_
-    int create_app_name(const char *argv_0);
+    int create_app_name(const char* argv_0);
 
     ///得到运行信息，可能包括路径信息
-    const char *get_app_runname();
+    const char* get_app_runname();
 
     ///得到程序进程名称，WINDOWS下去掉了后缀
-    const char *get_app_basename();
+    const char* get_app_basename();
 
     /*!
     * @brief      windows下设置服务信息
     * @param      svc_name 服务名称
     * @param      svc_desc 服务描述
     */
-    void set_service_info(const char *svc_name,
-                          const char *svc_desc);
+    void set_service_info(const char* svc_name,
+                          const char* svc_desc);
 
     //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
@@ -161,7 +161,7 @@ public:
     ///检查服务是否安装
     bool win_services_isinstalled();
 
-    int log_event(const char *format_str,...);
+    int log_event(const char* format_str, ...);
 
     ///服务运行函数
     static void WINAPI win_service_main();
@@ -189,7 +189,7 @@ protected:
 protected:
 
     //单子实例
-    static zce::Server_Base *base_instance_;
+    static zce::Server_Base* base_instance_;
 
 protected:
 

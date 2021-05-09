@@ -12,7 +12,7 @@ namespace zce
 /******************************************************************************************
 SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
 ******************************************************************************************/
-SQLite_Handler::SQLite_Handler():
+SQLite_Handler::SQLite_Handler() :
     sqlite3_handler_(NULL)
 {
 }
@@ -24,7 +24,7 @@ SQLite_Handler::~SQLite_Handler()
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
 //int == 0表示成功，否则失败
-int SQLite_Handler::open_database(const char *db_file,
+int SQLite_Handler::open_database(const char* db_file,
                                   bool read_only,
                                   bool create_db)
 {
@@ -47,7 +47,7 @@ int SQLite_Handler::open_database(const char *db_file,
                                 NULL);
     if (ret != SQLITE_OK)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
                 db_file,
                 error_code(),
                 error_message());
@@ -68,7 +68,7 @@ void SQLite_Handler::close_database()
 }
 
 //错误语句Str
-const char *SQLite_Handler::error_message()
+const char* SQLite_Handler::error_message()
 {
     return ::sqlite3_errmsg(sqlite3_handler_);
 }
@@ -98,10 +98,10 @@ int SQLite_Handler::turn_off_synch()
 }
 
 //!执行DDL等不需要结果的SQL
-int SQLite_Handler::execute(const char *sql_string)
+int SQLite_Handler::execute(const char* sql_string)
 {
     int ret = 0;
-    char *err_msg = NULL;
+    char* err_msg = NULL;
     ret = ::sqlite3_exec(sqlite3_handler_,
                          sql_string,
                          NULL,
@@ -113,7 +113,7 @@ int SQLite_Handler::execute(const char *sql_string)
     }
     else
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_exec execute sql [%s] fail.:[%d][%s].",
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_exec execute sql [%s] fail.:[%d][%s].",
                 sql_string,
                 ret,
                 err_msg);
@@ -123,19 +123,19 @@ int SQLite_Handler::execute(const char *sql_string)
 }
 
 //执行SQL 查询，取得结果
-int SQLite_Handler::get_table(const char *sql_string,
-                              SQLite_Result *result)
+int SQLite_Handler::get_table(const char* sql_string,
+                              SQLite_Result* result)
 {
     int ret = SQLITE_OK;
-    char *err_msg = NULL;
-    ret = ::sqlite3_get_table(sqlite3_handler_,sql_string,
+    char* err_msg = NULL;
+    ret = ::sqlite3_get_table(sqlite3_handler_, sql_string,
                               &(result->result_),
                               &(result->row_),
                               &(result->column_),
                               &(err_msg));
     if (ret != SQLITE_OK)
     {
-        ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_get_table execute fail:[%d][%s]",
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_get_table execute fail:[%d][%s]",
                 ret,
                 err_msg);
         ::sqlite3_free(err_msg);

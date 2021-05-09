@@ -41,7 +41,7 @@ public:
 public:
 
     //通过文件名称参数初始化文件锁，会打开这个文件
-    int open(const char *file_name,
+    int open(const char* file_name,
              int open_mode,
              mode_t perms = ZCE_DEFAULT_FILE_PERMS);
 

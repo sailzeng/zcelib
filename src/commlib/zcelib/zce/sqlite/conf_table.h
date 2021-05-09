@@ -60,19 +60,19 @@ public:
     void clear();
 
     //!比较函数
-    bool operator < (const AII_BINARY_DATA &right) const;
+    bool operator < (const AII_BINARY_DATA& right) const;
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
     //!将一个结构进行编码
     int protobuf_encode(unsigned int index_1,
                         unsigned int index_2,
-                        const google::protobuf::MessageLite *msg);
+                        const google::protobuf::MessageLite* msg);
 
     //!将一个结构进行解码
-    int protobuf_decode(unsigned int *index_1,
-                        unsigned int *index_2,
-                        google::protobuf::MessageLite *msg);
+    int protobuf_decode(unsigned int* index_1,
+                        unsigned int* index_2,
+                        google::protobuf::MessageLite* msg);
 
 #endif
 
@@ -124,7 +124,7 @@ protected:
                          unsigned int index_1,
                          unsigned int index_2,
                          size_t blob_len,
-                         const char *blob_data,
+                         const char* blob_data,
                          unsigned int last_mod_time);
 
     //!得到选择一个确定数据的SQL
@@ -158,14 +158,14 @@ protected:
     * @param[in/out] out_len 收入时标识outbuf的长度，输出时标识最后生成的字符串长度
     * @note       这儿是为了避免引入太多文件，而且base16实现较为简单，所以没有用zce的encode代码
     */
-    int base16_encode(const char *in,
+    int base16_encode(const char* in,
                       size_t in_len,
-                      char *out,
-                      size_t *out_len);
+                      char* out,
+                      size_t* out_len);
 public:
 
     //!打开一个通用的数据库
-    int open_dbfile(const char *db_file,
+    int open_dbfile(const char* db_file,
                     bool read_only,
                     bool create_db);
 
@@ -177,15 +177,15 @@ public:
 
     //!UPDATE 或者 INSERT 一个记录
     int replace_one(unsigned int table_id,
-                    const AII_BINARY_DATA *conf_data);
+                    const AII_BINARY_DATA* conf_data);
 
     //UPDATE 或者 INSERT 一组记录
     int replace_array(unsigned int table_id,
-                      const ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma);
+                      const ARRARY_OF_AI_IIJIMA_BINARY* ary_ai_iijma);
 
     //!查询了一条记录
     int select_one(unsigned int table_id,
-                   AII_BINARY_DATA *conf_data);
+                   AII_BINARY_DATA* conf_data);
 
     //!删除一条记录
     int delete_one(unsigned int table_id,
@@ -196,13 +196,13 @@ public:
     int counter(unsigned int table_id,
                 unsigned int startno,
                 unsigned int numquery,
-                unsigned int *rec_count);
+                unsigned int* rec_count);
 
     //!查询数据队列，部分数据（限制查询数量）或者全部数据
     int select_array(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery,
-                     ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma);
+                     ARRARY_OF_AI_IIJIMA_BINARY* ary_ai_iijma);
 
     /*!
     * @brief      对比两个数据表格，找出差异，然后找出差异的SQL，用于数据文件更新等功能
@@ -213,10 +213,10 @@ public:
     * @param[out] update_sql 返回的更新SQL语句
     * @note
     */
-    int compare_table(const char *old_db,
-                      const char *new_db,
+    int compare_table(const char* old_db,
+                      const char* new_db,
                       unsigned int table_id,
-                      std::string *update_sql);
+                      std::string* update_sql);
 protected:
     //
     const static size_t MAX_SQLSTRING_LEN = AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA * 2 + 1024;
@@ -224,9 +224,9 @@ protected:
 public:
 
     //! SQL语句
-    char *sql_string_ = NULL;
+    char* sql_string_ = NULL;
     //!
-    zce::SQLite_Handler *sqlite_handler_;
+    zce::SQLite_Handler* sqlite_handler_;
 };
 } //namespace zce
 

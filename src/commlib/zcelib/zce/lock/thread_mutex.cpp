@@ -25,7 +25,7 @@ ZCE_Thread_Light_Mutex::ZCE_Thread_Light_Mutex()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_initex",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_initex", ret);
         return;
     }
 }
@@ -38,7 +38,7 @@ ZCE_Thread_Light_Mutex::~ZCE_Thread_Light_Mutex(void)
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_destroy",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
         return;
     }
 }
@@ -51,7 +51,7 @@ void ZCE_Thread_Light_Mutex::lock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_lock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
         return;
     }
 }
@@ -78,13 +78,13 @@ void ZCE_Thread_Light_Mutex::unlock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_unlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);
         return;
     }
 }
 
 //取出内部的锁的指针
-pthread_mutex_t *ZCE_Thread_Light_Mutex::get_lock()
+pthread_mutex_t* ZCE_Thread_Light_Mutex::get_lock()
 {
     return &lock_;
 }
@@ -106,7 +106,7 @@ ZCE_Thread_Recursive_Mutex::ZCE_Thread_Recursive_Mutex()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_initex",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_initex", ret);
         return;
     }
 }
@@ -119,7 +119,7 @@ ZCE_Thread_Recursive_Mutex::~ZCE_Thread_Recursive_Mutex(void)
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_destroy",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
         return;
     }
 }
@@ -132,7 +132,7 @@ void ZCE_Thread_Recursive_Mutex::lock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_lock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
         return;
     }
 }
@@ -159,20 +159,20 @@ void ZCE_Thread_Recursive_Mutex::unlock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_unlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);
         return;
     }
 }
 
 //绝对时间
-bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value &abs_time)
+bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
-    ret = zce::pthread_mutex_timedlock(&lock_,abs_time);
+    ret = zce::pthread_mutex_timedlock(&lock_, abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_timedlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);
         return false;
     }
 
@@ -180,15 +180,15 @@ bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value &abs_time)
 }
 
 //相对时间
-bool ZCE_Thread_Recursive_Mutex::duration_lock(const zce::Time_Value &relative_time)
+bool ZCE_Thread_Recursive_Mutex::duration_lock(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
-    abs_time = zce::timeval_add(abs_time,relative_time);
+    abs_time = zce::timeval_add(abs_time, relative_time);
     return systime_lock(abs_time);
 }
 
 //取出内部的锁的指针
-pthread_mutex_t *ZCE_Thread_Recursive_Mutex::get_lock()
+pthread_mutex_t* ZCE_Thread_Recursive_Mutex::get_lock()
 {
     return &lock_;
 }
@@ -212,7 +212,7 @@ ZCE_Thread_NONR_Mutex::ZCE_Thread_NONR_Mutex()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_initex",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_initex", ret);
         return;
     }
 }
@@ -225,7 +225,7 @@ ZCE_Thread_NONR_Mutex::~ZCE_Thread_NONR_Mutex(void)
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_destroy",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
         return;
     }
 }
@@ -238,7 +238,7 @@ void ZCE_Thread_NONR_Mutex::lock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_lock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
         return;
     }
 }
@@ -265,23 +265,23 @@ void ZCE_Thread_NONR_Mutex::unlock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_unlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);
         return;
     }
 }
 
 //绝对时间
-bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value &abs_time)
+bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
-    ret = zce::pthread_mutex_timedlock(&lock_,abs_time);
+    ret = zce::pthread_mutex_timedlock(&lock_, abs_time);
 
     if (0 != ret)
     {
         //在ETIME==>ETIMEDOUT调整后没有注意修改这个问题，derrickhu帮忙发现了这个问题，特此修改。
         if (errno != ETIMEDOUT)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_timedlock",ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);
         }
 
         return false;
@@ -291,7 +291,7 @@ bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value &abs_time)
 }
 
 //相对时间
-bool ZCE_Thread_NONR_Mutex::duration_lock(const zce::Time_Value &relative_time)
+bool ZCE_Thread_NONR_Mutex::duration_lock(const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;

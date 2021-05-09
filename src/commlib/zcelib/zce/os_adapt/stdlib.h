@@ -33,9 +33,9 @@ namespace zce
 */
 int ecvt_r(double number,
            int ndigits,
-           int *decpt,
-           int *sign,
-           char *buf,
+           int* decpt,
+           int* sign,
+           char* buf,
            size_t len);
 
 /*!
@@ -51,9 +51,9 @@ int ecvt_r(double number,
 */
 int fcvt_r(double number,
            int ndigits,
-           int *decpt,
-           int *sign,
-           char *buf,
+           int* decpt,
+           int* sign,
+           char* buf,
            size_t len);
 };
 

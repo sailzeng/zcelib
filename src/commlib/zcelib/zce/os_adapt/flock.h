@@ -57,7 +57,7 @@ public:
 * @param[in,out]  lock       文件锁对象
 * @param[in]      file_hadle 操作的文件句柄
 */
-int file_lock_init(file_lock_t *lock,
+int file_lock_init(file_lock_t* lock,
                    ZCE_HANDLE file_hadle);
 
 //----------------------------------------------------------------------------------------
@@ -77,10 +77,10 @@ int file_lock_init(file_lock_t *lock,
 * @note          平台的不兼容会带来某种风险，Windows下一旦文件大小调整，锁锁定的区域就不对了，
 *                所以在需要兼容的环境，最好文件大小是不调整的，
 */
-void fcntl_lock_adjust_params(file_lock_t *lock,
+void fcntl_lock_adjust_params(file_lock_t* lock,
                               int whence,
-                              ssize_t &start,
-                              ssize_t &len);
+                              ssize_t& start,
+                              ssize_t& len);
 
 /*!
 * @brief   加文件读取锁，共享锁，如果不能加上锁，会阻塞等待，共享锁不会阻止其他人读取
@@ -90,7 +90,7 @@ void fcntl_lock_adjust_params(file_lock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int fcntl_rdlock(file_lock_t *lock,
+int fcntl_rdlock(file_lock_t* lock,
                  int  whence = SEEK_SET,
                  ssize_t start = 0,
                  ssize_t len = 0);
@@ -103,7 +103,7 @@ int fcntl_rdlock(file_lock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int fcntl_tryrdlock(file_lock_t *lock,
+int fcntl_tryrdlock(file_lock_t* lock,
                     int whence = SEEK_SET,
                     ssize_t start = 0,
                     ssize_t len = 0);
@@ -116,7 +116,7 @@ int fcntl_tryrdlock(file_lock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int fcntl_wrlock(file_lock_t *lock,
+int fcntl_wrlock(file_lock_t* lock,
                  int whence = SEEK_SET,
                  ssize_t start = 0,
                  ssize_t len = 0);
@@ -129,7 +129,7 @@ int fcntl_wrlock(file_lock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int fcntl_trywrlock(file_lock_t *lock,
+int fcntl_trywrlock(file_lock_t* lock,
                     int whence = SEEK_SET,
                     ssize_t start = 0,
                     ssize_t len = 0);
@@ -142,7 +142,7 @@ int fcntl_trywrlock(file_lock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     解锁定区域的长度，
 */
-int fcntl_unlock(file_lock_t *lock,
+int fcntl_unlock(file_lock_t* lock,
                  int whence = SEEK_SET,
                  ssize_t start = 0,
                  ssize_t len = 0);
@@ -160,7 +160,7 @@ int fcntl_unlock(file_lock_t *lock,
 *             LOCK_NB 不阻塞，可以和LOCK_SH，LOCK_EX组合使用。用|，如果有锁，立即返回，错误EWOULDBLOCK
 *             LOCK_UN 解锁
 */
-int flock(file_lock_t &lock_hadle,int operation);
+int flock(file_lock_t& lock_hadle, int operation);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_FLOCK_H_

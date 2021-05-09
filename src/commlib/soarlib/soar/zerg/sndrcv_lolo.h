@@ -70,11 +70,11 @@ public:
     virtual ~Lolo_SendRecv_Package();
 
     //设置相应的SVC INFO,
-    int set_lolo_svcinfo(const char *svc_ip,
+    int set_lolo_svcinfo(const char* svc_ip,
                          unsigned short svc_port,
-                         const soar::SERVICES_ID &recv_service,
-                         const soar::SERVICES_ID &send_service,
-                         const soar::SERVICES_ID &proxy_service,
+                         const soar::SERVICES_ID& recv_service,
+                         const soar::SERVICES_ID& send_service,
+                         const soar::SERVICES_ID& proxy_service,
                          size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                          bool is_check_conn_info = false);
 
@@ -82,25 +82,25 @@ public:
     template<class T1>
     int send_svc_msg(uint32_t user_id,
                      uint32_t cmd,
-                     const T1 &msg,
+                     const T1& msg,
                      uint32_t backfill_fsm_id = 0,
                      uint16_t business_id = 0);
 
     //接受数据
     template<class T2>
     int receive_svc_msg(uint32_t cmd,
-                        T2 &msg,
-                        zce::Time_Value *time_wait = NULL);
+                        T2& msg,
+                        zce::Time_Value* time_wait = NULL);
 
     //发送和接收数据，一起一锅搞掂的方式
-    template< class T1,class T2>
+    template< class T1, class T2>
     int send_recv_msg(unsigned int snd_cmd,
                       uint32_t user_id,
-                      const T1 &send_info,
-                      zce::Time_Value *time_wait,
+                      const T1& send_info,
+                      zce::Time_Value* time_wait,
                       bool if_recv,
                       unsigned int rcv_cmd,
-                      T2 &recv_info,
+                      T2& recv_info,
                       uint32_t backfill_fsm_id = 0,
                       uint16_t business_id = 0);
 };
@@ -108,21 +108,21 @@ public:
 //收数据
 template<class T2>
 int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
-                                           T2 &msg,
-                                           zce::Time_Value *time_wait)
+                                           T2& msg,
+                                           zce::Time_Value* time_wait)
 {
     int ret = 0;
     ssize_t socket_ret = 0;
     int data_len = 0;
 
     // 接收数据
-    socket_ret = lolo_datagram_.recvfrom((void *)(msg_recv_frame_),
+    socket_ret = lolo_datagram_.recvfrom((void*)(msg_recv_frame_),
                                          test_frame_len_,
                                          &lolo_recvdata_ip_,
                                          time_wait);
 
     msg_recv_frame_->ntoh();
-    msg_recv_frame_->dump_frame_head("UDP recv",RS_DEBUG);
+    msg_recv_frame_->dump_frame_head("UDP recv", RS_DEBUG);
 
 #if defined _DEBUG || defined DEBUG
     ZCE_ASSERT(test_frame_len_ >= msg_recv_frame_->length_);
@@ -131,7 +131,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
     //ret == 0
     if (socket_ret == 0)
     {
-        ZCE_LOG(RS_INFO,"[framework] Link is disconnect recv ret =%d, error[%u|%s].",
+        ZCE_LOG(RS_INFO, "[framework] Link is disconnect recv ret =%d, error[%u|%s].",
                 socket_ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -143,7 +143,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
         //如果错误是信号导致的重入
         int last_error = zce::last_error();
 
-        ZCE_LOG(RS_ERROR,"[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
                 socket_ret,
                 last_error,
                 strerror(last_error));
@@ -158,7 +158,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
 
     if (data_len < 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                 msg_recv_frame_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -191,7 +191,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
 template< class T1>
 int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
                                         uint32_t cmd,
-                                        const T1 &msg,
+                                        const T1& msg,
                                         uint32_t backfill_fsm_id,
                                         uint16_t business_id)
 {
@@ -219,7 +219,7 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
     //填写GAME ID
     msg_send_frame_->business_id_ = business_id;
 
-    ret = msg_send_frame_->appdata_encode(Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,info);
+    ret = msg_send_frame_->appdata_encode(Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0)
     {
@@ -230,7 +230,7 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
 
     //阻塞发送所有的数据
     msg_send_frame_->hton();
-    ssize_t socket_ret = lolo_datagram_.sendto((void *)(msg_send_frame_),
+    ssize_t socket_ret = lolo_datagram_.sendto((void*)(msg_send_frame_),
                                                len,
                                                &lolo_svc_ip_,
                                                NULL
@@ -239,7 +239,7 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
     //ZCE_LOG(RS_DEBUG,"[framework] SEND %u BYTES  Frame To Svr Succ. ",ret);
     if (socket_ret <= 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                 msg_recv_frame_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -250,14 +250,14 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
 }
 
 //发送和接收数据，一起一锅搞掂的方式
-template< class T1,class T2>
+template< class T1, class T2>
 int Lolo_SendRecv_Package::send_recv_msg(unsigned int snd_cmd,
                                          uint32_t user_id,
-                                         const T1 &send_info,
-                                         zce::Time_Value *time_wait,
+                                         const T1& send_info,
+                                         zce::Time_Value* time_wait,
                                          bool if_recv,
                                          unsigned int rcv_cmd,
-                                         T2 &recv_info,
+                                         T2& recv_info,
                                          uint32_t backfill_fsm_id,
                                          uint16_t business_id)
 {

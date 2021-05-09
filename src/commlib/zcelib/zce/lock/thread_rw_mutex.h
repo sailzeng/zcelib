@@ -52,18 +52,18 @@ public:
     virtual bool try_lock_read();
 
     //绝对时间
-    virtual bool systime_lock_read(const zce::Time_Value &abs_time);
+    virtual bool systime_lock_read(const zce::Time_Value& abs_time);
     //相对时间
-    virtual bool duration_lock_read(const zce::Time_Value &relative_time);
+    virtual bool duration_lock_read(const zce::Time_Value& relative_time);
 
     //写锁定
     virtual void lock_write();
     //尝试读取锁
     virtual bool try_lock_write();
     //写锁定超时，绝对时间
-    virtual bool systime_lock_write(const zce::Time_Value &abs_time);
+    virtual bool systime_lock_write(const zce::Time_Value& abs_time);
     //写锁定超时，相对时间
-    virtual bool duration_lock_write(const zce::Time_Value &relative_time);
+    virtual bool duration_lock_write(const zce::Time_Value& relative_time);
 
     ///解写锁
     virtual void unlock_write();
@@ -71,7 +71,7 @@ public:
     virtual void unlock_read();
 
     ///取出内部的锁的指针
-    pthread_rwlock_t *get_lock();
+    pthread_rwlock_t* get_lock();
 
 protected:
 
@@ -117,7 +117,7 @@ public:
     virtual void unlock_write();
 
     ///取出内部的锁的指针
-    SRWLOCK *get_lock();
+    SRWLOCK* get_lock();
 
 protected:
 

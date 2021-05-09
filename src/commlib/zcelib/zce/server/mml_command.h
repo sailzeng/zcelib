@@ -28,16 +28,16 @@ class MML_Command
     struct LessofCaseString
     {
     public:
-        bool operator()(const std::string &src,const std::string &dst) const
+        bool operator()(const std::string& src, const std::string& dst) const
         {
-            return (strcasecmp(src.c_str(),dst.c_str()) < 0);
+            return (strcasecmp(src.c_str(), dst.c_str()) < 0);
         }
     };
 
     ///命令的选项
-    typedef std::set <std::string,LessofCaseString>               MMLCMD_OPTION;
+    typedef std::set <std::string, LessofCaseString>               MMLCMD_OPTION;
     ///命令的参数
-    typedef std::map <std::string,std::string,LessofCaseString > MMLCMD_PARAMETER;
+    typedef std::map <std::string, std::string, LessofCaseString > MMLCMD_PARAMETER;
 
 public:
 
@@ -62,7 +62,7 @@ public:
     * @param      mml_string MML命令的字符串
     * @param      pattern    MML命令格式
     */
-    MML_Command(const char *mml_string,
+    MML_Command(const char* mml_string,
                 MML_Command::MML_STRING_PATTERN pattern);
     ///默认构造函数
     MML_Command();
@@ -72,10 +72,10 @@ public:
 protected:
 
     ///格式1的MML命令分析语句
-    int parse_mml_cnd_string1(const char *mml_string);
+    int parse_mml_cnd_string1(const char* mml_string);
 
     ///格式2的MML命令分析语句
-    int parse_mml_cnd_string2(const char *mml_string);
+    int parse_mml_cnd_string2(const char* mml_string);
 
 public:
 
@@ -85,7 +85,7 @@ public:
     * @param[in]  mml_string MML语句
     * @param[in]  pattern    命令格式
     */
-    int parse_mml_cnd_string(const char *mml_string,
+    int parse_mml_cnd_string(const char* mml_string,
                              MML_Command::MML_STRING_PATTERN pattern);
 
     /*!
@@ -93,33 +93,33 @@ public:
     * @return     int 如果有MML语句，返回0，否则返回-1
     * @param[out] std::string& 取出的命令字
     */
-    int get_mml_string(std::string &mml_string) const;
+    int get_mml_string(std::string& mml_string) const;
 
     /*!
     * @brief      返回（分析）MML的语句
     * @return     const char* 返回的MML语句，如果没有返回""
     */
-    const char *get_mml_string() const;
+    const char* get_mml_string() const;
 
     /*!
     * @brief      得到MML命令字
     * @return     int 如果有MML命令字，返回0，否则返回-1
     * @param      mml_cmd 取出的命令字
     */
-    int get_mml_command(std::string &mml_cmd) const;
+    int get_mml_command(std::string& mml_cmd) const;
 
     /*!
     * @brief      返回MML命令字
     * @return     const char* 返回的MML命令字，如果没有返回""
     */
-    const char *get_mml_command() const;
+    const char* get_mml_command() const;
 
     /*!
     * @brief      是否有这个命令选项
     * @return     int 如果有这个选项返回0，如果没有这个选项返回-1
     * @param      mml_option 命令选项
     */
-    int have_cmd_option(const std::string &mml_option) const;
+    int have_cmd_option(const std::string& mml_option) const;
 
     /*!
     * @brief      根据参数名称，得到命令的参数的值
@@ -127,14 +127,14 @@ public:
     * @param      para_key   参数名称
     * @param      para_value 参数的值
     */
-    int get_cmd_parameter(const std::string &para_key,std::string &para_value)  const;
+    int get_cmd_parameter(const std::string& para_key, std::string& para_value)  const;
 
     /*!
     * @brief      根据参数名称，得到命令的参数的值
     * @return     const char * 返回取得的命令参数值，如果没有对应的参数名称，返回""
     * @param      para_key   参数名称
     */
-    const char *get_cmd_parameter(const std::string &para_key)  const;
+    const char* get_cmd_parameter(const std::string& para_key)  const;
 
 protected:
 

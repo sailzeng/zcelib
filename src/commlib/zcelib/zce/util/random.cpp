@@ -5,7 +5,7 @@ namespace zce
 {
 //根据要求，生成一个随机数字符串，
 void random_base::get_string(RAND_STRING str_type,
-                             char *rand_str,
+                             char* rand_str,
                              size_t str_len)
 {
     uint32_t rand_data = 0;

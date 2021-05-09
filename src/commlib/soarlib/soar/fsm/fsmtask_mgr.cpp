@@ -50,11 +50,11 @@ FSMTask_Manger::~FSMTask_Manger()
 //初始化
 void FSMTask_Manger::initialize(size_t  szregtrans,
                                 size_t sztransmap,
-                                const soar::SERVICES_INFO &selfsvr,
-                                const zce::Time_Value &enqueue_timeout,
-                                zce::Timer_Queue *timer_queue,
-                                soar::App_BusPipe *zerg_mmap_pipe,
-                                APPFRAME_MALLOCOR *frame_mallocor)
+                                const soar::SERVICES_INFO& selfsvr,
+                                const zce::Time_Value& enqueue_timeout,
+                                zce::Timer_Queue* timer_queue,
+                                soar::App_BusPipe* zerg_mmap_pipe,
+                                APPFRAME_MALLOCOR* frame_mallocor)
 {
     //根据最大的FRAME长度调整Manager内部的数据
     size_t max_frame_len = frame_mallocor->get_max_framelen();
@@ -73,7 +73,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
 }
 
 //激活N个线程，
-int FSMTask_Manger::active_notify_task(FSMTask_TaskBase *clone_task,
+int FSMTask_Manger::active_notify_task(FSMTask_TaskBase* clone_task,
                                        size_t task_num,
                                        size_t task_stack_size)
 {
@@ -114,7 +114,7 @@ int FSMTask_Manger::active_notify_task(FSMTask_TaskBase *clone_task,
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ALERT,"[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
+            ZCE_LOG(RS_ALERT, "[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
                     static_cast<unsigned int>(i),
                     static_cast<unsigned int>(task_stack_size));
             return -1;
@@ -150,7 +150,7 @@ int FSMTask_Manger::stop_notify_task()
 }
 
 //处理从接收队列取出的FRAME
-int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_trans)
+int FSMTask_Manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_trans)
 {
     int ret = 0;
     create_trans = 0;
@@ -158,7 +158,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
     //
     for (proc_frame = 0; proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-        soar::Zerg_Frame *tmp_frame = NULL;
+        soar::Zerg_Frame* tmp_frame = NULL;
         //
         ret = recv_msg_queue_->try_dequeue(tmp_frame);
 
@@ -174,7 +174,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
             return 0;
         }
 
-        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV QUEUE FRAME:",tmp_frame);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame);
 
         //是否创建一个事务，
         bool create_fsm = false;
@@ -183,7 +183,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
         tmp_frame->recv_service_ = self_svc_info_.svc_id_;
 
         //tmp_frame  马上回收
-        ret = process_appframe(tmp_frame,create_fsm);
+        ret = process_appframe(tmp_frame, create_fsm);
         //释放内存
         frame_mallocor_->free_appframe(tmp_frame);
 
@@ -204,10 +204,10 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
 }
 
 //向发送队列放入frame
-int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_frame)
+int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame* post_frame, bool alloc_frame)
 {
     int ret = 0;
-    soar::Zerg_Frame *tmp_frame = NULL;
+    soar::Zerg_Frame* tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     if (alloc_frame)
@@ -217,18 +217,18 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
     //如果不是，就从池子中间复制一个FRAME
     else
     {
-        frame_mallocor_->clone_appframe(post_frame,tmp_frame);
+        frame_mallocor_->clone_appframe(post_frame, tmp_frame);
     }
 
     //不能直接放入enqueue_timeout_，这个值会改变
     zce::Time_Value tv = enqueue_timeout_;
-    ret = send_msg_queue_->enqueue(tmp_frame,tv);
+    ret = send_msg_queue_->enqueue(tmp_frame, tv);
     auto monitor = soar::Stat_Monitor::instance();
     //返回值小于0表示失败
     if (ret < 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
-                ret,tmp_frame->user_id_,tmp_frame->command_);
+        ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
+                ret, tmp_frame->user_id_, tmp_frame->command_);
 
         // 加个监控
         monitor->add_one(COMM_STAT_TASK_QUEUE_SEND_FAIL,

@@ -29,16 +29,19 @@
 *             iostream                 : 0.949645 sec .
 *
 *             因为C++20的出现，std::format 肯定要成为新的标杆。
+*             查询历史记录，你可以发现一些不是CPP11就能跑的一些代码。
+*             我已经不愿意看到老的代码。虽然我心血很多。
 *
 */
 
-#ifndef ZCE_STRING_EXTEND_H_
-#define ZCE_STRING_EXTEND_H_
+#pragma once
 
-#include "zce/string/helper.h"
+#include "zce/string/to_string.h"
 
 namespace zce
 {
+//----------------------------------------------------------------------------------------------------------
+
 //格式化字符串的标识，出现一个{}，标识进行一次参数输出
 static const char SNRPINTF_FMT_IDENTIFY[] = "{}";
 //格式化字符串的长度
@@ -51,7 +54,7 @@ static const size_t LEN_OF_ESCAPE_IDENTIFY = 3;
 //转义字符，如果前面出现{}再出现%，就标识转义
 static const char SNRPINTF_FMT_ESCAPE_CHAR = '%';
 
-//查询历史记录，你可以发现一些不是CPP11就能跑的一些代码。我已经不愿意看到老的代码。虽然我心血很多。
+// 下面代码推荐使用的是 str_nprintf string_format，如果使用，你未来应该很容易切换的std::format
 
 /*!
 * @brief      类似snprintf的格式化字符串函数，但用C++11方式优化处理。{}作为输出点。
@@ -66,11 +69,11 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR = '%';
 * @note
 */
 template <typename... out_type >
-char *foo_snprintf(char *foo_buffer,
-                   size_t foo_max_len,
-                   size_t &foo_use_len,
-                   const char *foo_fmt_spec,
-                   const out_type & ...out_data)
+char* str_nprintf(char* foo_buffer,
+                  size_t foo_max_len,
+                  size_t& foo_use_len,
+                  const char* foo_fmt_spec,
+                  const out_type & ...out_data)
 {
     foo_use_len = 0;
 
@@ -79,12 +82,12 @@ char *foo_snprintf(char *foo_buffer,
         return foo_buffer;
     }
 
-    size_t max_len = foo_max_len - 1,use_len = 0;
-    char *buffer = foo_buffer;
+    size_t max_len = foo_max_len - 1, use_len = 0;
+    char* buffer = foo_buffer;
     buffer[max_len] = '\0';
-    const char *fmt_spec = foo_fmt_spec;
+    const char* fmt_spec = foo_fmt_spec;
 
-    _foo_c11_outdata(buffer,max_len,foo_use_len,fmt_spec,out_data...);
+    _foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
 
     zce::fmt_str(buffer,
                  max_len,
@@ -96,7 +99,6 @@ char *foo_snprintf(char *foo_buffer,
     //返回
     return foo_buffer;
 }
-//--------------------------------------------------------------------------------------------------------------------------------
 
 /*!
 * @brief
@@ -108,38 +110,38 @@ char *foo_snprintf(char *foo_buffer,
 * @note
 */
 template <typename... out_type >
-std::string &foo_string_format(std::string &foo_string,
-                               const char *foo_fmt_spec,
+std::string& foo_string_format(std::string& foo_string,
+                               const char* foo_fmt_spec,
                                const out_type &...out_data)
 {
-    const char *fmt_spec = foo_fmt_spec;
-    _foo_c11_outstring(foo_string,fmt_spec,out_data...);
+    const char* fmt_spec = foo_fmt_spec;
+    _foo_c11_outstring(foo_string, fmt_spec, out_data...);
     zce::fmt_str(foo_string,
                  fmt_spec,
                  strlen(fmt_spec));
     return foo_string;
 }
 
-inline static void _foo_c11_outstring(std::string &foo_string,
-                                      const char *&foo_fmt_spec)
+inline static void _foo_c11_outstring(std::string& foo_string,
+                                      const char*& foo_fmt_spec)
 {
     foo_string.append(foo_fmt_spec);
 }
 
 template <typename out_type >
-void _foo_c11_outstring(std::string &foo_string,
-                        const char *&foo_fmt_spec,
-                        const out_type &out_data)
+void _foo_c11_outstring(std::string& foo_string,
+                        const char*& foo_fmt_spec,
+                        const out_type& out_data)
 {
-    const char *id_pos = NULL;
+    const char* id_pos = NULL;
 
     //处理第一个数据的输出，
     while (*foo_fmt_spec != '\0')
     {
         //找到{}，
-        id_pos = strstr(foo_fmt_spec,zce::SNRPINTF_FMT_IDENTIFY);
+        id_pos = strstr(foo_fmt_spec, zce::SNRPINTF_FMT_IDENTIFY);
         //将{}前面的字符串输出
-        zce::fmt_str(foo_string,foo_fmt_spec,(id_pos == NULL)?strlen(foo_fmt_spec):(id_pos - foo_fmt_spec));
+        zce::fmt_str(foo_string, foo_fmt_spec, (id_pos == NULL) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
         if (id_pos == NULL)
         {
             return;
@@ -152,14 +154,14 @@ void _foo_c11_outstring(std::string &foo_string,
         //检查后面字符是否是%，用于判断是否是转义
         if (*(id_pos + LEN_OF_FMT_IDENTIFY) != zce::SNRPINTF_FMT_ESCAPE_CHAR)
         {
-            zce::string_helper(foo_string,out_data);
+            zce::to_string(foo_string, out_data);
             foo_fmt_spec += LEN_OF_FMT_IDENTIFY;
             break;
         }
         //{}%将转义为{}输出
         else
         {
-            zce::fmt_str(foo_string,SNRPINTF_FMT_IDENTIFY,LEN_OF_FMT_IDENTIFY);
+            zce::fmt_str(foo_string, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
             foo_fmt_spec += LEN_OF_ESCAPE_IDENTIFY;
             continue;
         }
@@ -167,57 +169,57 @@ void _foo_c11_outstring(std::string &foo_string,
 }
 
 //vanic 递归展开
-template <typename out_type,typename... out_tlist >
-static void _foo_c11_outstring(std::string &foo_string,
-                               const char *&foo_fmt_spec,
-                               const out_type &out_data,
+template <typename out_type, typename... out_tlist >
+static void _foo_c11_outstring(std::string& foo_string,
+                               const char*& foo_fmt_spec,
+                               const out_type& out_data,
                                out_tlist ... out_datalist)
 {
-    _foo_c11_outstring(foo_string,foo_fmt_spec,out_data);
-    _foo_c11_outstring(foo_string,foo_fmt_spec,out_datalist...);
+    _foo_c11_outstring(foo_string, foo_fmt_spec, out_data);
+    _foo_c11_outstring(foo_string, foo_fmt_spec, out_datalist...);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 //如果没有参数的特殊处理
-inline static void _foo_c11_outdata(char *&foo_buffer,
-                                    size_t &foo_max_len,
-                                    size_t &foo_use_len,
-                                    const char *&foo_fmt_spec)
+inline static void _foo_c11_outdata(char*& foo_buffer,
+                                    size_t& foo_max_len,
+                                    size_t& foo_use_len,
+                                    const char*& foo_fmt_spec)
 {
     size_t len_of_str = ::strlen(foo_fmt_spec);
     if (len_of_str > foo_max_len)
     {
         foo_max_len = 0;
         foo_use_len += foo_max_len;
-        ::memcpy(foo_buffer,foo_fmt_spec,foo_max_len);
+        ::memcpy(foo_buffer, foo_fmt_spec, foo_max_len);
     }
     else
     {
         foo_max_len -= len_of_str;
         foo_use_len += len_of_str;
-        ::memcpy(foo_buffer,foo_fmt_spec,len_of_str);
+        ::memcpy(foo_buffer, foo_fmt_spec, len_of_str);
     }
 }
 
 template <typename out_type >
-static void _foo_c11_outdata(char *&foo_buffer,
-                             size_t &foo_max_len,
-                             size_t &foo_use_len,
-                             const char *&foo_fmt_spec,
-                             const out_type &out_data
+static void _foo_c11_outdata(char*& foo_buffer,
+                             size_t& foo_max_len,
+                             size_t& foo_use_len,
+                             const char*& foo_fmt_spec,
+                             const out_type& out_data
 )
 {
     size_t use_len = 0;
-    const char *id_pos = NULL;
+    const char* id_pos = NULL;
 
     //处理第一个数据的输出，
     while (foo_max_len > 0)
     {
         //找到{}，
-        id_pos = ::strstr(foo_fmt_spec,zce::SNRPINTF_FMT_IDENTIFY);
+        id_pos = ::strstr(foo_fmt_spec, zce::SNRPINTF_FMT_IDENTIFY);
         //将{}前面的字符串输出
-        zce::fmt_str(foo_buffer,foo_max_len,use_len,foo_fmt_spec,(id_pos == NULL)?strlen(foo_fmt_spec):(id_pos - foo_fmt_spec));
+        zce::fmt_str(foo_buffer, foo_max_len, use_len, foo_fmt_spec, (id_pos == NULL) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
 
         foo_buffer += use_len;
         foo_max_len -= use_len;
@@ -233,7 +235,7 @@ static void _foo_c11_outdata(char *&foo_buffer,
         //检查后面字符是否是?，用于判断是否是转义
         if (*(id_pos + LEN_OF_FMT_IDENTIFY) != zce::SNRPINTF_FMT_ESCAPE_CHAR)
         {
-            zce::output_helper(foo_buffer,foo_max_len,use_len,out_data);
+            zce::to_str(foo_buffer, foo_max_len, use_len, out_data);
             foo_buffer += use_len;
             foo_max_len -= use_len;
             foo_use_len += use_len;
@@ -243,7 +245,7 @@ static void _foo_c11_outdata(char *&foo_buffer,
         //{}%将转义为{}输出
         else
         {
-            zce::fmt_str(foo_buffer,foo_max_len,use_len,SNRPINTF_FMT_IDENTIFY,LEN_OF_FMT_IDENTIFY);
+            zce::fmt_str(foo_buffer, foo_max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
             foo_buffer += use_len;
             foo_max_len -= use_len;
             foo_use_len += use_len;
@@ -253,33 +255,33 @@ static void _foo_c11_outdata(char *&foo_buffer,
     }
 }
 
-template <typename out_type,typename... out_tlist >
-static void _foo_c11_outdata(char *&foo_buffer,
-                             size_t &foo_max_len,
-                             size_t &foo_use_len,
-                             const char *&foo_fmt_spec,
-                             const out_type &out_data,
+template <typename out_type, typename... out_tlist >
+static void _foo_c11_outdata(char*& foo_buffer,
+                             size_t& foo_max_len,
+                             size_t& foo_use_len,
+                             const char*& foo_fmt_spec,
+                             const out_type& out_data,
                              out_tlist ... out_datalist)
 {
-    _foo_c11_outdata(foo_buffer,foo_max_len,foo_use_len,foo_fmt_spec,out_data);
-    _foo_c11_outdata(foo_buffer,foo_max_len,foo_use_len,foo_fmt_spec,out_datalist...);
+    _foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
+    _foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 template <typename out_type >
-void _foo_c11_splice(char *&foo_buffer,
+void _foo_c11_splice(char*& foo_buffer,
                      size_t foo_max_len,
-                     size_t &foo_use_len,
+                     size_t& foo_use_len,
                      char separator_char,
-                     const out_type &out_data)
+                     const out_type& out_data)
 {
     size_t max_len = foo_max_len - 1;
     size_t use_len = 0;
     //如果还有空间容纳字符
     if (foo_max_len > 0)
     {
-        zce::output_helper(foo_buffer,foo_max_len,use_len,out_data);
+        zce::to_str(foo_buffer, foo_max_len, use_len, out_data);
         foo_buffer += use_len;
         foo_max_len -= use_len;
         foo_use_len += use_len;
@@ -294,45 +296,45 @@ void _foo_c11_splice(char *&foo_buffer,
     }
 }
 
-template <typename out_type,typename... out_tlist >
-void _foo_c11_splice(char *&foo_buffer,
+template <typename out_type, typename... out_tlist >
+void _foo_c11_splice(char*& foo_buffer,
                      size_t foo_max_len,
-                     size_t &foo_use_len,
+                     size_t& foo_use_len,
                      char separator_char,
-                     const out_type &out_data,
+                     const out_type& out_data,
                      out_tlist ... out_datalist)
 {
-    _foo_c11_splice(foo_buffer,foo_max_len,foo_use_len,separator_char,out_data);
-    _foo_c11_splice(foo_buffer,foo_max_len,foo_use_len,separator_char,out_datalist...);
+    _foo_c11_splice(foo_buffer, foo_max_len, foo_use_len, separator_char, out_data);
+    _foo_c11_splice(foo_buffer, foo_max_len, foo_use_len, separator_char, out_datalist...);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 template <typename... out_type >
-std::string &foo_string_splice(std::string &foo_string,
+std::string& foo_string_splice(std::string& foo_string,
                                char separator_char,
                                const out_type &...out_data)
 {
-    _foo_c11_string_splice(foo_string,separator_char,out_data...);
+    _foo_c11_string_splice(foo_string, separator_char, out_data...);
     return foo_string;
 }
 
 template <typename out_type >
-static void _foo_c11_string_splice(std::string &foo_string,
+static void _foo_c11_string_splice(std::string& foo_string,
                                    char separator_char,
-                                   const out_type &out_data)
+                                   const out_type& out_data)
 {
-    zce::string_helper(foo_string,out_data);
-    foo_string.append(1,separator_char);
+    zce::to_string(foo_string, out_data);
+    foo_string.append(1, separator_char);
 }
 
-template <typename out_type,typename... out_tlist >
-static void _foo_c11_string_splice(std::string &foo_string,
+template <typename out_type, typename... out_tlist >
+static void _foo_c11_string_splice(std::string& foo_string,
                                    char separator_char,
-                                   const out_type &out_data,
+                                   const out_type& out_data,
                                    out_tlist ... out_datalist)
 {
-    _foo_c11_string_splice(foo_string,separator_char,out_data);
-    _foo_c11_string_splice(foo_string,separator_char,out_datalist...);
+    _foo_c11_string_splice(foo_string, separator_char, out_data);
+    _foo_c11_string_splice(foo_string, separator_char, out_datalist...);
 }
 
 /*!
@@ -345,9 +347,9 @@ static void _foo_c11_string_splice(std::string &foo_string,
 * @param      ...out_data 用于拼接的类型 多个参数
 */
 template <typename... out_type >
-char *foo_strnsplice(char *foo_buffer,
+char* foo_strnsplice(char* foo_buffer,
                      size_t foo_max_len,
-                     size_t &foo_use_len,
+                     size_t& foo_use_len,
                      char separator_char,
                      const out_type & ...out_data)
 {
@@ -358,15 +360,13 @@ char *foo_strnsplice(char *foo_buffer,
     }
 
     size_t max_len = foo_max_len - 1;
-    char *buffer = foo_buffer;
+    char* buffer = foo_buffer;
     buffer[max_len] = '\0';
 
-    _foo_c11_splice(buffer,max_len,foo_use_len,separator_char,out_data...);
+    _foo_c11_splice(buffer, max_len, foo_use_len, separator_char, out_data...);
 
     foo_buffer[foo_use_len] = '\0';
     //返回
     return foo_buffer;
 }
 };
-
-#endif

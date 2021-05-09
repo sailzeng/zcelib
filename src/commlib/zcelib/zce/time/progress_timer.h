@@ -261,7 +261,7 @@ public:
     ~Auto_Progress_Timer()
     {
         progress_timer_.end();
-        ZCE_LOG(RS_INFO,"This operation in function[%s] use time :%.6f microseconds(usec).",
+        ZCE_LOG(RS_INFO, "This operation in function[%s] use time :%.6f microseconds(usec).",
                 __ZCE_FUNC__,
                 progress_timer_.elapsed_usec());
     };

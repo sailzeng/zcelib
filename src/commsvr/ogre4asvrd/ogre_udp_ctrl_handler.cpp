@@ -5,13 +5,13 @@
 #include "ogre_udp_ctrl_handler.h"
 
 //所有UPD端口的句柄
-std::vector<Ogre_UDPSvc_Hdl *> Ogre_UDPSvc_Hdl::ary_upd_peer_;
+std::vector<Ogre_UDPSvc_Hdl*> Ogre_UDPSvc_Hdl::ary_upd_peer_;
 
 //构造函数
-Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::Sockaddr_In &upd_addr,ZCE_Reactor *reactor):
-    ZCE_Event_Handler(reactor),
+Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::Sockaddr_In& upd_addr, zce::ZCE_Reactor* reactor) :
+    zce::Event_Handler(reactor),
     udp_bind_addr_(upd_addr),
-    peer_svc_info_(upd_addr.get_ip_address(),upd_addr.get_port_number()),
+    peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port_number()),
     dgram_databuf_(NULL),
     ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {
@@ -28,8 +28,8 @@ Ogre_UDPSvc_Hdl::~Ogre_UDPSvc_Hdl()
     }
 
     //删除掉保存的PEER数组
-    std::vector<Ogre_UDPSvc_Hdl *>::iterator iter_tmp = ary_upd_peer_.begin();
-    std::vector<Ogre_UDPSvc_Hdl *>::iterator iter_end = ary_upd_peer_.begin();
+    std::vector<Ogre_UDPSvc_Hdl*>::iterator iter_tmp = ary_upd_peer_.begin();
+    std::vector<Ogre_UDPSvc_Hdl*>::iterator iter_end = ary_upd_peer_.begin();
 
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
@@ -54,7 +54,7 @@ int Ogre_UDPSvc_Hdl::init_udp_peer()
         return -1;
     }
 
-    ret = reactor()->register_handler(this,ZCE_Event_Handler::READ_MASK);
+    ret = reactor()->register_handler(this, zce::Event_Handler::READ_MASK);
 
     if (ret != 0)
     {
@@ -79,10 +79,10 @@ int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
     size_t use_len = 0;
     zce::Sockaddr_In remote_addr;
     //读取数据
-    ret = read_data_fromudp(szrevc,remote_addr);
+    ret = read_data_fromudp(szrevc, remote_addr);
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG,"UDP Read Event[%s].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
-                     remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Read Event[%s].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
+                     remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                      ret,
                      szrevc);
 
@@ -107,7 +107,7 @@ int Ogre_UDPSvc_Hdl::handle_close()
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
     {
-        reactor()->remove_handler(this,false);
+        reactor()->remove_handler(this, false);
         dgram_peer_.close();
     }
 
@@ -118,7 +118,7 @@ int Ogre_UDPSvc_Hdl::handle_close()
 }
 
 //读取UDP数据
-int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc,zce::Sockaddr_In &remote_addr)
+int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::Sockaddr_In& remote_addr)
 {
     int ret = 0;
     szrevc = 0;
@@ -142,8 +142,8 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc,zce::Sockaddr_In &remote_a
             }
 
             //记录错误,返回错误
-            ZCE_LOG(RS_ERROR,"UDP Read error [%s],receive data error peer:%u zce::last_error()=%d|%s.\n",
-                    remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
+            ZCE_LOG(RS_ERROR, "UDP Read error [%s],receive data error peer:%u zce::last_error()=%d|%s.\n",
+                    remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                     dgram_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -166,8 +166,8 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc,zce::Sockaddr_In &remote_a
     //Socket被关闭，也返回错误标示,但是我不知道会不会出现这个问题...
     if (recvret == 0)
     {
-        ZCE_LOG(RS_ERROR,"UDP Read error [%s].UDP Peer recv return 0, I don't know how to process.?\n",
-                remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
+        ZCE_LOG(RS_ERROR, "UDP Read error [%s].UDP Peer recv return 0, I don't know how to process.?\n",
+                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -187,7 +187,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
         Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::dequechunk_node *>(dgram_databuf_));
+        reinterpret_cast<zce::lockfree::dequechunk_node*>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 
@@ -201,7 +201,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 }
 
 //发送UDP数据。
-int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
+int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
 {
     ssize_t szsend = -1;
 
@@ -230,8 +230,8 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     //没有找到相应的端口，给你一点信息
     if (i == ary_upd_peer_.size())
     {
-        ZCE_LOG(RS_ERROR,"Can't find send peer[%s|%u].Please check code.\n",
-                zce::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_,ip_addr_str,IP_ADDR_LEN),
+        ZCE_LOG(RS_ERROR, "Can't find send peer[%s|%u].Please check code.\n",
+                zce::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, ip_addr_str, IP_ADDR_LEN),
                 send_frame->snd_peer_info_.peer_port_);
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
@@ -239,16 +239,16 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     //发送失败
     if (szsend <= 0)
     {
-        ZCE_LOG(RS_ERROR,"UDP send error[%s]. Send data error peer:%u zce::last_error()=%d|%s.\n",
-                remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
+        ZCE_LOG(RS_ERROR, "UDP send error[%s]. Send data error peer:%u zce::last_error()=%d|%s.\n",
+                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                 ary_upd_peer_[i]->get_handle(),
                 zce::last_error(),
                 strerror(zce::last_error()));
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG,"UDP Send data to peer [%s]  Socket %u bytes data Succ.\n",
-                     remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s]  Socket %u bytes data Succ.\n",
+                     remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                      szsend);
     return 0;
 }

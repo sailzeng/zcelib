@@ -29,7 +29,7 @@ class ZCE_Mysql_Field
 {
 public:
     //构造函数
-    ZCE_Mysql_Field():
+    ZCE_Mysql_Field() :
         field_data_(NULL),
         field_length_(0),
         field_type_(FIELD_TYPE_NULL)
@@ -37,7 +37,7 @@ public:
     };
 
     //构造函数
-    ZCE_Mysql_Field(const char *fdata,unsigned int flength,enum_field_types ftype):
+    ZCE_Mysql_Field(const char* fdata, unsigned int flength, enum_field_types ftype) :
         field_data_(fdata),
         field_length_(flength),
         field_type_(ftype)
@@ -55,14 +55,14 @@ public:
     * @param[in]  flength  字段长度
     * @param[in]  ftype    字段类型
     */
-    inline void set_field(const char *fdata,
+    inline void set_field(const char* fdata,
                           unsigned int flength,
                           enum_field_types ftype);
 
     ///得到字段类型
     inline enum_field_types get_type() const;
     ///得到字段数据,Char*
-    inline const char *get_data() const;
+    inline const char* get_data() const;
     ///得到字段的长度
     inline unsigned int get_length() const;
 
@@ -74,7 +74,7 @@ public:
     //inline bool AsBool() const;
 
     //高速的得到字符串,在字符串较为长时最好使用这个函数
-    void get_string(std::string &) const;
+    void get_string(std::string&) const;
 
     //用于转换的操作符号
 
@@ -111,7 +111,7 @@ public:
 protected:
 
     ///字段数据,指针，指向结果集的数据，所以结果集必须存在
-    const char *field_data_;
+    const char* field_data_;
     ///字段长度
     unsigned int     field_length_;
     ///字段类型
@@ -119,7 +119,7 @@ protected:
 };
 
 //设置值
-inline void ZCE_Mysql_Field::set_field(const char *fdata,unsigned int flength,enum_field_types ftype)
+inline void ZCE_Mysql_Field::set_field(const char* fdata, unsigned int flength, enum_field_types ftype)
 {
     field_data_ = fdata;
     field_length_ = flength;
@@ -139,7 +139,7 @@ inline unsigned int ZCE_Mysql_Field::get_length() const
 }
 
 //
-inline const char *ZCE_Mysql_Field::get_data() const
+inline const char* ZCE_Mysql_Field::get_data() const
 {
     return field_data_;
 };
@@ -160,7 +160,7 @@ inline ZCE_Mysql_Field::operator std::string() const
 {
     std::string tmp_str;
     tmp_str.reserve(field_length_);
-    tmp_str.assign(field_data_,field_length_);
+    tmp_str.assign(field_data_, field_length_);
     return tmp_str;
 }
 

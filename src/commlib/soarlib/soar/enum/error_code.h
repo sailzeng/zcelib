@@ -280,7 +280,7 @@ public:
     };
 
     ///
-    static const char *error_string(int error_id);
+    static const char* error_string(int error_id);
 };
 
 //---------------------------------------------------------------------------------------------

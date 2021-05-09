@@ -2,7 +2,7 @@
 #include "soar/enum/error_code.h"
 
 ///
-const char *SOAR_RET::error_string(int error_id)
+const char* SOAR_RET::error_string(int error_id)
 {
     switch (error_id)
     {

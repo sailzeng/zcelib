@@ -72,8 +72,8 @@ Class           : UUID64
 */
 struct UUID64_16_48
 {
-    uint64_t       data1_:16;
-    uint64_t       data2_:48;
+    uint64_t       data1_ : 16;
+    uint64_t       data2_ : 48;
 };
 
 /*!
@@ -92,15 +92,15 @@ public:
     ~UUID64();
 
     /// < 运算符重载
-    bool operator < (const UUID64 &others) const;
+    bool operator < (const UUID64& others) const;
     /// == 运算符
-    bool operator == (const UUID64 &others) const;
+    bool operator == (const UUID64& others) const;
 
     /// 转移成一个uint64_t的结构
     operator uint64_t();
 
     /// 转换为字符串
-    const char *to_string(char *buffer,size_t buf_len,size_t &use_buf) const;
+    const char* to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
 
 public:
 
@@ -171,7 +171,7 @@ public:
     * @param      identity 当前的唯一表示，比如服务器ID等信息
     * @param      radix    时间基数
     */
-    void time_radix(uint16_t identity,uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint16_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -182,7 +182,7 @@ public:
 protected:
 
     ///发生器实例指针
-    static UUID64_Generator *instance_;
+    static UUID64_Generator* instance_;
 
 protected:
 
@@ -190,7 +190,7 @@ protected:
     * @brief      单子函数
     * @return     UUID64_Generator* 返回的实例指针
     */
-    static UUID64_Generator *instance();
+    static UUID64_Generator* instance();
     /*!
     * @brief      清理实例指针
     */
@@ -225,19 +225,19 @@ struct UUID128_32_32_64
 ///标准的UUID的格式
 struct UUID128_32_16_16_16_48
 {
-    uint64_t       data1_:32;
-    uint64_t       data2_:16;
-    uint64_t       data3_:16;
-    uint64_t       data4_:16;
-    uint64_t       data5_:48;
+    uint64_t       data1_ : 32;
+    uint64_t       data2_ : 16;
+    uint64_t       data3_ : 16;
+    uint64_t       data4_ : 16;
+    uint64_t       data5_ : 48;
 };
 
 ///微软的GUID的格式
 struct UUID128_32_16_16_64
 {
-    uint64_t       data1_:32;
-    uint64_t       data2_:16;
-    uint64_t       data3_:16;
+    uint64_t       data1_ : 32;
+    uint64_t       data2_ : 16;
+    uint64_t       data3_ : 16;
     uint64_t       data4_;
 };
 
@@ -260,12 +260,12 @@ public:
     ~UUID128();
 
     /// < 运算符重载
-    bool operator < (const UUID128 &others) const;
+    bool operator < (const UUID128& others) const;
     /// == 运算符
-    bool operator == (const UUID128 &others) const;
+    bool operator == (const UUID128& others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
-    const char *to_string(char *buffer,size_t buf_len,size_t &use_buf) const;
+    const char* to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
 
 public:
     ///UUID的字符串表示的长度
@@ -324,7 +324,7 @@ public:
     * @param      identity
     * @param      radix
     */
-    void time_radix(uint32_t identity,uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint32_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -348,6 +348,6 @@ protected:
 protected:
 
     //发生器实例指针
-    static UUID128_Generator *instance_;
+    static UUID128_Generator* instance_;
 };
 }

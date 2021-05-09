@@ -22,12 +22,12 @@ Socket_Connector::~Socket_Connector()
 {
 }
 
-int Socket_Connector::connect(zce::Socket_Stream &new_stream,
-                              const zce::Sockaddr_Base *remote_addr,
-                              zce::Time_Value &timeout,
+int Socket_Connector::connect(zce::Socket_Stream& new_stream,
+                              const zce::Sockaddr_Base* remote_addr,
+                              zce::Time_Value& timeout,
                               bool reuse_addr,
                               int protocol,
-                              const Sockaddr_Base *local_addr)
+                              const Sockaddr_Base* local_addr)
 {
     int ret = 0;
 
@@ -109,12 +109,12 @@ int Socket_Connector::connect(zce::Socket_Stream &new_stream,
 }
 
 //进行连接处理，可以进行非阻塞连接处理，
-int Socket_Connector::connect(zce::Socket_Stream &new_stream,
-                              const Sockaddr_Base *remote_addr,
+int Socket_Connector::connect(zce::Socket_Stream& new_stream,
+                              const Sockaddr_Base* remote_addr,
                               bool non_blocing,
                               bool reuse_addr,
                               int protocol,
-                              const Sockaddr_Base *local_addr)
+                              const Sockaddr_Base* local_addr)
 {
     int ret = 0;
 

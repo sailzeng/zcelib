@@ -6,15 +6,15 @@ class mmap_allocator //: public allocator<T>
 {
 public:
     typedef T                 value_type;
-    typedef value_type *pointer;
-    typedef const value_type *const_pointer;
-    typedef value_type &reference;
-    typedef const value_type &const_reference;
+    typedef value_type* pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
     typedef std::size_t       size_type;
     typedef std::ptrdiff_t    difference_type;
 
     mmap_allocator() {}
-    mmap_allocator(const mmap_allocator &) {}
+    mmap_allocator(const mmap_allocator&) {}
     ~mmap_allocator() {}
 
     template <typename U>
@@ -25,7 +25,7 @@ public:
 
     struct listnode
     {
-        listnode *next;
+        listnode* next;
         unsigned char   state;
         T               data;
     };
@@ -39,9 +39,9 @@ public:
         return &x;
     }
 
-    pointer allocate(size_type n,const_pointer = 0)
+    pointer allocate(size_type n, const_pointer = 0)
     {
-        void *p = std::malloc(n * sizeof(T));
+        void* p = std::malloc(n * sizeof(T));
 
         if (!p)
         {
@@ -51,7 +51,7 @@ public:
         return static_cast<pointer>(p);
     }
 
-    void deallocate(pointer p,size_type)
+    void deallocate(pointer p, size_type)
     {
         std::free(p);
     }
@@ -61,7 +61,7 @@ public:
         return freenum;
     }
 
-    void construct(pointer p,const value_type &x)
+    void construct(pointer p, const value_type& x)
     {
         new (p) value_type(x);
     }
@@ -72,21 +72,21 @@ public:
     }
 
 private:
-    void operator = (const mmap_allocator &);
+    void operator = (const mmap_allocator&);
 
-    static listnode *freelist;
+    static listnode* freelist;
 
     static size_t freenum;
 };
 
-template<typename _T1,typename _T2>
-inline bool operator == (const mmap_allocator<_T1> &,const mmap_allocator<_T2> &)
+template<typename _T1, typename _T2>
+inline bool operator == (const mmap_allocator<_T1>&, const mmap_allocator<_T2>&)
 {
     return false;
 }
 
-template<typename _T1,typename _T2>
-inline bool operator != (const mmap_allocator<_T1> &,const mmap_allocator<_T2> &)
+template<typename _T1, typename _T2>
+inline bool operator != (const mmap_allocator<_T1>&, const mmap_allocator<_T2>&)
 {
     return true;
 }

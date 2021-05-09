@@ -37,7 +37,7 @@ class Async_Object
     friend class Async_Obj_Mgr;
 
 public:
-    Async_Object(Async_Obj_Mgr *async_mgr,
+    Async_Object(Async_Obj_Mgr* async_mgr,
                  uint32_t create_cmd);
 protected:
     virtual ~Async_Object();
@@ -62,7 +62,7 @@ public:
     * @return     zce::Async_Object*
     * @param      async_mgr
     */
-    virtual Async_Object *clone(Async_Obj_Mgr *async_mgr,
+    virtual Async_Object* clone(Async_Obj_Mgr* async_mgr,
                                 uint32_t reg_cmd) = 0;
 
 #ifndef ZCE_CLONE_ASYNC_OBJ
@@ -80,17 +80,17 @@ public:
     * @brief      异步对象运行
     * @param[out] running 异步对象是否继续运行，如果不继续(返回false)，
     */
-    virtual void on_run(const void *outer_data,
+    virtual void on_run(const void* outer_data,
                         size_t data_len,
-                        bool &running) = 0;
+                        bool& running) = 0;
 
     /*!
     * @brief      异步对象超时处理
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const zce::Time_Value &now_time,
-                            bool &continue_run) = 0;
+    virtual void on_timeout(const zce::Time_Value& now_time,
+                            bool& continue_run) = 0;
 
     /*!
     * @brief      异步对象运行结束，做结束，释放资源的事情
@@ -107,7 +107,7 @@ public:
     /*!
     * @brief      保存接收到外部数据的指针，
     */
-    inline void receive_data(const void *recv_data)
+    inline void receive_data(const void* recv_data)
     {
         receive_data_ = recv_data;
     }
@@ -118,7 +118,7 @@ protected:
     * @brief                   设置超时定时器,如果触发，回调函数
     * @param  time_out         超时的时间，相对时间，
     */
-    int set_timeout(const zce::Time_Value &time_out);
+    int set_timeout(const zce::Time_Value& time_out);
 
     /*!
     * @brief      取消超时定时器
@@ -136,7 +136,7 @@ protected:
     uint32_t asyncobj_id_ = 0;
 
     ///管理者
-    Async_Obj_Mgr *async_mgr_ = NULL;
+    Async_Obj_Mgr* async_mgr_ = NULL;
 
     ///对应激活的处理的命令
     uint32_t  create_cmd_ = 0;
@@ -151,7 +151,7 @@ protected:
     zce::LOG_PRIORITY trace_log_pri_ = RS_INFO;
 
     ///传递的外部数据，
-    const void *receive_data_ = NULL;
+    const void* receive_data_ = NULL;
 };
 
 //=======================================================================================
@@ -167,7 +167,7 @@ class Async_Obj_Mgr: public zce::Timer_Handler
 protected:
 
     ///异步对象池子，
-    typedef zce::lordrings<Async_Object *>  ASYNC_OBJECT_POOL;
+    typedef zce::lordrings<Async_Object*>  ASYNC_OBJECT_POOL;
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {
@@ -196,9 +196,9 @@ protected:
     };
 
     //异步对象记录池子（包括异步对象和记录信息）
-    typedef std::unordered_map<uint32_t,ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
+    typedef std::unordered_map<uint32_t, ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
     //运行中的异步对象数量
-    typedef std::unordered_map<uint32_t,zce::Async_Object * > RUNNING_ASYNOBJ_MAP;
+    typedef std::unordered_map<uint32_t, zce::Async_Object* > RUNNING_ASYNOBJ_MAP;
 
 public:
 
@@ -213,7 +213,7 @@ public:
     * @param      running_number
     * @param      init_lock_pool 初始化
     */
-    int initialize(zce::Timer_Queue *tq,
+    int initialize(zce::Timer_Queue* tq,
                    size_t crtn_type_num,
                    size_t running_number);
 
@@ -231,7 +231,7 @@ public:
     * @param      init_clone_num
     */
     int register_asyncobj(uint32_t create_cmd,
-                          zce::Async_Object *async_base);
+                          zce::Async_Object* async_base);
 
     /*!
     * @brief      判断某个命令是否是注册（创建）异步对象命令
@@ -250,10 +250,10 @@ public:
     * @param      running     返回后，异步对象是否在继续运行
     */
     int create_asyncobj(uint32_t cmd,
-                        void *outer_data,
+                        void* outer_data,
                         size_t data_len,
-                        uint32_t &id,
-                        bool &running);
+                        uint32_t& id,
+                        bool& running);
 
     /*!
     * @brief      激活某个已经运行的异步对象,
@@ -263,9 +263,9 @@ public:
     * @param      running     返回后，异步对象是否在继续运行
     */
     int active_asyncobj(uint32_t id,
-                        void *outer_data,
+                        void* outer_data,
                         size_t data_len,
-                        bool &continue_running);
+                        bool& continue_running);
 
     /*!
     * @brief      打印管理器的基本信息，运行状态
@@ -283,15 +283,15 @@ protected:
     * @param      alloc_aysnc
     */
     int allocate_from_pool(uint32_t cmd,
-                           ASYNC_OBJECT_RECORD *&async_rec,
-                           zce::Async_Object *&alloc_aysnc);
+                           ASYNC_OBJECT_RECORD*& async_rec,
+                           zce::Async_Object*& alloc_aysnc);
 
     /*!
     * @brief      释放一个异步对象到池子里面
     * @return     int
     * @param      free_async
     */
-    int free_to_pool(zce::Async_Object *free_async);
+    int free_to_pool(zce::Async_Object* free_async);
 
     /*!
     * @brief      通过ID，寻找一个正在运行的异步对象
@@ -299,7 +299,7 @@ protected:
     * @param[in]  id   运行的异步对象的标识ID
     * @param[out] running_aysnc 查询到的异步对象
     */
-    int find_running_asyncobj(uint32_t id,zce::Async_Object *&running_aysnc);
+    int find_running_asyncobj(uint32_t id, zce::Async_Object*& running_aysnc);
 
     /*!
     * @brief      定时器触发的处理函数
@@ -307,11 +307,11 @@ protected:
     * @param      now_time
     * @param      act
     */
-    int timer_timeout(const zce::Time_Value &now_time,
-                      const void *act);
+    int timer_timeout(const zce::Time_Value& now_time,
+                      const void* act);
 
     // 得到负载因子
-    void load_foctor(uint32_t &load_cur,uint32_t &load_max);
+    void load_foctor(uint32_t& load_cur, uint32_t& load_max);
 
 protected:
     ///默认的异步对象类型数量

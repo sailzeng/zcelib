@@ -1,12 +1,12 @@
 #include "zealot_predefine.h"
 
-int test_host_name_fun(int,char *[])
+int test_host_name_fun(int, char* [])
 {
     int ret = 0;
 
     zce::socket_init();
 
-    size_t     ary_addr_num = 16,ary_addr6_num = 16;
+    size_t     ary_addr_num = 16, ary_addr6_num = 16;
     sockaddr_in ary_sock_addr[16];
     sockaddr_in6 ary_sock_addr6[16];
 
@@ -35,11 +35,11 @@ int test_host_name_fun(int,char *[])
 
     char domain_name[256 + 1];
     domain_name[256] = '\0';
-    ret = zce::getnameinfo_sockaddr((sockaddr *)&ary_sock_addr[0],
+    ret = zce::getnameinfo_sockaddr((sockaddr*)&ary_sock_addr[0],
                                     domain_name,
                                     256);
 
-    ret = zce::getnameinfo_sockaddr((sockaddr *)&ary_sock_addr6[0],
+    ret = zce::getnameinfo_sockaddr((sockaddr*)&ary_sock_addr6[0],
                                     domain_name,
                                     256);
 
@@ -50,13 +50,13 @@ int test_host_name_fun(int,char *[])
     return 0;
 }
 
-int test_net_getaddrinfo(int /*argc*/,char * /*argv*/[])
+int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
 
     zce::socket_init();
 
-    const char *TEST_HOST_NAME = "www.qq.com";
+    const char* TEST_HOST_NAME = "www.qq.com";
 
     const size_t ARRAY_NUM = 50;
     size_t ary_addr_num = ARRAY_NUM;
@@ -65,10 +65,10 @@ int test_net_getaddrinfo(int /*argc*/,char * /*argv*/[])
     sockaddr_in6 ary_addr6[ARRAY_NUM];
 
     addrinfo hints;
-    memset(&hints,0,sizeof(addrinfo));
+    memset(&hints, 0, sizeof(addrinfo));
     hints.ai_socktype = SOCK_STREAM;
 
-    addrinfo *result = nullptr;
+    addrinfo* result = nullptr;
     hints.ai_family = AF_INET;
     hints.ai_flags = AI_CANONNAME;
     ret = zce::getaddrinfo(TEST_HOST_NAME,
@@ -149,9 +149,9 @@ int test_net_getaddrinfo(int /*argc*/,char * /*argv*/[])
     zce::freeaddrinfo(result);
     std::cout << "ary_addr_num=" << ary_addr_num << " ary_addr6_num=" << ary_addr6_num << std::endl;
 
-    const char *TEST_HOST_NAME1 = "203.98.7.65";
-    const char *TEST_HOST_NAME2 = "2404:6800:4008:800::200e";
-    const char *TEST_HOST_NAME3 = "www.qq.com";
+    const char* TEST_HOST_NAME1 = "203.98.7.65";
+    const char* TEST_HOST_NAME2 = "2404:6800:4008:800::200e";
+    const char* TEST_HOST_NAME3 = "www.qq.com";
 
     sockaddr_in addr_in;
     addr_in.sin_family = AF_INET;
@@ -159,36 +159,36 @@ int test_net_getaddrinfo(int /*argc*/,char * /*argv*/[])
     addr_in6.sin6_family = AF_INET6;
     char ip_str[256];
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME1,
-                                   (sockaddr *)(&addr_in),
+                                   (sockaddr*)(&addr_in),
                                    sizeof(addr_in));
-    inet_ntop(addr_in.sin_family,(void *)&(addr_in.sin_addr),ip_str,256);
+    inet_ntop(addr_in.sin_family, (void*)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME1 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME1,
-                                   (sockaddr *)(&addr_in6),
+                                   (sockaddr*)(&addr_in6),
                                    sizeof(addr_in6));
-    inet_ntop(addr_in6.sin6_family,(void *)&(addr_in6.sin6_addr),ip_str,256);
+    inet_ntop(addr_in6.sin6_family, (void*)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME1 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
 
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME2,
-                                   (sockaddr *)(&addr_in6),
+                                   (sockaddr*)(&addr_in6),
                                    sizeof(addr_in6));
-    inet_ntop(addr_in6.sin6_family,(void *)&(addr_in6.sin6_addr),ip_str,256);
+    inet_ntop(addr_in6.sin6_family, (void*)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME2 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME2,
-                                   (sockaddr *)(&addr_in),
+                                   (sockaddr*)(&addr_in),
                                    sizeof(addr_in));
-    inet_ntop(addr_in.sin_family,(void *)&(addr_in.sin_addr),ip_str,256);
+    inet_ntop(addr_in.sin_family, (void*)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME2 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
 
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME3,
-                                   (sockaddr *)(&addr_in),
+                                   (sockaddr*)(&addr_in),
                                    sizeof(addr_in));
-    inet_ntop(addr_in.sin_family,(void *)&(addr_in.sin_addr),ip_str,256);
+    inet_ntop(addr_in.sin_family, (void*)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME3 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME3,
-                                   (sockaddr *)(&addr_in6),
+                                   (sockaddr*)(&addr_in6),
                                    sizeof(addr_in6));
-    inet_ntop(addr_in6.sin6_family,(void *)&(addr_in6.sin6_addr),ip_str,256);
+    inet_ntop(addr_in6.sin6_family, (void*)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME3 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
 
     return 0;

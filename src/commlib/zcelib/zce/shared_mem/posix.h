@@ -16,23 +16,23 @@ public:
 
 public:
     //打开文件，进行映射
-    int open(const char *file_name,
+    int open(const char* file_name,
              std::size_t shm_size,
              int file_open_mode = O_CREAT | O_RDWR,
              int file_perms_mode = ZCE_SHARE_FILE_PERMS,
-             const void *want_address = NULL,
+             const void* want_address = NULL,
              int mmap_prot = PROT_READ | PROT_WRITE,
              int mmap_flags = MAP_SHARED,
              std::size_t offset = 0
     );
 
     //打开文件，进行映射, 简单，推荐使用这个函数
-    int open(const char *file_name,
+    int open(const char* file_name,
              std::size_t shm_size,
              bool if_restore,
              bool read_only = false,
              bool share_file = true,
-             const void *want_address = NULL,
+             const void* want_address = NULL,
              std::size_t  offset = 0
     );
 
@@ -46,7 +46,7 @@ public:
     int flush();
 
     //返回映射的内存地址
-    void *addr();
+    void* addr();
 
 protected:
 
@@ -54,7 +54,7 @@ protected:
     std::string         shm_name_;
 
     //映射的内存地址
-    void *mmap_addr_;
+    void* mmap_addr_;
 
     // 映射的文件句柄
     ZCE_HANDLE          mmap_handle_;

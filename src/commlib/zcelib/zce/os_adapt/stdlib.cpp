@@ -7,9 +7,9 @@
 //返回参数，decpt返回指数，sign返回符号
 int zce::ecvt_r(double number,
                 int ndigits,
-                int *decpt,
-                int *sign,
-                char *buf,
+                int* decpt,
+                int* sign,
+                char* buf,
                 size_t len)
 {
 #ifdef ZCE_OS_WINDOWS
@@ -37,9 +37,9 @@ int zce::ecvt_r(double number,
 //返回参数，decpt返回指数，sign返回符号
 int zce::fcvt_r(double number,
                 int ndigits,
-                int *decpt,
-                int *sign,
-                char *buf,
+                int* decpt,
+                int* sign,
+                char* buf,
                 size_t len)
 {
 #ifdef ZCE_OS_WINDOWS

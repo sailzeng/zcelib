@@ -1,11 +1,11 @@
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-int test_windows_handle(int  /*argc*/,char * /*argv*/[])
+int test_windows_handle(int  /*argc*/, char* /*argv*/[])
 {
 #if defined ZCE_OS_WINDOWS
 
-    int file_desc = open("C:\\123.txt",O_CREAT | O_APPEND);
+    int file_desc = open("C:\\123.txt", O_CREAT | O_APPEND);
 
     if (file_desc == 0)
     {
@@ -20,8 +20,8 @@ int test_windows_handle(int  /*argc*/,char * /*argv*/[])
     std::cout << fh_2 << std::endl;
 
     //file_desc != filedesc_1 != filedesc_2,3个文件描述符不一样
-    int filedesc_1 = _open_osfhandle((intptr_t)fh_1,O_RDONLY);
-    int filedesc_2 = _open_osfhandle((intptr_t)fh_1,O_RDONLY);
+    int filedesc_1 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
+    int filedesc_2 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
 
     std::cout << (int)filedesc_1 << std::endl;
     std::cout << (int)filedesc_2 << std::endl;
@@ -35,10 +35,10 @@ int test_windows_handle(int  /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_osadapt_file(int  /*argc*/,char * /*argv*/[])
+int test_osadapt_file(int  /*argc*/, char* /*argv*/[])
 {
     size_t file_len = 0;
-    auto pair = zce::read_file_all("C:\\123.txt",&file_len);
+    auto pair = zce::read_file_all("C:\\123.txt", &file_len);
     if (pair.first != 0)
     {
         return pair.first;
@@ -47,7 +47,7 @@ int test_osadapt_file(int  /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_osadapt_perf(int  /*argc*/,char * /*argv*/[])
+int test_osadapt_perf(int  /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
     ZCE_PROCESS_PERFORM prc_perf_info;
@@ -81,7 +81,7 @@ int test_osadapt_perf(int  /*argc*/,char * /*argv*/[])
 #include "zealot_test_function.h"
 
 //选取所有的.h文件
-int hfile_selector(const struct dirent *dir_info)
+int hfile_selector(const struct dirent* dir_info)
 {
     size_t name_len = strlen(dir_info->d_name);
     if (name_len <= 2)
@@ -96,10 +96,10 @@ int hfile_selector(const struct dirent *dir_info)
     return 0;
 }
 
-int test_scandir(int /*argc*/,char /*argv*/ *[])
+int test_scandir(int /*argc*/, char /*argv*/* [])
 {
     zce::clear_last_error();
-    struct  dirent **namelist = NULL;
+    struct  dirent** namelist = NULL;
     int number_file = zce::scandir("E:\\Courage\\readline-5.2",
                                    &namelist,
                                    hfile_selector,
@@ -116,7 +116,7 @@ int test_scandir(int /*argc*/,char /*argv*/ *[])
         std::cout << "file name " << i << ":" << namelist[i]->d_name << std::endl;
     }
 
-    zce::free_scandir_result(number_file,namelist);
+    zce::free_scandir_result(number_file, namelist);
 
     //for (int i = 0; i < number_file; ++i)
     //{
@@ -132,7 +132,7 @@ struct Zealot_SVC: public zce::Server_Base
 };
 
 Zealot_SVC svc;
-int test_pid_file(int /*argc*/,char /*argv*/ *[])
+int test_pid_file(int /*argc*/, char /*argv*/* [])
 {
     svc.out_pid_file("C:\\1");
     return 0;
@@ -143,8 +143,8 @@ const size_t TEST_NUMBER = 100000 * 10;
 void test_findwith_container(size_t container_len)
 {
     std::vector<int>          int_vector;
-    std::map<int,int>         int_map;
-    unordered_map<int,int>    int_hash;
+    std::map<int, int>         int_map;
+    unordered_map<int, int>    int_hash;
 
     int_vector.resize(container_len);
     int_hash.rehash(container_len);
@@ -210,7 +210,7 @@ void test_findwith_container(size_t container_len)
 
 //
 
-int test_container_performance(int  /*argc*/,char * /*argv*/[])
+int test_container_performance(int  /*argc*/, char* /*argv*/[])
 {
     for (int j = 0; j < 3; ++j)
     {
@@ -239,10 +239,10 @@ int test_container_performance(int  /*argc*/,char * /*argv*/[])
     return 0;
 }
 
-int test_progress_timer(int  /*argc*/,char * /*argv*/[])
+int test_progress_timer(int  /*argc*/, char* /*argv*/[])
 {
     zce::Chrono_HR_Timer hr_timer;
-    zce::Time_Value sleep_len(2,5000);
+    zce::Time_Value sleep_len(2, 5000);
 
     hr_timer.restart();
     zce::sleep(sleep_len);
@@ -282,7 +282,7 @@ static int test_stack1()
     return 0;
 }
 
-int test_back_stack(int  /*argc*/,char * /*argv*/[])
+int test_back_stack(int  /*argc*/, char* /*argv*/[])
 {
     return test_stack1();
 }

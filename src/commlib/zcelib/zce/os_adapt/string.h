@@ -58,13 +58,13 @@ struct yun_char_traits < char >: public std::char_traits < char >
         return (isascii(c) && ::isspace(c));
     }
 
-    static char_type *strend(char_type *s)
+    static char_type* strend(char_type* s)
     {
-        return ::strchr(s,0);
+        return ::strchr(s, 0);
     }
-    static const char_type *strend(const char_type *s)
+    static const char_type* strend(const char_type* s)
     {
-        return ::strchr(s,0);
+        return ::strchr(s, 0);
     }
 };
 
@@ -89,14 +89,14 @@ struct yun_char_traits < wchar_t >: public std::char_traits < wchar_t >
         return ::iswspace(c);
     }
 
-    static char_type *strend(char_type *s)
+    static char_type* strend(char_type* s)
     {
-        return ::wcschr(s,0);
+        return ::wcschr(s, 0);
     }
 
-    static const char_type *strend(const char_type *s)
+    static const char_type* strend(const char_type* s)
     {
-        return ::wcschr(s,0);
+        return ::wcschr(s, 0);
     }
 };
 
@@ -111,11 +111,11 @@ struct yun_char_traits < wchar_t >: public std::char_traits < wchar_t >
 * @param      str
 */
 template <typename char_type>
-char_type *strtrimleft(char_type *str)
+char_type* strtrimleft(char_type* str)
 {
     ZCE_ASSERT(str);
 
-    char_type *lstr = str;
+    char_type* lstr = str;
     for (; *lstr != '\0'; lstr++)
     {
         //注意isspace的参数是int,（WIN下）要求字符是0~255,
@@ -130,7 +130,7 @@ char_type *strtrimleft(char_type *str)
     }
     if (lstr != str)
     {
-        yun_char_traits<char_type>::move(str,lstr,
+        yun_char_traits<char_type>::move(str, lstr,
                                          yun_char_traits<char_type>::length(lstr) + 1);
     }
     return str;
@@ -142,10 +142,10 @@ char_type *strtrimleft(char_type *str)
 * @param      str
 */
 template <typename char_type>
-char *strtrimright(char_type *str)
+char* strtrimright(char_type* str)
 {
     ZCE_ASSERT(str);
-    char_type *lstr = str + yun_char_traits<char_type>::length(str) - 1;
+    char_type* lstr = str + yun_char_traits<char_type>::length(str) - 1;
 
     for (; lstr >= str; lstr--)
     {
@@ -172,15 +172,15 @@ char *strtrimright(char_type *str)
 * @param      str
 */
 template <typename char_type>
-inline char *strtrim(char_type *str)
+inline char* strtrim(char_type* str)
 {
     zce::strtrimleft<char_type>(str);
     zce::strtrimright<char_type>(str);
     return str;
 }
 
-template < typename char_type,typename char_traits_type,typename allocator_typ >
-void stdstr_trimleft(std::basic_string<char_type,char_traits_type,allocator_typ> &str)
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+void stdstr_trimleft(std::basic_string<char_type, char_traits_type, allocator_typ>& str)
 {
     auto it = str.begin();
 
@@ -188,12 +188,12 @@ void stdstr_trimleft(std::basic_string<char_type,char_traits_type,allocator_typ>
     {
         ++it;
     }
-    str.erase(str.begin(),it);
+    str.erase(str.begin(), it);
     return;
 }
 
-template < typename char_type,typename char_traits_type,typename allocator_typ >
-void stdstr_trimright(std::basic_string<char_type,char_traits_type,allocator_typ> &str)
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+void stdstr_trimright(std::basic_string<char_type, char_traits_type, allocator_typ>& str)
 {
     auto  it = str.end();
     if (it == str.begin())
@@ -202,21 +202,21 @@ void stdstr_trimright(std::basic_string<char_type,char_traits_type,allocator_typ
     }
 
     while (it != str.begin() && yun_char_traits<char_type>::isspace(*--it));
-    str.erase(it + 1,str.end());
+    str.erase(it + 1, str.end());
     return;
 }
 
-template < typename char_type,typename char_traits_type,typename allocator_typ >
-inline void stdstr_trim(std::basic_string<char_type,char_traits_type,allocator_typ> &str)
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+inline void stdstr_trim(std::basic_string<char_type, char_traits_type, allocator_typ>& str)
 {
     stdstr_trimright(str);
     stdstr_trimleft(str);
     return;
 }
 
-template < typename char_type,typename char_traits_type,typename allocator_typ >
-int stdstr_casecmp(std::basic_string<char_type,char_traits_type,allocator_typ> &a,
-                   std::basic_string<char_type,char_traits_type,allocator_typ> &b)
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+int stdstr_casecmp(std::basic_string<char_type, char_traits_type, allocator_typ>& a,
+                   std::basic_string<char_type, char_traits_type, allocator_typ>& b)
 {
     if (a.length() == b.length())
     {
@@ -224,8 +224,8 @@ int stdstr_casecmp(std::basic_string<char_type,char_traits_type,allocator_typ> &
     }
     else
     {
-        return std::equal(a.begin(),a.end(),b.begin(),
-                          [](char a,char b)
+        return std::equal(a.begin(), a.end(), b.begin(),
+                          [](char a, char b)
                           {
                               return tolower(a) == tolower(b);
                           });
@@ -239,12 +239,12 @@ int stdstr_casecmp(std::basic_string<char_type,char_traits_type,allocator_typ> &
 /*!
 * @brief      将字符串全部转换为大写字符
 */
-char *strupr(char *str);
+char* strupr(char* str);
 
 /*!
 * @brief      将字符串全部转换为小写字符
 */
-char *strlwr(char *str);
+char* strlwr(char* str);
 
 /*!
 * @brief      字符串比较，忽视大小写
@@ -252,7 +252,7 @@ char *strlwr(char *str);
 * @param      string1
 * @param      string2
 */
-int strcasecmp(const char *string1,const char *string2);
+int strcasecmp(const char* string1, const char* string2);
 
 /*!
 * @brief      字符串定长比较，忽视大小写
@@ -262,7 +262,7 @@ int strcasecmp(const char *string1,const char *string2);
 * @param      maxlen
 * @note
 */
-int strncasecmp(const char *string1,const char *string2,size_t maxlen);
+int strncasecmp(const char* string1, const char* string2, size_t maxlen);
 
 //==========================================================================================================
 //产生唯一名字的一些函数
@@ -274,8 +274,8 @@ int strncasecmp(const char *string1,const char *string2,size_t maxlen);
 * @param[out] name        名字的buffer
 * @param[in]  length      buffer的长度
 */
-char *object_unique_name(const void *object_ptr,
-                         char *name,
+char* object_unique_name(const void* object_ptr,
+                         char* name,
                          size_t length);
 
 /*!
@@ -285,8 +285,8 @@ char *object_unique_name(const void *object_ptr,
 * @param[out] name         名字的buffer
 * @param[in]  length       buffer的长度
 */
-char *prefix_unique_name(const char *prefix_name,
-                         char *name,
+char* prefix_unique_name(const char* prefix_name,
+                         char* name,
                          size_t length);
 
 //==========================================================================================================
@@ -304,45 +304,45 @@ char *prefix_unique_name(const char *prefix_name,
 * @param[in]  pr 比较方式
 * @param[out] v  输出的容器，一般是vector<string>
 */
-template < typename iter_type1,typename iter_type2,typename compare_type,typename container_type>
-void _str_split(iter_type1 fs,iter_type1 ls,iter_type2 fo,iter_type2 lo,compare_type pr,container_type &v)
+template < typename iter_type1, typename iter_type2, typename compare_type, typename container_type>
+void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type& v)
 {
     //使用尾部插入的迭代器
     std::back_insert_iterator<container_type> o = std::back_inserter(v);
     if (fo == lo)
     {
-        *o = typename container_type::value_type(fs,ls);
+        *o = typename container_type::value_type(fs, ls);
         return;
     }
 
     // current position old_str in str
-    iter_type1 pos = std::search(fs,ls,fo,lo,pr);
+    iter_type1 pos = std::search(fs, ls, fo, lo, pr);
 
     if (pos == ls)
     {
         if (fs < ls)
         {
-            *o = typename container_type::value_type(fs,ls);
+            *o = typename container_type::value_type(fs, ls);
         }
 
         return;
     }
 
-    size_t old_size = std::distance(fo,lo);
+    size_t old_size = std::distance(fo, lo);
 
     for (; pos != ls;)
     {
         // append src string
-        *o = typename container_type::value_type(fs,pos);
+        *o = typename container_type::value_type(fs, pos);
         // ignore old_str
         fs = pos + old_size;
         // find next
-        pos = std::search(fs,ls,fo,lo,pr);
+        pos = std::search(fs, ls, fo, lo, pr);
     }
 
     if (fs != ls)
     {
-        *o = typename container_type::value_type(fs,ls);
+        *o = typename container_type::value_type(fs, ls);
     }
 
     return;
@@ -356,8 +356,8 @@ void _str_split(iter_type1 fs,iter_type1 ls,iter_type2 fo,iter_type2 lo,compare_
 * @param[in]  separator      分割字符串，注意如果是单个字符，也要用""括起来
 * @param[out] v              容器，用于存放分隔的结果,一般是vector<string>
 */
-template < typename char_type,typename container_type >
-inline void str_split(const char_type *str,const char_type *separator,container_type &v)
+template < typename char_type, typename container_type >
+inline void str_split(const char_type* str, const char_type* separator, container_type& v)
 {
     _str_split(str,
                yun_char_traits<char_type>::strend(str),
@@ -369,9 +369,9 @@ inline void str_split(const char_type *str,const char_type *separator,container_
 }
 
 template < typename container_type >
-inline void string_split(const std::string &source_str,
-                         const std::string &separator,
-                         container_type &v)
+inline void string_split(const std::string& source_str,
+                         const std::string& separator,
+                         container_type& v)
 {
     _str_split(source_str.begin(),
                source_str.end(),
@@ -390,10 +390,10 @@ inline void string_split(const std::string &source_str,
 * @param      sub
 * @param      replace
 */
-const char *str_replace(const char *src,
-                        char *dst,
-                        const char *sub,
-                        const char *replace);
+const char* str_replace(const char* src,
+                        char* dst,
+                        const char* sub,
+                        const char* replace);
 
 //----------------------------------------------------------------------------------------------------------
 //用于一些表格字符串分析函数
@@ -404,7 +404,7 @@ const char *str_replace(const char *src,
 * @param      str         参数字符串
 * @note       为了分析一些表格信息，增加的一组函数，一致一些类top的代码时翻译的
 */
-const char *skip_whitespace(const char *str);
+const char* skip_whitespace(const char* str);
 
 //
 /*!
@@ -412,7 +412,7 @@ const char *skip_whitespace(const char *str);
 * @return     const char* 跳过后的地址
 * @param      str         参数字符串
 */
-const char *skip_token(const char *str);
+const char* skip_token(const char* str);
 
 /*!
 * @brief      跳过一行
@@ -420,7 +420,7 @@ const char *skip_token(const char *str);
 * @param[in]  str         参数字符串
 * @note
 */
-const char *skip_line(const char *str);
+const char* skip_line(const char* str);
 
 /*!
 * @brief      跨越某个token,直到分隔符后（或者结束）
@@ -428,7 +428,7 @@ const char *skip_line(const char *str);
 * @param[in]  str            参数字符串
 * @param[in]  separator_char 分割字符，要找到这个字符为止，（跳到这个字符后面）
 */
-const char *skip_separator(const char *str,char separator_char);
+const char* skip_separator(const char* str, char separator_char);
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -439,9 +439,9 @@ const char *skip_separator(const char *str,char separator_char);
 * @param      mem_len 指针长度
 * @param      str_ary 字符串的数组，为什么不用std::ostream呢，因为我可能会要重新格式输出
 */
-void memory_debug(const unsigned char *mem_ptr,
+void memory_debug(const unsigned char* mem_ptr,
                   size_t mem_len,
-                  std::vector<std::string> &str_ary);
+                  std::vector<std::string>& str_ary);
 
 /*!
 * @brief      将调试信息输出到stream
@@ -449,16 +449,16 @@ void memory_debug(const unsigned char *mem_ptr,
 * @param      mem_len 指针长度，
 * @param      stream  文件流对象，stdout,stderr也都可以
 */
-void memory_debug(const unsigned char *mem_ptr,
+void memory_debug(const unsigned char* mem_ptr,
                   size_t mem_len,
-                  FILE *stream);
+                  FILE* stream);
 
 ///日志打印堆栈信息
 ///调试打印的指针
 ///指针数据的长度
 void memory_debug(zce::LOG_PRIORITY dbg_lvl,
-                  const char *dbg_info,
-                  const unsigned char *mem_ptr,
+                  const char* dbg_info,
+                  const unsigned char* mem_ptr,
                   size_t mem_len);
 
 //----------------------------------------------------------------------------------------------------------
@@ -476,53 +476,9 @@ void memory_debug(zce::LOG_PRIORITY dbg_lvl,
 * @param      sz     拷贝的长度
 * @note       任何时候都，都请优先选择 C运行库的 memcpy,
 */
-void *fast_memcpy(void *dst,const void *src,size_t sz);
+void* fast_memcpy(void* dst, const void* src, size_t sz);
 
-void *fast_memcpy2(void *dst,const void *src,size_t sz);
-
-//----------------------------------------------------------------------------------------------------------
-
-/*!
-* @brief      将c str 转换为很多数值类型，作为返回值返回
-* @tparam     ret_type 返回值类型
-* @return     ret_type
-* @param[in]  str  c string 字符串参数
-*/
-template<typename ret_type>
-ret_type str_to_value(const char *str);
-
-/*!
-* @brief      将c string 转换为很多数值类型，作为指针参数返回
-* @tparam     ptr_type 指针参数类型
-* @param[in]  str c string 字符串参数
-* @param[out] ptr 指针参数
-*/
-template<typename ptr_type>
-void str_to_ptr(const char *str,ptr_type *ptr);
-
-/*!
-* @brief      从std string字符串转换得到数据类型
-* @tparam     ret_type  返回的类型
-* @return     ret_type  返回的数据类型
-* @param[in]  str       字符串
-*/
-template<typename ret_type>
-ret_type string_to_value(const std::string &stdstr)
-{
-    return str_to_value<ret_type>(stdstr.c_str());
-}
-
-/*!
-* @brief      将std string 转换为很多数值类型，作为指针参数返回
-* @tparam     ptr_type  指针参数类型
-* @param      stdstr
-* @param      ptr
-*/
-template<typename ptr_type>
-void string_to_ptr(const std::string &stdstr,ptr_type *ptr)
-{
-    str_to_ptr<ptr_type>(stdstr.c_str(),ptr);
-}
+void* fast_memcpy2(void* dst, const void* src, size_t sz);
 };
 
 #endif //ZCE_LIB_STRING_EX_H_

@@ -13,19 +13,19 @@
 namespace zce
 {
 //
-int read_proc_get_cpuhz(struct ZCE_SYSTEM_INFO *info)
+int read_proc_get_cpuhz(struct ZCE_SYSTEM_INFO* info)
 {
     //
-    const char *PROC_FILENAME_CPUHZ = "/proc/cpuinfo";
+    const char* PROC_FILENAME_CPUHZ = "/proc/cpuinfo";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_CPUHZ,&read_len);
+    auto pair = zce::read_file_all(PROC_FILENAME_CPUHZ, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
     in_para = zce::skip_line(in_para);
     in_para = zce::skip_line(in_para);
     in_para = zce::skip_line(in_para);
@@ -33,89 +33,89 @@ int read_proc_get_cpuhz(struct ZCE_SYSTEM_INFO *info)
     in_para = zce::skip_line(in_para);
     in_para = zce::skip_line(in_para);
 
-    info->cpu_hz_ = static_cast<uint64_t>(::strtod(in_para,&out_para) * 1024 * 1024);
+    info->cpu_hz_ = static_cast<uint64_t>(::strtod(in_para, &out_para) * 1024 * 1024);
     in_para = out_para;
 
     return 0;
 }
 
 // get load averages ,得到CPU负载的
-static int read_proc_get_loadavg(struct ZCE_SYSTEM_PERFORMANCE *info)
+static int read_proc_get_loadavg(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
     //
-    const char *PROC_FILENAME_LOADAVG = "/proc/loadavg";
+    const char* PROC_FILENAME_LOADAVG = "/proc/loadavg";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_LOADAVG,&read_len);
+    auto pair = zce::read_file_all(PROC_FILENAME_LOADAVG, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
 
     //1,5,10 min load averages
-    info->sys_loads_[0] = ::strtod(in_para,&out_para);
+    info->sys_loads_[0] = ::strtod(in_para, &out_para);
     in_para = out_para;
-    info->sys_loads_[1] = ::strtod(in_para,&out_para);
+    info->sys_loads_[1] = ::strtod(in_para, &out_para);
     in_para = out_para;
-    info->sys_loads_[2] = ::strtod(in_para,&out_para);
+    info->sys_loads_[2] = ::strtod(in_para, &out_para);
     in_para = out_para;
 
     //running/tasks
-    info->running_num_ = ::strtoul(in_para,&out_para,0);
+    info->running_num_ = ::strtoul(in_para, &out_para, 0);
     in_para = out_para;
-    in_para = zce::skip_separator(in_para,'/');
-    info->processes_num_ = ::strtoul(in_para,&out_para,0);
+    in_para = zce::skip_separator(in_para, '/');
+    info->processes_num_ = ::strtoul(in_para, &out_para, 0);
     in_para = out_para;
 
     return 0;
 }
 
 //读取/proc/meminfo文件，取得内存的信息
-int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
+int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
-    const char *PROC_FILENAME_MEMINFO = "/proc/meminfo";
+    const char* PROC_FILENAME_MEMINFO = "/proc/meminfo";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_MEMINFO,&read_len);
+    auto pair = zce::read_file_all(PROC_FILENAME_MEMINFO, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
 
     uint64_t mem_data = 0;
 
     // be prepared for extra columns to appear be seeking to ends of lines
     // total memory 样例 MemTotal:        3584536 kB
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->totalram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
     // free memory 样例 MemFree:           22532 kB
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->freeram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
     // buffer memory 样例 Buffers:          443268 kB
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->bufferram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
     // cached memory 样例 Cached:          2580892 kB
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->cachedram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
     // cached swip
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->swapcached_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
@@ -127,13 +127,13 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
 
     /* total swap */
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->totalswap_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
     /* free swap */
     in_para = zce::skip_token(in_para);
-    mem_data = strtoull(in_para,&out_para,10);
+    mem_data = strtoull(in_para, &out_para, 10);
     info->freeswap_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
@@ -148,18 +148,18 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
 //iowait: waiting for I/O to complete
 //irq: servicing interrupts
 //softirq: servicing softirqs
-int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
+int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
-    const char *PROC_FILENAME_STAT = "/proc/stat";
+    const char* PROC_FILENAME_STAT = "/proc/stat";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_STAT,&read_len);
+    auto pair = zce::read_file_all(PROC_FILENAME_STAT, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
 
     // "cpu"
     in_para = zce::skip_token(in_para);
@@ -176,43 +176,43 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
 
     //user
     uint64_t time_data = 0;
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->user_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->user_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     //nice
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->nice_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->nice_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     //system
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->system_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->system_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     //idle
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->idle_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision / cpu_config_num);
     info->idle_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision) / cpu_config_num);
 
     //iowait
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->iowait_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->iowait_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     //hard irq
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->hardirq_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->hardirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     //soft irq
-    time_data = ::strtoull(in_para,&out_para,10);
+    time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->softirq_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->softirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
@@ -229,21 +229,21 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
 }
 
 //取得UPTIME  样例 10665138.96 41312475.36
-int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE *info)
+int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
-    const char *PROC_FILENAME_UPTIME = "/proc/uptime";
+    const char* PROC_FILENAME_UPTIME = "/proc/uptime";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_UPTIME,&read_len);
+    auto pair = zce::read_file_all(PROC_FILENAME_UPTIME, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
     }
 
-    const char *in_para = pair.second.get();
-    char *out_para = NULL;
+    const char* in_para = pair.second.get();
+    char* out_para = NULL;
 
     //
-    double uptime = ::strtod(in_para,&out_para);
+    double uptime = ::strtod(in_para, &out_para);
     in_para = out_para;
 
     info->up_time_.tv_sec = static_cast<time_t>(::floor(uptime));
@@ -254,7 +254,7 @@ int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE *info)
 };
 
 //根据PROC的几个文件得到当前的系统性能
-int  zce::read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info)
+int  zce::read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
     int ret = 0;
     ret = zce::read_proc_get_loadavg(info);
@@ -282,7 +282,7 @@ int  zce::read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info)
 }
 
 //sysinfo函数中间的很多数值和/proc目录的定义并不一致，我将就着来
-int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
+int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE* zce_system_perf)
 {
     struct sysinfo info;
     //其实通过::sysconf也可以得到这个数据
@@ -330,7 +330,7 @@ int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
 
 //----------------------------------------------------------------------------------------
 
-int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
+int zce::get_system_info(ZCE_SYSTEM_INFO* zce_system_info)
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -393,7 +393,7 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
     {
         return -1;
     }
-    l_return = ::RegQueryValueExA(hdl_key,"~MHz",NULL,NULL,(LPBYTE)&dw_mhz,&dw_size);
+    l_return = ::RegQueryValueExA(hdl_key, "~MHz", NULL, NULL, (LPBYTE)&dw_mhz, &dw_size);
     if (l_return != ERROR_SUCCESS)
     {
         return -1;
@@ -438,7 +438,7 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
 }
 
 //得到操作系统的性能信息
-int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
+int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE* zce_system_perf)
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -452,7 +452,7 @@ int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
     bool_ret = ::GlobalMemoryStatusEx(&mem_status);
 
     //得到CPU的使用状况
-    FILETIME idle_time,kernel_time,user_time;
+    FILETIME idle_time, kernel_time, user_time;
     bool_ret = ::GetSystemTimes(&idle_time,
                                 &kernel_time,
                                 &user_time);

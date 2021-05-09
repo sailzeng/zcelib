@@ -37,22 +37,22 @@ public:
 
 #if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
     //frame_option_的头24个BIT作为选项字段,
-    uint32_t     option_:20;
+    uint32_t     option_ : 20;
     //保留4个bit，
-    uint32_t     reserve_:4;
+    uint32_t     reserve_ : 4;
     //
-    uint32_t     protocol_:4;
+    uint32_t     protocol_ : 4;
     //后4BIT作为版本标识
-    uint32_t     version_:4;
+    uint32_t     version_ : 4;
 #else
     //后4BIT作为版本标识
-    uint32_t     version_:4;
+    uint32_t     version_ : 4;
     //
-    uint32_t     protocol_:4;
+    uint32_t     protocol_ : 4;
     //保留4个bit，
-    uint32_t     reserve_:4;
+    uint32_t     reserve_ : 4;
     //frame_option_的头24个BIT作为选项字段,
-    uint32_t     option_:20;
+    uint32_t     option_ : 20;
 #endif
 };
 
@@ -143,9 +143,9 @@ public:
         backfill_fsm_id_ = 0;
         serial_number_ = 0;
         business_id_ = 0;
-        send_service_.set_svcid(0,0);
-        recv_service_.set_svcid(0,0);
-        proxy_service_.set_svcid(0,0);
+        send_service_.set_svcid(0, 0);
+        recv_service_.set_svcid(0, 0);
+        proxy_service_.set_svcid(0, 0);
     }
 
 public:
@@ -213,7 +213,7 @@ protected:
     //析构函数
     ~Zerg_Frame() = delete;
     //Assign =运算符号
-    Zerg_Frame &operator = (const Zerg_Frame &other) = delete;
+    Zerg_Frame& operator = (const Zerg_Frame& other) = delete;
 
 public:
 
@@ -221,22 +221,22 @@ public:
     inline bool is_zerg_processcmd();
 
     //填充AppData数据到APPFrame
-    int fill_appdata(const size_t szdata,const char *vardata);
+    int fill_appdata(const size_t szdata, const char* vardata);
 
     //交换Rcv ,Snd SvrInfo
     void exchange_rcvsnd_svcid();
     //交换Rcv ,Snd SvrInfo,prochandle
-    void exchange_rcvsnd_svcid(Zerg_Frame &exframe);
+    void exchange_rcvsnd_svcid(Zerg_Frame& exframe);
     //回填返回包头
-    void fillback_appframe_head(Zerg_Frame &exframe);
+    void fillback_appframe_head(Zerg_Frame& exframe);
 
     //给dst_frame克隆一个自己
-    void clone(Zerg_Frame *dst_frame) const;
+    void clone(Zerg_Frame* dst_frame) const;
     //给dst_frame复制一个头部数据
-    void clone_head(Zerg_Frame *dst_frame) const;
+    void clone_head(Zerg_Frame* dst_frame) const;
 
     //取得一个头部信息
-    void get_head(Zerg_Head &frame_head) const;
+    void get_head(Zerg_Head& frame_head) const;
 
     //取得帧的长度
     inline size_t get_frame_len() const;
@@ -244,24 +244,24 @@ public:
     inline size_t get_frame_datalen() const;
 
     template<typename info_type>
-    int appdata_encode(size_t szframe_appdata,const info_type &info);
+    int appdata_encode(size_t szframe_appdata, const info_type& info);
 
     template<typename info_type>
-    int appdata_decode(size_t szframe_appdata,info_type &info);
+    int appdata_decode(size_t szframe_appdata, info_type& info);
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
     ///将一个结构进行编码
     int protobuf_encode(size_t szframe_appdata,
-                        const google::protobuf::MessageLite *msg,
+                        const google::protobuf::MessageLite* msg,
                         size_t data_start = 0,
-                        size_t *sz_code = NULL
+                        size_t* sz_code = NULL
     );
 
     ///将一个结构进行解码
-    int protobuf_decode(google::protobuf::MessageLite *msg,
+    int protobuf_decode(google::protobuf::MessageLite* msg,
                         size_t data_start = 0,
-                        size_t *sz_code = NULL);
+                        size_t* sz_code = NULL);
 
 #endif
 
@@ -274,9 +274,9 @@ public:
     //不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
     ///创建一个Frame
-    static Zerg_Frame *new_frame(std::size_t lenframe);
+    static Zerg_Frame* new_frame(std::size_t lenframe);
     ///销毁一个frame
-    static void delete_frame(Zerg_Frame *frame);
+    static void delete_frame(Zerg_Frame* frame);
 
     /*!
     * @brief      输出ZERG FRAME的头部信息
@@ -286,12 +286,12 @@ public:
     * @param      frame        要输出的frame
     */
     static void dump_frame_head(zce::LOG_PRIORITY log_priority,
-                                const char *outer_str,
-                                const Zerg_Frame *frame);
+                                const char* outer_str,
+                                const Zerg_Frame* frame);
     ///输出APPFRAME的所有信息
     static void dump_frame_all(zce::LOG_PRIORITY log_priority,
-                               const char *outer_str,
-                               const Zerg_Frame *proc_frame);
+                               const char* outer_str,
+                               const Zerg_Frame* proc_frame);
 
 public:
 

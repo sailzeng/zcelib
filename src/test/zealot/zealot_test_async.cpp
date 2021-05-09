@@ -15,8 +15,8 @@ private:
     };
 public:
 
-    FSM_1(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
-        Async_FSM(async_mgr,create_cmd)
+    FSM_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+        Async_FSM(async_mgr, create_cmd)
     {
         set_stage(FMS1_STAGE_1);
     }
@@ -27,12 +27,12 @@ protected:
     }
 
 public:
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
+    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new FSM_1(async_mgr,create_cmd));
+        return dynamic_cast<zce::Async_Object*>(new FSM_1(async_mgr, create_cmd));
     }
 
-    virtual void on_run(const void *outer_data,size_t /*data_len*/,bool &continue_run)
+    virtual void on_run(const void* outer_data, size_t /*data_len*/, bool& continue_run)
     {
         ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
@@ -79,8 +79,8 @@ private:
     };
 
 public:
-    FSM_2(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
-        Async_FSM(async_mgr,create_cmd)
+    FSM_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+        Async_FSM(async_mgr, create_cmd)
     {
         set_stage(FMS2_STAGE_1);
     }
@@ -89,14 +89,14 @@ protected:
     {
     }
 public:
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
+    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new FSM_2(async_mgr,create_cmd));
+        return dynamic_cast<zce::Async_Object*>(new FSM_2(async_mgr, create_cmd));
     }
 
-    virtual void on_run(const void *outer_data,
+    virtual void on_run(const void* outer_data,
                         size_t /*data_len*/,
-                        bool &continue_run)
+                        bool& continue_run)
     {
         ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
@@ -130,40 +130,40 @@ public:
 };
 
 //
-int test_async_fsm(int  /*argc*/,char * /*argv*/[])
+int test_async_fsm(int  /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
     const unsigned int CMD_1 = 10001;
     const unsigned int CMD_2 = 10002;
     const unsigned int CMD_3 = 10003;
 
-    zce::Timer_Queue *time_queue = new zce::Timer_Wheel();
-    zce::Async_FSMMgr *mgr = new zce::Async_FSMMgr();
-    mgr->initialize(time_queue,100,200);
-    mgr->register_asyncobj(CMD_1,new FSM_1(mgr,CMD_1));
-    mgr->register_asyncobj(CMD_2,new FSM_2(mgr,CMD_2));
+    zce::Timer_Queue* time_queue = new zce::Timer_Wheel();
+    zce::Async_FSMMgr* mgr = new zce::Async_FSMMgr();
+    mgr->initialize(time_queue, 100, 200);
+    mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
+    mgr->register_asyncobj(CMD_2, new FSM_2(mgr, CMD_2));
 
     bool running;
     uint32_t fsm1_async_id1;
-    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id1,running);
+    ret = mgr->create_asyncobj(CMD_1, NULL, 0, fsm1_async_id1, running);
     uint32_t fsm1_async_id2;
-    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id2,running);
+    ret = mgr->create_asyncobj(CMD_1, NULL, 0, fsm1_async_id2, running);
 
     uint32_t fsm2_async_id1;
-    ret = mgr->create_asyncobj(CMD_2,NULL,0,fsm2_async_id1,running);
+    ret = mgr->create_asyncobj(CMD_2, NULL, 0, fsm2_async_id1, running);
 
     uint32_t nouse_fsm3_id;
-    ret = mgr->create_asyncobj(CMD_3,NULL,0,nouse_fsm3_id,running);
+    ret = mgr->create_asyncobj(CMD_3, NULL, 0, nouse_fsm3_id, running);
     ZCE_ASSERT(ret != 0);
 
-    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL, 0, running);
 
     return 0;
 }
@@ -171,14 +171,14 @@ int test_async_fsm(int  /*argc*/,char * /*argv*/[])
 class Coroutine_1: public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_1(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
-        ZCE_Async_Coroutine(async_mgr,create_cmd)
+    Coroutine_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+        ZCE_Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
+    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new Coroutine_1(async_mgr,create_cmd));
+        return dynamic_cast<zce::Async_Object*>(new Coroutine_1(async_mgr, create_cmd));
     }
 
     ///协程运行,你要重载的函数
@@ -197,14 +197,14 @@ public:
 class Coroutine_2: public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_2(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
-        ZCE_Async_Coroutine(async_mgr,create_cmd)
+    Coroutine_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+        ZCE_Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
+    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new Coroutine_2(async_mgr,create_cmd));
+        return dynamic_cast<zce::Async_Object*>(new Coroutine_2(async_mgr, create_cmd));
     }
 
     virtual void coroutine_run()
@@ -220,28 +220,28 @@ public:
 };
 
 //
-int test_async_coroutine(int  /*argc*/,char * /*argv*/[])
+int test_async_coroutine(int  /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
     const unsigned int CMD_1 = 10001;
     const unsigned int CMD_2 = 10002;
     //const unsigned int CMD_3 = 10003;
 
-    zce::Timer_Queue *time_queue = new zce::Timer_Wheel();
-    ZCE_Async_CoroutineMgr *mgr = new ZCE_Async_CoroutineMgr();
-    mgr->initialize(time_queue,100,2000);
-    mgr->register_asyncobj(CMD_1,new Coroutine_1(mgr,CMD_1));
-    mgr->register_asyncobj(CMD_2,new Coroutine_2(mgr,CMD_2));
+    zce::Timer_Queue* time_queue = new zce::Timer_Wheel();
+    ZCE_Async_CoroutineMgr* mgr = new ZCE_Async_CoroutineMgr();
+    mgr->initialize(time_queue, 100, 2000);
+    mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));
+    mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));
     bool running;
     uint32_t fsm1_async_id1;
-    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id1,running);
+    ret = mgr->create_asyncobj(CMD_1, NULL, 0, fsm1_async_id1, running);
     uint32_t fsm1_async_id2;
-    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id2,running);
+    ret = mgr->create_asyncobj(CMD_1, NULL, 0, fsm1_async_id2, running);
 
-    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id2,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id2,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm1_async_id2, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
+    ret = mgr->active_asyncobj(fsm1_async_id2, NULL, 0, running);
 
     ZCE_ASSERT(ret == 0);
 
@@ -271,9 +271,9 @@ const int COROUTINE_LOOP_NUMBER = 3;
 * of the loop is reached, the function exits, and execution switches to the
 * context pointed to by main_context1. */
 void loop(
-    coroutine_t *loop_context,
-    int *i_from_iterator,
-    void *)
+    coroutine_t* loop_context,
+    int* i_from_iterator,
+    void*)
 {
     int i;
 
@@ -291,7 +291,7 @@ void loop(
     * ''setcontext(&loop_context->uc_link);'' */
 }
 
-int test_coroutine2(int /*argc*/,char * /*argv*/[])
+int test_coroutine2(int /*argc*/, char* /*argv*/[])
 {
     /* The three contexts:
     *    (1) main_context1 : The point in main to which loop will return.
@@ -314,8 +314,8 @@ int test_coroutine2(int /*argc*/,char * /*argv*/[])
                         8192 * 100,
                         true,
                         (ZCE_COROUTINE_3PARA)loop,
-                        (void *)&loop_context,
-                        (void *)&i_from_iterator,
+                        (void*)&loop_context,
+                        (void*)&i_from_iterator,
                         NULL);
 
     /* Clear the finished flag. */
@@ -338,7 +338,7 @@ int test_coroutine2(int /*argc*/,char * /*argv*/[])
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
             zce::yeild_coroutine(&loop_context);
-            printf("%d\n",i_from_iterator);
+            printf("%d\n", i_from_iterator);
         }
     }
 
