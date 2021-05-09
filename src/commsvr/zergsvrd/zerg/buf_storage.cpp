@@ -144,11 +144,22 @@ void Buffer_Storage::extend_bufferlist(size_t szlist)
     }
 
     size_of_bufferalloc_ += szlist;
+}
 
+void Buffer_Storage::monitor()
+{
     soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
                                                 0,
                                                 0,
                                                 size_of_bufferalloc_);
+    soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_FREE,
+                                                0,
+                                                0,
+                                                buffer_deque_.freesize());
+    soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
+                                                0,
+                                                0,
+                                                buffer_deque_.size());
 }
 
 //得到唯一的单子实例

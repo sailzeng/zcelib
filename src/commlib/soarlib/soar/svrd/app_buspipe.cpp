@@ -174,7 +174,6 @@ int App_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
 
     int ret = push_back_bus(RECV_PIPE_ID,
                             reinterpret_cast<const zce::lockfree::dequechunk_node*>(proc_frame));
-
     if (ret != 0)
     {
         // 发送失败, 管道满了

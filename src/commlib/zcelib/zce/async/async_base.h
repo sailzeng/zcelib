@@ -74,7 +74,7 @@ public:
     /*!
     * @brief      异步对象开始,可以用来做每次重新进行初始化时候的事情
     */
-    virtual void on_start();
+    virtual void on_init();
 
     /*!
     * @brief      异步对象运行

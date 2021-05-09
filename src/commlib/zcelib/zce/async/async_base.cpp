@@ -8,7 +8,7 @@
 namespace zce
 {
 //TIME ID
-const int Async_Object::ASYNCOBJ_ACTION_ID[] = {10001,20001};
+const int Async_Object::ASYNCOBJ_ACTION_ID[] ={10001,20001};
 
 //构造函数
 Async_Object::Async_Object(Async_Obj_Mgr* async_mgr,
@@ -64,7 +64,7 @@ void Async_Object::cancel_timeout()
 }
 
 //异步对象开始
-void Async_Object::on_start()
+void Async_Object::on_init()
 {
 }
 
@@ -317,7 +317,7 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
     crt_async->asyncobj_id_ = id_builder_;
 
     ++async_rec->create_num_;
-    crt_async->on_start();
+    crt_async->on_init();
 
     //启动丫的
     crt_async->on_run(outer_data, data_len, continue_running);

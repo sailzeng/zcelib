@@ -7,7 +7,7 @@ namespace zerg
 *
 * @note
 */
-class  App_Timer: public  Server_Timer_Base
+class  App_Timer: public  soar::Server_Timer
 {
 public:
     //
@@ -25,8 +25,5 @@ public:
     static const  int  ZERG_TIMER_ID[];
 
 protected:
-
-    //定时器触发的随机偏移, 避免所有服务器同时触发
-    unsigned int random_reload_point_;
 };
 }

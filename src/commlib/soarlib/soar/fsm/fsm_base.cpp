@@ -26,7 +26,7 @@ FSM_Base::~FSM_Base()
 }
 
 //事务内存重置
-void FSM_Base::on_start()
+void FSM_Base::on_init()
 {
     trans_create_ = true;
     req_zerg_head_.clear();
@@ -50,6 +50,9 @@ void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
     {
         trace_log_pri_ = RS_INFO;
     }
+    soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_START_SUCC,
+                                            req_zerg_head_.command_,
+                                            0);
     return;
 }
 
@@ -101,17 +104,17 @@ void FSM_Base::on_run(void* outer_data, bool& continue_run)
         {
             // 成功退出，修改监控数据
             soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
-                                                    trans_manager_->self_svc_info_.business_id_,
-                                                    req_zerg_head_.command_);
+                                                    req_zerg_head_.command_,
+                                                    0);
         }
         else
         {
             // 失败退出，修改监控数据
             soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
-                                                    trans_manager_->self_svc_info_.business_id_,
-                                                    req_zerg_head_.command_);
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_PROC_ERRNO,
-                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    req_zerg_head_.command_,
+                                                    running_errno_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL_BY_SVCTYPE,
+                                                    req_zerg_head_.send_service_.services_type_,
                                                     running_errno_);
         }
     }
@@ -134,8 +137,11 @@ void FSM_Base::on_timeout(const zce::Time_Value& now_time,
             asyncobj_id_,
             fsm_stage_,
             continue_run ? "TRUE" : "FALSE",
-            running_errno_
-    );
+            running_errno_);
+
+    soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_PROC_TIMEOUT,
+                                            req_zerg_head_.command_,
+                                            0);
 
     if (!continue_run)
     {
@@ -143,17 +149,17 @@ void FSM_Base::on_timeout(const zce::Time_Value& now_time,
         {
             // 成功退出，修改监控数据
             soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
-                                                    trans_manager_->self_svc_info_.business_id_,
-                                                    req_zerg_head_.command_);
+                                                    req_zerg_head_.command_,
+                                                    0);
         }
         else
         {
             // 失败退出，修改监控数据
             soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
-                                                    trans_manager_->self_svc_info_.business_id_,
-                                                    req_zerg_head_.command_);
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_PROC_ERRNO,
-                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    req_zerg_head_.command_,
+                                                    running_errno_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL_BY_SVCTYPE,
+                                                    req_zerg_head_.send_service_.services_type_,
                                                     running_errno_);
         }
     }
@@ -166,7 +172,7 @@ int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
     //
     if (wait_cmd != CMD_INVALID_CMD && recv_frame->command_ != wait_cmd)
     {
-        ZCE_LOG(RS_ERROR, "[framework] %s:check_receive_frame error,Transaction id [%u] Wait command[%u],"
+        ZCE_LOG(RS_ERROR, "[framework] %s:check_receive_frame error,FSM id [%u] Wait command[%u],"
                 "Recieve command[%u] transaction ID:[%u].",
                 typeid(*this).name(),
                 asyncobj_id_,

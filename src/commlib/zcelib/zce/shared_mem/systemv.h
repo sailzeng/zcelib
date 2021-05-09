@@ -1,17 +1,20 @@
-#ifndef ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
-#define ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
+#pragma once
 
 #include "zce/os_adapt/common.h"
 
-/*********************************************************************************
-class ZCE_ShareMem_SystemV 封装SystemV共享内存映射代码，和POSIX和MMAP的最大区别是，没有映射文件
-*********************************************************************************/
-class ZCE_ShareMem_SystemV: public zce::NON_Copyable
+namespace zce
+{
+/*!
+* @brief      封装SystemV共享内存映射代码，和POSIX和MMAP的最大区别是，
+*             没有映射文件
+* note
+*/
+class SHM_SystemV: public zce::NON_Copyable
 {
 public:
     //构造函数
-    ZCE_ShareMem_SystemV();
-    ~ZCE_ShareMem_SystemV();
+    SHM_SystemV();
+    ~SHM_SystemV();
 
 public:
     //打开文件，进行映射
@@ -53,5 +56,4 @@ protected:
     //映射的内存地址
     void* shm_addr_;
 };
-
-#endif //ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
+}

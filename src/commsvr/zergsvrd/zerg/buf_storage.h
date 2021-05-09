@@ -103,6 +103,9 @@ public:
     //扩展Buffer队列
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);
 
+    //记录监控数据
+    void monitor();
+
 public:
 
     //单子实例函数

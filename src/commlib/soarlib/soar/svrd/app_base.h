@@ -4,9 +4,9 @@
 #include "soar/zerg/services_info.h"
 #include "soar/enum/error_code.h"
 #include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/timer_base.h"
 
 class Server_Config_Base;
-class Server_Timer_Base;
 
 namespace soar
 {
@@ -42,7 +42,7 @@ public:
     * @param      timer_base  定时器触发句柄的指针，注意new了放进来
     */
     int initialize(Server_Config_Base* config_base,
-                   Server_Timer_Base* timer_base);
+                   soar::Server_Timer* timer_base);
 
     /*!
     * @brief      返回APP的配置类指针
@@ -99,7 +99,7 @@ protected:
     soar::App_BusPipe* zerg_mmap_pipe_;
 
     ///框架定时器处理类
-    Server_Timer_Base* timer_base_;
+    soar::Server_Timer* timer_base_;
 
     ///配置的处理的基类
     Server_Config_Base* config_base_;

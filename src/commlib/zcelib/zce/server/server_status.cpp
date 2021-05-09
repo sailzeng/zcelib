@@ -179,7 +179,7 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
     for (size_t i = 0; i < num_add_stat_item; ++i)
     {
         //能写auto正好
-        STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(item_ary[i].statics_item_.item_id_.statics_id_);
+        auto iter = conf_stat_map_.find(item_ary[i].statics_item_.item_id_.statics_id_);
         if (iter == conf_stat_map_.end())
         {
             conf_stat_map_.insert(STATUS_WITHNAME_MAP::value_type(item_ary[i].statics_item_.item_id_.statics_id_,
@@ -187,9 +187,11 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
         }
         else
         {
-            ZCE_LOG(RS_ERROR, "Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
+            ZCE_LOG(RS_ALERT, "Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
                     item_ary[i].statics_item_.item_id_.statics_id_,
                     item_ary[i].item_name_);
+            //这个错误很重要，认真提示你
+            ZCE_ASSERT_ALL(false);
             continue;
         }
     }

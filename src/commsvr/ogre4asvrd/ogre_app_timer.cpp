@@ -31,7 +31,7 @@ Ogre_App_Timer_Handler::~Ogre_App_Timer_Handler()
 int Ogre_App_Timer_Handler::timer_timeout(const zce::Time_Value& time_now, const void* arg)
 {
     //等到当前的时间
-    Server_Timer_Base::timer_timeout(time_now, arg);
+    Server_Timer::timer_timeout(time_now, arg);
 
     const int timeid = *(static_cast<const int*>(arg));
 

@@ -235,7 +235,7 @@ protected:
     zce::lockfree::shm_dequechunk* bus_pipe_pointer_[MAX_PIPE];
 
     ///MMAP内存文件，
-    ZCE_ShareMem_Mmap      mmap_file_;
+    zce::SHM_Mmap      mmap_file_;
 };
 
 //初始化

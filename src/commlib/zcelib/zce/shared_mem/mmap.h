@@ -1,18 +1,32 @@
-#ifndef ZCE_LIB_SHARE_MEMORY_MMAP_H_
-#define ZCE_LIB_SHARE_MEMORY_MMAP_H_
+/*!
+* @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
+* @filename   mmap.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date       2011-5-1
+* @brief      封装MMAP共享内存映射文件函数
+*
+*
+* @details
+*
+*
+*
+* @note
+*
+*/
+#pragma once
 
 #include "zce/os_adapt/common.h"
 #include "zce/util/non_copyable.h"
 
-/*********************************************************************************
-class ZCE_ShareMem_Mmap 封装MMAP共享内存映射文件函数
-*********************************************************************************/
-class ZCE_ShareMem_Mmap: public zce::NON_Copyable
+namespace zce
+{
+class SHM_Mmap: public zce::NON_Copyable
 {
 public:
     //构造函数
-    ZCE_ShareMem_Mmap();
-    ~ZCE_ShareMem_Mmap();
+    SHM_Mmap();
+    ~SHM_Mmap();
 
 public:
     //打开文件，进行映射
@@ -70,5 +84,4 @@ protected:
     //映射的共享内存大小
     std::size_t         shm_size_;
 };
-
-#endif //ZCE_LIB_SHARE_MEMORY_MMAP_H_
+} //namespace zce

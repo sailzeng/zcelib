@@ -82,7 +82,7 @@ protected:
 
     ///每次重新进行初始化时候的事情，等等，尽量保证基类的这个函数优先调用，
     ///这个地方用于恢复很多初始值
-    virtual void on_start() final;
+    virtual void on_init() final;
 
     ///事物的on_run函数，重载的FSM的，把调用转向到trans_run
     virtual void on_run(void* outer_data, bool& continue_run) final;

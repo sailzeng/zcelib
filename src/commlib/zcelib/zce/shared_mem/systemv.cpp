@@ -9,10 +9,11 @@
 
 #include "zce/shared_mem/systemv.h"
 
-//我现在有点理解大家为什么喜欢用System V的贡献内存了，简单。因为没有文件映射，所以其实他少了很多参数
-
+//我现在有点理解大家为什么喜欢用System V的共享内存了，简单。因为没有文件映射，所以其实他少了很多参数
+namespace zce
+{
 //构造函数
-ZCE_ShareMem_SystemV::ZCE_ShareMem_SystemV() :
+SHM_SystemV::SHM_SystemV() :
     sysv_key_(0),
     sysv_shmid_(ZCE_INVALID_HANDLE),
     shm_size_(0),
@@ -20,7 +21,7 @@ ZCE_ShareMem_SystemV::ZCE_ShareMem_SystemV() :
 {
 }
 
-ZCE_ShareMem_SystemV::~ZCE_ShareMem_SystemV()
+SHM_SystemV::~SHM_SystemV()
 {
     if (shm_addr_)
     {
@@ -29,11 +30,11 @@ ZCE_ShareMem_SystemV::~ZCE_ShareMem_SystemV()
 }
 
 //打开文件，进行映射
-int ZCE_ShareMem_SystemV::open(key_t sysv_key,
-                               std::size_t shm_size,
-                               int shmget_flg,
-                               int shmat_flg,
-                               const void* want_address)
+int SHM_SystemV::open(key_t sysv_key,
+                      std::size_t shm_size,
+                      int shmget_flg,
+                      int shmat_flg,
+                      const void* want_address)
 {
     //避免重入调用open函数，如果出现断言表示多次调用open,
     ZCE_ASSERT(NULL == shm_addr_);
@@ -62,11 +63,11 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
 }
 
 //打开文件，进行映射, 简单
-int ZCE_ShareMem_SystemV::open(key_t sysv_key,
-                               std::size_t shm_size,
-                               bool fail_if_exist,
-                               bool read_only,
-                               const void* want_address)
+int SHM_SystemV::open(key_t sysv_key,
+                      std::size_t shm_size,
+                      bool fail_if_exist,
+                      bool read_only,
+                      const void* want_address)
 {
     int shmget_flg = 0;
     int shmat_flg = 0;
@@ -105,7 +106,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
 }
 
 //关闭文件
-int ZCE_ShareMem_SystemV::close()
+int SHM_SystemV::close()
 {
     //断言保证不出现没有open就调用close的情况
     ZCE_ASSERT(shm_addr_ != NULL);
@@ -126,13 +127,14 @@ int ZCE_ShareMem_SystemV::close()
 }
 
 //删除映射的文件，当然正在映射的时候不能删除
-int ZCE_ShareMem_SystemV::remove()
+int SHM_SystemV::remove()
 {
     return zce::shmctl(sysv_shmid_, IPC_RMID, NULL);
 }
 
 //返回映射的内存地址
-void* ZCE_ShareMem_SystemV::addr()
+void* SHM_SystemV::addr()
 {
     return shm_addr_;
+}
 }

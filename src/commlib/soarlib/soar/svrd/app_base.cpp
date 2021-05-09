@@ -56,7 +56,7 @@ Svrd_Appliction::~Svrd_Appliction()
 
 //初始化，放入一些基类的指针，
 int Svrd_Appliction::initialize(Server_Config_Base* config_base,
-                                Server_Timer_Base* timer_base)
+                                soar::Server_Timer* timer_base)
 {
     config_base_ = config_base;
     timer_base_ = timer_base;
@@ -72,9 +72,11 @@ Server_Config_Base* Svrd_Appliction::config_instance()
 //启动过程的处理
 int Svrd_Appliction::app_start(int argc, const char* argv[])
 {
+    int ret = 0;
+    ::srand(static_cast<unsigned int>(time(NULL)));
+
     //Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
-    int ret = 0;
 
     //得到APP的名字，去掉路径，后缀的名字
     ret = create_app_name(argv[0]);
@@ -250,10 +252,14 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
 
     zerg_mmap_pipe_ = soar::App_BusPipe::instance();
 
+    soar::Stat_Monitor::instance()->
+        add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
+
     ZCE_LOG(RS_INFO, "[framework] MMAP Pipe init success,gogogo."
             "The more you have,the more you want. ");
 
     ZCE_LOG(RS_INFO, "[framework] Svrd_Appliction::init_instance Success.");
+
     return 0;
 }
 
@@ -287,6 +293,8 @@ int Svrd_Appliction::app_exit()
     {
         zce::Timer_Queue::instance()->close();
     }
+    soar::Stat_Monitor::instance()->
+        add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
 
     //单子实例清空
     zce::ZCE_Reactor::clean_instance();

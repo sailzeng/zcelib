@@ -1,18 +1,21 @@
-#ifndef ZCE_LIB_SHARE_MEMORY_POSIX_H_
-#define ZCE_LIB_SHARE_MEMORY_POSIX_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/common.h"
 
-/*********************************************************************************
-class ZCE_ShareMem_Posix 封装POSIX共享内存映射代码，
-*********************************************************************************/
-class ZCE_ShareMem_Posix: public zce::NON_Copyable
+/*!
+* @brief      封装POSIX共享内存映射代码，
+*
+* note
+*/
+namespace zce
+{
+class SHM_Posix: public zce::NON_Copyable
 {
 public:
     //构造函数
-    ZCE_ShareMem_Posix();
-    ~ZCE_ShareMem_Posix();
+    SHM_Posix();
+    ~SHM_Posix();
 
 public:
     //打开文件，进行映射
@@ -62,5 +65,4 @@ protected:
     //映射的共享内存大小
     std::size_t         shm_size_;
 };
-
-#endif //ZCE_LIB_SHARE_MEMORY_POSIX_H_
+}

@@ -1,19 +1,3 @@
-/******************************************************************************************
-Copyright           : 2002-2003, FXL Technology (Shenzhen) Company Limited.
-FileName            : zce/os_adapt/layer.h
-Author              : Sail (ZENGXING)/Author name here
-Version             :
-Date Of Creation    : 2011-5-1
-Description         : 时间操作的适配器层，主要还是向LINUX下靠拢
-
-Others              :
-Function List       :
-1.  ......
-Modification History:
-1.Date  :
-Author  :
-Modification  :
-******************************************************************************************/
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/util/non_copyable.h"
@@ -23,15 +7,17 @@ Modification  :
 #include "zce/logger/logging.h"
 #include "zce/shared_mem/mmap.h"
 
+namespace zce
+{
 //构造函数
-ZCE_ShareMem_Mmap::ZCE_ShareMem_Mmap() :
+SHM_Mmap::SHM_Mmap() :
     mmap_addr_(NULL),
     mmap_handle_(ZCE_INVALID_HANDLE),
     shm_size_(0)
 {
 }
 
-ZCE_ShareMem_Mmap::~ZCE_ShareMem_Mmap()
+SHM_Mmap::~SHM_Mmap()
 {
     if (mmap_addr_)
     {
@@ -40,14 +26,14 @@ ZCE_ShareMem_Mmap::~ZCE_ShareMem_Mmap()
 }
 
 //打开文件，进行映射
-int ZCE_ShareMem_Mmap::open(const char* file_name,
-                            std::size_t shm_size,
-                            int file_open_mode,
-                            int file_perms_mode,
-                            const void* want_address,
-                            int mmap_prot,
-                            int mmap_flags,
-                            std::size_t offset)
+int SHM_Mmap::open(const char* file_name,
+                   std::size_t shm_size,
+                   int file_open_mode,
+                   int file_perms_mode,
+                   const void* want_address,
+                   int mmap_prot,
+                   int mmap_flags,
+                   std::size_t offset)
 {
     //避免重入调用open函数，如果出现断言表示多次调用open,
     ZCE_ASSERT(NULL == mmap_addr_);
@@ -134,13 +120,13 @@ int ZCE_ShareMem_Mmap::open(const char* file_name,
 }
 
 //打开文件，进行映射, 简单
-int ZCE_ShareMem_Mmap::open(const char* file_name,
-                            std::size_t shm_size,
-                            bool if_restore,
-                            bool read_only,
-                            bool share_file,
-                            const void* want_address,
-                            std::size_t  offset)
+int SHM_Mmap::open(const char* file_name,
+                   std::size_t shm_size,
+                   bool if_restore,
+                   bool read_only,
+                   bool share_file,
+                   const void* want_address,
+                   std::size_t  offset)
 {
     int file_open_mode = (O_CREAT);
     int mmap_prot = PROT_READ;
@@ -194,7 +180,7 @@ int ZCE_ShareMem_Mmap::open(const char* file_name,
 }
 
 //关闭文件
-int ZCE_ShareMem_Mmap::close()
+int SHM_Mmap::close()
 {
     //断言保证不出现没有open就调用close的情况
     ZCE_ASSERT(mmap_addr_ != NULL);
@@ -217,13 +203,14 @@ int ZCE_ShareMem_Mmap::close()
 }
 
 //删除映射的文件，当然正在映射的时候不能删除
-int ZCE_ShareMem_Mmap::remove()
+int SHM_Mmap::remove()
 {
     return zce::unlink(mmap_file_name_.c_str());
 }
 
 //同步文件
-int ZCE_ShareMem_Mmap::flush()
+int SHM_Mmap::flush()
 {
     return zce::msync(mmap_addr_, shm_size_, MS_SYNC);
+}
 }

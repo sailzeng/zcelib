@@ -19,19 +19,19 @@ const int App_Timer::ZERG_TIMER_ID[] =
 
 //
 App_Timer::App_Timer() :
-    Server_Timer_Base()
+    Server_Timer()
 {
-    //reload主动连接的间隔时间, 300s
-    const  int     AUTOCONNECT_RELOAD_INTERVAL = 300000;
-
-    srand(static_cast<unsigned int>(zce::pthread_self()));
-    random_reload_point_ = rand() % AUTOCONNECT_RELOAD_INTERVAL;
-
     //主动重现链接的间隔时间
     const time_t AUTOCONNECT_RETRY_SEC = 5;
     zce::Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
 
     add_app_timer(connect_all_internal, &ZERG_TIMER_ID[0]);
+
+    //主动重现链接的间隔时间
+    const time_t RECORD_MONITOR_SEC = 60;
+    zce::Time_Value monitor_internal(RECORD_MONITOR_SEC, 0);
+
+    add_app_timer(monitor_internal, &ZERG_TIMER_ID[1]);
 }
 
 App_Timer::~App_Timer()
@@ -42,13 +42,17 @@ App_Timer::~App_Timer()
 int App_Timer::timer_timeout(const zce::Time_Value& time_now, const void* act)
 {
     //等到当前的时间
-    Server_Timer_Base::timer_timeout(time_now, act);
+    Server_Timer::timer_timeout(time_now, act);
 
     //心跳数据
     const int zerg_timeid = *(static_cast<const int*>(act));
     if (ZERG_TIMER_ID[0] == zerg_timeid)
     {
         TCP_Svc_Handler::reconnect_allserver();
+    }
+    else if (ZERG_TIMER_ID[1] == zerg_timeid)
+    {
+        Buffer_Storage::instance()->monitor();
     }
     return 0;
 }

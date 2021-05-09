@@ -246,7 +246,7 @@ protected:
     //
     HASH_TABLE_MY_DATA* hash_my_data_;
 
-    ZCE_ShareMem_Mmap   mmap_file_;
+    zce::SHM_Mmap   mmap_file_;
 
 protected:
     //

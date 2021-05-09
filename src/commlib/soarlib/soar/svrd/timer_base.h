@@ -52,26 +52,27 @@
 *
 */
 
-#ifndef SOARING_LIB_TIMER_HANDLER_H_
-#define SOARING_LIB_TIMER_HANDLER_H_
+#pragma once
 
 class soar::Stat_Monitor;
 class Server_Config_Base;
 
+namespace soar
+{
 /*!
 * @brief      服务器框架的定时器处理类
 *             可以从其得到当前的时钟
 * @note
 */
-class Server_Timer_Base: public zce::Timer_Handler
+class Server_Timer: public zce::Timer_Handler
 {
-    friend class soar::Svrd_Appliction;
+    friend class Svrd_Appliction;
 public:
 
     ///构造函数,因为框架的设计构造的时候不初始化timer queue，
-    Server_Timer_Base();
+    Server_Timer();
     ///析构函数
-    ~Server_Timer_Base();
+    ~Server_Timer();
 
 protected:
 
@@ -82,7 +83,10 @@ protected:
     void report_status();
 
     ///取得当前的时间，用于对时间精度要求不高的场合
-    zce::Time_Value gettimeofday();
+    static zce::Time_Value gettimeofday()
+    {
+        return now_time_;
+    }
 
 protected:
 
@@ -117,7 +121,7 @@ protected:
     static const  int  SERVER_TIMER_ID[];
 
     ///APP Timer的最大数量，
-    static const size_t MAX_APP_TIMER_NUMBER = 12;
+    static const size_t MAX_APP_TIMER_NUMBER = 16;
 
     ///默认心跳的精度
     static const time_t DEF_TIMER_INTERVAL_USEC = 500000;
@@ -144,11 +148,10 @@ protected:
     ///
     zce::Time_Value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
     ///
-    const void* zan_timer_act_[MAX_APP_TIMER_NUMBER] = {0};
+    const void* zan_timer_act_[MAX_APP_TIMER_NUMBER] ={0};
 
-public:
+protected:
     ///当前时间
     static zce::Time_Value now_time_;
 };
-
-#endif // SOARING_LIB_TIMER_HANDLER_H_
+}

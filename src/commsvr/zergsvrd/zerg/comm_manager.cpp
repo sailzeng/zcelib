@@ -226,60 +226,14 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
         }
         else
         {
-            //// 如果是广播的话，给对应Svr_type的所有Svr发
-            //if (proc_frame->recv_service_.services_id_ == soar::SERVICES_ID::BROADCAST_SERVICES_ID)
-            //{
-            //    std::vector<soar::SERVICES_ID> vec;
-            //    ret = TCP_Svc_Handler::get_zerg_auto_connect().get_all_conn_server(proc_frame->recv_service_.services_type_, vec);
-            //    if (ret != 0)
-            //    {
-            //        ZCE_LOG(RS_ERROR,"[%s] fetch broadcast pkg error, recv svrinfo:[%u|%u]",
-            //            __ZCE_FUNCTION__,
-            //            proc_frame->recv_service_.services_type_,
-            //            proc_frame->recv_service_.services_id_);
-
-            //        continue;
-            //    }
-
-            //    uint32_t size = (uint32_t)vec.size();
-            //    for (uint32_t i = 0; i < size; i ++)
-            //    {
-            //        if (i == size -1)
-            //        {
-            //            reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
-            //            // last Buf就用本身的tmpbuf来发，稍微加快速度
-            //            ret = send_single_buf(tmpbuf);
-            //        }
-            //        else
-            //        {
-            //            zerg::Buffer *send_buf = zbuffer_storage_->allocate_buffer();
-            //            memcpy(send_buf->buffer_data_, tmpbuf->buffer_data_, tmpbuf->size_of_use_);
-            //            reinterpret_cast<soar::Zerg_Frame *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
-            //            send_buf->size_of_use_ = tmpbuf->size_of_use_;
-            //            ret = send_single_buf(send_buf);
-            //        }
-
-            //        if (ret != 0)
-            //        {
-            //            continue;
-            //        }
-
-            //        ++send_frame_count_;
-            //    }
-            //}
-            //else
+            ret = send_single_buf(tmpbuf);
+            if (ret != 0)
             {
-                ret = send_single_buf(tmpbuf);
-                if (ret != 0)
-                {
-                    // 没有发成功，不加入后面的统计
-                    continue;
-                }
-
-                ++send_frame_count_;
+                // 没有发成功，不加入后面的统计
+                continue;
             }
+            ++send_frame_count_;
         }
-
         ++num_send_frame;
     }
 
@@ -371,7 +325,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
 
         //
         server_status_->add_one(ZERG_SEND_FAIL_COUNTER,
-                                proc_frame->business_id_,
+                                0,
                                 0);
         if (proc_frame->recv_service_.services_type_ == 0)
         {
@@ -415,23 +369,15 @@ void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame* recv_frame)
     }
 
     int ret = zerg_mmap_pipe_->push_back_recvbus(recv_frame);
-    if (ret != 0)
+    if (ret == 0)
     {
-        server_status_->add_one(ZERG_RECV_PIPE_FULL_COUNTER,
-                                recv_frame->business_id_,
-                                0);
-    }
-    else
-    {
+        //其实comm层有监控
         server_status_->add_one(ZERG_RECV_FRAME_COUNTER,
-                                recv_frame->business_id_,
+                                recv_frame->command_,
                                 0);
-        server_status_->add_one(ZERG_RECV_FRAME_COUNTER_BY_CMD,
-                                recv_frame->business_id_,
-                                recv_frame->command_);
         server_status_->add_one(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
-                                recv_frame->business_id_,
-                                recv_frame->send_service_.services_type_);
+                                recv_frame->send_service_.services_type_,
+                                0);
     }
 }
 }

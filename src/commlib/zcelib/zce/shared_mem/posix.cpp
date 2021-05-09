@@ -13,15 +13,17 @@
 #include "zce/logger/logging.h"
 #include "zce/shared_mem/posix.h"
 
+namespace zce
+{
 //构造函数
-ZCE_ShareMem_Posix::ZCE_ShareMem_Posix() :
+SHM_Posix::SHM_Posix() :
     mmap_addr_(NULL),
     mmap_handle_(ZCE_INVALID_HANDLE),
     shm_size_(0)
 {
 }
 
-ZCE_ShareMem_Posix::~ZCE_ShareMem_Posix()
+SHM_Posix::~SHM_Posix()
 {
     if (mmap_addr_)
     {
@@ -30,14 +32,14 @@ ZCE_ShareMem_Posix::~ZCE_ShareMem_Posix()
 }
 
 //打开文件，进行映射
-int ZCE_ShareMem_Posix::open(const char* shm_name,
-                             std::size_t shm_size,
-                             int file_open_mode,
-                             int file_perms_mode,
-                             const void* want_address,
-                             int mmap_prot,
-                             int mmap_flags,
-                             std::size_t offset)
+int SHM_Posix::open(const char* shm_name,
+                    std::size_t shm_size,
+                    int file_open_mode,
+                    int file_perms_mode,
+                    const void* want_address,
+                    int mmap_prot,
+                    int mmap_flags,
+                    std::size_t offset)
 {
     //避免重入调用open函数，如果出现断言表示多次调用open,
     ZCE_ASSERT(NULL == mmap_addr_);
@@ -45,7 +47,6 @@ int ZCE_ShareMem_Posix::open(const char* shm_name,
 
     int ret = 0;
 
-    //带入参数是INVALID_HANDLE_VALUE 时，可以使用不用文件映射的共享内存
     //MMAP文件的句柄
     mmap_handle_ = zce::shm_open(shm_name, file_open_mode, file_perms_mode);
 
@@ -126,13 +127,13 @@ int ZCE_ShareMem_Posix::open(const char* shm_name,
 }
 
 //打开文件，进行映射, 简单
-int ZCE_ShareMem_Posix::open(const char* shm_name,
-                             std::size_t shm_size,
-                             bool if_restore,
-                             bool read_only,
-                             bool share_file,
-                             const void* want_address,
-                             std::size_t  offset)
+int SHM_Posix::open(const char* shm_name,
+                    std::size_t shm_size,
+                    bool if_restore,
+                    bool read_only,
+                    bool share_file,
+                    const void* want_address,
+                    std::size_t  offset)
 {
     int file_open_mode = (O_CREAT);
     int mmap_prot = PROT_READ;
@@ -186,7 +187,7 @@ int ZCE_ShareMem_Posix::open(const char* shm_name,
 }
 
 //关闭文件
-int ZCE_ShareMem_Posix::close()
+int SHM_Posix::close()
 {
     //断言保证不出现没有open就调用close的情况
     ZCE_ASSERT(mmap_addr_ != NULL);
@@ -209,19 +210,20 @@ int ZCE_ShareMem_Posix::close()
 }
 
 //删除映射的文件，当然正在映射的时候不能删除
-int ZCE_ShareMem_Posix::remove()
+int SHM_Posix::remove()
 {
     return zce::shm_unlink(shm_name_.c_str());
 }
 
 //同步文件
-int ZCE_ShareMem_Posix::flush()
+int SHM_Posix::flush()
 {
     return zce::msync(mmap_addr_, shm_size_, MS_SYNC);
 }
 
 //返回映射的内存地址
-void* ZCE_ShareMem_Posix::addr()
+void* SHM_Posix::addr()
 {
     return mmap_addr_;
+}
 }

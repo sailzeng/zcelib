@@ -29,7 +29,7 @@ ZCE_Process_Mutex::ZCE_Process_Mutex(const char* mutex_name, bool recursive) :
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_ShareMem_Posix::open", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::SHM_Posix::open", ret);
         return;
     }
 
