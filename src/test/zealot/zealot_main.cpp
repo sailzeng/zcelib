@@ -18,12 +18,14 @@ int main(int argc, char* argv[])
                                                 static_cast<int>(LOG_HEAD::NONE));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
-    test_sqlite_handle(argc, argv);
-    test_sqlite_stmt(argc, argv);
+    test_foo_snprintf(argc, argv);
+    
 
     return 0;
 
 #if 0
+    test_sqlite_handle(argc, argv);
+    test_sqlite_stmt(argc, argv);
 
     test_memory_debug(argc, argv);
     test_back_stack(argc, argv);
