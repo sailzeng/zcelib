@@ -1,6 +1,6 @@
 #include "zealot_predefine.h"
 
-int test_foo_snprintf()
+int test_foo_snprintf(int /*argc*/, char* /*argv*/[])
 {
     char out_buffer[1024 + 1];
     size_t cur_len = 0;
@@ -38,7 +38,7 @@ int test_foo_snprintf()
     return 0;
 }
 
-int test_printf_int()
+int test_printf_int(int /*argc*/, char* /*argv*/[])
 {
     printf("+-----------------------------------------------------------+\n");
     int int_data = 123456;
@@ -104,7 +104,7 @@ int test_fmt_splice(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-int printf_double()
+int printf_double(int /*argc*/, char* /*argv*/[])
 {
     char out_buffer[1024 + 1];
     size_t cur_len = 0;
