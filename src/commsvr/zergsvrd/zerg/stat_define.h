@@ -11,64 +11,63 @@
 //监控的FEATURE_ID
 enum ZERG_MONITOR_FEATURE_ID
 {
-    ZERG_SERVICE_STAT_BEGIN     = 1000,
+    ZERG_SERVICE_STAT_BEGIN = 1000,
 
     //五分钟内已经Accept的PEER计数
-    ZERG_ACCEPT_PEER_COUNTER    = 1001,
+    ZERG_ACCEPT_PEER_COUNTER = 1001,
     //正在Accept的PEER数量,绝对值
-    ZERG_ACCEPT_PEER_NUMBER     = 1002,
+    ZERG_ACCEPT_PEER_NUMBER = 1002,
     //五分钟内已经Connect的PEER计数
-    ZERG_CONNECT_PEER_COUNTER   = 1003,
+    ZERG_CONNECT_PEER_COUNTER = 1003,
     //正在Connect的PEER数量,绝对值
-    ZERG_CONNECT_PEER_NUMBER    = 1004,
+    ZERG_CONNECT_PEER_NUMBER = 1004,
 
     //BUFFER缓冲区的CHUNK总数,绝对值
-    ZERG_BUFFER_STORAGE_NUMBER  = 1007,
+    ZERG_BUFFER_STORAGE_NUMBER = 1007,
     //BUFFER缓冲区的空闲的CHUNK,绝对值
-    ZERG_BUFFER_STORAGE_FREE    = 1008,
+    ZERG_BUFFER_STORAGE_FREE = 1008,
     //BUFFER缓冲区的已经使用CHUNK个数,绝对值
-    ZERG_BUFFER_STORAGE_USED    = 1009,
+    ZERG_BUFFER_STORAGE_USED = 1009,
 
     //五分钟内从发送管道取出放入发送队列的帧总数，尝试发送的总数
-    ZERG_SEND_FRAME_COUNTER     = 1010,
+    ZERG_SEND_FRAME_COUNTER = 1010,
     //五分钟内成功接收放入接收管道的帧总数
-    ZERG_RECV_FRAME_COUNTER     = 1011,
+    ZERG_RECV_FRAME_COUNTER = 1011,
     //五分钟内成功收到字节数总数,非精确值,因为每个PEER都是隔一段时间统计一次
-    ZERG_RECV_BYTES_COUNTER     = 1012,
+    ZERG_RECV_BYTES_COUNTER = 1012,
     //五分钟内成功发送的字节总数,非精确值
-    ZERG_SEND_BYTES_COUNTER     = 1013,
+    ZERG_SEND_BYTES_COUNTER = 1013,
     //五分钟内接受成功帧总数,,非精确值
-    ZERG_RECV_SUCC_COUNTER      = 1014,
+    ZERG_RECV_SUCC_COUNTER = 1014,
     //五分钟内发送成功帧总数,非精确值
-    ZERG_SEND_SUCC_COUNTER      = 1015,
+    ZERG_SEND_SUCC_COUNTER = 1015,
     //五分钟内接收失败的数据帧总数
-    ZERG_RECV_FAIL_COUNTER      = 1016,
+    ZERG_RECV_FAIL_COUNTER = 1016,
     //五分钟内发送数据失败的总数
-    ZERG_SEND_FAIL_COUNTER      = 1017,
+    ZERG_SEND_FAIL_COUNTER = 1017,
     //五分钟内接收数据发生阻塞的总数
-    ZERG_RECV_BLOCK_COUNTER     = 1018,
+    ZERG_RECV_BLOCK_COUNTER = 1018,
     //五分钟内发送数据发生阻塞的总数
-    ZERG_SEND_BLOCK_COUNTER     = 1019,
+    ZERG_SEND_BLOCK_COUNTER = 1019,
+    //五分钟内从发送管道取出放入发送队列的帧总数,分服务类型
+    ZERG_SEND_FRAME_COUNTER_BY_SVCTYPE = 1020,
+    //五分钟内成功接收放入接收管道的帧总数,分服务类型
+    ZERG_RECV_FRAME_COUNTER_BY_SVCTYPE = 1021,
 
     //五分钟内收到UDP数据的次数
-    ZERG_UDP_RECV_COUNTER       = 1020,
+    ZERG_UDP_RECV_COUNTER = 1030,
     //五分钟内发送UDP数据的次数
-    ZERG_UDP_SEND_COUNTER       = 1021,
+    ZERG_UDP_SEND_COUNTER = 1031,
     //五分钟内收到UDP数据字节的总数
-    ZERG_UDP_RECV_BYTES_COUNTER = 1022,
+    ZERG_UDP_RECV_BYTES_COUNTER = 1032,
     //五分钟内内发送UDP数据字节的总数
-    ZERG_UDP_SEND_BYTES_COUNTER = 1023,
+    ZERG_UDP_SEND_BYTES_COUNTER = 1033,
     //五分钟内收到UDP数据错误次数
-    ZERG_UDP_RECV_FAIL_COUNTER  = 1024,
+    ZERG_UDP_RECV_FAIL_COUNTER = 1034,
     //五分钟内发送UDP数据错误次数
-    ZERG_UDP_SEND_FAIL_COUNTER  = 1025,
+    ZERG_UDP_SEND_FAIL_COUNTER = 1035,
 
     ZERG_SEND_LIST_FULL_COUNTER = 1030,
-
-    //五分钟内从发送管道取出放入发送队列的帧总数,分服务类型
-    ZERG_SEND_FRAME_COUNTER_BY_SVCTYPE,
-    //五分钟内成功接收放入接收管道的帧总数,分服务类型
-    ZERG_RECV_FRAME_COUNTER_BY_SVCTYPE,
 
     ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
     ZERG_SEND_LIST_FULL_COUNTER_BY_SVR_TYPE,            // 发送队列满导致导致丢包的数量，分服务ID

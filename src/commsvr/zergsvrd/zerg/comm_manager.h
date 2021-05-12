@@ -16,118 +16,118 @@ class UDP_Svc_Handler;
 
 namespace zerg
 {
-/*!
-* @brief      通信管理器，
-*
-* note
-*/
-class Comm_Manager
-{
-    //
-    typedef std::vector<TCP_Accept_Handler*> TCPACCEPT_HANDLER_LIST;
-    //
-    typedef std::vector<UDP_Svc_Handler*> UDPSVC_HANDLER_LIST;
-
-protected:
-
-    //构造函数和析构函数
-    Comm_Manager();
-    ~Comm_Manager();
-
-public:
-
     /*!
-    * @brief      初始化,从配置文件读取配置
-    * @return     int
-    * @param      config
+    * @brief      通信管理器，
+    *
+    * note
     */
-    int get_config(const Zerg_Config* config);
+    class Comm_Manager
+    {
+        //
+        typedef std::vector<TCP_Accept_Handler*> TCPACCEPT_HANDLER_LIST;
+        //
+        typedef std::vector<UDP_Svc_Handler*> UDPSVC_HANDLER_LIST;
 
-    /*!
-    * @brief      初始化所有的监听，UDP端口，
-    * @return     int
-    */
-    int init_allpeer();
+    protected:
 
-    /*!
-    * @brief      根据SVC INFO 初始化Socket,
-    * @return     int
-    * @param      init_svcid 初始化所依据的SVC INFO
-    */
-    int init_socketpeer(const soar::SERVICES_ID& init_svcid);
+        //构造函数和析构函数
+        Comm_Manager();
+        ~Comm_Manager();
 
-    /*!
-    * @brief      检查端口是否安全,安全端口必须不使用保险(FALSE)
-    * @return     int
-    * @param      inetadd 检查的的地址信息
-    */
-    int check_safeport(const zce::Sockaddr_In& inetadd);
+    public:
 
-    /*!
-    * @brief      取得发送数据进行发送
-    * @return     int
-    * @param      want_send_frame  希望发送的数量，想了想，还是加了一个最多发送的帧的限额
-    * @param      proc_frame_num   实际处理的数量
-    * @note
-    */
-    int popall_sendpipe_write(size_t want_send_frame, size_t& proc_frame_num);
+        /*!
+        * @brief      初始化,从配置文件读取配置
+        * @return     int
+        * @param      config
+        */
+        int get_config(const Zerg_Config* config);
 
-    //
-    void pushback_recvpipe(soar::Zerg_Frame* recv_frame);
+        /*!
+        * @brief      初始化所有的监听，UDP端口，
+        * @return     int
+        */
+        int init_allpeer();
 
-    //检查发包频率
-    void check_freamcount(unsigned int now);
+        /*!
+        * @brief      根据SVC INFO 初始化Socket,
+        * @return     int
+        * @param      init_svcid 初始化所依据的SVC INFO
+        */
+        int init_socketpeer(const soar::SERVICES_ID& init_svcid);
 
-    //
-    int send_single_buf(zerg::Buffer* tmpbuf);
+        /*!
+        * @brief      检查端口是否安全,安全端口必须不使用保险(FALSE)
+        * @return     int
+        * @param      inetadd 检查的的地址信息
+        */
+        int check_safeport(const zce::Sockaddr_In& inetadd);
 
-public:
+        /*!
+        * @brief      取得发送数据进行发送
+        * @return     int
+        * @param      want_send_frame  希望发送的数量，想了想，还是加了一个最多发送的帧的限额
+        * @param      proc_frame_num   实际处理的数量
+        * @note
+        */
+        int popall_sendpipe_write(size_t want_send_frame, size_t& proc_frame_num);
 
-    //单子实例函数
-    static Comm_Manager* instance();
-    //清理单子实例
-    static void clean_instance();
+        //
+        void pushback_recvpipe(soar::Zerg_Frame* recv_frame);
 
-protected:
+        //检查发包频率
+        void check_freamcount(time_t now);
 
-    ///一次最多发送2048帧
-    static const unsigned int MAX_ONCE_SEND_FRAME = 4096;
+        //
+        int send_single_buf(zerg::Buffer* tmpbuf);
 
-    ///发包数告警值
-    static const unsigned int SEND_FRAME_ALERT_VALUE = 40000;
+    public:
 
-protected:
-    //单子实例
-    static Comm_Manager* instance_;
+        //单子实例函数
+        static Comm_Manager* instance();
+        //清理单子实例
+        static void clean_instance();
 
-protected:
+    protected:
 
-    ///ACCEPET的HANDLER数组
-    TCPACCEPT_HANDLER_LIST zerg_acceptor_;
-    ///UPD的HANDLER数组
-    UDPSVC_HANDLER_LIST zerg_updsvc_;
+        ///一次最多发送2048帧
+        static const unsigned int MAX_ONCE_SEND_FRAME = 4096;
 
-    ///对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
-    unsigned int error_try_num_;
+        ///发包数告警值
+        static const unsigned int SEND_FRAME_ALERT_VALUE = 40000;
 
-    ///监控命令的数量，为了加快速度，多用变量。
-    size_t monitor_size_;
-    ///监控的命令
-    unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
+    protected:
+        //单子实例
+        static Comm_Manager* instance_;
 
-    ///内存管道类的实例对象，保留它仅仅为了加速
-    soar::App_BusPipe* zerg_mmap_pipe_;
-    ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
-    zerg::Buffer_Storage* zbuffer_storage_;
-    ///统计，使用单子类的指针，保留它仅仅为了加速
-    soar::Stat_Monitor* server_status_;
+    protected:
 
-    ///计数起始时间
-    unsigned int count_start_time_;
-    ///协议包发送计数器
-    unsigned int send_frame_count_;
+        ///ACCEPET的HANDLER数组
+        TCPACCEPT_HANDLER_LIST zerg_acceptor_;
+        ///UPD的HANDLER数组
+        UDPSVC_HANDLER_LIST zerg_updsvc_;
 
-    ///配置实例指针
-    const Zerg_Config* zerg_config_;
-};
+        ///对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
+        unsigned int error_try_num_;
+
+        ///监控命令的数量，为了加快速度，多用变量。
+        size_t monitor_size_;
+        ///监控的命令
+        unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
+
+        ///内存管道类的实例对象，保留它仅仅为了加速
+        soar::App_BusPipe* zerg_mmap_pipe_;
+        ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
+        zerg::Buffer_Storage* zbuffer_storage_;
+        ///统计，使用单子类的指针，保留它仅仅为了加速
+        soar::Stat_Monitor* server_status_;
+
+        ///计数起始时间
+        time_t count_start_time_;
+        ///协议包发送计数器
+        unsigned int send_frame_count_;
+
+        ///配置实例指针
+        const Zerg_Config* zerg_config_;
+    };
 }

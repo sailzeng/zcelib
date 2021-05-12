@@ -9,7 +9,7 @@
 /****************************************************************************************************
 class  TCP_Svc_Handler
 ****************************************************************************************************/
-class TCP_Svc_Handler: public zce::Event_Handler,
+class TCP_Svc_Handler : public zce::Event_Handler,
     public zce::Timer_Handler
 {
 public:
@@ -65,8 +65,8 @@ public:
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                             const zce::Socket_Stream& sockstream,
-                             const zce::Sockaddr_In& socketaddr);
+        const zce::Socket_Stream& sockstream,
+        const zce::Sockaddr_In& socketaddr);
 
     /*!
     * @brief      主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
@@ -78,9 +78,9 @@ public:
     * @note
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                             const soar::SERVICES_ID& svrinfo,
-                             const zce::Socket_Stream& sockstream,
-                             const zce::Sockaddr_In& socketaddr);
+        const soar::SERVICES_ID& svrinfo,
+        const zce::Socket_Stream& sockstream,
+        const zce::Sockaddr_In& socketaddr);
 
     //ZEN的一组要求自己继承的函数.
     //zce::Event_Handler必须重载的函数，取得SOCKET句柄
@@ -118,8 +118,8 @@ public:
 
     //发送简单的ZERG命令给对方
     int send_simple_zerg_cmd(uint32_t cmd,
-                             const soar::SERVICES_ID& recv_services_info,
-                             uint32_t option = 0);
+        const soar::SERVICES_ID& recv_services_info,
+        uint32_t option = 0);
 
     ///发送心跳
     int send_zergheatbeat_reg();
@@ -230,9 +230,9 @@ public:
     static int process_send_data(zerg::Buffer* tmpbuf);
 
     ///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
-    ///请参考 @ref Zerg_Auto_Connector
+    ///请参考 @ref Auto_Connector
     static int find_conf_ms_svcid_ary(uint16_t services_type,
-                                      std::vector<uint32_t>*& ms_svcid_ary);
+        std::vector<uint32_t>*& ms_svcid_ary);
 protected:
 
     //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
@@ -287,7 +287,7 @@ protected:
     static unsigned int receive_timeout_;
 
     ///要自动链接的服务器
-    static Zerg_Auto_Connector zerg_auto_connect_;
+    static zerg::Auto_Connector zerg_auto_connect_;
 
     ///SVRINFO对应的PEER的HASHMAP
     static Active_SvcHandle_Set svr_peer_info_set_;
