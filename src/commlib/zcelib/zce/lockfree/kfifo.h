@@ -20,9 +20,7 @@
 
 #include "zce/shm_container/common.h"
 
-namespace zce
-{
-namespace lockfree
+namespace zce::lockfree
 {
 /*!
 @brief      可以放如deque的node结构，变长，前面4个字节表示长度，
@@ -30,32 +28,29 @@ namespace lockfree
             但注意你的长度表示字段一定要是定长，不能是size_t，long
             这种在不同平台长度不一样的东东。
 */
-class dequechunk_node
+class kfifo_node
 {
 public:
 
-    /*!
-    @brief      重载了new操作，用于得到一个变长得到架构
-    @return     void* operator
-    @param      size_t    new的默认参数
-    @param      nodelen   node节点的长度
-    */
-    void* operator new (size_t, size_t nodelen);
+    ///*!
+    //@brief      重载了new操作，用于得到一个变长得到架构
+    //@return     void* operator
+    //@param      size_t    new的默认参数
+    //@param      node_len   node节点的长度
+    //*
+    static kfifo_node* new_node(size_t node_len);
 
-    //养成好习惯,写new,就写delete.
-    //void operator delete(void *ptrframe, size_t);
-    void operator delete (void* ptrframe);
-
-public:
-    ///
-    static void fillin(dequechunk_node*, size_t, char*);
+    ///养成好习惯,写new,就写delete.
+    static void delete_node(kfifo_node* node);
 
 public:
+
+    ///头部的长度，
+    static const size_t KFIFO_NODE_HEAD_LEN = sizeof(uint32_t);
 
     ///最小的CHUNK NODE长度，4+1
-    static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = 5;
-    ///头部的长度，
-    static const size_t DEQUECHUNK_NODE_HEAD_LEN = 4;
+    static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = KFIFO_NODE_HEAD_LEN + 1;
+
     // 早年长度是unsigned ，一次重构我改成了size_t,但忘记了很多地方
     // 结构用的是固定长度，会强转为dequechunk_node，2了。
 
@@ -78,44 +73,35 @@ public:
             的一些状态，关键数据，用于恢复，在恢复的时候会进行比对检查
             内部使用结构，所以前面加了_
 */
-class _shm_dequechunk_head
+class shm_kfifo_head
 {
     //
-    friend  class shm_dequechunk;
+    friend  class shm_kfifo;
 
 protected:
 
     ///构造函数，不对外提供，
-    _shm_dequechunk_head() :
-        size_of_mmap_(0),
-        size_of_deque_(0),
-        max_len_node_(0),
-        deque_begin_(0),
-        deque_end_(0)
-    {
-    }
+    shm_kfifo_head() = default;
     ///析构函数
-    ~_shm_dequechunk_head()
-    {
-    }
+    ~shm_kfifo_head() = default;
 
-    //数据也不提供给大众访问，shm_dequechunk除外
+    //数据也不提供给大众访问，shm_kfifo除外
 protected:
 
     ///内存区的长度
-    size_t               size_of_mmap_;
+    size_t               size_of_mmap_ = 0;
 
-    ///deque的长度,必须>JUDGE_FULL_Iwo1NTERVAL
-    size_t               size_of_deque_;
+    ///deque的长度,必须>JUDGE_FULL_INTERVAL
+    size_t               size_of_deque_ = 0;
 
     ///node的最大长度
-    size_t               max_len_node_;
+    size_t               max_len_node_ = 0;
 
     ///两个关键内部指针,避免编译器优化
     ///环形队列开始的地方，这个地方必现是机器字长
-    volatile size_t      deque_begin_;
+    volatile size_t      deque_begin_ = 0;
     ///环行队列结束的地方，这个地方必现是机器字长
-    volatile size_t      deque_end_;
+    volatile size_t      deque_end_ = 0;
 };
 
 /*!
@@ -125,12 +111,12 @@ protected:
             不是容器模版,是一个先进，先出的存放任意大小的数据快的队列
             如果非要容器队列,用smem_list自己解决,很容易
 */
-class shm_dequechunk: public _shm_memory_base
+class shm_kfifo : public shm_container
 {
 protected:
 
     ///只定义不实现
-    const shm_dequechunk& operator=(const shm_dequechunk&);
+    const shm_kfifo& operator=(const shm_kfifo&) = delete;
 
     /*!
     @brief      得到两个关键指针的快照，用于判定队列里面的数据还有多少，是否为满或者空
@@ -145,10 +131,10 @@ protected:
 
     ///构造函数，用protected保护，避免你用了
 protected:
-    shm_dequechunk();
+    shm_kfifo() = default;
 public:
     ///析构函数
-    ~shm_dequechunk();
+    ~shm_kfifo();
 
 public:
 
@@ -161,24 +147,24 @@ public:
 
     /*!
     @brief      根据参数初始化
-    @return     shm_dequechunk * 返回的初始化的指针，需要销毁，你用delete就可以，或者调用
+    @return     shm_kfifo * 返回的初始化的指针，需要销毁，你用delete就可以，或者调用
     @param      size_of_deque    deque的长度，(就是 getallocsize 的参数，不是返回值呀)
     @param      max_len_node     放入的note最大长度，我会帮你检查一下
     @param      pmmap            内存的指针，共享内存也可以，普通内存也可以
     @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
     @note
     */
-    static shm_dequechunk* initialize(size_t size_of_deque,
-                                      size_t max_len_node,
-                                      char* pmmap,
-                                      bool if_restore = false
+    static shm_kfifo* initialize(size_t size_of_deque,
+        size_t max_len_node,
+        char* pmmap,
+        bool if_restore = false
     );
 
     /*!
     @brief      销毁初始化 initialize 得到的指针
     @param      deque_ptr  销毁的指针，
     */
-    static void finalize(shm_dequechunk* deque_ptr);
+    static void finalize(shm_kfifo* deque_ptr);
 
     ///清理成没有使用过的状态
     void clear();
@@ -188,21 +174,21 @@ public:
     @return     bool
     @param      node
     */
-    bool push_end(const dequechunk_node* node);
+    bool push_end(const kfifo_node* node);
 
     /*!
     @brief      将队列一个NODE从队首部取出,要求node!=NULL,已经分配好了数据区
     @return     bool  true表示成功取出，否则表示没有取出
     @param      node  保存pop 数据的的buffer，
     */
-    bool pop_front(dequechunk_node* const node);
+    bool pop_front(kfifo_node* const node);
 
     /*!
     @brief      读取队列的第一个NODE,但是不取出,要求node!=NULL,我认为你已经分配好了数据区
     @return     bool  true表示成功读取
     @param      node  保存read 数据的的buffer，
     */
-    bool read_front(dequechunk_node* const node);
+    bool read_front(kfifo_node* const node);
 
     /*!
     @brief      将队列一个NODE从队首部取出,我根据node的长度帮你分配空间,
@@ -210,14 +196,14 @@ public:
     @return     bool      true表示成功读取
     @param      new_node  获得数据的指针，这个数据你要自己释放，我概不负责了
     */
-    bool pop_front_new(dequechunk_node*& new_node);
+    bool pop_front_new(kfifo_node*& new_node);
 
     /*!
     @brief      读取队列的第一个NODE，我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
     @return     bool      true表示成功读取
     @param      new_node
     */
-    bool read_front_new(dequechunk_node*& new_node);
+    bool read_front_new(kfifo_node*& new_node);
 
     /*!
     @brief      读取队列的第一个NODE（指针）地址，，如果是折行的数据会特殊处理
@@ -225,7 +211,7 @@ public:
     @return     bool     true表示成功读取
     @param      node_ptr 存放地址的指针
     */
-    bool read_front_ptr(const dequechunk_node*& node_ptr);
+    bool read_front_ptr(const kfifo_node*& node_ptr);
 
     /*!
     @brief      丢弃队列前面的第一个NODE
@@ -258,18 +244,20 @@ protected:
 protected:
 
     ///内存的头部
-    _shm_dequechunk_head* dequechunk_head_;
+    shm_kfifo_head* dequechunk_head_ = nullptr;
 
     ///数据区的头指针,方便计算
-    char* dequechunk_database_;
+    char* dequechunk_database_ = nullptr;
 
     ///如果需要读取node的地址（不取出数据），那么有种特殊情况，折行要考虑
-    dequechunk_node* line_wrap_nodeptr_;
+    ///line_wrap_nodeptr_ 大部分时候不需要，除非你用read_front_ptr这些方法，
+    ///所以默认不初始化
+    kfifo_node* line_wrap_nodeptr_ = nullptr;
 };
 
 //取队列头的buffer长度,你必须在确认pipe里面有数据才能调用这个函数，否则后果自负。
 //因为这个函数的使用语境大部分是empty之后，
-inline size_t shm_dequechunk::get_front_len()
+inline size_t shm_kfifo::get_front_len()
 {
     //还是要担心长度截断2节,头大,头大,多写好多代码
     char* tmp1 = dequechunk_database_ + dequechunk_head_->deque_begin_;
@@ -277,7 +265,7 @@ inline size_t shm_dequechunk::get_front_len()
     char* tmp2 = reinterpret_cast<char*>(&tmplen);
 
     //如果管道的长度也绕圈，采用野蛮的法子得到长度
-    if (tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
+    if (tmp1 + kfifo_node::KFIFO_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
         //一个个字节读取长度
         for (size_t i = 0; i < sizeof(uint32_t); ++i)
@@ -300,7 +288,6 @@ inline size_t shm_dequechunk::get_front_len()
 
     return tmplen;
 }
-};
 };
 
 #endif //ZCE_LIB_LOCKFREE_DEQUE_H_

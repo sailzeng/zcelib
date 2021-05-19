@@ -334,11 +334,11 @@
     <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\string\from_string.h" />
     <ClInclude Include="zce\util\algorithm.h" />
+    <ClInclude Include="zce\util\fifo_cycbuf.h" />
     <ClInclude Include="zce\util\lord_rings.h" />
     <ClInclude Include="zce\util\mpl.h" />
     <ClInclude Include="zce\util\non_copyable.h" />
     <ClInclude Include="zce\util\random.h" />
-    <ClInclude Include="zce\util\signal.h" />
     <ClInclude Include="zce\util\singleton.h" />
     <ClInclude Include="zce\util\id_to_string.h" />
     <ClInclude Include="zce\bus\mmap_pipe.h" />

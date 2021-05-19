@@ -199,7 +199,7 @@ protected:
 * @note
 */
 template <uint32_t min_result, uint32_t max_result >
-class t_random_base: public random_base
+class t_random_base : public random_base
 {
 public:
 
@@ -225,7 +225,7 @@ public:
 /*!
 * @brief      BSD的RAND代码,他100%是线性同余
 */
-class random_bsdrand: public t_random_base<0, 0x7FFFFFFF>
+class random_bsdrand : public t_random_base<0, 0x7FFFFFFF>
 {
 public:
     ///构造函数
@@ -275,7 +275,7 @@ protected:
 /*!
 * @brief      rand48 算法随机数发生器，其的循环长度是2^48,故此有此名字，
 */
-class random_rand48: public t_random_base<0, 0xFFFFFFFF>
+class random_rand48 : public t_random_base<0, 0xFFFFFFFF>
 {
 public:
     ///构造函数
@@ -368,12 +368,12 @@ protected:
             其参考文档是
             "Maximally Equidistributed Combined Tausworthe Generators", Pierre L'Ecuyer, Mathematics of Computation, Volume 65, Number 213, January 1996, Pages 203-213
 */
-class random_taus88: public t_random_base<0, 0xFFFFFFFF>
+class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
 {
 public:
     //构造函数还是把默认种子搞出来把
     explicit random_taus88(uint32_t seed) :
-        seed_arg_{0}
+        seed_arg_{ 0 }
     {
         srand(seed);
     }
@@ -466,12 +466,12 @@ protected:
 */
 template < size_t mt_n, size_t mt_m, uint32_t mt_a, uint32_t mt_b, uint32_t mt_c,
     uint32_t mt_o, uint32_t mt_p, uint32_t mt_q, uint32_t mt_r, uint32_t mt_s, uint32_t mt_t, uint32_t mt_u >
-    class random_mt: public t_random_base<0, 0xFFFFFFFF>
+    class random_mt : public t_random_base<0, 0xFFFFFFFF>
 {
 public:
 
     explicit random_mt(uint32_t seed = DEFAULT_SEED) :
-        state_{0},
+        state_{ 0 },
         postion_(0)
     {
         srand(seed);
@@ -566,7 +566,7 @@ typedef random_mt<624, 397, 0x80000000, 0x7FFFFFFF, 0x9908B0DF, 11, 0xFFFFFFFF, 
 * @tparam     一个循环的常量
 */
 template <size_t luxury>
-class random_ranlux: public t_random_base<0, 0x00FFFFFF>
+class random_ranlux : public t_random_base<0, 0x00FFFFFF>
 {
 public:
 
@@ -711,14 +711,14 @@ typedef  random_ranlux<389>  random_ranlux389;
 
 ///定义了不同随机数发生器的变量产生器，如果没有多线程要求，可以直接使用他们
 
-typedef   ZCE_Singleton<random_bsdrand>      bsdrand_instance;
-typedef   ZCE_Singleton<random_rand48>       rand48_instance;
-typedef   ZCE_Singleton<random_taus88>       taus88_instance;
-typedef   ZCE_Singleton<random_mt11213a>     mt11213a_instance;
-typedef   ZCE_Singleton<random_mt11213b>     mt11213b_instance;
-typedef   ZCE_Singleton<random_mt19937>      mt19937_instance;
-typedef   ZCE_Singleton<random_ranlux223>    ranlux223_instance;
-typedef   ZCE_Singleton<random_ranlux389>    ranlux389_instance;
+typedef   zce::Singleton<random_bsdrand>      bsdrand_instance;
+typedef   zce::Singleton<random_rand48>       rand48_instance;
+typedef   zce::Singleton<random_taus88>       taus88_instance;
+typedef   zce::Singleton<random_mt11213a>     mt11213a_instance;
+typedef   zce::Singleton<random_mt11213b>     mt11213b_instance;
+typedef   zce::Singleton<random_mt19937>      mt19937_instance;
+typedef   zce::Singleton<random_ranlux223>    ranlux223_instance;
+typedef   zce::Singleton<random_ranlux389>    ranlux389_instance;
 
 //=======================================================================================================
 
@@ -811,14 +811,14 @@ typedef   random_var_gen<random_mt19937>      mt19937_var_gen;
 typedef   random_var_gen<random_ranlux223>    ranlux223_var_gen;
 typedef   random_var_gen<random_ranlux389>    ranlux389_var_gen;
 
-typedef   ZCE_Singleton<bsdrand_var_gen>      bsdrand_vargen_inst;
-typedef   ZCE_Singleton<rand48_var_gen>       rand48_vargen_inst;
-typedef   ZCE_Singleton<taus88_var_gen>       taus88_vargen_inst;
-typedef   ZCE_Singleton<mt11213a_var_gen>     mt11213a_vargen_inst;
-typedef   ZCE_Singleton<mt11213b_var_gen>     mt11213b_vargen_inst;
-typedef   ZCE_Singleton<mt19937_var_gen>      mt19937_vargen_inst;
-typedef   ZCE_Singleton<ranlux223_var_gen>    ranlux223_vargen_inst;
-typedef   ZCE_Singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
+typedef   zce::Singleton<bsdrand_var_gen>      bsdrand_vargen_inst;
+typedef   zce::Singleton<rand48_var_gen>       rand48_vargen_inst;
+typedef   zce::Singleton<taus88_var_gen>       taus88_vargen_inst;
+typedef   zce::Singleton<mt11213a_var_gen>     mt11213a_vargen_inst;
+typedef   zce::Singleton<mt11213b_var_gen>     mt11213b_vargen_inst;
+typedef   zce::Singleton<mt19937_var_gen>      mt19937_vargen_inst;
+typedef   zce::Singleton<ranlux223_var_gen>    ranlux223_vargen_inst;
+typedef   zce::Singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
 };// end of namespace    zce
 
 #endif

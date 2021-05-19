@@ -16,7 +16,7 @@ unsigned int   Ogre_TCP_Svc_Handler::accept_timeout_ = 3;
 unsigned int   Ogre_TCP_Svc_Handler::receive_timeout_ = 5;
 
 //TIME ID
-const int      Ogre_TCP_Svc_Handler::TCPCTRL_TIME_ID[] = {1,2};
+const int      Ogre_TCP_Svc_Handler::TCPCTRL_TIME_ID[] = { 1,2 };
 
 unsigned int   Ogre_TCP_Svc_Handler::error_try_num_ = 3;
 
@@ -75,7 +75,7 @@ Ogre_TCP_Svc_Handler::~Ogre_TCP_Svc_Handler()
 
 //初始化函数,用于Accept的端口的处理Event Handle构造.
 void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockstream,
-                                                FP_JudgeRecv_WholeFrame fp_judge_whole)
+    FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
     rcv_buffer_ = NULL;
@@ -97,8 +97,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
     char local_addr[IP_ADDR_LEN + 1], remote_addr[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     ZCE_LOG(RS_INFO, "Listen peer [%s] accept Socket IP Address: [%s] success,.\n",
-            local_address_.to_string(local_addr, IP_ADDR_LEN, use_len),
-            remote_address_.to_string(remote_addr, IP_ADDR_LEN, use_len)
+        local_address_.to_string(local_addr, IP_ADDR_LEN, use_len),
+        remote_address_.to_string(remote_addr, IP_ADDR_LEN, use_len)
     );
 
     ++num_accept_peer_;
@@ -115,9 +115,9 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "Register Accept handler fail! ret =%d  errno=%u|%s \n",
-                    ret,
-                    zce::last_error(),
-                    strerror(zce::last_error()));
+                ret,
+                zce::last_error(),
+                strerror(zce::last_error()));
             handle_close();
             return;
         }
@@ -128,8 +128,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
     else
     {
         ZCE_LOG(RS_ERROR, "Great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u \n",
-                num_accept_peer_,
-                max_accept_svr_);
+            num_accept_peer_,
+            max_accept_svr_);
         handle_close();
         return;
     }
@@ -168,8 +168,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
 
 //初始化函数,用于Connect出去的PEER 对应Event Handle构造.
 void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockstream,
-                                                const zce::Sockaddr_In& socketaddr,
-                                                FP_JudgeRecv_WholeFrame fp_judge_whole)
+    const zce::Sockaddr_In& socketaddr,
+    FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
     rcv_buffer_ = NULL;
@@ -195,9 +195,9 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "Register Connect handler fail! ret =%  errno=%u|%s \n",
-                ret,
-                zce::last_error(),
-                strerror(zce::last_error()));
+            ret,
+            zce::last_error(),
+            strerror(zce::last_error()));
         handle_close();
         return;
     }
@@ -249,9 +249,9 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
     int ret = read_data_from_peer(szrecv);
 
     ZCE_LOG(RS_DEBUG, "Read event,[%s] ,TCP handle input event triggered. ret:%d,szrecv:%u.\n",
-            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-            ret,
-            szrecv);
+        remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+        ret,
+        szrecv);
 
     //这儿任何错误都关闭,
     if (ret != 0)
@@ -266,16 +266,16 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
         bool if_recv_whole = false;
         //调用模块代码
         ret = fp_judge_whole_frame_(rcv_buffer_->frame_data_,
-                                    rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
-                                    static_cast<unsigned int>(Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN),
-                                    if_recv_whole,
-                                    size_frame);
+            rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
+            static_cast<unsigned int>(Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN),
+            if_recv_whole,
+            size_frame);
 
         if (0 != ret)
         {
             ZCE_LOG(RS_ERROR, "Read data error [%s].Judge whole fale error ret=%u.\n",
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                    ret);
+                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                ret);
             return -1;
         }
 
@@ -284,9 +284,9 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
         {
             //将数据放入接收的管道,不检测错误,因为错误会记录日志,而且有错误，也无法处理
             ZCE_LOGMSG_DEBUG(RS_DEBUG, "Read a whole data [%s] recv buffer len:%u, Frame len:%u.\n",
-                             remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                             rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
-                             size_frame);
+                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
+                size_frame);
 
             //记录接受了多少次数据
             receive_times_++;
@@ -353,8 +353,8 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const zce::Time_Value&/*time*/, const vo
         else
         {
             ZCE_LOG(RS_ERROR, "Timeout event,[%s] connect or Recive expire,want to close handle. recieve_counter=%u\n",
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                    receive_times_);
+                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                receive_times_);
             //原来是在这个地方reutrn -1,现在发现return -1是一个很消耗的事情,(定时器的取消会使用指针的方式,会遍历所有的数据)
             //所以在这儿直接调用handle_close
             handle_close();
@@ -424,7 +424,7 @@ int Ogre_TCP_Svc_Handler::handle_close()
     if (handler_mode_ == HANDLER_MODE_CONNECT)
     {
         ZCE_LOG(RS_ERROR, "Close event,[%s] connect peer socket close .\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
 
         //将指针归还到池子中间去
         pool_of_cnthdl_.push_back(this);
@@ -433,7 +433,7 @@ int Ogre_TCP_Svc_Handler::handle_close()
     else if (handler_mode_ == HANDLER_MODE_ACCEPTED)
     {
         ZCE_LOG(RS_INFO, "Close event,[%s] accept peer socket close.\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
 
         //将指针归还到池子中间去
         pool_of_acpthdl_.push_back(this);
@@ -473,8 +473,8 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
     char local_addr[IP_ADDR_LEN + 1], remote_addr[IP_ADDR_LEN];
     size_t use_len = 0;
     ZCE_LOG(RS_INFO, "Local peer[%s] auto connect [%s] success,.\n",
-            local_address_.to_string(local_addr, IP_ADDR_LEN, use_len),
-            remote_address_.to_string(remote_addr, IP_ADDR_LEN, use_len));
+        local_address_.to_string(local_addr, IP_ADDR_LEN, use_len),
+        remote_address_.to_string(remote_addr, IP_ADDR_LEN, use_len));
     return 0;
 }
 
@@ -504,14 +504,14 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
     if (data_len < Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN)
     {
         recvret = socket_peer_.recv(rcv_buffer_->frame_data_ + data_len,
-                                    Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN - rcv_buffer_->ogre_frame_len_,
-                                    0);
+            Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN - rcv_buffer_->ogre_frame_len_,
+            0);
     }
     //在最大的包内都没有接受完整数据
     else
     {
         ZCE_LOG(RS_ERROR, "Read error[%s],Buffer size is not enought or this is a error (attack) data.\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -531,10 +531,10 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
 
             //记录错误,返回错误
             ZCE_LOG(RS_ERROR, "Read error,[%s] receive data error peer:%u zce::last_error()=%d|%s.\n",
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                    socket_peer_.get_handle(),
-                    zce::last_error(),
-                    strerror(zce::last_error()));
+                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                socket_peer_.get_handle(),
+                zce::last_error(),
+                strerror(zce::last_error()));
 
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
@@ -573,7 +573,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     if (snd_buffer_deque_.empty() == true)
     {
         ZCE_LOG(RS_ERROR, "Write error,[%s] goto handle_output|write_data_to_peer ,but not data to send. Please check you code.\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         reactor()->cancel_wakeup(this, zce::Event_Handler::WRITE_MASK);
         return 0;
     }
@@ -584,7 +584,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     Ogre4a_App_Frame* sndbuffer = snd_buffer_deque_[0];
 
     ssize_t sendret = socket_peer_.send(sndbuffer->frame_data_ + send_bytes_,
-                                        (sndbuffer->ogre_frame_len_ - send_bytes_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
+        (sndbuffer->ogre_frame_len_ - send_bytes_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
 
     if (sendret < 0)
     {
@@ -593,10 +593,10 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
         szsend = 0;
         //后面应该会打印方的IP，这儿不重复
         ZCE_LOG(RS_ERROR, "Write error[%s],send data error. peer:%d errno=%u|%s \n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                socket_peer_.get_handle(),
-                last_error,
-                strerror(last_error));
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            socket_peer_.get_handle(),
+            last_error,
+            strerror(last_error));
 
         //EINVAL:遇到中断,等待重入的判断是if (zce::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
         //EWOULDBLOCK:我只使用EWOULDBLOCK 但是要注意EAGAIN zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
@@ -617,8 +617,8 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     {
         if_full = true;
         ZCE_LOGMSG_DEBUG(RS_DEBUG, "Send a whole frame To  IP|Port :%s FrameLen:%u.\n",
-                         remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                         send_bytes_);
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            send_bytes_);
         send_bytes_ = 0;
     }
 
@@ -682,9 +682,9 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
             {
                 int last_err = zce::last_error();
                 ZCE_LOG(RS_ERROR, "TNNND cancel_wakeup return(%d) == -1 errno=%d|%s. \n",
-                        ret,
-                        last_err,
-                        strerror(last_err));
+                    ret,
+                    last_err,
+                    strerror(last_err));
                 //认为这种情况是出现了问题，关闭之
                 return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
             }
@@ -694,8 +694,8 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
         if (true == if_force_close_)
         {
             ZCE_LOG(RS_INFO, "Send to peer handle[%u] IP|Port :[%s] complete ,want to close peer on account of frame option.\n",
-                    socket_peer_.get_handle(),
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                socket_peer_.get_handle(),
+                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             //让上层去关闭，要小心，小心，很麻烦，很多生命周期的问题,因为有两个地方调用这个函数
             return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
         }
@@ -713,9 +713,9 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
             {
                 int last_err = zce::last_error();
                 ZCE_LOG(RS_ERROR, "TNNND schedule_wakeup return (%d)== -1 errno=%d|%s. \n",
-                        ret,
-                        last_err,
-                        strerror(last_err));
+                    ret,
+                    last_err,
+                    strerror(last_err));
                 //认为这种情况是出现了问题，关闭之
                 return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
             }
@@ -741,11 +741,11 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
         //{
         //}
         ZCE_LOG(RS_ERROR, " Peer handle [%u] ,send frame fail.frame len[%u] "
-                "address[%s],peer status[%u]. \n",
-                socket_peer_.get_handle(),
-                inner_frame->ogre_frame_len_,
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                peer_status_
+            "address[%s],peer status[%u]. \n",
+            socket_peer_.get_handle(),
+            inner_frame->ogre_frame_len_,
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            peer_status_
         );
     }
     //如果发送命令明确要通知后面的服务,和RETRY互斥
@@ -757,7 +757,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
         //日志在函数中有输出,这儿略.
         ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
             Soar_MMAP_BusPipe::RECV_PIPE_ID,
-            reinterpret_cast<const zce::lockfree::dequechunk_node*>(inner_frame));
+            reinterpret_cast<const zce::lockfree::kfifo_node*>(inner_frame));
 
         if (ret != 0)
         {
@@ -807,11 +807,11 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
 
     //为CONNECT的HDL预先分配内存，成为一个池子
     ZCE_LOG(RS_INFO, "Connet Hanlder:size of Ogre_TCP_Svc_Handler [%u],one connect handler have deqeue length [%u],number of connect handler [%u]."
-            "About need  memory [%u] bytes.\n",
-            sizeof(Ogre_TCP_Svc_Handler),
-            MAX_OF_CONNECT_PEER_SEND_DEQUE,
-            max_connect_svr_,
-            (max_connect_svr_ * (sizeof(Ogre_TCP_Svc_Handler) + MAX_OF_CONNECT_PEER_SEND_DEQUE * sizeof(size_t)))
+        "About need  memory [%u] bytes.\n",
+        sizeof(Ogre_TCP_Svc_Handler),
+        MAX_OF_CONNECT_PEER_SEND_DEQUE,
+        max_connect_svr_,
+        (max_connect_svr_ * (sizeof(Ogre_TCP_Svc_Handler) + MAX_OF_CONNECT_PEER_SEND_DEQUE * sizeof(size_t)))
     );
     pool_of_cnthdl_.initialize(max_connect_svr_);
 
@@ -823,11 +823,11 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
 
     //为ACCEPT的HDL预先分配内存，成为一个池子
     ZCE_LOG(RS_INFO, "Accept Hanlder:size of Ogre_TCP_Svc_Handler [%u],one accept handler have deqeue length [%u],number of accept handler [%u]."
-            "About need  memory [%u] bytes.\n",
-            sizeof(Ogre_TCP_Svc_Handler),
-            MAX_OF_ACCEPT_PEER_SEND_DEQUE,
-            max_accept_svr_,
-            (max_accept_svr_ * (sizeof(Ogre_TCP_Svc_Handler) + MAX_OF_ACCEPT_PEER_SEND_DEQUE * sizeof(size_t)))
+        "About need  memory [%u] bytes.\n",
+        sizeof(Ogre_TCP_Svc_Handler),
+        MAX_OF_ACCEPT_PEER_SEND_DEQUE,
+        max_accept_svr_,
+        (max_accept_svr_ * (sizeof(Ogre_TCP_Svc_Handler) + MAX_OF_ACCEPT_PEER_SEND_DEQUE * sizeof(size_t)))
     );
     pool_of_acpthdl_.initialize(max_accept_svr_);
 
@@ -844,7 +844,7 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
     size_t num_vaild = 0, num_succ = 0, num_fail;
     ret = zerg_auto_connect_.connect_all_server(num_vaild, num_succ, num_fail);
     ZCE_LOG(RS_INFO, "Have %u server to auto connect ,success %u , fail %u,ret =%d.\n",
-            num_vaild, num_succ, num_fail, ret);
+        num_vaild, num_succ, num_fail, ret);
     if (ret != 0)
     {
         return ret;
@@ -871,8 +871,8 @@ Ogre_TCP_Svc_Handler* Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
         if (pool_of_acpthdl_.size() == 0)
         {
             ZCE_LOG(RS_INFO, "Pool is too small to process accept handler,please notice.Pool size:%u,capacity:%u.\n",
-                    pool_of_acpthdl_.size(),
-                    pool_of_acpthdl_.capacity()
+                pool_of_acpthdl_.size(),
+                pool_of_acpthdl_.capacity()
             );
             return NULL;
         }
@@ -929,11 +929,11 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame* ogre_frame)
     {
         //无法发送
         ZCE_LOG(RS_INFO, "Can't find handle remote address[%s|%u],send fail ,local address [%s|%u],frame len[%u].\n",
-                zce::inet_ntoa(ogre_frame->rcv_peer_info_.peer_ip_address_, remote_ip_str, TMP_IP_ADDRESS_LEN),
-                ogre_frame->rcv_peer_info_.peer_port_,
-                zce::inet_ntoa(ogre_frame->snd_peer_info_.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
-                ogre_frame->snd_peer_info_.peer_port_,
-                ogre_frame->ogre_frame_len_
+            zce::inet_ntoa(ogre_frame->rcv_peer_info_.peer_ip_address_, remote_ip_str, TMP_IP_ADDRESS_LEN),
+            ogre_frame->rcv_peer_info_.peer_port_,
+            zce::inet_ntoa(ogre_frame->snd_peer_info_.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
+            ogre_frame->snd_peer_info_.peer_port_,
+            ogre_frame->ogre_frame_len_
         );
         return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
@@ -942,8 +942,8 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame* ogre_frame)
     if (ogre_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_CLOSE_PEER)
     {
         ZCE_LOG(RS_INFO, "Recvice DESC_CLOSE_PEER,Svchanle will close, svrinfo [IP|Port:%s|%u ].\n",
-                zce::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
-                svrinfo.peer_port_);
+            zce::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
+            svrinfo.peer_port_);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
         svchanle->handle_close();
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
@@ -980,8 +980,8 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame* ogre_frame)
     if (ogre_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_SNDPRC_CLOSE_PEER)
     {
         ZCE_LOG(RS_INFO, "This Peer handle[%u] IP|Port :[%s] complete ,will close when all frame send complete ,because send frame has option Ogre4a_App_Frame::OGREDESC_SNDPRC_CLOSE_PEER.\n",
-                socket_peer_.get_handle(),
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            socket_peer_.get_handle(),
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         if_force_close_ = true;
     }
 
@@ -993,9 +993,9 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame* ogre_frame)
         //丢弃或者错误处理那个数据比较好呢?这儿值得商榷, 我这儿进行错误处理(可能丢弃)的是最新的.
         //我的考虑是如果命令有先后性.而且可以避免内存操作.
         ZCE_LOG(RS_ERROR, "Peer handle [%u] IP|Port[%s] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.\n",
-                socket_peer_.get_handle(),
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                snd_buffer_deque_.capacity());
+            socket_peer_.get_handle(),
+            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            snd_buffer_deque_.capacity());
 
         //回收帧
         process_senderror(ogre_frame);
@@ -1046,8 +1046,8 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
         //将倒数第1个节点的数据放入倒数第2个节点中间。所以实际的Cache能力是非常强的，
         //空间利用率也很高。越发佩服我自己了。
         memcpy((snd_buffer_deque_[sz_deque - 2]->frame_data_ + snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD),
-               snd_buffer_deque_[sz_deque - 1]->frame_data_,
-               (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
+            snd_buffer_deque_[sz_deque - 1]->frame_data_,
+            (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
 
         snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ += (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD);
 
@@ -1075,14 +1075,14 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
         Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::dequechunk_node*>(rcv_buffer_));
+        reinterpret_cast<zce::lockfree::kfifo_node*>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,
     if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD)
     {
         memmove(rcv_buffer_->frame_data_,
-                rcv_buffer_->frame_data_ + sz_data,
-                rcv_buffer_->ogre_frame_len_ - sz_data - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD);
+            rcv_buffer_->frame_data_ + sz_data,
+            rcv_buffer_->ogre_frame_len_ - sz_data - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD);
 
         //改变buffer长度
         rcv_buffer_->ogre_frame_len_ = rcv_buffer_->ogre_frame_len_ - sz_data;
@@ -1112,7 +1112,7 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 
 //根据有的SVR INFO，查询相应的HDL
 int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID& peer_id,
-                                             Ogre_TCP_Svc_Handler*& svchanle)
+    Ogre_TCP_Svc_Handler*& svchanle)
 {
     int ret = 0;
     ret = svr_peer_hdl_set_.find_services_peerinfo(peer_id, svchanle);

@@ -111,14 +111,14 @@ public:
     ///如果在共享内存使用,没有new,所以统一用initialize 初始化
     ///这个函数,不给你用,就是不给你用
     smem_trie_tree<_meta_type>(size_t numnode, void* pmmap, bool if_restore) :
-        _shm_memory_base(pmmap),
+        shm_container(pmmap),
         trie_head_(NULL),
         trie_tree_base_(NULL)
     {
     }
 
     smem_trie_tree<_meta_type>() :
-        _shm_memory_base(NULL),
+        shm_container(NULL),
         trie_head_(NULL),
         trie_tree_base_(NULL)
     {

@@ -313,7 +313,7 @@ template <class _Pair> struct mmap_select2st
 
 //=============================================================================================
 //
-class _shm_memory_base: public zce::NON_Copyable
+class shm_container : public zce::NON_Copyable
 {
 public:
 
@@ -326,18 +326,18 @@ protected:
     char* smem_base_;
 
     //构造函数
-    _shm_memory_base() :
+    shm_container() :
         smem_base_(NULL)
     {
     };
 
     //构造函数
-    _shm_memory_base(char* basepoint) :
+    shm_container(char* basepoint) :
         smem_base_(basepoint)
     {
     };
 
-    virtual ~_shm_memory_base()
+    virtual ~shm_container()
     {
     }
 };
@@ -353,8 +353,8 @@ public:
     size_t  idx_prev_;
 
     _shm_list_index() :
-        idx_next_(_shm_memory_base::_INVALID_POINT),
-        idx_prev_(_shm_memory_base::_INVALID_POINT)
+        idx_next_(shm_container::_INVALID_POINT),
+        idx_prev_(shm_container::_INVALID_POINT)
     {
     }
     _shm_list_index(const size_t& nxt, const size_t& prv) :

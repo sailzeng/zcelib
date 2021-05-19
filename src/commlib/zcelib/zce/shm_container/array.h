@@ -52,8 +52,8 @@ public:
 * @brief      共享内存中使用的vector，彻底简化版本
 * @tparam     _value_type  数组类型
 */
-template <class _value_type> class shm_array:
-    public _shm_memory_base
+template <class _value_type> class shm_array :
+    public shm_container
 {
 public:
 
@@ -67,7 +67,7 @@ protected:
 
     ///默认构造函数,就是不给你用
     shm_array() :
-        _shm_memory_base(NULL),
+        shm_container(NULL),
         data_base_(NULL)
     {
     }
@@ -82,7 +82,7 @@ public:
     * @param      if_restore
     */
     shm_array(const size_t numnode, char* pmmap, bool if_restore = false) :
-        _shm_memory_base(pmmap),
+        shm_container(pmmap),
         data_base_(NULL)
     {
         initialize(numnode, pmmap, if_restore);

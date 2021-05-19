@@ -117,12 +117,12 @@ public:
         serial_ = *(ht_instance_->next_index_ + serial_);
 
         //如果这个节点是末位的节点
-        if (serial_ == _shm_memory_base::_INVALID_POINT)
+        if (serial_ == shm_container::_INVALID_POINT)
         {
             //顺着Index查询.
             size_t bucket = ht_instance_->bkt_num_value(*(ht_instance_->data_base_ + oldseq));
 
-            while (serial_ == _shm_memory_base::_INVALID_POINT && ++bucket < ht_instance_->capacity())
+            while (serial_ == shm_container::_INVALID_POINT && ++bucket < ht_instance_->capacity())
             {
                 serial_ = *(ht_instance_->index_base_ + bucket);
             }
@@ -201,7 +201,7 @@ template < class _value_type,
     class _hash_fun = smem_hash<_key_type>,
     class _extract_key = smem_identity<_value_type>,
     class _equal_key = std::equal_to<_key_type> >
-    class shm_hashtable: public _shm_memory_base
+    class shm_hashtable : public shm_container
 {
 public:
     //定义自己
@@ -217,7 +217,7 @@ public:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
-        _shm_memory_base(NULL),
+        shm_container(NULL),
         hash_head_(NULL),
         index_base_(NULL),
         data_base_(NULL)
@@ -225,7 +225,7 @@ public:
     }
 
     shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >() :
-        _shm_memory_base(NULL)
+        shm_container(NULL)
     {
     }
 
@@ -319,11 +319,11 @@ public:
                 return NULL;
 #else
                 ZCE_LOG(RS_ALERT, "Hash Table node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                        "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                        sz_mmap,
-                        real_num,
-                        hashhead->size_of_mmap_,
-                        hashhead->num_of_node_);
+                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                    sz_mmap,
+                    real_num,
+                    hashhead->size_of_mmap_,
+                    hashhead->num_of_node_);
 #endif
             }
         }
@@ -658,7 +658,7 @@ public:
                 destroy_node(first);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == _shm_memory_base::_INVALID_POINT)
+                if (*(index_base_ + idx) == shm_container::_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -703,7 +703,7 @@ public:
                 destroy_node(first);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == _shm_memory_base::_INVALID_POINT)
+                if (*(index_base_ + idx) == shm_container::_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -753,7 +753,7 @@ public:
                 destroy_node(del_pos);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == _shm_memory_base::_INVALID_POINT)
+                if (*(index_base_ + idx) == shm_container::_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -818,7 +818,7 @@ protected:
 };
 
 template<class _value_type, class _hash_fun = smem_hash<_value_type>, class _equal_key = std::equal_to<_value_type> >
-class shm_hashset:
+class shm_hashset :
     public shm_hashtable< _value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key  >
 {
 public:
@@ -849,7 +849,7 @@ public:
 
 //HASH MAP
 template<class _key_type, class _value_type, class _hash_fun = smem_hash<_key_type>, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _equal_key = std::equal_to<_key_type> >
-class shm_hashmap:
+class shm_hashmap :
     public shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key  >
 {
 protected:

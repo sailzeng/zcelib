@@ -469,9 +469,6 @@
     <ClInclude Include="zce\util\id_to_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\util\signal.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\lock\lock_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -710,6 +707,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\from_string.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\util\fifo_cycbuf.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

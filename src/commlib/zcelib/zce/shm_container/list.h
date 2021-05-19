@@ -79,7 +79,7 @@ public:
 
     ///构造函数
     _shm_list_iterator<_value_type>() :
-        serial_(_shm_memory_base::_INVALID_POINT),
+        serial_(shm_container::_INVALID_POINT),
         list_instance_(NULL)
     {
     }
@@ -211,8 +211,8 @@ public:
 
 @tparam     _value_type 元素类型
 */
-template <class _value_type> class smem_list:
-    public _shm_memory_base
+template <class _value_type> class smem_list :
+    public shm_container
 {
 public:
 
@@ -227,7 +227,7 @@ public:
     ///如果在共享内存使用,没有new,所以统一用initialize 初始化
     ///这个函数,不给你用,就是不给你用
     smem_list<_value_type>(size_t numnode, void* pmmap, bool if_restore) :
-        _shm_memory_base(pmmap),
+        shm_container(pmmap),
         list_head_(NULL),
         index_base_(NULL),
         data_base_(NULL),
@@ -237,7 +237,7 @@ public:
     }
 
     smem_list<_value_type>() :
-        _shm_memory_base(NULL),
+        shm_container(NULL),
         list_head_(NULL),
         index_base_(NULL),
         data_base_(NULL),

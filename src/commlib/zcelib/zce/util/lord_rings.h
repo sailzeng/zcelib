@@ -21,8 +21,7 @@
 *             喔姐姐，我想回家，牵着我的手，我有些困了
 */
 
-#ifndef ZCE_LIB_BOOST_LORD_RINGS_H_
-#define ZCE_LIB_BOOST_LORD_RINGS_H_
+#pragma once
 
 /*!
 * @namespace zce 主要用于模版类的名字空间，为了和std统一，模版类一般用了小写
@@ -63,9 +62,9 @@ public:
     }
     ///构造函数
     _lordrings_iterator(size_t rings_start,
-                        size_t rings_capacity,
-                        _value_type* rings_value_base,
-                        size_t serial
+        size_t rings_capacity,
+        _value_type* rings_value_base,
+        size_t serial
     ) :
         rings_start_(rings_start),
         rings_capacity_(rings_capacity),
@@ -479,5 +478,3 @@ protected:
     _value_type* value_ptr_;
 };
 };
-
-#endif //#ifndef ZCE_LIB_BOOST_LORD_RINGS_H_

@@ -66,9 +66,9 @@ class _shm_rb_tree_index
 {
 public:
     _shm_rb_tree_index()
-        : parent_(_shm_memory_base::_INVALID_POINT)
-        , left_(_shm_memory_base::_INVALID_POINT)
-        , right_(_shm_memory_base::_INVALID_POINT)
+        : parent_(shm_container::_INVALID_POINT)
+        , left_(shm_container::_INVALID_POINT)
+        , right_(shm_container::_INVALID_POINT)
         , color_(RB_TREE_RED)
     {
     }
@@ -118,7 +118,7 @@ public:
     }
 
     _shm_rb_tree_iterator()
-        : serial_(_shm_memory_base::_INVALID_POINT),
+        : serial_(shm_container::_INVALID_POINT),
         rb_tree_instance_(NULL)
     {
     }
@@ -187,12 +187,12 @@ public:
     //用于实现operator++，找下一个节点
     void increment()
     {
-        if ((rb_tree_instance_->index_base_ + serial_)->right_ != _shm_memory_base::_INVALID_POINT)
+        if ((rb_tree_instance_->index_base_ + serial_)->right_ != shm_container::_INVALID_POINT)
         {
             //如果有右子节点，就向右走，然后一直沿左子树走到底即可
             serial_ = (rb_tree_instance_->index_base_ + serial_)->right_;
 
-            while ((rb_tree_instance_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT)
+            while ((rb_tree_instance_->index_base_ + serial_)->left_ != shm_container::_INVALID_POINT)
             {
                 serial_ = (rb_tree_instance_->index_base_ + serial_)->left_;
             }
@@ -227,12 +227,12 @@ public:
             serial_ = (rb_tree_instance_->index_base_ + serial_)->right_;
         }
         //如果有左子节点
-        else if ((rb_tree_instance_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT)
+        else if ((rb_tree_instance_->index_base_ + serial_)->left_ != shm_container::_INVALID_POINT)
         {
             //令y指向左子节点，找到y的右子节点，向右走到底即是
             size_t y = (rb_tree_instance_->index_base_ + serial_)->left_;
 
-            while ((rb_tree_instance_->index_base_ + y)->right_ != _shm_memory_base::_INVALID_POINT)
+            while ((rb_tree_instance_->index_base_ + y)->right_ != shm_container::_INVALID_POINT)
             {
                 y = (rb_tree_instance_->index_base_ + y)->right_;
             }
@@ -274,7 +274,7 @@ template < class _value_type,
     class _key_type,
     class _extract_key = smem_identity<_value_type>,
     class _compare_key = std::less<_key_type> >
-    class shm_rb_tree: public _shm_memory_base
+    class shm_rb_tree : public shm_container
 {
 public:
     //定义自己
@@ -290,14 +290,14 @@ protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void* pmmap, bool if_restore)
-        : _shm_memory_base(NULL)
+        : shm_container(NULL)
         , index_base_(NULL)
         , data_base_(NULL)
     {
     }
 
     shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >()
-        : _shm_memory_base(NULL)
+        : shm_container(NULL)
     {
     }
 public:
@@ -1202,7 +1202,7 @@ protected:
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分
 template<class _value_type, class _compare_key = std::less<_value_type> >
-class mmap_set:
+class mmap_set :
     public shm_rb_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
 protected:
@@ -1229,7 +1229,7 @@ public:
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template<class _key_type, class _value_type, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _compare_key = std::less<_value_type>  >
-class mmap_map:
+class mmap_map :
     public shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:

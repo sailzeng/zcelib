@@ -33,7 +33,7 @@ int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In& inetadd)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
             ZCE_LOG(RS_ERROR, "Unsafe port [%s],if you need to open this port,please close insurance. \n",
-                    inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
@@ -41,7 +41,7 @@ int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In& inetadd)
         {
             //给出警告
             ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
-                    inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         }
     }
     //
@@ -82,14 +82,14 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
 
     //
     for (procframe = 0;
-         Soar_MMAP_BusPipe::instance()->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false &&
-         procframe < MAX_ONCE_SEND_FRAME; ++procframe)
+        Soar_MMAP_BusPipe::instance()->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false &&
+        procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
         Ogre4a_App_Frame* send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
 
         //
         ret = Soar_MMAP_BusPipe::instance()->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                                           reinterpret_cast<zce::lockfree::dequechunk_node*&>(send_frame));
+            reinterpret_cast<zce::lockfree::kfifo_node*&>(send_frame));
 
         if (ret != 0)
         {
@@ -102,7 +102,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
         {
             ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
-                    send_frame->ogre_frame_len_);
+                send_frame->ogre_frame_len_);
             DEBUGDUMP_OGRE_HEAD(send_frame, "Ogre_Comm_Manger::get_all_senddata_to_write", RS_ALERT);
             ZCE_ASSERT(false);
             return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;

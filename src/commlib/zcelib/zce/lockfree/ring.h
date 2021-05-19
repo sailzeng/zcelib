@@ -1,13 +1,13 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_lockfree_deque.h
+* @filename
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2019年8月7日
 * @brief
 *
 *
-* @details
+* @details  这个代码还没有改造完成。
 *
 *
 * @note
@@ -204,7 +204,6 @@ public:
         }
 
         //直接放在队尾
-
         value_ptr_[(rings_start_ + rings_size_) % rings_capacity_] = value_data;
         ++rings_size_;
 
@@ -255,7 +254,6 @@ public:
 
         value_data = value_ptr_[rings_start_];
         rings_start_ = (rings_start_ + 1) % rings_capacity_;
-
         --rings_size_;
 
         return true;

@@ -4,50 +4,43 @@
 namespace zce::lockfree
 {
 /*********************************************************************************
-class dequechunk_node
+class kfifo_node
 *********************************************************************************/
 
 //nodelen 结点的长度,包括sizeofnode的长度
 //重载new运算符,得到一个变长的数据
-void* dequechunk_node::operator new   (size_t, size_t nodelen)
+kfifo_node* kfifo_node::new_node(size_t node_len)
 {
-    //assert(nodelen > sizeof (dequechunk_node));
-    if (nodelen < sizeof(dequechunk_node))
+    assert(node_len > sizeof(uint32_t));
+    if (node_len < sizeof(kfifo_node))
     {
-        nodelen = sizeof(dequechunk_node);
+        return nullptr;
     }
 
-    //
-    void* ptr = ::new unsigned char[nodelen];
+    unsigned char* ptr = ::new unsigned char[node_len];
 
 #ifdef  DEBUG
     //检查帧的哪个地方出现问题，还是这样好一点
     memset(ptr, 0, nodelen);
 #endif
     //
-    ((dequechunk_node*)ptr)->size_of_node_ = (unsigned int)nodelen;
+    ((kfifo_node*)ptr)->size_of_node_ = (uint32_t)node_len;
 
-    return ptr;
+    return ((kfifo_node*)ptr);
 };
 
-void dequechunk_node::operator delete (void* ptrframe)
+void kfifo_node::delete_node(kfifo_node* node)
 {
-    unsigned char* ptr = (unsigned char*)ptrframe;
+    unsigned char* ptr = (unsigned char*)node;
     delete[] ptr;
 }
 
 /*********************************************************************************
-class shm_dequechunk
+class shm_kfifo
 *********************************************************************************/
 //构造函数和析构函数都不是打算给你使用的,
-shm_dequechunk::shm_dequechunk() :
-    dequechunk_head_(NULL),
-    dequechunk_database_(NULL),
-    line_wrap_nodeptr_(NULL)
-{
-}
 
-shm_dequechunk::~shm_dequechunk()
+shm_kfifo::~shm_kfifo()
 {
     if (line_wrap_nodeptr_)
     {
@@ -56,16 +49,16 @@ shm_dequechunk::~shm_dequechunk()
     }
 }
 
-size_t shm_dequechunk::getallocsize(const size_t szdeque)
+size_t shm_kfifo::getallocsize(const size_t szdeque)
 {
-    return  sizeof(_shm_dequechunk_head) + szdeque + JUDGE_FULL_INTERVAL;
+    return  sizeof(shm_kfifo_head) + szdeque + JUDGE_FULL_INTERVAL;
 }
 
 //根据参数初始化
-shm_dequechunk* shm_dequechunk::initialize(size_t size_of_deque,
-                                           size_t max_len_node,
-                                           char* pmmap,
-                                           bool if_restore)
+shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
+    size_t max_len_node,
+    char* pmmap,
+    bool if_restore)
 {
     //必须大于间隔长度
     if (size_of_deque <= sizeof(size_t) + 16)
@@ -74,7 +67,7 @@ shm_dequechunk* shm_dequechunk::initialize(size_t size_of_deque,
     }
 
     //
-    _shm_dequechunk_head* dequechunk_head = reinterpret_cast<_shm_dequechunk_head*>(pmmap);
+    shm_kfifo_head* dequechunk_head = reinterpret_cast<shm_kfifo_head*>(pmmap);
 
     //如果是恢复，检查几个值是否相等
     if (if_restore == true)
@@ -92,26 +85,26 @@ shm_dequechunk* shm_dequechunk::initialize(size_t size_of_deque,
     dequechunk_head->size_of_deque_ = size_of_deque + JUDGE_FULL_INTERVAL;
     dequechunk_head->max_len_node_ = max_len_node;
 
-    shm_dequechunk* dequechunk = new shm_dequechunk();
+    shm_kfifo* kfifo = new shm_kfifo();
 
     //得到空间大小
-    dequechunk->smem_base_ = pmmap;
+    kfifo->smem_base_ = pmmap;
 
     //
-    dequechunk->dequechunk_head_ = dequechunk_head;
+    kfifo->dequechunk_head_ = dequechunk_head;
     //
-    dequechunk->dequechunk_database_ = pmmap + sizeof(_shm_dequechunk_head);
+    kfifo->dequechunk_database_ = pmmap + sizeof(shm_kfifo_head);
 
     if (if_restore == false)
     {
-        dequechunk->clear();
+        kfifo->clear();
     }
 
-    return dequechunk;
+    return kfifo;
 }
 
 //清理成没有使用过的状态
-void shm_dequechunk::clear()
+void shm_kfifo::clear()
 {
     //
     dequechunk_head_->deque_begin_ = 0;
@@ -121,7 +114,7 @@ void shm_dequechunk::clear()
 
 //得到两个关键指针的快照
 //这个操作可以不用加锁基于一点,32位操作系统中的32位整数操作是原子操作
-void shm_dequechunk::snap_getpoint(size_t& pstart, size_t& pend)
+void shm_kfifo::snap_getpoint(size_t& pstart, size_t& pend)
 {
     pstart = dequechunk_head_->deque_begin_;
     pend = dequechunk_head_->deque_end_;
@@ -129,10 +122,10 @@ void shm_dequechunk::snap_getpoint(size_t& pstart, size_t& pend)
 }
 
 //将一个NODE放入尾部
-bool shm_dequechunk::push_end(const dequechunk_node* node)
+bool shm_kfifo::push_end(const kfifo_node* node)
 {
     //粗略的检查,如果长度不合格,返回不成功
-    if (node->size_of_node_ < dequechunk_node::MIN_SIZE_DEQUE_CHUNK_NODE ||
+    if (node->size_of_node_ < kfifo_node::MIN_SIZE_DEQUE_CHUNK_NODE ||
         node->size_of_node_ > dequechunk_head_->max_len_node_)
     {
         return false;
@@ -169,7 +162,7 @@ bool shm_dequechunk::push_end(const dequechunk_node* node)
 //将队列一个NODE拷贝取出,
 //如果缓冲自己分配,最好准备一个够用的缓冲使用
 //返回的节点区,要求node!=NULL,已经分配好了数据区
-bool shm_dequechunk::pop_front(dequechunk_node* const node)
+bool shm_kfifo::pop_front(kfifo_node* const node)
 {
     assert(node != NULL);
 
@@ -208,7 +201,7 @@ bool shm_dequechunk::pop_front(dequechunk_node* const node)
 }
 
 //将队列一个NODE从队首部取出,我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
-bool shm_dequechunk::pop_front_new(dequechunk_node*& new_node)
+bool shm_kfifo::pop_front_new(kfifo_node*& new_node)
 {
     assert(new_node == NULL);
 
@@ -219,14 +212,14 @@ bool shm_dequechunk::pop_front_new(dequechunk_node*& new_node)
     }
 
     size_t tmplen = get_front_len();
-    new_node = new (tmplen) dequechunk_node;
+    new_node = kfifo_node::new_node(tmplen);
 
     //这样写会有一些重复调用，但是我觉得这个地方性能不会是问题。
     return pop_front(new_node);
 }
 
 //将队列一个NODE读取复制出来,但是不是取出，
-bool shm_dequechunk::read_front(dequechunk_node* const node)
+bool shm_kfifo::read_front(kfifo_node* const node)
 {
     assert(node != NULL);
 
@@ -257,7 +250,7 @@ bool shm_dequechunk::read_front(dequechunk_node* const node)
 }
 
 //读取队列的第一个NODE，我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
-bool shm_dequechunk::read_front_new(dequechunk_node*& new_node)
+bool shm_kfifo::read_front_new(kfifo_node*& new_node)
 {
     assert(new_node == NULL);
 
@@ -268,13 +261,13 @@ bool shm_dequechunk::read_front_new(dequechunk_node*& new_node)
     }
 
     size_t tmplen = get_front_len();
-    new_node = new (tmplen) dequechunk_node;
+    new_node = kfifo_node::new_node(tmplen);
 
     return read_front(new_node);
 }
 
 //读取队列的第一个NODE的指针，如果是折行的数据会特殊处理
-bool shm_dequechunk::read_front_ptr(const dequechunk_node*& node_ptr)
+bool shm_kfifo::read_front_ptr(const kfifo_node*& node_ptr)
 {
     //检查是否为空
     if (empty() == true)
@@ -291,29 +284,27 @@ bool shm_dequechunk::read_front_ptr(const dequechunk_node*& node_ptr)
     {
         size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
         size_t second = tmplen - first;
-
         //如果line_wrap_nodeptr_没有空间，现分配
         if (line_wrap_nodeptr_ == NULL)
         {
-            line_wrap_nodeptr_ = new (dequechunk_head_->max_len_node_) dequechunk_node;
+            line_wrap_nodeptr_ = kfifo_node::new_node(dequechunk_head_->max_len_node_);
         }
-
         //将两截数据保存到line_wrap_nodeptr_中，给上层调用者用，让上层仍然使用一个连续的空间
         memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_), pbegin, first);
         memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_) + first, dequechunk_database_, second);
 
-        node_ptr = reinterpret_cast<const dequechunk_node*>(line_wrap_nodeptr_);
+        node_ptr = line_wrap_nodeptr_;
     }
     else
     {
-        node_ptr = reinterpret_cast<const dequechunk_node*>(pbegin);
+        node_ptr = reinterpret_cast<const kfifo_node*>(pbegin);
     }
 
     return true;
 }
 
 //丢弃队列前面的第一个NODE
-bool shm_dequechunk::discard_frond()
+bool shm_kfifo::discard_frond()
 {
     //检查是否为空
     if (empty() == true)
@@ -343,7 +334,7 @@ bool shm_dequechunk::discard_frond()
 }
 
 //FREE的尺寸,空闲的空间有多少
-size_t shm_dequechunk::free_size()
+size_t shm_kfifo::free_size()
 {
     //取快照
     size_t pstart, pend, szfree;
@@ -370,19 +361,19 @@ size_t shm_dequechunk::free_size()
 }
 
 //容量
-size_t shm_dequechunk::capacity()
+size_t shm_kfifo::capacity()
 {
     return dequechunk_head_->size_of_mmap_;
 }
 
 //得到某1时刻的快照是否为EMPTY
-bool shm_dequechunk::empty()
+bool shm_kfifo::empty()
 {
     return free_size() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
 }
 
 //得到某1时刻的快照是否为FULL
-bool shm_dequechunk::full()
+bool shm_kfifo::full()
 {
     return free_size() == 0;
 }

@@ -82,9 +82,9 @@ int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
     ret = read_data_fromudp(szrevc, remote_addr);
 
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Read Event[%s].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
-                     remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                     ret,
-                     szrevc);
+        remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+        ret,
+        szrevc);
 
     if (ret != 0)
     {
@@ -127,9 +127,9 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::Sockaddr_In& remote_
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     recvret = dgram_peer_.recvfrom(dgram_databuf_->frame_data_,
-                                   Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN,
-                                   0,
-                                   &remote_addr);
+        Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN,
+        0,
+        &remote_addr);
 
     if (recvret < 0)
     {
@@ -143,10 +143,10 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::Sockaddr_In& remote_
 
             //记录错误,返回错误
             ZCE_LOG(RS_ERROR, "UDP Read error [%s],receive data error peer:%u zce::last_error()=%d|%s.\n",
-                    remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                    dgram_peer_.get_handle(),
-                    zce::last_error(),
-                    strerror(zce::last_error()));
+                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                dgram_peer_.get_handle(),
+                zce::last_error(),
+                strerror(zce::last_error()));
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
         else
@@ -167,7 +167,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::Sockaddr_In& remote_
     if (recvret == 0)
     {
         ZCE_LOG(RS_ERROR, "UDP Read error [%s].UDP Peer recv return 0, I don't know how to process.?\n",
-                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -187,7 +187,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
         Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::dequechunk_node*>(dgram_databuf_));
+        reinterpret_cast<zce::lockfree::kfifo_node*>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 
@@ -209,7 +209,7 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     zce::Sockaddr_In remote_addr(send_frame->rcv_peer_info_.peer_ip_address_,
-                                 send_frame->rcv_peer_info_.peer_port_);
+        send_frame->rcv_peer_info_.peer_port_);
 
     //
     size_t i = 0;
@@ -220,9 +220,9 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
         if (ary_upd_peer_[i]->peer_svc_info_ == send_frame->snd_peer_info_)
         {
             szsend = ary_upd_peer_[i]->dgram_peer_.sendto(send_frame->frame_data_,
-                                                          send_frame->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
-                                                          0,
-                                                          &remote_addr);
+                send_frame->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
+                0,
+                &remote_addr);
             break;
         }
     }
@@ -231,8 +231,8 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
     if (i == ary_upd_peer_.size())
     {
         ZCE_LOG(RS_ERROR, "Can't find send peer[%s|%u].Please check code.\n",
-                zce::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, ip_addr_str, IP_ADDR_LEN),
-                send_frame->snd_peer_info_.peer_port_);
+            zce::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, ip_addr_str, IP_ADDR_LEN),
+            send_frame->snd_peer_info_.peer_port_);
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
@@ -240,15 +240,15 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
     if (szsend <= 0)
     {
         ZCE_LOG(RS_ERROR, "UDP send error[%s]. Send data error peer:%u zce::last_error()=%d|%s.\n",
-                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                ary_upd_peer_[i]->get_handle(),
-                zce::last_error(),
-                strerror(zce::last_error()));
+            remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            ary_upd_peer_[i]->get_handle(),
+            zce::last_error(),
+            strerror(zce::last_error()));
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s]  Socket %u bytes data Succ.\n",
-                     remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                     szsend);
+        remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+        szsend);
     return 0;
 }

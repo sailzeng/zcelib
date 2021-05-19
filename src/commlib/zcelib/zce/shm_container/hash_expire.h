@@ -98,13 +98,13 @@ public:
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
         //如果这个节点是末位的节点
-        if (serial_ == _shm_memory_base::_INVALID_POINT)
+        if (serial_ == shm_container::_INVALID_POINT)
         {
             //顺着Index查询.
             size_t bucket = lruht_instance_->bkt_num_value(*(lruht_instance_->value_base_ + oldseq));
 
             //
-            while (serial_ == _shm_memory_base::_INVALID_POINT && ++bucket < lruht_instance_->capacity())
+            while (serial_ == shm_container::_INVALID_POINT && ++bucket < lruht_instance_->capacity())
             {
                 serial_ = *(lruht_instance_->hash_factor_base_ + bucket);
             }
@@ -123,15 +123,15 @@ public:
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
         //如果这个节点不是末位的节点
-        if (serial_ != _shm_memory_base::_INVALID_POINT)
+        if (serial_ != shm_container::_INVALID_POINT)
         {
             _extract_key get_key;
             _equal_key   equal_key;
 
             if (false == equal_key(get_key(*(lruht_instance_->value_base_ + oldseq)),
-                                   get_key(*(lruht_instance_->value_base_ + serial_))))
+                get_key(*(lruht_instance_->value_base_ + serial_))))
             {
-                serial_ = _shm_memory_base::_INVALID_POINT;
+                serial_ = shm_container::_INVALID_POINT;
             }
         }
         else
@@ -221,7 +221,7 @@ template < class _value_type,
     class _extract_key = smem_identity<_value_type>,
     class _equal_key = std::equal_to<_key_type>,
     class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hashtable_expire: public  _shm_memory_base
+    class shm_hashtable_expire : public  shm_container
 {
 public:
     //定义迭代器
@@ -338,11 +338,11 @@ public:
                 return NULL;
 #else
                 ZCE_LOG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                        "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                        sz_mmap,
-                        real_num,
-                        hashhead->size_of_mmap_,
-                        hashhead->num_of_node_);
+                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                    sz_mmap,
+                    real_num,
+                    hashhead->size_of_mmap_,
+                    hashhead->num_of_node_);
 #endif
             }
         }
@@ -562,7 +562,7 @@ public:
     * @note       这儿会将插入的数据放在最后淘汰的地方
     */
     std::pair<iterator, bool> insert_unique(const _value_type& val,
-                                            unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/)
+        unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -601,7 +601,7 @@ public:
     //插入节点,允许相等
     //优先级可以，传递入当前时间作为参数，
     std::pair<iterator, bool> insert_equal(const _value_type& val,
-                                           unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/)
+        unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -860,7 +860,7 @@ public:
     * @param      priority 优先级参数可以使用当前的时间
     */
     bool active_unique(const _key_type& key,
-                       unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
@@ -906,7 +906,7 @@ public:
     * @note       LRU中如果，一个值被使用后，可以认为是激活过一次，
     */
     bool active_unique_value(const _value_type& val,
-                             unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         _extract_key get_key;
         _equal_key   equal_key;
@@ -947,7 +947,7 @@ public:
 
     //激活所有相同的KEY,将激活的数据挂到LIST的最开始,淘汰使用expire
     size_t active_equal(const _key_type& key,
-                        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         size_t active_count = 0;
 
@@ -1191,7 +1191,7 @@ template < class _value_type,
     class _hash_fun = smem_hash<_value_type>,
     class _equal_key = std::equal_to<_value_type>,
     class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hashset_expire:
+    class shm_hashset_expire :
     public shm_hashtable_expire < _value_type,
     _value_type,
     _hash_fun,
@@ -1231,7 +1231,7 @@ template < class _key_type,
     class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
     class _equal_key = std::equal_to<_key_type>,
     class _washout_fun = _default_washout_fun<_value_type> >
-    class smem_hashmap_expire:
+    class smem_hashmap_expire :
     public shm_hashtable_expire < std::pair <_key_type, _value_type>,
     _key_type,
     _hash_fun,
