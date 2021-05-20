@@ -17,7 +17,7 @@ kfifo_node* kfifo_node::new_node(size_t node_len)
         return nullptr;
     }
 
-    unsigned char* ptr = ::new unsigned char[node_len];
+    char* ptr = ::new char[node_len];
 
 #ifdef  DEBUG
     //检查帧的哪个地方出现问题，还是这样好一点
@@ -31,7 +31,7 @@ kfifo_node* kfifo_node::new_node(size_t node_len)
 
 void kfifo_node::delete_node(kfifo_node* node)
 {
-    unsigned char* ptr = (unsigned char*)node;
+    char* ptr = (char*)node;
     delete[] ptr;
 }
 
@@ -56,9 +56,10 @@ size_t shm_kfifo::getallocsize(const size_t szdeque)
 
 //根据参数初始化
 shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
-    size_t max_len_node,
-    char* pmmap,
-    bool if_restore)
+                                 size_t max_len_node,
+                                 char* mmap_ptr,
+                                 bool if_read_ptr,
+                                 bool if_restore)
 {
     //必须大于间隔长度
     if (size_of_deque <= sizeof(size_t) + 16)
@@ -67,7 +68,7 @@ shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
     }
 
     //
-    shm_kfifo_head* dequechunk_head = reinterpret_cast<shm_kfifo_head*>(pmmap);
+    shm_kfifo_head* dequechunk_head = reinterpret_cast<shm_kfifo_head*>(mmap_ptr);
 
     //如果是恢复，检查几个值是否相等
     if (if_restore == true)
@@ -88,18 +89,22 @@ shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
     shm_kfifo* kfifo = new shm_kfifo();
 
     //得到空间大小
-    kfifo->smem_base_ = pmmap;
+    kfifo->smem_base_ = mmap_ptr;
 
     //
     kfifo->dequechunk_head_ = dequechunk_head;
     //
-    kfifo->dequechunk_database_ = pmmap + sizeof(shm_kfifo_head);
+    kfifo->dequechunk_database_ = mmap_ptr + sizeof(shm_kfifo_head);
 
     if (if_restore == false)
     {
         kfifo->clear();
     }
-
+    if (if_read_ptr)
+    {
+        kfifo->line_wrap_nodeptr_ = kfifo_node::new_node(
+            kfifo->dequechunk_head_->max_len_node_);
+    }
     return kfifo;
 }
 
@@ -269,6 +274,9 @@ bool shm_kfifo::read_front_new(kfifo_node*& new_node)
 //读取队列的第一个NODE的指针，如果是折行的数据会特殊处理
 bool shm_kfifo::read_front_ptr(const kfifo_node*& node_ptr)
 {
+    //如果line_wrap_nodeptr_没有空间，现分配
+    assert(line_wrap_nodeptr_);
+
     //检查是否为空
     if (empty() == true)
     {
@@ -284,11 +292,7 @@ bool shm_kfifo::read_front_ptr(const kfifo_node*& node_ptr)
     {
         size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
         size_t second = tmplen - first;
-        //如果line_wrap_nodeptr_没有空间，现分配
-        if (line_wrap_nodeptr_ == NULL)
-        {
-            line_wrap_nodeptr_ = kfifo_node::new_node(dequechunk_head_->max_len_node_);
-        }
+
         //将两截数据保存到line_wrap_nodeptr_中，给上层调用者用，让上层仍然使用一个连续的空间
         memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_), pbegin, first);
         memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_) + first, dequechunk_database_, second);

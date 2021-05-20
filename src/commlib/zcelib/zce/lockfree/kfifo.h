@@ -146,19 +146,19 @@ public:
     static size_t getallocsize(const size_t size_of_deque);
 
     /*!
-    @brief      根据参数初始化
-    @return     shm_kfifo * 返回的初始化的指针，需要销毁，你用delete就可以，或者调用
-    @param      size_of_deque    deque的长度，(就是 getallocsize 的参数，不是返回值呀)
-    @param      max_len_node     放入的note最大长度，我会帮你检查一下
-    @param      pmmap            内存的指针，共享内存也可以，普通内存也可以
-    @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
-    @note
+    * @brief      根据参数初始化
+    * @return     shm_kfifo * 返回的初始化的指针，需要销毁，你用delete就可以，或者调用
+    * @param      size_of_deque    deque的长度，(就是 getallocsize 的参数，不是返回值呀)
+    * @param      max_len_node     放入的note最大长度，我会帮你检查一下
+    * @param      mmap_ptr         内存的指针，共享内存也可以，普通内存也可以
+    * @param      if_read_ptr      是否会直接使用node 的指针，即会使用read_front_ptr函数
+    * @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
     */
     static shm_kfifo* initialize(size_t size_of_deque,
-        size_t max_len_node,
-        char* pmmap,
-        bool if_restore = false
-    );
+                                 size_t max_len_node,
+                                 char* mmap_ptr,
+                                 bool if_read_ptr = false,
+                                 bool if_restore = false);
 
     /*!
     @brief      销毁初始化 initialize 得到的指针
