@@ -17,7 +17,7 @@ int TCP_PEER_CONFIG_INFO::from_str(const char* peer_info_str)
     //char pure_str[SVC_INFO_STR_LEN];
     //zce::str_replace(svc_info_str, pure_str," ","");
     char mod_file_name[MAX_PATH];
-    uint32_t u[4] = {0};
+    uint32_t u[4] = { 0 };
     uint16_t port = 0;
     //测试发现其实不需要手动去掉多余空格的干扰，把特殊字符前面也增加%控制就可以了。
     int ret_num = sscanf(peer_info_str,

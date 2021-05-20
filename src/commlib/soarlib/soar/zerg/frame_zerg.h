@@ -205,7 +205,7 @@ public:
 * @brief      Zerg服务器间传递消息的通用帧头
 *
 */
-class  Zerg_Frame: public Zerg_Head
+class  Zerg_Frame : public Zerg_Head
 {
 protected:
     //构造函数，禁止大家都可以用的.

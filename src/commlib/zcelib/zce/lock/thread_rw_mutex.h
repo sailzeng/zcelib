@@ -32,7 +32,7 @@
 @brief      线程的读写锁
 
 */
-class ZCE_Thread_RW_Mutex: public ZCE_Lock_Base
+class ZCE_Thread_RW_Mutex : public ZCE_Lock_Base
 {
 public:
     ///读锁的GUARD
@@ -86,7 +86,7 @@ protected:
             主要是为了适配Windows SVR 2008以后的读写锁实现，
             如果环境允许，推荐使用这个，速度比模拟的估计快很多，
 */
-class ZCE_Thread_Win_RW_Mutex: public ZCE_Lock_Base
+class ZCE_Thread_Win_RW_Mutex : public ZCE_Lock_Base
 {
 public:
     ///读锁的GUARD

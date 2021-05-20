@@ -338,11 +338,11 @@ public:
                 return NULL;
 #else
                 ZCE_LOG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                    sz_mmap,
-                    real_num,
-                    hashhead->size_of_mmap_,
-                    hashhead->num_of_node_);
+                        "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                        sz_mmap,
+                        real_num,
+                        hashhead->size_of_mmap_,
+                        hashhead->num_of_node_);
 #endif
             }
         }
@@ -562,7 +562,7 @@ public:
     * @note       这儿会将插入的数据放在最后淘汰的地方
     */
     std::pair<iterator, bool> insert_unique(const _value_type& val,
-        unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/)
+                                            unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -601,7 +601,7 @@ public:
     //插入节点,允许相等
     //优先级可以，传递入当前时间作为参数，
     std::pair<iterator, bool> insert_equal(const _value_type& val,
-        unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/)
+                                           unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -860,7 +860,7 @@ public:
     * @param      priority 优先级参数可以使用当前的时间
     */
     bool active_unique(const _key_type& key,
-        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                       unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
@@ -906,7 +906,7 @@ public:
     * @note       LRU中如果，一个值被使用后，可以认为是激活过一次，
     */
     bool active_unique_value(const _value_type& val,
-        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                             unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         _extract_key get_key;
         _equal_key   equal_key;
@@ -947,7 +947,7 @@ public:
 
     //激活所有相同的KEY,将激活的数据挂到LIST的最开始,淘汰使用expire
     size_t active_equal(const _key_type& key,
-        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         size_t active_count = 0;
 

@@ -120,14 +120,14 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
     int k = 0;
     // Enumerate call stack frame.
     while (::StackWalk64(machine_type,
-                         process,
-                         cur_thread,
-                         &stackframe,
-                         &context,
-                         NULL,
-                         SymFunctionTableAccess64,
-                         SymGetModuleBase64,
-                         NULL))
+           process,
+           cur_thread,
+           &stackframe,
+           &context,
+           NULL,
+           SymFunctionTableAccess64,
+           SymGetModuleBase64,
+           NULL))
     {
         // 结束处理
         if (stackframe.AddrFrame.Offset == 0 || k > SIZE_OF_BACKTRACE_FUNC)

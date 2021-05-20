@@ -40,7 +40,7 @@ namespace zce
 *             内部也指向有WHEEL
 *             设置定时器，取消定时器，分发定时器的消耗级别都是O(1)
 */
-class Timer_Wheel: public zce::Timer_Queue
+class Timer_Wheel : public zce::Timer_Queue
 {
 protected:
 

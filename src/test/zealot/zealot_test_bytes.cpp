@@ -61,7 +61,7 @@ int test_bytes_hash(int /*argc*/, char* /*argv*/[])
         {0x57,0xed,0xf4,0xa2,0x2b,0xe3,0xc9,0x55,0xac,0x49,0xda,0x2e,0x21,0x07,0xb6,0x7a},
         {0x35,0x9c,0x47,0x1e,0x86,0x20,0xe2,0x7a,0x41,0xb9,0x64,0x83,0x4c,0x4d,0x5e,0xb2},
     };
-    unsigned char result[32] = {0};
+    unsigned char result[32] = { 0 };
 
     zce::md5(test_buf[2], test_buflen[2], result);
 
@@ -221,7 +221,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
     memcpy(buffer, test_string, str_len + 1);
     {
         zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
-        unsigned char result[32] = {0};
+        unsigned char result[32] = { 0 };
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
@@ -1204,8 +1204,8 @@ struct DR_DATA_1
     static const size_t D1_C3_LEN = 6;
     static const size_t D1_C4_LEN = 8;
 
-    char d1_c3_[D1_C3_LEN] = {0};
-    int d1_c4_[D1_C4_LEN] = {0};
+    char d1_c3_[D1_C3_LEN] = { 0 };
+    int d1_c4_[D1_C4_LEN] = { 0 };
 
     std::vector<int> d1_d1_;
 

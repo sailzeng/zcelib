@@ -111,7 +111,7 @@ enum class LOG_OUTPUT
             zce::foo_snprintf，
 
 */
-class ZCE_LogTrace_Basic: public zce::NON_Copyable
+class ZCE_LogTrace_Basic : public zce::NON_Copyable
 {
 protected:
 

@@ -483,7 +483,7 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval& cur_time,
 {
     time_t cur_t = cur_time.tv_sec;
     tm curtm = *localtime(&(cur_t));
-    char tmpbuf[64] = {0};
+    char tmpbuf[64] = { 0 };
     size_t buflen = sizeof(tmpbuf) - 1;
 
     switch (div_log_file_)

@@ -15,7 +15,7 @@ namespace soar
 *
 * @note
 */
-class Svrd_Appliction: public zce::Server_Base
+class Svrd_Appliction : public zce::Server_Base
 {
 protected:
 

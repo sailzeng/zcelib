@@ -130,7 +130,7 @@ static int parse_long_options(char* const* nargv,
     {
         /* find matching long option */
         if (strncmp(current_argv, long_options[i].name,
-                    current_argv_len))
+            current_argv_len))
         {
             continue;
         }
@@ -616,11 +616,11 @@ zce::getopt_long(int nargc,
 {
 #if defined (ZCE_OS_WINDOWS)
     return (getopt_internal(nargc,
-                            nargv,
-                            options,
-                            long_options,
-                            idx,
-                            FLAG_PERMUTE));
+            nargv,
+            options,
+            long_options,
+            idx,
+            FLAG_PERMUTE));
 #endif
 #if defined (ZCE_OS_LINUX)
     return ::getopt_long(nargc,
@@ -644,11 +644,11 @@ zce::getopt_long_only(int nargc,
 {
 #if defined (ZCE_OS_WINDOWS)
     return (getopt_internal(nargc,
-                            nargv,
-                            options,
-                            long_options,
-                            idx,
-                            FLAG_PERMUTE | FLAG_LONGONLY));
+            nargv,
+            options,
+            long_options,
+            idx,
+            FLAG_PERMUTE | FLAG_LONGONLY));
 #endif
 #if defined (ZCE_OS_LINUX)
     return ::getopt_long_only(nargc,

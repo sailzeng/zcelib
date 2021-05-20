@@ -199,7 +199,7 @@ struct ZCE_STATUS_HEAD
 *
 * @note       本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
 */
-class Server_Status: public zce::NON_Copyable
+class Server_Status : public zce::NON_Copyable
 {
 protected:
 

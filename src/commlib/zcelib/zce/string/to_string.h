@@ -883,7 +883,7 @@ public:
     int                flags_;
 };
 
-class  Int_HexOut_Helper: public Int_Out_Helper
+class  Int_HexOut_Helper : public Int_Out_Helper
 {
 public:
     template <typename int_type>

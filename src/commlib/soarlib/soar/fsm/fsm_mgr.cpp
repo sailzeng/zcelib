@@ -347,7 +347,7 @@ FSM_Manager* FSM_Manager::instance()
 int FSM_Manager::lock_only_one(uint32_t cmd,
                                uint32_t lock_id)
 {
-    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    ONLYONE_LOCK lock_rec = { cmd,lock_id };
     auto iter_tmp =
         only_one_lock_pool_->insert(lock_rec);
 
@@ -367,7 +367,7 @@ int FSM_Manager::lock_only_one(uint32_t cmd,
 void FSM_Manager::unlock_only_one(uint32_t cmd,
                                   uint32_t lock_id)
 {
-    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    ONLYONE_LOCK lock_rec = { cmd,lock_id };
     only_one_lock_pool_->erase(lock_rec);
     return;
 }

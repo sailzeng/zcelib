@@ -21,7 +21,7 @@
 *             只要是从ZCE_Lock_Base继承的家伙，应该都可以使用这个，
 *             ZCE_LockPtr_Guard是利用多态特性实现的，而不是模版特性
 */
-class ZCE_Lock_Ptr_Guard: public zce::NON_Copyable
+class ZCE_Lock_Ptr_Guard : public zce::NON_Copyable
 {
 public:
 

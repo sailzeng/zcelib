@@ -9,7 +9,7 @@
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class ZCE_Async_Coroutine: public zce::Async_Object
+class ZCE_Async_Coroutine : public zce::Async_Object
 {
     friend class ZCE_Async_CoroutineMgr;
 
@@ -122,7 +122,7 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class ZCE_Async_CoroutineMgr: public zce::Async_Obj_Mgr
+class ZCE_Async_CoroutineMgr : public zce::Async_Obj_Mgr
 {
 public:
 

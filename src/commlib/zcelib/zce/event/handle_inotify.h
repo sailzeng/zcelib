@@ -78,7 +78,7 @@ namespace zce
             作为反应器，被调用
             在Windows 下，要用zce::WFMO_Reactor，
 */
-class Event_INotify:public zce::Event_Handler
+class Event_INotify :public zce::Event_Handler
 {
 public:
 

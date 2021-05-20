@@ -1,7 +1,7 @@
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-class FSM_1: public zce::Async_FSM
+class FSM_1 : public zce::Async_FSM
 {
 private:
     enum
@@ -65,7 +65,7 @@ public:
     }
 };
 
-class FSM_2: public zce::Async_FSM
+class FSM_2 : public zce::Async_FSM
 {
 private:
     enum
@@ -168,7 +168,7 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-class Coroutine_1: public ZCE_Async_Coroutine
+class Coroutine_1 : public ZCE_Async_Coroutine
 {
 public:
     Coroutine_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
@@ -194,7 +194,7 @@ public:
     }
 };
 
-class Coroutine_2: public ZCE_Async_Coroutine
+class Coroutine_2 : public ZCE_Async_Coroutine
 {
 public:
     Coroutine_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :

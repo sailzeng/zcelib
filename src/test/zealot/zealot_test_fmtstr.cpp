@@ -88,7 +88,7 @@ int test_fmt_splice(int /*argc*/, char* /*argv*/[])
 {
     const size_t BUFFER_LEN = 1023;
     size_t use_len = 0;
-    char buffer[BUFFER_LEN + 1] = {0};
+    char buffer[BUFFER_LEN + 1] = { 0 };
     zce::foo_strnsplice(buffer, BUFFER_LEN, use_len, '|', "ABC", "efghi");
     std::cout << buffer << std::endl;
     double double_data = 123.45678;

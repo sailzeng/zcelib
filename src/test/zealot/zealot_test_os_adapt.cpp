@@ -127,7 +127,7 @@ int test_scandir(int /*argc*/, char /*argv*/* [])
     return 0;
 }
 
-struct Zealot_SVC: public zce::Server_Base
+struct Zealot_SVC : public zce::Server_Base
 {
 };
 

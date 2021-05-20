@@ -3,7 +3,7 @@
 #include "zce/util/random.h"
 
 //仅仅用于测试，不实现完全了
-class random_libc: public zce::t_random_base<0, 0x00007FFF>
+class random_libc : public zce::t_random_base<0, 0x00007FFF>
 {
 public:
 
@@ -28,7 +28,7 @@ public:
 };
 
 //仅仅用于测试，不实现完全了
-class random_pet2: public zce::t_random_base<0, 0xFFFFFFFF>
+class random_pet2 : public zce::t_random_base<0, 0xFFFFFFFF>
 {
 public:
 

@@ -6,7 +6,7 @@
 
 namespace zce
 {
-class Socket_Stream: public zce::Socket_Base
+class Socket_Stream : public zce::Socket_Base
 {
 public:
 

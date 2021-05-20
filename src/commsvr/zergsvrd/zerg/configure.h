@@ -134,7 +134,7 @@ public:
 *
 * @note
 */
-class Zerg_Config: public Server_Config_Base
+class Zerg_Config : public Server_Config_Base
 {
 public:
     //

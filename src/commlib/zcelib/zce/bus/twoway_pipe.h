@@ -78,10 +78,10 @@ public:
 
     //初始化部分参数,
     int initialize(const char* bus_mmap_name,
-        size_t size_recv_pipe,
-        size_t size_send_pipe,
-        size_t max_frame_len,
-        bool if_restore);
+                   size_t size_recv_pipe,
+                   size_t size_send_pipe,
+                   size_t max_frame_len,
+                   bool if_restore);
 
 public:
 

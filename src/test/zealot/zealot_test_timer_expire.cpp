@@ -2,9 +2,9 @@
 
 static const size_t TEST_TIMER_NUMBER = 10;
 
-int TEST_TIMER_ACT[10] = {1,2,3,4,5,6,7,8,9,10};
+int TEST_TIMER_ACT[10] = { 1,2,3,4,5,6,7,8,9,10 };
 
-class Test_Timer_Handler: public zce::Timer_Handler
+class Test_Timer_Handler : public zce::Timer_Handler
 {
 public:
     virtual int timer_timeout(const zce::Time_Value& now_timenow_time,

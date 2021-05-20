@@ -23,7 +23,7 @@
 /*!
 * @brief      MYSQL的连接器
 */
-class ZCE_Mysql_Connect: public zce::NON_Copyable
+class ZCE_Mysql_Connect : public zce::NON_Copyable
 {
 public:
     /*!

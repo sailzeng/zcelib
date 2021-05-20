@@ -24,7 +24,7 @@
 *             ZCE_Process_Semaphore,ZCE_Thread_NONR_Mutex,等
 */
 template <typename zce_lock>
-class ZCE_Lock_Guard: public zce::NON_Copyable
+class ZCE_Lock_Guard : public zce::NON_Copyable
 {
 public:
 
@@ -80,7 +80,7 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock ZCE_Thread_RW_Mutex
 */
 template <class zce_lock>
-class ZCE_Read_Guard: public zce::NON_Copyable
+class ZCE_Read_Guard : public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
@@ -134,7 +134,7 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock ZCE_Thread_RW_Mutex
 */
 template <class zce_lock>
-class ZCE_Write_Guard: public zce::NON_Copyable
+class ZCE_Write_Guard : public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定

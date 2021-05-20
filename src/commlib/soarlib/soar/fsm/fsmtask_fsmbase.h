@@ -3,7 +3,7 @@
 
 namespace soar
 {
-class FSMTask_FSMBase: public FSM_Base
+class FSMTask_FSMBase : public FSM_Base
 {
 public:
 

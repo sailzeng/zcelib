@@ -62,9 +62,9 @@ public:
     }
     ///构造函数
     _lordrings_iterator(size_t rings_start,
-        size_t rings_capacity,
-        _value_type* rings_value_base,
-        size_t serial
+                        size_t rings_capacity,
+                        _value_type* rings_value_base,
+                        size_t serial
     ) :
         rings_start_(rings_start),
         rings_capacity_(rings_capacity),

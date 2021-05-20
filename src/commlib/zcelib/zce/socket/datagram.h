@@ -6,7 +6,7 @@
 namespace zce
 {
 //UDP socket
-class Socket_DataGram: public zce::Socket_Base
+class Socket_DataGram : public zce::Socket_Base
 {
 public:
 

@@ -26,7 +26,7 @@ class Timer_Handler;
 * @brief      定时器发生器的基础类
 *
 */
-class Timer_Queue: public zce::NON_Copyable
+class Timer_Queue : public zce::NON_Copyable
 {
 public:
     //无效的时间ID
@@ -75,7 +75,7 @@ protected:
         int                 time_id_ = 0;
 
         ///以后每次间隔的触发等待时间
-        zce::Time_Value      interval_time_ = {0,0};
+        zce::Time_Value      interval_time_ = { 0,0 };
 
         ///回调的时候返回的指针，我只是保存他，给你用的。你自己把握好
         const void* action_ = NULL;

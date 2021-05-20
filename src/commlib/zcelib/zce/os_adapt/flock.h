@@ -40,7 +40,7 @@ public:
 # if defined (ZCE_OS_WINDOWS)
 
     //OVERLAPPED 主要包括一些文件偏移信息
-    OVERLAPPED   overlapped_ = {0};
+    OVERLAPPED   overlapped_ = { 0 };
 
 # elif defined (ZCE_OS_LINUX)
     //文件锁flock对象

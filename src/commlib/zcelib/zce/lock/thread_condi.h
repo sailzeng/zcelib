@@ -21,7 +21,7 @@
 
 //线程的条件变量类,为了方便用了模版类，但请你直接用两个typedef
 template <class MUTEX>
-class ZCE_Thread_Condition: public ZCE_Condition_Base
+class ZCE_Thread_Condition : public ZCE_Condition_Base
 {
 public:
 

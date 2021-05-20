@@ -7,7 +7,7 @@
 *
 * @note
 */
-class TCP_Accept_Handler: public zce::Event_Handler
+class TCP_Accept_Handler : public zce::Event_Handler
 {
 public:
 

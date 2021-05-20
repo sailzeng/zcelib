@@ -662,8 +662,8 @@ int AII_Config_Table::compare_table(const char* old_db,
         {
             if (old_ai_iijma[p].ai_data_length_ == new_ai_iijma[q].ai_data_length_ &&
                 0 == ::memcmp(old_ai_iijma[p].ai_iijima_data_,
-                              new_ai_iijma[q].ai_iijima_data_,
-                              old_ai_iijma[p].ai_data_length_))
+                new_ai_iijma[q].ai_iijima_data_,
+                old_ai_iijma[p].ai_data_length_))
             {
                 //old[p] = new[q]相同，
                 ++p;
@@ -696,8 +696,8 @@ int AII_Config_Table::compare_table(const char* old_db,
                     bool r_is_equal = false;
                     if (old_ai_iijma[p].ai_data_length_ == new_ai_iijma[r].ai_data_length_ &&
                         0 == ::memcmp(old_ai_iijma[p].ai_iijima_data_,
-                                      new_ai_iijma[r].ai_iijima_data_,
-                                      old_ai_iijma[p].ai_data_length_))
+                        new_ai_iijma[r].ai_iijima_data_,
+                        old_ai_iijma[p].ai_data_length_))
                     {
                         r_is_equal = true;
                     }

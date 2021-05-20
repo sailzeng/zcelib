@@ -21,7 +21,7 @@
 
 namespace zce
 {
-class SHM_Mmap: public zce::NON_Copyable
+class SHM_Mmap : public zce::NON_Copyable
 {
 public:
     //构造函数

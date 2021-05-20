@@ -23,7 +23,7 @@
 /******************************************************************************************
 class ZCE_Trace_LogMsg
 ******************************************************************************************/
-class ZCE_Trace_LogMsg: public ZCE_LogTrace_Basic
+class ZCE_Trace_LogMsg : public ZCE_LogTrace_Basic
 {
 public:
 

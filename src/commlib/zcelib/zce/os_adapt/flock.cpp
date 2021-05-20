@@ -47,9 +47,9 @@ void zce::fcntl_lock_adjust_params(zce::file_lock_t* lock,
         distance.QuadPart = 0;
 
         if (!::SetFilePointerEx(lock->handle_,
-                                distance,
-                                &offset,
-                                FILE_CURRENT))
+            distance,
+            &offset,
+            FILE_CURRENT))
         {
             errno = zce::last_error();
             return;

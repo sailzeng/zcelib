@@ -11,7 +11,7 @@ namespace zce
 {
 //构造函数
 WFMO_Reactor::WFMO_Reactor() :
-    watch_handle_ary_{ZCE_INVALID_HANDLE}
+    watch_handle_ary_{ ZCE_INVALID_HANDLE }
 {
     initialize();
 

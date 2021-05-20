@@ -16,7 +16,7 @@
 
 class soar::FSMTask_TaskBase;
 
-class Comm_SvrdApp_FSMTask: public soar::Svrd_Appliction
+class Comm_SvrdApp_FSMTask : public soar::Svrd_Appliction
 {
 protected:
 

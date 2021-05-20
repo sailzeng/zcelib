@@ -31,7 +31,7 @@ namespace zce
 * @brief      SELECT 的IO反应器，IO多路复用模型
 *
 */
-class Select_Reactor: public zce::ZCE_Reactor
+class Select_Reactor : public zce::ZCE_Reactor
 {
 public:
 

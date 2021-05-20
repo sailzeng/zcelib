@@ -20,7 +20,7 @@ namespace zce
 * @brief      EPOLL 的IO反应器，IO多路复用模型
 *
 */
-class  Epoll_Reactor: public zce::ZCE_Reactor
+class  Epoll_Reactor : public zce::ZCE_Reactor
 {
 protected:
 

@@ -9,7 +9,7 @@ namespace zce
 *
 * @note
 */
-class Sockaddr_In: public Sockaddr_Base
+class Sockaddr_In : public Sockaddr_Base
 {
 public:
 

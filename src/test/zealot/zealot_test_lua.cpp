@@ -102,7 +102,7 @@ public:
     int a_;
 };
 
-class T3B: public T3A
+class T3B : public T3A
 {
 public:
     T3B(int b1, int b2, int b3) : T3A(0), b1_(b1), b2_(b2), b3_(b3)
@@ -727,7 +727,7 @@ struct T9C_base
     }
 };
 
-class T9C: public T9C_base
+class T9C : public T9C_base
 {
 public:
     T9C(int val) :

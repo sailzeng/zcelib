@@ -7,7 +7,7 @@ namespace zerg
 *
 * @note
 */
-class  App_Timer: public  soar::Server_Timer
+class  App_Timer : public  soar::Server_Timer
 {
 public:
     //

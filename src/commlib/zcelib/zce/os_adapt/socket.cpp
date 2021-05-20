@@ -1183,7 +1183,7 @@ int zce::inet_pton(int family,
 
         //为什么不直接用in_val->S_un.S_un_b.s_b1？你猜
         const int NUM_FIELDS_AF_INET = 4;
-        uint32_t u[NUM_FIELDS_AF_INET] = {0};
+        uint32_t u[NUM_FIELDS_AF_INET] = { 0 };
         get_fields_num = sscanf(strptr,
                                 "%u%.%u%.%u%.%u",
                                 &(u[0]),
@@ -1215,7 +1215,7 @@ int zce::inet_pton(int family,
         //输入的字符串不合乎标准
         const int NUM_FIELDS_AF_INET6 = 8;
 
-        const char INET6_STR_UP_CHAR[] = {"1234567890ABCDEF"};
+        const char INET6_STR_UP_CHAR[] = { "1234567890ABCDEF" };
 
         //先请0
         memset(addrptr, 0, sizeof(in_addr6));
@@ -1232,8 +1232,8 @@ int zce::inet_pton(int family,
         //
         size_t word_start_pos = 0;
 
-        uint16_t for_word[NUM_FIELDS_AF_INET6] = {0};
-        uint16_t back_word[NUM_FIELDS_AF_INET6] = {0};
+        uint16_t for_word[NUM_FIELDS_AF_INET6] = { 0 };
+        uint16_t back_word[NUM_FIELDS_AF_INET6] = { 0 };
 
         size_t forword_num = 0, backword_num = 0;
 
@@ -1322,7 +1322,7 @@ int zce::inet_pton(int family,
         if (havedot_ipv4_mapped > 0)
         {
             const int NUM_FIELDS_AF_INET = 4;
-            uint32_t u[NUM_FIELDS_AF_INET] = {0};
+            uint32_t u[NUM_FIELDS_AF_INET] = { 0 };
             get_fields_num = sscanf(strptr + word_start_pos,
                                     "%u%.%u%.%u%.%u",
                                     &(u[0]),
@@ -2088,7 +2088,7 @@ int zce::socks5_initialize(ZCE_SOCKET handle,
                            zce::Time_Value& timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
-    unsigned char buffer[BUFFER_LEN] = {""};
+    unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
     ssize_t snd_ret = 0;
 
@@ -2180,7 +2180,7 @@ int zce::socks5_connect_host(ZCE_SOCKET handle,
                              zce::Time_Value& timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
-    unsigned char buffer[BUFFER_LEN] = {""};
+    unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
     const size_t MAX_STRING_LEN = 255;
 
@@ -2267,7 +2267,7 @@ int zce::socks5_udp_associate(ZCE_SOCKET handle,
                               zce::Time_Value& timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
-    unsigned char buffer[BUFFER_LEN] = {""};
+    unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
 
     ZCE_ASSERT(bind_addr && udp_addr);

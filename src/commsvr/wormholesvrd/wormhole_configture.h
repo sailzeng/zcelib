@@ -3,7 +3,7 @@
 
 #include "wormhole_proxyprocess.h"
 
-class Wormhole_Server_Config: public Server_Config_Base
+class Wormhole_Server_Config : public Server_Config_Base
 {
 public:
     //

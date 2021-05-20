@@ -81,7 +81,7 @@ namespace zce
 /*********************************************************************************
 class ZCE_Server_Toolkit
 *********************************************************************************/
-class Server_Base: public zce::NON_Copyable
+class Server_Base : public zce::NON_Copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,

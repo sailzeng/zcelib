@@ -520,8 +520,8 @@ void zce::fmt_int64(char* buffer,
         }
     }
 
-    const char BASE_UPPERCASE_OUTCHAR[] = {"0123456789ABCDEF"};
-    const char BASE_LOWERCASE_OUTCHAR[] = {"0123456789abcdef"};
+    const char BASE_UPPERCASE_OUTCHAR[] = { "0123456789ABCDEF" };
+    const char BASE_LOWERCASE_OUTCHAR[] = { "0123456789abcdef" };
 
     //如果是大写,16进制的转换全部用大写
     const char* use_char_ary = BASE_LOWERCASE_OUTCHAR;
@@ -673,8 +673,8 @@ void zce::fmt_int64(std::string& stdstr,
         }
     }
 
-    const char BASE_UPPERCASE_OUTCHAR[] = {"0123456789ABCDEF"};
-    const char BASE_LOWERCASE_OUTCHAR[] = {"0123456789abcdef"};
+    const char BASE_UPPERCASE_OUTCHAR[] = { "0123456789ABCDEF" };
+    const char BASE_LOWERCASE_OUTCHAR[] = { "0123456789abcdef" };
 
     //如果是大写,16进制的转换全部用大写
     const char* use_char_ary = BASE_LOWERCASE_OUTCHAR;

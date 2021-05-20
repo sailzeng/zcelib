@@ -875,7 +875,7 @@ void ZCE_Lua_Base::reg_uint64()
 static int tostring_stdstring(lua_State* state)
 {
     lua_pushstring(state, ((std::string*)
-                           (((zce::luatie::lua_udat_base*)lua_touserdata(state, 1))->obj_ptr_))->c_str());
+                   (((zce::luatie::lua_udat_base*)lua_touserdata(state, 1))->obj_ptr_))->c_str());
     return 1;
 }
 
@@ -918,7 +918,7 @@ static int add_stdstring(lua_State* state)
     if (lua_isuserdata(state, 2))
     {
         ptr_b = (std::string*)(((zce::luatie::lua_udat_base*)
-                                lua_touserdata(state, 2))->obj_ptr_);
+                               lua_touserdata(state, 2))->obj_ptr_);
     }
     else if (lua_isstring(state, 2))
     {

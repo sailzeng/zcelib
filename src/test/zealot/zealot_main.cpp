@@ -19,7 +19,6 @@ int main(int argc, char* argv[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
     test_foo_snprintf(argc, argv);
-    
 
     return 0;
 

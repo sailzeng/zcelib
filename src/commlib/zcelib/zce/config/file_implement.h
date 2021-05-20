@@ -9,7 +9,7 @@
 *
 * @note
 */
-class ZCE_INI_Implement: public zce::NON_Copyable
+class ZCE_INI_Implement : public zce::NON_Copyable
 {
 public:
 
@@ -29,7 +29,7 @@ protected:
 *
 * @note
 */
-class ZCE_XML_Implement: public zce::NON_Copyable
+class ZCE_XML_Implement : public zce::NON_Copyable
 {
 public:
     ZCE_XML_Implement();

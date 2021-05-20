@@ -37,7 +37,6 @@ int test_fmt_splice(int argc, char* argv[]);
 int test_cpp_log_out(int argc, char* argv[]);
 int test_foo_snprintf(int argc, char* argv[]);
 
-
 int test_bytes_hash(int argc, char* argv[]);
 int test_bytes_encode(int argc, char* argv[]);
 int test_bytes_crc32(int argc, char* argv[]);
@@ -50,7 +49,6 @@ int bytes_encrypt_right(int argc, char* argv[]);
 int bytes_encrypt_perf(int argc, char* argv[]);
 
 int test_scandir(int argc, char* argv[]);
-
 
 int test_inotify_reactor(int argc, char* argv[]);
 int test_inotify_reactor2(int /*argc*/, char* /*argv*/[]);

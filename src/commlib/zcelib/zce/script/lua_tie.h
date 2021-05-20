@@ -130,7 +130,7 @@ public:
 * @tparam     val_type 值得类型
 */
 template<typename val_type>
-class val_2_udat: public lua_udat_base
+class val_2_udat : public lua_udat_base
 {
 public:
     val_2_udat()
@@ -162,7 +162,7 @@ public:
 * @tparam     val_type 指针的类型
 */
 template<typename val_type>
-class ptr_2_udat: public lua_udat_base
+class ptr_2_udat : public lua_udat_base
 {
 public:
     ptr_2_udat(val_type t)
@@ -176,7 +176,7 @@ public:
 * @tparam     val_type 引用的类型
 */
 template<typename val_type>
-class ref_2_udat: public lua_udat_base
+class ref_2_udat : public lua_udat_base
 {
 public:
     //注意第一个&t表示是引用参数，第二个是标示传递指针给lua_udat_base基类
@@ -191,7 +191,7 @@ public:
 * @tparam     val_type 引用的类型
 */
 template<typename ary_type>
-class arrayref_2_udat: public lua_udat_base
+class arrayref_2_udat : public lua_udat_base
 {
 public:
     ///构造函数
@@ -236,7 +236,7 @@ void push_stack(lua_State* state,
 {
     //
     new (::lua_newuserdata(state,
-                           sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(ref);
+         sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(ref);
 
     //如果原类型（去掉引用）是一个object，
     if (std::is_class<typename std::remove_reference<val_type>::type >::value)
@@ -327,7 +327,7 @@ void push_stack_val(lua_State* state, val_type val)
     }
 
     new (::lua_newuserdata(state,
-                           sizeof(val_2_udat<val_type>)))
+         sizeof(val_2_udat<val_type>)))
         val_2_udat<typename std::remove_cv<val_type>::type >(val);
 
     //根据类的名称，设置metatable
@@ -363,8 +363,8 @@ template<typename val_type  >
 void push_stack(lua_State* state,
                 typename  std::enable_if
                 < !(std::is_pointer<val_type>::value ||
-                    std::is_reference<val_type>::value ||
-                    std::is_enum<val_type>::value), val_type
+                std::is_reference<val_type>::value ||
+                std::is_enum<val_type>::value), val_type
                 >::type val)
 {
     return push_stack_val<typename std::remove_cv<val_type>::type >(state, val);
@@ -626,7 +626,7 @@ public:
         //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
         push_stack<ret_type>(state,
                              fun_ptr(read_stack<typename std::decay<args_type>::type>
-                                     (state, para_idx--)...));
+                             (state, para_idx--)...));
         return (last_yield) ? ::lua_yield(state, 1) : 1;
     }
 
@@ -642,7 +642,7 @@ public:
         //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
         int para_idx = 1;
         std::tuple<typename std::decay<args_type>::type...> para = {
-            (read_stack<typename std::decay<args_type>::type>(state,para_idx++))...};
+            (read_stack<typename std::decay<args_type>::type>(state,para_idx++))... };
         //使用tuple执行函数调用
         push_stack<ret_type>(state,
                              zce::g_func_tuplearg_invoke(fun_ptr, para));
@@ -666,7 +666,7 @@ private:
         ret_type(*fun_ptr)(args_type...) = (ret_type(*)(args_type...)) (upvalue_1);
 
         push_stack<ret_type>(state, fun_ptr(read_stack<typename std::decay<args_type>::type>
-                                            (state, I + 1)...));
+                             (state, I + 1)...));
         return (last_yield) ? ::lua_yield(state, 1) : 1;
     }
 #endif
@@ -728,7 +728,7 @@ private:
         //new 一个user data，用<T>的大小,同时，同时用placement new 的方式，
         //（指针式lua_newuserdata分配的）完成构造函数
         new (::lua_newuserdata(state,
-                               sizeof(val_2_udat<class_type>))) \
+             sizeof(val_2_udat<class_type>))) \
             val_2_udat<class_type>(read_stack<args_type>(state, I + 2)...);
 
         ::lua_pushstring(state, class_name<class_type>::name());
@@ -833,7 +833,7 @@ public:
 * @tparam     var_type   为变量类型
 */
 template<typename class_type, typename var_type>
-class member_var: memvar_base
+class member_var : memvar_base
 {
 public:
     member_var(var_type class_type::* val) :
@@ -873,7 +873,7 @@ public:
 * @note
 */
 template<typename class_type, typename ary_type, size_t ary_size>
-class member_array: memvar_base
+class member_array : memvar_base
 {
 public:
 
@@ -1471,7 +1471,7 @@ public:
         ::lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
         new (lua_newuserdata(lua_state_,
-                             sizeof(zce::luatie::member_var<class_type, var_type>))) \
+             sizeof(zce::luatie::member_var<class_type, var_type>))) \
             zce::luatie::member_var<class_type, var_type>(val);
         ::lua_rawset(lua_state_, -3);
 
@@ -1511,7 +1511,7 @@ public:
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
         new (lua_newuserdata(lua_state_,
-                             sizeof(zce::luatie::member_array<class_type, ary_type, ary_size>))) \
+             sizeof(zce::luatie::member_array<class_type, ary_type, ary_size>))) \
             zce::luatie::member_array<class_type, ary_type, ary_size>(mem_ary, read_only);
         lua_rawset(lua_state_, -3);
 
@@ -1952,7 +1952,7 @@ protected:
 *             我的代码里面也有真正的thread相关的东东，避免误解，统一使用Lua Thread这样的命名
 *             另外，我比较吃不准的是是直接使用lua_State 还是用现场更好。对外其实差别不大
 */
-class ZCE_Lua_Thread: public ZCE_Lua_Base
+class ZCE_Lua_Thread : public ZCE_Lua_Base
 {
 public:
 
@@ -1987,7 +1987,7 @@ protected:
 *             同时还可以使用线程等功能
 * @note
 */
-class ZCE_Lua_Tie: public ZCE_Lua_Base
+class ZCE_Lua_Tie : public ZCE_Lua_Base
 {
 public:
 
