@@ -395,8 +395,8 @@ public:
         *cipher_len = cphbuf_need_len;
 
         //用于记录异或结果的数据区，+4是因为尾巴补0的时候，可能溢出一个BLOCK，免得写一堆判断代码。
-        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
-        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = {0};
+        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = { 0 };
+        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = { 0 };
 
         //用你给出的iv以及随机数算法生成IV.填补进入密文数据区，目前设计的可以填充的iv 4个字节
         unsigned char* write_ptr = cipher_buf;
@@ -756,7 +756,7 @@ public:
             更多情况下，这是一个例子，教你如何写某个加密算法的ECB加密策略，
             好在CBC中使用
 */
-class XOR_ECB: public SubKey_Is_Key_ECB
+class XOR_ECB : public SubKey_Is_Key_ECB
 {
 public:
 
@@ -814,7 +814,7 @@ public:
 *             http://zh.wikipedia.org/wiki/DES                   -- 来自维基
 * @note
 */
-class DES_ECB: public DES_Base
+class DES_ECB : public DES_Base
 {
 public:
     //秘钥长度
@@ -871,7 +871,7 @@ typedef ZCE_Crypt<DES_ECB > DES_Crypt_64_64_16;
 * @note       密文 = EK3(DK2(EK1(平文)))
 *             平文 = DK1(EK2(DK3(密文)))
 */
-class DES3_ECB: public DES_Base
+class DES3_ECB : public DES_Base
 {
 public:
     //秘钥长度
@@ -938,7 +938,7 @@ typedef ZCE_Crypt<DES3_ECB > DES3_Crypt_64_192_16;
 * @note       算法中使用了ZINDEX_TO_LEUINT32，这些宏，其实是相当于我认为算法的编码是小头党
 */
 template <size_t round_size>
-class TEA_ECB: public SubKey_Is_Uint32Ary_ECB<16>
+class TEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
 
@@ -1019,7 +1019,7 @@ typedef ZCE_Crypt<TEA_ECB<64 > > TEA_Crypt_64_128_64;
 @tparam     round_size 加密的轮数
 */
 template <size_t round_size>
-class XTEA_ECB: public SubKey_Is_Uint32Ary_ECB<16>
+class XTEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
 
@@ -1099,7 +1099,7 @@ typedef ZCE_Crypt<XTEA_ECB<64 > > XTEA_Crypt_64_128_64;
 
 */
 template <size_t block_size, size_t round_size>
-class XXTEA_ECB: public SubKey_Is_Uint32Ary_ECB<16>
+class XXTEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
 
@@ -1214,7 +1214,7 @@ typedef ZCE_Crypt<XXTEA_ECB<16, 16 > > XXTEA_Crypt_128_128_16;
             这个东东更加脆弱，但由于GOST的密钥要求256位，加密轮数也多
             所以安全性好于DES,这个实现的轮数只能是32轮，（轮数无法改变）
 */
-class GOST_ECB: public SubKey_Is_Uint32Ary_ECB<32>
+class GOST_ECB : public SubKey_Is_Uint32Ary_ECB<32>
 {
 public:
 
@@ -1271,7 +1271,7 @@ protected:
                         RC6算法为轮数+4
 */
 template <size_t key_size, size_t round_size, size_t sbox_size >
-class RC_ECB_Base: public RC_SBOX_Define
+class RC_ECB_Base : public RC_SBOX_Define
 {
 public:
 
@@ -1325,7 +1325,7 @@ public:
 @tparam     sbox_size  SBOX的大小
 */
 template <size_t key_size, size_t round_size, size_t sbox_size >
-class RC5_ECB: public RC_ECB_Base< key_size, round_size, sbox_size >
+class RC5_ECB : public RC_ECB_Base< key_size, round_size, sbox_size >
 {
 public:
 
@@ -1381,7 +1381,7 @@ typedef ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > > RC5_Crypt_64_128_20;
             RC6 一般情况下，推荐128bit密钥，128bitBLOCK，轮数20.
 */
 template <size_t key_size, size_t round_size, size_t sbox_size >
-class RC6_ECB: public RC_ECB_Base<key_size, round_size, sbox_size >
+class RC6_ECB : public RC_ECB_Base<key_size, round_size, sbox_size >
 {
 public:
 
@@ -1479,7 +1479,7 @@ protected:
 
 //保存CAST6_KEY_ROTAST算法的SBOX，供CAST5，CAST6算法使用
 template < size_t round_size>
-class CAST_ECB_Base: public CAST_SBOX_Define
+class CAST_ECB_Base : public CAST_SBOX_Define
 {
 protected:
 
@@ -1513,7 +1513,7 @@ protected:
 
 */
 template <size_t key_size, size_t round_size>
-class CAST5_ECB: public CAST_ECB_Base < round_size >
+class CAST5_ECB : public CAST_ECB_Base < round_size >
 {
 public:
 
@@ -1749,7 +1749,7 @@ typedef ZCE_Crypt<CAST5_ECB<16, 16> >  CAST5_Crypt_64_128_16;
 @tparam     round_size 加密的轮数，我这儿支持12，24.36，48轮
 */
 template <size_t key_size, size_t round_size>
-class CAST6_ECB: public CAST_ECB_Base < round_size >
+class CAST6_ECB : public CAST_ECB_Base < round_size >
 {
 public:
 
@@ -2018,7 +2018,7 @@ protected:
             core are "jacketed" by unkeyed mixing rounds, together with key whitening.
 */
 template <size_t key_size>
-class MARS_ECB: public MARS_ECB_Define
+class MARS_ECB : public MARS_ECB_Define
 {
 public:
 
@@ -2301,7 +2301,7 @@ protected:
 @note
 */
 template <size_t key_size, size_t round_size>
-class AES_ECB: public AES_ECB_Define
+class AES_ECB : public AES_ECB_Define
 {
 public:
 

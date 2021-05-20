@@ -31,7 +31,7 @@ namespace zce
 * @brief      WaitForMultipleObjects 的IO反应器，IO多路复用模型
 *
 */
-class WFMO_Reactor: public ZCE_Reactor
+class WFMO_Reactor : public ZCE_Reactor
 {
 public:
 

@@ -1525,11 +1525,11 @@ public:
             _value_type,
             _extract_key,
             _compare_key  > *> (
-                avl_tree < std::pair < _key_type,
-                _value_type >,
-                _key_type,
-                _extract_key,
-                _compare_key >::initialize(numnode, pmmap, if_restore));
+            avl_tree < std::pair < _key_type,
+            _value_type >,
+            _key_type,
+            _extract_key,
+            _compare_key >::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
     _value_type& operator[](const _key_type& key)

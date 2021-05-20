@@ -244,12 +244,12 @@ void zce::memory_debug(const unsigned char* mem_ptr,
     //一行输出的字符数量
     const size_t LINE_OUT_NUM = 32;
     const size_t SPEARATOR_LEN = 2;
-    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = {0};
+    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = { 0 };
     ascii_str[LINE_OUT_NUM + SPEARATOR_LEN] = '\0';
     const size_t HEX_STR_LEN = 4;
-    char hex_str[HEX_STR_LEN] = {0};
+    char hex_str[HEX_STR_LEN] = { 0 };
     const size_t ADDR_STR_LEN = 32;
-    char addr_str[ADDR_STR_LEN] = {0};
+    char addr_str[ADDR_STR_LEN] = { 0 };
     //头部用4个空格作为分割富豪
 
     ascii_str[0] = ' ';

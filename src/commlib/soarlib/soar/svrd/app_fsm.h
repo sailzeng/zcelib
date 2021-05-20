@@ -18,7 +18,7 @@
 *
 * @note
 */
-class Comm_SvrdApp_FSM: public soar::Svrd_Appliction
+class Comm_SvrdApp_FSM : public soar::Svrd_Appliction
 {
 protected:
 

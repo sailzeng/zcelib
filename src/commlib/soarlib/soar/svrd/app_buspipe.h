@@ -11,7 +11,7 @@ class soar::Zerg_Frame;
 
 namespace soar
 {
-class App_BusPipe: protected zce::TwoWay_BusPipe
+class App_BusPipe : protected zce::TwoWay_BusPipe
 {
 public:
     //构造函数,

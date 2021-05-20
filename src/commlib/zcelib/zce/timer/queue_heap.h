@@ -33,7 +33,7 @@ namespace zce
 *           其各种操作的时间复杂度都基本是O(log(2N)) 这个级别。
 *
 */
-class Timer_Heap: public zce::Timer_Queue
+class Timer_Heap : public zce::Timer_Queue
 {
 public:
     ///构造函数

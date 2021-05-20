@@ -4,7 +4,7 @@
 //forward declaration
 class Ogre_IPRestrict_Mgr;
 
-class Ogre_UDPSvc_Hdl: public zce::Event_Handler
+class Ogre_UDPSvc_Hdl : public zce::Event_Handler
 {
 protected:
     //

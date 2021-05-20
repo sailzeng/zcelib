@@ -10,7 +10,7 @@ class Ogre_IPRestrict_Mgr;
 *
 * @note
 */
-class Ogre_TCPAccept_Hdl: public zce::Event_Handler
+class Ogre_TCPAccept_Hdl : public zce::Event_Handler
 {
 public:
 

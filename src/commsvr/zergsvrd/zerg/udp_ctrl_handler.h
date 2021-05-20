@@ -10,7 +10,7 @@
 class soar::Zerg_Frame;
 class Zerg_Config;
 
-class UDP_Svc_Handler: public zce::Event_Handler
+class UDP_Svc_Handler : public zce::Event_Handler
 {
 protected:
 

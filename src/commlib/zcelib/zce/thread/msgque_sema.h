@@ -34,7 +34,7 @@ namespace zce
 */
 template < typename _value_type,
     typename _container_type >
-    class Message_Queue: public zce::NON_Copyable
+    class Message_Queue : public zce::NON_Copyable
 {
 public:
 
@@ -294,7 +294,7 @@ protected:
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class MsgQueue_List: public Message_Queue<_value_type, std::list<_value_type> >
+class MsgQueue_List : public Message_Queue<_value_type, std::list<_value_type> >
 {
 public:
     //
@@ -315,7 +315,7 @@ public:
 * note       封装的主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class MsgQueue_Deque: public Message_Queue<_value_type, std::deque<_value_type> >
+class MsgQueue_Deque : public Message_Queue<_value_type, std::deque<_value_type> >
 {
 public:
     //
@@ -336,7 +336,7 @@ public:
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <typename _value_type >
-class MsgQueue_Rings: public Message_Queue<_value_type, zce::lordrings<_value_type> >
+class MsgQueue_Rings : public Message_Queue<_value_type, zce::lordrings<_value_type> >
 {
 public:
     //

@@ -442,7 +442,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t* mutex,
     {
         if ((PTHREAD_PROCESS_SHARED == mutex->lock_shared_)
             || (PTHREAD_PROCESS_PRIVATE == mutex->lock_shared_
-                && ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
+            && ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
             )
         {
             //等待时间触发

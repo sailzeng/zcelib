@@ -8,7 +8,7 @@
 *
 * @note
 */
-class Wormhole_Proxy_App: public Soar_SvrdApp_ZergBus
+class Wormhole_Proxy_App : public Soar_SvrdApp_ZergBus
 {
 public:
     // 自己的单子偷偷藏着，

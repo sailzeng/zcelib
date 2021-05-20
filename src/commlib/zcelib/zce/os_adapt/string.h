@@ -34,12 +34,12 @@ namespace zce
 * @note       char_traits里面还有 length,move等函数
 */
 template <typename char_type>
-struct yun_char_traits: public std::char_traits < char_type >
+struct yun_char_traits : public std::char_traits < char_type >
 {
 };
 
 template <>
-struct yun_char_traits < char >: public std::char_traits < char >
+struct yun_char_traits < char > : public std::char_traits < char >
 {
     typedef std::string string_type;
 
@@ -69,7 +69,7 @@ struct yun_char_traits < char >: public std::char_traits < char >
 };
 
 template <>
-struct yun_char_traits < wchar_t >: public std::char_traits < wchar_t >
+struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
 {
     typedef std::wstring    string_type;
 

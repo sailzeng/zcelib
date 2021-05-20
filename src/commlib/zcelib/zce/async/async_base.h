@@ -162,7 +162,7 @@ class Timer_Queue;
 * @brief      异步对象的管理器基类
 *
 */
-class Async_Obj_Mgr: public zce::Timer_Handler
+class Async_Obj_Mgr : public zce::Timer_Handler
 {
 protected:
 

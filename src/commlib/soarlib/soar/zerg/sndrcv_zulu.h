@@ -23,7 +23,7 @@
 /******************************************************************************************
 class Zulu_SendRecv_Msg
 ******************************************************************************************/
-class Zulu_SendRecv_Msg: public SendRecv_Msg_Base
+class Zulu_SendRecv_Msg : public SendRecv_Msg_Base
 {
 protected:
 

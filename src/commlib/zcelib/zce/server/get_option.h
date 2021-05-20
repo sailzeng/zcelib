@@ -19,7 +19,7 @@
 
 #include "zce/util/non_copyable.h"
 
-class  ZCE_Get_Option: public zce::NON_Copyable
+class  ZCE_Get_Option : public zce::NON_Copyable
 {
 public:
     /// Mutually exclusive ordering values.

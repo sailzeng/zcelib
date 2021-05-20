@@ -6,7 +6,7 @@
 class soar::Zerg_Frame;
 
 //单个函数处理APP FRAME
-class SvrdApp_Plain: public soar::Svrd_Appliction
+class SvrdApp_Plain : public soar::Svrd_Appliction
 {
 protected:
     //

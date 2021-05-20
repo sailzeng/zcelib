@@ -9,17 +9,17 @@ namespace zce
 {
 //
 Select_Reactor::Select_Reactor() :
-    read_fd_set_{0},
-    write_fd_set_{0},
-    exception_fd_set_{0}
+    read_fd_set_{ 0 },
+    write_fd_set_{ 0 },
+    exception_fd_set_{ 0 }
 {
     initialize(FD_SETSIZE);
 }
 
 Select_Reactor::Select_Reactor(size_t max_event_number) :
-    read_fd_set_{0},
-    write_fd_set_{0},
-    exception_fd_set_{0}
+    read_fd_set_{ 0 },
+    write_fd_set_{ 0 },
+    exception_fd_set_{ 0 }
 {
     initialize(max_event_number);
 }

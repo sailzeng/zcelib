@@ -45,7 +45,7 @@ struct SVCID_CONFIG
 *
 * @note
 */
-class Server_Config_FSM: public Server_Config_Base
+class Server_Config_FSM : public Server_Config_Base
 {
 protected:
     //构造函数

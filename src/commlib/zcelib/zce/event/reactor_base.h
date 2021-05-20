@@ -24,7 +24,7 @@ namespace zce
 * @brief      反应器的基类
 *
 */
-class ZCE_Reactor:public zce::NON_Copyable
+class ZCE_Reactor :public zce::NON_Copyable
 {
 protected:
 

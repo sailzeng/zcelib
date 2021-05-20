@@ -243,7 +243,7 @@ public:
                          size_t buf_size,
                          unsigned char result[HASH_RESULT_SIZE])
     {
-        uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
+        uint32_t message[PROCESS_BLOCK_SIZE / 4] = { 0 };
 
         //保存剩余的数据，我们要拼出最后1个（或者两个）要处理的块，前面的算法保证了，最后一个块肯定小于64个字节
         memset(message, 0, PROCESS_BLOCK_SIZE);
@@ -328,7 +328,7 @@ public:
 //=====================================================================================================
 //MD5的处理策略类，主要是实现算法，不用直接使用，
 //本来是希望用protected和friends 友元避免外部能感知这些函数的，但友元对对模版的支持还不够，我只能public了
-class ZCE_Hash_MD5: public ZCE_HashFun_Block64<16, true, ZCE_Hash_MD5>
+class ZCE_Hash_MD5 : public ZCE_HashFun_Block64<16, true, ZCE_Hash_MD5>
 {
 public:
 
@@ -340,7 +340,7 @@ public:
 
 //=====================================================================================================
 //SHA1的处理策略类
-class ZCE_Hash_SHA1: public ZCE_HashFun_Block64<20, false, ZCE_Hash_SHA1>
+class ZCE_Hash_SHA1 : public ZCE_HashFun_Block64<20, false, ZCE_Hash_SHA1>
 {
 public:
 
@@ -353,7 +353,7 @@ public:
 //=====================================================================================================
 
 //SHA256，SHA2的算法策略
-class ZCE_Hash_SHA256: public ZCE_HashFun_Block64<32, false, ZCE_Hash_SHA256>
+class ZCE_Hash_SHA256 : public ZCE_HashFun_Block64<32, false, ZCE_Hash_SHA256>
 {
 public:
 

@@ -89,7 +89,7 @@ protected:
 *
 * @note
 */
-class Echo_Proxy_Process: public Interface_WH_Proxy
+class Echo_Proxy_Process : public Interface_WH_Proxy
 {
 public:
     // Echo处理
@@ -108,7 +108,7 @@ public:
 *
 * @note
 */
-class Transmit_Proxy: public Interface_WH_Proxy
+class Transmit_Proxy : public Interface_WH_Proxy
 {
 public:
 
@@ -128,7 +128,7 @@ public:
 *
 * @note
 */
-class Broadcast_ProxyProcess: public Interface_WH_Proxy
+class Broadcast_ProxyProcess : public Interface_WH_Proxy
 {
 public:
     Broadcast_ProxyProcess();
@@ -154,7 +154,7 @@ protected:
 
 //====================================================================================
 
-class Modulo_ProxyProcess: public Interface_WH_Proxy
+class Modulo_ProxyProcess : public Interface_WH_Proxy
 {
 public:
 

@@ -252,7 +252,7 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char* original_buf,
             break;
         }
 
-zlz_token_process:
+    zlz_token_process:
 
         //块的最开始是一个字节的offset_token，TOKEN的高4bit表示非压缩长度，低四位表示压缩长度
         offset_token = (write_pos++);
@@ -454,7 +454,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char* compressed_bu
         //偏移的长度不可能大于写位置和头位置的差  +8 因为这种复制风格，所以要留有8字节的间距，
         //保证有这些空间可读，
         if (ZCE_UNLIKELY((size_t)(read_end - read_pos) < (8 + noncomp_count)
-                         || ((size_t)(write_end - write_pos) < (8 + noncomp_count + comp_count))))
+            || ((size_t)(write_end - write_pos) < (8 + noncomp_count + comp_count))))
         {
             return -1;
         }
@@ -503,7 +503,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char* compressed_bu
                     //第一个0没有意义，因为offset不可能为0，
                     //其他数据的意义是，因为希望进行8字节盯得快速拷贝，希望源和相对数据的长度差别大于8字节，
                     //那么就要找到一个在这种情况下重复开始的规律
-                    static const size_t POS_MOVE_REFER[] = {0,0,2,2,0,3,2,1};
+                    static const size_t POS_MOVE_REFER[] = { 0,0,2,2,0,3,2,1 };
                     ref_pos += POS_MOVE_REFER[ref_offset];
                     unsigned char* match_write = (write_pos + 8);
                     ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos, write_stop);
@@ -528,7 +528,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char* compressed_bu
 
     //如果空间不够，还是返回错误
     if (ZCE_UNLIKELY((size_t)(read_pos - read_end) < noncomp_count
-                     || (size_t)(write_end - write_pos) < noncomp_count))
+        || (size_t)(write_end - write_pos) < noncomp_count))
     {
         return -1;
     }
@@ -672,7 +672,7 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char* original_buf,
         ZCE_LZ_FAST_COPY_STOP(write_pos, nomatch_achor, write_stop);
         write_pos = write_stop;
 
-lz4_match_process:
+    lz4_match_process:
         //到这儿来了就是发现有(至少)4字节的匹配了，
         match_achor = read_pos;
         read_pos += 4;
@@ -978,7 +978,7 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char* compressed_bu
                 //第一个0没有意义，因为offset不可能为0，
                 //其他数据的意义是，因为希望进行8字节盯得快速拷贝，希望源和相对数据的长度差别大于8字节，
                 //那么就要找到一个在这种情况下重复开始的规律
-                static const size_t POS_MOVE_REFER[] = {0,0,2,2,0,3,2,1};
+                static const size_t POS_MOVE_REFER[] = { 0,0,2,2,0,3,2,1 };
                 ref_pos += POS_MOVE_REFER[ref_offset];
                 unsigned char* match_write = (write_pos + 8);
                 ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos, write_stop);
@@ -989,7 +989,7 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char* compressed_bu
 
     //如果空间不够，还是返回错误
     if (ZCE_UNLIKELY((size_t)(read_pos - read_end) < noncomp_count
-                     || (size_t)(write_end - write_pos) < noncomp_count))
+        || (size_t)(write_end - write_pos) < noncomp_count))
     {
         return -1;
     }

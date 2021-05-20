@@ -155,9 +155,9 @@ public:
     @note
     */
     static shm_kfifo* initialize(size_t size_of_deque,
-        size_t max_len_node,
-        char* pmmap,
-        bool if_restore = false
+                                 size_t max_len_node,
+                                 char* pmmap,
+                                 bool if_restore = false
     );
 
     /*!

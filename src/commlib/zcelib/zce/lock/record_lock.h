@@ -23,7 +23,7 @@
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
 *
 */
-class ZCE_Record_Lock: public zce::NON_Copyable
+class ZCE_Record_Lock : public zce::NON_Copyable
 {
 public:
 

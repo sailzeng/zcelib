@@ -28,7 +28,7 @@
 * @brief      MYSQL的命令对象，用于处理SQL语句的执行，获得结果集
 *
 */
-class ZCE_Mysql_Command: public zce::NON_Copyable
+class ZCE_Mysql_Command : public zce::NON_Copyable
 {
 public:
     ///命令对象的构造函数

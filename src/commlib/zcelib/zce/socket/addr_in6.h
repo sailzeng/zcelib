@@ -7,7 +7,7 @@ namespace zce
 //IPV6是一个
 
 //IPv6的物理结构
-class Sockaddr_In6: public Sockaddr_Base
+class Sockaddr_In6 : public Sockaddr_Base
 {
 public:
 

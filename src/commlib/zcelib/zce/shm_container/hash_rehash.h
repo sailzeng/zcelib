@@ -331,13 +331,13 @@ protected:
 
     //用于自己的内部的初始化处理
     static self* initialize_i(size_t row_number,
-        const size_t primes_list[],
-        size_t num_node,
-        size_t sz_alloc,
-        char* pmmap,
-        const _value_type& invalid_data,
-        bool if_expire,
-        bool if_restore)
+                              const size_t primes_list[],
+                              size_t num_node,
+                              size_t sz_alloc,
+                              char* pmmap,
+                              const _value_type& invalid_data,
+                              bool if_expire,
+                              bool if_restore)
     {
         self* instance = new shm_hash_rehash < _value_type,
             _key_type,
@@ -409,10 +409,10 @@ public:
     * @note       内存区的构成为 define区,index区,data区,返回所需要的长度,
     */
     static size_t getallocsize(size_t req_num,
-        size_t& real_num,
-        size_t prime_ary[],
-        bool if_expire,
-        size_t row_prime_ary = DEF_PRIMES_LIST_NUM)
+                               size_t& real_num,
+                               size_t prime_ary[],
+                               bool if_expire,
+                               size_t row_prime_ary = DEF_PRIMES_LIST_NUM)
     {
         ZCE_ASSERT(row_prime_ary >= MIN_PRIMES_LIST_NUM && row_prime_ary <= MAX_PRIMES_LIST_NUM);
 
@@ -443,9 +443,9 @@ public:
     * @note
     */
     static size_t getallocsize(size_t row_prime_ary,
-        const size_t primes_list[],
-        bool if_expire,
-        size_t& node_count)
+                               const size_t primes_list[],
+                               bool if_expire,
+                               size_t& node_count)
     {
         //列表的最大长度不能大于MAX_PRIMES_LIST_ELEMENT
         ZCE_ASSERT(row_prime_ary <= DEF_PRIMES_LIST_NUM);
@@ -490,12 +490,12 @@ public:
     * @note       推荐使用这个函数,你做的事情要少很多
     */
     static self* initialize(size_t req_num,
-        size_t& real_num,
-        char* pmmap,
-        const _value_type& invalid_data,
-        bool if_expire,
-        size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
-        bool if_restore = false)
+                            size_t& real_num,
+                            char* pmmap,
+                            const _value_type& invalid_data,
+                            bool if_expire,
+                            size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
+                            bool if_restore = false)
     {
         ZCE_ASSERT(pmmap != NULL && req_num > 0);
 
@@ -549,13 +549,13 @@ public:
 
         //打完收工
         return initialize_i(row_prime_ary,
-            prime_ary,
-            req_num,
-            sz_alloc,
-            pmmap,
-            invalid_data,
-            if_expire,
-            if_restore);
+                            prime_ary,
+                            req_num,
+                            sz_alloc,
+                            pmmap,
+                            invalid_data,
+                            if_expire,
+                            if_restore);
     }
 
     //清理初始化所有的内存,所有的节点为FREE
@@ -581,11 +581,11 @@ public:
 
     //你也可以传递一个质数队列，作为进行多轮HASH取模的质数队列,
     static self* initialize(size_t primes_number,
-        size_t primes_list[],
-        char* pmmap,
-        const _value_type& invalid_data,
-        bool if_expire,
-        bool if_restore = false)
+                            size_t primes_list[],
+                            char* pmmap,
+                            const _value_type& invalid_data,
+                            bool if_expire,
+                            bool if_restore = false)
     {
         assert(pmmap != NULL);
 
@@ -625,13 +625,13 @@ public:
 
         //打完收工
         return initialize_i(primes_number,
-            primes_list,
-            node_count,
-            sz_alloc,
-            pmmap,
-            invalid_data,
-            if_expire,
-            if_restore);
+                            primes_list,
+                            node_count,
+                            sz_alloc,
+                            pmmap,
+                            invalid_data,
+                            if_expire,
+                            if_restore);
     }
 
 public:
@@ -737,8 +737,8 @@ public:
     //@unsigned int priority  插入数据优先级，
     //@unsigned int expire_priority = static_cast<unsigned int>(-1)，淘汰的优先级，默认为最大值，不进行不淘汰，这个修正来自djiang的好建议
     std::pair<iterator, bool> insert(const _value_type& val,
-        unsigned int priority,
-        unsigned int expire_priority = 0)
+                                     unsigned int priority,
+                                     unsigned int expire_priority = 0)
     {
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -880,7 +880,7 @@ public:
     //激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
     //优先级参数可以使用当前的时间
     bool active(const _key_type& key,
-        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         iterator  iter_tmp = find(key);
 
@@ -896,7 +896,7 @@ public:
 
     //
     bool active_value(const _value_type& val,
-        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                      unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         _extract_key get_key;
         return active(get_key(val), priority);

@@ -8,7 +8,7 @@
 namespace zce
 {
 /// Acceptor的工厂，用于产生Socket_Stream
-class Socket_Acceptor: public zce::Socket_Base
+class Socket_Acceptor : public zce::Socket_Base
 {
 public:
     Socket_Acceptor();

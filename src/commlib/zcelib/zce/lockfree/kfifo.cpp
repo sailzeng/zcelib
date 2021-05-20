@@ -56,9 +56,9 @@ size_t shm_kfifo::getallocsize(const size_t szdeque)
 
 //根据参数初始化
 shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
-    size_t max_len_node,
-    char* pmmap,
-    bool if_restore)
+                                 size_t max_len_node,
+                                 char* pmmap,
+                                 bool if_restore)
 {
     //必须大于间隔长度
     if (size_of_deque <= sizeof(size_t) + 16)

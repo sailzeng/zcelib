@@ -18,7 +18,7 @@
 *             LINUX下用有名信号灯，
 *             WINDOWS下用带名称的信号灯，
 */
-class ZCE_Process_Semaphore: public ZCE_Lock_Base
+class ZCE_Process_Semaphore : public ZCE_Lock_Base
 {
 public:
 

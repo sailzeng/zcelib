@@ -8,7 +8,7 @@
 namespace zce
 {
 //TIME ID
-const int Async_Object::ASYNCOBJ_ACTION_ID[] ={10001,20001};
+const int Async_Object::ASYNCOBJ_ACTION_ID[] = { 10001,20001 };
 
 //构造函数
 Async_Object::Async_Object(Async_Obj_Mgr* async_mgr,

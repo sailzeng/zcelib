@@ -117,7 +117,7 @@ void Timer_Wheel::bind_wheel_listnode(int time_node_id)
     //前进了多少时间点
     size_t front_num = static_cast<size_t>
         ((time_node_ary_[time_node_id].next_trigger_point_
-          - prev_trigger_msec_) / timer_precision_mesc_);
+         - prev_trigger_msec_) / timer_precision_mesc_);
 
     //调试代码，暂时屏蔽
     //ZCE_LOG(RS_DEBUG,"[zcelib] Timer_Wheel::bind_wheel_listnode next_trigger_point_[%llu] prev_trigger_msec_ [%llu] front_num [%lu]",

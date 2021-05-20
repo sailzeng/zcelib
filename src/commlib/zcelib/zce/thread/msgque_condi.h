@@ -31,7 +31,7 @@
 * note
 */
 template <typename _value_type, typename _container_type = std::deque<_value_type> >
-class ZCE_Message_Queue_Condi: public zce::NON_Copyable
+class ZCE_Message_Queue_Condi : public zce::NON_Copyable
 {
 protected:
 
@@ -281,7 +281,7 @@ protected:
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class ZCE_Msgqueue_List_Condi: public ZCE_Message_Queue_Condi<_value_type, std::list<_value_type> >
+class ZCE_Msgqueue_List_Condi : public ZCE_Message_Queue_Condi<_value_type, std::list<_value_type> >
 {
 public:
     //
@@ -302,7 +302,7 @@ public:
 * note
 */
 template <class _value_type >
-class ZCE_Msgqueue_Deque_Condi: public ZCE_Message_Queue_Condi<_value_type, std::deque<_value_type> >
+class ZCE_Msgqueue_Deque_Condi : public ZCE_Message_Queue_Condi<_value_type, std::deque<_value_type> >
 {
 public:
     //
@@ -323,7 +323,7 @@ public:
 * note       封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <class _value_type >
-class ZCE_Msgqueue_Rings_Condi: public ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >
+class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >
 {
 public:
     //

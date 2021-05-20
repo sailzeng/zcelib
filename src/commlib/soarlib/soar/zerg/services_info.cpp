@@ -22,7 +22,7 @@ int SERVICES_INFO::from_str(const char* svc_info_str,
     //char pure_str[SVC_INFO_STR_LEN];
     //zce::str_replace(svc_info_str, pure_str," ","");
 
-    uint32_t u[4] = {0};
+    uint32_t u[4] = { 0 };
     uint16_t port = 0;
     //测试发现其实不需要手动去掉多余空格的干扰，把特殊字符前面也增加%控制就可以了。
     int ret_num = sscanf(svc_info_str,
@@ -40,7 +40,7 @@ int SERVICES_INFO::from_str(const char* svc_info_str,
     }
     if (check_valid &&
         (soar::SERVICES_ID::INVALID_SERVICES_TYPE == svc_id_.services_type_
-         || soar::SERVICES_ID::INVALID_SERVICES_ID == svc_id_.services_id_))
+        || soar::SERVICES_ID::INVALID_SERVICES_ID == svc_id_.services_id_))
     {
         return SOAR_RET::ERROR_STRING_TO_SVCID_FAIL;
     }

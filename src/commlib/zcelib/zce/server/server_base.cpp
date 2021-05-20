@@ -264,7 +264,7 @@ int Server_Base::watch_dog_status(bool first_record)
     if (now_system_perf_.totalram_size_ > 0)
     {
         mem_use_ratio_ = static_cast<uint32_t>((now_system_perf_.totalram_size_
-                                                - can_use_size_) * 1000 / now_system_perf_.totalram_size_);
+                                               - can_use_size_) * 1000 / now_system_perf_.totalram_size_);
     }
     else
     {

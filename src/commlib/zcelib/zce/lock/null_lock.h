@@ -31,7 +31,7 @@ class zce::Time_Value;
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
 */
-class ZCE_Null_Mutex: public ZCE_Lock_Base
+class ZCE_Null_Mutex : public ZCE_Lock_Base
 {
 public:
     //NULL锁的GUARD
@@ -92,7 +92,7 @@ protected:
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
 */
-class ZCE_Null_Condition: public ZCE_Condition_Base
+class ZCE_Null_Condition : public ZCE_Condition_Base
 {
 public:
     //

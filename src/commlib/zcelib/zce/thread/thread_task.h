@@ -26,7 +26,7 @@
 *
 * @note       对象不可拷贝复制，
 */
-class ZCE_Thread_Task: public zce::NON_Copyable
+class ZCE_Thread_Task : public zce::NON_Copyable
 {
 public:
 

@@ -27,7 +27,7 @@ namespace zce
 /*!
 * @brief      状态机对象
 */
-class Async_FSM: public Async_Object
+class Async_FSM : public Async_Object
 {
     friend class Async_FSMMgr;
 
@@ -84,7 +84,7 @@ protected:
 * @brief      状态机主控管理类
 *
 */
-class Async_FSMMgr: public zce::Async_Obj_Mgr
+class Async_FSMMgr : public zce::Async_Obj_Mgr
 {
 public:
 

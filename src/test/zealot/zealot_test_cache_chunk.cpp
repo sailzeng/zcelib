@@ -12,19 +12,19 @@ int test_cachechunk(int /*argc*/, char* /*argv*/[])
 
     zce::shm_cachechunk* pmmap = zce::shm_cachechunk::initialize(4, 32, 32, tmproom, false);
     char tmpbuf[512];
-    char tmpbuf1[68] = {"1234567890123456789012345678901234567890"};
+    char tmpbuf1[68] = { "1234567890123456789012345678901234567890" };
     tmpbuf1[67] = '\0';
     size_t usenode;
     pmmap->set_node(68, tmpbuf1, usenode);
     size_t szdatalen;
     pmmap->get_node(usenode, szdatalen, tmpbuf);
-    char tmpbuf2[32] = {"12345678901234567890"};
+    char tmpbuf2[32] = { "12345678901234567890" };
     pmmap->set_node(32, tmpbuf2, usenode);
     pmmap->get_node(usenode, szdatalen, tmpbuf);
     usenode = 0;
     pmmap->freenode(usenode);
 
-    char tmpbuf3[168] = {"12345678901234567890123456789012345678901234567890123456789012345678901234567890"};
+    char tmpbuf3[168] = { "12345678901234567890123456789012345678901234567890123456789012345678901234567890" };
     bret = pmmap->set_node(168, tmpbuf3, usenode);
     pmmap->get_node(usenode, szdatalen, tmpbuf);
     pmmap->freenode(usenode);
@@ -36,7 +36,7 @@ int test_cachechunk(int /*argc*/, char* /*argv*/[])
     bret = pmmap->set_node(32, tmpbuf2, usenode);
     usenode = 3;
     pmmap->freenode(usenode);
-    char tmpbuf4[2048] = {":(---)"};
+    char tmpbuf4[2048] = { ":(---)" };
     bret = pmmap->set_node(2048, tmpbuf4, usenode);
     bret = pmmap->set_node(704, tmpbuf4, usenode);
     bret = pmmap->set_node(672, tmpbuf4, usenode);

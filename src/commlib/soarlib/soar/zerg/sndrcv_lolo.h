@@ -51,7 +51,7 @@
 /******************************************************************************************
 class Lolo_SendRecv_Package
 ******************************************************************************************/
-class Lolo_SendRecv_Package: public SendRecv_Msg_Base
+class Lolo_SendRecv_Package : public SendRecv_Msg_Base
 {
 protected:
 

@@ -31,7 +31,7 @@
 *             Windows下是用临界区+SPIN实现的，所以嘛，同时注意临界区是可递归的
 *             LINUX下用的就是SPIN 锁
 */
-class ZCE_Thread_Spin_Mutex: public ZCE_Lock_Base
+class ZCE_Thread_Spin_Mutex : public ZCE_Lock_Base
 {
 public:
     ///线程锁的GUARD

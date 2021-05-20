@@ -7,7 +7,7 @@ class soar::Zerg_Frame;
 
 namespace soar
 {
-class FSMTask_TaskBase: public ZCE_Thread_Task
+class FSMTask_TaskBase : public ZCE_Thread_Task
 {
     //给一个友缘
     friend class FSMTask_Manger;

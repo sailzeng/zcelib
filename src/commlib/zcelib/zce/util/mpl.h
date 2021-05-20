@@ -34,7 +34,7 @@ struct has_def_type_impl < T, typename has_def_typehelper<typename T::type>::typ
 
 //检测类型T是否具有内部的名为type的typedef
 template<typename T>
-struct has_def_type: has_def_type_impl < T >
+struct has_def_type : has_def_type_impl < T >
 {
 };
 

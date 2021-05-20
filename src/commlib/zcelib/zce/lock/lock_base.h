@@ -30,7 +30,7 @@
 *             但ZCE_Lock_Base内部的成员，都应该是private的，而ZCE_Null_Mutex的内部成员都应该是
 *             public，这个矛盾是不可调和的
 */
-class ZCE_Lock_Base: public zce::NON_Copyable
+class ZCE_Lock_Base : public zce::NON_Copyable
 {
 protected:
     ///构造函数和析构函数，允许析构，不允许构造的写法
@@ -115,7 +115,7 @@ private:
 *             扩展应该都是从这个基类扩展
 *
 */
-class ZCE_Condition_Base: public zce::NON_Copyable
+class ZCE_Condition_Base : public zce::NON_Copyable
 {
 protected:
     ///构造函数,protected，允许析构，不允许构造的写法

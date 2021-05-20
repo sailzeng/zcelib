@@ -41,7 +41,7 @@
 *             考虑一下，也让这个东东NO Copyable了，
 *
 */
-class ZCE_Mysql_Result: zce::NON_Copyable
+class ZCE_Mysql_Result : zce::NON_Copyable
 {
 public:
 

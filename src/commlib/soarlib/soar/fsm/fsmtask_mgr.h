@@ -25,7 +25,7 @@
 namespace soar
 {
 class FSMTask_TaskBase;
-class FSMTask_Manger: public FSM_Manager
+class FSMTask_Manger : public FSM_Manager
 {
 protected:
 
