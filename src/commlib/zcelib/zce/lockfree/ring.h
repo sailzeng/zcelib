@@ -32,7 +32,7 @@ public:
     ///构造函数，后面必须调用,initialize
     rings() :
         rings_start_(0),
-        rings_size_(0),
+        rings_end_(0),
         rings_capacity_(0),
         value_ptr_(NULL)
     {
@@ -41,7 +41,7 @@ public:
     ///构造函数，同时完成初始化,后面完全 没有必要调用,initialize
     rings(size_t max_len) :
         rings_start_(0),
-        rings_size_(0),
+        rings_end_(0),
         rings_capacity_(max_len),
         value_ptr_(NULL)
     {
@@ -62,8 +62,8 @@ public:
         assert(max_len > 0);
 
         rings_start_ = 0;
-        rings_size_ = 0;
-        rings_capacity_ = max_len;
+        rings_end_ = 0;
+        rings_capacity_ = max_len+1;
 
         //清理现场
         if (value_ptr_)
@@ -79,13 +79,13 @@ public:
     void finalize()
     {
         rings_start_ = 0;
-        rings_size_ = 0;
+        rings_end_ = 0;
         rings_capacity_ = 0;
 
         //清理现场
         if (value_ptr_)
         {
-            size_t sz = rings_size_.load();
+            size_t sz = rings_end_.load();
             for (; read < sz; ++read)
             {
                 value_ptr_[read].~_value_type();
@@ -100,47 +100,52 @@ public:
     void clear()
     {
         rings_start_ = 0;
-        rings_size_ = 0;
+        rings_end_ = 0;
     }
 
     ///尺寸空间
     inline size_t size() const
     {
-        return rings_size_;
+        if (cycdeque_end_ >= cycdeque_start_)
+        {
+            return rings_end_ - rings_start_;
+        }
+        else
+        {
+            return rings_end_ + rings_capacity_ - rings_start_;
+        }
     }
     ///返回空闲空间的大小
     inline size_t freesize() const
     {
-        return rings_capacity_ - rings_size_;
+        return rings_capacity_ - size() - 1;
     }
 
     ///返回队列的容量
     inline size_t capacity() const
     {
-        return rings_capacity_;
+        return rings_capacity_-1;
     }
 
     ////检查是否已经满了
     inline bool full() const
     {
         //已经用的空间等于容量
-        if (rings_size_ == rings_capacity_)
+        if ((rings_end_ + 1) % rings_capacity_ == rings_start_)
         {
             return true;
         }
-
         return false;
     }
 
     ///判断队列是否为空
     inline bool empty() const
     {
-        //空间等于0
-        if (rings_size_ == 0)
+        //如果发现开始==结束
+        if (rings_start_ == rings_end_)
         {
             return true;
         }
-
         return false;
     }
 
@@ -148,7 +153,6 @@ public:
     bool resize(size_t new_max_size)
     {
         assert(new_max_size > 0);
-
         size_t deque_size = size();
 
         //如果原来的尺寸大于新的尺寸，无法扩展
@@ -157,7 +161,7 @@ public:
             return false;
         }
 
-        _value_type* new_value_ptr = new _value_type[new_max_size];
+        _value_type* new_value_ptr = new _value_type[new_max_size+1];
 
         //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
@@ -173,8 +177,8 @@ public:
 
         //调整几个内部参数
         rings_start_ = 0;
-        rings_capacity_ = new_max_size;
-        //cycdeque_size_ 不变
+        rings_end_ = deque_size;
+        rings_capacity_ = new_max_size+1;
 
         value_ptr_ = new_value_ptr;
 
@@ -182,63 +186,33 @@ public:
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_back(const _value_type& value_data, bool lay_over = false)
+    bool push_back(const _value_type& value_data)
     {
         //如果已经满了
         if (full())
         {
-            //如果不要覆盖，返回错误
-            if (lay_over == false)
-            {
-                return false;
-            }
-            //如果要覆盖
-            else
-            {
-                //将最后一个位置覆盖，并且调整起始和结束位置
-                value_ptr_[(rings_start_ + rings_size_) % rings_capacity_] = value_data;
-                rings_start_ = (rings_start_ + 1) % rings_capacity_;
-
-                return true;
-            }
+            return false;
         }
 
         //直接放在队尾
-        value_ptr_[(rings_start_ + rings_size_) % rings_capacity_] = value_data;
-        ++rings_size_;
+        rings_end_ = (rings_end_ + 1) % rings_capacity_;
+        value_ptr_[(rings_start_ + rings_end_) % rings_capacity_] = value_data;
 
         return true;
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_front(const _value_type& value_data, bool lay_over = false)
+    bool push_front(const _value_type& value_data)
     {
         //如果已经满了
         if (full())
         {
-            //如果不要覆盖，返回错误
-            if (lay_over == false)
-            {
-                return false;
-            }
-            //如果要覆盖
-            else
-            {
-                //将第一个位置调整覆盖，并且调整起始和结束位置
-                rings_start_ = (rings_start_ > 0) ? rings_start_ - 1 : rings_capacity_ - 1;
-                value_ptr_[rings_start_] = value_data;
-
-                //覆盖，尺寸也不用调整
-
-                return true;
-            }
+            return false;
         }
 
         //直接放在队尾
         rings_start_ = (rings_start_ > 0) ? rings_start_ - 1 : rings_capacity_ - 1;
         value_ptr_[rings_start_] = value_data;
-
-        ++rings_size_;
 
         return true;
     }
@@ -251,11 +225,9 @@ public:
         {
             return false;
         }
-
-        value_data = value_ptr_[rings_start_];
+        auto start = rings_start_;
         rings_start_ = (rings_start_ + 1) % rings_capacity_;
-        --rings_size_;
-
+        value_data = value_ptr_[start];
         return true;
     }
 
@@ -269,8 +241,6 @@ public:
         }
 
         rings_start_ = (rings_start_ + 1) % rings_capacity_;
-        --rings_size_;
-
         return true;
     }
 
@@ -283,8 +253,8 @@ public:
             return false;
         }
 
-        value_data = value_ptr_[(rings_start_ + rings_size_) % rings_capacity_];
-        --rings_size_;
+        ring_end_ = (ring_end_ > 0) ? ring_end_ - 1 : rings_capacity_ - 1;
+        value_data = value_ptr_[ring_end_];
         return true;
     }
 
@@ -296,7 +266,7 @@ public:
         {
             return false;
         }
-        --rings_size_;
+        cycdeque_end_ = (cycdeque_end_ > 0) ? cycdeque_end_ - 1 : cycdeque_len_ - 1;
         return true;
     }
 
@@ -307,7 +277,7 @@ protected:
 
     ///循环队列的长度，
     ///没有用结束为止是方便计算， 结束位置通过(rings_start_+cycdeque_size_)%rings_capacity_得到，思路仍然是前开后闭
-    std::atomic<size_t> rings_size_;
+    std::atomic<size_t> rings_end_;
 
     ///队列的长度，
     size_t rings_capacity_;
