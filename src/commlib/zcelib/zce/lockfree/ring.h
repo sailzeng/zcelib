@@ -16,8 +16,6 @@
 
 #pragma once
 
-#include "zce/shm_container/common.h"
-
 namespace zce::lockfree
 {
 /*!
@@ -187,13 +185,13 @@ public:
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
     bool push_back(const _value_type& value_data)
     {
-        //如果已经满了
+        //
         while (true)
         {
             size_t end = 0, start = 0;
             ring_start_.load(start);
             rings_end_.load(end);
-
+            //用快照进行判定，如果已经满了
             if ((end + 1) % rings_capacity_ == start)
             {
                 return false;
@@ -203,6 +201,7 @@ public:
             bool succ = rings_end_.compare_exchange_strong(end, new_end);
             if (succ)
             {
+                //这儿其实还是存在一种ABA的可能，
                 value_ptr_[new_end] = value_data;
                 return true;
             }
@@ -213,15 +212,29 @@ public:
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
     bool push_front(const _value_type& value_data)
     {
-        //如果已经满了
-        if (full())
+        //
+        while (true)
         {
-            return false;
-        }
+            size_t end = 0, start = 0;
+            ring_start_.load(start);
+            rings_end_.load(end);
+            //用快照进行判定
+            if ((end + 1) % rings_capacity_ == start)
+            {
+                return false;
+            }
 
-        //直接放在队尾
-        rings_start_ = (rings_start_ > 0) ? rings_start_ - 1 : rings_capacity_ - 1;
-        value_ptr_[rings_start_] = value_data;
+            //直接放在队尾
+            auto new_start = (start > 0) ? start - 1 : rings_capacity_ - 1;
+            //直接放在队尾
+            bool succ = ring_start_.compare_exchange_strong(start, new_start);
+            if (succ)
+            {
+                //这儿其实还是存在一种ABA的可能，
+                value_ptr_[new_start] = value_data;
+                return true;
+            }
+        }
 
         return true;
     }
@@ -235,8 +248,9 @@ public:
             return false;
         }
         auto start = rings_start_;
-        rings_start_ = (rings_start_ + 1) % rings_capacity_;
         value_data = value_ptr_[start];
+        rings_start_ = (rings_start_ + 1) % rings_capacity_;
+
         return true;
     }
 
