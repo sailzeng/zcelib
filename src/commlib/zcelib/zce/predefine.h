@@ -206,6 +206,9 @@
 #define FD_SETSIZE   1024
 #endif
 
+//min，max这些宏会和std::numeric_limits<int>::max这类函数冲突，
+#define NOMINMAX
+
 //有些文件前缀是大写的，看起来怪怪的，但Windows下他就真是大写的。
 
 #include <winsock2.h>

@@ -102,6 +102,14 @@ public:
                         sz_use_len);
     }
 
+    template <typename... out_type >
+    static void write_logmsg(zce::LOG_PRIORITY outlevel,
+                             const char* str_format,
+                             const out_type &...out_data)
+    {
+        lpp_instance_->foo_write_logmsg(outlevel, str_format, out_data...);
+    }
+
 public:
 
     //实例的赋值

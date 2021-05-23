@@ -119,4 +119,6 @@ int test_sqlite_handle(int /*argc*/, char* /*argv */[]);
 int test_sqlite_stmt(int /*argc*/, char* /*argv */[]);
 int test_sqlite_configtable(int /*argc*/, char* /*argv */[]);
 
+int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[]);
+
 #endif //

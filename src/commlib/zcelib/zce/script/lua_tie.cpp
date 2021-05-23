@@ -36,32 +36,32 @@ void push_stack_val(lua_State* state, const char* const ptr)
 template<>
 void push_stack_val(lua_State* state, char val)
 {
-    ::lua_pushnumber(state, val);
+    ::lua_pushinteger(state, val);
 }
 template<>
 void push_stack_val(lua_State* state, unsigned char val)
 {
-    ::lua_pushnumber(state, val);
+    ::lua_pushinteger(state, val);
 }
 template<>
 void push_stack_val(lua_State* state, short val)
 {
-    ::lua_pushnumber(state, val);
+    ::lua_pushinteger(state, val);
 }
 template<>
 void push_stack_val(lua_State* state, unsigned short val)
 {
-    ::lua_pushnumber(state, val);
+    ::lua_pushinteger(state, val);
 }
 template<>
 void push_stack_val(lua_State* state, int val)
 {
-    ::lua_pushnumber(state, val);
+    ::lua_pushinteger(state, val);
 }
 template<>
 void push_stack_val(lua_State* state, unsigned int val)
 {
-    ::lua_pushnumber(state, val);
+    ::lua_pushinteger(state, val);
 }
 template<>
 void push_stack_val(lua_State* state, float val)
@@ -81,9 +81,11 @@ void push_stack_val(lua_State* state, bool val)
 template<>
 void push_stack_val(lua_State* state, int64_t val)
 {
-    *(int64_t*)::lua_newuserdata(state, sizeof(int64_t)) = val;
-    ::lua_pushstring(state, "int64_t");
-    ::lua_gettable(state, LUA_GLOBALSINDEX);
+#if LUA_VERSION_NUM >= 503
+    ::lua_pushinteger(state, val);
+#else
+    * (int64_t*)::lua_newuserdata(state, sizeof(int64_t)) = val;
+    lua_getglobal(state, "int64_t");
 
     //在DEBUG版本增强一些检查，如果不是table
 #if defined DEBUG || defined _DEBUG
@@ -95,16 +97,18 @@ void push_stack_val(lua_State* state, int64_t val)
         return;
     }
 #endif
-
     ::lua_setmetatable(state, -2);
+#endif
     return;
 }
 template<>
 void push_stack_val(lua_State* state, uint64_t val)
 {
-    *(uint64_t*)lua_newuserdata(state, sizeof(uint64_t)) = val;
-    ::lua_pushstring(state, "uint64_t");
-    ::lua_gettable(state, LUA_GLOBALSINDEX);
+#if LUA_VERSION_NUM >= 503
+    ::lua_pushinteger(state, val);
+#else
+    * (uint64_t*)lua_newuserdata(state, sizeof(uint64_t)) = val;
+    lua_getglobal(state, "uint64_t");
 
     //在DEBUG版本增强一些检查，如果不是table
 #if defined DEBUG || defined _DEBUG
@@ -118,6 +122,7 @@ void push_stack_val(lua_State* state, uint64_t val)
 #endif
 
     ::lua_setmetatable(state, -2);
+#endif
     return;
 }
 
@@ -126,9 +131,7 @@ void push_stack_val(lua_State* state, std::string& val)
 {
     auto str = new(::lua_newuserdata(state, sizeof(std::string)))std::string;
     *str = val;
-    ::lua_pushstring(state, "stdstring");
-    ::lua_gettable(state, LUA_GLOBALSINDEX);
-
+    lua_getglobal(state, "stdstring");
     //在DEBUG版本增强一些检查，如果不是table
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
@@ -158,32 +161,32 @@ template<> const char* read_stack_ptr(lua_State* state, int index)
 
 template<> char read_stack_val(lua_State* state, int index)
 {
-    return (char)lua_tonumber(state, index);
+    return (char)lua_tointeger(state, index);
 }
 
 template<> unsigned char read_stack_val(lua_State* state, int index)
 {
-    return (unsigned char)lua_tonumber(state, index);
+    return (unsigned char)lua_tointeger(state, index);
 }
 
 template<> short read_stack_val(lua_State* state, int index)
 {
-    return (short)lua_tonumber(state, index);
+    return (short)lua_tointeger(state, index);
 }
 
 template<> unsigned short read_stack_val(lua_State* state, int index)
 {
-    return (unsigned short)lua_tonumber(state, index);
+    return (unsigned short)lua_tointeger(state, index);
 }
 
 template<> int read_stack_val(lua_State* state, int index)
 {
-    return (int)lua_tonumber(state, index);
+    return (int)lua_tointeger(state, index);
 }
 
 template<> unsigned int read_stack_val(lua_State* state, int index)
 {
-    return (unsigned int)lua_tonumber(state, index);
+    return (unsigned int)lua_tointeger(state, index);
 }
 
 template<> float read_stack_val(lua_State* state, int index)
@@ -205,12 +208,15 @@ template<> bool read_stack_val(lua_State* state, int index)
     //避免某些程度的转换不成功？
     else
     {
-        return lua_tonumber(state, index) != 0;
+        return lua_tointeger(state, index) != 0;
     }
 }
 
 template<> int64_t read_stack_val(lua_State* state, int index)
 {
+#if LUA_VERSION_NUM >= 503
+    return (int64_t)lua_tointeger(state, index);
+#else
     if (lua_isnumber(state, index))
     {
         return (int64_t)lua_tonumber(state, index);
@@ -226,10 +232,14 @@ template<> int64_t read_stack_val(lua_State* state, int index)
                 lua_type(state, index));
         return 0;
     }
+#endif
 }
 
 template<> uint64_t read_stack_val(lua_State* state, int index)
 {
+#if LUA_VERSION_NUM >= 503
+    return (uint64_t)lua_tointeger(state, index);
+#else
     if (lua_isnumber(state, index))
     {
         return (uint64_t)lua_tonumber(state, index);
@@ -245,6 +255,7 @@ template<> uint64_t read_stack_val(lua_State* state, int index)
                 lua_type(state, index));
         return 0;
     }
+#endif
 }
 
 template<> std::string read_stack_val(lua_State* state, int index)
@@ -529,6 +540,8 @@ int destroyer(lua_State* state)
 };// namespace
 
 //=======================================================================================================
+#if LUA_VERSION_NUM < 503
+
 //为int64_t 准备的metatable
 static int tostring_int64(lua_State* state)
 {
@@ -646,7 +659,6 @@ void ZCE_Lua_Base::reg_int64()
 {
     const char* int64_name = "int64_t";
     zce::luatie::class_name<int64_t>::name(int64_name);
-    lua_pushstring(lua_state_, int64_name);
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__name");
@@ -696,7 +708,7 @@ void ZCE_Lua_Base::reg_int64()
     //设置这个table作为int64_t 原型的metatable.
     lua_setmetatable(lua_state_, -2);
 
-    lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    lua_setglobal(lua_state_, int64_name);
 }
 
 //=======================================================================================================
@@ -816,7 +828,6 @@ void ZCE_Lua_Base::reg_uint64()
 {
     const char* uint64_name = "uint64_t";
     zce::luatie::class_name<uint64_t>::name(uint64_name);
-    lua_pushstring(lua_state_, uint64_name);
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__name");
@@ -866,8 +877,10 @@ void ZCE_Lua_Base::reg_uint64()
     //设置这个table作为int64_t 原型的metatable.
     lua_setmetatable(lua_state_, -2);
 
-    lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    lua_setglobal(lua_state_, uint64_name);
 }
+
+#endif
 
 //=======================================================================================================
 //为std::string 准备的metatable
@@ -958,7 +971,7 @@ void ZCE_Lua_Base::reg_stdstring()
 {
     const char* stdstring_name = "stdstring";
     zce::luatie::class_name<std::string>::name(stdstring_name);
-    lua_pushstring(lua_state_, stdstring_name);
+
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__name");
@@ -1000,7 +1013,7 @@ void ZCE_Lua_Base::reg_stdstring()
     //设置这个table作为stdstring 原型的metatable.
     lua_setmetatable(lua_state_, -2);
 
-    lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    lua_setglobal(lua_state_, stdstring_name);
 }
 
 //=======================================================================================================
@@ -1039,7 +1052,7 @@ int ZCE_Lua_Base::do_buffer(const char* buff, size_t len)
         ZCE_LOG(RS_ERROR, "lua_pcall ret = %d", ret);
     }
 
-    ::lua_remove(lua_state_, errfunc);
+    lua_remove(lua_state_, errfunc);
     return 0;
 }
 
@@ -1058,7 +1071,7 @@ int ZCE_Lua_Base::do_file(const char* filename)
                 ret,
                 lua_tostring(lua_state_, -1));
         lua_pop(lua_state_, 1);
-        ::lua_remove(lua_state_, errfunc);
+        lua_remove(lua_state_, errfunc);
         return ret;
     }
 
@@ -1069,7 +1082,7 @@ int ZCE_Lua_Base::do_file(const char* filename)
         ZCE_LOG(RS_ERROR, "lua_pcall ret = %d", ret);
     }
 
-    ::lua_remove(lua_state_, errfunc);
+    lua_remove(lua_state_, errfunc);
     return 0;
 }
 
@@ -1108,10 +1121,16 @@ int ZCE_Lua_Thread::get_thread_stackidx()
     return luathread_stackidx_;
 }
 
-//恢复线程运行
+//恢复线程运行,501版本后，LUA为了处理多次循环调用，搞了这个API，
 int ZCE_Lua_Thread::resume(int narg)
 {
+#if LUA_VERSION_NUM == 501
     return ::lua_resume(lua_state_, narg);
+#elif LUA_VERSION_NUM == 502 || LUA_VERSION_NUM == 503
+    return ::lua_resume(lua_state_, NULL, narg);
+#else
+    return ::lua_resume(lua_state_, NULL, narg, NULL);
+#endif
 }
 
 //挂起线程运行
@@ -1142,8 +1161,8 @@ int ZCE_Lua_Tie::open(bool open_libs,
         close();
     }
 
-    //lua_open 这个东东就是luaL_newstate，这个好像是为了向前兼容
-    lua_state_ = lua_open();
+    //这个东东就是luaL_newstate，这个好像是为了向前兼容
+    lua_state_ = luaL_newstate();
     if (nullptr == lua_state_)
     {
         return -1;
@@ -1154,8 +1173,11 @@ int ZCE_Lua_Tie::open(bool open_libs,
     }
     if (reg_common_use)
     {
+        //lua 5.3版本已经支持int64
+#if LUA_VERSION_NUM < 503
         reg_int64();
         reg_uint64();
+#endif
         reg_stdstring();
     }
     return 0;
@@ -1190,7 +1212,7 @@ void ZCE_Lua_Tie::del_thread(ZCE_Lua_Thread* lua_thread)
     int idx = lua_thread->get_thread_stackidx();
     if (idx != 0)
     {
-        ::lua_remove(lua_state_, idx);
+        lua_remove(lua_state_, idx);
     }
 }
 

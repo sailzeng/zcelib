@@ -14,8 +14,7 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCKFREE_RINGS_H_
-#define ZCE_LIB_LOCKFREE_RINGS_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -63,7 +62,7 @@ public:
 
         rings_start_ = 0;
         rings_end_ = 0;
-        rings_capacity_ = max_len+1;
+        rings_capacity_ = max_len + 1;
 
         //清理现场
         if (value_ptr_)
@@ -116,7 +115,7 @@ public:
         }
     }
     ///返回空闲空间的大小
-    inline size_t freesize() const
+    inline size_t free() const
     {
         return rings_capacity_ - size() - 1;
     }
@@ -124,7 +123,7 @@ public:
     ///返回队列的容量
     inline size_t capacity() const
     {
-        return rings_capacity_-1;
+        return rings_capacity_ - 1;
     }
 
     ////检查是否已经满了
@@ -161,7 +160,7 @@ public:
             return false;
         }
 
-        _value_type* new_value_ptr = new _value_type[new_max_size+1];
+        _value_type* new_value_ptr = new _value_type[new_max_size + 1];
 
         //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
@@ -178,7 +177,7 @@ public:
         //调整几个内部参数
         rings_start_ = 0;
         rings_end_ = deque_size;
-        rings_capacity_ = new_max_size+1;
+        rings_capacity_ = new_max_size + 1;
 
         value_ptr_ = new_value_ptr;
 
@@ -189,16 +188,26 @@ public:
     bool push_back(const _value_type& value_data)
     {
         //如果已经满了
-        if (full())
+        while (true)
         {
-            return false;
+            size_t end = 0, start = 0;
+            ring_start_.load(start);
+            rings_end_.load(end);
+
+            if ((end + 1) % rings_capacity_ == start)
+            {
+                return false;
+            }
+            new_end = (end + 1) % rings_capacity_;
+            //直接放在队尾
+            bool succ = rings_end_.compare_exchange_strong(end, new_end);
+            if (succ)
+            {
+                value_ptr_[new_end] = value_data;
+                return true;
+            }
         }
-
-        //直接放在队尾
-        rings_end_ = (rings_end_ + 1) % rings_capacity_;
-        value_ptr_[(rings_start_ + rings_end_) % rings_capacity_] = value_data;
-
-        return true;
+        return false;
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
@@ -285,5 +294,3 @@ protected:
     _value_type* value_ptr_;
 };
 };
-
-#endif //ZCE_LIB_LOCKFREE_RINGS_H_

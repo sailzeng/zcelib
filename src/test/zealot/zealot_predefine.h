@@ -89,6 +89,8 @@
 #include <zce/sqlite/sqlite_handler.h>
 #include <zce/sqlite/sqlite_stmt.h>
 
+#include <zce/util/fifo_cycbuf.h>
+
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)

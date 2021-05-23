@@ -761,15 +761,16 @@ public:
     {
         ZCE_ASSERT(max > min);
         uint32_t u32_max = max - min;
-        uint32_t u32_rand = uniform_uint32(0, u32_max);
+        uint32_t u32_rand = uin32_rand_gen_.get_uint32() % u32_max;
         return min + u32_rand;
     }
     ///在 uint32数值范围给产生一个随机数变量
-    inline uint32_t uniform_uint32(int64_t min, int64_t max)
+    inline uint32_t uniform_uint32(uint32_t min, uint32_t max)
     {
         ZCE_ASSERT(max > min);
-        uint32_t u32_rand = uin32_rand_gen_.get_uint32();
-        return (u32_rand + min) % max;
+        uint32_t u32_max = max - min;
+        uint32_t u32_rand = uin32_rand_gen_.get_uint32() % u32_max;
+        return min + u32_rand;
     }
 
     ///在 int64数值范围给产生一个随机数变量
@@ -777,15 +778,16 @@ public:
     {
         ZCE_ASSERT(max > min);
         uint64_t u64_max = max - min;
-        uint64_t u64_rand = uniform_uint64(0, u64_max);
+        uint64_t u64_rand = uin32_rand_gen_.get_uint64() % u64_max;
         return min + u64_rand;
     }
     ///在 uint64数值范围给产生一个随机数变量
     inline uint64_t uniform_uint64(uint64_t min, uint64_t max)
     {
         ZCE_ASSERT(max > min);
-        uint64_t u64_rand = uin32_rand_gen_.get_uint64();
-        return (u64_rand + min) % max;
+        uint64_t u64_max = max - min;
+        uint64_t u64_rand = uin32_rand_gen_.get_uint64() % u64_max;
+        return min + u64_rand;
     }
 
     //

@@ -186,7 +186,7 @@ void shm_cachechunk::destroy_node(const size_t nodeindex)
 }
 
 //取剩余空间的大小
-void shm_cachechunk::free_size(size_t& free_node, size_t& free_chunk, size_t& max_room)
+void shm_cachechunk::free(size_t& free_node, size_t& free_chunk, size_t& max_room)
 {
     free_node = cachechunk_head_->usable_of_node_;
     free_chunk = cachechunk_head_->usable_of_chunk_;

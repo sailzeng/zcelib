@@ -4,16 +4,23 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Sunday, June 22, 2014
-* @brief      这个代码是参考Tinker实现的，仍然感谢原作者
+* @brief      这个代码是参考Tinker实现的，仍然感谢原作者，虽然已经大大的不同
+*             我比他酷多了。
 *
 *             这个代码的目的一方面是我对于如何捏合一个脚本语言总是好奇，今天
 *             终于有了机会折腾一下.
 *             目前支持LUA 5.1
 * @details
-*
-*
+*             LUA 5.1 有Luajit的支持，最后有人气
+*             LUA 5.2 去掉了module
+*                     去掉了对LUA_GLOBALSINDEX的支持，使用lua_setglobal，lua_getglobal
+*                     去掉了LUA_ENVIRONINDEX and functions lua_getfenv/lua_setfenv
+*                     lua_objlen 改名为 lua_rawlen
+*             LUA 5.3 支持64位整数
 *
 * @note       感谢fergzhang帮忙解释了很多Tinker的实现，
+*             代码中有的地方是用了全局名字空间::，有的没用，为啥呢。lua自己总是使用宏，另外一个版本用函数
+*
 *             我等了四年，就是要等一个机会，我要争一口气，不是想证明我了不起，我是要告诉人家，我失去的东西一定要亲手拿回来！
 *             -- 《英雄本色》 小马哥
 *             2014年6月13日早上，荷兰干净利落的爆了西班牙5：1，
@@ -30,8 +37,7 @@
 *             今宵别梦寒
 */
 
-#ifndef ZCE_LIB_SCRIPT_LUA_H_
-#define ZCE_LIB_SCRIPT_LUA_H_
+#pragma once
 
 #include "zce/predefine.h"
 #include "zce/util/mpl.h"
@@ -39,10 +45,11 @@
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
 #if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 == 1
 
-//LUA 5.2版本目前而言，大部分组件都还不支持，所以……
-#if LUA_VERSION_NUM != 501
-#error "[Error] please check your lua libary version,only support 5.1,"\
-    "Lua 5.2 is not mature. LUA_VERSION_NUM != 501."
+//LUA 目前的版本是5.4，我是从5.1开始接触LUA的，所以也只打算从5.1开始支持。
+//LUA 5.1因为很多组件都只支持5.1，估计群众基础还是有的
+#if LUA_VERSION_NUM < 501
+#error "[Error] please check your lua libary version,only support 5.1 and later "\
+    " LUA_VERSION_NUM >= 501."
 #endif
 
 //在Lua的使用过程中，如果一个类不需要再Lua中使用，其实可以不需要先注册进去，
@@ -242,10 +249,11 @@ void push_stack(lua_State* state,
     if (std::is_class<typename std::remove_reference<val_type>::type >::value)
     {
         //根据类的名称，设置metatable，注意这儿去掉了引用，进行的查询，
-        ::lua_pushstring(state, class_name < typename
-                         std::remove_reference < typename
-                         std::remove_cv<val_type>::type >::type >::name());
-        ::lua_gettable(state, LUA_GLOBALSINDEX);
+        //lua_getglobal在5.1是个宏，在5.2以后是一个函数
+        lua_getglobal(state, class_name < typename
+                      std::remove_reference < typename
+                      std::remove_cv<val_type>::type >::type >::name());
+
         if (!lua_istable(state, -1))
         {
 #if ZCE_CHECK_CLASS_NOMETA == 1
@@ -255,7 +263,7 @@ void push_stack(lua_State* state,
                     typeid(ref).name(),
                     class_name<val_type >::name());
 #endif
-            ::lua_remove(state, -1);
+            lua_remove(state, -1);
             return;
         }
         ::lua_setmetatable(state, -2);
@@ -275,9 +283,8 @@ void push_stack_ptr(lua_State* state, ptr_type ptr)
         if (std::is_class<typename std::remove_pointer<ptr_type>::type >::value)
         {
             //根据类的名称，设置metatable，注意这儿去掉了指针，进行的查询，
-            ::lua_pushstring(state, class_name <
-                             typename std::remove_pointer <ptr_type> ::type > ::name());
-            ::lua_gettable(state, LUA_GLOBALSINDEX);
+            lua_getglobal(state, class_name <
+                          typename std::remove_pointer <ptr_type> ::type > ::name());
             if (!lua_istable(state, -1))
             {
 #if ZCE_CHECK_CLASS_NOMETA == 1
@@ -288,7 +295,7 @@ void push_stack_ptr(lua_State* state, ptr_type ptr)
                         typeid(ptr).name(),
                         class_name<std::remove_pointer <ptr_type> ::type >::name());
 #endif
-                ::lua_remove(state, -1);
+                lua_remove(state, -1);
                 return;
             }
             ::lua_setmetatable(state, -2);
@@ -331,8 +338,8 @@ void push_stack_val(lua_State* state, val_type val)
         val_2_udat<typename std::remove_cv<val_type>::type >(val);
 
     //根据类的名称，设置metatable
-    ::lua_pushstring(state, class_name<typename std::remove_cv<val_type>::type >::name());
-    ::lua_gettable(state, LUA_GLOBALSINDEX);
+    lua_getglobal(state,
+                  class_name<typename std::remove_cv<val_type>::type >::name());
     if (!lua_istable(state, -1))
     {
 #if ZCE_CHECK_CLASS_NOMETA == 1
@@ -343,7 +350,7 @@ void push_stack_val(lua_State* state, val_type val)
                 typeid(val).name(),
                 class_name<std::remove_cv<val_type>::type >::name());
 #endif
-        ::lua_remove(state, -1);
+        lua_remove(state, -1);
         return;
     }
     ::lua_setmetatable(state, -2);
@@ -731,9 +738,7 @@ private:
              sizeof(val_2_udat<class_type>))) \
             val_2_udat<class_type>(read_stack<args_type>(state, I + 2)...);
 
-        ::lua_pushstring(state, class_name<class_type>::name());
-        ::lua_gettable(state, LUA_GLOBALSINDEX);
-
+        lua_getglobal(state, class_name<class_type>::name());
         ::lua_setmetatable(state, -2);
         return 1;
     }
@@ -940,10 +945,14 @@ public:
     ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
     void dump_stack();
 
+    //LUA 5.3支持int64了。
+#if LUA_VERSION_NUM < 503
     ///向LUA注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
     void reg_int64();
     ///向LUA注册uint64_t的类型
     void reg_uint64();
+#endif
+
     ///向LUA注册std::string的类型
     void reg_stdstring();
 
@@ -952,7 +961,7 @@ public:
     /// 删除指定索引上的元素，并将该位置之上的所有元素下移。
     inline void stack_remove(int index)
     {
-        ::lua_remove(lua_state_, index);
+        lua_remove(lua_state_, index);
     }
 
     ///会上移指定位置之上的所有元素以开辟一个槽的空间，然后将栈顶元素移到该位置
@@ -1017,7 +1026,11 @@ public:
     ///for other values, it is 0.
     inline size_t get_objlen(int index)
     {
+#if LUA_VERSION_NUM >= 502
+        return (size_t)::lua_rawlen(lua_state_, index);
+#else
         return ::lua_objlen(lua_state_, index);
+#endif
     }
 
     ///取得table的所有元素个数,注意其和stack_objlen的其别,此函数绝对不高效，呵呵
@@ -1036,8 +1049,7 @@ public:
     ///通过名称取得lua对象，并且检查
     inline int get_luaobj(const char* obj_name, int luatype)
     {
-        ::lua_pushstring(lua_state_, obj_name);
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, obj_name);
         if (::lua_type(lua_state_, -1) != luatype)
         {
             return -1;
@@ -1055,18 +1067,16 @@ public:
     void set_gvar(const char* name, var_type var)
     {
         //名称对象，
-        ::lua_pushstring(lua_state_, name);
         //模板函数，根据val_type绝对如何push
         zce::luatie::push_stack<var_type>(lua_state_, var);
-        ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        lua_setglobal(lua_state_, name);
     }
 
     ///根据名称，从LUA读取一个变量
     template<typename var_type>
     var_type get_gvar(const char* name)
     {
-        ::lua_pushstring(lua_state_, name);
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, name);
         return zce::luatie::pop_stack<var_type>(lua_state_);
     }
 
@@ -1087,9 +1097,8 @@ public:
     {
         zce::luatie::arrayref_2_udat<array_type> aux_ary(ary_data, ary_size, read_only);
         //名称对象，
-        ::lua_pushstring(lua_state_, name);
         zce::luatie::push_stack(lua_state_, aux_ary);
-        ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        lua_setglobal(lua_state_, name);
     }
 
     ///从LUA中获取一个全局的数组
@@ -1099,13 +1108,12 @@ public:
                    size_t& ary_size)
     {
         //名称对象，
-        ::lua_pushstring(lua_state_, name);
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, name);
 
         //如果不是一个table，错误哦
         if (!::lua_isuserdata(lua_state_, -1))
         {
-            ::lua_remove(lua_state_, -1);
+            lua_remove(lua_state_, -1);
             return -1;
         }
         zce::luatie::arrayref_2_udat<ary_type> aux_ary =
@@ -1177,14 +1185,13 @@ public:
                       array_type* array_dat)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        ::lua_pushstring(lua_state_, table_name);
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, table_name);
 
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
                     table_name);
-            ::lua_remove(lua_state_, -1);
+            lua_remove(lua_state_, -1);
             return -1;
         }
 
@@ -1196,7 +1203,7 @@ public:
             int index = zce::luatie::read_stack<int>(lua_state_, -2) - 1;
             array_dat[index] = zce::luatie::read_stack <array_type>(lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
-            ::lua_remove(lua_state_, -1);
+            lua_remove(lua_state_, -1);
         }
         return 0;
     }
@@ -1284,11 +1291,10 @@ public:
     template<typename ...pair_tlist>
     void new_table(const char* table_name, pair_tlist ... pair_list)
     {
-        ::lua_pushstring(lua_state_, table_name);
         lua_newtable(lua_state_);
         //向table里面添加pair
         newtable_addkv(pair_list...);
-        ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        lua_setglobal(lua_state_, table_name);
     }
 
     /*!
@@ -1302,8 +1308,6 @@ public:
     Candy_Tie_Class<class_type> reg_class(const char* class_name,
                                           bool read_only = false)
     {
-        //绑定T和名称,类的名称
-        ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name(class_name));
         //new 一个table，这个table是作为其他的类的metatable的（某种程度上也可以说是原型），
         ::lua_newtable(lua_state_);
 
@@ -1335,8 +1339,8 @@ public:
         ::lua_pushstring(lua_state_, "__gc");
         ::lua_pushcclosure(lua_state_, zce::luatie::destroyer, 0);
         ::lua_rawset(lua_state_, -3);
-
-        ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        //绑定T和名称,类的名称
+        lua_setglobal(lua_state_, zce::luatie::class_name<class_type>::name(class_name));
 
         return Candy_Tie_Class<class_type>(this, read_only);
     }
@@ -1352,8 +1356,7 @@ public:
     int class_constructor(construct_func func)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
-        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, zce::luatie::class_name<class_type>::name());
 
         //如果栈顶是不是一个表，进行错误处理
         if (!lua_istable(lua_state_, -1))
@@ -1393,8 +1396,7 @@ public:
     int class_inherit()
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
-        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, zce::luatie::class_name<class_type>::name());
 
         //如果栈顶是一个表
         if (!lua_istable(lua_state_, -1))
@@ -1423,8 +1425,7 @@ public:
 #endif
 
         lua_pushstring(lua_state_, "__parent");
-        lua_pushstring(lua_state_, zce::luatie::class_name<parent_type>::name());
-        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, zce::luatie::class_name<parent_type>::name());
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
@@ -1455,8 +1456,7 @@ public:
     int class_mem_var(const char* name, var_type class_type::* val)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, zce::luatie::class_name<class_type>::name());
 
         //
         if (!lua_istable(lua_state_, -1))
@@ -1495,8 +1495,7 @@ public:
                       bool read_only = false)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
-        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, zce::luatie::class_name<class_type>::name());
 
         //
         if (!lua_istable(lua_state_, -1))
@@ -1595,8 +1594,7 @@ protected:
         lua_pushcclosure(lua_state_, zce::luatie::on_error, 0);
         int errfunc = lua_gettop(lua_state_);
 
-        lua_pushstring(lua_state_, fun_name);
-        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, fun_name);
         //检查其是否是函数
         if (!lua_isfunction(lua_state_, -1))
         {
@@ -1645,8 +1643,7 @@ protected:
                       std::random_access_iterator_tag /*nouse*/)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        ::lua_pushstring(lua_state_, table_name);
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, table_name);
 
         if (!lua_istable(lua_state_, -1))
         {
@@ -1667,7 +1664,7 @@ protected:
                 <container_type::value_type>
                 (lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
-            ::lua_remove(lua_state_, -1);
+            lua_remove(lua_state_, -1);
         }
         return 0;
     }
@@ -1679,15 +1676,14 @@ protected:
                       std::bidirectional_iterator_tag /*nouse*/)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        ::lua_pushstring(lua_state_, table_name);
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, table_name);
 
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
                     table_name);
             ZCE_ASSERT(false);
-            ::lua_remove(lua_state_, -1);
+            lua_remove(lua_state_, -1);
             return -1;
         }
 
@@ -1699,7 +1695,7 @@ protected:
             container_dat[zce::luatie::read_stack<typename container_type::value_type::first_type>(lua_state_, -2)] =
                 zce::luatie::read_stack<typename container_type::value_type::second_type>(lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
-            ::lua_remove(lua_state_, -1);
+            lua_remove(lua_state_, -1);
         }
         return 0;
     }
@@ -1719,7 +1715,6 @@ protected:
                      const raiter_type last,
                      std::random_access_iterator_tag /*nouse*/)
     {
-        ::lua_pushstring(lua_state_, table_name);
         ::lua_createtable(lua_state_,
                           static_cast<int>(std::distance(first, last)), 0);
         raiter_type iter_temp = first;
@@ -1733,7 +1728,7 @@ protected:
                 *iter_temp);
             ::lua_settable(lua_state_, -3);
         }
-        ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        lua_setglobal(lua_state_, table_name);
     }
 
     /*!
@@ -1751,7 +1746,6 @@ protected:
                      const biiter_type last,
                      std::bidirectional_iterator_tag /*nouse*/)
     {
-        ::lua_pushstring(lua_state_, table_name);
         ::lua_createtable(lua_state_,
                           0,
                           static_cast<int>(std::distance(first, last)));
@@ -1767,10 +1761,10 @@ protected:
             zce::luatie::push_stack <typename std::remove_cv < typename
                 std::iterator_traits<biiter_type>::value_type::second_type
             >::type >(lua_state_, iter_temp->second);
-            lua_settable(lua_state_, -3);
+            lua_setglobal(lua_state_, table_name);
         }
 
-        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        lua_setglobal(lua_state_, table_name);
         return;
     }
 
@@ -1786,8 +1780,6 @@ protected:
     template<bool last_yield, typename ret_type, typename... args_type>
     void reg_g_func(const char* name, ret_type(*func)(args_type...))
     {
-        //函数名称
-        ::lua_pushstring(lua_state_, name);
         //将函数指针转换为void * ，作为lightuserdata 放入堆栈，作为closure的upvalue放入
         ::lua_pushlightuserdata(lua_state_, (void*)func);
         //functor模板函数，放入closure,
@@ -1798,8 +1790,8 @@ protected:
                            >::type::invoke,
                            1);
 
-        //将其放入全局环境表中
-        ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        //将其放入全局注册表中
+        lua_setglobal(lua_state_, name);
     }
 
     /*!
@@ -1816,8 +1808,7 @@ protected:
     int class_mem_func(const char* name, ret_type(class_type::* func)(args_type...))
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
-        ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        lua_getglobal(lua_state_, zce::luatie::class_name<class_type>::name());
 
         //
         if (!lua_istable(lua_state_, -1))
@@ -1843,7 +1834,7 @@ protected:
                            >::type::invoke,
                            1);
         ::lua_rawset(lua_state_, -3);
-        ::lua_remove(lua_state_, -1);
+        lua_remove(lua_state_, -1);
         return 0;
     }
 
@@ -2024,5 +2015,3 @@ public:
 #endif
 
 #endif //#if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 ==1
-
-#endif // ZCE_LIB_SCRIPT_LUA_H_

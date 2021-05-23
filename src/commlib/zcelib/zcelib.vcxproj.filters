@@ -20,7 +20,7 @@
     <None Include="zcelib.ruleset" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="zce\net\zce_net_http_client.cpp">
+    <ClCompile Include="zce\net\http_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\os_adapt\backtrace.cpp">
@@ -322,7 +322,7 @@
     <ClInclude Include="zce\log\logging.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\net\zce_net_http_client.h">
+    <ClInclude Include="zce\net\http_client.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\os_adapt\backtrace.h">

@@ -246,7 +246,7 @@ public:
         return cycdeque_size_;
     }
     ///返回空闲空间的大小
-    inline size_t freesize() const
+    inline size_t free() const
     {
         return cycdeque_capacity_ - cycdeque_size_;
     }

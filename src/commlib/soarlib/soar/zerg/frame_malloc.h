@@ -194,17 +194,17 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
     //
     ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
 
-    //最后应该size == capacity , freesize==0
+    //最后应该size == capacity , free==0
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {
         //如果内存全部归还
-        if (frame_pool_[i].freesize() == 0)
+        if (frame_pool_[i].free() == 0)
         {
             //
             ZCE_LOG(RS_INFO, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Ok.",
                     i,
                     size_appframe_[i],
-                    frame_pool_[i].freesize(),
+                    frame_pool_[i].free(),
                     frame_pool_[i].capacity(),
                     frame_pool_[i].size());
         }
@@ -215,7 +215,7 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
             ZCE_LOG(RS_ERROR, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
                     i,
                     size_appframe_[i],
-                    frame_pool_[i].freesize(),
+                    frame_pool_[i].free(),
                     frame_pool_[i].capacity(),
                     frame_pool_[i].size());
         }

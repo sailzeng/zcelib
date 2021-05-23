@@ -37,7 +37,9 @@
 //当年还用过一套为GCC2.9定义的双括号的红，土死了，后来不打算兼容那么多版本，我懒
 
 //使用调试级别输出日志
-#define ZCE_LOG               ZCE_Trace_LogMsg::debug_output
+#define ZCE_LOG               ZCE_Trace_LogMsg::write_logmsg
+
+#define ZPP_LOG               ZCE_LogTrace_Plus::write_logmsg
 
 #if _MSC_VER <= 1300
 
@@ -51,12 +53,12 @@
 
 #else
 
-#define ZLOG_TRACE(...)       ZCE_Trace_LogMsg::debug_output(RS_TRACE,__VA_ARGS__)
-#define ZLOG_DEBUG(...)       ZCE_Trace_LogMsg::debug_output(RS_DEBUG,__VA_ARGS__)
-#define ZLOG_INFO(...)        ZCE_Trace_LogMsg::debug_output(RS_INFO,__VA_ARGS__)
-#define ZLOG_ERROR(...)       ZCE_Trace_LogMsg::debug_output(RS_ERROR,__VA_ARGS__)
-#define ZLOG_ALERT(...)       ZCE_Trace_LogMsg::debug_output(RS_ALERT,__VA_ARGS__)
-#define ZLOG_FATAL(...)       ZCE_Trace_LogMsg::debug_output(RS_FATAL,__VA_ARGS__)
+#define ZLOG_TRACE(...)       ZCE_Trace_LogMsg::write_logmsg(RS_TRACE,__VA_ARGS__)
+#define ZLOG_DEBUG(...)       ZCE_Trace_LogMsg::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#define ZLOG_INFO(...)        ZCE_Trace_LogMsg::write_logmsg(RS_INFO,__VA_ARGS__)
+#define ZLOG_ERROR(...)       ZCE_Trace_LogMsg::write_logmsg(RS_ERROR,__VA_ARGS__)
+#define ZLOG_ALERT(...)       ZCE_Trace_LogMsg::write_logmsg(RS_ALERT,__VA_ARGS__)
+#define ZLOG_FATAL(...)       ZCE_Trace_LogMsg::write_logmsg(RS_FATAL,__VA_ARGS__)
 
 #endif
 
@@ -168,7 +170,7 @@ public:
     }
 
     //!利用单子对象，打印日志信息
-    static void debug_output(zce::LOG_PRIORITY dbglevel,
+    static void write_logmsg(zce::LOG_PRIORITY dbglevel,
                              const char* str_format,
                              ...)
     {
@@ -200,14 +202,14 @@ protected:
 #define ZLOG_ENABLE           ZCE_Trace_Printf::instance()->enable_output(true)
 #define ZLOG_DISABLE          ZCE_Trace_Printf::instance()->enable_output(false)
 #define ZLOG_SET_OUTLEVEL     ZCE_Trace_Printf::instance()->set_log_priority
-#define ZCE_LOG               ZCE_Trace_Printf::debug_output
+#define ZCE_LOG               ZCE_Trace_Printf::write_logmsg
 
-#define ZLOG_TRACE(...)       ZCE_Trace_Printf::debug_output(RS_TRACE,__VA_ARGS__)
-#define ZLOG_DEBUG(...)       ZCE_Trace_Printf::debug_output(RS_DEBUG,__VA_ARGS__)
-#define ZLOG_INFO(...)        ZCE_Trace_Printf::debug_output(RS_INFO,__VA_ARGS__)
-#define ZLOG_ERROR(...)       ZCE_Trace_Printf::debug_output(RS_ERROR,__VA_ARGS__)
-#define ZLOG_ALERT(...)       ZCE_Trace_Printf::debug_output(RS_ALERT,__VA_ARGS__)
-#define ZLOG_FATAL(...)       ZCE_Trace_Printf::debug_output(RS_FATAL,__VA_ARGS__)
+#define ZLOG_TRACE(...)       ZCE_Trace_Printf::write_logmsg(RS_TRACE,__VA_ARGS__)
+#define ZLOG_DEBUG(...)       ZCE_Trace_Printf::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#define ZLOG_INFO(...)        ZCE_Trace_Printf::write_logmsg(RS_INFO,__VA_ARGS__)
+#define ZLOG_ERROR(...)       ZCE_Trace_Printf::write_logmsg(RS_ERROR,__VA_ARGS__)
+#define ZLOG_ALERT(...)       ZCE_Trace_Printf::write_logmsg(RS_ALERT,__VA_ARGS__)
+#define ZLOG_FATAL(...)       ZCE_Trace_Printf::write_logmsg(RS_FATAL,__VA_ARGS__)
 
 #ifndef ZCE_ASSERT_ALL
 #define ZCE_ASSERT_ALL(expr) assert(expr)

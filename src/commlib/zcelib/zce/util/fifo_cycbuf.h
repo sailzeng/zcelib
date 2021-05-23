@@ -7,21 +7,21 @@ class fifo_cycbuf
 {
 public:
 
-    class cycbuf_node
+    class node
     {
     public:
 
         ///*!
-        //@brief      ÖØÔØÁËnew²Ù×÷£¬ÓÃÓÚµÃµ½Ò»¸ö±ä³¤µÃµ½¼Ü¹¹
+        //@brief      é‡è½½äº†newæ“ä½œï¼Œç”¨äºå¾—åˆ°ä¸€ä¸ªå˜é•¿å¾—åˆ°æ¶æ„
         //@return     void* operator
-        //@param      size_t    newµÄÄ¬ÈÏ²ÎÊı
-        //@param      node_len   node½ÚµãµÄ³¤¶È
+        //@param      size_t    newçš„é»˜è®¤å‚æ•°
+        //@param      node_len   nodeèŠ‚ç‚¹çš„é•¿åº¦
         //*
-        static cycbuf_node* new_node(size_t node_len)
+        static node* new_node(size_t node_len)
         {
             static_assert(std::is_integral<INTEGRAL_T>::value, "Not integral!");
             assert(node_len > sizeof(INTEGRAL_T));
-            if (node_len < sizeof(cycbuf_node))
+            if (node_len < sizeof(node))
             {
                 return nullptr;
             }
@@ -31,46 +31,41 @@ public:
             memset(ptr, 0, nodelen);
 #endif
             //
-            ((cycbuf_node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
-            return ((cycbuf_node*)ptr);
+            ((node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
+            return ((node*)ptr);
         }
 
-        ///Ñø³ÉºÃÏ°¹ß,Ğ´new,¾ÍĞ´delete.
-        static void cycbuf_node(cycbuf_node* node)
+        ///å…»æˆå¥½ä¹ æƒ¯,å†™new,å°±å†™delete.
+        static void delete_node(node* node)
         {
             char* ptr = (char*)node;
             delete[] ptr;
         }
 
-    public:
-
-        ///Í·²¿µÄ³¤¶È£¬
-        static const size_t KFIFO_NODE_HEAD_LEN = sizeof(uint32_t);
-
-        ///×îĞ¡µÄCHUNK NODE³¤¶È£¬4+1
-        static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = KFIFO_NODE_HEAD_LEN + 1;
-
-        // ÔçÄê³¤¶ÈÊÇunsigned £¬Ò»´ÎÖØ¹¹ÎÒ¸Ä³ÉÁËsize_t,µ«Íü¼ÇÁËºÜ¶àµØ·½
-        // ½á¹¹ÓÃµÄÊÇ¹Ì¶¨³¤¶È£¬»áÇ¿×ªÎªdequechunk_node£¬2ÁË¡£
-
-        /// Õû¸öNodeµÄ³¤¶È,°üÀ¨size_of_node_ + chunkdata,
-        /// ÕâÀïÊ¹ÓÃsize_t,longÔÚ64Î»ÏÂ»áÓĞÎÊÌâ
+        /// æ•´ä¸ªNodeçš„é•¿åº¦,åŒ…æ‹¬size_of_node_ + node_data_æ•°æ®,
+        /// è¿™é‡Œä½¿ç”¨size_t,longåœ¨64ä½ä¸‹ä¼šæœ‰é—®é¢˜
         INTEGRAL_T    size_of_node_;
 
 #if defined(ZCE_OS_WINDOWS)
 #pragma warning ( disable : 4200)
 #endif
-        /// Êı¾İÇøµÄÊı¾İ£¬±ä³¤µÄÊı¾İ
+        /// æ•°æ®åŒºçš„æ•°æ®ï¼Œå˜é•¿çš„æ•°æ®
         char            node_data_[];
 #if defined(ZCE_OS_WINDOWS)
 #pragma warning ( default : 4200)
 #endif
     };
+public:
+
+    ///å¤´éƒ¨çš„é•¿åº¦ï¼Œ
+    static const size_t NODE_HEAD_LEN = sizeof(INTEGRAL_T);
+
+    ///æœ€å°çš„CHUNK NODEé•¿åº¦ï¼Œ4+1
+    static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = NODE_HEAD_LEN + 1;
 
 public:
 
-    fifo_cycbuf(size_t size_of_deque,
-                size_t max_len_node)
+    fifo_cycbuf()
     {
     }
 
@@ -83,16 +78,16 @@ public:
         }
     }
 
-    ///µÃµ½FREE¿Õ¼äµÄ¿ìÕÕ
+    ///å¾—åˆ°FREEç©ºé—´çš„å¿«ç…§
     size_t free()
     {
-        //¼ÆËã³ß´ç
+        //è®¡ç®—å°ºå¯¸
         size_t sz_free;
         if (cycbuf_begin_ == cycbuf_end_)
         {
             sz_free = size_of_deque_;
         }
-        else if (pstart < pend)
+        else if (cycbuf_begin_ < cycbuf_end_)
         {
             sz_free = size_of_deque_ - (cycbuf_end_ - cycbuf_begin_);
         }
@@ -104,21 +99,22 @@ public:
         return sz_free;
     }
 
-    ///ÈİÁ¿
+    ///å®¹é‡
     size_t capacity()
     {
+        return size_of_deque_ - JUDGE_FULL_INTERVAL;
     }
 
-    ///µÃµ½ÊÇ·ñÂúµÄ¿ìÕÕ
+    ///å¾—åˆ°æ˜¯å¦ä¸ºç©º
     bool empty()
     {
-
+        return cycbuf_begin_ == cycbuf_end_;
     }
 
-    ///µÃµ½ÊÇ·ñ¿ÕµÄ¿ìÕÕ
+    ///å¾—åˆ°æ˜¯å¦ç©º
     bool full()
     {
-
+        return free() == 0;
     }
 
     void clear()
@@ -128,17 +124,16 @@ public:
         memset(cycbuf_data_, 0, size_of_deque_);
     }
 
-
     bool initialize(size_t size_of_deque,
                     size_t max_len_node)
     {
-        
-        //±ØĞë´óÓÚ¼ä¸ô³¤¶È
+        //å¿…é¡»å¤§äºé—´éš”é•¿åº¦
         if (size_of_deque <= sizeof(INTEGRAL_T) + JUDGE_FULL_INTERVAL)
         {
             return false;
         }
-        if (std::numeric_limits<INTEGRAL_T>::max() > max_len_node)
+        if (max_len_node > static_cast<size_t>(
+            std::numeric_limits<int>::max()))
         {
             return false;
         }
@@ -151,27 +146,140 @@ public:
         return true;
     }
 
+    //å°†ä¸€ä¸ªNODEæ”¾å…¥å°¾éƒ¨
+    bool push_end(const node* node)
+    {
+        //ç²—ç•¥çš„æ£€æŸ¥,å¦‚æœé•¿åº¦ä¸åˆæ ¼,è¿”å›ä¸æˆåŠŸ
+        if (node->size_of_node_ < sizeof(INTEGRAL_T) ||
+            node->size_of_node_ > max_len_node_)
+        {
+            return false;
+        }
+
+        //æ£€æŸ¥é˜Ÿåˆ—çš„ç©ºé—´æ˜¯å¦å¤Ÿç”¨
+        if (free() < node->size_of_node_)
+        {
+            return false;
+        }
+
+        //å¦‚æœç©ºé—´è¶³å¤Ÿ
+        char* pend = cycbuf_data_ + cycbuf_end_;
+
+        //å¦‚æœç»•åœˆ
+        if (pend + node->size_of_node_ > cycbuf_data_ + size_of_deque_)
+        {
+            size_t first = size_of_deque_ - cycbuf_end_;
+            size_t second = node->size_of_node_ - first;
+            memcpy(pend, reinterpret_cast<const char*>(node), first);
+            memcpy(cycbuf_data_, reinterpret_cast<const char*>(node) + first, second);
+            cycbuf_end_ = second;
+        }
+        //å¦‚æœå¯ä»¥ä¸€æ¬¡æ‹·è´å®Œæˆ
+        else
+        {
+            memcpy(pend, reinterpret_cast<const char*>(node), node->size_of_node_);
+            cycbuf_end_ += node->size_of_node_;
+        }
+
+        return true;
+    }
+
+    bool pop_front(node* const node)
+    {
+        assert(node != NULL);
+
+        //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
+        if (empty() == true)
+        {
+            return false;
+        }
+
+        char* pbegin = cycbuf_data_ + cycbuf_begin_;
+        size_t node_len = get_front_len();
+
+        assert(node_len > 0);
+        assert(cycbuf_begin_ <= size_of_deque_);
+
+        //å¦‚æœè¢«åˆ†ä¸º2æˆª
+        if (pbegin + node_len > cycbuf_data_ + size_of_deque_)
+        {
+            size_t first = size_of_deque_ - cycbuf_begin_;
+            size_t second = node_len - first;
+            memcpy(reinterpret_cast<char*>(node), pbegin, first);
+            memcpy(reinterpret_cast<char*>(node) + first, cycbuf_data_, second);
+            cycbuf_begin_ = second;
+        }
+        else
+        {
+            memcpy(reinterpret_cast<char*>(node), pbegin, node_len);
+            cycbuf_begin_ += node->size_of_node_;
+            assert(cycbuf_begin_ <= size_of_deque_);
+        }
+
+        assert(cycbuf_begin_ <= size_of_deque_);
+
+        return true;
+    }
+
+    //å› ä¸ºè¿™ä¸ªå‡½æ•°çš„ä½¿ç”¨è¯­å¢ƒå¤§éƒ¨åˆ†æ˜¯emptyä¹‹åï¼Œ
+    size_t get_front_len()
+    {
+        //è¿˜æ˜¯è¦æ‹…å¿ƒé•¿åº¦æˆªæ–­2èŠ‚,å¤´å¤§,å¤´å¤§,å¤šå†™å¥½å¤šä»£ç 
+        char* tmp1 = cycbuf_data_ + cycbuf_begin_;
+        INTEGRAL_T node_len = 0;
+        char* tmp2 = reinterpret_cast<char*>(&node_len);
+
+        //å¦‚æœç®¡é“çš„é•¿åº¦ä¹Ÿç»•åœˆï¼Œé‡‡ç”¨é‡è›®çš„æ³•å­å¾—åˆ°é•¿åº¦
+        if (tmp1 + NODE_HEAD_LEN > cycbuf_data_ + size_of_deque_)
+        {
+            //ä¸€ä¸ªä¸ªå­—èŠ‚è¯»å–é•¿åº¦
+            for (size_t i = 0; i < NODE_HEAD_LEN; ++i)
+            {
+                if (tmp1 >= cycbuf_data_ + size_of_deque_)
+                {
+                    tmp1 = cycbuf_data_;
+                }
+
+                *tmp2 = *tmp1;
+                ++tmp1;
+                ++tmp2;
+            }
+        }
+        //
+        else
+        {
+            node_len = *(reinterpret_cast<INTEGRAL_T*>(tmp1));
+        }
+
+        return node_len;
+    }
+
 protected:
 
-    ///ÅĞ¶ÏÊÇ·ÇÎªÂúµÄ¼ä¸ô£¬Äã¿ÉÒÔÈÏÎª»·ĞÎ¶ÓÁĞ»¹ÊÇÒ»¸öÇ°±Õºó¿ªµÄ½á¹¹
-    ///cycbuf_begin_ = cycbuf_end_ ±íÊ¾¶ÓÁĞÎªNULL
-    ///cycbuf_begin_ = cycbuf_end_ + JUDGE_FULL_INTERVAL ±íÊ¾¶ÓÁĞÂú
+    ///åˆ¤æ–­æ˜¯éä¸ºæ»¡çš„é—´éš”ï¼Œä½ å¯ä»¥è®¤ä¸ºç¯å½¢é˜Ÿåˆ—è¿˜æ˜¯ä¸€ä¸ªå‰é—­åå¼€çš„ç»“æ„
+    ///cycbuf_begin_ = cycbuf_end_ è¡¨ç¤ºé˜Ÿåˆ—ä¸ºNULL
+    ///cycbuf_begin_ = cycbuf_end_ + JUDGE_FULL_INTERVAL è¡¨ç¤ºé˜Ÿåˆ—æ»¡
     static const size_t   JUDGE_FULL_INTERVAL = 8;
 
 protected:
 
-    ///dequeµÄ³¤¶È,±ØĞë>JUDGE_FULL_INTERVAL
-    size_t               size_of_deque_ = 0;
+    ///dequeçš„é•¿åº¦,å¿…é¡»>JUDGE_FULL_INTERVAL
+    size_t size_of_deque_ = 0;
 
-    ///nodeµÄ×î´ó³¤¶È
-    size_t               max_len_node_ = 0;
+    ///nodeçš„æœ€å¤§é•¿åº¦
+    size_t max_len_node_ = 0;
 
-    ///Á½¸ö¹Ø¼üÄÚ²¿Ö¸Õë,±ÜÃâ±àÒëÆ÷ÓÅ»¯
-    ///»·ĞÎ¶ÓÁĞ¿ªÊ¼µÄµØ·½£¬Õâ¸öµØ·½±ØÏÖÊÇ»úÆ÷×Ö³¤
-    size_t               cycbuf_begin_ = 0;
-    ///»·ĞĞ¶ÓÁĞ½áÊøµÄµØ·½£¬Õâ¸öµØ·½±ØÏÖÊÇ»úÆ÷×Ö³¤
-    size_t               cycbuf_end_ = 0;
+    ///ä¸¤ä¸ªå…³é”®å†…éƒ¨æŒ‡é’ˆ,é¿å…ç¼–è¯‘å™¨ä¼˜åŒ–
+    ///ç¯å½¢é˜Ÿåˆ—å¼€å§‹çš„åœ°æ–¹ï¼Œè¿™ä¸ªåœ°æ–¹å¿…ç°æ˜¯æœºå™¨å­—é•¿
+    size_t cycbuf_begin_ = 0;
+    ///ç¯è¡Œé˜Ÿåˆ—ç»“æŸçš„åœ°æ–¹ï¼Œè¿™ä¸ªåœ°æ–¹å¿…ç°æ˜¯æœºå™¨å­—é•¿
+    size_t cycbuf_end_ = 0;
 
-    char                *cycbuf_data_ = nullptr;
+    char* cycbuf_data_ = nullptr;
 };
+
+//nodeçš„å¤´éƒ¨æ ‡è¯†é•¿åº¦çš„å­—èŠ‚é•¿åº¦æ˜¯uint16_tè¿˜æ˜¯uint32_t
+typedef fifo_cycbuf<uint16_t> fifo_cycbuf_u16;
+typedef fifo_cycbuf<uint32_t> fifo_cycbuf_u32;
+typedef fifo_cycbuf<uint64_t> fifo_cycbuf_u64;
 }

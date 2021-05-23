@@ -128,9 +128,9 @@ public:
     * @param[out] free_chunk   剩余的桶的数量，
     * @param[out] max_room     剩余的空间，最大可以放多大的数据
     */
-    void free_size(size_t& free_node,
-                   size_t& free_chunk,
-                   size_t& max_room);
+    void free(size_t& free_node,
+              size_t& free_chunk,
+              size_t& max_room);
 
     /*!
     * @brief      检查是否有足够空间存放一个数据

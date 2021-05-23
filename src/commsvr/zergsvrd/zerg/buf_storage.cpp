@@ -155,7 +155,7 @@ void Buffer_Storage::monitor()
     soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_FREE,
                                                 0,
                                                 0,
-                                                buffer_deque_.freesize());
+                                                buffer_deque_.free());
     soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
                                                 0,
                                                 0,

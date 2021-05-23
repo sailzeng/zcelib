@@ -92,22 +92,13 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
                     sz_use_len);
 }
 
-//写日志
-void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY outlevel, const char* str_format, ...)
-{
-    va_list args;
-    va_start(args, str_format);
-    vwrite_logmsg(outlevel, str_format, args);
-    va_end(args);
-}
-
 //ZASSERT的扩展定义，
 void ZCE_Trace_LogMsg::debug_assert(const char* file_name,
                                     const int file_line,
                                     const char* function_name,
                                     const char* expression_name)
 {
-    debug_output(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s].",
+    write_logmsg(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s].",
                  file_name,
                  file_line,
                  function_name,
@@ -121,7 +112,7 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char* file_name,
                                        const char* expression_name,
                                        const char* out_string)
 {
-    debug_output(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s] OutString[%s].",
+    write_logmsg(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s] OutString[%s].",
                  file_name,
                  file_line,
                  function_name,
@@ -130,7 +121,7 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char* file_name,
 }
 
 //调用vwrite_logmsg完成实际输出
-void ZCE_Trace_LogMsg::debug_output(zce::LOG_PRIORITY dbglevel,
+void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY dbglevel,
                                     const char* str_format, ...)
 {
     va_list args;

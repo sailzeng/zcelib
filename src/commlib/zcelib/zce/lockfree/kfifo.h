@@ -46,10 +46,10 @@ public:
 public:
 
     ///头部的长度，
-    static const size_t KFIFO_NODE_HEAD_LEN = sizeof(uint32_t);
+    static const size_t NODE_HEAD_LEN = sizeof(uint32_t);
 
     ///最小的CHUNK NODE长度，4+1
-    static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = KFIFO_NODE_HEAD_LEN + 1;
+    static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = NODE_HEAD_LEN + 1;
 
     // 早年长度是unsigned ，一次重构我改成了size_t,但忘记了很多地方
     // 结构用的是固定长度，会强转为dequechunk_node，2了。
@@ -69,42 +69,6 @@ public:
 };
 
 /*!
-@brief      队列的头部数据，初始化的放在共享内存的最开始部分，用于记录队列
-            的一些状态，关键数据，用于恢复，在恢复的时候会进行比对检查
-            内部使用结构，所以前面加了_
-*/
-class shm_kfifo_head
-{
-    //
-    friend  class shm_kfifo;
-
-protected:
-
-    ///构造函数，不对外提供，
-    shm_kfifo_head() = default;
-    ///析构函数
-    ~shm_kfifo_head() = default;
-
-    //数据也不提供给大众访问，shm_kfifo除外
-protected:
-
-    ///内存区的长度
-    size_t               size_of_mmap_ = 0;
-
-    ///deque的长度,必须>JUDGE_FULL_INTERVAL
-    size_t               size_of_deque_ = 0;
-
-    ///node的最大长度
-    size_t               max_len_node_ = 0;
-
-    ///两个关键内部指针,避免编译器优化
-    ///环形队列开始的地方，这个地方必现是机器字长
-    volatile size_t      deque_begin_ = 0;
-    ///环行队列结束的地方，这个地方必现是机器字长
-    volatile size_t      deque_end_ = 0;
-};
-
-/*!
 @brief      如果1个读,1个写不用加锁,因为用了些技巧,中间有一个空闲区,读只使用pend指针,写只使用pstart指针,
             判断EMPTY,FULL使用快照,
             如果非要多个进程读写,要加锁,要自己实现锁,我只提供了一个基类,
@@ -113,6 +77,50 @@ protected:
 */
 class shm_kfifo : public shm_container
 {
+protected:
+    /*!
+    @brief      队列的头部数据，初始化的放在共享内存的最开始部分，用于记录队列
+                的一些状态，关键数据，用于恢复，在恢复的时候会进行比对检查
+                内部使用结构，所以前面加了_
+    */
+    class shm_kfifo_head
+    {
+        //
+        friend  class shm_kfifo;
+
+    protected:
+
+        ///构造函数，不对外提供，
+        shm_kfifo_head() = default;
+        ///析构函数
+        ~shm_kfifo_head() = default;
+
+        //数据也不提供给大众访问，shm_kfifo除外
+    protected:
+
+        ///内存区的长度
+        size_t               size_of_mmap_ = 0;
+
+        ///deque的长度,必须>JUDGE_FULL_INTERVAL
+        size_t               size_of_deque_ = 0;
+
+        ///node的最大长度
+        size_t               max_len_node_ = 0;
+
+        ///两个关键内部指针,避免编译器优化,这个地方最好其实用atomic
+        ///环形队列开始的地方，这个地方必现是机器字长
+        volatile size_t      deque_begin_ = 0;
+        ///环行队列结束的地方，这个地方必现是机器字长
+        volatile size_t      deque_end_ = 0;
+    };
+
+    ///构造函数，用protected保护，避免你用了
+protected:
+    shm_kfifo() = default;
+public:
+    ///析构函数
+    ~shm_kfifo();
+
 protected:
 
     ///只定义不实现
@@ -128,14 +136,6 @@ protected:
     @param      pend    返回的循环队列结束位置
     */
     void snap_getpoint(size_t& pstart, size_t& pend);
-
-    ///构造函数，用protected保护，避免你用了
-protected:
-    shm_kfifo() = default;
-public:
-    ///析构函数
-    ~shm_kfifo();
-
 public:
 
     /*!
@@ -223,7 +223,7 @@ public:
     inline size_t get_front_len();
 
     ///得到FREE空间的快照
-    size_t free_size();
+    size_t free();
 
     ///容量
     size_t capacity();
@@ -265,7 +265,7 @@ inline size_t shm_kfifo::get_front_len()
     char* tmp2 = reinterpret_cast<char*>(&tmplen);
 
     //如果管道的长度也绕圈，采用野蛮的法子得到长度
-    if (tmp1 + kfifo_node::KFIFO_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
+    if (tmp1 + kfifo_node::NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
         //一个个字节读取长度
         for (size_t i = 0; i < sizeof(uint32_t); ++i)

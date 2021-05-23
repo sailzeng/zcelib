@@ -261,7 +261,7 @@
     <ClCompile Include="zce\mysql\result.cpp" />
     <ClCompile Include="zce\mysql\stmt_bind.cpp" />
     <ClCompile Include="zce\mysql\stmt_cmd.cpp" />
-    <ClCompile Include="zce\net\zce_net_http_client.cpp" />
+    <ClCompile Include="zce\net\http_client.cpp" />
     <ClCompile Include="zce\os_adapt\backtrace.cpp" />
     <ClCompile Include="zce\os_adapt\condi.cpp" />
     <ClCompile Include="zce\os_adapt\coroutine.cpp" />
@@ -386,7 +386,7 @@
     <ClInclude Include="zce\mysql\result.h" />
     <ClInclude Include="zce\mysql\stmt_bind.h" />
     <ClInclude Include="zce\mysql\stmt_cmd.h" />
-    <ClInclude Include="zce\net\zce_net_http_client.h" />
+    <ClInclude Include="zce\net\http_client.h" />
     <ClInclude Include="zce\os_adapt\backtrace.h" />
     <ClInclude Include="zce\os_adapt\condi.h" />
     <ClInclude Include="zce\os_adapt\coroutine.h" />

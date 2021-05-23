@@ -53,11 +53,11 @@ int test_cache_chunk2()
     zce::shm_cachechunk* testchunk = NULL;
     size_t testindex, testfreenode, testfreechunk, testfreeroom;
     testchunk = zce::shm_cachechunk::initialize(10, 100, 10, cachebuf);
-    testchunk->free_size(testfreenode, testfreechunk, testfreeroom);
+    testchunk->free(testfreenode, testfreechunk, testfreeroom);
     std::cout << "free chunk:" << testfreechunk << std::endl;
 
     testchunk->set_node(9, testdata, testindex);
-    testchunk->free_size(testfreenode, testfreechunk, testfreeroom);
+    testchunk->free(testfreenode, testfreechunk, testfreeroom);
 
     char tmpbuf[128];
     size_t szdatalen = 0;
@@ -65,7 +65,7 @@ int test_cache_chunk2()
 
     std::cout << "index:" << testindex << " " << "free chunk:" << testfreechunk << std::endl;
     testchunk->freenode(testindex);
-    testchunk->free_size(testfreenode, testfreechunk, testfreeroom);
+    testchunk->free(testfreenode, testfreechunk, testfreeroom);
     std::cout << "free chunk:" << testfreechunk << std::endl;
 
     return 0;

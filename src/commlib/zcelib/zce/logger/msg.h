@@ -31,9 +31,6 @@ public:
     ZCE_Trace_LogMsg();
     virtual ~ZCE_Trace_LogMsg();
 
-    ///为C爱好者准备的封装，且记不要混用,输出一条(行)日志记录.
-    void write_logmsg(zce::LOG_PRIORITY outlevel, const char* str_format, ...);
-
 protected:
 
     /*!
@@ -67,7 +64,7 @@ public:
                                 const char* out_string);
 
     ///利用单子对象，打印日志信息
-    static void debug_output(zce::LOG_PRIORITY dbglevel,
+    static void write_logmsg(zce::LOG_PRIORITY dbglevel,
                              const char* str_format,
                              ...);
 

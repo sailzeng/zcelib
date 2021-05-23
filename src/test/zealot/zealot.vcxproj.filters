@@ -23,7 +23,7 @@
     <ClCompile Include="zealot_test_rbtree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_lockfree_deque.cpp">
+    <ClCompile Include="zealot_test_ring.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zealot_test_list.cpp">

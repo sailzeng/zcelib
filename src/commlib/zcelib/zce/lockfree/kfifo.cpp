@@ -137,7 +137,7 @@ bool shm_kfifo::push_end(const kfifo_node* node)
     }
 
     //检查队列的空间是否够用
-    if (free_size() < node->size_of_node_)
+    if (free() < node->size_of_node_)
     {
         return false;
     }
@@ -146,7 +146,7 @@ bool shm_kfifo::push_end(const kfifo_node* node)
     char* pend = dequechunk_database_ + dequechunk_head_->deque_end_;
 
     //如果绕圈
-    if (pend + node->size_of_node_ >= dequechunk_database_ + dequechunk_head_->size_of_deque_)
+    if (pend + node->size_of_node_ > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
         size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_end_;
         size_t second = node->size_of_node_ - first;
@@ -338,30 +338,29 @@ bool shm_kfifo::discard_frond()
 }
 
 //FREE的尺寸,空闲的空间有多少
-size_t shm_kfifo::free_size()
+size_t shm_kfifo::free()
 {
     //取快照
-    size_t pstart, pend, szfree;
-    snap_getpoint(pstart, pend);
+    size_t start, end, sz_free;
+    snap_getpoint(start, end);
 
     //计算尺寸
-    if (pstart == pend)
+    if (start == end)
     {
-        szfree = dequechunk_head_->size_of_deque_;
+        sz_free = dequechunk_head_->size_of_deque_;
     }
-    else if (pstart < pend)
+    else if (start < end)
     {
-        szfree = dequechunk_head_->size_of_deque_ - (pend - pstart);
+        sz_free = dequechunk_head_->size_of_deque_ - (end - start);
     }
     else
     {
-        szfree = pstart - pend;
+        sz_free = start - end;
     }
 
     //重要：FREE长度应该减去预留部分长度，保证首尾不会相接
-    szfree -= JUDGE_FULL_INTERVAL;
-
-    return szfree;
+    sz_free -= JUDGE_FULL_INTERVAL;
+    return sz_free;
 }
 
 //容量
@@ -373,12 +372,12 @@ size_t shm_kfifo::capacity()
 //得到某1时刻的快照是否为EMPTY
 bool shm_kfifo::empty()
 {
-    return free_size() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
+    return free() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
 }
 
 //得到某1时刻的快照是否为FULL
 bool shm_kfifo::full()
 {
-    return free_size() == 0;
+    return free() == 0;
 }
 };

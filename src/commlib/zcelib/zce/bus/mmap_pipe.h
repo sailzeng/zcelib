@@ -126,7 +126,7 @@ public:
                     "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
                     pipe_id,
                     node->size_of_node_,
-                    bus_pipe_pointer_[pipe_id]->free_size(),
+                    bus_pipe_pointer_[pipe_id]->free(),
                     bus_pipe_pointer_[pipe_id]->capacity()
             );
             return -1;
@@ -213,10 +213,10 @@ public:
     }
 
     //管道的空余空间,
-    inline void get_bus_freesize(size_t pipe_id, size_t& pipe_size, size_t& free_size)
+    inline void get_bus_freesize(size_t pipe_id, size_t& pipe_size, size_t& free)
     {
         pipe_size = bus_head_.size_of_pipe_[pipe_id];
-        free_size = bus_pipe_pointer_[pipe_id]->free_size();
+        free = bus_pipe_pointer_[pipe_id]->free();
         return;
     }
     //-----------------------------------------------------------------
