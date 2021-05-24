@@ -1288,7 +1288,7 @@ int test_bytes_data_represent(int /*argc*/, char* /*argv */[])
     data1.d1_f1_[33] = 5555;
     data1.d1_f1_[333] = 55555;
 
-    ZCE_Serialize_Write ssave(buffer_data1, SIZE_OF_BUFFER);
+    zce::serialize::Encode ssave(buffer_data1, SIZE_OF_BUFFER);
     data1.serialize(ssave);
     if (ssave.is_good())
     {
@@ -1300,7 +1300,7 @@ int test_bytes_data_represent(int /*argc*/, char* /*argv */[])
     }
 
     DR_DATA_1 data2;
-    ZCE_Serialize_Read sload(buffer_data1, SIZE_OF_BUFFER);
+    zce::serialize::Decode sload(buffer_data1, SIZE_OF_BUFFER);
     data2.serialize(sload);
 
     return 0;

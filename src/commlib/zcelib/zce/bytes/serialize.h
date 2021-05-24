@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_BYTES_SERIALIZATION_H_
-#define ZCE_LIB_BYTES_SERIALIZATION_H_
+#pragma once
 
 #include "zce/bytes/bytes_common.h"
 #include "zce/logger/logging.h"
@@ -7,42 +6,44 @@
 //===========================================================================================================
 //流编码处理的类，写入流的处理类
 
-class ZCE_Serialize_Write;
+namespace zce::serialize
+{
+class Encode;
 
 //辅助处理保存数据的一些类
 template<typename val_type >
-class ZCE_ClassSerialize_WriteHelp
+class En_Class_Help
 {
 public:
-    void write_help(ZCE_Serialize_Write* ssave, const val_type& val);
+    void write_help(Encode* ssave, const val_type& val);
 };
 
 template<>
-class ZCE_ClassSerialize_WriteHelp<std::string>
+class En_Class_Help<std::string>
 {
 public:
-    void write_help(ZCE_Serialize_Write* ssave, const std::string& val);
+    void write_help(Encode* ssave, const std::string& val);
 };
 
 template<typename vector_type >
-class ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >
+class En_Class_Help<std::vector<vector_type> >
 {
 public:
-    void write_help(ZCE_Serialize_Write* ssave, const std::vector<vector_type>& val);
+    void write_help(Encode* ssave, const std::vector<vector_type>& val);
 };
 
 template<typename list_type >
-class ZCE_ClassSerialize_WriteHelp<std::list<list_type> >
+class En_Class_Help<std::list<list_type> >
 {
 public:
-    void write_help(ZCE_Serialize_Write* ssave, const std::list<list_type>& val);
+    void write_help(Encode* ssave, const std::list<list_type>& val);
 };
 
 template<typename key_type, typename data_type >
-class ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >
+class En_Class_Help<std::map<key_type, data_type> >
 {
 public:
-    void write_help(ZCE_Serialize_Write* ssave, const std::map<key_type, data_type>& val);
+    void write_help(Encode* ssave, const std::map<key_type, data_type>& val);
 };
 
 /*!
@@ -51,14 +52,14 @@ public:
 * @note       没有考虑对齐等问题，
 *             BTW：对于写入，我们不在溢出保护上做过多努力，那是你负责的事情
 */
-class ZCE_Serialize_Write
+class Encode
 {
 public:
 
     ///构造函数
-    ZCE_Serialize_Write(char* write_buf, size_t buf_len);
+    Encode(char* write_buf, size_t buf_len);
 
-    ~ZCE_Serialize_Write();
+    ~Encode();
 
 public:
 
@@ -180,14 +181,14 @@ public:
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value >::type write(const val_type& val)
     {
-        ZCE_ClassSerialize_WriteHelp<val_type> ssave;
+        En_Class_Help<val_type> ssave;
         ssave.write_help(this, val);
         return;
     }
 
     ///使用& 操作符号写入数据，
     template<typename val_type>
-    ZCE_Serialize_Write& operator &(const val_type& val)
+    Encode& operator &(const val_type& val)
     {
         this->write(val);
         return *this;
@@ -213,16 +214,16 @@ protected:
 
 //用保存class辅助处理的 base templates 实现
 template<typename val_type>
-void ZCE_ClassSerialize_WriteHelp<val_type>::write_help(ZCE_Serialize_Write* ssave,
-                                                        const val_type& val)
+void En_Class_Help<val_type>::write_help(Encode* ssave,
+                                         const val_type& val)
 {
     val.serialize(ssave);
 }
 
 //用于保存vector 辅助处理的特化
 template<typename vector_type>
-void ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >::write_help(ZCE_Serialize_Write* ssave,
-                                                                         const std::vector<vector_type>& val)
+void En_Class_Help<std::vector<vector_type> >::write_help(Encode* ssave,
+                                                          const std::vector<vector_type>& val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
@@ -235,8 +236,8 @@ void ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >::write_help(ZCE_Ser
 }
 
 template<typename list_type>
-void ZCE_ClassSerialize_WriteHelp<std::list<list_type> >::write_help(ZCE_Serialize_Write* ssave,
-                                                                     const std::list<list_type>& val)
+void En_Class_Help<std::list<list_type> >::write_help(Encode* ssave,
+                                                      const std::list<list_type>& val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
@@ -250,8 +251,8 @@ void ZCE_ClassSerialize_WriteHelp<std::list<list_type> >::write_help(ZCE_Seriali
 }
 
 template<typename key_type, typename data_type >
-void ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >::write_help(ZCE_Serialize_Write* ssave,
-                                                                              const std::map<key_type, data_type>& val)
+void En_Class_Help<std::map<key_type, data_type> >::write_help(Encode* ssave,
+                                                               const std::map<key_type, data_type>& val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
@@ -267,41 +268,41 @@ void ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >::write_help(ZC
 
 //===========================================================================================================
 
-class ZCE_Serialize_Read;
+class Decode;
 //辅助处理读取数据的一些类
 template<typename val_type >
-class ZCE_ClassSerialize_ReadHelp
+class De_Class_Help
 {
 public:
-    void read_help(ZCE_Serialize_Read* sload, val_type& val);
+    void read_help(Decode* sload, val_type& val);
 };
 
 template<>
-class ZCE_ClassSerialize_ReadHelp<std::string>
+class De_Class_Help<std::string>
 {
 public:
-    void read_help(ZCE_Serialize_Read* sload, std::string& val);
+    void read_help(Decode* sload, std::string& val);
 };
 
 template<typename vector_type >
-class ZCE_ClassSerialize_ReadHelp<std::vector<vector_type> >
+class De_Class_Help<std::vector<vector_type> >
 {
 public:
-    void read_help(ZCE_Serialize_Read* sload, std::vector<vector_type>& val);
+    void read_help(Decode* sload, std::vector<vector_type>& val);
 };
 
 template<typename list_type >
-class ZCE_ClassSerialize_ReadHelp<std::list<list_type> >
+class De_Class_Help<std::list<list_type> >
 {
 public:
-    void read_help(ZCE_Serialize_Read* sload, std::list<list_type>& val);
+    void read_help(Decode* sload, std::list<list_type>& val);
 };
 
 template<typename key_type, typename data_type >
-class ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >
+class De_Class_Help<std::map<key_type, data_type> >
 {
 public:
-    void read_help(ZCE_Serialize_Read* sload, std::map<key_type, data_type>& val);
+    void read_help(Decode* sload, std::map<key_type, data_type>& val);
 };
 
 /*!
@@ -309,9 +310,9 @@ public:
 *
 * @note       读取对于边界有有一些安全处理，避免输入数据就有问题的情况
 */
-class ZCE_Serialize_Read
+class Decode
 {
-    friend class ZCE_ClassSerialize_ReadHelp<std::string>;
+    friend class De_Class_Help<std::string>;
 public:
 
     /*!
@@ -319,10 +320,10 @@ public:
     * @param      read_buf 输入的数据，不会对数据进行改动
     * @param      buf_len  数据的长度
     */
-    ZCE_Serialize_Read(const char* read_buf, size_t buf_len);
+    Decode(const char* read_buf, size_t buf_len);
 
     ///析构函数
-    ~ZCE_Serialize_Read();
+    ~Decode();
 
 public:
     ///返回当前类是否正常，BTW：我们不在溢出保护上做努力，那是你负责的事情
@@ -454,14 +455,14 @@ public:
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value>::type read(val_type& val)
     {
-        ZCE_ClassSerialize_ReadHelp<val_type> sload;
+        De_Class_Help<val_type> sload;
         sload.read_help(this, val);
         return;
     }
 
     ///使用&操作符号写入数据，
     template<typename val_type>
-    ZCE_Serialize_Read& operator &(val_type& val)
+    Decode& operator &(val_type& val)
     {
         this->read(val);
         return *this;
@@ -485,15 +486,15 @@ protected:
 
 //辅助类，save_help 函数
 template<typename val_type>
-void ZCE_ClassSerialize_ReadHelp<val_type>::read_help(ZCE_Serialize_Read* sload,
-                                                      val_type& val)
+void De_Class_Help<val_type>::read_help(Decode* sload,
+                                        val_type& val)
 {
     val.serialize(sload);
 }
 
 template<typename vector_type>
-void ZCE_ClassSerialize_ReadHelp<std::vector<vector_type> >::read_help(ZCE_Serialize_Read* sload,
-                                                                       std::vector<vector_type>& val)
+void De_Class_Help<std::vector<vector_type> >::read_help(Decode* sload,
+                                                         std::vector<vector_type>& val)
 {
     unsigned int v_size = 0;
     sload->read_arithmetic(v_size);
@@ -512,8 +513,8 @@ void ZCE_ClassSerialize_ReadHelp<std::vector<vector_type> >::read_help(ZCE_Seria
 }
 
 template<typename list_type>
-void ZCE_ClassSerialize_ReadHelp<std::list<list_type> >::read_help(ZCE_Serialize_Read* sload,
-                                                                   std::list<list_type>& val)
+void De_Class_Help<std::list<list_type> >::read_help(Decode* sload,
+                                                     std::list<list_type>& val)
 {
     size_t v_size = val.size();
     sload->read_arithmetic(v_size);
@@ -532,8 +533,8 @@ void ZCE_ClassSerialize_ReadHelp<std::list<list_type> >::read_help(ZCE_Serialize
 }
 
 template<typename key_type, typename data_type >
-void ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >::read_help(ZCE_Serialize_Read* sload,
-                                                                            std::map<key_type, data_type>& val)
+void De_Class_Help<std::map<key_type, data_type> >::read_help(Decode* sload,
+                                                              std::map<key_type, data_type>& val)
 {
     size_t v_size = val.size();
     sload->read_arithmetic(v_size);
@@ -552,5 +553,4 @@ void ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >::read_help(ZCE_
     }
     return;
 }
-
-#endif //ZCE_LIB_BYTES_SERIALIZATION_H_
+}
