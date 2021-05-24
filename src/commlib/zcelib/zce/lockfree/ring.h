@@ -198,7 +198,6 @@ public:
             if (vptr_ptr_[start])
             {
                 value_ptr = vptr_ptr_[start];
-                vptr_ptr_[start] = nullptr;
             }
             else
             {
@@ -208,6 +207,7 @@ public:
             bool succ = ring_start_.compare_exchange_strong(start, new_start);
             if (succ)
             {
+                vptr_ptr_[start] = nullptr;
                 return true;
             }
         }
@@ -227,11 +227,10 @@ public:
             {
                 return false;
             }
-            //因为存在push挪动了start，但没有放入数据可能（先放数据问题更大）
+            //因为存在push_end挪动了ring_end_，但还没有放入数据可能（先放数据问题更大）
             if (vptr_ptr_[end])
             {
                 value_ptr = vptr_ptr_[end];
-                vptr_ptr_[end] = nullptr;
             }
             else
             {
@@ -241,6 +240,7 @@ public:
             bool succ = ring_end_.compare_exchange_strong(end, new_end);
             if (succ)
             {
+                vptr_ptr_[end] = nullptr;
                 return true;
             }
         }
