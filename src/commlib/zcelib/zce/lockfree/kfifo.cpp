@@ -38,16 +38,6 @@ void kfifo_node::delete_node(kfifo_node* node)
 /*********************************************************************************
 class shm_kfifo
 *********************************************************************************/
-//构造函数和析构函数都不是打算给你使用的,
-
-shm_kfifo::~shm_kfifo()
-{
-    if (line_wrap_nodeptr_)
-    {
-        delete line_wrap_nodeptr_;
-        line_wrap_nodeptr_ = NULL;
-    }
-}
 
 size_t shm_kfifo::getallocsize(const size_t szdeque)
 {
@@ -58,7 +48,6 @@ size_t shm_kfifo::getallocsize(const size_t szdeque)
 shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
                                  size_t max_len_node,
                                  char* mmap_ptr,
-                                 bool if_read_ptr,
                                  bool if_restore)
 {
     //必须大于间隔长度
@@ -100,12 +89,13 @@ shm_kfifo* shm_kfifo::initialize(size_t size_of_deque,
     {
         kfifo->clear();
     }
-    if (if_read_ptr)
-    {
-        kfifo->line_wrap_nodeptr_ = kfifo_node::new_node(
-            kfifo->dequechunk_head_->max_len_node_);
-    }
     return kfifo;
+}
+
+void shm_kfifo::finalize(shm_kfifo* kfifo_ptr)
+{
+    delete kfifo_ptr;
+    kfifo_ptr = nullptr;
 }
 
 //清理成没有使用过的状态
@@ -114,7 +104,7 @@ void shm_kfifo::clear()
     //
     dequechunk_head_->deque_begin_ = 0;
     dequechunk_head_->deque_end_ = 0;
-    memset(dequechunk_database_, 0, dequechunk_head_->size_of_deque_);
+    ::memset(dequechunk_database_, 0, dequechunk_head_->size_of_deque_);
 }
 
 //得到两个关键指针的快照
@@ -269,42 +259,6 @@ bool shm_kfifo::read_front_new(kfifo_node*& new_node)
     new_node = kfifo_node::new_node(tmplen);
 
     return read_front(new_node);
-}
-
-//读取队列的第一个NODE的指针，如果是折行的数据会特殊处理
-bool shm_kfifo::read_front_ptr(const kfifo_node*& node_ptr)
-{
-    //如果line_wrap_nodeptr_没有空间，现分配
-    assert(line_wrap_nodeptr_);
-
-    //检查是否为空
-    if (empty() == true)
-    {
-        return false;
-    }
-
-    //如果空间足够
-    char* pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
-    size_t tmplen = get_front_len();
-
-    //如果被分为2截,折行了，用line_wrap_nodeptr_，保存数据，提交给上层，
-    if (pbegin + tmplen > dequechunk_database_ + dequechunk_head_->size_of_deque_)
-    {
-        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
-        size_t second = tmplen - first;
-
-        //将两截数据保存到line_wrap_nodeptr_中，给上层调用者用，让上层仍然使用一个连续的空间
-        memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_), pbegin, first);
-        memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_) + first, dequechunk_database_, second);
-
-        node_ptr = line_wrap_nodeptr_;
-    }
-    else
-    {
-        node_ptr = reinterpret_cast<const kfifo_node*>(pbegin);
-    }
-
-    return true;
 }
 
 //丢弃队列前面的第一个NODE

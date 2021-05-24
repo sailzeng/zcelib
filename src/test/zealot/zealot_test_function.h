@@ -28,7 +28,7 @@ int test_osadapt_perf(int argc, char* argv[]);
 int test_nonr_thread_mutex(int argc, char* argv[]);
 int test_msgqueue_condi(int argc, char* argv[]);
 
-int test_host_name_fun(int, char* []);
+int test_host_name_fun(int, char*[]);
 
 int test_rw_lock1(int argc, char* argv[]);
 int test_rw_lock2(int argc, char* argv[]);
@@ -120,5 +120,6 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[]);
 int test_sqlite_configtable(int /*argc*/, char* /*argv */[]);
 
 int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[]);
+int test_lockfree_ring(int /*argc*/, char* /*argv*/[]);
 
 #endif //

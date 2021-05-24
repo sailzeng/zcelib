@@ -170,3 +170,12 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
     }
     return 0;
 }
+
+int test_lockfree_ring(int /*argc*/, char* /*argv*/[])
+{
+    zce::lockfree::rings<int> a1(1024);
+    a1.push_back(new int(1));
+    a1.push_back(new int(2));
+
+    return 0;
+}

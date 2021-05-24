@@ -73,8 +73,7 @@ public:
 
         for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
         {
-            delete bus_pipe_pointer_[i];
-            bus_pipe_pointer_[i] = NULL;
+            zce::lockfree::shm_kfifo::finalize(bus_pipe_pointer_[i]);
 
             bus_head_.size_of_pipe_[i] = 0;
             bus_head_.size_of_room_[i] = 0;

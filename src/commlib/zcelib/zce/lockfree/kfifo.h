@@ -114,12 +114,11 @@ protected:
         volatile size_t      deque_end_ = 0;
     };
 
-    ///构造函数，用protected保护，避免你用了
 protected:
+    ///构造函数，用protected保护，避免你用了
     shm_kfifo() = default;
-public:
     ///析构函数
-    ~shm_kfifo();
+    ~shm_kfifo() = default;
 
 protected:
 
@@ -151,13 +150,11 @@ public:
     * @param      size_of_deque    deque的长度，(就是 getallocsize 的参数，不是返回值呀)
     * @param      max_len_node     放入的note最大长度，我会帮你检查一下
     * @param      mmap_ptr         内存的指针，共享内存也可以，普通内存也可以
-    * @param      if_read_ptr      是否会直接使用node 的指针，即会使用read_front_ptr函数
     * @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
     */
     static shm_kfifo* initialize(size_t size_of_deque,
                                  size_t max_len_node,
                                  char* mmap_ptr,
-                                 bool if_read_ptr = false,
                                  bool if_restore = false);
 
     /*!
@@ -206,14 +203,6 @@ public:
     bool read_front_new(kfifo_node*& new_node);
 
     /*!
-    @brief      读取队列的第一个NODE（指针）地址，，如果是折行的数据会特殊处理
-                在某些情况下少用一次Memcopy，追求极致性能的时候考虑使用
-    @return     bool     true表示成功读取
-    @param      node_ptr 存放地址的指针
-    */
-    bool read_front_ptr(const kfifo_node*& node_ptr);
-
-    /*!
     @brief      丢弃队列前面的第一个NODE
     @return     bool 是否丢弃成功
     */
@@ -248,11 +237,6 @@ protected:
 
     ///数据区的头指针,方便计算
     char* dequechunk_database_ = nullptr;
-
-    ///如果需要读取node的地址（不取出数据），那么有种特殊情况，折行要考虑
-    ///line_wrap_nodeptr_ 大部分时候不需要，除非你用read_front_ptr这些方法，
-    ///所以默认不初始化
-    kfifo_node* line_wrap_nodeptr_ = nullptr;
 };
 
 //取队列头的buffer长度,你必须在确认pipe里面有数据才能调用这个函数，否则后果自负。
