@@ -55,7 +55,7 @@ public:
         ring_end_ = 0;
         ring_capacity_ = max_len + 1;
         //
-        vptr_ptr_ = new _value_type * [max_len];
+        vptr_ptr_ = new std::atomic<_value_type*>[max_len];
         for (size_t i = 0; i < max_len; ++i)
         {
             vptr_ptr_[i] = nullptr;
@@ -85,7 +85,7 @@ public:
     ///尺寸空间
     inline size_t size() const
     {
-        if (cycdeque_end_ >= lordring_start_)
+        if (ring_end_ >= ring_start_)
         {
             return ring_end_ - ring_start_;
         }
@@ -142,11 +142,18 @@ public:
                 return false;
             }
             auto new_end = (end + 1) % ring_capacity_;
-            //直接放在队尾,先占位
-            bool succ = ring_end_.compare_exchange_strong(end, new_end);
+            if (vptr_ptr_[new_end] != nullptr)
+            {
+                continue;
+            }
+            //先写入数据
+            _value_type * write_null = nullptr;
+            bool succ = vptr_ptr_[new_end].compare_exchange_strong(write_null,
+                                                                   value_ptr);
             if (succ)
             {
-                vptr_ptr_[new_end] = value_ptr;
+                //最后在移动end标识
+                ring_end_.compare_exchange_strong(end, new_end);
                 return true;
             }
         }
@@ -169,16 +176,21 @@ public:
 
             //直接放在队尾
             auto new_start = (start > 0) ? start - 1 : ring_capacity_ - 1;
+            if (vptr_ptr_[new_start] != nullptr)
+            {
+                continue;
+            }
             //直接放在队尾
-            bool succ = lordring_start_.compare_exchange_strong(start, new_start);
+            _value_type * write_null = nullptr;
+            bool succ = vptr_ptr_[new_start].compare_exchange_strong(write_null,
+                                                                     value_ptr);
             if (succ)
             {
-                vptr_ptr_[new_start] = value_ptr;
+                lordring_start_.compare_exchange_strong(start, new_start);
                 return true;
             }
         }
-
-        return true;
+        return false;
     }
 
     ///从队列的前面pop并且得到一个数据
@@ -194,25 +206,21 @@ public:
                 return false;
             }
 
-            //因为存在push_front挪动了ring_start_，但还没有放入数据可能（先放数据问题更大）
-            if (vptr_ptr_[start])
-            {
-                value_ptr = vptr_ptr_[start];
-            }
-            else
+            //因为存在push_front 放入了数据，但没有改写ring_start_可能
+            value_ptr = vptr_ptr_[start];
+            if (value_ptr == nullptr)
             {
                 continue;
             }
-            auto new_start = (start + 1) % ring_capacity_;
-            bool succ = ring_start_.compare_exchange_strong(start, new_start);
+            bool succ = vptr_ptr_[start].compare_exchange_strong(value_ptr,
+                                                                 nullptr);
             if (succ)
             {
-                vptr_ptr_[start] = nullptr;
-                return true;
+                auto new_start = (start + 1) % ring_capacity_;
+                ring_start_.compare_exchange_strong(start, new_start);
             }
         }
-
-        return true;
+        return false;
     }
 
     ///从队列的尾部pop并且得到一个数据
@@ -227,24 +235,21 @@ public:
             {
                 return false;
             }
-            //因为存在push_end挪动了ring_end_，但还没有放入数据可能（先放数据问题更大）
-            if (vptr_ptr_[end])
-            {
-                value_ptr = vptr_ptr_[end];
-            }
-            else
+            //因为存在push_front 放入了数据，但没有改写ring_end_可能
+            value_ptr = vptr_ptr_[end];
+            if (value_ptr == nullptr)
             {
                 continue;
             }
-            auto new_end = (end > 0) ? end - 1 : ring_capacity_ - 1;
-            bool succ = ring_end_.compare_exchange_strong(end, new_end);
+            bool succ = vptr_ptr_[end].compare_exchange_strong(value_ptr,
+                                                               nullptr);
             if (succ)
             {
-                vptr_ptr_[end] = nullptr;
-                return true;
+                auto new_end = (end > 0) ? end - 1 : ring_capacity_ - 1;
+                ring_end_.compare_exchange_strong(end, new_end);
             }
         }
-        return true;
+        return false;
     }
 
 protected:
@@ -258,7 +263,7 @@ protected:
     ///队列的长度，
     size_t ring_capacity_ = 0;
 
-    ///存放数据的指针，理论上这儿应该用std::atomic<_value_type*>
-    _value_type **vptr_ptr_ = nullptr;
+    ///存放数据的指针，
+    std::atomic<_value_type*> *vptr_ptr_ = nullptr;
 };
 };
