@@ -20,8 +20,10 @@ public:
         static node* new_node(size_t node_len)
         {
             static_assert(std::is_integral<INTEGRAL_T>::value, "Not integral!");
-            assert(node_len > sizeof(INTEGRAL_T));
-            if (node_len < sizeof(node))
+            assert(node_len > sizeof(INTEGRAL_T) &&
+                   node_len <= static_cast<size_t>(std::numeric_limits<int>::max()));
+            if (node_len <= sizeof(INTEGRAL_T) ||
+                node_len > static_cast<size_t>(std::numeric_limits<int>::max()))
             {
                 return nullptr;
             }

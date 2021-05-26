@@ -253,15 +253,14 @@ public:
     }
 
 protected:
+    ///队列的长度，
+    size_t ring_capacity_ = 0;
 
     ///循环队列的起始位置
     std::atomic<size_t> ring_start_ = 0;
 
     ///循环队列的尾部位置，
     std::atomic<size_t> ring_end_ = 0;
-
-    ///队列的长度，
-    size_t ring_capacity_ = 0;
 
     ///存放数据的指针，
     std::atomic<_value_type*> *vptr_ptr_ = nullptr;

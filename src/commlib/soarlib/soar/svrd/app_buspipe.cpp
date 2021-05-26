@@ -61,7 +61,7 @@ App_BusPipe* App_BusPipe::instance()
 int App_BusPipe::pop_front_recvbus(soar::Zerg_Frame*& proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID,
-                            reinterpret_cast<zce::lockfree::kfifo_node*&>(proc_frame));
+                            reinterpret_cast<zce::bus_node*&>(proc_frame));
 
     // 加监控数据
     if (ret == 0)
@@ -87,7 +87,7 @@ int App_BusPipe::pop_front_recvbus(soar::Zerg_Frame*& proc_frame)
 int App_BusPipe::pop_front_sendbus(soar::Zerg_Frame*& proc_frame)
 {
     int ret = pop_front_bus(SEND_PIPE_ID,
-                            reinterpret_cast<zce::lockfree::kfifo_node*&>(proc_frame));
+                            reinterpret_cast<zce::bus_node*&>(proc_frame));
 
     // 加监控数据
     if (ret == 0)
@@ -129,7 +129,7 @@ int App_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
     }
 
     int ret = push_back_bus(SEND_PIPE_ID,
-                            reinterpret_cast<const zce::lockfree::kfifo_node*>(proc_frame));
+                            reinterpret_cast<const zce::bus_node*>(proc_frame));
 
     if (ret != 0)
     {
@@ -173,7 +173,7 @@ int App_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
     }
 
     int ret = push_back_bus(RECV_PIPE_ID,
-                            reinterpret_cast<const zce::lockfree::kfifo_node*>(proc_frame));
+                            reinterpret_cast<const zce::bus_node*>(proc_frame));
     if (ret != 0)
     {
         // 发送失败, 管道满了

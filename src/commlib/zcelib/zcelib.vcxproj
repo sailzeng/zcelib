@@ -210,6 +210,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="makefile" />
     <None Include="zcelib.ruleset" />
   </ItemGroup>
@@ -239,7 +240,6 @@
     <ClCompile Include="zce\event\reactor_epoll.cpp" />
     <ClCompile Include="zce\event\reactor_select.cpp" />
     <ClCompile Include="zce\event\reactor_wfmo.cpp" />
-    <ClCompile Include="zce\lockfree\kfifo.cpp" />
     <ClCompile Include="zce\lock\lock_base.cpp" />
     <ClCompile Include="zce\lock\file_lock.cpp" />
     <ClCompile Include="zce\lock\null_lock.cpp" />

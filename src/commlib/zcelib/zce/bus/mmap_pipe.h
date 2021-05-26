@@ -21,15 +21,15 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/shared_mem/mmap.h"
-
-namespace zce::lockfree
-{
-class kfifo_node;
-class shm_kfifo;
-};
+#include "zce/lockfree/kfifo.h"
 
 namespace zce
 {
+//
+typedef zce::lockfree::shm_kfifo<uint32_t> bus_pipe;
+//
+typedef zce::lockfree::shm_kfifo<uint32_t>::kfifo_node bus_node;
+
 //MMAP的管道，你要初始化几条就初始化几条
 template<size_t MAX_PIPE>
 class MMAP_BusPipe : public zce::NON_Copyable
@@ -73,7 +73,7 @@ public:
 
         for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
         {
-            zce::lockfree::shm_kfifo::finalize(bus_pipe_pointer_[i]);
+            bus_pipe::finalize(bus_pipe_pointer_[i]);
 
             bus_head_.size_of_pipe_[i] = 0;
             bus_head_.size_of_room_[i] = 0;
@@ -113,7 +113,7 @@ public:
     const char* mmap_file_name();
 
     //向管道写入帧
-    inline int push_back_bus(size_t pipe_id, const zce::lockfree::kfifo_node* node)
+    inline int push_back_bus(size_t pipe_id, const bus_node* node)
     {
         //取出一个帧
         bool bret = bus_pipe_pointer_[pipe_id]->push_end(node);
@@ -141,7 +141,7 @@ public:
     * @param      node     准备复制node指针，指针的空间请分配好
     * @note
     */
-    inline int pop_front_bus(size_t pipe_id, zce::lockfree::kfifo_node* node)
+    inline int pop_front_bus(size_t pipe_id, bus_node* node)
     {
         if (bus_pipe_pointer_[pipe_id]->empty())
         {
@@ -161,7 +161,7 @@ public:
     * @param      node
     * @note
     */
-    inline int read_front_bus(size_t pipe_id, zce::lockfree::kfifo_node*& node)
+    inline int read_front_bus(size_t pipe_id, bus_node *& node)
     {
         if (bus_pipe_pointer_[pipe_id]->empty())
         {
@@ -231,7 +231,7 @@ protected:
     BUS_PIPE_HEAD<MAX_PIPE>      bus_head_;
 
     ///N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    zce::lockfree::shm_kfifo* bus_pipe_pointer_[MAX_PIPE];
+    bus_pipe* bus_pipe_pointer_[MAX_PIPE];
 
     ///MMAP内存文件，
     zce::SHM_Mmap      mmap_file_;
@@ -287,7 +287,7 @@ int MMAP_BusPipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
 
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        size_t sz_room = zce::lockfree::shm_kfifo::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = bus_pipe::getallocsize(bus_head_.size_of_pipe_[i]);
         bus_head_.size_of_room_[i] = sz_room;
         sz_malloc += sz_room;
     }
@@ -420,10 +420,10 @@ int MMAP_BusPipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
         char* pt_pipe = static_cast<char*>(mmap_file_.addr()) + file_offset;
 
         //初始化内存
-        bus_pipe_pointer_[i] = zce::lockfree::shm_kfifo::initialize(bus_head_.size_of_pipe_[i],
-                                                                    max_frame_len,
-                                                                    pt_pipe,
-                                                                    if_restore
+        bus_pipe_pointer_[i] = bus_pipe::initialize(bus_head_.size_of_pipe_[i],
+                                                    max_frame_len,
+                                                    pt_pipe,
+                                                    if_restore
         );
 
         //管道创建自己也会检查是否能恢复
@@ -438,7 +438,7 @@ int MMAP_BusPipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
 
         ZCE_ASSERT(bus_pipe_pointer_[i] != NULL);
 
-        size_t sz_room = zce::lockfree::shm_kfifo::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = bus_pipe::getallocsize(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;
     }
 

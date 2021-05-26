@@ -18,6 +18,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="zcelib.ruleset" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce\net\http_client.cpp">
@@ -234,9 +235,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\sqlite\conf_table.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\lockfree\kfifo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\string\to_string.cpp">
