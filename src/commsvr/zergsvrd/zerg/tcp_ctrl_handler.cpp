@@ -888,8 +888,8 @@ int TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
     //ZCE_LOG(RS_INFO,"[zergsvr] read_data_from_peer %d .", get_handle());
 
     //充分利用缓冲区去接收
-    recvret = socket_peer_.recv(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_,
-                                zerg::Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
+    recvret = socket_peer_.recv(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_,
+                                zerg::Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_use_,
                                 0);
 
     //表示被关闭或者出现错误
@@ -937,7 +937,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
     szrevc = recvret;
 
     //接收了N个字符
-    rcv_buffer_->size_of_buffer_ += static_cast<size_t>(szrevc);
+    rcv_buffer_->size_of_use_ += static_cast<size_t>(szrevc);
     recieve_bytes_ += static_cast<size_t>(szrevc);
 
     return 0;
@@ -955,10 +955,10 @@ int TCP_Svc_Handler::check_recv_full_frame(bool& bfull,
     size_t use_len = 0;
     //如果连4个字节都没有收集齐,不用处理下面这段
     //注意这儿是在32位环境考虑
-    if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= sizeof(unsigned int))
+    if (rcv_buffer_->size_of_use_ - rcv_buffer_->size_of_buffer_ >= sizeof(unsigned int))
     {
         //如果有4个字节,检查帧的长度
-        ZRD_U32_FROM_BYTES((rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_), whole_frame_len);
+        ZRD_U32_FROM_BYTES((rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_), whole_frame_len);
         whole_frame_len = ntohl(whole_frame_len);
 
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
@@ -970,8 +970,8 @@ int TCP_Svc_Handler::check_recv_full_frame(bool& bfull,
                     peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                     whole_frame_len,
                     soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
-                    rcv_buffer_->size_of_buffer_,
-                    rcv_buffer_->size_of_use_);
+                    rcv_buffer_->size_of_use_,
+                    rcv_buffer_->size_of_buffer_);
             //
             DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,
                                        "Error frame before framehead_decode,",
@@ -981,7 +981,7 @@ int TCP_Svc_Handler::check_recv_full_frame(bool& bfull,
     }
 
     //如果接受的数据已经完整,(至少有一个完整)
-    if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= whole_frame_len && whole_frame_len > 0)
+    if (rcv_buffer_->size_of_use_ - rcv_buffer_->size_of_buffer_ >= whole_frame_len && whole_frame_len > 0)
     {
         bfull = true;
         ++recieve_counter_;
@@ -1114,8 +1114,8 @@ int TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& bfull)
     //前面有检查,不会越界
     zerg::Buffer* sndbuffer = snd_buffer_deque_[0];
 
-    ssize_t sendret = socket_peer_.send(sndbuffer->buffer_data_ + sndbuffer->size_of_buffer_,
-                                        sndbuffer->size_of_use_ - sndbuffer->size_of_buffer_,
+    ssize_t sendret = socket_peer_.send(sndbuffer->buffer_data_ + sndbuffer->size_of_use_,
+                                        sndbuffer->size_of_buffer_ - sndbuffer->size_of_use_,
                                         0);
 
     if (sendret <= 0)
@@ -1147,18 +1147,18 @@ int TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& bfull)
     szsend = sendret;
 
     //发送了N个字符
-    sndbuffer->size_of_buffer_ += static_cast<size_t>(szsend);
+    sndbuffer->size_of_use_ += static_cast<size_t>(szsend);
     send_bytes_ += static_cast<size_t>(szsend);
 
     //如果数据已经全部发送了
-    if (sndbuffer->size_of_use_ == sndbuffer->size_of_buffer_)
+    if (sndbuffer->size_of_buffer_ == sndbuffer->size_of_use_)
     {
         bfull = true;
         ++send_counter_;
         //ZCE_LOGMSG_DEBUG(RS_DEBUG,"Send a few(n>=1) whole frame To  IP|Port :%s|%u FrameLen:%u.",
         //    peer_address_.get_host_addr(),
         //    peer_address_.get_port_number(),
-        //    sndbuffer->size_of_buffer_);
+        //    sndbuffer->size_of_use_);
     }
 
     return 0;
@@ -1171,14 +1171,14 @@ int TCP_Svc_Handler::process_send_error(zerg::Buffer* tmpbuf, bool frame_encode)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //记录已经使用到的位置
-    size_t use_start = tmpbuf->size_of_buffer_;
-    tmpbuf->size_of_buffer_ = 0;
+    size_t use_start = tmpbuf->size_of_use_;
+    tmpbuf->size_of_use_ = 0;
 
     //一个队列中间可能有多个FRAME，要对头部进行解码，所以必须一个个弄出来
-    while (tmpbuf->size_of_buffer_ != tmpbuf->size_of_use_)
+    while (tmpbuf->size_of_use_ != tmpbuf->size_of_buffer_)
     {
         soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(tmpbuf->buffer_data_ +
-                                                                           tmpbuf->size_of_buffer_);
+                                                                           tmpbuf->size_of_use_);
 
         //如果FRAME已经编码
         if (frame_encode)
@@ -1189,7 +1189,7 @@ int TCP_Svc_Handler::process_send_error(zerg::Buffer* tmpbuf, bool frame_encode)
         //检查已经使用的地址表示这个帧是否发送了,如果已经发送了，这个帧就不要处理
 
         //如果没有发送完成，记录下来，进行处理
-        if (use_start < tmpbuf->size_of_buffer_ + proc_frame->length_)
+        if (use_start < tmpbuf->size_of_use_ + proc_frame->length_)
         {
             //如果是要记录的命令，记录下来，可以帮忙回溯一些问题
             if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD)
@@ -1215,7 +1215,7 @@ int TCP_Svc_Handler::process_send_error(zerg::Buffer* tmpbuf, bool frame_encode)
         server_status_->add_number(ZERG_SEND_FAIL_COUNTER, 0, 0, 1);
 
         //
-        tmpbuf->size_of_buffer_ += proc_frame->length_;
+        tmpbuf->size_of_use_ += proc_frame->length_;
     }
 
     //归还到POOL中间。
@@ -1461,7 +1461,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
 
     //
     proc_frame->recv_service_ = recv_services_info;
-    tmpbuf->size_of_use_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
+    tmpbuf->size_of_buffer_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
 
     //
     return put_frame_to_sendlist(tmpbuf);
@@ -1580,14 +1580,14 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     }
 
     //如果倒数第2个桶有能力放下倒数第1个桶的FRAME数据，则进行合并操作。
-    if (soar::Zerg_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
+    if (soar::Zerg_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_buffer_ > snd_buffer_deque_[sz_deque - 1]->size_of_buffer_)
     {
         //将倒数第1个节点的数据放入倒数第2个节点中间。所以实际的Cache能力是非常强的，
         //空间利用率也很高。越发佩服我自己了。
-        memcpy(snd_buffer_deque_[sz_deque - 2]->buffer_data_ + snd_buffer_deque_[sz_deque - 2]->size_of_use_,
+        memcpy(snd_buffer_deque_[sz_deque - 2]->buffer_data_ + snd_buffer_deque_[sz_deque - 2]->size_of_buffer_,
                snd_buffer_deque_[sz_deque - 1]->buffer_data_,
-               snd_buffer_deque_[sz_deque - 1]->size_of_use_);
-        snd_buffer_deque_[sz_deque - 2]->size_of_use_ += snd_buffer_deque_[sz_deque - 1]->size_of_use_;
+               snd_buffer_deque_[sz_deque - 1]->size_of_buffer_);
+        snd_buffer_deque_[sz_deque - 2]->size_of_buffer_ += snd_buffer_deque_[sz_deque - 1]->size_of_buffer_;
 
         //将倒数第一个施放掉
         zbuffer_storage_->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
@@ -1599,12 +1599,12 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     //else
     //{
     //    ZCE_LOGMSG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_APPFRAME=%u,"
-    //        "snd_buffer_deque_[sz_deque-2]->size_of_use_=%u,"
-    //        "snd_buffer_deque_[sz_deque-1]->size_of_use_=%u.",
+    //        "snd_buffer_deque_[sz_deque-2]->size_of_buffer_=%u,"
+    //        "snd_buffer_deque_[sz_deque-1]->size_of_buffer_=%u.",
     //        sz_deque,
     //        soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
-    //        snd_buffer_deque_[sz_deque-2]->size_of_use_,
-    //        snd_buffer_deque_[sz_deque-1]->size_of_use_);
+    //        snd_buffer_deque_[sz_deque-2]->size_of_buffer_,
+    //        snd_buffer_deque_[sz_deque-1]->size_of_buffer_);
     //}
 }
 
@@ -1616,7 +1616,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //
-    rcv_buffer_->size_of_use_ = 0;
+    rcv_buffer_->size_of_buffer_ = 0;
 
     //
     while (rcv_buffer_)
@@ -1633,22 +1633,22 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
         //如果没有受到
         if (false == bfull)
         {
-            if (rcv_buffer_->size_of_use_ > 0)
+            if (rcv_buffer_->size_of_buffer_ > 0)
             {
                 //拷贝的内存可能交错,所以不用memcpy
                 memmove(rcv_buffer_->buffer_data_,
-                        rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_,
-                        rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_);
+                        rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_,
+                        rcv_buffer_->size_of_use_ - rcv_buffer_->size_of_buffer_);
 
                 //改变buffer长度
-                rcv_buffer_->size_of_buffer_ = rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_;
-                rcv_buffer_->size_of_use_ = 0;
+                rcv_buffer_->size_of_use_ = rcv_buffer_->size_of_use_ - rcv_buffer_->size_of_buffer_;
+                rcv_buffer_->size_of_buffer_ = 0;
             }
 
             break;
         }
 
-        soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_);
+        soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_);
 
         //如果已经收集了一个数据
         ret = preprocess_recvframe(proc_frame);
@@ -1702,9 +1702,9 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
         zerg_comm_mgr_->pushback_recvpipe(proc_frame);
 
         //接收一个完整的数据
-        rcv_buffer_->size_of_use_ += whole_frame_len;
+        rcv_buffer_->size_of_buffer_ += whole_frame_len;
 
-        if (rcv_buffer_->size_of_buffer_ == rcv_buffer_->size_of_use_)
+        if (rcv_buffer_->size_of_use_ == rcv_buffer_->size_of_buffer_)
         {
             //无论处理正确与否,都释放缓冲区的空间
             zbuffer_storage_->free_byte_buffer(rcv_buffer_);
@@ -1712,7 +1712,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
         }
         //如果第一个包的收到数据已经大于这个长度.那么就会出现下面的情况，
         //如果这儿想避免复杂的判断，可以限定收到的第一个数据包的最大长度为帧头的长度，但是这样会降低效率。
-        else if (rcv_buffer_->size_of_buffer_ > rcv_buffer_->size_of_use_)
+        else if (rcv_buffer_->size_of_use_ > rcv_buffer_->size_of_buffer_)
         {
         }
     }

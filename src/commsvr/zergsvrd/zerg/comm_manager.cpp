@@ -198,7 +198,7 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
         zerg_mmap_pipe_->pop_front_sendbus(proc_frame);
 
-        tmpbuf->size_of_use_ = proc_frame->length_;
+        tmpbuf->size_of_buffer_ = proc_frame->length_;
 
         //如果是要跟踪的命令
         if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)

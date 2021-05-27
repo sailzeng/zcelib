@@ -315,6 +315,9 @@
     <ClCompile Include="zce\string\from_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\util\buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -707,7 +710,10 @@
     <ClInclude Include="zce\string\from_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\util\fifo_cycbuf.h">
+    <ClInclude Include="zce\util\cycbuf_node.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\util\buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

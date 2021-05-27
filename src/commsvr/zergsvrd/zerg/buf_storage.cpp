@@ -8,8 +8,8 @@ namespace zerg
 class ZByteBuffer
 ****************************************************************************************************/
 Buffer::Buffer() :
-    size_of_use_(0),
-    size_of_buffer_(0)
+    size_of_buffer_(0),
+    size_of_use_(0)
 {
 }
 
@@ -22,7 +22,7 @@ Buffer::~Buffer()
 void Buffer::fill_write_data(const size_t szdata, const char* data)
 {
     memcpy(buffer_data_, data, szdata);
-    size_of_buffer_ += szdata;
+    size_of_use_ += szdata;
     //
 }
 //
@@ -31,10 +31,10 @@ void Buffer::get_read_data(size_t& szdata, char* data)
     memcpy(data, buffer_data_, szdata);
 }
 
-void Buffer::clear_buffer()
+void Buffer::clear()
 {
-    size_of_buffer_ = 0;
     size_of_use_ = 0;
+    size_of_buffer_ = 0;
 }
 
 /****************************************************************************************************
@@ -120,7 +120,7 @@ Buffer* Buffer_Storage::allocate_buffer()
 void Buffer_Storage::free_byte_buffer(Buffer* ptrbuf)
 {
     ZCE_ASSERT(ptrbuf);
-    ptrbuf->clear_buffer();
+    ptrbuf->clear();
     buffer_deque_.push_back(ptrbuf);
 }
 
@@ -139,7 +139,7 @@ void Buffer_Storage::extend_bufferlist(size_t szlist)
     for (size_t i = 0; i < szlist; ++i)
     {
         Buffer* tmppr = new Buffer();
-        tmppr->clear_buffer();
+        tmppr->clear();
         buffer_deque_.push_back(tmppr);
     }
 

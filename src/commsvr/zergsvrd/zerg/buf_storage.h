@@ -12,21 +12,6 @@ class Buffer
 {
 public:
     //
-    static const unsigned int CAPACITY_OF_BUFFER = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME + 16;
-
-public:
-
-    //当前要使用的缓冲长度，当前处理的帧的长度,没有得到长度前填写0
-    size_t      size_of_use_;
-
-    //使用的尺寸
-    size_t      size_of_buffer_;
-
-    //数据缓冲区
-    char       buffer_data_[CAPACITY_OF_BUFFER];
-
-public:
-    //
     Buffer();
     //
     ~Buffer();
@@ -39,18 +24,18 @@ public:
     //
     inline char* get_use_point()
     {
-        return buffer_data_ + size_of_buffer_;
+        return buffer_data_ + size_of_use_;
     }
     //
     inline size_t get_leave_size()
     {
-        return size_of_use_ - size_of_buffer_;
+        return size_of_buffer_ - size_of_use_;
     }
 
     //
-    inline bool is_full()
+    inline bool full()
     {
-        if (size_of_buffer_ >= size_of_use_)
+        if (size_of_use_ >= size_of_buffer_)
         {
             return true;
         }
@@ -58,9 +43,9 @@ public:
     }
 
     //
-    inline bool is_empty()
+    inline bool empty()
     {
-        if (size_of_buffer_ == 0)
+        if (size_of_use_ == 0)
         {
             return true;
         }
@@ -68,7 +53,22 @@ public:
     };
 
     //
-    void clear_buffer();
+    void clear();
+
+public:
+    //
+    static const unsigned int CAPACITY_OF_BUFFER = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME + 16;
+
+public:
+
+    //当前要使用的缓冲长度，当前处理的帧的长度,没有得到长度前填写0
+    size_t      size_of_buffer_;
+
+    //使用的尺寸
+    size_t      size_of_use_;
+
+    //数据缓冲区
+    char       buffer_data_[CAPACITY_OF_BUFFER];
 };
 
 //===================================================================================================
