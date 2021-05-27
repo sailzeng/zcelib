@@ -22,12 +22,12 @@ int test_cachechunk(int /*argc*/, char* /*argv*/[])
     pmmap->push_node(32, tmpbuf2, usenode);
     pmmap->pull_node(usenode, szdatalen, tmpbuf);
     usenode = 0;
-    pmmap->freenode(usenode);
+    pmmap->free_node(usenode);
 
     char tmpbuf3[168] = { "12345678901234567890123456789012345678901234567890123456789012345678901234567890" };
     bret = pmmap->push_node(168, tmpbuf3, usenode);
     pmmap->pull_node(usenode, szdatalen, tmpbuf);
-    pmmap->freenode(usenode);
+    pmmap->free_node(usenode);
 
     bret = pmmap->push_node(168, tmpbuf3, usenode);
     pmmap->pull_node(usenode, szdatalen, tmpbuf);
@@ -35,7 +35,7 @@ int test_cachechunk(int /*argc*/, char* /*argv*/[])
     bret = pmmap->push_node(32, tmpbuf2, usenode);
     bret = pmmap->push_node(32, tmpbuf2, usenode);
     usenode = 3;
-    pmmap->freenode(usenode);
+    pmmap->free_node(usenode);
     char tmpbuf4[2048] = { ":(---)" };
     bret = pmmap->push_node(2048, tmpbuf4, usenode);
     bret = pmmap->push_node(704, tmpbuf4, usenode);
@@ -64,7 +64,7 @@ int test_cache_chunk2()
     testchunk->pull_node(testindex, szdatalen, tmpbuf);
 
     std::cout << "index:" << testindex << " " << "free chunk:" << testfreechunk << std::endl;
-    testchunk->freenode(testindex);
+    testchunk->free_node(testindex);
     testchunk->free(testfreenode, testfreechunk, testfreeroom);
     std::cout << "free chunk:" << testfreechunk << std::endl;
 

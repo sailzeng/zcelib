@@ -257,7 +257,7 @@ void shm_cachechunk::node_size(const size_t node_index, size_t& node_size, size_
 }
 
 //得到CHUNK的大小,注意这是CHUNK的容量不是里面数据的大小
-size_t shm_cachechunk::chunksize()
+size_t shm_cachechunk::chunk_capacity()
 {
     return cachechunk_head_->size_of_chunk_;
 }
@@ -287,7 +287,7 @@ void shm_cachechunk::pull_node(const size_t node_index, size_t& szdata, char* ou
 }
 
 //释放NODE的索引对应的所有CHUNK，
-void shm_cachechunk::freenode(const size_t node_index)
+void shm_cachechunk::free_node(const size_t node_index)
 {
     destroy_node(node_index);
 }

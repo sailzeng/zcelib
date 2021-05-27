@@ -202,13 +202,13 @@ public:
     * @brief      释放某个NODE节点
     * @param[in]  node_index  释放的NODE的索引
     */
-    void freenode(const size_t node_index);
+    void free_node(const size_t node_index);
 
     /*!
-    * @brief      得到CHUNK的定义大小,注意这是CHUNK的容量不是里面数据的大小
+    * @brief      得到CHUNK的定义大小,注意这是CHUNK的容量,不是里面数据的大小
     * @return     size_t CHUNK的定义大小
     */
-    size_t chunksize();
+    size_t chunk_capacity();
 
     /*!
     * @brief      用于每次取一个CHUNK的指针操作，根据NODE索引，第几个CHUNK,返回
