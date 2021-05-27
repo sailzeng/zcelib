@@ -710,5 +710,8 @@
     <ClInclude Include="zce\util\cycbuf_node.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\pool\point_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -98,7 +98,7 @@ void shm_cachechunk::clear()
 }
 
 //根据申请的空间,分配一个NODE,
-bool shm_cachechunk::create_node(const size_t szdata, size_t& nodeindex)
+bool shm_cachechunk::create_node(const size_t szdata, size_t& node_index)
 {
     //如果没有了NODE,或者没有了CHUNK
     bool bret = check_enough(szdata);
@@ -130,11 +130,11 @@ bool shm_cachechunk::create_node(const size_t szdata, size_t& nodeindex)
         chunkinx = *(chunkindex_base_ + chunkinx);
     }
 
-    nodeindex = cachechunk_head_->free_node_head_;
-    cachechunk_head_->free_node_head_ = (*(cachenode_base_ + nodeindex)).chunk_index_;
+    node_index = cachechunk_head_->free_node_head_;
+    cachechunk_head_->free_node_head_ = (*(cachenode_base_ + node_index)).chunk_index_;
 
-    (*(cachenode_base_ + nodeindex)).chunk_index_ = cachechunk_head_->free_chunk_head_;
-    (*(cachenode_base_ + nodeindex)).size_of_node_ = szdata;
+    (*(cachenode_base_ + node_index)).chunk_index_ = cachechunk_head_->free_chunk_head_;
+    (*(cachenode_base_ + node_index)).size_of_node_ = szdata;
 
     //将FREE链子的头节点放入
     cachechunk_head_->free_chunk_head_ = *(chunkindex_base_ + chunkinx);
@@ -149,10 +149,10 @@ bool shm_cachechunk::create_node(const size_t szdata, size_t& nodeindex)
 }
 
 //释放一个NODE,将其的桶归还给FREELIST
-void shm_cachechunk::destroy_node(const size_t nodeindex)
+void shm_cachechunk::destroy_node(const size_t node_index)
 {
     //归还CHUNK
-    size_t chunkinx = (*(cachenode_base_ + nodeindex)).chunk_index_;
+    size_t chunkinx = (*(cachenode_base_ + node_index)).chunk_index_;
     size_t fchunkinx = chunkinx;
     //循环释放CHUNK
     //free_chunk为释放的CHUNK数量，
@@ -167,10 +167,10 @@ void shm_cachechunk::destroy_node(const size_t nodeindex)
     cachechunk_head_->free_chunk_head_ = fchunkinx;
 
     //归还NODE
-    (*(cachenode_base_ + nodeindex)).chunk_index_ = cachechunk_head_->free_node_head_;
-    (*(cachenode_base_ + nodeindex)).size_of_node_ = 0;
+    (*(cachenode_base_ + node_index)).chunk_index_ = cachechunk_head_->free_node_head_;
+    (*(cachenode_base_ + node_index)).size_of_node_ = 0;
 
-    cachechunk_head_->free_node_head_ = nodeindex;
+    cachechunk_head_->free_node_head_ = node_index;
 
     //注意下面改的几个内部变量是可用的数量，不是已经用的。
     ++(cachechunk_head_->usable_of_node_);
@@ -199,7 +199,9 @@ bool shm_cachechunk::check_enough(size_t szdata)
 }
 
 //将一个NODE放入Cache中，
-bool shm_cachechunk::set_node(const size_t szdata, const char* indata, size_t& nodeindex)
+bool shm_cachechunk::push_node(const size_t szdata,
+                               const char* indata,
+                               size_t& node_index)
 {
     size_t tmpindex;
     bool bret = create_node(szdata, tmpindex);
@@ -209,7 +211,7 @@ bool shm_cachechunk::set_node(const size_t szdata, const char* indata, size_t& n
         return false;
     }
 
-    nodeindex = tmpindex;
+    node_index = tmpindex;
     size_t chunkinx = (*(cachenode_base_ + tmpindex)).chunk_index_;
 
     size_t szonce = 0, szcpy = 0;
@@ -234,23 +236,23 @@ bool shm_cachechunk::set_node(const size_t szdata, const char* indata, size_t& n
 }
 
 //得到NODE的大小
-size_t shm_cachechunk::nodesize(const size_t nodeindex)
+size_t shm_cachechunk::node_size(const size_t node_index)
 {
-    return (*(cachenode_base_ + nodeindex)).size_of_node_;
+    return (*(cachenode_base_ + node_index)).size_of_node_;
 }
 
 //得到某个NODE的尺寸,以及相应的chunk的数量
-void shm_cachechunk::nodesize(const size_t nodeindex, size_t& nodesize, size_t& chunknum)
+void shm_cachechunk::node_size(const size_t node_index, size_t& node_size, size_t& chunknum)
 {
-    nodesize = (*(cachenode_base_ + nodeindex)).size_of_node_;
+    node_size = (*(cachenode_base_ + node_index)).size_of_node_;
 
-    if (0 == (nodesize % (cachechunk_head_->size_of_chunk_)))
+    if (0 == (node_size % (cachechunk_head_->size_of_chunk_)))
     {
-        chunknum = nodesize / (cachechunk_head_->size_of_chunk_);
+        chunknum = node_size / (cachechunk_head_->size_of_chunk_);
     }
     else
     {
-        chunknum = nodesize / (cachechunk_head_->size_of_chunk_) + 1;
+        chunknum = node_size / (cachechunk_head_->size_of_chunk_) + 1;
     }
 }
 
@@ -261,10 +263,10 @@ size_t shm_cachechunk::chunksize()
 }
 
 //取回NODE的数据，以及大小
-void shm_cachechunk::get_node(const size_t nodeindex, size_t& szdata, char* outdata)
+void shm_cachechunk::pull_node(const size_t node_index, size_t& szdata, char* outdata)
 {
-    size_t chunkinx = (*(cachenode_base_ + nodeindex)).chunk_index_;
-    size_t tmpszdata = (*(cachenode_base_ + nodeindex)).size_of_node_;
+    size_t chunkinx = (*(cachenode_base_ + node_index)).chunk_index_;
+    size_t tmpszdata = (*(cachenode_base_ + node_index)).size_of_node_;
     szdata = tmpszdata;
 
     size_t szonce = 0, szcpy = 0;
@@ -285,22 +287,22 @@ void shm_cachechunk::get_node(const size_t nodeindex, size_t& szdata, char* outd
 }
 
 //释放NODE的索引对应的所有CHUNK，
-void shm_cachechunk::freenode(const size_t nodeindex)
+void shm_cachechunk::freenode(const size_t node_index)
 {
-    destroy_node(nodeindex);
+    destroy_node(node_index);
 }
 
 //当需要一个个CHUNK取出数据时，得到一个NODE的第N个CHUNK的数据
-void shm_cachechunk::get_chunk(const size_t nodeindex, size_t chunk_no, size_t& szdata, char* outdata)
+void shm_cachechunk::get_chunk(const size_t node_index, size_t chunk_no, size_t& szdata, char* outdata)
 {
     size_t chunk_num_of_node, size_of_node;
-    nodesize(nodeindex, size_of_node, chunk_num_of_node);
+    node_size(node_index, size_of_node, chunk_num_of_node);
 
     size_t size_of_chunk = cachechunk_head_->size_of_chunk_;
     size_t leftsize = size_of_node;
 
     //
-    size_t inxchunk = (*(cachenode_base_ + nodeindex)).chunk_index_;
+    size_t inxchunk = (*(cachenode_base_ + node_index)).chunk_index_;
 
     for (size_t i = 0; i < chunk_no; ++i)
     {
@@ -314,18 +316,18 @@ void shm_cachechunk::get_chunk(const size_t nodeindex, size_t chunk_no, size_t& 
 
 //根据数据的起始位置，取得这个位置所在CHUNK的数据,（注意只拷贝一个CHUNK的数据）
 //如果不是数据的起始位置开始，而是在CHUNK中间（不是0），拷贝回来的数据从data_start开始
-void shm_cachechunk::get_chunkdata(const size_t nodeindex,
+void shm_cachechunk::get_chunkdata(const size_t node_index,
                                    const size_t data_start,
                                    size_t& chunk_no,
                                    size_t& szdata,
                                    char* outdata)
 {
     chunk_no = 0;
-    size_t chunkinx = (*(cachenode_base_ + nodeindex)).chunk_index_;
+    size_t chunkinx = (*(cachenode_base_ + node_index)).chunk_index_;
     size_t tmpszdata = data_start;
 
 #if defined _DEBUG || defined DEBUG
-    assert(data_start < (*(cachenode_base_ + nodeindex)).size_of_node_);
+    assert(data_start < (*(cachenode_base_ + node_index)).size_of_node_);
 #endif
 
     size_t szonce = 0;
@@ -346,19 +348,19 @@ void shm_cachechunk::get_chunkdata(const size_t nodeindex,
 
 //用于每次取一个CHUNK的指针操作，根据NODE索引，第几个CHUNK,返回
 //  CHUNK的指针以及相应的长度,注意指针的生命周期,
-void shm_cachechunk::get_chunk_point(const size_t nodeindex,
+void shm_cachechunk::get_chunk_point(const size_t node_index,
                                      size_t chunk_no,
                                      size_t& szdata,
                                      char*& chunk_point)
 {
     size_t chunk_num_of_node, size_of_node;
-    nodesize(nodeindex, size_of_node, chunk_num_of_node);
+    node_size(node_index, size_of_node, chunk_num_of_node);
 
     size_t size_of_chunk = cachechunk_head_->size_of_chunk_;
     size_t leftsize = size_of_node;
 
     //
-    size_t inxchunk = (*(cachenode_base_ + nodeindex)).chunk_index_;
+    size_t inxchunk = (*(cachenode_base_ + node_index)).chunk_index_;
 
     for (size_t i = 0; i < chunk_no; ++i)
     {
@@ -372,15 +374,15 @@ void shm_cachechunk::get_chunk_point(const size_t nodeindex,
 
 //用于根据数据的起始位置，取得这个位置所在CHUNK的指针,以及取得
 //在这个CHUNK里面的剩余的数据时
-void shm_cachechunk::get_chunkdata_point(const size_t nodeindex,
+void shm_cachechunk::get_chunkdata_point(const size_t node_index,
                                          const size_t data_start,
                                          size_t& chunk_no,
                                          size_t& szdata,
                                          char*& chunk_data_point)
 {
-    size_t chunkinx = (*(cachenode_base_ + nodeindex)).chunk_index_;
+    size_t chunkinx = (*(cachenode_base_ + node_index)).chunk_index_;
     size_t szofchunk = cachechunk_head_->size_of_chunk_;
-    size_t size_of_node_ = (*(cachenode_base_ + nodeindex)).size_of_node_;
+    size_t size_of_node_ = (*(cachenode_base_ + node_index)).size_of_node_;
 
 #if defined _DEBUG || defined DEBUG
     assert(data_start < size_of_node_);

@@ -332,6 +332,7 @@
     <ClInclude Include="zce\logger\msg.h" />
     <ClInclude Include="zce\logger\plus.h" />
     <ClInclude Include="zce\logger\priority.h" />
+    <ClInclude Include="zce\pool\point_pool.h" />
     <ClInclude Include="zce\string\from_string.h" />
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\util\cycbuf_node.h" />

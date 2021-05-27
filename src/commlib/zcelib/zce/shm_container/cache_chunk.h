@@ -6,7 +6,7 @@
 * @date       2005年12月16日
 * @brief      一个简单的存放变长数据的Cache，用于大小不太固定的数据的缓冲，
 *             用最小的内存，存放最大的数据，空间浪费小。
-*             将内存分割成若干个大小的桶， 每个数据用N(N>=1)个桶存放，
+*             将Node内存分割成若干个大小的桶Chunk， 每个数据用N(N>=1)个桶Chunk存放，
 *
 * @details    桶的大小设计毕竟比较有讲究，太大不好，还是会造成依稀浪费，
 *             太小也不好，会导致一个数据存放在太多的桶内。
@@ -47,45 +47,34 @@ class _shm_cachechunk_head
 {
     ///通过友元让其他人使用
     friend class shm_cachechunk;
+
 private:
     ///构造函数
-    _shm_cachechunk_head() :
-        size_of_mmap_(0),
-        num_of_node_(0),
-        usable_of_node_(0),
-        num_of_chunk_(0),
-        usable_of_chunk_(0),
-        size_of_chunk_(0),
-        free_node_head_(0),
-        free_chunk_head_(0)
-    {
-    }
+    _shm_cachechunk_head() = default;
     ///析构函数
-    ~_shm_cachechunk_head()
-    {
-    }
+    ~_shm_cachechunk_head() = default;
 
 private:
     ///内存区的长度
-    size_t               size_of_mmap_;
+    size_t               size_of_mmap_ = 0;
 
     ///NODE的数量
-    size_t               num_of_node_;
+    size_t               num_of_node_ = 0;
     ///还可以使用的NODE的数量，注意是可用，不是已经使用
-    size_t               usable_of_node_;
+    size_t               usable_of_node_ = 0;
 
     ///Chunk的数量
-    size_t               num_of_chunk_;
+    size_t               num_of_chunk_ = 0;
     ///还可以使用的CHUNK的数量
-    size_t               usable_of_chunk_;
+    size_t               usable_of_chunk_ = 0;
 
     ///chunk尺寸
-    size_t               size_of_chunk_;
+    size_t               size_of_chunk_ = 0;
 
     ///FREE NODE的起始节点
-    size_t               free_node_head_;
+    size_t               free_node_head_ = 0;
     ///FREE CHUNK的起始节点
-    size_t               free_chunk_head_;
+    size_t               free_chunk_head_ = 0;
 };
 
 /*!
@@ -110,15 +99,15 @@ protected:
     * @brief      根据申请的空间,分配一个NODE,
     * @return     bool    是否成功申请
     * @param[in]  size_t    希望申请放入的NODE的长度
-    * @param[out] nodeindex 返回参数，申请到的NODE的索引
+    * @param[out] node_index 返回参数，申请到的NODE的索引
     */
-    bool create_node(size_t, size_t& nodeindex);
+    bool create_node(size_t, size_t& node_index);
 
     /*!
     * @brief      释放一个NODE,将其归还给FREELIST
-    * @param      nodeindex 释放的NODE索引
+    * @param      node_index 释放的NODE索引
     */
-    void destroy_node(const size_t nodeindex);
+    void destroy_node(const size_t node_index);
 
 public:
 
@@ -136,7 +125,7 @@ public:
               size_t& max_room);
 
     /*!
-    * @brief      检查是否有足够空间存放一个数据
+    * @brief      检查是否有足够空间存放一个尺寸为szdata数据
     * @return     bool   返回值，是否可以放入，
     * @param[in]  szdata 要放入的数据大小
     */
@@ -147,48 +136,48 @@ public:
     * @return     bool       是否成功放入
     * @param[in]  szdata     数据的大小
     * @param[in]  indata     数据指针
-    * @param[out] nodeindex  NODE放入的NODE的索引，根据这个可以找到这个NODE
+    * @param[out] node_index  NODE放入的NODE的索引，根据这个可以找到这个NODE
     */
-    bool set_node(const size_t szdata,
-                  const char* indata,
-                  size_t& nodeindex);
+    bool push_node(const size_t szdata,
+                   const char* indata,
+                   size_t& node_index);
 
     /*!
     * @brief      得到某个NODE的尺寸
     * @return     size_t    返回NODE的尺寸
-    * @param[in]  nodeindex NODE的索引，拜托你传递一个正确的参数，否则行为未定义
+    * @param[in]  node_index NODE的索引，拜托你传递一个正确的参数，否则行为未定义
     */
-    size_t nodesize(const size_t nodeindex);
+    size_t node_size(const size_t node_index);
 
     /*!
     * @brief      得到某个NODE的尺寸,桶数量，本来打算用一个返回值表示是否取值成功的，
     *             但后来想想我是数组下标操作，还是你来保证参数吧。
-    * @param[in]  nodeindex  NODE的索引，拜托你传递一个正确的参数，否则行为未定义
-    * @param[out] nodesize   返回参数，NODE的尺寸
+    * @param[in]  node_index  NODE的索引，拜托你传递一个正确的参数，否则行为未定义
+    * @param[out] node_size   返回参数，NODE的尺寸
     * @param[out] chunknum   返回参数，存放所用的CHUNK的数量
     */
-    void nodesize(const size_t nodeindex,
-                  size_t& nodesize,
-                  size_t& chunknum);
+    void node_size(const size_t node_index,
+                   size_t& node_size,
+                   size_t& chunknum);
 
     /*!
     * @brief      取得一个节点的数据
-    * @param[in]  nodeindex  存放NODE的索引
+    * @param[in]  node_index  存放NODE的索引
     * @param[out] szdata     返回NODE的大小
     * @param[out] outdata    返回的NODE数据数据空间的尺寸你要自己保证喔，
     */
-    void get_node(const size_t nodeindex,
-                  size_t& szdata,
-                  char* outdata);
+    void pull_node(const size_t node_index,
+                   size_t& szdata,
+                   char* outdata);
 
     /*!
     * @brief      当需要一个个CHUNK取出数据时，得到一个NODE的第N个CHUNK的数据
-    * @param[in]  nodeindex  NODE的索引
+    * @param[in]  node_index  NODE的索引
     * @param[in]  chunk_no   第几个CHUNK，从0开始呀，（注意这不是下标，而是第几个桶）
     * @param[out] szdata     返回参数，返回的数据长度，（小于等于桶长度）
     * @param[out] outdata    返回参数，这个桶的数据，数据空间要大于桶的容量
     */
-    void get_chunk(const size_t nodeindex,
+    void get_chunk(const size_t node_index,
                    size_t chunk_no,
                    size_t& szdata,
                    char* outdata);
@@ -197,13 +186,13 @@ public:
     * @brief      根据数据的起始位置，取得这个位置所在CHUNK的数据,（注意只拷贝一个CHUNK的数据）
     *             如果不是数据的起始位置开始，而是在CHUNK中间（不是0），拷贝回来的数据从data_start
     *             开始
-    * @param[in]  nodeindex   NODE的索引
+    * @param[in]  node_index   NODE的索引
     * @param[in]  data_start  数据的起始位置
     * @param[out] chunk_no    返回参数，这个起始位置，位于第几个桶上
     * @param[out] szdata      返回参数，返回的数据长度
     * @param[out] outdata     返回参数，这个桶的从data_start开始到桶结束位置的数据，
     */
-    void get_chunkdata(const size_t nodeindex,
+    void get_chunkdata(const size_t node_index,
                        const size_t data_start,
                        size_t& chunk_no,
                        size_t& szdata,
@@ -211,9 +200,9 @@ public:
 
     /*!
     * @brief      释放某个NODE节点
-    * @param[in]  nodeindex  释放的NODE的索引
+    * @param[in]  node_index  释放的NODE的索引
     */
-    void freenode(const size_t nodeindex);
+    void freenode(const size_t node_index);
 
     /*!
     * @brief      得到CHUNK的定义大小,注意这是CHUNK的容量不是里面数据的大小
@@ -225,12 +214,12 @@ public:
     * @brief      用于每次取一个CHUNK的指针操作，根据NODE索引，第几个CHUNK,返回
     *             CHUNK的指针以及相应的长度,注意指针的生命周期,多线程情况下请注意加锁
     *             多用于一些为了追求极致速度，不希望拷贝数据的地方
-    * @param[in]  nodeindex   NODE索引
+    * @param[in]  node_index   NODE索引
     * @param[in]  chunk_no    第几个CHUNK，
     * @param[out] szdata      这个CHUNK中数据的长度
     * @param[out] chunk_point 这个CHUNK开始的指针
     */
-    void get_chunk_point(const size_t nodeindex,
+    void get_chunk_point(const size_t node_index,
                          size_t chunk_no,
                          size_t& szdata,
                          char*& chunk_point);
@@ -239,14 +228,14 @@ public:
     * @brief      用于根据数据的起始位置，取得这个位置所在CHUNK的指针,以及取得
     *             在这个CHUNK里面的剩余的数据时
     *             多用于一些为了追求极致速度，不希望拷贝数据的地方
-    * @param[in]  nodeindex        NODE索引
+    * @param[in]  node_index        NODE索引
     * @param[in]  data_start       查询的数据的起始位置
     * @param[out] chunk_no         返回参数，这个起始位置，位于第几个桶上
     * @param[out] szdata           返回参数，返回的数据长度，从data_start位置开始，到这个CHUNK结束，的数据长度
     * @param[out] chunk_data_point 返回参数，这个data_start位置在CHUNK中的位置指针
     * @note       注意指针的生命周期，当年jovi用这个好像搞了一套引用技术，呵呵
     */
-    void get_chunkdata_point(const size_t nodeindex,
+    void get_chunkdata_point(const size_t node_index,
                              const size_t data_start,
                              size_t& chunk_no,
                              size_t& szdata,

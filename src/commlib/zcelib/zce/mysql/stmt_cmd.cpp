@@ -119,14 +119,19 @@ int ZCE_Mysql_STMT_Command::stmt_prepare_bind(ZCE_Mysql_STMT_Bind* bindparam,
 }
 
 //设置SQL Command语句,为BIN型的SQL语句准备,同时绑定参数,结果
-int ZCE_Mysql_STMT_Command::set_stmt_command(const std::string& sqlcmd, ZCE_Mysql_STMT_Bind* bindparam, ZCE_Mysql_STMT_Bind* bindresult)
+int ZCE_Mysql_STMT_Command::set_stmt_command(const std::string& sqlcmd,
+                                             ZCE_Mysql_STMT_Bind* bindparam,
+                                             ZCE_Mysql_STMT_Bind* bindresult)
 {
     stmt_command_ = sqlcmd;
     return stmt_prepare_bind(bindparam, bindresult);
 }
 
 //设置SQL Command语句,为BIN型的SQL语句准备,用于要帮定变量的SQL,结果
-int ZCE_Mysql_STMT_Command::set_stmt_command(const char* sqlcmd, size_t szsql, ZCE_Mysql_STMT_Bind* bindparam, ZCE_Mysql_STMT_Bind* bindresult)
+int ZCE_Mysql_STMT_Command::set_stmt_command(const char* sqlcmd,
+                                             size_t szsql,
+                                             ZCE_Mysql_STMT_Bind* bindparam,
+                                             ZCE_Mysql_STMT_Bind* bindresult)
 {
     ZCE_ASSERT(sqlcmd != NULL);
     //
@@ -200,7 +205,9 @@ int ZCE_Mysql_STMT_Command::fetch_row_next() const
 }
 
 //
-int  ZCE_Mysql_STMT_Command::fetch_column(MYSQL_BIND* bind, unsigned int column, unsigned int offset) const
+int  ZCE_Mysql_STMT_Command::fetch_column(MYSQL_BIND* bind,
+                                          unsigned int column,
+                                          unsigned int offset) const
 {
     int tmpret = ::mysql_stmt_fetch_column(mysql_stmt_, bind, column, offset);
     if (0 != tmpret)
