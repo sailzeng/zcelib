@@ -93,13 +93,16 @@ private:
 *             用最小的内存，存放最大的数据，空间浪费小。
 *
 */
-class shm_cachechunk : public shm_container
+class shm_cachechunk
 {
 protected:
     //构造函数,
-    shm_cachechunk();
+    shm_cachechunk() = default;
+    //只定义,不实现,
+    const shm_cachechunk& operator=(const shm_cachechunk& others) = delete;
+public:
     //析构函数,
-    ~shm_cachechunk();
+    ~shm_cachechunk() = default;
 
 protected:
 
@@ -277,6 +280,8 @@ public:
                                       bool if_restore = false);
 
 protected:
+    //内存基础地址
+    char* smem_base_ = nullptr;
 
     ///CACHE的头部，
     _shm_cachechunk_head* cachechunk_head_ = nullptr;

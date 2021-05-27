@@ -98,13 +98,13 @@ public:
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
         //如果这个节点是末位的节点
-        if (serial_ == shm_container::_INVALID_POINT)
+        if (serial_ == zce::SHM_CNTR_INVALID_POINT)
         {
             //顺着Index查询.
             size_t bucket = lruht_instance_->bkt_num_value(*(lruht_instance_->value_base_ + oldseq));
 
             //
-            while (serial_ == shm_container::_INVALID_POINT && ++bucket < lruht_instance_->capacity())
+            while (serial_ == zce::SHM_CNTR_INVALID_POINT && ++bucket < lruht_instance_->capacity())
             {
                 serial_ = *(lruht_instance_->hash_factor_base_ + bucket);
             }
@@ -123,7 +123,7 @@ public:
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
         //如果这个节点不是末位的节点
-        if (serial_ != shm_container::_INVALID_POINT)
+        if (serial_ != zce::SHM_CNTR_INVALID_POINT)
         {
             _extract_key get_key;
             _equal_key   equal_key;
@@ -131,7 +131,7 @@ public:
             if (false == equal_key(get_key(*(lruht_instance_->value_base_ + oldseq)),
                 get_key(*(lruht_instance_->value_base_ + serial_))))
             {
-                serial_ = shm_container::_INVALID_POINT;
+                serial_ = zce::SHM_CNTR_INVALID_POINT;
             }
         }
         else
@@ -176,32 +176,23 @@ public:
 class _hashtable_expire_head
 {
 protected:
-    _hashtable_expire_head() :
-        size_of_mmap_(0),
-        num_of_node_(0),
-        sz_freenode_(0),
-        sz_usenode_(0),
-        sz_useindex_(0)
-    {
-    }
-    ~_hashtable_expire_head()
-    {
-    }
+    _hashtable_expire_head() = default;
+    ~_hashtable_expire_head() = default;
 
 public:
     //内存区的长度
-    size_t           size_of_mmap_;
+    size_t           size_of_mmap_ = 0;
 
     //NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
-    size_t           num_of_node_;
+    size_t           num_of_node_ = 0;
 
     //FREE的NODE个数
-    size_t           sz_freenode_;
+    size_t           sz_freenode_ = 0;
     //USE的NODE个数
-    size_t           sz_usenode_;
+    size_t           sz_usenode_ = 0;
 
     //使用的INDEX个数,可以了解实际开链的负载比率
-    size_t           sz_useindex_;
+    size_t           sz_useindex_ = 0;
 };
 
 /*!
@@ -221,8 +212,17 @@ template < class _value_type,
     class _extract_key = smem_identity<_value_type>,
     class _equal_key = std::equal_to<_key_type>,
     class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hashtable_expire : public  shm_container
+    class shm_hashtable_expire
 {
+private:
+
+    typedef shm_hashtable_expire < _value_type,
+        _key_type,
+        _hash_fun,
+        _extract_key,
+        _equal_key,
+        _washout_fun > self;
+
 public:
     //定义迭代器
     typedef _hashtable_expire_iterator < _value_type,
@@ -240,49 +240,13 @@ public:
         _washout_fun >;
 
 protected:
-    //
-    static const size_t  LIST_ADD_NODE_NUMBER = 2;
-
-protected:
-    //
-    _hashtable_expire_head* lru_hash_head_;
-
-    //Hash因子的BASE
-    size_t* hash_factor_base_;
-    //Hash的索引,hash链的索引,注释写得不清楚，自己都记不得了.
-    size_t* hash_index_base_;
-
-    //LIST的索引
-    _shm_list_index* lst_index_base_;
-    //FREE节点链表的开始
-    _shm_list_index* lst_free_node_;
-    //USE节点链表的开始
-    _shm_list_index* lst_use_node_;
-
-    //优先级的数据指针,用32位的数据保存优先级
-    unsigned int* priority_base_;
-    //数据区指针
-    _value_type* value_base_;
-
-protected:
-
-    shm_hashtable_expire() :
-        lru_hash_head_(NULL),
-        hash_factor_base_(NULL),
-        hash_index_base_(NULL),
-        lst_index_base_(NULL),
-        lst_free_node_(NULL),
-        lst_use_node_(NULL),
-        priority_base_(NULL),
-        value_base_(NULL)
-    {
-    }
-
+    //protected 构造函数，避免你用
+    shm_hashtable_expire() = default;
+    //只定义,不实现,避免犯错
+    const self& operator=(const self& others);
 public:
 
-    ~shm_hashtable_expire()
-    {
-    }
+    ~shm_hashtable_expire() = default;
 
 protected:
 
@@ -312,13 +276,7 @@ public:
     }
 
     //初始化
-    static shm_hashtable_expire < _value_type,
-        _key_type,
-        _hash_fun,
-        _extract_key,
-        _equal_key,
-        _washout_fun >*
-        initialize(size_t req_num, size_t& real_num, char* pmmap, bool if_restore = false)
+    static self* initialize(size_t req_num, size_t& real_num, char* pmmap, bool if_restore = false)
     {
         assert(pmmap != NULL && req_num > 0);
         //调整
@@ -353,8 +311,7 @@ public:
             hashhead->num_of_node_ = real_num;
         }
 
-        shm_hashtable_expire< _value_type, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >* instance
-            = new shm_hashtable_expire< _value_type, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun>();
+        self* instance = new self();
 
         instance->smem_base_ = pmmap;
         char* tmp_base = instance->smem_base_;
@@ -407,8 +364,8 @@ public:
         for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
         {
             //
-            hash_factor_base_[i] = _INVALID_POINT;
-            hash_index_base_[i] = _INVALID_POINT;
+            hash_factor_base_[i] = SHM_CNTR_INVALID_POINT;
+            hash_index_base_[i] = SHM_CNTR_INVALID_POINT;
             priority_base_[i] = 0;
 
             pindex->idx_next_ = (i + 1);
@@ -439,7 +396,7 @@ protected:
         //如果没有空间可以分配
         if (lru_hash_head_->sz_freenode_ == 0)
         {
-            return _INVALID_POINT;
+            return SHM_CNTR_INVALID_POINT;
         }
 
         //从链上取1个下来
@@ -486,7 +443,7 @@ protected:
         lru_hash_head_->sz_usenode_--;
         lru_hash_head_->sz_freenode_++;
 
-        hash_index_base_[pos] = _INVALID_POINT;
+        hash_index_base_[pos] = SHM_CNTR_INVALID_POINT;
 
         //调用显式的析构函数
         (value_base_ + pos)->~_value_type();
@@ -517,7 +474,7 @@ public:
     {
         for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
         {
-            if (*(hash_factor_base_ + i) != _INVALID_POINT)
+            if (*(hash_factor_base_ + i) != SHM_CNTR_INVALID_POINT)
             {
                 return iterator(*(hash_factor_base_ + i), this);
             }
@@ -529,7 +486,7 @@ public:
     //得到结束位置
     iterator end()
     {
-        return iterator(_INVALID_POINT, this);
+        return iterator(SHM_CNTR_INVALID_POINT, this);
     }
     //当前使用的节点数量
     size_t size() const
@@ -571,7 +528,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key函数
             if (equal_key((get_key(value_base_[first])), (get_key(val))) == true)
@@ -586,9 +543,9 @@ public:
         size_t newnode = create_node(val, priority);
 
         //空间不足,
-        if (newnode == _INVALID_POINT)
+        if (newnode == SHM_CNTR_INVALID_POINT)
         {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
         }
 
         //放入链表中
@@ -610,7 +567,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key函数
             if (equal_key((get_key(value_base_[first])), (get_key(val))) == true)
@@ -625,13 +582,13 @@ public:
         size_t newnode = create_node(val, priority);
 
         //空间不足,
-        if (newnode == _INVALID_POINT)
+        if (newnode == SHM_CNTR_INVALID_POINT)
         {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
         }
 
         //没有找到相同KEY的数据
-        if (first == _INVALID_POINT)
+        if (first == SHM_CNTR_INVALID_POINT)
         {
             //放入链表的首部就可以了
             hash_index_base_[newnode] = hash_factor_base_[idx];
@@ -657,7 +614,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        while (first != _INVALID_POINT && !equal_key(get_key(value_base_[first]), key))
+        while (first != SHM_CNTR_INVALID_POINT && !equal_key(get_key(value_base_[first]), key))
         {
             first = hash_index_base_[first];
         }
@@ -685,7 +642,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -723,7 +680,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -764,7 +721,7 @@ public:
         size_t itseq = it.getserial();
 
         //
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             if (first == itseq)
             {
@@ -816,7 +773,7 @@ public:
         _equal_key   equal_key;
 
         //循环查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -869,7 +826,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -917,7 +874,7 @@ public:
         //使用量函数对象,一个类单独定义一个是否更好?
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -958,7 +915,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1068,7 +1025,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1097,7 +1054,7 @@ public:
         size_t first = hash_factor_base_[idx];
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1125,7 +1082,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1182,6 +1139,33 @@ public:
             }
         }
     }
+
+protected:
+    //
+    static const size_t  LIST_ADD_NODE_NUMBER = 2;
+
+protected:
+    //内存基础地址
+    char* smem_base_ = nullptr;
+    //头部指针
+    _hashtable_expire_head* lru_hash_head_ = nullptr;
+
+    //Hash因子的BASE
+    size_t* hash_factor_base_ = nullptr;
+    //Hash的索引,hash链的索引,注释写得不清楚，自己都记不得了.
+    size_t* hash_index_base_;
+
+    //LIST的索引
+    _shm_list_index* lst_index_base_ = nullptr;
+    //FREE节点链表的开始
+    _shm_list_index* lst_free_node_ = nullptr;
+    //USE节点链表的开始
+    _shm_list_index* lst_use_node_ = nullptr;
+
+    //优先级的数据指针,用32位的数据保存优先级
+    unsigned int* priority_base_ = nullptr;
+    //数据区指针
+    _value_type* value_base_ = nullptr;
 };
 
 /************************************************************************************************************
@@ -1199,31 +1183,30 @@ template < class _value_type,
     _equal_key,
     _washout_fun >
 {
+private:
+    //定义自己
+    typedef shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun> self;
 protected:
-
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun >(size_t numnode, void* pmmap, bool if_restore) :
-        shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>(numnode, pmmap, if_restore)
-    {
-        initialize(numnode, pmmap, if_restore);
-    }
+    shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun>() = default;
 
-    ~shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun>()
-    {
-    }
+    const self& operator=(const self& others) = delete;
+public:
+    ~shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun>() = default;
 
 public:
-    static shm_hashset_expire< _value_type, _hash_fun, _equal_key, _washout_fun >*
+    static self*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashset_expire< _value_type, _hash_fun, _equal_key, _washout_fun > *>(
-            shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<self *>(
+            shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>::initialize(
+            numnode, pmmap, if_restore));
     }
 };
 
 /************************************************************************************************************
-template           : smem_hashmap_expire
+template           : shm_hashmap_expire
 ************************************************************************************************************/
 template < class _key_type,
     class _value_type,
@@ -1231,7 +1214,7 @@ template < class _key_type,
     class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
     class _equal_key = std::equal_to<_key_type>,
     class _washout_fun = _default_washout_fun<_value_type> >
-    class smem_hashmap_expire :
+    class shm_hashmap_expire :
     public shm_hashtable_expire < std::pair <_key_type, _value_type>,
     _key_type,
     _hash_fun,
@@ -1239,26 +1222,26 @@ template < class _key_type,
     _equal_key,
     _washout_fun >
 {
+private:
+    //定义自己
+    typedef shm_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun > self;
+
 protected:
-
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
-    //这个函数,不给你用,就是不给你用
-    smem_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >(size_t numnode, void* pmmap, bool if_restore) :
-        shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _extract_key, _equal_key, _washout_fun >(numnode, pmmap, if_restore)
-    {
-        initialize(numnode, pmmap, if_restore);
-    }
 
-    ~smem_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >()
-    {
-    }
+    //这个函数,不给你用,就是不给你用
+    shm_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+
+    const self& operator=(const self& others) = delete;
+public:
+    ~shm_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
 
 public:
-    static smem_hashmap_expire< _key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun  >*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    static self* initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<smem_hashmap_expire< _key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun > *>(
-            shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<self *>(
+            shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
+            numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
     _value_type& operator[](const _key_type& key)

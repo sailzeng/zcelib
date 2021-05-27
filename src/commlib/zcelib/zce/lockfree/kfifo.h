@@ -30,10 +30,10 @@ namespace zce::lockfree
 *             如果非要多个进程读写,要加锁,要自己实现锁,我只提供了一个基类,
 *             是一个先进，先出的存放任意大小的数据快的队列
 * @tparam     INTEGRAL_T  Node 最开始的标识长度是用了几个字节
-* note        不是容器模版,如果非要容器队列,用smem_list自己解决,很容易
+* note        不是容器模版,如果非要容器队列,用shm_list自己解决,很容易
 */
 template <typename INTEGRAL_T>
-class shm_kfifo : public shm_container
+class shm_kfifo
 {
 public:
 
@@ -539,6 +539,9 @@ protected:
     static const size_t   JUDGE_FULL_INTERVAL = 8;
 
 protected:
+
+    //内存基础地址
+    char* smem_base_ = nullptr;;
 
     ///内存的头部
     shm_kfifo_head* kfifo_head_ = nullptr;

@@ -104,79 +104,79 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
-{
-    zce::fifo_cycbuf_u32 a1;
-
-    const size_t NODE_MAX_LEN = 1024;
-    const size_t CYCBUF_LEN = 4 * 1024;
-    a1.initialize(CYCBUF_LEN, NODE_MAX_LEN);
-
-    zce::mt19937_var_gen random;
-    random.srand((uint32_t)time(NULL));
-
-    for (size_t i = 0;; ++i)
-    {
-        size_t node_len = random.uniform_uint32(zce::fifo_cycbuf_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
-        auto ptr1 = zce::fifo_cycbuf_u32::node::new_node(node_len);
-        bool ok = a1.push_end(ptr1);
-        zce::fifo_cycbuf_u32::node::delete_node(ptr1);
-        if (ok)
-        {
-            ZPP_LOG(RS_DEBUG, "push_end success,no={} node len ={} ring free={}", i, node_len, a1.free());
-        }
-        else
-        {
-            ZPP_LOG(RS_DEBUG, "push_end fail,no={} node len ={}", i, node_len);
-            break;
-        }
-    }
-
-    auto ptr2 = zce::fifo_cycbuf_u32::node::new_node(NODE_MAX_LEN);
-    for (size_t i = 0;; ++i)
-    {
-        bool ok = a1.pop_front(ptr2);
-        if (ok)
-        {
-            size_t node_len = ptr2->size_of_node_;
-            ZPP_LOG(RS_DEBUG, "pop_front success,no={} node len ={} ring free={}", i, node_len, a1.free());
-        }
-        else
-        {
-            ZPP_LOG(RS_DEBUG, "push_end fail,no={} ring free ={}", i, a1.free());
-            break;
-        }
-    }
-
-    auto ptr_2 = zce::fifo_cycbuf_u32::node::new_node(NODE_MAX_LEN);
-    for (size_t i = 0; i < 1024 * 128; ++i)
-    {
-        size_t node_len = random.uniform_uint32(zce::fifo_cycbuf_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
-        size_t push_num = random.uniform_uint32(2, 6);
-        for (size_t j = 0; j < push_num; ++j)
-        {
-            auto ptr_1 = zce::fifo_cycbuf_u32::node::new_node(node_len);
-            bool ok = a1.push_end(ptr_1);
-            zce::fifo_cycbuf_u32::node::delete_node(ptr_1);
-            ZPP_LOG(RS_DEBUG, "push_end {},no={}{} ring free ={}", ok, i, j, a1.free());
-        }
-
-        size_t pop_num = random.uniform_uint32(2, 6);
-        for (size_t k = 0; k < pop_num; ++k)
-        {
-            bool ok = a1.pop_front(ptr_2);
-            node_len = ok ? 0 : ptr_2->size_of_node_;
-            ZPP_LOG(RS_DEBUG, "pop_front {},no={}{} ring free ={}", ok, i, k, a1.free());
-        }
-    }
-    return 0;
-}
-
-int test_lockfree_ring(int /*argc*/, char* /*argv*/[])
-{
-    zce::lockfree::rings<int> a1(1024);
-    a1.push_back(new int(1));
-    a1.push_back(new int(2));
-
-    return 0;
-}
+//int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
+//{
+//    zce::fifo_cycbuf_u32 a1;
+//
+//    const size_t NODE_MAX_LEN = 1024;
+//    const size_t CYCBUF_LEN = 4 * 1024;
+//    a1.initialize(CYCBUF_LEN, NODE_MAX_LEN);
+//
+//    zce::mt19937_var_gen random;
+//    random.srand((uint32_t)time(NULL));
+//
+//    for (size_t i = 0;; ++i)
+//    {
+//        size_t node_len = random.uniform_uint32(zce::fifo_cycbuf_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
+//        auto ptr1 = zce::fifo_cycbuf_u32::node::new_node(node_len);
+//        bool ok = a1.push_end(ptr1);
+//        zce::fifo_cycbuf_u32::node::delete_node(ptr1);
+//        if (ok)
+//        {
+//            ZPP_LOG(RS_DEBUG, "push_end success,no={} node len ={} ring free={}", i, node_len, a1.free());
+//        }
+//        else
+//        {
+//            ZPP_LOG(RS_DEBUG, "push_end fail,no={} node len ={}", i, node_len);
+//            break;
+//        }
+//    }
+//
+//    auto ptr2 = zce::fifo_cycbuf_u32::node::new_node(NODE_MAX_LEN);
+//    for (size_t i = 0;; ++i)
+//    {
+//        bool ok = a1.pop_front(ptr2);
+//        if (ok)
+//        {
+//            size_t node_len = ptr2->size_of_node_;
+//            ZPP_LOG(RS_DEBUG, "pop_front success,no={} node len ={} ring free={}", i, node_len, a1.free());
+//        }
+//        else
+//        {
+//            ZPP_LOG(RS_DEBUG, "push_end fail,no={} ring free ={}", i, a1.free());
+//            break;
+//        }
+//    }
+//
+//    auto ptr_2 = zce::fifo_cycbuf_u32::node::new_node(NODE_MAX_LEN);
+//    for (size_t i = 0; i < 1024 * 128; ++i)
+//    {
+//        size_t node_len = random.uniform_uint32(zce::fifo_cycbuf_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
+//        size_t push_num = random.uniform_uint32(2, 6);
+//        for (size_t j = 0; j < push_num; ++j)
+//        {
+//            auto ptr_1 = zce::fifo_cycbuf_u32::node::new_node(node_len);
+//            bool ok = a1.push_end(ptr_1);
+//            zce::fifo_cycbuf_u32::node::delete_node(ptr_1);
+//            ZPP_LOG(RS_DEBUG, "push_end {},no={}{} ring free ={}", ok, i, j, a1.free());
+//        }
+//
+//        size_t pop_num = random.uniform_uint32(2, 6);
+//        for (size_t k = 0; k < pop_num; ++k)
+//        {
+//            bool ok = a1.pop_front(ptr_2);
+//            node_len = ok ? 0 : ptr_2->size_of_node_;
+//            ZPP_LOG(RS_DEBUG, "pop_front {},no={}{} ring free ={}", ok, i, k, a1.free());
+//        }
+//    }
+//    return 0;
+//}
+//
+//int test_lockfree_ring(int /*argc*/, char* /*argv*/[])
+//{
+//    zce::lockfree::rings<int> a1(1024);
+//    a1.push_back(new int(1));
+//    a1.push_back(new int(2));
+//
+//    return 0;
+//}

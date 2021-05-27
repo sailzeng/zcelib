@@ -26,71 +26,46 @@ class _shm_array_head
 protected:
 
     //头部构造函数
-    _shm_array_head() :
-        size_of_mmap_(0),
-        num_of_node_(0),
-        num_of_use_(0)
-    {
-    }
+    _shm_array_head() = default;
     //析构函数
-    ~_shm_array_head()
-    {
-    }
+    ~_shm_array_head() = default;
 
 public:
 
     ///内存区的长度
-    size_t               size_of_mmap_;
+    size_t               size_of_mmap_ = 0;
     ///结点总数，
-    size_t               num_of_node_;
+    size_t               num_of_node_ = 0;
 
     ///表示目前使用的结点个数
-    size_t               num_of_use_;
+    size_t               num_of_use_ = 0;
 };
 
 /*!
 * @brief      共享内存中使用的vector，彻底简化版本
 * @tparam     _value_type  数组类型
 */
-template <class _value_type> class shm_array :
-    public shm_container
+template <class _value_type> class shm_array
 {
+private:
+    //定义自己
+    typedef shm_array<_value_type> self;
 public:
-
     ///定义迭代器,这个简单
     typedef _value_type* iterator;
 
 protected:
 
     //只定义,不实现,
-    const shm_array<_value_type>& operator=(const shm_array<_value_type>& others);
+    const self& operator=(const self& others) = delete;
 
     ///默认构造函数,就是不给你用
-    shm_array() :
-        shm_container(NULL),
-        data_base_(NULL)
-    {
-    }
+    shm_array() = default;
 
 public:
 
-    /*!
-    * @brief      构造函数，根据参数进行初始化，
-    * @return     void
-    * @param      numnode
-    * @param      pmmap
-    * @param      if_restore
-    */
-    shm_array(const size_t numnode, char* pmmap, bool if_restore = false) :
-        shm_container(pmmap),
-        data_base_(NULL)
-    {
-        initialize(numnode, pmmap, if_restore);
-    }
     ///析构函数
-    ~shm_array()
-    {
-    }
+    ~shm_array() = default;
 public:
 
     ///内存区的构成为 定义区,data区,返回所需要的长度,
@@ -100,7 +75,7 @@ public:
     }
 
     ///初始化
-    static shm_array<_value_type>* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
+    static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
         _shm_array_head* aryhead = reinterpret_cast<_shm_array_head*>(pmmap);
 
@@ -261,6 +236,8 @@ public:
     }
 
 protected:
+    //内存基础地址
+    char* smem_base_ = nullptr;
     ///
     _shm_array_head* array_head_ = nullptr;
     ///数据区起始指针,

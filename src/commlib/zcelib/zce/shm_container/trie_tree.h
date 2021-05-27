@@ -150,7 +150,7 @@ protected:
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
         {
-            return _INVALID_POINT;
+            return SHM_CNTR_INVALID_POINT;
         }
 
         //从链上取1个下来
@@ -199,13 +199,13 @@ public:
         return  sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode;
     }
 
-    smem_list<_value_type>* getinstance()
+    shm_list<_value_type>* getinstance()
     {
         return this;
     }
 
     //初始化
-    static smem_list<_value_type>* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
+    static shm_list<_value_type>* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
         _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(pmmap);
@@ -225,7 +225,7 @@ public:
         listhead->size_of_mmap_ = getallocsize(numnode);
         listhead->num_of_node_ = numnode;
 
-        smem_list<_value_type>* instance = new smem_list<_value_type>();
+        shm_list<_value_type>* instance = new shm_list<_value_type>();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
@@ -318,9 +318,9 @@ protected:
     {
         size_t node = create_node(val);
 
-        if (node == _INVALID_POINT)
+        if (node == SHM_CNTR_INVALID_POINT)
         {
-            return _INVALID_POINT;
+            return SHM_CNTR_INVALID_POINT;
         }
 
         //将新结点挂接到队列中
@@ -342,7 +342,7 @@ public:
         size_t tmp = insert(pos.getserial(), val);
 
         //插入失败
-        if (_INVALID_POINT == tmp)
+        if (SHM_CNTR_INVALID_POINT == tmp)
         {
             return std::pair<iterator, bool>(end(), false);
         }

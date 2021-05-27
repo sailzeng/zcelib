@@ -45,10 +45,10 @@ namespace zce
 {
 //============================================================================================
 
-template <class _value_type> class smem_list;
+template <class _value_type> class shm_list;
 
 /*!
-@brief      迭代器的封装，双向迭代器，为smem_list 提供迭起器。
+@brief      迭代器的封装，双向迭代器，为shm_list 提供迭起器。
             内部通过序列号，以及对象指针对进行迭代器的判等等。
 @tparam     _value_type 容器处理的数据类型
 */
@@ -71,7 +71,7 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator<_value_type>(size_t seq, smem_list<_value_type>* instance) :
+    _shm_list_iterator<_value_type>(size_t seq, shm_list<_value_type>* instance) :
         serial_(seq),
         list_instance_(instance)
     {
@@ -79,7 +79,7 @@ public:
 
     ///构造函数
     _shm_list_iterator<_value_type>() :
-        serial_(shm_container::_INVALID_POINT),
+        serial_(zce::SHM_CNTR_INVALID_POINT),
         list_instance_(NULL)
     {
     }
@@ -89,7 +89,7 @@ public:
     }
 
     ///初始化，
-    void initialize(size_t seq, smem_list<_value_type>* instance)
+    void initialize(size_t seq, shm_list<_value_type>* instance)
     {
         serial_ = seq;
         list_instance_ = instance;
@@ -160,7 +160,7 @@ protected:
     //序列号，相对于数组下标
     size_t                  serial_;
     //对应的list对象指针
-    smem_list<_value_type>* list_instance_;
+    shm_list<_value_type>* list_instance_;
 };
 
 //============================================================================================
@@ -174,31 +174,21 @@ class _shm_list_head
 protected:
 
     ///构造函数
-    _shm_list_head() :
-        size_of_mmap_(0),
-        num_of_node_(0),
-        size_free_node_(0),
-        size_use_node_(0)
-    {
-    }
-
-    //析构函数
-    ~_shm_list_head()
-    {
-    }
+    _shm_list_head() = default;
+    ~_shm_list_head() = default;
 
     //我不能对模版搞个友元，算了，开始开放出来把
 public:
 
     ///内存区的长度
-    size_t               size_of_mmap_;
+    size_t               size_of_mmap_ = 0;
     ///NODE结点个数
-    size_t               num_of_node_;
+    size_t               num_of_node_ = 0;
 
     ///FREE的NODE个数
-    size_t               size_free_node_;
+    size_t               size_free_node_ = 0;
     ///USE的NODE个数
-    size_t               size_use_node_;
+    size_t               size_use_node_ = 0;
 };
 
 //============================================================================================
@@ -211,47 +201,32 @@ public:
 
 @tparam     _value_type 元素类型
 */
-template <class _value_type> class smem_list :
-    public shm_container
+template <class _value_type>
+class shm_list
 {
-public:
+private:
 
+    //定义自己
+    typedef shm_list<_value_type> self;
+
+public:
     ///定义迭代器
     typedef _shm_list_iterator<_value_type> iterator;
 
     //某些函数提供给迭代器用
     friend class _shm_list_iterator<_value_type>;
 
-public:
+protected:
 
     ///如果在共享内存使用,没有new,所以统一用initialize 初始化
     ///这个函数,不给你用,就是不给你用
-    smem_list<_value_type>(size_t numnode, void* pmmap, bool if_restore) :
-        shm_container(pmmap),
-        list_head_(NULL),
-        index_base_(NULL),
-        data_base_(NULL),
-        freenode_(NULL),
-        usenode_(NULL)
-    {
-    }
-
-    smem_list<_value_type>() :
-        shm_container(NULL),
-        list_head_(NULL),
-        index_base_(NULL),
-        data_base_(NULL),
-        freenode_(NULL),
-        usenode_(NULL)
-    {
-    }
-
-    ~smem_list<_value_type>()
-    {
-    }
+    shm_list() = default;
 
     //只定义,不实现,
-    const smem_list<_value_type>& operator=(const smem_list<_value_type>& others);
+    const self operator=(const self& others) = delete;
+
+public:
+    ~shm_list() = default;
 
 protected:
 
@@ -272,7 +247,7 @@ protected:
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
         {
-            return _INVALID_POINT;
+            return SHM_CNTR_INVALID_POINT;
         }
 
         //从链上取1个下来
@@ -321,13 +296,13 @@ public:
         return  sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode;
     }
 
-    smem_list<_value_type>* getinstance()
+    self* getinstance()
     {
         return this;
     }
 
     //初始化
-    static smem_list<_value_type>* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
+    static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
         _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(pmmap);
@@ -347,7 +322,7 @@ public:
         listhead->size_of_mmap_ = getallocsize(numnode);
         listhead->num_of_node_ = numnode;
 
-        smem_list<_value_type>* instance = new smem_list<_value_type>();
+        self* instance = new self();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
@@ -454,9 +429,9 @@ protected:
     {
         size_t node = create_node(val);
 
-        if (node == _INVALID_POINT)
+        if (node == SHM_CNTR_INVALID_POINT)
         {
-            return _INVALID_POINT;
+            return SHM_CNTR_INVALID_POINT;
         }
 
         //将新结点挂接到队列中
@@ -478,7 +453,7 @@ public:
         size_t tmp = insert(pos.getserial(), val);
 
         //插入失败
-        if (_INVALID_POINT == tmp)
+        if (SHM_CNTR_INVALID_POINT == tmp)
         {
             return std::pair<iterator, bool>(end(), false);
         }
@@ -615,18 +590,19 @@ protected:
 protected:
 
     //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-
+    //内存基础地址
+    char* smem_base_ = nullptr;
     //LIST的头部区指针
-    _shm_list_head* list_head_;
+    _shm_list_head* list_head_ = nullptr;
     //索引数据区指针,
-    _shm_list_index* index_base_;
+    _shm_list_index* index_base_ = nullptr;
     //数据区起始指针,
-    _value_type* data_base_;
+    _value_type* data_base_ = nullptr;
 
     //FREE NODE的头指针,N+1个索引位表示
-    _shm_list_index* freenode_;
+    _shm_list_index* freenode_ = nullptr;
     //USE NODE的头指针,N+2个索引位表示
-    _shm_list_index* usenode_;
+    _shm_list_index* usenode_ = nullptr;
 };
 };
 

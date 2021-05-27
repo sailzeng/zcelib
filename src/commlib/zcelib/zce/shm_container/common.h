@@ -123,6 +123,9 @@ namespace zce
 //除非你知道你自己在干嘛，否则不要调整这个宏
 #define ALLOW_RESTORE_INCONFORMITY 0
 
+//空序号指针标示,32位为0xFFFFFFFF,64位为0xFFFFFFFFFFFFFFFF CNTR = CONTAINER SHM = Share memory
+const size_t  SHM_CNTR_INVALID_POINT = static_cast<size_t>(-1);
+
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
 //STL采用的方式一个查表的方式
 //我原来的算法就是采用STL的算法改进的，
@@ -312,37 +315,6 @@ template <class _Pair> struct mmap_select2st
 };
 
 //=============================================================================================
-//
-class shm_container : public zce::NON_Copyable
-{
-public:
-
-    //空序号指针标示,32位为0xFFFFFFFF,64位为0xFFFFFFFFFFFFFFFF
-    static const size_t  _INVALID_POINT = static_cast<size_t>(-1);
-
-protected:
-
-    //内存基础地址
-    char* smem_base_;
-
-    //构造函数
-    shm_container() :
-        smem_base_(NULL)
-    {
-    };
-
-    //构造函数
-    shm_container(char* basepoint) :
-        smem_base_(basepoint)
-    {
-    };
-
-    virtual ~shm_container()
-    {
-    }
-};
-
-//-----------------------------------------------------------------------------
 ///放到这儿是因为HASH—EXPIRE和LIST都用了这个结构,
 class _shm_list_index
 {
@@ -353,8 +325,8 @@ public:
     size_t  idx_prev_;
 
     _shm_list_index() :
-        idx_next_(shm_container::_INVALID_POINT),
-        idx_prev_(shm_container::_INVALID_POINT)
+        idx_next_(zce::SHM_CNTR_INVALID_POINT),
+        idx_prev_(zce::SHM_CNTR_INVALID_POINT)
     {
     }
     _shm_list_index(const size_t& nxt, const size_t& prv) :

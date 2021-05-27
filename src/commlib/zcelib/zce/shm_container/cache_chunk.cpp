@@ -3,14 +3,6 @@
 
 namespace zce
 {
-shm_cachechunk::shm_cachechunk()
-{
-}
-
-shm_cachechunk::~shm_cachechunk()
-{
-}
-
 //得到初始化所需内存的大小
 size_t shm_cachechunk::getallocsize(const size_t numnode,
                                     const size_t numchunk,
@@ -80,7 +72,7 @@ void shm_cachechunk::clear()
 
         if (i == cachechunk_head_->num_of_node_ - 1)
         {
-            cachenode_base_[i].chunk_index_ = _INVALID_POINT;
+            cachenode_base_[i].chunk_index_ = SHM_CNTR_INVALID_POINT;
         }
     }
 
@@ -93,7 +85,7 @@ void shm_cachechunk::clear()
 
         if (i == cachechunk_head_->num_of_chunk_ - 1)
         {
-            chunkindex_base_[i] = _INVALID_POINT;
+            chunkindex_base_[i] = SHM_CNTR_INVALID_POINT;
         }
     }
 
@@ -130,7 +122,7 @@ bool shm_cachechunk::create_node(const size_t szdata, size_t& nodeindex)
         tmpszdata -= cachechunk_head_->size_of_chunk_;
 
         //根据前面的判断，这个
-        if (chunkinx == _INVALID_POINT)
+        if (chunkinx == SHM_CNTR_INVALID_POINT)
         {
             return false;
         }
@@ -147,7 +139,7 @@ bool shm_cachechunk::create_node(const size_t szdata, size_t& nodeindex)
     //将FREE链子的头节点放入
     cachechunk_head_->free_chunk_head_ = *(chunkindex_base_ + chunkinx);
 
-    *(chunkindex_base_ + chunkinx) = _INVALID_POINT;
+    *(chunkindex_base_ + chunkinx) = SHM_CNTR_INVALID_POINT;
 
     //记录使用的数据节点数量
     --(cachechunk_head_->usable_of_node_);
@@ -166,7 +158,7 @@ void shm_cachechunk::destroy_node(const size_t nodeindex)
     //free_chunk为释放的CHUNK数量，
     size_t free_chunk = 1;
 
-    for (; *(chunkindex_base_ + chunkinx) != _INVALID_POINT; ++free_chunk)
+    for (; *(chunkindex_base_ + chunkinx) != SHM_CNTR_INVALID_POINT; ++free_chunk)
     {
         chunkinx = *(chunkindex_base_ + chunkinx);
     }

@@ -103,7 +103,7 @@ protected:
 
 public:
     _hash_rehash_iterator() :
-        serial_(shm_container::_INVALID_POINT),
+        serial_(zce::SHM_CNTR_INVALID_POINT),
         ht_rehash_instance_(NULL)
     {
     }
@@ -152,7 +152,7 @@ public:
         //如果没有发现数据
         if (old_serial == ht_rehash_instance_->hash_safe_head_->num_of_node_)
         {
-            serial_ = shm_container::_INVALID_POINT;
+            serial_ = zce::SHM_CNTR_INVALID_POINT;
         }
 
         return *this;
@@ -248,7 +248,7 @@ template < class _value_type,
     class _extract_key = smem_identity<_value_type>,
     class _equal_key = std::equal_to<_key_type>,
     class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hash_rehash : public  shm_container
+    class shm_hash_rehash
 {
 public:
 
@@ -277,34 +277,13 @@ public:
         _washout_fun >;
 
 protected:
+    //不给你使用。请使用initialize 获取实例
+    shm_hash_rehash() = default;
 
-    //无效的数据，比如这个数据里面的KEY是永远不会出现的，一般是比如0，或者-1
-    //这个地方其实是偷懒的表现，用于简化处理某个空间，是否有效
-    _value_type              invalid_data_;
-
-    //放在共享内存头部的指针
-    _hashtable_rehash_head* hash_safe_head_;
-
-    //数据区指针
-    _value_type* value_base_;
-
-    //优先级的数据指针,用32位的数据保存优先级
-    unsigned int* priority_base_;
-
-protected:
-
-    shm_hash_rehash() :
-        hash_safe_head_(NULL),
-        value_base_(NULL),
-        priority_base_(NULL)
-    {
-    }
-
+    const self& operator=(const self& others) = delete;
 public:
 
-    ~shm_hash_rehash()
-    {
-    }
+    ~shm_hash_rehash() = default;
 
 protected:
 
@@ -658,7 +637,7 @@ public:
     //得到结束位置
     iterator end()
     {
-        return iterator(_INVALID_POINT, this);
+        return iterator(SHM_CNTR_INVALID_POINT, this);
     }
     //当前使用的节点数量
     size_t size() const
@@ -689,7 +668,7 @@ public:
         _equal_key   equal_key;
 
         size_t idx_count = 0;
-        size_t idx_no_use = _INVALID_POINT;
+        size_t idx_no_use = SHM_CNTR_INVALID_POINT;
 
         //循环进行N此取模操作，
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
@@ -706,7 +685,7 @@ public:
             //如果是一个无效数据，表示一个空位置
             if (equal_key((get_key(value_base_[idx_count])), (get_key(invalid_data_))) == true)
             {
-                if (idx_no_use == _INVALID_POINT)
+                if (idx_no_use == SHM_CNTR_INVALID_POINT)
                 {
                     idx_no_use = idx_count;
                     break;
@@ -718,7 +697,7 @@ public:
         }
 
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
-        if (_INVALID_POINT == idx_no_use)
+        if (SHM_CNTR_INVALID_POINT == idx_no_use)
         {
             return std::pair<iterator, bool>(end(), false);
         }
@@ -745,7 +724,7 @@ public:
         _equal_key   equal_key;
 
         size_t idx_count = 0;
-        size_t idx_no_use = _INVALID_POINT;
+        size_t idx_no_use = SHM_CNTR_INVALID_POINT;
 
         //循环进行N此取模操作，
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
@@ -762,7 +741,7 @@ public:
             //如果是一个无效数据，表示一个空位置
             if (equal_key((get_key(value_base_[idx_count])), (get_key(invalid_data_))) == true)
             {
-                if (idx_no_use == _INVALID_POINT)
+                if (idx_no_use == SHM_CNTR_INVALID_POINT)
                 {
                     idx_no_use = idx_count;
                     break;
@@ -785,7 +764,7 @@ public:
         }
 
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
-        if (_INVALID_POINT == idx_no_use)
+        if (SHM_CNTR_INVALID_POINT == idx_no_use)
         {
             return std::pair<iterator, bool>(end(), false);
         }
@@ -932,6 +911,23 @@ public:
 
         return expire_num;
     }
+protected:
+
+    //内存基础地址
+    char* smem_base_ = nullptr;
+
+    //无效的数据，比如这个数据里面的KEY是永远不会出现的，一般是比如0，或者-1
+    //这个地方其实是偷懒的表现，用于简化处理某个空间，是否有效
+    _value_type              invalid_data_;
+
+    //放在共享内存头部的指针
+    _hashtable_rehash_head* hash_safe_head_ = nullptr;
+
+    //数据区指针
+    _value_type* value_base_ = nullptr;
+
+    //优先级的数据指针,用32位的数据保存优先级
+    unsigned int* priority_base_ = nullptr;
 };
 };
 

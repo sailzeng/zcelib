@@ -117,12 +117,12 @@ public:
         serial_ = *(ht_instance_->next_index_ + serial_);
 
         //如果这个节点是末位的节点
-        if (serial_ == shm_container::_INVALID_POINT)
+        if (serial_ == zce::SHM_CNTR_INVALID_POINT)
         {
             //顺着Index查询.
             size_t bucket = ht_instance_->bkt_num_value(*(ht_instance_->data_base_ + oldseq));
 
-            while (serial_ == shm_container::_INVALID_POINT && ++bucket < ht_instance_->capacity())
+            while (serial_ == zce::SHM_CNTR_INVALID_POINT && ++bucket < ht_instance_->capacity())
             {
                 serial_ = *(ht_instance_->index_base_ + bucket);
             }
@@ -201,40 +201,28 @@ template < class _value_type,
     class _hash_fun = smem_hash<_key_type>,
     class _extract_key = smem_identity<_value_type>,
     class _equal_key = std::equal_to<_key_type> >
-    class shm_hashtable : public shm_container
+    class shm_hashtable
 {
-public:
+private:
     //定义自己
     typedef shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key> self;
 
+public:
     //定义迭代器
     typedef _shm_hashtable_iterator<_value_type, _key_type, _hash_fun, _extract_key, _equal_key> iterator;
 
     //友元
     friend class _shm_hashtable_iterator<_value_type, _key_type, _hash_fun, _extract_key, _equal_key>;
 
-public:
-    //如果在共享内存使用,没有new,所以统一用initialize 初始化
-    //这个函数,不给你用,就是不给你用
-    shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
-        shm_container(NULL),
-        hash_head_(NULL),
-        index_base_(NULL),
-        data_base_(NULL)
-    {
-    }
+protected:
 
-    shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >() :
-        shm_container(NULL)
-    {
-    }
-
-    ~shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >()
-    {
-    }
+    shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >() = default;
 
     //只定义,不实现,
-    const self& operator=(const self& others);
+    const self& operator=(const self& others) = delete;
+public:
+
+    ~shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >() = default;
 
 protected:
 
@@ -244,7 +232,7 @@ protected:
         //如果没有空间可以分配
         if (hash_head_->sz_freenode_ == 0)
         {
-            return _INVALID_POINT;
+            return SHM_CNTR_INVALID_POINT;
         }
 
         //从连上取下一个空闲节点
@@ -375,7 +363,7 @@ public:
         //初始化free数据区
         for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
         {
-            index_base_[i] = _INVALID_POINT;
+            index_base_[i] = SHM_CNTR_INVALID_POINT;
         }
 
         //清理FREELIST的单向NODE,
@@ -388,7 +376,7 @@ public:
 
             if (i == hash_head_->num_of_node_ - 1)
             {
-                next_index_[i] = _INVALID_POINT;
+                next_index_[i] = SHM_CNTR_INVALID_POINT;
             }
         }
     }
@@ -411,7 +399,7 @@ public:
     {
         for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
         {
-            if (*(index_base_ + i) != _INVALID_POINT)
+            if (*(index_base_ + i) != SHM_CNTR_INVALID_POINT)
             {
                 return iterator(*(index_base_ + i), this);
             }
@@ -422,7 +410,7 @@ public:
     //用无效指针
     iterator end()
     {
-        return iterator(_INVALID_POINT, this);
+        return iterator(SHM_CNTR_INVALID_POINT, this);
     }
 
     //
@@ -456,7 +444,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != _INVALID_POINT && !equal_key(get_key(*(data_base_ + first)), key))
+        while (first != SHM_CNTR_INVALID_POINT && !equal_key(get_key(*(data_base_ + first)), key))
         {
             first = *(next_index_ + first);
         }
@@ -500,7 +488,7 @@ public:
 
         size_t nxt_idx = first_idx;
 
-        while (nxt_idx != _INVALID_POINT)
+        while (nxt_idx != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key函数
             if (equal_key((get_key(*(data_base_ + nxt_idx))), (get_key(val))) == true)
@@ -514,9 +502,9 @@ public:
         //没有找到,插入新数据
         size_t newnode = create_node(val);
         //空间不足,
-        if (newnode == _INVALID_POINT)
+        if (newnode == SHM_CNTR_INVALID_POINT)
         {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
         }
 
         //放入链表中
@@ -524,7 +512,7 @@ public:
         *(index_base_ + idx) = newnode;
 
         //如果第一个位置就不是无效的INDEX
-        if (first_idx == _INVALID_POINT)
+        if (first_idx == SHM_CNTR_INVALID_POINT)
         {
             //记录使用量一个索引
             ++(hash_head_->sz_useindex_);
@@ -549,7 +537,7 @@ public:
 
         size_t nxt_idx = first_idx;
 
-        while (nxt_idx != _INVALID_POINT)
+        while (nxt_idx != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key函数,会将相同的数据放在一起，便于处理
             if (equal_key((get_key(*(data_base_ + nxt_idx))), (get_key(val))) == true)
@@ -564,13 +552,13 @@ public:
         size_t newnode = create_node(val);
 
         //空间不足,
-        if (newnode == _INVALID_POINT)
+        if (newnode == SHM_CNTR_INVALID_POINT)
         {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
         }
 
         //没有找到相同KEY的数据
-        if (nxt_idx == _INVALID_POINT)
+        if (nxt_idx == SHM_CNTR_INVALID_POINT)
         {
             //放入链表的首部就可以了
             (next_index_ + newnode) = *(index_base_ + idx);
@@ -585,7 +573,7 @@ public:
         }
 
         //如果第一个位置就不是无效的INDEX,记录使用了INDEX
-        if (first_idx == _INVALID_POINT)
+        if (first_idx == SHM_CNTR_INVALID_POINT)
         {
             ++(hash_head_->sz_useindex_);
         }
@@ -610,7 +598,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(*(data_base_ + first)), key) == true)
@@ -641,7 +629,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(*(data_base_ + first)), key) == true)
@@ -658,7 +646,7 @@ public:
                 destroy_node(first);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == shm_container::_INVALID_POINT)
+                if (*(index_base_ + idx) == zce::SHM_CNTR_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -687,7 +675,7 @@ public:
         size_t itseq = it.getserial();
 
         //
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             if (first == itseq)
             {
@@ -703,7 +691,7 @@ public:
                 destroy_node(first);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == shm_container::_INVALID_POINT)
+                if (*(index_base_ + idx) == zce::SHM_CNTR_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -732,7 +720,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != _INVALID_POINT)
+        while (first != SHM_CNTR_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(*(data_base_ + first)), key) == true)
@@ -753,7 +741,7 @@ public:
                 destroy_node(del_pos);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == shm_container::_INVALID_POINT)
+                if (*(index_base_ + idx) == zce::SHM_CNTR_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -803,7 +791,11 @@ public:
 
 protected:
 
-    _shm_hash_table_head* hash_head_;
+    //内存基础地址
+    char* smem_base_ = nullptr;
+
+    //头部数据
+    _shm_hash_table_head* hash_head_ = nullptr;
 
     ///所有的指针都是根据基地址计算得到的,保留他们主要用于方便计算,
     ///每次初始化会重新计算,所以不会有地址错误的问题，而且这些值是各自拥有，不共享的，
@@ -824,19 +816,12 @@ class shm_hashset :
 public:
     //定义迭代器
     //typedef shm_hashtable< _value_type,_value_type ,_hash_fun, _extract_key,_equal_key  >::iterator iterator;
+
 protected:
+    shm_hashset<_value_type, _hash_fun, _equal_key >() = default;
 
-    //如果在共享内存使用,没有new,所以统一用initialize 初始化
-    //这个函数,不给你用,就是不给你用
-    shm_hashset<_value_type, _hash_fun, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
-        shm_hashtable<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key>(numnode, pmmap, if_restore)
-    {
-        initialize(numnode, pmmap, if_restore);
-    }
-
-    ~shm_hashset<_value_type, _hash_fun, _equal_key >()
-    {
-    }
+public:
+    ~shm_hashset<_value_type, _hash_fun, _equal_key >() = default;
 
 public:
     static shm_hashset< _value_type, _hash_fun, _equal_key  >*
