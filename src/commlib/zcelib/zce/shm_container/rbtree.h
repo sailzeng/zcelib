@@ -273,14 +273,15 @@ public:
 
 protected:
 
-    shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >() = default;
+    shm_rb_tree() = default;
 
     //只定义,不实现,避免犯错
+    shm_rb_tree(const shm_rb_tree&) = delete;
     const self& operator=(const self& others) = delete;
 
 public:
 
-    ~shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >() = default;
+    ~shm_rb_tree() = default;
 
     //得到索引的基础地址
     inline _shm_rb_tree_index* getindexbase()

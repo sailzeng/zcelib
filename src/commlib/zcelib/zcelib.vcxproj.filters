@@ -719,5 +719,8 @@
     <ClInclude Include="zce\util\buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\pool\object_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

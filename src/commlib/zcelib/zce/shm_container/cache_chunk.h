@@ -87,7 +87,9 @@ class shm_cachechunk
 protected:
     //构造函数,
     shm_cachechunk() = default;
-    //只定义,不实现,
+
+    //不实现，避免误用
+    shm_cachechunk(const shm_cachechunk&) = delete;
     const shm_cachechunk& operator=(const shm_cachechunk& others) = delete;
 public:
     //析构函数,

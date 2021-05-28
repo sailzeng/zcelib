@@ -280,6 +280,8 @@ protected:
     //不给你使用。请使用initialize 获取实例
     shm_hash_rehash() = default;
 
+    //不实现，避免误用
+    shm_hash_rehash(const shm_hash_rehash&) = delete;
     const self& operator=(const self& others) = delete;
 public:
 

@@ -91,7 +91,9 @@
 
 #include <zce/lockfree/kfifo.h>
 #include <zce/lockfree/ring.h>
-//#include <zce/util/fifo_cycbuf.h>
+#include <zce/util/cycbuf_node.h>
+#include <zce/util/buffer.h>
+#include <zce/pool/object_pool.h>
 
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS

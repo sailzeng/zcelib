@@ -186,7 +186,7 @@ public:
     }
 
     ///初始化数据区，和构造函数干的事情基本一样，只是多了一步原来有数据就清理掉
-    void initialize(size_t max_len)
+    bool initialize(size_t max_len)
     {
         assert(max_len > 0);
 
@@ -196,6 +196,11 @@ public:
 
         assert(vptr_ptr_ == nullptr);
         vptr_ptr_ = (_value_type *)::malloc(sizeof(_value_type) * lordring_capacity_);
+        if (vptr_ptr_ == nullptr)
+        {
+            return false;
+        }
+        return true;
     }
 
     ///结束，完成，销毁，求问fini是什么的缩写，

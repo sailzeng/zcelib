@@ -244,6 +244,7 @@ protected:
     shm_hashtable_expire() = default;
     //只定义,不实现,避免犯错
     const self& operator=(const self& others);
+    shm_hashtable_expire(const shm_hashtable_expire&) = delete;
 public:
 
     ~shm_hashtable_expire() = default;

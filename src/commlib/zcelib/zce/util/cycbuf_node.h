@@ -103,11 +103,11 @@ public:
         size_t sz_free;
         if (cycbuf_begin_ == cycbuf_end_)
         {
-            sz_free = size_of_deque_;
+            sz_free = size_of_cycle_;
         }
         else if (cycbuf_begin_ < cycbuf_end_)
         {
-            sz_free = size_of_deque_ - (cycbuf_end_ - cycbuf_begin_);
+            sz_free = size_of_cycle_ - (cycbuf_end_ - cycbuf_begin_);
         }
         else
         {
@@ -120,7 +120,7 @@ public:
     ///容量
     size_t capacity()
     {
-        return size_of_deque_ - JUDGE_FULL_INTERVAL;
+        return size_of_cycle_ - JUDGE_FULL_INTERVAL;
     }
 
     ///得到是否为空
@@ -139,7 +139,7 @@ public:
     {
         cycbuf_begin_ = 0;
         cycbuf_end_ = 0;
-        memset(cycbuf_data_, 0, size_of_deque_);
+        memset(cycbuf_data_, 0, size_of_cycle_);
     }
 
     bool initialize(size_t size_of_deque,
@@ -155,10 +155,10 @@ public:
         {
             return false;
         }
-        size_of_deque_ = size_of_deque + JUDGE_FULL_INTERVAL;
+        size_of_cycle_ = size_of_deque + JUDGE_FULL_INTERVAL;
         max_len_node_ = max_len_node;
 
-        cycbuf_data_ = new char[size_of_deque_];
+        cycbuf_data_ = new char[size_of_cycle_];
 
         clear();
         return true;
@@ -184,9 +184,9 @@ public:
         char* pend = cycbuf_data_ + cycbuf_end_;
 
         //如果绕圈
-        if (pend + node->size_of_node_ > cycbuf_data_ + size_of_deque_)
+        if (pend + node->size_of_node_ > cycbuf_data_ + size_of_cycle_)
         {
-            size_t first = size_of_deque_ - cycbuf_end_;
+            size_t first = size_of_cycle_ - cycbuf_end_;
             size_t second = node->size_of_node_ - first;
             memcpy(pend, reinterpret_cast<const char*>(node), first);
             memcpy(cycbuf_data_, reinterpret_cast<const char*>(node) + first, second);
@@ -216,12 +216,12 @@ public:
         size_t node_len = get_front_len();
 
         assert(node_len > 0);
-        assert(cycbuf_begin_ <= size_of_deque_);
+        assert(cycbuf_begin_ <= size_of_cycle_);
 
         //如果被分为2截
-        if (pbegin + node_len > cycbuf_data_ + size_of_deque_)
+        if (pbegin + node_len > cycbuf_data_ + size_of_cycle_)
         {
-            size_t first = size_of_deque_ - cycbuf_begin_;
+            size_t first = size_of_cycle_ - cycbuf_begin_;
             size_t second = node_len - first;
             memcpy(reinterpret_cast<char*>(node), pbegin, first);
             memcpy(reinterpret_cast<char*>(node) + first, cycbuf_data_, second);
@@ -231,10 +231,10 @@ public:
         {
             memcpy(reinterpret_cast<char*>(node), pbegin, node_len);
             cycbuf_begin_ += node->size_of_node_;
-            assert(cycbuf_begin_ <= size_of_deque_);
+            assert(cycbuf_begin_ <= size_of_cycle_);
         }
 
-        assert(cycbuf_begin_ <= size_of_deque_);
+        assert(cycbuf_begin_ <= size_of_cycle_);
 
         return true;
     }
@@ -248,12 +248,12 @@ public:
         char* tmp2 = reinterpret_cast<char*>(&node_len);
 
         //如果管道的长度也绕圈，采用野蛮的法子得到长度
-        if (tmp1 + NODE_HEAD_LEN > cycbuf_data_ + size_of_deque_)
+        if (tmp1 + NODE_HEAD_LEN > cycbuf_data_ + size_of_cycle_)
         {
             //一个个字节读取长度
             for (size_t i = 0; i < NODE_HEAD_LEN; ++i)
             {
-                if (tmp1 >= cycbuf_data_ + size_of_deque_)
+                if (tmp1 >= cycbuf_data_ + size_of_cycle_)
                 {
                     tmp1 = cycbuf_data_;
                 }
@@ -282,7 +282,7 @@ protected:
 protected:
 
     ///deque的长度,必须>JUDGE_FULL_INTERVAL
-    size_t size_of_deque_ = 0;
+    size_t size_of_cycle_ = 0;
 
     ///node的最大长度
     size_t max_len_node_ = 0;
@@ -297,7 +297,7 @@ protected:
 };
 
 //node的头部标识长度的字节长度是uint16_t还是uint32_t
-typedef cycbuf_node<uint16_t> fifo_cycbuf_u16;
-typedef cycbuf_node<uint32_t> fifo_cycbuf_u32;
-typedef cycbuf_node<uint64_t> fifo_cycbuf_u64;
+typedef cycbuf_node<uint16_t> cycbuf_node_u16;
+typedef cycbuf_node<uint32_t> cycbuf_node_u32;
+typedef cycbuf_node<uint64_t> cycbuf_node_u64;
 }

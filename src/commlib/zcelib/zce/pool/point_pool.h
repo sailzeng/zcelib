@@ -5,7 +5,7 @@
 namespace zce
 {
 template<typename T>
-class point_pool :public zce::lordrings<T*> pool_;
+class point_pool :public zce::lordrings<T*>
 {
 };
 }

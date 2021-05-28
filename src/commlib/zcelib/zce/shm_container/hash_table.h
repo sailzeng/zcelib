@@ -216,13 +216,14 @@ public:
 
 protected:
 
-    shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >() = default;
+    shm_hashtable() = default;
 
     //只定义,不实现,
+    shm_hashtable(const shm_hashtable&) = delete;
     const self& operator=(const self& others) = delete;
 public:
 
-    ~shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key >() = default;
+    ~shm_hashtable() = default;
 
 protected:
 

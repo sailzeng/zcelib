@@ -56,11 +56,12 @@ public:
 
 protected:
 
-    //只定义,不实现,
-    const self& operator=(const self& others) = delete;
-
     ///默认构造函数,就是不给你用
     shm_array() = default;
+
+    //只定义,不实现,
+    shm_array(const shm_array&) = delete;
+    const self& operator=(const self& others) = delete;
 
 public:
 

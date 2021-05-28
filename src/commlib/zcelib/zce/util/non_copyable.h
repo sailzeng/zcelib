@@ -24,12 +24,10 @@ class NON_Copyable
 {
 protected:
     ///构造函数和析构函数，保护，保证可以继承
-    NON_Copyable()
-    {
-    }
-    ~NON_Copyable()
-    {
-    }
+    NON_Copyable() = default;
+
+    ~NON_Copyable() = default;
+
     // emphasize the following members are private
 private:
 

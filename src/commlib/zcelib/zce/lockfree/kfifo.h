@@ -131,7 +131,7 @@ protected:
         size_t               size_of_mmap_ = 0;
 
         ///deque的长度,必须>JUDGE_FULL_INTERVAL
-        size_t               size_of_deque_ = 0;
+        size_t               size_of_cycle_ = 0;
 
         ///node的最大长度
         size_t               max_len_node_ = 0;
@@ -209,7 +209,7 @@ public:
         {
             //坚持关键数据是否一致
             if (dequechunk_head->size_of_mmap_ != getallocsize(size_of_deque)
-                || dequechunk_head->size_of_deque_ != size_of_deque + JUDGE_FULL_INTERVAL
+                || dequechunk_head->size_of_cycle_ != size_of_deque + JUDGE_FULL_INTERVAL
                 || dequechunk_head->max_len_node_ != max_len_node)
             {
                 return NULL;
@@ -217,7 +217,7 @@ public:
         }
 
         dequechunk_head->size_of_mmap_ = getallocsize(size_of_deque);
-        dequechunk_head->size_of_deque_ = size_of_deque + JUDGE_FULL_INTERVAL;
+        dequechunk_head->size_of_cycle_ = size_of_deque + JUDGE_FULL_INTERVAL;
         dequechunk_head->max_len_node_ = max_len_node;
 
         shm_kfifo* kfifo = new shm_kfifo();
@@ -253,7 +253,7 @@ public:
         //
         kfifo_head_->deque_begin_ = 0;
         kfifo_head_->deque_end_ = 0;
-        ::memset(kfifo_data_, 0, kfifo_head_->size_of_deque_);
+        ::memset(kfifo_data_, 0, kfifo_head_->size_of_cycle_);
     }
     /*!
     @brief      将一个NODE放入尾部
@@ -279,9 +279,9 @@ public:
         char* pend = kfifo_data_ + kfifo_head_->deque_end_;
 
         //如果绕圈
-        if (pend + node->size_of_node_ > kfifo_data_ + kfifo_head_->size_of_deque_)
+        if (pend + node->size_of_node_ > kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
-            size_t first = kfifo_head_->size_of_deque_ - kfifo_head_->deque_end_;
+            size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_end_;
             size_t second = node->size_of_node_ - first;
             memcpy(pend, reinterpret_cast<const char*>(node), first);
             memcpy(kfifo_data_, reinterpret_cast<const char*>(node) + first, second);
@@ -317,12 +317,12 @@ public:
 
         assert(tmplen > 0);
         assert(tmplen < 64 * 1024);
-        assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_deque_);
+        assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_cycle_);
 
         //如果被分为2截
-        if (pbegin + tmplen > kfifo_data_ + kfifo_head_->size_of_deque_)
+        if (pbegin + tmplen > kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
-            size_t first = kfifo_head_->size_of_deque_ - kfifo_head_->deque_begin_;
+            size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_begin_;
             size_t second = tmplen - first;
             memcpy(reinterpret_cast<char*>(node), pbegin, first);
             memcpy(reinterpret_cast<char*>(node) + first, kfifo_data_, second);
@@ -332,10 +332,10 @@ public:
         {
             memcpy(reinterpret_cast<char*>(node), pbegin, tmplen);
             kfifo_head_->deque_begin_ += node->size_of_node_;
-            assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_deque_);
+            assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_cycle_);
         }
 
-        assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_deque_);
+        assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_cycle_);
 
         return true;
     }
@@ -360,9 +360,9 @@ public:
         size_t tmplen = get_front_len();
 
         //如果被分为2截
-        if (pbegin + tmplen > kfifo_data_ + kfifo_head_->size_of_deque_)
+        if (pbegin + tmplen > kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
-            size_t first = kfifo_head_->size_of_deque_ - kfifo_head_->deque_begin_;
+            size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_begin_;
             size_t second = tmplen - first;
             memcpy(reinterpret_cast<char*>(node), pbegin, first);
             memcpy(reinterpret_cast<char*>(node) + first, kfifo_data_, second);
@@ -438,9 +438,9 @@ public:
         //如果要求帮使用者分配,切记释放,
 
         //如果被分为2截
-        if (pbegin + tmplen > kfifo_data_ + kfifo_head_->size_of_deque_)
+        if (pbegin + tmplen > kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
-            size_t first = kfifo_head_->size_of_deque_ - kfifo_head_->deque_begin_;
+            size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_begin_;
             size_t second = tmplen - first;
             kfifo_head_->deque_begin_ = second;
         }
@@ -463,12 +463,12 @@ public:
 
         //如果管道的长度也绕圈，采用野蛮的法子得到长度
         if (tmp1 + kfifo_node::NODE_HEAD_LEN >
-            kfifo_data_ + kfifo_head_->size_of_deque_)
+            kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
             //一个个字节读取长度
             for (size_t i = 0; i < sizeof(INTEGRAL_T); ++i)
             {
-                if (tmp1 >= kfifo_data_ + kfifo_head_->size_of_deque_)
+                if (tmp1 >= kfifo_data_ + kfifo_head_->size_of_cycle_)
                 {
                     tmp1 = kfifo_data_;
                 }
@@ -497,11 +497,11 @@ public:
         //计算尺寸
         if (start == end)
         {
-            sz_free = kfifo_head_->size_of_deque_;
+            sz_free = kfifo_head_->size_of_cycle_;
         }
         else if (start < end)
         {
-            sz_free = kfifo_head_->size_of_deque_ - (end - start);
+            sz_free = kfifo_head_->size_of_cycle_ - (end - start);
         }
         else
         {
@@ -522,7 +522,7 @@ public:
     ///得到是否满的快照
     bool empty()
     {
-        return free() == kfifo_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
+        return free() == kfifo_head_->size_of_cycle_ - JUDGE_FULL_INTERVAL;
     }
 
     ///得到是否空的快照

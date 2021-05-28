@@ -15,9 +15,6 @@ int test_log_trace(int argc, char* argv[]);
 int test_cachechunk(int argc, char* argv[]);
 int test_cache_chunk2(int argc, char* argv[]);
 
-int test_extendstl_cycdeque(int argc, char* argv[]);
-int test_extendstl_cycdeque2(int argc, char* argv[]);
-
 int test_hash_safe(int argc, char* argv[]);
 int test_hash_safe2(int argc, char* argv[]);
 int test_hash_match(int argc, char* argv[]);
@@ -121,5 +118,5 @@ int test_sqlite_configtable(int /*argc*/, char* /*argv */[]);
 
 int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[]);
 int test_lockfree_ring(int /*argc*/, char* /*argv*/[]);
-
+int test_pool(int /*argc*/, char* /*argv*/[]);
 #endif //

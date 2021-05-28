@@ -223,6 +223,7 @@ protected:
     shm_list() = default;
 
     //只定义,不实现,
+    shm_list(const shm_list&) = delete;
     const self operator=(const self& others) = delete;
 
 public:

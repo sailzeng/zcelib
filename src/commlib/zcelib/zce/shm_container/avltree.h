@@ -296,14 +296,15 @@ public:
 
 protected:
 
-    avl_tree<_value_type, _key_type, _extract_key, _compare_key >() = default;
+    avl_tree() = default;
 
     //只定义,不实现,避免犯错
-    const self& operator=(const self& others);
+    avl_tree(const avl_tree&) = delete;
+    const self& operator=(const self& others) = delete;
 
 public:
 
-    ~avl_tree<_value_type, _key_type, _extract_key, _compare_key >() = default;
+    ~avl_tree() = default;
 
     //得到索引的基础地址
     inline _avl_tree_index* getindexbase()
