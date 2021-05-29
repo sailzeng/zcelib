@@ -20,7 +20,7 @@ PRIMARY KEY (F1)
 );
 */
 
-#include "zealot_predefine.h"
+#include "predefine.h"
 
 const static int  RETURN_SUCC = 0;
 const static int  RETURN_DB_ERROR = -1;

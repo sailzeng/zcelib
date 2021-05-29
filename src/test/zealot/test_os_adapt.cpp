@@ -1,5 +1,4 @@
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
+#include "predefine.h"
 
 int test_windows_handle(int  /*argc*/, char* /*argv*/[])
 {
@@ -77,8 +76,7 @@ int test_osadapt_perf(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
+#include "predefine.h"
 
 //选取所有的.h文件
 int hfile_selector(const struct dirent* dir_info)
@@ -96,7 +94,7 @@ int hfile_selector(const struct dirent* dir_info)
     return 0;
 }
 
-int test_scandir(int /*argc*/, char /*argv*/* [])
+int test_scandir(int /*argc*/, char /*argv*/*[])
 {
     zce::clear_last_error();
     struct  dirent** namelist = NULL;
@@ -132,7 +130,7 @@ struct Zealot_SVC : public zce::Server_Base
 };
 
 Zealot_SVC svc;
-int test_pid_file(int /*argc*/, char /*argv*/* [])
+int test_pid_file(int /*argc*/, char /*argv*/*[])
 {
     svc.out_pid_file("C:\\1");
     return 0;

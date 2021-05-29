@@ -1,4 +1,4 @@
-#include "zealot_predefine.h"
+#include "predefine.h"
 
 int test_foo_snprintf(int /*argc*/, char* /*argv*/[])
 {
@@ -533,7 +533,7 @@ int test_out_file_stream()
     return 0;
 }
 
-int test_log_debug(int, char* [])
+int test_log_debug(int, char*[])
 {
     ZCE_BACKTRACE_STACK(RS_DEBUG);
     unsigned char dbg_ptr[916];

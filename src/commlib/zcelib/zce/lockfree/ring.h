@@ -7,10 +7,14 @@
 * @brief
 *
 *
-* @details  这个代码还没有改造完成。
+* @details   一个lockfee的ring队列处理代码。通过循环队列的方式避免ABA问题
 *
 *
-* @note
+* @note      实验性质很大，因为内部保持的是指针，你在外部必须new和delete，
+*            所以性能肯定不会特别良好。
+*            也没有像很多借口设计那样，内部new，delete，因为可能会给你错觉。
+*            而且内部不可能保存数据，你无法知道数据的读写是不是lockfree的。
+*
 *
 */
 
@@ -21,18 +25,20 @@
 namespace zce::lockfree
 {
 /*!
-* @tparam    _value_type 数据类型
-* @brief     魔戒.循环链表，可以自动扩展，可以最后的覆盖第一个，
+* @tparam    T 数据类型
+* @brief     环戒.lookfree循环链表，可以自动扩展，可以最后的覆盖第一个，
+* @note      内部存放的指针，所以你必须new了放入，
+*            同时因为反复会让你用new这类操作，速度不快很正常
 */
-template<class _value_type >
+template<class T >
 class rings
 {
 public:
     ///构造函数，后面必须调用,initialize
     rings() = default;
 
-    ///构造函数，同时完成初始化,后面完全 没有必要调用,initialize
-    rings(size_t max_len)
+    ///构造函数，同时完成初始化,后面无需调用再次调用initialize
+    explicit rings(size_t max_len)
     {
         assert(max_len > 0);
         initialize(max_len);
@@ -55,7 +61,7 @@ public:
         ring_end_ = 0;
         ring_capacity_ = max_len + 1;
         //
-        vptr_ptr_ = new std::atomic<_value_type*>[max_len];
+        vptr_ptr_ = new std::atomic<T*>[max_len];
         for (size_t i = 0; i < max_len; ++i)
         {
             vptr_ptr_[i] = nullptr;
@@ -128,8 +134,14 @@ public:
         return false;
     }
 
-    ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_back(_value_type * const value_ptr)
+    /*!
+    * @brief      将一个数据放入队列的尾部,如果队列已经满了,
+    *             覆盖原有的数据
+    * @return     bool 是否成功放入
+    * @param      value_ptr 放入的数据的指针
+    * @note       容器里面存放的都是指针，所以你必须new之后放入
+    */
+    bool push_back(T * const value_ptr)
     {
         //
         while (true)
@@ -147,7 +159,7 @@ public:
                 continue;
             }
             //先写入数据
-            _value_type * write_null = nullptr;
+            T * write_null = nullptr;
             bool succ = vptr_ptr_[new_end].compare_exchange_strong(write_null,
                                                                    value_ptr);
             if (succ)
@@ -160,8 +172,8 @@ public:
         return false;
     }
 
-    ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_front(_value_type * const value_ptr)
+    ///将一个数据放入队列的尾部,如果队列已经满了,
+    bool push_front(T * const value_ptr)
     {
         //
         while (true)
@@ -181,7 +193,7 @@ public:
                 continue;
             }
             //直接放在队尾
-            _value_type * write_null = nullptr;
+            T * write_null = nullptr;
             bool succ = vptr_ptr_[new_start].compare_exchange_strong(write_null,
                                                                      value_ptr);
             if (succ)
@@ -193,8 +205,13 @@ public:
         return false;
     }
 
-    ///从队列的前面pop并且得到一个数据
-    bool pop_front(_value_type *&value_ptr)
+    /*!
+    * @brief      从队列的前面pop并且得到一个数据
+    * @return     bool
+    * @param      value_ptr
+    * @note
+    */
+    bool pop_front(T *&value_ptr)
     {
         while (true)
         {
@@ -224,7 +241,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(_value_type *&value_ptr)
+    bool pop_back(T *&value_ptr)
     {
         while (true)
         {
@@ -263,6 +280,6 @@ protected:
     std::atomic<size_t> ring_end_ = 0;
 
     ///存放数据的指针，
-    std::atomic<_value_type*> *vptr_ptr_ = nullptr;
+    std::atomic<T*> *vptr_ptr_ = nullptr;
 };
 };

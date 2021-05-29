@@ -111,7 +111,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderFile>zealot_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -134,7 +134,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderFile>zealot_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <EnablePREfast>false</EnablePREfast>
@@ -158,7 +158,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PrecompiledHeaderFile>zealot_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -185,7 +185,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PrecompiledHeaderFile>zealot_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AssemblerOutput>All</AssemblerOutput>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -204,37 +204,33 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="zealot_main.cpp" />
-    <ClCompile Include="zealot_predefine.cpp">
+    <ClCompile Include="predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="zealot_test_async.cpp" />
-    <ClCompile Include="zealot_test_bytes.cpp" />
-    <ClCompile Include="zealot_test_cache_chunk.cpp" />
-    <ClCompile Include="zealot_test_copy_boost.cpp" />
-    <ClCompile Include="zealot_test_config.cpp" />
-    <ClCompile Include="zealot_test_fmtstr.cpp" />
-    <ClCompile Include="zealot_test_hash.cpp" />
-    <ClCompile Include="zealot_test_inotify.cpp" />
-    <ClCompile Include="zealot_test_list.cpp" />
-    <ClCompile Include="zealot_test_ring.cpp" />
-    <ClCompile Include="zealot_test_lua.cpp" />
-    <ClCompile Include="zealot_test_mysql_benchmark.cpp" />
-    <ClCompile Include="zealot_test_rwlock.cpp" />
-    <ClCompile Include="zealot_test_os_adapt.cpp" />
-    <ClCompile Include="zealot_test_random.cpp" />
-    <ClCompile Include="zealot_test_rbtree.cpp" />
-    <ClCompile Include="zealot_test_server.cpp" />
-    <ClCompile Include="zealot_test_socket.cpp" />
-    <ClCompile Include="zealot_test_sqlite.cpp" />
-    <ClCompile Include="zealot_test_thread.cpp" />
-    <ClCompile Include="zealot_test_timer_expire.cpp" />
+    <ClCompile Include="test_async.cpp" />
+    <ClCompile Include="test_bytes.cpp" />
+    <ClCompile Include="test_shm_container.cpp" />
+    <ClCompile Include="test_config.cpp" />
+    <ClCompile Include="test_fmtstr.cpp" />
+    <ClCompile Include="test_event_inotify.cpp" />
+    <ClCompile Include="test_ring.cpp" />
+    <ClCompile Include="test_script_lua.cpp" />
+    <ClCompile Include="test_mysql.cpp" />
+    <ClCompile Include="test_lock.cpp" />
+    <ClCompile Include="test_os_adapt.cpp" />
+    <ClCompile Include="test_util.cpp" />
+    <ClCompile Include="test_server.cpp" />
+    <ClCompile Include="test_socket.cpp" />
+    <ClCompile Include="test_sqlite.cpp" />
+    <ClCompile Include="test_thread.cpp" />
+    <ClCompile Include="test_timer_expire.cpp" />
+    <ClCompile Include="test_lookfree.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="zealot_predefine.h" />
-    <ClInclude Include="zealot_test_function.h" />
+    <ClInclude Include="predefine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\bin\test.lua\lua_test_01.lua" />

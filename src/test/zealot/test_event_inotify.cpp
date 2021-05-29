@@ -1,5 +1,4 @@
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
+#include "predefine.h"
 
 #if defined ZCE_OS_WINDOWS
 #define  TEST_PATH_1  "D:\\testdir\\1"

@@ -1,7 +1,6 @@
 //#define _STLP_USE_STATIC_LIB
 
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
+#include "predefine.h"
 
 int main(int argc, char* argv[])
 {

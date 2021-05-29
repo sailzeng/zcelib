@@ -1,5 +1,4 @@
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
+#include "predefine.h"
 
 int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {

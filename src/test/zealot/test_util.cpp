@@ -1,5 +1,5 @@
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
+#include "predefine.h"
+
 #include "zce/util/random.h"
 
 //仅仅用于测试，不实现完全了

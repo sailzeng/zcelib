@@ -1,6 +1,6 @@
-#include "zealot_predefine.h"
+#include "predefine.h"
 
-int test_nonr_thread_mutex(int, char* [])
+int test_nonr_thread_mutex(int, char*[])
 {
     ZCE_Thread_NONR_Mutex  abc;
     abc.lock();

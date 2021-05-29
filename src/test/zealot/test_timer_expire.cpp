@@ -1,4 +1,4 @@
-#include "zealot_predefine.h"
+#include "predefine.h"
 
 static const size_t TEST_TIMER_NUMBER = 10;
 

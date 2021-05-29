@@ -1853,7 +1853,7 @@ class Lua_Base;
 *             tie.reg_class<TA>("TA",false).mem_var(...).mem_var(...)
 *             当然缺点也会有，因为这样的操作没有返回值，所以即使有错误也无法反馈
 * @tparam     class_type 绑定的类的名称
-* @note       具体函数的解释请参考ZCE_Lua_Tie
+* @note       具体函数的解释请参考zce::Lua_Tie
 */
 template <typename class_type>
 class Candy_Tie_Class

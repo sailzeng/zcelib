@@ -1,4 +1,4 @@
-#include "zealot_predefine.h"
+#include "predefine.h"
 
 ZCE_Thread_RW_Mutex light_rw;
 

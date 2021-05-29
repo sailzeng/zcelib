@@ -1,4 +1,4 @@
-﻿#include "zealot_predefine.h"
+﻿#include "predefine.h"
 
 int test_sqlite_handle(int /*argc*/, char* /*argv */[])
 {

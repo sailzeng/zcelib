@@ -1,6 +1,6 @@
-#include "zealot_predefine.h"
+#include "predefine.h"
 
-int test_host_name_fun(int, char* [])
+int test_host_name_fun(int, char*[])
 {
     int ret = 0;
 

@@ -124,8 +124,8 @@ protected:
             {
                 return false;
             }
-            ret = init_fun_(new_ptr);
-            if (ret != true)
+            bool ret = init_fun_(new_ptr);
+            if (!ret)
             {
                 return false;
             }
