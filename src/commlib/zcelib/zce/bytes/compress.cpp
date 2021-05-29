@@ -480,7 +480,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char* compressed_bu
 
             //另外这个地方，用memcpy是不合适的，因为地址可能有交叠
             write_stop = write_pos + comp_count;
-            if (ZCE_LIKELY(ref_offset >= sizeof(uint64_t)))
+            if (ZCE_LIKELY(ref_offset < 8))
             {
                 ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
             }
@@ -503,7 +503,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char* compressed_bu
                     //第一个0没有意义，因为offset不可能为0，
                     //其他数据的意义是，因为希望进行8字节盯得快速拷贝，希望源和相对数据的长度差别大于8字节，
                     //那么就要找到一个在这种情况下重复开始的规律
-                    static const size_t POS_MOVE_REFER[] = { 0,0,2,2,0,3,2,1 };
+                    static const char POS_MOVE_REFER[] = { 0,0,2,2,0,3,2,1 };
                     ref_pos += POS_MOVE_REFER[ref_offset];
                     unsigned char* match_write = (write_pos + 8);
                     ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos, write_stop);

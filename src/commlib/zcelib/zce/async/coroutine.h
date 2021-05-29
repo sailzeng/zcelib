@@ -1,17 +1,18 @@
-#ifndef ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
-#define ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
+#pragma once
 
 #include "zce/async/async_base.h"
 
+namespace zce
+{
 //====================================================================================
 
 /*!
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class ZCE_Async_Coroutine : public zce::Async_Object
+class Async_Coroutine : public zce::Async_Object
 {
-    friend class ZCE_Async_CoroutineMgr;
+    friend class Async_CoroutineMgr;
 
     //
     enum class COROUTINE_STATE
@@ -31,12 +32,12 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd);
+    Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~ZCE_Async_Coroutine();
+    ~Async_Coroutine();
 
 public:
 
@@ -50,7 +51,7 @@ public:
     * @brief      结束销毁函数，在析构前的调用
     * @return     int
     */
-    virtual void finish();
+    virtual void terminate();
 
 protected:
 
@@ -78,9 +79,11 @@ protected:
 
     /*!
     * @brief      继承zce::Async_Object的函数，
-    * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
+    *             协程对象的运行处理
     */
-    virtual void on_run(const void* outer_data, size_t data_len, bool& running) override;
+    virtual void on_run(const void* outer_data,
+                        size_t data_len,
+                        bool& running) override;
 
     /*!
     * @brief      异步对象超时处理
@@ -88,7 +91,7 @@ protected:
     * @param[out] continue_run 异步对象是否继续运行,
     */
     virtual void on_timeout(const zce::Time_Value& now_time,
-                            bool& continue_run) override;
+                            bool& running) override;
 
 protected:
 
@@ -110,7 +113,7 @@ protected:
     coroutine_t   handle_;
 
     ///协程的堆栈大小，
-    size_t           stack_size_ = DEF_STACK_SIZE;
+    size_t        stack_size_ = DEF_STACK_SIZE;
 
     ///协程的状态
     COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
@@ -122,20 +125,19 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class ZCE_Async_CoroutineMgr : public zce::Async_Obj_Mgr
+class Async_CoroutineMgr : public zce::Async_Obj_Mgr
 {
 public:
 
     //
-    ZCE_Async_CoroutineMgr();
-    virtual ~ZCE_Async_CoroutineMgr();
+    Async_CoroutineMgr();
+    virtual ~Async_CoroutineMgr();
 
 protected:
 
     ///默认异步对象池子的初始化的数量
     static const size_t COROUTINE_POOL_INIT_SIZE = 1;
     ///默认池子扩展的时候，扩展的异步对象的数量
-    static const size_t COROUTINE_POOL_EXTEND_SIZE = 16;
+    static const size_t COROUTINE_POOL_EXTEND_SIZE = 32;
 };
-
-#endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
+}

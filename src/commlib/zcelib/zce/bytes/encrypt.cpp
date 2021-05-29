@@ -122,47 +122,47 @@ const uint32_t DES_Base::DES_RHS[16] =
 /*
 * Initial Permutation macro
 */
-#define DES_IP(X,Y,T)                                             \
+#define DES_IP(X,Y,POOL_OBJ)                                             \
     {                                                               \
-        T = ((X >>  4) ^ Y) & 0x0F0F0F0F; Y ^= T; X ^= (T <<  4);   \
-        T = ((X >> 16) ^ Y) & 0x0000FFFF; Y ^= T; X ^= (T << 16);   \
-        T = ((Y >>  2) ^ X) & 0x33333333; X ^= T; Y ^= (T <<  2);   \
-        T = ((Y >>  8) ^ X) & 0x00FF00FF; X ^= T; Y ^= (T <<  8);   \
+        POOL_OBJ = ((X >>  4) ^ Y) & 0x0F0F0F0F; Y ^= POOL_OBJ; X ^= (POOL_OBJ <<  4);   \
+        POOL_OBJ = ((X >> 16) ^ Y) & 0x0000FFFF; Y ^= POOL_OBJ; X ^= (POOL_OBJ << 16);   \
+        POOL_OBJ = ((Y >>  2) ^ X) & 0x33333333; X ^= POOL_OBJ; Y ^= (POOL_OBJ <<  2);   \
+        POOL_OBJ = ((Y >>  8) ^ X) & 0x00FF00FF; X ^= POOL_OBJ; Y ^= (POOL_OBJ <<  8);   \
         Y = ((Y << 1) | (Y >> 31)) & 0xFFFFFFFF;                    \
-        T = (X ^ Y) & 0xAAAAAAAA; Y ^= T; X ^= T;                   \
+        POOL_OBJ = (X ^ Y) & 0xAAAAAAAA; Y ^= POOL_OBJ; X ^= POOL_OBJ;                   \
         X = ((X << 1) | (X >> 31)) & 0xFFFFFFFF;                    \
     }
 
 /*
 * Final Permutation macro
 */
-#define DES_FP(X,Y,T)                                             \
+#define DES_FP(X,Y,POOL_OBJ)                                             \
     {                                                               \
         X = ((X << 31) | (X >> 1)) & 0xFFFFFFFF;                    \
-        T = (X ^ Y) & 0xAAAAAAAA; X ^= T; Y ^= T;                   \
+        POOL_OBJ = (X ^ Y) & 0xAAAAAAAA; X ^= POOL_OBJ; Y ^= POOL_OBJ;                   \
         Y = ((Y << 31) | (Y >> 1)) & 0xFFFFFFFF;                    \
-        T = ((Y >>  8) ^ X) & 0x00FF00FF; X ^= T; Y ^= (T <<  8);   \
-        T = ((Y >>  2) ^ X) & 0x33333333; X ^= T; Y ^= (T <<  2);   \
-        T = ((X >> 16) ^ Y) & 0x0000FFFF; Y ^= T; X ^= (T << 16);   \
-        T = ((X >>  4) ^ Y) & 0x0F0F0F0F; Y ^= T; X ^= (T <<  4);   \
+        POOL_OBJ = ((Y >>  8) ^ X) & 0x00FF00FF; X ^= POOL_OBJ; Y ^= (POOL_OBJ <<  8);   \
+        POOL_OBJ = ((Y >>  2) ^ X) & 0x33333333; X ^= POOL_OBJ; Y ^= (POOL_OBJ <<  2);   \
+        POOL_OBJ = ((X >> 16) ^ Y) & 0x0000FFFF; Y ^= POOL_OBJ; X ^= (POOL_OBJ << 16);   \
+        POOL_OBJ = ((X >>  4) ^ Y) & 0x0F0F0F0F; Y ^= POOL_OBJ; X ^= (POOL_OBJ <<  4);   \
     }
 
 /*
 * DES round macro
 */
-#define DES_ROUND(X,Y,T,sk)                         \
+#define DES_ROUND(X,Y,POOL_OBJ,sk)                         \
     {                                               \
-        T = *sk++ ^ X;                              \
-        Y ^= SB[7][ (T      ) & 0x3F ] ^              \
-             SB[5][ (T >>  8) & 0x3F ] ^              \
-             SB[3][ (T >> 16) & 0x3F ] ^              \
-             SB[1][ (T >> 24) & 0x3F ];               \
+        POOL_OBJ = *sk++ ^ X;                              \
+        Y ^= SB[7][ (POOL_OBJ      ) & 0x3F ] ^              \
+             SB[5][ (POOL_OBJ >>  8) & 0x3F ] ^              \
+             SB[3][ (POOL_OBJ >> 16) & 0x3F ] ^              \
+             SB[1][ (POOL_OBJ >> 24) & 0x3F ];               \
         \
-        T = *sk++ ^ ((X << 28) | (X >> 4));         \
-        Y ^= SB[6][ (T      ) & 0x3F ] ^              \
-             SB[4][ (T >>  8) & 0x3F ] ^              \
-             SB[2][ (T >> 16) & 0x3F ] ^              \
-             SB[0][ (T >> 24) & 0x3F ];               \
+        POOL_OBJ = *sk++ ^ ((X << 28) | (X >> 4));         \
+        Y ^= SB[6][ (POOL_OBJ      ) & 0x3F ] ^              \
+             SB[4][ (POOL_OBJ >>  8) & 0x3F ] ^              \
+             SB[2][ (POOL_OBJ >> 16) & 0x3F ] ^              \
+             SB[0][ (POOL_OBJ >> 24) & 0x3F ];               \
     }
 
 //

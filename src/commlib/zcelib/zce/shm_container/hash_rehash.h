@@ -52,8 +52,7 @@
 *             的东西不出现也许是对的呢
 */
 
-#ifndef ZCE_SHM_HASH_TABLE_REHASH_H_
-#define ZCE_SHM_HASH_TABLE_REHASH_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -932,5 +931,3 @@ protected:
     unsigned int* priority_base_ = nullptr;
 };
 };
-
-#endif //#ifndef ZCE_SHM_HASH_TABLE_REHASH_H_

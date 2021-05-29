@@ -56,7 +56,9 @@ void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
     return;
 }
 
-void FSM_Base::on_run(void* outer_data, bool& continue_run)
+void FSM_Base::on_run(void* outer_data,
+                      size_t /*data_len*/,
+                      bool& continue_run)
 {
     soar::Zerg_Frame* recv_frame = (soar::Zerg_Frame*)outer_data;
 

@@ -13,8 +13,7 @@
 *
 */
 
-#ifndef ZCE_LIB_SHM_ARRAY_H_
-#define ZCE_LIB_SHM_ARRAY_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -245,5 +244,3 @@ protected:
     _value_type* data_base_ = nullptr;
 };
 };
-
-#endif //ZCE_LIB_SHM_ARRAY_H_

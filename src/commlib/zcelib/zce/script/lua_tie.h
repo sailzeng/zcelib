@@ -69,9 +69,7 @@
 #pragma GCC diagnostic ignored "-Wsequence-point"
 #endif
 
-namespace zce
-{
-namespace luatie
+namespace zce::luatie
 {
 ///只读的table的newdindex
 int newindex_onlyread(lua_State* state);
@@ -732,7 +730,7 @@ private:
     template<std::size_t... I>
     static int _invoke_witch_stack(lua_State* state, std::index_sequence<I...>)
     {
-        //new 一个user data，用<T>的大小,同时，同时用placement new 的方式，
+        //new 一个user data，用<POOL_OBJ>的大小,同时，同时用placement new 的方式，
         //（指针式lua_newuserdata分配的）完成构造函数
         new (::lua_newuserdata(state,
              sizeof(val_2_udat<class_type>))) \
@@ -912,10 +910,11 @@ public:
     ///是否只读
     bool                   read_only_;
 };
-};
 };  //namespace
 
 //=======================================================================================================
+namespace zce
+{
 template<typename class_type> class Candy_Tie_Class;
 
 /*!
@@ -924,14 +923,14 @@ template<typename class_type> class Candy_Tie_Class;
 * @note       因为协程和Tie都应该会使用到这部分。所以独立
 *             作为基类
 */
-class ZCE_Lua_Base
+class Lua_Base
 {
 protected:
 
     ///构造函数
-    explicit ZCE_Lua_Base(lua_State* lua_state);
+    explicit Lua_Base(lua_State* lua_state);
     ///析构函数
-    virtual ~ZCE_Lua_Base();
+    virtual ~Lua_Base();
 
 public:
 
@@ -1846,7 +1845,7 @@ protected:
 
 //=======================================================================================================
 
-class ZCE_Lua_Base;
+class Lua_Base;
 
 /*!
 * @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法
@@ -1861,7 +1860,7 @@ class Candy_Tie_Class
 {
 public:
     ///构造函数
-    Candy_Tie_Class(ZCE_Lua_Base* lua_tie,
+    Candy_Tie_Class(Lua_Base* lua_tie,
                     bool read_only) :
         lua_tie_(lua_tie),
         read_only_(read_only)
@@ -1928,10 +1927,10 @@ public:
 
 protected:
     ///Lua的解释器的状态
-    ZCE_Lua_Base* lua_tie_ = nullptr;
+    Lua_Base* lua_tie_ = nullptr;
 
     ///这个类是否是只读的方式
-    bool           read_only_ = false;
+    bool      read_only_ = false;
 };
 
 //=======================================================================================================
@@ -1943,15 +1942,15 @@ protected:
 *             我的代码里面也有真正的thread相关的东东，避免误解，统一使用Lua Thread这样的命名
 *             另外，我比较吃不准的是是直接使用lua_State 还是用现场更好。对外其实差别不大
 */
-class ZCE_Lua_Thread : public ZCE_Lua_Base
+class Lua_Thread : public Lua_Base
 {
 public:
 
-    ZCE_Lua_Thread();
+    Lua_Thread();
 
     ///析构代码，Lua Thread的代码不会自己释放自己，Lua Thread在
     ///堆栈被清空的时候，会被GC回收掉。所以，析构函数什么也不做。
-    ~ZCE_Lua_Thread();
+    ~Lua_Thread();
 
     ///设置线程相关的数据
     void set_thread(lua_State* lua_thread, int thread_stackidx);
@@ -1978,12 +1977,12 @@ protected:
 *             同时还可以使用线程等功能
 * @note
 */
-class ZCE_Lua_Tie : public ZCE_Lua_Base
+class Lua_Tie : public Lua_Base
 {
 public:
 
-    ZCE_Lua_Tie();
-    ~ZCE_Lua_Tie();
+    Lua_Tie();
+    ~Lua_Tie();
 
     /*!
     * @brief      打开lua state
@@ -1997,14 +1996,15 @@ public:
     void close();
 
     ///开启一个新的lua thread
-    int new_thread(ZCE_Lua_Thread* lua_thread);
+    int new_thread(Lua_Thread* lua_thread);
 
     ///关闭，回收一个lua thread
-    void del_thread(ZCE_Lua_Thread* lua_thread);
+    void del_thread(Lua_Thread* lua_thread);
 
     ///恢复一个线程的运行
-    int resume_thread(ZCE_Lua_Thread* lua_thread, int narg);
+    int resume_thread(Lua_Thread* lua_thread, int narg);
 };
+}
 
 //=======================================================================================================
 

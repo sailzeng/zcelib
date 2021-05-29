@@ -17,8 +17,7 @@
 *             应该帮过不少忙，
 *
 */
-#ifndef ZCE_LIB_SHM_CACHE_CHUNK_H_
-#define ZCE_LIB_SHM_CACHE_CHUNK_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -287,5 +286,3 @@ protected:
     char* chunkdata_base_ = nullptr;
 };
 };
-
-#endif //ZCE_LIB_SHM_CACHE_CHUNK_H_

@@ -171,7 +171,7 @@ public:
                    bool init_lock_pool = false);
 
     //
-    void finish();
+    void terminate();
 
     //得到一个SvrInfo
     const soar::SERVICES_INFO* self_svc_info();

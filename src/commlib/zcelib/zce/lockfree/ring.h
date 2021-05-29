@@ -41,7 +41,7 @@ public:
     ///析构函数，释放空间
     ~rings()
     {
-        finalize();
+        terminate();
     }
 
     ///初始化数据区，和构造函数干的事情基本一样，只是多了一步原来有数据就清理掉
@@ -63,7 +63,7 @@ public:
     }
 
     ///结束，完成，销毁
-    void finalize()
+    void terminate()
     {
         clear();
         //清理现场

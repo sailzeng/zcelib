@@ -3,27 +3,29 @@
 #include "zce/os_adapt/error.h"
 #include "zce/logger/logging.h"
 
+namespace zce
+{
 //========================================================================================
 
-ZCE_Async_Coroutine::ZCE_Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd) :
+Async_Coroutine::Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd) :
     zce::Async_Object(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
 }
 
-ZCE_Async_Coroutine::~ZCE_Async_Coroutine()
+Async_Coroutine::~Async_Coroutine()
 {
 }
 
 //初始化协程的对象
-int ZCE_Async_Coroutine::initialize()
+int Async_Coroutine::initialize()
 {
     zce::Async_Object::initialize();
     int ret = 0;
     ret = zce::make_coroutine(&handle_,
                               stack_size_,
                               true,
-                              (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
+                              (ZCE_COROUTINE_3PARA)Async_Coroutine::static_do,
                               (void*)this,
                               NULL,
                               NULL
@@ -37,17 +39,17 @@ int ZCE_Async_Coroutine::initialize()
 }
 
 //清理协程对象
-void ZCE_Async_Coroutine::finish()
+void Async_Coroutine::terminate()
 {
-    zce::Async_Object::finish();
+    zce::Async_Object::terminate();
     zce::delete_coroutine(&handle_);
     return;
 }
 
 //调用协程
-void ZCE_Async_Coroutine::on_run(const void* outer_data, size_t /*data_len*/, bool& continue_run)
+void Async_Coroutine::on_run(const void* outer_data, size_t data_len, bool& continue_run)
 {
-    receive_data(outer_data);
+    receive_data(outer_data, data_len);
     continue_run = false;
 
     yeild_coroutine();
@@ -70,21 +72,21 @@ void ZCE_Async_Coroutine::on_run(const void* outer_data, size_t /*data_len*/, bo
 }
 
 //调用协程
-void ZCE_Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
-                                     bool& continue_run)
+void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
+                                 bool& running)
 {
-    continue_run = false;
+    running = false;
     coroutine_state_ = COROUTINE_STATE::TIMEOUT;
     yeild_coroutine();
 
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
     {
-        continue_run = true;
+        running = true;
     }
     else if (coroutine_state_ == COROUTINE_STATE::EXIT)
     {
-        continue_run = false;
+        running = false;
     }
     else
     {
@@ -93,27 +95,27 @@ void ZCE_Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
 }
 
 //切换回Main，协程还会继续运行
-void ZCE_Async_Coroutine::yeild_main_continue()
+void Async_Coroutine::yeild_main_continue()
 {
     coroutine_state_ = COROUTINE_STATE::CONTINUE;
     zce::yeild_main(&handle_);
 }
 
 //切换回Main,协程退出
-void ZCE_Async_Coroutine::yeild_main_exit()
+void Async_Coroutine::yeild_main_exit()
 {
     coroutine_state_ = COROUTINE_STATE::EXIT;
     zce::yeild_main(&handle_);
 }
 
 //切换回协程，也就是切换到他自己运行
-void ZCE_Async_Coroutine::yeild_coroutine()
+void Async_Coroutine::yeild_coroutine()
 {
     zce::yeild_coroutine(&handle_);
 }
 
 //协程对象的运行函数
-void ZCE_Async_Coroutine::coroutine_do()
+void Async_Coroutine::coroutine_do()
 {
     //如果需要协程
     for (;;)
@@ -127,15 +129,15 @@ void ZCE_Async_Coroutine::coroutine_do()
 }
 
 ///static 函数，用于协程运行函数，调用协程对象的运行函数
-void ZCE_Async_Coroutine::static_do(void* coroutine,
-                                    void*,
-                                    void*)
+void Async_Coroutine::static_do(void* coroutine,
+                                void*,
+                                void*)
 {
-    ((ZCE_Async_Coroutine*)coroutine)->coroutine_do();
+    ((Async_Coroutine*)coroutine)->coroutine_do();
 }
 
 //等待time_out 时间后超时，设置定时器后，切换协程到main
-int ZCE_Async_Coroutine::waitfor_timeout(const zce::Time_Value& time_out)
+int Async_Coroutine::waitfor_timeout(const zce::Time_Value& time_out)
 {
     int ret = 0;
     ret = set_timeout(time_out);
@@ -150,13 +152,14 @@ int ZCE_Async_Coroutine::waitfor_timeout(const zce::Time_Value& time_out)
 //=====================================================================================
 
 //携程主控管理类
-ZCE_Async_CoroutineMgr::ZCE_Async_CoroutineMgr() :
+Async_CoroutineMgr::Async_CoroutineMgr() :
     zce::Async_Obj_Mgr()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;
 }
 
-ZCE_Async_CoroutineMgr::~ZCE_Async_CoroutineMgr()
+Async_CoroutineMgr::~Async_CoroutineMgr()
 {
+}
 }

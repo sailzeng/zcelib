@@ -73,7 +73,7 @@ public:
 
         for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
         {
-            bus_pipe::finalize(bus_pipe_pointer_[i]);
+            bus_pipe::terminate(bus_pipe_pointer_[i]);
 
             bus_head_.size_of_pipe_[i] = 0;
             bus_head_.size_of_room_[i] = 0;

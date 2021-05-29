@@ -363,7 +363,7 @@ size_t Timer_Wheel::dispatch_timer(const zce::Time_Value& now_time,
         }
 
         //判定的精度,直接使用timer_precision_mesc_也应该可以，但因为轮子其实很大，所以 * 10感觉安全一点
-        const unsigned int JUDGE_PRECISION_MESC = 10 * timer_precision_mesc_;
+        const uint64_t JUDGE_PRECISION_MESC = 10 * timer_precision_mesc_;
 
         //
         while (INVALID_TIMER_ID != timer_node_id)

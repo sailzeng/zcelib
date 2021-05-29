@@ -1,11 +1,11 @@
 #ifndef SOARING_LIB_MMAPALLOC_H_
 #define SOARING_LIB_MMAPALLOC_H_
 
-template <typename  T>
-class mmap_allocator //: public allocator<T>
+template <typename  POOL_OBJ>
+class mmap_allocator //: public allocator<POOL_OBJ>
 {
 public:
-    typedef T                 value_type;
+    typedef POOL_OBJ                 value_type;
     typedef value_type* pointer;
     typedef const value_type* const_pointer;
     typedef value_type& reference;
@@ -27,7 +27,7 @@ public:
     {
         listnode* next;
         unsigned char   state;
-        T               data;
+        POOL_OBJ               data;
     };
 
     pointer address(reference x) const
@@ -41,7 +41,7 @@ public:
 
     pointer allocate(size_type n, const_pointer = 0)
     {
-        void* p = std::malloc(n * sizeof(T));
+        void* p = std::malloc(n * sizeof(POOL_OBJ));
 
         if (!p)
         {
@@ -91,7 +91,7 @@ inline bool operator != (const mmap_allocator<_T1>&, const mmap_allocator<_T2>&)
     return true;
 }
 
-template<typename T>
+template<typename POOL_OBJ>
 static
 
 #endif

@@ -35,7 +35,7 @@ ZCE_LogTrace_Basic::ZCE_LogTrace_Basic() :
 ZCE_LogTrace_Basic::~ZCE_LogTrace_Basic()
 {
     //注销
-    finalize();
+    terminate();
 }
 
 //初始化函数,用于时间分割日志的构造
@@ -162,7 +162,7 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
 }
 
 //关闭日志，注意关闭后，必须重新初始化
-void ZCE_LogTrace_Basic::finalize()
+void ZCE_LogTrace_Basic::terminate()
 {
     if (log_file_handle_.is_open())
     {

@@ -440,5 +440,3 @@ public:
     }
 };
 };
-
-#endif //ZCE_LIB_SHARE_MEM_TRIE_TREE_H_

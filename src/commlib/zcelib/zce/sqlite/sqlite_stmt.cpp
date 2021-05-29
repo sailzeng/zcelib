@@ -25,11 +25,11 @@ SQLite_STMT::SQLite_STMT(SQLite_Handler* sqlite3_handler) :
 
 SQLite_STMT::~SQLite_STMT()
 {
-    finalize();
+    terminate();
 }
 
 //销毁SQLITE3的STMT HANDLER，恢复初始化值等。
-int SQLite_STMT::finalize()
+int SQLite_STMT::terminate()
 {
     //销毁SQLITE3的STMT HANDLER
     int ret = ::sqlite3_finalize(prepared_statement_);
@@ -63,7 +63,7 @@ int SQLite_STMT::prepare(const char* sql_string)
 {
     if (prepared_statement_)
     {
-        finalize();
+        terminate();
     }
 
     int ret = ::sqlite3_prepare_v2(sqlite_handler_->get_sqlite_handler(),

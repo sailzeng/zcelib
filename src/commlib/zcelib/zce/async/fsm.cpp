@@ -18,7 +18,9 @@ Async_FSM::~Async_FSM()
 }
 
 //状态机运行的代码，这只是一个参考示例
-void Async_FSM::on_run(const void* outer_data, size_t /*data_len*/, bool& continue_run)
+void Async_FSM::on_run(const void* outer_data,
+                       size_t /*data_len*/,
+                       bool& running)
 {
     ZCE_UNUSED_ARG(outer_data);
     enum
@@ -34,22 +36,22 @@ void Async_FSM::on_run(const void* outer_data, size_t /*data_len*/, bool& contin
     {
     case STAGE_1:
         //Do stage 1 something.init.
-        continue_run = true;
+        running = true;
         set_stage(STAGE_2);
         break;
     case STAGE_2:
         //Do stage 2 something.
-        continue_run = true;
+        running = true;
         set_stage(STAGE_3);
         break;
     case STAGE_3:
         //Do stage 3 something.
-        continue_run = true;
+        running = true;
         set_stage(STAGE_4);
         break;
     case STAGE_4:
         //Do stage 4 something. end.
-        continue_run = false;
+        running = false;
         break;
     default:
         //一个无法识别的状态

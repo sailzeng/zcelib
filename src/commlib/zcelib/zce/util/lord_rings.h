@@ -182,29 +182,28 @@ public:
     ///析构函数，释放空间
     ~lordrings()
     {
-        finalize();
+        terminate();
     }
 
     ///初始化数据区，和构造函数干的事情基本一样，只是多了一步原来有数据就清理掉
     bool initialize(size_t max_len)
     {
-        assert(max_len > 0);
+        assert(max_len > 0 && vptr_ptr_ == nullptr);
 
         lordring_start_ = 0;
         lordring_size_ = 0;
-        lordring_capacity_ = max_len;
 
-        assert(vptr_ptr_ == nullptr);
-        vptr_ptr_ = (_value_type *)::malloc(sizeof(_value_type) * lordring_capacity_);
-        if (vptr_ptr_ == nullptr)
+        auto ret = resize(max_len);
+        if (ret == false)
         {
             return false;
         }
+
         return true;
     }
 
     ///结束，完成，销毁，求问fini是什么的缩写，
-    void finalize()
+    void terminate()
     {
         clear();
         //清理现场
@@ -267,7 +266,6 @@ public:
         {
             return true;
         }
-
         return false;
     }
 
@@ -279,22 +277,27 @@ public:
         size_t deque_size = lordring_size_;
 
         //如果原来的尺寸大于新的尺寸，无法扩展
-        if (deque_size > new_max_size)
+        if (deque_size > new_max_size || new_max_size <= 0)
         {
             return false;
         }
 
         _value_type *new_value_ptr = (_value_type *)::malloc(sizeof(_value_type) * new_max_size);
+        if (new_value_ptr == nullptr)
+        {
+            return false;
+        }
 
-        //如果原来有数据,拷贝到新的数据区
+        //如果原来有数据,
         if (vptr_ptr_ != nullptr)
         {
+            //拷贝到新的数据区,下面这个
             for (size_t i = 0; i < deque_size && i < new_max_size; ++i)
             {
                 new_value_ptr[i] = vptr_ptr_[(lordring_start_ + i) % lordring_capacity_];
                 vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~_value_type();
             }
-
+            //释放原有的数据空间
             ::free(vptr_ptr_);
             vptr_ptr_ = nullptr;
         }
@@ -332,7 +335,6 @@ public:
         }
 
         //直接放在队尾
-
         vptr_ptr_[(lordring_start_ + lordring_size_) % lordring_capacity_] = value_data;
         ++lordring_size_;
 

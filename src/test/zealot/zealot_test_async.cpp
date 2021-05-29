@@ -168,11 +168,11 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-class Coroutine_1 : public ZCE_Async_Coroutine
+class Coroutine_1 : public Async_Coroutine
 {
 public:
     Coroutine_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
-        ZCE_Async_Coroutine(async_mgr, create_cmd)
+        Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
@@ -194,11 +194,11 @@ public:
     }
 };
 
-class Coroutine_2 : public ZCE_Async_Coroutine
+class Coroutine_2 : public Async_Coroutine
 {
 public:
     Coroutine_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
-        ZCE_Async_Coroutine(async_mgr, create_cmd)
+        Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
@@ -228,7 +228,7 @@ int test_async_coroutine(int  /*argc*/, char* /*argv*/[])
     //const unsigned int CMD_3 = 10003;
 
     zce::Timer_Queue* time_queue = new zce::Timer_Wheel();
-    ZCE_Async_CoroutineMgr* mgr = new ZCE_Async_CoroutineMgr();
+    Async_CoroutineMgr* mgr = new Async_CoroutineMgr();
     mgr->initialize(time_queue, 100, 2000);
     mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));
     mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));

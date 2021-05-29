@@ -15,8 +15,7 @@
 *
 */
 
-#ifndef ZCE_SHM_LRU_HASH_TABLE_H_
-#define ZCE_SHM_LRU_HASH_TABLE_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -1251,5 +1250,3 @@ public:
     }
 };
 };
-
-#endif //#ifndef ZCE_SHM_LRU_HASH_TABLE_H_

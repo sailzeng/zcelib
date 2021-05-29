@@ -55,7 +55,7 @@ public:
     * @brief      结束销毁函数，在析构前的调用，其实就是对应上面
     * @return     int
     */
-    virtual void finish();
+    virtual void terminate();
 
     /*!
     * @brief      克隆自己
@@ -78,9 +78,11 @@ public:
 
     /*!
     * @brief      异步对象运行
-    * @param[out] running 异步对象是否继续运行，如果不继续(返回false)，
+    * @param[in]  recv_data 收到的数据
+    * @param[in]  data_len  数据长度
+    * @param[out] running   异步对象是否继续运行，如果不继续(返回false)，
     */
-    virtual void on_run(const void* outer_data,
+    virtual void on_run(const void* recv_data,
                         size_t data_len,
                         bool& running) = 0;
 
@@ -105,11 +107,13 @@ public:
     void set_errorno(int error_no);
 
     /*!
-    * @brief      保存接收到外部数据的指针，
+    * @brief      收到数据，保存接收到外部数据的指针，
     */
-    inline void receive_data(const void* recv_data)
+    virtual void receive_data(const void* recv_data,
+                              size_t data_len)
     {
         receive_data_ = recv_data;
+        recv_data_len_ = data_len;
     }
 
 protected:
@@ -150,8 +154,10 @@ protected:
     ///日志跟踪的优先级
     zce::LOG_PRIORITY trace_log_pri_ = RS_INFO;
 
-    ///传递的外部数据，
+    ///收到的外部数据，
     const void* receive_data_ = NULL;
+    ///收到的外部长度
+    size_t recv_data_len_ = 0;
 };
 
 //=======================================================================================
@@ -221,7 +227,7 @@ public:
     * @brief      结束所有的协程处理，回收释放资源，
     *             打印统计信息，检查是否有泄漏等
     */
-    void finish();
+    void terminate();
 
     /*!
     * @brief      注册一类协程，其用reg_cmd对应，
@@ -244,13 +250,13 @@ public:
     * @brief      创建一个异步对象
     * @return     int
     * @param      cmd         创建的命令，如果是注册命令，会创建一个异步对象进行处理
-    * @param      outer_data  外部数据，带给异步对象，给他处理
+    * @param      recv_data  外部数据，带给异步对象，给他处理
     * @param      data_len    外部数据的长度
     * @param      id          返回参数，内部创建异步对象的ID，
     * @param      running     返回后，异步对象是否在继续运行
     */
     int create_asyncobj(uint32_t cmd,
-                        void* outer_data,
+                        void* recv_data,
                         size_t data_len,
                         uint32_t& id,
                         bool& running);
@@ -258,12 +264,12 @@ public:
     /*!
     * @brief      激活某个已经运行的异步对象,
     * @return     int
-    * @param      outer_data
+    * @param      recv_data
     * @param      data_len
     * @param      running     返回后，异步对象是否在继续运行
     */
     int active_asyncobj(uint32_t id,
-                        void* outer_data,
+                        void* recv_data,
                         size_t data_len,
                         bool& continue_running);
 
@@ -311,7 +317,7 @@ protected:
                       const void* act);
 
     // 得到负载因子
-    void load_foctor(uint32_t& load_cur, uint32_t& load_max);
+    void load_foctor(size_t& load_cur, size_t& load_max);
 
 protected:
     ///默认的异步对象类型数量

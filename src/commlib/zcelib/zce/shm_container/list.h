@@ -36,8 +36,7 @@
 * 再对暗念俺女（男）程序员说明，我已经结婚。
 */
 
-#ifndef ZCE_LIB_SHARE_MEM_LIST_H_
-#define ZCE_LIB_SHARE_MEM_LIST_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -606,5 +605,3 @@ protected:
     _shm_list_index* usenode_ = nullptr;
 };
 };
-
-#endif //ZCE_LIB_SHARE_MEM_LIST_H_

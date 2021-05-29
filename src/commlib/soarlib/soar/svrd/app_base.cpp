@@ -325,9 +325,9 @@ int Svrd_Appliction::init_log()
 {
     int ret = 0;
 
-    ZCE_LOG(RS_DEBUG, "log instance finalize .");
+    ZCE_LOG(RS_DEBUG, "log instance initialize .");
     //关闭原来的日志输出方法
-    ZCE_Trace_LogMsg::instance()->finalize();
+    ZCE_Trace_LogMsg::instance()->terminate();
 
     // 初始化日志
     ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_output_,

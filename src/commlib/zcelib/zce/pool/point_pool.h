@@ -4,8 +4,8 @@
 
 namespace zce
 {
-template<typename T>
-class point_pool :public zce::lordrings<T*>
+template<typename POOL_OBJ>
+class point_pool :public zce::lordrings<POOL_OBJ*>
 {
 };
 }

@@ -30,7 +30,7 @@ int Async_Object::initialize()
 }
 
 //结束销毁函数，在析构前的调用
-void Async_Object::finish()
+void Async_Object::terminate()
 {
     return;
 }
@@ -108,7 +108,7 @@ int Async_Obj_Mgr::initialize(Timer_Queue* tq,
 }
 
 //
-void Async_Obj_Mgr::finish()
+void Async_Obj_Mgr::terminate()
 {
     RUNNING_ASYNOBJ_MAP::iterator run_iter = running_aysncobj_.begin();
     RUNNING_ASYNOBJ_MAP::iterator run_end = running_aysncobj_.end();
@@ -159,7 +159,7 @@ void Async_Obj_Mgr::finish()
         {
             Async_Object* corout_base = NULL;
             pool_reg.aysncobj_pool_.pop_front(corout_base);
-            corout_base->finish();
+            corout_base->terminate();
             delete corout_base;
             corout_base = NULL;
         }
@@ -293,7 +293,7 @@ int Async_Obj_Mgr::free_to_pool(Async_Object* free_crtn)
 
 //创建异步对象
 int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
-                                   void* outer_data,
+                                   void* recv_data,
                                    size_t data_len,
                                    uint32_t& id,
                                    bool& continue_running)
@@ -320,7 +320,7 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
     crt_async->on_init();
 
     //启动丫的
-    crt_async->on_run(outer_data, data_len, continue_running);
+    crt_async->on_run(recv_data, data_len, continue_running);
 
     //如果运行一下就退出了,直接结束回收
     if (continue_running == false)
@@ -367,13 +367,13 @@ int Async_Obj_Mgr::find_running_asyncobj(uint32_t id,
 
 //激活某个已经运行的异步对象
 int Async_Obj_Mgr::active_asyncobj(uint32_t id,
-                                   void* outer_data,
+                                   void* recv_data,
                                    size_t data_len,
-                                   bool& continue_running)
+                                   bool& running)
 {
     int ret = 0;
     Async_Object* async_obj = NULL;
-    continue_running = false;
+    running = false;
     ret = find_running_asyncobj(id, async_obj);
     if (ret != 0)
     {
@@ -396,11 +396,11 @@ int Async_Obj_Mgr::active_asyncobj(uint32_t id,
     //激活同时取消定时器
     async_obj->cancel_timeout();
 
-    async_obj->on_run(outer_data, data_len, continue_running);
+    async_obj->on_run(recv_data, data_len, running);
     ++async_rec.active_num_;
 
     //如果不继续运行了，
-    if (continue_running == false)
+    if (running == false)
     {
         ++async_rec.end_num_;
         async_obj->on_end();
@@ -409,7 +409,7 @@ int Async_Obj_Mgr::active_asyncobj(uint32_t id,
     ZCE_LOG(RS_DEBUG, "[ZCELIB] Async object active. command [%u] create, id [%u],and continue run [%s].",
             async_obj->create_cmd_,
             id,
-            continue_running ? "TRUE" : "FALSE");
+            running ? "TRUE" : "FALSE");
 
     return 0;
 }
@@ -451,7 +451,7 @@ int Async_Obj_Mgr::timer_timeout(const zce::Time_Value& now_time,
 }
 
 //去的当前的负载情况
-void Async_Obj_Mgr::load_foctor(uint32_t& load_cur, uint32_t& load_max)
+void Async_Obj_Mgr::load_foctor(size_t& load_cur, size_t& load_max)
 {
     load_cur = running_aysncobj_.size();
     if (max_load_async_ < load_cur)

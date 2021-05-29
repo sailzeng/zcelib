@@ -202,7 +202,7 @@ public:
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
     */
-    void finalize();
+    void terminate();
 
     /*!
     @brief      打开/关闭日志输出开关

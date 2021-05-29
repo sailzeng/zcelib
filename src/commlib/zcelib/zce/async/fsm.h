@@ -50,7 +50,7 @@ protected:
     */
     virtual void on_run(const void* outer_data,
                         size_t data_len,
-                        bool& continue_run) = 0;
+                        bool& running) = 0;
 
     /*!
     * @brief      状态机对象超时处理，默认continue_run返回false，让系统回收，
@@ -58,7 +58,7 @@ protected:
     * @param[out] continue_run 异步对象是否继续运行,
     */
     virtual void on_timeout(const zce::Time_Value& now_time,
-                            bool& continue_run) override;
+                            bool& running) override;
 
     /*!
     * @brief      设置的状态机阶段，

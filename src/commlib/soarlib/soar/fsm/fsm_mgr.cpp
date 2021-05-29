@@ -73,7 +73,7 @@ int FSM_Manager::initialize(zce::Timer_Queue* timer_queue,
 }
 
 //
-void FSM_Manager::finish()
+void FSM_Manager::terminate()
 {
     //销毁内存分配器
     if (inner_frame_mallocor_)
@@ -103,7 +103,7 @@ void FSM_Manager::finish()
         fake_recv_buffer_ = NULL;
     }
 
-    Async_FSMMgr::finish();
+    Async_FSMMgr::terminate();
 
     ZCE_TRACE_FILELINE(RS_INFO);
 }

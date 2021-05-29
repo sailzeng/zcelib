@@ -14,9 +14,7 @@
 * @note       不保证线程安全，上层自己来保证
 *
 */
-
-#ifndef ZCE_LIB_SHM_RB_TREE_H_
-#define ZCE_LIB_SHM_RB_TREE_H_
+#pragma once
 
 #include "zce/shm_container/common.h"
 
@@ -1219,5 +1217,3 @@ public:
     }
 };
 };
-
-#endif //ZCE_LIB_SHM_RB_TREE_H_

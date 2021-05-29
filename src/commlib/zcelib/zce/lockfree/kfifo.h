@@ -241,7 +241,7 @@ public:
     @brief      销毁初始化 initialize 得到的指针
     @param      deque_ptr  销毁的指针，
     */
-    static void finalize(shm_kfifo* kfifo_ptr)
+    static void terminate(shm_kfifo* kfifo_ptr)
     {
         delete kfifo_ptr;
         kfifo_ptr = nullptr;

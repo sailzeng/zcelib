@@ -105,7 +105,7 @@ public:
     * @brief      销毁SQLITE3的STMT HANDLER,恢复初始化值等。
     * @return     int
     */
-    int finalize();
+    int terminate();
 
     /*!
     * @brief      执行一次stmt SQL，，如果执行成功，返回0，

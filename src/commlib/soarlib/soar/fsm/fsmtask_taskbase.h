@@ -47,10 +47,10 @@ protected:
 protected:
 
     //将数据放入管理器，
-    template <class T>
+    template <class POOL_OBJ>
     int pushbak_mgr_recvqueue(const soar::Zerg_Frame* recv_frame,
                               uint32_t cmd,
-                              const T& msg,
+                              const POOL_OBJ& msg,
                               uint32_t option
     )
     {
@@ -95,9 +95,9 @@ protected:
     }
 
     //将数据放入管理器，
-    template <class T>
+    template <class POOL_OBJ>
     int pushbak_mgr_recvqueue(uint32_t cmd,
-                              const T& msg,
+                              const POOL_OBJ& msg,
                               uint32_t backfill_fsm_id,
                               uint32_t user_id = 0,
                               uint32_t option = 0
