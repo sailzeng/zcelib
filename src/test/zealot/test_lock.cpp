@@ -9,7 +9,7 @@ int g_daomei_foo = 0;
 
 size_t TEST_NUMBER = 10000000;
 
-class Task_Read : public ZCE_Thread_Task
+class Task_Read : public zce::Thread_Task
 {
 public:
 
@@ -33,7 +33,7 @@ protected:
     size_t number_prc_ = 0;
 };
 
-class Task_Write : public ZCE_Thread_Task
+class Task_Write : public zce::Thread_Task
 {
 public:
     Task_Write()
@@ -86,7 +86,7 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
 
 ZCE_Thread_RW_Mutex rw_lock;
 
-class Task_Read_1 : public ZCE_Thread_Task
+class Task_Read_1 : public zce::Thread_Task
 {
 public:
 
@@ -110,7 +110,7 @@ protected:
     size_t number_prc_ = 0;
 };
 
-class Task_Write_1 : public ZCE_Thread_Task
+class Task_Write_1 : public zce::Thread_Task
 {
 public:
     Task_Write_1()

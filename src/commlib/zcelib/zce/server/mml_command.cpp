@@ -103,15 +103,15 @@ int MML_Command::parse_mml_cnd_string(const char* mml_string,
 {
     switch (pattern)
     {
-    case MML_Command::MML_STRING_PATTERN::PATTERN_1:
-        parse_mml_cnd_string1(mml_string);
-        break;
-    case MML_Command::MML_STRING_PATTERN::PATTERN_2:
-        parse_mml_cnd_string2(mml_string);
-        break;
-    default:
-        ZCE_ASSERT_ALL(false);
-        return -1;
+        case MML_Command::MML_STRING_PATTERN::PATTERN_1:
+            parse_mml_cnd_string1(mml_string);
+            break;
+        case MML_Command::MML_STRING_PATTERN::PATTERN_2:
+            parse_mml_cnd_string2(mml_string);
+            break;
+        default:
+            ZCE_ASSERT_ALL(false);
+            return -1;
     }
     return 0;
 }

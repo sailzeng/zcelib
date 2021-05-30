@@ -28,7 +28,7 @@ namespace zce
 //
 typedef zce::lockfree::shm_kfifo<uint32_t> bus_pipe;
 //
-typedef zce::lockfree::shm_kfifo<uint32_t>::kfifo_node bus_node;
+typedef zce::lockfree::shm_kfifo<uint32_t>::node bus_node;
 
 //MMAP的管道，你要初始化几条就初始化几条
 template<size_t MAX_PIPE>

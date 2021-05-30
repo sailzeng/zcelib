@@ -20,7 +20,7 @@
     <ClCompile Include="zealot_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_ring.cpp">
+    <ClCompile Include="test_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_shm_container.cpp">

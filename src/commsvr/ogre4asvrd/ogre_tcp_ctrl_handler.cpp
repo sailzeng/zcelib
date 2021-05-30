@@ -757,7 +757,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
         //日志在函数中有输出,这儿略.
         ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
             Soar_MMAP_BusPipe::RECV_PIPE_ID,
-            reinterpret_cast<const zce::lockfree::kfifo_node*>(inner_frame));
+            reinterpret_cast<const zce::lockfree::node*>(inner_frame));
 
         if (ret != 0)
         {
@@ -1075,7 +1075,7 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
         Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::kfifo_node*>(rcv_buffer_));
+        reinterpret_cast<zce::lockfree::node*>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,
     if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD)

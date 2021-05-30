@@ -9,11 +9,6 @@ namespace zce
 //SOCKET的基类
 class Socket_Base
 {
-protected:
-
-    //SOCKET句柄，LINUX下是int，文件句柄，WINDOWS是一个SOCKET类型，其实就是一个WINDOWS句柄，也就是指针
-    ZCE_SOCKET     socket_handle_;
-
     //Socket_Base不会提供给外部用，所以不准用
 protected:
 
@@ -46,14 +41,13 @@ public:
 
     //Open SOCK句柄，不BIND本地地址的方式
     int open(int type,
-             int protocol_family = AF_INET,
+             int family = AF_INET,
              int protocol = 0,
              bool reuse_addr = true);
 
     //Open SOCK句柄，BIND本地地址的方式
     int open(int type,
              const Sockaddr_Base* local_addr,
-             int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
 
@@ -113,5 +107,10 @@ public:
     ssize_t send(const void* buf,
                  size_t len,
                  int flags = 0) const;
+
+protected:
+
+    //SOCKET句柄，LINUX下是int，文件句柄，WINDOWS是一个SOCKET类型，其实就是一个WINDOWS句柄，也就是指针
+    ZCE_SOCKET     socket_handle_;
 };
 }

@@ -49,46 +49,46 @@ Interface_WH_Proxy* Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
     switch (proxytype)
     {
         // 回显服务器
-    case PROXY_TYPE_ECHO:
-    {
-        tmpintface = new Echo_Proxy_Process();
-        break;
-    }
+        case PROXY_TYPE_ECHO:
+        {
+            tmpintface = new Echo_Proxy_Process();
+            break;
+        }
 
-    // 透转转发的方式
-    case PROXY_TYPE_TRANSMIT:
-    {
-        tmpintface = new Transmit_Proxy();
-        break;
-    }
+        // 透转转发的方式
+        case PROXY_TYPE_TRANSMIT:
+        {
+            tmpintface = new Transmit_Proxy();
+            break;
+        }
 
-    // 对数据进行拷贝分发广播
-    case PROXY_TYPE_BROADCAST:
-    {
-        tmpintface = new Broadcast_ProxyProcess();
-        break;
-    }
+        // 对数据进行拷贝分发广播
+        case PROXY_TYPE_BROADCAST:
+        {
+            tmpintface = new Broadcast_ProxyProcess();
+            break;
+        }
 
-    // DBPROXY的模式，采用UIN取模的方式的到服务器的ID
-    case PROXY_TYPE_MODULO_UID:
-    {
-        tmpintface = new Modulo_ProxyProcess(Modulo_ProxyProcess::MODULO_UID);
-        break;
-    }
+        // DBPROXY的模式，采用UIN取模的方式的到服务器的ID
+        case PROXY_TYPE_MODULO_UID:
+        {
+            tmpintface = new Modulo_ProxyProcess(Modulo_ProxyProcess::MODULO_UID);
+            break;
+        }
 
-    // DBPROXY的模式，采用APPID和UIN的方式的到服务器的ID
-    case PROXY_TYPE_MODULO_SENDSVCID:
-    {
-        tmpintface = new Modulo_ProxyProcess(Modulo_ProxyProcess::MODULO_SENDSVC_ID);
-        break;
-    }
+        // DBPROXY的模式，采用APPID和UIN的方式的到服务器的ID
+        case PROXY_TYPE_MODULO_SENDSVCID:
+        {
+            tmpintface = new Modulo_ProxyProcess(Modulo_ProxyProcess::MODULO_SENDSVC_ID);
+            break;
+        }
 
-    default:
-    {
-        // 错误
-        ZCE_LOG(RS_ERROR, "Error Proxy Type define. Please check you code. ");
-        return NULL;
-    }
+        default:
+        {
+            // 错误
+            ZCE_LOG(RS_ERROR, "Error Proxy Type define. Please check you code. ");
+            return NULL;
+        }
     }
 
     return tmpintface;

@@ -18,7 +18,7 @@ ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 
 ZCE_Thread_Light_Mutex  io_mutex;
 
-class Task_Producer : public ZCE_Thread_Task
+class Task_Producer : public zce::Thread_Task
 {
 public:
     Task_Producer()
@@ -45,7 +45,7 @@ protected:
     size_t number_prc_;
 };
 
-class Task_Consumer : public ZCE_Thread_Task
+class Task_Consumer : public zce::Thread_Task
 {
 public:
     Task_Consumer()

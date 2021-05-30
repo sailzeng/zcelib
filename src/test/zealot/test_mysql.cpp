@@ -275,35 +275,35 @@ int test_sql_main(int argc, char* argv[])
     {
         switch (c)
         {
-        case 'e':
-            bexecute = false;
-            break;
-        case 'd':
-            benchmarktype = BENCHMARK_DELETE;
-            break;
-        case 'i':
-            benchmarktype = BENCHMARK_INSERT;
-            break;
-        case 'c':
-            benchmarktype = BENCHMARK_CACHE;
-            break;
-        case 's':
-            benchmarktype = BENCHMARK_SELECT;
-            break;
-        case 'n':
-            numprocess = atoi(get_opt.optarg);
-            break;
-        case 'r':
-            numruncache = atoi(get_opt.optarg);
-            break;
-        case 'p':
-            num_sleep = atoi(get_opt.optarg);
-            break;
-        case 't':
-            table_id = atoi(get_opt.optarg);
-            break;
-        default:
-            break;
+            case 'e':
+                bexecute = false;
+                break;
+            case 'd':
+                benchmarktype = BENCHMARK_DELETE;
+                break;
+            case 'i':
+                benchmarktype = BENCHMARK_INSERT;
+                break;
+            case 'c':
+                benchmarktype = BENCHMARK_CACHE;
+                break;
+            case 's':
+                benchmarktype = BENCHMARK_SELECT;
+                break;
+            case 'n':
+                numprocess = atoi(get_opt.optarg);
+                break;
+            case 'r':
+                numruncache = atoi(get_opt.optarg);
+                break;
+            case 'p':
+                num_sleep = atoi(get_opt.optarg);
+                break;
+            case 't':
+                table_id = atoi(get_opt.optarg);
+                break;
+            default:
+                break;
         }
     }
 
@@ -314,48 +314,48 @@ int test_sql_main(int argc, char* argv[])
 
     switch (benchmarktype)
     {
-    case BENCHMARK_DELETE:
-        for (int i = 0; i < numprocess; i++)
-        {
-            int ret = benchmark_delete_record(table_id, i, bexecute, szErr);
-            if (ret > 0)
+        case BENCHMARK_DELETE:
+            for (int i = 0; i < numprocess; i++)
             {
-                return ret;
+                int ret = benchmark_delete_record(table_id, i, bexecute, szErr);
+                if (ret > 0)
+                {
+                    return ret;
+                }
             }
-        }
-        break;
-    case BENCHMARK_INSERT:
-        for (int i = 0; i < numprocess; i++)
-        {
-            int ret = benchmark_insert_record(table_id, i, bexecute, szErr);
-            if (ret > 0)
+            break;
+        case BENCHMARK_INSERT:
+            for (int i = 0; i < numprocess; i++)
             {
-                return ret;
+                int ret = benchmark_insert_record(table_id, i, bexecute, szErr);
+                if (ret > 0)
+                {
+                    return ret;
+                }
             }
-        }
-        break;
-    case BENCHMARK_SELECT:
-        for (int i = 0; i < numprocess; i++)
-        {
-            int ret = benchmark_select_record(table_id, i, bexecute, szErr);
-            if (ret > 0)
+            break;
+        case BENCHMARK_SELECT:
+            for (int i = 0; i < numprocess; i++)
             {
-                return ret;
+                int ret = benchmark_select_record(table_id, i, bexecute, szErr);
+                if (ret > 0)
+                {
+                    return ret;
+                }
             }
-        }
-        break;
-    case BENCHMARK_CACHE:
-        for (int i = 0; i < numprocess; i++)
-        {
-            int ret = benchmark_cache_record(table_id, i, numruncache, bexecute, szErr);
-            if (ret > 0)
+            break;
+        case BENCHMARK_CACHE:
+            for (int i = 0; i < numprocess; i++)
             {
-                return ret;
+                int ret = benchmark_cache_record(table_id, i, numruncache, bexecute, szErr);
+                if (ret > 0)
+                {
+                    return ret;
+                }
             }
-        }
-        break;
-    default:
-        break;
+            break;
+        default:
+            break;
     }
 
     zce::sleep(num_sleep);

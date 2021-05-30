@@ -83,6 +83,8 @@ struct is_random_access_iterator
 };
 //----------------------------------------------------------------------------
 
+//关注一下 std::invoke 函数std::result_of, std::invoke_result
+
 template<typename fun_t, typename para_tuple, std::size_t... I>
 auto g_func_invoke_impl(fun_t& f, const para_tuple& a, std::index_sequence<I...>)
 {

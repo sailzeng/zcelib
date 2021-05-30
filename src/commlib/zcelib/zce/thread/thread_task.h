@@ -16,24 +16,25 @@
 *
 */
 
-#ifndef ZCE_LIB_THREAD_TASK_H_
-#define ZCE_LIB_THREAD_TASK_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 
+namespace zce
+{
 /*!
 * @brief      用自己封装的pthread函数构建的TASK类型，每个线程一个对象
 *
 * @note       对象不可拷贝复制，
 */
-class ZCE_Thread_Task : public zce::NON_Copyable
+class Thread_Task : public zce::NON_Copyable
 {
 public:
 
     ///构造函数
-    ZCE_Thread_Task();
+    Thread_Task();
     ///析构函数
-    virtual ~ZCE_Thread_Task();
+    virtual ~Thread_Task();
 
 public:
 
@@ -97,5 +98,4 @@ protected:
     ///线程的返回值
     int                     thread_return_;
 };
-
-#endif //#ifndef ZCE_LIB_THREAD_TASK_H_
+}

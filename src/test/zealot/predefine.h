@@ -95,6 +95,9 @@
 #include <zce/util/buffer.h>
 #include <zce/pool/object_pool.h>
 
+#include <thread>
+#include <mutex>
+
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)
@@ -228,7 +231,8 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[]);
 int test_sqlite_configtable(int /*argc*/, char* /*argv */[]);
 
 int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[]);
-int test_lockfree_ring(int /*argc*/, char* /*argv*/[]);
+int test_lockfree_ring1(int /*argc*/, char* /*argv*/[]);
+int test_lockfree_ring2(int /*argc*/, char* /*argv*/[]);
 int test_pool(int /*argc*/, char* /*argv*/[]);
 #endif //
 

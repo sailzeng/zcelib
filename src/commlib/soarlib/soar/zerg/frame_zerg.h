@@ -208,13 +208,12 @@ public:
 class  Zerg_Frame : public Zerg_Head
 {
 protected:
-    //构造函数，禁止大家都可以用的.
+    //构造函数，复制函数，禁止大家都可以用的.
     Zerg_Frame() = delete;
+    Zerg_Frame& operator = (const Zerg_Frame& other) = delete;
     //析构函数
     ~Zerg_Frame() = delete;
     //Assign =运算符号
-    Zerg_Frame& operator = (const Zerg_Frame& other) = delete;
-
 public:
 
     //是否事通信服务器处理的命理
@@ -297,7 +296,7 @@ public:
 
     //---------------------------------------------------------------------------
     //包头都尺寸,48
-    static const size_t LEN_OF_APPFRAME_HEAD = sizeof(Zerg_Head);
+    static const size_t LEN_OF_APPFRAME_HEAD = 48;
 
     //FRAME的一些长度参数,默认的最大长度是64K
     //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
@@ -306,14 +305,10 @@ public:
     //FRAME的最大长度,根据各个地方的长度而得到
     static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD;
 
+public:
     ///frame_appdata_ 是一个变长度的字符串序列标示,
-#ifdef ZCE_OS_WINDOWS
-#pragma warning ( disable : 4200)
-#endif
-    char                 frame_appdata_[];
-#ifdef ZCE_OS_WINDOWS
-#pragma warning ( default : 4200)
-#endif
+    char                 frame_appdata_[1];
+
 };
 
 #pragma pack ()

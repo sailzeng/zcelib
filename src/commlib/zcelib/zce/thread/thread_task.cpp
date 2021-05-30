@@ -2,24 +2,26 @@
 #include "zce/os_adapt/thread.h"
 #include "zce/thread/thread_task.h"
 
+namespace zce
+{
 /************************************************************************************************************
-Class           : ZCE_Thread_Task
+Class           : Thread_Task
 ************************************************************************************************************/
-ZCE_Thread_Task::ZCE_Thread_Task() :
+Thread_Task::Thread_Task() :
     group_id_(INVALID_GROUP_ID),
     thread_id_(0),
     thread_return_(0)
 {
 }
 
-ZCE_Thread_Task::~ZCE_Thread_Task()
+Thread_Task::~Thread_Task()
 {
 }
 
 //
-void ZCE_Thread_Task::svc_run(void* args)
+void Thread_Task::svc_run(void* args)
 {
-    ZCE_Thread_Task* t = (ZCE_Thread_Task*)args;
+    Thread_Task* t = (Thread_Task*)args;
 
     // Call the Task's svc() hook method.
     int const svc_status = t->svc();
@@ -32,15 +34,15 @@ void ZCE_Thread_Task::svc_run(void* args)
 }
 
 //创建一个线程
-int ZCE_Thread_Task::activate(int group_id,
-                              ZCE_THREAD_ID* threadid,
-                              int detachstate,
-                              size_t stacksize,
-                              int threadpriority)
+int Thread_Task::activate(int group_id,
+                          ZCE_THREAD_ID* threadid,
+                          int detachstate,
+                          size_t stacksize,
+                          int threadpriority)
 {
     int ret = 0;
     //创建线程
-    ret = zce::pthread_createex(ZCE_Thread_Task::svc_run,
+    ret = zce::pthread_createex(Thread_Task::svc_run,
                                 static_cast<void*> (this),
                                 threadid,
                                 detachstate,
@@ -59,42 +61,43 @@ int ZCE_Thread_Task::activate(int group_id,
 }
 
 //线程结束后的返回值int 类型
-int ZCE_Thread_Task::thread_return()
+int Thread_Task::thread_return()
 {
     return thread_return_;
 }
 
 //得到group id
-int ZCE_Thread_Task::group_id() const
+int Thread_Task::group_id() const
 {
     return group_id_;
 }
 
-ZCE_THREAD_ID ZCE_Thread_Task::thread_id() const
+ZCE_THREAD_ID Thread_Task::thread_id() const
 {
     return thread_id_;
 }
 
 //脱离绑定关系
-int ZCE_Thread_Task::detach()
+int Thread_Task::detach()
 {
     return zce::pthread_detach(thread_id_);
 }
 
 //
-int ZCE_Thread_Task::wait_join()
+int Thread_Task::wait_join()
 {
     return zce::pthread_join(thread_id_);
 }
 
 //需要继承的处理的函数,理论上重载这一个函数就OK
-int ZCE_Thread_Task::svc(void)
+int Thread_Task::svc(void)
 {
     return 0;
 }
 
 //让出CPU时间
-int ZCE_Thread_Task::yield()
+int Thread_Task::yield()
 {
     return zce::pthread_yield();
+}
 }

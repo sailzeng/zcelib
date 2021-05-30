@@ -321,14 +321,14 @@ protected:
 
 protected:
     ///默认的异步对象类型数量
-    static const size_t DEFUALT_ASYNC_TYPE_NUM = 2048;
+    static constexpr size_t DEFUALT_ASYNC_TYPE_NUM = 2048;
     ///默认同时运行的一部分对象的数量
-    static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 256 * 1024;
+    static constexpr size_t DEFUALT_RUNNIG_ASYNC_SIZE = 256 * 1024;
 public:
     ///无效的事务ID
-    static const uint32_t INVALID_IDENTITY = 0;
+    static constexpr uint32_t INVALID_IDENTITY = 0;
     ///无效的的命令
-    static const uint32_t INVALID_COMMAND = 0;
+    static constexpr uint32_t INVALID_COMMAND = 0;
 
 protected:
 

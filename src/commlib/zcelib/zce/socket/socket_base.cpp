@@ -42,87 +42,36 @@ int Socket_Base::open(int type,
                       int protocol,
                       bool reuse_addr)
 {
-    int ret = 0;
-
     //防止你干坏事，重复调用，造成资源无法释放
     assert(socket_handle_ == ZCE_INVALID_SOCKET);
-
-    socket_handle_ = socket(family, type, protocol);
-    if (ZCE_INVALID_SOCKET == socket_handle_)
-    {
-        int last_err = last_error();
-        ZCE_LOG(RS_ERROR, "socket return fail last error %d|%s.",
-                last_err,
-                strerror(last_err));
-        return -1;
-    }
-
-    //如果要REUSE这个地址
-    if (reuse_addr)
-    {
-        int one = 1;
-        ret = zce::setsockopt(socket_handle_,
-                              SOL_SOCKET,
-                              SO_REUSEADDR,
-                              &one,
-                              sizeof(int));
-
-        if (ret != 0)
-        {
-            zce::closesocket(socket_handle_);
-            return -1;
-        }
-    }
-
-    return 0;
+    int ret = zce::open_socket(&socket_handle_,
+                               type,
+                               family,
+                               protocol,
+                               reuse_addr);
+    return ret;
 }
 
 //Open SOCK句柄，BIND地址的方式
 int Socket_Base::open(int type,
                       const Sockaddr_Base* local_addr,
-                      int family,
                       int protocol,
                       bool reuse_addr)
 {
-    int ret = 0;
-
-    //如果没有标注协议簇，用bind的本地地址的协议簇标识
-    if (local_addr && family == AF_UNSPEC)
-    {
-        family = local_addr->sockaddr_ptr_->sa_family;
-    }
-
-    //如果地址协议和socket的协议簇不一样，
-    if (local_addr && family != local_addr->sockaddr_ptr_->sa_family)
-    {
-        assert(false);
-        return -1;
-    }
-
-    ret = this->open(type,
-                     family,
-                     protocol,
-                     reuse_addr);
-
-    //如果要绑定本地地址，一般SOCKET无须此步
-    if (local_addr)
-    {
-        ret = Socket_Base::bind(local_addr);
-
-        if (ret != 0)
-        {
-            close();
-            return ret;
-        }
-    }
-
-    return 0;
+    assert(socket_handle_ == ZCE_INVALID_SOCKET);
+    int ret = zce::open_socket(&socket_handle_,
+                               type,
+                               local_addr->get_addr(),
+                               local_addr->get_size(),
+                               protocol,
+                               reuse_addr);
+    return ret;
 }
 
 //关闭之
 int Socket_Base::close()
 {
-    int ret = closesocket(socket_handle_);
+    int ret = close_socket(socket_handle_);
 
     if (0 == ret)
     {

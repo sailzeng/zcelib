@@ -63,7 +63,7 @@ public:
     */
     int connect(zce::Socket_Stream& new_stream,
                 const zce::Sockaddr_Base* remote_addr,
-                bool non_blocing,
+                bool k,
                 bool reuse_addr = false,
                 int protocol = 0,
                 const Sockaddr_Base* local_addr = NULL);

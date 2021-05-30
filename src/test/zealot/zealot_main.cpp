@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
                                                  ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
                                                  static_cast<int>(LOG_HEAD::NONE));
 
-    test_fifo_cycbuf1(argc, argv);
+    test_lockfree_ring2(argc, argv);
 
     return 0;
 

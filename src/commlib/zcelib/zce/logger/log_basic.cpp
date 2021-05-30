@@ -489,45 +489,45 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval& cur_time,
     switch (div_log_file_)
     {
         //以小时为单位得到文件名称
-    case LOGFILE_DEVIDE::BY_TIME_HOUR:
-    case LOGFILE_DEVIDE::BY_TIME_SIX_HOUR:
-    {
-        strftime(tmpbuf, buflen, "_%Y%m%d_%H", &curtm);
+        case LOGFILE_DEVIDE::BY_TIME_HOUR:
+        case LOGFILE_DEVIDE::BY_TIME_SIX_HOUR:
+        {
+            strftime(tmpbuf, buflen, "_%Y%m%d_%H", &curtm);
 #if defined ZCE_LOG_TEST && ZCE_LOG_TEST== 1
-        strftime(tmpbuf, buflen, "_%Y%m%d_%H%M", &curtm);
+            strftime(tmpbuf, buflen, "_%Y%m%d_%H%M", &curtm);
 #endif
-        ::strcat(tmpbuf, STR_LOG_POSTFIX);
+            ::strcat(tmpbuf, STR_LOG_POSTFIX);
 
-        break;
-    }
+            break;
+        }
 
-    case LOGFILE_DEVIDE::BY_TIME_DAY:
-        ::strftime(tmpbuf, buflen, "_%Y%m%d", &curtm);
-        ::strcat(tmpbuf, STR_LOG_POSTFIX);
-        break;
+        case LOGFILE_DEVIDE::BY_TIME_DAY:
+            ::strftime(tmpbuf, buflen, "_%Y%m%d", &curtm);
+            ::strcat(tmpbuf, STR_LOG_POSTFIX);
+            break;
 
-        //
-    case LOGFILE_DEVIDE::BY_TIME_MONTH:
-        ::strftime(tmpbuf, buflen, "_%Y%m", &curtm);
-        ::strcat(tmpbuf, STR_LOG_POSTFIX);
-        break;
+            //
+        case LOGFILE_DEVIDE::BY_TIME_MONTH:
+            ::strftime(tmpbuf, buflen, "_%Y%m", &curtm);
+            ::strcat(tmpbuf, STR_LOG_POSTFIX);
+            break;
 
-    case LOGFILE_DEVIDE::BY_TIME_YEAR:
-        ::strftime(tmpbuf, buflen, "_%Y", &curtm);
-        ::strcat(tmpbuf, STR_LOG_POSTFIX);
-        break;
+        case LOGFILE_DEVIDE::BY_TIME_YEAR:
+            ::strftime(tmpbuf, buflen, "_%Y", &curtm);
+            ::strcat(tmpbuf, STR_LOG_POSTFIX);
+            break;
 
-    case LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND:
-        char mill_sec_str[16];
-        ::strftime(tmpbuf, buflen, "_%Y%m%d_%H%M%s_", &curtm);
-        snprintf(mill_sec_str, 15, "%03d", static_cast<int>(cur_time.tv_usec / 1000));
-        ::strcat(tmpbuf, mill_sec_str);
-        ::strcat(tmpbuf, STR_LOG_POSTFIX);
-        break;
-        //Never goto here.
-    default:
-        ::strcat(tmpbuf, STR_LOG_POSTFIX);
-        break;
+        case LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND:
+            char mill_sec_str[16];
+            ::strftime(tmpbuf, buflen, "_%Y%m%d_%H%M%s_", &curtm);
+            snprintf(mill_sec_str, 15, "%03d", static_cast<int>(cur_time.tv_usec / 1000));
+            ::strcat(tmpbuf, mill_sec_str);
+            ::strcat(tmpbuf, STR_LOG_POSTFIX);
+            break;
+            //Never goto here.
+        default:
+            ::strcat(tmpbuf, STR_LOG_POSTFIX);
+            break;
     }
 
     logfilename = log_file_prefix_;
@@ -581,33 +581,33 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(zce::LOG_PRIORITY outlevel,
     {
         switch (outlevel)
         {
-        case RS_TRACE:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[TRACE]");
-            sz_buf_len -= sz_use_len;
-            break;
+            case RS_TRACE:
+                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[TRACE]");
+                sz_buf_len -= sz_use_len;
+                break;
 
-        case RS_DEBUG:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[DEBUG]");
-            sz_buf_len -= sz_use_len;
-            break;
+            case RS_DEBUG:
+                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[DEBUG]");
+                sz_buf_len -= sz_use_len;
+                break;
 
-        case RS_INFO:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[INFO]");
-            sz_buf_len -= sz_use_len;
-            break;
+            case RS_INFO:
+                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[INFO]");
+                sz_buf_len -= sz_use_len;
+                break;
 
-        case RS_ERROR:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[ERROR]");
-            sz_buf_len -= sz_use_len;
-            break;
+            case RS_ERROR:
+                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[ERROR]");
+                sz_buf_len -= sz_use_len;
+                break;
 
-        case RS_FATAL:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[FATAL]");
-            sz_buf_len -= sz_use_len;
-            break;
+            case RS_FATAL:
+                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[FATAL]");
+                sz_buf_len -= sz_use_len;
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
     }
 

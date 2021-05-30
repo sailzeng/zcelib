@@ -225,6 +225,7 @@
     <ClCompile Include="zce\logger\log_basic.cpp" />
     <ClCompile Include="zce\logger\msg.cpp" />
     <ClCompile Include="zce\logger\plus.cpp" />
+    <ClCompile Include="zce\rudp\rudp.cpp" />
     <ClCompile Include="zce\string\from_string.cpp" />
     <ClCompile Include="zce\util\buffer.cpp" />
     <ClCompile Include="zce\util\random.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\pool\object_pool.h" />
     <ClInclude Include="zce\pool\point_pool.h" />
+    <ClInclude Include="zce\rudp\rudp.h" />
     <ClInclude Include="zce\string\from_string.h" />
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\util\buffer.h" />

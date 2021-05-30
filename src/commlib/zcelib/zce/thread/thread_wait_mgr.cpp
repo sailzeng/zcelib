@@ -3,21 +3,23 @@
 #include "zce/thread/thread_task.h"
 #include "zce/thread/thread_wait_mgr.h"
 
+namespace zce
+{
 //单子实例
-ZCE_Thread_Wait_Manager* ZCE_Thread_Wait_Manager::instance_ = NULL;
+Thread_Wait_Manager* Thread_Wait_Manager::instance_ = NULL;
 
 //构造函数等
-ZCE_Thread_Wait_Manager::ZCE_Thread_Wait_Manager()
+Thread_Wait_Manager::Thread_Wait_Manager()
 {
 }
 
 //
-ZCE_Thread_Wait_Manager::~ZCE_Thread_Wait_Manager()
+Thread_Wait_Manager::~Thread_Wait_Manager()
 {
 }
 
 //如果需要管理处理，要自己登记，
-void ZCE_Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id)
+void Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_id, wait_group_id);
 
@@ -25,14 +27,14 @@ void ZCE_Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id, int 
 }
 
 //登记一个要进行等待处理等待线程
-void ZCE_Thread_Wait_Manager::record_wait_thread(const ZCE_Thread_Task* wait_thr_task)
+void Thread_Wait_Manager::record_wait_thread(const zce::Thread_Task* wait_thr_task)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_task->thread_id(), wait_thr_task->group_id());
     wait_thread_list_.push_back(wait_thread);
 }
 
 //等所有的线程退出
-void ZCE_Thread_Wait_Manager::wait_all()
+void Thread_Wait_Manager::wait_all()
 {
     //注意下面每次都是干begin
     while (wait_thread_list_.size() > 0)
@@ -46,7 +48,7 @@ void ZCE_Thread_Wait_Manager::wait_all()
 }
 
 //等待一个GROUP的线程退出
-void ZCE_Thread_Wait_Manager::wait_group(int group_id)
+void Thread_Wait_Manager::wait_group(int group_id)
 {
     //注意下面每次都是干begin
     MANAGE_WAIT_THREAD_LIST::iterator iter_temp = wait_thread_list_.begin();
@@ -71,18 +73,18 @@ void ZCE_Thread_Wait_Manager::wait_group(int group_id)
 }
 
 //得到唯一的单子实例
-ZCE_Thread_Wait_Manager* ZCE_Thread_Wait_Manager::instance()
+Thread_Wait_Manager* Thread_Wait_Manager::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new ZCE_Thread_Wait_Manager();
+        instance_ = new Thread_Wait_Manager();
     }
 
     return instance_;
 }
 
 //清除单子实例
-void ZCE_Thread_Wait_Manager::clean_instance()
+void Thread_Wait_Manager::clean_instance()
 {
     if (instance_)
     {
@@ -91,4 +93,5 @@ void ZCE_Thread_Wait_Manager::clean_instance()
 
     instance_ = NULL;
     return;
+}
 }

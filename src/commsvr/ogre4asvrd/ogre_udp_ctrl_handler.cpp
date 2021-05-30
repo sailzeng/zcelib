@@ -187,7 +187,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
         Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::kfifo_node*>(dgram_databuf_));
+        reinterpret_cast<zce::lockfree::node*>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 

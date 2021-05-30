@@ -25,7 +25,6 @@ public:
     //Open SOCK句柄，BIND本地地址的方式,一般情况下不用这样使用，除非……
     //protocol_family 参数可以是AF_INET,或者AF_INET6等
     int open(const Sockaddr_Base* local_addr,
-             int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
 

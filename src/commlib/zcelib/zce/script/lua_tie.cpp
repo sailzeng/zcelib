@@ -323,64 +323,64 @@ int enum_clua_stack(lua_State* state)
         int lua_typeid = lua_type(state, i);
         switch (lua_typeid)
         {
-        case LUA_TNIL:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s",
-                    i,
-                    lua_typename(state, lua_typeid));
-            break;
-        case LUA_TBOOLEAN:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%s]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_toboolean(state, i) ? "true" : "false");
-            break;
-        case LUA_TLIGHTUSERDATA:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [0x%p]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_topointer(state, i));
-            break;
-        case LUA_TNUMBER:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%f]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_tonumber(state, i));
-            break;
-        case LUA_TSTRING:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[%s]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_tostring(state, i));
-            break;
-        case LUA_TTABLE:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_topointer(state, i));
-            break;
-        case LUA_TFUNCTION:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s() [0x%p]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_topointer(state, i));
-            break;
-        case LUA_TUSERDATA:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]",
-                    i,
-                    lua_typename(state, lua_typeid),
-                    lua_topointer(state, i));
-            break;
-        case LUA_TTHREAD:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s",
-                    i,
-                    lua_typename(state, lua_typeid));
-            break;
-        default:
-            ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type id %d type name %s",
-                    i,
-                    lua_typeid,
-                    lua_typename(state, lua_typeid));
-            break;
+            case LUA_TNIL:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s",
+                        i,
+                        lua_typename(state, lua_typeid));
+                break;
+            case LUA_TBOOLEAN:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%s]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_toboolean(state, i) ? "true" : "false");
+                break;
+            case LUA_TLIGHTUSERDATA:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [0x%p]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_topointer(state, i));
+                break;
+            case LUA_TNUMBER:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%f]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_tonumber(state, i));
+                break;
+            case LUA_TSTRING:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[%s]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_tostring(state, i));
+                break;
+            case LUA_TTABLE:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_topointer(state, i));
+                break;
+            case LUA_TFUNCTION:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s() [0x%p]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_topointer(state, i));
+                break;
+            case LUA_TUSERDATA:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]",
+                        i,
+                        lua_typename(state, lua_typeid),
+                        lua_topointer(state, i));
+                break;
+            case LUA_TTHREAD:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s",
+                        i,
+                        lua_typename(state, lua_typeid));
+                break;
+            default:
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type id %d type name %s",
+                        i,
+                        lua_typeid,
+                        lua_typename(state, lua_typeid));
+                break;
         }
     }
     return 0;

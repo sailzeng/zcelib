@@ -54,7 +54,7 @@ int Socket_Acceptor::open(const Sockaddr_Base* local_addr,
 
     if (ret != 0)
     {
-        zce::closesocket(socket_handle_);
+        zce::close_socket(socket_handle_);
         return ret;
     }
 
@@ -64,7 +64,7 @@ int Socket_Acceptor::open(const Sockaddr_Base* local_addr,
 
     if (ret != 0)
     {
-        zce::closesocket(socket_handle_);
+        zce::close_socket(socket_handle_);
         return ret;
     }
 
@@ -78,7 +78,6 @@ int Socket_Acceptor::accept(Socket_Stream& new_stream,
     ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
                                          remote_addr->sockaddr_ptr_,
                                          &remote_addr->sockaddr_size_);
-
     if (sock_handle == ZCE_INVALID_SOCKET)
     {
         return -1;

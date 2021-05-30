@@ -321,6 +321,9 @@
     <ClCompile Include="zce\async\lua_thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\rudp\rudp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -726,6 +729,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\async\lua_thread.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\rudp\rudp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

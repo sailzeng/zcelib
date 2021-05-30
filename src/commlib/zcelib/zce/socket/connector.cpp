@@ -40,7 +40,6 @@ int Socket_Connector::connect(zce::Socket_Stream& new_stream,
         if (local_addr)
         {
             ret = new_stream.open(local_addr,
-                                  local_addr->sockaddr_ptr_->sa_family,
                                   protocol,
                                   reuse_addr);
         }
@@ -126,7 +125,6 @@ int Socket_Connector::connect(zce::Socket_Stream& new_stream,
     if (ZCE_INVALID_SOCKET == new_stream.get_handle())
     {
         ret = new_stream.open(local_addr,
-                              remote_addr->sockaddr_ptr_->sa_family,
                               protocol,
                               reuse_addr);
 

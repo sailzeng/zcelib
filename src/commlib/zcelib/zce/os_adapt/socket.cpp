@@ -32,7 +32,78 @@ int zce::socket_init(int version_high, int version_low)
 #endif
 }
 
-int zce::socket_finish(void)
+//打开socket 句柄，简化处理的函数，非标准，通常用于客户端本地端口
+int zce::open_socket(ZCE_SOCKET *handle,
+                     int type,
+                     int family,
+                     int protocol,
+                     bool reuse_addr)
+{
+    int ret = 0;
+
+    *handle = socket(family, type, protocol);
+    if (ZCE_INVALID_SOCKET == *handle)
+    {
+        int last_err = last_error();
+        ZCE_LOG(RS_ERROR, "socket return fail last error %d|%s.",
+                last_err,
+                strerror(last_err));
+        return -1;
+    }
+
+    //如果要REUSE这个地址
+    if (reuse_addr)
+    {
+        int one = 1;
+        ret = zce::setsockopt(*handle,
+                              SOL_SOCKET,
+                              SO_REUSEADDR,
+                              &one,
+                              sizeof(int));
+
+        if (ret != 0)
+        {
+            zce::close_socket(*handle);
+            return -1;
+        }
+    }
+    return 0;
+}
+
+//打开socket 句柄，同时绑定本地地址，简化处理的函数，非标准，通常用于监听端口
+int zce::open_socket(ZCE_SOCKET *handle,
+                     int type,
+                     const sockaddr* local_addr,
+                     socklen_t addrlen,
+                     int protocol,
+                     bool reuse_addr)
+{
+    int ret = 0;
+
+    //如果没有标注协议簇，用bind的本地地址的协议簇标识
+    int family = local_addr->sa_family;
+    ret = zce::open_socket(handle,
+                           type,
+                           family,
+                           protocol,
+                           reuse_addr);
+
+    //如果要绑定本地地址，一般SOCKET无须此步
+    if (local_addr)
+    {
+        ret = zce::bind(*handle, local_addr, addrlen);
+        if (ret != 0)
+        {
+            close_socket(*handle);
+            return ret;
+        }
+    }
+
+    return 0;
+}
+
+//关闭Socket的支持
+int zce::socket_terminate(void)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -46,7 +117,7 @@ int zce::socket_finish(void)
                   errno);
     }
 
-# endif
+#endif
     return 0;
 }
 
@@ -209,7 +280,6 @@ ssize_t zce::sendmsg(ZCE_SOCKET handle,
                              msg->msg_namelen,
                              0,
                              0);
-
     if (result != 0)
     {
         errno = ::WSAGetLastError();
@@ -316,26 +386,25 @@ int zce::sock_enable(ZCE_SOCKET handle, int flags)
 
     switch (flags)
     {
-    case O_NONBLOCK:
-        // nonblocking argument (1)
-        // blocking:            (0)
-    {
-        u_long nonblock = 1;
-        int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
-
-        //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
-        if (SOCKET_ERROR == zce_result)
+        case O_NONBLOCK:
+            // nonblocking argument (1)
+            // blocking:            (0)
         {
-            errno = ::WSAGetLastError();
+            u_long nonblock = 1;
+            int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
+
+            //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
+            if (SOCKET_ERROR == zce_result)
+            {
+                errno = ::WSAGetLastError();
+            }
+
+            return zce_result;
         }
-
-        return zce_result;
-    }
-
-    default:
-    {
-        return (-1);
-    }
+        default:
+        {
+            return (-1);
+        }
     }
 
 #elif defined (ZCE_OS_LINUX)
@@ -365,24 +434,24 @@ int zce::sock_disable(ZCE_SOCKET handle, int flags)
 
     switch (flags)
     {
-    case O_NONBLOCK:
-        // nonblocking argument (1)
-        // blocking:            (0)
-    {
-        u_long nonblock = 0;
-        int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
-
-        //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
-        if (SOCKET_ERROR == zce_result)
+        case O_NONBLOCK:
+            // nonblocking argument (1)
+            // blocking:            (0)
         {
-            errno = ::WSAGetLastError();
+            u_long nonblock = 0;
+            int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
+
+            //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
+            if (SOCKET_ERROR == zce_result)
+            {
+                errno = ::WSAGetLastError();
+            }
+
+            return zce_result;
         }
 
-        return zce_result;
-    }
-
-    default:
-        return (-1);
+        default:
+            return (-1);
     }
 
 #elif defined (ZCE_OS_LINUX)
@@ -619,7 +688,7 @@ int zce::connect_timeout(ZCE_SOCKET handle,
     ret = zce::sock_enable(handle, O_NONBLOCK);
     if (ret != 0)
     {
-        zce::closesocket(handle);
+        zce::close_socket(handle);
         return -1;
     }
 
@@ -632,7 +701,7 @@ int zce::connect_timeout(ZCE_SOCKET handle,
 
         if (EINPROGRESS != last_err && EWOULDBLOCK != last_err)
         {
-            zce::closesocket(handle);
+            zce::close_socket(handle);
             return ret;
         }
     }
@@ -646,14 +715,14 @@ int zce::connect_timeout(ZCE_SOCKET handle,
 
     if (ret != HANDLE_READY_ONE)
     {
-        zce::closesocket(handle);
+        zce::close_socket(handle);
         return -1;
     }
 
     ret = zce::sock_disable(handle, O_NONBLOCK);
     if (ret != 0)
     {
-        zce::closesocket(handle);
+        zce::close_socket(handle);
         return -1;
     }
 

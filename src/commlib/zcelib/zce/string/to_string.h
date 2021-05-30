@@ -158,7 +158,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const unsigned short& out_data)
+                   const unsigned short out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -172,7 +172,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const unsigned short& out_data)
+                      const unsigned short out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -188,7 +188,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const int& out_data)
+                   const int out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -202,7 +202,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const int& out_data)
+                      const int out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -218,7 +218,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const unsigned int& out_data)
+                   const unsigned int out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -232,7 +232,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const unsigned int& out_data)
+                      const unsigned int out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -248,7 +248,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const long& out_data)
+                   const long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -262,7 +262,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const long& out_data)
+                      const long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -278,7 +278,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const unsigned long& out_data)
+                   const unsigned long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -292,7 +292,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const unsigned long& out_data)
+                      const unsigned long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -308,7 +308,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const long long& out_data)
+                   const long long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -322,7 +322,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const long long& out_data)
+                      const long long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -338,7 +338,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const unsigned long long& out_data)
+                   const unsigned long long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -352,7 +352,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const unsigned long long& out_data)
+                      const unsigned long long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -368,7 +368,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const float& out_data)
+                   const float out_data)
 {
     double cvt_out_data = out_data;
     zce::fmt_double(buffer,
@@ -378,7 +378,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const float& out_data)
+                      const float out_data)
 {
     double cvt_out_data = out_data;
     zce::fmt_double(stdstr,
@@ -390,7 +390,7 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const double& out_data)
+                   const double out_data)
 {
     zce::fmt_double(buffer,
                     max_len,
@@ -399,7 +399,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const double& out_data)
+                      const double out_data)
 {
     zce::fmt_double(stdstr,
                     out_data);

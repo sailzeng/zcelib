@@ -267,8 +267,8 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
 int Svrd_Appliction::app_exit()
 {
     //可能要增加多线程的等待
-    ZCE_Thread_Wait_Manager::instance()->wait_all();
-    ZCE_Thread_Wait_Manager::clean_instance();
+    zce::Thread_Wait_Manager::instance()->wait_all();
+    zce::Thread_Wait_Manager::clean_instance();
 
     soar::Stat_Monitor::clean_instance();
 

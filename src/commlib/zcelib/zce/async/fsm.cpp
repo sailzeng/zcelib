@@ -34,29 +34,29 @@ void Async_FSM::on_run(const void* outer_data,
     };
     switch (get_stage())
     {
-    case STAGE_1:
-        //Do stage 1 something.init.
-        running = true;
-        set_stage(STAGE_2);
-        break;
-    case STAGE_2:
-        //Do stage 2 something.
-        running = true;
-        set_stage(STAGE_3);
-        break;
-    case STAGE_3:
-        //Do stage 3 something.
-        running = true;
-        set_stage(STAGE_4);
-        break;
-    case STAGE_4:
-        //Do stage 4 something. end.
-        running = false;
-        break;
-    default:
-        //一个无法识别的状态
-        ZCE_ASSERT(false);
-        break;
+        case STAGE_1:
+            //Do stage 1 something.init.
+            running = true;
+            set_stage(STAGE_2);
+            break;
+        case STAGE_2:
+            //Do stage 2 something.
+            running = true;
+            set_stage(STAGE_3);
+            break;
+        case STAGE_3:
+            //Do stage 3 something.
+            running = true;
+            set_stage(STAGE_4);
+            break;
+        case STAGE_4:
+            //Do stage 4 something. end.
+            running = false;
+            break;
+        default:
+            //一个无法识别的状态
+            ZCE_ASSERT(false);
+            break;
     }
     return;
 }

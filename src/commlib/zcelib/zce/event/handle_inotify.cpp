@@ -473,52 +473,52 @@ int Event_INotify::handle_input()
         //根据Action和mask确定调用函数
         switch (read_ptr->Action)
         {
-        case FILE_ACTION_ADDED:
-            if (watch_mask_ | IN_CREATE)
-            {
-                detect_ret = inotify_create(watch_handle_,
-                                            watch_mask_,
-                                            watch_path_,
-                                            active_path);
-            }
-            break;
-        case FILE_ACTION_REMOVED:
-            if (watch_mask_ | IN_DELETE)
-            {
-                detect_ret = inotify_delete(watch_handle_,
-                                            watch_mask_,
-                                            watch_path_,
-                                            active_path);
-            }
-            break;
-            //注意Windows 下的这个类型，包括了属性更改
-        case FILE_ACTION_MODIFIED:
-            if (watch_mask_ | IN_MODIFY)
-            {
-                detect_ret = inotify_modify(watch_handle_,
-                                            watch_mask_,
-                                            watch_path_,
-                                            active_path);
-            }
-            break;
-        case FILE_ACTION_RENAMED_OLD_NAME:
-            if (watch_mask_ | IN_MOVED_FROM)
-            {
-                detect_ret = inotify_moved_from(watch_handle_,
+            case FILE_ACTION_ADDED:
+                if (watch_mask_ | IN_CREATE)
+                {
+                    detect_ret = inotify_create(watch_handle_,
                                                 watch_mask_,
                                                 watch_path_,
                                                 active_path);
-            }
-            break;
-        case FILE_ACTION_RENAMED_NEW_NAME:
-            if (watch_mask_ | IN_MOVED_TO)
-            {
-                detect_ret = inotify_moved_to(watch_handle_,
-                                              watch_mask_,
-                                              watch_path_,
-                                              active_path);
-            }
-            break;
+                }
+                break;
+            case FILE_ACTION_REMOVED:
+                if (watch_mask_ | IN_DELETE)
+                {
+                    detect_ret = inotify_delete(watch_handle_,
+                                                watch_mask_,
+                                                watch_path_,
+                                                active_path);
+                }
+                break;
+                //注意Windows 下的这个类型，包括了属性更改
+            case FILE_ACTION_MODIFIED:
+                if (watch_mask_ | IN_MODIFY)
+                {
+                    detect_ret = inotify_modify(watch_handle_,
+                                                watch_mask_,
+                                                watch_path_,
+                                                active_path);
+                }
+                break;
+            case FILE_ACTION_RENAMED_OLD_NAME:
+                if (watch_mask_ | IN_MOVED_FROM)
+                {
+                    detect_ret = inotify_moved_from(watch_handle_,
+                                                    watch_mask_,
+                                                    watch_path_,
+                                                    active_path);
+                }
+                break;
+            case FILE_ACTION_RENAMED_NEW_NAME:
+                if (watch_mask_ | IN_MOVED_TO)
+                {
+                    detect_ret = inotify_moved_to(watch_handle_,
+                                                  watch_mask_,
+                                                  watch_path_,
+                                                  active_path);
+                }
+                break;
         }
 
         //累计偏移长度

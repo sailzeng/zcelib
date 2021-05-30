@@ -153,17 +153,19 @@ public:
             {
                 return false;
             }
-            auto new_end = (end + 1) % ring_capacity_;
-            if (vptr_ptr_[new_end] != nullptr)
+
+            //注意，这儿写入的是end，因为队列是前开后闭的
+            if (vptr_ptr_[end] != nullptr)
             {
                 continue;
             }
             //先写入数据
             T * write_null = nullptr;
-            bool succ = vptr_ptr_[new_end].compare_exchange_strong(write_null,
-                                                                   value_ptr);
+            bool succ = vptr_ptr_[end].compare_exchange_strong(write_null,
+                                                               value_ptr);
             if (succ)
             {
+                auto new_end = (end + 1) % ring_capacity_;
                 //最后在移动end标识
                 ring_end_.compare_exchange_strong(end, new_end);
                 return true;
@@ -186,13 +188,13 @@ public:
                 return false;
             }
 
-            //直接放在队尾
+            //直接放在队首部
             auto new_start = (start > 0) ? start - 1 : ring_capacity_ - 1;
             if (vptr_ptr_[new_start] != nullptr)
             {
                 continue;
             }
-            //直接放在队尾
+            //如果仍然是null，而且交互成功，
             T * write_null = nullptr;
             bool succ = vptr_ptr_[new_start].compare_exchange_strong(write_null,
                                                                      value_ptr);
@@ -223,7 +225,6 @@ public:
                 return false;
             }
 
-            //因为存在push_front 放入了数据，但没有改写ring_start_可能
             value_ptr = vptr_ptr_[start];
             if (value_ptr == nullptr)
             {
@@ -235,6 +236,7 @@ public:
             {
                 auto new_start = (start + 1) % ring_capacity_;
                 ring_start_.compare_exchange_strong(start, new_start);
+                return true;
             }
         }
         return false;
@@ -252,18 +254,19 @@ public:
             {
                 return false;
             }
-            //因为存在push_front 放入了数据，但没有改写ring_end_可能
-            value_ptr = vptr_ptr_[end];
+            auto new_end = (end > 0) ? end - 1 : ring_capacity_ - 1;
+            value_ptr = vptr_ptr_[new_end];
+
             if (value_ptr == nullptr)
             {
                 continue;
             }
-            bool succ = vptr_ptr_[end].compare_exchange_strong(value_ptr,
-                                                               nullptr);
+            bool succ = vptr_ptr_[new_end].compare_exchange_strong(value_ptr,
+                                                                   nullptr);
             if (succ)
             {
-                auto new_end = (end > 0) ? end - 1 : ring_capacity_ - 1;
                 ring_end_.compare_exchange_strong(end, new_end);
+                return true;
             }
         }
         return false;

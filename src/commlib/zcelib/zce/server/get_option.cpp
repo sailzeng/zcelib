@@ -142,22 +142,22 @@ ZCE_Get_Option::ZCE_Get_Option(int argc,
     {
         switch (optstring[offset++])
         {
-        case '+':
-            this->ordering_ = REQUIRE_ORDER;
-            break;
+            case '+':
+                this->ordering_ = REQUIRE_ORDER;
+                break;
 
-        case '-':
-            this->ordering_ = RETURN_IN_ORDER;
-            break;
+            case '-':
+                this->ordering_ = RETURN_IN_ORDER;
+                break;
 
-        case ':':
-            this->has_colon_ = 1;
-            break;
+            case ':':
+                this->has_colon_ = 1;
+                break;
 
-        default:
-            // Quit as soon as we see something else...
-            done = 1;
-            break;
+            default:
+                // Quit as soon as we see something else...
+                done = 1;
+                break;
         }
     }
 

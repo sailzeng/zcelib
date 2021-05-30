@@ -44,8 +44,12 @@ public:
     *             就可以强转成指针使用
     *
     */
-    class kfifo_node
+    class node
     {
+    protected:
+        node() = delete;
+        node& operator=(const node & others) = delete;
+        ~node() = delete;
     public:
 
         ///*!
@@ -54,7 +58,7 @@ public:
         //@param      size_t    new的默认参数
         //@param      node_len   node节点的长度
         //*
-        static kfifo_node* new_node(size_t node_len)
+        static node* new_node(size_t node_len)
         {
             static_assert(std::is_integral<INTEGRAL_T>::value, "Not integral!");
             assert(node_len > sizeof(INTEGRAL_T) &&
@@ -65,7 +69,6 @@ public:
             {
                 return nullptr;
             }
-
             char* ptr = ::new char[node_len];
 
 #ifdef  DEBUG
@@ -73,13 +76,13 @@ public:
             memset(ptr, 0, nodelen);
 #endif
             //
-            ((kfifo_node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
+            ((node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
 
-            return ((kfifo_node*)ptr);
+            return ((node*)ptr);
         }
 
         ///养成好习惯,写new,就写delete.
-        static void delete_node(kfifo_node * node)
+        static void delete_node(node * node)
         {
             char* ptr = (char*)node;
             delete[] ptr;
@@ -96,14 +99,9 @@ public:
         /// 这里使用size_t,long在64位下会有问题
         INTEGRAL_T    size_of_node_;
 
-#if defined(ZCE_OS_WINDOWS)
-#pragma warning ( disable : 4200)
-#endif
-        /// 数据区的数据，变长的数据
-        char            chunk_data_[];
-#if defined(ZCE_OS_WINDOWS)
-#pragma warning ( default : 4200)
-#endif
+        /// 数据区的数据，变长的数据,1只是占位符号
+        char          chunk_data_[1];
+
     };
 
 protected:
@@ -260,10 +258,10 @@ public:
     @return     bool
     @param      node
     */
-    bool push_end(const kfifo_node* node)
+    bool push_end(const node* node)
     {
         //粗略的检查,如果长度不合格,返回不成功
-        if (node->size_of_node_ < kfifo_node::MIN_SIZE_DEQUE_CHUNK_NODE ||
+        if (node->size_of_node_ < node::MIN_SIZE_DEQUE_CHUNK_NODE ||
             node->size_of_node_ > kfifo_head_->max_len_node_)
         {
             return false;
@@ -302,7 +300,7 @@ public:
     @return     bool  true表示成功取出，否则表示没有取出
     @param      node  保存pop 数据的的buffer，
     */
-    bool pop_front(kfifo_node* const node)
+    bool pop_front(node* const node)
     {
         assert(node != NULL);
 
@@ -345,7 +343,7 @@ public:
     @return     bool  true表示成功读取
     @param      node  保存read 数据的的buffer，
     */
-    bool read_front(kfifo_node* const node)
+    bool read_front(node* const node)
     {
         assert(node != NULL);
 
@@ -381,7 +379,7 @@ public:
     @return     bool      true表示成功读取
     @param      new_node  获得数据的指针，这个数据你要自己释放，我概不负责了
     */
-    bool pop_front_new(kfifo_node*& new_node)
+    bool pop_front_new(node*& new_node)
     {
         assert(new_node == NULL);
 
@@ -392,7 +390,7 @@ public:
         }
 
         size_t tmplen = get_front_len();
-        new_node = kfifo_node::new_node(tmplen);
+        new_node = node::new_node(tmplen);
 
         //这样写会有一些重复调用，但是我觉得这个地方性能不会是问题。
         return pop_front(new_node);
@@ -403,7 +401,7 @@ public:
     @return     bool      true表示成功读取
     @param      new_node
     */
-    bool read_front_new(kfifo_node*& new_node)
+    bool read_front_new(node*& new_node)
     {
         assert(new_node == NULL);
 
@@ -414,7 +412,7 @@ public:
         }
 
         size_t tmplen = get_front_len();
-        new_node = kfifo_node::new_node(tmplen);
+        new_node = node::new_node(tmplen);
 
         return read_front(new_node);
     }
@@ -462,7 +460,7 @@ public:
         char* tmp2 = reinterpret_cast<char*>(&node_len);
 
         //如果管道的长度也绕圈，采用野蛮的法子得到长度
-        if (tmp1 + kfifo_node::NODE_HEAD_LEN >
+        if (tmp1 + node::NODE_HEAD_LEN >
             kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
             //一个个字节读取长度

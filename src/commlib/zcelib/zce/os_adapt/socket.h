@@ -42,7 +42,7 @@ int socket_init(int version_high = 2,
 * @brief      程序退出，DLL鞋砸时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
 * @return     int 0成功，-1失败
 */
-int socket_finish(void);
+int socket_terminate(void);
 
 /*!
 * @brief      创建一个SOCKET对象
@@ -54,6 +54,33 @@ int socket_finish(void);
 inline ZCE_SOCKET socket(int family,
                          int type,
                          int proto = 0);
+
+/*!
+* @brief      打开socket 句柄，简化处理的函数，非标准，通常用于客户端本地端口
+* @return     int == 0表示成功
+* @param[out] handle      返回的socket 句柄
+* @param[in]  reuse_addr  是否重用地址
+* @note       type,family,protocol参数参考socket函数
+*/
+int open_socket(ZCE_SOCKET *handle,
+                int type,
+                int family,
+                int protocol = 0,
+                bool reuse_addr = true);
+
+/*!
+* @brief      打开socket 句柄，同时绑定本地地址，简化处理的函数，非标准，通常用于监听端口
+* @return     int
+* @param      local_addr 要绑定的本地地址
+* @param      addrlen    要绑定的本地地址长度
+* @note       其他参数，返回参考前面的函数
+*/
+int open_socket(ZCE_SOCKET *handle,
+                int type,
+                const sockaddr* local_addr,
+                socklen_t addrlen,
+                int protocol = 0,
+                bool reuse_addr = true);
 
 /*!
 * @brief      接收一个accept请求的socket
@@ -82,7 +109,7 @@ int bind(ZCE_SOCKET handle,
 * @return     int 0成功，-1失败
 * @param      要关闭的句柄
 */
-inline int closesocket(ZCE_SOCKET handle);
+inline int close_socket(ZCE_SOCKET handle);
 
 /*!
 * @brief      shutdown，how参数向LINUX下靠齐SHUT_RD
@@ -1109,7 +1136,14 @@ int socks5_udp_associate(ZCE_SOCKET handle,
 //返回的错误，而这两个error可能同时存在，以至于我们的代码很难写，而我们整体的上倾向用errno，因为Windows的::GetLastError
 //和我们定义差别很大，所以我不得不这样处理一下，
 
-//
+/*!
+* @brief      初始化socket 句柄
+* @return     ZCE_SOCKET socket
+* @param      family   AF_INET、AF_INET6
+* @param      type     SOCK_STREAM、SOCK_DGRAM
+* @param      proto    IPPROTO_TCP、IPPTOTO_UDP
+* @note
+*/
 inline ZCE_SOCKET zce::socket(int family,
                               int type,
                               int proto)
@@ -1127,6 +1161,7 @@ inline ZCE_SOCKET zce::socket(int family,
     }
     else
     {
+#if 0
         //关闭这个地方实验一下
         //已经初始化成功，并且是UDP ，去掉这一段
         //SIO_UDP_CONNRESET，是让你在向一个错误UDP peer发送一个数据后，你后收到一个RST错误
@@ -1146,8 +1181,8 @@ inline ZCE_SOCKET zce::socket(int family,
                 //干点啥呢，不干啥，可能更好？
             }
         }
+#endif
     }
-
 #endif //
 
     return socket_hdl;
@@ -1205,7 +1240,7 @@ inline int zce::bind(ZCE_SOCKET handle,
 }
 
 //这个只能向Windows靠齐，因为我自己还有一个close函数，但windows下两个函数完全是两回事
-inline int zce::closesocket(ZCE_SOCKET handle)
+inline int zce::close_socket(ZCE_SOCKET handle)
 {
 #if defined ZCE_OS_WINDOWS
     int zce_result = ::closesocket(handle);

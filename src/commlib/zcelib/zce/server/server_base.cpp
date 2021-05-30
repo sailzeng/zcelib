@@ -697,26 +697,26 @@ void WINAPI Server_Base::win_services_ctrl(DWORD op_code)
 {
     switch (op_code)
     {
-    case SERVICE_CONTROL_STOP:
-        //
-        base_instance_->app_run_ = false;
-        break;
+        case SERVICE_CONTROL_STOP:
+            //
+            base_instance_->app_run_ = false;
+            break;
 
-    case SERVICE_CONTROL_PAUSE:
-        break;
+        case SERVICE_CONTROL_PAUSE:
+            break;
 
-    case SERVICE_CONTROL_CONTINUE:
-        break;
+        case SERVICE_CONTROL_CONTINUE:
+            break;
 
-    case SERVICE_CONTROL_INTERROGATE:
-        break;
+        case SERVICE_CONTROL_INTERROGATE:
+            break;
 
-    case SERVICE_CONTROL_SHUTDOWN:
-        break;
+        case SERVICE_CONTROL_SHUTDOWN:
+            break;
 
-    default:
-        base_instance_->log_event("Bad service request");
-        break;
+        default:
+            base_instance_->log_event("Bad service request");
+            break;
     }
 }
 

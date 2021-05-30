@@ -25,8 +25,11 @@ public:
 
     class node
     {
+    protected:
+        node() = delete;
+        node& operator=(const node & others) = delete;
+        ~node() = delete;
     public:
-
         ///*!
         //@brief      重载了new操作，用于得到一个变长得到架构
         //@return     void* operator
@@ -64,14 +67,8 @@ public:
         /// 这里使用size_t,long在64位下会有问题
         INTEGRAL_T    size_of_node_;
 
-#if defined(ZCE_OS_WINDOWS)
-#pragma warning ( disable : 4200)
-#endif
         /// 数据区的数据，变长的数据
-        char            node_data_[];
-#if defined(ZCE_OS_WINDOWS)
-#pragma warning ( default : 4200)
-#endif
+        char            node_data_[1];
     };
 public:
 

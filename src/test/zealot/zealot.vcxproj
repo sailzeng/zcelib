@@ -216,7 +216,7 @@
     <ClCompile Include="test_config.cpp" />
     <ClCompile Include="test_fmtstr.cpp" />
     <ClCompile Include="test_event_inotify.cpp" />
-    <ClCompile Include="test_ring.cpp" />
+    <ClCompile Include="test_pool.cpp" />
     <ClCompile Include="test_script_lua.cpp" />
     <ClCompile Include="test_mysql.cpp" />
     <ClCompile Include="test_lock.cpp" />
