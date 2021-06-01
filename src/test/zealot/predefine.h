@@ -231,6 +231,8 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[]);
 int test_sqlite_configtable(int /*argc*/, char* /*argv */[]);
 
 int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[]);
+int test_lockfree_ring_ptr1(int /*argc*/, char* /*argv*/[]);
+int test_lockfree_ring_ptr2(int /*argc*/, char* /*argv*/[]);
 int test_lockfree_ring1(int /*argc*/, char* /*argv*/[]);
 int test_lockfree_ring2(int /*argc*/, char* /*argv*/[]);
 int test_pool(int /*argc*/, char* /*argv*/[]);

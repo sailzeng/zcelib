@@ -43,7 +43,7 @@ int test_host_name_fun(int, char*[])
                                     domain_name,
                                     256);
 
-    zce::socket_finish();
+    zce::socket_terminate();
 
     ZCE_UNUSED_ARG(ret);
 

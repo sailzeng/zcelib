@@ -89,12 +89,6 @@ char* str_nprintf(char* foo_buffer,
 
     _foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
 
-    zce::fmt_str(buffer,
-                 max_len,
-                 use_len,
-                 fmt_spec,
-                 strlen(fmt_spec));
-    foo_use_len += use_len;
     buffer[use_len] = '\0';
     //返回
     return foo_buffer;
