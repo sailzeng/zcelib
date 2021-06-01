@@ -614,7 +614,7 @@
     <ClInclude Include="zce\lockfree\ring.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\lockfree\stack.h">
+    <ClInclude Include="zce\lockfree\list.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\to_string.h">
