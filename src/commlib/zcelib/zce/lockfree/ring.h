@@ -286,7 +286,6 @@ protected:
 *            这个实现没有多层保护，所以不能直接存放数据拷贝，只能存放指针，
 *           （你无法知道数据的读写是不是lockfree的。指针的读写是LOCKFREE）
 *
-*
 */
 template<class T >
 class rings_ptr
@@ -419,8 +418,9 @@ public:
             }
             //先写入数据
             T * write_null = nullptr;
-            bool succ = vptr_ptr_[end].compare_exchange_strong(write_null,
-                                                               value_ptr);
+            bool succ = vptr_ptr_[end].compare_exchange_weak(write_null,
+                                                             value_ptr,
+                                                             std::memory_order_acq_rel);
             if (succ)
             {
                 auto new_end = (end + 1) % ring_capacity_;
@@ -454,8 +454,9 @@ public:
             }
             //如果仍然是null，而且交互成功，
             T * write_null = nullptr;
-            bool succ = vptr_ptr_[new_start].compare_exchange_strong(write_null,
-                                                                     value_ptr);
+            bool succ = vptr_ptr_[new_start].compare_exchange_weak(write_null,
+                                                                   value_ptr,
+                                                                   std::memory_order_acq_rel);
             if (succ)
             {
                 lordring_start_.compare_exchange_strong(start, new_start);
@@ -488,8 +489,9 @@ public:
             {
                 continue;
             }
-            bool succ = vptr_ptr_[start].compare_exchange_strong(value_ptr,
-                                                                 nullptr);
+            bool succ = vptr_ptr_[start].compare_exchange_weak(value_ptr,
+                                                               nullptr,
+                                                               std::memory_order_acq_rel);
             if (succ)
             {
                 auto new_start = (start + 1) % ring_capacity_;
@@ -519,8 +521,9 @@ public:
             {
                 continue;
             }
-            bool succ = vptr_ptr_[new_end].compare_exchange_strong(value_ptr,
-                                                                   nullptr);
+            bool succ = vptr_ptr_[new_end].compare_exchange_weak(value_ptr,
+                                                                 nullptr,
+                                                                 std::memory_order_acq_rel);
             if (succ)
             {
                 ring_end_.compare_exchange_strong(end, new_end);

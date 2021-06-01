@@ -22,7 +22,7 @@ class HANDLE
 public:
     //
     ZCE_SOCKET udp_socket_;
-
+    //
     sockaddr* sockaddr_local_ = nullptr;
     //
     sockaddr* sockaddr_peer_ = nullptr;
@@ -41,12 +41,13 @@ protected:
 #pragma pack (1)
 class RUDP_HEAD
 {
-    uint32_t serial_number;
-    uint32_t ack_;
     uint16_t len_;
-    uint16_t option_;
-    uint16_t windows_num_;
+    uint8_t flag_;
+    uint8_t windows_num_;
 
+    uint32_t serial_number;
+
+    uint32_t ack_;
 };
 #pragma pack ()
 
