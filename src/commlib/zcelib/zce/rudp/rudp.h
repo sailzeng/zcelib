@@ -7,6 +7,14 @@
 
 namespace zce::rudp
 {
+enum class STATE
+{
+    CLOSE = 0,
+    SYN_SND = 1,
+    SYN_RCV = 2,
+    ESTABLISHED = 3,
+};
+
 class HANDLE
 {
     typedef zce::lordrings<zce::buffer_queue>  buffer_list;
@@ -25,12 +33,20 @@ protected:
 
     buffer_list recv_list_;
 
+    STATE state_;
+
     time_t rto_;
 };
 
 #pragma pack (1)
 class RUDP_HEAD
 {
+    uint32_t serial_number;
+    uint32_t ack_;
+    uint16_t len_;
+    uint16_t option_;
+    uint16_t windows_num_;
+
 };
 #pragma pack ()
 
