@@ -1,4 +1,7 @@
 #include "predefine.h"
+#include <zce/lockfree/kfifo.h>
+#include <zce/lockfree/ring.h>
+#include <zce/lockfree/queue.h>
 
 int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {
@@ -323,5 +326,15 @@ int test_lockfree_ring2(int /*argc*/, char* /*argv*/[])
             g_ring.size()
     );
 
+    return 0;
+}
+
+zce::lockfree::queue<int> g_queue;
+
+int test_lockfree_queue2(int /*argc*/, char* /*argv*/[])
+{
+    int *data = NULL;
+    g_queue.enqueue(new int(0));
+    g_queue.enqueue(data);
     return 0;
 }

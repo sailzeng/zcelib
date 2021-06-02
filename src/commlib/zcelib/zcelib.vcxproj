@@ -333,6 +333,7 @@
     <ClInclude Include="zce\async\coroutine.h" />
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\async\lua_thread.h" />
+    <ClInclude Include="zce\lockfree\ring_ptr.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
     <ClInclude Include="zce\logger\logging.h" />
     <ClInclude Include="zce\logger\log_basic.h" />
@@ -374,7 +375,7 @@
     <ClInclude Include="zce\event\reactor_wfmo.h" />
     <ClInclude Include="zce\lockfree\kfifo.h" />
     <ClInclude Include="zce\lockfree\ring.h" />
-    <ClInclude Include="zce\lockfree\list.h" />
+    <ClInclude Include="zce\lockfree\queue.h" />
     <ClInclude Include="zce\lock\lock_base.h" />
     <ClInclude Include="zce\lock\file_lock.h" />
     <ClInclude Include="zce\lock\lock_guard.h" />

@@ -614,7 +614,7 @@
     <ClInclude Include="zce\lockfree\ring.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\lockfree\list.h">
+    <ClInclude Include="zce\lockfree\queue.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\to_string.h">
@@ -732,6 +732,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\rudp\rudp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\lockfree\ring_ptr.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
