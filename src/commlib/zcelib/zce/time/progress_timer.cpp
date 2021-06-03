@@ -42,7 +42,10 @@ void Progress_Timer::addup_start()
     {
         addup_time_ += end_time_ - start_time_;
     }
-
+    else
+    {
+        addup_time_ += end_time_ + std::numeric_limits<clock_t>::max() - start_time_;
+    }
     end_time_ = 0;
     start_time_ = std::clock();
 }
@@ -60,7 +63,8 @@ double Progress_Timer::elapsed_sec() const
     }
     else
     {
-        return  (addup_time_) / CLOCKS_PER_SEC;
+        return  (double(end_time_) + std::numeric_limits<clock_t>::max() - start_time_)
+            / CLOCKS_PER_SEC;
     }
 }
 
@@ -181,7 +185,7 @@ void HR_Progress_Timer::end()
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
-    }
+}
 #endif
 }
 

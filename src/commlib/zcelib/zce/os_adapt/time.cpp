@@ -99,6 +99,11 @@ const timeval zce::get_uptime()
 #endif
 }
 
+uint64_t zce::clock_ms(void)
+{
+    return  uint64_t(std::clock()) * 1000 / CLOCKS_PER_SEC;
+}
+
 //
 //得到当前的系统时间字符串输出
 const char* zce::timestamp(char* str_date_time, size_t datetime_strlen)

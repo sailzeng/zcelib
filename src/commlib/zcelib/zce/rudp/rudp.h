@@ -15,9 +15,44 @@ enum class STATE
     ESTABLISHED = 3,
 };
 
+//
+#pragma pack (1)
+class RUDP_HEAD
+{
+    uint16_t len_;
+    uint8_t flag_;
+    uint8_t windows_num_;
+    uint32_t serial_number_;
+    uint32_t ack_;
+    uint32_t uno1_;
+    uint32_t uno2_;
+    char data_[1];
+};
+#pragma pack ()
+
+//
+static constexpr size_t MTU_TCP_DEFAULT = 576;
+//
+static constexpr size_t MTU_ETHERNET_PPOE = 1480;
+
+//
+static constexpr size_t MAX_NUM_SEND_LIST = 512;
+//
+static constexpr size_t MAX_NUM_RECV_LIST = 512;
+
+struct SEND_BUFFER
+{
+    zce::buffer_queue *buf_queue_;
+    uint64_t send_clock_;
+    uint64_t ack_clock_;
+    size_t fail_num_;
+};
+
 class HANDLE
 {
-    typedef zce::lordrings<zce::buffer_queue>  buffer_list;
+protected:
+
+    typedef zce::lordrings<zce::buffer_queue*>  RECV_BUFFER_LIST;
 
 public:
     //
@@ -29,27 +64,22 @@ public:
 
 protected:
     //
-    buffer_list send_list_;
-
-    buffer_list recv_list_;
-
+    RECV_BUFFER_LIST send_list_;
+    //
+    RECV_BUFFER_LIST recv_list_;
+    //
     STATE state_;
-
+    //
+    size_t mtu_ = MTU_ETHERNET_PPOE;
+    //
     time_t rto_;
 };
 
-#pragma pack (1)
-class RUDP_HEAD
+struct RUDP_CORE
 {
-    uint16_t len_;
-    uint8_t flag_;
-    uint8_t windows_num_;
-
-    uint32_t serial_number;
-
-    uint32_t ack_;
 };
-#pragma pack ()
+
+int init();
 
 int open(zce::rudp::HANDLE *handle,
          int family);

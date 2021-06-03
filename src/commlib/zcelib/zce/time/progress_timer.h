@@ -35,7 +35,7 @@ namespace zce
 * @brief      计时器 注意这是一个计时器，不是一个定时器，就是用于记录某个事件的
 *             开始和结束时间，所用的时长的类
 *             BOOST 有一个类似的类timer，和progress_timer , 考虑我的代码分层，
-*             我不安装没有将其放入zce_boost_xxx的代码中,而是放到了这个地方
+*             放在了时间代码区
 *             在接口上和timer,progress_timer,都有一些不同，
 *             注意底层计时用的是std::clock，(所以其实有一些麻烦)，
 *             长度是clock_t，在Windows下是32位，精度是毫秒，这东西在Windows上只能跑49天多
