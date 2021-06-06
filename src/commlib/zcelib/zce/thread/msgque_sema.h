@@ -336,14 +336,14 @@ public:
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <typename _value_type >
-class MsgQueue_Rings : public Message_Queue<_value_type, zce::lordrings<_value_type> >
+class MsgQueue_Rings : public Message_Queue<_value_type, zce::lord_rings<_value_type> >
 {
 public:
     //
     explicit MsgQueue_Rings(size_t queue_max_size) :
-        Message_Queue<_value_type, zce::lordrings<_value_type> >(queue_max_size)
+        Message_Queue<_value_type, zce::lord_rings<_value_type> >(queue_max_size)
     {
-        Message_Queue<_value_type, zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        Message_Queue<_value_type, zce::lord_rings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
     ~MsgQueue_Rings()

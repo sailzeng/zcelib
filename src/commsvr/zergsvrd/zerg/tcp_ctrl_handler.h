@@ -41,7 +41,7 @@ public:
 protected:
 
     ///句柄的池子，避免每次都new处理
-    typedef zce::lordrings<TCP_Svc_Handler*> POOL_OF_TCP_HANDLER;
+    typedef zce::lord_rings<TCP_Svc_Handler*> POOL_OF_TCP_HANDLER;
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
@@ -331,7 +331,7 @@ protected:
     ///如果是内网，请求数量有限，那么设置成128, 256也是可以接受的，但其实际意义有待观察
 
     ///发送的数据可能要排队
-    zce::lordrings<zerg::Buffer*>  snd_buffer_deque_;
+    zce::lord_rings<zerg::Buffer*>  snd_buffer_deque_;
 
     ///下面这4个字段其实是记录一个时间段内的接受和发送的数据总数
     ///接收的次数计数器

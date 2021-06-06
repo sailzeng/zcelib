@@ -6,7 +6,7 @@
 * @date       2011年6月17日
 * @brief      多线程使用的Message Queue，内部的同步对象使用了条件变量
 *             这个类暂时不要使用，他和整个体系是脱节的，完全是为了测试条件变量写的类
-*             同时支持list，deque,和自己的一个容器zce::lordrings 环形队列
+*             同时支持list，deque,和自己的一个容器zce::lord_rings 环形队列
 * @details
 *
 *
@@ -323,14 +323,14 @@ public:
 * note       封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <class _value_type >
-class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >
+class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >
 {
 public:
     //
     explicit ZCE_Msgqueue_Rings_Condi(size_t queue_max_size) :
-        ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >(queue_max_size)
+        ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >(queue_max_size)
     {
-        ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
     ~ZCE_Msgqueue_Rings_Condi()

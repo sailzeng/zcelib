@@ -333,7 +333,8 @@
     <ClInclude Include="zce\async\coroutine.h" />
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\async\lua_thread.h" />
-    <ClInclude Include="zce\lockfree\ring_ptr.h" />
+    <ClInclude Include="zce\lockfree\ptr_ring.h" />
+    <ClInclude Include="zce\lockfree\spsc_ring.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
     <ClInclude Include="zce\logger\logging.h" />
     <ClInclude Include="zce\logger\log_basic.h" />
@@ -341,7 +342,7 @@
     <ClInclude Include="zce\logger\plus.h" />
     <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\pool\object_pool.h" />
-    <ClInclude Include="zce\pool\point_pool.h" />
+    <ClInclude Include="zce\pool\buffer_pool.h" />
     <ClInclude Include="zce\rudp\rudp.h" />
     <ClInclude Include="zce\string\from_string.h" />
     <ClInclude Include="zce\util\algorithm.h" />

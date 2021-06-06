@@ -719,7 +719,7 @@
     <ClInclude Include="zce\util\cycbuf_node.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\pool\point_pool.h">
+    <ClInclude Include="zce\pool\buffer_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\buffer.h">
@@ -734,7 +734,10 @@
     <ClInclude Include="zce\rudp\rudp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\lockfree\ring_ptr.h">
+    <ClInclude Include="zce\lockfree\ptr_ring.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\lockfree\spsc_ring.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

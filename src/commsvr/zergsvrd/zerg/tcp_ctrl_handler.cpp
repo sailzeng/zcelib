@@ -1599,12 +1599,12 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     //else
     //{
     //    ZCE_LOGMSG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_APPFRAME=%u,"
-    //        "snd_buffer_deque_[sz_deque-2]->size_of_buffer_=%u,"
-    //        "snd_buffer_deque_[sz_deque-1]->size_of_buffer_=%u.",
+    //        "snd_buffer_deque_[sz_deque-2]->size_of_capacity_=%u,"
+    //        "snd_buffer_deque_[sz_deque-1]->size_of_capacity_=%u.",
     //        sz_deque,
     //        soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
-    //        snd_buffer_deque_[sz_deque-2]->size_of_buffer_,
-    //        snd_buffer_deque_[sz_deque-1]->size_of_buffer_);
+    //        snd_buffer_deque_[sz_deque-2]->size_of_capacity_,
+    //        snd_buffer_deque_[sz_deque-1]->size_of_capacity_);
     //}
 }
 

@@ -4,7 +4,7 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2019年8月7日
-* @brief      rings_ptr,内部存放指针的循环队列，
+* @brief      ptr_rings,内部存放指针的循环队列，
 *
 *
 * @details   内部采用一个循环BUFFER存放atomic 指针，
@@ -35,27 +35,27 @@ namespace zce::lockfree
 *
 */
 template<class T >
-class rings_ptr
+class ptr_rings
 {
 public:
     ///构造函数，后面必须调用,initialize
-    rings_ptr() = default;
+    ptr_rings() = default;
 
     ///构造函数，同时完成初始化,后面无需调用再次调用initialize
-    explicit rings_ptr(size_t max_len)
+    explicit ptr_rings(size_t max_len)
     {
         assert(max_len > 0);
         initialize(max_len);
     }
 
     ///析构函数，释放空间
-    ~rings_ptr()
+    ~ptr_rings()
     {
         terminate();
     }
 
     ///初始化数据区，和构造函数干的事情基本一样，只是多了一步原来有数据就清理掉
-    ///initialize 不加锁，
+    ///initialize 不加锁，Not Thread-safe.
     void initialize(size_t max_len)
     {
         assert(max_len > 0);
@@ -72,7 +72,7 @@ public:
         }
     }
 
-    ///结束，完成，销毁
+    ///结束，完成，销毁。Not Thread-safe.
     void terminate()
     {
         clear();
@@ -95,13 +95,15 @@ public:
     ///尺寸空间
     inline size_t size() const
     {
-        if (ring_end_ >= ring_start_)
+        size_t start = ring_start_.load();
+        size_t end = ring_end_.load();
+        if (end >= start)
         {
-            return ring_end_ - ring_start_;
+            return end - start;
         }
         else
         {
-            return ring_end_ + ring_capacity_ - ring_start_;
+            return end + ring_capacity_ - start;
         }
     }
     ///返回空闲空间的大小
@@ -293,4 +295,4 @@ protected:
     ///存放数据的指针，
     std::atomic<T*> *vptr_ptr_ = nullptr;
 };
-};
+}

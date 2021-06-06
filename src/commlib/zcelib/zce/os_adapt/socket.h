@@ -15,8 +15,7 @@
 *             将所有的注释doxygen化，
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_SOCKET_H_
-#define ZCE_LIB_OS_ADAPT_SOCKET_H_
+#pragma once
 
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/time.h"
@@ -28,6 +27,15 @@ class zce::Time_Value;
 
 namespace zce
 {
+///sockaddr_storage 太长了，128个字节，搞个简单的少占用一点空间
+union sockaddr_ip
+{
+    //sockaddr_in 16个字节
+    sockaddr_in  in_;
+    //sockaddr_in6 28个字节
+    sockaddr_in6 in6_;
+};
+
 /*!
 * @brief      WINDOWS 的SOCKET必须调用一下初始化WSAStartup
 * @return     int 0成功，
@@ -351,19 +359,22 @@ inline int select(
 enum class HANDLE_READY
 {
     ///读事件
-    READ = 0x1,
+    READ = (1 << 1),
 
     ///写事件
-    WRITE = 0x2,
+    WRITE = (1 << 2),
 
     ///异常
-    EXCEPTION = 0x3,
-
-    ///ACCPET 事件，也是放在读的SET
-    ACCEPT = 0x4,
+    EXCEPTION = (1 << 3),
 
     ///连接成功，我为连接成功做了多少努力，你看不见
-    CONNECTED = 0x5,
+    CONNECTED = (1 << 4),
+
+    ///ACCPET 事件，也是放在读的SET
+    ACCEPT = (1 << 5),
+
+    /// iNotify通知事件，文件系统的改变通知
+    INOTIFY = (1 << 9),
 };
 
 /*!
@@ -373,6 +384,7 @@ enum class HANDLE_READY
 * @param[in,out] timeout_tv   超时的时间
 * @param[in]     ready_todo   等待什么事件（只能单个），@ref HANDLE_READY
 * @note          特别提醒，只能处理单个事件喔，不能同时处理读写,
+*                本来还想写一个handle_multi_ready的函数的，但感觉必要性很一般。
 */
 int handle_ready(ZCE_SOCKET handle,
                  zce::Time_Value* timeout_tv,
@@ -1810,7 +1822,7 @@ inline int zce::select(
 
     if (timeout_tv)
     {
-        //有函数讲内部的timv_val取出来
+        //有函数将内部的timv_val取出来
         select_tv = (*timeout_tv);
     }
 
@@ -2078,5 +2090,3 @@ inline int zce::gethostname(char* name, size_t name_len)
     return ::gethostname(name, name_len);
 #endif
 }
-
-#endif //ZCE_LIB_OS_ADAPT_SOCKET_H_

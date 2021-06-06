@@ -12,7 +12,7 @@ public:
     //构造函数，析构函数，赋值函数
     object_pool() = default;
     ~object_pool() = default;
-    object_pool(const object_pool &) = delete;
+    object_pool(const object_pool &) = default;
     object_pool & operator= (const object_pool &) = delete;
 
     /*!
@@ -142,7 +142,7 @@ protected:
     size_t extend_size_ = 0;
 
     //对象池子
-    zce::lordrings<POOL_OBJ*>   obj_pool_;
+    zce::lord_rings<POOL_OBJ*>   obj_pool_;
 
     //T的初始化函数，
     std::function <bool(POOL_OBJ*) > init_fun_;

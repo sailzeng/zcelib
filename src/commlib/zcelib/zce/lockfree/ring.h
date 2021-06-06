@@ -22,8 +22,8 @@ namespace zce::lockfree
 {
 /*!
 * @tparam    T 数据类型
-* @brief     LOCKFREE 的魔戒.循环链表LILO，里面存放的是数据的拷贝。
-*            如何实现的LOCKFREE以及避免ABA的。
+* @brief     LOCKFREE 的魔戒.循环链表LILO，里面存放的是数据的拷贝，可以多读读写。
+*            如何实现的LOCKFREE以及避免ABA的？
 *            整个循环链表又两部分表示，可读（有数据）区域，可写（空闲）区域，
 *            这些区域的表示方法都是前开后闭，都由2个ATOMIC的数据表示。
 *            数据区数据数量，由可读取数据得到
@@ -190,7 +190,7 @@ public:
     bool push_back(const T& value_data)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
-        size_t w_start = 0, w_end = 0;
+        size_t w_start = 0, w_end = 0, r_end;
         do
         {
             w_end = write_end_.load(std::memory_order_acquire);
@@ -209,22 +209,20 @@ public:
         //写入数据，直接放在队尾
         new (value_ptr_ + w_start) T(value_data);
 
-        //调整可读范围
-        bool ret = false;
+        //调整可读范围.只步进+1，所以稍微的不同步不影响任何使用
         do
         {
-            size_t expected = w_start;
-            ret = read_end_.compare_exchange_weak(expected,
-                                                  (w_start + 1) % rings_capacity_,
-                                                  std::memory_order_acq_rel);
-        } while (!ret);
+            r_end = read_end_;
+        } while (read_end_.compare_exchange_weak(r_end,
+                 (r_end + 1) % rings_capacity_,
+                 std::memory_order_acq_rel));
         return true;
     }
 
     ///从队列的前面pop并且得到一个数据
     bool pop_front(T& value_data)
     {
-        size_t r_start = 0, r_end = 0;
+        size_t r_start = 0, r_end = 0, w_end = 0;
         do
         {
             r_start = read_start_.load(std::memory_order_acquire);
@@ -240,14 +238,73 @@ public:
         value_data = value_ptr_[r_start];
         value_ptr_[r_start].~T();
 
-        bool ret = false;
         do
         {
-            size_t expected = (r_start - 1 + rings_capacity_) % rings_capacity_;
-            ret = write_end_.compare_exchange_weak(expected,
-                                                   r_start,
-                                                   std::memory_order_acq_rel);
-        } while (!ret);
+            w_end = write_end_;
+        } while (write_end_.compare_exchange_weak(w_end,
+                 (w_end + 1) % rings_capacity_,
+                 std::memory_order_acq_rel));
+        return true;
+    }
+
+    ///将一个数据放入队列的头部
+    bool push_front(const T& value_data)
+    {
+        //先调整可写入区域，然后写数据，在调整可读区域
+        size_t w_start = 0, w_end = 0, r_start = 0;
+        do
+        {
+            w_start = write_start_.load(std::memory_order_acquire);
+            w_end = write_end_.load(std::memory_order_acquire);
+
+            //如果可写入空间没了，已经满了
+            if (w_start == w_end)
+            {
+                return false;
+            }
+            //写结束步进-1
+        } while (!write_end_.compare_exchange_weak(w_end,
+                 (w_end > 0) ? w_end - 1 : rings_capacity_ - 1,
+                 std::memory_order_acq_rel));
+
+        //写入数据，直接放在队尾
+        new (value_ptr_ + w_end) T(value_data);
+
+        //调整可读范围,步进-1
+        do
+        {
+            r_start = read_start_;
+        } while (read_start_.compare_exchange_weak(r_start,
+                 (r_start > 0) ? r_start - 1 : rings_capacity_ - 1,
+                 std::memory_order_acq_rel));
+        return true;
+    }
+
+    ///从队列的前面pop并且得到一个数据
+    bool pop_back(T& value_data)
+    {
+        size_t r_start = 0, r_end = 0, w_start = 0;
+        do
+        {
+            r_start = read_start_.load(std::memory_order_acquire);
+            r_end = read_end_.load(std::memory_order_acquire);
+            if (r_end == r_start)
+            {
+                return false;
+            }
+        } while (!read_end_.compare_exchange_weak(r_end,
+                 (r_end > 0) ? r_end - 1 : rings_capacity_ - 1,
+                 std::memory_order_acq_rel));
+        //读取数据，
+        value_data = value_ptr_[r_end];
+        value_ptr_[r_end].~T();
+
+        do
+        {
+            w_start = write_start_;
+        } while (write_end_.compare_exchange_weak(w_start,
+                 (w_start > 0) ? w_start - 1 : rings_capacity_ - 1,
+                 std::memory_order_acq_rel));
         return true;
     }
 

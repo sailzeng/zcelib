@@ -7,7 +7,7 @@ class Ogre_Buffer_Storage BUFFER存储的
 class Ogre_Buffer_Storage
 {
     //
-    typedef zce::lordrings <Ogre4a_App_Frame*> SAIL_FRAME_BUFFER_POOL;
+    typedef zce::lord_rings <Ogre4a_App_Frame*> SAIL_FRAME_BUFFER_POOL;
 
 protected:
 

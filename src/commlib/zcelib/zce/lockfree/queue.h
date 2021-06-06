@@ -5,7 +5,7 @@
 namespace zce::lockfree
 {
 /*!
-* @brief      lockfree的
+* @brief      lockfree的Queue 队列
 *
 * @tparam     T
 * note        这个玩意测试性质非常大，主要就是为了满足我学习的爱好
@@ -53,7 +53,7 @@ public:
             node * old_next = old_tail->next_;
 
             //如果尾指针已经被移动了，则重新开始
-            if (old_tail != tail_ || )
+            if (old_tail != tail_)
             {
                 continue;
             }
@@ -124,13 +124,19 @@ public:
         }
         return true;
     }
+
+    size_t size()
+    {
+        return queue_size_;
+    }
+
 protected:
-    ///
+    ///队列的头部指针
     std::atomic <node *> head_;
-    ///
+    ///队列的尾部指针
     std::atomic <node *> tail_;
-    ///
-    size_t queue_size_;
+    ///队列的尺寸
+    std::atomic<size_t> queue_size_;
 };
 
 /*!

@@ -4,9 +4,9 @@
 namespace zce
 {
 //=========================================================================================
-//class buffer_cycle
+//class cycle_buffer
 
-buffer_cycle::~buffer_cycle()
+cycle_buffer::~cycle_buffer()
 {
     if (cycbuf_data_)
     {
@@ -15,7 +15,7 @@ buffer_cycle::~buffer_cycle()
     }
 }
 
-buffer_cycle::buffer_cycle(const buffer_cycle & others)
+cycle_buffer::cycle_buffer(const cycle_buffer & others)
     :size_of_cycle_(others.size_of_cycle_)
     , cycbuf_begin_(others.cycbuf_begin_)
     , cycbuf_end_(others.cycbuf_end_)
@@ -27,7 +27,7 @@ buffer_cycle::buffer_cycle(const buffer_cycle & others)
     }
 }
 
-buffer_cycle::buffer_cycle(buffer_cycle && others) noexcept
+cycle_buffer::cycle_buffer(cycle_buffer && others) noexcept
     :size_of_cycle_(others.size_of_cycle_)
     , cycbuf_begin_(others.cycbuf_begin_)
     , cycbuf_end_(others.cycbuf_end_)
@@ -39,7 +39,7 @@ buffer_cycle::buffer_cycle(buffer_cycle && others) noexcept
     others.cycbuf_data_ = nullptr;
 }
 
-buffer_cycle& buffer_cycle::operator=(const buffer_cycle & others)
+cycle_buffer& cycle_buffer::operator=(const cycle_buffer & others)
 {
     if (this == &others)
     {
@@ -61,7 +61,7 @@ buffer_cycle& buffer_cycle::operator=(const buffer_cycle & others)
     return *this;
 }
 
-buffer_cycle& buffer_cycle::operator=(buffer_cycle && others) noexcept
+cycle_buffer& cycle_buffer::operator=(cycle_buffer && others) noexcept
 {
     if (this == &others)
     {
@@ -78,7 +78,7 @@ buffer_cycle& buffer_cycle::operator=(buffer_cycle && others) noexcept
     return *this;
 }
 
-void buffer_cycle::clear()
+void cycle_buffer::clear()
 {
     cycbuf_begin_ = 0;
     cycbuf_end_ = 0;
@@ -87,7 +87,7 @@ void buffer_cycle::clear()
 #endif
 }
 
-bool buffer_cycle::initialize(size_t size_of_buffer)
+bool cycle_buffer::initialize(size_t size_of_buffer)
 {
     assert(cycbuf_data_ == nullptr);
     size_of_cycle_ = size_of_buffer + JUDGE_FULL_INTERVAL;
@@ -98,29 +98,31 @@ bool buffer_cycle::initialize(size_t size_of_buffer)
     return true;
 }
 
-///得到FREE空间的快照
-size_t buffer_cycle::free()
+//得到已经使用空间的尺寸
+size_t cycle_buffer::size()
 {
-    //计算尺寸
-    size_t sz_free;
     if (cycbuf_begin_ == cycbuf_end_)
     {
-        sz_free = size_of_cycle_;
+        return 0;
     }
     else if (cycbuf_begin_ < cycbuf_end_)
     {
-        sz_free = size_of_cycle_ - (cycbuf_end_ - cycbuf_begin_);
+        return (cycbuf_end_ - cycbuf_begin_);
     }
     else
     {
-        sz_free = cycbuf_begin_ - cycbuf_end_;
+        return size_of_cycle_ + cycbuf_end_ - cycbuf_begin_ - JUDGE_FULL_INTERVAL;
     }
-    sz_free = sz_free - JUDGE_FULL_INTERVAL;
-    return sz_free;
 }
 
-//将一个data放入尾部
-bool buffer_cycle::push_end(const char * data, size_t data_len)
+//得到FREE空间
+size_t cycle_buffer::free()
+{
+    return size_of_cycle_ - size() - JUDGE_FULL_INTERVAL;
+}
+
+//将一个data_len长度数据data放入cycle_buffer尾部
+bool cycle_buffer::push_end(const char * data, size_t data_len)
 {
     assert(data != NULL);
     //检查队列的空间是否够用
@@ -150,17 +152,16 @@ bool buffer_cycle::push_end(const char * data, size_t data_len)
     return true;
 }
 
-//
-bool buffer_cycle::pop_front(char * const data, size_t data_len)
+//从cycle_buffer头部，取出一个data_len长度的数据放入data
+bool cycle_buffer::pop_front(char * const data, size_t data_len)
 {
     assert(data != NULL && data_len > 0);
 
-    //检查是否为空
-    if (empty() == true)
+    //检查是否有数据给他取走
+    if (size() < data_len)
     {
         return false;
     }
-
     char* pbegin = cycbuf_data_ + cycbuf_begin_;
 
     //如果被分为2截
@@ -183,9 +184,9 @@ bool buffer_cycle::pop_front(char * const data, size_t data_len)
 }
 
 //=========================================================================================
-//class buffer_queue
+//class queue_buffer
 
-buffer_queue::~buffer_queue()
+queue_buffer::~queue_buffer()
 {
     if (buffer_data_)
     {
@@ -193,14 +194,14 @@ buffer_queue::~buffer_queue()
         buffer_data_ = nullptr;
     }
 }
-buffer_queue::buffer_queue(const buffer_queue& others) :
-    size_of_buffer_(others.size_of_buffer_),
+queue_buffer::queue_buffer(const queue_buffer& others) :
+    size_of_capacity_(others.size_of_capacity_),
     size_of_use_(others.size_of_use_),
     buffer_data_(nullptr)
 {
-    if (size_of_buffer_)
+    if (size_of_capacity_)
     {
-        buffer_data_ = new char[size_of_buffer_];
+        buffer_data_ = new char[size_of_capacity_];
         if (size_of_use_)
         {
             ::memcpy(buffer_data_, others.buffer_data_, size_of_use_);
@@ -208,8 +209,8 @@ buffer_queue::buffer_queue(const buffer_queue& others) :
     }
 }
 
-buffer_queue::buffer_queue(buffer_queue&& others) noexcept :
-    size_of_buffer_(others.size_of_buffer_),
+queue_buffer::queue_buffer(queue_buffer&& others) noexcept :
+    size_of_capacity_(others.size_of_capacity_),
     size_of_use_(others.size_of_use_),
     buffer_data_(others.buffer_data_)
 {
@@ -217,7 +218,7 @@ buffer_queue::buffer_queue(buffer_queue&& others) noexcept :
 }
 
 //赋值函数
-buffer_queue& buffer_queue::operator=(const buffer_queue& others)
+queue_buffer& queue_buffer::operator=(const queue_buffer& others)
 {
     if (buffer_data_)
     {
@@ -228,9 +229,9 @@ buffer_queue& buffer_queue::operator=(const buffer_queue& others)
     {
         return *this;
     }
-    size_of_buffer_ = others.size_of_buffer_;
+    size_of_capacity_ = others.size_of_capacity_;
     size_of_use_ = others.size_of_use_;
-    buffer_data_ = new char[size_of_buffer_];
+    buffer_data_ = new char[size_of_capacity_];
     if (size_of_use_)
     {
         ::memcpy(buffer_data_, others.buffer_data_, size_of_use_);
@@ -238,50 +239,72 @@ buffer_queue& buffer_queue::operator=(const buffer_queue& others)
     return *this;
 }
 //右值赋值函数，
-buffer_queue& buffer_queue::operator=(buffer_queue&& others) noexcept
+queue_buffer& queue_buffer::operator=(queue_buffer&& others) noexcept
 {
     if (this == &others)
     {
         return *this;
     }
-    size_of_buffer_ = others.size_of_buffer_;
+    size_of_capacity_ = others.size_of_capacity_;
     size_of_use_ = others.size_of_use_;
     buffer_data_ = others.buffer_data_;
 
-    others.size_of_buffer_ = 0;
+    others.size_of_capacity_ = 0;
     others.size_of_use_ = 0;
     others.buffer_data_ = nullptr;
     return *this;
 }
 
-bool buffer_queue::initialize(size_t size_of_buffer)
+bool queue_buffer::initialize(size_t size_of_buffer)
 {
     assert(buffer_data_ == nullptr);
-    size_of_buffer_ = size_of_buffer;
+    size_of_capacity_ = size_of_buffer;
     buffer_data_ = new char[size_of_buffer];
 
     clear();
     return true;
 }
 
-void buffer_queue::clear()
+void queue_buffer::clear()
 {
     size_of_use_ = 0;
 #if defined DEBUG || defined _DEBUG
-    ::memset(buffer_data_, 0, size_of_buffer_);
+    ::memset(buffer_data_, 0, size_of_capacity_);
 #endif
 }
 
 //
-void buffer_queue::fill_write_data(const size_t szdata, const char* data)
+bool queue_buffer::set(const char* data, const size_t szdata)
 {
+    if (szdata > size_of_capacity_)
+    {
+        return false;
+    }
     ::memcpy(buffer_data_, data, szdata);
-    size_of_use_ += szdata;
-    //
+    size_of_use_ = szdata;
+    return true;
 }
+
 //
-void buffer_queue::get_read_data(size_t& szdata, char* data)
+bool queue_buffer::get(char* data, size_t& szdata)
 {
+    if (szdata < size_of_use_)
+    {
+        return false;
+    }
     ::memcpy(data, buffer_data_, szdata);
+    szdata = size_of_use_;
+    return true;
+}
+
+bool queue_buffer::add(const char* data, const size_t szdata)
+{
+    if (szdata > size_of_capacity_ - size_of_use_)
+    {
+        return false;
+    }
+    ::memcpy(buffer_data_ + size_of_use_, data, szdata);
+    size_of_use_ = szdata;
+    return true;
 }
 }

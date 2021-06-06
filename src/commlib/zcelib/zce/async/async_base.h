@@ -173,7 +173,7 @@ class Async_Obj_Mgr : public zce::Timer_Handler
 protected:
 
     ///异步对象池子，
-    typedef zce::lordrings<Async_Object*>  ASYNC_OBJECT_POOL;
+    typedef zce::lord_rings<Async_Object*>  ASYNC_OBJECT_POOL;
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {

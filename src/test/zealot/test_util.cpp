@@ -1,6 +1,7 @@
 #include "predefine.h"
 
-#include "zce/util/random.h"
+#include <zce/util/random.h>
+#include <zce/util/cycbuf_node.h>
 
 //仅仅用于测试，不实现完全了
 class random_libc : public zce::t_random_base<0, 0x00007FFF>

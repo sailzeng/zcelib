@@ -89,10 +89,6 @@
 #include <zce/sqlite/sqlite_handler.h>
 #include <zce/sqlite/sqlite_stmt.h>
 
-#include <zce/util/cycbuf_node.h>
-#include <zce/util/buffer.h>
-#include <zce/pool/object_pool.h>
-
 #include <thread>
 #include <mutex>
 

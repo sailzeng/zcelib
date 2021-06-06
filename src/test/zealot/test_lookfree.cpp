@@ -2,6 +2,7 @@
 #include <zce/lockfree/kfifo.h>
 #include <zce/lockfree/ring.h>
 #include <zce/lockfree/queue.h>
+#include <zce/lockfree/ptr_ring.h>
 
 int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {
@@ -93,7 +94,7 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-zce::lockfree::rings_ptr<int> g_ring_ptr(10240);
+zce::lockfree::ptr_rings<int> g_ring_ptr(10240);
 std::mutex mtx;
 
 int thread_do_push(int push_start, size_t push_num)
