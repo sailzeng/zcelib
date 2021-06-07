@@ -27,17 +27,17 @@ public:
     {
         bool ret = false;
         bucket_number_ = bucket_num;
-        bucket_capacity_.assign(bucket_size_ary, bucket_size_ary + bucket_num);
-        std::sort(bucket_capacity_.begin(), bucket_capacity_.end());
+        bucket_bufsize_.assign(bucket_size_ary, bucket_size_ary + bucket_num);
+        std::sort(bucket_bufsize_.begin(), bucket_bufsize_.end());
         pools_.resize(bucket_num);
         for (size_t i = 0; i < bucket_num; ++i)
         {
             std::function<bool(zce::queue_buffer *)> init_fun =
-                std::bind(&zce::queue_buffer::initialize, 
+                std::bind(&zce::queue_buffer::initialize,
                           std::placeholders::_1,
-                          bucket_capacity_[i]);
+                          bucket_bufsize_[i]);
             std::function<void(zce::queue_buffer *)> clear_fun =
-                std::bind(&zce::queue_buffer::clear, 
+                std::bind(&zce::queue_buffer::clear,
                           std::placeholders::_1);
 
             ret = pools_[i].initialize(init_node_size,
@@ -79,11 +79,15 @@ public:
     }
 
     //
-    void dump()
+    void dump(zce::LOG_PRIORITY log_priority)
     {
         for (size_t i = 0; i < bucket_number_; i++)
         {
-
+            ZCE_LOG(log_priority, "Buffer Pool [%d] bucket bufsize [%u] capacity[%u] size[%u]",
+                    i,
+                    bucket_bufsize_[i],
+                    pools_[i].capacity(),
+                    pools_[i].pools_());
         }
     }
 
@@ -94,7 +98,7 @@ protected:
     {
         for (size_t i = 0; i < bucket_number_; i++)
         {
-            if (bucket_capacity_[i] >= expect_buf_size)
+            if (bucket_bufsize_[i] >= expect_buf_size)
             {
                 return &pools_[i];
             }
@@ -108,7 +112,7 @@ protected:
     //桶的数量
     size_t bucket_number_;
     //桶的容量
-    std::vector<size_t> bucket_capacity_;
+    std::vector<size_t> bucket_bufsize_;
     //桶组成的池子
     std::vector<bucket> pools_;
 };

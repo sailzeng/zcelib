@@ -257,7 +257,7 @@ inline ssize_t send(ZCE_SOCKET handle,
 * @return     ssize_t  -1表示失败（失败原因从errno获得），0表示端口被断开，>0表示接收到的数据 数据长度
 * @param[in]  handle   操作的句柄
 * @param[out] buf      接收数据的buffer
-* @param[out] len      接收数据的buffer的长度
+* @param[in]  len      接收数据的buffer的长度
 * @param[in]  flags    接受操作的flag 默认为0，MSG_DONTWAI LINUX支持，相当于非阻塞接收
 * @param[out] from     数据来源的地址，from可以和from_len一起为NULL,表示不关心从哪儿来的数据
 * @param[out] from_len 数据来源地址的长度
