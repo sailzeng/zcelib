@@ -82,7 +82,7 @@ public:
     }
 
     //归还一个对象
-    void return_object(POOL_OBJ* ptr)
+    void free_object(POOL_OBJ* ptr)
     {
         clear_fun_(ptr);
         obj_pool_.push_back(ptr);

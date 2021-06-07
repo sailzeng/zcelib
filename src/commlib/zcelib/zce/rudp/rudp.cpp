@@ -12,10 +12,10 @@ int core_init(CORE *core,
     return 0;
 }
 
-int core_recieve(CORE * /*core*/,
+int core_recieve(CORE * core,
                  ZCE_SOCKET socket,
-                 RUDP *& /*rudp*/,
-                 RUDP */*new_rudp*/)
+                 RUDP *& rudp,
+                 RUDP *new_rudp)
 {
     HANDLE handle;
     handle.udp_socket_ = socket;
@@ -28,8 +28,8 @@ int core_recieve(CORE * /*core*/,
         return ret;
     }
     handle.local_ = local_ip;
-    //zce::sockaddr_ip remote_ip;
-    //ret = zce::recvfrom(socket, )
+    zce::sockaddr_ip remote_ip;
+    ret = zce::recvfrom(socket, )
     return 0;
 }
 }

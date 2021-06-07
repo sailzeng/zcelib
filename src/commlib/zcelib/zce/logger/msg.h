@@ -68,24 +68,6 @@ public:
                              const char* str_format,
                              ...);
 
-    //为什么要这样麻烦,问题在于不能用宏(__VA_ARGS__)解决问题(部分编译器不支持,VS2003),
-#if _MSC_VER <= 1300
-
-    //使用 RS_TRACE 调试级别输出
-    static void debug_traceex(const char*, ...);
-    //使用 RS_DEBUG 调试级别输出
-    static void debug_debugex(const char* str_format, ...);
-    //使用 RS_INFO 调试级别输出
-    static void debug_infoex(const char* str_format, ...);
-    //使用 RS_ERROR 错误级别输出
-    static void debug_errorex(const char* str_format, ...);
-    //使用 RS_ALERT 严重错误级别输出
-    static void debug_alertex(const char* str_format, ...);
-    //使用 RS_FATAL 致命错误级别输出
-    static void debug_fatalex(const char* str_format, ...);
-
-#endif //#if _MSC_VER <= 1300
-
 protected:
 
     ///多行输出对象的最大长度
