@@ -167,8 +167,8 @@ public:
 
     void terminate();
 
-    int receive(PEER *& recv_rudp,
-                bool *new_rudp);
+    //发送应答
+    void send_head();
 
     //int register(uint32_t session_id,
     //             PEER *rudp);
@@ -182,9 +182,11 @@ protected:
     //
     ZCE_SOCKET udp_socket_ = ZCE_INVALID_SOCKET;
     //
-    char *receive_buffer_ = nullptr;
+    char *recv_buffer_ = nullptr;
+
     //
-    size_t receive_len_ = 0;
+    char *send_buffer_ = nullptr;
+
     //
     uint32_t session_gen_ = 19190504;
     //
