@@ -87,7 +87,7 @@ public:
                     i,
                     bucket_bufsize_[i],
                     pools_[i].capacity(),
-                    pools_[i].pools_());
+                    pools_[i].size());
         }
     }
 

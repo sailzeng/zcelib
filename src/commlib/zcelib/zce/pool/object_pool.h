@@ -86,24 +86,24 @@ public:
     {
         clear_fun_(ptr);
         obj_pool_.push_back(ptr);
-        return ptr;
+        return;
     }
 
     inline size_t size()
     {
-        return obj_pool_->size();
+        return obj_pool_.size();
     }
     inline size_t capacity()
     {
-        return obj_pool_->capacity();
+        return obj_pool_.capacity();
     }
     inline bool empty()
     {
-        return obj_pool_->empty();
+        return obj_pool_.empty();
     }
     inline bool full()
     {
-        return obj_pool_->full();
+        return obj_pool_.full();
     }
 
 protected:

@@ -322,6 +322,7 @@
 #include <memory>
 #include <limits>
 #include <type_traits>
+#include <random>
 
 //hash_map,hash_set的头文件包含处理要麻烦一点
 
@@ -384,7 +385,7 @@ typedef SSIZE_T ssize_t;
 typedef int ssize_t;
 #endif
 
-//VC++ 2010，以及遵守这个标准了
+//VC++ 2010，已经遵守这个标准了
 #if _MSC_VER >= 1500
 #include <stdint.h>
 #include <inttypes.h>

@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
                                                  ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
                                                  static_cast<int>(LOG_HEAD::NONE));
 
-    test_pool(argc, argv);
+    test_random_repeat_number(argc, argv);
 
     return 0;
 

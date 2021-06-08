@@ -10,7 +10,7 @@ void RUDP_HEAD::hton()
 {
     u32_1_copy_ = htonl(u32_1_copy_);
     session_id_ = htonl(session_id_);
-    serial_number_ = htonl(serial_number_);
+    serial_id_ = htonl(serial_id_);
     ack_ = htonl(ack_);
     uno1_ = htonl(uno1_);
     uno2_ = htonl(uno2_);
@@ -21,7 +21,7 @@ void RUDP_HEAD::ntoh()
 {
     u32_1_copy_ = ntohl(u32_1_copy_);
     session_id_ = ntohl(session_id_);
-    serial_number_ = ntohl(serial_number_);
+    serial_id_ = ntohl(serial_id_);
     ack_ = ntohl(ack_);
     uno1_ = ntohl(uno1_);
     uno2_ = ntohl(uno2_);
@@ -31,22 +31,32 @@ void RUDP_HEAD::ntoh()
 //class CORE
 
 int CORE::initialize(int family,
-                     size_t send_pool_num,
-                     size_t recv_pool_num)
+                     size_t /*send_pool_num*/,
+                     size_t /*recv_pool_num*/)
 {
     recv_buffer_ = new char[MAX_FRAME_LEN];
     send_buffer_ = new char[MAX_FRAME_LEN];
     family_ = family;
+    std::random_device rd;
+    random_gen_.seed(rd());
     return 0;
 }
 
-int CORE::receive(PEER *& recv_rudp,
-                  bool *new_rudp)
+void CORE::terminate()
 {
-    int ret = 0;
+    delete recv_buffer_;
+    recv_buffer_ = nullptr;
+    delete send_buffer_;
+    send_buffer_ = nullptr;
+}
+
+int CORE::receive(PEER *& /*recv_rudp*/,
+                  bool * /*new_rudp*/)
+{
     zce::sockaddr_ip remote_ip;
+    socklen_t sz_addr = sizeof(zce::sockaddr_ip);
     ssize_t ssz_recv = zce::recvfrom(udp_socket_,
-                                     recv_buffer_,
+                                     (void *)recv_buffer_,
                                      MAX_FRAME_LEN,
                                      0,
                                      (sockaddr*)&remote_ip,
@@ -66,11 +76,29 @@ int CORE::receive(PEER *& recv_rudp,
 
     RUDP_HEAD * head = (RUDP_HEAD *)recv_buffer_;
     head->ntoh();
-    if (head->u32_1_.len_ != ssz_recv)
+    if (head->u32_1_.len_ != (uint32_t)ssz_recv)
     {
         return -2;
     }
-
+    if (head->session_id_ == 0)
+    {
+        if (head->u32_1_.flag_ & SYN)
+        {
+            uint32_t session_id = random_gen_();
+            uint32_t serial_id = random_gen_();
+        }
+        else
+        {
+        }
+    }
+    else
+    {
+        auto iter = peer_map_.find(head->session_id_);
+        if (iter == peer_map_.end())
+        {
+        }
+        //PEER * peer = iter->second;
+    }
     return 0;
 }
 

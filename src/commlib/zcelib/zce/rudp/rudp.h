@@ -68,7 +68,7 @@ public:
         uint32_t u32_1_copy_ = 0;
     };
     uint32_t session_id_ = 0;
-    uint32_t serial_number_ = 0;
+    uint32_t serial_id_ = 0;
     uint32_t ack_ = 0;
     uint32_t uno1_ = 0;
     uint32_t uno2_ = 0;
@@ -83,14 +83,6 @@ public:
 #pragma pack ()
 
 //=====================================================================================
-
-enum class STATE
-{
-    CLOSE = 0,
-    SYN_SND = 1,
-    SYN_RCV = 2,
-    ESTABLISHED = 3,
-};
 
 //
 static constexpr size_t MTU_WAN = 576;
@@ -125,6 +117,14 @@ class PEER
 {
 protected:
 
+    enum class STATE
+    {
+        CLOSE = 0,
+        SYN_SND = 1,
+        SYN_RCV = 2,
+        ESTABLISHED = 3,
+    };
+
     typedef zce::lord_rings <RECV_BUFFER *> RECV_BUFFER_LIST;
     typedef zce::lord_rings <SEND_BUFFER *> SEND_BUFFER_LIST;
 
@@ -143,7 +143,7 @@ protected:
     RECV_BUFFER_LIST recv_list_;
 
     //
-    STATE state_ = CLOSE;
+    STATE state_ = STATE::CLOSE;
     //
     size_t mtu_ = MSS_ETHERNET;
     //
@@ -167,6 +167,9 @@ public:
 
     void terminate();
 
+    int receive(PEER *& recv_rudp,
+                bool *new_rudp);
+
     //发送应答
     void send_head();
 
@@ -181,16 +184,17 @@ protected:
     int family_ = AF_INET;
     //
     ZCE_SOCKET udp_socket_ = ZCE_INVALID_SOCKET;
+
     //
     char *recv_buffer_ = nullptr;
-
     //
     char *send_buffer_ = nullptr;
 
+    //随机数发生器，用于生产session id，和序号ID serial_id
+    std::mt19937  random_gen_;
+
     //
-    uint32_t session_gen_ = 19190504;
-    //
-    std::unordered_map<uint32_t, PEER*>  rudp_map_;
+    std::unordered_map<uint32_t, PEER*>  peer_map_;
 };
 
 int open(zce::rudp::PEER *handle,
@@ -198,7 +202,6 @@ int open(zce::rudp::PEER *handle,
          CORE *rudp_core);
 
 int open(zce::rudp::PEER *handle,
-         CORE *rudp_core,
          const sockaddr* remote_addr,
          socklen_t addrlen);
 
