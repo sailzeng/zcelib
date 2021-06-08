@@ -36,8 +36,9 @@ namespace zce
 /*!
 * @tparam    T 数据类型
 * @brief     魔戒的的迭代器，在魔戒类里面有typedef成为iterator，
-* @note      记住lordrings的迭代器比vector更加危险，因为他的空间是循环利用的，任何一次push,pop操作都会让迭代器失效。
-*            所以使用的时候当心，
+* @note      记住lordrings的迭代器比vector更加危险，因为他的空间是循环利用的，任何一次push,
+*            pop操作都会让迭代器失效。所以使用的时候当心，
+*            
 *            个人觉得迭代器的作用不大，因为魔戒的使用主要头尾，几乎不用遍历使用。
 */
 template <class T >
@@ -367,7 +368,8 @@ public:
             else
             {
                 //将起始位置调整覆盖，并且调整起始和结束位置
-                lordring_start_ = (lordring_start_ > 0) ? lordring_start_ - 1 : lordring_capacity_ - 1;
+                lordring_start_ = (lordring_start_ > 0) ? 
+                    lordring_start_ - 1 : lordring_capacity_ - 1;
                 lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
                 vptr_ptr_[lordring_start_] = value_data;
                 return true;

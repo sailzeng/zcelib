@@ -7,6 +7,83 @@
 
 namespace zce::rudp
 {
+//=====================================================================================
+
+enum FLAG
+{
+    //客户端发往服务器的第一帧,标志，让服务器告知SESSION ID
+    SYN = (0x1 > 1),
+    //ACK应答数据，表示ack_
+    ACK = (0x1 > 2),
+    //带有数据
+    PSH = (0x1 > 3),
+    //
+    RST = (0x1 > 4),
+    //link MTU TEST，链路的MTU测试帧
+    LMT = (0x1 > 5),
+};
+
+#pragma pack (1)
+
+class RUDP_HEAD
+{
+public:
+
+    //构造函数，复制函数，禁止大家都可以用的.
+    RUDP_HEAD() = default;
+    RUDP_HEAD& operator = (const RUDP_HEAD& other) = default;
+    //析构函数
+    ~RUDP_HEAD() = default;
+
+    ///将头部数据转换网络序
+    void hton();
+    ///将头部数据转换为本地序
+    void ntoh();
+
+protected:
+
+    struct U32_ONE
+    {
+    public:
+#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+        uint32_t len_ : 12;
+        uint32_t flag_ : 6;
+        uint32_t mtu_type_ : 2;
+        uint32_t windows_num_ : 12;
+#else
+        uint32_t windows_num_ : 12;
+        uint32_t mtu_type_ : 2;
+        uint32_t flag_ : 6;
+        uint32_t len_ : 12;
+#endif
+    };
+
+public:
+
+    union
+    {
+        ///frame 选项
+        U32_ONE  u32_1_;
+        /// 辅助编大小端转换
+        uint32_t u32_1_copy_ = 0;
+    };
+    uint32_t session_id_ = 0;
+    uint32_t serial_number_ = 0;
+    uint32_t ack_ = 0;
+    uint32_t uno1_ = 0;
+    uint32_t uno2_ = 0;
+};
+
+class RUDP_FRAME : public RUDP_HEAD
+{
+public:
+    char data_[1];
+};
+
+#pragma pack ()
+
+//=====================================================================================
+
 enum class STATE
 {
     CLOSE = 0,
@@ -14,37 +91,6 @@ enum class STATE
     SYN_RCV = 2,
     ESTABLISHED = 3,
 };
-
-enum FLAG
-{
-    //�ͻ��˷����������ĵ�һ֡,��־���÷�������֪SESSION ID
-    SYN = (0x1 > 1),
-    //
-    ACK = (0x1 > 2),
-    //��������
-    PSH = (0x1 > 3),
-    //
-    RST = (0x1 > 4),
-    //
-    MTT = (0x1 > 5),
-};
-
-//
-#pragma pack (1)
-
-class RUDP_HEAD
-{
-    uint32_t len_ : 12;
-    uint32_t flag_ : 8;
-    uint32_t windows_num_ : 12;
-    uint32_t session_id_;
-    uint32_t serial_number_;
-    uint32_t ack_;
-    uint32_t uno1_;
-    uint32_t uno2_;
-    char data_[1];
-};
-#pragma pack ()
 
 //
 static constexpr size_t MTU_WAN = 576;
@@ -55,8 +101,10 @@ static constexpr size_t MTU_ETHERNET = 1480;
 //
 static constexpr size_t MSS_ETHERNET = 1480 - 20 - 8;
 
-//������ݴ����ĳ��ȣ����ע��һ�£���ʵ��󳤶�ֻ������MSS_ETHERNET��+4 ��Ŀ����Ϊ�˷����ж�����
-static constexpr size_t MAX_PROCESS_LEN = MSS_ETHERNET + 4;
+//最大数据处理的长度，这儿注意一下，其实最大长度只可能是MSS_ETHERNET，+4 的目的是为了方便判定错误
+static constexpr size_t MAX_FRAME_LEN = MSS_ETHERNET + 4;
+//
+static constexpr size_t MIN_FRAME_LEN = sizeof(RUDP_HEAD);
 
 //
 static constexpr size_t MAX_NUM_SEND_LIST = 512;
@@ -73,11 +121,6 @@ struct SEND_BUFFER
 };
 
 //=====================================================================================
-
-//=====================================================================================
-
-class CORE;
-
 class PEER
 {
 protected:
@@ -87,7 +130,7 @@ protected:
 
 protected:
     //
-    uint32_t session_id_;
+    uint32_t session_id_ = 0;
 
     //
     ZCE_SOCKET udp_socket_ = ZCE_INVALID_SOCKET;
@@ -100,7 +143,7 @@ protected:
     RECV_BUFFER_LIST recv_list_;
 
     //
-    STATE state_;
+    STATE state_ = CLOSE;
     //
     size_t mtu_ = MSS_ETHERNET;
     //
@@ -108,37 +151,42 @@ protected:
 };
 
 //=====================================================================================
-
+///RUDP core，服务器端用的类
 class CORE
 {
-    int initialize(CORE *core,
-                   size_t send_pool_num,
-                   size_t recv_pool_num,
-                   int family);
+public:
+    CORE() = default;
+    CORE(const CORE&) = default;
+    CORE& operator = (const CORE & other) = default;
+    //析构函数
+    ~CORE() = default;
 
-    int terminate(CORE *core);
+    int initialize(int family,
+                   size_t send_pool_num,
+                   size_t recv_pool_num);
+
+    void terminate();
 
     int receive(PEER *& recv_rudp,
                 bool *new_rudp);
 
-    int core_register(CORE *core,
-                      HANDLE &handle,
-                      PEER *rudp);
+    //int register(uint32_t session_id,
+    //             PEER *rudp);
 
-    int core_cancel(CORE *core,
-                    HANDLE &handle);
+    //int cancel(uint32_t session_id,
+    //           HANDLE &handle);
 
-public:
+protected:
     //
-    ZCE_SOCKET udp_socket_;
-
-    int family_;
-
-    char *receive_buffer_;
-
-    size_t receive_len_;
+    int family_ = AF_INET;
     //
-    uint32_t session_gen_;
+    ZCE_SOCKET udp_socket_ = ZCE_INVALID_SOCKET;
+    //
+    char *receive_buffer_ = nullptr;
+    //
+    size_t receive_len_ = 0;
+    //
+    uint32_t session_gen_ = 19190504;
     //
     std::unordered_map<uint32_t, PEER*>  rudp_map_;
 };

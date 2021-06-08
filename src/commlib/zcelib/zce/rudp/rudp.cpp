@@ -4,37 +4,50 @@
 namespace zce::rudp
 {
 //=================================================================================================
+//class RUDP_HEAD
+
+void RUDP_HEAD::hton()
+{
+    u32_1_copy_ = htonl(u32_1_copy_);
+    session_id_ = htonl(session_id_);
+    serial_number_ = htonl(serial_number_);
+    ack_ = htonl(ack_);
+    uno1_ = htonl(uno1_);
+    uno2_ = htonl(uno2_);
+}
+
+//灏嗘墍鏈夌殑uint16_t,uint32_t杞崲涓烘湰鍦板簭
+void RUDP_HEAD::ntoh()
+{
+    u32_1_copy_ = ntohl(u32_1_copy_);
+    session_id_ = ntohl(session_id_);
+    serial_number_ = ntohl(serial_number_);
+    ack_ = ntohl(ack_);
+    uno1_ = ntohl(uno1_);
+    uno2_ = ntohl(uno2_);
+}
 
 //=================================================================================================
-int core_init(CORE *core,
-              size_t /*send_pool_num*/,
-              size_t /*recv_pool_num*/,
-              int family)
+//class CORE
+
+int CORE::initialize(int family,
+                     size_t send_pool_num,
+                     size_t recv_pool_num)
 {
-    core->family_ = family;
+    recv_buffer_ = new char[MAX_FRAME_LEN];
+    send_buffer_ = new char[MAX_FRAME_LEN];
+    family_ = family;
     return 0;
 }
 
-int core_receive(CORE * core,
-                 ZCE_SOCKET socket,
-                 PEER *&recv_rudp,
-                 bool *new_rudp)
+int CORE::receive(PEER *& recv_rudp,
+                  bool *new_rudp)
 {
-    HANDLE handle;
-    handle.udp_socket_ = socket;
     int ret = 0;
-    zce::sockaddr_ip local_ip;
-    socklen_t sz_addr = sizeof(zce::sockaddr_ip);
-    ret = zce::getsockname(socket, (sockaddr*)&local_ip, &sz_addr);
-    if (ret)
-    {
-        return ret;
-    }
-    handle.local_ = local_ip;
     zce::sockaddr_ip remote_ip;
-    ssize_t ssz_recv = zce::recvfrom(socket,
-                                     core->receive_buffer_,
-                                     MAX_PROCESS_LEN,
+    ssize_t ssz_recv = zce::recvfrom(udp_socket_,
+                                     recv_buffer_,
+                                     MAX_FRAME_LEN,
                                      0,
                                      (sockaddr*)&remote_ip,
                                      &sz_addr);
@@ -44,27 +57,20 @@ int core_receive(CORE * core,
     }
     else
     {
-        //收到的数据长度不可能大于以太网的MSS
-        if (ssz_recv > MSS_ETHERNET)
+        //鏀跺埌鐨勬暟鎹暱搴︿笉鍙兘澶т簬浠ュお缃戠殑MSS
+        if (ssz_recv > MSS_ETHERNET || ssz_recv < MIN_FRAME_LEN)
         {
-            return -1;
+            return -2;
         }
     }
-    core->receive_len_ = ssz_recv;
-    handle.remote_ = remote_ip;
-    auto iter = core->rudp_map_.find(handle);
-    if (iter != core->rudp_map_.end())
+
+    RUDP_HEAD * head = (RUDP_HEAD *)recv_buffer_;
+    head->ntoh();
+    if (head->u32_1_.len_ != ssz_recv)
     {
-        recv_rudp = iter.second();
+        return -2;
     }
-    else
-    {
-        *new_rudp = true;
-        recv_rudp = new PEER;
-        recv_rudp->hanlde_ = handle;
-        recv_rudp->core
-            core->rudp_map_.insert();
-    }
+
     return 0;
 }
 
