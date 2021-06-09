@@ -1,5 +1,6 @@
 #pragma once
 
+#include "zce/logger/logging.h"
 #include "zce/util/lord_rings.h"
 
 namespace zce

@@ -2,6 +2,7 @@
 
 #include "zce/util/lord_rings.h"
 #include "zce/util/buffer.h"
+#include "zce/pool/buffer_pool.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/socket.h"
 
@@ -83,7 +84,8 @@ public:
 #pragma pack ()
 
 //=====================================================================================
-
+size_t BUF_BUCKET_NUM = 8;
+size_t BUF_BUCKET_SIZE_ARY[] = { 64, 128,256,512,768,1024,1280,1536 };
 //
 static constexpr size_t MTU_WAN = 576;
 //
@@ -103,19 +105,19 @@ static constexpr size_t MAX_NUM_SEND_LIST = 512;
 //
 static constexpr size_t MAX_NUM_RECV_LIST = 512;
 
-typedef zce::queue_buffer RECV_BUFFER;
-struct SEND_BUFFER
-{
-    zce::queue_buffer *buf_queue_;
-    uint64_t send_clock_;
-    uint64_t ack_clock_;
-    size_t fail_num_;
-};
-
 //=====================================================================================
 class PEER
 {
 protected:
+
+    enum class MODEL
+    {
+        PEER_INVALID = 0,
+        //
+        PEER_CLIENT = 1,
+        //
+        PEER_CORE_CREATE = 1,
+    };
 
     enum class STATE
     {
@@ -125,18 +127,57 @@ protected:
         ESTABLISHED = 3,
     };
 
+    typedef zce::queue_buffer RECV_BUFFER;
+    struct SEND_BUFFER
+    {
+        zce::queue_buffer *buf_queue_;
+        uint64_t send_clock_;
+        uint64_t ack_clock_;
+        size_t fail_num_;
+    };
+
     typedef zce::lord_rings <RECV_BUFFER *> RECV_BUFFER_LIST;
     typedef zce::lord_rings <SEND_BUFFER *> SEND_BUFFER_LIST;
 
+public:
+
+    PEER() = default;
+    PEER(const PEER&) = default;
+    PEER& operator = (const PEER & other) = default;
+
+    //服务器端CORE打开一个PEER
+    int open(uint32_t session_id,
+             uint32_t serial_id,
+             ZCE_SOCKET peer_socket,
+             const sockaddr *remote_addr,
+             size_t send_list_num,
+             size_t recv_list_num,
+             zce::buffer_pool *buf_pool);
+
+    //客户端打开一个
+    int open(const sockaddr *remote_addr,
+             size_t send_list_num,
+             size_t recv_list_num);
+
+    int receive(const sockaddr *remote_addr,
+                zce::queue_buffer *buf_queue_,
+                bool *new_rudp);
+
 protected:
+    //模式，不同的open函数决定不同的模式
+    MODEL model_ = MODEL::PEER_INVALID;
     //
     uint32_t session_id_ = 0;
-
     //
-    ZCE_SOCKET udp_socket_ = ZCE_INVALID_SOCKET;
+    uint32_t serial_id_ = 0;
 
-    zce::sockaddr_ip remote_;
+    //Socket 句柄
+    ZCE_SOCKET peer_socket_ = ZCE_INVALID_SOCKET;
+    //远端地址
+    zce::sockaddr_ip remote_addr_;
 
+    //buffer的缓冲池子
+    zce::buffer_pool *buf_pool_;
     //
     RECV_BUFFER_LIST send_list_;
     //
@@ -159,11 +200,12 @@ public:
     CORE(const CORE&) = default;
     CORE& operator = (const CORE & other) = default;
     //析构函数
-    ~CORE() = default;
+    ~CORE();
 
-    int initialize(int family,
-                   size_t send_pool_num,
-                   size_t recv_pool_num);
+    int initialize(const sockaddr *core_addr,
+                   size_t max_num_of_peer,
+                   size_t peer_send_list_num,
+                   size_t peer_recv_list_num);
 
     void terminate();
 
@@ -180,38 +222,34 @@ public:
     //           HANDLE &handle);
 
 protected:
-    //
-    int family_ = AF_INET;
-    //
-    ZCE_SOCKET udp_socket_ = ZCE_INVALID_SOCKET;
+
+    //Socket 句柄
+    ZCE_SOCKET core_socket_ = ZCE_INVALID_SOCKET;
+    //本地地址，CORE地址，服务器地址
+    zce::sockaddr_ip core_addr_;
+
+    //最大的RUDP PEER数量。
+    size_t max_num_of_peer_ = 102400;
 
     //
     char *recv_buffer_ = nullptr;
     //
     char *send_buffer_ = nullptr;
 
+    //
+    zce::buffer_pool buf_pool_;
+
+    //
+    size_t peer_recv_list_num_;
+    //
+    size_t peer_send_list_num_;
+
     //随机数发生器，用于生产session id，和序号ID serial_id
     std::mt19937  random_gen_;
 
     //
     std::unordered_map<uint32_t, PEER*>  peer_map_;
+    //
+    std::unordered_set<zce::sockaddr_ip > peer_addr_set_;
 };
-
-int open(zce::rudp::PEER *handle,
-         ZCE_SOCKET udp_socket_,
-         CORE *rudp_core);
-
-int open(zce::rudp::PEER *handle,
-         const sockaddr* remote_addr,
-         socklen_t addrlen);
-
-ssize_t rudp_sendto(zce::rudp::PEER *handle,
-                    const void* buf,
-                    size_t len,
-                    zce::Time_Value* timeout_tv = NULL);
-
-ssize_t rudp_recvfrom(PEER *rudp,
-                      void* buf,
-                      size_t len,
-                      int flags);
 }
