@@ -28,6 +28,15 @@ void RUDP_HEAD::ntoh()
     uno2_ = ntohl(uno2_);
 }
 
+//填充Data数据到Frame
+int RUDP_FRAME::fill_data(const size_t szdata, const char* vardata)
+{
+    //填写数据区的长度
+    memcpy(data_, vardata, szdata);
+    u32_1_.len_ = static_cast<uint32_t>(sizeof(RUDP_HEAD) + szdata);
+    return 0;
+}
+
 //=================================================================================================
 //class PEER
 
@@ -93,8 +102,9 @@ int PEER::open(const sockaddr *remote_addr,
         assert(false);
         return -1;
     }
-    ret = zce::open_socket(peer_socket_,
-                           SOCK_DGRAM);
+    ret = zce::open_socket(&peer_socket_,
+                           SOCK_DGRAM,
+                           remote_addr->sa_family);
     if (ret != 0)
     {
         return ret;
@@ -132,6 +142,7 @@ int CORE::initialize(const sockaddr *core_addr,
 {
     int ret = 0;
     socklen_t socket_len = 0;
+    max_num_of_peer_ = max_num_of_peer;
     if (core_addr->sa_family == AF_INET)
     {
         ::memcpy(&core_addr_, core_addr, sizeof(sockaddr_in));
@@ -147,7 +158,7 @@ int CORE::initialize(const sockaddr *core_addr,
         assert(false);
         return -1;
     }
-    ret = zce::open_socket(core_socket_,
+    ret = zce::open_socket(&core_socket_,
                            SOCK_DGRAM,
                            core_addr,
                            socket_len);
@@ -179,12 +190,14 @@ void CORE::terminate()
     }
 }
 
-int CORE::receive(PEER *& /*recv_rudp*/,
-                  bool * /*new_rudp*/)
+int CORE::receive(PEER *& recv_rudp,
+                  bool * new_rudp)
 {
+    assert(recv_rudp == nullptr);
+    int ret = 0;
     zce::sockaddr_ip remote_ip;
     socklen_t sz_addr = sizeof(zce::sockaddr_ip);
-    ssize_t ssz_recv = zce::recvfrom(udp_socket_,
+    ssize_t ssz_recv = zce::recvfrom(core_socket_,
                                      (void *)recv_buffer_,
                                      MAX_FRAME_LEN,
                                      0,
@@ -213,11 +226,16 @@ int CORE::receive(PEER *& /*recv_rudp*/,
     {
         if (head->u32_1_.flag_ & SYN)
         {
-            uint32_t session_id = random_gen_();
-            uint32_t serial_id = random_gen_();
+            *new_rudp = true;
+            ret = create_peer(&remote_ip, recv_rudp);
+            if (ret != 0)
+            {
+                return ret;
+            }
         }
         else
         {
+            return -1;
         }
     }
     else
@@ -225,8 +243,46 @@ int CORE::receive(PEER *& /*recv_rudp*/,
         auto iter = peer_map_.find(head->session_id_);
         if (iter == peer_map_.end())
         {
+            return -1;
         }
-        //PEER * peer = iter->second;
+        recv_rudp = iter->second;
+    }
+    //
+
+    return 0;
+}
+
+int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
+                      PEER *& new_peer)
+{
+    int ret = 0;
+    auto iter_addr = peer_addr_set_.find(*remote_ip);
+    if (iter_addr != peer_addr_set_.end())
+    {
+        uint32_t session_id = iter_addr->second;
+        auto iter_peer = peer_map_.find(session_id);
+        if (iter_peer == peer_map_.end())
+        {
+            new_peer = iter_peer->second;
+            return 0;
+        }
+        else
+        {
+        }
+    }
+    new_peer = new PEER();
+    uint32_t session_id = random_gen_();
+    uint32_t serial_id = random_gen_();
+    ret = new_peer->open(session_id,
+                         serial_id,
+                         core_socket_,
+                         (sockaddr *)remote_ip,
+                         peer_send_list_num_,
+                         peer_recv_list_num_,
+                         &buf_pool_);
+    if (ret != 0)
+    {
+        return ret;
     }
     return 0;
 }

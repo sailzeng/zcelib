@@ -43,6 +43,7 @@ public:
 
 protected:
 
+    //第一个uint32_t的内部数据表示，分成了若干段落
     struct U32_ONE
     {
     public:
@@ -77,6 +78,17 @@ public:
 
 class RUDP_FRAME : public RUDP_HEAD
 {
+protected:
+    //构造函数，复制函数，禁止大家都可以用的.
+    RUDP_FRAME() = delete;
+    RUDP_FRAME& operator = (const RUDP_FRAME& other) = delete;
+    //析构函数
+    ~RUDP_FRAME() = delete;
+
+public:
+    //填充Data数据到RUDP_FRAME
+    int fill_data(const size_t szdata, const char* vardata);
+
 public:
     char data_[1];
 };
@@ -84,8 +96,8 @@ public:
 #pragma pack ()
 
 //=====================================================================================
-size_t BUF_BUCKET_NUM = 8;
-size_t BUF_BUCKET_SIZE_ARY[] = { 64, 128,256,512,768,1024,1280,1536 };
+constexpr size_t BUF_BUCKET_NUM = 8;
+constexpr size_t BUF_BUCKET_SIZE_ARY[] = { 64,128,256,512,768,1024,1280,1536 };
 //
 static constexpr size_t MTU_WAN = 576;
 //
@@ -154,7 +166,7 @@ public:
              size_t recv_list_num,
              zce::buffer_pool *buf_pool);
 
-    //客户端打开一个
+    //以客户端方式打开一个PEER
     int open(const sockaddr *remote_addr,
              size_t send_list_num,
              size_t recv_list_num);
@@ -212,6 +224,11 @@ public:
     int receive(PEER *& recv_rudp,
                 bool *new_rudp);
 
+protected:
+
+    int create_peer(const zce::sockaddr_ip *remote_ip,
+                    PEER *& new_peer);
+
     //发送应答
     void send_head();
 
@@ -228,7 +245,7 @@ protected:
     //本地地址，CORE地址，服务器地址
     zce::sockaddr_ip core_addr_;
 
-    //最大的RUDP PEER数量。
+    //最大支持的RUDP PEER数量。
     size_t max_num_of_peer_ = 102400;
 
     //
@@ -239,17 +256,17 @@ protected:
     //
     zce::buffer_pool buf_pool_;
 
-    //
+    //CORE创建的PEER的接收队列数量
     size_t peer_recv_list_num_;
-    //
+    //CORE创建的PEER的发送队列数量
     size_t peer_send_list_num_;
 
     //随机数发生器，用于生产session id，和序号ID serial_id
     std::mt19937  random_gen_;
 
-    //
+    //session id对应的PEER map
     std::unordered_map<uint32_t, PEER*>  peer_map_;
-    //
-    std::unordered_set<zce::sockaddr_ip > peer_addr_set_;
+    //地址对应的session id的map
+    std::unordered_map<zce::sockaddr_ip, uint32_t> peer_addr_set_;
 };
 }

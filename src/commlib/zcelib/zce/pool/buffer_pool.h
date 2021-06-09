@@ -21,7 +21,7 @@ public:
 
     //初始化
     bool initialize(size_t bucket_num,
-                    size_t bucket_size_ary[],
+                    const size_t bucket_size_ary[],
                     size_t init_node_size,
                     size_t extend_node_size)
     {

@@ -41,7 +41,7 @@ public:
         ret = extend(init_pool_size);
         if (!ret)
         {
-            return nullptr;
+            return false;
         }
         pool_capacity_ = init_pool_size;
         return true;
