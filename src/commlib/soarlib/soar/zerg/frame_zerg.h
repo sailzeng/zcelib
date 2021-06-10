@@ -308,7 +308,6 @@ public:
 public:
     ///frame_appdata_ 是一个变长度的字符串序列标示,
     char                 frame_appdata_[1];
-
 };
 
 #pragma pack ()

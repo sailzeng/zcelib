@@ -48,7 +48,7 @@
 *             10000000次，VC++ 2010, Realse 版本 O2
 *             为了防止内部优化，每次测试字符串数据都不一样，感谢airfu教我了怎么看
 *             编译器优化问题。
-*             bkdr_hash 3.514  seconds.  768.355M/s
+*             hash_bkdr 3.514  seconds.  768.355M/s
 *             crc32     5.433  seconds.  496.963M/s
 *             md5       10.137 seconds.  266.351M/s
 *             sha1      17.173 seconds.  157.224M/s
@@ -124,10 +124,10 @@
 *             哦~~
 */
 
-#ifndef ZCE_LIB_BYTES_HASH_H_
-#define ZCE_LIB_BYTES_HASH_H_
+#pragma once
 
 #include "zce/bytes/bytes_common.h"
+#include "zce/os_adapt/file.h"
 
 //=====================================================================================================
 
@@ -616,18 +616,16 @@ inline uint16_t crc16(const unsigned char* buf,
 * @param[in]  str     字符串
 * @param[in]  str_len 字符串长度
 */
-size_t bkdr_hash(const unsigned char* str, size_t str_len);
+size_t hash_bkdr(const char* str, size_t str_len);
 
 /// AP Hash Function
-size_t ap_hash(const unsigned char* str, size_t str_len);
+size_t hash_ap(const char* str, size_t str_len);
 
 /// JS Hash Function
-size_t js_hash(const unsigned char* str, size_t str_len);
+size_t hash_js(const char* str, size_t str_len);
 
 /// DJB Hash Function
-size_t djb_hash(const unsigned char* str, size_t str_len);
+size_t hash_djb(const char* str, size_t str_len);
 
 //=====================================================================================================
 };
-
-#endif //ZCE_LIB_BYTES_HASH_H_

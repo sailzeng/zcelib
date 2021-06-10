@@ -18,7 +18,7 @@ enum FLAG
     ACK = (0x1 > 2),
     //带有数据
     PSH = (0x1 > 3),
-    //
+    //RESET
     RST = (0x1 > 4),
     //link MTU TEST，链路的MTU测试帧
     LMT = (0x1 > 5),
@@ -171,9 +171,23 @@ public:
              size_t send_list_num,
              size_t recv_list_num);
 
+    void close();
+
+    //远端地址是否发生了变化
+    bool remote_change(const zce::sockaddr_ip &new_remote,
+                       zce::sockaddr_ip &old_remote);
+    //
     int receive(const sockaddr *remote_addr,
-                zce::queue_buffer *buf_queue_,
-                bool *new_rudp);
+                RUDP_FRAME *rudp_frame,
+                size_t frame_len);
+
+    //
+    inline uint32_t seesion_id()
+    {
+        return session_id_;
+    }
+
+    int reset();
 
 protected:
     //模式，不同的open函数决定不同的模式
@@ -267,6 +281,6 @@ protected:
     //session id对应的PEER map
     std::unordered_map<uint32_t, PEER*>  peer_map_;
     //地址对应的session id的map
-    std::unordered_map<zce::sockaddr_ip, uint32_t> peer_addr_set_;
+    std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;
 };
 }

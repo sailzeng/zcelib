@@ -89,19 +89,7 @@ int PEER::open(const sockaddr *remote_addr,
     int ret = 0;
     model_ = MODEL::PEER_CLIENT;
 
-    if (remote_addr->sa_family == AF_INET)
-    {
-        ::memcpy(&remote_addr_, remote_addr, sizeof(sockaddr_in));
-    }
-    else if (remote_addr->sa_family == AF_INET6)
-    {
-        ::memcpy(&remote_addr_, remote_addr, sizeof(sockaddr_in6));
-    }
-    else
-    {
-        assert(false);
-        return -1;
-    }
+    remote_addr_ = remote_addr;
     ret = zce::open_socket(&peer_socket_,
                            SOCK_DGRAM,
                            remote_addr->sa_family);
@@ -128,6 +116,40 @@ int PEER::open(const sockaddr *remote_addr,
     return 0;
 }
 
+void PEER::close()
+{
+    if (model_ == MODEL::PEER_CLIENT)
+    {
+        zce::close_socket(peer_socket_);
+    }
+    //CORE 产生的
+    return;
+}
+
+//远端地址是否发生了变化
+bool PEER::remote_change(const zce::sockaddr_ip &new_remote,
+                         zce::sockaddr_ip &old_remote)
+{
+    if (new_remote == remote_addr_)
+    {
+        return false;
+    }
+    else
+    {
+        old_remote = remote_addr_;
+        return true;
+    }
+}
+
+int PEER::receive(const sockaddr *remote_addr,
+                  RUDP_FRAME *rudp_frame,
+                  size_t frame_len)
+{
+    //远端地址如果可能发生改变，CORE用remote_change自己判定是否有变化
+    remote_addr_ = remote_addr;
+    return 0;
+}
+
 //=================================================================================================
 //class CORE
 CORE::~CORE()
@@ -143,21 +165,7 @@ int CORE::initialize(const sockaddr *core_addr,
     int ret = 0;
     socklen_t socket_len = 0;
     max_num_of_peer_ = max_num_of_peer;
-    if (core_addr->sa_family == AF_INET)
-    {
-        ::memcpy(&core_addr_, core_addr, sizeof(sockaddr_in));
-        socket_len = sizeof(sockaddr_in);
-    }
-    else if (core_addr->sa_family == AF_INET6)
-    {
-        ::memcpy(&core_addr_, core_addr, sizeof(sockaddr_in6));
-        socket_len = sizeof(sockaddr_in6);
-    }
-    else
-    {
-        assert(false);
-        return -1;
-    }
+    core_addr_ = core_addr;
     ret = zce::open_socket(&core_socket_,
                            SOCK_DGRAM,
                            core_addr,
@@ -188,12 +196,14 @@ void CORE::terminate()
         delete send_buffer_;
         send_buffer_ = nullptr;
     }
+    zce::close_socket(core_socket_);
 }
 
 int CORE::receive(PEER *& recv_rudp,
                   bool * new_rudp)
 {
     assert(recv_rudp == nullptr);
+    *new_rudp = false;
     int ret = 0;
     zce::sockaddr_ip remote_ip;
     socklen_t sz_addr = sizeof(zce::sockaddr_ip);
@@ -216,15 +226,15 @@ int CORE::receive(PEER *& recv_rudp,
         }
     }
 
-    RUDP_HEAD * head = (RUDP_HEAD *)recv_buffer_;
-    head->ntoh();
-    if (head->u32_1_.len_ != (uint32_t)ssz_recv)
+    RUDP_FRAME * frame = (RUDP_FRAME *)recv_buffer_;
+    frame->ntoh();
+    if (frame->u32_1_.len_ != (uint32_t)ssz_recv)
     {
         return -2;
     }
-    if (head->session_id_ == 0)
+    if (frame->session_id_ == 0)
     {
-        if (head->u32_1_.flag_ & SYN)
+        if (frame->u32_1_.flag_ & SYN)
         {
             *new_rudp = true;
             ret = create_peer(&remote_ip, recv_rudp);
@@ -240,15 +250,27 @@ int CORE::receive(PEER *& recv_rudp,
     }
     else
     {
-        auto iter = peer_map_.find(head->session_id_);
+        auto iter = peer_map_.find(frame->session_id_);
         if (iter == peer_map_.end())
         {
             return -1;
         }
         recv_rudp = iter->second;
     }
+    //看远端地址是否变化了,如果变化了，更新peer_addr_set_ 表
+    zce::sockaddr_ip old_remote;
+    bool change = recv_rudp->remote_change(remote_ip,
+                                           old_remote);
+    if (change)
+    {
+        peer_addr_set_.erase(old_remote);
+        peer_addr_set_.insert(std::make_pair(remote_ip,
+                              recv_rudp->seesion_id()));
+    }
     //
-
+    recv_rudp->receive((sockaddr *)&remote_ip,
+                       frame,
+                       (uint32_t)ssz_recv);
     return 0;
 }
 
@@ -264,6 +286,8 @@ int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
         if (iter_peer == peer_map_.end())
         {
             new_peer = iter_peer->second;
+            new_peer->reset();
+            //
             return 0;
         }
         else

@@ -28,12 +28,33 @@ class zce::Time_Value;
 namespace zce
 {
 ///sockaddr_storage 太长了，128个字节，搞个简单的少占用一点空间
-union sockaddr_ip
+class sockaddr_ip
 {
-    //sockaddr_in 16个字节
-    sockaddr_in  in_;
-    //sockaddr_in6 28个字节
-    sockaddr_in6 in6_;
+public:
+    sockaddr_ip() = default;
+    ~sockaddr_ip() = default;
+    explicit sockaddr_ip(const ::sockaddr *sa);
+    explicit sockaddr_ip(const ::sockaddr_in &sa);
+    explicit sockaddr_ip(const ::sockaddr_in6 &sa);
+
+    bool operator == (const sockaddr_ip &others) const;
+
+    sockaddr_ip& operator = (const ::sockaddr *addr) const;
+    sockaddr_ip& operator = (const ::sockaddr_in &addr_in) const;
+    sockaddr_ip& operator = (const ::sockaddr_in6 &addr_in6) const;
+
+    union
+    {
+        //sockaddr_in 16个字节
+        sockaddr_in  in_;
+        //sockaddr_in6 28个字节
+        sockaddr_in6 in6_;
+    };
+};
+
+struct sockaddr_ip_hash
+{
+    size_t operator()(const zce::sockaddr_ip& s) const;
 };
 
 /*!

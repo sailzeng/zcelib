@@ -186,7 +186,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
-            abc = zce::bkdr_hash(buffer, str_len);
+            abc = zce::hash_bkdr(buffer, str_len);
         }
     }
     printf("bkdr_hash = %zu\n", abc);

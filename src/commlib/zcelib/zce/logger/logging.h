@@ -25,6 +25,7 @@
 //定义日志输出,则实用内部的函数作为输出定义
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
+#include "zce/logger/log_basic.h"
 #include "zce/logger/msg.h"
 
 //打开输出
@@ -116,8 +117,6 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 
 //如果没有定义使用ZCE内部的日志输出，使用printf作为输出方法，
 #else
-
-#include "zce_log_priority.h"
 
 //==========================================================================================================
 class ZCE_Trace_Printf

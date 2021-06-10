@@ -1,7 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/string.h"
-#include "zce/os_adapt/file.h"
 #include "zce/bytes/hash_value.h"
 
 //================================================================================================
@@ -560,60 +559,55 @@ uint16_t zce::crc16(uint16_t crcinit,
 //================================================================================================
 
 // BKDR Hash Function
-size_t zce::bkdr_hash(const unsigned char* str, size_t str_len)
+size_t zce::hash_bkdr(const char* str, size_t str_len)
 {
     // 31 131 1313 13131 131313 etc..
-    static const size_t seed = 131;
+    static const size_t seed = 131313;
     size_t hash = 0;
     for (size_t i = 0; i < str_len; ++i)
     {
-        hash = hash * seed + *(str + i);
+        hash = hash * seed + (size_t)(*(str + i));
     }
-
     return hash;
 }
 
 // AP Hash Function
-size_t zce::ap_hash(const unsigned char* str, size_t str_len)
+size_t zce::hash_ap(const char* str, size_t str_len)
 {
     size_t hash = 0;
-
     for (size_t i = 0; i < str_len; ++i)
     {
         if ((i & 1) == 0)
         {
-            hash ^= ((hash << 7) ^ (*(str + i)) ^ (hash >> 3));
+            hash ^= ((hash << 7) ^ (size_t)(*(str + i)) ^ (hash >> 3));
         }
         else
         {
-            hash ^= (~((hash << 11) ^ (*(str + i)) ^ (hash >> 5)));
+            hash ^= (~((hash << 11) ^ (size_t)(*(str + i)) ^ (hash >> 5)));
         }
     }
-
     return hash;
 }
 
 // JS Hash Function
-size_t zce::js_hash(const unsigned char* str, size_t str_len)
+size_t zce::hash_js(const char* str, size_t str_len)
 {
     size_t hash = 1315423911;
-
     for (size_t i = 0; i < str_len; ++i)
     {
-        hash ^= ((hash << 5) + (*(str + i)) + (hash >> 2));
+        hash ^= ((hash << 5) + (size_t)(*(str + i)) + (hash >> 2));
     }
 
     return hash;
 }
 
 // DJB Hash Function
-size_t zce::djb_hash(const unsigned char* str, size_t str_len)
+size_t zce::hash_djb(const char* str, size_t str_len)
 {
     size_t hash = 5381;
-
     for (size_t i = 0; i < str_len; ++i)
     {
-        hash += (hash << 5) + (*(str + i));
+        hash += (hash << 5) + (size_t)(*(str + i));
     }
 
     return hash;
