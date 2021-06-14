@@ -13,17 +13,17 @@ namespace zce::rudp
 enum FLAG
 {
     //客户端发往服务器的第一帧,标志，让服务器告知SESSION ID
-    SYN = (0x1 > 1),
+    SYN = (0x1 < 1),
     //ACK应答数据，表示ack_
-    ACK = (0x1 > 2),
+    ACK = (0x1 < 2),
     //带有数据
-    PSH = (0x1 > 3),
+    PSH = (0x1 < 3),
     //RESET
-    RST = (0x1 > 4),
+    RST = (0x1 < 4),
     //link MTU TEST，链路的MTU测试帧
-    LMT = (0x1 > 5),
+    LMT = (0x1 < 5),
     //Keep live
-    KPL = (0x1 > 6),
+    KPL = (0x1 < 6),
 };
 
 //对应mtu_type_ 字段，可以有4种，目前用了2种
@@ -138,7 +138,7 @@ static constexpr size_t MTU_ETHERNET_RUDP = MSS_ETHERNET;
 static constexpr size_t MSS_ETHERNET_RUDP = MTU_ETHERNET_RUDP - sizeof(RUDP_HEAD);
 
 //最大数据处理的长度，这儿注意一下，其实最大长度只可能是MSS_ETHERNET，
-static constexpr size_t MAX_FRAME_LEN = MSS_ETHERNET;
+static constexpr size_t MAX_FRAME_LEN = MTU_ETHERNET_RUDP;
 //
 static constexpr size_t MIN_FRAME_LEN = sizeof(RUDP_HEAD);
 //+4 的目的是为了方便判定错误
@@ -174,6 +174,7 @@ protected:
         ESTABLISHED = 3,
     };
 
+    struct SEND_RECORD;
 public:
 
     PEER() = default;
@@ -194,7 +195,8 @@ public:
     int open(const sockaddr *remote_addr,
              size_t send_rec_list_size,
              size_t send_list_capacity,
-             size_t recv_list_capacity);
+             size_t recv_list_capacity,
+             bool link_test_mtu = false);
 
     void close();
 
@@ -212,27 +214,28 @@ public:
         return session_id_;
     }
 
+    //
     int reset();
+
+    //
+    int recvfrom();
 
 protected:
 
-    //
+    //core 传递 接受数据给peer
     int deliver_recv(const zce::sockaddr_ip *remote_addr,
                      RUDP_FRAME *recv_frame,
                      size_t frame_len,
                      bool *remote_change,
                      zce::sockaddr_ip *old_remote);
-    //
+    //发送frame
     int send_frame_to(int flag,
-                      uint32_t sequence_num = 0,
                       bool first_send = true,
                       const char *data = nullptr,
-                      size_t sz_data = 0);
+                      size_t sz_data = 0,
+                      SEND_RECORD *snd_rec = nullptr);
 
     int state_changes(RUDP_FRAME *recv_frame);
-
-    //
-    int recvfrom();
 
     //跟进收到ACK ID确认那些发送成功了
     int acknowledge_send(uint32_t recv_ack_id);
@@ -240,11 +243,15 @@ protected:
     /// 计算RTO
     void calculate_rto(uint64_t send_clock);
 
+    ///超时处理
+    void time_out(uint64_t now_clock_ms);
+
 protected:
 
     typedef zce::cycle_buffer RECV_RECORD;
     struct SEND_RECORD
     {
+        uint32_t flag_ = 0;
         //这个发送报的序列号
         uint32_t sequence_num_ = 0;
         //
@@ -282,7 +289,7 @@ protected:
     //Socket 句柄
     ZCE_SOCKET peer_socket_ = ZCE_INVALID_SOCKET;
     //远端地址，注意UDP远端地址是可能变化的，
-    zce::sockaddr_ip remote_addr_;
+    zce::sockaddr_ip remote_addr_{};
 
     //发送记录列表
     SEND_RECORD_LIST send_rec_list_;
@@ -304,6 +311,10 @@ protected:
     size_t peer_windows_size_ = 64 * 1024;
     //
     time_t rto_ = 80;
+    //
+    time_t min_rto_ = 80;
+    //超时阻塞的情况下，rto增加的比率
+    double blocking_rto_ratio_ = 1.5;
 };
 
 //=====================================================================================
@@ -327,6 +338,9 @@ public:
 
     int receive(PEER *& recv_rudp,
                 bool *new_rudp);
+
+    //超时处理
+    void time_out();
 
 protected:
 
@@ -362,6 +376,7 @@ protected:
     std::mt19937  random_gen_;
 
     //session id对应的PEER map
+    ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。
     std::unordered_map<uint32_t, PEER*>  peer_map_;
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;

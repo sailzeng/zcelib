@@ -85,12 +85,12 @@ public:
 
     ///从pos（相对于cycbuf_begin_）读取数据，
     bool get_data(size_t pos,
-                  char *&data,
+                  char *data,
                   size_t read_len);
 
     ///从绝对位置read_ptr开始读取数据
     bool get_data(const char *read_ptr,
-                  char *&data,
+                  char *data,
                   size_t read_len);
 
     ///重新调整整个buffer的尺寸，缩小，或者增大尾部。

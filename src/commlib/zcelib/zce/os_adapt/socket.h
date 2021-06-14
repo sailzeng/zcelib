@@ -1605,12 +1605,12 @@ inline ssize_t zce::recvfrom(ZCE_SOCKET handle,
 
 #elif defined (ZCE_OS_LINUX)
 
-    return ::deliver_recv(handle,
-                          buf,
-                          len,
-                          flags,
-                          from,
-                          from_len);
+    return ::recvfrom(handle,
+                      buf,
+                      len,
+                      flags,
+                      from,
+                      from_len);
 
 #endif
 }

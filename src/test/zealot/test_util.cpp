@@ -423,7 +423,7 @@ int test_random_variance(const char* rand_fun_name,
     fangcai = fangcai / TEST_SIZE;
     std::cout << rand_fun_name << " variance " << fangcai << " max caizhi :" << max_caizhi << std::endl;
 
-    delete coverage_chart;
+    delete[] coverage_chart;
     coverage_chart = NULL;
 
     return 0;
@@ -670,9 +670,20 @@ int test_random_repeat_t()
     uint32_t  u32_data2 = 0;
 
     u32_data1 = rand_gen.rand();
-    u32_data2 = rand_gen.rand();
-
     uint64_t i = 0;
+    for (; i < 4 * 0xFFFFFFFFULL; ++i)
+    {
+        if (u32_data1 == rand_gen.rand())
+        {
+            break;
+        }
+    }
+    std::cout << std::endl;
+    std::cout << "Single Repeat" << typeid(rand_gen_t).name() << " use times " << std::hex << i << std::endl;
+
+    u32_data1 = rand_gen.rand();
+    u32_data2 = rand_gen.rand();
+    i = 0;
     for (; i < 4 * 0xFFFFFFFFULL; ++i)
     {
         if (u32_data1 == rand_gen.rand() && u32_data2 == rand_gen.rand())
@@ -682,7 +693,7 @@ int test_random_repeat_t()
     }
 
     std::cout << std::endl;
-    std::cout << "Repeat" << typeid(rand_gen_t).name() << " use times " << std::hex << i << std::endl;
+    std::cout << "Dobule Repeat" << typeid(rand_gen_t).name() << " use times " << std::hex << i << std::endl;
 
     return 0;
 }

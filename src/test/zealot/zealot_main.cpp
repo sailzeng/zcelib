@@ -17,14 +17,6 @@ int main(int argc, char* argv[])
                                                 static_cast<int>(LOG_HEAD::NONE));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
-    ZCE_LogTrace_Plus::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                 "E:\\My.Log\\TEST_2",
-                                                 false,
-                                                 true,
-                                                 0,
-                                                 ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                                                 static_cast<int>(LOG_HEAD::NONE));
-
     test_random_repeat_number(argc, argv);
 
     return 0;

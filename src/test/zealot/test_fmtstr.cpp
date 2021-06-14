@@ -238,14 +238,14 @@ int printf_double(int /*argc*/, char* /*argv*/[])
 
 int test_cpp_log_out(int /*argc*/, char* /*argv*/[])
 {
-    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love={} ", "ABCDEFG");
+    ZPP_LOG(RS_DEBUG, "my love={} ", "ABCDEFG");
 
-    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love={} you love={}", "ABCDEFG", 1234567890);
+    ZPP_LOG(RS_DEBUG, "my love={} you love={}", "ABCDEFG", 1234567890);
 
-    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "one love={} two love= {} three love={}",
-                                                    "ABCDEFG",
-                                                    1.1,
-                                                    12345);
+    ZPP_LOG(RS_DEBUG, "one love={} two love= {} three love={}",
+            "ABCDEFG",
+            1.1,
+            12345);
 
     return 0;
 }

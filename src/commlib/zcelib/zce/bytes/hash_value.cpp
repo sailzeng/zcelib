@@ -415,7 +415,7 @@ void ZCE_Hash_CRC32::initialize(context* ctx)
     *ctx = 0;
 }
 
-void ZCE_Hash_CRC32::process(context* ctx, const unsigned char* buf, size_t buf_size)
+void ZCE_Hash_CRC32::process(context* ctx, const char* buf, size_t buf_size)
 {
     uint32_t crc = *ctx;
     while (buf_size--)
@@ -426,9 +426,9 @@ void ZCE_Hash_CRC32::process(context* ctx, const unsigned char* buf, size_t buf_
 }
 
 void ZCE_Hash_CRC32::finalize(context* ctx,
-                              const unsigned char* buf,
+                              const char* buf,
                               size_t buf_size,
-                              unsigned char result[HASH_RESULT_SIZE])
+                              char result[HASH_RESULT_SIZE])
 {
     uint32_t crc = *ctx;
     while (buf_size--)
@@ -443,9 +443,9 @@ void ZCE_Hash_CRC32::finalize(context* ctx,
 
 //求一个buffer的CRC32值，可以用于一些要求速度的简单校验,
 
-uint32_t zce::crc32(uint32_t crcinit, const unsigned char* buf, size_t buf_size)
+uint32_t zce::crc32(uint32_t crcinit, const char* buf, size_t buf_size)
 {
-    const unsigned char* p = buf;
+    const char* p = buf;
     uint32_t crc = crcinit;
 
     //默认采用一种快速的读取方法，一次取16个字节读取的版本，
@@ -455,13 +455,13 @@ uint32_t zce::crc32(uint32_t crcinit, const unsigned char* buf, size_t buf_size)
     //我理解快速CRC32计算为什么快，但不理解两者为啥含义相同。天生不具备数据计算的脑子呀。
 
     //处理不对齐的内存地址部分，
-    for (; (3 & (p - (unsigned char*)0)) && buf_size > 0; p++, buf_size--)
+    for (; (3 & (p - (char*)0)) && buf_size > 0; p++, buf_size--)
     {
         crc = ZCE_CRC32_TABLE[(crc ^ *p) & 0xFF] ^ (crc >> 8);
     }
 
     // 一次处理16个字节的数据，当作4个DWORD计算，
-    for (const unsigned char* e = p + (buf_size & ~15); p < e; p += 16)
+    for (const char* e = p + (buf_size & ~15); p < e; p += 16)
     {
         crc ^= ZINDEX_TO_LEUINT32(p, 0);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
@@ -489,7 +489,7 @@ uint32_t zce::crc32(uint32_t crcinit, const unsigned char* buf, size_t buf_size)
     }
 
     // 处理非对齐的尾部信息。
-    for (const unsigned char* e = p + (buf_size & 15); p < e; p++)
+    for (const char* e = p + (buf_size & 15); p < e; p++)
     {
         crc = ZCE_CRC32_TABLE[(crc ^ *p) & 0xFF] ^ (crc >> 8);
     }
@@ -543,11 +543,11 @@ static const uint16_t ZCE_CRC16_TABLE[256] =
 
 //计算CRC16的值。
 uint16_t zce::crc16(uint16_t crcinit,
-                    const unsigned char* buf,
+                    const char* buf,
                     size_t buf_size)
 {
     uint16_t crc = crcinit;
-    const unsigned char* p = buf;
+    const char* p = buf;
     while (buf_size--)
     {
         crc = ZCE_CRC16_TABLE[(crc ^ *p++) & 0xFF] ^ (crc >> 8);

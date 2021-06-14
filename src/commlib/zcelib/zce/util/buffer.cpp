@@ -269,7 +269,7 @@ bool cycle_buffer::reduce(size_t buf_len)
 
 ///从pos（相对于cycbuf_begin_）读取数据，
 bool cycle_buffer::get_data(size_t pos,
-                            char *&data,
+                            char *data,
                             size_t read_len)
 {
     if (size() < pos + read_len)
@@ -293,7 +293,7 @@ bool cycle_buffer::get_data(size_t pos,
 }
 ///从绝对位置read_ptr开始读取数据
 bool cycle_buffer::get_data(const char *read_ptr,
-                            char *& data,
+                            char *data,
                             size_t read_len)
 {
     assert(read_ptr >= cycbuf_data_ && read_ptr < cycbuf_data_ + size_of_cycle_);
