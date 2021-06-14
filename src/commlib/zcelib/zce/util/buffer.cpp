@@ -122,32 +122,63 @@ size_t cycle_buffer::free()
 }
 
 //将一个data_len长度数据data放入cycle_buffer尾部
-bool cycle_buffer::push_end(const char * data, size_t data_len)
+bool cycle_buffer::push_end(const char * data,
+                            size_t data_len,
+                            char *&write_ptr)
 {
     assert(data != NULL);
+    write_ptr = nullptr;
     //检查队列的空间是否够用
     if (free() < data_len)
     {
         return false;
     }
 
-    //如果空间足够
-    char* pend = cycbuf_data_ + cycbuf_end_;
-
+    write_ptr = cycbuf_data_ + cycbuf_end_;
     //如果绕圈
-    if (pend + data_len > cycbuf_data_ + size_of_cycle_)
+    if (write_ptr + data_len > cycbuf_data_ + size_of_cycle_)
     {
         size_t first = size_of_cycle_ - cycbuf_end_;
         size_t second = data_len - first;
-        ::memcpy(pend, data, first);
+        ::memcpy(write_ptr, data, first);
         ::memcpy(cycbuf_data_, data + first, second);
         cycbuf_end_ = second;
     }
     //如果可以一次拷贝完成
     else
     {
-        memcpy(pend, data, data_len);
+        ::memcpy(write_ptr, data, data_len);
         cycbuf_end_ += data_len;
+    }
+    return true;
+}
+
+//在尾部填充长度为fill_len，的fill_data的字符
+bool cycle_buffer::push_end(char fill_ch,
+                            size_t fill_len,
+                            char *&write_ptr)
+{
+    //检查队列的空间是否够用
+    if (free() < fill_len)
+    {
+        return false;
+    }
+
+    write_ptr = cycbuf_data_ + cycbuf_end_;
+    //如果绕圈
+    if (write_ptr + fill_len > cycbuf_data_ + size_of_cycle_)
+    {
+        size_t first = size_of_cycle_ - cycbuf_end_;
+        size_t second = fill_len - first;
+        ::memset(write_ptr, fill_ch, first);
+        ::memset(cycbuf_data_, fill_ch, second);
+        cycbuf_end_ = second;
+    }
+    //如果可以一次拷贝完成
+    else
+    {
+        ::memset(write_ptr, fill_ch, fill_len);
+        cycbuf_end_ += fill_len;
     }
     return true;
 }
@@ -183,6 +214,108 @@ bool cycle_buffer::pop_front(char * const data, size_t data_len)
     return true;
 }
 
+bool cycle_buffer::pop_front(size_t data_len)
+{
+    assert(data_len > 0);
+    if (size() < data_len)
+    {
+        return false;
+    }
+    cycbuf_begin_ = (cycbuf_begin_ + data_len) % size_of_cycle_;
+    return true;
+}
+
+///从偏移量的位置开始，填充
+bool cycle_buffer::set_data(size_t pos,
+                            const char * data,
+                            size_t data_len,
+                            char *&write_ptr)
+{
+    //检查队列的空间是否够用
+    if (capacity() < pos + data_len)
+    {
+        return false;
+    }
+
+    size_t w_pos = ((cycbuf_begin_ + pos) % size_of_cycle_);
+    write_ptr = cycbuf_data_ + w_pos;
+    //cycbuf_end_ += ((cycbuf_begin_ + pos + data_len) % size_of_cycle_);
+    if (write_ptr + data_len > cycbuf_data_ + size_of_cycle_)
+    {
+        size_t first = size_of_cycle_ - w_pos;
+        size_t second = data_len - first;
+        ::memcpy(write_ptr, data, first);
+        ::memcpy(cycbuf_data_, data, second);
+        cycbuf_end_ = second;
+    }
+    else
+    {
+        ::memcpy(write_ptr, data, data_len);
+        cycbuf_end_ = w_pos + data_len;
+    }
+    return true;
+}
+
+///重新缩小调整整个buffer的尺寸，（增加大不是提供一堆无意义的数据）
+bool cycle_buffer::reduce(size_t buf_len)
+{
+    if (size() < buf_len)
+    {
+        return false;
+    }
+    cycbuf_end_ += (cycbuf_begin_ + buf_len) % size_of_cycle_;
+    return true;
+}
+
+///从pos（相对于cycbuf_begin_）读取数据，
+bool cycle_buffer::get_data(size_t pos,
+                            char *&data,
+                            size_t read_len)
+{
+    if (size() < pos + read_len)
+    {
+        return false;
+    }
+    size_t r_pos = ((cycbuf_begin_ + pos) % size_of_cycle_);
+    char *read_ptr = cycbuf_data_ + r_pos;
+    if (read_ptr + read_len > cycbuf_data_ + size_of_cycle_)
+    {
+        size_t first = size_of_cycle_ - r_pos;
+        size_t second = read_len - first;
+        ::memcpy(data, read_ptr, first);
+        ::memcpy(data, cycbuf_data_, second);
+    }
+    else
+    {
+        ::memcpy(data, read_ptr, read_len);
+    }
+    return true;
+}
+///从绝对位置read_ptr开始读取数据
+bool cycle_buffer::get_data(const char *read_ptr,
+                            char *& data,
+                            size_t read_len)
+{
+    assert(read_ptr >= cycbuf_data_ && read_ptr < cycbuf_data_ + size_of_cycle_);
+    if (size() < read_ptr - cycbuf_data_ + read_len)
+    {
+        return false;
+    }
+    size_t r_pos = read_ptr - cycbuf_data_;
+    if (read_ptr + read_len > cycbuf_data_ + size_of_cycle_)
+    {
+        size_t first = size_of_cycle_ - r_pos;
+        size_t second = read_len - first;
+        ::memcpy(data, read_ptr, first);
+        ::memcpy(data, cycbuf_data_, second);
+    }
+    else
+    {
+        ::memcpy(data, read_ptr, read_len);
+    }
+    return true;
+}
+
 //=========================================================================================
 //class queue_buffer
 
@@ -194,7 +327,7 @@ queue_buffer::~queue_buffer()
         buffer_data_ = nullptr;
     }
 }
-queue_buffer::queue_buffer(const queue_buffer& others) :
+queue_buffer::queue_buffer(const queue_buffer & others) :
     size_of_capacity_(others.size_of_capacity_),
     size_of_use_(others.size_of_use_),
     buffer_data_(nullptr)
@@ -209,7 +342,7 @@ queue_buffer::queue_buffer(const queue_buffer& others) :
     }
 }
 
-queue_buffer::queue_buffer(queue_buffer&& others) noexcept :
+queue_buffer::queue_buffer(queue_buffer && others) noexcept :
     size_of_capacity_(others.size_of_capacity_),
     size_of_use_(others.size_of_use_),
     buffer_data_(others.buffer_data_)
@@ -218,7 +351,7 @@ queue_buffer::queue_buffer(queue_buffer&& others) noexcept :
 }
 
 //赋值函数
-queue_buffer& queue_buffer::operator=(const queue_buffer& others)
+queue_buffer& queue_buffer::operator=(const queue_buffer & others)
 {
     if (buffer_data_)
     {
@@ -239,7 +372,7 @@ queue_buffer& queue_buffer::operator=(const queue_buffer& others)
     return *this;
 }
 //右值赋值函数，
-queue_buffer& queue_buffer::operator=(queue_buffer&& others) noexcept
+queue_buffer& queue_buffer::operator=(queue_buffer && others) noexcept
 {
     if (this == &others)
     {
@@ -273,7 +406,7 @@ void queue_buffer::clear()
 #endif
 }
 
-//
+//填充数据
 bool queue_buffer::set(const char* data, const size_t szdata)
 {
     if (szdata > size_of_capacity_)
@@ -285,8 +418,22 @@ bool queue_buffer::set(const char* data, const size_t szdata)
     return true;
 }
 
-//
-bool queue_buffer::get(char* data, size_t& szdata)
+//从偏移offset开始，填充数据data,长度为szdata,
+bool queue_buffer::set(const size_t offset,
+                       const char* data,
+                       const size_t szdata)
+{
+    if (szdata + offset > size_of_capacity_)
+    {
+        return false;
+    }
+    ::memcpy(buffer_data_ + offset, data, szdata);
+    size_of_use_ = szdata + offset;
+    return true;
+}
+
+//读取数据
+bool queue_buffer::get(char* data, size_t & szdata)
 {
     if (szdata < size_of_use_)
     {
@@ -297,6 +444,7 @@ bool queue_buffer::get(char* data, size_t& szdata)
     return true;
 }
 
+//继续在尾部增加数据
 bool queue_buffer::add(const char* data, const size_t szdata)
 {
     if (szdata > size_of_capacity_ - size_of_use_)

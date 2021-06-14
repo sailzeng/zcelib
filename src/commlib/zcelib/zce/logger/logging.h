@@ -14,8 +14,7 @@
 *
 */
 
-#ifndef ZCE_LIB_LOG_LOGGING_H_
-#define ZCE_LIB_LOG_LOGGING_H_
+#pragma once
 
 //==========================================================================================================
 
@@ -26,7 +25,7 @@
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
 #include "zce/logger/log_basic.h"
-#include "zce/logger/msg.h"
+#include "zce/logger/log_msg.h"
 
 //打开输出
 #define ZLOG_ENABLE           ZCE_Trace_LogMsg::instance()->enable_output(true)
@@ -40,7 +39,7 @@
 //使用调试级别输出日志
 #define ZCE_LOG               ZCE_Trace_LogMsg::write_logmsg
 
-#define ZPP_LOG               ZCE_LogTrace_Plus::write_logmsg
+#define ZPP_LOG               ZCE_Trace_LogMsg::write_logplus
 
 #if _MSC_VER <= 1300
 
@@ -428,5 +427,3 @@ public:
 #endif //#if defined DEBUG || defined _DEBUG
 
 //-----------------------------------------------------------------------------------------------
-
-#endif

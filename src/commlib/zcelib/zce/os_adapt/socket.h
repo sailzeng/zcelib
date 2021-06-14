@@ -17,11 +17,10 @@
 
 #pragma once
 
+#include "zce/logger/logging.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/error.h"
-#include "zce/logger/logging.h"
-#include "zce/time/time_value.h"
 
 class zce::Time_Value;
 
@@ -33,15 +32,15 @@ class sockaddr_ip
 public:
     sockaddr_ip() = default;
     ~sockaddr_ip() = default;
-    explicit sockaddr_ip(const ::sockaddr *sa);
-    explicit sockaddr_ip(const ::sockaddr_in &sa);
-    explicit sockaddr_ip(const ::sockaddr_in6 &sa);
+    explicit sockaddr_ip(const sockaddr *sa);
+    explicit sockaddr_ip(const sockaddr_in &sa);
+    explicit sockaddr_ip(const sockaddr_in6 &sa);
 
     bool operator == (const sockaddr_ip &others) const;
 
-    sockaddr_ip& operator = (const ::sockaddr *addr) const;
-    sockaddr_ip& operator = (const ::sockaddr_in &addr_in) const;
-    sockaddr_ip& operator = (const ::sockaddr_in6 &addr_in6) const;
+    sockaddr_ip& operator = (const sockaddr *addr);
+    sockaddr_ip& operator = (const sockaddr_in &addr_in);
+    sockaddr_ip& operator = (const sockaddr_in6 &addr_in6);
 
     union
     {
@@ -555,7 +554,7 @@ ssize_t sendn_timeout(ZCE_SOCKET handle,
                       int flags = 0);
 
 /*!
-* @brief      接收UDP数据，接收到一个的数据包或者超时后返回，请参考@ref recvfrom
+* @brief      接收UDP数据，接收到一个的数据包或者超时后返回，请参考@ref deliver_recv
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
 */
 ssize_t recvfrom_timeout(ZCE_SOCKET handle,
@@ -1159,7 +1158,7 @@ int socks5_udp_associate(ZCE_SOCKET handle,
                          int addr_len,
                          sockaddr* udp_addr,
                          zce::Time_Value& timeout_tv);
-};
+} //namespace
 
 //-----------------------------------------------------------------------------------------
 
@@ -1606,12 +1605,12 @@ inline ssize_t zce::recvfrom(ZCE_SOCKET handle,
 
 #elif defined (ZCE_OS_LINUX)
 
-    return ::recvfrom(handle,
-                      buf,
-                      len,
-                      flags,
-                      from,
-                      from_len);
+    return ::deliver_recv(handle,
+                          buf,
+                          len,
+                          flags,
+                          from,
+                          from_len);
 
 #endif
 }

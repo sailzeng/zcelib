@@ -85,7 +85,7 @@
 #include <zce/shared_mem/mmap.h>
 #include <zce/shared_mem/posix.h>
 #include <zce/logger/logging.h>
-#include <zce/logger/msg.h>
+#include <zce/logger/log_msg.h>
 #include <zce/lock/null_lock.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/config/property_tree.h>

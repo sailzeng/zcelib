@@ -89,7 +89,8 @@ static const time_t TIMEZONE_SECONDS = timezone;
 */
 const timeval  get_uptime(void);
 
-/// 得到服务器从启动到现在的毫秒数，使用std::clock函数处理
+///得到服务器从启动到现在的毫秒数，内部采用系统函数，而不使用std::clock函数处理，
+///提供更高的使用便捷性，不用考虑回环等问题
 uint64_t clock_ms(void);
 
 /*!

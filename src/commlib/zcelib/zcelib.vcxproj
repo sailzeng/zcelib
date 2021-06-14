@@ -218,13 +218,15 @@
     <None Include="zcelib.ruleset" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="zce\async\async_base.cpp" />
+    <ClCompile Include="zce\async\async_base.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="zce\async\coroutine.cpp" />
     <ClCompile Include="zce\async\fsm.cpp" />
     <ClCompile Include="zce\async\lua_thread.cpp" />
     <ClCompile Include="zce\logger\log_basic.cpp" />
-    <ClCompile Include="zce\logger\msg.cpp" />
-    <ClCompile Include="zce\logger\plus.cpp" />
+    <ClCompile Include="zce\logger\log_msg.cpp" />
     <ClCompile Include="zce\rudp\rudp.cpp" />
     <ClCompile Include="zce\string\from_string.cpp" />
     <ClCompile Include="zce\util\buffer.cpp" />
@@ -338,8 +340,7 @@
     <ClInclude Include="zce\lock\ptr_guard.h" />
     <ClInclude Include="zce\logger\logging.h" />
     <ClInclude Include="zce\logger\log_basic.h" />
-    <ClInclude Include="zce\logger\msg.h" />
-    <ClInclude Include="zce\logger\plus.h" />
+    <ClInclude Include="zce\logger\log_msg.h" />
     <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\pool\object_pool.h" />
     <ClInclude Include="zce\pool\buffer_pool.h" />

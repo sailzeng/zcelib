@@ -38,7 +38,7 @@ namespace zce
 * @brief     魔戒的的迭代器，在魔戒类里面有typedef成为iterator，
 * @note      记住lordrings的迭代器比vector更加危险，因为他的空间是循环利用的，任何一次push,
 *            pop操作都会让迭代器失效。所以使用的时候当心，
-*            
+*
 *            个人觉得迭代器的作用不大，因为魔戒的使用主要头尾，几乎不用遍历使用。
 */
 template <class T >
@@ -368,7 +368,7 @@ public:
             else
             {
                 //将起始位置调整覆盖，并且调整起始和结束位置
-                lordring_start_ = (lordring_start_ > 0) ? 
+                lordring_start_ = (lordring_start_ > 0) ?
                     lordring_start_ - 1 : lordring_capacity_ - 1;
                 lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
                 vptr_ptr_[lordring_start_] = value_data;
@@ -437,16 +437,57 @@ public:
         return true;
     }
 
-    ///[]数组下标定位,ID不要越界，自己保证，我没兴趣为你干什么
-    T &operator[](size_t id)
+    //在某个位置上插入数据，后面的数据都后移一位
+    bool insert(size_t pos, T &value_data)
     {
-        return vptr_ptr_[(lordring_start_ + id) % lordring_capacity_];
+        if (full())
+        {
+            return false;
+        }
+        auto absolute_pos = (lordring_start_ + pos) % lordring_capacity_;
+        size_t deque_size = size();
+        //都后移一位
+        for (size_t i = 0; i < deque_size - pos; ++i)
+        {
+            vptr_ptr_[(absolute_pos + i + 1) % lordring_capacity_] =
+                vptr_ptr_[(absolute_pos + i) % lordring_capacity_];
+        }
+        vptr_ptr_[absolute_pos] = value_data;
+        lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
+        return true;
     }
 
-    ///[]数组下标定位,ID不要越界，自己保证，我没兴趣为你干什么
-    const T &operator[](size_t id) const
+    //在某个位置上删除数据，后面的数据都前移一位
+    bool erase(size_t pos)
     {
-        return vptr_ptr_[(lordring_start_ + id) % lordring_capacity_];
+        if (empty())
+        {
+            return false;
+        }
+        auto absolute_pos = (lordring_start_ + pos) % lordring_capacity_;
+        vptr_ptr_[absolute_pos].~T();
+
+        size_t deque_size = size();
+        //都前移一位
+        for (size_t i = 0; i < deque_size - pos - 1; ++i)
+        {
+            vptr_ptr_[(absolute_pos + i) % lordring_capacity_] =
+                vptr_ptr_[(absolute_pos + i + 1) % lordring_capacity_];
+        }
+        lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
+        return false;
+    }
+
+    ///[]数组下标定位,pos不要越界，自己保证，我没兴趣为你干什么
+    T &operator[](size_t pos)
+    {
+        return vptr_ptr_[(lordring_start_ + pos) % lordring_capacity_];
+    }
+
+    ///[]数组下标定位,pos不要越界，自己保证，我没兴趣为你干什么
+    const T &operator[](size_t pos) const
+    {
+        return vptr_ptr_[(lordring_start_ + pos) % lordring_capacity_];
     }
 
     ///返回start的迭代器，开始就是序列号为0的位置

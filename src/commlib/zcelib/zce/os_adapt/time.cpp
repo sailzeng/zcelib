@@ -99,9 +99,26 @@ const timeval zce::get_uptime()
 #endif
 }
 
+//
 uint64_t zce::clock_ms(void)
 {
-    return  uint64_t(std::clock()) * 1000 / CLOCKS_PER_SEC;
+#if defined (ZCE_OS_WINDOWS)
+    return  ::GetTickCount64();
+#elif defined (ZCE_OS_LINUX)
+    struct timespec sp;
+    int ret = ::clock_gettime(CLOCK_MONOTONIC, &sp);
+    if (ret == 0)
+    {
+        return (uint64_t)sp.tv_sec * SEC_PER_MSEC + (uint64_t)sp.tv_nsec / MSEC_PER_NSEC;
+    }
+    else
+    {
+        ZCE_LOG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d",
+                ret,
+                zce::last_error());
+        return 0;
+    }
+#endif
 }
 
 //

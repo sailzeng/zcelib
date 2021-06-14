@@ -15,11 +15,22 @@ protected:
 public:
     //构造函数，析构函数，赋值函数
     buffer_pool() = default;
-    ~buffer_pool() = default;
     buffer_pool(const buffer_pool &) = delete;
     buffer_pool & operator= (const buffer_pool &) = delete;
-
-    //初始化
+    ~buffer_pool()
+    {
+        terminate();
+    }
+    
+    /*!
+    * @brief      初始化
+    * @return     bool
+    * @param      bucket_num          桶的数量，
+    * @param      bucket_size_ary     每个桶装的buffer的size的队列，队列长度由bucket_num决定
+    * @param      init_node_size      每个桶初始化的尺寸
+    * @param      extend_node_size    每个桶扩展的尺寸
+    * @note       
+    */
     bool initialize(size_t bucket_num,
                     const size_t bucket_size_ary[],
                     size_t init_node_size,
@@ -50,6 +61,15 @@ public:
             }
         }
         return true;
+    }
+
+    //结束销毁
+    void terminate()
+    {
+        for (size_t i = 0; i < bucket_number_; ++i)
+        {
+            pools_[i].terminate();
+        }
     }
 
     bool alloc_buffer(size_t expect_buf_size,

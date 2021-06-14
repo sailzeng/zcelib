@@ -58,7 +58,7 @@ bool sockaddr_ip::operator == (const sockaddr_ip &others) const
     return false;
 }
 
-sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr *sa) const
+sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr *sa)
 {
     if (sa->sa_family == AF_INET)
     {
@@ -70,14 +70,14 @@ sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr *sa) const
     }
     return *this;
 }
-sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr_in &sa) const
+sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr_in &sa)
 {
     ::memcpy(&this->in_, &sa, sizeof(sockaddr_in));
     return *this;
 }
-sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr_in6 &sa) const
+sockaddr_ip& sockaddr_ip::operator = (const ::sockaddr_in6 &sa)
 {
-    ::memcpy(&this->in6_, &sa, sizeof(sockaddr_in));
+    ::memcpy(&this->in6_, &sa, sizeof(sockaddr_in6));
     return *this;
 }
 

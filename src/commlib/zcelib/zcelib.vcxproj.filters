@@ -297,10 +297,7 @@
     <ClCompile Include="zce\config\property_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\logger\msg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\logger\plus.cpp">
+    <ClCompile Include="zce\logger\log_msg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\logger\log_basic.cpp">
@@ -692,10 +689,7 @@
     <ClInclude Include="zce\logger\logging.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\logger\msg.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\logger\plus.h">
+    <ClInclude Include="zce\logger\log_msg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\logger\priority.h">

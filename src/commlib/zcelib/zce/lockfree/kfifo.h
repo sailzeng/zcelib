@@ -16,7 +16,6 @@
 */
 #pragma once
 
-
 namespace zce::lockfree
 {
 /*!
@@ -100,7 +99,6 @@ public:
 
         /// 数据区的数据，变长的数据,1只是占位符号
         char          chunk_data_[1];
-
     };
 
 protected:
@@ -538,7 +536,7 @@ protected:
 protected:
 
     //内存基础地址
-    char* smem_base_ = nullptr;;
+    char* smem_base_ = nullptr;
 
     ///内存的头部
     shm_kfifo_head* kfifo_head_ = nullptr;
