@@ -214,7 +214,7 @@ public:
         }
 
         //测试时打开，
-        //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Recv queue message_count:%u message_bytes:%u. ",
+        //ZCE_LOG_DEBUG(RS_DEBUG,"[framework] Recv queue message_count:%u message_bytes:%u. ",
         //  recv_msg_queue_->size(),
         //  recv_msg_queue_->size() * sizeof(soar::Zerg_Frame *));
 

@@ -463,12 +463,12 @@ int TCP_Svc_Handler::handle_input()
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Read event ,svcinfo[%u|%u] IP[%s], handle input event triggered. ret:%d,szrecv:%u.",
-                     peer_svr_id_.services_type_,
-                     peer_svr_id_.services_id_,
-                     peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                     ret,
-                     szrecv);
+    ZCE_LOG_DEBUG(RS_DEBUG, "Read event ,svcinfo[%u|%u] IP[%s], handle input event triggered. ret:%d,szrecv:%u.",
+                  peer_svr_id_.services_type_,
+                  peer_svr_id_.services_id_,
+                  peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                  ret,
+                  szrecv);
 
     //这儿任何错误都关闭,
     if (ret != 0)
@@ -985,11 +985,11 @@ int TCP_Svc_Handler::check_recv_full_frame(bool& bfull,
     {
         bfull = true;
         ++recieve_counter_;
-        ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a whole frame from services[%u|%u] IP|Port [%s] FrameLen:%u.",
-                         peer_svr_id_.services_type_,
-                         peer_svr_id_.services_id_,
-                         peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                         whole_frame_len);
+        ZCE_LOG_DEBUG(RS_DEBUG, "Receive a whole frame from services[%u|%u] IP|Port [%s] FrameLen:%u.",
+                      peer_svr_id_.services_type_,
+                      peer_svr_id_.services_id_,
+                      peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                      whole_frame_len);
     }
 
     return 0;
@@ -1155,7 +1155,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& bfull)
     {
         bfull = true;
         ++send_counter_;
-        //ZCE_LOGMSG_DEBUG(RS_DEBUG,"Send a few(n>=1) whole frame To  IP|Port :%s|%u FrameLen:%u.",
+        //ZCE_LOG_DEBUG(RS_DEBUG,"Send a few(n>=1) whole frame To  IP|Port :%s|%u FrameLen:%u.",
         //    peer_address_.get_host_addr(),
         //    peer_address_.get_port_number(),
         //    sndbuffer->size_of_use_);
@@ -1439,7 +1439,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
                                           const soar::SERVICES_ID& recv_services_info,
                                           uint32_t option)
 {
-    //ZCE_LOGMSG_DEBUG(RS_DEBUG,"Send simple command to services[%u|%u] IP[%s|%u],Cmd %u.",
+    //ZCE_LOG_DEBUG(RS_DEBUG,"Send simple command to services[%u|%u] IP[%s|%u],Cmd %u.",
     //    peer_svr_info_.services_type_,
     //    peer_svr_info_.services_id_,
     //    peer_address_.get_host_addr(),
@@ -1598,7 +1598,7 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     ////下面的代码用于合并的测试，平常会注释掉
     //else
     //{
-    //    ZCE_LOGMSG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_APPFRAME=%u,"
+    //    ZCE_LOG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_APPFRAME=%u,"
     //        "snd_buffer_deque_[sz_deque-2]->size_of_capacity_=%u,"
     //        "snd_buffer_deque_[sz_deque-1]->size_of_capacity_=%u.",
     //        sz_deque,

@@ -238,7 +238,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame* post_frame, bool alloc_f
     }
 
     //测试时打开，
-    //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
+    //ZCE_LOG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
     //    send_msg_queue_->size(),
     //    send_msg_queue_->size() * sizeof(soar::Zerg_Frame *));
     monitor->add_one(COMM_STAT_TASK_QUEUE_SEND_SUCC,

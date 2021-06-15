@@ -13,17 +13,17 @@ namespace zce::rudp
 enum FLAG
 {
     //客户端发往服务器的第一帧,标志，让服务器告知SESSION ID
-    SYN = (0x1 < 1),
+    SYN = (0x1 << 1),
     //ACK应答数据，表示ack_
-    ACK = (0x1 < 2),
+    ACK = (0x1 << 2),
     //带有数据
-    PSH = (0x1 < 3),
+    PSH = (0x1 << 3),
     //RESET
-    RST = (0x1 < 4),
+    RST = (0x1 << 4),
     //link MTU TEST，链路的MTU测试帧
-    LMT = (0x1 < 5),
+    LMT = (0x1 << 5),
     //Keep live
-    KPL = (0x1 < 6),
+    KPL = (0x1 << 6),
 };
 
 //对应mtu_type_ 字段，可以有4种，目前用了2种
@@ -117,9 +117,7 @@ public:
 #pragma pack ()
 
 //=====================================================================================
-constexpr size_t BUF_BUCKET_NUM = 8;
-constexpr size_t BUF_BUCKET_SIZE_ARY[] = { 64,128,256,512,768,1024,1280,1536 };
-//
+
 static constexpr size_t MTU_WAN = 576;
 //
 static constexpr size_t MSS_WAN = MTU_WAN - 20 - 8;
@@ -169,9 +167,10 @@ protected:
     enum class STATE
     {
         CLOSE = 0,
-        SYS_SEND = 1,
-        SYN_RCVD = 2,
-        ESTABLISHED = 3,
+        ACCEPTED = 1,
+        SYS_SEND = 2,
+        SYN_RCVD = 3,
+        ESTABLISHED = 4,
     };
 
     struct SEND_RECORD;
@@ -213,6 +212,11 @@ public:
     {
         return session_id_;
     }
+    inline ZCE_SOCKET get_handle()
+    {
+        assert(model_ == MODEL::PEER_CLIENT);
+        return peer_socket_;
+    }
 
     //
     int reset();
@@ -238,25 +242,28 @@ protected:
     int state_changes(RUDP_FRAME *recv_frame);
 
     //跟进收到ACK ID确认那些发送成功了
-    int acknowledge_send(uint32_t recv_ack_id);
+    int acknowledge_send(uint32_t recv_ack_id,
+                         uint64_t now_clock);
 
     /// 计算RTO
-    void calculate_rto(uint64_t send_clock);
+    void calculate_rto(uint64_t send_clock,
+                       uint64_t now_clock);
 
     ///超时处理
     void time_out(uint64_t now_clock_ms);
 
 protected:
 
-    typedef zce::cycle_buffer RECV_RECORD;
+    //发送（需要确认的发送）的记录，
     struct SEND_RECORD
     {
+        //
         uint32_t flag_ = 0;
         //这个发送报的序列号
         uint32_t sequence_num_ = 0;
-        //
+        //发送数据的长度
         size_t len_ = 0;
-        //
+        //记录这个数据在发送窗口的位置，
         char *buf_pos_ = nullptr;
 
         //发送的时间，
@@ -269,6 +276,11 @@ protected:
 
     typedef zce::lord_rings<SEND_RECORD >  SEND_RECORD_LIST;
 
+    //最小的RTO值
+    static time_t min_rto_;
+    //超时阻塞的情况下，rto增加的比率
+    static double blocking_rto_ratio_;
+
 protected:
     //模式，不同的open函数决定不同的模式
     MODEL model_ = MODEL::PEER_INVALID;
@@ -278,13 +290,13 @@ protected:
 
     //会话ID，表示这个会话状态，由CORE 生产，客户端负责每次携带
     uint32_t session_id_ = 0;
-    //序列号
-    uint32_t snd_seq_num_counter_ = 0;
-    //已经确认的序列号ID,已经收到了ACK
-    uint32_t snd_seq_num_ack_ = 0;
+    //自己的（发送）序列号
+    uint32_t my_seq_num_counter_ = 0;
+    //自己的已经确认的（发送）序列号ID,已经收到了ACK
+    uint32_t my_seq_num_ack_ = 0;
 
-    //期待收到的下一个seq num，也就是回复的ack id
-    uint32_t rcv_expect_seq_num_ = 0;
+    //对方期待收到的下一个数据的seq num，也就是回复的ACK id
+    uint32_t peer_expect_seq_num_ = 0;
 
     //Socket 句柄
     ZCE_SOCKET peer_socket_ = ZCE_INVALID_SOCKET;
@@ -298,23 +310,22 @@ protected:
     //发送数据的滑动窗口
     zce::cycle_buffer send_windows_;
 
-    //
+    //发送的BUFFER
     char *recv_buffer_ = nullptr;
-    //
+    //接收的BUFFER
     char *send_buffer_ = nullptr;
 
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
     //但考虑到简单，我们先把两端的MTU约束成一样,
     MTU_TYPE mtu_type_ = MTU_TYPE::ETHERNET;
 
-    //
+    //对端窗口的大小
     size_t peer_windows_size_ = 64 * 1024;
-    //
+    //RTO，
     time_t rto_ = 80;
-    //
-    time_t min_rto_ = 80;
-    //超时阻塞的情况下，rto增加的比率
-    double blocking_rto_ratio_ = 1.5;
+
+    //最后活动的时间
+    uint64_t last_live_clock_ = 0;
 };
 
 //=====================================================================================
@@ -341,6 +352,12 @@ public:
 
     //超时处理
     void time_out();
+
+    //
+    inline ZCE_SOCKET get_handle()
+    {
+        return core_socket_;
+    }
 
 protected:
 

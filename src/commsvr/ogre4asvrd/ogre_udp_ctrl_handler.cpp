@@ -81,10 +81,10 @@ int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
     //读取数据
     ret = read_data_fromudp(szrevc, remote_addr);
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Read Event[%s].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
-                     remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                     ret,
-                     szrevc);
+    ZCE_LOG_DEBUG(RS_DEBUG, "UDP Read Event[%s].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
+                  remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                  ret,
+                  szrevc);
 
     if (ret != 0)
     {
@@ -247,8 +247,8 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s]  Socket %u bytes data Succ.\n",
-                     remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                     szsend);
+    ZCE_LOG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s]  Socket %u bytes data Succ.\n",
+                  remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                  szsend);
     return 0;
 }

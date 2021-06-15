@@ -283,10 +283,10 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
         if (if_recv_whole == true)
         {
             //将数据放入接收的管道,不检测错误,因为错误会记录日志,而且有错误，也无法处理
-            ZCE_LOGMSG_DEBUG(RS_DEBUG, "Read a whole data [%s] recv buffer len:%u, Frame len:%u.\n",
-                             remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                             rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
-                             size_frame);
+            ZCE_LOG_DEBUG(RS_DEBUG, "Read a whole data [%s] recv buffer len:%u, Frame len:%u.\n",
+                          remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                          rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
+                          size_frame);
 
             //记录接受了多少次数据
             receive_times_++;
@@ -616,9 +616,9 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     if (sndbuffer->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD == send_bytes_)
     {
         if_full = true;
-        ZCE_LOGMSG_DEBUG(RS_DEBUG, "Send a whole frame To  IP|Port :%s FrameLen:%u.\n",
-                         remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                         send_bytes_);
+        ZCE_LOG_DEBUG(RS_DEBUG, "Send a whole frame To  IP|Port :%s FrameLen:%u.\n",
+                      remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                      send_bytes_);
         send_bytes_ = 0;
     }
 

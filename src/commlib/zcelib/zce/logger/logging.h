@@ -375,8 +375,12 @@ public:
 
 #if defined DEBUG || defined _DEBUG
 
-#ifndef ZCE_LOGMSG_DEBUG
-#define ZCE_LOGMSG_DEBUG        ZCE_LOG
+#ifndef ZCE_LOG_DEBUG
+#define ZCE_LOG_DEBUG        ZCE_LOG
+#endif
+
+#ifndef ZPP_LOG_DEBUG
+#define ZPP_LOG_DEBUG        ZPP_LOG
 #endif
 
 #ifndef ZCE_ASSERT_DEBUG
@@ -400,11 +404,19 @@ public:
 
 //如果不是调试编译,将这些宏置为空
 
-#ifndef ZCE_LOGMSG_DEBUG
+#ifndef ZCE_LOG_DEBUG
 #if defined ZCE_OS_WINDOWS
-#define ZCE_LOGMSG_DEBUG             __noop
+#define ZCE_LOG_DEBUG             __noop
 #else
-#define ZCE_LOGMSG_DEBUG(...)          do  {} while (0)
+#define ZCE_LOG_DEBUG(...)          do  {} while (0)
+#endif
+#endif
+
+#ifndef ZPP_LOG_DEBUG
+#if defined ZCE_OS_WINDOWS
+#define ZPP_LOG_DEBUG             __noop
+#else
+#define ZPP_LOG_DEBUG(...)          do  {} while (0)
 #endif
 #endif
 

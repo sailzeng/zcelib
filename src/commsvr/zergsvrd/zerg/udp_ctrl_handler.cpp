@@ -97,15 +97,15 @@ int UDP_Svc_Handler::handle_input()
 
         //读取数据
         int ret = read_data_from_udp(szrevc);
-        ZCE_LOGMSG_DEBUG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
+        ZCE_LOG_DEBUG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
 
         if (ret != 0)
         {
-            ZCE_LOGMSG_DEBUG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,zce::last_error()=%d|%s",
-                             ret,
-                             szrevc,
-                             zce::last_error(),
-                             strerror(zce::last_error()));
+            ZCE_LOG_DEBUG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,zce::last_error()=%d|%s",
+                          ret,
+                          szrevc,
+                          zce::last_error(),
+                          strerror(zce::last_error()));
             //return -1吗，但是我真不知道如何处理
             break;
         }

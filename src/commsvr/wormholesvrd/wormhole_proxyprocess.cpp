@@ -133,19 +133,19 @@ int Echo_Proxy_Process::get_proxy_config(const zce::PropertyTree* conf_tree)
 
 int Echo_Proxy_Process::process_proxy(Zerg_App_Frame* proc_frame)
 {
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a echo frame to process,"
-                     "send svr:[%u|%u], "
-                     "recv svr:[%u|%u], "
-                     "frame_uin:%u, "
-                     "frame_cmd:%u, "
-                     "frame_len:%u. ",
-                     proc_frame->send_service_.services_type_,
-                     proc_frame->send_service_.services_id_,
-                     proc_frame->recv_service_.services_type_,
-                     proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_userid_,
-                     proc_frame->frame_command_,
-                     proc_frame->frame_length_);
+    ZCE_LOG_DEBUG(RS_DEBUG, "Receive a echo frame to process,"
+                  "send svr:[%u|%u], "
+                  "recv svr:[%u|%u], "
+                  "frame_uin:%u, "
+                  "frame_cmd:%u, "
+                  "frame_len:%u. ",
+                  proc_frame->send_service_.services_type_,
+                  proc_frame->send_service_.services_id_,
+                  proc_frame->recv_service_.services_type_,
+                  proc_frame->recv_service_.services_id_,
+                  proc_frame->frame_userid_,
+                  proc_frame->frame_command_,
+                  proc_frame->frame_length_);
 
     int ret = 0;
     // 内部处理的命令
@@ -169,12 +169,12 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame* proc_frame)
         return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
-                     proc_frame->recv_service_.services_type_,
-                     proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_userid_,
-                     proc_frame->frame_command_,
-                     proc_frame->frame_length_);
+    ZCE_LOG_DEBUG(RS_DEBUG, "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
+                  proc_frame->recv_service_.services_type_,
+                  proc_frame->recv_service_.services_id_,
+                  proc_frame->frame_userid_,
+                  proc_frame->frame_command_,
+                  proc_frame->frame_length_);
     return 0;
 }
 
@@ -203,19 +203,19 @@ int Transmit_Proxy::get_proxy_config(const zce::PropertyTree* conf_tree)
 
 int Transmit_Proxy::process_proxy(Zerg_App_Frame* proc_frame)
 {
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a transmit frame to process,"
-                     "send svr:[%u|%u], "
-                     "recv svr:[%u|%u], "
-                     "frame_uin:%u, "
-                     "frame_cmd:%u, "
-                     "frame_len:%u. ",
-                     proc_frame->send_service_.services_type_,
-                     proc_frame->send_service_.services_id_,
-                     proc_frame->recv_service_.services_type_,
-                     proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_userid_,
-                     proc_frame->frame_command_,
-                     proc_frame->frame_length_);
+    ZCE_LOG_DEBUG(RS_DEBUG, "Receive a transmit frame to process,"
+                  "send svr:[%u|%u], "
+                  "recv svr:[%u|%u], "
+                  "frame_uin:%u, "
+                  "frame_cmd:%u, "
+                  "frame_len:%u. ",
+                  proc_frame->send_service_.services_type_,
+                  proc_frame->send_service_.services_id_,
+                  proc_frame->recv_service_.services_type_,
+                  proc_frame->recv_service_.services_id_,
+                  proc_frame->frame_userid_,
+                  proc_frame->frame_command_,
+                  proc_frame->frame_length_);
 
     int ret = 0;
 
@@ -237,13 +237,13 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame* proc_frame)
         return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
-                     proc_frame->recv_service_.services_type_,
-                     proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_userid_,
-                     proc_frame->frame_command_,
-                     proc_frame->frame_length_,
-                     proc_frame->transaction_id_);
+    ZCE_LOG_DEBUG(RS_DEBUG, "Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
+                  proc_frame->recv_service_.services_type_,
+                  proc_frame->recv_service_.services_id_,
+                  proc_frame->frame_userid_,
+                  proc_frame->frame_command_,
+                  proc_frame->frame_length_,
+                  proc_frame->transaction_id_);
 
     return 0;
 }
@@ -360,13 +360,13 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame* proc_frame)
             return ret;
         }
 
-        ZCE_LOGMSG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
-                         proc_frame->recv_service_.services_type_,
-                         proc_frame->recv_service_.services_id_,
-                         proc_frame->frame_userid_,
-                         proc_frame->frame_command_,
-                         proc_frame->frame_length_,
-                         proc_frame->transaction_id_);
+        ZCE_LOG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
+                      proc_frame->recv_service_.services_type_,
+                      proc_frame->recv_service_.services_id_,
+                      proc_frame->frame_userid_,
+                      proc_frame->frame_command_,
+                      proc_frame->frame_length_,
+                      proc_frame->transaction_id_);
     }
 
     return 0;
@@ -492,13 +492,13 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame* proc_frame)
         return ret;
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
-                     proc_frame->recv_service_.services_type_,
-                     proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_userid_,
-                     proc_frame->frame_command_,
-                     proc_frame->frame_length_,
-                     proc_frame->transaction_id_);
+    ZCE_LOG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
+                  proc_frame->recv_service_.services_type_,
+                  proc_frame->recv_service_.services_id_,
+                  proc_frame->frame_userid_,
+                  proc_frame->frame_command_,
+                  proc_frame->frame_length_,
+                  proc_frame->transaction_id_);
 
     return 0;
 }
