@@ -1036,13 +1036,13 @@ inline uint16_t get_port_number(const sockaddr* addr);
 
 //返回地址信息
 inline const char* get_host_addr(const sockaddr* addr,
-                                 char* addr_buf,
-                                 size_t addr_size);
+                                 char* out_buf,
+                                 size_t buf_size);
 
 //得到IP地址和端口信息的字符串描述
 inline const char* get_host_addr_port(const sockaddr* addr,
-                                      char* addr_buf,
-                                      size_t addr_size);
+                                      char* out_buf,
+                                      size_t buf_size);
 
 /*!
 * @brief      返回IP地址的整数,本地序
@@ -1901,18 +1901,18 @@ inline uint16_t zce::get_port_number(const sockaddr* addr)
 
 //返回地址信息
 inline const char* zce::get_host_addr(const sockaddr* addr,
-                                      char* addr_buf,
-                                      size_t addr_size)
+                                      char* out_buf,
+                                      size_t buf_size)
 {
     return zce::inet_ntop(addr->sa_family,
                           (void*)(addr),
-                          addr_buf,
-                          addr_size);
+                          out_buf,
+                          buf_size);
 }
 
 inline const char* zce::get_host_addr_port(const sockaddr* addr,
-                                           char* addr_buf,
-                                           size_t addr_size)
+                                           char* out_buf,
+                                           size_t buf_size)
 {
     uint16_t port = 0;
     if (AF_INET == addr->sa_family)
@@ -1926,10 +1926,10 @@ inline const char* zce::get_host_addr_port(const sockaddr* addr,
     else
     {
     }
-    zce::inet_ntop(addr->sa_family, (void*)(addr), addr_buf, addr_size);
-    size_t str_len = strlen(addr_buf);
-    snprintf(addr_buf + str_len, addr_size - str_len, "#%u", port);
-    return addr_buf;
+    zce::inet_ntop(addr->sa_family, (void*)(addr), out_buf, buf_size);
+    size_t str_len = strlen(out_buf);
+    snprintf(out_buf + str_len, buf_size - str_len, "#%u", port);
+    return out_buf;
 }
 
 //非标准函数，但是重入安全

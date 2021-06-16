@@ -88,10 +88,15 @@ public:
         /// 辅助编大小端转换
         uint32_t u32_1_copy_ = 0;
     };
+    //会话ID
     uint32_t session_id_ = 0;
+    //序列号，数据对应的序列号
     uint32_t sequence_num_ = 0;
+    //应答ID，确认收到的对端的序列号
     uint32_t ack_id_ = 0;
+    //本地接收窗口大小
     uint32_t windows_size_ = 0;
+
     uint32_t uno1_ = 0;
     uint32_t uno2_ = 0;
 };
@@ -117,39 +122,38 @@ public:
 #pragma pack ()
 
 //=====================================================================================
+class BASE
+{
+public:
+    //WAN的MTU
+    static constexpr size_t MTU_WAN = 576;
+    //UDP包在WAN网络的负载
+    static constexpr size_t MSS_WAN_UDP = MTU_WAN - 20 - 8;
+    //RUDP的MTU
+    static constexpr size_t MTU_WAN_RUDP = MSS_WAN_UDP;
+    //RUDP的MSS，要减去头部大小
+    static constexpr size_t MSS_WAN_RUDP = MTU_WAN_RUDP - sizeof(RUDP_HEAD);
 
-static constexpr size_t MTU_WAN = 576;
-//
-static constexpr size_t MSS_WAN = MTU_WAN - 20 - 8;
-//
-static constexpr size_t MTU_WAN_RUDP = MSS_WAN;
-//
-static constexpr size_t MSS_WAN_RUDP = MTU_WAN_RUDP - sizeof(RUDP_HEAD);
+    //
+    static constexpr size_t MTU_ETHERNET = 1480;
+    //
+    static constexpr size_t MSS_ETHERNET = MTU_ETHERNET - 20 - 8;
+    //
+    static constexpr size_t MTU_ETHERNET_RUDP = MSS_ETHERNET;
+    //
+    static constexpr size_t MSS_ETHERNET_RUDP = MTU_ETHERNET_RUDP - sizeof(RUDP_HEAD);
 
-//
-static constexpr size_t MTU_ETHERNET = 1480;
-//
-static constexpr size_t MSS_ETHERNET = MTU_ETHERNET - 20 - 8;
-//
-static constexpr size_t MTU_ETHERNET_RUDP = MSS_ETHERNET;
-//
-static constexpr size_t MSS_ETHERNET_RUDP = MTU_ETHERNET_RUDP - sizeof(RUDP_HEAD);
-
-//最大数据处理的长度，这儿注意一下，其实最大长度只可能是MSS_ETHERNET，
-static constexpr size_t MAX_FRAME_LEN = MTU_ETHERNET_RUDP;
-//
-static constexpr size_t MIN_FRAME_LEN = sizeof(RUDP_HEAD);
-//+4 的目的是为了方便判定错误
-static constexpr size_t MAX_BUFFER_LEN = MAX_FRAME_LEN + 4;
-
-//
-static constexpr size_t MAX_NUM_SEND_LIST = 512;
-//
-static constexpr size_t MAX_NUM_RECV_LIST = 512;
+    //最大数据处理的长度，这儿注意一下，其实最大长度只可能是MSS_ETHERNET，
+    static constexpr size_t MAX_FRAME_LEN = MTU_ETHERNET_RUDP;
+    //
+    static constexpr size_t MIN_FRAME_LEN = sizeof(RUDP_HEAD);
+    //+4 的目的是为了方便判定错误
+    static constexpr size_t MAX_BUFFER_LEN = MAX_FRAME_LEN + 4;
+};
 
 //=====================================================================================
 class CORE;
-class PEER
+class PEER :public BASE
 {
     //有些函数只能core调用
     friend class CORE;
@@ -181,7 +185,8 @@ public:
     PEER& operator = (const PEER & other) = default;
 
     //服务器端CORE打开一个PEER
-    int open(uint32_t session_id,
+    int open(CORE *core,
+             uint32_t session_id,
              uint32_t serial_id,
              ZCE_SOCKET peer_socket,
              const sockaddr *remote_addr,
@@ -207,11 +212,6 @@ public:
     int send(const char* buf,
              size_t &len);
 
-    //
-    inline uint32_t seesion_id()
-    {
-        return session_id_;
-    }
     inline ZCE_SOCKET get_handle()
     {
         assert(model_ == MODEL::PEER_CLIENT);
@@ -239,10 +239,8 @@ protected:
                       size_t sz_data = 0,
                       SEND_RECORD *snd_rec = nullptr);
 
-    int state_changes(RUDP_FRAME *recv_frame);
-
     //跟进收到ACK ID确认那些发送成功了
-    int acknowledge_send(uint32_t recv_ack_id,
+    int acknowledge_send(RUDP_FRAME *recv_frame,
                          uint64_t now_clock);
 
     /// 计算RTO
@@ -284,9 +282,8 @@ protected:
 protected:
     //模式，不同的open函数决定不同的模式
     MODEL model_ = MODEL::PEER_INVALID;
-
-    //状态
-    STATE rudp_state_ = STATE::CLOSE;
+    //
+    CORE *core_ = nullptr;
 
     //会话ID，表示这个会话状态，由CORE 生产，客户端负责每次携带
     uint32_t session_id_ = 0;
@@ -324,13 +321,13 @@ protected:
     //RTO，
     time_t rto_ = 80;
 
-    //最后活动的时间
-    uint64_t last_live_clock_ = 0;
+    //对端最后活动（收到数据）的时间
+    uint64_t peer_live_clock_ = 0;
 };
 
 //=====================================================================================
 ///RUDP core，服务器端用的类
-class CORE
+class CORE :public BASE
 {
 public:
     CORE() = default;
@@ -359,13 +356,14 @@ public:
         return core_socket_;
     }
 
+    //删除对应的PEER
+    void delete_peer(PEER *del_peer);
+
 protected:
 
+    //创建一个PEER
     int create_peer(const zce::sockaddr_ip *remote_ip,
                     PEER *& new_peer);
-
-    //发送应答
-    void send_head();
 
 protected:
 
