@@ -365,29 +365,31 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
             int32_t difference = (int32_t)(recv_seq_num - peer_expect_seq_num_);
 
             //收取重复数据
-            if (difference > 0)
+            if (difference < 0)
             {
                 ZCE_LOG_DEBUG(RS_DEBUG, "");
             }
-            //发生了跳跃
-            else if (difference < 0)
+            //发生了跳跃,记录跳跃的帧
+            else if (difference > 0)
             {
+                record_selective(recv_frame);
             }
             //和期待的seq num 一致，
             else
             {
-                char *wt_ptr = nullptr;
-                recv_windows_.push_end(recv_frame->data_, data_len, wt_ptr);
-                peer_expect_seq_num_ = peer_expect_seq_num_ + static_cast<uint32_t>(data_len);
+                if (data_len > 0)
+                {
+                    char *wt_ptr = nullptr;
+                    recv_windows_.push_end(recv_frame->data_, data_len, wt_ptr);
+                    peer_expect_seq_num_ = peer_expect_seq_num_ + static_cast<uint32_t>(data_len);
+                    send_frame_to(FLAG::ACK);
+                }
+                else
+                {
+                    ZCE_LOG_DEBUG(RS_ERROR, "");
+                }
             }
-            send_frame_to(FLAG::ACK);
         }
-    }
-    else if (flag & FLAG::KPL)
-    {
-        //回复一个ACK
-        peer_expect_seq_num_++;
-        send_frame_to(FLAG::ACK);
     }
     else if (flag & FLAG::SYN)
     {
@@ -404,6 +406,11 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         {
         }
     }
+    //心跳情况下，什么都不做，就是保证有应答
+    else if (flag & FLAG::KPL)
+    {
+        send_frame_to(FLAG::ACK);
+    }
     uint64_t now_clock = zce::clock_ms();
     //有ACK处理
     if (flag & FLAG::ACK)
@@ -417,6 +424,134 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     }
     peer_live_clock_ = now_clock;
     return 0;
+}
+
+void PEER::proces_selective()
+{
+    size_t process_num = 0;
+    for (size_t i = 0; i < selective_ack_num_; ++i)
+    {
+        RUDP_FRAME *selective_frame = selective_ack_ary_[i];
+        size_t data_len = selective_frame->u32_1_.len_ - sizeof(RUDP_HEAD);
+        if (recv_windows_.free() > data_len)
+        {
+            uint32_t recv_seq_num = selective_frame->sequence_num_;
+            int32_t difference = (int32_t)(recv_seq_num - peer_expect_seq_num_);
+            if (difference < 0)
+            {
+                ++process_num;
+            }
+            //发生了跳跃,
+            else if (difference > 0)
+            {
+                break;
+            }
+            //和期待的seq num 一致，
+            else
+            {
+                char *wt_ptr = nullptr;
+                recv_windows_.push_end(selective_frame->data_, data_len, wt_ptr);
+                peer_expect_seq_num_ = peer_expect_seq_num_ + static_cast<uint32_t>(data_len);
+                send_frame_to(FLAG::ACK);
+                ++process_num;
+            }
+        }
+    }
+    selective_ack_num_ -= process_num;
+}
+
+//记录收到的跳跃数据。代码丑的一比
+void PEER::record_selective(RUDP_FRAME *selective_frame)
+{
+    uint32_t s_s_num = selective_frame->sequence_num_;
+    if (selective_ack_num_ == 0)
+    {
+        memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+        ++selective_ack_num_;
+    }
+    if (selective_ack_num_ == 1)
+    {
+        if (s_s_num == selective_ack_ary_[0]->sequence_num_)
+        {
+            return;
+        }
+        if (s_s_num > selective_ack_ary_[0]->sequence_num_)
+        {
+            memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
+            ++selective_ack_num_;
+        }
+        else
+        {
+            RUDP_FRAME *temp = selective_ack_ary_[1];
+            selective_ack_ary_[1] = selective_ack_ary_[0];
+            selective_ack_ary_[0] = temp;
+            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+            ++selective_ack_num_;
+        }
+    }
+    if (selective_ack_num_ == 2)
+    {
+        if (s_s_num == selective_ack_ary_[0]->sequence_num_ ||
+            s_s_num == selective_ack_ary_[1]->sequence_num_)
+        {
+            return;
+        }
+        if (s_s_num > selective_ack_ary_[1]->sequence_num_)
+        {
+            memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
+            ++selective_ack_num_;
+        }
+        else if (s_s_num > selective_ack_ary_[0]->sequence_num_)
+        {
+            RUDP_FRAME *temp = selective_ack_ary_[2];
+            selective_ack_ary_[2] = selective_ack_ary_[1];
+            selective_ack_ary_[1] = temp;
+            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+            ++selective_ack_num_;
+        }
+        else
+        {
+            RUDP_FRAME *temp = selective_ack_ary_[2];
+            selective_ack_ary_[2] = selective_ack_ary_[1];
+            selective_ack_ary_[1] = selective_ack_ary_[0];
+            selective_ack_ary_[0] = temp;
+            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+            ++selective_ack_num_;
+        }
+    }
+    if (selective_ack_num_ == 3)
+    {
+        if (s_s_num == selective_ack_ary_[0]->sequence_num_ ||
+            s_s_num == selective_ack_ary_[1]->sequence_num_ ||
+            s_s_num == selective_ack_ary_[2]->sequence_num_)
+        {
+            return;
+        }
+        if (s_s_num > selective_ack_ary_[2]->sequence_num_)
+        {
+            //很无奈，空间保存不了
+            return;
+        }
+        else if (s_s_num > selective_ack_ary_[1]->sequence_num_)
+        {
+            memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
+        }
+        else if (s_s_num > selective_ack_ary_[0]->sequence_num_)
+        {
+            memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
+            RUDP_FRAME *temp = selective_ack_ary_[2];
+            selective_ack_ary_[2] = selective_ack_ary_[1];
+            selective_ack_ary_[1] = temp;
+        }
+        else
+        {
+            RUDP_FRAME *temp = selective_ack_ary_[2];
+            selective_ack_ary_[2] = selective_ack_ary_[1];
+            selective_ack_ary_[1] = selective_ack_ary_[0];
+            selective_ack_ary_[0] = temp;
+            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+        }
+    }
 }
 
 //客户端调用的接收函数
@@ -505,8 +640,8 @@ int PEER::send_frame_to(int flag,
     frame->session_id_ = session_id_;
 
     uint64_t now_clock = zce::clock_ms();
-    //这几种情况的发送需要ACK确认
-    if ((flag & FLAG::PSH) || (flag & FLAG::SYN) || (flag & FLAG::KPL))
+    //这几种情况的发送需要ACK确认,会填写sequence_num_
+    if ((flag & FLAG::PSH) || (flag & FLAG::SYN))
     {
         if (first_send == true)
         {
@@ -600,9 +735,9 @@ int PEER::acknowledge_send(RUDP_FRAME *recv_frame,
     {
         //一直处理第一个
         SEND_RECORD &snd_rec = send_rec_list_[0];
-        size_t snd_serial_id = snd_rec.sequence_num_;
+        uint32_t snd_serial_id = snd_rec.sequence_num_;
 
-        //这儿有一点技巧，避免 wraparound引发麻烦,其实就是利用了补码
+        //这儿有一点技巧，避免 wrap around引发麻烦,其实就是利用了补码
         difference = (int32_t)(recv_ack_id - snd_serial_id);
         if (difference < 0)
         {

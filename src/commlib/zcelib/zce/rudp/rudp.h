@@ -66,13 +66,16 @@ protected:
         uint32_t flag_ : 8;
         //保留
         uint32_t reserve_ : 8;
+        //selective的数量
+        uint32_t selective_num_ : 2;
         //采用什么MTU类型，参考MTU_TYPE
-        uint32_t mtu_type_ : 4;
+        uint32_t mtu_type_ : 2;
 
         //recv list 接收List的数量，用windows_num_ 这个变量名称是为了方便大家理解
 #else
         //大端的字段，顺序和小端相反
-        uint32_t mtu_type_ : 4;
+        uint32_t mtu_type_ : 2;
+        uint32_t selective_num_ : 2;
         uint32_t reserve_ : 8;
         uint32_t flag_ : 8;
         uint32_t len_ : 12;
@@ -258,6 +261,12 @@ protected:
     ///超时处理
     void time_out(uint64_t now_clock_ms);
 
+    ///
+    void record_selective(RUDP_FRAME *selective_frame);
+
+    ///
+    void proces_selective();
+
 protected:
 
     //发送（需要确认的发送）的记录，
@@ -286,6 +295,8 @@ protected:
     static time_t min_rto_;
     //超时阻塞的情况下，rto增加的比率
     static double blocking_rto_ratio_;
+    ///
+    static time_t noalive_time_to_close_;
 
 protected:
     //模式，不同的open函数决定不同的模式
@@ -322,7 +333,8 @@ protected:
 
     //
     size_t selective_ack_num_ = 0;
-    char selective_ack_ary_[3] = { 0 };
+    //
+    RUDP_FRAME *selective_ack_ary_[3] = { nullptr };
 
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
     //但考虑到简单，我们先把两端的MTU约束成一样,
