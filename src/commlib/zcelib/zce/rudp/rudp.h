@@ -97,8 +97,8 @@ public:
     //本地接收窗口大小
     uint32_t windows_size_ = 0;
 
-    uint32_t uno1_ = 0;
-    uint32_t uno2_ = 0;
+    uint32_t sack1_ = 0;
+    uint32_t sack2_ = 0;
 };
 
 class RUDP_FRAME : public RUDP_HEAD

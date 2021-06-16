@@ -14,8 +14,8 @@ void RUDP_HEAD::hton()
     sequence_num_ = htonl(sequence_num_);
     ack_id_ = htonl(ack_id_);
     windows_size_ = htonl(windows_size_);
-    uno1_ = htonl(uno1_);
-    uno2_ = htonl(uno2_);
+    sack1_ = htonl(sack1_);
+    sack2_ = htonl(sack2_);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
@@ -26,8 +26,8 @@ void RUDP_HEAD::ntoh()
     sequence_num_ = ntohl(sequence_num_);
     ack_id_ = ntohl(ack_id_);
     windows_size_ = ntohl(windows_size_);
-    uno1_ = ntohl(uno1_);
-    uno2_ = ntohl(uno2_);
+    sack1_ = ntohl(sack1_);
+    sack2_ = ntohl(sack2_);
 }
 
 void RUDP_HEAD::clear()
@@ -37,8 +37,8 @@ void RUDP_HEAD::clear()
     sequence_num_ = 0;
     ack_id_ = 0;
     windows_size_ = 0;
-    uno1_ = 0;
-    uno2_ = 0;
+    sack1_ = 0;
+    sack2_ = 0;
 }
 
 //填充Data数据到Frame
