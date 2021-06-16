@@ -99,6 +99,7 @@ public:
 
     uint32_t sack1_ = 0;
     uint32_t sack2_ = 0;
+    uint32_t sack3_ = 0;
 };
 
 class RUDP_FRAME : public RUDP_HEAD
@@ -124,7 +125,14 @@ public:
 //=====================================================================================
 class BASE
 {
+protected:
+    //随机数发生器，用于生产session id，和序号ID serial_id
+    static std::mt19937  random_gen_;
+
 public:
+    //取得随机数
+    static uint32_t random();
+
     //WAN的MTU
     static constexpr size_t MTU_WAN = 576;
     //UDP包在WAN网络的负载
@@ -218,10 +226,10 @@ public:
         return peer_socket_;
     }
 
-    //
+    //重置，
     int reset();
 
-    //
+    //客户端收取数据
     int recvfrom();
 
 protected:
@@ -312,6 +320,10 @@ protected:
     //接收的BUFFER
     char *send_buffer_ = nullptr;
 
+    //
+    size_t selective_ack_num_ = 0;
+    char selective_ack_ary_[3] = { 0 };
+
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
     //但考虑到简单，我们先把两端的MTU约束成一样,
     MTU_TYPE mtu_type_ = MTU_TYPE::ETHERNET;
@@ -386,9 +398,6 @@ protected:
     size_t peer_recv_list_num_ = 0;
     //CORE创建的PEER的发送队列数量
     size_t peer_send_list_num_ = 0;
-
-    //随机数发生器，用于生产session id，和序号ID serial_id
-    std::mt19937  random_gen_;
 
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。

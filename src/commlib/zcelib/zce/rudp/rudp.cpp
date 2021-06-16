@@ -16,6 +16,7 @@ void RUDP_HEAD::hton()
     windows_size_ = htonl(windows_size_);
     sack1_ = htonl(sack1_);
     sack2_ = htonl(sack2_);
+    sack3_ = htonl(sack3_);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
@@ -28,6 +29,7 @@ void RUDP_HEAD::ntoh()
     windows_size_ = ntohl(windows_size_);
     sack1_ = ntohl(sack1_);
     sack2_ = ntohl(sack2_);
+    sack3_ = ntohl(sack3_);
 }
 
 void RUDP_HEAD::clear()
@@ -39,6 +41,7 @@ void RUDP_HEAD::clear()
     windows_size_ = 0;
     sack1_ = 0;
     sack2_ = 0;
+    sack3_ = 0;
 }
 
 //填充Data数据到Frame
@@ -48,6 +51,15 @@ int RUDP_FRAME::fill_data(const size_t szdata, const char* vardata)
     ::memcpy(data_, vardata, szdata);
     u32_1_.len_ = static_cast<uint32_t>(sizeof(RUDP_HEAD) + szdata);
     return 0;
+}
+
+//=================================================================================================
+//class BASE
+std::mt19937 BASE::random_gen_(19190504 + (uint32_t)::time(NULL));
+
+uint32_t BASE::random()
+{
+    return random_gen_();
 }
 
 //=================================================================================================
@@ -115,9 +127,7 @@ int PEER::open(const sockaddr *remote_addr,
 {
     int ret = 0;
     model_ = MODEL::PEER_CLIENT;
-    std::mt19937  random_gen;
-    random_gen.seed((unsigned int)time(NULL));
-    my_seq_num_counter_ = random_gen();
+    my_seq_num_counter_ = BASE::random();
 
     remote_addr_ = remote_addr;
     ret = zce::open_socket(&peer_socket_,
@@ -185,9 +195,7 @@ int PEER::reset()
         send_windows_.clear();
         recv_windows_.clear();
         session_id_ = 0;
-        std::mt19937  random_gen;
-        random_gen.seed((unsigned int)time(NULL));
-        my_seq_num_counter_ = random_gen();
+        my_seq_num_counter_ = BASE::random();
         my_seq_num_ack_ = 0;
         peer_expect_seq_num_ = 0;
         send_frame_to(FLAG::SYN);
@@ -488,6 +496,14 @@ int PEER::send_frame_to(int flag,
     {
         ::memcpy(send_buffer_ + sizeof(RUDP_HEAD), data, sz_data);
     }
+    if (flag & FLAG::ACK)
+    {
+        frame->ack_id_ = peer_expect_seq_num_;
+    }
+    frame->u32_1_.mtu_type_ = (uint32_t)mtu_type_;
+    frame->windows_size_ = static_cast<uint32_t>(recv_windows_.free());
+    frame->session_id_ = session_id_;
+
     uint64_t now_clock = zce::clock_ms();
     //这几种情况的发送需要ACK确认
     if ((flag & FLAG::PSH) || (flag & FLAG::SYN) || (flag & FLAG::KPL))
@@ -529,13 +545,23 @@ int PEER::send_frame_to(int flag,
         }
     }
 
-    if (flag & FLAG::ACK)
-    {
-        frame->ack_id_ = peer_expect_seq_num_;
-    }
-    frame->u32_1_.mtu_type_ = (uint32_t)mtu_type_;
-    frame->windows_size_ = static_cast<uint32_t>(recv_windows_.free());
-    frame->session_id_ = session_id_;
+    const size_t buf_size = 64;
+    char remote_str[buf_size];
+    ZCE_LOG_DEBUG(RS_DEBUG,
+                  "[RUDP] send_frame_to model[%u] session[%u] remote [%s] "
+                  "my sn counter[%u] my ack sn[%u] peer ack [%u] "
+                  "send frame len[%u] flag[%u] sn[%u] ack[%u]",
+                  model_,
+                  session_id_,
+                  zce::get_host_addr_port((sockaddr *)&remote_addr_,
+                  remote_str, buf_size),
+                  my_seq_num_counter_,
+                  my_seq_num_ack_,
+                  peer_expect_seq_num_,
+                  frame->u32_1_.len_,
+                  frame->u32_1_.flag_,
+                  frame->sequence_num_,
+                  frame->ack_id_);
 
     ssize_t ssend = zce::sendto(peer_socket_,
                                 (void *)frame,
@@ -545,7 +571,6 @@ int PEER::send_frame_to(int flag,
                                 sizeof(zce::sockaddr_ip));
     if (ssend != (ssize_t)sz_frame)
     {
-        const size_t buf_size = 64;
         char buf[buf_size];
         ZCE_LOG(RS_ERROR,
                 "zce::sendto return error ret = [%d] frame len[%u] remote[%s]",
@@ -671,6 +696,7 @@ void PEER::time_out(uint64_t now_clock_ms)
 
 //=================================================================================================
 //class CORE
+
 CORE::~CORE()
 {
     terminate();
@@ -757,6 +783,14 @@ int CORE::receive(PEER *& recv_rudp,
     {
         if (frame->session_id_ == 0)
         {
+            if (peer_map_.size() > max_num_of_peer_)
+            {
+                ZCE_LOG(RS_ERROR, "[RUDP] peer_map_ size[%u] > "
+                        " max_num_of_peer_[%u]",
+                        peer_map_.size(),
+                        max_num_of_peer_);
+                return -1;
+            }
             *new_rudp = true;
             ret = create_peer(&remote_ip, recv_rudp);
             if (ret != 0)
@@ -766,7 +800,10 @@ int CORE::receive(PEER *& recv_rudp,
         }
         else
         {
-            ZCE_LOG(RS_ERROR, "");
+            ZCE_LOG(RS_ERROR, "[RUDP] SYN error, flag [%u] but "
+                    "session id!=0,[%u]",
+                    frame->u32_1_.flag_,
+                    frame->session_id_);
             return -1;
         }
     }
