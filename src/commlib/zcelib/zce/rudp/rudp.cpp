@@ -53,6 +53,18 @@ int RUDP_FRAME::fill_data(const size_t szdata, const char* vardata)
     return 0;
 }
 
+RUDP_FRAME *RUDP_FRAME::new_frame(size_t frame_len)
+{
+    assert(frame_len > sizeof(RUDP_HEAD));
+    return (RUDP_FRAME *)new char[frame_len];
+}
+
+///删除回收一个new的frame
+void RUDP_FRAME::delete_frame(RUDP_FRAME *frame)
+{
+    delete[](char *)frame;
+}
+
 //=================================================================================================
 //class BASE
 std::mt19937 BASE::random_gen_(19190504 + (uint32_t)::time(NULL));
@@ -115,6 +127,10 @@ int PEER::open(CORE *core,
     {
         return ret;
     }
+    selective_ack_num_ = 0;
+    selective_ack_ary_[0] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
+    selective_ack_ary_[1] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
+    selective_ack_ary_[2] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
     return 0;
 }
 
@@ -163,11 +179,18 @@ int PEER::open(const sockaddr *remote_addr,
     {
         send_frame_to(FLAG::SYN | FLAG::LMT);
     }
+    selective_ack_num_ = 0;
+    selective_ack_ary_[0] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
+    selective_ack_ary_[1] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
+    selective_ack_ary_[2] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
     return 0;
 }
 
 void PEER::close()
 {
+    RUDP_FRAME::delete_frame(selective_ack_ary_[0]);
+    RUDP_FRAME::delete_frame(selective_ack_ary_[1]);
+    RUDP_FRAME::delete_frame(selective_ack_ary_[2]);
     if (model_ == MODEL::PEER_CLIENT)
     {
         zce::close_socket(peer_socket_);
@@ -240,10 +263,12 @@ int PEER::send(const char* buf,
     //发送数据太长，臣妾搞不掂呀
     size_t snd_rec_free = send_rec_list_.free();
     size_t snd_wnd_free = send_windows_.free();
-    if (send_windows_.free() == 0 || snd_rec_free == 0)
+    if (snd_wnd_free == 0 || snd_rec_free == 0)
     {
         zce::last_error(EWOULDBLOCK);
-        ZCE_LOG(RS_INFO, "");
+        ZCE_LOG(RS_INFO, "[RUDP] snd_rec_free [%u] snd_wnd_free[%u]",
+                snd_rec_free,
+                snd_wnd_free);
         return -1;
     }
 
@@ -356,39 +381,11 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     //对方有数据
     if (flag & FLAG::PSH)
     {
-        size_t data_len = frame_len - sizeof(RUDP_HEAD);
-        if (recv_windows_.free() > data_len)
+        bool processed = process_push_data(recv_frame);
+        //如果不处理
+        if (!processed)
         {
-            uint32_t recv_seq_num = recv_frame->sequence_num_;
-
-            //这儿有一点技巧，避免 wraparound引发麻烦,其实就是利用了补码
-            int32_t difference = (int32_t)(recv_seq_num - peer_expect_seq_num_);
-
-            //收取重复数据
-            if (difference < 0)
-            {
-                ZCE_LOG_DEBUG(RS_DEBUG, "");
-            }
-            //发生了跳跃,记录跳跃的帧
-            else if (difference > 0)
-            {
-                record_selective(recv_frame);
-            }
-            //和期待的seq num 一致，
-            else
-            {
-                if (data_len > 0)
-                {
-                    char *wt_ptr = nullptr;
-                    recv_windows_.push_end(recv_frame->data_, data_len, wt_ptr);
-                    peer_expect_seq_num_ = peer_expect_seq_num_ + static_cast<uint32_t>(data_len);
-                    send_frame_to(FLAG::ACK);
-                }
-                else
-                {
-                    ZCE_LOG_DEBUG(RS_ERROR, "");
-                }
-            }
+            record_selective(recv_frame);
         }
     }
     else if (flag & FLAG::SYN)
@@ -426,35 +423,46 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     return 0;
 }
 
+///
+bool PEER::process_push_data(RUDP_FRAME *recv_frame)
+{
+    size_t data_len = recv_frame->u32_1_.len_ - sizeof(RUDP_HEAD);
+    if (recv_windows_.free() > data_len)
+    {
+        uint32_t recv_seq_num = recv_frame->sequence_num_;
+        int32_t difference = (int32_t)(recv_seq_num - peer_expect_seq_num_);
+        if (difference < 0)
+        {
+            return true;
+        }
+        //发生了跳跃,
+        else if (difference > 0)
+        {
+            return false;
+        }
+        //和期待的seq num 一致，
+        else
+        {
+            char *wt_ptr = nullptr;
+            recv_windows_.push_end(recv_frame->data_, data_len, wt_ptr);
+            peer_expect_seq_num_ = peer_expect_seq_num_ + static_cast<uint32_t>(data_len);
+            send_frame_to(FLAG::ACK);
+            return true;
+        }
+    }
+    return false;
+}
+
 void PEER::proces_selective()
 {
     size_t process_num = 0;
     for (size_t i = 0; i < selective_ack_num_; ++i)
     {
         RUDP_FRAME *selective_frame = selective_ack_ary_[i];
-        size_t data_len = selective_frame->u32_1_.len_ - sizeof(RUDP_HEAD);
-        if (recv_windows_.free() > data_len)
+        bool processed = process_push_data(selective_frame);
+        if (processed)
         {
-            uint32_t recv_seq_num = selective_frame->sequence_num_;
-            int32_t difference = (int32_t)(recv_seq_num - peer_expect_seq_num_);
-            if (difference < 0)
-            {
-                ++process_num;
-            }
-            //发生了跳跃,
-            else if (difference > 0)
-            {
-                break;
-            }
-            //和期待的seq num 一致，
-            else
-            {
-                char *wt_ptr = nullptr;
-                recv_windows_.push_end(selective_frame->data_, data_len, wt_ptr);
-                peer_expect_seq_num_ = peer_expect_seq_num_ + static_cast<uint32_t>(data_len);
-                send_frame_to(FLAG::ACK);
-                ++process_num;
-            }
+            ++process_num;
         }
     }
     selective_ack_num_ -= process_num;
@@ -469,13 +477,14 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
         memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
         ++selective_ack_num_;
     }
+    uint32_t s_a_a0_num = selective_ack_ary_[0]->sequence_num_;
     if (selective_ack_num_ == 1)
     {
-        if (s_s_num == selective_ack_ary_[0]->sequence_num_)
+        if (s_s_num == s_a_a0_num)
         {
             return;
         }
-        if (s_s_num > selective_ack_ary_[0]->sequence_num_)
+        if (int32_t(s_s_num - s_a_a0_num) > 0)
         {
             memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
             ++selective_ack_num_;
@@ -489,6 +498,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
             ++selective_ack_num_;
         }
     }
+    uint32_t s_a_a1_num = selective_ack_ary_[1]->sequence_num_;
     if (selective_ack_num_ == 2)
     {
         if (s_s_num == selective_ack_ary_[0]->sequence_num_ ||
@@ -496,12 +506,12 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
         {
             return;
         }
-        if (s_s_num > selective_ack_ary_[1]->sequence_num_)
+        if (int32_t(s_s_num - s_a_a1_num) > 0)
         {
             memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
             ++selective_ack_num_;
         }
-        else if (s_s_num > selective_ack_ary_[0]->sequence_num_)
+        else if (int32_t(s_s_num - s_a_a0_num))
         {
             RUDP_FRAME *temp = selective_ack_ary_[2];
             selective_ack_ary_[2] = selective_ack_ary_[1];
@@ -519,6 +529,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
             ++selective_ack_num_;
         }
     }
+    uint32_t s_a_a2_num = selective_ack_ary_[1]->sequence_num_;
     if (selective_ack_num_ == 3)
     {
         if (s_s_num == selective_ack_ary_[0]->sequence_num_ ||
@@ -527,21 +538,21 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
         {
             return;
         }
-        if (s_s_num > selective_ack_ary_[2]->sequence_num_)
+        if (int32_t(s_s_num - s_a_a2_num) > 0)
         {
             //很无奈，空间保存不了
             return;
         }
-        else if (s_s_num > selective_ack_ary_[1]->sequence_num_)
+        else if (int32_t(s_s_num - s_a_a1_num) > 0)
         {
             memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
         }
-        else if (s_s_num > selective_ack_ary_[0]->sequence_num_)
+        else if (int32_t(s_s_num - s_a_a0_num) > 0)
         {
-            memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
             RUDP_FRAME *temp = selective_ack_ary_[2];
             selective_ack_ary_[2] = selective_ack_ary_[1];
             selective_ack_ary_[1] = temp;
+            memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
         }
         else
         {

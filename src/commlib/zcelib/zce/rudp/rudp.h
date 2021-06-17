@@ -105,6 +105,9 @@ public:
     uint32_t sack3_ = 0;
 };
 
+/**
+ * @brief RUDP_FRAME,数据头部
+*/
 class RUDP_FRAME : public RUDP_HEAD
 {
 protected:
@@ -115,6 +118,15 @@ protected:
     ~RUDP_FRAME() = delete;
 
 public:
+    /**
+    * @brief new 一个frame
+    * @param frame_len frame的长度，包括头部
+    * @return 生产的frame指针
+    */
+    static RUDP_FRAME *new_frame(size_t frame_len);
+
+    ///删除回收一个new的frame
+    static void delete_frame(RUDP_FRAME *frame);
 
     //填充Data数据到RUDP_FRAME
     int fill_data(const size_t szdata, const char* vardata);
@@ -267,6 +279,9 @@ protected:
     ///
     void proces_selective();
 
+    ///
+    bool process_push_data(RUDP_FRAME *recv_frame);
+
 protected:
 
     //发送（需要确认的发送）的记录，
@@ -331,9 +346,9 @@ protected:
     //接收的BUFFER
     char *send_buffer_ = nullptr;
 
-    //
+    ///收到的跳跃包队列数量，最大是3
     size_t selective_ack_num_ = 0;
-    //
+    //跳跃包的队列
     RUDP_FRAME *selective_ack_ary_[3] = { nullptr };
 
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
