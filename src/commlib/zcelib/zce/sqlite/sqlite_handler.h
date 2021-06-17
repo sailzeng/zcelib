@@ -182,6 +182,7 @@ protected:
     //! Results of the query
     char** result_ = NULL;
     //! Number of result rows written here ，row_也是从1开始
+    //! 使用int的原因是内部函数用的int
     int row_ = 0;
 
     //! Number of result columns written here ,column_ 从1开始

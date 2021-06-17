@@ -48,11 +48,11 @@ int FSM_Manager::initialize(zce::Timer_Queue* timer_queue,
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
     trans_send_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    trans_send_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    trans_send_buffer_->init_head((uint32_t)max_frame_len, CMD_INVALID_CMD);
     trans_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    trans_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    trans_recv_buffer_->init_head((uint32_t)max_frame_len, CMD_INVALID_CMD);
     fake_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    fake_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    fake_recv_buffer_->init_head((uint32_t)max_frame_len, CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
     if (init_inner_queue)
@@ -234,7 +234,7 @@ int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
                  buf,
                  buf_len);
     }
-    send_frame->length_ += buf_len;
+    send_frame->length_ += (uint32_t)buf_len;
     sendfame_to_pipe(send_frame);
     return 0;
 }

@@ -191,6 +191,9 @@ void PEER::close()
     RUDP_FRAME::delete_frame(selective_ack_ary_[0]);
     RUDP_FRAME::delete_frame(selective_ack_ary_[1]);
     RUDP_FRAME::delete_frame(selective_ack_ary_[2]);
+    selective_ack_ary_[0] = nullptr;
+    selective_ack_ary_[1] = nullptr;
+    selective_ack_ary_[2] = nullptr;
     if (model_ == MODEL::PEER_CLIENT)
     {
         zce::close_socket(peer_socket_);
@@ -258,11 +261,30 @@ int PEER::send(const char* buf,
     {
         frame_max_len = MSS_WAN_RUDP;
     }
-    //else
-
+    else
+    {
+        assert(false);
+    }
     //发送数据太长，臣妾搞不掂呀
     size_t snd_rec_free = send_rec_list_.free();
     size_t snd_wnd_free = send_windows_.free();
+
+    const size_t buf_size = 64;
+    char remote_str[buf_size];
+    ZCE_LOG_DEBUG(RS_DEBUG,
+                  "[RUDP] send model[%u] session[%u] remote [%s] mtu[%u] frame_max_len[%u] "
+                  "send windows free [%u] send record [%s] my sn counter[%u] my ack sn[%u] peer ack [%u] ",
+                  model_,
+                  session_id_,
+                  zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
+                  mtu_type_,
+                  frame_max_len,
+                  snd_wnd_free,
+                  snd_rec_free,
+                  my_seq_num_counter_,
+                  my_seq_num_ack_,
+                  peer_expect_seq_num_);
+
     if (snd_wnd_free == 0 || snd_rec_free == 0)
     {
         zce::last_error(EWOULDBLOCK);
@@ -299,7 +321,15 @@ int PEER::send(const char* buf,
         --snd_rec_free;
         process_len += one_process;
 
-        ZCE_LOG_DEBUG(RS_DEBUG, "");
+        ZCE_LOG_DEBUG(RS_DEBUG,
+                      "[RUDP] remain_len [%u] one_process[%u] peer_windows_size_[%u]"
+                      "frame_max_len [%u] snd_wnd_free[%u] snd_rec_free[%u]",
+                      remain_len,
+                      one_process,
+                      peer_windows_size_,
+                      frame_max_len,
+                      snd_wnd_free,
+                      snd_rec_free);
     }
     len = process_len;
 
@@ -317,7 +347,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     const size_t buf_size = 64;
     char new_remote_str[buf_size], old_remote_str[buf_size];
     ZCE_LOG_DEBUG(RS_DEBUG,
-                  "[RUDP] model[%u] session[%u] remote new[%s] old [%s]"
+                  "[RUDP] deliver_recv model[%u] session[%u] remote new[%s] old [%s]"
                   "my sn counter[%u] my ack sn[%u] peer ack [%u]"
                   "recv frame len[%u] flag[%u] session[%u] sn[%u] ack[%u]",
                   model_,
@@ -474,7 +504,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
     uint32_t s_s_num = selective_frame->sequence_num_;
     if (selective_ack_num_ == 0)
     {
-        memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+        ::memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
         ++selective_ack_num_;
     }
     uint32_t s_a_a0_num = selective_ack_ary_[0]->sequence_num_;
@@ -486,7 +516,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
         }
         if (int32_t(s_s_num - s_a_a0_num) > 0)
         {
-            memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
             ++selective_ack_num_;
         }
         else
@@ -494,7 +524,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
             RUDP_FRAME *temp = selective_ack_ary_[1];
             selective_ack_ary_[1] = selective_ack_ary_[0];
             selective_ack_ary_[0] = temp;
-            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
             ++selective_ack_num_;
         }
     }
@@ -508,7 +538,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
         }
         if (int32_t(s_s_num - s_a_a1_num) > 0)
         {
-            memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
             ++selective_ack_num_;
         }
         else if (int32_t(s_s_num - s_a_a0_num))
@@ -525,7 +555,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
             selective_ack_ary_[2] = selective_ack_ary_[1];
             selective_ack_ary_[1] = selective_ack_ary_[0];
             selective_ack_ary_[0] = temp;
-            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
             ++selective_ack_num_;
         }
     }
@@ -545,14 +575,14 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
         }
         else if (int32_t(s_s_num - s_a_a1_num) > 0)
         {
-            memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[2], selective_frame, selective_frame->u32_1_.len_);
         }
         else if (int32_t(s_s_num - s_a_a0_num) > 0)
         {
             RUDP_FRAME *temp = selective_ack_ary_[2];
             selective_ack_ary_[2] = selective_ack_ary_[1];
             selective_ack_ary_[1] = temp;
-            memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[1], selective_frame, selective_frame->u32_1_.len_);
         }
         else
         {
@@ -560,7 +590,7 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
             selective_ack_ary_[2] = selective_ack_ary_[1];
             selective_ack_ary_[1] = selective_ack_ary_[0];
             selective_ack_ary_[0] = temp;
-            memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
+            ::memcpy(selective_ack_ary_[0], selective_frame, selective_frame->u32_1_.len_);
         }
     }
 }
