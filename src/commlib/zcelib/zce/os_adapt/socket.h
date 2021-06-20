@@ -1915,18 +1915,21 @@ inline const char* zce::get_host_addr_port(const sockaddr* addr,
                                            size_t buf_size)
 {
     uint16_t port = 0;
+    void *in_ptr = NULL;
     if (AF_INET == addr->sa_family)
     {
         port = ntohs(((sockaddr_in*)(addr))->sin_port);
+        in_ptr = (void *)(&((sockaddr_in*)addr)->sin_addr);
     }
     else if (AF_INET6 == addr->sa_family)
     {
         port = ntohs(((sockaddr_in6*)(addr))->sin6_port);
+        in_ptr = (void *)(&((sockaddr_in6*)addr)->sin6_addr);
     }
     else
     {
     }
-    zce::inet_ntop(addr->sa_family, (void*)(addr), out_buf, buf_size);
+    zce::inet_ntop(addr->sa_family, in_ptr, out_buf, buf_size);
     size_t str_len = strlen(out_buf);
     snprintf(out_buf + str_len, buf_size - str_len, "#%u", port);
     return out_buf;

@@ -260,7 +260,7 @@ ssize_t writev(ZCE_SOCKET handle,
 
     return ::writev(handle, buffers, iovcnt);
 #endif
-    }
+}
 
 //
 ssize_t readv(ZCE_SOCKET handle,
@@ -308,7 +308,7 @@ ssize_t readv(ZCE_SOCKET handle,
     return ::readv(handle, buffers, iovcnt);
 
 #endif
-    }
+}
 
 //
 ssize_t recvmsg(ZCE_SOCKET handle,
@@ -352,7 +352,7 @@ ssize_t recvmsg(ZCE_SOCKET handle,
     return ::recvmsg(handle, msg, flags);
 
 #endif
-    }
+}
 
 ssize_t sendmsg(ZCE_SOCKET handle,
                 const struct msghdr* msg,
@@ -393,7 +393,7 @@ ssize_t sendmsg(ZCE_SOCKET handle,
     //
     return ::sendmsg(handle, msg, flags);
 # endif
-    }
+}
 
 //--------------------------------------------------------------------------------------------
 //尽量收取len个数据，直到出现错误
@@ -522,11 +522,11 @@ int sock_enable(ZCE_SOCKET handle, int flags)
     if (::fcntl(handle, F_SETFL, val) == -1)
     {
         return -1;
-        }
+    }
 
     return 0;
 #endif
-    }
+}
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
 int sock_disable(ZCE_SOCKET handle, int flags)
@@ -764,8 +764,8 @@ int handle_ready(ZCE_SOCKET handle,
         if (once_events_ary[1].events & EPOLLIN)
         {
             return -1;
+        }
     }
-}
     return event_happen;
 #endif
 }
@@ -1548,7 +1548,7 @@ int inet_pton(int family,
     //LINuX下有这个函数
     return ::inet_pton(family, strptr, addrptr);
 #endif
-    }
+}
 
 //函数原型如下[将“点分十进制” －> “整数”],IPV6将，:分割16进制转换成128位数字
 const char* inet_ntop(int family,
@@ -1557,7 +1557,9 @@ const char* inet_ntop(int family,
                       size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
-
+#if defined ZCE_SUPPORT_WINSVR2008
+    return ::inet_ntop(family, addrptr, strptr, len);
+#else
     //根据不同的协议簇进行不同的处理
     if (AF_INET == family)
     {
@@ -1624,12 +1626,12 @@ const char* inet_ntop(int family,
         errno = EAFNOSUPPORT;
         return NULL;
     }
-
+#endif
 #elif defined (ZCE_OS_LINUX)
     //LINuX下有这个函数
     return ::inet_ntop(family, addrptr, strptr, len);
 #endif
-    }
+}
 
 //输出IP地址信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>15.IPV6至少长度>39
 const char* socketaddr_ntop(const sockaddr* sock_addr,
@@ -1798,7 +1800,7 @@ hostent* gethostbyname2(const char* hostname,
 #elif defined (ZCE_OS_LINUX)
     return ::gethostbyname2(hostname, af);
 #endif
-    }
+}
 
 //非标准函数,得到某个域名的IPV4的地址信息，但是使用起来比较容易和方便
 //name 域名

@@ -214,6 +214,7 @@ public:
     PEER(const PEER&) = default;
     PEER& operator = (const PEER & other) = default;
 
+protected:
     //服务器端CORE打开一个PEER，模式：PEER_CORE_CREATE
     int open(CORE *core,
              uint32_t session_id,
@@ -224,14 +225,15 @@ public:
              size_t send_rec_list_size,
              size_t send_wnd_size,
              size_t recv_wnd_size,
-             std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv);
+             std::function<ssize_t(uint32_t, PEER *)> &callbak_recv);
 
+public:
     //以客户端方式打开一个PEER，模式：PEER_CLIENT
     int open(const sockaddr *remote_addr,
              size_t send_rec_list_size,
              size_t send_wnd_size,
              size_t recv_wnd_size,
-             std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv,
+             std::function<ssize_t(uint32_t, PEER *)> &callbak_recv,
              bool link_test_mtu = false);
 
     void close();
@@ -374,8 +376,9 @@ protected:
     //!发送的BUFFER,根据model不同，生成（处理）方式不同
     char *send_buffer_ = nullptr;
 
-    //!发现接收数据是，接收回调函数，在函数里面调用outer_recv提取数据
-    std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv_ = nullptr;
+    //! 发现接收数据是，接收回调函数，在函数里面调用outer_recv提取数据
+    //! 第一个参数是session id，第二个参数是接收数据的PEER *
+    std::function<ssize_t(uint32_t, PEER *)> callbak_recv_;
 
     ///收到的跳跃包队列数量，最大是3
     size_t selective_ack_num_ = 0;
@@ -416,14 +419,14 @@ public:
      * @param callbak_recv CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
      * @return
     */
-    int initialize(const sockaddr *core_addr,
-                   size_t max_num_of_peer,
-                   size_t peer_send_rec_list_size,
-                   size_t peer_send_wnd_size,
-                   size_t peer_recv_wnd_size,
-                   std::function<ssize_t(uint32_t, PEER *, size_t)> *peer_callbak_recv);
+    int open(const sockaddr *core_addr,
+             size_t max_num_of_peer,
+             size_t peer_send_rec_list_size,
+             size_t peer_send_wnd_size,
+             size_t peer_recv_wnd_size,
+             std::function<ssize_t(uint32_t, PEER *)> &peer_callbak_recv);
 
-    void terminate();
+    void close();
 
     /**
      * @brief 接受数据的处理,不阻塞,可以在select 时间触发后调用这个函数
@@ -434,12 +437,10 @@ public:
     ssize_t recv(PEER *& recv_rudp,
                  bool *new_rudp);
     /**
-     * @brief 带超时处理的接收，其他参数参考 @outer_recv 函数
+     * @brief 带超时处理的接收，
      * @param timeout_tv 超时时间，
     */
-    ssize_t recv_timeout(PEER *& recv_rudp,
-                         bool *new_rudp,
-                         zce::Time_Value* timeout_tv);
+    ssize_t recv_timeout(zce::Time_Value* timeout_tv);
 
     //!超时处理，没10ms调用一次
     void time_out();
@@ -482,7 +483,8 @@ protected:
     size_t peer_send_wnd_size_ = 0;
 
     //!PEER收到数据的回调函数
-    std::function<ssize_t(uint32_t, PEER *, size_t)> *peer_callbak_recv_ = nullptr;
+    //! 第一个参数是session id，第二个参数是接收数据的PEER *
+    std::function<ssize_t(uint32_t, PEER *)> peer_callbak_recv_;
 
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。

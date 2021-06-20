@@ -430,15 +430,15 @@ int hash_file(const char* file_name,
               char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
     //打开文件
-    ZCE_HANDLE  fd = zce::open(file_name, O_RDONLY);
-    if (ZCE_INVALID_HANDLE == fd)
+    zce::AUTO_HANDLE  fd(zce::open(file_name, O_RDONLY));
+    if (ZCE_INVALID_HANDLE == fd.get())
     {
         return -1;
     }
 
     //获取文件尺寸，有长度可以避免有时候如果读取的文件长度和缓冲相等，要读取一次的麻烦，
     size_t file_size = 0;
-    int ret = zce::filesize(fd, &file_size);
+    int ret = zce::filesize(fd.get(), &file_size);
     if (0 != ret)
     {
         return -1;
@@ -446,7 +446,7 @@ int hash_file(const char* file_name,
 
     //每次尽力读取640K数据，注意这个buffer必须是PROCESS_BLOCK_SIZE字节的N倍喔
     const size_t READ_LEN = HASH_STRATEGY::PROCESS_BLOCK_SIZE * BUFFER_MULTIPLE;
-    char* read_buf = new char[READ_LEN];
+    std::unique_ptr<char[]> read_buf(new char[READ_LEN]);
 
     typename HASH_STRATEGY::context ctx;
     HASH_STRATEGY::initialize(&ctx);
@@ -456,19 +456,15 @@ int hash_file(const char* file_name,
     do
     {
         //读取内容
-        read_len = zce::read(fd, read_buf, READ_LEN);
+        read_len = zce::read(fd.get(), read_buf.get(), READ_LEN);
         if (read_len < 0)
         {
-            delete[] read_buf;
-            zce::close(fd);
             return -1;
         }
-        HASH_STRATEGY::process(&ctx, (char*)read_buf, read_len);
+        HASH_STRATEGY::process(&ctx, (char*)read_buf.get(), read_len);
     } while ((file_size -= read_len) > 0);
 
-    HASH_STRATEGY::finalize(&ctx, (char*)read_buf, read_len, result);
-    delete[] read_buf;
-    zce::close(fd);
+    HASH_STRATEGY::finalize(&ctx, (char*)read_buf.get(), read_len, result);
 
     return 0;
 }

@@ -4,6 +4,7 @@
 
 int main(int argc, char* argv[])
 {
+    SetConsoleOutputCP(65001);
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 
@@ -17,7 +18,7 @@ int main(int argc, char* argv[])
                                                 static_cast<int>(LOG_HEAD::NONE));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
-    test_rudp_core(argc, argv);
+    test_rudp(argc, argv);
 
     return 0;
 

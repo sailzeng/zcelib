@@ -174,23 +174,31 @@ std::pair<int, std::shared_ptr<char>> read_file_all(const char* filename,
                                                     size_t* file_len,
                                                     size_t offset = 0);
 
-/*!
-* @brief     辅助 unique_ptr 用于文件处理过程的自动释放
-*/
-inline void close_FILE_assist(FILE* to_close)
+class AUTO_HANDLE
 {
-    ::fclose(to_close);
-}
+public:
+    AUTO_HANDLE() = delete;
+    inline AUTO_HANDLE(ZCE_HANDLE handle) :
+        handle_(handle)
+    {
+    }
+    inline ~AUTO_HANDLE()
+    {
+        zce::close(handle_);
+    }
+    inline ZCE_HANDLE get()
+    {
+        return handle_;
+    }
+protected:
+    ZCE_HANDLE handle_;
+};
 
-inline void close_HANDLE_assist(ZCE_HANDLE to_close)
-{
-    zce::close(to_close);
-}
+//! 自动释放的ZCE_HANDLE
+//! 这样使用 zce::AUTO_HANDLE fd(::fopen("xxx"),::fclose);
+using AUTO_FILE = std::unique_ptr<FILE, decltype(::fclose) *>;
 
-inline void close_stdFILE_assist(std::FILE* to_close)
-{
-    std::fclose(to_close);
-}
+using AUTO_STDFILE = std::unique_ptr<std::FILE, decltype(std::fclose) *>;
 };
 
 #endif //ZCE_LIB_OS_ADAPT_FILE_H_
