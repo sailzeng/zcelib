@@ -1973,6 +1973,7 @@ inline int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
                                 const char* ipv4_addr_str,
                                 uint16_t ipv4_port)
 {
+    ::memset(sock_addr_ipv4, 0, sizeof(sockaddr_in));
     sock_addr_ipv4->sin_family = AF_INET;
     //htons在某些情况下是一个宏，
     //sock_addr_ipv4->sin_port = ::htons(ipv4_port);
@@ -2028,7 +2029,7 @@ inline int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
                                 uint16_t ipv4_port
 )
 {
-    //memset(sock_addr_ipv4,0,sizeof(sockaddr_in));
+    ::memset(sock_addr_ipv4, 0, sizeof(sockaddr_in));
     sock_addr_ipv4->sin_family = AF_INET;
     sock_addr_ipv4->sin_port = htons(ipv4_port);
     sock_addr_ipv4->sin_addr.s_addr = htonl(ipv4_addr_val);
@@ -2046,6 +2047,7 @@ inline int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
                                  const char* ipv6_addr_str,
                                  uint16_t ipv6_port)
 {
+    ::memset(sock_addr_ipv6, 0, sizeof(sockaddr_in6));
     sock_addr_ipv6->sin6_family = AF_INET6;
     sock_addr_ipv6->sin6_port = htons(ipv6_port);
 
@@ -2094,6 +2096,7 @@ inline int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
                                  uint16_t ipv6_port,
                                  const char ipv6_addr_val[16])
 {
+    ::memset(sock_addr_ipv6, 0, sizeof(sockaddr_in6));
     //16bytes，128bit的IPV6的地址信息
     const size_t IPV6_INET6_LEN = 16;
 

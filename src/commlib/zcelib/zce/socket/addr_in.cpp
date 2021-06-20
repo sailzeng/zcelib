@@ -113,7 +113,7 @@ bool Sockaddr_In::check_safeport()
 //比较两个地址是否相等
 bool Sockaddr_In::operator == (const Sockaddr_In& others) const
 {
-    //in4_addr_.sin_zero 要比较吗？暂时算了。
+    //in4_addr_.sin_zero 要比较吗？暂时算了。有一些时候没有memset，sin_zero会不一样
 
     //比较地址协议簇，地址，端口
     if (others.in4_addr_.sin_family == in4_addr_.sin_family &&
