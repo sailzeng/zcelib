@@ -14,9 +14,9 @@ void RUDP_HEAD::hton()
     sequence_num_ = htonl(sequence_num_);
     ack_id_ = htonl(ack_id_);
     windows_size_ = htonl(windows_size_);
-    sack1_ = htonl(sack1_);
-    sack2_ = htonl(sack2_);
-    sack3_ = htonl(sack3_);
+    sack_[0] = htonl(sack_[0]);
+    sack_[1] = htonl(sack_[1]);
+    sack_[2] = htonl(sack_[2]);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
@@ -27,9 +27,9 @@ void RUDP_HEAD::ntoh()
     sequence_num_ = ntohl(sequence_num_);
     ack_id_ = ntohl(ack_id_);
     windows_size_ = ntohl(windows_size_);
-    sack1_ = ntohl(sack1_);
-    sack2_ = ntohl(sack2_);
-    sack3_ = ntohl(sack3_);
+    sack_[0] = ntohl(sack_[0]);
+    sack_[1] = ntohl(sack_[1]);
+    sack_[2] = ntohl(sack_[2]);
 }
 
 void RUDP_HEAD::clear()
@@ -39,9 +39,9 @@ void RUDP_HEAD::clear()
     sequence_num_ = 0;
     ack_id_ = 0;
     windows_size_ = 0;
-    sack1_ = 0;
-    sack2_ = 0;
-    sack3_ = 0;
+    sack_[0] = 0;
+    sack_[1] = 0;
+    sack_[2] = 0;
 }
 
 //填充Data数据到Frame
@@ -79,6 +79,8 @@ uint32_t BASE::random()
 double PEER::blocking_rto_ratio_ = 1.5;
 
 time_t PEER::min_rto_ = 80;
+//10分钟
+time_t PEER::noalive_time_to_close_ = 600000;
 
 //服务器端CORE打开一个PEER
 int PEER::open(CORE *core,
@@ -88,8 +90,9 @@ int PEER::open(CORE *core,
                const sockaddr *remote_addr,
                char *send_buffer,
                size_t send_rec_list_size,
-               size_t send_windows_capacity,
-               size_t recv_windows_capacity)
+               size_t send_wnd_size,
+               size_t recv_wnd_size,
+               std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv)
 {
     int ret = 0;
     model_ = MODEL::PEER_CORE_CREATE;
@@ -117,12 +120,12 @@ int PEER::open(CORE *core,
     {
         return ret;
     }
-    ret = send_windows_.initialize(send_windows_capacity);
+    ret = send_windows_.initialize(send_wnd_size);
     if (ret != 0)
     {
         return ret;
     }
-    ret = recv_windows_.initialize(recv_windows_capacity);
+    ret = recv_windows_.initialize(recv_wnd_size);
     if (ret != 0)
     {
         return ret;
@@ -131,6 +134,10 @@ int PEER::open(CORE *core,
     selective_ack_ary_[0] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
     selective_ack_ary_[1] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
     selective_ack_ary_[2] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
+    //peer_live_clock_服务端打开的 PEER是收到数据创建的，所以后面会更新peer_live_clock_
+
+    callbak_recv_ = callbak_recv;
+
     return 0;
 }
 
@@ -139,6 +146,7 @@ int PEER::open(const sockaddr *remote_addr,
                size_t send_rec_list_size,
                size_t send_windows_capacity,
                size_t recv_windows_capacity,
+               std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv,
                bool link_test_mtu)
 {
     int ret = 0;
@@ -170,6 +178,8 @@ int PEER::open(const sockaddr *remote_addr,
     }
     recv_buffer_ = new char[MAX_BUFFER_LEN];
     send_buffer_ = new char[MAX_BUFFER_LEN];
+    callbak_recv_ = new std::function<ssize_t(uint32_t, PEER *, size_t)>;
+    *callbak_recv_ = *callbak_recv;
 
     if (link_test_mtu)
     {
@@ -183,11 +193,14 @@ int PEER::open(const sockaddr *remote_addr,
     selective_ack_ary_[0] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
     selective_ack_ary_[1] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
     selective_ack_ary_[2] = RUDP_FRAME::new_frame(MAX_BUFFER_LEN);
+    peer_live_clock_ = zce::clock_ms();
     return 0;
 }
 
 void PEER::close()
 {
+    established_ = false;
+    selective_ack_num_ = 0;
     RUDP_FRAME::delete_frame(selective_ack_ary_[0]);
     RUDP_FRAME::delete_frame(selective_ack_ary_[1]);
     RUDP_FRAME::delete_frame(selective_ack_ary_[2]);
@@ -202,6 +215,8 @@ void PEER::close()
         recv_buffer_ = nullptr;
         delete[] send_buffer_;
         send_buffer_ = nullptr;
+        delete callbak_recv_;
+        callbak_recv_ = nullptr;
     }
     else if (model_ == MODEL::PEER_CORE_CREATE)
     {
@@ -215,6 +230,8 @@ void PEER::close()
 
 int PEER::reset()
 {
+    established_ = false;
+    selective_ack_num_ = 0;
     if (model_ == MODEL::PEER_CLIENT)
     {
         send_rec_list_.clear();
@@ -234,8 +251,8 @@ int PEER::reset()
 }
 
 //给外部调用的接收接口
-int PEER::recv(char* buf,
-               size_t &len)
+int PEER::outer_recv(char* buf,
+                     size_t &len)
 {
     if (len > recv_windows_.size())
     {
@@ -248,8 +265,8 @@ int PEER::recv(char* buf,
 }
 
 //给外部调用的发送接口
-int PEER::send(const char* buf,
-               size_t &len)
+int PEER::outer_send(const char* buf,
+                     size_t &len)
 {
     int ret = 0;
     size_t frame_max_len = MSS_ETHERNET_RUDP;
@@ -383,7 +400,9 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         *remote_change = true;
         *old_remote = remote_addr_;
         remote_addr_ = new_remote;
-        ZCE_LOG(RS_INFO, "");
+        ZCE_LOG(RS_INFO, "[RUDP]Remote address [%s] already modify [%s].Please pay attention to.",
+                zce::get_host_addr_port((sockaddr *)&remote_addr_, old_remote_str, buf_size),
+                zce::get_host_addr_port((sockaddr *)remote_addr, new_remote_str, buf_size));
     }
     peer_windows_size_ = recv_frame->windows_size_;
     mtu_type_ = static_cast<MTU_TYPE>(recv_frame->u32_1_.mtu_type_);
@@ -405,21 +424,35 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     uint32_t flag = recv_frame->u32_1_.flag_;
     if (flag & FLAG::RST)
     {
-        reset();
+        return reset();
     }
 
     //对方有数据
+    bool already_processed = false, advance_arrive = false;
     if (flag & FLAG::PSH)
     {
-        bool processed = process_push_data(recv_frame);
-        //如果不处理
-        if (!processed)
+        //如果连接没有建立，
+        if (!established_)
+        {
+            ZCE_LOG_DEBUG(RS_DEBUG, "[RUDP]link session[%u] not established, but receive push data,"
+                          "discard it. peer_expect_seq_num_[%u] recv sn[%u].",
+                          session_id_,
+                          peer_expect_seq_num_,
+                          recv_frame->sequence_num_);
+            return -1;
+        }
+        process_push_data(recv_frame,
+                          &already_processed,
+                          &advance_arrive);
+        //如果是跳跃数据。
+        if (advance_arrive)
         {
             record_selective(recv_frame);
         }
     }
     else if (flag & FLAG::SYN)
     {
+        //记录对方的sequence number，期待下一个的sn = 当前的sn +1
         peer_expect_seq_num_ = recv_frame->sequence_num_ + 1;
         if (flag & FLAG::ACK && model_ == MODEL::PEER_CLIENT)
         {
@@ -432,6 +465,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         else
         {
         }
+        established_ = true;
     }
     //心跳情况下，什么都不做，就是保证有应答
     else if (flag & FLAG::KPL)
@@ -439,8 +473,8 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         send_frame_to(FLAG::ACK);
     }
     uint64_t now_clock = zce::clock_ms();
-    //有ACK处理
-    if (flag & FLAG::ACK)
+    //有ACK 标志处理,（而且没有处理过）
+    if (flag & FLAG::ACK && already_processed == false)
     {
         ret = acknowledge_send(recv_frame,
                                now_clock);
@@ -454,8 +488,12 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
 }
 
 ///
-bool PEER::process_push_data(RUDP_FRAME *recv_frame)
+bool PEER::process_push_data(RUDP_FRAME *recv_frame,
+                             bool *already_processed,
+                             bool *advance_arrive)
 {
+    *already_processed = false;
+    *advance_arrive = false;
     size_t data_len = recv_frame->u32_1_.len_ - sizeof(RUDP_HEAD);
     if (recv_windows_.free() > data_len)
     {
@@ -463,11 +501,13 @@ bool PEER::process_push_data(RUDP_FRAME *recv_frame)
         int32_t difference = (int32_t)(recv_seq_num - peer_expect_seq_num_);
         if (difference < 0)
         {
-            return true;
+            *already_processed = true;
+            return false;
         }
         //发生了跳跃,
         else if (difference > 0)
         {
+            *advance_arrive = true;
             return false;
         }
         //和期待的seq num 一致，
@@ -488,11 +528,18 @@ void PEER::proces_selective()
     size_t process_num = 0;
     for (size_t i = 0; i < selective_ack_num_; ++i)
     {
+        bool already_processed = false, advance_arrive = false;
         RUDP_FRAME *selective_frame = selective_ack_ary_[i];
-        bool processed = process_push_data(selective_frame);
+        bool processed = process_push_data(selective_frame,
+                                           &already_processed,
+                                           &advance_arrive);
         if (processed)
         {
             ++process_num;
+        }
+        if (advance_arrive)
+        {
+            break;
         }
     }
     selective_ack_num_ -= process_num;
@@ -596,13 +643,15 @@ void PEER::record_selective(RUDP_FRAME *selective_frame)
 }
 
 //客户端调用的接收函数
-int PEER::recvfrom()
+ssize_t PEER::recv()
 {
     assert(model_ == MODEL::PEER_CLIENT);
     if (model_ != MODEL::PEER_CLIENT)
     {
         return -1;
     }
+    const size_t buf_size = 64;
+    char out_buf[buf_size];
     zce::sockaddr_ip remote_ip;
     socklen_t sz_addr = sizeof(zce::sockaddr_ip);
     ssize_t ssz_recv = zce::recvfrom(peer_socket_,
@@ -613,10 +662,8 @@ int PEER::recvfrom()
                                      &sz_addr);
     if (ssz_recv <= 0)
     {
-        const size_t buf_size = 64;
-        char out_buf[buf_size];
         ZCE_LOG(RS_ERROR,
-                "zce::sendto return error ret = [%d] remote[%s]",
+                "zce::recvfrom return error ret = [%d] remote[%s]",
                 ssz_recv,
                 zce::get_host_addr_port((sockaddr *)&remote_addr_, out_buf, buf_size));
         return -1;
@@ -626,6 +673,11 @@ int PEER::recvfrom()
         //收到的数据长度不可能大于以太网的MSS
         if (ssz_recv > MAX_FRAME_LEN || ssz_recv < MIN_FRAME_LEN)
         {
+            ZCE_LOG(RS_ERROR,
+                    "zce::recvfrom ssz_recv [%u] session id [%u] remote[%s] ",
+                    ssz_recv,
+                    session_id_,
+                    zce::get_host_addr_port((sockaddr *)&remote_addr_, out_buf, buf_size));
             return -2;
         }
     }
@@ -634,12 +686,32 @@ int PEER::recvfrom()
     RUDP_FRAME *recv_frame = (RUDP_FRAME *)recv_buffer_;
     recv_frame->ntoh();
     //
-    deliver_recv(&remote_ip,
-                 recv_frame,
-                 (uint32_t)ssz_recv,
-                 &change,
-                 &old_remote);
-    return 0;
+    int ret = deliver_recv(&remote_ip,
+                           recv_frame,
+                           (uint32_t)ssz_recv,
+                           &change,
+                           &old_remote);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    return ssz_recv;
+}
+
+ssize_t PEER::recv_timeout(zce::Time_Value* timeout_tv)
+{
+    int ret = 0;
+    //进行超时处理
+    ret = zce::handle_ready(peer_socket_,
+                            timeout_tv,
+                            zce::HANDLE_READY::READ);
+
+    const int HANDLE_READY_ONE = 1;
+    if (ret != HANDLE_READY_ONE)
+    {
+        return -1;
+    }
+    return recv();
 }
 
 int PEER::send_frame_to(int flag,
@@ -675,6 +747,11 @@ int PEER::send_frame_to(int flag,
     if (flag & FLAG::ACK)
     {
         frame->ack_id_ = peer_expect_seq_num_;
+        frame->u32_1_.selective_num_ = (uint32_t)selective_ack_num_;
+        for (size_t l = 0; l < selective_ack_num_; ++l)
+        {
+            frame->sack_[l] = selective_ack_ary_[l]->sequence_num_;
+        }
     }
     frame->u32_1_.mtu_type_ = (uint32_t)mtu_type_;
     frame->windows_size_ = static_cast<uint32_t>(recv_windows_.free());
@@ -687,7 +764,8 @@ int PEER::send_frame_to(int flag,
         if (first_send == true)
         {
             SEND_RECORD first_snd_rec;
-            first_snd_rec.len_ = sz_frame;
+            first_snd_rec.flag_ = flag;
+            first_snd_rec.len_ = sz_data;
             frame->sequence_num_ = my_seq_num_counter_;
             first_snd_rec.sequence_num_ = my_seq_num_counter_;
             if (sz_data > 0)
@@ -738,7 +816,7 @@ int PEER::send_frame_to(int flag,
                   frame->u32_1_.flag_,
                   frame->sequence_num_,
                   frame->ack_id_);
-
+    frame->hton();
     ssize_t ssend = zce::sendto(peer_socket_,
                                 (void *)frame,
                                 sz_frame,
@@ -868,6 +946,11 @@ void PEER::time_out(uint64_t now_clock_ms)
             }
         }
     }
+    //如果长时间没有反应。
+    if (now_clock_ms - peer_live_clock_ > (uint64_t)noalive_time_to_close_)
+    {
+        close();
+    }
 }
 
 //=================================================================================================
@@ -882,7 +965,8 @@ int CORE::initialize(const sockaddr *core_addr,
                      size_t max_num_of_peer,
                      size_t peer_send_rec_list_size,
                      size_t peer_send_list_num,
-                     size_t peer_recv_list_num)
+                     size_t peer_recv_list_num,
+                     std::function<ssize_t(uint32_t, PEER *, size_t)> *peer_callbak_recv)
 {
     int ret = 0;
     socklen_t socket_len = 0;
@@ -899,11 +983,11 @@ int CORE::initialize(const sockaddr *core_addr,
     recv_buffer_ = new char[MAX_BUFFER_LEN];
     send_buffer_ = new char[MAX_BUFFER_LEN];
 
-    std::random_device rd;
-    random_gen_.seed(rd());
-    peer_send_list_num_ = peer_send_list_num;
-    peer_recv_list_num_ = peer_recv_list_num;
+    peer_send_wnd_size_ = peer_send_list_num;
+    peer_recv_wnd_size_ = peer_recv_list_num;
     peer_send_rec_list_size_ = peer_send_rec_list_size;
+    peer_callbak_recv_ = new std::function<ssize_t(uint32_t, PEER *, size_t)>;
+    *peer_callbak_recv_ = *peer_callbak_recv;
     return 0;
 }
 
@@ -922,8 +1006,8 @@ void CORE::terminate()
     zce::close_socket(core_socket_);
 }
 
-int CORE::receive(PEER *& recv_rudp,
-                  bool * new_rudp)
+ssize_t CORE::recv(PEER *& recv_rudp,
+                   bool * new_rudp)
 {
     assert(recv_rudp == nullptr);
     *new_rudp = false;
@@ -976,10 +1060,10 @@ int CORE::receive(PEER *& recv_rudp,
         }
         else
         {
-            ZCE_LOG(RS_ERROR, "[RUDP] SYN error, flag [%u] but "
-                    "session id!=0,[%u]",
-                    frame->u32_1_.flag_,
-                    frame->session_id_);
+            ZCE_LOG_DEBUG(RS_ERROR, "[RUDP] SYN error, flag [%u] but "
+                          "session id!=0,[%u]",
+                          frame->u32_1_.flag_,
+                          frame->session_id_);
             return -1;
         }
     }
@@ -988,6 +1072,7 @@ int CORE::receive(PEER *& recv_rudp,
         auto iter = peer_map_.find(frame->session_id_);
         if (iter == peer_map_.end())
         {
+            ZCE_LOG_DEBUG(RS_ERROR, "[RUDP] ");
             return -1;
         }
         recv_rudp = iter->second;
@@ -995,7 +1080,7 @@ int CORE::receive(PEER *& recv_rudp,
     //看远端地址是否变化了,如果变化了，更新peer_addr_set_ 表
     zce::sockaddr_ip old_remote;
     bool change = false;
-    //
+    //将接收的数据调教给PEER
     recv_rudp->deliver_recv(&remote_ip,
                             frame,
                             (uint32_t)ssz_recv,
@@ -1007,7 +1092,25 @@ int CORE::receive(PEER *& recv_rudp,
         peer_addr_set_.insert(std::make_pair(remote_ip,
                               recv_rudp->session_id_));
     }
-    return 0;
+    return ssz_recv;
+}
+
+ssize_t CORE::recv_timeout(PEER *& recv_rudp,
+                           bool *new_rudp,
+                           zce::Time_Value* timeout_tv)
+{
+    int ret = 0;
+    //进行超时处理
+    ret = zce::handle_ready(core_socket_,
+                            timeout_tv,
+                            zce::HANDLE_READY::READ);
+
+    const int HANDLE_READY_ONE = 1;
+    if (ret != HANDLE_READY_ONE)
+    {
+        return -1;
+    }
+    return recv(recv_rudp, new_rudp);
 }
 
 int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
@@ -1054,11 +1157,12 @@ int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
                          (sockaddr *)remote_ip,
                          send_buffer_,
                          peer_send_rec_list_size_,
-                         peer_send_list_num_,
-                         peer_recv_list_num_);
+                         peer_send_wnd_size_,
+                         peer_recv_wnd_size_,
+                         peer_callbak_recv_);
     if (ret != 0)
     {
-        return ret;
+        return -1;
     }
     return 0;
 }

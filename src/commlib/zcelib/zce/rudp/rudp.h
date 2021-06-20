@@ -1,3 +1,20 @@
+/*!
+* @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
+* @filename   rudp.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date       2021年6月20日
+* @brief
+*
+*
+* @details
+*
+*
+*
+* @note
+*
+*/
+
 #pragma once
 
 #include "zce/util/lord_rings.h"
@@ -71,7 +88,7 @@ protected:
         //采用什么MTU类型，参考MTU_TYPE
         uint32_t mtu_type_ : 2;
 
-        //recv list 接收List的数量，用windows_num_ 这个变量名称是为了方便大家理解
+        //outer_recv list 接收List的数量，用windows_num_ 这个变量名称是为了方便大家理解
 #else
         //大端的字段，顺序和小端相反
         uint32_t mtu_type_ : 2;
@@ -99,10 +116,8 @@ public:
     uint32_t ack_id_ = 0;
     //本地接收窗口大小
     uint32_t windows_size_ = 0;
-
-    uint32_t sack1_ = 0;
-    uint32_t sack2_ = 0;
-    uint32_t sack3_ = 0;
+    //SACK
+    uint32_t sack_[3] = { 0 };
 };
 
 /**
@@ -184,20 +199,12 @@ protected:
 
     enum class MODEL
     {
+        //无效模式
         PEER_INVALID = 0,
-        //
+        //客户端模式
         PEER_CLIENT = 1,
-        //
-        PEER_CORE_CREATE = 1,
-    };
-
-    enum class STATE
-    {
-        CLOSE = 0,
-        ACCEPTED = 1,
-        SYS_SEND = 2,
-        SYN_RCVD = 3,
-        ESTABLISHED = 4,
+        //CORE创造的模式（类似服务器SOCKET）
+        PEER_CORE_CREATE = 2,
     };
 
     struct SEND_RECORD;
@@ -207,7 +214,7 @@ public:
     PEER(const PEER&) = default;
     PEER& operator = (const PEER & other) = default;
 
-    //服务器端CORE打开一个PEER
+    //服务器端CORE打开一个PEER，模式：PEER_CORE_CREATE
     int open(CORE *core,
              uint32_t session_id,
              uint32_t serial_id,
@@ -215,25 +222,34 @@ public:
              const sockaddr *remote_addr,
              char *send_buffer,
              size_t send_rec_list_size,
-             size_t send_windows_capacity,
-             size_t recv_windows_capacity);
+             size_t send_wnd_size,
+             size_t recv_wnd_size,
+             std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv);
 
-    //以客户端方式打开一个PEER
+    //以客户端方式打开一个PEER，模式：PEER_CLIENT
     int open(const sockaddr *remote_addr,
              size_t send_rec_list_size,
-             size_t send_list_capacity,
-             size_t recv_list_capacity,
+             size_t send_wnd_size,
+             size_t recv_wnd_size,
+             std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv,
              bool link_test_mtu = false);
 
     void close();
 
-    ///给外部调用的接收接口
-    int recv(char* buf,
-             size_t &len);
+    ///给外部调用的接收接口,从接收窗口取数据，
+    int outer_recv(char* buf,
+                   size_t &len);
 
-    ///给外部调用的发送接口
-    int send(const char* buf,
-             size_t &len);
+    //! 给外部调用的发送接口，把数据让如发送窗口，（是否实际发送看情况）
+    //! 内部对数据会进行分包处理
+    int outer_send(const char* buf,
+                   size_t &len);
+
+    //!可以接收的数据尺寸
+    inline size_t recv_data_size()
+    {
+        return recv_windows_.size();
+    }
 
     inline ZCE_SOCKET get_handle()
     {
@@ -241,12 +257,16 @@ public:
         return peer_socket_;
     }
 
-    //重置，
-    int reset();
+    inline uint32_t session_id()
+    {
+        return session_id_;
+    }
 
-    //客户端收取数据
-    int recvfrom();
+    //!客户端收取数据,如果发生了读取事件后，可以调用这个函数
+    //!你可以在select 等函数后调用这个函数
+    ssize_t recv();
 
+    ssize_t recv_timeout(zce::Time_Value* timeout_tv);
 protected:
 
     //core 传递 接受数据给peer
@@ -266,28 +286,33 @@ protected:
     int acknowledge_send(RUDP_FRAME *recv_frame,
                          uint64_t now_clock);
 
-    /// 计算RTO
+    ///在收到ACK返回之后，计算RTO
     void calculate_rto(uint64_t send_clock,
                        uint64_t now_clock);
 
-    ///超时处理
-    void time_out(uint64_t now_clock_ms);
-
-    ///
+    ///记录收到的跳跃(selective)数据
     void record_selective(RUDP_FRAME *selective_frame);
 
-    ///
+    ///处理跳跃的数据，
     void proces_selective();
 
     ///
-    bool process_push_data(RUDP_FRAME *recv_frame);
+    bool process_push_data(RUDP_FRAME *recv_frame,
+                           bool *already_processed,
+                           bool *advance_arrive);
+
+    //重置，
+    int reset();
+
+    //!超时处理，大约10ms调用一次他。如果是CORE模式，
+    void time_out(uint64_t now_clock_ms);
 
 protected:
 
     //发送（需要确认的发送）的记录，
     struct SEND_RECORD
     {
-        //
+        //发送的帧的FLAG，目前好像没用用到
         uint32_t flag_ = 0;
         //这个发送报的序列号
         uint32_t sequence_num_ = 0;
@@ -296,9 +321,9 @@ protected:
         //记录这个数据在发送窗口的位置，
         char *buf_pos_ = nullptr;
 
-        //发送的时间，
+        //发送的时间，需要记录，在就算RTO时使用
         uint64_t send_clock_ = 0;
-        //超时的时间
+        //超时的时间，大于这个时间，就可以进行重新发送
         uint64_t timeout_clock_ = 0;
         //发送的次数
         size_t send_num_ = 0;
@@ -306,21 +331,24 @@ protected:
 
     typedef zce::lord_rings<SEND_RECORD >  SEND_RECORD_LIST;
 
-    //最小的RTO值
+    //!最小的RTO值
     static time_t min_rto_;
-    //超时阻塞的情况下，rto增加的比率
+    //!超时阻塞的情况下，rto增加的比率
     static double blocking_rto_ratio_;
-    ///
+    //!如果在一段时间没有消息维持活跃，则关闭
     static time_t noalive_time_to_close_;
 
 protected:
-    //模式，不同的open函数决定不同的模式
+    //!模式，不同的open函数决定不同的模式
     MODEL model_ = MODEL::PEER_INVALID;
-    //
+    //!core的指针，如果peer是core创造的（），会保持core的指针
     CORE *core_ = nullptr;
-
-    //会话ID，表示这个会话状态，由CORE 生产，客户端负责每次携带
+    //!会话ID，表示这个会话状态，由CORE 生产，客户端负责保存
     uint32_t session_id_ = 0;
+
+    //!连接是否建立
+    bool established_ = false;
+
     //自己的（发送）序列号
     uint32_t my_seq_num_counter_ = 0;
     //自己的已经确认的（发送）序列号ID,已经收到了ACK
@@ -329,22 +357,25 @@ protected:
     //对方期待收到的下一个数据的seq num，也就是回复的ACK id
     uint32_t peer_expect_seq_num_ = 0;
 
-    //Socket 句柄
+    //!Socket 句柄
     ZCE_SOCKET peer_socket_ = ZCE_INVALID_SOCKET;
-    //远端地址，注意UDP远端地址是可能变化的，
+    //!远端地址，注意UDP远端地址是可能变化的，
     zce::sockaddr_ip remote_addr_{};
 
-    //发送记录列表
+    //!发送记录列表
     SEND_RECORD_LIST send_rec_list_;
-    //接收的滑动窗口
+    //!接收的滑动窗口
     zce::cycle_buffer recv_windows_;
-    //发送数据的滑动窗口
+    //!发送数据的滑动窗口
     zce::cycle_buffer send_windows_;
 
-    //发送的BUFFER
+    //!接收的BUFFER,根据model不同，生成（处理）方式不同
     char *recv_buffer_ = nullptr;
-    //接收的BUFFER
+    //!发送的BUFFER,根据model不同，生成（处理）方式不同
     char *send_buffer_ = nullptr;
+
+    //!发现接收数据是，接收回调函数，在函数里面调用outer_recv提取数据
+    std::function<ssize_t(uint32_t, PEER *, size_t)> *callbak_recv_ = nullptr;
 
     ///收到的跳跃包队列数量，最大是3
     size_t selective_ack_num_ = 0;
@@ -375,21 +406,45 @@ public:
     //析构函数
     ~CORE();
 
+    /**
+     * @brief 初始化CORE
+     * @param core_addr 绑定的地址
+     * @param max_num_of_peer 允许CORE同时管理的PEER数量
+     * @param peer_send_rec_list_size CORE创建的每个PEER的发送记录数量，发送记录要保存没有确认的帧
+     * @param peer_send_wnd_size CORE创建的每个PEER的发送窗口尺寸，发送窗口保存没有确认的发送数据
+     * @param peer_recv_wnd_size CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
+     * @param callbak_recv CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
+     * @return
+    */
     int initialize(const sockaddr *core_addr,
                    size_t max_num_of_peer,
                    size_t peer_send_rec_list_size,
-                   size_t peer_send_list_num,
-                   size_t peer_recv_list_num);
+                   size_t peer_send_wnd_size,
+                   size_t peer_recv_wnd_size,
+                   std::function<ssize_t(uint32_t, PEER *, size_t)> *peer_callbak_recv);
 
     void terminate();
 
-    int receive(PEER *& recv_rudp,
-                bool *new_rudp);
+    /**
+     * @brief 接受数据的处理,不阻塞,可以在select 时间触发后调用这个函数
+     * @param recv_rudp  发生时间的PEER
+     * @param new_rudp   这个PEER是否是新创建的
+     * @return 返回收到数据的尺寸，>0成功，==0SOCKET关闭，<0出错
+    */
+    ssize_t recv(PEER *& recv_rudp,
+                 bool *new_rudp);
+    /**
+     * @brief 带超时处理的接收，其他参数参考 @outer_recv 函数
+     * @param timeout_tv 超时时间，
+    */
+    ssize_t recv_timeout(PEER *& recv_rudp,
+                         bool *new_rudp,
+                         zce::Time_Value* timeout_tv);
 
-    //超时处理
+    //!超时处理，没10ms调用一次
     void time_out();
 
-    //
+    //!得到SOCKET句柄
     inline ZCE_SOCKET get_handle()
     {
         return core_socket_;
@@ -414,17 +469,20 @@ protected:
     //最大支持的RUDP PEER数量。
     size_t max_num_of_peer_ = 102400;
 
-    //
+    //!接收的BUFFER
     char *recv_buffer_ = nullptr;
-    //
+    //!发送的BUFFER,
     char *send_buffer_ = nullptr;
 
     //发送记录列表的数量
     size_t peer_send_rec_list_size_ = 0;
     //CORE创建的PEER的接收队列数量
-    size_t peer_recv_list_num_ = 0;
+    size_t peer_recv_wnd_size_ = 0;
     //CORE创建的PEER的发送队列数量
-    size_t peer_send_list_num_ = 0;
+    size_t peer_send_wnd_size_ = 0;
+
+    //!PEER收到数据的回调函数
+    std::function<ssize_t(uint32_t, PEER *, size_t)> *peer_callbak_recv_ = nullptr;
 
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。

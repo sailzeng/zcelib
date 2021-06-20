@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
                                                 static_cast<int>(LOG_HEAD::NONE));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
-    test_random_repeat_number(argc, argv);
+    test_rudp_core(argc, argv);
 
     return 0;
 
