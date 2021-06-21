@@ -293,12 +293,14 @@ int PEER::outer_send(const char* buf,
     char remote_str[buf_size];
     ZCE_LOG_DEBUG(RS_DEBUG,
                   "[RUDP] outer_send model[%d] session[%u] remote [%s] mtu[%d] frame_max_len[%u] "
-                  "send windows free [%u] send record [%u] my sn counter[%u] my ack sn[%u] peer ack [%u] ",
+                  "peer_windows_size_[%u] send windows free [%u] "
+                  "send record [%u] my sn counter[%u] my ack sn[%u] peer ack [%u] ",
                   model_,
                   session_id_,
                   zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
                   mtu_type_,
                   frame_max_len,
+                  peer_windows_size_,
                   snd_wnd_free,
                   snd_rec_free,
                   my_seq_num_counter_,
@@ -468,7 +470,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         }
         else if (model_ == MODEL::PEER_CORE_CREATE)
         {
-            send_frame_to(FLAG::ACK & FLAG::SYN);
+            send_frame_to(FLAG::ACK | FLAG::SYN);
         }
         else
         {
@@ -774,7 +776,7 @@ int PEER::send_frame_to(int flag,
     //如果PSH，就带上ACK
     if (flag & FLAG::PSH)
     {
-        flag &= FLAG::ACK;
+        flag |= FLAG::ACK;
     }
     frame->u32_1_.flag_ = flag;
     //如果进行链路探测，填写最大的帧长进行发送，
@@ -803,12 +805,19 @@ int PEER::send_frame_to(int flag,
     }
     frame->u32_1_.mtu_type_ = (uint32_t)mtu_type_;
     frame->windows_size_ = static_cast<uint32_t>(recv_windows_.free());
-    frame->session_id_ = session_id_;
 
     uint64_t now_clock = zce::clock_ms();
     //这几种情况的发送需要ACK确认,会填写sequence_num_
     if ((flag & FLAG::PSH) || (flag & FLAG::SYN))
     {
+        if (!established_ && (flag & FLAG::PSH))
+        {
+            ZCE_LOG_DEBUG(RS_DEBUG, "[RUDP]link session[%u] not established, but send push data,"
+                          "discard it. peer_expect_seq_num_[%u] .",
+                          session_id_,
+                          peer_expect_seq_num_);
+            return -1;
+        }
         if (first_send == true)
         {
             SEND_RECORD first_snd_rec;
@@ -855,8 +864,7 @@ int PEER::send_frame_to(int flag,
                   "send frame len[%u] flag[%u] sn[%u] ack[%u]",
                   model_,
                   session_id_,
-                  zce::get_host_addr_port((sockaddr *)&remote_addr_,
-                  remote_str, buf_size),
+                  zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
                   my_seq_num_counter_,
                   my_seq_num_ack_,
                   peer_expect_seq_num_,
@@ -1124,7 +1132,8 @@ ssize_t CORE::recv(PEER *& recv_rudp,
         auto iter = peer_map_.find(frame->session_id_);
         if (iter == peer_map_.end())
         {
-            ZCE_LOG_DEBUG(RS_ERROR, "[RUDP] ");
+            ZCE_LOG_DEBUG(RS_ERROR, "[RUDP] session id [%u] not map to peer.",
+                          frame->session_id_);
             return -1;
         }
         recv_rudp = iter->second;
@@ -1188,6 +1197,8 @@ int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
                       PEER *& new_peer)
 {
     int ret = 0;
+    const size_t buf_size = 64;
+    char remote_str[buf_size];
     //用这个IP找找，如果地址库里有，就找出对应那个关闭
     auto iter_addr = peer_addr_set_.find(*remote_ip);
     if (iter_addr != peer_addr_set_.end())
@@ -1201,7 +1212,12 @@ int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
         }
         else
         {
-            ZCE_LOG(RS_ERROR, "");
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP] create_peer find remote addr [%s] to session id[%u],"
+                    "but session id have't map to peer.",
+                    zce::get_host_addr_port((sockaddr *)&remote_ip, remote_str, buf_size),
+                    session_id);
+            peer_addr_set_.erase(iter_addr);
         }
     }
     new_peer = new PEER();
@@ -1235,6 +1251,9 @@ int CORE::create_peer(const zce::sockaddr_ip *remote_ip,
     {
         return -1;
     }
+
+    peer_map_[session_id] = new_peer;
+    peer_addr_set_[*remote_ip] = session_id;
     return 0;
 }
 

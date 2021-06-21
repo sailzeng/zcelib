@@ -138,6 +138,7 @@ int test_rudp_peer(int /*argc*/, char* /*argv*/[])
             }
             remain_file_len -= read_len;
             remain_send_len = read_len;
+            send_len = read_len;
             ret = peer.outer_send(read_buf.get(), send_len);
             if (ret != 0)
             {
