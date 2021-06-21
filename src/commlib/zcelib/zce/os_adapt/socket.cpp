@@ -8,6 +8,7 @@
 namespace zce
 {
 //===============================================
+//sockaddr_ip，兼容sockaddr_in sockaddr_in6的地址信息
 sockaddr_ip::sockaddr_ip(const ::sockaddr_in &sa)
 {
     ::memcpy(&in_, &sa, sizeof(sockaddr_in));
@@ -39,14 +40,25 @@ bool sockaddr_ip::operator == (const sockaddr_ip &others) const
     const sockaddr *addr_ptr = (const sockaddr *)&others;
     if (addr_ptr->sa_family == AF_INET)
     {
-        if (::memcmp(this, &others, sizeof(sockaddr_in)) == 0)
+        //避免比较sin_zero一类数据
+        const sockaddr_in *s = (sockaddr_in *)this;
+        const sockaddr_in *o = (sockaddr_in *)&others;
+        //比较地址协议簇，地址，端口
+        if (o->sin_family == s->sin_family &&
+            o->sin_addr.s_addr == s->sin_addr.s_addr &&
+            o->sin_port == s->sin_port)
         {
             return true;
         }
     }
     else if (addr_ptr->sa_family == AF_INET6)
     {
-        if (::memcmp(this, &others, sizeof(sockaddr_in6)) == 0)
+        const sockaddr_in6 *s = (sockaddr_in6 *)this;
+        const sockaddr_in6 *o = (sockaddr_in6 *)&others;
+        //比较地址协议簇，地址，端口
+        if (o->sin6_family == s->sin6_family &&
+            0 == memcmp(&(o->sin6_addr), &(s->sin6_addr), sizeof(in6_addr)) &&
+            o->sin6_port == s->sin6_port)
         {
             return true;
         }
@@ -1050,7 +1062,7 @@ ssize_t sendn_timeout(ZCE_SOCKET handle,
             result = onetime_send;
             break;
         }
-    }
+}
 
 #if defined  ZCE_OS_WINDOWS
     //关闭非阻塞状态
@@ -1207,7 +1219,7 @@ ssize_t recvn_timeout2(ZCE_SOCKET handle,
     //要不要还原原来的SO_RCVTIMEO?算了，用阻塞超时调用地方应该会一直使用
 
     return bytes_recv;
-}
+    }
 
 //
 ssize_t sendn_timeout2(ZCE_SOCKET handle,
@@ -2526,4 +2538,4 @@ int socks5_udp_associate(ZCE_SOCKET handle,
 
     return 0;
 }
-}
+    }

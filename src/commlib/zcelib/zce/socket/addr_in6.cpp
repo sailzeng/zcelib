@@ -95,8 +95,6 @@ bool Sockaddr_In6::check_safeport()
 //比较两个地址是否相等
 bool Sockaddr_In6::operator == (const Sockaddr_In6& others) const
 {
-    //in6_addr_.sin_zero 要比较吗？暂时算了。
-
     //比较地址协议簇，地址，端口
     if (others.in6_addr_.sin6_family == this->in6_addr_.sin6_family &&
         0 == memcmp(&(others.in6_addr_.sin6_addr), &(this->in6_addr_.sin6_addr), sizeof(in6_addr)) &&
@@ -104,7 +102,6 @@ bool Sockaddr_In6::operator == (const Sockaddr_In6& others) const
     {
         return true;
     }
-
     return false;
 }
 

@@ -161,6 +161,12 @@ int PEER::open(const sockaddr *remote_addr,
     {
         return ret;
     }
+    ret = zce::sock_enable(peer_socket_, O_NONBLOCK);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
     bool bret = send_rec_list_.initialize(send_rec_list_size);
     if (!bret)
     {
@@ -286,8 +292,8 @@ int PEER::outer_send(const char* buf,
     const size_t buf_size = 64;
     char remote_str[buf_size];
     ZCE_LOG_DEBUG(RS_DEBUG,
-                  "[RUDP] send model[%u] session[%u] remote [%s] mtu[%u] frame_max_len[%u] "
-                  "send windows free [%u] send record [%s] my sn counter[%u] my ack sn[%u] peer ack [%u] ",
+                  "[RUDP] outer_send model[%d] session[%u] remote [%s] mtu[%d] frame_max_len[%u] "
+                  "send windows free [%u] send record [%u] my sn counter[%u] my ack sn[%u] peer ack [%u] ",
                   model_,
                   session_id_,
                   zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
@@ -395,7 +401,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     }
     //远端地址可能发生改变，
     zce::sockaddr_ip new_remote = *remote_addr;
-    if (new_remote != remote_addr_)
+    if ((model_ == MODEL::PEER_CORE_CREATE) && new_remote != remote_addr_)
     {
         *remote_change = true;
         *old_remote = remote_addr_;
@@ -477,7 +483,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     }
     uint64_t now_clock = zce::clock_ms();
     //有ACK 标志处理,（而且没有处理过）
-    if (flag & FLAG::ACK && already_processed == false)
+    if ((flag & FLAG::ACK) && already_processed == false)
     {
         ret = acknowledge_send(recv_frame,
                                now_clock);
@@ -671,17 +677,25 @@ ssize_t PEER::recv()
     socklen_t sz_addr = sizeof(zce::sockaddr_ip);
     ssize_t ssz_recv = zce::recvfrom(peer_socket_,
                                      (void *)recv_buffer_,
-                                     MAX_FRAME_LEN,
+                                     MAX_BUFFER_LEN,
                                      0,
                                      (sockaddr*)&remote_ip,
                                      &sz_addr);
     if (ssz_recv <= 0)
     {
-        ZCE_LOG(RS_ERROR,
-                "zce::recvfrom return error ret = [%d] remote[%s]",
-                ssz_recv,
-                zce::get_host_addr_port((sockaddr *)&remote_addr_, out_buf, buf_size));
-        return -1;
+        if (zce::last_error() == EWOULDBLOCK)
+        {
+            return 0;
+        }
+        else
+        {
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP]zce::recvfrom return error ret = [%d] remote[%s] errno=[%d]",
+                    ssz_recv,
+                    zce::get_host_addr_port((sockaddr *)&remote_addr_, out_buf, buf_size),
+                    zce::last_error());
+            return -1;
+        }
     }
     else
     {
@@ -689,7 +703,7 @@ ssize_t PEER::recv()
         if (ssz_recv > MAX_FRAME_LEN || ssz_recv < MIN_FRAME_LEN)
         {
             ZCE_LOG(RS_ERROR,
-                    "zce::recvfrom ssz_recv [%u] session id [%u] remote[%s] ",
+                    "[RUDP]zce::recvfrom ssz_recv [%u] session id [%u] remote[%s]",
                     ssz_recv,
                     session_id_,
                     zce::get_host_addr_port((sockaddr *)&remote_addr_, out_buf, buf_size));
@@ -1010,6 +1024,11 @@ int CORE::open(const sockaddr *core_addr,
                            SOCK_DGRAM,
                            core_addr,
                            socket_len);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = zce::sock_enable(core_socket_, O_NONBLOCK);
     if (ret != 0)
     {
         return ret;
