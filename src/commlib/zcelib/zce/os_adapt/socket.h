@@ -2102,7 +2102,7 @@ inline int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 
     sock_addr_ipv6->sin6_family = AF_INET6;
     sock_addr_ipv6->sin6_port = htons(ipv6_port);
-    memcpy(sock_addr_ipv6->sin6_addr.s6_addr, ipv6_addr_val, IPV6_INET6_LEN);
+    ::memcpy(sock_addr_ipv6->sin6_addr.s6_addr, ipv6_addr_val, IPV6_INET6_LEN);
     return 0;
 }
 
