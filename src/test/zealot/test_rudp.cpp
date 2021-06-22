@@ -39,24 +39,22 @@ int test_rudp(int argc, char* argv[])
     {
         return test_rudp_core(argc, argv);
     }
-    return test_rudp_peer(argc, argv);
+    return test_rudp_client(argc, argv);
 }
 
-ssize_t core_recv(uint32_t session_id,
-                  zce::rudp::PEER *peer)
+ssize_t core_recv(zce::rudp::PEER *peer)
 {
     ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv data len [%u]",
-            session_id,
-            peer->recv_data_size());
+            peer->session_id(),
+            peer->recv_wnd_size());
     return 0;
 }
 
-ssize_t peer_recv(uint32_t session_id,
-                  zce::rudp::PEER *peer)
+ssize_t peer_recv(zce::rudp::PEER *peer)
 {
     ZCE_LOG(RS_DEBUG, "[PEER recv] session id[%u] recv data len [%u]",
-            session_id,
-            peer->recv_data_size());
+            peer->session_id(),
+            peer->recv_wnd_size());
     return 0;
 }
 
@@ -65,7 +63,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
     int ret = 0;
     zce::rudp::CORE core;
     sockaddr_in core_addr;
-    std::function<ssize_t(uint32_t, zce::rudp::PEER *)> callbak_fun(core_recv);
+    std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(core_recv);
     zce::set_sockaddr_in(&core_addr, "0.0.0.0", 888);
     ret = core.open((sockaddr *)&core_addr,
                     1024,
@@ -80,30 +78,33 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
 
     for (; core_run;)
     {
+        size_t size_recv = 0;
         zce::Time_Value tv(0, 100000);
-        core.recv_timeout(&tv);
+        core.receive_timeout_i(&tv, &size_recv);
     }
     core.close();
     return 0;
 }
 
-int test_rudp_peer(int /*argc*/, char* /*argv*/[])
+int test_rudp_client(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    zce::rudp::PEER peer;
+    zce::rudp::CLIENT client;
     sockaddr_in reomote_addr;
-    std::function<ssize_t(uint32_t, zce::rudp::PEER *)> callbak_fun(peer_recv);
+    std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(peer_recv);
     zce::set_sockaddr_in(&reomote_addr, "127.0.0.1", 888);
-    ret = peer.open((sockaddr *)&reomote_addr,
-                    1024,
-                    64 * 1024,
-                    64 * 1024,
-                    callbak_fun,
-                    true);
+    ret = client.open((sockaddr *)&reomote_addr,
+                      1024,
+                      64 * 1024,
+                      64 * 1024,
+                      callbak_fun);
+
     if (ret != 0)
     {
         return ret;
     }
+    zce::Time_Value tv(3, 0);
+    client.connect_timeout(&tv);
     //打开文件
     zce::AUTO_HANDLE fd(zce::open("E:\\1.pdf", O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
@@ -126,8 +127,9 @@ int test_rudp_peer(int /*argc*/, char* /*argv*/[])
     size_t send_len = 0, remain_send_len = 0;
     for (; core_run;)
     {
-        zce::Time_Value tv(0, 10000);
-        peer.recv_timeout(&tv);
+        tv.set(0, 10000);
+        size_t sz_recv = 0;
+        client.receive_timeout_i(&tv, &sz_recv);
         //读取内容
         if (remain_file_len > 0 && remain_send_len == 0)
         {
@@ -139,7 +141,7 @@ int test_rudp_peer(int /*argc*/, char* /*argv*/[])
             remain_file_len -= read_len;
             remain_send_len = read_len;
             send_len = read_len;
-            ret = peer.outer_send(read_buf.get(), send_len);
+            ret = client.send(read_buf.get(), send_len);
             if (ret != 0)
             {
                 return ret;
@@ -148,10 +150,10 @@ int test_rudp_peer(int /*argc*/, char* /*argv*/[])
         if (remain_send_len > 0)
         {
             send_len = remain_send_len;
-            ret = peer.outer_send(read_buf.get(), send_len);
+            ret = client.send(read_buf.get(), send_len);
             remain_send_len -= send_len;
         }
     }
-    peer.close();
+    client.close();
     return 0;
 }

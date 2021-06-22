@@ -190,7 +190,7 @@ public:
 };
 
 //=====================================================================================
-class CORE;
+
 class PEER :public BASE
 {
 protected:
@@ -211,22 +211,26 @@ public:
     PEER() = default;
     PEER(const PEER&) = default;
     PEER& operator = (const PEER & other) = default;
-
+protected:
+    ~PEER() = default;
 public:
 
-    void close();
+    //!关闭，具体行为由继承类实现
+    virtual void close() = 0;
+    //!重置，具体行为由继承类实现
+    virtual void reset() = 0;
 
-    ///给外部调用的接收接口,从接收窗口取数据，
-    int outer_recv(char* buf,
-                   size_t &len);
+    //! 给外部调用的接收接口,从接收窗口取数据，
+    int recv(char* buf,
+             size_t &len);
 
     //! 给外部调用的发送接口，把数据让如发送窗口，（是否实际发送看情况）
     //! 内部对数据会进行分包处理
-    int outer_send(const char* buf,
-                   size_t &len);
+    int send(const char* buf,
+             size_t &len);
 
-    //!可以接收的数据尺寸
-    inline size_t recv_data_size()
+    //!可以接收的数据(窗口)尺寸
+    inline size_t recv_wnd_size()
     {
         return recv_windows_.size();
     }
@@ -265,13 +269,10 @@ protected:
     ///处理跳跃的数据，
     void proces_selective();
 
-    ///
-    bool process_push_data(RUDP_FRAME *recv_frame,
+    ///处理接收的数据
+    bool process_recv_data(RUDP_FRAME *recv_frame,
                            bool *already_processed,
                            bool *advance_arrive);
-
-    //重置，
-    int reset();
 
     //!超时处理，大约10ms调用一次他。如果是CORE模式，
     void time_out(uint64_t now_clock_ms);
@@ -379,26 +380,36 @@ public:
              size_t send_rec_list_size,
              size_t send_wnd_size,
              size_t recv_wnd_size,
-             std::function<ssize_t(PEER *)> &callbak_recv,
-             bool link_test_mtu = false);
+             std::function<ssize_t(PEER *)> &callbak_recv);
 
-    virtual void close() = override;
-
-    virtual void reset() = override;
+    //!关闭，
+    virtual void close() override;
+    //!重置，
+    virtual void reset() override;
 
     inline ZCE_SOCKET get_handle()
     {
         return peer_socket_;
     }
 
-    //!客户端收取数据,如果发生了读取事件后，可以调用这个函数
-    //!你可以在select 等函数后调用这个函数
-    ssize_t recv();
+    //! 客户端无阻塞（无等待）收取数据,收取数据到内部接收窗口
+    //! 如果发生了读取事件后，可以调用这个函数，你可以在select 等函数后调用这个函数
+    int receive_i(size_t *recv_size);
 
-    ssize_t recv_timeout(zce::Time_Value* timeout_tv);
+    //! 客户端阻塞（等待）收取数据
+    int receive_timeout_i(zce::Time_Value* timeout_tv,
+                          size_t *recv_size);
+
+    //! 异步（非阻塞）连接，返回0并不表示真正成功，还没有对方确认
+    int connect(bool link_test_mtu = false);
+
+    //! 同步连接，等待@timeout_tv的时间，
+    int connect_timeout(zce::Time_Value* timeout_tv,
+                        bool link_test_mtu = false);
 };
 
 //=====================================================================================
+class CORE;
 class ACCEPT :public PEER
 {
     //有些函数只能core调用
@@ -421,9 +432,9 @@ protected:
              size_t recv_wnd_size,
              std::function<ssize_t(PEER *)> &callbak_recv);
 
-    virtual void close() = override;
+    virtual void close() override;
 
-    virtual void reset() = override;
+    virtual void reset() override;
 
 protected:
     //!core的指针，如果peer是core创造的（），会保持core的指针
@@ -462,17 +473,15 @@ public:
 
     /**
      * @brief 接受数据的处理,不阻塞,可以在select 时间触发后调用这个函数
-     * @param recv_rudp  发生时间的PEER
-     * @param new_rudp   这个PEER是否是新创建的
-     * @return 返回收到数据的尺寸，>0成功，==0SOCKET关闭，<0出错
+     * @return 返回收到数据的尺寸，==0成功，非0失败
     */
-    ssize_t recv(ACCEPT *& recv_rudp,
-                 bool *new_rudp);
+    int receive_i(size_t *recv_size);
     /**
      * @brief 带超时处理的接收，
      * @param timeout_tv 超时时间，
     */
-    ssize_t recv_timeout(zce::Time_Value* timeout_tv);
+    int receive_timeout_i(zce::Time_Value* timeout_tv,
+                          size_t *recv_size);
 
     //!超时处理，没10ms调用一次
     void time_out();
@@ -484,12 +493,12 @@ public:
     }
 
     //删除对应的PEER
-    void delete_peer(ACCEPT *del_peer);
+    void close_peer(ACCEPT *del_peer);
 
 protected:
 
     //创建一个PEER
-    int create_peer(const zce::sockaddr_ip *remote_ip,
+    int accept_peer(const zce::sockaddr_ip *remote_ip,
                     ACCEPT *& new_peer);
 
 protected:

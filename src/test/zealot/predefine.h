@@ -232,7 +232,7 @@ int test_pool(int /*argc*/, char* /*argv*/[]);
 
 int test_rudp(int /*argc*/, char* /*argv*/[]);
 int test_rudp_core(int /*argc*/, char* /*argv*/[]);
-int test_rudp_peer(int /*argc*/, char* /*argv*/[]);
+int test_rudp_client(int /*argc*/, char* /*argv*/[]);
 
 #endif //
 
