@@ -193,8 +193,6 @@ public:
 class CORE;
 class PEER :public BASE
 {
-    //有些函数只能core调用
-    friend class CORE;
 protected:
 
     enum class MODEL
@@ -214,27 +212,7 @@ public:
     PEER(const PEER&) = default;
     PEER& operator = (const PEER & other) = default;
 
-protected:
-    //服务器端CORE打开一个PEER，模式：PEER_CORE_CREATE
-    int open(CORE *core,
-             uint32_t session_id,
-             uint32_t serial_id,
-             ZCE_SOCKET peer_socket,
-             const sockaddr *remote_addr,
-             char *send_buffer,
-             size_t send_rec_list_size,
-             size_t send_wnd_size,
-             size_t recv_wnd_size,
-             std::function<ssize_t(uint32_t, PEER *)> &callbak_recv);
-
 public:
-    //以客户端方式打开一个PEER，模式：PEER_CLIENT
-    int open(const sockaddr *remote_addr,
-             size_t send_rec_list_size,
-             size_t send_wnd_size,
-             size_t recv_wnd_size,
-             std::function<ssize_t(uint32_t, PEER *)> &callbak_recv,
-             bool link_test_mtu = false);
 
     void close();
 
@@ -253,22 +231,11 @@ public:
         return recv_windows_.size();
     }
 
-    inline ZCE_SOCKET get_handle()
-    {
-        assert(model_ == MODEL::PEER_CLIENT);
-        return peer_socket_;
-    }
-
     inline uint32_t session_id()
     {
         return session_id_;
     }
 
-    //!客户端收取数据,如果发生了读取事件后，可以调用这个函数
-    //!你可以在select 等函数后调用这个函数
-    ssize_t recv();
-
-    ssize_t recv_timeout(zce::Time_Value* timeout_tv);
 protected:
 
     //core 传递 接受数据给peer
@@ -343,8 +310,7 @@ protected:
 protected:
     //!模式，不同的open函数决定不同的模式
     MODEL model_ = MODEL::PEER_INVALID;
-    //!core的指针，如果peer是core创造的（），会保持core的指针
-    CORE *core_ = nullptr;
+
     //!会话ID，表示这个会话状态，由CORE 生产，客户端负责保存
     uint32_t session_id_ = 0;
 
@@ -376,9 +342,9 @@ protected:
     //!发送的BUFFER,根据model不同，生成（处理）方式不同
     char *send_buffer_ = nullptr;
 
-    //! 发现接收数据是，接收回调函数，在函数里面调用outer_recv提取数据
-    //! 第一个参数是session id，第二个参数是接收数据的PEER *
-    std::function<ssize_t(uint32_t, PEER *)> callbak_recv_;
+    //! 发现接收数据时，接收回调函数，在函数里面调用outer_recv提取数据
+    //! 第一个参数是接收数据的PEER *
+    std::function<ssize_t(PEER *)> callbak_recv_;
 
     ///收到的跳跃包队列数量，最大是3
     size_t selective_ack_num_ = 0;
@@ -396,6 +362,72 @@ protected:
 
     //对端最后活动（收到数据）的时间
     uint64_t peer_live_clock_ = 0;
+};
+
+//=====================================================================================
+class CLIENT :public PEER
+{
+public:
+
+    CLIENT() = default;
+    CLIENT(const CLIENT&) = default;
+    CLIENT& operator = (const CLIENT & other) = default;
+
+public:
+    //以客户端方式打开一个PEER，模式：PEER_CLIENT
+    int open(const sockaddr *remote_addr,
+             size_t send_rec_list_size,
+             size_t send_wnd_size,
+             size_t recv_wnd_size,
+             std::function<ssize_t(PEER *)> &callbak_recv,
+             bool link_test_mtu = false);
+
+    virtual void close() = override;
+
+    virtual void reset() = override;
+
+    inline ZCE_SOCKET get_handle()
+    {
+        return peer_socket_;
+    }
+
+    //!客户端收取数据,如果发生了读取事件后，可以调用这个函数
+    //!你可以在select 等函数后调用这个函数
+    ssize_t recv();
+
+    ssize_t recv_timeout(zce::Time_Value* timeout_tv);
+};
+
+//=====================================================================================
+class ACCEPT :public PEER
+{
+    //有些函数只能core调用
+    friend class CORE;
+public:
+    ACCEPT() = default;
+    ACCEPT(const ACCEPT&) = default;
+    ACCEPT& operator = (const ACCEPT & other) = default;
+
+protected:
+    //服务器端CORE打开一个PEER，模式：PEER_CORE_CREATE
+    int open(CORE * core,
+             uint32_t session_id,
+             uint32_t serial_id,
+             ZCE_SOCKET peer_socket,
+             const sockaddr * remote_addr,
+             char *send_buffer,
+             size_t send_rec_list_size,
+             size_t send_wnd_size,
+             size_t recv_wnd_size,
+             std::function<ssize_t(PEER *)> &callbak_recv);
+
+    virtual void close() = override;
+
+    virtual void reset() = override;
+
+protected:
+    //!core的指针，如果peer是core创造的（），会保持core的指针
+    CORE *core_ = nullptr;
 };
 
 //=====================================================================================
@@ -424,7 +456,7 @@ public:
              size_t peer_send_rec_list_size,
              size_t peer_send_wnd_size,
              size_t peer_recv_wnd_size,
-             std::function<ssize_t(uint32_t, PEER *)> &peer_callbak_recv);
+             std::function<ssize_t(PEER *)> &peer_callbak_recv);
 
     void close();
 
@@ -434,7 +466,7 @@ public:
      * @param new_rudp   这个PEER是否是新创建的
      * @return 返回收到数据的尺寸，>0成功，==0SOCKET关闭，<0出错
     */
-    ssize_t recv(PEER *& recv_rudp,
+    ssize_t recv(ACCEPT *& recv_rudp,
                  bool *new_rudp);
     /**
      * @brief 带超时处理的接收，
@@ -452,13 +484,13 @@ public:
     }
 
     //删除对应的PEER
-    void delete_peer(PEER *del_peer);
+    void delete_peer(ACCEPT *del_peer);
 
 protected:
 
     //创建一个PEER
     int create_peer(const zce::sockaddr_ip *remote_ip,
-                    PEER *& new_peer);
+                    ACCEPT *& new_peer);
 
 protected:
 
@@ -484,11 +516,11 @@ protected:
 
     //!PEER收到数据的回调函数
     //! 第一个参数是session id，第二个参数是接收数据的PEER *
-    std::function<ssize_t(uint32_t, PEER *)> peer_callbak_recv_;
+    std::function<ssize_t(PEER *)> peer_callbak_recv_;
 
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。
-    std::unordered_map<uint32_t, PEER*>  peer_map_;
+    std::unordered_map<uint32_t, ACCEPT*>  peer_map_;
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;
 };
