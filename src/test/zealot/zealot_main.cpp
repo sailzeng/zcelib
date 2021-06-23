@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 
 #define ZCE_USE_LOGMSG 1
     ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                "E:\\My.Log\\TEST_1",
+                                                "E:\\My.Log\\TEST_2",
                                                 false,
                                                 true,
                                                 0,

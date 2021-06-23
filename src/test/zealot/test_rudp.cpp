@@ -55,6 +55,20 @@ ssize_t peer_recv(zce::rudp::PEER *peer)
     ZCE_LOG(RS_DEBUG, "[PEER recv] session id[%u] recv data len [%u]",
             peer->session_id(),
             peer->recv_wnd_size());
+    zce::AUTO_HANDLE fd(zce::open("E:\\2.pdf", O_CREAT | O_APPEND));
+    if (ZCE_INVALID_HANDLE == fd.get())
+    {
+        return -1;
+    }
+    std::unique_ptr<char[]> write_buf(new char[peer->recv_wnd_size()]);
+    size_t recv_size = peer->recv_wnd_size();
+    peer->recv(write_buf.get(),
+               recv_size);
+    ssize_t write_len = zce::write(fd.get(), write_buf.get(), recv_size);
+    if (recv_size != (size_t)write_len)
+    {
+        ZCE_LOG(RS_DEBUG, "");
+    }
     return 0;
 }
 
@@ -151,6 +165,10 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
         {
             send_len = remain_send_len;
             ret = client.send(read_buf.get(), send_len);
+            if (ret != 0)
+            {
+                return ret;
+            }
             remain_send_len -= send_len;
         }
     }

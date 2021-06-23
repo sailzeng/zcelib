@@ -156,12 +156,13 @@ int PEER::send(const char* buf,
                   my_seq_num_ack_,
                   peer_expect_seq_num_);
 
-    if (snd_wnd_free == 0 || snd_rec_free == 0)
+    if (snd_wnd_free == 0 || snd_rec_free == 0 || peer_windows_size_ == 0)
     {
         zce::last_error(EWOULDBLOCK);
-        ZCE_LOG(RS_INFO, "[RUDP] snd_rec_free [%u] snd_wnd_free[%u]",
+        ZCE_LOG(RS_INFO, "[RUDP] snd_rec_free [%u] snd_wnd_free[%u] peer_windows_size_ [%u]",
                 snd_rec_free,
-                snd_wnd_free);
+                snd_wnd_free,
+                peer_windows_size_);
         return -1;
     }
 
@@ -219,8 +220,8 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
     char new_remote_str[buf_size], old_remote_str[buf_size];
     ZCE_LOG_DEBUG(RS_DEBUG,
                   "[RUDP] deliver_recv model[%u] session[%u] remote new[%s] old [%s] "
-                  "my sn counter[%u] my ack sn[%u] peer ack [%u] "
-                  "recv frame len[%u] flag[%u] session[%u] sn[%u] ack[%u] "
+                  "my sn counter[%u] my ack sn[%u] peer ack [%u] peer_windows_size_[%u] "
+                  "recv frame len[%u] flag[%u] session[%u] sn[%u] ack[%u] windows size [%u]"
                   "recv windows size[%u] free[%u] ",
                   model_,
                   session_id_,
@@ -229,11 +230,13 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                   my_seq_num_counter_,
                   my_seq_num_ack_,
                   peer_expect_seq_num_,
+                  peer_windows_size_,
                   recv_frame->u32_1_.len_,
                   recv_frame->u32_1_.flag_,
                   recv_frame->session_id_,
                   recv_frame->sequence_num_,
                   recv_frame->ack_id_,
+                  recv_frame->windows_size_,
                   recv_windows_.size(),
                   recv_windows_.free());
     if (frame_len <= 0)
@@ -659,7 +662,7 @@ int PEER::acknowledge_send(RUDP_FRAME *recv_frame,
         uint32_t snd_serial_id = snd_rec.sequence_num_;
 
         //这儿有一点技巧，避免 wrap around引发麻烦,其实就是利用了补码
-        difference = (int32_t)(recv_ack_id - snd_serial_id);
+        difference = (int32_t)(snd_serial_id - recv_ack_id);
         if (difference < 0)
         {
             //只对没有超时处理的发送计算rto
@@ -668,8 +671,10 @@ int PEER::acknowledge_send(RUDP_FRAME *recv_frame,
                 calculate_rto(snd_rec.send_clock_,
                               now_clock);
             }
-
-            send_windows_.pop_front(snd_rec.len_);
+            if (snd_rec.len_ > 0)
+            {
+                send_windows_.pop_front(snd_rec.len_);
+            }
             send_rec_list_.pop_front();
             continue;
         }
@@ -683,7 +688,7 @@ int PEER::acknowledge_send(RUDP_FRAME *recv_frame,
 
     //
     if ((difference == 0 && send_rec_list_.size() > 0)
-        || (difference > 0 && send_rec_list_.size() == 0
+        || (difference < 0 && send_rec_list_.size() == 0
         && recv_ack_id == my_seq_num_counter_))
     {
         //正常，如果收到的ack id
@@ -721,9 +726,11 @@ void PEER::calculate_rto(uint64_t send_clock,
 }
 
 //超时处理
-void PEER::time_out(uint64_t now_clock_ms)
+void PEER::time_out(uint64_t now_clock_ms,
+                    bool *not_alive)
 {
     int ret = 0;
+    *not_alive = false;
     size_t size_snd_rec = send_rec_list_.size();
     for (size_t i = 0; i < size_snd_rec; ++i)
     {
@@ -751,7 +758,7 @@ void PEER::time_out(uint64_t now_clock_ms)
     //如果长时间没有反应。
     if (now_clock_ms - peer_live_clock_ > (uint64_t)noalive_time_to_close_)
     {
-        close();
+        *not_alive = true;
     }
 }
 
@@ -968,7 +975,10 @@ int CLIENT::connect_timeout(zce::Time_Value* timeout_tv,
     {
         return ret;
     }
-
+    if (!established_)
+    {
+        return -1;
+    }
     return 0;
 }
 
@@ -1049,11 +1059,6 @@ void ACCEPT::reset()
 
 //=================================================================================================
 //class CORE
-
-CORE::~CORE()
-{
-    close();
-}
 
 int CORE::open(const sockaddr *core_addr,
                size_t max_num_of_peer,
@@ -1136,7 +1141,7 @@ int CORE::receive_i(size_t *recv_size)
     {
         return -2;
     }
-    if (frame->u32_1_.flag_ & SYN)
+    if (frame->u32_1_.flag_ & FLAG::SYN)
     {
         if (frame->session_id_ == 0)
         {
@@ -1173,6 +1178,12 @@ int CORE::receive_i(size_t *recv_size)
             return -1;
         }
         recv_rudp = iter->second;
+    }
+
+    if (frame->u32_1_.flag_ & FLAG::RST)
+    {
+        recv_rudp->close();
+        return 0;
     }
     //看远端地址是否变化了,如果变化了，更新peer_addr_set_ 表
     zce::sockaddr_ip old_remote;
@@ -1244,7 +1255,7 @@ int CORE::accept_peer(const zce::sockaddr_ip *remote_ip,
         if (iter_peer != peer_map_.end())
         {
             ACCEPT * old_peer = iter_peer->second;
-            close_peer(old_peer);
+            old_peer->close();
         }
         else
         {
@@ -1313,9 +1324,20 @@ void CORE::time_out()
 {
     uint64_t now_clock_ms = zce::clock_ms();
     //这儿我抉择过一段时间。到底要不要用一些其他unorder_map的遍历
-    for (auto iter : peer_map_)
+    for (auto iter = peer_map_.begin(); iter != peer_map_.end(); ++iter)
     {
-        iter.second->time_out(now_clock_ms);
+        bool no_alive = false;
+        iter->second->time_out(now_clock_ms, &no_alive);
+        if (no_alive)
+        {
+            auto del_iter = iter;
+            ++iter;
+            del_iter->second->close();
+            if (iter == peer_map_.end())
+            {
+                break;
+            }
+        }
     }
     return;
 }

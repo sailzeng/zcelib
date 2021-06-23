@@ -274,8 +274,9 @@ protected:
                            bool *already_processed,
                            bool *advance_arrive);
 
-    //!超时处理，大约10ms调用一次他。如果是CORE模式，
-    void time_out(uint64_t now_clock_ms);
+    //!超时处理，大约10ms调用一次他。
+    void time_out(uint64_t now_clock_ms,
+                  bool *not_alive);
 
 protected:
 
@@ -450,7 +451,7 @@ public:
     CORE(const CORE&) = default;
     CORE& operator = (const CORE & other) = default;
     //析构函数
-    ~CORE();
+    ~CORE() = default;
 
     /**
      * @brief 初始化CORE
