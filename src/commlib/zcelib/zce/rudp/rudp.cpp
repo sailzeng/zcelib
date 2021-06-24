@@ -432,6 +432,31 @@ void PEER::proces_selective()
         }
     }
     selective_ack_num_ -= process_num;
+    if (selective_ack_num_>0)
+    {
+        if (process_num == 2)
+        {
+            RUDP_FRAME *temp = selective_ack_ary_[0];
+            selective_ack_ary_[0] = selective_ack_ary_[2];
+            selective_ack_ary_[2] = temp;
+        }
+        if (process_num == 1)
+        {
+            if (selective_ack_num_ == 1)
+            {
+                RUDP_FRAME *temp = selective_ack_ary_[0];
+                selective_ack_ary_[0] = selective_ack_ary_[1];
+                selective_ack_ary_[1] = temp;
+            }
+            if (selective_ack_num_ == 2)
+            {
+                RUDP_FRAME *temp = selective_ack_ary_[0];
+                selective_ack_ary_[0] = selective_ack_ary_[1];
+                selective_ack_ary_[1] = selective_ack_ary_[2];
+                selective_ack_ary_[2] = temp;
+            }
+        }
+    }
 }
 
 //记录收到的跳跃数据。代码丑的一比
