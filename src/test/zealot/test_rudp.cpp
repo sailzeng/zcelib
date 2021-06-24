@@ -51,7 +51,15 @@ ssize_t core_recv(zce::rudp::PEER *peer)
     zce::AUTO_HANDLE fd(zce::open("E:\\2.pdf", O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
+        ZCE_LOG(RS_ERROR, "");
         return -1;
+    }
+    size_t file_size = 0;
+    int ret = zce::filesize(fd.get(), &file_size);
+    if (ret != 0)
+    {
+        ZCE_LOG(RS_ERROR, "");
+        return ret;
     }
     std::unique_ptr<char[]> write_buf(new char[peer->recv_wnd_size()]);
     size_t recv_size = peer->recv_wnd_size();
@@ -62,9 +70,11 @@ ssize_t core_recv(zce::rudp::PEER *peer)
     {
         ZCE_LOG(RS_DEBUG, "");
     }
-    ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv data len [%u]",
+    ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
             peer->session_id(),
-            peer->recv_wnd_size());
+            peer->recv_wnd_size(),
+            file_size,
+            recv_size);
     return 0;
 }
 
@@ -80,6 +90,7 @@ ssize_t peer_recv(zce::rudp::PEER *peer)
 int test_rudp_core(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
+    zce::unlink("E:\\2.pdf");
     zce::rudp::CORE core;
     sockaddr_in core_addr;
     std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(core_recv);

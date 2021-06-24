@@ -212,26 +212,30 @@ int PEER::send(const char* buf,
 
 int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                        RUDP_FRAME *recv_frame,
-                       size_t frame_len,
+                       size_t recv_len,
                        bool *remote_change,
-                       zce::sockaddr_ip *old_remote)
+                       zce::sockaddr_ip *old_remote,
+                       bool *reset_peer)
 {
+    *reset_peer = false;
     const size_t buf_size = 64;
     char new_remote_str[buf_size], old_remote_str[buf_size];
     ZCE_LOG_DEBUG(RS_DEBUG,
-                  "[RUDP] deliver_recv model[%u] session[%u] remote new[%s] old [%s] "
-                  "my sn counter[%u] my ack sn[%u] peer ack [%u] peer_windows_size_[%u] "
-                  "recv windows size[%u] free[%u] "
-                  "recv frame len[%u] flag[%u] session[%u] sn[%u] ack[%u] wnd [%u]"
-                  ,
+                  "[RUDP] deliver_recv start. model[%u] session[%u] recv len [%u] "
+                  "remote new[%s] old [%s] my_seq_num_counter_[%u] my_seq_num_ack_[%u] "
+                  "peer_expect_seq_num_ [%u] peer_windows_size_[%u] recv_bytes_[%llu]"
+                  "recv_windows_ size[%u] free[%u] "
+                  "recv frame len[%u] flag[%u] session[%u] sn[%u] ack[%u] wnd [%u]",
                   model_,
                   session_id_,
+                  recv_len,
                   zce::get_host_addr_port((sockaddr *)remote_addr, new_remote_str, buf_size),
                   zce::get_host_addr_port((sockaddr *)&remote_addr_, old_remote_str, buf_size),
                   my_seq_num_counter_,
                   my_seq_num_ack_,
                   peer_expect_seq_num_,
                   peer_windows_size_,
+                  recv_bytes_,
                   recv_windows_.size(),
                   recv_windows_.free(),
                   recv_frame->u32_1_.len_,
@@ -240,29 +244,60 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                   recv_frame->sequence_num_,
                   recv_frame->ack_id_,
                   recv_frame->windows_size_);
-    if (frame_len <= 0)
+
+    //收到的数据长度不可能大于以太网的MSS
+    if (recv_len <= 0 ||
+        recv_len > MSS_ETHERNET ||
+        recv_len < MIN_FRAME_LEN ||
+        recv_len != recv_frame->u32_1_.len_)
     {
+        ZCE_LOG(RS_ERROR,
+                "[RUDP] deliver_recv. Frame len error. model[%u] session[%u] mtu[%u] "
+                "recv len [%u] frame len [%u]in head MSS_ETHERNET [%u] MIN_FRAME_LEN [%u]",
+                model_,
+                session_id_,
+                mtu_type_,
+                recv_len,
+                recv_frame->u32_1_.len_,
+                MSS_ETHERNET,
+                MIN_FRAME_LEN);
+        *reset_peer = true;
+        send_frame_to(FLAG::RST);
+        reset();
+        zce::last_error(EMSGSIZE);
         return -1;
-    }
-    else
-    {
-        //收到的数据长度不可能大于以太网的MSS
-        if (frame_len > MSS_ETHERNET || frame_len < MIN_FRAME_LEN)
-        {
-            ZCE_LOG(RS_ERROR, "");
-            return -2;
-        }
     }
     //远端地址可能发生改变，
     zce::sockaddr_ip new_remote = *remote_addr;
-    if ((model_ == MODEL::PEER_CORE_CREATE) && new_remote != remote_addr_)
+    if (new_remote != remote_addr_)
     {
-        *remote_change = true;
-        *old_remote = remote_addr_;
-        remote_addr_ = new_remote;
-        ZCE_LOG(RS_INFO, "[RUDP]Remote address [%s] already modify [%s].Please pay attention to.",
-                zce::get_host_addr_port((sockaddr *)&remote_addr_, old_remote_str, buf_size),
-                zce::get_host_addr_port((sockaddr *)remote_addr, new_remote_str, buf_size));
+        //客户端的地址可能会变化。属于正常情况，记录一下
+        if (model_ == MODEL::PEER_CORE_CREATE)
+        {
+            *remote_change = true;
+            *old_remote = remote_addr_;
+            remote_addr_ = new_remote;
+            ZCE_LOG(RS_INFO,
+                    "[RUDP] deliver_recv. model[%u] session[%u] remote address [%s] "
+                    "already modify [%s].Please pay attention to.",
+                    model_,
+                    session_id_,
+                    zce::get_host_addr_port((sockaddr *)&remote_addr_, old_remote_str, buf_size),
+                    zce::get_host_addr_port((sockaddr *)remote_addr, new_remote_str, buf_size));
+        }
+        //服务端地址不会变化，也不能接受其他人塞过来的数据
+        else if (model_ == MODEL::PEER_CLIENT)
+        {
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP] deliver_recv. model[%u] session[%u] recv remote address [%s] data."
+                    "but core remote addr [%s].Please pay attention to.",
+                    model_,
+                    session_id_,
+                    zce::get_host_addr_port((sockaddr *)remote_addr, new_remote_str, buf_size),
+                    zce::get_host_addr_port((sockaddr *)&remote_addr_, old_remote_str, buf_size));
+            zce::last_error(ENOTCONN);
+            return -1;
+        }
     }
     peer_windows_size_ = recv_frame->windows_size_;
     mtu_type_ = static_cast<MTU_TYPE>(recv_frame->u32_1_.mtu_type_);
@@ -277,15 +312,20 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         if (session_id_ != recv_frame->session_id_ &&
             (flag & FLAG::SYN) == 0)
         {
-            ZCE_LOG(RS_ERROR, "Session id not eaqul, receive session id[%u] init session[%u].",
-                    recv_frame->session_id_,
-                    session_id_);
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP] deliver_recv.Session id [%u] not eaqul, receive session id[%u] .",
+                    session_id_,
+                    recv_frame->session_id_);
+            *reset_peer = true;
+            send_frame_to(FLAG::RST);
+            reset();
             return -1;
         }
     }
 
     if (flag & FLAG::RST)
     {
+        *reset_peer = true;
         reset();
         return 0;
     }
@@ -297,29 +337,36 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         //如果连接没有建立，
         if (!established_)
         {
-            ZCE_LOG_DEBUG(RS_DEBUG, "[RUDP]link session[%u] not established, but receive push data,"
-                          "discard it. peer_expect_seq_num_[%u] recv sn[%u].",
-                          session_id_,
-                          peer_expect_seq_num_,
-                          recv_frame->sequence_num_);
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP] deliver_recv.session[%u] link not established, but receive "
+                    " push data,discard it. peer_expect_seq_num_[%u] recv sn[%u].",
+                    session_id_,
+                    peer_expect_seq_num_,
+                    recv_frame->sequence_num_);
+            *reset_peer = true;
+            send_frame_to(FLAG::RST);
+            reset();
+            return -1;
+        }
+        if (recv_len == sizeof(RUDP_HEAD))
+        {
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP] deliver_recv.session[%u] receive PSH flag ,but frame len == "
+                    "sizeof(RUDP_HEAD). ",
+                    session_id_);
+            *reset_peer = true;
+            send_frame_to(FLAG::RST);
+            reset();
             return -1;
         }
         auto bingo = process_recv_data(recv_frame,
                                        &already_processed,
                                        &advance_arrive);
-        ZCE_LOG_DEBUG(RS_DEBUG, "[RUDP] process_recv_data frame len [%u] flag [%u] sn[%u] "
-                      "peer_expect_seq_num_ [%u] ret[%u] already_processed[%u] advance_arrive[%u]",
-                      recv_frame->u32_1_.len_,
-                      recv_frame->u32_1_.flag_,
-                      recv_frame->sequence_num_,
-                      peer_expect_seq_num_,
-                      bingo,
-                      already_processed,
-                      advance_arrive);
         //也看看原来跳跃的数据是否能处理
         if (bingo)
         {
             proces_selective();
+            recv_bytes_ += (recv_len - sizeof(RUDP_HEAD));
         }
         else
         {
@@ -329,6 +376,19 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                 record_selective(recv_frame);
             }
         }
+        ZCE_LOG_DEBUG(RS_DEBUG,
+                      "[RUDP] process_recv_data frame len [%u] flag [%u] sn[%u] "
+                      "peer_expect_seq_num_ [%u] recv_bytes_[%llu] ret[%u] "
+                      " already_processed[%u] advance_arrive[%u]",
+                      recv_len,
+                      recv_frame->u32_1_.flag_,
+                      recv_frame->sequence_num_,
+                      peer_expect_seq_num_,
+                      recv_bytes_,
+                      bingo,
+                      already_processed,
+                      advance_arrive);
+
         send_frame_to(FLAG::ACK);
     }
     else if (flag & FLAG::SYN)
@@ -432,7 +492,7 @@ void PEER::proces_selective()
         }
     }
     selective_ack_num_ -= process_num;
-    if (selective_ack_num_>0)
+    if (selective_ack_num_ > 0)
     {
         if (process_num == 2)
         {
@@ -663,16 +723,18 @@ int PEER::send_frame_to(int flag,
     const size_t buf_size = 64;
     char remote_str[buf_size];
     ZCE_LOG_DEBUG(RS_DEBUG,
-                  "[RUDP] send_frame_to model[%u] first send[%u] session[%u] remote [%s] "
-                  "my sn counter[%u] my ack sn[%u] peer ack [%u] "
+                  "[RUDP] send_frame_to model[%u] session[%u] first send[%u] remote [%s] "
+                  "my_seq_num_counter_[%u] my_seq_num_ack_[%u] "
+                  "peer_expect_seq_num_[%u] send_bytes_ [%llu] "
                   "send frame len[%u] flag[%u] sn[%u] ack[%u] wnd[%u]",
                   model_,
-                  first_send,
                   session_id_,
+                  first_send,
                   zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
                   my_seq_num_counter_,
                   my_seq_num_ack_,
                   peer_expect_seq_num_,
+                  send_bytes_,
                   frame->u32_1_.len_,
                   frame->u32_1_.flag_,
                   frame->sequence_num_,
@@ -696,7 +758,15 @@ int PEER::send_frame_to(int flag,
                 (sockaddr *)&remote_addr_, buf, buf_size));
         return -1;
     }
-
+    send_bytes_ += sz_frame - sizeof(RUDP_HEAD);
+    ZCE_LOG_DEBUG(RS_DEBUG,
+                  "[RUDP] send_frame_to send end. model[%u] session[%u] first send[%u] remote [%s] "
+                  "send_bytes_ [%llu] ",
+                  model_,
+                  session_id_,
+                  first_send,
+                  zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
+                  send_bytes_);
     return 0;
 }
 
@@ -906,7 +976,6 @@ void CLIENT::reset()
     my_seq_num_counter_ = BASE::random();
     my_seq_num_ack_ = 0;
     peer_expect_seq_num_ = 0;
-    send_frame_to(FLAG::SYN);
     return;
 }
 
@@ -958,11 +1027,13 @@ int CLIENT::receive_i(size_t *recv_size)
     RUDP_FRAME *recv_frame = (RUDP_FRAME *)recv_buffer_;
     recv_frame->ntoh();
     //
+    bool reset_peer = false;
     int ret = deliver_recv(&remote_ip,
                            recv_frame,
                            (size_t)ssz_recv,
                            &change,
-                           &old_remote);
+                           &old_remote,
+                           &reset_peer);
     if (ret != 0)
     {
         return -1;
@@ -1258,12 +1329,14 @@ int CORE::receive_i(size_t *recv_size)
     zce::sockaddr_ip old_remote;
     bool change = false;
     //将接收的数据调教给PEER
+    bool reset_peer = false;
     recv_rudp->deliver_recv(&remote_ip,
                             frame,
                             (size_t)ssz_recv,
                             &change,
-                            &old_remote);
-    if (change)
+                            &old_remote,
+                            &reset_peer);
+    if (change && reset_peer == false)
     {
         peer_addr_set_.erase(old_remote);
         peer_addr_set_.insert(std::make_pair(remote_ip,

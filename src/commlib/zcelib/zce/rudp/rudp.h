@@ -249,7 +249,8 @@ protected:
                      RUDP_FRAME *recv_frame,
                      size_t frame_len,
                      bool *remote_change,
-                     zce::sockaddr_ip *old_remote);
+                     zce::sockaddr_ip *old_remote,
+                     bool *reset);
     //发送frame
     int send_frame_to(int flag,
                       bool first_send = true,
@@ -363,6 +364,12 @@ protected:
     size_t peer_windows_size_ = 64 * 1024;
     //RTO，
     time_t rto_ = 80;
+
+    //!
+    uint64_t send_bytes_ = 0;
+    //!
+    uint64_t recv_bytes_ = 0;
+    
 
     //对端最后活动（收到数据）的时间
     uint64_t peer_live_clock_ = 0;
