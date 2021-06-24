@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
                                                 true,
                                                 0,
                                                 ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                                                static_cast<int>(LOG_HEAD::NONE));
+                                                static_cast<int>(LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
     test_rudp(argc, argv);

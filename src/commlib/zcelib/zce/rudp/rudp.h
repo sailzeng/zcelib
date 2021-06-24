@@ -41,6 +41,8 @@ enum FLAG
     LMT = (0x1 << 5),
     //Keep live
     KPL = (0x1 << 6),
+
+    NTF = (0x1 << 7),
 };
 
 //对应mtu_type_ 字段，可以有4种，目前用了2种
