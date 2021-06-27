@@ -467,6 +467,7 @@
     <ClInclude Include="zce\timer\queue_wheel.h" />
     <ClInclude Include="zce\time\progress_timer.h" />
     <ClInclude Include="zce\time\time_value.h" />
+    <ClInclude Include="zce\util\static_list.h" />
     <ClInclude Include="zce\uuid\generator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

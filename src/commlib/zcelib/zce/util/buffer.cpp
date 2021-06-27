@@ -111,7 +111,7 @@ size_t cycle_buffer::size()
     }
     else
     {
-        return size_of_cycle_ + cycbuf_end_ - cycbuf_begin_ - JUDGE_FULL_INTERVAL;
+        return size_of_cycle_ + cycbuf_end_ - cycbuf_begin_;
     }
 }
 

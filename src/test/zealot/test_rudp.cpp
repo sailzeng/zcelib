@@ -64,7 +64,7 @@ ssize_t core_recv(zce::rudp::PEER *peer)
     std::unique_ptr<char[]> write_buf(new char[peer->recv_wnd_size()]);
     size_t recv_size = peer->recv_wnd_size();
     peer->recv(write_buf.get(),
-               recv_size);
+               &recv_size);
     ssize_t write_len = zce::write(fd.get(), write_buf.get(), recv_size);
     if (recv_size != (size_t)write_len)
     {
@@ -90,13 +90,12 @@ ssize_t peer_recv(zce::rudp::PEER *peer)
 int test_rudp_core(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    zce::unlink("E:\\2.pdf");
+    ret = zce::unlink("E:\\2.pdf");
     zce::rudp::CORE core;
     sockaddr_in core_addr;
     std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(core_recv);
     zce::set_sockaddr_in(&core_addr, "0.0.0.0", 888);
     ret = core.open((sockaddr *)&core_addr,
-                    1024,
                     1024,
                     64 * 1024,
                     64 * 1024,
@@ -124,7 +123,6 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
     std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(peer_recv);
     zce::set_sockaddr_in(&reomote_addr, "127.0.0.1", 888);
     ret = client.open((sockaddr *)&reomote_addr,
-                      1024,
                       64 * 1024,
                       64 * 1024,
                       callbak_fun);
@@ -172,7 +170,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
             remain_send_len = read_len;
             send_len = read_len;
             once_process_len = 0;
-            ret = client.send(read_buf.get(), send_len);
+            ret = client.send(read_buf.get(), &send_len);
             if (ret != 0)
             {
                 if (zce::last_error() != EWOULDBLOCK)
@@ -187,7 +185,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
         if (remain_send_len > 0)
         {
             send_len = remain_send_len;
-            ret = client.send(read_buf.get() + once_process_len, send_len);
+            ret = client.send(read_buf.get() + once_process_len, &send_len);
             if (ret != 0)
             {
                 if (zce::last_error() != EWOULDBLOCK)

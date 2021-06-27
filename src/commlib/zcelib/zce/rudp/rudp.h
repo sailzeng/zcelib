@@ -18,6 +18,7 @@
 #pragma once
 
 #include "zce/util/lord_rings.h"
+#include "zce/util/static_list.h"
 #include "zce/util/buffer.h"
 #include "zce/pool/buffer_pool.h"
 #include "zce/os_adapt/common.h"
@@ -30,19 +31,19 @@ namespace zce::rudp
 enum FLAG
 {
     //客户端发往服务器的第一帧,标志，让服务器告知SESSION ID
-    SYN = (0x1 << 1),
+    SYN = (0x1 << 0),
     //ACK应答数据，表示ack_
-    ACK = (0x1 << 2),
+    ACK = (0x1 << 1),
     //带有数据
-    PSH = (0x1 << 3),
-    //RESET
-    RST = (0x1 << 4),
+    PSH = (0x1 << 2),
+    //RESET，要求对方重置，感觉对方已经疯癫了。
+    RST = (0x1 << 3),
     //link MTU TEST，链路的MTU测试帧
-    LMT = (0x1 << 5),
-    //Keep live
-    KPL = (0x1 << 6),
-
-    NTF = (0x1 << 7),
+    LMT = (0x1 << 4),
+    //are you ok？询问对方情况，也用于Keep live。
+    AYO = (0x1 << 5),
+    //应答AYO，Iam ok，会带上窗口信息。
+    IAO = (0x1 << 6),
 };
 
 //对应mtu_type_ 字段，可以有4种，目前用了2种
@@ -207,6 +208,16 @@ protected:
         PEER_CORE_CREATE = 2,
     };
 
+    enum class RECV_OPERATION
+    {
+        INVALID = 0,
+        FILL = 1,
+        REPEAT = 2,
+        ADVANCE = 3,
+        SERIES = 4,
+        ERR = 5,
+    };
+
     struct SEND_RECORD;
 public:
 
@@ -224,12 +235,12 @@ public:
 
     //! 给外部调用的接收接口,从接收窗口取数据，
     int recv(char* buf,
-             size_t &len);
+             size_t *recv_len);
 
     //! 给外部调用的发送接口，把数据让如发送窗口，（是否实际发送看情况）
     //! 内部对数据会进行分包处理
     int send(const char* buf,
-             size_t &len);
+             size_t *send_len);
 
     //!可以接收的数据(窗口)尺寸
     inline size_t recv_wnd_size()
@@ -273,9 +284,8 @@ protected:
     void proces_selective();
 
     ///处理接收的数据
-    bool process_recv_data(RUDP_FRAME *recv_frame,
-                           bool *already_processed,
-                           bool *advance_arrive);
+    int process_recv_data(RUDP_FRAME *recv_frame,
+                          RECV_OPERATION *op);
 
     //!超时处理，大约10ms调用一次他。
     void time_out(uint64_t now_clock_ms,
@@ -305,6 +315,15 @@ protected:
 
     typedef zce::lord_rings<SEND_RECORD >  SEND_RECORD_LIST;
 
+    struct RECV_RECORD
+    {
+        //
+        uint32_t start_;
+        //
+        uint32_t end_;
+    };
+    typedef zce::static_list<RECV_RECORD >  RECV_RECORD_LIST;
+
     //!最小的RTO值
     static time_t min_rto_;
     //!超时阻塞的情况下，rto增加的比率
@@ -327,20 +346,27 @@ protected:
     //自己的已经确认的（发送）序列号ID,已经收到了ACK
     uint32_t my_seq_num_ack_ = 0;
 
-    //对方期待收到的下一个数据的seq num，也就是回复的ACK id
-    uint32_t peer_expect_seq_num_ = 0;
+    //!已经连续起来的SEQ，也就是期待收到对方的下一个数据的SEQ，也就是回复的ACK id
+    uint32_t rcv_wnd_series_end_ = 0;
+    //!接受窗口内最开始的序列号
+    uint32_t rcv_wnd_first_ = 0;
+    //!接受窗口收到的最后一个序列值（注意是尾部）
+    uint32_t rcv_wnd_last_ = 0;
 
     //!Socket 句柄
     ZCE_SOCKET peer_socket_ = ZCE_INVALID_SOCKET;
     //!远端地址，注意UDP远端地址是可能变化的，
     zce::sockaddr_ip remote_addr_{};
 
-    //!发送记录列表
+    //!发送记录列表,最大记录数和窗口大小有关系
     SEND_RECORD_LIST send_rec_list_;
-    //!接收的滑动窗口
-    zce::cycle_buffer recv_windows_;
     //!发送数据的滑动窗口
     zce::cycle_buffer send_windows_;
+
+    //!接收记录列表,最大记录数和接收窗口大小有关系
+    RECV_RECORD_LIST recv_rec_list_;
+    //!接收的滑动窗口
+    zce::cycle_buffer recv_windows_;
 
     //!接收的BUFFER,根据model不同，生成（处理）方式不同
     char *recv_buffer_ = nullptr;
@@ -351,11 +377,6 @@ protected:
     //! 第一个参数是接收数据的PEER *
     std::function<ssize_t(PEER *)> callbak_recv_;
 
-    ///收到的跳跃包队列数量，最大是3
-    size_t selective_ack_num_ = 0;
-    //跳跃包的队列
-    RUDP_FRAME *selective_ack_ary_[3] = { nullptr };
-
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
     //但考虑到简单，我们先把两端的MTU约束成一样,
     MTU_TYPE mtu_type_ = MTU_TYPE::ETHERNET;
@@ -365,11 +386,10 @@ protected:
     //RTO，
     time_t rto_ = 80;
 
-    //!
+    //!发送的字节数量
     uint64_t send_bytes_ = 0;
-    //!
+    //!接收到的数据数量
     uint64_t recv_bytes_ = 0;
-    
 
     //对端最后活动（收到数据）的时间
     uint64_t peer_live_clock_ = 0;
@@ -387,7 +407,6 @@ public:
 public:
     //以客户端方式打开一个PEER，模式：PEER_CLIENT
     int open(const sockaddr *remote_addr,
-             size_t send_rec_list_size,
              size_t send_wnd_size,
              size_t recv_wnd_size,
              std::function<ssize_t(PEER *)> &callbak_recv);
@@ -437,7 +456,6 @@ protected:
              ZCE_SOCKET peer_socket,
              const sockaddr * remote_addr,
              char *send_buffer,
-             size_t send_rec_list_size,
              size_t send_wnd_size,
              size_t recv_wnd_size,
              std::function<ssize_t(PEER *)> &callbak_recv);
@@ -466,7 +484,6 @@ public:
      * @brief 初始化CORE
      * @param core_addr 绑定的地址
      * @param max_num_of_peer 允许CORE同时管理的PEER数量
-     * @param peer_send_rec_list_size CORE创建的每个PEER的发送记录数量，发送记录要保存没有确认的帧
      * @param peer_send_wnd_size CORE创建的每个PEER的发送窗口尺寸，发送窗口保存没有确认的发送数据
      * @param peer_recv_wnd_size CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
      * @param callbak_recv CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
@@ -474,7 +491,6 @@ public:
     */
     int open(const sockaddr *core_addr,
              size_t max_num_of_peer,
-             size_t peer_send_rec_list_size,
              size_t peer_send_wnd_size,
              size_t peer_recv_wnd_size,
              std::function<ssize_t(PEER *)> &peer_callbak_recv);
@@ -526,8 +542,6 @@ protected:
     //!发送的BUFFER,
     char *send_buffer_ = nullptr;
 
-    //发送记录列表的数量
-    size_t peer_send_rec_list_size_ = 0;
     //CORE创建的PEER的接收队列数量
     size_t peer_recv_wnd_size_ = 0;
     //CORE创建的PEER的发送队列数量

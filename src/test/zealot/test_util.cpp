@@ -2,6 +2,7 @@
 
 #include <zce/util/random.h>
 #include <zce/util/cycbuf_node.h>
+#include <zce/util/static_list.h>
 
 //仅仅用于测试，不实现完全了
 class random_libc : public zce::t_random_base<0, 0x00007FFF>
@@ -807,5 +808,13 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
             ZPP_LOG(RS_DEBUG, "pop_front {},no={}{} ring free ={}", ok, i, k, a1.free());
         }
     }
+    return 0;
+}
+
+int test_static_list(int /*argc*/, char* /*argv*/[])
+{
+    zce::static_list<int> abc;
+    abc.initialize(200);
+
     return 0;
 }

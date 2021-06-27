@@ -604,4 +604,4 @@ protected:
     //USE NODE的头指针,N+2个索引位表示
     _shm_list_index* usenode_ = nullptr;
 };
-};
+}
