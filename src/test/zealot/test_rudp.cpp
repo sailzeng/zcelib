@@ -126,7 +126,6 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
                       64 * 1024,
                       64 * 1024,
                       callbak_fun);
-
     if (ret != 0)
     {
         return ret;
@@ -164,23 +163,16 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
             read_len = zce::read(fd.get(), read_buf.get(), READ_LEN);
             if (read_len < 0)
             {
+                ZCE_LOG(RS_ERROR,
+                        "read file ret =%d errno =%d",
+                        ret,
+                        zce::last_error());
                 return -1;
             }
             remain_file_len -= read_len;
             remain_send_len = read_len;
             send_len = read_len;
             once_process_len = 0;
-            ret = client.send(read_buf.get(), &send_len);
-            if (ret != 0)
-            {
-                if (zce::last_error() != EWOULDBLOCK)
-                {
-                    return ret;
-                }
-            }
-            remain_send_len -= send_len;
-            once_process_len += send_len;
-            all_proces_len += send_len;
         }
         if (remain_send_len > 0)
         {
@@ -190,6 +182,10 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
             {
                 if (zce::last_error() != EWOULDBLOCK)
                 {
+                    ZCE_LOG(RS_ERROR,
+                            "send ret =%d errno =%d",
+                            ret,
+                            zce::last_error());
                     return ret;
                 }
             }
@@ -197,7 +193,9 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
             once_process_len += send_len;
             all_proces_len += send_len;
         }
-        ZCE_LOG(RS_INFO, "[TEST]remain_file_len[%u] remain_send_len[%u] "
+
+        ZCE_LOG(RS_INFO,
+                "[TEST]remain_file_len[%u] remain_send_len[%u] "
                 "process_len[%u] all_proces_len [%u]",
                 remain_file_len,
                 remain_send_len,

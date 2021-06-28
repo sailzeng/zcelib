@@ -4,14 +4,18 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2021年6月20日
-* @brief
+* @brief      RUDP，
 *
 *
-* @details
+* @details    我用到的类似TCP的技术
+*             接受窗口和发送窗口，都是用了滑动窗口进行处理，
+*             Zero Window Probe  ZWP 当对端窗口尺寸是0是询问对端，并且如果如果窗口变化
+*             而且窗口小于阈值，会主动通知对端。
+*             Fast Recovery 快速重传机制 收到2个相同的ACK，主动进行重传。
+*             TCP默认是3个相同的ACK，这儿有简化
+*             SACK ，类似，发现如果有收到的数据不连续有，跳跃，会在ACK数据里面主动通知对端
 *
-*
-*
-* @note
+* @note       最后至少写了2周，若干次反复。
 *
 */
 
@@ -83,11 +87,11 @@ protected:
         //帧的长度，包括头部，最长4096一个包，但其实最大长度会按MTU TYPE进行控制
         uint32_t len_ : 12;
         //标志为，参考FLAG
-        uint32_t flag_ : 8;
+        uint32_t flag_ : 10;
         //保留
-        uint32_t reserve_ : 8;
+        uint32_t reserve_ : 4;
         //selective的数量
-        uint32_t selective_num_ : 2;
+        uint32_t req_resend_num_ : 4;
         //采用什么MTU类型，参考MTU_TYPE
         uint32_t mtu_type_ : 2;
 
@@ -95,9 +99,9 @@ protected:
 #else
         //大端的字段，顺序和小端相反
         uint32_t mtu_type_ : 2;
-        uint32_t selective_num_ : 2;
-        uint32_t reserve_ : 8;
-        uint32_t flag_ : 8;
+        uint32_t req_resend_num_ : 4;
+        uint32_t reserve_ : 4;
+        uint32_t flag_ : 10;
         uint32_t len_ : 12;
 #endif
     };
@@ -119,8 +123,9 @@ public:
     uint32_t ack_id_ = 0;
     //本地接收窗口大小
     uint32_t windows_size_ = 0;
-    //SACK
-    uint32_t sack_[3] = { 0 };
+
+    //请求重传的序列号，这个设计类似SACK，
+    uint32_t req_resend_seq_[3] = { 0 };
 };
 
 /**
@@ -166,29 +171,30 @@ public:
     //取得随机数
     static uint32_t random();
 
-    //WAN的MTU
+    //!WAN的MTU
     static constexpr size_t MTU_WAN = 576;
-    //UDP包在WAN网络的负载
+    //!UDP包在WAN网络的负载，去掉IP头部，UDP头部长度
     static constexpr size_t MSS_WAN_UDP = MTU_WAN - 20 - 8;
-    //RUDP的MTU
+    //!RUDP在WAN的MTU
     static constexpr size_t MTU_WAN_RUDP = MSS_WAN_UDP;
-    //RUDP的MSS，要减去头部大小
+    //!RUDP的MSS，要减去头部大小
     static constexpr size_t MSS_WAN_RUDP = MTU_WAN_RUDP - sizeof(RUDP_HEAD);
 
-    //
+    //!以太网的MTU
     static constexpr size_t MTU_ETHERNET = 1480;
-    //
+    //!UDP包在以太网ETHERNET网络的负载
     static constexpr size_t MSS_ETHERNET = MTU_ETHERNET - 20 - 8;
-    //
+    //!RUDP在以太网的MTU
     static constexpr size_t MTU_ETHERNET_RUDP = MSS_ETHERNET;
-    //
+    //!RUDP在以太网的MSS,减去头部长度
     static constexpr size_t MSS_ETHERNET_RUDP = MTU_ETHERNET_RUDP - sizeof(RUDP_HEAD);
 
-    //最大数据处理的长度，这儿注意一下，其实最大长度只可能是MSS_ETHERNET，
+    //!最大数据处理的长度，这儿注意一下，其实最大长度只可能是MSS_ETHERNET，
     static constexpr size_t MAX_FRAME_LEN = MTU_ETHERNET_RUDP;
-    //
+    //!最小的FRAME长度，头部大小
     static constexpr size_t MIN_FRAME_LEN = sizeof(RUDP_HEAD);
-    //+4 的目的是为了方便判定错误
+
+    //!BUFFER的大小 +4 的目的是为了方便判定错误
     static constexpr size_t MAX_BUFFER_LEN = MAX_FRAME_LEN + 4;
 };
 
@@ -233,12 +239,22 @@ public:
     //!重置，具体行为由继承类实现
     virtual void reset() = 0;
 
-    //! 给外部调用的接收接口,从接收窗口取数据，
+    /**
+     * @brief 给外部调用的接收接口,从接收窗口取数据，
+     * @param[in]     buf
+     * @param[in,out] recv_len
+     * @return
+    */
     int recv(char* buf,
              size_t *recv_len);
 
-    //! 给外部调用的发送接口，把数据让如发送窗口，（是否实际发送看情况）
-    //! 内部对数据会进行分包处理
+    /**
+     * @brief 给外部调用的发送接口，把数据让如发送窗口，（是否实际发送看情况）
+     *        会对数据会进行分包处理
+     * @param[in]     buf       接收数据的buffer，
+     * @param[in,out] send_len  发送数据长度
+     * @return 返回0表示成功，如果返回-1，错误是EWOULDBLOCK表示请稍等一下发送
+    */
     int send(const char* buf,
              size_t *send_len);
 
@@ -248,6 +264,7 @@ public:
         return recv_windows_.size();
     }
 
+    //!得到PEER对应的session id
     inline uint32_t session_id()
     {
         return session_id_;
@@ -255,14 +272,32 @@ public:
 
 protected:
 
-    //core 传递 接受数据给peer
+    /**
+     * @brief 传递接收的数据给peer
+     * @param [in]  remote_addr 远端地址,因为是UDP，可能会变化
+     * @param [in]  recv_frame  接收的FRAME
+     * @param [in]  frame_len  FRAME的长度
+     * @param [out] remote_change 返回参数，远端地址是否改变
+     * @param [out] old_remote    返回原来的远端地址
+     * @param [out] reset         返回是否需要reset处理
+     * @return 返回0表示成功
+    */
     int deliver_recv(const zce::sockaddr_ip *remote_addr,
                      RUDP_FRAME *recv_frame,
                      size_t frame_len,
                      bool *remote_change,
                      zce::sockaddr_ip *old_remote,
                      bool *reset);
-    //发送frame
+
+    /**
+     * @brief 发送FRAME数据去远端，
+     * @param[in] flag       发送的FLAG
+     * @param[in] first_send 是否是第一次发送，
+     * @param[in] data       发送的数据
+     * @param[in] sz_data    发送的数据长度
+     * @param[in] snd_rec    发送的记录，如果不是第一次发送，会使用发送记录进行重发
+     * @return 返回0表示成功，
+    */
     int send_frame_to(int flag,
                       bool first_send = true,
                       const char *data = nullptr,
@@ -270,21 +305,15 @@ protected:
                       SEND_RECORD *snd_rec = nullptr);
 
     //跟进收到ACK ID确认那些发送成功了
-    int acknowledge_send(RUDP_FRAME *recv_frame,
+    int acknowledge_send(const RUDP_FRAME *recv_frame,
                          uint64_t now_clock);
 
-    ///在收到ACK返回之后，计算RTO
+    //!在收到ACK返回之后，计算RTO
     void calculate_rto(uint64_t send_clock,
                        uint64_t now_clock);
 
-    ///记录收到的跳跃(selective)数据
-    void record_selective(RUDP_FRAME *selective_frame);
-
-    ///处理跳跃的数据，
-    void proces_selective();
-
     ///处理接收的数据
-    int process_recv_data(RUDP_FRAME *recv_frame,
+    int process_recv_data(const RUDP_FRAME *recv_frame,
                           RECV_OPERATION *op);
 
     //!超时处理，大约10ms调用一次他。
@@ -293,28 +322,29 @@ protected:
 
 protected:
 
-    //发送（需要确认的发送）的记录，
+    //!发送（需要确认的发送）的记录，
     struct SEND_RECORD
     {
-        //发送的帧的FLAG，目前好像没用用到
+        //!发送的帧的FLAG，目前好像没用用到
         uint32_t flag_ = 0;
-        //这个发送报的序列号
+        //!这个发送报的序列号
         uint32_t sequence_num_ = 0;
-        //发送数据的长度
+        //!发送数据的长度
         size_t len_ = 0;
-        //记录这个数据在发送窗口的位置，
+        //!记录这个数据在发送窗口的位置，
         char *buf_pos_ = nullptr;
 
-        //发送的时间，需要记录，在就算RTO时使用
+        //!发送的时间，需要记录，在就算RTO时使用
         uint64_t send_clock_ = 0;
-        //超时的时间，大于这个时间，就可以进行重新发送
+        //!超时的时间，大于这个时间，就可以进行重新发送
         uint64_t timeout_clock_ = 0;
-        //发送的次数
+        //!发送的次数
         size_t send_num_ = 0;
     };
 
     typedef zce::lord_rings<SEND_RECORD >  SEND_RECORD_LIST;
 
+    //!接收记录
     struct RECV_RECORD
     {
         //
@@ -405,7 +435,15 @@ public:
     CLIENT& operator = (const CLIENT & other) = default;
 
 public:
-    //以客户端方式打开一个PEER，模式：PEER_CLIENT
+
+    /**
+     * @brief 以客户端方式打开一个PEER，模式：PEER_CLIENT
+     * @param remote_addr    远端地址
+     * @param send_wnd_size  发送窗口尺寸
+     * @param recv_wnd_size  接收窗口尺寸
+     * @param callbak_recv   如果有接收数据，进行回调函数，
+     * @return
+    */
     int open(const sockaddr *remote_addr,
              size_t send_wnd_size,
              size_t recv_wnd_size,
@@ -416,6 +454,7 @@ public:
     //!重置，
     virtual void reset() override;
 
+    //!得到SOCKET句柄
     inline ZCE_SOCKET get_handle()
     {
         return peer_socket_;
@@ -449,7 +488,20 @@ public:
     ACCEPT& operator = (const ACCEPT & other) = default;
 
 protected:
-    //服务器端CORE打开一个PEER，模式：PEER_CORE_CREATE
+
+    /**
+     * @brief 服务器端CORE打开一个PEER，模式：PEER_CORE_CREATE
+     * @param core
+     * @param session_id    会话ID，对应这个PEER的标识
+     * @param serial_id     序列号ID，SEQUNCE ID
+     * @param peer_socket   相应的SOCKET，注意RUDP是共用CORE的SOCKET
+     * @param remote_addr   远端地址
+     * @param send_buffer   发送的BUFFER
+     * @param send_wnd_size 发送窗口的大小，发送记录数由窗口决定
+     * @param recv_wnd_size 接收窗口的大小，接收记录数由窗口决定
+     * @param callbak_recv  回调的接收函数，如果收到了数据，回调这个函数，
+     * @return
+    */
     int open(CORE * core,
              uint32_t session_id,
              uint32_t serial_id,
@@ -529,12 +581,12 @@ protected:
 
 protected:
 
-    //Socket 句柄
+    //!Socket 句柄
     ZCE_SOCKET core_socket_ = ZCE_INVALID_SOCKET;
-    //本地地址，CORE地址，服务器地址
+    //!本地地址，CORE地址，服务器地址
     zce::sockaddr_ip core_addr_;
 
-    //最大支持的RUDP PEER数量。
+    //!最大支持的RUDP PEER数量。
     size_t max_num_of_peer_ = 102400;
 
     //!接收的BUFFER
@@ -542,9 +594,9 @@ protected:
     //!发送的BUFFER,
     char *send_buffer_ = nullptr;
 
-    //CORE创建的PEER的接收队列数量
+    //!CORE创建的PEER的接收队列数量
     size_t peer_recv_wnd_size_ = 0;
-    //CORE创建的PEER的发送队列数量
+    //!CORE创建的PEER的发送队列数量
     size_t peer_send_wnd_size_ = 0;
 
     //!PEER收到数据的回调函数
@@ -554,6 +606,7 @@ protected:
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。
     std::unordered_map<uint32_t, ACCEPT*>  peer_map_;
+
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;
 };

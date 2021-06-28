@@ -25,9 +25,9 @@ void RUDP_HEAD::hton()
     sequence_num_ = htonl(sequence_num_);
     ack_id_ = htonl(ack_id_);
     windows_size_ = htonl(windows_size_);
-    sack_[0] = htonl(sack_[0]);
-    sack_[1] = htonl(sack_[1]);
-    sack_[2] = htonl(sack_[2]);
+    req_resend_seq_[0] = htonl(req_resend_seq_[0]);
+    req_resend_seq_[1] = htonl(req_resend_seq_[1]);
+    req_resend_seq_[2] = htonl(req_resend_seq_[2]);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
@@ -38,9 +38,9 @@ void RUDP_HEAD::ntoh()
     sequence_num_ = ntohl(sequence_num_);
     ack_id_ = ntohl(ack_id_);
     windows_size_ = ntohl(windows_size_);
-    sack_[0] = ntohl(sack_[0]);
-    sack_[1] = ntohl(sack_[1]);
-    sack_[2] = ntohl(sack_[2]);
+    req_resend_seq_[0] = ntohl(req_resend_seq_[0]);
+    req_resend_seq_[1] = ntohl(req_resend_seq_[1]);
+    req_resend_seq_[2] = ntohl(req_resend_seq_[2]);
 }
 
 void RUDP_HEAD::clear()
@@ -50,9 +50,9 @@ void RUDP_HEAD::clear()
     sequence_num_ = 0;
     ack_id_ = 0;
     windows_size_ = 0;
-    sack_[0] = 0;
-    sack_[1] = 0;
-    sack_[2] = 0;
+    req_resend_seq_[0] = 0;
+    req_resend_seq_[1] = 0;
+    req_resend_seq_[2] = 0;
 }
 
 //填充Data数据到Frame
@@ -249,6 +249,7 @@ int PEER::send(const char* buf,
     return 0;
 }
 
+//!有数据抵达时的函数
 int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                        RUDP_FRAME *recv_frame,
                        size_t recv_len,
@@ -495,7 +496,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
 }
 
 //
-int PEER::process_recv_data(RUDP_FRAME *recv_frame,
+int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
                             RECV_OPERATION *op)
 {
     bool already_proc = false;
@@ -618,15 +619,15 @@ int PEER::process_recv_data(RUDP_FRAME *recv_frame,
 
     //检查接收的数据是否是连续的，
     auto t = recv_rec_list_.begin();
-    for (; t != recv_rec_list_.end(); ++t)
+    while (t != recv_rec_list_.end())
     {
         if (t->start_ == rcv_wnd_series_end_)
         {
             rcv_wnd_series_end_ = t->end_;
             auto del_iter = t;
-            ++t;
             recv_rec_list_.erase(del_iter);
             call_recv = true;
+            t = recv_rec_list_.begin();
             continue;
         }
         else
@@ -652,10 +653,10 @@ int PEER::process_recv_data(RUDP_FRAME *recv_frame,
     {
         callbak_recv_(this);
     }
-
     return 0;
 }
 
+//发送FRAME数据去远端，
 int PEER::send_frame_to(int flag,
                         bool first_send,
                         const char *data,
@@ -703,9 +704,27 @@ int PEER::send_frame_to(int flag,
     frame->u32_1_.len_ = sz_frame;
     frame->session_id_ = session_id_;
 
+    //ACK标志
     if (flag & FLAG::ACK)
     {
         frame->ack_id_ = rcv_wnd_series_end_;
+        uint32_t resend_num = 0;
+        for (auto iter1 = recv_rec_list_.begin();
+             iter1 != recv_rec_list_.end(); ++iter1)
+        {
+            auto iter2 = ++iter1;
+            if (iter2 == recv_rec_list_.end())
+            {
+                break;
+            }
+            //收到的数据不连续
+            if (iter1->end_ != iter2->start_)
+            {
+                frame->req_resend_seq_[resend_num] = iter2->start_;
+                ++resend_num;
+            }
+        }
+        frame->u32_1_.req_resend_num_ = resend_num;
     }
     frame->u32_1_.mtu_type_ = (uint32_t)mtu_type_;
     frame->windows_size_ = static_cast<uint32_t>(recv_windows_.free());
@@ -817,7 +836,8 @@ int PEER::send_frame_to(int flag,
     return 0;
 }
 
-int PEER::acknowledge_send(RUDP_FRAME *recv_frame,
+//
+int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
                            uint64_t now_clock)
 {
     //收到了2次相同的ack id，很可能丢包
@@ -837,53 +857,81 @@ int PEER::acknowledge_send(RUDP_FRAME *recv_frame,
                               &snd_rec);
             }
         }
-        return 0;
-    }
-
-    int32_t difference = 0;
-    for (size_t i = 0; i < size_snd_rec; ++i)
-    {
-        //一直处理第一个
-        SEND_RECORD &snd_rec = send_rec_list_[0];
-        uint32_t snd_serial_id = snd_rec.sequence_num_;
-
-        //这儿有一点技巧，避免 wrap around引发麻烦,其实就是利用了补码
-        difference = (int32_t)(snd_serial_id - recv_ack_id);
-        if (difference < 0)
-        {
-            //只对没有超时处理的发送计算rto
-            if (snd_rec.send_num_ == 1)
-            {
-                calculate_rto(snd_rec.send_clock_,
-                              now_clock);
-            }
-            if (snd_rec.len_ > 0)
-            {
-                send_windows_.pop_front(snd_rec.len_);
-            }
-            send_rec_list_.pop_front();
-            continue;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    my_seq_num_ack_ = recv_frame->ack_id_;
-
-    //
-    if ((difference == 0 && send_rec_list_.size() > 0)
-        || (difference < 0 && send_rec_list_.size() == 0
-        && recv_ack_id == my_seq_num_counter_))
-    {
-        //正常，如果收到的ack id
     }
     else
     {
-        //其实这儿存在错误
-        ZCE_LOG(RS_ERROR, "");
+        int32_t difference = 0;
+        for (size_t i = 0; i < size_snd_rec; ++i)
+        {
+            //一直处理第一个
+            SEND_RECORD &snd_rec = send_rec_list_[0];
+            uint32_t snd_serial_id = snd_rec.sequence_num_;
+
+            //这儿有一点技巧，避免 wrap around引发麻烦,其实就是利用了补码
+            difference = (int32_t)(snd_serial_id - recv_ack_id);
+            if (difference < 0)
+            {
+                //只对没有超时处理的发送计算rto
+                if (snd_rec.send_num_ == 1)
+                {
+                    calculate_rto(snd_rec.send_clock_,
+                                  now_clock);
+                }
+                //已经的得到确认，从发送窗口pop出数据
+                if (snd_rec.len_ > 0)
+                {
+                    send_windows_.pop_front(snd_rec.len_);
+                }
+                send_rec_list_.pop_front();
+                continue;
+            }
+            else
+            {
+                break;
+            }
+        }
+        my_seq_num_ack_ = recv_frame->ack_id_;
+        //
+        if ((difference == 0 && send_rec_list_.size() > 0)
+            || (difference < 0 && send_rec_list_.size() == 0
+            && recv_ack_id == my_seq_num_counter_))
+        {
+            //正常，如果收到的ack id
+        }
+        else
+        {
+            //其实这儿存在错误
+            ZCE_LOG(RS_ERROR, "code error？");
+        }
     }
+
+    //处理重新发送请求，
+    size_t resend_num = recv_frame->u32_1_.req_resend_num_;
+    if (resend_num > 0)
+    {
+        size_t y = 0;
+        size_snd_rec = send_rec_list_.size();
+        for (size_t x = 0; x < size_snd_rec; ++x)
+        {
+            SEND_RECORD &snd_rec = send_rec_list_[x];
+            //req_resend_seq_ 应该是有序的，下面的代码基于这个假定
+            if (snd_rec.sequence_num_ == recv_frame->req_resend_seq_[y])
+            {
+                //重发，重发不检查窗口大小
+                send_frame_to(snd_rec.flag_,
+                              false,
+                              nullptr,
+                              0,
+                              &snd_rec);
+                ++y;
+                if (y >= resend_num)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     return 0;
 }
 
