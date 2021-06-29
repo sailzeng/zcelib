@@ -996,6 +996,41 @@ void PEER::time_out(uint64_t now_clock_ms,
     }
 }
 
+void PEER::adjust_cwnd(CWND_EVENT event)
+{
+    switch (event)
+    {
+        case CWND_EVENT::ACK:
+            if (congestion_window_ < CWND_SSTHRESH)
+            {
+                congestion_window_ += 8;
+            }
+            else
+            {
+                congestion_window_ += 1;
+            }
+            break;
+        case CWND_EVENT::FAST_RECOVERY:
+            if (congestion_window_ > 2)
+            {
+                congestion_window_ -= 2;
+            }
+            break;
+        case CWND_EVENT::RTO_RECOVERY:
+            if (congestion_window_ > 4)
+            {
+                congestion_window_ -= 4;
+            }
+            break;
+        case CWND_EVENT::SWND_CHANGE:
+            if (send_windows_.size() < 4)
+            {
+                congestion_window_ = 4;
+            }
+            break;
+    }
+}
+
 //=================================================================================================
 //客户端调用的接收数据到内部的函数
 //客户端打开一个

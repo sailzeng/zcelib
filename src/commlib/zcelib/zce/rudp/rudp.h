@@ -16,7 +16,7 @@
 *             SACK ，类似，发现如果有收到的数据不连续有，跳跃，会在ACK数据里面主动通知对端
 *
 * @note       最后至少写了2周，若干次反复。
-*
+*             拥塞控制（流控）还是其中很讨厌的地方。
 */
 
 #pragma once
@@ -221,14 +221,35 @@ protected:
         PEER_CORE_CREATE = 2,
     };
 
+    //接受过程中发生的操作
     enum class RECV_OPERATION
     {
+        //无效值
         INVALID = 0,
+        //填充空档位
         FILL = 1,
+        //重复收到数据
         REPEAT = 2,
+        //提前到了
         ADVANCE = 3,
+        //顺序收到 ：）
         SERIES = 4,
+        //错误
         ERR = 5,
+    };
+
+    //改变拥塞窗口的事件
+    enum class CWND_EVENT
+    {
+        INVALID = 0,
+        //
+        ACK,
+        //
+        FAST_RECOVERY,
+        //
+        RTO_RECOVERY,
+        //
+        SWND_CHANGE,
     };
 
     struct SEND_RECORD;
@@ -326,6 +347,9 @@ protected:
     //!超时处理，大约10ms调用一次他。
     void time_out(uint64_t now_clock_ms,
                   bool *not_alive);
+
+    //!
+    void adjust_cwnd(CWND_EVENT event);
 
 protected:
 
