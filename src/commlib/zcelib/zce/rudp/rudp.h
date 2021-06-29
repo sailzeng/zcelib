@@ -196,6 +196,13 @@ public:
 
     //!BUFFER的大小 +4 的目的是为了方便判定错误
     static constexpr size_t MAX_BUFFER_LEN = MAX_FRAME_LEN + 4;
+
+    //!CWND最小值
+    static constexpr size_t MIN_CWND_SIZE = 4;
+    //!CWND最大值
+    static constexpr size_t MAX_CWND_SIZE = 64;
+    //!慢启动CWND阈值
+    static constexpr size_t CWND_SSTHRESH = 32;
 };
 
 //=====================================================================================
@@ -390,12 +397,16 @@ protected:
 
     //!发送记录列表,最大记录数和窗口大小有关系
     SEND_RECORD_LIST send_rec_list_;
-    //!发送数据的滑动窗口
+    //!发送数据的滑动窗口 swnd
     zce::cycle_buffer send_windows_;
+
+    //!cmd 拥塞窗口，进行流量控制，这儿我不针对窗口大小处理，而是对一次可以发送的记录数量控制
+    //!拥塞控制的在我们这种层面很难，
+    size_t congestion_window_ = MIN_CWND_SIZE;
 
     //!接收记录列表,最大记录数和接收窗口大小有关系
     RECV_RECORD_LIST recv_rec_list_;
-    //!接收的滑动窗口
+    //!接收的滑动窗口 rwnd
     zce::cycle_buffer recv_windows_;
 
     //!接收的BUFFER,根据model不同，生成（处理）方式不同
