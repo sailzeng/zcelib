@@ -196,9 +196,10 @@ int PEER::send(const char* buf,
         return -1;
     }
 
-    size_t one_process = 0, process_len = 0;
+    size_t one_process = 0, process_len = 0, z = 0;
     while (remain_len > 0 && snd_rec_free > 0 &&
-           snd_wnd_free > 0 && peer_windows_size_ > 0)
+           snd_wnd_free > 0 && peer_windows_size_ > 0 &&
+           z < congestion_window_)
     {
         //得到这一次最大能处理的数据大小
         one_process = remain_len > frame_max_len ?
@@ -221,7 +222,7 @@ int PEER::send(const char* buf,
         peer_windows_size_ -= one_process;
         --snd_rec_free;
         process_len += one_process;
-
+        ++z;
         RUDP_TRACE(RS_DEBUG,
                    "[RUDP]send loop. seesion[%u] one_process [%u] process_len[%u] remain_len [%u] "
                    "peer_windows_size_[%u] frame_max_len [%u] ",
@@ -996,44 +997,54 @@ void PEER::time_out(uint64_t now_clock_ms,
     }
 }
 
+//再次声明，这儿的cwnd和TCP的拥塞窗口不是一样，我只用于控制一次的发送大小
 void PEER::adjust_cwnd(CWND_EVENT event)
 {
+    //!CWND最小值
+    static constexpr size_t MIN_CWND_SIZE = 4;
+    //!CWND最大值
+    static constexpr size_t MAX_CWND_SIZE = 64;
+    //!慢启动CWND阈值
+    static constexpr size_t CWND_SSTHRESH = 32;
+
     switch (event)
     {
-        case CWND_EVENT::ACK:
-            if (congestion_window_ < CWND_SSTHRESH)
-            {
-                congestion_window_ += 8;
-            }
-            else
-            {
-                congestion_window_ += 1;
-            }
-            break;
-        case CWND_EVENT::FAST_RECOVERY:
-            if (congestion_window_ > 2)
-            {
-                congestion_window_ -= 2;
-            }
-            break;
-        case CWND_EVENT::RTO_RECOVERY:
-            if (congestion_window_ > 4)
-            {
-                congestion_window_ -= 4;
-            }
-            break;
-        case CWND_EVENT::SWND_CHANGE:
-            if (send_windows_.size() < 4)
-            {
-                congestion_window_ = 4;
-            }
-            break;
+    case CWND_EVENT::ACK:
+        if (congestion_window_ < CWND_SSTHRESH)
+        {
+            congestion_window_ += 8;
+        }
+        else
+        {
+            congestion_window_ += 1;
+        }
+        break;
+    case CWND_EVENT::FAST_RECOVERY:
+        if (congestion_window_ > 2)
+        {
+            congestion_window_ -= 2;
+        }
+        break;
+    case CWND_EVENT::RTO_RECOVERY:
+        if (congestion_window_ > 4)
+        {
+            congestion_window_ -= 4;
+        }
+        break;
+    case CWND_EVENT::SWND_CHANGE:
+        if (send_windows_.size() < 4)
+        {
+            congestion_window_ = 4;
+        }
+        break;
     }
+    congestion_window_ = congestion_window_ <= MAX_CWND_SIZE ? congestion_window_ : MAX_CWND_SIZE;
+    congestion_window_ = congestion_window_ >= MIN_CWND_SIZE ? congestion_window_ : MIN_CWND_SIZE;
 }
 
 //=================================================================================================
 //客户端调用的接收数据到内部的函数
-//客户端打开一个
+//打开一个客户端
 int CLIENT::open(const sockaddr *remote_addr,
                  size_t send_wnd_size,
                  size_t recv_wnd_size,
