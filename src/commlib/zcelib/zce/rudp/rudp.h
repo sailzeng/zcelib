@@ -227,10 +227,12 @@ protected:
         REPEAT = 2,
         //提前到了
         ADVANCE = 3,
+        //放到了尾部，（但不是顺序）
+        TAIL = 4,
         //顺序收到 ：）
-        SERIES = 4,
+        SERIES = 5,
         //错误
-        ERR = 5,
+        ERR = 6,
     };
 
     //改变拥塞窗口的事件
@@ -293,6 +295,12 @@ public:
         return session_id_;
     }
 
+    //连接是否建立
+    inline bool established()
+    {
+        return established_;
+    }
+
 protected:
 
     /**
@@ -302,6 +310,8 @@ protected:
      * @param [in]  frame_len  FRAME的长度
      * @param [out] remote_change 返回参数，远端地址是否改变
      * @param [out] old_remote    返回原来的远端地址
+     * @param [out] call_recv     返回是否收到的连续的数据，可以调用callback recv
+     * @param [out] call_connect  返回是否调用连接成功函数，可以调用callback connect
      * @param [out] reset         返回是否需要reset处理
      * @return 返回0表示成功
     */
@@ -310,6 +320,8 @@ protected:
                      size_t frame_len,
                      bool *remote_change,
                      zce::sockaddr_ip *old_remote,
+                     bool *call_recv,
+                     bool *call_connect,
                      bool *reset);
 
     /**
@@ -433,10 +445,6 @@ protected:
     //!发送的BUFFER,根据model不同，生成（处理）方式不同
     char *send_buffer_ = nullptr;
 
-    //! 发现接收数据时，接收回调函数，在函数里面调用outer_recv提取数据
-    //! 第一个参数是接收数据的PEER *
-    std::function<ssize_t(PEER *)> callbak_recv_;
-
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
     //但考虑到简单，我们先把两端的MTU约束成一样,
     MTU_TYPE mtu_type_ = MTU_TYPE::ETHERNET;
@@ -468,16 +476,18 @@ public:
 
     /**
      * @brief 以客户端方式打开一个PEER，模式：PEER_CLIENT
-     * @param remote_addr    远端地址
-     * @param send_wnd_size  发送窗口尺寸
-     * @param recv_wnd_size  接收窗口尺寸
-     * @param callbak_recv   如果有接收数据，进行回调函数，
+     * @param remote_addr     远端地址
+     * @param send_wnd_size   发送窗口尺寸
+     * @param recv_wnd_size   接收窗口尺寸
+     * @param callbak_recv    可选参数，如果有接收数据，进行回调函数，
+     * @param callbak_connect 可选参数，如果连接成功，进行回调函数，
      * @return
     */
     int open(const sockaddr *remote_addr,
              size_t send_wnd_size,
              size_t recv_wnd_size,
-             std::function<ssize_t(PEER *)> &callbak_recv);
+             std::function<ssize_t(CLIENT *)> *callbak_recv = nullptr,
+             std::function<int(CLIENT *, bool)> *callbak_connect = nullptr);
 
     //!关闭，
     virtual void close() override;
@@ -504,6 +514,21 @@ public:
     //! 同步连接，等待@timeout_tv的时间，
     int connect_timeout(zce::Time_Value* timeout_tv,
                         bool link_test_mtu = false);
+
+    //!超时处理，每10ms调用一次
+    void time_out();
+
+protected:
+    //!
+    bool is_callbak_recv_ = false;
+    //! 发现接收数据时，接收回调函数，在函数里面调用outer_recv提取数据
+    //! 第一个参数是接收数据的PEER *
+    std::function<ssize_t(CLIENT *)> callbak_recv_;
+
+    //!
+    bool is_callbak_connect_ = false;
+    //! 连接成功和失败的回调函数
+    std::function<int(CLIENT *, bool)> callbak_connect_;
 };
 
 //=====================================================================================
@@ -539,8 +564,7 @@ protected:
              const sockaddr * remote_addr,
              char *send_buffer,
              size_t send_wnd_size,
-             size_t recv_wnd_size,
-             std::function<ssize_t(PEER *)> &callbak_recv);
+             size_t recv_wnd_size);
 
     virtual void close() override;
 
@@ -568,14 +592,16 @@ public:
      * @param max_num_of_peer 允许CORE同时管理的PEER数量
      * @param peer_send_wnd_size CORE创建的每个PEER的发送窗口尺寸，发送窗口保存没有确认的发送数据
      * @param peer_recv_wnd_size CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
-     * @param callbak_recv CORE创建的每个PEER的接受窗口尺寸，接收窗口保存上层没有提取的数据
+     * @param callbak_recv   ACCEPT的PEER收到数据后的回调函数
+     * @param callbak_accept ACCEPT的PEER后的回调函数
      * @return
     */
     int open(const sockaddr *core_addr,
              size_t max_num_of_peer,
              size_t peer_send_wnd_size,
              size_t peer_recv_wnd_size,
-             std::function<ssize_t(PEER *)> &peer_callbak_recv);
+             std::function<ssize_t(ACCEPT *)> *callbak_recv = nullptr,
+             std::function<int(ACCEPT *)> *callbak_accept = nullptr);
 
     void close();
 
@@ -583,13 +609,22 @@ public:
      * @brief 接受数据的处理,不阻塞,可以在select 时间触发后调用这个函数
      * @return 返回收到数据的尺寸，==0成功，非0失败
     */
-    int receive_i(size_t *recv_size);
+    int receive_i(size_t *recv_size,
+                  ACCEPT *&recv_rudp,
+                  bool *accpect);
+
     /**
-     * @brief 带超时处理的接收，
-     * @param timeout_tv 超时时间，
+     * @brief 带超时的接收处理
+     * @param timeout_tv 超时时间
+     * @param recv_peer_num   输出参数，发生接收处理的peer数量
+     * @param accpet_peer_num 输出参数，发生accept处理的peer数量
+     * @param recv_bytes      输出参数，接收的字节数量
+     * @return
     */
     int receive_timeout_i(zce::Time_Value* timeout_tv,
-                          size_t *recv_size);
+                          size_t *recv_peer_num,
+                          size_t *accpet_peer_num,
+                          size_t *recv_bytes);
 
     //!超时处理，没10ms调用一次
     void time_out();
@@ -629,15 +664,22 @@ protected:
     //!CORE创建的PEER的发送队列数量
     size_t peer_send_wnd_size_ = 0;
 
-    //!PEER收到数据的回调函数
-    //! 第一个参数是session id，第二个参数是接收数据的PEER *
-    std::function<ssize_t(PEER *)> peer_callbak_recv_;
-
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。
     std::unordered_map<uint32_t, ACCEPT*>  peer_map_;
 
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;
+
+    //!是否调用recv 的回调函数
+    bool is_callbak_recv_ = false;
+    //! 发现接收数据时，接收回调函数，在函数里面调用outer_recv提取数据
+    //! 第一个参数是接收数据的ACCEPT *
+    std::function<ssize_t(ACCEPT *)> callbak_recv_;
+
+    //!是否调用accept 的回调函数
+    bool is_callbak_accept_ = false;
+    //!发生accept的时候，进行回调的函数
+    std::function<int(ACCEPT *)> callbak_accept_;
 };
 }

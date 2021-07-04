@@ -3,6 +3,14 @@
 #include <zce/util/random.h>
 #include <zce/rudp/rudp.h>
 
+const char TEST_FILE[4][256] =
+{
+    "E:\\TEST_1_SRC.MP4",
+    "E:\\TEST_1_DST.MP4",
+    "E:\\TEST_2_SRC.MP4",
+    "E:\\TEST_2_DST.MP4",
+};
+
 bool core_run = true;
 bool peer_run = true;
 
@@ -42,13 +50,13 @@ int test_rudp(int argc, char* argv[])
     return test_rudp_client(argc, argv);
 }
 
-ssize_t core_recv(zce::rudp::PEER *peer)
+ssize_t core_recv(zce::rudp::ACCEPT *peer)
 {
     ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv data len [%u]",
             peer->session_id(),
             peer->recv_wnd_size());
 
-    zce::AUTO_HANDLE fd(zce::open("E:\\2.pdf", O_CREAT | O_APPEND | O_WRONLY));
+    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[1], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "");
@@ -79,12 +87,20 @@ ssize_t core_recv(zce::rudp::PEER *peer)
     return 0;
 }
 
-ssize_t peer_recv(zce::rudp::PEER *peer)
+zce::rudp::ACCEPT *g_accpet_rudp = nullptr;
+
+int core_accept(zce::rudp::ACCEPT *peer)
 {
-    ZCE_LOG(RS_DEBUG, "[PEER recv] session id[%u] recv data len [%u]",
+    g_accpet_rudp = peer;
+    return 0;
+}
+
+ssize_t client_recv(zce::rudp::CLIENT *peer)
+{
+    ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv data len [%u]",
             peer->session_id(),
             peer->recv_wnd_size());
-    zce::AUTO_HANDLE fd(zce::open("E:\\4.pdf", O_CREAT | O_APPEND | O_WRONLY));
+    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "");
@@ -106,7 +122,7 @@ ssize_t peer_recv(zce::rudp::PEER *peer)
     {
         ZCE_LOG(RS_DEBUG, "");
     }
-    ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
+    ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
             peer->session_id(),
             peer->recv_wnd_size(),
             file_size,
@@ -118,34 +134,105 @@ ssize_t peer_recv(zce::rudp::PEER *peer)
 int test_rudp_core(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    ret = zce::unlink("E:\\2.pdf");
+    ret = zce::unlink(TEST_FILE[1]);
+    if (ret != 0)
+    {
+        ZCE_LOG(RS_ERROR, "delete file fail.");
+    }
     //打开文件
-    zce::AUTO_HANDLE fd(zce::open("E:\\3.pdf", O_RDONLY));
+    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[0], O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
+        ZCE_LOG(RS_ERROR, "open file fail.");
         return -1;
+    }
+    size_t file_size = 0;
+    ret = zce::filesize(fd.get(), &file_size);
+    if (ret != 0)
+    {
+        ZCE_LOG(RS_ERROR, "filesize fail.");
+        return ret;
     }
 
     zce::rudp::CORE core;
     sockaddr_in core_addr;
-    std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(core_recv);
+    std::function<ssize_t(zce::rudp::ACCEPT *)> callbak_recv(core_recv);
+    std::function<int(zce::rudp::ACCEPT *)> callbak_accept(core_accept);
     zce::set_sockaddr_in(&core_addr, "0.0.0.0", 888);
     ret = core.open((sockaddr *)&core_addr,
                     1024,
-                    64 * 1024,
-                    64 * 1024,
-                    callbak_fun);
+                    10 * 1024 * 1024,
+                    10 * 1024 * 1024,
+                    &callbak_recv,
+                    &callbak_accept);
     if (ret != 0)
     {
         return ret;
     }
 
+    zce::Time_Value tv(0, 100000);
+    size_t remain_file_len = file_size;
+    //每次尽力读取4K数据，
+    const size_t READ_LEN = 4 * 1024;
+    std::unique_ptr<char[]> read_buf(new char[READ_LEN]);
+    ssize_t read_len = 0;
+    size_t send_len = 0, remain_send_len = 0, once_process_len = 0, all_proces_len = 0;
     for (; core_run;)
     {
-        size_t size_recv = 0;
-        zce::Time_Value tv(0, 100000);
-        core.receive_timeout_i(&tv, &size_recv);
+        tv.set(0, 10000);
+        size_t recv_bytes = 0, recv_num = 0, accept_num = 0;
+
+        core.receive_timeout_i(&tv, &recv_num, &accept_num, &recv_bytes);
+        core.time_out();
+        //读取文件内容
+        if (remain_file_len > 0 && remain_send_len == 0 && g_accpet_rudp)
+        {
+            read_len = zce::read(fd.get(), read_buf.get(), READ_LEN);
+            if (read_len < 0)
+            {
+                ZCE_LOG(RS_ERROR,
+                        "read file ret =%d errno =%d",
+                        ret,
+                        zce::last_error());
+                return -1;
+            }
+            remain_file_len -= read_len;
+            remain_send_len = read_len;
+            send_len = read_len;
+            once_process_len = 0;
+        }
+        if (remain_send_len > 0 && g_accpet_rudp)
+        {
+            send_len = remain_send_len;
+            ret = g_accpet_rudp->send(read_buf.get() + once_process_len, &send_len);
+            if (ret != 0)
+            {
+                if (zce::last_error() != EWOULDBLOCK)
+                {
+                    ZCE_LOG(RS_ERROR,
+                            "send ret =%d errno =%d",
+                            ret,
+                            zce::last_error());
+                    return ret;
+                }
+            }
+            remain_send_len -= send_len;
+            once_process_len += send_len;
+            all_proces_len += send_len;
+        }
+
+        if (once_process_len > 0)
+        {
+            ZCE_LOG(RS_INFO,
+                    "[TEST]remain_file_len[%u] remain_send_len[%u] "
+                    "process_len[%u] all_proces_len [%u]",
+                    remain_file_len,
+                    remain_send_len,
+                    once_process_len,
+                    all_proces_len);
+        }
     }
+
     core.close();
     return 0;
 }
@@ -153,24 +240,35 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
 int test_rudp_client(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
+    ret = zce::unlink(TEST_FILE[3]);
+    if (ret != 0)
+    {
+        ZCE_LOG(RS_ERROR, "delete file fail.");
+    }
     zce::rudp::CLIENT client;
     sockaddr_in reomote_addr;
-    std::function<ssize_t(zce::rudp::PEER *)> callbak_fun(peer_recv);
+    std::function<ssize_t(zce::rudp::CLIENT *)> callbak_fun(client_recv);
     zce::set_sockaddr_in(&reomote_addr, "127.0.0.1", 888);
     ret = client.open((sockaddr *)&reomote_addr,
-                      64 * 1024,
-                      64 * 1024,
-                      callbak_fun);
+                      10 * 1024 * 1024,
+                      10 * 1024 * 1024,
+                      &callbak_fun);
     if (ret != 0)
     {
         return ret;
     }
     zce::Time_Value tv(3, 0);
-    client.connect_timeout(&tv);
+    ret = client.connect_timeout(&tv);
+    if (ret != 0)
+    {
+        ZCE_LOG(RS_ERROR, "connect fail.");
+        return ret;
+    }
     //打开文件
-    zce::AUTO_HANDLE fd(zce::open("E:\\1.pdf", O_RDONLY));
+    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[2], O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
+        ZCE_LOG(RS_ERROR, "open file fail.");
         return -1;
     }
 
@@ -179,6 +277,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
     ret = zce::filesize(fd.get(), &file_size);
     if (0 != ret)
     {
+        ZCE_LOG(RS_ERROR, "filesize fail.");
         return -1;
     }
     size_t remain_file_len = file_size;
@@ -192,6 +291,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
         tv.set(0, 10000);
         size_t sz_recv = 0;
         client.receive_timeout_i(&tv, &sz_recv);
+        client.time_out();
         //读取内容
         if (remain_file_len > 0 && remain_send_len == 0)
         {
@@ -228,14 +328,16 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
             once_process_len += send_len;
             all_proces_len += send_len;
         }
-
-        ZCE_LOG(RS_INFO,
-                "[TEST]remain_file_len[%u] remain_send_len[%u] "
-                "process_len[%u] all_proces_len [%u]",
-                remain_file_len,
-                remain_send_len,
-                once_process_len,
-                all_proces_len);
+        if (once_process_len > 0)
+        {
+            ZCE_LOG(RS_INFO,
+                    "[TEST]remain_file_len[%u] remain_send_len[%u] "
+                    "process_len[%u] all_proces_len [%u]",
+                    remain_file_len,
+                    remain_send_len,
+                    once_process_len,
+                    all_proces_len);
+        }
     }
 
     client.close();

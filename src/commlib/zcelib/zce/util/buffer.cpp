@@ -232,7 +232,8 @@ bool cycle_buffer::set_data(size_t pos,
                             char *&write_ptr)
 {
     //检查队列的空间是否够用
-    if (capacity() < pos + data_len)
+    assert(size() >= pos + data_len);
+    if (size() < pos + data_len)
     {
         return false;
     }
@@ -246,12 +247,10 @@ bool cycle_buffer::set_data(size_t pos,
         size_t second = data_len - first;
         ::memcpy(write_ptr, data, first);
         ::memcpy(cycbuf_data_, data, second);
-        cycbuf_end_ = second;
     }
     else
     {
         ::memcpy(write_ptr, data, data_len);
-        cycbuf_end_ = w_pos + data_len;
     }
     return true;
 }
