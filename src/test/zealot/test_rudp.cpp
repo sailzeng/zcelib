@@ -5,10 +5,10 @@
 
 const char TEST_FILE[4][256] =
 {
-    "E:\\TEST_1_SRC.MP4",
-    "E:\\TEST_1_DST.MP4",
-    "E:\\TEST_2_SRC.MP4",
-    "E:\\TEST_2_DST.MP4",
+    "E:\\TEST_1_SRC.TXT",
+    "E:\\TEST_1_DST.TXT",
+    "E:\\TEST_2_SRC.TXT",
+    "E:\\TEST_2_DST.TXT",
 };
 
 bool core_run = true;

@@ -246,7 +246,7 @@ bool cycle_buffer::set_data(size_t pos,
         size_t first = size_of_cycle_ - w_pos;
         size_t second = data_len - first;
         ::memcpy(write_ptr, data, first);
-        ::memcpy(cycbuf_data_, data, second);
+        ::memcpy(cycbuf_data_, data + first, second);
     }
     else
     {
@@ -282,7 +282,7 @@ bool cycle_buffer::get_data(size_t pos,
         size_t first = size_of_cycle_ - r_pos;
         size_t second = read_len - first;
         ::memcpy(data, read_ptr, first);
-        ::memcpy(data, cycbuf_data_, second);
+        ::memcpy(data + first, cycbuf_data_, second);
     }
     else
     {
@@ -296,17 +296,17 @@ bool cycle_buffer::get_data(const char *read_ptr,
                             size_t read_len)
 {
     assert(read_ptr >= cycbuf_data_ && read_ptr < cycbuf_data_ + size_of_cycle_);
-    if (size() < read_ptr - cycbuf_data_ + read_len)
-    {
-        return false;
-    }
+    //if (size() < read_ptr - cycbuf_begin_ + read_len)
+    //{
+    //    return false;
+    //}
     size_t r_pos = read_ptr - cycbuf_data_;
     if (read_ptr + read_len > cycbuf_data_ + size_of_cycle_)
     {
         size_t first = size_of_cycle_ - r_pos;
         size_t second = read_len - first;
         ::memcpy(data, read_ptr, first);
-        ::memcpy(data, cycbuf_data_, second);
+        ::memcpy(data + first, cycbuf_data_, second);
     }
     else
     {
