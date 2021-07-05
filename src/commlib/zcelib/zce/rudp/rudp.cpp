@@ -260,6 +260,13 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                        bool *call_connect,
                        bool *reset_peer)
 {
+    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
+    {
+        ZCE_LOG(RS_ERROR,
+                "[RUDP]send_frame_to erro. session[%u], send_buffer_ error."
+                "Please check code.",
+                session_id_);
+    }
     *call_recv = false;
     *call_connect = false;
     *reset_peer = false;
@@ -692,6 +699,13 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
                rcv_wnd_series_end_ - rcv_wnd_first_,
                rcv_wnd_last_ - rcv_wnd_first_);
 
+    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
+    {
+        ZCE_LOG(RS_ERROR,
+                "[RUDP]send_frame_to erro. session[%u], send_buffer_ error."
+                "Please check code.",
+                session_id_);
+    }
     return 0;
 }
 
@@ -720,12 +734,25 @@ int PEER::send_frame_to(int flag,
         sz_frame = sizeof(RUDP_HEAD) + old_snd_rec->len_;
         if (old_snd_rec->len_ > 0)
         {
-            send_windows_.get_data(old_snd_rec->buf_pos_,
-                                   send_buffer_ + sizeof(RUDP_HEAD),
-                                   old_snd_rec->len_);
+            bool succ = send_windows_.acquire_data(old_snd_rec->buf_pos_,
+                                                   send_buffer_ + sizeof(RUDP_HEAD),
+                                                   old_snd_rec->len_);
+            if (!succ)
+            {
+                ZCE_LOG(RS_ERROR,
+                        "[RUDP]send_frame_to erro. session[%u], acquire_data fail."
+                        "Please check code.",
+                        session_id_);
+            }
         }
     }
-
+    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
+    {
+        ZCE_LOG(RS_ERROR,
+                "[RUDP]send_frame_to erro. session[%u], send_buffer_ error."
+                "Please check code.",
+                session_id_);
+    }
     //如果PSH，就带上ACK
     if (flag & FLAG::PSH)
     {
@@ -761,6 +788,10 @@ int PEER::send_frame_to(int flag,
             {
                 frame->req_resend_seq_[resend_num] = iter2->start_;
                 ++resend_num;
+                if (resend_num > 3)
+                {
+                    break;
+                }
             }
         }
         frame->u32_1_.req_resend_num_ = resend_num;
@@ -1047,34 +1078,34 @@ void PEER::adjust_cwnd(CWND_EVENT event)
 
     switch (event)
     {
-    case CWND_EVENT::ACK:
-        if (congestion_window_ < CWND_SSTHRESH)
-        {
-            congestion_window_ += 8;
-        }
-        else
-        {
-            congestion_window_ += 1;
-        }
-        break;
-    case CWND_EVENT::FAST_RECOVERY:
-        if (congestion_window_ > 2)
-        {
-            congestion_window_ -= 2;
-        }
-        break;
-    case CWND_EVENT::RTO_RECOVERY:
-        if (congestion_window_ > 4)
-        {
-            congestion_window_ -= 4;
-        }
-        break;
-    case CWND_EVENT::SWND_CHANGE:
-        if (send_windows_.size() < 4)
-        {
-            congestion_window_ = 4;
-        }
-        break;
+        case CWND_EVENT::ACK:
+            if (congestion_window_ < CWND_SSTHRESH)
+            {
+                congestion_window_ += 8;
+            }
+            else
+            {
+                congestion_window_ += 1;
+            }
+            break;
+        case CWND_EVENT::FAST_RECOVERY:
+            if (congestion_window_ > 2)
+            {
+                congestion_window_ -= 2;
+            }
+            break;
+        case CWND_EVENT::RTO_RECOVERY:
+            if (congestion_window_ > 4)
+            {
+                congestion_window_ -= 4;
+            }
+            break;
+        case CWND_EVENT::SWND_CHANGE:
+            if (send_windows_.size() < 4)
+            {
+                congestion_window_ = 4;
+            }
+            break;
     }
     congestion_window_ = congestion_window_ <= MAX_CWND_SIZE ? congestion_window_ : MAX_CWND_SIZE;
     congestion_window_ = congestion_window_ >= MIN_CWND_SIZE ? congestion_window_ : MIN_CWND_SIZE;
@@ -1130,6 +1161,8 @@ int CLIENT::open(const sockaddr *remote_addr,
     }
     recv_buffer_ = new char[MAX_BUFFER_LEN];
     send_buffer_ = new char[MAX_BUFFER_LEN];
+    memset(send_buffer_, 0x5E, MAX_BUFFER_LEN);
+    memset(recv_buffer_, 0x5E, MAX_BUFFER_LEN);
     if (callbak_recv)
     {
         is_callbak_recv_ = true;
@@ -1149,10 +1182,16 @@ void CLIENT::close()
 {
     PEER::close();
     zce::close_socket(peer_socket_);
-    delete[] recv_buffer_;
-    recv_buffer_ = nullptr;
-    delete[] send_buffer_;
-    send_buffer_ = nullptr;
+    if (recv_buffer_)
+    {
+        delete[] recv_buffer_;
+        recv_buffer_ = nullptr;
+    }
+    if (send_buffer_)
+    {
+        delete[] send_buffer_;
+        send_buffer_ = nullptr;
+    }
     return;
 }
 
@@ -1405,14 +1444,12 @@ int ACCEPT::open(CORE *core,
 void ACCEPT::close()
 {
     PEER::close();
-    core_->close_peer(this);
     return;
 }
 
 void ACCEPT::reset()
 {
     PEER::close();
-    core_->close_peer(this);
     return;
 }
 
@@ -1445,6 +1482,8 @@ int CORE::open(const sockaddr *core_addr,
     }
     recv_buffer_ = new char[MAX_BUFFER_LEN];
     send_buffer_ = new char[MAX_BUFFER_LEN];
+    memset(send_buffer_, 0x5E, MAX_BUFFER_LEN);
+    memset(recv_buffer_, 0x5E, MAX_BUFFER_LEN);
 
     peer_send_wnd_size_ = peer_send_list_num;
     peer_recv_wnd_size_ = peer_recv_list_num;
@@ -1481,6 +1520,12 @@ int CORE::receive_i(size_t *recv_size,
                     ACCEPT *&recv_rudp,
                     bool *accpect)
 {
+    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
+    {
+        ZCE_LOG(RS_ERROR,
+                "[RUDP]send_frame_to erro. , send_buffer_ error."
+                "Please check code.");
+    }
     int ret = 0;
     *accpect = false;
     recv_rudp = nullptr;
@@ -1502,6 +1547,8 @@ int CORE::receive_i(size_t *recv_size,
         //收到的数据长度不可能大于以太网的MSS
         if (ssz_recv > MAX_FRAME_LEN || ssz_recv < MIN_FRAME_LEN)
         {
+            ZCE_LOG(RS_ERROR, "[RUDP] ssz_recv [%u]  ",
+                    ssz_recv);
             return -2;
         }
     }
@@ -1555,7 +1602,12 @@ int CORE::receive_i(size_t *recv_size,
         }
         recv_rudp = iter->second;
     }
-
+    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
+    {
+        ZCE_LOG(RS_ERROR,
+                "[RUDP]send_frame_to erro. , send_buffer_ error."
+                "Please check code.");
+    }
     if (frame->u32_1_.flag_ & FLAG::RST)
     {
         recv_rudp->close();
@@ -1581,6 +1633,10 @@ int CORE::receive_i(size_t *recv_size,
         peer_addr_set_.erase(old_remote);
         peer_addr_set_.insert(std::make_pair(remote_ip,
                               recv_rudp->session_id_));
+    }
+    if (reset_peer)
+    {
+        close_peer(recv_rudp);
     }
     if (call_recv && is_callbak_recv_)
     {

@@ -182,7 +182,7 @@ public:
 
     //!以太网的MTU
     static constexpr size_t MTU_ETHERNET = 1480;
-    //!UDP包在以太网ETHERNET网络的负载
+    //!UDP包在以太网ETHERNET网络的负载 1452
     static constexpr size_t MSS_ETHERNET = MTU_ETHERNET - 20 - 8;
     //!RUDP在以太网的MTU
     static constexpr size_t MTU_ETHERNET_RUDP = MSS_ETHERNET;

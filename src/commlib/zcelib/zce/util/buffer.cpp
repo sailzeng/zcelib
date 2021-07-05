@@ -297,9 +297,9 @@ bool cycle_buffer::acquire_data(const char *read_ptr,
 {
     assert(read_ptr && data && read_len > 0);
     size_t r_pos = read_ptr - cycbuf_data_;
-    if ((cycbuf_begin_ < cycbuf_end_ && cycbuf_begin_ <= r_pos && r_pos + read_len < cycbuf_end_)
-        || (cycbuf_begin_ > cycbuf_end_ && cycbuf_begin_ <= r_pos && r_pos + read_len < cycbuf_end_ + size_of_cycle_)
-        || (cycbuf_begin_ > cycbuf_end_ && cycbuf_begin_ > r_pos && cycbuf_begin_ < r_pos + read_len && r_pos + read_len < cycbuf_end_ + size_of_cycle_))
+    if ((cycbuf_begin_ < cycbuf_end_ && cycbuf_begin_ <= r_pos && r_pos + read_len <= cycbuf_end_)
+        || (cycbuf_begin_ > cycbuf_end_ && cycbuf_begin_ <= r_pos && r_pos + read_len <= cycbuf_end_ + size_of_cycle_)
+        || (cycbuf_begin_ > cycbuf_end_ && cycbuf_begin_ > r_pos && cycbuf_begin_ < r_pos + size_of_cycle_ && r_pos + read_len <= cycbuf_end_))
     {
         //正常
     }

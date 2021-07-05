@@ -139,6 +139,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
     {
         ZCE_LOG(RS_ERROR, "delete file fail.");
     }
+    /*
     //打开文件
     zce::AUTO_HANDLE fd(zce::open(TEST_FILE[0], O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
@@ -153,7 +154,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
         ZCE_LOG(RS_ERROR, "filesize fail.");
         return ret;
     }
-
+    */
     zce::rudp::CORE core;
     sockaddr_in core_addr;
     std::function<ssize_t(zce::rudp::ACCEPT *)> callbak_recv(core_recv);
@@ -171,12 +172,12 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
     }
 
     zce::Time_Value tv(0, 100000);
-    size_t remain_file_len = file_size;
+    //size_t remain_file_len = file_size;
     //每次尽力读取4K数据，
     const size_t READ_LEN = 4 * 1024;
     std::unique_ptr<char[]> read_buf(new char[READ_LEN]);
-    ssize_t read_len = 0;
-    size_t send_len = 0, remain_send_len = 0, once_process_len = 0, all_proces_len = 0;
+    //ssize_t read_len = 0;
+    //size_t send_len = 0, remain_send_len = 0, once_process_len = 0, all_proces_len = 0;
     for (; core_run;)
     {
         tv.set(0, 10000);
@@ -185,6 +186,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
         core.receive_timeout_i(&tv, &recv_num, &accept_num, &recv_bytes);
         core.time_out();
         //读取文件内容
+        /*
         if (remain_file_len > 0 && remain_send_len == 0 && g_accpet_rudp)
         {
             read_len = zce::read(fd.get(), read_buf.get(), READ_LEN);
@@ -231,6 +233,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
                     once_process_len,
                     all_proces_len);
         }
+        */
     }
 
     core.close();
