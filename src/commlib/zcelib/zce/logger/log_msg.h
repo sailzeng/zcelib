@@ -67,7 +67,7 @@ protected:
                           const out_type &...out_data)
     {
         //如果日志输出开关关闭
-        if (if_output_log_ == false)
+        if (is_output_log_ == false)
         {
             return;
         }

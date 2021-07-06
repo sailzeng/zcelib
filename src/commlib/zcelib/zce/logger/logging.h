@@ -128,7 +128,7 @@ public:
                        va_list args)
     {
         //如果日志输出开关关闭
-        if (if_output_log_ == false)
+        if (is_output_log_ == false)
         {
             return;
         }
@@ -156,7 +156,7 @@ public:
     //打开日志输出开关
     void enable_output(bool enable_out)
     {
-        if_output_log_ = enable_out;
+        is_output_log_ = enable_out;
     }
 
     //设置日志输出Level
@@ -194,7 +194,7 @@ protected:
     zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
     //!是否输出日志信息,可以用于暂时屏蔽
-    bool                  if_output_log_ = true;
+    bool                  is_output_log_ = true;
 };
 
 #define ZLOG_ENABLE           ZCE_Trace_Printf::instance()->enable_output(true)

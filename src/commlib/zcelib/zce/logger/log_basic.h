@@ -74,13 +74,13 @@ enum class LOG_HEAD
     ///什么都不纪录
     NONE = 0,
     ///纪录当前的时间
-    CURRENTTIME = 1,
+    CURRENTTIME = (0x1 << 0),
     ///纪录日志的级别信息
-    LOGLEVEL = 2,
+    LOGLEVEL = (0x1 << 1),
     ///纪录进程ID
-    PROCESS_ID = 4,
+    PROCESS_ID = (0x1 << 2),
     ///纪录线程ID
-    THREAD_ID = 8,
+    THREAD_ID = (0x1 << 3),
 };
 
 ///选择输出的方式
@@ -89,15 +89,15 @@ enum class LOG_OUTPUT
     ///不向任何地方输出
     NONE = 0,
     ///同步不向其他地方输出,默认
-    LOGFILE = 1,
+    LOGFILE = (0x1 << 0),
     ///同步向标准输出输出.如果你的程序是CGI程序,慎用
-    STDOUT = 2,
+    STDOUT = (0x1 << 1),
     ///同步向标准错误输出.
-    ERROUT = 4,
+    ERROUT = (0x1 << 2),
     ///向共享内存文件里面输出
-    MMAP_FILE = 8,
+    MMAP_FILE = (0x1 << 3),
     ///同步向WINDOWS的调试窗口输出,仅仅在WIN32环境起作用
-    WINDBG = 32
+    WINDBG = (0x1 << 4)
 };
 
 /*!
@@ -131,52 +131,56 @@ public:
     @return     int               返回0标识初始化成功
     @param[in]  div_log_file      分割日志的方式
     @param[in]  log_file_prefix   日志的前缀
-    @param[in]  if_thread_synchro 是否进行线程同步，
-    @param[in]  auto_new_line     日志记录的末尾是否自动的换行，new一行
     @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
+    @param[in]  trunc_old         是否截断原有的日志文件的信息，
+    @param[in]  is_thread_synchro 是否进行线程同步，
+    @param[in]  auto_new_line     日志记录的末尾是否自动的换行，new一行
     @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
     @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
+
     */
     int init_time_log(LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
-                      bool if_thread_synchro = false,
-                      bool auto_new_line = true,
                       size_t reserve_file_num = DEFAULT_RESERVE_FILENUM,
-                      unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                      unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL)
-    );
+                      bool trunc_old = false,
+                      bool is_thread_synchro = false,
+                      bool auto_new_line = true,
+                      int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                      int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL);
 
     /*!
     @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
     @return     int                返回0标识初始化成功
     @param[in]  log_file_prefix    日志的前缀
-    @param[in]  if_thread_synchro  是否进行线程同步
-    @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
     @param[in]  max_size_log_file  日志文件的最大尺寸，目前最大尺寸内部用的4G
+    @param[in]  trunc_old          是否截断原有的日志文件的信息，
+    @param[in]  is_thread_synchro  是否进行线程同步
+    @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
     @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
     @param[in]  output_way         日志输出的方式，参考 @ref LOG_OUTPUT
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_size_log(const char* log_file_prefix,
-                      bool if_thread_synchro = false,
-                      bool auto_new_line = true,
                       size_t max_size_log_file = DEFAULT_LOG_SIZE,
                       unsigned int reserve_file_num = DEFAULT_RESERVE_FILENUM,
-                      unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                      unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
+                      bool trunc_old = false,
+                      bool is_thread_synchro = false,
+                      bool auto_new_line = true,
+                      int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                      int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL);
 
     /*!
     @brief      初始化函数，用于标准输出
     @return     int                返回0标识初始化成功
-    @param[in]  if_thread_synchro  是否进行线程同步
     @param[in]  use_err_out        是否是使用错误输出进行输出，因为标准输出的麻烦，一般用错误输出
+    @param[in]  if_thread_synchro  是否进行线程同步
     @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int init_stdout(bool if_thread_synchro = false,
-                    bool use_err_out = true,
+    int init_stdout(bool use_err_out = true,
                     bool auto_new_line = true,
-                    unsigned int head_record = static_cast<int>(LOG_HEAD::CURRENTTIME) | static_cast<int>(LOG_HEAD::LOGLEVEL));
+                    bool is_thread_synchro = false,
+                    int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL);
 
     /*!
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,
@@ -184,7 +188,7 @@ public:
     @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
     @param[in]  div_log_file
     @param[in]  log_file_prefix
-    @param[in]  if_thread_synchro
+    @param[in]  is_thread_synchro
     @param[in]  auto_new_line
     @param[in]  max_size_log_file 日志文件的最大尺寸
     @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
@@ -193,7 +197,8 @@ public:
     int initialize(unsigned int output_way,
                    LOGFILE_DEVIDE div_log_file,
                    const char* log_file_prefix,
-                   bool if_thread_synchro,
+                   bool trunc_old,
+                   bool is_thread_synchro,
                    bool auto_new_line,
                    size_t max_size_log_file,
                    size_t reserve_file_num,
@@ -353,7 +358,7 @@ protected:
 protected:
 
     ///日志分片的处理方式
-    LOGFILE_DEVIDE div_log_file_;
+    LOGFILE_DEVIDE div_log_file_ = LOGFILE_DEVIDE::NONE;
 
     ///日志文件名的前缀,包括路径
     std::string log_file_prefix_;
@@ -365,7 +370,7 @@ protected:
     std::string log_file_dir_;
 
     ///输出的方式，LOG_OUTPUT的枚举值组合 @ref LOG_OUTPUT
-    unsigned int output_way_;
+    int output_way_ = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT;
 
     ///对于线程安全,我的考虑如下,多进程模型,无需加锁,只用对多线程模型加锁,
     //多进程模型共用一个文件描述符,而且不共享文件缓冲区,所以不用考虑同步,
@@ -374,34 +379,36 @@ protected:
     //对于2，其实由于我写入的数据区长度最大只有4K，所以其实理论上可以逃避这个问题，当然这样不能使用带有缓冲的输出,只能用write
 
     ///是否进行多线程的同步
-    bool if_thread_synchro_;
+    bool is_thread_synchro_ = false;
 
     ///同步锁
     ZCE_Thread_Light_Mutex protect_lock_;
 
     ///是否进行自动换行
-    bool                   auto_new_line_;
+    bool                   auto_new_line_ = true;
+
+    bool                   trunc_old_ = false;
 
     ///文件的最大尺寸
-    size_t                 max_size_log_file_;
+    size_t                 max_size_log_file_ = DEFAULT_LOG_SIZE;
 
     ///保留文件的个数,如果有太多文件要删除,为0表示不删除
-    size_t                 reserve_file_num_;
+    size_t                 reserve_file_num_ = DEFAULT_RESERVE_FILENUM;
 
     ///默认记录的数据,按照和LOG_HEAD_RECORD_INFO 异或
-    unsigned int           record_info_;
+    int                    record_info_ = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL;
 
     ///当前的大概时间,按小时记录,避免进行过多的时间判断
-    time_t                current_click_;
+    time_t                 current_click_ = 1;
 
     ///输出日志信息的Mask值,小于这个信息的信息不予以输出
-    zce::LOG_PRIORITY      permit_outlevel_;
+    zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
     ///日志文件的尺寸
-    size_t                size_log_file_;
+    size_t                 size_log_file_ = 0;
 
     ///是否输出日志信息,可以用于暂时屏蔽
-    bool                  if_output_log_;
+    bool                   is_output_log_ = true;
 
     ///日志的文件句柄
     std::ofstream         log_file_handle_;

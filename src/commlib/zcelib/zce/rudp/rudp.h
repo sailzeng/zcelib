@@ -40,14 +40,16 @@ enum FLAG
     ACK = (0x1 << 1),
     //带有数据
     PSH = (0x1 << 2),
+    //
+    UNA = (0x1 << 3),
     //RESET，要求对方重置，感觉对方已经疯癫了。
-    RST = (0x1 << 3),
+    RST = (0x1 << 4),
     //link MTU TEST，链路的MTU测试帧
-    LMT = (0x1 << 4),
+    LMT = (0x1 << 5),
     //are you ok？询问对方情况，也用于Keep live。
-    AYO = (0x1 << 5),
+    AYO = (0x1 << 6),
     //应答AYO，Iam ok，会带上窗口信息。
-    IAO = (0x1 << 6),
+    IAO = (0x1 << 7),
 };
 
 //对应mtu_type_ 字段，可以有4种，目前用了2种
@@ -90,7 +92,7 @@ protected:
         uint32_t flag_ : 10;
         //保留
         uint32_t reserve_ : 4;
-        //selective的数量
+        //UNA的数量
         uint32_t una_num_ : 4;
         //采用什么MTU类型，参考MTU_TYPE
         uint32_t mtu_type_ : 2;
@@ -220,7 +222,7 @@ protected:
     };
 
     //接受过程中发生的操作
-    enum class RECV_OPERATION
+    enum class RECV_DATA_LOCATION
     {
         //无效值
         INVALID = 0,
@@ -234,8 +236,10 @@ protected:
         TAIL = 4,
         //顺序收到 ：）
         SERIES = 5,
+        //没有足够的空间接纳数据
+        NO_ROOM = 6,
         //错误
-        ERR = 6,
+        ERR = 7,
     };
 
     //改变拥塞窗口的事件
@@ -250,6 +254,16 @@ protected:
         RTO_RECOVERY,
         //
         SWND_CHANGE,
+    };
+
+    enum class RECV_NEXT_CALL
+    {
+        INVALID = 0,
+        CONNECT = 1,
+        RECEIVE = 2,
+        RESET_PEER = 3,
+        BE_RESET = 4,
+        SENDBACK_ACK = 5,
     };
 
     struct SEND_RECORD;
@@ -287,9 +301,10 @@ public:
              size_t *send_len);
 
     //!可以接收的数据(窗口)尺寸
-    inline size_t recv_wnd_size()
+    inline size_t recv_bytes()
     {
-        return recv_windows_.size();
+        uint32_t can_read = rcv_wnd_series_end_ - rcv_wnd_first_;
+        return can_read;
     }
 
     //!得到PEER对应的session id
@@ -313,9 +328,7 @@ protected:
      * @param [in]  frame_len  FRAME的长度
      * @param [out] remote_change 返回参数，远端地址是否改变
      * @param [out] old_remote    返回原来的远端地址
-     * @param [out] call_recv     返回是否收到的连续的数据，可以调用callback recv
-     * @param [out] call_connect  返回是否调用连接成功函数，可以调用callback connect
-     * @param [out] reset         返回是否需要reset处理
+     * @param [out] next_call     返回下一步的操作类型是什么
      * @return 返回0表示成功
     */
     int deliver_recv(const zce::sockaddr_ip *remote_addr,
@@ -323,9 +336,7 @@ protected:
                      size_t frame_len,
                      bool *remote_change,
                      zce::sockaddr_ip *old_remote,
-                     bool *call_recv,
-                     bool *call_connect,
-                     bool *reset);
+                     RECV_NEXT_CALL *next_call);
 
     /**
      * @brief 发送FRAME数据去远端，
@@ -337,6 +348,7 @@ protected:
      * @return 返回0表示成功，
     */
     int send_frame_to(int flag,
+                      bool prev_rec_ack = false,
                       bool first_send = true,
                       const char *data = nullptr,
                       size_t sz_data = 0,
@@ -352,7 +364,7 @@ protected:
 
     ///处理接收的数据
     int process_recv_data(const RUDP_FRAME *recv_frame,
-                          RECV_OPERATION *op);
+                          RECV_DATA_LOCATION *op);
 
     //!超时处理，大约10ms调用一次他。
     void time_out(uint64_t now_clock_ms,
@@ -360,6 +372,11 @@ protected:
 
     //!
     void adjust_cwnd(CWND_EVENT event);
+
+    //!记录要发送的ACK，等待
+    void record_ack();
+    //!发送ACK
+    void send_ack();
 
 protected:
 
@@ -394,6 +411,8 @@ protected:
         uint32_t end_;
     };
     typedef zce::static_list<RECV_RECORD >  RECV_RECORD_LIST;
+
+    static constexpr size_t MAX_RECORD_ACK_NUM = 3;
 
     //!最小的RTO值
     static time_t min_rto_;
@@ -457,8 +476,15 @@ protected:
     //RTO，
     time_t rto_ = 80;
 
+    //
+    size_t record_ack_num_ = 0;
+    //
+    uint32_t record_prev_ack_;
+
     //!发送的字节数量
     uint64_t send_bytes_ = 0;
+    //!重复发送的字节数量
+    uint64_t resend_bytes_ = 0;
     //!接收到的数据数量
     uint64_t recv_bytes_ = 0;
 
@@ -612,9 +638,9 @@ public:
      * @brief 接受数据的处理,不阻塞,可以在select 时间触发后调用这个函数
      * @return 返回收到数据的尺寸，==0成功，非0失败
     */
-    int receive_i(size_t *recv_size,
-                  ACCEPT *&recv_rudp,
-                  bool *accpect);
+    int receive_i(size_t *recv_peer_num,
+                  size_t *accpet_peer_num,
+                  size_t *recv_bytes);
 
     /**
      * @brief 带超时的接收处理
@@ -648,6 +674,9 @@ protected:
                     ACCEPT *& new_peer);
 
 protected:
+    //
+    const size_t ONCE_PROCESS_RECEIVE = 256;
+protected:
 
     //!Socket 句柄
     ZCE_SOCKET core_socket_ = ZCE_INVALID_SOCKET;
@@ -673,6 +702,15 @@ protected:
 
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;
+
+    //
+    size_t once_callback_rcv_num_ = 0;
+    //
+    ACCEPT **once_callback_rcv_ = nullptr;
+
+    size_t once_sendback_ack_num_ = 0;
+    //
+    ACCEPT **once_sendback_ack_ = nullptr;
 
     //!是否调用recv 的回调函数
     bool is_callbak_recv_ = false;

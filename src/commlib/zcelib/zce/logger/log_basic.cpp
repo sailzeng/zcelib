@@ -12,18 +12,7 @@
 const char ZCE_LogTrace_Basic::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 
 //构造函数
-ZCE_LogTrace_Basic::ZCE_LogTrace_Basic() :
-    div_log_file_(LOGFILE_DEVIDE::NONE),
-    output_way_(ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT)),
-    if_thread_synchro_(false),
-    auto_new_line_(true),
-    max_size_log_file_(DEFAULT_LOG_SIZE),
-    reserve_file_num_(DEFAULT_RESERVE_FILENUM),
-    record_info_(static_cast<int>(LOG_HEAD::CURRENTTIME) | static_cast<int>(LOG_HEAD::LOGLEVEL)),
-    current_click_(1),
-    permit_outlevel_(RS_TRACE),
-    size_log_file_(0),
-    if_output_log_(true)
+ZCE_LogTrace_Basic::ZCE_LogTrace_Basic()
 {
     //预先分配空间
     log_file_name_.reserve(PATH_MAX + 32);
@@ -41,17 +30,19 @@ ZCE_LogTrace_Basic::~ZCE_LogTrace_Basic()
 //初始化函数,用于时间分割日志的构造
 int ZCE_LogTrace_Basic::init_time_log(LOGFILE_DEVIDE div_log_file,
                                       const char* log_file_prefix,
-                                      bool if_thread_synchro,
-                                      bool auto_new_line,
                                       size_t reserve_file_num,
-                                      unsigned int output_way,
-                                      unsigned int head_record)
+                                      bool trunc_log,
+                                      bool is_thread_synchro,
+                                      bool auto_new_line,
+                                      int output_way,
+                                      int head_record)
 {
     assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file && LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
     return initialize(output_way,
                       div_log_file,
                       log_file_prefix,
-                      if_thread_synchro,
+                      trunc_log,
+                      is_thread_synchro,
                       auto_new_line,
                       0,
                       reserve_file_num,
@@ -59,14 +50,14 @@ int ZCE_LogTrace_Basic::init_time_log(LOGFILE_DEVIDE div_log_file,
 }
 
 //初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
-int ZCE_LogTrace_Basic::init_size_log(
-    const char* log_file_prefix,
-    bool if_thread_synchro,
-    bool auto_new_line,
-    size_t max_size_log_file,
-    unsigned int reserve_file_num,
-    unsigned int output_way,
-    unsigned int head_record)
+int ZCE_LogTrace_Basic::init_size_log(const char* log_file_prefix,
+                                      size_t max_size_log_file,
+                                      unsigned int reserve_file_num,
+                                      bool trunc_log,
+                                      bool is_thread_synchro,
+                                      bool auto_new_line,
+                                      int output_way,
+                                      int head_record)
 {
     LOGFILE_DEVIDE div_log_file = LOGFILE_DEVIDE::BY_SIZE_NAME_ID;
 
@@ -79,7 +70,8 @@ int ZCE_LogTrace_Basic::init_size_log(
     return initialize(output_way,
                       div_log_file,
                       log_file_prefix,
-                      if_thread_synchro,
+                      trunc_log,
+                      is_thread_synchro,
                       auto_new_line,
                       max_size_log_file,
                       reserve_file_num,
@@ -87,10 +79,10 @@ int ZCE_LogTrace_Basic::init_size_log(
 }
 
 //初始化函数，用于标准输出
-int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro,
-                                    bool use_err_out,
+int ZCE_LogTrace_Basic::init_stdout(bool use_err_out,
+                                    bool is_thread_synchro,
                                     bool auto_new_line,
-                                    unsigned int head_record)
+                                    int head_record)
 {
     unsigned int output_way = 0;
 
@@ -106,7 +98,8 @@ int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro,
     return initialize(output_way,
                       LOGFILE_DEVIDE::NONE,
                       "",
-                      if_thread_synchro,
+                      false,
+                      is_thread_synchro,
                       auto_new_line,
                       0,
                       0,
@@ -117,7 +110,8 @@ int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro,
 int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
                                    LOGFILE_DEVIDE div_log_file,
                                    const char* log_file_prefix,
-                                   bool if_thread_synchro,
+                                   bool trunc_old,
+                                   bool is_thread_synchro,
                                    bool auto_new_line,
                                    size_t max_size_log_file,
                                    size_t reserve_file_num,
@@ -126,9 +120,9 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
     output_way_ = output_way;
     div_log_file_ = div_log_file;
 
-    if_thread_synchro_ = if_thread_synchro;
+    is_thread_synchro_ = is_thread_synchro;
     auto_new_line_ = auto_new_line;
-
+    trunc_old_ = trunc_old;
     max_size_log_file_ = max_size_log_file;
     reserve_file_num_ = reserve_file_num;
     record_info_ = head_record;
@@ -136,7 +130,7 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
     permit_outlevel_ = RS_TRACE;
     size_log_file_ = 0;
 
-    if_output_log_ = true;
+    is_output_log_ = true;
 
     //断言检查输入参数
     if (log_file_prefix != NULL)
@@ -176,7 +170,7 @@ void ZCE_LogTrace_Basic::terminate()
     output_way_ = static_cast<int>(LOG_OUTPUT::LOGFILE) | static_cast<int>(LOG_OUTPUT::ERROUT);
 
     size_log_file_ = 0;
-    if_output_log_ = true;
+    is_output_log_ = true;
 }
 
 //配置日志文件
@@ -223,7 +217,7 @@ void ZCE_LogTrace_Basic::make_configure(void)
 //打开日志输出开关
 void ZCE_LogTrace_Basic::enable_output(bool enable_out)
 {
-    if_output_log_ = enable_out;
+    is_output_log_ = enable_out;
 }
 
 //设置日志输出Level
@@ -270,20 +264,21 @@ unsigned int ZCE_LogTrace_Basic::get_output_way(void)
 }
 
 //设置是否线程同步
-bool ZCE_LogTrace_Basic::set_thread_synchro(bool if_thread_synchro)
+bool ZCE_LogTrace_Basic::set_thread_synchro(bool is_thread_synchro)
 {
-    bool old_synchro = if_thread_synchro_;
-    if_thread_synchro_ = if_thread_synchro;
+    bool old_synchro = is_thread_synchro_;
+    is_thread_synchro_ = is_thread_synchro;
     return old_synchro;
 }
 //取得是否进行线程同步
 bool ZCE_LogTrace_Basic::get_thread_synchro(void)
 {
-    return if_thread_synchro_;
+    return is_thread_synchro_;
 }
 
 //得到新的日志文件文件名称
-void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval& current_time)
+void ZCE_LogTrace_Basic::open_new_logfile(bool initiate,
+                                          const timeval& current_time)
 {
     //是否要生成新的文件名称
     bool to_new_file = false;
@@ -403,7 +398,12 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval& current_
 
         log_file_handle_.clear();
         //打开之,
-        log_file_handle_.open(log_file_name_.c_str(), std::ios::out | std::ios::app);
+        std::ios_base::openmode mode = std::ios::out | std::ios::app;
+        if (trunc_old_)
+        {
+            mode |= std::ios::trunc;
+        }
+        log_file_handle_.open(log_file_name_.c_str(), mode);
 
         size_log_file_ = static_cast<size_t>(log_file_handle_.tellp());
 
@@ -630,7 +630,7 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval& now_time,
                                          size_t sz_use_len)
 {
     //如果要线程同步，在这个地方加锁，由于使用了条件判断是否加锁，而不是模版，所以这个地方没有用GRUAD，
-    if (if_thread_synchro_)
+    if (is_thread_synchro_)
     {
         protect_lock_.lock();
     }
@@ -679,7 +679,7 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval& now_time,
 #endif
 
     //如果有线程同步，在这个地方解锁
-    if (if_thread_synchro_)
+    if (is_thread_synchro_)
     {
         protect_lock_.unlock();
     }

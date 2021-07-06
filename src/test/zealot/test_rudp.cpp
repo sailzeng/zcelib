@@ -45,16 +45,38 @@ int test_rudp(int argc, char* argv[])
 
     if (argc > 1)
     {
+        ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                                    "E:\\My.Log\\CORE_",
+                                                    0,
+                                                    true,
+                                                    false,
+                                                    true,
+                                                    (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                                                    static_cast<int>(LOG_HEAD::LOGLEVEL));
+        ZCE_TRACE_FILELINE(RS_DEBUG);
         return test_rudp_core(argc, argv);
     }
-    return test_rudp_client(argc, argv);
+    else
+    {
+        ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                                    "E:\\My.Log\\CLIENT_",
+                                                    0,
+                                                    true,
+                                                    false,
+                                                    true,
+                                                    (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                                                    static_cast<int>(LOG_HEAD::LOGLEVEL));
+        ZCE_TRACE_FILELINE(RS_DEBUG);
+        test_rudp_client(argc, argv);
+    }
+    return 0;
 }
 
 ssize_t core_recv(zce::rudp::ACCEPT *peer)
 {
     ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv data len [%u]",
             peer->session_id(),
-            peer->recv_wnd_size());
+            peer->recv_bytes());
 
     zce::AUTO_HANDLE fd(zce::open(TEST_FILE[1], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
@@ -69,8 +91,8 @@ ssize_t core_recv(zce::rudp::ACCEPT *peer)
         ZCE_LOG(RS_ERROR, "");
         return ret;
     }
-    std::unique_ptr<char[]> write_buf(new char[peer->recv_wnd_size()]);
-    size_t recv_size = peer->recv_wnd_size();
+    std::unique_ptr<char[]> write_buf(new char[peer->recv_bytes()]);
+    size_t recv_size = peer->recv_bytes();
     peer->recv(write_buf.get(),
                &recv_size);
     ssize_t write_len = zce::write(fd.get(), write_buf.get(), recv_size);
@@ -81,7 +103,7 @@ ssize_t core_recv(zce::rudp::ACCEPT *peer)
 
     ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
             peer->session_id(),
-            peer->recv_wnd_size(),
+            peer->recv_bytes(),
             file_size,
             recv_size);
     return 0;
@@ -99,7 +121,7 @@ ssize_t client_recv(zce::rudp::CLIENT *peer)
 {
     ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv data len [%u]",
             peer->session_id(),
-            peer->recv_wnd_size());
+            peer->recv_bytes());
     zce::AUTO_HANDLE fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
@@ -113,8 +135,8 @@ ssize_t client_recv(zce::rudp::CLIENT *peer)
         ZCE_LOG(RS_ERROR, "");
         return ret;
     }
-    std::unique_ptr<char[]> write_buf(new char[peer->recv_wnd_size()]);
-    size_t recv_size = peer->recv_wnd_size();
+    std::unique_ptr<char[]> write_buf(new char[peer->recv_bytes()]);
+    size_t recv_size = peer->recv_bytes();
     peer->recv(write_buf.get(),
                &recv_size);
     ssize_t write_len = zce::write(fd.get(), write_buf.get(), recv_size);
@@ -124,7 +146,7 @@ ssize_t client_recv(zce::rudp::CLIENT *peer)
     }
     ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
             peer->session_id(),
-            peer->recv_wnd_size(),
+            peer->recv_bytes(),
             file_size,
             recv_size);
 
@@ -331,7 +353,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
             once_process_len += send_len;
             all_proces_len += send_len;
         }
-        if (once_process_len > 0)
+        if (remain_file_len > 0 || remain_send_len > 0)
         {
             ZCE_LOG(RS_INFO,
                     "[TEST]remain_file_len[%u] remain_send_len[%u] "
