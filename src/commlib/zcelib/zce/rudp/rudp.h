@@ -237,7 +237,7 @@ protected:
         //顺序收到 ：）
         SERIES = 5,
         //没有足够的空间接纳数据
-        NO_ROOM = 6,
+        NOROOM = 6,
         //错误
         ERR = 7,
     };

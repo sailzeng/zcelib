@@ -531,7 +531,7 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
                       session_id_,
                       recv_rec_list_.size(),
                       recv_rec_list_.free());
-        *op = RECV_DATA_LOCATION::NO_ROOM;
+        *op = RECV_DATA_LOCATION::NOROOM;
         return 0;
     }
     if ((int32_t)(new_start - rcv_wnd_series_end_) < 0)
@@ -598,7 +598,7 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
                     write_len,
                     recv_windows_.size(),
                     recv_windows_.free());
-            *op = RECV_DATA_LOCATION::NO_ROOM;
+            *op = RECV_DATA_LOCATION::NOROOM;
             return 0;
         }
         //不连续

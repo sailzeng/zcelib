@@ -81,11 +81,10 @@ protected:
         //得到当前时间
         timeval now_time_val(zce::gettimeofday());
 
-        //我要保留一个位置放'\0'
-        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];
-        log_tmp_buffer[LOG_TMP_BUFFER_SIZE] = '\0';
+        //我要保留一个位置放'\0',还为\n考虑留一个空间
+        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 2];
+        log_tmp_buffer[LOG_TMP_BUFFER_SIZE+1] = '\0';
 
-        //还是为\n考虑留一个空间
         size_t sz_buf_len = LOG_TMP_BUFFER_SIZE;
         size_t sz_use_len = 0;
 
