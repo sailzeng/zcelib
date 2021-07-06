@@ -25,9 +25,9 @@ void RUDP_HEAD::hton()
     sequence_num_ = htonl(sequence_num_);
     ack_id_ = htonl(ack_id_);
     windows_size_ = htonl(windows_size_);
-    req_resend_seq_[0] = htonl(req_resend_seq_[0]);
-    req_resend_seq_[1] = htonl(req_resend_seq_[1]);
-    req_resend_seq_[2] = htonl(req_resend_seq_[2]);
+    una_[0] = htonl(una_[0]);
+    una_[1] = htonl(una_[1]);
+    una_[2] = htonl(una_[2]);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
@@ -38,9 +38,9 @@ void RUDP_HEAD::ntoh()
     sequence_num_ = ntohl(sequence_num_);
     ack_id_ = ntohl(ack_id_);
     windows_size_ = ntohl(windows_size_);
-    req_resend_seq_[0] = ntohl(req_resend_seq_[0]);
-    req_resend_seq_[1] = ntohl(req_resend_seq_[1]);
-    req_resend_seq_[2] = ntohl(req_resend_seq_[2]);
+    una_[0] = ntohl(una_[0]);
+    una_[1] = ntohl(una_[1]);
+    una_[2] = ntohl(una_[2]);
 }
 
 void RUDP_HEAD::clear()
@@ -50,9 +50,9 @@ void RUDP_HEAD::clear()
     sequence_num_ = 0;
     ack_id_ = 0;
     windows_size_ = 0;
-    req_resend_seq_[0] = 0;
-    req_resend_seq_[1] = 0;
-    req_resend_seq_[2] = 0;
+    una_[0] = 0;
+    una_[1] = 0;
+    una_[2] = 0;
 }
 
 //填充Data数据到Frame
@@ -260,13 +260,6 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
                        bool *call_connect,
                        bool *reset_peer)
 {
-    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
-    {
-        ZCE_LOG(RS_ERROR,
-                "[RUDP]send_frame_to erro. session[%u], send_buffer_ error."
-                "Please check code.",
-                session_id_);
-    }
     *call_recv = false;
     *call_connect = false;
     *reset_peer = false;
@@ -699,13 +692,6 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
                rcv_wnd_series_end_ - rcv_wnd_first_,
                rcv_wnd_last_ - rcv_wnd_first_);
 
-    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
-    {
-        ZCE_LOG(RS_ERROR,
-                "[RUDP]send_frame_to erro. session[%u], send_buffer_ error."
-                "Please check code.",
-                session_id_);
-    }
     return 0;
 }
 
@@ -746,13 +732,6 @@ int PEER::send_frame_to(int flag,
             }
         }
     }
-    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
-    {
-        ZCE_LOG(RS_ERROR,
-                "[RUDP]send_frame_to erro. session[%u], send_buffer_ error."
-                "Please check code.",
-                session_id_);
-    }
     //如果PSH，就带上ACK
     if (flag & FLAG::PSH)
     {
@@ -786,15 +765,15 @@ int PEER::send_frame_to(int flag,
             //收到的数据不连续
             if (iter1->end_ != iter2->start_)
             {
-                frame->req_resend_seq_[resend_num] = iter2->start_;
-                ++resend_num;
-                if (resend_num > 3)
+                frame->una_[resend_num] = iter2->start_;
+                if (resend_num >= RUDP_FRAME::MAX_UNA_NUMBER)
                 {
                     break;
                 }
+                ++resend_num;
             }
         }
-        frame->u32_1_.req_resend_num_ = resend_num;
+        frame->u32_1_.una_num_ = resend_num;
     }
     frame->u32_1_.mtu_type_ = (uint32_t)mtu_type_;
     frame->windows_size_ = static_cast<uint32_t>(recv_windows_.free());
@@ -910,6 +889,18 @@ int PEER::send_frame_to(int flag,
 int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
                            uint64_t now_clock)
 {
+    RUDP_TRACE(RS_DEBUG,
+               "acknowledge_send start.session[%u] recv frame ack[%u] my_seq_num_ack_[%u] "
+               "una number [%u] uno [%u][%u][%u] send list[%u][%u].",
+               session_id_,
+               recv_frame->ack_id_,
+               my_seq_num_ack_,
+               recv_frame->u32_1_.una_num_,
+               recv_frame->una_[0],
+               recv_frame->una_[1],
+               recv_frame->una_[2],
+               send_rec_list_.size(),
+               send_rec_list_.free());
     //收到了2次相同的ack id，很可能丢包
     uint32_t recv_ack_id = recv_frame->ack_id_;
     size_t size_snd_rec = send_rec_list_.size();
@@ -976,8 +967,8 @@ int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
     }
 
     //处理重新发送请求，
-    size_t resend_num = recv_frame->u32_1_.req_resend_num_;
-    if (resend_num > 0)
+    size_t resend_num = recv_frame->u32_1_.una_num_;
+    if (resend_num > 0 && resend_num <= RUDP_FRAME::MAX_UNA_NUMBER)
     {
         size_t y = 0;
         size_snd_rec = send_rec_list_.size();
@@ -985,7 +976,7 @@ int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
         {
             SEND_RECORD &snd_rec = send_rec_list_[x];
             //req_resend_seq_ 应该是有序的，下面的代码基于这个假定
-            if (snd_rec.sequence_num_ == recv_frame->req_resend_seq_[y])
+            if (snd_rec.sequence_num_ == recv_frame->una_[y])
             {
                 //重发，重发不检查窗口大小
                 send_frame_to(snd_rec.flag_,
@@ -1161,8 +1152,8 @@ int CLIENT::open(const sockaddr *remote_addr,
     }
     recv_buffer_ = new char[MAX_BUFFER_LEN];
     send_buffer_ = new char[MAX_BUFFER_LEN];
-    memset(send_buffer_, 0x5E, MAX_BUFFER_LEN);
-    memset(recv_buffer_, 0x5E, MAX_BUFFER_LEN);
+    memset(send_buffer_, 0x0, MAX_BUFFER_LEN);
+    memset(recv_buffer_, 0x0, MAX_BUFFER_LEN);
     if (callbak_recv)
     {
         is_callbak_recv_ = true;
@@ -1482,8 +1473,8 @@ int CORE::open(const sockaddr *core_addr,
     }
     recv_buffer_ = new char[MAX_BUFFER_LEN];
     send_buffer_ = new char[MAX_BUFFER_LEN];
-    memset(send_buffer_, 0x5E, MAX_BUFFER_LEN);
-    memset(recv_buffer_, 0x5E, MAX_BUFFER_LEN);
+    memset(send_buffer_, 0x0, MAX_BUFFER_LEN);
+    memset(recv_buffer_, 0x0, MAX_BUFFER_LEN);
 
     peer_send_wnd_size_ = peer_send_list_num;
     peer_recv_wnd_size_ = peer_recv_list_num;
@@ -1520,12 +1511,6 @@ int CORE::receive_i(size_t *recv_size,
                     ACCEPT *&recv_rudp,
                     bool *accpect)
 {
-    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
-    {
-        ZCE_LOG(RS_ERROR,
-                "[RUDP]send_frame_to erro. , send_buffer_ error."
-                "Please check code.");
-    }
     int ret = 0;
     *accpect = false;
     recv_rudp = nullptr;
@@ -1602,12 +1587,7 @@ int CORE::receive_i(size_t *recv_size,
         }
         recv_rudp = iter->second;
     }
-    if (send_buffer_[MSS_ETHERNET] != 0x5E || send_buffer_[MSS_ETHERNET + 1] != 0x5E)
-    {
-        ZCE_LOG(RS_ERROR,
-                "[RUDP]send_frame_to erro. , send_buffer_ error."
-                "Please check code.");
-    }
+
     if (frame->u32_1_.flag_ & FLAG::RST)
     {
         recv_rudp->close();

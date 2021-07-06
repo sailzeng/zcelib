@@ -91,7 +91,7 @@ protected:
         //保留
         uint32_t reserve_ : 4;
         //selective的数量
-        uint32_t req_resend_num_ : 4;
+        uint32_t una_num_ : 4;
         //采用什么MTU类型，参考MTU_TYPE
         uint32_t mtu_type_ : 2;
 
@@ -99,7 +99,7 @@ protected:
 #else
         //大端的字段，顺序和小端相反
         uint32_t mtu_type_ : 2;
-        uint32_t req_resend_num_ : 4;
+        uint32_t una_num_ : 4;
         uint32_t reserve_ : 4;
         uint32_t flag_ : 10;
         uint32_t len_ : 12;
@@ -107,7 +107,10 @@ protected:
     };
 
 public:
+    //!最大的UNA数组数量
+    static constexpr size_t MAX_UNA_NUMBER = 3;
 
+public:
     union
     {
         ///frame 选项
@@ -124,8 +127,8 @@ public:
     //本地接收窗口大小
     uint32_t windows_size_ = 0;
 
-    //请求重传的序列号，这个设计类似SACK，
-    uint32_t req_resend_seq_[3] = { 0 };
+    //请求重传的序列号，这个设计类似SACK，目前最多3个
+    uint32_t una_[MAX_UNA_NUMBER] = { 0 };
 };
 
 /**
