@@ -10,14 +10,14 @@ int main(int argc, char* argv[])
 
 #define ZCE_USE_LOGMSG 1
 #if 0
-    ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                "E:\\My.Log\\TEST_2",
-                                                0,
-                                                true,
-                                                false,
-                                                true,
-                                                ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                                                static_cast<int>(LOG_HEAD::LOGLEVEL));
+    zce::LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                           "E:\\My.Log\\TEST_2",
+                                           0,
+                                           true,
+                                           false,
+                                           true,
+                                           ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
+                                           static_cast<int>(LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 #endif
 

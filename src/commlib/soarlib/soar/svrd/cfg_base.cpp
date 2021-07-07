@@ -265,7 +265,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     std::string temp_value;
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_LEVEL", temp_value);
-    log_config_.log_level_ = ZCE_LogTrace_Basic::log_priorities(temp_value.c_str());
+    log_config_.log_level_ = zce::LogTrace_Base::log_priorities(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -273,7 +273,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     }
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
-    log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
+    log_config_.log_div_type_ = zce::LogTrace_Base::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);

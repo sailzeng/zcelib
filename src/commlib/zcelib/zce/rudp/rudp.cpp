@@ -1107,22 +1107,15 @@ void PEER::adjust_cwnd(CWND_EVENT event)
     congestion_window_ = congestion_window_ >= MIN_CWND_SIZE ? congestion_window_ : MIN_CWND_SIZE;
 }
 
-//!记录要发送的ACK，等待
-void PEER::record_ack()
-{
-    ++record_ack_num_;
-    record_prev_ack_ = rcv_wnd_series_end_;
-}
-
 //!发送ACK
 void PEER::send_ack()
 {
-    if (record_ack_num_ > 1)
+    if (need_sendback_ack_ > 1)
     {
         send_frame_to(FLAG::ACK, true);
     }
     send_frame_to(FLAG::ACK | FLAG::UNA);
-    record_ack_num_ = 0;
+    need_sendback_ack_ = 0;
 }
 
 //=================================================================================================
@@ -1495,10 +1488,10 @@ int CORE::open(const sockaddr *core_addr,
     memset(send_buffer_, 0x0, MAX_BUFFER_LEN);
     memset(recv_buffer_, 0x0, MAX_BUFFER_LEN);
 
-    once_callback_rcv_ = new ACCEPT * [ONCE_PROCESS_RECEIVE];
-    once_sendback_ack_ = new ACCEPT * [ONCE_PROCESS_RECEIVE];
-    memset(once_callback_rcv_, 0x0, ONCE_PROCESS_RECEIVE * sizeof(ACCEPT *));
-    memset(once_sendback_ack_, 0x0, ONCE_PROCESS_RECEIVE * sizeof(ACCEPT *));
+    once_callback_rcv_ = new uint32_t[ONCE_PROCESS_RECEIVE];
+    once_sendback_ack_ = new uint32_t[ONCE_PROCESS_RECEIVE];
+    memset(once_callback_rcv_, 0x0, ONCE_PROCESS_RECEIVE * sizeof(uint32_t));
+    memset(once_sendback_ack_, 0x0, ONCE_PROCESS_RECEIVE * sizeof(uint32_t));
 
     peer_send_wnd_size_ = peer_send_list_num;
     peer_recv_wnd_size_ = peer_recv_list_num;
@@ -1546,7 +1539,7 @@ int CORE::receive_i(size_t *recv_peer_num,
                     size_t *recv_bytes)
 {
     int ret = 0;
-    ACCEPT *recv_rudp = nullptr;
+
     *recv_bytes = 0;
     *recv_peer_num = 0;
     *accpet_peer_num = 0;
@@ -1554,6 +1547,7 @@ int CORE::receive_i(size_t *recv_peer_num,
     once_sendback_ack_num_ = 0;
     for (size_t k = 0; k < ONCE_PROCESS_RECEIVE; ++k)
     {
+        ACCEPT *recv_peer = nullptr;
         zce::sockaddr_ip remote_ip;
         socklen_t sz_addr = sizeof(zce::sockaddr_ip);
         ssize_t ssz_recv = zce::recvfrom(core_socket_,
@@ -1596,7 +1590,7 @@ int CORE::receive_i(size_t *recv_peer_num,
                             max_num_of_peer_);
                     return -1;
                 }
-                ret = accept_peer(&remote_ip, recv_rudp);
+                ret = accept_peer(&remote_ip, recv_peer);
                 if (ret != 0)
                 {
                     return ret;
@@ -1604,7 +1598,7 @@ int CORE::receive_i(size_t *recv_peer_num,
                 *accpet_peer_num = *accpet_peer_num + 1;
                 if (is_callbak_accept_)
                 {
-                    callbak_accept_(recv_rudp);
+                    callbak_accept_(recv_peer);
                 }
             }
             else
@@ -1625,7 +1619,7 @@ int CORE::receive_i(size_t *recv_peer_num,
                               frame->session_id_);
                 return -1;
             }
-            recv_rudp = iter->second;
+            recv_peer = iter->second;
         }
 
         (*recv_peer_num) += 1;
@@ -1634,7 +1628,7 @@ int CORE::receive_i(size_t *recv_peer_num,
         bool change = false;
         //将接收的数据调教给PEER
         PEER::RECV_NEXT_CALL next_call = PEER::RECV_NEXT_CALL::INVALID;
-        recv_rudp->deliver_recv(&remote_ip,
+        recv_peer->deliver_recv(&remote_ip,
                                 frame,
                                 (size_t)ssz_recv,
                                 &change,
@@ -1645,53 +1639,71 @@ int CORE::receive_i(size_t *recv_peer_num,
         {
             peer_addr_set_.erase(old_remote);
             peer_addr_set_.insert(std::make_pair(remote_ip,
-                                  recv_rudp->session_id_));
+                                  recv_peer->session_id_));
         }
 
         if (next_call == PEER::RECV_NEXT_CALL::RESET_PEER)
         {
-            recv_rudp->send_frame_to(FLAG::RST);
-            recv_rudp->reset();
-            close_peer(recv_rudp);
+            recv_peer->send_frame_to(FLAG::RST);
+            recv_peer->reset();
+            close_peer(recv_peer);
         }
         else if (next_call == PEER::RECV_NEXT_CALL::BE_RESET)
         {
-            recv_rudp->reset();
-            close_peer(recv_rudp);
+            recv_peer->reset();
+            close_peer(recv_peer);
         }
         else if (next_call == PEER::RECV_NEXT_CALL::RECEIVE && is_callbak_recv_)
         {
-            once_callback_rcv_[once_callback_rcv_num_] = recv_rudp;
+            ++recv_peer->need_callback_recv_;
+            once_callback_rcv_[once_callback_rcv_num_] = recv_peer->session_id_;
             once_callback_rcv_num_++;
-            recv_rudp->record_ack();
-            once_sendback_ack_[once_sendback_ack_num_] = recv_rudp;
+            recv_peer->record_ack();
+            once_sendback_ack_[once_sendback_ack_num_] = recv_peer->session_id_;
             once_sendback_ack_num_++;
         }
         //不直接处理RESET可能很好理解，但为什么不立即返回ACK呢。
         //如果一次接受的大量数据都是一个PEER的，那么会回复很多ACK和UNO，反而导致重发的风暴
         else if (next_call == PEER::RECV_NEXT_CALL::SENDBACK_ACK)
         {
-            recv_rudp->record_ack();
-            once_sendback_ack_[once_sendback_ack_num_] = recv_rudp;
+            recv_peer->record_ack();
+            once_sendback_ack_[once_sendback_ack_num_] = recv_peer->session_id_;
             once_sendback_ack_num_++;
         }
         *recv_bytes += (size_t)ssz_recv;
     }
+
+    //回调接收函数
     if (is_callbak_recv_)
     {
         for (size_t q = 0; q < once_callback_rcv_num_; ++q)
         {
-            if (once_callback_rcv_[q]->recv_bytes())
+            auto iter = peer_map_.find(once_callback_rcv_[q]);
+            if (iter == peer_map_.end())
             {
-                callbak_recv_(once_callback_rcv_[q]);
+                //不直接保存指针，而保存session id，因为在循环过程，可能部分PEER都退出了，指针会时效
+                continue;
+            }
+            ACCEPT *rc_peer = iter->second;
+            if (rc_peer->need_callback_recv_)
+            {
+                callbak_recv_(rc_peer);
+                rc_peer->need_callback_recv_ = 0;
             }
         }
     }
+    //处理回送ACK
     for (size_t u = 0; u < once_sendback_ack_num_; ++u)
     {
-        if (once_sendback_ack_[u]->record_ack_num_)
+        auto iter = peer_map_.find(once_sendback_ack_[u]);
+        if (iter == peer_map_.end())
         {
-            once_sendback_ack_[u]->send_ack();
+            continue;
+        }
+        ACCEPT *ack_peer = iter->second;
+        if (ack_peer->need_sendback_ack_)
+        {
+            ack_peer->send_ack();
         }
     }
 

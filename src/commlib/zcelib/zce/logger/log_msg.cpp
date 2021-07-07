@@ -5,31 +5,27 @@
 
 //ZengXing 22503
 
-//
-ZCE_Trace_LogMsg* ZCE_Trace_LogMsg::log_instance_ = NULL;
+namespace zce
+{
+LogMsg* LogMsg::log_instance_ = NULL;
 
 /******************************************************************************************
-class ZCE_Trace_LogMsg
+class LogMsg
 ******************************************************************************************/
 //析构函数
-ZCE_Trace_LogMsg::ZCE_Trace_LogMsg() :
-    multiline_buf_(NULL)
+LogMsg::LogMsg()
 {
 }
 
 //析构函数
-ZCE_Trace_LogMsg::~ZCE_Trace_LogMsg()
+LogMsg::~LogMsg()
 {
-    if (multiline_buf_)
-    {
-        delete[] multiline_buf_;
-    }
 }
 
 //输出va_list的参数信息
-void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
-                                     const char* str_format,
-                                     va_list args)
+void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
+                           const char* str_format,
+                           va_list args)
 {
     //如果日志输出开关关闭
     if (is_output_log_ == false)
@@ -44,31 +40,32 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
     }
 
     //得到当前时间
-    timeval now_time_val(zce::gettimeofday());
+    timeval now_time_val(gettimeofday());
 
-    //我要保留一个位置放'\0'
-    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 2];
-    log_tmp_buffer[LOG_TMP_BUFFER_SIZE+1] = '\0';
+    //我要保留一个位置放'\0'，以及一个\n
+    //用static 变量，保证只初始化一次， 用thread_local 保证每个线程一个
+    static thread_local char *log_buffer = new char[SIZE_OF_LOG_BUFFER + 2];
+    log_buffer[SIZE_OF_LOG_BUFFER + 1] = '\0';
 
     //还是为\n考虑留一个空间
-    size_t sz_buf_len = LOG_TMP_BUFFER_SIZE;
+    size_t sz_buf_len = SIZE_OF_LOG_BUFFER;
     size_t sz_use_len = 0;
 
     //输出头部信息
     stringbuf_loghead(outlevel,
                       now_time_val,
-                      log_tmp_buffer,
+                      log_buffer,
                       sz_buf_len,
                       sz_use_len);
     sz_buf_len -= sz_use_len;
 
     //得到打印信息,_vsnprintf为特殊函数
-    int len_of_out = vsnprintf(log_tmp_buffer + sz_use_len, sz_buf_len, str_format, args);
+    int len_of_out = vsnprintf(log_buffer + sz_use_len, sz_buf_len, str_format, args);
 
     //如果输出的字符串比想想的长
     if (len_of_out >= static_cast<int>(sz_buf_len) || len_of_out < 0)
     {
-        sz_use_len = LOG_TMP_BUFFER_SIZE;
+        sz_use_len = SIZE_OF_LOG_BUFFER;
         sz_buf_len = 0;
     }
     else
@@ -80,7 +77,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
     //如果要自动增加换行符号，
     if (auto_new_line_)
     {
-        log_tmp_buffer[sz_use_len] = '\n';
+        log_buffer[sz_use_len] = '\n';
         ++sz_use_len;
 
         //注意sz_buf_len在这儿没有调整，因为'\n'的位置我前面为了安全扣除了
@@ -88,15 +85,15 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
     }
 
     output_log_info(now_time_val,
-                    log_tmp_buffer,
+                    log_buffer,
                     sz_use_len);
 }
 
 //ZASSERT的扩展定义，
-void ZCE_Trace_LogMsg::debug_assert(const char* file_name,
-                                    const int file_line,
-                                    const char* function_name,
-                                    const char* expression_name)
+void LogMsg::debug_assert(const char* file_name,
+                          const int file_line,
+                          const char* function_name,
+                          const char* expression_name)
 {
     write_logmsg(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s].",
                  file_name,
@@ -106,13 +103,15 @@ void ZCE_Trace_LogMsg::debug_assert(const char* file_name,
 }
 
 //Aseert调试,增强版本函数
-void ZCE_Trace_LogMsg::debug_assert_ex(const char* file_name,
-                                       const int file_line,
-                                       const char* function_name,
-                                       const char* expression_name,
-                                       const char* out_string)
+void LogMsg::debug_assert_ex(const char* file_name,
+                             const int file_line,
+                             const char* function_name,
+                             const char* expression_name,
+                             const char* out_string)
 {
-    write_logmsg(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s] OutString[%s].",
+    write_logmsg(RS_FATAL,
+                 "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],"
+                 "EXPRESSION:[%s] OutString[%s].",
                  file_name,
                  file_line,
                  function_name,
@@ -121,8 +120,8 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char* file_name,
 }
 
 //调用vwrite_logmsg完成实际输出
-void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY dbglevel,
-                                    const char* str_format, ...)
+void LogMsg::write_logmsg(LOG_PRIORITY dbglevel,
+                          const char* str_format, ...)
 {
     va_list args;
 
@@ -137,18 +136,18 @@ void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY dbglevel,
 }
 
 //得到唯一的单子实例
-ZCE_Trace_LogMsg* ZCE_Trace_LogMsg::instance()
+LogMsg* LogMsg::instance()
 {
     if (log_instance_ == NULL)
     {
-        log_instance_ = new ZCE_Trace_LogMsg();
+        log_instance_ = new LogMsg();
     }
 
     return log_instance_;
 }
 
 //赋值唯一的单子实例
-void ZCE_Trace_LogMsg::instance(ZCE_Trace_LogMsg* instatnce)
+void LogMsg::instance(LogMsg* instatnce)
 {
     clean_instance();
     log_instance_ = instatnce;
@@ -156,7 +155,7 @@ void ZCE_Trace_LogMsg::instance(ZCE_Trace_LogMsg* instatnce)
 }
 
 //清除单子实例
-void ZCE_Trace_LogMsg::clean_instance()
+void LogMsg::clean_instance()
 {
     if (log_instance_)
     {
@@ -165,4 +164,5 @@ void ZCE_Trace_LogMsg::clean_instance()
 
     log_instance_ = NULL;
     return;
+}
 }

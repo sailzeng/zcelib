@@ -26,8 +26,7 @@
 *
 */
 
-#ifndef ZCE_LIB_TRACE_LOG_BASE_H_
-#define ZCE_LIB_TRACE_LOG_BASE_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 #include "zce/lock/thread_mutex.h"
@@ -111,7 +110,9 @@ enum class LOG_OUTPUT
             zce::foo_snprintf，
 
 */
-class ZCE_LogTrace_Basic : public zce::NON_Copyable
+namespace zce
+{
+class LogTrace_Base : public zce::NON_Copyable
 {
 protected:
 
@@ -122,9 +123,9 @@ protected:
 public:
 
     ///构造函数,
-    ZCE_LogTrace_Basic();
+    LogTrace_Base();
     ///析构函数
-    virtual ~ZCE_LogTrace_Basic();
+    virtual ~LogTrace_Base();
 
     /*!
     @brief      初始化函数,用于时间分割日志的构造
@@ -331,11 +332,6 @@ public:
 
 protected:
 
-    ///日志的缓冲区的尺寸,这儿用了8K，很长了，
-    ///由于我内部还是使用的C++的stream 作为输出对象，所以我在多线程下还是使用了锁。
-    ///但如果直接用write 函数写，4096(-1)是一个更合适的值，
-    static const size_t  LOG_TMP_BUFFER_SIZE = 8190;
-
     ///默认的保留的文件的数量
     static const size_t DEFAULT_RESERVE_FILENUM = 100;
     ///最大的保留的文件的数量
@@ -416,5 +412,4 @@ protected:
     //r
     std::list<std::string> time_logfile_list_;
 };
-
-#endif //ZCE_LIB_TRACE_LOG_BASE_H_
+}

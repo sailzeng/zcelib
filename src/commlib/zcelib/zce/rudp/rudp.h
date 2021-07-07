@@ -374,7 +374,12 @@ protected:
     void adjust_cwnd(CWND_EVENT event);
 
     //!记录要发送的ACK，等待
-    void record_ack();
+    inline void record_ack()
+    {
+        ++need_sendack_;
+        record_prev_ack_ = rcv_wnd_series_end_;
+    }
+
     //!发送ACK
     void send_ack();
 
@@ -476,10 +481,12 @@ protected:
     //RTO，
     time_t rto_ = 80;
 
-    //
-    size_t record_ack_num_ = 0;
-    //
-    uint32_t record_prev_ack_;
+    //! 是否需要调用recv 回调函数，大于0表示需要
+    size_t need_callback_recv_ = 0;
+    // 是否需要调用recv 回调函数，大于0表示需要
+    size_t need_sendack_ = 0;
+    //!记录的钱一个可用的ACK值，多次recvfrom之后，如果
+    uint32_t record_prev_ack_ = 0;
 
     //!发送的字节数量
     uint64_t send_bytes_ = 0;
@@ -703,14 +710,16 @@ protected:
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_ip, uint32_t, sockaddr_ip_hash> peer_addr_set_;
 
-    //
+    //! receive_i内完成(多次)接收后，需要回调接受函数的PEER的seesion id队列
+    //! 为什么保存seesion id，而不保存指针，你可以想想
+    uint32_t *once_callback_rcv_ = nullptr;
+    //! @once_callback_rcv_ 队列长度
     size_t once_callback_rcv_num_ = 0;
-    //
-    ACCEPT **once_callback_rcv_ = nullptr;
 
+    //! receive_i内完成(多次)接收后，需要会送ACK的PEER的session id 队列
+    uint32_t *once_sendback_ack_ = nullptr;
+    //! @once_sendback_ack_队列长度
     size_t once_sendback_ack_num_ = 0;
-    //
-    ACCEPT **once_sendback_ack_ = nullptr;
 
     //!是否调用recv 的回调函数
     bool is_callbak_recv_ = false;

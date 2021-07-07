@@ -45,27 +45,27 @@ int test_rudp(int argc, char* argv[])
 
     if (argc > 1)
     {
-        ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                    "E:\\My.Log\\CORE_",
-                                                    0,
-                                                    true,
-                                                    false,
-                                                    true,
-                                                    (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                                                    static_cast<int>(LOG_HEAD::LOGLEVEL));
+        zce::LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                               "E:\\My.Log\\CORE_",
+                                               0,
+                                               true,
+                                               false,
+                                               true,
+                                               (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                                               static_cast<int>(LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
         return test_rudp_core(argc, argv);
     }
     else
     {
-        ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                    "E:\\My.Log\\CLIENT_",
-                                                    0,
-                                                    true,
-                                                    false,
-                                                    true,
-                                                    (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                                                    static_cast<int>(LOG_HEAD::LOGLEVEL));
+        zce::LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                               "E:\\My.Log\\CLIENT_",
+                                               0,
+                                               true,
+                                               false,
+                                               true,
+                                               (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                                               static_cast<int>(LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
         test_rudp_client(argc, argv);
     }

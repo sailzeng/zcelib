@@ -116,7 +116,7 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
     // 初始化日志用滚动的方式可以保留的天数多点
     std::string init_log_name(config_base_->log_file_prefix_.c_str());
     init_log_name += "_init";
-    ZCE_Trace_LogMsg::instance()->init_size_log(
+    zce::LogMsg::instance()->init_size_log(
         init_log_name.c_str(),
         false,
         true,
@@ -311,13 +311,13 @@ int Svrd_Appliction::app_exit()
 //设置日志的优先级
 void Svrd_Appliction::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
-    ZCE_Trace_LogMsg::instance()->set_log_priority(log_prio);
+    zce::LogMsg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
 zce::LOG_PRIORITY Svrd_Appliction::get_log_priority()
 {
-    return ZCE_Trace_LogMsg::instance()->get_log_priority();
+    return zce::LogMsg::instance()->get_log_priority();
 }
 
 //日志初始化
@@ -327,20 +327,20 @@ int Svrd_Appliction::init_log()
 
     ZCE_LOG(RS_DEBUG, "log instance initialize .");
     //关闭原来的日志输出方法
-    ZCE_Trace_LogMsg::instance()->terminate();
+    zce::LogMsg::instance()->terminate();
 
     // 初始化日志
-    ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_output_,
-                                                   config_base_->log_config_.log_div_type_,
-                                                   config_base_->log_file_prefix_.c_str(),
-                                                   false,
-                                                   true,
-                                                   config_base_->log_config_.max_log_file_size_,
-                                                   config_base_->log_config_.reserve_file_num_,
-                                                   ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
+    ret = zce::LogMsg::instance()->initialize(config_base_->log_config_.log_output_,
+                                              config_base_->log_config_.log_div_type_,
+                                              config_base_->log_file_prefix_.c_str(),
+                                              false,
+                                              true,
+                                              config_base_->log_config_.max_log_file_size_,
+                                              config_base_->log_config_.reserve_file_num_,
+                                              ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
     if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "ZCE_Trace_LogMsg::instance()->initialize ret fail.");
+        ZCE_LOG(RS_ERROR, "zce::LogMsg::instance()->initialize ret fail.");
         return ret;
     }
 

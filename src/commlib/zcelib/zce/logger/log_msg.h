@@ -12,7 +12,7 @@
 *             ow，ow，又可以卖老来讲一点点历史了，一点点，
 *             最开始写这个类的时候，我刚刚对C++的stream有一些了解。正如一切土孩子
 *             看见新东东一样，你会以为新东东是完美的，在第一版我用stream的方式实现了
-*             日志输出，当然不得不说，也还是挺酷的，
+*             日志输出，当然不得不说，光看着也还是挺酷的，
 *             但说回来C++ stream真算不上一个设计完美的东东
 *             1.格式化控制痛苦，必须承认在格式化控制上他远远不如printf这种函数，
 *             2.性能弱，大约比snprintf这类函数的慢50%.(GCC7.1最新版本有惊喜)
@@ -22,9 +22,10 @@
 *             所以当要彻底重构的时候，我决定测定抛弃steam的代码，特别是当我发现
 *             fast format这些函数库在字符串格式化上已经超越C的snprintf，无疑
 *             极大的振奋了我。我决定自己实现一下，当然C的log函数迅速整理完毕，
-*             C++的版本却仍然等待了很长一段时间，即使我的zce::str_nprintf
+*             C++的版本却仍然等待了很长一段时间，即使我的str_nprintf
 *             已经完成后，因为我发现，如果没有变餐的模版，每一次用模版实现字符串格式
 *             化都是一次煎熬，你只能用宏完成代码替换。好在C++11目前以及普及，
+*             大约在15年，C++的版本也完成了。
 *
 *             最后C++ 20，快点到来把。期待C++ format的实现。
 *
@@ -34,22 +35,20 @@
 *
 */
 
-#ifndef ZCE_LIB_LOG_MESSAGE_H_
-#define ZCE_LIB_LOG_MESSAGE_H_
+#pragma once
 
 #include "zce/string/extend.h"
 #include "zce/logger/log_basic.h"
 
-/******************************************************************************************
-class ZCE_Trace_LogMsg
-******************************************************************************************/
-class ZCE_Trace_LogMsg : public ZCE_LogTrace_Basic
+namespace zce
+{
+class LogMsg : public LogTrace_Base
 {
 public:
 
     ///构造函数
-    ZCE_Trace_LogMsg();
-    virtual ~ZCE_Trace_LogMsg();
+    LogMsg();
+    virtual ~LogMsg();
 
 protected:
 
@@ -59,10 +58,12 @@ protected:
     @param      lpszFormat  日志的格式化字符串
     @param      args        动态的日志参数列表组成的va_list
     */
-    void vwrite_logmsg(zce::LOG_PRIORITY outlevel, const char* str_format, va_list args);
+    void vwrite_logmsg(LOG_PRIORITY outlevel,
+                       const char* str_format,
+                       va_list args);
 
     template <typename... out_type >
-    void foo_write_logmsg(zce::LOG_PRIORITY outlevel,
+    void foo_write_logmsg(LOG_PRIORITY outlevel,
                           const char* str_format,
                           const out_type &...out_data)
     {
@@ -79,13 +80,13 @@ protected:
         }
 
         //得到当前时间
-        timeval now_time_val(zce::gettimeofday());
+        timeval now_time_val(gettimeofday());
 
         //我要保留一个位置放'\0',还为\n考虑留一个空间
-        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 2];
-        log_tmp_buffer[LOG_TMP_BUFFER_SIZE+1] = '\0';
+        static thread_local char * log_tmp_buffer[SIZE_OF_LOG_BUFFER + 2];
+        log_tmp_buffer[SIZE_OF_LOG_BUFFER + 1] = '\0';
 
-        size_t sz_buf_len = LOG_TMP_BUFFER_SIZE;
+        size_t sz_buf_len = SIZE_OF_LOG_BUFFER;
         size_t sz_use_len = 0;
 
         stringbuf_loghead(outlevel,
@@ -98,11 +99,11 @@ protected:
 
         //得到打印信息,str_nprintf 为自己内部的函数，str_format使用{}作为输出控制符
         size_t sprt_use_len = 0;
-        zce::str_nprintf(log_tmp_buffer + sz_use_len,
-                         sz_buf_len,
-                         sprt_use_len,
-                         str_format,
-                         out_data...);
+        str_nprintf(log_tmp_buffer + sz_use_len,
+                    sz_buf_len,
+                    sprt_use_len,
+                    str_format,
+                    out_data...);
         sz_use_len += sprt_use_len;
         sz_buf_len -= sprt_use_len;
 
@@ -123,9 +124,9 @@ protected:
 public:
 
     //实例的赋值
-    static void instance(ZCE_Trace_LogMsg*);
+    static void instance(LogMsg*);
     //实例的获得
-    static ZCE_Trace_LogMsg* instance();
+    static LogMsg* instance();
     //清除实例
     static void clean_instance();
 
@@ -143,12 +144,12 @@ public:
                                 const char* out_string);
 
     ///利用单子对象，打印日志信息
-    static void write_logmsg(zce::LOG_PRIORITY dbglevel,
+    static void write_logmsg(LOG_PRIORITY dbglevel,
                              const char* str_format,
                              ...);
 
     template <typename... out_type >
-    static void write_logplus(zce::LOG_PRIORITY outlevel,
+    static void write_logplus(LOG_PRIORITY outlevel,
                               const char* str_format,
                               const out_type &...out_data)
     {
@@ -158,22 +159,20 @@ public:
     }
 
 protected:
+    ///由于我内部还是使用的C++的ofstream 作为输出对象，所以我在多线程下还是使用了锁。
 
-    ///多行输出对象的最大长度
-    static const size_t SIZE_OF_MULTILINE_BUF = 512 * 1024 - 1;
-
-protected:
-
-    ///多行术后出的
-    char* multiline_buf_;
-
-    ///同步锁
-    ZCE_Thread_Light_Mutex   multiline_lock_;
+#if defined LARGE_LOG && LARGE_LOG == 1
+    //!巨型日志
+    static const size_t SIZE_OF_LOG_BUFFER = 512 * 1024 - 2;
+#else
+    //!日志的缓冲区的尺寸,这儿用了8K，很长了，-2是因为\0 和\n
+    //!但如果直接用write 函数写，4096(-1)是一个更合适的值，
+    static const size_t  SIZE_OF_LOG_BUFFER = 8192 - 2;
+#endif
 
 protected:
 
     ///单子实例指针
-    static ZCE_Trace_LogMsg* log_instance_;
+    static LogMsg* log_instance_;
 };
-
-#endif //ZCE_LIB_TRACE_LOG_MESSAGE_H_
+}
