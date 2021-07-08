@@ -205,7 +205,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
         tv.set(0, 10000);
         size_t recv_bytes = 0, recv_num = 0, accept_num = 0;
 
-        core.receive_timeout_i(&tv, &recv_num, &accept_num, &recv_bytes);
+        core.receive_timeout(&tv, &recv_num, &accept_num, &recv_bytes);
         core.time_out();
         //读取文件内容
         /*
@@ -315,7 +315,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
     {
         tv.set(0, 10000);
         size_t sz_recv = 0;
-        client.receive_timeout_i(&tv, &sz_recv);
+        client.receive_timeout(&tv, &sz_recv);
         client.time_out();
         //读取内容
         if (remain_file_len > 0 && remain_send_len == 0)

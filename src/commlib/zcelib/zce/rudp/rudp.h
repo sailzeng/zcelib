@@ -376,7 +376,7 @@ protected:
     //!记录要发送的ACK，等待
     inline void record_ack()
     {
-        ++need_sendack_;
+        ++need_sendback_ack_;
         record_prev_ack_ = rcv_wnd_series_end_;
     }
 
@@ -484,7 +484,7 @@ protected:
     //! 是否需要调用recv 回调函数，大于0表示需要
     size_t need_callback_recv_ = 0;
     // 是否需要调用recv 回调函数，大于0表示需要
-    size_t need_sendack_ = 0;
+    size_t need_sendback_ack_ = 0;
     //!记录的钱一个可用的ACK值，多次recvfrom之后，如果
     uint32_t record_prev_ack_ = 0;
 
@@ -538,11 +538,11 @@ public:
 
     //! 客户端无阻塞（无等待）收取数据,收取数据到内部接收窗口
     //! 如果发生了读取事件后，可以调用这个函数，你可以在select 等函数后调用这个函数
-    int receive_i(size_t *recv_size);
+    int batch_receive(size_t *recv_size);
 
     //! 客户端阻塞（等待）收取数据
-    int receive_timeout_i(zce::Time_Value* timeout_tv,
-                          size_t *recv_size);
+    int receive_timeout(zce::Time_Value* timeout_tv,
+                        size_t *recv_size);
 
     //! 异步（非阻塞）连接，返回0并不表示真正成功，还没有对方确认
     int connect(bool link_test_mtu = false);
@@ -645,9 +645,9 @@ public:
      * @brief 接受数据的处理,不阻塞,可以在select 时间触发后调用这个函数
      * @return 返回收到数据的尺寸，==0成功，非0失败
     */
-    int receive_i(size_t *recv_peer_num,
-                  size_t *accpet_peer_num,
-                  size_t *recv_bytes);
+    int batch_receive(size_t *recv_peer_num,
+                      size_t *accpet_peer_num,
+                      size_t *recv_bytes);
 
     /**
      * @brief 带超时的接收处理
@@ -657,10 +657,10 @@ public:
      * @param recv_bytes      输出参数，接收的字节数量
      * @return
     */
-    int receive_timeout_i(zce::Time_Value* timeout_tv,
-                          size_t *recv_peer_num,
-                          size_t *accpet_peer_num,
-                          size_t *recv_bytes);
+    int receive_timeout(zce::Time_Value* timeout_tv,
+                        size_t *recv_peer_num,
+                        size_t *accpet_peer_num,
+                        size_t *recv_bytes);
 
     //!超时处理，没10ms调用一次
     void time_out();

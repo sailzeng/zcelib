@@ -41,6 +41,12 @@
 
 #define ZPP_LOG               zce::LogMsg::write_logplus
 
+#if defined ZCE_OS_WINDOWS
+#define ZNO_LOG             __noop
+#else
+#define ZNO_LOG(...)        (void(0))
+#endif
+
 #if _MSC_VER <= 1300
 
 //提供一些简写的方式，虽然我也觉得不是特别好

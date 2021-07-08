@@ -1219,7 +1219,7 @@ void CLIENT::reset()
 }
 
 //客户端无阻塞（无等待）收取数据,收取数据到内部接收窗口
-int CLIENT::receive_i(size_t *recv_size)
+int CLIENT::batch_receive(size_t *recv_size)
 {
     *recv_size = 0;
     const size_t buf_size = 64;
@@ -1241,8 +1241,9 @@ int CLIENT::receive_i(size_t *recv_size)
         else
         {
             ZCE_LOG(RS_ERROR,
-                    "[RUDP]zce::recvfrom return error ret = [%d] remote[%s] errno=[%d]",
+                    "[RUDP]zce::recvfrom return error ret = [%d] session[%u] remote[%s] errno=[%d]",
                     ssz_recv,
+                    session_id_,
                     zce::get_host_addr_port((sockaddr *)&remote_addr_, out_buf, buf_size),
                     zce::last_error());
             return -1;
@@ -1290,8 +1291,8 @@ int CLIENT::receive_i(size_t *recv_size)
     return 0;
 }
 
-int CLIENT::receive_timeout_i(zce::Time_Value* timeout_tv,
-                              size_t *recv_size)
+int CLIENT::receive_timeout(zce::Time_Value* timeout_tv,
+                            size_t *recv_size)
 {
     *recv_size = 0;
     int ret = 0;
@@ -1311,7 +1312,7 @@ int CLIENT::receive_timeout_i(zce::Time_Value* timeout_tv,
     for (size_t k = 0; k < ONCE_PROCESS_TIMES; ++k)
     {
         size_t recv_len = 0;
-        ret = receive_i(&recv_len);
+        ret = batch_receive(&recv_len);
         if (ret != 0)
         {
             return ret;
@@ -1362,7 +1363,7 @@ int CLIENT::connect_timeout(zce::Time_Value* timeout_tv,
         return ret;
     }
     size_t recv_size;
-    ret = receive_timeout_i(timeout_tv, &recv_size);
+    ret = receive_timeout(timeout_tv, &recv_size);
     if (ret != 0)
     {
         return ret;
@@ -1534,9 +1535,9 @@ void CORE::close()
     zce::close_socket(core_socket_);
 }
 
-int CORE::receive_i(size_t *recv_peer_num,
-                    size_t *accpet_peer_num,
-                    size_t *recv_bytes)
+int CORE::batch_receive(size_t *recv_peer_num,
+                        size_t *accpet_peer_num,
+                        size_t *recv_bytes)
 {
     int ret = 0;
 
@@ -1558,6 +1559,13 @@ int CORE::receive_i(size_t *recv_peer_num,
                                          &sz_addr);
         if (ssz_recv <= 0)
         {
+            if (zce::last_error() != EWOULDBLOCK)
+            {
+                ZCE_LOG(RS_ERROR,
+                        "[RUDP][CORE]zce::recvfrom return error ret = [%d] errno=[%d]",
+                        ssz_recv,
+                        zce::last_error());
+            }
             break;
         }
         else
@@ -1565,10 +1573,10 @@ int CORE::receive_i(size_t *recv_peer_num,
             //收到的数据长度不可能大于以太网的MSS
             if (ssz_recv > MAX_FRAME_LEN || ssz_recv < MIN_FRAME_LEN)
             {
-                ZCE_LOG(RS_ERROR, "[RUDP] receive_i ssz_recv [%u] error. "
+                ZCE_LOG(RS_ERROR, "[RUDP][CORE] batch_receive ssz_recv [%u] error. "
                         "MIN_FRAME_LEN <= ssz_recv <=MAX_FRAME_LEN",
                         ssz_recv);
-                return -2;
+                continue;
             }
         }
 
@@ -1576,19 +1584,24 @@ int CORE::receive_i(size_t *recv_peer_num,
         frame->ntoh();
         if (frame->u32_1_.len_ != (uint32_t)ssz_recv)
         {
-            return -2;
+            //收到的FRAME数据肯定和标识长度应该一致.
+            ZCE_LOG(RS_ERROR,
+                    "[RUDP][CORE]batch_receive frame len error. ssz_recv [%d] frame len[%d]",
+                    ssz_recv,
+                    frame->u32_1_.len_);
+            continue;
         }
         if (frame->u32_1_.flag_ & FLAG::SYN)
         {
             if (frame->session_id_ == 0)
             {
-                if (peer_map_.size() > max_num_of_peer_)
+                if (peer_map_.size() >= max_num_of_peer_)
                 {
-                    ZCE_LOG(RS_ERROR, "[RUDP] peer_map_ size[%u] > "
+                    ZCE_LOG(RS_ERROR, "[RUDP][CORE]batch_receive already process max. peer_map_ size[%u] > "
                             " max_num_of_peer_[%u]",
                             peer_map_.size(),
                             max_num_of_peer_);
-                    return -1;
+                    break;
                 }
                 ret = accept_peer(&remote_ip, recv_peer);
                 if (ret != 0)
@@ -1603,11 +1616,11 @@ int CORE::receive_i(size_t *recv_peer_num,
             }
             else
             {
-                ZCE_LOG_DEBUG(RS_ERROR, "[RUDP] SYN error, flag [%u] but "
+                ZCE_LOG_DEBUG(RS_ERROR, "[RUDP][CORE] SYN error, flag [%u] but "
                               "session id!=0,[%u]",
                               frame->u32_1_.flag_,
                               frame->session_id_);
-                return -1;
+                continue;
             }
         }
         else
@@ -1615,9 +1628,9 @@ int CORE::receive_i(size_t *recv_peer_num,
             auto iter = peer_map_.find(frame->session_id_);
             if (iter == peer_map_.end())
             {
-                ZCE_LOG_DEBUG(RS_ERROR, "[RUDP] session id [%u] not map to peer.",
+                ZCE_LOG_DEBUG(RS_ERROR, "[RUDP][CORE] session[%u] not map to peer.",
                               frame->session_id_);
-                return -1;
+                continue;
             }
             recv_peer = iter->second;
         }
@@ -1706,14 +1719,13 @@ int CORE::receive_i(size_t *recv_peer_num,
             ack_peer->send_ack();
         }
     }
-
     return 0;
 }
 
-int CORE::receive_timeout_i(zce::Time_Value* timeout_tv,
-                            size_t *recv_peer_num,
-                            size_t *accpet_peer_num,
-                            size_t *recv_bytes)
+int CORE::receive_timeout(zce::Time_Value* timeout_tv,
+                          size_t *recv_peer_num,
+                          size_t *accpet_peer_num,
+                          size_t *recv_bytes)
 {
     int ret = 0;
     //进行超时处理
@@ -1726,7 +1738,9 @@ int CORE::receive_timeout_i(zce::Time_Value* timeout_tv,
     {
         return -1;
     }
-    ret = receive_i(recv_peer_num, accpet_peer_num, recv_bytes);
+    ret = batch_receive(recv_peer_num,
+                        accpet_peer_num,
+                        recv_bytes);
     if (ret != 0)
     {
         return ret;
