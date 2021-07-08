@@ -168,13 +168,19 @@ public:
 //=====================================================================================
 class BASE
 {
-protected:
-    //随机数发生器，用于生产session id，和序号ID serial_id
-    static std::mt19937  random_gen_;
-
 public:
     //取得随机数
     static uint32_t random();
+
+    //!设置一些关键静态变量
+
+    static void min_rto(time_t rto);
+
+    static void blocking_rto_ratio(double rto_ratio);
+
+    static void noalive_time_to_close(time_t to_close_time);
+
+protected:
 
     //!WAN的MTU
     static constexpr size_t MTU_WAN = 576;
@@ -203,6 +209,16 @@ public:
     static constexpr size_t MAX_BUFFER_LEN = MAX_FRAME_LEN + 4;
 
     static constexpr size_t INIT_CWND_SIZE = 4;
+
+protected:
+    //随机数发生器，用于生产session id，和序号ID serial_id
+    static std::mt19937  random_gen_;
+    //! 最小的RTO值
+    static time_t min_rto_;
+    //! 超时阻塞的情况下，rto增加的比率
+    static double blocking_rto_ratio_;
+    //! 如果在一段时间没有消息维持活跃，则关闭
+    static time_t noalive_time_to_close_;
 };
 
 //=====================================================================================
@@ -242,7 +258,7 @@ protected:
         ERR = 7,
     };
 
-    //改变拥塞窗口的事件
+    //!改变拥塞窗口的事件
     enum class CWND_EVENT
     {
         INVALID = 0,
@@ -407,24 +423,15 @@ protected:
 
     typedef zce::lord_rings<SEND_RECORD >  SEND_RECORD_LIST;
 
-    //!接收记录
+    //! 接收记录
     struct RECV_RECORD
     {
-        //
-        uint32_t start_;
-        //
-        uint32_t end_;
+        //! 接受数据的SN
+        uint32_t seq_start_;
+        //! 接受数据结束的序列号，也就是SN+len
+        uint32_t seq_end_;
     };
     typedef zce::static_list<RECV_RECORD >  RECV_RECORD_LIST;
-
-    static constexpr size_t MAX_RECORD_ACK_NUM = 3;
-
-    //!最小的RTO值
-    static time_t min_rto_;
-    //!超时阻塞的情况下，rto增加的比率
-    static double blocking_rto_ratio_;
-    //!如果在一段时间没有消息维持活跃，则关闭
-    static time_t noalive_time_to_close_;
 
 protected:
     //!模式，不同的open函数决定不同的模式

@@ -78,20 +78,39 @@ void RUDP_FRAME::delete_frame(RUDP_FRAME *frame)
 
 //=================================================================================================
 //class BASE
+
+//=================================================================================================
+//class BASE
 std::mt19937 BASE::random_gen_(19190504 + (uint32_t)::time(NULL));
 
 uint32_t BASE::random()
 {
     return random_gen_();
 }
+//!
+double BASE::blocking_rto_ratio_ = 1.5;
+//!
+time_t BASE::min_rto_ = 80;
+//10分钟
+time_t BASE::noalive_time_to_close_ = 600000;
+
+void BASE::min_rto(time_t rto)
+{
+    min_rto_ = rto;
+}
+
+void BASE::blocking_rto_ratio(double rto_ratio)
+{
+    blocking_rto_ratio_ = rto_ratio;
+}
+
+void BASE::noalive_time_to_close(time_t to_close_time)
+{
+    noalive_time_to_close_ = to_close_time;
+}
 
 //=================================================================================================
 //class PEER
-double PEER::blocking_rto_ratio_ = 1.5;
-
-time_t PEER::min_rto_ = 80;
-//10分钟
-time_t PEER::noalive_time_to_close_ = 600000;
 
 void PEER::close()
 {
@@ -543,15 +562,15 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
     char *write_pos = nullptr;
     for (; r != recv_rec_list_.end(); ++r)
     {
-        int32_t dif_rs_ne = (int32_t)(r->start_ - new_end);
-        int32_t dif_re_ns = (int32_t)(r->end_ - new_start);
-        int32_t dif_rs_ns = (int32_t)(r->start_ - new_start);
-        int32_t dif_re_ne = (int32_t)(r->end_ - new_end);
+        int32_t dif_rs_ne = (int32_t)(r->seq_start_ - new_end);
+        int32_t dif_re_ns = (int32_t)(r->seq_end_ - new_start);
+        int32_t dif_rs_ns = (int32_t)(r->seq_start_ - new_start);
+        int32_t dif_re_ne = (int32_t)(r->seq_end_ - new_end);
         if (dif_rs_ne >= 0)
         {
             RECV_RECORD rcv_rec;
-            rcv_rec.start_ = new_start;
-            rcv_rec.end_ = new_end;
+            rcv_rec.seq_start_ = new_start;
+            rcv_rec.seq_end_ = new_end;
             recv_rec_list_.insert(r, rcv_rec);
             uint32_t write_start = new_start - rcv_wnd_first_;
 
@@ -614,8 +633,8 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
         }
         rcv_wnd_last_ = new_end;
         RECV_RECORD rcv_rec;
-        rcv_rec.start_ = new_start;
-        rcv_rec.end_ = new_end;
+        rcv_rec.seq_start_ = new_start;
+        rcv_rec.seq_end_ = new_end;
         recv_rec_list_.insert(r, rcv_rec);
         recv_windows_.push_end(recv_frame->data_, data_len, write_pos);
     }
@@ -629,9 +648,9 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
     auto t = recv_rec_list_.begin();
     while (t != recv_rec_list_.end())
     {
-        if (t->start_ == rcv_wnd_series_end_)
+        if (t->seq_start_ == rcv_wnd_series_end_)
         {
-            rcv_wnd_series_end_ = t->end_;
+            rcv_wnd_series_end_ = t->seq_end_;
             auto del_iter = t;
             recv_rec_list_.erase(del_iter);
             t = recv_rec_list_.begin();
@@ -660,8 +679,8 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
             RUDP_TRACE(RS_ERROR,
                        "[RUDP]process_recv_data error.recv_rec_list_[%u] data[%u][%u]",
                        e,
-                       t->start_,
-                       t->end_);
+                       t->seq_start_,
+                       t->seq_end_);
         }
     }
 #endif
@@ -762,9 +781,9 @@ int PEER::send_frame_to(int flag,
                     break;
                 }
                 //收到的数据不连续
-                if (iter1->end_ != iter2->start_)
+                if (iter1->seq_end_ != iter2->seq_start_)
                 {
-                    frame->una_[resend_num] = iter2->start_;
+                    frame->una_[resend_num] = iter2->seq_start_;
                     if (resend_num >= RUDP_FRAME::MAX_UNA_NUMBER)
                     {
                         break;
