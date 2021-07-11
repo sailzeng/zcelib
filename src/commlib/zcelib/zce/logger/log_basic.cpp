@@ -403,10 +403,20 @@ void LogTrace_Base::open_new_logfile(bool initiate,
         std::ios_base::openmode mode = std::ios::out | std::ios::app;
         if (trunc_old_)
         {
-            mode |= std::ios::trunc;
+            mode = std::ios::out | std::ios::trunc;
         }
         log_file_handle_.open(log_file_name_.c_str(), mode);
-
+        if (log_file_handle_)
+        {
+            fprintf(stderr, "Open log file name [%s] ok.",
+                    log_file_name_.c_str());
+        }
+        else
+        {
+            fprintf(stderr, "Open log file name [%s] fail. errno=%d.",
+                    log_file_name_.c_str(),
+                    errno);
+        }
         size_log_file_ = static_cast<size_t>(log_file_handle_.tellp());
 
         if (LOGFILE_DEVIDE::BY_TIME_HOUR == div_log_file_ ||
@@ -616,13 +626,17 @@ void LogTrace_Base::stringbuf_loghead(LOG_PRIORITY outlevel,
     //如果纪录当前的PID
     if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::PROCESS_ID))
     {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]", static_cast<unsigned int>(getpid()));
+        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]",
+                               static_cast<unsigned int>(getpid()));
         sz_buf_len -= sz_use_len;
     }
 
     if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::THREAD_ID))
     {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[TID:%u]", static_cast<unsigned int>(pthread_self()));
+        sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
+                               sz_buf_len,
+                               "[TID:%u]",
+                               static_cast<unsigned int>(pthread_self()));
         sz_buf_len -= sz_use_len;
     }
 }

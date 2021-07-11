@@ -83,7 +83,7 @@ protected:
         timeval now_time_val(gettimeofday());
 
         //我要保留一个位置放'\0',还为\n考虑留一个空间
-        static thread_local char * log_tmp_buffer[SIZE_OF_LOG_BUFFER + 2];
+        static thread_local char log_tmp_buffer[SIZE_OF_LOG_BUFFER + 2];
         log_tmp_buffer[SIZE_OF_LOG_BUFFER + 1] = '\0';
 
         size_t sz_buf_len = SIZE_OF_LOG_BUFFER;

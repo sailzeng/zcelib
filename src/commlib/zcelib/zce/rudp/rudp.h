@@ -384,7 +384,8 @@ protected:
 
     //!超时处理，大约10ms调用一次他。
     void time_out(uint64_t now_clock_ms,
-                  bool *not_alive);
+                  bool *not_alive,
+                  bool *connect_fail);
 
     //!
     void adjust_cwnd(CWND_EVENT event);
@@ -501,6 +502,8 @@ protected:
     uint64_t resend_bytes_ = 0;
     //!接收到的数据数量
     uint64_t recv_bytes_ = 0;
+    //!重复接收到的数据数量
+    uint64_t rerecv_bytes_ = 0;
 
     //对端最后活动（收到数据）的时间
     uint64_t peer_live_clock_ = 0;
