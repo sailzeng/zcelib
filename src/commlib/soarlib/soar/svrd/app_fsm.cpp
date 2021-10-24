@@ -6,7 +6,7 @@
 
 //
 Comm_SvrdApp_FSM::Comm_SvrdApp_FSM() :
-    soar::App_Buspipe()
+    soar::App_BusPipe()
 {
 }
 
@@ -19,7 +19,7 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 int Comm_SvrdApp_FSM::app_start(int argc, const char* argv[])
 {
     int ret = 0;
-    ret = soar::App_Buspipe::app_start(argc, argv);
+    ret = soar::App_BusPipe::app_start(argc, argv);
 
     if (0 != ret)
     {
@@ -132,7 +132,7 @@ int Comm_SvrdApp_FSM::app_exit()
     int ret = 0;
     soar::FSM_Manager::clean_instance();
 
-    ret = soar::App_Buspipe::app_exit();
+    ret = soar::App_BusPipe::app_exit();
 
     if (0 != ret)
     {

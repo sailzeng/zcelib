@@ -4,8 +4,10 @@
 #include "soar/svrd/svrd_buspipe.h"
 #include "soar/enum/error_code.h"
 
+namespace soar
+{
 SvrdApp_Plain::SvrdApp_Plain() :
-    App_Buspipe(),
+    App_BusPipe(),
     nonctrl_recv_buffer_(NULL)
 {
     nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
@@ -132,7 +134,7 @@ int SvrdApp_Plain::popfront_recvpipe(size_t max_prc, size_t& proc_frame)
             continue;
         }
     }
-
     //
     return 0;
+}
 }

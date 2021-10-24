@@ -1,14 +1,13 @@
-#ifndef WORMHOLE_APPLICATION_H_
-#define WORMHOLE_APPLICATION_H_
+#pragma once
 
-#include "wormhole_proxyprocess.h"
+#include "proxyprocess.h"
 
 /*!
 * @brief
 *
 * @note
 */
-class Wormhole_Proxy_App : public soar::App_BusPipe
+class Wormhole_Proxy_App : public soar::SvrdApp_Plain
 {
 public:
     // 自己的单子偷偷藏着，
@@ -40,5 +39,3 @@ protected:
     /// 处理的PROXY的接口
     Interface_WH_Proxy* interface_proxy_ = NULL;
 };
-
-#endif //WORMHOLE_APPLICATION_H_

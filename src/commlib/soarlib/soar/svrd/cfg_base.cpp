@@ -140,7 +140,7 @@ int Server_Config_Base::read_start_arg(int argc, const char* argv[])
     }
 
     log_file_prefix_ = app_run_dir_ + "/log/";
-    log_file_prefix_ += soar::App_Buspipe::instance()->get_app_basename();
+    log_file_prefix_ += soar::App_BusPipe::instance()->get_app_basename();
 
     return 0;
 }
@@ -172,7 +172,7 @@ int Server_Config_Base::read_cfgfile()
 
     // 未指定app的配置文件，则使用默认的
     app_cfg_file_ = app_run_dir_ + "/cfg/";
-    app_cfg_file_ += soar::App_Buspipe::instance()->get_app_basename();
+    app_cfg_file_ += soar::App_BusPipe::instance()->get_app_basename();
     app_cfg_file_ += ".cfg";
 
     // 未指定svcid配置文件
@@ -202,7 +202,7 @@ int Server_Config_Base::read_cfgfile()
 void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Application base name %s svc id:%hu.%hu",
-            soar::App_Buspipe::instance()->get_app_basename(),
+            soar::App_BusPipe::instance()->get_app_basename(),
             self_svc_info_.svc_id_.services_type_,
             self_svc_info_.svc_id_.services_id_);
     ZCE_LOG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());

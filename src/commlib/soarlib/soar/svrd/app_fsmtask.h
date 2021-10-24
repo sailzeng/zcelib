@@ -16,7 +16,7 @@
 
 class soar::FSMTask_TaskBase;
 
-class Comm_SvrdApp_FSMTask : public soar::App_Buspipe
+class Comm_SvrdApp_FSMTask : public soar::App_BusPipe
 {
 protected:
 

@@ -1,6 +1,6 @@
-#include "wormhole_predefine.h"
-#include "wormhole_application.h"
-#include "wormhole_configture.h"
+#include "predefine.h"
+#include "application.h"
+#include "configture.h"
 
 Wormhole_Server_Config::Wormhole_Server_Config()
 {

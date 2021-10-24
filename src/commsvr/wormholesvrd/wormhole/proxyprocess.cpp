@@ -1,7 +1,7 @@
-#include "wormhole_predefine.h"
-#include "wormhole_proxyprocess.h"
-#include "wormhole_application.h"
-#include "wormhole_stat_define.h"
+#include "predefine.h"
+#include "proxyprocess.h"
+#include "application.h"
+#include "stat_define.h"
 
 //===================================================================================================
 
@@ -131,7 +131,7 @@ int Echo_Proxy_Process::get_proxy_config(const zce::PropertyTree* conf_tree)
     return 0;
 }
 
-int Echo_Proxy_Process::process_proxy(Zerg_App_Frame* proc_frame)
+int Echo_Proxy_Process::process_proxy(soar::Zerg_Frame* proc_frame)
 {
     ZCE_LOG_DEBUG(RS_DEBUG, "Receive a echo frame to process,"
                   "send svr:[%u|%u], "
@@ -143,18 +143,15 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame* proc_frame)
                   proc_frame->send_service_.services_id_,
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_userid_,
-                  proc_frame->frame_command_,
-                  proc_frame->frame_length_);
+                  proc_frame->user_id_,
+                  proc_frame->command_,
+                  proc_frame->length_);
 
     int ret = 0;
-    // 内部处理的命令
-    bool bsnderr;
-
-    if (proc_frame->is_internal_process(bsnderr) == true)
+    if (proc_frame->is_zerg_processcmd() == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_userid_, proc_frame->frame_command_);
+                proc_frame->user_id_, proc_frame->command_);
         return 0;
     }
 
@@ -169,12 +166,12 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame* proc_frame)
         return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
 
-    ZCE_LOG_DEBUG(RS_DEBUG, "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
+    ZCE_LOG_DEBUG(RS_DEBUG, "Echo to [%u|%u], user id:%u, command:%u, length:%u. ",
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_userid_,
-                  proc_frame->frame_command_,
-                  proc_frame->frame_length_);
+                  proc_frame->user_id_,
+                  proc_frame->command_,
+                  proc_frame->length_);
     return 0;
 }
 
@@ -201,7 +198,7 @@ int Transmit_Proxy::get_proxy_config(const zce::PropertyTree* conf_tree)
     return 0;
 }
 
-int Transmit_Proxy::process_proxy(Zerg_App_Frame* proc_frame)
+int Transmit_Proxy::process_proxy(soar::Zerg_Frame* proc_frame)
 {
     ZCE_LOG_DEBUG(RS_DEBUG, "Receive a transmit frame to process,"
                   "send svr:[%u|%u], "
@@ -213,19 +210,17 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame* proc_frame)
                   proc_frame->send_service_.services_id_,
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_userid_,
-                  proc_frame->frame_command_,
-                  proc_frame->frame_length_);
+                  proc_frame->user_id_,
+                  proc_frame->command_,
+                  proc_frame->length_);
 
     int ret = 0;
 
     // 内部处理的命令,跳过
-    bool bsnderr;
-
-    if (proc_frame->is_internal_process(bsnderr) == true)
+    if (proc_frame->is_zerg_processcmd() == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_userid_, proc_frame->frame_command_);
+                proc_frame->user_id_, proc_frame->command_);
         return 0;
     }
 
@@ -240,10 +235,10 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame* proc_frame)
     ZCE_LOG_DEBUG(RS_DEBUG, "Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_userid_,
-                  proc_frame->frame_command_,
-                  proc_frame->frame_length_,
-                  proc_frame->transaction_id_);
+                  proc_frame->user_id_,
+                  proc_frame->command_,
+                  proc_frame->length_,
+                  proc_frame->fsm_id_);
 
     return 0;
 }
@@ -323,20 +318,18 @@ int Broadcast_ProxyProcess::get_proxy_config(const zce::PropertyTree* conf_tree)
 }
 
 //
-int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame* proc_frame)
+int Broadcast_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
 {
     int ret = 0;
 
     // 输出包头，看看
-    proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_DEBUG);
+    DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "[FROM RECV FRAME]", proc_frame);
 
     // 内部处理的命令,跳过
-    bool bsnderr;
-
-    if (proc_frame->is_internal_process(bsnderr) == true)
+    if (proc_frame->is_zerg_processcmd() == true)
     {
-        ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_userid_, proc_frame->frame_command_);
+        ZCE_LOG(RS_DEBUG, "Receive a internal command, user_id:%u, command:%u. ",
+                proc_frame->user_id_, proc_frame->command_);
         return 0;
     }
 
@@ -363,10 +356,10 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame* proc_frame)
         ZCE_LOG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                       proc_frame->recv_service_.services_type_,
                       proc_frame->recv_service_.services_id_,
-                      proc_frame->frame_userid_,
-                      proc_frame->frame_command_,
-                      proc_frame->frame_length_,
-                      proc_frame->transaction_id_);
+                      proc_frame->user_id_,
+                      proc_frame->command_,
+                      proc_frame->length_,
+                      proc_frame->fsm_id_);
     }
 
     return 0;
@@ -450,15 +443,13 @@ int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
     int ret = 0;
 
     // 输出包头，看看
-    proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_DEBUG);
+    DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "[FROM RECV FRAME]", proc_frame);
 
     // 内部处理的命令,跳过
-    bool bsnderr;
-
-    if (proc_frame->is_internal_process(bsnderr) == true)
+    if (proc_frame->is_zerg_processcmd() == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_userid_, proc_frame->frame_command_);
+                proc_frame->user_id_, proc_frame->command_);
         return 0;
     }
 
@@ -472,7 +463,7 @@ int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
     uint32_t mod_number = 0;
     if (MODULO_UID == modulo_type_)
     {
-        mod_number = proc_frame->frame_userid_;
+        mod_number = proc_frame->user_id_;
     }
     else if (MODULO_SENDSVC_ID == modulo_type_)
     {
@@ -495,10 +486,10 @@ int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
     ZCE_LOG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_userid_,
-                  proc_frame->frame_command_,
-                  proc_frame->frame_length_,
-                  proc_frame->transaction_id_);
+                  proc_frame->user_id_,
+                  proc_frame->command_,
+                  proc_frame->length_,
+                  proc_frame->fsm_id_);
 
     return 0;
 }
@@ -606,7 +597,7 @@ int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
 //}
 //
 ////要处理的帧
-//int DBModalProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
+//int DBModalProxyProcess::process_proxy(soar::Zerg_Frame *proc_frame)
 //{
 //    ZCE_LOG(RS_DEBUG,"Receive a dbmode frame to process,"
 //               "send svr:[%u|%u], "

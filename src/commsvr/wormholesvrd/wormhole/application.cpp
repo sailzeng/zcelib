@@ -1,7 +1,7 @@
-#include "wormhole_predefine.h"
-#include "wormhole_configture.h"
-#include "wormhole_stat_define.h"
-#include "wormhole_application.h"
+#include "predefine.h"
+#include "configture.h"
+#include "stat_define.h"
+#include "application.h"
 
 /****************************************************************************************************
 class  Arbiter_Appliction
@@ -23,7 +23,7 @@ Wormhole_Proxy_App::~Wormhole_Proxy_App()
 int Wormhole_Proxy_App::app_start(int argc, const char* argv[])
 {
     int ret = 0;
-    ret = soar::App_Buspipe::app_start(argc, argv);
+    ret = soar::App_BusPipe::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -64,7 +64,7 @@ int Wormhole_Proxy_App::app_exit()
     int ret = 0;
 
     //最后调用通用的退出模块
-    ret = soar::App_Buspipe::app_exit();
+    ret = soar::App_BusPipe::app_exit();
     if (ret != 0)
     {
         return ret;
@@ -103,7 +103,7 @@ int Wormhole_Proxy_App::reload_config()
     return 0;
 }
 
-int Wormhole_Proxy_App::process_recv_frame(Zerg_App_Frame* recv_frame)
+int Wormhole_Proxy_App::process_recv_frame(soar::Zerg_Frame* recv_frame)
 {
     return interface_proxy_->process_proxy(recv_frame);
 }

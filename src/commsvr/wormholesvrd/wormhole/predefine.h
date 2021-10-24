@@ -48,6 +48,7 @@
 #include <soar/enum/error_code.h>
 #include <soar/svrd/cfg_base.h>
 #include <soar/zerg/frame_zerg.h>
+#include <soar/svrd/app_plain.h>
 #include <soar/svrd/svrd_buspipe.h>
 #include <soar/svrd/app_main.h>
 #include <soar/enum/enum_define.h>

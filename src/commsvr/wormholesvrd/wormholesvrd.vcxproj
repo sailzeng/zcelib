@@ -19,23 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wormhole_application.cpp" />
-    <ClCompile Include="wormhole_configture.cpp" />
-    <ClCompile Include="wormhole_main.cpp" />
-    <ClCompile Include="wormhole_predefine.cpp">
+    <ClCompile Include="wormhole\application.cpp" />
+    <ClCompile Include="wormhole\configture.cpp" />
+    <ClCompile Include="wormhole\main.cpp" />
+    <ClCompile Include="wormhole\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="wormhole_proxyprocess.cpp" />
+    <ClCompile Include="wormhole\proxyprocess.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wormhole_application.h" />
-    <ClInclude Include="wormhole_configture.h" />
-    <ClInclude Include="wormhole_predefine.h" />
-    <ClInclude Include="wormhole_proxyprocess.h" />
-    <ClInclude Include="wormhole_stat_define.h" />
+    <ClInclude Include="wormhole\application.h" />
+    <ClInclude Include="wormhole\configture.h" />
+    <ClInclude Include="wormhole\predefine.h" />
+    <ClInclude Include="wormhole\proxyprocess.h" />
+    <ClInclude Include="stat_define.h" />
+    <ClInclude Include="wormhole\stat_define.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\commlib\soarlib\soarlib.vcxproj">
@@ -135,7 +136,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -153,7 +154,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -173,7 +174,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -195,7 +196,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

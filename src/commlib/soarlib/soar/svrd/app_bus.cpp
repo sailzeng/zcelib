@@ -26,9 +26,9 @@
 
 namespace soar
 {
-App_Buspipe* App_Buspipe::instance_ = NULL;
+App_BusPipe* App_BusPipe::instance_ = NULL;
 
-App_Buspipe::App_Buspipe() :
+App_BusPipe::App_BusPipe() :
     self_svc_info_(),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
@@ -39,7 +39,7 @@ App_Buspipe::App_Buspipe() :
     app_author_ = "FXL Platform Server Dev Team.";
 }
 
-App_Buspipe::~App_Buspipe()
+App_BusPipe::~App_BusPipe()
 {
     if (timer_base_)
     {
@@ -55,7 +55,7 @@ App_Buspipe::~App_Buspipe()
 }
 
 //初始化，放入一些基类的指针，
-int App_Buspipe::initialize(Server_Config_Base* config_base,
+int App_BusPipe::initialize(Server_Config_Base* config_base,
                             soar::Server_Timer* timer_base)
 {
     config_base_ = config_base;
@@ -64,18 +64,18 @@ int App_Buspipe::initialize(Server_Config_Base* config_base,
 }
 
 //获取配置的指针
-Server_Config_Base* App_Buspipe::config_instance()
+Server_Config_Base* App_BusPipe::config_instance()
 {
     return config_base_;
 }
 
 //启动过程的处理
-int App_Buspipe::app_start(int argc, const char* argv[])
+int App_BusPipe::app_start(int argc, const char* argv[])
 {
     int ret = 0;
     ::srand(static_cast<unsigned int>(time(NULL)));
 
-    //App_Buspipe 只可能启动一个实例，所以在这个地方初始化了static指针
+    //App_BusPipe 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
 
     //得到APP的名字，去掉路径，后缀的名字
@@ -258,13 +258,13 @@ int App_Buspipe::app_start(int argc, const char* argv[])
     ZCE_LOG(RS_INFO, "[framework] MMAP Pipe init success,gogogo."
             "The more you have,the more you want. ");
 
-    ZCE_LOG(RS_INFO, "[framework] App_Buspipe::init_instance Success.");
+    ZCE_LOG(RS_INFO, "[framework] App_BusPipe::init_instance Success.");
 
     return 0;
 }
 
 //退出的工作
-int App_Buspipe::app_exit()
+int App_BusPipe::app_exit()
 {
     //可能要增加多线程的等待
     zce::Thread_Wait_Manager::instance()->wait_all();
@@ -309,19 +309,19 @@ int App_Buspipe::app_exit()
 }
 
 //设置日志的优先级
-void App_Buspipe::set_log_priority(zce::LOG_PRIORITY log_prio)
+void App_BusPipe::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
     zce::LogMsg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
-zce::LOG_PRIORITY App_Buspipe::get_log_priority()
+zce::LOG_PRIORITY App_BusPipe::get_log_priority()
 {
     return zce::LogMsg::instance()->get_log_priority();
 }
 
 //日志初始化
-int App_Buspipe::init_log()
+int App_BusPipe::init_log()
 {
     int ret = 0;
 
@@ -351,25 +351,25 @@ int App_Buspipe::init_log()
 }
 
 //重新加载配置
-int App_Buspipe::reload_config()
+int App_BusPipe::reload_config()
 {
     return 0;
 }
 
 //注册实例指针
-void App_Buspipe::set_instance(App_Buspipe* inst)
+void App_BusPipe::set_instance(App_BusPipe* inst)
 {
     instance_ = inst;
 }
 
 //得到实例指针
-App_Buspipe* App_Buspipe::instance()
+App_BusPipe* App_BusPipe::instance()
 {
     return instance_;
 }
 
 //清理实例指针
-void App_Buspipe::clean_instance()
+void App_BusPipe::clean_instance()
 {
     if (instance_)
     {

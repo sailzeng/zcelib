@@ -66,7 +66,7 @@ namespace soar
 */
 class Server_Timer : public zce::Timer_Handler
 {
-    friend class App_Buspipe;
+    friend class App_BusPipe;
 public:
 
     ///构造函数,因为框架的设计构造的时候不初始化timer queue，

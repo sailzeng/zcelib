@@ -14,14 +14,14 @@ namespace soar
 *
 * @note
 */
-class App_Buspipe : public zce::Server_Base
+class App_BusPipe : public zce::Server_Base
 {
 protected:
 
     ///构造函数和析构函数
-    App_Buspipe();
+    App_BusPipe();
     ///析构函数
-    virtual ~App_Buspipe();
+    virtual ~App_BusPipe();
 
 public:
 
@@ -71,10 +71,10 @@ protected:
 public:
 
     ///注册实例指针
-    static void set_instance(App_Buspipe* inst);
+    static void set_instance(App_BusPipe* inst);
 
     ///得到实例指针
-    static App_Buspipe* instance();
+    static App_BusPipe* instance();
 
     ///清理实例实例指针
     static void clean_instance();
@@ -82,7 +82,7 @@ public:
 protected:
 
     //实例指针
-    static App_Buspipe* instance_;
+    static App_BusPipe* instance_;
 
 protected:
 

@@ -236,7 +236,7 @@ protected:
 //    //
 //    virtual int get_proxy_config(const zce::PropertyTree *conf_tree);
 //    //
-//    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+//    virtual int process_proxy(soar::Zerg_Frame *proc_frame);
 //};
 //
 //
@@ -304,7 +304,7 @@ protected:
 //    //
 //    virtual int get_proxy_config(const zce::PropertyTree *conf_tree);
 //    //
-//    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+//    virtual int process_proxy(soar::Zerg_Frame *proc_frame);
 //
 //private:
 //    //

@@ -18,7 +18,7 @@
 *
 * @note
 */
-class Comm_SvrdApp_FSM : public soar::App_Buspipe
+class Comm_SvrdApp_FSM : public soar::App_BusPipe
 {
 protected:
 

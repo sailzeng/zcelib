@@ -26,7 +26,7 @@ int Ogre_Service_App::app_start(int argc, const char* argv[])
     int ret = 0;
     ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
     //
-    ret = soar::App_Buspipe::app_start(argc, argv);
+    ret = soar::App_BusPipe::app_start(argc, argv);
 
     if (ret != 0)
     {
