@@ -34,13 +34,13 @@ void ZCE_Null_Mutex::unlock()
 }
 
 //绝对时间超时的的锁定，超时后解锁，返回是否超时
-bool ZCE_Null_Mutex::systime_lock(const zce::Time_Value& /*abs_time*/)
+bool ZCE_Null_Mutex::lock(const zce::Time_Value& /*abs_time*/)
 {
     return true;
 }
 
 //相对时间，返回是否超时
-bool ZCE_Null_Mutex::duration_lock(const zce::Time_Value& /*relative_time*/)
+bool ZCE_Null_Mutex::lock_for(const zce::Time_Value& /*relative_time*/)
 {
     return true;
 }

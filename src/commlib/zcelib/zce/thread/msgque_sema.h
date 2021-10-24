@@ -99,7 +99,7 @@ public:
                 const zce::Time_Value& wait_time)
     {
         bool bret = false;
-        bret = sem_full_.duration_lock(wait_time);
+        bret = sem_full_.lock_for(wait_time);
 
         //如果超时了，返回false
         if (!bret)
@@ -149,7 +149,7 @@ public:
                 const zce::Time_Value& wait_time)
     {
         bool bret = false;
-        bret = sem_empty_.duration_lock(wait_time);
+        bret = sem_empty_.lock_for(wait_time);
 
         //如果超时了，返回false
         if (!bret)
@@ -240,7 +240,7 @@ protected:
         if (if_wait_timeout)
         {
             bool bret = false;
-            bret = sem_empty_.duration_lock(wait_time);
+            bret = sem_empty_.lock_for(wait_time);
 
             //如果超时了，返回false
             if (!bret)

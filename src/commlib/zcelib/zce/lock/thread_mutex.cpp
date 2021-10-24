@@ -165,7 +165,7 @@ void ZCE_Thread_Recursive_Mutex::unlock()
 }
 
 //绝对时间
-bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value& abs_time)
+bool ZCE_Thread_Recursive_Mutex::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(&lock_, abs_time);
@@ -180,11 +180,11 @@ bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间
-bool ZCE_Thread_Recursive_Mutex::duration_lock(const zce::Time_Value& relative_time)
+bool ZCE_Thread_Recursive_Mutex::lock_for(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return systime_lock(abs_time);
+    return lock(abs_time);
 }
 
 //取出内部的锁的指针
@@ -271,7 +271,7 @@ void ZCE_Thread_NONR_Mutex::unlock()
 }
 
 //绝对时间
-bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value& abs_time)
+bool ZCE_Thread_NONR_Mutex::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(&lock_, abs_time);
@@ -291,9 +291,9 @@ bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间
-bool ZCE_Thread_NONR_Mutex::duration_lock(const zce::Time_Value& relative_time)
+bool ZCE_Thread_NONR_Mutex::lock_for(const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
-    return systime_lock(abs_time);
+    return lock(abs_time);
 }

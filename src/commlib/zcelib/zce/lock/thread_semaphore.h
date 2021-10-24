@@ -40,10 +40,10 @@ public:
     virtual void unlock();
 
     //绝对时间超时的的锁定，超时后解锁
-    virtual bool systime_lock(const zce::Time_Value& abs_time);
+    virtual bool lock(const zce::Time_Value& abs_time);
 
     //相对时间的超时锁定，超时后，解锁
-    virtual bool duration_lock(const zce::Time_Value& relative_time);
+    virtual bool lock_for(const zce::Time_Value& relative_time);
 
 protected:
     //线程锁

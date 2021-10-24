@@ -272,13 +272,20 @@ protected:
         SWND_CHANGE,
     };
 
+    //!
     enum class RECV_NEXT_CALL
     {
+        //无效值
         INVALID = 0,
+        //可以回调connect 函数
         CONNECT = 1,
+        //可以回调 recv 函数
         RECEIVE = 2,
+        //需要RESET peer，
         RESET_PEER = 3,
+        //被RESET了，
         BE_RESET = 4,
+        //需要发送ACK
         SENDBACK_ACK = 5,
     };
 
@@ -387,7 +394,7 @@ protected:
                   bool *not_alive,
                   bool *connect_fail);
 
-    //!
+    //!调整拥塞窗口
     void adjust_cwnd(CWND_EVENT event);
 
     //!记录要发送的ACK，等待
@@ -399,6 +406,9 @@ protected:
 
     //!发送ACK
     void send_ack();
+
+    //!DUMP信息
+    void dump_info(const char *some_thing, LOG_PRIORITY log_priority);
 
 protected:
 

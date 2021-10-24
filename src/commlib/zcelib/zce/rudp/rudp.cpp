@@ -870,17 +870,23 @@ int PEER::send_frame_to(int flag,
             send_bytes_,
             resend_bytes_);
     frame->hton();
-    ssize_t ssend = zce::sendto(peer_socket_,
-                                (void *)frame,
-                                sz_frame,
-                                0,
-                                (sockaddr *)&remote_addr_,
-                                sizeof(zce::sockaddr_ip));
+    ssize_t ssend = sz_frame;
+    if (random() % 100 > 3)
+    {
+        ssend = zce::sendto(peer_socket_,
+                            (void *)frame,
+                            sz_frame,
+                            0,
+                            (sockaddr *)&remote_addr_,
+                            sizeof(zce::sockaddr_ip));
+        return 0;
+    }
+
     if (ssend != (ssize_t)sz_frame)
     {
         char buf[buf_size];
         ZCE_LOG(RS_ERROR,
-                "zce::sendto return error ret = [%d] frame len[%u] remote[%s]",
+                "[RUDP]zce::sendto return error ret = [%d] frame len[%u] remote[%s]",
                 ssend,
                 sz_frame,
                 zce::get_host_addr_port(
@@ -913,7 +919,7 @@ int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
                            uint64_t now_clock)
 {
     ZNO_LOG(RS_DEBUG,
-            "acknowledge_send start.session[%u] recv frame ack[%u] my_seq_num_ack_[%u] "
+            "[RUDP]acknowledge_send start.session[%u] recv frame ack[%u] my_seq_num_ack_[%u] "
             "una number [%u] uno [%u][%u][%u] send list[%u][%u].",
             session_id_,
             recv_frame->ack_id_,
@@ -940,6 +946,9 @@ int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
                               nullptr,
                               0,
                               &snd_rec);
+            }
+            else
+            {
             }
         }
     }
@@ -968,6 +977,7 @@ int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
                     send_windows_.pop_front(snd_rec.len_);
                 }
                 send_rec_list_.pop_front();
+                adjust_cwnd(CWND_EVENT::ACK);
                 continue;
             }
             else
@@ -986,7 +996,12 @@ int PEER::acknowledge_send(const RUDP_FRAME *recv_frame,
         else
         {
             //其实这儿存在错误
-            ZCE_LOG(RS_ERROR, "code error?");
+            ZCE_LOG(RS_ERROR, "[RUDP]code error? difference [%d] send rec [%u] "
+                    "recv_ack_id[%u] my_seq_num_counter_[%u]",
+                    difference,
+                    send_rec_list_.size(),
+                    recv_ack_id,
+                    my_seq_num_counter_);
         }
     }
 
@@ -1053,6 +1068,7 @@ void PEER::time_out(uint64_t now_clock_ms,
     int ret = 0;
     *not_alive = false;
     *connect_fail = false;
+    size_t resend_num = 0;
     size_t size_snd_rec = send_rec_list_.size();
     for (size_t i = 0; i < size_snd_rec; ++i)
     {
@@ -1064,6 +1080,7 @@ void PEER::time_out(uint64_t now_clock_ms,
                 now_clock_ms - snd_rec.send_clock_ >= 60000)
             {
                 *connect_fail = true;
+                break;
             }
 
             //重发
@@ -1077,6 +1094,7 @@ void PEER::time_out(uint64_t now_clock_ms,
             {
                 break;
             }
+            ++resend_num;
         }
     }
     //如果长时间没有反应。
@@ -1140,6 +1158,40 @@ void PEER::send_ack()
     }
     send_frame_to(FLAG::ACK | FLAG::UNA);
     need_sendback_ack_ = 0;
+}
+
+void PEER::dump_info(const char *some_thing, LOG_PRIORITY log_priority)
+{
+    const size_t buf_size = 64;
+    char remote_str[buf_size];
+    ZCE_LOG(log_priority,
+            "[RUDP].info[%s].model[%u] session[%u] remote [%s] "
+            "send seq[%u|%u][%u]send wnd [%u|%u] rec[%u|%u] send bytes[%llu][%llu]"
+            "recv seq[%u|%u|%u][%u|%u]recv windows[%u|%u] rec [%u|%u],recv bytes[%llu][%llu].",
+            some_thing,
+            model_,
+            session_id_,
+            zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
+            my_seq_num_ack_,
+            my_seq_num_counter_,
+            my_seq_num_counter_ - my_seq_num_ack_,
+            send_windows_.size(),
+            send_windows_.free(),
+            send_rec_list_.size(),
+            send_rec_list_.free(),
+            send_bytes_,
+            resend_bytes_,
+            rcv_wnd_first_,
+            rcv_wnd_series_end_,
+            rcv_wnd_last_,
+            rcv_wnd_series_end_ - rcv_wnd_first_,
+            rcv_wnd_last_ - rcv_wnd_first_,
+            recv_windows_.size(),
+            recv_windows_.free(),
+            recv_rec_list_.size(),
+            recv_rec_list_.free(),
+            recv_bytes_,
+            rerecv_bytes_);
 }
 
 //=================================================================================================

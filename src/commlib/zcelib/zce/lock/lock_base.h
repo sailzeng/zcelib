@@ -65,14 +65,14 @@ private:
     * @param      abs_time
     * @note
     */
-    virtual bool systime_lock(const zce::Time_Value& abs_time);
+    virtual bool lock(const zce::Time_Value& abs_time);
 
     /*!
     * @brief      获得锁，等待一个相对时间
     * @return     bool          返回true成功获取锁，false失败，（超时等）
     * @param      relative_time 等待的相对时间，
     */
-    virtual bool duration_lock(const zce::Time_Value& relative_time);
+    virtual bool lock_for(const zce::Time_Value& relative_time);
 
     ///读取锁
     virtual void lock_read();

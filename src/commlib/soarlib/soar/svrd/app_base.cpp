@@ -118,10 +118,10 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
     init_log_name += "_init";
     zce::LogMsg::instance()->init_size_log(
         init_log_name.c_str(),
-        false,
-        true,
         10 * 1024 * 1024,
-        3);
+        3,
+        false,
+        true);
 
     ZCE_LOG(RS_INFO, "[framework] change run directory to %s .",
             config_base_->app_run_dir_.c_str());

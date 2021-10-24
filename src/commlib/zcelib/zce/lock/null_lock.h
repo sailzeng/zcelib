@@ -58,9 +58,9 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁，返回是否超时
-    virtual bool systime_lock(const zce::Time_Value& /*abs_time*/);
+    virtual bool lock(const zce::Time_Value& /*abs_time*/);
     ///相对时间
-    virtual bool duration_lock(const zce::Time_Value& /*relative_time*/);
+    virtual bool lock_for(const zce::Time_Value& /*relative_time*/);
 
     //相对与BOOST的shared的共享-独占锁的叫法，我还是倾向读写锁
 

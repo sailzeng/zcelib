@@ -78,7 +78,7 @@ ssize_t core_recv(zce::rudp::ACCEPT *peer)
             peer->session_id(),
             peer->recv_bytes());
 
-    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[1], O_CREAT | O_APPEND | O_WRONLY));
+    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "");
@@ -156,7 +156,7 @@ ssize_t client_recv(zce::rudp::CLIENT *peer)
 int test_rudp_core(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    ret = zce::unlink(TEST_FILE[1]);
+    ret = zce::unlink(TEST_FILE[3]);
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "delete file fail.");
@@ -265,7 +265,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
 int test_rudp_client(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    ret = zce::unlink(TEST_FILE[3]);
+    ret = zce::unlink(TEST_FILE[1]);
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "delete file fail.");

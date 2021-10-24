@@ -46,13 +46,13 @@ void ZCE_Lock_Base::unlock_write()
 }
 
 //绝对时间超时的的锁定，超时后解锁，返回是否超时
-bool ZCE_Lock_Base::systime_lock(const zce::Time_Value& /*abs_time*/)
+bool ZCE_Lock_Base::lock(const zce::Time_Value& /*abs_time*/)
 {
     return true;
 }
 
 //相对时间，返回是否超时
-bool ZCE_Lock_Base::duration_lock(const zce::Time_Value& /*relative_time*/)
+bool ZCE_Lock_Base::lock_for(const zce::Time_Value& /*relative_time*/)
 {
     return true;
 }
