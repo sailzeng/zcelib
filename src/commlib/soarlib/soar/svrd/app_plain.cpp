@@ -1,11 +1,11 @@
 #include "soar/predefine.h"
 #include "soar/zerg/frame_zerg.h"
 #include "soar/svrd/app_plain.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 #include "soar/enum/error_code.h"
 
 SvrdApp_Plain::SvrdApp_Plain() :
-    Svrd_Appliction(),
+    App_Buspipe(),
     nonctrl_recv_buffer_(NULL)
 {
     nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);

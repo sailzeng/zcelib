@@ -20,7 +20,7 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/zerg/frame_malloc.h"
 #include "soar/fsm/fsm_mgr.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 
 namespace soar
 {
@@ -62,7 +62,7 @@ public:
                     const soar::SERVICES_INFO& selfsvr,
                     const zce::Time_Value& enqueue_timeout,
                     zce::Timer_Queue* timer_queue,
-                    soar::App_BusPipe* zerg_mmap_pipe,
+                    soar::Svrd_BusPipe* zerg_mmap_pipe,
                     APPFRAME_MALLOCOR* frame_mallocor);
 
     //处理从接收队列取出的FRAME

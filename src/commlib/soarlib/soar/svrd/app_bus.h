@@ -1,9 +1,8 @@
-#ifndef SOARING_LIB_SERVER_APPLICATION_H_
-#define SOARING_LIB_SERVER_APPLICATION_H_
+#pragma once
 
 #include "soar/zerg/services_info.h"
 #include "soar/enum/error_code.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 #include "soar/svrd/timer_base.h"
 
 class Server_Config_Base;
@@ -15,14 +14,14 @@ namespace soar
 *
 * @note
 */
-class Svrd_Appliction : public zce::Server_Base
+class App_Buspipe : public zce::Server_Base
 {
 protected:
 
     ///构造函数和析构函数
-    Svrd_Appliction();
+    App_Buspipe();
     ///析构函数
-    virtual ~Svrd_Appliction();
+    virtual ~App_Buspipe();
 
 public:
 
@@ -72,10 +71,10 @@ protected:
 public:
 
     ///注册实例指针
-    static void set_instance(Svrd_Appliction* inst);
+    static void set_instance(App_Buspipe* inst);
 
     ///得到实例指针
-    static Svrd_Appliction* instance();
+    static App_Buspipe* instance();
 
     ///清理实例实例指针
     static void clean_instance();
@@ -83,7 +82,7 @@ public:
 protected:
 
     //实例指针
-    static Svrd_Appliction* instance_;
+    static App_Buspipe* instance_;
 
 protected:
 
@@ -96,7 +95,7 @@ protected:
     size_t               max_msg_num_;
 
     ///与zerg的管道
-    soar::App_BusPipe* zerg_mmap_pipe_;
+    soar::Svrd_BusPipe* zerg_mmap_pipe_;
 
     ///框架定时器处理类
     soar::Server_Timer* timer_base_;
@@ -105,5 +104,3 @@ protected:
     Server_Config_Base* config_base_;
 };
 };
-
-#endif //SOARING_LIB_SERVER_APPLICATION_H_

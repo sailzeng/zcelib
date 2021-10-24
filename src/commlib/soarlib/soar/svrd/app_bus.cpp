@@ -16,8 +16,8 @@
 */
 
 #include "soar/predefine.h"
-#include "soar/svrd/app_base.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/app_bus.h"
+#include "soar/svrd/svrd_buspipe.h"
 #include "soar/zerg/services_info.h"
 #include "soar/svrd/cfg_fsm.h"
 #include "soar/svrd/timer_base.h"
@@ -26,9 +26,9 @@
 
 namespace soar
 {
-Svrd_Appliction* Svrd_Appliction::instance_ = NULL;
+App_Buspipe* App_Buspipe::instance_ = NULL;
 
-Svrd_Appliction::Svrd_Appliction() :
+App_Buspipe::App_Buspipe() :
     self_svc_info_(),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
@@ -39,7 +39,7 @@ Svrd_Appliction::Svrd_Appliction() :
     app_author_ = "FXL Platform Server Dev Team.";
 }
 
-Svrd_Appliction::~Svrd_Appliction()
+App_Buspipe::~App_Buspipe()
 {
     if (timer_base_)
     {
@@ -55,8 +55,8 @@ Svrd_Appliction::~Svrd_Appliction()
 }
 
 //初始化，放入一些基类的指针，
-int Svrd_Appliction::initialize(Server_Config_Base* config_base,
-                                soar::Server_Timer* timer_base)
+int App_Buspipe::initialize(Server_Config_Base* config_base,
+                            soar::Server_Timer* timer_base)
 {
     config_base_ = config_base;
     timer_base_ = timer_base;
@@ -64,18 +64,18 @@ int Svrd_Appliction::initialize(Server_Config_Base* config_base,
 }
 
 //获取配置的指针
-Server_Config_Base* Svrd_Appliction::config_instance()
+Server_Config_Base* App_Buspipe::config_instance()
 {
     return config_base_;
 }
 
 //启动过程的处理
-int Svrd_Appliction::app_start(int argc, const char* argv[])
+int App_Buspipe::app_start(int argc, const char* argv[])
 {
     int ret = 0;
     ::srand(static_cast<unsigned int>(time(NULL)));
 
-    //Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
+    //App_Buspipe 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
 
     //得到APP的名字，去掉路径，后缀的名字
@@ -237,7 +237,7 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
 #endif
 
     //初始化内存管道
-    ret = soar::App_BusPipe::instance()->
+    ret = soar::Svrd_BusPipe::instance()->
         initialize(self_svc_info_,
                    config_base_->pipe_cfg_.recv_pipe_len_,
                    config_base_->pipe_cfg_.send_pipe_len_,
@@ -246,11 +246,11 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_INFO, "[framework] soar::App_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
+        ZCE_LOG(RS_INFO, "[framework] soar::Svrd_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
         return ret;
     }
 
-    zerg_mmap_pipe_ = soar::App_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
 
     soar::Stat_Monitor::instance()->
         add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
@@ -258,13 +258,13 @@ int Svrd_Appliction::app_start(int argc, const char* argv[])
     ZCE_LOG(RS_INFO, "[framework] MMAP Pipe init success,gogogo."
             "The more you have,the more you want. ");
 
-    ZCE_LOG(RS_INFO, "[framework] Svrd_Appliction::init_instance Success.");
+    ZCE_LOG(RS_INFO, "[framework] App_Buspipe::init_instance Success.");
 
     return 0;
 }
 
 //退出的工作
-int Svrd_Appliction::app_exit()
+int App_Buspipe::app_exit()
 {
     //可能要增加多线程的等待
     zce::Thread_Wait_Manager::instance()->wait_all();
@@ -272,7 +272,7 @@ int Svrd_Appliction::app_exit()
 
     soar::Stat_Monitor::clean_instance();
 
-    soar::App_BusPipe::clean_instance();
+    soar::Svrd_BusPipe::clean_instance();
 
     //释放所有资源,会关闭所有的handle吗,zce::ZCE_Reactor 会，ACE的ZCE_Reactor看实现
     if (zce::ZCE_Reactor::instance())
@@ -309,19 +309,19 @@ int Svrd_Appliction::app_exit()
 }
 
 //设置日志的优先级
-void Svrd_Appliction::set_log_priority(zce::LOG_PRIORITY log_prio)
+void App_Buspipe::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
     zce::LogMsg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
-zce::LOG_PRIORITY Svrd_Appliction::get_log_priority()
+zce::LOG_PRIORITY App_Buspipe::get_log_priority()
 {
     return zce::LogMsg::instance()->get_log_priority();
 }
 
 //日志初始化
-int Svrd_Appliction::init_log()
+int App_Buspipe::init_log()
 {
     int ret = 0;
 
@@ -334,6 +334,7 @@ int Svrd_Appliction::init_log()
                                               config_base_->log_config_.log_div_type_,
                                               config_base_->log_file_prefix_.c_str(),
                                               false,
+                                              true,
                                               true,
                                               config_base_->log_config_.max_log_file_size_,
                                               config_base_->log_config_.reserve_file_num_,
@@ -350,25 +351,25 @@ int Svrd_Appliction::init_log()
 }
 
 //重新加载配置
-int Svrd_Appliction::reload_config()
+int App_Buspipe::reload_config()
 {
     return 0;
 }
 
 //注册实例指针
-void Svrd_Appliction::set_instance(Svrd_Appliction* inst)
+void App_Buspipe::set_instance(App_Buspipe* inst)
 {
     instance_ = inst;
 }
 
 //得到实例指针
-Svrd_Appliction* Svrd_Appliction::instance()
+App_Buspipe* App_Buspipe::instance()
 {
     return instance_;
 }
 
 //清理实例指针
-void Svrd_Appliction::clean_instance()
+void App_Buspipe::clean_instance()
 {
     if (instance_)
     {

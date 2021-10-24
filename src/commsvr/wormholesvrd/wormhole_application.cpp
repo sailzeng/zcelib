@@ -23,7 +23,7 @@ Wormhole_Proxy_App::~Wormhole_Proxy_App()
 int Wormhole_Proxy_App::app_start(int argc, const char* argv[])
 {
     int ret = 0;
-    ret = soar::Svrd_Appliction::app_start(argc, argv);
+    ret = soar::App_Buspipe::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -64,7 +64,7 @@ int Wormhole_Proxy_App::app_exit()
     int ret = 0;
 
     //最后调用通用的退出模块
-    ret = soar::Svrd_Appliction::app_exit();
+    ret = soar::App_Buspipe::app_exit();
     if (ret != 0)
     {
         return ret;

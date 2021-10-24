@@ -114,6 +114,7 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char* original_buf,
         {
             //长度也是最大记录2个字节,
             //下一轮 step_len 可能还会自增，所以这儿是<,注意是0xFFDF，= 0xFFFF -32
+            [[unlikely]]
             if (ZCE_UNLIKELY(read_pos - nomatch_achor > 0xFFDF))
             {
                 goto zlz_token_process;
@@ -825,7 +826,7 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char* original_buf,
 #else
         nomatch_achor = read_pos;
 #endif
-    }
+}
 
 lz4_end_process:
 
@@ -985,7 +986,7 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char* compressed_bu
             }
         }
         write_pos = write_stop;
-    }
+}
 
     //如果空间不够，还是返回错误
     if (ZCE_UNLIKELY((size_t)(read_pos - read_end) < noncomp_count

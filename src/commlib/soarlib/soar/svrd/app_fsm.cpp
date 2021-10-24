@@ -1,12 +1,12 @@
 #include "soar/predefine.h"
 #include "soar/fsm/fsm_mgr.h"
 #include "soar/svrd/app_fsm.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 #include "soar/svrd/cfg_fsm.h"
 
 //
 Comm_SvrdApp_FSM::Comm_SvrdApp_FSM() :
-    soar::Svrd_Appliction()
+    soar::App_Buspipe()
 {
 }
 
@@ -19,7 +19,7 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 int Comm_SvrdApp_FSM::app_start(int argc, const char* argv[])
 {
     int ret = 0;
-    ret = soar::Svrd_Appliction::app_start(argc, argv);
+    ret = soar::App_Buspipe::app_start(argc, argv);
 
     if (0 != ret)
     {
@@ -35,7 +35,7 @@ int Comm_SvrdApp_FSM::app_start(int argc, const char* argv[])
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_info_,
 
-                             soar::App_BusPipe::instance());
+                             soar::Svrd_BusPipe::instance());
     soar::FSM_Manager::instance(p_trans_mgr_);
 
     ret = register_trans_cmd();
@@ -132,7 +132,7 @@ int Comm_SvrdApp_FSM::app_exit()
     int ret = 0;
     soar::FSM_Manager::clean_instance();
 
-    ret = soar::Svrd_Appliction::app_exit();
+    ret = soar::App_Buspipe::app_exit();
 
     if (0 != ret)
     {

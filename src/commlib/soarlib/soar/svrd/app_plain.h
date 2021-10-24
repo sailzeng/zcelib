@@ -1,12 +1,12 @@
 #ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_
 #define SOARING_LIB_SVRD_APP_NONCTRL_H_
 
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 
 class soar::Zerg_Frame;
 
 //单个函数处理APP FRAME
-class SvrdApp_Plain : public soar::Svrd_Appliction
+class SvrdApp_Plain : public soar::App_Buspipe
 {
 protected:
     //

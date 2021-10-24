@@ -98,7 +98,7 @@ int Interface_WH_Proxy::init_proxy_instance()
 {
     // int ret =0;
     // 初始化MMAP内存的PIPE
-    zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
 
     return 0;
 }
@@ -445,7 +445,7 @@ int Modulo_ProxyProcess::get_proxy_config(const zce::PropertyTree* conf_tree)
 }
 
 //
-int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame* proc_frame)
+int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
 {
     int ret = 0;
 

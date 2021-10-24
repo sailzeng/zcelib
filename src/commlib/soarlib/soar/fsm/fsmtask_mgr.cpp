@@ -53,7 +53,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
                                 const soar::SERVICES_INFO& selfsvr,
                                 const zce::Time_Value& enqueue_timeout,
                                 zce::Timer_Queue* timer_queue,
-                                soar::App_BusPipe* zerg_mmap_pipe,
+                                soar::Svrd_BusPipe* zerg_mmap_pipe,
                                 APPFRAME_MALLOCOR* frame_mallocor)
 {
     //根据最大的FRAME长度调整Manager内部的数据

@@ -47,8 +47,8 @@
 #include <soar/svrd/cfg_base.h>
 #include <soar/svrd/app_main.h>
 #include <soar/zerg/frame_zerg.h>
-#include <soar/svrd/app_buspipe.h>
-#include <soar/svrd/app_base.h>
+#include <soar/svrd/svrd_buspipe.h>
+#include <soar/svrd/app_bus.h>
 #include <soar/svrd/app_main.h>
 #include <soar/stat/monitor.h>
 #include <soar/svrd/timer_base.h>

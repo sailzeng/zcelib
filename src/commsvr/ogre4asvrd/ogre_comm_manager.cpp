@@ -82,14 +82,14 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
 
     //
     for (procframe = 0;
-         Soar_MMAP_BusPipe::instance()->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false &&
+         soar::Svrd_BusPipe::instance()->is_empty_sendbus() == false &&
          procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
         Ogre4a_App_Frame* send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
 
         //
-        ret = Soar_MMAP_BusPipe::instance()->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                                           reinterpret_cast<zce::lockfree::node*&>(send_frame));
+        ret = soar::Svrd_BusPipe::instance()->pop_front_sendbus(
+            reinterpret_cast<soar::Zerg_Frame *>(send_frame));
 
         if (ret != 0)
         {

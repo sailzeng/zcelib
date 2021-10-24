@@ -1,8 +1,6 @@
 /// @file       arbiter_type_define.h
 /// @date       2012/07/19
 
-/// @author     stefzhou
-
 /// @brief      数据和类型定义
 /// @details
 

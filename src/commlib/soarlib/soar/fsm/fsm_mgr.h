@@ -1,7 +1,7 @@
 #pragma once
 
 #include "soar/zerg/frame_malloc.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 
 //是否按照zengyu所说的将所有的IO接口继承处理???
 //我心中充满了无数的问号
@@ -45,7 +45,7 @@ SEND PIPE<=================================
 
 namespace soar
 {
-class App_BusPipe;
+class Svrd_BusPipe;
 class FSM_Base;
 class Zerg_Frame;
 
@@ -165,7 +165,7 @@ public:
                    size_t  reg_fsm_num,
                    size_t running_fsm_num,
                    const soar::SERVICES_INFO& selfsvr,
-                   soar::App_BusPipe* zerg_mmap_pipe,
+                   soar::Svrd_BusPipe* zerg_mmap_pipe,
                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
@@ -269,7 +269,7 @@ protected:
     soar::SERVICES_INFO self_svc_info_;
 
     //共享内存的管道
-    soar::App_BusPipe* zerg_mmap_pipe_ = nullptr;
+    soar::Svrd_BusPipe* zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
     const zce::Time_Value* statistics_clock_ = nullptr;

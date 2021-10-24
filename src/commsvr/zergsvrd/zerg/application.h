@@ -7,7 +7,7 @@
 *
 * @note
 */
-class Zerg_App : public soar::Svrd_Appliction
+class Zerg_App : public soar::App_Buspipe
 {
 public:
     //我又要偷偷藏着

@@ -185,9 +185,8 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::Sockaddr_In& remote_
 
 int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
-    int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
-        Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::node*>(dgram_databuf_));
+    int ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
+        reinterpret_cast<soar::Zerg_Frame*>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 

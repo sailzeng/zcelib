@@ -6,7 +6,7 @@
 
 class Ogre4a_App_Frame;
 class mmap_dequechunk;
-class Soar_MMAP_BusPipe;
+class soar::Svrd_BusPipe;
 
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler

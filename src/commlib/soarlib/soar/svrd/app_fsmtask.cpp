@@ -8,7 +8,7 @@
 #include "soar/svrd/app_fsmtask.h"
 
 Comm_SvrdApp_FSMTask::Comm_SvrdApp_FSMTask() :
-    soar::Svrd_Appliction()
+    soar::App_Buspipe()
 {
 };
 
@@ -21,7 +21,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
 {
     int ret = 0;
 
-    ret = soar::Svrd_Appliction::app_start(argc, argv);
+    ret = soar::App_Buspipe::app_start(argc, argv);
     if (0 != ret)
     {
         return ret;
@@ -42,7 +42,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
         self_svc_info_,
         enqueue_timeout,
         zce::Timer_Queue::instance(),
-        soar::App_BusPipe::instance(),
+        soar::Svrd_BusPipe::instance(),
         THREADMUTEX_APPFRAME_MALLOCOR::instance());
 
     ret = register_notifytrans_cmd();
@@ -167,7 +167,7 @@ int Comm_SvrdApp_FSMTask::app_exit()
     int ret = 0;
     soar::FSM_Manager::clean_instance();
 
-    ret = soar::Svrd_Appliction::app_exit();
+    ret = soar::App_Buspipe::app_exit();
 
     if (0 != ret)
     {
