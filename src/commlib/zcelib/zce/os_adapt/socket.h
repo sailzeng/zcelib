@@ -27,20 +27,20 @@ class zce::Time_Value;
 namespace zce
 {
 ///sockaddr_storage 太长了，128个字节，搞个简单的少占用一点空间
-class sockaddr_ip
+class sockaddr_any
 {
 public:
-    sockaddr_ip() = default;
-    ~sockaddr_ip() = default;
-    explicit sockaddr_ip(const sockaddr *sa);
-    explicit sockaddr_ip(const sockaddr_in &sa);
-    explicit sockaddr_ip(const sockaddr_in6 &sa);
+    sockaddr_any() = default;
+    ~sockaddr_any() = default;
+    explicit sockaddr_any(const sockaddr *sa);
+    explicit sockaddr_any(const sockaddr_in &sa);
+    explicit sockaddr_any(const sockaddr_in6 &sa);
 
-    bool operator == (const sockaddr_ip &others) const;
+    bool operator == (const sockaddr_any &others) const;
 
-    sockaddr_ip& operator = (const sockaddr *addr);
-    sockaddr_ip& operator = (const sockaddr_in &addr_in);
-    sockaddr_ip& operator = (const sockaddr_in6 &addr_in6);
+    sockaddr_any& operator = (const sockaddr *addr);
+    sockaddr_any& operator = (const sockaddr_in &addr_in);
+    sockaddr_any& operator = (const sockaddr_in6 &addr_in6);
 
     union
     {
@@ -53,7 +53,7 @@ public:
 
 struct sockaddr_ip_hash
 {
-    size_t operator()(const zce::sockaddr_ip& s) const;
+    size_t operator()(const zce::sockaddr_any& s) const;
 };
 
 /*!
@@ -67,7 +67,7 @@ int socket_init(int version_high = 2,
                 int version_low = 2);
 
 /*!
-* @brief      程序退出，DLL鞋砸时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
+* @brief      程序退出，DLL卸载时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
 * @return     int 0成功，-1失败
 */
 int socket_terminate(void);
@@ -77,18 +77,20 @@ int socket_terminate(void);
 * @return     ZCE_SOCKET 返回SOCKET句柄
 * @param[in]  family   (地址)协议族，为AF_INET，AF_INET6，AF_UNSPEC等,协议族，按道理是和地址族一一对应的，所以PF_XXX,约等于AF_XXX
 * @param[in]  type     是SOCK_DGRAM或者SOCK_STREAM，SOCK_RAW
-* @param[in]  proto    协议类型，主要在原生SOCKET中使用，比如ICMP等，一般填写为0
+* @param[in]  protocol 协议类型，主要在原生SOCKET中使用，比如ICMP等，一般填写为0
 */
 inline ZCE_SOCKET socket(int family,
                          int type,
-                         int proto = 0);
+                         int protocol = 0);
 
 /*!
 * @brief      打开socket 句柄，简化处理的函数，非标准，通常用于客户端本地端口
 * @return     int == 0表示成功
 * @param[out] handle      返回的socket 句柄
+* @param[in]  type        SOCK_DGRAM,SOCK_STREAM
+* @param[in]  family      AF_INET ,AF_INET6
 * @param[in]  reuse_addr  是否重用地址
-* @note       type,family,protocol参数参考socket函数
+* @note       family      protocol参数参考socket函数
 */
 int open_socket(ZCE_SOCKET *handle,
                 int type,
@@ -874,9 +876,9 @@ void freeaddrinfo(struct addrinfo* result);
 * @param[out] addr   根据你输入的addr_len的 确定是sockaddr_in,还是sockaddr_in6
 * @param[in]  addr_len 地址的长度
 */
-int getaddrinfo_result_to_addr(addrinfo* result,
-                               sockaddr* addr,
-                               socklen_t addr_len);
+int getaddrinfo_result_to_oneaddr(addrinfo* result,
+                                  sockaddr* addr,
+                                  socklen_t addr_len);
 
 /*!
 * @brief         辅助函数，将getaddrinfo的结果进行加工处理，处理成数组
@@ -1117,47 +1119,6 @@ int mapped_sockin6_to_sockin(const sockaddr_in6* src, sockaddr_in* dst);
 * @param      check_port
 */
 bool check_safeport(uint16_t check_port);
-
-//-------------------------------------------------------------------------------------
-//socks 5 代理部分
-
-/*!
-* @brief      SOCKS5代理初始化，进行用户验证等
-* @return     int 返回0标识成功
-* @param      handle      已经连接SOCKS5服务器的句柄，必须先连接 connect,可以使用connect_timeout函数
-* @param      username    验证模式下的用户名称，如果不需要验证用填写NULL
-* @param      password    验证模式下的密码，如果不需要验证用填写NULL
-* @param      timeout_tv  超时时间
-* @note       handle 必须先连接
-*/
-int socks5_initialize(ZCE_SOCKET handle,
-                      const char* username,
-                      const char* password,
-                      zce::Time_Value& timeout_tv);
-
-/*!
-* @brief      SOCKS5代理初始化，进行用户验证等
-* @return     int  返回0标识成功
-* @param      handle     已经连接SOCKS5服务器的句柄，必须先连接 connect
-* @param      host_name  跳转的域名，域名和地址只选一个，优先域名，为NULL
-* @param      port       跳转的端口
-* @param      addr       跳转的地址
-* @param      addrlen    跳转的地址的长度
-* @param      timeout_tv 超时时间
-*/
-int socks5_connect_host(ZCE_SOCKET handle,
-                        const char* host_name,
-                        const sockaddr* host_addr,
-                        int addrlen,
-                        uint16_t host_port,
-                        zce::Time_Value& timeout_tv);
-
-//socks5代理，UDP穿透
-int socks5_udp_associate(ZCE_SOCKET handle,
-                         const sockaddr* bind_addr,
-                         int addr_len,
-                         sockaddr* udp_addr,
-                         zce::Time_Value& timeout_tv);
 } //namespace
 
 //-----------------------------------------------------------------------------------------

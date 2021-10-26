@@ -20,13 +20,13 @@ Socket_Stream::~Socket_Stream()
 }
 
 //Open SOCK句柄，不BIND本地地址的方式
-int Socket_Stream::open(int protocol_family,
+int Socket_Stream::open(int family,
                         int protocol,
                         bool reuse_addr)
 {
     int ret = 0;
     //打开
-    ret = zce::Socket_Base::open(SOCK_STREAM, protocol_family, protocol, reuse_addr);
+    ret = zce::Socket_Base::open(SOCK_STREAM, family, protocol, reuse_addr);
 
     if (ret != 0)
     {

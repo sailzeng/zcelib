@@ -20,11 +20,11 @@ int main(int argc, char* argv[])
                                            static_cast<int>(LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 #endif
-
-    test_rudp(argc, argv);
-    return 0;
+    test_dns_resolve(argc, argv);
 
 #if 0
+    test_rudp(argc, argv);
+    return 0;
     test_sqlite_handle(argc, argv);
     test_sqlite_stmt(argc, argv);
 

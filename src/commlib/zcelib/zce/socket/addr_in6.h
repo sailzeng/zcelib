@@ -32,7 +32,20 @@ public:
 
 public:
     //设置地址信息
-    virtual  void set_sockaddr(sockaddr* addr, socklen_t len) override;
+    virtual void set_sockaddr(sockaddr* addr, socklen_t len) override;
+
+    //取得域名相关的IP地址信息，调用的是getaddrinfo，notename可以是数值地址，或者域名
+    virtual int getaddrinfo(const char* notename,
+                            uint16_t port_number = 0)override;
+
+    //DNS相关函数，
+    //取得IP地址相关的域名信息,调用的是getnameinfo
+    virtual int getnameinfo(char* host_name, size_t name_len) const override;
+
+    ///设置端口好，
+    virtual inline void set_port(uint16_t)override;
+    ///取得端口号
+    virtual inline uint16_t get_port(void) const override;
 
     /*!
     * @brief      根据字符串取得IP地址信息，以及端口号信息,
@@ -49,11 +62,6 @@ public:
     //根据地址IP，端口号设置
     int set(uint16_t port_number,
             const char ipv6_addr_val[16]);
-
-    ///设置端口好，
-    inline void set_port_number(uint16_t);
-    ///取得端口号
-    inline uint16_t get_port_number(void) const;
 
     ///检查端口号是否是一个安全端口
     bool check_safeport();
@@ -81,12 +89,6 @@ public:
     //如果这个IPV6的地址是IPV4映射过来的，将其还原为IPV4的地址
     int mapped_to_inaddr(zce::Sockaddr_In& to) const;
 
-    //DNS相关函数，
-    //取得IP地址相关的域名信息,调用的是getnameinfo
-    int get_name_info(char* host_name, size_t name_len) const;
-    //取得域名相关的IP地址信息，调用的是getaddrinfo，notename可以是数值地址，或者域名
-    int getaddrinfo_to_addr(const char* notename);
-
     //各种操作符号转换函数，方便各种使用，让Sockaddr_In6的行为和sockaddr_in6基本一致
     //返回sockaddr_in6
     operator sockaddr_in6 () const;
@@ -109,12 +111,12 @@ inline const char* Sockaddr_In6::get_ip_address(char* ipv6_addr_val) const
 }
 
 //设置端口好，
-inline void Sockaddr_In6::set_port_number(uint16_t port_number)
+inline void Sockaddr_In6::set_port(uint16_t port_number)
 {
     in6_addr_.sin6_port = ntohs(port_number);
 }
 //取得端口号
-inline uint16_t Sockaddr_In6::get_port_number(void) const
+inline uint16_t Sockaddr_In6::get_port(void) const
 {
     return ntohs(in6_addr_.sin6_port);
 }

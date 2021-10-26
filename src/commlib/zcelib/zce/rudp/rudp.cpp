@@ -264,11 +264,11 @@ int PEER::send(const char* buf,
 }
 
 //!有数据抵达时的函数
-int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
+int PEER::deliver_recv(const zce::sockaddr_any *remote_addr,
                        RUDP_FRAME *recv_frame,
                        size_t recv_len,
                        bool *remote_change,
-                       zce::sockaddr_ip *old_remote,
+                       zce::sockaddr_any *old_remote,
                        RECV_NEXT_CALL *next_call)
 {
     *next_call = RECV_NEXT_CALL::INVALID;
@@ -330,7 +330,7 @@ int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
         return -1;
     }
     //远端地址可能发生改变，
-    zce::sockaddr_ip new_remote = *remote_addr;
+    zce::sockaddr_any new_remote = *remote_addr;
     if (new_remote != remote_addr_)
     {
         //客户端的地址可能会变化。属于正常情况，记录一下
@@ -878,7 +878,7 @@ int PEER::send_frame_to(int flag,
                             sz_frame,
                             0,
                             (sockaddr *)&remote_addr_,
-                            sizeof(zce::sockaddr_ip));
+                            sizeof(zce::sockaddr_any));
         return 0;
     }
 
@@ -1303,8 +1303,8 @@ int CLIENT::batch_receive(size_t *recv_size)
     const size_t ONCE_PROCESS_TIMES = 256;
     const size_t buf_size = 64;
     char out_buf[buf_size];
-    zce::sockaddr_ip remote_ip;
-    socklen_t sz_addr = sizeof(zce::sockaddr_ip);
+    zce::sockaddr_any remote_ip;
+    socklen_t sz_addr = sizeof(zce::sockaddr_any);
     for (size_t k = 0; k < ONCE_PROCESS_TIMES; ++k)
     {
         ssize_t ssz_recv = zce::recvfrom(peer_socket_,
@@ -1343,7 +1343,7 @@ int CLIENT::batch_receive(size_t *recv_size)
                 break;
             }
         }
-        zce::sockaddr_ip old_remote;
+        zce::sockaddr_any old_remote;
         bool change = false;
         RUDP_FRAME *recv_frame = (RUDP_FRAME *)recv_buffer_;
         recv_frame->ntoh();
@@ -1642,8 +1642,8 @@ int CORE::batch_receive(size_t *recv_peer_num,
     for (size_t k = 0; k < ONCE_PROCESS_RECEIVE; ++k)
     {
         ACCEPT *recv_peer = nullptr;
-        zce::sockaddr_ip remote_ip;
-        socklen_t sz_addr = sizeof(zce::sockaddr_ip);
+        zce::sockaddr_any remote_ip;
+        socklen_t sz_addr = sizeof(zce::sockaddr_any);
         ssize_t ssz_recv = zce::recvfrom(core_socket_,
                                          (void *)recv_buffer_,
                                          MAX_BUFFER_LEN,
@@ -1730,7 +1730,7 @@ int CORE::batch_receive(size_t *recv_peer_num,
 
         (*recv_peer_num) += 1;
         //看远端地址是否变化了,如果变化了，更新peer_addr_set_ 表
-        zce::sockaddr_ip old_remote;
+        zce::sockaddr_any old_remote;
         bool change = false;
         //将接收的数据调教给PEER
         PEER::RECV_NEXT_CALL next_call = PEER::RECV_NEXT_CALL::INVALID;
@@ -1841,7 +1841,7 @@ int CORE::receive_timeout(zce::Time_Value* timeout_tv,
     return 0;
 }
 
-int CORE::accept_peer(const zce::sockaddr_ip *remote_ip,
+int CORE::accept_peer(const zce::sockaddr_any *remote_ip,
                       ACCEPT *& new_peer)
 {
     int ret = 0;

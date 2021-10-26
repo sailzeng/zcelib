@@ -321,6 +321,15 @@
     <ClCompile Include="zce\rudp\rudp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\net\dns_resolve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\net\sock5_proxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\socket\addr_any.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -735,6 +744,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\static_list.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\net\dns_resolve.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\net\sock5_proxy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\socket\addr_any.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,7 +25,7 @@
 
 namespace zce
 {
-class TimeValue;
+class Time_Value;
 class Sockaddr_In;
 class Sockaddr_In6;
 class UUID64;

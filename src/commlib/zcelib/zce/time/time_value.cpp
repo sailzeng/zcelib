@@ -210,7 +210,7 @@ uint64_t Time_Value::total_msec_round() const
     return ret_msec;
 }
 
-//用毫秒作为单位设置TimeValue
+//用毫秒作为单位设置Time_Value
 void Time_Value::total_msec(uint64_t set_msec)
 {
 #if defined ZCE_OS_WINDOWS
@@ -228,7 +228,7 @@ uint64_t Time_Value::total_usec() const
     return static_cast<uint64_t>(zce_time_value_.tv_sec) * zce::SEC_PER_USEC + zce_time_value_.tv_usec;
 }
 
-//用微秒作为单位，设置TimeValue，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
+//用微秒作为单位，设置Time_Value，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
 void Time_Value::total_usec(uint64_t set_usec)
 {
     const int SEC_PER_UESC = 1000000;
