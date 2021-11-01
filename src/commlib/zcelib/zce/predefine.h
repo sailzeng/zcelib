@@ -176,22 +176,17 @@
 
 //为什么Windows头文件必须放在前面，因为里面有大量的定义，如果步不按照这个规矩来，很容易形成冲突，
 
-//支持WINSERVER2008,VISTA 将下面调整成1，如果不支持下面调整成0
-#define ZCE_SUPPORT_WINSVR2008 1
-
 //Windows 的Vista和WinServer2008以后，支持了很多新的API,如果需要支持，需要打开支持开关
-#ifndef ZCE_SUPPORT_WINSVR2008
-#if (defined _WIN32_WINNT) && (_WIN32_WINNT >=  0x0600) && defined (_MSC_VER) && (_MSC_VER >= 1400)
-#define ZCE_SUPPORT_WINSVR2008 1
-#else
-#define ZCE_SUPPORT_WINSVR2008 0
-#endif
-#endif
+//ZCE_DEPEND_WINVER 2008 的要求 (_WIN32_WINNT >=  0x0600) && (_MSC_VER > 1400)
+//ZCE_DEPEND_WINVER 2012 的要求 (_WIN32_WINNT >=  0x0603) && (_MSC_VER > 1700)
+#define ZCE_DEPEND_WINVER  2012
 
 //很多头文件以及数值定义本来可以放到各个OS的配置文件里面去的，但是感觉比较重要，还是放到这个地方了
 // pretend it's at least Windows XP or Win2003，如果不定义这个，有时候会有一些API无法使用的问题
 #if !defined (_WIN32_WINNT)
-#if (defined ZCE_SUPPORT_WINSVR2008) && (ZCE_SUPPORT_WINSVR2008 == 1)
+#if (defined ZCE_DEPEND_WINVER) && (ZCE_DEPEND_WINVER >= 2012)
+# define _WIN32_WINNT 0x0603
+#elif (defined ZCE_DEPEND_WINVER) && (ZCE_DEPEND_WINVER == 2008)
 # define _WIN32_WINNT 0x0600
 #else
 # define _WIN32_WINNT 0x0501

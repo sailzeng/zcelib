@@ -216,7 +216,9 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_pe
     prc_perf_info->start_time_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     // 计算running_time，uptime可以读取/proc/uptime得到, 这里使用系统zcelib自带的zce::get_uptime()
-    prc_perf_info->running_time_ = zce::timeval_sub(zce::get_uptime(), prc_perf_info->start_time_);
+    timeval up_time;
+    zce::steady_clock(&up_time);
+    prc_perf_info->running_time_ = zce::timeval_sub(up_time, prc_perf_info->start_time_);
 
     //内存信息我从另外一个文件读取
 

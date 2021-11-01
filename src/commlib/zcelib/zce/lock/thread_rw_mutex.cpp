@@ -181,7 +181,7 @@ pthread_rwlock_t* ZCE_Thread_RW_Mutex::get_lock()
 Class           : ZCE_Thread_Win_RW_Mutex 轻量级的读写锁，不提供超时等函数
 ************************************************************************************************************/
 
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
 //如果用WIN自带的读写锁
 

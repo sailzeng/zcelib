@@ -278,7 +278,7 @@ int PEER::deliver_recv(const zce::sockaddr_any *remote_addr,
     ZNO_LOG(RS_DEBUG,
             "[RUDP] deliver_recv start.model[%u] session[%u] recv len[%u] "
             "remote [%s].[%s] recv frame len[%u] flag[%u] session[%u] sn[%u] ack[%u] wnd [%u]"
-            "peer_windows_size_[%u] recv seq [%u|%u|%u][%u|%u] send seq[%u|%u][%u]"
+            "peer_windows_size_[%u] recv seq_ [%u|%u|%u][%u|%u] send seq_[%u|%u][%u]"
             "recv wnd [%u|%u] rec [%u|%u] send rec[%u|%u].recv bytes[%llu][%llu]",
             model_,
             session_id_,
@@ -489,7 +489,7 @@ int PEER::deliver_recv(const zce::sockaddr_any *remote_addr,
 
     ZNO_LOG(RS_DEBUG,
             "[RUDP] deliver_recv end. model[%u] session[%u] recv len [%u] "
-            "remote [%s] peer_windows_size_[%u] recv seq [%u|%u|%u][%u|%u] send seq[%u|%u][%u] "
+            "remote [%s] peer_windows_size_[%u] recv seq_ [%u|%u|%u][%u|%u] send seq_[%u|%u][%u] "
             "recv wnd [%u|%u] rec [%u|%u] send rec[%u|%u].recv bytes[%llu][%llu]",
             model_,
             session_id_,
@@ -528,7 +528,7 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
     ZNO_LOG(RS_DEBUG,
             "[RUDP]process_recv_data start.session[%u],"
             "recv frame len[%u] flag[%u] sn[%u|%u] data len[%u] "
-            "recv windows [%u|%u] recv_rec [%u|%u],recv seq[%u|%u|%u].",
+            "recv windows [%u|%u] recv_rec [%u|%u],recv seq_[%u|%u|%u].",
             session_id_,
             recv_frame->u32_1_.len_,
             recv_frame->u32_1_.flag_,
@@ -668,7 +668,7 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
     {
         ZCE_LOG(RS_ERROR,
                 "[RUDP]process_recv_data error.session[%u] please check. "
-                "recv wind[%u]?=[%u] seq [%u]?<=[%u]",
+                "recv wind[%u]?=[%u] seq_ [%u]?<=[%u]",
                 session_id_,
                 recv_windows_.size(),
                 (rcv_wnd_last_ - rcv_wnd_first_),
@@ -688,7 +688,7 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
 
     ZNO_LOG(RS_DEBUG,
             "[RUDP]process_recv_data end.session[%u] op[%d]"
-            "recv_windows_[%u|%u] recv_rec_list_ [%u|%u],recv seq[%u|%u|%u][%u|%u].",
+            "recv_windows_[%u|%u] recv_rec_list_ [%u|%u],recv seq_[%u|%u|%u][%u|%u].",
             session_id_,
             *op,
             recv_windows_.size(),
@@ -849,7 +849,7 @@ int PEER::send_frame_to(int flag,
     char remote_str[buf_size];
     ZNO_LOG(RS_DEBUG,
             "[RUDP]send_frame_to start. model[%u] session[%u] first send[%u] remote [%s] "
-            "send frame len[%u] flag[%u] sn[%u] ack[%u] wnd[%u] send seq[%u|%u][%u]"
+            "send frame len[%u] flag[%u] sn[%u] ack[%u] wnd[%u] send seq_[%u|%u][%u]"
             " send wnd [%u|%u] rec[%u|%u] send bytes[%llu][%llu]",
             model_,
             session_id_,
@@ -896,7 +896,7 @@ int PEER::send_frame_to(int flag,
 
     ZNO_LOG(RS_DEBUG,
             "[RUDP] send_frame_to send end. model[%u] session[%u] first send[%u] remote [%s] "
-            "send len [%u]send seq[%u|%u][%u] send wnd [%u|%u] rec[%u|%u] send bytes[%llu][%llu]",
+            "send len [%u]send seq_[%u|%u][%u] send wnd [%u|%u] rec[%u|%u] send bytes[%llu][%llu]",
             model_,
             session_id_,
             first_send,
@@ -1166,8 +1166,8 @@ void PEER::dump_info(const char *some_thing, LOG_PRIORITY log_priority)
     char remote_str[buf_size];
     ZCE_LOG(log_priority,
             "[RUDP].info[%s].model[%u] session[%u] remote [%s] "
-            "send seq[%u|%u][%u]send wnd [%u|%u] rec[%u|%u] send bytes[%llu][%llu]"
-            "recv seq[%u|%u|%u][%u|%u]recv windows[%u|%u] rec [%u|%u],recv bytes[%llu][%llu].",
+            "send seq_[%u|%u][%u]send wnd [%u|%u] rec[%u|%u] send bytes[%llu][%llu]"
+            "recv seq_[%u|%u|%u][%u|%u]recv windows[%u|%u] rec [%u|%u],recv bytes[%llu][%llu].",
             some_thing,
             model_,
             session_id_,

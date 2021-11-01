@@ -3,6 +3,8 @@
 #include "zce/logger/logging.h"
 #include "zce/net/dns_resolve.h"
 
+#pragma pack (1)
+
 struct _DNS_FLAG
 {
 public:
@@ -66,11 +68,13 @@ struct _DNS_Head
     uint16_t  qd_count_;
     //!回复答案的数量
     uint16_t  an_count_;
-    //!返回的
+    //!返回的权威名称服务器数量
     uint16_t  ns_count_;
-    //!
+    //!额外服务器的数量
     uint16_t  ar_count_;
 };
+
+#pragma pack ()
 
 namespace zce
 {
@@ -78,8 +82,8 @@ namespace zce
 
 DNS_Resolve::DNS_Resolve()
 {
-    send_packet_ = new char[MAX_PACKET_LEN];
-    recv_packet_ = new char[MAX_PACKET_LEN];
+    send_packet_ = new char[DNS_PACKET_MAX_LEN];
+    recv_packet_ = new char[DNS_PACKET_MAX_LEN];
 }
 DNS_Resolve::~DNS_Resolve()
 {
@@ -137,7 +141,7 @@ int DNS_Resolve::query(const char *query_name,
                        uint16_t query_type,
                        uint16_t *tid)
 {
-    size_t len = MAX_PACKET_LEN;
+    size_t len = DNS_PACKET_MAX_LEN;
     int ret = DNS_Resolve::pack_request(send_packet_,
                                         &len,
                                         query_name,
@@ -145,6 +149,7 @@ int DNS_Resolve::query(const char *query_name,
                                         tid);
     if (ret != 0)
     {
+        ZCE_LOG(RS_ERROR, "pack_request error ,error code = %d", ret);
         return ret;
     }
     ssize_t snd_len = dns_socket_.sendto(send_packet_,
@@ -164,7 +169,7 @@ int DNS_Resolve::answer(uint16_t *tid,
                         size_t *addrs_num,
                         zce::Time_Value* timeout_tv)
 {
-    size_t len = MAX_PACKET_LEN;
+    size_t len = DNS_PACKET_MAX_LEN;
     Sockaddr_Any recv_addr;
     ssize_t rcv_len = 0;
     int ret = 0;
@@ -232,6 +237,7 @@ int DNS_Resolve::pack_request(char *buf,
     header->tid_ = htons(++TID);
     *tid = TID;
     header->flags_.opcode_ = 0;
+    //要求DNS服务器进行递归查询
     header->flags_.rd_ = 1;
     header->u16_flags_ = htons(header->u16_flags_);
     //一般来说。一次只能干一件事，见Stack Overflow
@@ -353,13 +359,13 @@ int DNS_Resolve::parse_response(char *buf,
     }
     pos += 4;
 
-    //处理 answer 节
+    //处理 answer 节,
     uint16_t ancount = ntohs(header->an_count_);
     if (ancount < 1)
     {
         return -1;
     }
-
+    //所有的RR(Resource Recode/资源记录)都有如下所示的相同的顶层格式
     size_t num = 0;
     for (size_t i = 0; i < ancount; ++i)
     {
@@ -438,12 +444,14 @@ int DNS_Resolve::parse_response(char *buf,
         }
         else
         {
-            //不支持对其他信息的解析,DNS PR一次会返回很多种信息
+            //其他类型暂时不处理，有的类型SOA rddata内部还有数据，比较复杂
         }
         pos += rdlen;
     }
 
     *addrs_num = num;
+    //后面还有NS权威服务器信息的节，暂时不处理，目测也是RR格式
+    //后面还有NS附加信息的节，暂时不处理
     return 0;
 }
 }

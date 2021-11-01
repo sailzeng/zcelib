@@ -26,21 +26,30 @@ class zce::Time_Value;
 
 namespace zce
 {
-///sockaddr_storage 太长了，128个字节，搞个简单的少占用一点空间
+//==============================================================================
+
+//! sockaddr_any用于通用的存放sockaddr_in or sockaddr_in6的地址，
+//! 用于一些可能是IPV4，也可能是IPV6的地方
+//! sockaddr_storage 太长了，128个字节，搞个简单的少占用一点空间
 class sockaddr_any
 {
 public:
     sockaddr_any() = default;
     ~sockaddr_any() = default;
-    explicit sockaddr_any(const sockaddr *sa);
-    explicit sockaddr_any(const sockaddr_in &sa);
-    explicit sockaddr_any(const sockaddr_in6 &sa);
+    sockaddr_any(const ::sockaddr *sa, socklen_t sa_len);
+    explicit sockaddr_any(const ::sockaddr_in &sa);
+    explicit sockaddr_any(const ::sockaddr_in6 &sa);
 
     bool operator == (const sockaddr_any &others) const;
 
-    sockaddr_any& operator = (const sockaddr *addr);
-    sockaddr_any& operator = (const sockaddr_in &addr_in);
-    sockaddr_any& operator = (const sockaddr_in6 &addr_in6);
+    //!根据addr->sa_family判别sockaddr的类型
+    sockaddr_any& operator = (const ::sockaddr *addr);
+    sockaddr_any& operator = (const ::sockaddr_in &addr_in);
+    sockaddr_any& operator = (const ::sockaddr_in6 &addr_in6);
+
+    void set(const ::sockaddr *sa, socklen_t sa_len);
+
+    int get_family() const;
 
     union
     {
@@ -55,6 +64,8 @@ struct sockaddr_ip_hash
 {
     size_t operator()(const zce::sockaddr_any& s) const;
 };
+
+//==============================================================================
 
 /*!
 * @brief      WINDOWS 的SOCKET必须调用一下初始化WSAStartup
@@ -1158,7 +1169,7 @@ inline ZCE_SOCKET zce::socket(int family,
         //关闭这个地方实验一下
         //已经初始化成功，并且是UDP ，去掉这一段
         //SIO_UDP_CONNRESET，是让你在向一个错误UDP peer发送一个数据后，你后收到一个RST错误
-        if (type == SOCK_DGRAM)
+        if (type_ == SOCK_DGRAM)
         {
             DWORD bytes_returned = 0;
             BOOL new_behavior = FALSE;

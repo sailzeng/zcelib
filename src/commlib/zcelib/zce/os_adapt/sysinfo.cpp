@@ -218,7 +218,7 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE* info)
     info->softirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
     // 获得系统的uptime
-    info->up_time_ = zce::get_uptime();
+    zce::steady_clock(&info->up_time_);
 
     //必现补充声明的是，其实这7个数值并不代表所有的CPU时间（除非非常早的内核），后面还有若干数值，我抛弃不用
     //里面实际应该有user+nice+system+idle+iowait+irq+softirq+( stealstolen  +  guest)
@@ -321,7 +321,7 @@ int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE* zce_system_perf)
     zce_system_perf->swapcached_size_ = 0;
 
     //uptime可以读取/proc/uptime得到,但这儿暂时算了
-    zce_system_perf->up_time_ = zce::get_uptime();
+    zce::steady_clock(&zce_system_perf->up_time_);
 
     return 0;
 }
@@ -501,7 +501,7 @@ int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE* zce_system_perf)
     zce_system_perf->swapcached_size_ = 0;
 
     //得到系统的启动时间
-    zce_system_perf->up_time_ = zce::get_uptime();
+    zce::steady_clock(&zce_system_perf->up_time_);
 
     zce_system_perf->idle_time_ = zce::make_timeval(&idle_time);
     zce_system_perf->system_time_ = zce::make_timeval(&kernel_time);

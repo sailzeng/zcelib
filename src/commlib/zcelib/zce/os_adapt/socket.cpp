@@ -19,20 +19,9 @@ sockaddr_any::sockaddr_any(const ::sockaddr_in6 &sa)
     ::memcpy(&in6_, &sa, sizeof(sockaddr_in6));
 }
 
-sockaddr_any::sockaddr_any(const sockaddr *sa)
+sockaddr_any::sockaddr_any(const ::sockaddr *sa, socklen_t sa_len)
 {
-    if (sa->sa_family == AF_INET)
-    {
-        ::memcpy(&in_, sa, sizeof(sockaddr_in));
-    }
-    else if (sa->sa_family == AF_INET6)
-    {
-        ::memcpy(&in6_, sa, sizeof(sockaddr_in6));
-    }
-    else
-    {
-        assert(false);
-    }
+    set(sa, sa_len);
 }
 
 bool sockaddr_any::operator == (const sockaddr_any &others) const
@@ -57,7 +46,7 @@ bool sockaddr_any::operator == (const sockaddr_any &others) const
         const sockaddr_in6 *o = (sockaddr_in6 *)&others;
         //比较地址协议簇，地址，端口
         if (o->sin6_family == s->sin6_family &&
-            0 == memcmp(&(o->sin6_addr), &(s->sin6_addr), sizeof(in6_addr)) &&
+            0 == ::memcmp(&(o->sin6_addr), &(s->sin6_addr), sizeof(in6_addr)) &&
             o->sin6_port == s->sin6_port)
         {
             return true;
@@ -95,6 +84,30 @@ sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in6 &sa)
 {
     ::memcpy(&this->in6_, &sa, sizeof(sockaddr_in6));
     return *this;
+}
+
+void sockaddr_any::set(const ::sockaddr *sa, socklen_t sa_len)
+{
+    if (sa_len == sizeof(::sockaddr_in))
+    {
+        ::memcpy(&in_, sa, sizeof(::sockaddr_in));
+        in_.sin_family = AF_INET;
+    }
+    else if (sa_len == sizeof(::sockaddr_in6))
+    {
+        ::memcpy(&in6_, sa, sizeof(::sockaddr_in6));
+        in6_.sin6_family = AF_INET6;
+    }
+    else
+    {
+        assert(false);
+    }
+}
+
+int sockaddr_any::get_family() const
+{
+    //因为用的是union，所以in_.sin_family和 in6_.sin6_family 一个德行
+    return in_.sin_family;
 }
 
 size_t sockaddr_ip_hash::operator()(const zce::sockaddr_any& s) const
@@ -1176,11 +1189,13 @@ ssize_t recvn_timeout2(ZCE_SOCKET handle,
 #if defined  ZCE_OS_WINDOWS
     //超时的毫秒
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
-    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void*)(&msec_timeout), sizeof(DWORD));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO,
+                          (const void*)(&msec_timeout), sizeof(DWORD));
 
 #elif defined  ZCE_OS_LINUX
     timeval sockopt_tv = timeout_tv;
-    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void*)(&sockopt_tv), sizeof(timeval));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO,
+                          (const void*)(&sockopt_tv), sizeof(timeval));
 #endif
 
     if (0 != ret)
@@ -1356,7 +1371,7 @@ int inet_pton(int family,
 
     //为什么不让我用inet_pton ,(Vista才支持),不打开下面注释的原因是，编译会通过了，但你也没法用,XP和WINSERVER2003都无法使用，
     //VISTA,WINSERVER2008的_WIN32_WINNT都是0x0600. 诅咒在2011年还在用Win2003Server的公司
-#if defined ZCE_SUPPORT_WINSVR2008
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     return ::inet_pton(family, strptr, addrptr);
 #else
 
@@ -1573,7 +1588,7 @@ const char* inet_ntop(int family,
                       size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
-#if defined ZCE_SUPPORT_WINSVR2008
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     return ::inet_ntop(family, addrptr, strptr, len);
 #else
     //根据不同的协议簇进行不同的处理

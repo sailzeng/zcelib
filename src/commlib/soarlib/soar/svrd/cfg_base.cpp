@@ -154,7 +154,7 @@ int Server_Config_Base::usage(const char* program_name)
     std::cout << "   -d run as daemon" << std::endl;
     std::cout << "   -n reset channel mmp" << std::endl;
     std::cout << "   -v show version" << std::endl;
-    std::cout << "   -t service type" << std::endl;
+    std::cout << "   -t service type_" << std::endl;
     std::cout << "   -i service index" << std::endl;
     std::cout << "   -p pull config from cfgsvr" << std::endl;
     std::cout << "   -m install app as windows servcie" << std::endl;

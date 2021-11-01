@@ -156,7 +156,7 @@ struct pthread_cond_t
 
     ///WINDOWS的条件变量在WINSERVER2008，VISTA后才支持
     ///这个条件变量只能单进程内部使用，其外部互斥量，只支持临界区
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     CONDITION_VARIABLE   cv_object_;
 #endif
     ///采用两个信号灯和一个互斥量模拟的条件变量，同时支持signal和broadcast操作，

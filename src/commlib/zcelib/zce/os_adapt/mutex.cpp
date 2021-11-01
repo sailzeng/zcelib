@@ -102,7 +102,7 @@ int zce::pthread_mutexattr_settype(pthread_mutexattr_t* attr, int type)
     attr->lock_type_ = type;
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutexattr_settype(attr, type);
+    return ::pthread_mutexattr_settype(attr, type_);
 #endif
 }
 
@@ -114,7 +114,7 @@ int zce::pthread_mutexattr_gettype(const pthread_mutexattr_t* attr,
     *type = attr->lock_type_;
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_mutexattr_gettype(attr, type);
+    return ::pthread_mutexattr_gettype(attr, type_);
 #endif
 }
 

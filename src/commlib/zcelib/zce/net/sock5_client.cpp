@@ -1,7 +1,7 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/socket.h"
-#include "zce/net/sock5_proxy.h"
+#include "zce/net/sock5_client.h"
 
 //==============================================================================================
 //SOCKS5支持UDP穿透和TCP代理，比较全面

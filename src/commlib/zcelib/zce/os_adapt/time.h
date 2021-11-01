@@ -77,7 +77,21 @@ static const time_t TIMEZONE_SECONDS = timezone;
 #endif
 
 /*!
-* @brief      非标准函数，得到服务器启动到现在的时间，这个时间是个绝对递增的值，不会调整
+* @brief      取得当前的时间，（墙上时钟）
+* @return     inline int  ==0表示成功
+* @param      [out]tv     当前的时间
+* @param      [out]tz     时区，内部没有处理夏令时问题，LINUX的系统目前也不支持了
+* @note       gettimeofday 这个函数在POSIX中已经被抛弃，但是大量的LINUX还会继续使用，所以暂时留下来，
+*             POSIX推荐的clock_gettime好像还没有看见多少人呢用
+*/
+inline int gettimeofday(struct timeval* tv, struct timezone* tz = NULL);
+
+//别名而已，
+inline int system_clock(struct ::timeval *tv);
+
+/*!
+* @brief      非标准函数，得到稳定的时间，
+*             目前是，服务器启动到现在的时间，这个时间是个绝对递增的值，不会调整
 * @detail     原来模拟的函数是gethrtime的行为，但其返回单位比较怪，类似得到CPU从启动后到现在的TICK的时间，
 *             后来pascal改了改了函数名称，也好行为不一样，不如这样
 * @return     const timeval
@@ -87,21 +101,11 @@ static const time_t TIMEZONE_SECONDS = timezone;
 *             你老不要49天就只调用一次这个函数呀，那样我保证不了你的TICK的效果，你老至少每天调用一次吧。
 *             LINUX 下，测试后发现很多系统没有gethrtime函数，用POSIX的新函数clock_gettime代替。
 */
-const timeval  get_uptime(void);
+int steady_clock(timeval *tv);
 
 ///得到服务器从启动到现在的毫秒数，内部采用系统函数，而不使用std::clock函数处理，
 ///提供更高的使用便捷性，不用考虑回环等问题
 uint64_t clock_ms(void);
-
-/*!
-* @brief      取得当前的时间，（墙上时钟）
-* @return     inline int  ==0表示成功
-* @param      [out]tv     当前的时间
-* @param      [out]tz     时区，内部没有处理夏令时问题，LINUX的系统目前也不支持了
-* @note       gettimeofday 这个函数在POSIX中已经被抛弃，但是大量的LINUX还会继续使用，所以暂时留下来，
-*             POSIX推荐的clock_gettime好像还没有看见多少人呢用
-*/
-inline int gettimeofday(struct timeval* tv, struct timezone* tz = NULL);
 
 /*!
 * @brief      取得当前的时钟
@@ -543,9 +547,9 @@ inline int zce::gettimeofday(struct timeval* tv, struct timezone* tz)
         //The FILETIME structure is a 64-bit value representing the number of
         //100-nanosecond intervals since January 1, 1601.
 
-        //得到time_t部分
+        //得到time_t部分,FILETIME存放的是100-nanosecond,1s = 10000000 (100ns)
         tv->tv_sec = static_cast<long>((ui.QuadPart - 116444736000000000) / 10000000);
-        //得到微秒部分，FILETIME存放的是100-nanosecond
+        //得到微秒部分，
         tv->tv_usec = static_cast<long>(((ui.QuadPart - 116444736000000000) % 10000000) / 10);
     }
 
@@ -576,8 +580,13 @@ inline int zce::gettimeofday(struct timeval* tv, struct timezone* tz)
 #endif //
 }
 
+inline int zce::system_clock(struct ::timeval *tv)
+{
+    return zce::gettimeofday(tv);
+}
+
 //得到时间各种时间
-inline int zce::clock_gettime(clockid_t clk_id, timespec* ts)
+inline int zce::clock_gettime(clockid_t clk_id, ::timespec* ts)
 {
 #if defined ZCE_OS_WINDOWS
     timeval tv;
@@ -587,7 +596,7 @@ inline int zce::clock_gettime(clockid_t clk_id, timespec* ts)
     }
     else if (CLOCK_MONOTONIC == clk_id)
     {
-        tv = zce::get_uptime();
+        zce::steady_clock(&tv);
     }
     else
     {

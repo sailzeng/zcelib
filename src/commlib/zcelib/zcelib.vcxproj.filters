@@ -324,10 +324,13 @@
     <ClCompile Include="zce\net\dns_resolve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\net\sock5_proxy.cpp">
+    <ClCompile Include="zce\net\sock5_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\socket\addr_any.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\net\ping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -749,10 +752,13 @@
     <ClInclude Include="zce\net\dns_resolve.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\net\sock5_proxy.h">
+    <ClInclude Include="zce\net\sock5_client.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\socket\addr_any.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\net\ping.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

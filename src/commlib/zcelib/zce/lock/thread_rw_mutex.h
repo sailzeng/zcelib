@@ -79,7 +79,7 @@ protected:
     pthread_rwlock_t  rw_lock_;
 };
 
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
 /*!
 @brief      轻量级的线程的读写锁，没有超时处理，

@@ -31,13 +31,11 @@
 //缺点：如果两次调用之间的时间如果过长，超过49天，我无法保证你得到准确的值
 //你老不要49天就只调用一次这个函数呀，那样我保证不了你的TICK的效果，你老至少每天调用一次吧。
 //内部为了上一次调用的时间，用了static 变量，又为了保护static，给了锁，
-const timeval zce::get_uptime()
+int zce::steady_clock(timeval *tv)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     //注意GetTickCount64和GetTickCount返回的都是milliseconds，不是CPU Tick
-
-    timeval up_time;
     uint64_t now_cpu_tick = 0;
 
     //为什么不让我用GetTickCount64 ,(Vista才支持),不打开下面注释的原因是，编译会通过了，但你也没法用,XP和WINSERVER2003都无法使用，
@@ -68,15 +66,14 @@ const timeval zce::get_uptime()
         cpu_tick_count += 0xFFFFFFFF - one_period_tick + cpu_tick;
         one_period_tick = cpu_tick;
     }
-
     now_cpu_tick = cpu_tick_count;
 
 #endif //
 
-    up_time.tv_sec = static_cast<long>(now_cpu_tick / SEC_PER_MSEC);
-    up_time.tv_usec = static_cast<long>(now_cpu_tick % SEC_PER_MSEC * MSEC_PER_USEC);
+    tv->tv_sec = static_cast<long>(now_cpu_tick / SEC_PER_MSEC);
+    tv->tv_usec = static_cast<long>(now_cpu_tick % SEC_PER_MSEC * MSEC_PER_USEC);
 
-    return up_time;
+    return 0;
 
 #elif defined (ZCE_OS_LINUX)
     //倒霉的发现LINUX很多版本都没有支持这个gethrtime函数，我靠，，，，，
@@ -86,16 +83,17 @@ const timeval zce::get_uptime()
 
     if (ret == 0)
     {
-        up_time = zce::make_timeval(&sp);
+        *tv = zce::make_timeval(&sp);
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d", ret, zce::last_error());
-        up_time.tv_sec = 0;
-        up_time.tv_usec = 0;
+        ZCE_LOG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d "
+                "lasterror = %d", ret, zce::last_error());
+        tv->tv_sec = 0;
+        tv->tv_usec = 0;
     }
 
-    return up_time;
+    return 0;
 #endif
 }
 
