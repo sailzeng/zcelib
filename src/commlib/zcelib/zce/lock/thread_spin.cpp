@@ -5,15 +5,16 @@
 #include "zce/os_adapt/semaphore.h"
 #include "zce/os_adapt/error.h"
 #include "zce/logger/logging.h"
-
 #include "zce/lock/thread_spin.h"
 
+namespace zce
+{
 /************************************************************************************************************
-Class           : ZCE_Thread_Spin_Mutex
+Class           : Thread_Spin_Mutex
 ************************************************************************************************************/
 
 //构造函数
-ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex()
+Thread_Spin_Mutex::Thread_Spin_Mutex()
 {
     int ret = 0;
 
@@ -29,7 +30,7 @@ ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex()
 }
 
 //销毁互斥量
-ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex(void)
+Thread_Spin_Mutex::~Thread_Spin_Mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_spin_destroy(&lock_);
@@ -42,7 +43,7 @@ ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex(void)
 }
 
 //锁定
-void ZCE_Thread_Spin_Mutex::lock()
+void Thread_Spin_Mutex::lock()
 {
     int ret = 0;
     ret = zce::pthread_spin_lock(&lock_);
@@ -55,7 +56,7 @@ void ZCE_Thread_Spin_Mutex::lock()
 }
 
 //尝试锁定
-bool ZCE_Thread_Spin_Mutex::try_lock()
+bool Thread_Spin_Mutex::try_lock()
 {
     int ret = 0;
     ret = zce::pthread_spin_trylock(&lock_);
@@ -69,7 +70,7 @@ bool ZCE_Thread_Spin_Mutex::try_lock()
 }
 
 //解锁,
-void ZCE_Thread_Spin_Mutex::unlock()
+void Thread_Spin_Mutex::unlock()
 {
     int ret = 0;
     ret = zce::pthread_spin_unlock(&lock_);
@@ -82,7 +83,8 @@ void ZCE_Thread_Spin_Mutex::unlock()
 }
 
 //取出内部的锁的指针
-pthread_spinlock_t* ZCE_Thread_Spin_Mutex::get_lock()
+pthread_spinlock_t* Thread_Spin_Mutex::get_lock()
 {
     return &lock_;
+}
 }

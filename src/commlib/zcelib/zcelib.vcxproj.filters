@@ -761,5 +761,11 @@
     <ClInclude Include="zce\net\ping.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\task\msgque_condi.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\task\msgque_sema.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

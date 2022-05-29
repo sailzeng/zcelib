@@ -378,7 +378,7 @@ protected:
     bool is_thread_synchro_ = false;
 
     ///同步锁
-    ZCE_Thread_Light_Mutex protect_lock_;
+    Thread_Light_Mutex protect_lock_;
 
     ///是否进行自动换行
     bool                   auto_new_line_ = true;

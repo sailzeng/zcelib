@@ -367,13 +367,20 @@ struct iovec
 
 struct msghdr
 {
-    void* msg_name;       /* optional address */
-    socklen_t     msg_namelen;    /* size of address */
-    struct iovec* msg_iov;        /* scatter/gather array */
-    size_t        msg_iovlen;     /* # elements in msg_iov */
-    void* msg_control;    /* ancillary data, see below */
-    socklen_t     msg_controllen; /* ancillary data buffer len */
-    int           msg_flags;      /* flags on received message */
+    /* optional address ,相当于对方的地址,recvfrom的第5，6个参数*/
+    void* msg_name;
+    /* size of address */
+    socklen_t     msg_namelen;
+    /* scatter/gather array 接受or 发送数据的数组*/
+    struct iovec* msg_iov;
+    /* # elements in msg_iov */
+    size_t        msg_iovlen;
+    /* ancillary data, see below */
+    void* msg_control;
+    /* ancillary data buffer len */
+    socklen_t     msg_controllen;
+    /* flags on received message */
+    int           msg_flags;
 };
 
 struct sched_param

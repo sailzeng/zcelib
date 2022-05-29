@@ -275,13 +275,13 @@ protected:
     size_t                                         queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    zce::MT_SYNCH::MUTEX                           queue_lock_;
+    ZCE_MT_SYNCH::MUTEX                            queue_lock_;
 
     //信号灯，满的信号灯
-    zce::MT_SYNCH::SEMAPHORE                       sem_full_;
+    ZCE_MT_SYNCH::SEMAPHORE                        sem_full_;
 
     //信号灯，空的信号灯，当数据
-    zce::MT_SYNCH::SEMAPHORE                       sem_empty_;
+    ZCE_MT_SYNCH::SEMAPHORE                        sem_empty_;
 
     //容器类型，可以是list,dequeue,
     _container_type                                message_queue_;
@@ -289,7 +289,7 @@ protected:
 
 /*!
 * @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
-*             zce::MsgQueue_List <MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
+*             zce::MsgQueue_List <ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
 * @tparam     _value_type 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */

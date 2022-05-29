@@ -7,28 +7,29 @@
 * @brief      线程的信号灯封装
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
-#define ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
+#pragma once
 
 #include "zce/lock/lock_base.h"
 #include "zce/lock/lock_guard.h"
 #include "zce/time/time_value.h"
 
+namespace zce
+{
 /*!
 @brief      线程的信号灯封装，使用的是无名的信号灯，
 */
-class ZCE_Thread_Semaphore : public ZCE_Lock_Base
+class Thread_Semaphore : public zce::Lock_Base
 {
 public:
     //线程锁的GUARD
-    typedef ZCE_Lock_Guard<ZCE_Thread_Semaphore> LOCK_GUARD;
+    typedef zce::Lock_Guard<Thread_Semaphore> LOCK_GUARD;
 
 public:
 
     //构造函数,默认创建匿名信号灯，线程下一般用匿名信号灯就足够了,sem_name一般用NULL就足够了
     //匿名信号灯==无名信号灯
-    ZCE_Thread_Semaphore(unsigned int init_value);
-    virtual ~ZCE_Thread_Semaphore(void);
+    Thread_Semaphore(unsigned int init_value);
+    virtual ~Thread_Semaphore(void);
 
     //锁定
     virtual void lock();
@@ -49,5 +50,4 @@ protected:
     //线程锁
     sem_t* lock_;
 };
-
-#endif //ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
+}

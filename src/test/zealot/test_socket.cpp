@@ -225,3 +225,25 @@ int test_dns_resolve([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     }
     return 0;
 }
+
+int test_ping([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
+{
+    int ret = 0;
+    zce::Ping ping;
+    ret = ping.initialize(AF_INET, "114.114.114.114");
+    printf("initialize ret=%d\n", ret);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ping.ping(10);
+    zce::Ping ping6;
+    ret = ping6.initialize(AF_INET6, "::1");
+    printf("initialize ret=%d\n", ret);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ping6.ping(10);
+    return 0;
+}

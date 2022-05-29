@@ -53,7 +53,7 @@ public:
                                  size_t& use_buf,
                                  bool out_port_info = true) const
     {
-        return zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len, use_buf, out_port_info);
+        return zce::sockaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len, use_buf, out_port_info);
     }
 
     ///检查地址是否是一个内网地址

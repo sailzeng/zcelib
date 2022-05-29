@@ -12,8 +12,7 @@
 *             单线程环境
 */
 
-#ifndef ZCE_LIB_LOCK_SYNCH_TRAITS_H_
-#define ZCE_LIB_LOCK_SYNCH_TRAITS_H_
+#pragma once
 
 //用于某些策略处理的类
 #include "zce/lock/process_mutex.h"
@@ -23,21 +22,23 @@
 #include "zce/lock/thread_condi.h"
 #include "zce/lock/null_lock.h"
 
+namespace zce
+{
 /*!
 * @brief      线程加锁环境的锁类型萃取器
 */
-class ZCE_MT_SYNCH
+class MT_SYNCH
 {
 public:
-    typedef ZCE_Thread_Light_Mutex                  MUTEX;
-    typedef ZCE_Null_Mutex                          NULL_MUTEX;
-    typedef ZCE_Process_Mutex                       PROCESS_MUTEX;
-    typedef ZCE_Thread_Recursive_Mutex              RECURSIVE_MUTEX;
-    typedef ZCE_Thread_RW_Mutex                     RW_MUTEX;
-    typedef ZCE_Thread_Condition_Mutex              CONDITION;
-    typedef ZCE_Thread_Condition_Recursive_Mutex    RECURSIVE_CONDITION;
-    typedef ZCE_Thread_Semaphore                    SEMAPHORE;
-    typedef ZCE_Null_Mutex                          NULL_SEMAPHORE;
+    typedef Thread_Light_Mutex                  MUTEX;
+    typedef Null_Mutex                          NULL_MUTEX;
+    typedef Process_Mutex                       PROCESS_MUTEX;
+    typedef Thread_Recursive_Mutex              RECURSIVE_MUTEX;
+    typedef Thread_RW_Mutex                     RW_MUTEX;
+    typedef Thread_Condition_Mutex              CONDITION;
+    typedef Thread_Condition_Recursive_Mutex    RECURSIVE_CONDITION;
+    typedef Thread_Semaphore                    SEMAPHORE;
+    typedef Null_Mutex                          NULL_SEMAPHORE;
 };
 
 /*!
@@ -46,15 +47,14 @@ public:
 class ZCE_NULL_SYNCH
 {
 public:
-    typedef ZCE_Null_Mutex               MUTEX;
-    typedef ZCE_Null_Mutex               NULL_MUTEX;
-    typedef ZCE_Null_Mutex               PROCESS_MUTEX;
-    typedef ZCE_Null_Mutex               RECURSIVE_MUTEX;
-    typedef ZCE_Null_Mutex               RW_MUTEX;
-    typedef ZCE_Null_Condition           CONDITION;
-    typedef ZCE_Null_Condition           RECURSIVE_CONDITION;
-    typedef ZCE_Null_Mutex               SEMAPHORE;
-    typedef ZCE_Null_Mutex               NULL_SEMAPHORE;
+    typedef Null_Mutex               MUTEX;
+    typedef Null_Mutex               NULL_MUTEX;
+    typedef Null_Mutex               PROCESS_MUTEX;
+    typedef Null_Mutex               RECURSIVE_MUTEX;
+    typedef Null_Mutex               RW_MUTEX;
+    typedef Null_Condition           CONDITION;
+    typedef Null_Condition           RECURSIVE_CONDITION;
+    typedef Null_Mutex               SEMAPHORE;
+    typedef Null_Mutex               NULL_SEMAPHORE;
 };
-
-#endif //ZCE_LIB_LOCK_SYNCH_TRAITS_H_
+}

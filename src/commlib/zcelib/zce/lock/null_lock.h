@@ -27,25 +27,27 @@
 
 class zce::Time_Value;
 
+namespace zce
+{
 /*!
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
 */
-class ZCE_Null_Mutex : public ZCE_Lock_Base
+class Null_Mutex : public zce::Lock_Base
 {
 public:
     //NULL锁的GUARD
-    typedef ZCE_Lock_Guard<ZCE_Null_Mutex>      LOCK_GUARD;
+    typedef Lock_Guard<zce::Null_Mutex>      LOCK_GUARD;
 
-    typedef ZCE_Read_Guard<ZCE_Null_Mutex>      LOCK_READ_GUARD;
+    typedef Read_Guard<zce::Null_Mutex>      LOCK_READ_GUARD;
 
-    typedef ZCE_Write_Guard<ZCE_Null_Mutex>     LOCK_WRITE_GUARD;
+    typedef Write_Guard<zce::Null_Mutex>     LOCK_WRITE_GUARD;
 
 public:
     ///构造函数
-    ZCE_Null_Mutex(const char* ptr = NULL);
+    Null_Mutex(const char* ptr = NULL);
     ///析构函数
-    virtual ~ZCE_Null_Mutex(void);
+    virtual ~Null_Mutex(void);
 
 public:
     ///锁定
@@ -92,23 +94,23 @@ protected:
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
 */
-class ZCE_Null_Condition : public ZCE_Condition_Base
+class Null_Condition : public Condition_Base
 {
 public:
     //
-    ZCE_Null_Condition();
-    virtual ~ZCE_Null_Condition();
+    Null_Condition();
+    virtual ~Null_Condition();
 
 private:
 
     ///等待
-    virtual void wait(ZCE_Null_Mutex* /*external_mutex*/);
+    virtual void wait(zce::Null_Mutex* /*external_mutex*/);
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(ZCE_Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*abs_time*/);
+    virtual bool systime_wait(zce::Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*abs_time*/);
 
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(ZCE_Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*relative_time*/);
+    virtual bool duration_wait(zce::Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*relative_time*/);
 
     /// 给一个等待线程发送信号 Signal one waiting thread.
     virtual void signal(void);
@@ -120,5 +122,6 @@ protected:
     // A dummy lock.
     int    lock_;
 };
+}
 
 #endif //ZCE_LIB_LOCK_NULL_LOCK_H_

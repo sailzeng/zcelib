@@ -158,16 +158,16 @@ int Comm_Manager::check_safeport(const zce::Sockaddr_In& inetadd)
     const unsigned short SAFE_PORT1 = 80;
 
     //如果打开了保险检查,检查配置的端口
-    if ((inetadd.get_port_number() <= UNSAFE_PORT1 && inetadd.get_port_number() != SAFE_PORT1) ||
-        inetadd.get_port_number() == UNSAFE_PORT2 ||
-        inetadd.get_port_number() == UNSAFE_PORT3 ||
-        inetadd.get_port_number() == UNSAFE_PORT4)
+    if ((inetadd.get_port() <= UNSAFE_PORT1 && inetadd.get_port() != SAFE_PORT1) ||
+        inetadd.get_port() == UNSAFE_PORT2 ||
+        inetadd.get_port() == UNSAFE_PORT3 ||
+        inetadd.get_port() == UNSAFE_PORT4)
     {
         //如果使用保险打开(TRUE)
         if (zerg_config_->zerg_cfg_data_.zerg_insurance_)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Unsafe port %u,if you need to open this port,please close insurance. ",
-                    inetadd.get_port_number());
+                    inetadd.get_port());
             return SOAR_RET::ERR_ZERG_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
@@ -175,7 +175,7 @@ int Comm_Manager::check_safeport(const zce::Sockaddr_In& inetadd)
         {
             //给出警告
             ZCE_LOG(RS_INFO, "[zergsvr] Warn!Warn! Unsafe port %u.Please notice! ",
-                    inetadd.get_port_number());
+                    inetadd.get_port());
         }
     }
 

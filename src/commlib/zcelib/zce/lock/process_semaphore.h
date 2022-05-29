@@ -7,23 +7,24 @@
 * @brief      进程间同步用的信号灯，
 *
 */
-#ifndef ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
-#define ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
+#pragma once
 
 #include "zce/lock/lock_base.h"
 #include "zce/lock/lock_guard.h"
 
+namespace zce
+{
 /*!
 * @brief      进程的信号灯类
 *             LINUX下用有名信号灯，
 *             WINDOWS下用带名称的信号灯，
 */
-class ZCE_Process_Semaphore : public ZCE_Lock_Base
+class Process_Semaphore : public zce::Lock_Base
 {
 public:
 
     ///线程锁的GUARD
-    typedef ZCE_Lock_Guard<ZCE_Process_Semaphore> LOCK_GUARD;
+    typedef zce::Lock_Guard<Process_Semaphore> LOCK_GUARD;
 
 public:
 
@@ -32,10 +33,10 @@ public:
     * @param      init_value  信号灯初始化的值
     * @param      sem_name    信号灯的名称
     */
-    ZCE_Process_Semaphore(unsigned int init_value,
-                          const char* sem_name
+    Process_Semaphore(unsigned int init_value,
+                      const char* sem_name
     );
-    virtual ~ZCE_Process_Semaphore(void);
+    virtual ~Process_Semaphore(void);
 
     ///锁定
     virtual void lock();
@@ -68,5 +69,4 @@ protected:
     ///信号灯的名称，不得不记录下来，或者是共享内存的文件名称
     char              sema_name_[PATH_MAX + 1];
 };
-
-#endif //ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
+}

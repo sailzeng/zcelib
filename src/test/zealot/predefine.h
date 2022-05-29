@@ -89,6 +89,7 @@
 #include <zce/sqlite/sqlite_handler.h>
 #include <zce/sqlite/sqlite_stmt.h>
 #include <zce/net/dns_resolve.h>
+#include <zce/net/ping.h>
 
 #include <thread>
 #include <mutex>
@@ -237,6 +238,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[]);
 int test_rudp_client(int /*argc*/, char* /*argv*/[]);
 
 int test_dns_resolve(int argc, char* argv[]);
+int test_ping(int argc, char* argv[]);
 
 #endif //
 

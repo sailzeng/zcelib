@@ -11,7 +11,7 @@ std::vector<Ogre_UDPSvc_Hdl*> Ogre_UDPSvc_Hdl::ary_upd_peer_;
 Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::Sockaddr_In& upd_addr, zce::ZCE_Reactor* reactor) :
     zce::Event_Handler(reactor),
     udp_bind_addr_(upd_addr),
-    peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port_number()),
+    peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port()),
     dgram_databuf_(NULL),
     ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {

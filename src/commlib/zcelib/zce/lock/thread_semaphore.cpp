@@ -5,8 +5,10 @@
 #include "zce/logger/logging.h"
 #include "zce/lock/thread_semaphore.h"
 
+namespace zce
+{
 //构造函数,默认创建匿名信号灯，线程下一般用匿名信号灯就足够了,
-ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value) :
+Thread_Semaphore::Thread_Semaphore(unsigned int init_value) :
     lock_(NULL)
 {
     int ret = 0;
@@ -20,7 +22,7 @@ ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value) :
     }
 }
 
-ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
+Thread_Semaphore::~Thread_Semaphore()
 {
     //没有初始化过
     if (!lock_)
@@ -36,7 +38,7 @@ ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
 }
 
 //锁定
-void ZCE_Thread_Semaphore::lock()
+void Thread_Semaphore::lock()
 {
     //信号灯锁定
     int ret = zce::sem_wait(lock_);
@@ -49,7 +51,7 @@ void ZCE_Thread_Semaphore::lock()
 }
 
 //尝试锁定
-bool ZCE_Thread_Semaphore::try_lock()
+bool Thread_Semaphore::try_lock()
 {
     //信号灯锁定
     int ret = zce::sem_trywait(lock_);
@@ -63,7 +65,7 @@ bool ZCE_Thread_Semaphore::try_lock()
 }
 
 //解锁,
-void ZCE_Thread_Semaphore::unlock()
+void Thread_Semaphore::unlock()
 {
     int ret = zce::sem_post(lock_);
 
@@ -75,7 +77,7 @@ void ZCE_Thread_Semaphore::unlock()
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool ZCE_Thread_Semaphore::lock(const zce::Time_Value& abs_time)
+bool Thread_Semaphore::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::sem_timedwait(lock_, abs_time);
@@ -94,9 +96,10 @@ bool ZCE_Thread_Semaphore::lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool ZCE_Thread_Semaphore::lock_for(const zce::Time_Value& relative_time)
+bool Thread_Semaphore::lock_for(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
     return lock(abs_time);
+}
 }

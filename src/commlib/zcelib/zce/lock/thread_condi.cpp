@@ -6,11 +6,13 @@
 #include "zce/lock/thread_mutex.h"
 #include "zce/lock/thread_condi.h"
 
+namespace zce
+{
 //---------------------------------------------------------------------------------------
-//为ZCE_Thread_Light_Mutex做的特化
+//为Thread_Light_Mutex做的特化
 //等待
 template <>
-void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait(ZCE_Thread_Light_Mutex* external_mutex)
+void Thread_Condition<Thread_Light_Mutex>::wait(Thread_Light_Mutex* external_mutex)
 {
     int ret = zce::pthread_cond_wait(&lock_,
                                      external_mutex->get_lock());
@@ -22,12 +24,12 @@ void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait(ZCE_Thread_Light_Mutex* 
     }
 }
 
-//我根据ZCE_Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex给了特化实现
+//我根据Thread_Light_Mutex，Thread_Recursive_Mutex给了特化实现
 
 //绝对时间超时的的等待，超时后解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light_Mutex* external_mutex,
-                                                                const zce::Time_Value& abs_time)
+bool Thread_Condition<Thread_Light_Mutex>::systime_wait(Thread_Light_Mutex* external_mutex,
+                                                        const zce::Time_Value& abs_time)
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -44,7 +46,7 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
 
 //相对时间的超时锁定等待，超时后，解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex* external_mutex, const zce::Time_Value& relative_time)
+bool Thread_Condition<Thread_Light_Mutex>::duration_wait(Thread_Light_Mutex* external_mutex, const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
@@ -52,10 +54,10 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Ligh
 }
 
 //---------------------------------------------------------------------------------------
-//为ZCE_Thread_Light_Mutex做的特化
+//为Thread_Light_Mutex做的特化
 //等待
 template <>
-void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait(ZCE_Thread_Recursive_Mutex* external_mutex)
+void Thread_Condition<Thread_Recursive_Mutex>::wait(Thread_Recursive_Mutex* external_mutex)
 {
     int ret = zce::pthread_cond_wait(&lock_,
                                      external_mutex->get_lock());
@@ -67,12 +69,12 @@ void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait(ZCE_Thread_Recursive
     }
 }
 
-//我根据ZCE_Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex给了特化实现
+//我根据Thread_Light_Mutex，Thread_Recursive_Mutex给了特化实现
 
 //绝对时间超时的的等待，超时后解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_Recursive_Mutex* external_mutex,
-                                                                    const zce::Time_Value& abs_time)
+bool Thread_Condition<Thread_Recursive_Mutex>::systime_wait(Thread_Recursive_Mutex* external_mutex,
+                                                            const zce::Time_Value& abs_time)
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -89,10 +91,11 @@ bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_R
 
 //相对时间的超时锁定等待，超时后，解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::duration_wait(ZCE_Thread_Recursive_Mutex* external_mutex,
-                                                                     const zce::Time_Value& relative_time)
+bool Thread_Condition<Thread_Recursive_Mutex>::duration_wait(Thread_Recursive_Mutex* external_mutex,
+                                                             const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return systime_wait(external_mutex, abs_time);
+}
 }

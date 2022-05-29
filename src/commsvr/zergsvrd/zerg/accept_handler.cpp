@@ -48,7 +48,7 @@ int TCP_Accept_Handler::create_listen()
 
     ZCE_LOG(RS_INFO, "[zergsvr] Bind Listen IP|Port : [%s] Success.",
             accept_bind_addr_.to_string(str_ip_addr, IP_ADDR_LEN, use_len),
-            accept_bind_addr_.get_port_number());
+            accept_bind_addr_.get_port());
 
     //被Accept的端口会继承这些选项
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void*>(&rcvbuflen), &opvallen);

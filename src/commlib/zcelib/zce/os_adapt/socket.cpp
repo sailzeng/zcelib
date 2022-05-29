@@ -9,6 +9,15 @@ namespace zce
 {
 //===============================================
 //sockaddr_ip，兼容sockaddr_in sockaddr_in6的地址信息
+
+sockaddr_any::sockaddr_any()
+{
+    memset(&in6_, 0, sizeof(sockaddr_in6));
+}
+sockaddr_any::~sockaddr_any()
+{
+}
+
 sockaddr_any::sockaddr_any(const ::sockaddr_in &sa)
 {
     ::memcpy(&in_, &sa, sizeof(sockaddr_in));
@@ -92,16 +101,23 @@ void sockaddr_any::set(const ::sockaddr *sa, socklen_t sa_len)
     {
         ::memcpy(&in_, sa, sizeof(::sockaddr_in));
         in_.sin_family = AF_INET;
+        in_.sin_port = 0;
     }
     else if (sa_len == sizeof(::sockaddr_in6))
     {
         ::memcpy(&in6_, sa, sizeof(::sockaddr_in6));
         in6_.sin6_family = AF_INET6;
+        in6_.sin6_port = 0;
     }
     else
     {
         assert(false);
     }
+}
+
+void sockaddr_any::set_family(int family)
+{
+    in_.sin_family = (ADDRESS_FAMILY)family;
 }
 
 int sockaddr_any::get_family() const
@@ -1665,9 +1681,9 @@ const char* inet_ntop(int family,
 }
 
 //输出IP地址信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>15.IPV6至少长度>39
-const char* socketaddr_ntop(const sockaddr* sock_addr,
-                            char* str_ptr,
-                            size_t str_len)
+const char* sockaddr_ntop(const sockaddr* sock_addr,
+                          char* str_ptr,
+                          size_t str_len)
 {
     //根据不同的地址协议族，进行转换
     if (sock_addr->sa_family == AF_INET)
@@ -1693,11 +1709,11 @@ const char* socketaddr_ntop(const sockaddr* sock_addr,
 }
 
 //输出IP地址信息以及端口信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>21.IPV6至少长度>45
-const char* socketaddr_ntop_ex(const sockaddr* sock_addr,
-                               char* str_ptr,
-                               size_t str_len,
-                               size_t& use_len,
-                               bool out_port_info)
+const char* sockaddr_ntop_ex(const sockaddr* sock_addr,
+                             char* str_ptr,
+                             size_t str_len,
+                             size_t& use_len,
+                             bool out_port_info)
 {
     uint16_t addr_port = 0;
     const char* ret_str = nullptr;

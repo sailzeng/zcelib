@@ -5,23 +5,25 @@
 #include "zce/os_adapt/flock.h"
 #include "zce/lock/file_lock.h"
 
+namespace zce
+{
 //构造函数
-ZCE_File_Lock::ZCE_File_Lock() :
+File_Lock::File_Lock() :
     open_by_self_(false),
     file_len_(0)
 {
 }
 
 //析构函数
-ZCE_File_Lock::~ZCE_File_Lock()
+File_Lock::~File_Lock()
 {
     close();
 }
 
 //通过文件名称参数初始化文件锁，会打开这个文件
-int ZCE_File_Lock::open(const char* file_name,
-                        int open_mode,
-                        mode_t perms)
+int File_Lock::open(const char* file_name,
+                    int open_mode,
+                    mode_t perms)
 {
     int ret = 0;
     //避免重复打开，用断言保护
@@ -52,7 +54,7 @@ int ZCE_File_Lock::open(const char* file_name,
 }
 
 //通过文件句柄初始化文件锁
-int ZCE_File_Lock::open(ZCE_HANDLE file_handle)
+int File_Lock::open(ZCE_HANDLE file_handle)
 {
     int ret = 0;
     ret = zce::filesize(file_handle, &file_len_);
@@ -67,7 +69,7 @@ int ZCE_File_Lock::open(ZCE_HANDLE file_handle)
 }
 
 //关闭文件锁
-int ZCE_File_Lock::close()
+int File_Lock::close()
 {
     unlock();
 
@@ -80,13 +82,13 @@ int ZCE_File_Lock::close()
 }
 
 //得到锁文件的句柄
-ZCE_HANDLE ZCE_File_Lock::get_file_handle()
+ZCE_HANDLE File_Lock::get_file_handle()
 {
     return file_lock_.handle_;
 }
 
 //读取锁
-void ZCE_File_Lock::lock_read()
+void File_Lock::lock_read()
 {
     int ret = 0;
     ret = zce::fcntl_rdlock(&file_lock_, SEEK_SET, 0, file_len_);
@@ -100,7 +102,7 @@ void ZCE_File_Lock::lock_read()
     return;
 }
 //尝试读取锁
-bool ZCE_File_Lock::try_lock_read()
+bool File_Lock::try_lock_read()
 {
     int ret = 0;
 
@@ -115,7 +117,7 @@ bool ZCE_File_Lock::try_lock_read()
 }
 
 //写锁定
-void ZCE_File_Lock::lock_write()
+void File_Lock::lock_write()
 {
     int ret = 0;
     ret = zce::fcntl_wrlock(&file_lock_, SEEK_SET, 0, file_len_);
@@ -126,7 +128,7 @@ void ZCE_File_Lock::lock_write()
     }
 }
 //尝试读取锁
-bool ZCE_File_Lock::try_lock_write()
+bool File_Lock::try_lock_write()
 {
     int ret = 0;
 
@@ -141,7 +143,7 @@ bool ZCE_File_Lock::try_lock_write()
 }
 
 //解锁,如果是读写锁也只需要这一个函数
-void ZCE_File_Lock::unlock()
+void File_Lock::unlock()
 {
     int ret = 0;
 
@@ -151,4 +153,5 @@ void ZCE_File_Lock::unlock()
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::fcntl_unlock LOCK_UN", ret);
         return;
     }
+}
 }

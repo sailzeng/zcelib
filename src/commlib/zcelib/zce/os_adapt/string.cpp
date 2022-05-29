@@ -29,8 +29,8 @@ char* zce::prefix_unique_name(const char* prefix_name,
                               char* name,
                               size_t length)
 {
-    ZCE_Thread_Light_Mutex id_lock;
-    ZCE_Lock_Guard<ZCE_Thread_Light_Mutex> id_guard(id_lock);
+    Thread_Light_Mutex id_lock;
+    Lock_Guard<Thread_Light_Mutex> id_guard(id_lock);
 
     static unsigned int uniqueid_builder = 0;
     ++uniqueid_builder;

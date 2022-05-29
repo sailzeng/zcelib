@@ -1,27 +1,4 @@
-/*!
-* @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/thread/msgque_condi.h
-* @author     Sailzeng <sailzeng.cn@gmail.com>
-* @version
-* @date       2011年6月17日
-* @brief      多线程使用的Message Queue，内部的同步对象使用了条件变量
-*             这个类暂时不要使用，他和整个体系是脱节的，完全是为了测试条件变量写的类
-*             同时支持list，deque,和自己的一个容器zce::lord_rings 环形队列
-* @details
-*
-*
-*
-* @note
-*
-*/
-
-#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_CONDITION_H_
-#define ZCE_LIB_THREAD_MESSAGE_QUEUE_CONDITION_H_
-
-#include "zce/util/non_copyable.h"
-#include "zce/lock/thread_mutex.h"
-#include "zce/util/lord_rings.h"
-#include "zce/lock/thread_condi.h"
+#pragma once
 
 /*!
 * @brief      用条件变量+容器实现的消息队列，对于我个人来说，条件变量有点怪，装B？请问condi传入Mutex的目的是？
@@ -30,8 +7,8 @@
 * @tparam     _container_type 消息队列内部容器类型
 * note
 */
-template <typename _value_type, typename _container_type = std::deque<_value_type> >
-class ZCE_Message_Queue_Condi : public zce::NON_Copyable
+template <typename T, typename C = std::deque<T> >
+class ZCE_Message_Queue_Condi
 {
 protected:
 
@@ -74,7 +51,7 @@ public:
     //QUEUE是否为满
     inline bool full()
     {
-        zce::Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
 
         if (queue_cur_size_ == queue_max_size_)
         {
@@ -140,14 +117,14 @@ public:
 
     void clear()
     {
-        zce::Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
 
     size_t size()
     {
-        zce::Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
         return queue_cur_size_;
     }
 
@@ -161,7 +138,7 @@ protected:
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
         {
-            zce::Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
             bool bret = false;
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，必须重入检查
@@ -209,7 +186,7 @@ protected:
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            zce::Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
             bool bret = false;
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，
@@ -262,13 +239,13 @@ protected:
     std::size_t                  queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    zce::Thread_Light_Mutex      queue_lock_;
+    Thread_Light_Mutex       queue_lock_;
 
     //插入保护的条件变量
-    zce::Thread_Condition_Mutex  cond_enqueue_;
+    ZCE_Thread_Condition_Mutex   cond_enqueue_;
 
     //取出进行保护的条件变量
-    zce::Thread_Condition_Mutex  cond_dequeue_;
+    ZCE_Thread_Condition_Mutex   cond_dequeue_;
 
     //容器类型，可以是list,dequeue,
     _container_type              message_queue_;
@@ -337,5 +314,3 @@ public:
     {
     }
 };
-
-#endif //#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_CONDITION_H_

@@ -34,8 +34,8 @@ namespace zce
 class sockaddr_any
 {
 public:
-    sockaddr_any() = default;
-    ~sockaddr_any() = default;
+    sockaddr_any();
+    ~sockaddr_any();
     sockaddr_any(const ::sockaddr *sa, socklen_t sa_len);
     explicit sockaddr_any(const ::sockaddr_in &sa);
     explicit sockaddr_any(const ::sockaddr_in6 &sa);
@@ -48,6 +48,8 @@ public:
     sockaddr_any& operator = (const ::sockaddr_in6 &addr_in6);
 
     void set(const ::sockaddr *sa, socklen_t sa_len);
+
+    void set_family(int family);
 
     int get_family() const;
 
@@ -749,21 +751,21 @@ static const size_t MAX_SOCKETADDR_STRING_LEN = 45;
 * @param      str_ptr      返回的的地址字符串
 * @param      str_len      字符串长度
 */
-const char* socketaddr_ntop(const sockaddr* sock_addr,
-                            char* str_ptr,
-                            size_t str_len);
+const char* sockaddr_ntop(const sockaddr* sock_addr,
+                          char* str_ptr,
+                          size_t str_len);
 
 /*!
-* @brief      socketaddr_ntop_ex 输出IP地址信息和端口号,端口号
+* @brief      sockaddr_ntop_ex 输出IP地址信息和端口号,端口号
 *             输出IP地址信息以及端口信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>21.IPV6至少长度>45
-*             和socketaddr_ntop的区别就在于socketaddr_ntop_ex同时输出了端口号
-*             参数参考 @ref socketaddr_ntop
+*             和sockaddr_ntop的区别就在于sockaddr_ntop_ex同时输出了端口号
+*             参数参考 @ref sockaddr_ntop
 */
-const char* socketaddr_ntop_ex(const sockaddr* sock_addr,
-                               char* str_ptr,
-                               size_t str_len,
-                               size_t& use_len,
-                               bool out_port_info = true);
+const char* sockaddr_ntop_ex(const sockaddr* sock_addr,
+                             char* str_ptr,
+                             size_t str_len,
+                             size_t& use_len,
+                             bool out_port_info = true);
 
 //======================================================================================================
 //域名解析，转换IP地址的几个函数
@@ -1045,7 +1047,7 @@ inline int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 //下面一些是针对IPV4的函数
 
 //返回端口号,用指针作为参数主要是希望统一
-inline uint16_t get_port_number(const sockaddr* addr);
+inline uint16_t get_port(const sockaddr* addr);
 
 //返回地址信息
 inline const char* get_host_addr(const sockaddr* addr,
@@ -1856,7 +1858,7 @@ inline bool zce::is_ready_fds(int no_fds,
 }
 
 //返回端口号
-inline uint16_t zce::get_port_number(const sockaddr* addr)
+inline uint16_t zce::get_port(const sockaddr* addr)
 {
     if (AF_INET == addr->sa_family)
     {
@@ -1876,35 +1878,20 @@ inline const char* zce::get_host_addr(const sockaddr* addr,
                                       char* out_buf,
                                       size_t buf_size)
 {
-    return zce::inet_ntop(addr->sa_family,
-                          (void*)(addr),
-                          out_buf,
-                          buf_size);
+    return zce::sockaddr_ntop((addr),
+                              out_buf,
+                              buf_size);
 }
 
 inline const char* zce::get_host_addr_port(const sockaddr* addr,
                                            char* out_buf,
                                            size_t buf_size)
 {
-    uint16_t port = 0;
-    void *in_ptr = NULL;
-    if (AF_INET == addr->sa_family)
-    {
-        port = ntohs(((sockaddr_in*)(addr))->sin_port);
-        in_ptr = (void *)(&((sockaddr_in*)addr)->sin_addr);
-    }
-    else if (AF_INET6 == addr->sa_family)
-    {
-        port = ntohs(((sockaddr_in6*)(addr))->sin6_port);
-        in_ptr = (void *)(&((sockaddr_in6*)addr)->sin6_addr);
-    }
-    else
-    {
-    }
-    zce::inet_ntop(addr->sa_family, in_ptr, out_buf, buf_size);
-    size_t str_len = strlen(out_buf);
-    snprintf(out_buf + str_len, buf_size - str_len, "#%u", port);
-    return out_buf;
+    size_t use_len = 0;
+    return zce::sockaddr_ntop_ex((addr),
+                                 out_buf,
+                                 buf_size,
+                                 use_len);
 }
 
 //非标准函数，但是重入安全

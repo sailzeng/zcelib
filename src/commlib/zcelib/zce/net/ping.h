@@ -27,8 +27,8 @@ class Ping
 {
 public:
 
-    Ping();
-    ~Ping();
+    Ping() = default;
+    ~Ping() = default;
 
     int initialize(::sockaddr *ping_addr,
                    socklen_t addr_len);
@@ -52,22 +52,24 @@ public:
     static uint16_t calculate_checksum(char* buffer, size_t bytes);
 
 protected:
+    //内部初始化
+    int initialize();
+
+protected:
     //DNS 包的最大长度
     static constexpr size_t PING_PACKET_MAX_LEN = 256;
     //DNS 头部长度
     static constexpr size_t DNS_HEADER_LEN = 12;
 
 protected:
-    //!发送缓冲区
-    char              *send_packet_ = nullptr;
-    //!接收缓冲区
-    char              *recv_packet_ = nullptr;
 
     //! ping的地址的family
     int  addr_family_ = 0;
 
     //!ping 服务器地址
     zce::sockaddr_any   ping_addr_;
+    //!本地地址
+    zce::sockaddr_any local_addr_;
 
     socklen_t addr_len_ = 0;
 

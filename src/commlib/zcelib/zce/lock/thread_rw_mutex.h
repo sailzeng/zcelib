@@ -4,7 +4,7 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年9月13日
-* @brief      线程的读写锁，ZCE_Thread_RW_Mutex
+* @brief      线程的读写锁，Thread_RW_Mutex
 *             在WINDOWS下，内部是使用的适配层的代码，清参考 @ref zce/os_adapt/rwlock.h
 *             在不支持WINSERVER 2008的环境用的是条件变量和MUTEX的模拟的作品，
 *             在支持WINSERVER 2008的环境（包括服务器和编译），会使用WINDOWS自己的读写锁封装
@@ -21,29 +21,30 @@
 *             怀念我的朋友。——《肖申克的救赎》
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_RW_MUTEX_H_
-#define ZCE_LIB_LOCK_THREAD_RW_MUTEX_H_
-
 #include "zce/lock/lock_base.h"
 #include "zce/lock/lock_guard.h"
 #include "zce/time/time_value.h"
 
+#pragma once
+
+namespace zce
+{
 /*!
 @brief      线程的读写锁
 
 */
-class ZCE_Thread_RW_Mutex : public ZCE_Lock_Base
+class Thread_RW_Mutex : public zce::Lock_Base
 {
 public:
     ///读锁的GUARD
-    typedef ZCE_Read_Guard<ZCE_Thread_RW_Mutex>  LOCK_READ_GUARD;
+    typedef zce::Read_Guard<Thread_RW_Mutex>  LOCK_READ_GUARD;
     ///写锁的GUARD
-    typedef ZCE_Write_Guard<ZCE_Thread_RW_Mutex> LOCK_WRITE_GUARD;
+    typedef zce::Write_Guard<Thread_RW_Mutex> LOCK_WRITE_GUARD;
 
 public:
     //构造函数
-    ZCE_Thread_RW_Mutex();
-    virtual ~ZCE_Thread_RW_Mutex();
+    Thread_RW_Mutex();
+    virtual ~Thread_RW_Mutex();
 
 public:
     //读取锁
@@ -86,18 +87,18 @@ protected:
             主要是为了适配Windows SVR 2008以后的读写锁实现，
             如果环境允许，推荐使用这个，速度比模拟的估计快很多，
 */
-class ZCE_Thread_Win_RW_Mutex : public ZCE_Lock_Base
+class Thread_Win_RW_Mutex : public zce::Lock_Base
 {
 public:
     ///读锁的GUARD
-    typedef ZCE_Read_Guard<ZCE_Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
+    typedef zce::Read_Guard<Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
     ///写锁的GUARD
-    typedef ZCE_Write_Guard<ZCE_Thread_Win_RW_Mutex> LOCK_WRITE_GUARD;
+    typedef zce::Write_Guard<Thread_Win_RW_Mutex> LOCK_WRITE_GUARD;
 
 public:
     //构造函数
-    ZCE_Thread_Win_RW_Mutex();
-    virtual ~ZCE_Thread_Win_RW_Mutex();
+    Thread_Win_RW_Mutex();
+    virtual ~Thread_Win_RW_Mutex();
 
 public:
     //读取锁
@@ -126,5 +127,4 @@ protected:
 };
 
 #endif
-
-#endif //ZCE_LIB_LOCK_THREAD_MUTEX_H_
+}

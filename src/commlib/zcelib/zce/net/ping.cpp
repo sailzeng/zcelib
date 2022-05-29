@@ -6,16 +6,29 @@
 //==============================================================================================
 //https://www.jianshu.com/p/8e9903c7f9e8
 //https://network.fasionchan.com/zh_CN/latest/practices/ping-by-icmp-c.html
+//https://blog.csdn.net/qq_33690566/article/details/103653440
 
 namespace zce
 {
 #define MAGIC "12345678901"
 #define MAGIC_LEN 12
 #define MTU 1500
-#define RECV_TIMEOUT_USEC 100000
 
 #pragma pack (1)
 
+//IPV6的IMCPV6的Checksum计算需要一个伪头部
+struct _ICMPV6_PSEUDO
+{
+    //
+    in6_addr src_addr_;
+    in6_addr dst_addr_;
+    //
+    uint32_t upper_layer_len_;
+    uint8_t zero_[3];
+    uint8_t upper_proto_;
+};
+
+//ICMP的ECHO信息，前3个字节是头部
 struct _ICMP_ECHO
 {
     //前3个字段是 头部
@@ -39,24 +52,6 @@ struct _ICMP_ECHO
 
 #pragma pack ()
 
-Ping::Ping()
-{
-    send_packet_ = new char[PING_PACKET_MAX_LEN];
-    recv_packet_ = new char[PING_PACKET_MAX_LEN];
-}
-Ping::~Ping()
-{
-    if (send_packet_)
-    {
-        delete send_packet_;
-        send_packet_ = nullptr;
-    }
-    if (recv_packet_)
-    {
-        delete recv_packet_;
-        recv_packet_ = nullptr;
-    }
-}
 int Ping::initialize(::sockaddr *ping_addr,
                      socklen_t addr_len)
 {
@@ -64,24 +59,23 @@ int Ping::initialize(::sockaddr *ping_addr,
     if (addr_len == sizeof(::sockaddr_in))
     {
         addr_family_ = AF_INET;
+        ping_addr_.in_.sin_family = AF_INET;
     }
     else if (addr_len == sizeof(::sockaddr_in6))
     {
         addr_family_ = AF_INET6;
+        ping_addr_.in6_.sin6_family = AF_INET6;
     }
     else
     {
         assert(false);
     }
     ping_addr_.set(ping_addr, addr_family_);
-    ping_socket_ = zce::socket(addr_family_,
-                               SOCK_RAW,
-                               IPPROTO_ICMP);
-    if (ping_socket_ != ZCE_INVALID_SOCKET)
+    int ret = initialize();
+    if (ret != 0)
     {
-        return -1;
+        return ret;
     }
-
     return 0;
 }
 
@@ -93,10 +87,14 @@ int Ping::initialize(int svr_family,
     if (addr_family_ == AF_INET)
     {
         addr_len_ = sizeof(sockaddr_in);
+        ping_addr_.in_.sin_family = AF_INET;
+        local_addr_.in_.sin_family = AF_INET;
     }
     else if (addr_family_ == AF_INET6)
     {
         addr_len_ = sizeof(sockaddr_in6);
+        ping_addr_.in6_.sin6_family = AF_INET6;
+        local_addr_.in6_.sin6_family = AF_INET6;
     }
     else
     {
@@ -109,13 +107,52 @@ int Ping::initialize(int svr_family,
     {
         return ret;
     }
+    ret = initialize();
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
+
+int Ping::initialize()
+{
+    int ret = 0;
+    int proto = IPPROTO_ICMP;
+    if (addr_family_ == AF_INET6)
+    {
+        proto = IPPROTO_ICMPV6;
+    }
+
     ping_socket_ = zce::socket(addr_family_,
                                SOCK_RAW,
-                               IPPROTO_ICMP);
-    if (ping_socket_ != ZCE_INVALID_SOCKET)
+                               proto);
+    if (ping_socket_ == ZCE_INVALID_SOCKET)
     {
         return -1;
     }
+
+    socklen_t opval = 8 * 1024;
+    ret = ::setsockopt(ping_socket_,
+                       SOL_SOCKET,
+                       SO_RCVBUF,
+                       (const char*)&opval,
+                       sizeof(socklen_t));
+    if (ret != 0)
+    {
+        return ret;
+    }
+    //必须先connect，否则喔不不知道本地IP。
+    ret = zce::connect(ping_socket_,
+                       (struct sockaddr*)&ping_addr_,
+                       addr_len_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = zce::getsockname(ping_socket_,
+                           (sockaddr *)&local_addr_,
+                           &addr_len_);
     return 0;
 }
 
@@ -145,59 +182,66 @@ uint16_t Ping::calculate_checksum(char* buffer, size_t bytes)
     }
 
     // add carry if any
-    uint32_t carray = checksum >> 16;
-    while (carray)
-    {
-        checksum = (checksum & 0xffff) + carray;
-        carray = checksum >> 16;
-    }
+    checksum = (checksum >> 16) + (checksum & 0xffff);
+    checksum += (checksum >> 16);
 
     // negate it
-    checksum = ~checksum;
-
-    return checksum & 0xffff;
+    return (~checksum) & 0xffff;
 }
 
 int Ping::send_echo(uint32_t ident,
                     uint32_t seq)
 {
     // allocate memory for icmp packet
-    struct _ICMP_ECHO icmp;
-    ::memset(&icmp, 0, sizeof(icmp));
+    char buffer[MTU];
+    struct _ICMP_ECHO *icmp = (struct _ICMP_ECHO *)(buffer + sizeof(_ICMP_ECHO));
+    struct _ICMPV6_PSEUDO *v6_pseudo = (struct _ICMPV6_PSEUDO *)(buffer);
 
     // fill header files
     if (addr_family_ == AF_INET)
     {
-        icmp.type_ = 8;
-        icmp.code = 0;
+        ::memset(icmp, 0, sizeof(_ICMP_ECHO));
+        icmp->type_ = 8;
+        icmp->code = 0;
+        icmp->ident_ = htonl(ident);
+        icmp->seq_ = htonl(seq);
+        // fill magic_ string
+        strncpy(icmp->magic_, MAGIC, MAGIC_LEN);
+        // fill sending timestamp
+        icmp->sending_ts_ = htonll(zce::clock_ms());
+        // calculate and fill checksum
+        icmp->check_sum_ = htons(
+            calculate_checksum((char*)icmp, sizeof(_ICMP_ECHO)));
     }
     else if (addr_family_ == AF_INET6)
     {
-        icmp.type_ = 128;
-        icmp.code = 0;
+        ::memset(v6_pseudo, 0, sizeof(_ICMP_ECHO) + sizeof(_ICMPV6_PSEUDO));
+        memcpy(&v6_pseudo->src_addr_, &local_addr_.in6_.sin6_addr, 16);
+        memcpy(&v6_pseudo->dst_addr_, &ping_addr_.in6_.sin6_addr, 16);
+        v6_pseudo->upper_layer_len_ = htonl(sizeof(_ICMP_ECHO));
+        v6_pseudo->upper_proto_ = IPPROTO_ICMPV6;
+
+        icmp->type_ = 128;
+        icmp->code = 0;
+        icmp->ident_ = htonl(ident);
+        icmp->seq_ = htonl(seq);
+        // fill magic_ string
+        strncpy(icmp->magic_, MAGIC, MAGIC_LEN);
+        // fill sending timestamp
+        icmp->sending_ts_ = htonll(zce::clock_ms());
+
+        icmp->check_sum_ = htons(
+            calculate_checksum((char *)v6_pseudo, sizeof(_ICMPV6_PSEUDO) + sizeof(_ICMP_ECHO)));
     }
     else
     {
         assert(false);
     }
 
-    icmp.ident_ = htonl(ident);
-    icmp.seq_ = htonl(seq);
-    // fill magic_ string
-    strncpy(icmp.magic_, MAGIC, MAGIC_LEN);
-
-    // fill sending timestamp
-    icmp.sending_ts_ = htonll(zce::clock_ms());
-
-    // calculate and fill checksum
-    icmp.check_sum_ = htons(
-        calculate_checksum((char*)&icmp, sizeof(icmp))
-    );
-
     // send it
     ssize_t bytes = zce::sendto(ping_socket_,
-                                &icmp,
-                                sizeof(icmp),
+                                icmp,
+                                sizeof(_ICMP_ECHO),
                                 0,
                                 (struct sockaddr*)&ping_addr_,
                                 addr_len_);
@@ -216,12 +260,12 @@ int Ping::recv_echo(uint32_t *ident,
 {
     // allocate buffer
     char buffer[MTU];
-
     // receive another packet
+    zce::sockaddr_any recv_addr;
     ssize_t bytes = zce::recvfrom(ping_socket_,
                                   buffer,
                                   sizeof(buffer),
-                                  (struct sockaddr*)&ping_addr_,
+                                  (struct sockaddr*)&recv_addr,
                                   &addr_len_,
                                   timeout_tv);
     if (bytes < 0)
@@ -231,7 +275,6 @@ int Ping::recv_echo(uint32_t *ident,
         {
             return -1;
         }
-
         return -1;
     }
 
@@ -242,15 +285,18 @@ int Ping::recv_echo(uint32_t *ident,
         icmp = (struct _ICMP_ECHO*)(buffer + 20);
         *ttl = buffer[8];
         // check type
-        if (icmp->type_ != 8 || icmp->code != 0)
+        if (icmp->type_ != 0 || icmp->code != 0)
         {
             return -1;
         }
     }
     else if (addr_family_ == AF_INET6)
     {
-        icmp = (struct _ICMP_ECHO*)(buffer + 40);
-        *ttl = buffer[7];
+        //这儿有个缺陷，无法收取IPV6头部，所以TTL获取不了，Linux下可以用recvmsg改进。
+        //windows可能就要用IPV6_HDRINCL ，但这个需要admin的权限才能跑
+        //对我来说没有必要，放弃
+        icmp = (struct _ICMP_ECHO*)(buffer);
+        *ttl = 0;
         if (icmp->type_ != 129 || icmp->code != 0)
         {
             return -1;
@@ -282,9 +328,6 @@ int Ping::ping(size_t test_num)
         {
             fprintf(stderr, "%04u.Send request fail.\n", send_seq);
         }
-        // increase sequence number
-        send_seq += 1;
-
         do
         {
             // try to receive and print reply
@@ -308,18 +351,23 @@ int Ping::ping(size_t test_num)
                 }
                 break;
             }
+            //收到一个正确的书籍，但序列号对不上，可能是超时过来的
             if (ret == 0 && (recv_ident != send_ident || recv_seq != send_seq))
             {
                 fprintf(stderr, "%04u.Receive failed.\n", recv_seq);
                 continue;
             }
+            char addr_buf[64];
             fprintf(stdout,
-                    "%04u. rely size=%llu,time=%llums,TTL=%u.\n",
+                    "%04u. %s Rely size=%zu,time=%llums,TTL=%u.\n",
                     send_seq,
+                    zce::sockaddr_ntop((sockaddr *)&ping_addr_, addr_buf, 63),
                     sizeof(_ICMP_ECHO),
                     ms,
                     ttl);
         } while (false);
+        // increase sequence number
+        send_seq += 1;
     }
 
     return 0;

@@ -6,37 +6,38 @@
 * @date       2013年1月14日
 * @brief      GURAD。利用构造函数和析构函数自动加锁，解锁的类，
 *             在各个类里面都有typdef帮助使用
-*             比如ZCE_Thread_Light_Mutex
+*             比如Thread_Light_Mutex
 *
 *             如果你还能被人噎着，就表示你还不够强大，
 *
 */
 
-#ifndef ZCE_LIB_LOCK_GUARD_H_
-#define ZCE_LIB_LOCK_GUARD_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 
+namespace zce
+{
 /*!
 * @brief      锁GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型，可以是ZCE_Null_Mutex，ZCE_Process_Mutex，
-*             ZCE_Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex
-*             ZCE_Process_Semaphore,ZCE_Thread_NONR_Mutex,等
+* @tparam     ZCE_LOCK 锁的类型，可以是Null_Mutex，Process_Mutex，
+*             Thread_Light_Mutex，Thread_Recursive_Mutex
+*             Process_Semaphore,Thread_NONR_Mutex,等
 */
 template <typename zce_lock>
-class ZCE_Lock_Guard : public zce::NON_Copyable
+class Lock_Guard : public zce::NON_Copyable
 {
 public:
 
     ///构造，得到锁，进行锁定
-    ZCE_Lock_Guard(zce_lock& lock) :
+    Lock_Guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock();
     }
 
     //构造，得到锁，根据要求决定是否进行锁定操作
-    ZCE_Lock_Guard(zce_lock& lock, bool block) :
+    Lock_Guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -46,7 +47,7 @@ public:
     }
 
     ///析构，同时对锁进行释放操作
-    ~ZCE_Lock_Guard(void)
+    ~Lock_Guard(void)
     {
         lock_->unlock();
     };
@@ -77,21 +78,21 @@ protected:
 
 /*!
 * @brief      读写锁的共享锁（读取）锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock ZCE_Thread_RW_Mutex
+* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock Thread_RW_Mutex
 */
 template <class zce_lock>
-class ZCE_Read_Guard : public zce::NON_Copyable
+class Read_Guard : public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    ZCE_Read_Guard(zce_lock& lock) :
+    Read_Guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock_read();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    ZCE_Read_Guard(zce_lock& lock, bool block) :
+    Read_Guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -101,7 +102,7 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~ZCE_Read_Guard()
+    ~Read_Guard()
     {
         lock_->unlock();
     }
@@ -131,21 +132,21 @@ protected:
 
 /*!
 * @brief      读写锁，写锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock ZCE_Thread_RW_Mutex
+* @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock Thread_RW_Mutex
 */
 template <class zce_lock>
-class ZCE_Write_Guard : public zce::NON_Copyable
+class Write_Guard : public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    ZCE_Write_Guard(zce_lock& lock) :
+    Write_Guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock_write();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    ZCE_Write_Guard(zce_lock& lock, bool block) :
+    Write_Guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -155,7 +156,7 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~ZCE_Write_Guard()
+    ~Write_Guard()
     {
         lock_->unlock();
     }
@@ -182,5 +183,4 @@ protected:
     ///用来GUARD保护的锁
     zce_lock* lock_;
 };
-
-#endif //ZCE_LIB_LOCK_GUARD_H_
+}

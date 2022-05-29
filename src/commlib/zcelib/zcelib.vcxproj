@@ -354,6 +354,8 @@
     <ClInclude Include="zce\rudp\rudp.h" />
     <ClInclude Include="zce\socket\addr_any.h" />
     <ClInclude Include="zce\string\from_string.h" />
+    <ClInclude Include="zce\task\msgque_condi.h" />
+    <ClInclude Include="zce\task\msgque_sema.h" />
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\util\buffer.h" />
     <ClInclude Include="zce\util\cycbuf_node.h" />
