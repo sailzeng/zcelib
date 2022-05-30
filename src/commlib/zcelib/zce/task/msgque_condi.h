@@ -1,5 +1,9 @@
 #pragma once
 
+#include "zce/predefine.h"
+
+namespace zce
+{
 /*!
 * @brief      用条件变量+容器实现的消息队列，对于我个人来说，条件变量有点怪，装B？请问condi传入Mutex的目的是？
 *
@@ -8,7 +12,7 @@
 * note
 */
 template <typename T, typename C = std::deque<T> >
-class ZCE_Message_Queue_Condi
+class Task_MsgQueue
 {
 protected:
 
@@ -25,21 +29,20 @@ protected:
 public:
 
     //构造函数和析构函数
-    ZCE_Message_Queue_Condi(size_t queue_max_size) :
+    Task_MsgQueue(size_t queue_max_size) :
         queue_max_size_(queue_max_size),
         queue_cur_size_(0)
     {
     }
 
-    ~ZCE_Message_Queue_Condi()
+    ~Task_MsgQueue()
     {
     }
 
     //QUEUE是否为NULL
     inline bool empty()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
-
+        std::lock_guard<std::mutex> guard(queue_lock_);
         if (queue_cur_size_ == 0)
         {
             return true;
@@ -51,8 +54,7 @@ public:
     //QUEUE是否为满
     inline bool full()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
-
+        std::lock_guard<std::mutex> guard(queue_lock_);
         if (queue_cur_size_ == queue_max_size_)
         {
             return true;
@@ -62,7 +64,7 @@ public:
     }
 
     //放入，一直等待
-    int enqueue(const _value_type& value_data)
+    int enqueue(const T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
@@ -71,7 +73,7 @@ public:
     }
 
     //有超时放入
-    int enqueue(const _value_type& value_data,
+    int enqueue(const T& value_data,
                 const zce::Time_Value& wait_time)
     {
         return enqueue_interior(value_data,
@@ -80,7 +82,7 @@ public:
     }
 
     //尝试放入，立即返回
-    int try_enqueue(const _value_type& value_data)
+    int try_enqueue(const T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
@@ -89,7 +91,7 @@ public:
     }
 
     //取出
-    int dequeue(_value_type& value_data)
+    int dequeue(T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
@@ -98,7 +100,7 @@ public:
     }
 
     //有超时处理的取出
-    int dequeue(_value_type& value_data,
+    int dequeue(T& value_data,
                 const zce::Time_Value& wait_time)
     {
         return dequeue_interior(value_data,
@@ -107,7 +109,7 @@ public:
     }
 
     //尝试取出，立即返回
-    int try_dequeue(_value_type& value_data)
+    int try_dequeue(T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
@@ -117,28 +119,28 @@ public:
 
     void clear()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        std::lock_guard<std::mutex> guard(queue_lock_);
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
 
     size_t size()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        std::lock_guard<std::mutex> guard(queue_lock_);
         return queue_cur_size_;
     }
 
 protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
-    int enqueue_interior(const _value_type& value_data,
+    int enqueue_interior(const T& value_data,
                          MQW_WAIT_MODEL wait_model,
                          const timeval& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
         {
-            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+            std::lock_guard<std::mutex> guard(queue_lock_);
             bool bret = false;
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，必须重入检查
@@ -235,20 +237,18 @@ protected:
     //QUEUE的最大尺寸
     std::size_t                  queue_max_size_;
 
-    //由于LIST的size()函数比较耗时，所以这儿还是用了几个计数器
+    //由于LIST的size()函数比较耗时(过时理论)，所以这儿还是用了几个计数器
     std::size_t                  queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    Thread_Light_Mutex       queue_lock_;
-
+    std::mutex                   queue_lock_;
     //插入保护的条件变量
-    ZCE_Thread_Condition_Mutex   cond_enqueue_;
-
+    std::condition_variable      cv_en_;
     //取出进行保护的条件变量
-    ZCE_Thread_Condition_Mutex   cond_dequeue_;
+    std::condition_variable      cv_de_;
 
     //容器类型，可以是list,dequeue,
-    _container_type              message_queue_;
+    C                            message_queue_;
 };
 
 /*!
@@ -314,3 +314,4 @@ public:
     {
     }
 };
+}
