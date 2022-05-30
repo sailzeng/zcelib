@@ -9,17 +9,19 @@ int main(int argc, char* argv[])
     ZCE_UNUSED_ARG(argv);
 
 #define ZCE_USE_LOGMSG 1
-    ZCE_Trace_LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                "E:\\My.Log\\TEST_1",
-                                                false,
-                                                true,
-                                                0,
-                                                ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                                                static_cast<int>(LOG_HEAD::NONE));
+#if 0
+    zce::LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                           "E:\\My.Log\\TEST_2",
+                                           0,
+                                           true,
+                                           false,
+                                           true,
+                                           ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
+                                           static_cast<int>(LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);
+#endif
 
     test_rudp(argc, argv);
-
     return 0;
 
 #if 0

@@ -111,7 +111,7 @@ size_t cycle_buffer::size()
     }
     else
     {
-        return size_of_cycle_ + cycbuf_end_ - cycbuf_begin_ - JUDGE_FULL_INTERVAL;
+        return size_of_cycle_ + cycbuf_end_ - cycbuf_begin_;
     }
 }
 
@@ -232,7 +232,8 @@ bool cycle_buffer::set_data(size_t pos,
                             char *&write_ptr)
 {
     //检查队列的空间是否够用
-    if (capacity() < pos + data_len)
+    assert(size() >= pos + data_len);
+    if (size() < pos + data_len)
     {
         return false;
     }
@@ -245,13 +246,11 @@ bool cycle_buffer::set_data(size_t pos,
         size_t first = size_of_cycle_ - w_pos;
         size_t second = data_len - first;
         ::memcpy(write_ptr, data, first);
-        ::memcpy(cycbuf_data_, data, second);
-        cycbuf_end_ = second;
+        ::memcpy(cycbuf_data_, data + first, second);
     }
     else
     {
         ::memcpy(write_ptr, data, data_len);
-        cycbuf_end_ = w_pos + data_len;
     }
     return true;
 }
@@ -283,7 +282,7 @@ bool cycle_buffer::get_data(size_t pos,
         size_t first = size_of_cycle_ - r_pos;
         size_t second = read_len - first;
         ::memcpy(data, read_ptr, first);
-        ::memcpy(data, cycbuf_data_, second);
+        ::memcpy(data + first, cycbuf_data_, second);
     }
     else
     {
@@ -292,22 +291,28 @@ bool cycle_buffer::get_data(size_t pos,
     return true;
 }
 ///从绝对位置read_ptr开始读取数据
-bool cycle_buffer::get_data(const char *read_ptr,
-                            char *data,
-                            size_t read_len)
+bool cycle_buffer::acquire_data(const char *read_ptr,
+                                char *data,
+                                size_t read_len)
 {
-    assert(read_ptr >= cycbuf_data_ && read_ptr < cycbuf_data_ + size_of_cycle_);
-    if (size() < read_ptr - cycbuf_data_ + read_len)
+    assert(read_ptr && data && read_len > 0);
+    size_t r_pos = read_ptr - cycbuf_data_;
+    if ((cycbuf_begin_ < cycbuf_end_ && cycbuf_begin_ <= r_pos && r_pos + read_len <= cycbuf_end_)
+        || (cycbuf_begin_ > cycbuf_end_ && cycbuf_begin_ <= r_pos && r_pos + read_len <= cycbuf_end_ + size_of_cycle_)
+        || (cycbuf_begin_ > cycbuf_end_ && cycbuf_begin_ > r_pos && cycbuf_begin_ < r_pos + size_of_cycle_ && r_pos + read_len <= cycbuf_end_))
+    {
+        //正常
+    }
+    else
     {
         return false;
     }
-    size_t r_pos = read_ptr - cycbuf_data_;
     if (read_ptr + read_len > cycbuf_data_ + size_of_cycle_)
     {
         size_t first = size_of_cycle_ - r_pos;
         size_t second = read_len - first;
         ::memcpy(data, read_ptr, first);
-        ::memcpy(data, cycbuf_data_, second);
+        ::memcpy(data + first, cycbuf_data_, second);
     }
     else
     {

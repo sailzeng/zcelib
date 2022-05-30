@@ -463,6 +463,7 @@ inline void last_error(int error)
 {
 #if defined (ZCE_OS_WINDOWS)
     ::SetLastError(error);
+    errno = error;
 #elif defined (ZCE_OS_LINUX)
     errno = error;
 #endif

@@ -734,5 +734,8 @@
     <ClInclude Include="zce\lockfree\spsc_ring.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\util\static_list.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
