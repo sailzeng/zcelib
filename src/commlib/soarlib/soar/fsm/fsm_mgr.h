@@ -1,7 +1,7 @@
 #pragma once
 
 #include "soar/zerg/frame_malloc.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 
 //是否按照zengyu所说的将所有的IO接口继承处理???
 //我心中充满了无数的问号
@@ -45,7 +45,7 @@ SEND PIPE<=================================
 
 namespace soar
 {
-class App_BusPipe;
+class Svrd_BusPipe;
 class FSM_Base;
 class Zerg_Frame;
 
@@ -90,7 +90,7 @@ protected:
     ///内部的APPFRAME的消息队列，
     typedef zce::MsgQueue_Deque<soar::Zerg_Frame*> Inner_Frame_Queue;
     ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
-    typedef ZergFrame_Mallocor<ZCE_Null_Mutex> Inner_Frame_Mallocor;
+    typedef ZergFrame_Mallocor<zce::Null_Mutex> Inner_Frame_Mallocor;
     //内部的锁的数量
     typedef std::unordered_set<ONLYONE_LOCK, HASH_OF_LOCK, EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
 
@@ -165,7 +165,7 @@ public:
                    size_t  reg_fsm_num,
                    size_t running_fsm_num,
                    const soar::SERVICES_INFO& selfsvr,
-                   soar::App_BusPipe* zerg_mmap_pipe,
+                   soar::Svrd_BusPipe* zerg_mmap_pipe,
                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
@@ -269,7 +269,7 @@ protected:
     soar::SERVICES_INFO self_svc_info_;
 
     //共享内存的管道
-    soar::App_BusPipe* zerg_mmap_pipe_ = nullptr;
+    soar::Svrd_BusPipe* zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
     const zce::Time_Value* statistics_clock_ = nullptr;
@@ -415,7 +415,8 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
+        ZCE_LOG(RS_ERROR, "[framework] mgr_postframe_to_msgqueue but fail.Send queue is full "
+                "or task process too slow to process request.");
         return ret;
     }
     return 0;

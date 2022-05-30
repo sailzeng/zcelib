@@ -6,24 +6,25 @@
 * @date       2012年10月1日
 * @brief      记录锁的封装，用于锁定文件中的一部分字节，字段
 *             只是OS层上薄薄的一层封装，
-*             另外由于，记录的特殊原因，他不能从ZCE_Lock_Base上面继承了，
+*             另外由于，记录的特殊原因，他不能从zce::Lock_Base上面继承了，
 * @details    有些DB，和我见过的某些产品曾经用记录锁来用同步用户的某些操作，
 *             建议参考一下@ref zce/os_adapt/flock.h
 * @note       由于Windows 下记录锁，锁区域参数size 为0时，并不锁定从起始偏移
 *             到文件偏移的最大值，所以，所以如果文件大小变化，会出现部分区域没有锁定
 *
 */
-#ifndef ZCE_LIB_LOCK_RECORD_LOCK_H_
-#define ZCE_LIB_LOCK_RECORD_LOCK_H_
+#pragma once
 
 #include "zce/lock/lock_base.h"
 #include "zce/os_adapt/flock.h"
 
+namespace zce
+{
 /*!
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
 *
 */
-class ZCE_Record_Lock : public zce::NON_Copyable
+class Record_Lock : public zce::NON_Copyable
 {
 public:
 
@@ -31,12 +32,12 @@ public:
     * @brief      构造函数
     * @param      file_handle 文件句柄
     */
-    ZCE_Record_Lock(ZCE_HANDLE file_handle);
+    Record_Lock(ZCE_HANDLE file_handle);
 
     /// 构造函数
-    ZCE_Record_Lock();
+    Record_Lock();
     /// 析构函数
-    ~ZCE_Record_Lock();
+    ~Record_Lock();
 
 public:
 
@@ -105,5 +106,4 @@ protected:
     ///自己打开的这个文件，也就是调用过open函数
     bool                  open_by_self_ = false;
 };
-
-#endif //ZCE_LIB_LOCK_RECORD_LOCK_H_
+}

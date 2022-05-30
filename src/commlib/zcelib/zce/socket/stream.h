@@ -18,7 +18,7 @@ public:
 public:
 
     //Open SOCK句柄，不BIND本地地址的方式
-    int open(int protocol_family = AF_INET,
+    int open(int family = AF_INET,
              int protocol = 0,
              bool reuse_addr = true);
 

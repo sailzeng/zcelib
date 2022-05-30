@@ -19,23 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wormhole_application.cpp" />
-    <ClCompile Include="wormhole_configture.cpp" />
-    <ClCompile Include="wormhole_main.cpp" />
-    <ClCompile Include="wormhole_predefine.cpp">
+    <ClCompile Include="wormhole\application.cpp" />
+    <ClCompile Include="wormhole\configture.cpp" />
+    <ClCompile Include="wormhole\main.cpp" />
+    <ClCompile Include="wormhole\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="wormhole_proxyprocess.cpp" />
+    <ClCompile Include="wormhole\proxyprocess.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wormhole_application.h" />
-    <ClInclude Include="wormhole_configture.h" />
-    <ClInclude Include="wormhole_predefine.h" />
-    <ClInclude Include="wormhole_proxyprocess.h" />
-    <ClInclude Include="wormhole_stat_define.h" />
+    <ClInclude Include="wormhole\application.h" />
+    <ClInclude Include="wormhole\configture.h" />
+    <ClInclude Include="wormhole\predefine.h" />
+    <ClInclude Include="wormhole\proxyprocess.h" />
+    <ClInclude Include="stat_define.h" />
+    <ClInclude Include="wormhole\stat_define.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\commlib\soarlib\soarlib.vcxproj">
@@ -97,8 +98,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
@@ -106,15 +107,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
     <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
@@ -122,8 +123,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
     <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -135,7 +136,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -153,7 +154,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -173,7 +174,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -195,7 +196,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

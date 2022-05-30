@@ -4,7 +4,7 @@
 
 //在改写发生3个月左右，我都一致使用sockaddr sockaddr_in作为地址参数，为什么要变化呢，
 //因为在有一天改写原来代码时，突然觉得为什么为什么彻底OO一点点？
-//整体参考ACE_INET_Addr ACE INET Addr实现的，当然也有一些变化，ACE没有直接使用sockaddr，不知道为啥
+//整体参考ACE_INET_Addr ACE INET Addr实现的，当然也有非常大的变化，ACE没有直接使用sockaddr，不知道为啥
 
 namespace zce
 {
@@ -21,20 +21,31 @@ public:
     //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用Sockaddr_Base
     virtual void set_sockaddr(sockaddr* sockaddr_ptr, socklen_t sockaddr_size) = 0;
 
-    //Get/set the size of the address.
-    inline socklen_t get_size(void) const;
-    //
-    inline void  set_size(int sa_size);
+    //通过域名得到IP地址
+    virtual int getaddrinfo(const char* notename,
+                            uint16_t port_number = 0) = 0;
 
-    //设置地址信息
-    inline void set_addr(sockaddr* sockaddr_ptr);
-    //取得地址信息
+    //通过IP取得域名
+    virtual int getnameinfo(char* host_name, size_t name_len) const = 0;
+
+    ///设置端口号，
+    virtual void set_port(uint16_t) = 0;
+    ///取得端口号
+    virtual uint16_t get_port(void) const = 0;
+
+    //!取得地址的长度
+    inline socklen_t get_size(void) const;
+
+    //!取得地址信息
     inline sockaddr* get_addr(void) const;
 
+    //!取得地址的family
+    inline int get_family(void) const;
+
     // 检查地址是否相等
-    bool operator == (const Sockaddr_Base& others_sockaddr) const;
+    bool operator == (const Sockaddr_Base& others) const;
     // 检查地址是否不相等
-    bool operator != (const Sockaddr_Base& others_sockaddr) const;
+    bool operator != (const Sockaddr_Base& others) const;
 
     //转换成字符串,同时输出字符串的长度
     inline const char* to_string(char* buffer,
@@ -42,7 +53,7 @@ public:
                                  size_t& use_buf,
                                  bool out_port_info = true) const
     {
-        return zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len, use_buf, out_port_info);
+        return zce::sockaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len, use_buf, out_port_info);
     }
 
     ///检查地址是否是一个内网地址
@@ -60,25 +71,21 @@ public:
     socklen_t sockaddr_size_;
 };
 
-//Get/set the size of the address.
+//!取得地址的长度
 inline socklen_t Sockaddr_Base::get_size(void) const
 {
     return sockaddr_size_;
 }
-//
-inline void Sockaddr_Base::set_size(int sa_size)
-{
-    sockaddr_size_ = sa_size;
-}
 
-//设置地址信息
-inline void Sockaddr_Base::set_addr(sockaddr* sockaddr_ptr)
-{
-    sockaddr_ptr_ = sockaddr_ptr;
-}
 //取得地址信息
 inline sockaddr* Sockaddr_Base::get_addr(void) const
 {
     return sockaddr_ptr_;
+}
+
+//!取得地址的family
+int Sockaddr_Base::get_family(void) const
+{
+    return sockaddr_ptr_->sa_family;
 }
 }

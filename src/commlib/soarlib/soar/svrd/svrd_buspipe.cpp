@@ -1,28 +1,28 @@
 #include "soar/predefine.h"
 #include "soar/zerg/frame_zerg.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 
 namespace soar
 {
-App_BusPipe* App_BusPipe::zerg_bus_instance_ = NULL;
+Svrd_BusPipe* Svrd_BusPipe::zerg_bus_instance_ = NULL;
 
-char App_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
+char Svrd_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
 
-App_BusPipe::App_BusPipe() :
+Svrd_BusPipe::Svrd_BusPipe() :
     TwoWay_BusPipe()
 {
 }
 
-App_BusPipe::~App_BusPipe()
+Svrd_BusPipe::~Svrd_BusPipe()
 {
 }
 
 //初始化
-int App_BusPipe::initialize(soar::SERVICES_INFO& svr_info,
-                            size_t size_recv_pipe,
-                            size_t size_send_pipe,
-                            size_t max_frame_len,
-                            bool if_restore)
+int Svrd_BusPipe::initialize(soar::SERVICES_INFO& svr_info,
+                             size_t size_recv_pipe,
+                             size_t size_send_pipe,
+                             size_t max_frame_len,
+                             bool if_restore)
 {
     monitor_ = soar::Stat_Monitor::instance();
 
@@ -39,7 +39,7 @@ int App_BusPipe::initialize(soar::SERVICES_INFO& svr_info,
 }
 
 //根据SVR INFO得到MMAP文件名称
-void App_BusPipe::get_mmapfile_name(char* mmapfile, size_t buflen)
+void Svrd_BusPipe::get_mmapfile_name(char* mmapfile, size_t buflen)
 {
     snprintf(mmapfile, buflen, "./ZERGPIPE.%u.%u.MMAP",
              zerg_svr_info_.svc_id_.services_type_,
@@ -47,21 +47,21 @@ void App_BusPipe::get_mmapfile_name(char* mmapfile, size_t buflen)
 }
 
 //得到唯一的单子实例
-App_BusPipe* App_BusPipe::instance()
+Svrd_BusPipe* Svrd_BusPipe::instance()
 {
     if (zerg_bus_instance_ == NULL)
     {
-        zerg_bus_instance_ = new App_BusPipe();
+        zerg_bus_instance_ = new Svrd_BusPipe();
     }
 
     return zerg_bus_instance_;
 }
 
 //从RECV管道读取帧，
-int App_BusPipe::pop_front_recvbus(soar::Zerg_Frame*& proc_frame)
+int Svrd_BusPipe::pop_front_recvbus(soar::Zerg_Frame* proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID,
-                            reinterpret_cast<zce::bus_node*&>(proc_frame));
+                            reinterpret_cast<zce::bus_node*>(proc_frame));
 
     // 加监控数据
     if (ret == 0)
@@ -84,10 +84,10 @@ int App_BusPipe::pop_front_recvbus(soar::Zerg_Frame*& proc_frame)
 }
 
 //从RECV管道读取帧，
-int App_BusPipe::pop_front_sendbus(soar::Zerg_Frame*& proc_frame)
+int Svrd_BusPipe::pop_front_sendbus(soar::Zerg_Frame* proc_frame)
 {
     int ret = pop_front_bus(SEND_PIPE_ID,
-                            reinterpret_cast<zce::bus_node*&>(proc_frame));
+                            reinterpret_cast<zce::bus_node*>(proc_frame));
 
     // 加监控数据
     if (ret == 0)
@@ -110,7 +110,7 @@ int App_BusPipe::pop_front_sendbus(soar::Zerg_Frame*& proc_frame)
 }
 
 //向SEND管道写入帧，
-int App_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
+int Svrd_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO SEND PIPE FRAME:", proc_frame);
 
@@ -154,7 +154,7 @@ int App_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
 }
 
 //向RECV管道写入帧，
-int App_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
+int Svrd_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO RECV PIPE FRAME:", proc_frame);
 
@@ -198,7 +198,7 @@ int App_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
 }
 
 //赋值唯一的单子实例
-void App_BusPipe::instance(App_BusPipe* pinstatnce)
+void Svrd_BusPipe::instance(Svrd_BusPipe* pinstatnce)
 {
     clean_instance();
     zerg_bus_instance_ = pinstatnce;
@@ -206,7 +206,7 @@ void App_BusPipe::instance(App_BusPipe* pinstatnce)
 }
 
 //清除单子实例
-void App_BusPipe::clean_instance()
+void Svrd_BusPipe::clean_instance()
 {
     if (zerg_bus_instance_)
     {

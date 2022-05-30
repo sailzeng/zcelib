@@ -1157,7 +1157,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& bfull)
         ++send_counter_;
         //ZCE_LOG_DEBUG(RS_DEBUG,"Send a few(n>=1) whole frame To  IP|Port :%s|%u FrameLen:%u.",
         //    peer_address_.get_host_addr(),
-        //    peer_address_.get_port_number(),
+        //    peer_address_.get_port(),
         //    sndbuffer->size_of_use_);
     }
 
@@ -1443,7 +1443,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
     //    peer_svr_info_.services_type_,
     //    peer_svr_info_.services_id_,
     //    peer_address_.get_host_addr(),
-    //    peer_address_.get_port_number(),
+    //    peer_address_.get_port(),
     //    cmd);
     //向对方发送一个心跳包
     zerg::Buffer* tmpbuf = zbuffer_storage_->allocate_buffer();

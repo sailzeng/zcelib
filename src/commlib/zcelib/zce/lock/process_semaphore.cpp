@@ -6,9 +6,11 @@
 #include "zce/time/time_value.h"
 #include "zce/lock/process_semaphore.h"
 
+namespace zce
+{
 //构造函数,
-ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
-                                             const char* sem_name) :
+Process_Semaphore::Process_Semaphore(unsigned int init_value,
+                                     const char* sem_name) :
     lock_(NULL)
 {
     ZCE_ASSERT(sem_name);
@@ -31,7 +33,7 @@ ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
     }
 }
 
-ZCE_Process_Semaphore::~ZCE_Process_Semaphore()
+Process_Semaphore::~Process_Semaphore()
 {
     //没有初始化过
     if (!lock_)
@@ -58,7 +60,7 @@ ZCE_Process_Semaphore::~ZCE_Process_Semaphore()
 }
 
 //锁定
-void ZCE_Process_Semaphore::lock()
+void Process_Semaphore::lock()
 {
     //信号灯锁定
     int ret = zce::sem_wait(lock_);
@@ -71,7 +73,7 @@ void ZCE_Process_Semaphore::lock()
 }
 
 //尝试锁定
-bool ZCE_Process_Semaphore::try_lock()
+bool Process_Semaphore::try_lock()
 {
     //信号灯锁定
     int ret = zce::sem_trywait(lock_);
@@ -85,7 +87,7 @@ bool ZCE_Process_Semaphore::try_lock()
 }
 
 //解锁,
-void ZCE_Process_Semaphore::unlock()
+void Process_Semaphore::unlock()
 {
     int ret = zce::sem_post(lock_);
 
@@ -97,7 +99,7 @@ void ZCE_Process_Semaphore::unlock()
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool ZCE_Process_Semaphore::systime_lock(const zce::Time_Value& abs_time)
+bool Process_Semaphore::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::sem_timedwait(lock_, abs_time);
@@ -116,9 +118,10 @@ bool ZCE_Process_Semaphore::systime_lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool ZCE_Process_Semaphore::duration_lock(const zce::Time_Value& relative_time)
+bool Process_Semaphore::lock_for(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return systime_lock(abs_time);
+    return lock(abs_time);
+}
 }

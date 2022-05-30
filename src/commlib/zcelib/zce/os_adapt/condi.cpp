@@ -59,7 +59,7 @@ int zce::pthread_cond_init(pthread_cond_t* cond,
     }
 
     //WIN SERVER 2008，VISTA 后支持条件变量
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     //如果是线程内部的，而且是递归的，而且没有超时功能，可以用Windows的条件条件变量干活
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
@@ -183,7 +183,7 @@ int zce::pthread_cond_destroy(pthread_cond_t* cond)
 #if defined (ZCE_OS_WINDOWS)
 
     //使用WINDOWS的条件变量
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {
@@ -228,7 +228,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t* cond,
     }
 
     //使用WINDOWS2008的条件变量
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {
@@ -378,7 +378,7 @@ int zce::pthread_cond_broadcast(pthread_cond_t* cond)
     // The <external_mutex> must be locked before this call is made.
 
     //使用WINDOWS的条件变量
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {
@@ -446,7 +446,7 @@ int zce::pthread_cond_signal(pthread_cond_t* cond)
 
     //在调用这个方式前，外部的锁必须是锁上的，
     //使用WINDOWS的条件变量
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {

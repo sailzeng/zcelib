@@ -264,12 +264,21 @@ int PEER::send(const char* buf,
 }
 
 //!有数据抵达时的函数
+<<<<<<< .mine
 int PEER::deliver_recv(const zce::sockaddr_ip *remote_addr,
+=======
+int PEER::deliver_recv(const zce::sockaddr_any *remote_addr,
+>>>>>>> .theirs
                        RUDP_FRAME *recv_frame,
                        size_t recv_len,
                        bool *remote_change,
+<<<<<<< .mine
                        zce::sockaddr_ip *old_remote,
                        RECV_NEXT_CALL *next_call)
+=======
+                       zce::sockaddr_any *old_remote,
+                       RECV_NEXT_CALL *next_call)
+>>>>>>> .theirs
 {
     *next_call = RECV_NEXT_CALL::INVALID;
     const size_t buf_size = 64;
@@ -668,7 +677,7 @@ int PEER::process_recv_data(const RUDP_FRAME *recv_frame,
     {
         ZCE_LOG(RS_ERROR,
                 "[RUDP]process_recv_data error.session[%u] please check. "
-                "recv wind[%u]?=[%u] seq [%u]?<=[%u]",
+                "recv wind[%u]?=[%u] seq_ [%u]?<=[%u]",
                 session_id_,
                 recv_windows_.size(),
                 (rcv_wnd_last_ - rcv_wnd_first_),
@@ -1078,7 +1087,13 @@ void PEER::time_out(uint64_t now_clock_ms,
             if (snd_rec.flag_ & FLAG::SYN && model_ == MODEL::PEER_CLIENT &&
                 now_clock_ms - snd_rec.send_clock_ >= 60000)
             {
+<<<<<<< .mine
                 *connect_fail = true;
+
+=======
+                *connect_fail = true;
+                break;
+>>>>>>> .theirs
             }
 
             //重发
@@ -1092,6 +1107,7 @@ void PEER::time_out(uint64_t now_clock_ms,
             {
                 break;
             }
+            ++resend_num;
         }
     }
     //如果长时间没有反应。
@@ -1838,7 +1854,7 @@ int CORE::receive_timeout(zce::Time_Value* timeout_tv,
     return 0;
 }
 
-int CORE::accept_peer(const zce::sockaddr_ip *remote_ip,
+int CORE::accept_peer(const zce::sockaddr_any *remote_ip,
                       ACCEPT *& new_peer)
 {
     int ret = 0;

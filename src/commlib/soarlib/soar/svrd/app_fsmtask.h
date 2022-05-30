@@ -1,7 +1,7 @@
 #ifndef SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
 #define SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
 
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 
 #define REGISTER_NOTIFYTRANS_CMD(fsmtask_fsm_class, cmd_word ) \
     { \
@@ -16,7 +16,7 @@
 
 class soar::FSMTask_TaskBase;
 
-class Comm_SvrdApp_FSMTask : public soar::Svrd_Appliction
+class Comm_SvrdApp_FSMTask : public soar::App_BusPipe
 {
 protected:
 

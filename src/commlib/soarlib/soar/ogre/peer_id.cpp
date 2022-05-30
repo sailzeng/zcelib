@@ -13,7 +13,7 @@ OGRE_PEER_ID::OGRE_PEER_ID(unsigned int peer_ip_address, unsigned short peer_por
 
 OGRE_PEER_ID::OGRE_PEER_ID(const zce::Sockaddr_In& inet_addr) :
     peer_ip_address_(inet_addr.get_ip_address()),
-    peer_port_(inet_addr.get_port_number())
+    peer_port_(inet_addr.get_port())
 {
 }
 
@@ -32,7 +32,7 @@ void OGRE_PEER_ID::set(unsigned int peer_ip_address, unsigned short peer_port)
 void OGRE_PEER_ID::set(const zce::Sockaddr_In& inet_addr)
 {
     peer_ip_address_ = inet_addr.get_ip_address();
-    peer_port_ = inet_addr.get_port_number();
+    peer_port_ = inet_addr.get_port();
 }
 
 //比较函数,

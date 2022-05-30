@@ -1,12 +1,13 @@
-#ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_
-#define SOARING_LIB_SVRD_APP_NONCTRL_H_
+#pragma once
 
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 
 class soar::Zerg_Frame;
 
+namespace soar
+{
 //单个函数处理APP FRAME
-class SvrdApp_Plain : public soar::Svrd_Appliction
+class SvrdApp_Plain : public soar::App_BusPipe
 {
 protected:
     //
@@ -31,5 +32,4 @@ protected:
     //接受的数据区
     soar::Zerg_Frame* nonctrl_recv_buffer_;
 };
-
-#endif //#ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_
+}

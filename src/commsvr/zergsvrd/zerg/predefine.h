@@ -1,5 +1,4 @@
-#ifndef ZERG_SERVER_PRE_DEFINE_H_
-#define ZERG_SERVER_PRE_DEFINE_H_
+#pragma once
 
 #include <zce/predefine.h>
 #include <zce/time/time_value.h>
@@ -47,8 +46,8 @@
 #include <soar/svrd/cfg_base.h>
 #include <soar/svrd/app_main.h>
 #include <soar/zerg/frame_zerg.h>
-#include <soar/svrd/app_buspipe.h>
-#include <soar/svrd/app_base.h>
+#include <soar/svrd/svrd_buspipe.h>
+#include <soar/svrd/app_bus.h>
 #include <soar/svrd/app_main.h>
 #include <soar/stat/monitor.h>
 #include <soar/svrd/timer_base.h>
@@ -62,5 +61,3 @@
 
 //好几个地方都用这个常量，统一设置，以后好改
 static const socklen_t ZERG_SND_RCV_BUF_OPVAL = 320 * 1024;
-
-#endif //_ZERG_SERVER_PRE_DEFINE_H_

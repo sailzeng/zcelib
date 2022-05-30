@@ -193,3 +193,57 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
 
     return 0;
 }
+
+int test_dns_resolve([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
+{
+    zce::socket_init();
+
+    int ret = 0;
+    zce::DNS_Resolve dns;
+    ret = dns.initialize(AF_INET, "114.114.114.114", 53);
+    printf("initialize ret=%d\n", ret);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    uint16_t tid = 0;
+    ret = dns.query("www.sina.com.cn", zce::DNS_Resolve::QTYPE_A, &tid);
+    printf("query ret=%d tid = %x \n", ret, tid);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    const size_t ARRAYS_SIZE = 64;
+    size_t arrays_size = ARRAYS_SIZE;
+    sockaddr_in addrs_ary[ARRAYS_SIZE];
+    zce::Time_Value tv(5);
+    ret = dns.answer(&tid, AF_INET, (sockaddr *)addrs_ary, &arrays_size, &tv);
+    printf("query ret=%d tid = %x arrays_size = %llu\n", ret, tid, arrays_size);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
+
+int test_ping([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
+{
+    int ret = 0;
+    zce::Ping ping;
+    ret = ping.initialize(AF_INET, "114.114.114.114");
+    printf("initialize ret=%d\n", ret);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ping.ping(10);
+    zce::Ping ping6;
+    ret = ping6.initialize(AF_INET6, "::1");
+    printf("initialize ret=%d\n", ret);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ping6.ping(10);
+    return 0;
+}

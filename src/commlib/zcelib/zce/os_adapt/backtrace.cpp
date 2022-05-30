@@ -40,7 +40,7 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
     //释放空间
     ::free(symbols_strings);
 
-#elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
+#elif defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     //我还没有时间看完dbghelp所有的东西,目前的代码参考后一个版本居多,目前这个东东必须有pdb文件，
     //http://blog.csdn.net/skies457/article/details/7201185

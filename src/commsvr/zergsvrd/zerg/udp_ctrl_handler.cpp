@@ -208,7 +208,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
     }
 
     //proc_frame->send_ip_address_ = remote_addr.get_ip_address();
-    proc_frame->send_service_.services_type_ = remote_addr.get_port_number();
+    proc_frame->send_service_.services_type_ = remote_addr.get_port();
     proc_frame->send_service_.services_id_ = remote_addr.get_ip_address();
 
     //

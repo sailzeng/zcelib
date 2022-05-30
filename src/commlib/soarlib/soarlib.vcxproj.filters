@@ -58,10 +58,10 @@
     <ClCompile Include="soar\svrd\app_plain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar\svrd\app_base.cpp">
+    <ClCompile Include="soar\svrd\app_bus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar\svrd\app_buspipe.cpp">
+    <ClCompile Include="soar\svrd\svrd_buspipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="soar\stat\monitor.cpp">
@@ -150,10 +150,10 @@
     <ClInclude Include="soar\svrd\app_plain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="soar\svrd\app_base.h">
+    <ClInclude Include="soar\svrd\app_bus.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="soar\svrd\app_buspipe.h">
+    <ClInclude Include="soar\svrd\svrd_buspipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar\stat\monitor.h">

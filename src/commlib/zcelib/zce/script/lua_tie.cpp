@@ -91,7 +91,7 @@ void push_stack_val(lua_State* state, int64_t val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        ZCE_LOG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
+        ZCE_LOG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type_ id [%d]",
                 lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -227,7 +227,7 @@ template<> int64_t read_stack_val(lua_State* state, int index)
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "stack index [%d] can't to be int64_t ,type id [%d]",
+        ZCE_LOG(RS_ERROR, "stack index [%d] can't to be int64_t ,type_ id [%d]",
                 index,
                 lua_type(state, index));
         return 0;
@@ -250,7 +250,7 @@ template<> uint64_t read_stack_val(lua_State* state, int index)
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "stack index [%d] can't to be uint64_t ,type id [%d]",
+        ZCE_LOG(RS_ERROR, "stack index [%d] can't to be uint64_t ,type_ id [%d]",
                 index,
                 lua_type(state, index));
         return 0;
@@ -270,7 +270,7 @@ template<> std::string read_stack_val(lua_State* state, int index)
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "[ZCELUA]stack index [%d] can't to be std::string ,type id [%d]",
+        ZCE_LOG(RS_ERROR, "[ZCELUA]stack index [%d] can't to be std::string ,type_ id [%d]",
                 index,
                 lua_type(state, index));
         return std::string("");
@@ -376,7 +376,7 @@ int enum_clua_stack(lua_State* state)
                         lua_typename(state, lua_typeid));
                 break;
             default:
-                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type id %d type name %s",
+                ZCE_LOG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type_ id %d type_ name %s",
                         i,
                         lua_typeid,
                         lua_typename(state, lua_typeid));

@@ -2,7 +2,7 @@
 #include "soar/enum/error_code.h"
 #include "soar/zerg/services_info.h"
 #include "soar_server_ver_define.h"
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 #include "soar/svrd/cfg_fsm.h"
 
 Server_Config_FSM::Server_Config_FSM()

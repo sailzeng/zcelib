@@ -15,25 +15,27 @@
 #include "zce/util/non_copyable.h"
 #include "zce/lock/lock_base.h"
 
+namespace zce
+{
 /*!
 * @brief      锁GUARD，利用构造和析构进行加锁解锁操作方法，利用多态兼容变化
 *             多态的好处是，你可以动态的决定使用什么锁，而不是在编译的时候。
-*             只要是从ZCE_Lock_Base继承的家伙，应该都可以使用这个，
+*             只要是从zce::Lock_Base继承的家伙，应该都可以使用这个，
 *             ZCE_LockPtr_Guard是利用多态特性实现的，而不是模版特性
 */
-class ZCE_Lock_Ptr_Guard : public zce::NON_Copyable
+class Lock_Ptr_Guard : public zce::NON_Copyable
 {
 public:
 
     //构造，得到锁，进行锁定
-    ZCE_Lock_Ptr_Guard(ZCE_Lock_Base* lock_ptr) :
+    Lock_Ptr_Guard(zce::Lock_Base* lock_ptr) :
         lock_ptr_(lock_ptr)
     {
         lock_ptr_->lock();
     }
 
     ///构造，得到锁，根据要求决定是否进行锁定操作
-    ZCE_Lock_Ptr_Guard(ZCE_Lock_Base* lock_ptr, bool block) :
+    Lock_Ptr_Guard(zce::Lock_Base* lock_ptr, bool block) :
         lock_ptr_(lock_ptr)
     {
         if (block)
@@ -43,7 +45,7 @@ public:
     }
 
     ///析构，同时对锁进行释放操作
-    ~ZCE_Lock_Ptr_Guard(void)
+    ~Lock_Ptr_Guard(void)
     {
         lock_ptr_->unlock();
     };
@@ -69,5 +71,6 @@ public:
 protected:
 
     ///用来GUARD保护的锁,利用C++特性实现锁差异
-    ZCE_Lock_Base* lock_ptr_;
+    zce::Lock_Base* lock_ptr_;
 };
+}

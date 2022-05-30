@@ -69,11 +69,10 @@ int Timer_Queue::initialize(size_t num_timer_node,
         prev_trigger_msec_ = now_time.total_msec();
     }
     //
-    else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::STEADY_CLOCK)
     {
         //其实这不是真正的CPU Tick
-        zce::Time_Value cpu_tick(zce::get_uptime());
-        prev_trigger_msec_ = cpu_tick.total_msec();
+        prev_trigger_msec_ = zce::clock_ms();
     }
     else
     {
@@ -245,11 +244,10 @@ int Timer_Queue::alloc_timernode(zce::Timer_Handler* timer_hdl,
         now_trigger_time.gettimeofday();
         now_point = now_trigger_time.total_msec();
     }
-    else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::STEADY_CLOCK)
     {
         //其实这不是真正的CPU Tick
-        zce::Time_Value cpu_tick(zce::get_uptime());
-        now_point = cpu_tick.total_msec();
+        now_point = = zce::clock_ms();
     }
 
     alloc_time_node->next_trigger_point_ = now_point + delay_time.total_msec();
@@ -356,11 +354,10 @@ int Timer_Queue::get_first_timeout(zce::Time_Value* first_timeout)
         now_trigger_msec = now_time.total_msec();
     }
     //
-    else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::STEADY_CLOCK)
     {
         //其实这不是真正的CPU Tick
-        zce::Time_Value cpu_tick(zce::get_uptime());
-        now_trigger_msec = cpu_tick.total_msec();
+        now_trigger_msec = zce::clock_ms();
     }
     else
     {
@@ -393,11 +390,10 @@ size_t Timer_Queue::expire()
         now_trigger_msec = now_time.total_msec();
     }
     //
-    else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::STEADY_CLOCK)
     {
         //其实这不是真正的CPU Tick
-        zce::Time_Value cpu_tick(zce::get_uptime());
-        now_trigger_msec = cpu_tick.total_msec();
+        now_trigger_msec = zce::clock_ms();
     }
     else
     {

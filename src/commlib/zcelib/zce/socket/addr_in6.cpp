@@ -10,6 +10,8 @@ namespace zce
 Sockaddr_In6::Sockaddr_In6(void) :
     Sockaddr_Base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(sockaddr_in6))
 {
+    ::memset(&in6_addr_, 0, sizeof(in6_addr_));
+    in6_addr_.sin6_family = AF_INET6;
 }
 
 //根据sockaddr_in构造，
@@ -89,7 +91,7 @@ int Sockaddr_In6::set(const char* ip_addr_str)
 ///检查端口号是否是一个安全端口
 bool Sockaddr_In6::check_safeport()
 {
-    return zce::check_safeport(this->get_port_number());
+    return zce::check_safeport(this->get_port());
 }
 
 //比较两个地址是否相等
@@ -125,7 +127,7 @@ bool Sockaddr_In6::is_ip_equal(const Sockaddr_In6& others) const
 }
 
 //取得IP地址相关的域名信息，调用的是getnameinfo
-int Sockaddr_In6::get_name_info(char* host_name, size_t name_len) const
+int Sockaddr_In6::getnameinfo(char* host_name, size_t name_len) const
 {
     return zce::getnameinfo(reinterpret_cast<const sockaddr*>(&in6_addr_),
                             sizeof(sockaddr_in6),
@@ -137,8 +139,10 @@ int Sockaddr_In6::get_name_info(char* host_name, size_t name_len) const
 }
 
 //取得域名相关的IP地址信息，调用的是getaddrinfo_to_addr
-int Sockaddr_In6::getaddrinfo_to_addr(const char* nodename)
+int Sockaddr_In6::getaddrinfo(const char* nodename,
+                              uint16_t port_number)
 {
+    in6_addr_.sin6_port = ntohs(port_number);
     return zce::getaddrinfo_to_addr(nodename,
                                     sockaddr_ptr_,
                                     sizeof(sockaddr_in6));

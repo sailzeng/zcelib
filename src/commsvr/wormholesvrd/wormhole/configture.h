@@ -1,7 +1,6 @@
-#ifndef WORMHOLE_SERVER_CONFIGTURE_H_
-#define WORMHOLE_SERVER_CONFIGTURE_H_
+#pragma once
 
-#include "wormhole_proxyprocess.h"
+#include "proxyprocess.h"
 
 class Wormhole_Server_Config : public Server_Config_Base
 {
@@ -26,5 +25,3 @@ public:
     ///代理的配置数据要
     zce::PropertyTree proxy_conf_tree_;
 };
-
-#endif //WORMHOLE_SERVER_CONFIGTURE_H_

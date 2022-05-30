@@ -292,6 +292,19 @@ public:
                                const char* outer_str,
                                const Zerg_Frame* proc_frame);
 
+    //很耗时的操作，注意使用频度
+#define DUMP_ZERG_FRAME_HEAD(x,y,z)    soar::Zerg_Frame::dump_frame_head(x,y,z)
+#define DUMP_ZERG_FRAME_ALL(x,y,z)     soar::Zerg_Frame::dump_frame_all(x,y,z)
+
+//非DEBUG版本会优化掉的宏
+#if defined _DEBUG || defined DEBUG
+#define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)     soar::Zerg_Frame::dump_frame_head(x,y,z)
+#define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)      soar::Zerg_Frame::dump_frame_all(x,y,z)
+#else
+#define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)
+#define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)
+#endif
+
 public:
 
     //---------------------------------------------------------------------------
@@ -334,18 +347,5 @@ inline bool Zerg_Frame::is_zerg_processcmd()
     return false;
 }
 }
-
-//很耗时的操作，注意使用频度
-#define DUMP_ZERG_FRAME_HEAD(x,y,z)    soar::Zerg_Frame::dump_frame_head(x,y,z)
-#define DUMP_ZERG_FRAME_ALL(x,y,z)     soar::Zerg_Frame::dump_frame_all(x,y,z)
-
-//非DEBUG版本会优化掉的宏
-#if defined _DEBUG || defined DEBUG
-#define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)     soar::Zerg_Frame::dump_frame_head(x,y,z)
-#define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)      soar::Zerg_Frame::dump_frame_all(x,y,z)
-#else
-#define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)
-#define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)
-#endif
 
 #endif //SOARING_LIB_SERVER_APP_FRAME_H_

@@ -291,7 +291,7 @@ void push_stack_ptr(lua_State* state, ptr_type ptr)
                         "May be you don't register or name conflict? ",
                         __ZCE_FUNC__,
                         typeid(ptr).name(),
-                        class_name<std::remove_pointer <ptr_type> ::type >::name());
+                        class_name<std::remove_pointer <ptr_type> ::type_ >::name());
 #endif
                 lua_remove(state, -1);
                 return;
@@ -346,7 +346,7 @@ void push_stack_val(lua_State* state, val_type val)
                 "May be you don't register or name conflict? ",
                 __ZCE_FUNC__,
                 typeid(val).name(),
-                class_name<std::remove_cv<val_type>::type >::name());
+                class_name<std::remove_cv<val_type>::type_ >::name());
 #endif
         lua_remove(state, -1);
         return;
@@ -630,7 +630,7 @@ public:
         int para_idx = ::lua_gettop(state);
         //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
         push_stack<ret_type>(state,
-                             fun_ptr(read_stack<typename std::decay<args_type>::type>
+                             fun_ptr(read_stack<typename std::decay<args_type>::type_>
                              (state, para_idx--)...));
         return (last_yield) ? ::lua_yield(state, 1) : 1;
     }
@@ -646,8 +646,8 @@ public:
         //使用tuple展开参数，而且是从左到右展开
         //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
         int para_idx = 1;
-        std::tuple<typename std::decay<args_type>::type...> para = {
-            (read_stack<typename std::decay<args_type>::type>(state,para_idx++))... };
+        std::tuple<typename std::decay<args_type>::type_...> para = {
+            (read_stack<typename std::decay<args_type>::type_>(state,para_idx++))... };
         //使用tuple执行函数调用
         push_stack<ret_type>(state,
                              zce::g_func_tuplearg_invoke(fun_ptr, para));

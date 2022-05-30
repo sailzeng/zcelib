@@ -7,31 +7,33 @@
 * @brief      进程的MUTEX，必须有名字，
 *
 */
-#ifndef ZCE_LIB_LOCK_PROCESS_MUTEX_H_
-#define ZCE_LIB_LOCK_PROCESS_MUTEX_H_
+
+#pragma once
 
 #include "zce/lock/lock_base.h"
 #include "zce/lock/lock_guard.h"
 #include "zce/shared_mem/posix.h"
 
+namespace zce
+{
 /*!
 * @brief      进程Mutex锁,用于多进程间的互斥同步处理，
 *             在WINDOWS下，递归锁是用MUTEX模拟的（必须有名字），非递归锁是用信号灯模拟，
 *             在LINUX下，还是用pthread_mutex实现的，但是用共享内存存放，名字用于共享
 *             内存名字
 */
-class ZCE_Process_Mutex : public ZCE_Lock_Base
+class Process_Mutex : public zce::Lock_Base
 {
 public:
 
     //进程锁的GUARD
-    typedef ZCE_Lock_Guard<ZCE_Process_Mutex> LOCK_GUARD;
+    typedef zce::Lock_Guard<Process_Mutex> LOCK_GUARD;
 
 public:
     ///构造函数
-    ZCE_Process_Mutex(const char* mutex_name, bool recursive = true);
+    Process_Mutex(const char* mutex_name, bool recursive = true);
     ///析构函数
-    virtual ~ZCE_Process_Mutex(void);
+    virtual ~Process_Mutex(void);
 
     ///锁定
     virtual void lock();
@@ -43,10 +45,10 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool systime_lock(const zce::Time_Value& abs_time);
+    virtual bool lock(const zce::Time_Value& abs_time);
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool duration_lock(const zce::Time_Value& relative_time);
+    virtual bool lock_for(const zce::Time_Value& relative_time);
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();
@@ -61,5 +63,4 @@ protected:
     zce::SHM_Posix posix_sharemem_;
 #endif
 };
-
-#endif //ZCE_LIB_LOCK_PROCESS_MUTEX_H_
+}

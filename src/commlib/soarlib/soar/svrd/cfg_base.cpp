@@ -2,7 +2,7 @@
 #include "soar/enum/error_code.h"
 #include "soar/zerg/services_info.h"
 #include "soar_server_ver_define.h"
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 #include "soar/svrd/cfg_base.h"
 
 Server_Config_Base::Server_Config_Base() :
@@ -140,7 +140,7 @@ int Server_Config_Base::read_start_arg(int argc, const char* argv[])
     }
 
     log_file_prefix_ = app_run_dir_ + "/log/";
-    log_file_prefix_ += soar::Svrd_Appliction::instance()->get_app_basename();
+    log_file_prefix_ += soar::App_BusPipe::instance()->get_app_basename();
 
     return 0;
 }
@@ -154,7 +154,7 @@ int Server_Config_Base::usage(const char* program_name)
     std::cout << "   -d run as daemon" << std::endl;
     std::cout << "   -n reset channel mmp" << std::endl;
     std::cout << "   -v show version" << std::endl;
-    std::cout << "   -t service type" << std::endl;
+    std::cout << "   -t service type_" << std::endl;
     std::cout << "   -i service index" << std::endl;
     std::cout << "   -p pull config from cfgsvr" << std::endl;
     std::cout << "   -m install app as windows servcie" << std::endl;
@@ -172,7 +172,7 @@ int Server_Config_Base::read_cfgfile()
 
     // 未指定app的配置文件，则使用默认的
     app_cfg_file_ = app_run_dir_ + "/cfg/";
-    app_cfg_file_ += soar::Svrd_Appliction::instance()->get_app_basename();
+    app_cfg_file_ += soar::App_BusPipe::instance()->get_app_basename();
     app_cfg_file_ += ".cfg";
 
     // 未指定svcid配置文件
@@ -202,7 +202,7 @@ int Server_Config_Base::read_cfgfile()
 void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Application base name %s svc id:%hu.%hu",
-            soar::Svrd_Appliction::instance()->get_app_basename(),
+            soar::App_BusPipe::instance()->get_app_basename(),
             self_svc_info_.svc_id_.services_type_,
             self_svc_info_.svc_id_.services_id_);
     ZCE_LOG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());
@@ -265,7 +265,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     std::string temp_value;
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_LEVEL", temp_value);
-    log_config_.log_level_ = ZCE_LogTrace_Basic::log_priorities(temp_value.c_str());
+    log_config_.log_level_ = zce::LogTrace_Base::log_priorities(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -273,7 +273,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     }
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
-    log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
+    log_config_.log_div_type_ = zce::LogTrace_Base::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);

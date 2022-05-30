@@ -16,10 +16,10 @@ void to_str(char* buffer,
             size_t& use_len,
             const sockaddr_in& out_data)
 {
-    const char* ret_str = zce::socketaddr_ntop_ex((const sockaddr*)(&out_data),
-                                                  buffer,
-                                                  max_len,
-                                                  use_len);
+    const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
+                                                buffer,
+                                                max_len,
+                                                use_len);
     //返回成功
     if (!ret_str)
     {
@@ -34,10 +34,10 @@ void to_string(std::string& stdstr,
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
     size_t use_len = 0;
-    auto ret_str = zce::socketaddr_ntop_ex((const sockaddr*)(&out_data),
-                                           addr_str,
-                                           max_len,
-                                           use_len);
+    auto ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
+                                         addr_str,
+                                         max_len,
+                                         use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -47,10 +47,10 @@ void to_str(char* buffer,
             size_t& use_len,
             const sockaddr_in6& out_data)
 {
-    const char* ret_str = zce::socketaddr_ntop_ex((const sockaddr*)(&out_data),
-                                                  buffer,
-                                                  max_len,
-                                                  use_len);
+    const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
+                                                buffer,
+                                                max_len,
+                                                use_len);
     if (!ret_str)
     {
         zce::to_str(buffer, max_len, use_len, "<ERROR>");
@@ -64,10 +64,10 @@ void to_string(std::string& stdstr,
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
     size_t use_len = 0;
-    auto ret_str = zce::socketaddr_ntop_ex((const sockaddr*)(&out_data),
-                                           addr_str,
-                                           max_len,
-                                           use_len);
+    auto ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
+                                         addr_str,
+                                         max_len,
+                                         use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -77,10 +77,10 @@ void to_str(char* buffer,
             size_t& use_len,
             const sockaddr* out_data)
 {
-    const char* ret_str = zce::socketaddr_ntop_ex(out_data,
-                                                  buffer,
-                                                  max_len,
-                                                  use_len);
+    const char* ret_str = zce::sockaddr_ntop_ex(out_data,
+                                                buffer,
+                                                max_len,
+                                                use_len);
     //返回成功
     if (!ret_str)
     {
@@ -95,10 +95,10 @@ void to_string(std::string& stdstr,
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
     size_t use_len = 0;
-    auto ret_str = zce::socketaddr_ntop_ex(out_data,
-                                           addr_str,
-                                           max_len,
-                                           use_len);
+    auto ret_str = zce::sockaddr_ntop_ex(out_data,
+                                         addr_str,
+                                         max_len,
+                                         use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 

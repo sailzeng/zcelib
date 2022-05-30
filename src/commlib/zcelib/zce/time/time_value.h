@@ -199,7 +199,7 @@ public:
     uint64_t total_msec_round() const;
 
     /*!
-    * @brief      用毫秒作为单位设置TimeValue
+    * @brief      用毫秒作为单位设置Time_Value
     * @param      set_msec
     */
     void total_msec(uint64_t set_msec);
@@ -211,7 +211,7 @@ public:
     uint64_t total_usec() const;
 
     /*!
-    * @brief      用微秒作为单位，设置TimeValue，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
+    * @brief      用微秒作为单位，设置Time_Value，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
     * @param[in]  set_usec 总共的微秒时间，将被换算为timeval
     */
     void total_usec(uint64_t set_usec);

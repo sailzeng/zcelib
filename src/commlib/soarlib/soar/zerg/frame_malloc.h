@@ -336,7 +336,7 @@ void ZergFrame_Mallocor<zce_lock>::clean_instance()
 }
 
 //
-typedef ZergFrame_Mallocor<ZCE_Null_Mutex> NULLMUTEX_APPFRAME_MALLOCOR;
-typedef ZergFrame_Mallocor<ZCE_Thread_Light_Mutex> THREADMUTEX_APPFRAME_MALLOCOR;
+typedef ZergFrame_Mallocor<zce::Null_Mutex> NULLMUTEX_APPFRAME_MALLOCOR;
+typedef ZergFrame_Mallocor<zce::Thread_Light_Mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

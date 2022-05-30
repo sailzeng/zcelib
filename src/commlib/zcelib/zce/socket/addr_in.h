@@ -38,6 +38,19 @@ public:
     ///设置地址信息
     virtual void set_sockaddr(sockaddr* addr, socklen_t len) override;
 
+    ///取得域名相关的IP地址信息，调用函数是getaddrinfo，notename可以是数值地址，或者域名
+    virtual int getaddrinfo(const char* nodename,
+                            uint16_t port_number = 0) override;
+
+    ///DNS相关函数，
+    ///取得IP地址相关的域名信息,调用函数是getnameinfo
+    virtual int getnameinfo(char* host_name, size_t name_len) const override;
+
+    ///设置端口号，
+    virtual inline void set_port(uint16_t) override;
+    ///取得端口号
+    virtual inline uint16_t get_port(void) const override;
+
     /*!
     * @brief      根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号根据参数设置
     * @return     int  返回0表示转换成功
@@ -65,11 +78,6 @@ public:
     */
     int set(const char* ip_addr_str);
 
-    ///设置端口好，
-    inline void set_port_number(uint16_t);
-    ///取得端口号
-    inline uint16_t get_port_number(void) const;
-
     ///检查端口号是否是一个安全端口
     bool check_safeport();
 
@@ -87,13 +95,6 @@ public:
 
     //检查IP地址是否相等,忽视端口
     bool is_ip_equal(const Sockaddr_In& others) const;
-
-    ///DNS相关函数，
-    ///取得IP地址相关的域名信息,调用函数是getnameinfo
-    int get_name_info(char* host_name, size_t name_len) const;
-
-    ///取得域名相关的IP地址信息，调用函数是getaddrinfo，notename可以是数值地址，或者域名
-    int getaddrinfo_to_addr(const char* nodename);
 
     ///各种操作符号转换函数，方便各种使用，让Sockaddr_In的行为和sockaddr_in基本一致
     ///返回sockaddr_in
@@ -116,12 +117,12 @@ inline uint32_t Sockaddr_In::get_ip_address(void) const
 }
 
 //设置端口好，
-inline void Sockaddr_In::set_port_number(uint16_t port_number)
+inline void Sockaddr_In::set_port(uint16_t port_number)
 {
     in4_addr_.sin_port = ntohs(port_number);
 }
 //取得端口号
-inline uint16_t Sockaddr_In::get_port_number(void) const
+inline uint16_t Sockaddr_In::get_port(void) const
 {
     return ntohs(in4_addr_.sin_port);
 }

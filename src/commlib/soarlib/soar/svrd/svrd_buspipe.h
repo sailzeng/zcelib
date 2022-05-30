@@ -11,13 +11,13 @@ class soar::Zerg_Frame;
 
 namespace soar
 {
-class App_BusPipe : protected zce::TwoWay_BusPipe
+class Svrd_BusPipe : protected zce::TwoWay_BusPipe
 {
 public:
     //构造函数,
-    App_BusPipe();
+    Svrd_BusPipe();
     //析购函数
-    ~App_BusPipe();
+    ~Svrd_BusPipe();
 
 public:
 
@@ -33,10 +33,10 @@ public:
 
     //-----------------------------------------------------------------
     //从RECV管道读取帧
-    int pop_front_recvbus(soar::Zerg_Frame*& proc_frame);
+    int pop_front_recvbus(soar::Zerg_Frame* proc_frame);
 
     //从SEND管道读取帧
-    int pop_front_sendbus(soar::Zerg_Frame*& proc_frame);
+    int pop_front_sendbus(soar::Zerg_Frame* proc_frame);
 
     //向SEND管道写入帧
     int push_back_sendbus(const soar::Zerg_Frame* proc_frame);
@@ -69,15 +69,15 @@ public:
 
     //为了SingleTon类准备
     //实例的赋值
-    static void instance(App_BusPipe*);
+    static void instance(Svrd_BusPipe*);
     //实例的获得
-    static App_BusPipe* instance();
+    static Svrd_BusPipe* instance();
     //清除实例
     static void clean_instance();
 
 protected:
     //instance函数使用的东西
-    static App_BusPipe* zerg_bus_instance_;
+    static Svrd_BusPipe* zerg_bus_instance_;
 
 protected:
 

@@ -5,15 +5,16 @@
 #include "zce/os_adapt/semaphore.h"
 #include "zce/os_adapt/error.h"
 #include "zce/logger/logging.h"
-
 #include "zce/lock/thread_mutex.h"
 
 /************************************************************************************************************
-Class           : ZCE_Thread_Light_Mutex 轻量级的互斥锁，不提供超时。
+Class           : Thread_Light_Mutex 轻量级的互斥锁，不提供超时。
 ************************************************************************************************************/
 
+namespace zce
+{
 //构造函数
-ZCE_Thread_Light_Mutex::ZCE_Thread_Light_Mutex()
+Thread_Light_Mutex::Thread_Light_Mutex()
 {
     int ret = 0;
 
@@ -31,7 +32,7 @@ ZCE_Thread_Light_Mutex::ZCE_Thread_Light_Mutex()
 }
 
 //销毁互斥量
-ZCE_Thread_Light_Mutex::~ZCE_Thread_Light_Mutex(void)
+Thread_Light_Mutex::~Thread_Light_Mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(&lock_);
@@ -44,7 +45,7 @@ ZCE_Thread_Light_Mutex::~ZCE_Thread_Light_Mutex(void)
 }
 
 //锁定
-void ZCE_Thread_Light_Mutex::lock()
+void Thread_Light_Mutex::lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(&lock_);
@@ -57,7 +58,7 @@ void ZCE_Thread_Light_Mutex::lock()
 }
 
 //尝试锁定
-bool ZCE_Thread_Light_Mutex::try_lock()
+bool Thread_Light_Mutex::try_lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(&lock_);
@@ -71,7 +72,7 @@ bool ZCE_Thread_Light_Mutex::try_lock()
 }
 
 //解锁,
-void ZCE_Thread_Light_Mutex::unlock()
+void Thread_Light_Mutex::unlock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(&lock_);
@@ -84,16 +85,16 @@ void ZCE_Thread_Light_Mutex::unlock()
 }
 
 //取出内部的锁的指针
-pthread_mutex_t* ZCE_Thread_Light_Mutex::get_lock()
+pthread_mutex_t* Thread_Light_Mutex::get_lock()
 {
     return &lock_;
 }
 
 /************************************************************************************************************
-Class           : ZCE_Thread_Recursive_Mutex
+Class           : Thread_Recursive_Mutex
 ************************************************************************************************************/
 //构造函数
-ZCE_Thread_Recursive_Mutex::ZCE_Thread_Recursive_Mutex()
+Thread_Recursive_Mutex::Thread_Recursive_Mutex()
 {
     int ret = 0;
 
@@ -112,7 +113,7 @@ ZCE_Thread_Recursive_Mutex::ZCE_Thread_Recursive_Mutex()
 }
 
 //析构函数，释放MUTEX资源
-ZCE_Thread_Recursive_Mutex::~ZCE_Thread_Recursive_Mutex(void)
+Thread_Recursive_Mutex::~Thread_Recursive_Mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(&lock_);
@@ -125,7 +126,7 @@ ZCE_Thread_Recursive_Mutex::~ZCE_Thread_Recursive_Mutex(void)
 }
 
 //锁定
-void ZCE_Thread_Recursive_Mutex::lock()
+void Thread_Recursive_Mutex::lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(&lock_);
@@ -138,7 +139,7 @@ void ZCE_Thread_Recursive_Mutex::lock()
 }
 
 //尝试锁定
-bool ZCE_Thread_Recursive_Mutex::try_lock()
+bool Thread_Recursive_Mutex::try_lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(&lock_);
@@ -152,7 +153,7 @@ bool ZCE_Thread_Recursive_Mutex::try_lock()
 }
 
 //解锁,
-void ZCE_Thread_Recursive_Mutex::unlock()
+void Thread_Recursive_Mutex::unlock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(&lock_);
@@ -165,7 +166,7 @@ void ZCE_Thread_Recursive_Mutex::unlock()
 }
 
 //绝对时间
-bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value& abs_time)
+bool Thread_Recursive_Mutex::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(&lock_, abs_time);
@@ -180,25 +181,25 @@ bool ZCE_Thread_Recursive_Mutex::systime_lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间
-bool ZCE_Thread_Recursive_Mutex::duration_lock(const zce::Time_Value& relative_time)
+bool Thread_Recursive_Mutex::lock_for(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return systime_lock(abs_time);
+    return lock(abs_time);
 }
 
 //取出内部的锁的指针
-pthread_mutex_t* ZCE_Thread_Recursive_Mutex::get_lock()
+pthread_mutex_t* Thread_Recursive_Mutex::get_lock()
 {
     return &lock_;
 }
 
 /************************************************************************************************************
-Class           : ZCE_Thread_NONR_Mutex
+Class           : Thread_NONR_Mutex
 ************************************************************************************************************/
 //构造函数,name参数，可以不带，带反而可能降低可移植性
 //稍稍解释一下为什么可以不带name参数，因为Windows下我们是用信号灯模拟，但Windows的信号灯在线程环境下，不需要一定有名字
-ZCE_Thread_NONR_Mutex::ZCE_Thread_NONR_Mutex()
+Thread_NONR_Mutex::Thread_NONR_Mutex()
 {
     //线程锁
     int ret = 0;
@@ -218,7 +219,7 @@ ZCE_Thread_NONR_Mutex::ZCE_Thread_NONR_Mutex()
 }
 
 //析构函数，释放MUTEX资源
-ZCE_Thread_NONR_Mutex::~ZCE_Thread_NONR_Mutex(void)
+Thread_NONR_Mutex::~Thread_NONR_Mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(&lock_);
@@ -231,7 +232,7 @@ ZCE_Thread_NONR_Mutex::~ZCE_Thread_NONR_Mutex(void)
 }
 
 //锁定
-void ZCE_Thread_NONR_Mutex::lock()
+void Thread_NONR_Mutex::lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(&lock_);
@@ -244,7 +245,7 @@ void ZCE_Thread_NONR_Mutex::lock()
 }
 
 //尝试锁定
-bool ZCE_Thread_NONR_Mutex::try_lock()
+bool Thread_NONR_Mutex::try_lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(&lock_);
@@ -258,7 +259,7 @@ bool ZCE_Thread_NONR_Mutex::try_lock()
 }
 
 //解锁,
-void ZCE_Thread_NONR_Mutex::unlock()
+void Thread_NONR_Mutex::unlock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(&lock_);
@@ -271,7 +272,7 @@ void ZCE_Thread_NONR_Mutex::unlock()
 }
 
 //绝对时间
-bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value& abs_time)
+bool Thread_NONR_Mutex::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(&lock_, abs_time);
@@ -291,9 +292,10 @@ bool ZCE_Thread_NONR_Mutex::systime_lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间
-bool ZCE_Thread_NONR_Mutex::duration_lock(const zce::Time_Value& relative_time)
+bool Thread_NONR_Mutex::lock_for(const zce::Time_Value& relative_time)
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
-    return systime_lock(abs_time);
+    return lock(abs_time);
+}
 }

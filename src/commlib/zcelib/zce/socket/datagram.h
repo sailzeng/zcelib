@@ -1,6 +1,7 @@
 #pragma once
 
 #include "zce/time/time_value.h"
+#include "zce/socket/socket_base.h"
 #include "zce/socket/addr_base.h"
 
 namespace zce
@@ -16,12 +17,12 @@ public:
     ~Socket_DataGram();
 
     //Open SOCK句柄，不BIND本地地址的方式
-    int open(int protocol_family = AF_INET,
+    ///family 参数可以是AF_INET,或者AF_INET6等
+    int open(int family = AF_INET,
              int protocol = 0,
              bool reuse_addr = true);
 
     ///Open SOCK句柄，BIND本地地址的方式,一般情况下不用这样使用，除非……
-    ///protocol_family 参数可以是AF_INET,或者AF_INET6等
     int open(const Sockaddr_Base* local_addr,
              int protocol = 0,
              bool reuse_addr = false);

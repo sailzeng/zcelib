@@ -693,7 +693,8 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
         //如果将要关闭
         if (true == if_force_close_)
         {
-            ZCE_LOG(RS_INFO, "Send to peer handle[%u] IP|Port :[%s] complete ,want to close peer on account of frame option.\n",
+            ZCE_LOG(RS_INFO, "Send to peer handle[%u] IP|Port :[%s] complete ,want to close peer on"
+                    " account of frame option.\n",
                     socket_peer_.get_handle(),
                     remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             //让上层去关闭，要小心，小心，很麻烦，很多生命周期的问题,因为有两个地方调用这个函数
@@ -737,7 +738,8 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
     {
         ////原来一直考虑使用错误管道进行重新发送等处理，现在想想，实在多余，算了
         //// 如果错误管道不为空
-        //if(  Soar_MMAP_BusPipe::instance()->IsExistZergPipe(Soar_MMAP_BusPipe::ERROR_PIPE_ID) == true)
+        //if( soar::Svrd_BusPipe::instance()->IsExistZergPipe(soar::Svrd_BusPipe::ERROR_PIPE_ID)
+        //       == true)
         //{
         //}
         ZCE_LOG(RS_ERROR, " Peer handle [%u] ,send frame fail.frame len[%u] "
@@ -755,9 +757,8 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
         inner_frame->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_SEND_ERROR;
 
         //日志在函数中有输出,这儿略.
-        ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
-            Soar_MMAP_BusPipe::RECV_PIPE_ID,
-            reinterpret_cast<const zce::lockfree::node*>(inner_frame));
+        ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
+            reinterpret_cast<soar::Zerg_Frame *>(inner_frame));
 
         if (ret != 0)
         {
@@ -1073,9 +1074,8 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 //
 int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
-    int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
-        Soar_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<zce::lockfree::node*>(rcv_buffer_));
+    int ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
+        reinterpret_cast<soar::Zerg_Frame*>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,
     if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD)

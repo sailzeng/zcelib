@@ -3,7 +3,7 @@
 #include "soar/stat/define.h"
 #include "soar/stat/monitor.h"
 #include "soar/svrd/cfg_base.h"
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 #include "soar/svrd/timer_base.h"
 
 namespace soar
@@ -112,7 +112,7 @@ void Server_Timer::report_status()
 {
     // 上报进程存活状态
     stat_monitor_->add_one(COMM_STAT_APP_ALIVE, 0, 0);
-    soar::Svrd_Appliction* svrd_app = soar::Svrd_Appliction::instance();
+    soar::App_BusPipe* svrd_app = soar::App_BusPipe::instance();
 
     {
         // 获取服务器状态信息

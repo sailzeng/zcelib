@@ -322,7 +322,7 @@ public:
             hashhead->num_of_node_ = real_num;
         }
 
-        shm_hashtable< _value_type, _key_type, _hash_fun, _extract_key, _equal_key  >* instance
+        self* instance
             = new shm_hashtable< _value_type, _key_type, _hash_fun, _extract_key, _equal_key  >();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
@@ -833,29 +833,29 @@ public:
 };
 
 //HASH MAP
-template<class _key_type, class _value_type, class _hash_fun = smem_hash<_key_type>, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _equal_key = std::equal_to<_key_type> >
+template<class _key_type, class _value_type, class _hash_fun = smem_hash<_key_type>, class _equal_key = std::equal_to<_key_type> >
 class shm_hashmap :
-    public shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key  >
+    public shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, mmap_select1st <std::pair <_key_type, _value_type> >, _equal_key  >
 {
 protected:
 
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashmap<_key_type, _value_type, _hash_fun, _extract_key, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
-        shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _extract_key, _equal_key  >(numnode, pmmap, if_restore)
+    shm_hashmap<_key_type, _value_type, _hash_fun, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
+        shm_hashtable< std::pair <_key_type, _value_type>, _key_type, mmap_select1st <std::pair <_key_type, _value_type> >, _equal_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~shm_hashmap<_key_type, _value_type, _hash_fun, _extract_key, _equal_key >()
+    ~shm_hashmap<_key_type, _value_type, _hash_fun, _equal_key >()
     {
     }
 public:
-    static shm_hashmap< _key_type, _value_type, _hash_fun, _extract_key, _equal_key  >*
+    static shm_hashmap< _key_type, _value_type, _hash_fun, _equal_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashmap< _key_type, _value_type, _hash_fun, _extract_key, _equal_key  > *>(
-            shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<shm_hashmap< _key_type, _value_type, _hash_fun, _equal_key  > *>(
+            shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, mmap_select1st <std::pair <_key_type, _value_type> >, _equal_key>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
     _value_type& operator[](const _key_type& key)

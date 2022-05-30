@@ -12,21 +12,22 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_CONDI_H_
-#define ZCE_LIB_LOCK_THREAD_CONDI_H_
+#pragma once
 
 #include "zce/logger/logging.h"
 #include "zce/lock/lock_base.h"
 #include "zce/os_adapt/condi.h"
 
+namespace zce
+{
 //线程的条件变量类,为了方便用了模版类，但请你直接用两个typedef
 template <class MUTEX>
-class ZCE_Thread_Condition : public ZCE_Condition_Base
+class Thread_Condition : public zce::Condition_Base
 {
 public:
 
     //构造函数
-    ZCE_Thread_Condition()
+    Thread_Condition()
     {
         int ret = 0;
 
@@ -40,7 +41,7 @@ public:
     }
 
     //析构函数
-    virtual ~ZCE_Thread_Condition(void)
+    virtual ~Thread_Condition(void)
     {
         //销毁条件变量
         int ret = zce::pthread_cond_destroy(&lock_);
@@ -52,7 +53,7 @@ public:
         }
     }
 
-    //我根据ZCE_Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex给了特化实现
+    //我根据Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex给了特化实现
 
     //等待
     virtual void wait(MUTEX* external_mutex);
@@ -98,8 +99,7 @@ protected:
 //你可以直接用这两个特化的类
 
 ///使用线程MUTEX
-typedef ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>        ZCE_Thread_Condition_Mutex;
+typedef Thread_Condition<zce::Thread_Light_Mutex>        Thread_Condition_Mutex;
 ///使用可递归的MUTEX的类
-typedef ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>    ZCE_Thread_Condition_Recursive_Mutex;
-
-#endif //ZCE_LIB_LOCK_THREAD_CONDI_H_
+typedef Thread_Condition<zce::Thread_Recursive_Mutex>    Thread_Condition_Recursive_Mutex;
+}

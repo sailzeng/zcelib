@@ -14,29 +14,30 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCK_FILE_LOCK_H_
-#define ZCE_LIB_LOCK_FILE_LOCK_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 #include "zce/lock/lock_guard.h"
 
+namespace zce
+{
 /*!
 * @brief      文件锁，对于整个文件进行操作
 */
-class ZCE_File_Lock : public zce::NON_Copyable
+class File_Lock : public zce::NON_Copyable
 {
 public:
 
     ///读锁的GUARD
-    typedef ZCE_Read_Guard<ZCE_File_Lock> LOCK_READ_GUARD;
+    typedef Read_Guard<File_Lock> LOCK_READ_GUARD;
     ///写锁的GUARD
-    typedef ZCE_Write_Guard<ZCE_File_Lock> LOCK_WRITE_GUARD;
+    typedef Write_Guard<File_Lock> LOCK_WRITE_GUARD;
 
 public:
 
     //构造函数
-    ZCE_File_Lock();
-    ~ZCE_File_Lock();
+    File_Lock();
+    ~File_Lock();
 
 public:
 
@@ -80,5 +81,4 @@ protected:
     ///文件锁句柄
     zce::file_lock_t   file_lock_;
 };
-
-#endif //ZCE_LIB_LOCK_FILE_LOCK_H_
+}

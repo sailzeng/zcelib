@@ -38,7 +38,7 @@ Ogre4a_App_Frame* Ogre4a_App_Frame::new_ogre(size_t lenframe)
     memset(ptr, 0, lenframe);
 #endif //DEBUG
 
-    //reinterpret_cast<Zerg_App_Frame*>(ptr)->m_Length = static_cast<unsigned int>(lenframe);
+    //reinterpret_cast<soar::Zerg_Frame*>(ptr)->m_Length = static_cast<unsigned int>(lenframe);
     return static_cast<Ogre4a_App_Frame*>(ptr);
 }
 

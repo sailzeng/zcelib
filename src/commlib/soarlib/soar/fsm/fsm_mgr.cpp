@@ -25,7 +25,7 @@ int FSM_Manager::initialize(zce::Timer_Queue* timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
                             const soar::SERVICES_INFO& selfsvr,
-                            soar::App_BusPipe* zerg_mmap_pipe,
+                            soar::Svrd_BusPipe* zerg_mmap_pipe,
                             size_t max_frame_len,
                             bool init_inner_queue,
                             bool init_lock_pool)

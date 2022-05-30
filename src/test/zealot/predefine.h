@@ -36,6 +36,7 @@
 #include <zce/lockfree/kfifo.h>
 #include <zce/shm_container/avltree.h>
 
+#include <zce/time/time_value.h>
 #include <zce/time/progress_timer.h>
 
 #include <zce/util/random.h>
@@ -87,6 +88,8 @@
 
 #include <zce/sqlite/sqlite_handler.h>
 #include <zce/sqlite/sqlite_stmt.h>
+#include <zce/net/dns_resolve.h>
+#include <zce/net/ping.h>
 
 #include <thread>
 #include <mutex>
@@ -233,6 +236,9 @@ int test_pool(int /*argc*/, char* /*argv*/[]);
 int test_rudp(int /*argc*/, char* /*argv*/[]);
 int test_rudp_core(int /*argc*/, char* /*argv*/[]);
 int test_rudp_client(int /*argc*/, char* /*argv*/[]);
+
+int test_dns_resolve(int argc, char* argv[]);
+int test_ping(int argc, char* argv[]);
 
 #endif //
 

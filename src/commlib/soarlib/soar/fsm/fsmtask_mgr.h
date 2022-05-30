@@ -20,7 +20,7 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/zerg/frame_malloc.h"
 #include "soar/fsm/fsm_mgr.h"
-#include "soar/svrd/app_buspipe.h"
+#include "soar/svrd/svrd_buspipe.h"
 
 namespace soar
 {
@@ -32,7 +32,7 @@ protected:
     //zce::MsgQueue_Deque底层实现用的Deque
     typedef zce::MsgQueue_Deque<soar::Zerg_Frame*>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
-    typedef ZergFrame_Mallocor<typename ZCE_MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
+    typedef ZergFrame_Mallocor<typename zce::MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
     //FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，这个数量级别已经不少了
     static const size_t FRAME_QUEUE_WATER_MARK = 102400;
@@ -62,7 +62,7 @@ public:
                     const soar::SERVICES_INFO& selfsvr,
                     const zce::Time_Value& enqueue_timeout,
                     zce::Timer_Queue* timer_queue,
-                    soar::App_BusPipe* zerg_mmap_pipe,
+                    soar::Svrd_BusPipe* zerg_mmap_pipe,
                     APPFRAME_MALLOCOR* frame_mallocor);
 
     //处理从接收队列取出的FRAME

@@ -8,12 +8,14 @@
 #include "zce/time/time_value.h"
 #include "zce/lock/process_mutex.h"
 
+namespace zce
+{
 //构造函数,
 //mutex_name 互斥量的名称，必选参数，在WIN下是互斥量的名称，在LINUX，是共享内存的文件名称，
 //（如果是WIN下的非递归锁，是个信号灯的名称）
 //WINDOWS的核心对象的名称被用于标识一个核心对象（互斥量，信号灯），而LINUX下的pthread_xxx同步对象，如果对象在共享内存里面，
 //那么就是进程间同步对象，当然还要注意属性PTHREAD_PROCESS_SHARED的设置
-ZCE_Process_Mutex::ZCE_Process_Mutex(const char* mutex_name, bool recursive) :
+Process_Mutex::Process_Mutex(const char* mutex_name, bool recursive) :
     lock_(NULL)
 {
     ZCE_ASSERT(mutex_name);
@@ -51,7 +53,7 @@ ZCE_Process_Mutex::ZCE_Process_Mutex(const char* mutex_name, bool recursive) :
 }
 
 //析构函数，
-ZCE_Process_Mutex::~ZCE_Process_Mutex(void)
+Process_Mutex::~Process_Mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(lock_);
@@ -78,7 +80,7 @@ ZCE_Process_Mutex::~ZCE_Process_Mutex(void)
 }
 
 //锁定
-void ZCE_Process_Mutex::lock()
+void Process_Mutex::lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(lock_);
@@ -91,7 +93,7 @@ void ZCE_Process_Mutex::lock()
 }
 
 //尝试锁定
-bool ZCE_Process_Mutex::try_lock()
+bool Process_Mutex::try_lock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(lock_);
@@ -105,7 +107,7 @@ bool ZCE_Process_Mutex::try_lock()
 }
 
 //解锁,
-void ZCE_Process_Mutex::unlock()
+void Process_Mutex::unlock()
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(lock_);
@@ -118,7 +120,7 @@ void ZCE_Process_Mutex::unlock()
 }
 
 //绝对时间
-bool ZCE_Process_Mutex::systime_lock(const zce::Time_Value& abs_time)
+bool Process_Mutex::lock(const zce::Time_Value& abs_time)
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(lock_, abs_time);
@@ -133,15 +135,16 @@ bool ZCE_Process_Mutex::systime_lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间
-bool ZCE_Process_Mutex::duration_lock(const zce::Time_Value& relative_time)
+bool Process_Mutex::lock_for(const zce::Time_Value& relative_time)
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return systime_lock(abs_time);
+    return lock(abs_time);
 }
 
 //取出内部的锁的指针
-pthread_mutex_t* ZCE_Process_Mutex::get_lock()
+pthread_mutex_t* Process_Mutex::get_lock()
 {
     return lock_;
+}
 }

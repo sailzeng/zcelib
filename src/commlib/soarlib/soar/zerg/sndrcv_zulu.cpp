@@ -23,23 +23,6 @@ Zulu_SendRecv_Msg::~Zulu_SendRecv_Msg()
     }
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年4月25日
-Function        : Zulu_SendRecv_Package::set_zulu_svcinfo
-Return          : int
-Parameter List  :
-  Param1: const char* svc_ip
-  Param2: unsigned short svc_port
-  Param3: const soar::SERVICES_ID& recv_service
-  Param4: const soar::SERVICES_ID& send_service
-  Param5: const soar::SERVICES_ID& proxy_service
-  Param6: size_t frame_len
-Description     : //设置相应的SVC INFO,
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
 int Zulu_SendRecv_Msg::set_zulu_svcinfo(const char* svc_ip,
                                         unsigned short svc_port,
                                         const soar::SERVICES_ID& recv_service,

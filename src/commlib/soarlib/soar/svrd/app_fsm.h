@@ -1,7 +1,7 @@
 #ifndef SOARING_LIB_SVRD_APP_TRNAS_H_
 #define SOARING_LIB_SVRD_APP_TRNAS_H_
 
-#include "soar/svrd/app_base.h"
+#include "soar/svrd/app_bus.h"
 
 #define REGISTER_TRANSACTION_CMD(trans_class, cmd_word ) \
     { \
@@ -18,7 +18,7 @@
 *
 * @note
 */
-class Comm_SvrdApp_FSM : public soar::Svrd_Appliction
+class Comm_SvrdApp_FSM : public soar::App_BusPipe
 {
 protected:
 

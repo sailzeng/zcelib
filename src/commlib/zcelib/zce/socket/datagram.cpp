@@ -22,14 +22,14 @@ Socket_DataGram::~Socket_DataGram()
 }
 
 //Open SOCK句柄，不BIND本地地址的方式
-int Socket_DataGram::open(int protocol_family,
+int Socket_DataGram::open(int family,
                           int protocol,
                           bool reuse_addr)
 {
     int ret = 0;
     //打开
     ret = zce::Socket_Base::open(SOCK_DGRAM,
-                                 protocol_family,
+                                 family,
                                  protocol,
                                  reuse_addr);
 

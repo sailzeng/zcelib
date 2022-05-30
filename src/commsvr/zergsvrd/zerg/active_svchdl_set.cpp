@@ -53,7 +53,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
+        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type_ :[%hu] .",
                 __ZCE_FUNC__,
                 services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
@@ -102,7 +102,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
+        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type_ :[%hu] .",
                 __ZCE_FUNC__,
                 services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
@@ -186,7 +186,7 @@ int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vecto
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
+        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type_ :[%hu] .",
                 __ZCE_FUNC__,
                 services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
