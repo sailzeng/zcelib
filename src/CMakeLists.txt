@@ -1,5 +1,6 @@
 # make VERBOSE = 1 显示所有编译命令
 
+#cmake_minimum_required 需要的最小的版本
 cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithAssert" CACHE STRING "" FORCE)
@@ -9,12 +10,20 @@ endif()
 set(CMAKE_BUILD_TYPE "Debug"  CACHE STRING "" FORCE)
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithAssert")
 
-#Linux 默认使用的编译文件是c++，也就是g++
+#Linux 默认使用的编译文件是c++，也就是g++，C文件用gcc
 #set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # set the project name
 project(zceproject CXX)
+
+set (ZCE_VERSION_MAJOR 2)
+set (ZCE_VERSION_MINOR 0)
+
+configure_file (
+  "${CMAKE_SOURCE_DIR}/commlib/zcelib/config.h.in"
+  "${CMAKE_SOURCE_DIR}/commlib/zcelib/config.h"
+  )
 
 #config 是大小写敏感的
 
