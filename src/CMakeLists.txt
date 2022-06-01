@@ -3,8 +3,15 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithAssert" CACHE STRING "" FORCE)
-set(CMAKE_DEFAULT_BUILD_TYPE "Debug"  CACHE STRING "" FORCE)
+if(CMAKE_GENERATOR MATCHES "Ninja Multi-Config")
+  set(CMAKE_DEFAULT_BUILD_TYPE Debug)
+endif()
+set(CMAKE_BUILD_TYPE "Debug"  CACHE STRING "" FORCE)
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithAssert")
+
+#Linux 默认使用的编译文件是c++，也就是g++
+#set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
 
 # set the project name
 project(zceproject CXX)
@@ -39,9 +46,8 @@ set(CMAKE_CXX_FLAGS_REALSE ${CMAKE_CXX_FLAGS_REALSE}-DNDEBUG )
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-#Linux 默认使用的编译文件是c++，也就是g++
-#set(CMAKE_C_COMPILER "gcc")
-#set(CMAKE_CXX_COMPILER "g++")
+
+
 
 #工程外部的头文件
 set(PATH_THIRDPARTY_INC "../third_party/include/")
