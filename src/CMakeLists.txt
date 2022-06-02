@@ -3,26 +3,36 @@
 #cmake_minimum_required 需要的最小的版本
 cmake_minimum_required(VERSION 3.16)
 
+#根据平台决定产生的内容
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+	MESSAGE(STATUS "Current platform: Linux ")
+	set(CMAKE_GENERATOR "Unix Makefiles")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+	MESSAGE(STATUS "Current platform: Windows")
+	set(CMAKE_GENERATOR "MinGW Makefiles")
+ELSE ()
+	MESSAGE(STATUS "Others platform: ${CMAKE_SYSTEM_NAME}")
+ENDIF ()
+
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithAssert" CACHE STRING "" FORCE)
-if(CMAKE_GENERATOR MATCHES "Ninja Multi-Config")
-  set(CMAKE_DEFAULT_BUILD_TYPE Debug)
-endif()
 set(CMAKE_BUILD_TYPE "Debug"  CACHE STRING "" FORCE)
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithAssert")
 
 #Linux 默认使用的编译文件是c++，也就是g++，C文件用gcc
-#set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # set the project name
 project(zceproject CXX)
 
+
+
 set (ZCE_VERSION_MAJOR 2)
 set (ZCE_VERSION_MINOR 0)
 
 configure_file (
-  "${CMAKE_SOURCE_DIR}/commlib/zcelib/config.h.in"
-  "${CMAKE_SOURCE_DIR}/commlib/zcelib/config.h"
+  "${CMAKE_SOURCE_DIR}/commlib/zcelib/version.h.in"
+  "${CMAKE_SOURCE_DIR}/commlib/zcelib/version.h"
   )
 
 #config 是大小写敏感的
@@ -54,8 +64,6 @@ set(CMAKE_CXX_FLAGS_REALSE ${CMAKE_CXX_FLAGS_REALSE}-DNDEBUG )
 # C++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-
 
 
 #工程外部的头文件
