@@ -4,33 +4,40 @@
 //改写的途径应该是在Makefile为好
 
 #ifndef ZCE_MAJOR_VER
-#define ZCE_MAJOR_VER 1
+#define ZCE_MAJOR_VER "2"
 #endif 
 
 #ifndef ZCE_MINOR_VER
-#define ZCE_MINOR_VER 0
-#endif //#ifndef ZCE_MINOR_VER
+#define ZCE_MINOR_VER "0"
+#endif 
 
 // build num 由CI编译自动修改，手动修改无用
 #ifndef ZCE_BUILD_VER
-#define ZCE_BUILD_VER 0
-#endif //#ifndef ZCE_BUILD_VER
+#define ZCE_BUILD_VER "0"
+#endif
 
-// svn revision 由CI编译自动修改，手动修改无用
+// svn revision 或者git commit id 由CI编译自动修改，手动修改无用
+// svn info --show-item revision
+// git rev-parse --short HEAD
 #ifndef ZCE_REVISION
-#define ZCE_REVISION 0
-#endif //#ifndef ZCE_REVISION
-
-#ifndef _SOARING_LIB_VER_STRINGIZING
-#define _SOARING_LIB_VER_STRINGIZING(v) #v
+#define ZCE_REVISION "0"
 #endif
 
-#ifndef _SOARING_LIB_VER_JOIN
-#define _SOARING_LIB_VER_JOIN(major,minor,build,revision) _SOARING_LIB_VER_STRINGIZING(major.minor.build.revision)
+#ifndef ___STRINGIZING
+#define ___STRINGIZING(v) #v
 #endif
+
+#ifndef _ZCE_LIB_VERNUM_JOIN
+#define _ZCE_LIB_VERNUM_JOIN(major,minor,build,revision) ___STRINGIZING(major.minor.build.revision)
+#endif
+
+#ifndef _ZCE_LIB_VERSTR_JOIN
+#define _ZCE_LIB_VERSTR_JOIN(major,minor,build,revision)  major"."minor"."build"."revision
+#endif
+
 
 #ifndef ZCE_JION_VER_STRING
-#define ZCE_JION_VER_STRING  _SOARING_LIB_VER_JOIN(TSS_MAJOR_VER,TSS_MINOR_VER,TSS_BUILD_VER,TSS_REVISION)
+#define ZCE_JION_VER_STRING  _ZCE_LIB_VERSTR_JOIN(ZCE_MAJOR_VER,ZCE_MINOR_VER,ZCE_BUILD_VER,ZCE_REVISION)
 #endif
 
 #ifndef ZCE_BUILD_TYPE_STRING
@@ -44,7 +51,7 @@
 #endif
 
 #ifndef ZCE_VERSION_DECLARE
-#define ZCE_VERSION_DECLARE(name)   "Server Version :" ZCE_JION_VER_STRING "  .\n" \
+#define ZCE_VERSION_DECLARE(name)   #name"Server Version :" ZCE_JION_VER_STRING "  .\n" \
     ZCE_BUILD_TYPE_STRING
     "Compilation Timestamp :" __DATE__ " " __TIME__ " .\n" \
     "Copyright :(C) 2008-2012 . My Team (We are best!). All rights reserved. \n"  \
