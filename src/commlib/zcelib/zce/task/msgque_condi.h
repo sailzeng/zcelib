@@ -151,7 +151,7 @@ protected:
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混,WINDOWS下的实现应该是用信号灯模拟的
-                    bret = cond_enqueue_.duration_wait(&queue_lock_, wait_time);
+                    bret = cond_enqueue_.wait_for(&queue_lock_, wait_time);
 
                     //如果超时了，返回false
                     if (!bret)
@@ -200,7 +200,7 @@ protected:
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混
-                    bret = cond_dequeue_.duration_wait(&queue_lock_, wait_time);
+                    bret = cond_dequeue_.wait_for(&queue_lock_, wait_time);
 
                     //如果超时了，返回false
                     if (!bret)

@@ -114,13 +114,15 @@ void Null_Condition::wait(zce::Null_Mutex* /*external_mutex*/)
 }
 
 ///绝对时间超时的的等待，超时后解锁
-bool Null_Condition::systime_wait(zce::Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*abs_time*/)
+bool Null_Condition::wait_until(zce::Null_Mutex* /*external_mutex*/, 
+                                const zce::Time_Value& /*abs_time*/)
 {
     return true;
 }
 
 ///相对时间的超时锁定等待，超时后，解锁
-bool Null_Condition::duration_wait(zce::Null_Mutex* /*external_mutex*/, const zce::Time_Value&/*relative_time*/)
+bool Null_Condition::wait_for(zce::Null_Mutex* /*external_mutex*/, 
+                              const zce::Time_Value&/*relative_time*/)
 {
     return false;
 }

@@ -52,14 +52,14 @@ public:
     * @return     bool      true获得了锁，false，无法获得锁
     * @param      abs_time  超时的绝对时间
     */
-    virtual bool lock(const zce::Time_Value& abs_time);
+    virtual bool wait_until(const zce::Time_Value& abs_time);
 
     /*!
     * @brief      相对时间的超时锁定，超时后，解锁
     * @return     bool           true获得了锁，false，无法获得锁
     * @param      relative_time  超时的绝对时间
     */
-    virtual bool lock_for(const zce::Time_Value& relative_time);
+    virtual bool wait_for(const zce::Time_Value& relative_time);
 
 protected:
 

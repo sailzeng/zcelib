@@ -134,10 +134,10 @@ private:
     virtual void wait(zce::Lock_Base* external_mutex);
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(zce::Lock_Base* external_mutex, const zce::Time_Value& abs_time);
+    virtual bool wait_until(zce::Lock_Base* external_mutex, const zce::Time_Value& abs_time);
 
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(zce::Lock_Base* external_mutex, const zce::Time_Value& relative_time);
+    virtual bool wait_for(zce::Lock_Base* external_mutex, const zce::Time_Value& relative_time);
 
     /// 给一个等待线程发送信号 Signal one waiting thread.
     virtual void signal(void);

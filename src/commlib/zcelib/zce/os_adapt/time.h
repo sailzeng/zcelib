@@ -376,6 +376,11 @@ const timeval make_timeval(const std::chrono::nanoseconds& val);
 const timeval make_timeval(const std::chrono::system_clock::time_point& val);
 const timeval make_timeval(const std::chrono::steady_clock::time_point& val);
 
+
+void make_chrono(const timeval& tv, const std::chrono::milliseconds& val);
+void make_chrono(const timeval& tv, const std::chrono::microseconds& val);
+void make_chrono(const timeval& tv, const std::chrono::nanoseconds& val);
+
 //WINDOWS API常用的几个参数
 #if defined (ZCE_OS_WINDOWS)
 /*!

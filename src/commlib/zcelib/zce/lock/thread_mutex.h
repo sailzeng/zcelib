@@ -85,10 +85,10 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool lock(const zce::Time_Value& abs_time);
+    virtual bool wait_until(const zce::Time_Value& abs_time);
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool lock_for(const zce::Time_Value& relative_time);
+    virtual bool wait_for(const zce::Time_Value& relative_time);
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();
@@ -126,10 +126,10 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool lock(const zce::Time_Value& abs_time);
+    virtual bool wait_until(const zce::Time_Value& abs_time);
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool lock_for(const zce::Time_Value& relative_time);
+    virtual bool wait_for(const zce::Time_Value& relative_time);
 
 protected:
 

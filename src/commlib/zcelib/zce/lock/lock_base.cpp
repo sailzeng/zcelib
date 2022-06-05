@@ -124,13 +124,13 @@ void Condition_Base::wait(zce::Lock_Base* /*external_mutex*/)
 }
 
 ///绝对时间超时的的等待，超时后解锁
-bool Condition_Base::systime_wait(zce::Lock_Base* /*external_mutex*/, const zce::Time_Value& /*abs_time*/)
+bool Condition_Base::wait_until(zce::Lock_Base* /*external_mutex*/, const zce::Time_Value& /*abs_time*/)
 {
     return true;
 }
 
 ///相对时间的超时锁定等待，超时后，解锁
-bool Condition_Base::duration_wait(zce::Lock_Base* /*external_mutex*/, const zce::Time_Value&/*relative_time*/)
+bool Condition_Base::wait_for(zce::Lock_Base* /*external_mutex*/, const zce::Time_Value&/*relative_time*/)
 {
     return false;
 }
