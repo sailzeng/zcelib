@@ -354,7 +354,7 @@ protected:
      * @param [out] next_call     返回下一步的操作类型是什么
      * @return 返回0表示成功
     */
-    int deliver_recv(const zce::sockaddr_ip *remote_addr,
+    int deliver_recv(const zce::sockaddr_any *remote_addr,
                      RUDP_FRAME *recv_frame,
                      size_t frame_len,
                      bool *remote_change,
@@ -707,13 +707,8 @@ protected:
 
     //!Socket 句柄
     ZCE_SOCKET core_socket_ = ZCE_INVALID_SOCKET;
-<<<<<<< .mine
-    //!本地地址，CORE地址，服务器地址
-    zce::sockaddr_ip core_addr_;
-=======
     //!本地地址，CORE地址，服务器地址
     zce::sockaddr_any core_addr_;
->>>>>>> .theirs
 
     //!最大支持的RUDP PEER数量。
     size_t max_num_of_peer_ = 102400;
@@ -757,26 +752,5 @@ protected:
     //!发生accept的时候，进行回调的函数
     std::function<int(ACCEPT *)> callbak_accept_;
 
-    //! receive_i内完成(多次)接收后，需要回调接受函数的PEER的seesion id队列
-    //! 为什么保存seesion id，而不保存指针，你可以想想
-    uint32_t *once_callback_rcv_ = nullptr;
-    //! @once_callback_rcv_ 队列长度
-    size_t once_callback_rcv_num_ = 0;
-
-    //! receive_i内完成(多次)接收后，需要会送ACK的PEER的session id 队列
-    uint32_t *once_sendback_ack_ = nullptr;
-    //! @once_sendback_ack_队列长度
-    size_t once_sendback_ack_num_ = 0;
-
-    //!是否调用recv 的回调函数
-    bool is_callbak_recv_ = false;
-    //! 发现接收数据时，接收回调函数，在函数里面调用outer_recv提取数据
-    //! 第一个参数是接收数据的ACCEPT *
-    std::function<ssize_t(ACCEPT *)> callbak_recv_;
-
-    //!是否调用accept 的回调函数
-    bool is_callbak_accept_ = false;
-    //!发生accept的时候，进行回调的函数
-    std::function<int(ACCEPT *)> callbak_accept_;
 };
 }

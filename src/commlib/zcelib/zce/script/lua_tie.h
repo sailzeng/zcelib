@@ -39,7 +39,6 @@
 
 #pragma once
 
-#include "zce/predefine.h"
 #include "zce/util/mpl.h"
 
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
@@ -910,7 +909,7 @@ public:
     ///是否只读
     bool                   read_only_;
 };
-};  //namespace
+};  //namespace zce::luatie
 
 //=======================================================================================================
 namespace zce

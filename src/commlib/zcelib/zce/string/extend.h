@@ -56,65 +56,7 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR = '%';
 
 // 下面代码推荐使用的是 str_nprintf string_format，如果使用，你未来应该很容易切换的std::format
 
-/*!
-* @brief      类似snprintf的格式化字符串函数，但用C++11方式优化处理。{}作为输出点。
-*             格式控制通过辅助类完成。
-* @tparam     out_type     输出的参数类型
-* @return     char*        格式化后的字符串指针
-* @param      foo_buffer   用于格式化字符串
-* @param      foo_max_len  字符串最大长度
-* @param      foo_use_len  使用的字符串长度
-* @param      foo_fmt_spec 格式化的格式字符串
-* @param      ...out_data  输出数据，插入格式化字符串中
-* @note
-*/
-template <typename... out_type >
-char* str_nprintf(char* foo_buffer,
-                  size_t foo_max_len,
-                  size_t& foo_use_len,
-                  const char* foo_fmt_spec,
-                  const out_type & ...out_data)
-{
-    foo_use_len = 0;
 
-    if (0 == foo_max_len)
-    {
-        return foo_buffer;
-    }
-
-    size_t max_len = foo_max_len - 1, use_len = 0;
-    char* buffer = foo_buffer;
-    buffer[max_len] = '\0';
-    const char* fmt_spec = foo_fmt_spec;
-
-    _foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
-
-    buffer[use_len] = '\0';
-    //返回
-    return foo_buffer;
-}
-
-/*!
-* @brief
-* @tparam     out_type
-* @return     std::string&
-* @param      foo_string
-* @param      foo_fmt_spec
-* @param      ...out_data
-* @note
-*/
-template <typename... out_type >
-std::string& foo_string_format(std::string& foo_string,
-                               const char* foo_fmt_spec,
-                               const out_type &...out_data)
-{
-    const char* fmt_spec = foo_fmt_spec;
-    _foo_c11_outstring(foo_string, fmt_spec, out_data...);
-    zce::fmt_str(foo_string,
-                 fmt_spec,
-                 strlen(fmt_spec));
-    return foo_string;
-}
 
 inline static void _foo_c11_outstring(std::string& foo_string,
                                       const char*& foo_fmt_spec)
@@ -332,6 +274,66 @@ static void _foo_c11_string_splice(std::string& foo_string,
 }
 
 /*!
+* @brief      类似snprintf的格式化字符串函数，但用C++11方式优化处理。{}作为输出点。
+*             格式控制通过辅助类完成。
+* @tparam     out_type     输出的参数类型
+* @return     char*        格式化后的字符串指针
+* @param      foo_buffer   用于格式化字符串
+* @param      foo_max_len  字符串最大长度
+* @param      foo_use_len  使用的字符串长度
+* @param      foo_fmt_spec 格式化的格式字符串
+* @param      ...out_data  输出数据，插入格式化字符串中
+* @note
+*/
+template <typename... out_type >
+char* str_nprintf(char* foo_buffer,
+                  size_t foo_max_len,
+                  size_t& foo_use_len,
+                  const char* foo_fmt_spec,
+                  const out_type & ...out_data)
+{
+    foo_use_len = 0;
+
+    if (0 == foo_max_len)
+    {
+        return foo_buffer;
+    }
+
+    size_t max_len = foo_max_len - 1, use_len = 0;
+    char* buffer = foo_buffer;
+    buffer[max_len] = '\0';
+    const char* fmt_spec = foo_fmt_spec;
+
+    _foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
+
+    buffer[use_len] = '\0';
+    //返回
+    return foo_buffer;
+}
+
+/*!
+* @brief
+* @tparam     out_type
+* @return     std::string&
+* @param      foo_string
+* @param      foo_fmt_spec
+* @param      ...out_data
+* @note
+*/
+template <typename... out_type >
+std::string& foo_string_format(std::string& foo_string,
+                               const char* foo_fmt_spec,
+                               const out_type &...out_data)
+{
+    const char* fmt_spec = foo_fmt_spec;
+    _foo_c11_outstring(foo_string, fmt_spec, out_data...);
+    zce::fmt_str(foo_string,
+                 fmt_spec,
+                 strlen(fmt_spec));
+    return foo_string;
+}
+
+/*!
 * @brief      函数用于讲多个参数拼接成一个字符串，可以使用风格符
 * @return     char*    返回字符串
 * @param      foo_buffer  存放拼接结果的字符串
@@ -363,4 +365,5 @@ char* foo_strnsplice(char* foo_buffer,
     //返回
     return foo_buffer;
 }
+
 };

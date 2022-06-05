@@ -208,7 +208,7 @@ public:
                                                                    std::memory_order_acq_rel);
             if (succ)
             {
-                lordring_start_.compare_exchange_strong(start, new_start);
+                ring_start_.compare_exchange_strong(start, new_start);
                 return true;
             }
         }

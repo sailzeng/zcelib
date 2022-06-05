@@ -69,7 +69,7 @@
 #pragma warning ( disable : 26495)
 #endif
 
-typedef struct sem_t
+struct sem_t
 {
     //信号量的句柄
     HANDLE  sem_hanlde_ = INVALID_HANDLE_VALUE;

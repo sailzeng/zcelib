@@ -103,7 +103,7 @@ public:
             return false;
         }
         new_max_size += 1;
-        _value_type* new_value_ptr = (_value_type*)::malloc(sizeof(_value_type) * new_max_size);
+        T* new_value_ptr = (T*)::malloc(sizeof(T) * new_max_size);
         //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
         {

@@ -61,7 +61,7 @@ public:
     //QUEUE是否为NULL
     inline bool empty()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        zce::Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
 
         if (queue_cur_size_ == 0)
         {

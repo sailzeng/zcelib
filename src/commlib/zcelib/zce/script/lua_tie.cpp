@@ -655,61 +655,7 @@ static int selfsub_int64(lua_State* state)
     return 0;
 }
 
-void Lua_Base::reg_int64()
-{
-    const char* int64_name = "int64_t";
-    zce::luatie::class_name<int64_t>::name(int64_name);
-    lua_newtable(lua_state_);
 
-    lua_pushstring(lua_state_, "__name");
-    lua_pushstring(lua_state_, int64_name);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__tostring");
-    lua_pushcclosure(lua_state_, tostring_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__eq");
-    lua_pushcclosure(lua_state_, eq_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__lt");
-    lua_pushcclosure(lua_state_, lt_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__le");
-    lua_pushcclosure(lua_state_, le_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__add");
-    lua_pushcclosure(lua_state_, add_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__sub");
-    lua_pushcclosure(lua_state_, sub_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "selfadd");
-    lua_pushcclosure(lua_state_, selfadd_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "selfsub");
-    lua_pushcclosure(lua_state_, selfsub_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
-    //LUA中出现这样的调用，i1 =int64_t("123")
-    lua_newtable(lua_state_);
-
-    lua_pushstring(lua_state_, "__call");
-    lua_pushcclosure(lua_state_, constructor_int64, 0);
-    lua_rawset(lua_state_, -3);
-
-    //设置这个table作为int64_t 原型的metatable.
-    lua_setmetatable(lua_state_, -2);
-
-    lua_setglobal(lua_state_, int64_name);
-}
 
 //=======================================================================================================
 //为uint64_t 准备的metatable
@@ -824,62 +770,6 @@ static int selfsub_uint64(lua_State* state)
     return 0;
 }
 
-void Lua_Base::reg_uint64()
-{
-    const char* uint64_name = "uint64_t";
-    zce::luatie::class_name<uint64_t>::name(uint64_name);
-    lua_newtable(lua_state_);
-
-    lua_pushstring(lua_state_, "__name");
-    lua_pushstring(lua_state_, uint64_name);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__tostring");
-    lua_pushcclosure(lua_state_, tostring_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__eq");
-    lua_pushcclosure(lua_state_, eq_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__lt");
-    lua_pushcclosure(lua_state_, lt_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__le");
-    lua_pushcclosure(lua_state_, le_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__add");
-    lua_pushcclosure(lua_state_, add_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "__sub");
-    lua_pushcclosure(lua_state_, sub_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "selfadd");
-    lua_pushcclosure(lua_state_, selfadd_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_pushstring(lua_state_, "selfsub");
-    lua_pushcclosure(lua_state_, selfsub_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
-    //LUA中出现这样的调用，i1 =int64_t("123")
-    lua_newtable(lua_state_);
-
-    lua_pushstring(lua_state_, "__call");
-    lua_pushcclosure(lua_state_, constructor_uint64, 0);
-    lua_rawset(lua_state_, -3);
-
-    //设置这个table作为int64_t 原型的metatable.
-    lua_setmetatable(lua_state_, -2);
-
-    lua_setglobal(lua_state_, uint64_name);
-}
-
 #endif
 
 //=======================================================================================================
@@ -968,6 +858,122 @@ static int constructor_stdstring(lua_State* state)
 
 namespace zce
 {
+
+#if LUA_VERSION_NUM < 503
+
+void Lua_Base::reg_int64()
+{
+    const char* int64_name = "int64_t";
+    zce::luatie::class_name<int64_t>::name(int64_name);
+    lua_newtable(lua_state_);
+
+    lua_pushstring(lua_state_, "__name");
+    lua_pushstring(lua_state_, int64_name);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__tostring");
+    lua_pushcclosure(lua_state_, tostring_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__eq");
+    lua_pushcclosure(lua_state_, eq_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__lt");
+    lua_pushcclosure(lua_state_, lt_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__le");
+    lua_pushcclosure(lua_state_, le_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__add");
+    lua_pushcclosure(lua_state_, add_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__sub");
+    lua_pushcclosure(lua_state_, sub_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "selfadd");
+    lua_pushcclosure(lua_state_, selfadd_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "selfsub");
+    lua_pushcclosure(lua_state_, selfsub_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
+    //LUA中出现这样的调用，i1 =int64_t("123")
+    lua_newtable(lua_state_);
+
+    lua_pushstring(lua_state_, "__call");
+    lua_pushcclosure(lua_state_, constructor_int64, 0);
+    lua_rawset(lua_state_, -3);
+
+    //设置这个table作为int64_t 原型的metatable.
+    lua_setmetatable(lua_state_, -2);
+
+    lua_setglobal(lua_state_, int64_name);
+}
+
+void Lua_Base::reg_uint64()
+{
+    const char* uint64_name = "uint64_t";
+    zce::luatie::class_name<uint64_t>::name(uint64_name);
+    lua_newtable(lua_state_);
+
+    lua_pushstring(lua_state_, "__name");
+    lua_pushstring(lua_state_, uint64_name);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__tostring");
+    lua_pushcclosure(lua_state_, tostring_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__eq");
+    lua_pushcclosure(lua_state_, eq_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__lt");
+    lua_pushcclosure(lua_state_, lt_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__le");
+    lua_pushcclosure(lua_state_, le_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__add");
+    lua_pushcclosure(lua_state_, add_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "__sub");
+    lua_pushcclosure(lua_state_, sub_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "selfadd");
+    lua_pushcclosure(lua_state_, selfadd_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    lua_pushstring(lua_state_, "selfsub");
+    lua_pushcclosure(lua_state_, selfsub_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
+    //LUA中出现这样的调用，i1 =int64_t("123")
+    lua_newtable(lua_state_);
+
+    lua_pushstring(lua_state_, "__call");
+    lua_pushcclosure(lua_state_, constructor_uint64, 0);
+    lua_rawset(lua_state_, -3);
+
+    //设置这个table作为int64_t 原型的metatable.
+    lua_setmetatable(lua_state_, -2);
+
+    lua_setglobal(lua_state_, uint64_name);
+}
+#endif 
+
 //注册std::string
 void Lua_Base::reg_stdstring()
 {
