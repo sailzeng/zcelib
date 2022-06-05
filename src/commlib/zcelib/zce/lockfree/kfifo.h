@@ -71,7 +71,7 @@ public:
 
 #ifdef  DEBUG
             //检查帧的哪个地方出现问题，还是这样好一点
-            memset(ptr, 0, nodelen);
+            memset(ptr, 0, node_len);
 #endif
             //
             ((node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
