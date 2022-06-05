@@ -12,7 +12,7 @@ namespace zce
 * note
 */
 template <typename T, typename C = std::deque<T> >
-class Task_MsgQueue
+class task_msgqueue
 {
 protected:
 
@@ -29,13 +29,13 @@ protected:
 public:
 
     //构造函数和析构函数
-    Task_MsgQueue(size_t queue_max_size) :
+    task_msgqueue(size_t queue_max_size) :
         queue_max_size_(queue_max_size),
         queue_cur_size_(0)
     {
     }
 
-    ~Task_MsgQueue()
+    ~task_msgqueue()
     {
     }
 
@@ -258,7 +258,7 @@ protected:
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class ZCE_Msgqueue_List_Condi : public ZCE_Message_Queue_Condi<_value_type, std::list<_value_type> >
+class ZCE_Msgqueue_List_Condi : public task_msgqueue<_value_type, std::list<_value_type> >
 {
 public:
     //
@@ -279,7 +279,7 @@ public:
 * note
 */
 template <class _value_type >
-class ZCE_Msgqueue_Deque_Condi : public ZCE_Message_Queue_Condi<_value_type, std::deque<_value_type> >
+class ZCE_Msgqueue_Deque_Condi : public task_msgqueue<_value_type, std::deque<_value_type> >
 {
 public:
     //
@@ -300,7 +300,7 @@ public:
 * note       封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <class _value_type >
-class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >
+class ZCE_Msgqueue_Rings_Condi : public task_msgqueue<_value_type, zce::lord_rings<_value_type> >
 {
 public:
     //
