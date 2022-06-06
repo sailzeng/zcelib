@@ -280,7 +280,7 @@ protected:
         (index_base_ + freenext)->idx_prev_ = pos;
 
         //调用显式的析构函数
-        (data_base_ + pos)->~_value_type();
+        (data_base_ + pos)->~T();
 
         list_head_->size_use_node_--;
         list_head_->size_free_node_++;

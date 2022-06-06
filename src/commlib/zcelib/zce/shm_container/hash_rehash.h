@@ -60,7 +60,7 @@ namespace zce
 {
 //为了方便编译，预先定义一下
 template < class T,
-    class _key_type,
+    class K,
     class _hash_fun,
     class _extract_key,
     class _equal_key,
@@ -69,7 +69,7 @@ template < class T,
 //SAFE HASH 迭代器，注意这儿是SAFE HASH，不是SAFE iterator，我吧HASH放前面纯粹是方便几个文件
 //放在一起
 template < class T,
-    class _key_type,
+    class K,
     class _hashfun,
     class _extract_key,
     class _equal_key,
@@ -80,7 +80,7 @@ protected:
 
     //HASH TABLE的定义
     typedef shm_hash_rehash < T,
-        _key_type,
+        K,
         _hashfun,
         _extract_key,
         _equal_key,
@@ -88,7 +88,7 @@ protected:
 
     //定义迭代器
     typedef _hash_rehash_iterator < T,
-        _key_type,
+        K,
         _hashfun,
         _extract_key,
         _equal_key,
@@ -242,10 +242,10 @@ public:
 //=============================================================================================
 
 template < class T,
-    class _key_type,
-    class _hash_fun = smem_hash<_key_type>,
+    class K,
+    class _hash_fun = smem_hash<K>,
     class _extract_key = smem_identity<T>,
-    class _equal_key = std::equal_to<_key_type>,
+    class _equal_key = std::equal_to<K>,
     class _washout_fun = _default_washout_fun<T> >
 class shm_hash_rehash
 {
@@ -253,7 +253,7 @@ public:
 
     //定义迭代器
     typedef _hash_rehash_iterator < T,
-        _key_type,
+        K,
         _hash_fun,
         _extract_key,
         _equal_key,
@@ -261,7 +261,7 @@ public:
 
     //定义自己
     typedef shm_hash_rehash < T,
-        _key_type,
+        K,
         _hash_fun,
         _extract_key,
         _equal_key,
@@ -269,7 +269,7 @@ public:
 
     //声明迭代器是友元
     friend class _hash_rehash_iterator < T,
-        _key_type,
+        K,
         _hash_fun,
         _extract_key,
         _equal_key,
@@ -297,7 +297,7 @@ protected:
 
     //为什么不能重载上面的函数,自己考虑一下,
     //重载的话，如果_value_type和_key_type一样，就等着哭吧 ---inmore
-    size_t bkt_num_key(const _key_type& key, size_t one_primes) const
+    size_t bkt_num_key(const K& key, size_t one_primes) const
     {
         _hash_fun hash_fun;
         return static_cast<size_t>(hash_fun(key) % one_primes);
@@ -320,7 +320,7 @@ protected:
                               bool if_restore)
     {
         self* instance = new shm_hash_rehash < T,
-            _key_type,
+            K,
             _hash_fun,
             _extract_key,
             _equal_key >();
@@ -784,7 +784,7 @@ public:
 
     //查询相应的Key是否有,返回迭代器
     //这个地方有一个陷阱,这个地方返回的迭代器++，不能给你找到相同的key的数据,而开链的HASH实现了这个功能
-    iterator find(const _key_type& key)
+    iterator find(const K& key)
     {
         //使用量函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -819,7 +819,7 @@ public:
         return find(get_key(val));
     }
 
-    bool erase(const _key_type& key)
+    bool erase(const K& key)
     {
         iterator iter_temp = find(key);
 
@@ -838,7 +838,7 @@ public:
         if (it_del != end())
         {
             //调用析构函数,注意这个调用只能通过指针进行，对于int，之类的类型
-            (value_base_ + it_del.getserial())->~_value_type();
+            (value_base_ + it_del.getserial())->~T();
             //恢复成无效数据
             new (value_base_ + it_del.getserial())T(invalid_data_);
             --(hash_safe_head_->sz_usenode_);
@@ -859,7 +859,7 @@ public:
 
     //激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
     //优先级参数可以使用当前的时间
-    bool active(const _key_type& key,
+    bool active(const K& key,
                 unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         iterator  iter_tmp = find(key);

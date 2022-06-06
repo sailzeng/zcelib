@@ -166,7 +166,7 @@ public:
             //生产默认的数据,析构
             for (size_t i = num; i < array_head_->num_of_use_; ++i)
             {
-                (data_base_ + i)->~_value_type();
+                (data_base_ + i)->~T();
             }
         }
         //等于，什么都不做

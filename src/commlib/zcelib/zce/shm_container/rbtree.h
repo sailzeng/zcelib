@@ -31,7 +31,7 @@ enum RB_TREE_COLOR
 //
 typedef char  color_type;
 
-template<class T, class _key_type, class _extract_key, class _compare_key> class shm_rb_tree;
+template<class T, class K, class _extract_key, class _compare_key> class shm_rb_tree;
 
 //RB TREE的头部数据区
 class _shm_rb_tree_head
@@ -80,11 +80,11 @@ public:
 };
 
 //RBtree的迭代器
-template <class T, class _key_type, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
+template <class T, class K, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
 {
-    typedef _shm_rb_tree_iterator<T, _key_type, _extract_key, _compare_key> iterator;
+    typedef _shm_rb_tree_iterator<T, K, _extract_key, _compare_key> iterator;
 
-    typedef shm_rb_tree<T, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
+    typedef shm_rb_tree<T, K, _extract_key, _compare_key> shm_rb_tree_t;
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
@@ -254,20 +254,20 @@ protected:
 * @note
 */
 template < class T,
-    class _key_type,
+    class K,
     class _extract_key = smem_identity<T>,
-    class _compare_key = std::less<_key_type> >
+    class _compare_key = std::less<K> >
 class shm_rb_tree
 {
 public:
     //定义自己
-    typedef shm_rb_tree<T, _key_type, _extract_key, _compare_key> self;
+    typedef shm_rb_tree<T, K, _extract_key, _compare_key> self;
 
     //定义迭代器
-    typedef _shm_rb_tree_iterator<T, _key_type, _extract_key, _compare_key> iterator;
+    typedef _shm_rb_tree_iterator<T, K, _extract_key, _compare_key> iterator;
 
     //迭代器友元
-    friend class _shm_rb_tree_iterator<T, _key_type, _extract_key, _compare_key>;
+    friend class _shm_rb_tree_iterator<T, K, _extract_key, _compare_key>;
 
 protected:
 
@@ -330,7 +330,7 @@ protected:
         rb_tree_head_->sz_use_node_--;
 
         //调用显式的析构函数
-        (data_base_ + pos)->~_value_type();
+        (data_base_ + pos)->~T();
     }
 
 public:
@@ -517,7 +517,7 @@ protected:
         return *(data_base_ + x);
     }
 
-    inline const _key_type& key(size_t x)
+    inline const K& key(size_t x)
     {
         return _extract_key()(value(x));
     }
@@ -1025,7 +1025,7 @@ public:
     }
 
     //通过key删除节点，Map和Set用
-    size_t erase_unique(const _key_type& k)
+    size_t erase_unique(const K& k)
     {
         iterator it = find(k);
 
@@ -1046,7 +1046,7 @@ public:
     }
 
     //通过key删除节点，Multimap和Multiset用
-    size_t erase_equal(const _key_type& k)
+    size_t erase_equal(const K& k)
     {
         iterator it_l = lower_bound(k);
         iterator it_u = upper_bound(k);
@@ -1061,7 +1061,7 @@ public:
     }
 
     //找到第一个key值相同的节点
-    iterator lower_bound(const _key_type& k)
+    iterator lower_bound(const K& k)
     {
         size_t y = header();
         size_t x = root();
@@ -1084,7 +1084,7 @@ public:
     }
 
     //找到最后一个key值相同的节点
-    iterator upper_bound(const _key_type& k)
+    iterator upper_bound(const K& k)
     {
         size_t y = header();
         size_t x = root();
@@ -1107,7 +1107,7 @@ public:
     }
 
     //找key相同的节点
-    iterator find(const _key_type& k)
+    iterator find(const K& k)
     {
         size_t y = header();
         size_t x = root();
@@ -1194,26 +1194,26 @@ public:
 };
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
-template<class _key_type, class T, class _extract_key = mmap_select1st <std::pair <_key_type, T> >, class _compare_key = std::less<T>  >
+template<class K, class T, class _extract_key = mmap_select1st <std::pair <K, T> >, class _compare_key = std::less<T>  >
 class mmap_map :
-    public shm_rb_tree< std::pair <_key_type, T>, _key_type, _extract_key, _compare_key  >
+    public shm_rb_tree< std::pair <K, T>, K, _extract_key, _compare_key  >
 {
 protected:
 
-    mmap_map<_key_type, T, _extract_key, _compare_key >() = default;
-    ~mmap_map<_key_type, T, _extract_key, _compare_key >() = default;
+    mmap_map<K, T, _extract_key, _compare_key >() = default;
+    ~mmap_map<K, T, _extract_key, _compare_key >() = default;
 
 public:
-    static mmap_map< _key_type, T, _extract_key, _compare_key  >*
+    static mmap_map< K, T, _extract_key, _compare_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_map< _key_type, T, _extract_key, _compare_key  > *>(
-            shm_rb_tree< std::pair <_key_type, T>, _key_type, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<mmap_map< K, T, _extract_key, _compare_key  > *>(
+            shm_rb_tree< std::pair <K, T>, K, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
-    T& operator[](const _key_type& key)
+    T& operator[](const K& key)
     {
-        return (find_or_insert(std::pair<_key_type, T >(key, T()))).second;
+        return (find_or_insert(std::pair<K, T >(key, T()))).second;
     }
 };
 };

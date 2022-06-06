@@ -22,7 +22,7 @@
 namespace zce
 {
 template < class T,
-    class _key_type,
+    class K,
     class _hash_fun,
     class _extract_key,
     class _equal_key,
@@ -30,7 +30,7 @@ template < class T,
 
 //LRU HASH 迭代器
 template < class T,
-    class _key_type,
+    class K,
     class _hashfun,
     class _extract_key,
     class _equal_key,
@@ -41,7 +41,7 @@ protected:
 
     //HASH TABLE的定义
     typedef shm_hashtable_expire < T,
-        _key_type,
+        K,
         _hashfun,
         _extract_key,
         _equal_key,
@@ -49,7 +49,7 @@ protected:
 
     //定义迭代器
     typedef _hashtable_expire_iterator < T,
-        _key_type,
+        K,
         _hashfun,
         _extract_key,
         _equal_key,
@@ -206,17 +206,17 @@ public:
 @note
 */
 template < class T,
-    class _key_type,
-    class _hash_fun = smem_hash<_key_type>,
+    class K,
+    class _hash_fun = smem_hash<K>,
     class _extract_key = smem_identity<T>,
-    class _equal_key = std::equal_to<_key_type>,
+    class _equal_key = std::equal_to<K>,
     class _washout_fun = _default_washout_fun<T> >
 class shm_hashtable_expire
 {
 private:
 
     typedef shm_hashtable_expire < T,
-        _key_type,
+        K,
         _hash_fun,
         _extract_key,
         _equal_key,
@@ -225,14 +225,14 @@ private:
 public:
     //定义迭代器
     typedef _hashtable_expire_iterator < T,
-        _key_type,
+        K,
         _hash_fun,
         _extract_key,
         _equal_key,
         _washout_fun > iterator;
 
     friend class _hashtable_expire_iterator < T,
-        _key_type,
+        K,
         _hash_fun,
         _extract_key,
         _equal_key,
@@ -446,7 +446,7 @@ protected:
         hash_index_base_[pos] = SHM_CNTR_INVALID_POINT;
 
         //调用显式的析构函数
-        (value_base_ + pos)->~_value_type();
+        (value_base_ + pos)->~T();
         priority_base_[pos] = 0;
 
         assert(lru_hash_head_->sz_usenode_ + lru_hash_head_->sz_freenode_ == lru_hash_head_->num_of_node_);
@@ -461,7 +461,7 @@ protected:
 
     //为什么不能重载上面的函数,自己考虑一下,
     //重载的话，如果_value_type和_key_type一样，就等着哭吧 ---inmore
-    size_t bkt_num_key(const _key_type& key) const
+    size_t bkt_num_key(const K& key) const
     {
         _hash_fun hash_fun;
         return static_cast<size_t>(hash_fun(key) % lru_hash_head_->num_of_node_);
@@ -606,7 +606,7 @@ public:
     }
 
     //查询相应的Key是否有,返回迭代器
-    iterator find(const _key_type& key)
+    iterator find(const K& key)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
@@ -630,7 +630,7 @@ public:
     }
 
     //得到某个KEY的元素个数，有点相当于查询操作
-    size_t count(const _key_type& key)
+    size_t count(const K& key)
     {
         size_t equal_count = 0;
         size_t idx = bkt_num_key(key);
@@ -668,7 +668,7 @@ public:
     * @return     bool
     * @param      key
     */
-    bool erase_unique(const _key_type& key)
+    bool erase_unique(const K& key)
     {
         size_t idx = bkt_num_key(key);
         //从索引中找到第一个
@@ -760,7 +760,7 @@ public:
     * @param      key
     * @note
     */
-    size_t erase_equal(const _key_type& key)
+    size_t erase_equal(const K& key)
     {
         size_t erase_count = 0;
         size_t idx = bkt_num_key(key);
@@ -816,7 +816,7 @@ public:
     * @param      key
     * @param      priority 优先级参数可以使用当前的时间
     */
-    bool active_unique(const _key_type& key,
+    bool active_unique(const K& key,
                        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_key(key);
@@ -868,7 +868,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        _key_type key = get_key(val);
+        K key = get_key(val);
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
@@ -903,7 +903,7 @@ public:
     }
 
     //激活所有相同的KEY,将激活的数据挂到LIST的最开始,淘汰使用expire
-    size_t active_equal(const _key_type& key,
+    size_t active_equal(const K& key,
                         unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         size_t active_count = 0;
@@ -1016,7 +1016,7 @@ public:
     }
 
     //标注，重新给一个数据打一个优先级标签，淘汰使用函数washout
-    bool mark_unique(const _key_type& key, unsigned int priority)
+    bool mark_unique(const K& key, unsigned int priority)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
@@ -1048,7 +1048,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        _key_type key = get_key(val);
+        K key = get_key(val);
 
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
@@ -1071,7 +1071,7 @@ public:
     }
 
     //标注所有相等的数据，重新给一个数据打一个优先级标签，淘汰使用函数washout
-    bool mark_equal(const _key_type& key, unsigned int priority)
+    bool mark_equal(const K& key, unsigned int priority)
     {
         size_t mark_count = 0;
 
@@ -1208,15 +1208,15 @@ public:
 /************************************************************************************************************
 template           : shm_hashmap_expire
 ************************************************************************************************************/
-template < class _key_type,
+template < class K,
     class T,
-    class _hash_fun = smem_hash<_key_type>,
-    class _extract_key = mmap_select1st <std::pair <_key_type, T> >,
-    class _equal_key = std::equal_to<_key_type>,
+    class _hash_fun = smem_hash<K>,
+    class _extract_key = mmap_select1st <std::pair <K, T> >,
+    class _equal_key = std::equal_to<K>,
     class _washout_fun = _default_washout_fun<T> >
 class shm_hashmap_expire :
-    public shm_hashtable_expire < std::pair <_key_type, T>,
-    _key_type,
+    public shm_hashtable_expire < std::pair <K, T>,
+    K,
     _hash_fun,
     _extract_key,
     _equal_key,
@@ -1224,27 +1224,27 @@ class shm_hashmap_expire :
 {
 private:
     //定义自己
-    typedef shm_hashmap_expire<_key_type, T, _hash_fun, _extract_key, _equal_key, _washout_fun > self;
+    typedef shm_hashmap_expire<K, T, _hash_fun, _extract_key, _equal_key, _washout_fun > self;
 
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
 
     //这个函数,不给你用,就是不给你用
-    shm_hashmap_expire<_key_type, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+    shm_hashmap_expire<K, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
 
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashmap_expire<_key_type, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+    ~shm_hashmap_expire<K, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
 
 public:
     static self* initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<self*>(
-            shm_hashtable_expire< std::pair <_key_type, T>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
+            shm_hashtable_expire< std::pair <K, T>, K, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
                 numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
-    T& operator[](const _key_type& key)
+    T& operator[](const K& key)
     {
         return (find(key)).second;
     }
