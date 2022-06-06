@@ -59,70 +59,10 @@ int zce::pthread_cond_init(pthread_cond_t* cond,
     }
 
     //WIN SERVER 2008，VISTA 后支持条件变量
-#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
     //如果是线程内部的，而且是递归的，而且没有超时功能，可以用Windows的条件条件变量干活
-    if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
-    {
-        ::InitializeConditionVariable(&(cond->cv_object_));
-        return 0;
-    }
-
-#endif
-
-    cond->simulate_cv_.block_sema_ = NULL;
-    cond->simulate_cv_.finish_broadcast_ = NULL;
-    cond->simulate_cv_.waiters_ = 0;
-    cond->simulate_cv_.was_broadcast_ = false;
-
-    char* sem_block_ptr = NULL, * sem_finish_ptr = NULL;
-    char sem_block_name[PATH_MAX + 1], sem_finish_name[PATH_MAX + 1];
-    sem_block_name[PATH_MAX] = '\0';
-    sem_finish_name[PATH_MAX] = '\0';
-
-    //这段代码只在WIN32下用，我简化了
-    pthread_mutexattr_t waiters_lock_attr;
-    zce::pthread_mutexattr_init(&waiters_lock_attr);
-    waiters_lock_attr.lock_shared_ = PTHREAD_PROCESS_PRIVATE;
-    waiters_lock_attr.lock_type_ = PTHREAD_MUTEX_RECURSIVE;
-
-    //初始化线程的互斥量
-    int result = 0;
-    result = zce::pthread_mutex_init(&cond->simulate_cv_.waiters_lock_,
-                                     &waiters_lock_attr);
-
-    if (result != 0)
-    {
-        return result;
-    }
-
-    cond->simulate_cv_.block_sema_ = zce::sem_open(sem_block_ptr,
-                                                   O_CREAT,
-                                                   ZCE_DEFAULT_FILE_PERMS,
-                                                   0);
-
-    //如果失败了，要回收前面获得的资源
-    if (!cond->simulate_cv_.block_sema_)
-    {
-        zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
-        return -1;
-    }
-
-    cond->simulate_cv_.finish_broadcast_ = zce::sem_open(sem_finish_ptr,
-                                                         O_CREAT,
-                                                         ZCE_DEFAULT_FILE_PERMS,
-                                                         0);
-
-    //如果失败了，要回收前面获得的资源,这种分段申请资源最麻烦
-    if (!cond->simulate_cv_.finish_broadcast_)
-    {
-        zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
-        zce::sem_close(cond->simulate_cv_.block_sema_);
-        //其实没用
-        //zce::sem_unlink(sem_block_name);
-        return EINVAL;
-    }
-
+    ZCE_ASSERT(ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond));
+    ::InitializeConditionVariable(&(cond->cv_object_));
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
@@ -182,32 +122,9 @@ int zce::pthread_cond_destroy(pthread_cond_t* cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //使用WINDOWS的条件变量
-#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
-
-    if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
-    {
-        //WINDOWS的条件变量没有释放
-        return 0;
-    }
-
-#endif
-
-    zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
-
-    zce::sem_close(cond->simulate_cv_.block_sema_);
-    zce::sem_close(cond->simulate_cv_.finish_broadcast_);
-
-    //WIN平台下，无须调用这个函数，偷懒
-    //zce::sem_unlink(sem_name);
-
-    cond->simulate_cv_.block_sema_ = NULL;
-    cond->simulate_cv_.finish_broadcast_ = NULL;
-
-    cond->simulate_cv_.waiters_ = 0;
-    cond->simulate_cv_.was_broadcast_ = false;
-
+    //WINDOWS的条件变量没有释放的需求
     return 0;
+
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_cond_destroy(cond);
 #endif
@@ -227,115 +144,48 @@ int zce::pthread_cond_timedwait(pthread_cond_t* cond,
         return EINVAL;
     }
 
-    //使用WINDOWS2008的条件变量
-#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
-    if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
-    {
-        DWORD wait_msec = INFINITE;
+    DWORD wait_msec = INFINITE;
 
-        //如果有超时，计算相对超时时间
-        if (abs_timespec_out)
-        {
-            //得到相对时间，这个折腾，
-            timeval now_time = zce::gettimeofday();
-            timeval abs_time = zce::make_timeval(abs_timespec_out);
-
-            timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
-            wait_msec = static_cast<DWORD>(zce::total_milliseconds(timeout_time));
-        }
-
-        //WINDOWS的条件变量没有释放
-        BOOL bret = ::SleepConditionVariableCS(
-            &(cond->cv_object_),
-            &(external_mutex->thr_nontimeout_mutex_),
-            wait_msec);
-
-        if (bret == FALSE)
-        {
-            //SleepConditionVariableCS 是在GetLastError看结果，
-            //这些API的设计继续反映出WINDOWS的前后不一。
-            if (::GetLastError() == WAIT_TIMEOUT)
-            {
-                return ETIMEDOUT;
-            }
-            else
-            {
-                return EINVAL;
-            }
-        }
-
-        return 0;
-    }
-
-#endif  //使用WINDOWS2008的条件变量
-
-    // Prevent race conditions on the <waiters_> count.
-    zce::pthread_mutex_lock(&(cond->simulate_cv_.waiters_lock_));
-    ++(cond->simulate_cv_.waiters_);
-    zce::pthread_mutex_unlock(&(cond->simulate_cv_.waiters_lock_));
-
-    int result = 0;
-
-    //对外部的锁重新解锁，
-    //不对释放资源进行错误处理，如果释放失败，我能如何呢
-    zce::pthread_mutex_unlock(external_mutex);
-
-    ///@note这个地方存在某种争议，也就是上面这步和下面这步是否要
-    ///形成原子操作，这个问题在Douglas C. Schmidt and Irfan Pyarali的论文中有过描述，
-    ///但是因为我们用的是信号灯，所以这儿即使有人插队到这个地方得到external_mutex，发出了
-    ///signal或者广播，也不会造成下面死锁，我这样认为，呵呵。
-    ///当然如果真有问题，就换成SignalObjectAndWait，
-
-    //如果是超时等待，就进行等待
+    //如果有超时，计算相对超时时间
     if (abs_timespec_out)
     {
-        result = zce::sem_timedwait(cond->simulate_cv_.block_sema_,
-                                    abs_timespec_out);
-    }
-    else
-    {
-        result = zce::sem_wait(cond->simulate_cv_.block_sema_);
-    }
+        //得到相对时间，这个折腾，
+        timeval now_time = zce::gettimeofday();
+        timeval abs_time = zce::make_timeval(abs_timespec_out);
 
-    //记录错误
-    if (result != 0)
-    {
-        result = zce::last_error_with_default(EINVAL);
+        timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
+        wait_msec = static_cast<DWORD>(zce::total_milliseconds(timeout_time));
     }
 
-    //同步，避免竞争
-    zce::pthread_mutex_lock(&cond->simulate_cv_.waiters_lock_);
-    //信号灯已经退出，减少等待的总数
-    --(cond->simulate_cv_.waiters_);
-    bool const last_waiter = (cond->simulate_cv_.was_broadcast_
-                              && cond->simulate_cv_.waiters_ == 0);
-    zce::pthread_mutex_unlock(&cond->simulate_cv_.waiters_lock_);
+    //WINDOWS的条件变量没有释放
+    BOOL bret = ::SleepConditionVariableCS(
+        &(cond->cv_object_),
+        &(external_mutex->thr_nontimeout_mutex_),
+        wait_msec);
 
-    if (result == 0)
+    if (bret == FALSE)
     {
-        //这就是我特别看不懂的地方，理论意图应该是最后一个，告知广播者，
-        //如果是最后一个人，通知broadcaster对象，我们是最后一个人了，你可以退出了，不用等了。
-        //这个地方用信号灯其实有一些问题，因为不利于公平性，但由于这个模拟要求广播的时候，外部锁
-        //必现加上，所以问题不大
-        if (last_waiter)
+        //SleepConditionVariableCS 是在GetLastError看结果，
+        //这些API的设计继续反映出WINDOWS的前后不一。
+        if (::GetLastError() == WAIT_TIMEOUT)
         {
-            // Release the signaler/broadcaster if we're the last waiter.
-            zce::sem_post(cond->simulate_cv_.finish_broadcast_);
+            return ETIMEDOUT;
+        }
+        else
+        {
+            return EINVAL;
         }
     }
 
-    //对外部的锁重新加上
-    zce::pthread_mutex_lock(external_mutex);
+    return 0;
 
-    return result;
 
 #elif defined (ZCE_OS_LINUX)
     //
     return ::pthread_cond_timedwait(cond,
                                     external_mutex,
                                     abs_timespec_out);
-
 #endif
 }
 
@@ -374,65 +224,9 @@ int zce::pthread_cond_broadcast(pthread_cond_t* cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //在调用这个方式前，外部的锁必须是锁上的，（这个地方略有疑问，其实POSIX并没有特别明确说明此问题）
-    // The <external_mutex> must be locked before this call is made.
-
     //使用WINDOWS的条件变量
-#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
-
-    if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
-    {
-        ::WakeAllConditionVariable(&(cond->cv_object_));
-        return 0;
-    }
-
-#endif
-
-    // This is needed to ensure that <waiters_> and <was_broadcast_> are
-    // consistent relative to each other.
-    zce::pthread_mutex_lock(&cond->simulate_cv_.waiters_lock_);
-    bool have_waiters = false;
-
-    if (cond->simulate_cv_.waiters_ > 0)
-    {
-        // We are broadcasting, even if there is just one waiter...
-        // Record the fact that we are broadcasting.  This helps the
-        // cond_wait() method know how to optimize itself.  Be sure to
-        // set this with the <waiters_lock_> held.
-        cond->simulate_cv_.was_broadcast_ = true;
-        have_waiters = true;
-    }
-
-    zce::pthread_mutex_unlock(&cond->simulate_cv_.waiters_lock_);
-    int result = 0;
-
-    if (have_waiters)
-    {
-        //ACE比较喜欢这种if的方式，我不是特别习惯，但在多层处理的过程中这个方法也还凑合
-        //唤醒所有的等待者,
-        if (zce::sem_post(cond->simulate_cv_.block_sema_, cond->simulate_cv_.waiters_) != 0)
-        {
-            result = EINVAL;
-        }
-
-        //注意这儿，这儿的实现是不完美的，因为其实从语义上讲，上面这句话和下面这句话也必须是原子的，
-        //否则，也许post block_sema_ 后，wait的线程取得执行权利，finish_broadcast_已经post了，
-        //那么下面就没有任何作用了，ACE的源代码里面是用的SignalObjectAndWait
-        //但ACE的实现也要求大家调用broadcast是，外部锁是加上的，所以吧
-        // Wait for all the awakened threads to acquire their part of
-        // the counting semaphore.
-        else if (zce::sem_wait(cond->simulate_cv_.finish_broadcast_) != 0)
-        {
-            result = EINVAL;
-        }
-
-        //由于这个函数要求外部锁是锁上的，所以was_broadcast_的调整也OK
-        // This is okay, even without the <waiters_lock_> held because
-        // no other waiter threads can wake up to access it.
-        cond->simulate_cv_.was_broadcast_ = false;
-    }
-
-    return result;
+    ::WakeAllConditionVariable(&(cond->cv_object_));
+    return 0;
 
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_cond_broadcast(cond);
@@ -448,32 +242,9 @@ int zce::pthread_cond_signal(pthread_cond_t* cond)
     //使用WINDOWS的条件变量
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 
-    if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
-    {
-        ::WakeConditionVariable(&(cond->cv_object_));
-        return 0;
-    }
-
-#endif
-
-    int result = 0;
-    //是否有人在等待
-    zce::pthread_mutex_lock(&cond->simulate_cv_.waiters_lock_);
-    bool const have_waiters = cond->simulate_cv_.waiters_ > 0;
-    zce::pthread_mutex_unlock(&cond->simulate_cv_.waiters_lock_);
-
-    if (have_waiters)
-    {
-        result = zce::sem_post(cond->simulate_cv_.block_sema_);
-
-        if (0 != result)
-        {
-            return EINVAL;
-        }
-    }
-
-    // No-op
+    ::WakeConditionVariable(&(cond->cv_object_));
     return 0;
+#endif
 
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_cond_signal(cond);

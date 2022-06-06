@@ -261,11 +261,11 @@ template<> struct smem_hash<uint64_t>
 
 //---------------------------------------------------------------------------------------------
 //默认的一个淘汰函数，在自动淘汰时调用，用于完成一些不便于用析构处理的代码
-template < class _value_type>
+template < class T>
 class _default_washout_fun
 {
 public:
-    void operator()(_value_type& /*da*/)
+    void operator()(T& /*da*/)
     {
         return;
     }

@@ -159,10 +159,7 @@ struct pthread_cond_t
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     CONDITION_VARIABLE   cv_object_;
 #endif
-    ///采用两个信号灯和一个互斥量模拟的条件变量，同时支持signal和broadcast操作，
-    ///也支持外部互斥量是多进程共享，也支持外部互斥量是MUTEX（信号灯），临界区模拟
-    ///的，pthread_mutex_t
-    win_simulate_cv_t     simulate_cv_;
+
 };
 
 //读写锁的代码来自UNP V2

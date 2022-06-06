@@ -25,10 +25,11 @@
 #include "zce/lock/lock_base.h"
 #include "zce/util/non_copyable.h"
 
-class zce::Time_Value;
+
 
 namespace zce
 {
+class Time_Value;
 /*!
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *

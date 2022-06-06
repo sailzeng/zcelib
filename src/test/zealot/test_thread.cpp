@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-int test_nonr_thread_mutex(int, char*[])
+int test_nonr_thread_mutex(int, char* [])
 {
     zce::Thread_NONR_Mutex  abc;
     abc.lock();
@@ -13,7 +13,7 @@ int test_nonr_thread_mutex(int, char*[])
 }
 
 //zce::MsgQueue_Deque<ZCE_MT_SYNCH,int>   message_queue_(100);
-ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
+zce::MsgList_Condi <int >  message_queue_(100);
 //ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 
 zce::Thread_Light_Mutex  io_mutex;

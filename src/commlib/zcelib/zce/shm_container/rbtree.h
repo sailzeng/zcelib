@@ -31,7 +31,7 @@ enum RB_TREE_COLOR
 //
 typedef char  color_type;
 
-template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_rb_tree;
+template<class T, class _key_type, class _extract_key, class _compare_key> class shm_rb_tree;
 
 //RB TREE的头部数据区
 class _shm_rb_tree_head
@@ -80,17 +80,17 @@ public:
 };
 
 //RBtree的迭代器
-template <class _value_type, class _key_type, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
+template <class T, class _key_type, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
 {
-    typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
+    typedef _shm_rb_tree_iterator<T, _key_type, _extract_key, _compare_key> iterator;
 
-    typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
+    typedef shm_rb_tree<T, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type* pointer;
-    typedef _value_type& reference;
-    typedef _value_type value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef T value_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
@@ -132,13 +132,13 @@ public:
         return !(*this == x);
     }
 
-    _value_type& operator*() const
+    T& operator*() const
     {
         return *(operator->());
     }
 
     //在多线程的环境下提供这个运送符号是不安全的,没有加锁,上层自己保证
-    _value_type* operator->() const
+    T* operator->() const
     {
         return rb_tree_instance_->getdatabase() + serial_;
     }
@@ -253,21 +253,21 @@ protected:
 * @tparam     _compare_key  比较键值大小的方法,或者函数对象
 * @note
 */
-template < class _value_type,
+template < class T,
     class _key_type,
-    class _extract_key = smem_identity<_value_type>,
+    class _extract_key = smem_identity<T>,
     class _compare_key = std::less<_key_type> >
-    class shm_rb_tree
+class shm_rb_tree
 {
 public:
     //定义自己
-    typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> self;
+    typedef shm_rb_tree<T, _key_type, _extract_key, _compare_key> self;
 
     //定义迭代器
-    typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
+    typedef _shm_rb_tree_iterator<T, _key_type, _extract_key, _compare_key> iterator;
 
     //迭代器友元
-    friend class _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
+    friend class _shm_rb_tree_iterator<T, _key_type, _extract_key, _compare_key>;
 
 protected:
 
@@ -288,14 +288,14 @@ public:
     }
 
     //得到数据区的基础地质
-    inline  _value_type* getdatabase()
+    inline  T* getdatabase()
     {
         return data_base_;
     }
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type& val)
+    size_t create_node(const T& val)
     {
         //如果没有空间可以分配
         if (rb_tree_head_->sz_free_node_ == 0)
@@ -315,7 +315,7 @@ protected:
         (index_base_ + new_node)->right_ = SHM_CNTR_INVALID_POINT;
         (index_base_ + new_node)->color_ = RB_TREE_RED;
 
-        new (data_base_ + new_node)_value_type(val);
+        new (data_base_ + new_node)T(val);
 
         return new_node;
     }
@@ -340,7 +340,7 @@ public:
     {
         return  sizeof(_shm_rb_tree_head) +
             sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
-            sizeof(_value_type) * numnode;
+            sizeof(T) * numnode;
     }
 
     //初始化
@@ -370,7 +370,7 @@ public:
         instance->smem_base_ = pmmap;
         instance->rb_tree_head_ = rb_tree_head;
         instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head));
-        instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->data_base_ = reinterpret_cast<T*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
@@ -512,7 +512,7 @@ protected:
         return (index_base_ + x)->color_;
     }
 
-    inline const _value_type& value(size_t x)
+    inline const T& value(size_t x)
     {
         return *(data_base_ + x);
     }
@@ -546,7 +546,7 @@ protected:
 
 protected:
     //真正的插入是由这个函数完成的
-    std::pair<iterator, bool>  _insert(size_t x, size_t y, const _value_type& v)
+    std::pair<iterator, bool>  _insert(size_t x, size_t y, const T& v)
     {
         size_t z = create_node(v);
         //如果空间不足，无法插入，返回end,false的pair
@@ -942,7 +942,7 @@ protected:
 public:
 
     //允许重复key插入的插入函数，Multimap、Multimap用这个
-    std::pair<iterator, bool>  insert_equal(const _value_type& v)
+    std::pair<iterator, bool>  insert_equal(const T& v)
     {
         size_t y = header();
         size_t x = root();
@@ -957,7 +957,7 @@ public:
     }
 
     //重复key插入则失败的插入函数，Map、Sap用这个
-    std::pair<iterator, bool> insert_unique(const _value_type& v)
+    std::pair<iterator, bool> insert_unique(const T& v)
     {
         size_t y = header();
         size_t x = root();
@@ -1039,7 +1039,7 @@ public:
     }
 
     //通过value删除节点，Map和Set用
-    size_t erase_unique_value(const _value_type& v)
+    size_t erase_unique_value(const T& v)
     {
         _extract_key get_key;
         return erase_unique(get_key(v));
@@ -1054,7 +1054,7 @@ public:
     }
 
     //通过值删除节点，Multimap和Multiset用
-    size_t erase_equal_value(const _value_type& v)
+    size_t erase_equal_value(const T& v)
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
@@ -1130,14 +1130,14 @@ public:
     }
 
     //找value相同的节点
-    iterator find_value(const _value_type& v)
+    iterator find_value(const T& v)
     {
         _extract_key get_key;
         return find(get_key(v));
     }
 
     //找value相同的节点，如未找到则插入
-    _value_type& find_or_insert(const _value_type& v)
+    T& find_or_insert(const T& v)
     {
         iterator iter = find_value(v);
 
@@ -1165,7 +1165,7 @@ protected:
     _shm_rb_tree_index* index_base_ = nullptr;
 
     //数据区起始指针,
-    _value_type* data_base_ = nullptr;
+    T* data_base_ = nullptr;
 
     //头节点的头指针,N+1个索引位表示
     _shm_rb_tree_index* head_index_ = nullptr;
@@ -1175,45 +1175,45 @@ protected:
 };
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分
-template<class _value_type, class _compare_key = std::less<_value_type> >
+template<class T, class _compare_key = std::less<T> >
 class mmap_set :
-    public shm_rb_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
+    public shm_rb_tree< T, T, smem_identity<T>, _compare_key >
 {
 protected:
 
-    mmap_set<_value_type, _compare_key >() = default;
-    ~mmap_set<_value_type, _compare_key >() = default;
+    mmap_set<T, _compare_key >() = default;
+    ~mmap_set<T, _compare_key >() = default;
 
 public:
-    static mmap_set< _value_type, _compare_key  >*
+    static mmap_set< T, _compare_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_set< _value_type, _compare_key  > *>(
-            shm_rb_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<mmap_set< T, _compare_key  > *>(
+            shm_rb_tree<T, T, smem_identity<T>, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
-template<class _key_type, class _value_type, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _compare_key = std::less<_value_type>  >
+template<class _key_type, class T, class _extract_key = mmap_select1st <std::pair <_key_type, T> >, class _compare_key = std::less<T>  >
 class mmap_map :
-    public shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
+    public shm_rb_tree< std::pair <_key_type, T>, _key_type, _extract_key, _compare_key  >
 {
 protected:
 
-    mmap_map<_key_type, _value_type, _extract_key, _compare_key >() = default;
-    ~mmap_map<_key_type, _value_type, _extract_key, _compare_key >() = default;
+    mmap_map<_key_type, T, _extract_key, _compare_key >() = default;
+    ~mmap_map<_key_type, T, _extract_key, _compare_key >() = default;
 
 public:
-    static mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*
+    static mmap_map< _key_type, T, _extract_key, _compare_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_map< _key_type, _value_type, _extract_key, _compare_key  > *>(
-            shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<mmap_map< _key_type, T, _extract_key, _compare_key  > *>(
+            shm_rb_tree< std::pair <_key_type, T>, _key_type, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
-    _value_type& operator[](const _key_type& key)
+    T& operator[](const _key_type& key)
     {
-        return (find_or_insert(std::pair<_key_type, _value_type >(key, _value_type()))).second;
+        return (find_or_insert(std::pair<_key_type, T >(key, T()))).second;
     }
 };
 };

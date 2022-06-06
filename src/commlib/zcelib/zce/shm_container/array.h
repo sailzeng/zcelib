@@ -44,14 +44,14 @@ public:
 * @brief      共享内存中使用的vector，彻底简化版本
 * @tparam     _value_type  数组类型
 */
-template <class _value_type> class shm_array
+template <class T> class shm_array
 {
 private:
     //定义自己
-    typedef shm_array<_value_type> self;
+    typedef shm_array<T> self;
 public:
     ///定义迭代器,这个简单
-    typedef _value_type* iterator;
+    typedef T* iterator;
 
 protected:
 
@@ -71,7 +71,7 @@ public:
     ///内存区的构成为 定义区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_array_head) + sizeof(_value_type) * (numnode);
+        return  sizeof(_shm_array_head) + sizeof(T) * (numnode);
     }
 
     ///初始化
@@ -94,12 +94,12 @@ public:
         aryhead->size_of_mmap_ = getallocsize(numnode);
         aryhead->num_of_node_ = numnode;
 
-        shm_array<_value_type>* instance = new shm_array<_value_type>();
+        shm_array<T>* instance = new shm_array<T>();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
         instance->array_head_ = aryhead;
-        instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_array_head));
+        instance->data_base_ = reinterpret_cast<T*>(pmmap + sizeof(_shm_array_head));
 
         if (if_restore == false)
         {
@@ -117,7 +117,7 @@ public:
     }
 
     ///用[]访问数据，越界了自己负责
-    _value_type& operator[](size_t n)
+    T& operator[](size_t n)
     {
         return *(data_base_ + n);
     }
@@ -157,7 +157,7 @@ public:
             //生产默认的数据
             for (size_t i = array_head_->num_of_use_; i < num; ++i)
             {
-                new (data_base_ + i) _value_type();
+                new (data_base_ + i) T();
             }
         }
         //如果是缩小空间,销毁数据，调用析构
@@ -194,18 +194,18 @@ public:
     }
 
     ///关键位置
-    _value_type& front()
+    T& front()
     {
         return data_base_;
     }
     ///
-    _value_type& back()
+    T& back()
     {
         return *(data_base_ + (array_head_->num_of_use_ - 1));
     }
 
     ///向后添加数据
-    bool push_back(const _value_type& val)
+    bool push_back(const T& val)
     {
         if (array_head_->num_of_use_ == array_head_->num_of_node_)
         {
@@ -213,7 +213,7 @@ public:
         }
 
         //使用placement new 复制对象
-        new (data_base_ + array_head_->num_of_use_) _value_type(val);
+        new (data_base_ + array_head_->num_of_use_) T(val);
 
         ++(array_head_->num_of_use_);
 
@@ -241,6 +241,6 @@ protected:
     ///
     _shm_array_head* array_head_ = nullptr;
     ///数据区起始指针,
-    _value_type* data_base_ = nullptr;
+    T* data_base_ = nullptr;
 };
 };

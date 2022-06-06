@@ -21,7 +21,7 @@
 
 namespace zce
 {
-template < class _value_type,
+template < class T,
     class _key_type,
     class _hash_fun,
     class _extract_key,
@@ -29,18 +29,18 @@ template < class _value_type,
     class _washout_fun > class shm_hashtable_expire;
 
 //LRU HASH 迭代器
-template < class _value_type,
+template < class T,
     class _key_type,
     class _hashfun,
     class _extract_key,
     class _equal_key,
     class _washout_fun >
-    class _hashtable_expire_iterator
+class _hashtable_expire_iterator
 {
 protected:
 
     //HASH TABLE的定义
-    typedef shm_hashtable_expire < _value_type,
+    typedef shm_hashtable_expire < T,
         _key_type,
         _hashfun,
         _extract_key,
@@ -48,7 +48,7 @@ protected:
         _washout_fun  > _lru_hashtable;
 
     //定义迭代器
-    typedef _hashtable_expire_iterator < _value_type,
+    typedef _hashtable_expire_iterator < T,
         _key_type,
         _hashfun,
         _extract_key,
@@ -78,12 +78,12 @@ public:
     {
     }
 
-    _value_type& operator*() const
+    T& operator*() const
     {
         return lruht_instance_->value_base_[serial_];
     }
 
-    _value_type* operator->() const
+    T* operator->() const
     {
         return lruht_instance_->value_base_ + serial_;
     }
@@ -128,7 +128,7 @@ public:
             _equal_key   equal_key;
 
             if (false == equal_key(get_key(*(lruht_instance_->value_base_ + oldseq)),
-                get_key(*(lruht_instance_->value_base_ + serial_))))
+                                   get_key(*(lruht_instance_->value_base_ + serial_))))
             {
                 serial_ = zce::SHM_CNTR_INVALID_POINT;
             }
@@ -205,17 +205,17 @@ public:
 @tparam     _washout_fun
 @note
 */
-template < class _value_type,
+template < class T,
     class _key_type,
     class _hash_fun = smem_hash<_key_type>,
-    class _extract_key = smem_identity<_value_type>,
+    class _extract_key = smem_identity<T>,
     class _equal_key = std::equal_to<_key_type>,
-    class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hashtable_expire
+    class _washout_fun = _default_washout_fun<T> >
+class shm_hashtable_expire
 {
 private:
 
-    typedef shm_hashtable_expire < _value_type,
+    typedef shm_hashtable_expire < T,
         _key_type,
         _hash_fun,
         _extract_key,
@@ -224,14 +224,14 @@ private:
 
 public:
     //定义迭代器
-    typedef _hashtable_expire_iterator < _value_type,
+    typedef _hashtable_expire_iterator < T,
         _key_type,
         _hash_fun,
         _extract_key,
         _equal_key,
         _washout_fun > iterator;
 
-    friend class _hashtable_expire_iterator < _value_type,
+    friend class _hashtable_expire_iterator < T,
         _key_type,
         _hash_fun,
         _extract_key,
@@ -271,7 +271,7 @@ public:
         //
         sz_alloc += sizeof(_shm_list_index) * (real_num + LIST_ADD_NODE_NUMBER);
         sz_alloc += sizeof(unsigned int) * (real_num);
-        sz_alloc += sizeof(_value_type) * (real_num);
+        sz_alloc += sizeof(T) * (real_num);
         return sz_alloc;
     }
 
@@ -329,7 +329,7 @@ public:
 
         instance->priority_base_ = reinterpret_cast<unsigned int*>(tmp_base);
         tmp_base = tmp_base + sizeof(unsigned int) * (real_num);
-        instance->value_base_ = reinterpret_cast<_value_type*>(tmp_base);
+        instance->value_base_ = reinterpret_cast<T*>(tmp_base);
 
         if (false == if_restore)
         {
@@ -391,7 +391,7 @@ public:
 protected:
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type& val, unsigned int priority)
+    size_t create_node(const T& val, unsigned int priority)
     {
         //如果没有空间可以分配
         if (lru_hash_head_->sz_freenode_ == 0)
@@ -413,7 +413,7 @@ protected:
         lst_use_node_->idx_next_ = newnode;
 
         //placement new记录数据和优先级
-        new (value_base_ + newnode)  _value_type(val);
+        new (value_base_ + newnode)  T(val);
         priority_base_[newnode] = priority;
 
         lru_hash_head_->sz_usenode_++;
@@ -453,7 +453,7 @@ protected:
     }
 
     //从value中取值
-    size_t bkt_num_value(const _value_type& obj) const
+    size_t bkt_num_value(const T& obj) const
     {
         _extract_key get_key;
         return static_cast<size_t>(bkt_num_key(get_key(obj)));
@@ -518,7 +518,7 @@ public:
     *                      么不直接用time(NULL),是给你更大的灵活性,
     * @note       这儿会将插入的数据放在最后淘汰的地方
     */
-    std::pair<iterator, bool> insert_unique(const _value_type& val,
+    std::pair<iterator, bool> insert_unique(const T& val,
                                             unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_value(val);
@@ -557,7 +557,7 @@ public:
 
     //插入节点,允许相等
     //优先级可以，传递入当前时间作为参数，
-    std::pair<iterator, bool> insert_equal(const _value_type& val,
+    std::pair<iterator, bool> insert_equal(const T& val,
                                            unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/)
     {
         size_t idx = bkt_num_value(val);
@@ -623,7 +623,7 @@ public:
     }
 
     //
-    iterator find_value(const _value_type& val)
+    iterator find_value(const T& val)
     {
         _extract_key get_key;
         return find(get_key(val));
@@ -657,7 +657,7 @@ public:
     }
 
     //得到某个VALUE的元素个数，有点相当于查询操作
-    size_t count_value(const _value_type& val)
+    size_t count_value(const T& val)
     {
         _extract_key get_key;
         return count(get_key(val));
@@ -748,7 +748,7 @@ public:
     }
 
     //删除某个值
-    bool erase_unique_value(const _value_type& val)
+    bool erase_unique_value(const T& val)
     {
         _extract_key get_key;
         return erase_unique(get_key(val));
@@ -862,7 +862,7 @@ public:
     * @param      priority 优先级
     * @note       LRU中如果，一个值被使用后，可以认为是激活过一次，
     */
-    bool active_unique_value(const _value_type& val,
+    bool active_unique_value(const T& val,
                              unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         _extract_key get_key;
@@ -1042,7 +1042,7 @@ public:
     }
 
     //根据value将优先级跟新，重新给一个数据打一个优先级标签，同时将值替换，
-    bool mark_value(const _value_type& val, unsigned int priority)
+    bool mark_value(const T& val, unsigned int priority)
     {
         //使用量函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -1165,43 +1165,43 @@ protected:
     //优先级的数据指针,用32位的数据保存优先级
     unsigned int* priority_base_ = nullptr;
     //数据区指针
-    _value_type* value_base_ = nullptr;
+    T* value_base_ = nullptr;
 };
 
 /************************************************************************************************************
 template           : shm_hashset_expire
 ************************************************************************************************************/
-template < class _value_type,
-    class _hash_fun = smem_hash<_value_type>,
-    class _equal_key = std::equal_to<_value_type>,
-    class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hashset_expire :
-    public shm_hashtable_expire < _value_type,
-    _value_type,
+template < class T,
+    class _hash_fun = smem_hash<T>,
+    class _equal_key = std::equal_to<T>,
+    class _washout_fun = _default_washout_fun<T> >
+class shm_hashset_expire :
+    public shm_hashtable_expire < T,
+    T,
     _hash_fun,
-    smem_identity<_value_type>,
+    smem_identity<T>,
     _equal_key,
     _washout_fun >
 {
 private:
     //定义自己
-    typedef shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun> self;
+    typedef shm_hashset_expire<T, _hash_fun, _equal_key, _washout_fun> self;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun>() = default;
+    shm_hashset_expire<T, _hash_fun, _equal_key, _washout_fun>() = default;
 
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun>() = default;
+    ~shm_hashset_expire<T, _hash_fun, _equal_key, _washout_fun>() = default;
 
 public:
     static self*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<self *>(
-            shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>::initialize(
-            numnode, pmmap, if_restore));
+        return reinterpret_cast<self*>(
+            shm_hashtable_expire<T, T, _hash_fun, smem_identity<T>, _equal_key, _washout_fun>::initialize(
+                numnode, pmmap, if_restore));
     }
 };
 
@@ -1209,13 +1209,13 @@ public:
 template           : shm_hashmap_expire
 ************************************************************************************************************/
 template < class _key_type,
-    class _value_type,
+    class T,
     class _hash_fun = smem_hash<_key_type>,
-    class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
+    class _extract_key = mmap_select1st <std::pair <_key_type, T> >,
     class _equal_key = std::equal_to<_key_type>,
-    class _washout_fun = _default_washout_fun<_value_type> >
-    class shm_hashmap_expire :
-    public shm_hashtable_expire < std::pair <_key_type, _value_type>,
+    class _washout_fun = _default_washout_fun<T> >
+class shm_hashmap_expire :
+    public shm_hashtable_expire < std::pair <_key_type, T>,
     _key_type,
     _hash_fun,
     _extract_key,
@@ -1224,27 +1224,27 @@ template < class _key_type,
 {
 private:
     //定义自己
-    typedef shm_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun > self;
+    typedef shm_hashmap_expire<_key_type, T, _hash_fun, _extract_key, _equal_key, _washout_fun > self;
 
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
 
     //这个函数,不给你用,就是不给你用
-    shm_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+    shm_hashmap_expire<_key_type, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
 
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+    ~shm_hashmap_expire<_key_type, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
 
 public:
     static self* initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<self *>(
-            shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
-            numnode, pmmap, if_restore));
+        return reinterpret_cast<self*>(
+            shm_hashtable_expire< std::pair <_key_type, T>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
+                numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
-    _value_type& operator[](const _key_type& key)
+    T& operator[](const _key_type& key)
     {
         return (find(key)).second;
     }

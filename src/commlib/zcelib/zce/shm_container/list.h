@@ -44,22 +44,22 @@ namespace zce
 {
 //============================================================================================
 
-template <class _value_type> class shm_list;
+template <class T> class shm_list;
 
 /*!
 @brief      迭代器的封装，双向迭代器，为shm_list 提供迭起器。
             内部通过序列号，以及对象指针对进行迭代器的判等等。
 @tparam     _value_type 容器处理的数据类型
 */
-template <class _value_type> class _shm_list_iterator
+template <class T> class _shm_list_iterator
 {
-    typedef _shm_list_iterator<_value_type> iterator;
+    typedef _shm_list_iterator<T> iterator;
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type* pointer;
-    typedef _value_type& reference;
-    typedef _value_type value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef T value_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
@@ -70,25 +70,25 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator<_value_type>(size_t seq, shm_list<_value_type>* instance) :
+    _shm_list_iterator<T>(size_t seq, shm_list<T>* instance) :
         serial_(seq),
         list_instance_(instance)
     {
     }
 
     ///构造函数
-    _shm_list_iterator<_value_type>() :
+    _shm_list_iterator<T>() :
         serial_(zce::SHM_CNTR_INVALID_POINT),
         list_instance_(NULL)
     {
     }
     ///析构函数
-    ~_shm_list_iterator<_value_type>()
+    ~_shm_list_iterator<T>()
     {
     }
 
     ///初始化，
-    void initialize(size_t seq, shm_list<_value_type>* instance)
+    void initialize(size_t seq, shm_list<T>* instance)
     {
         serial_ = seq;
         list_instance_ = instance;
@@ -113,12 +113,12 @@ public:
     }
 
     ///提领操作
-    _value_type& operator*() const
+    T& operator*() const
     {
         return *(operator->());
     }
     //在多线程的环境下提供这个运送符号是不安全的,我没有加锁,原因如说明
-    _value_type* operator->() const
+    T* operator->() const
     {
         //
         return list_instance_->getdatabase() + serial_;
@@ -159,7 +159,7 @@ protected:
     //序列号，相对于数组下标
     size_t                  serial_;
     //对应的list对象指针
-    shm_list<_value_type>* list_instance_;
+    shm_list<T>* list_instance_;
 };
 
 //============================================================================================
@@ -200,20 +200,20 @@ public:
 
 @tparam     _value_type 元素类型
 */
-template <class _value_type>
+template <class T>
 class shm_list
 {
 private:
 
     //定义自己
-    typedef shm_list<_value_type> self;
+    typedef shm_list<T> self;
 
 public:
     ///定义迭代器
-    typedef _shm_list_iterator<_value_type> iterator;
+    typedef _shm_list_iterator<T> iterator;
 
     //某些函数提供给迭代器用
-    friend class _shm_list_iterator<_value_type>;
+    friend class _shm_list_iterator<T>;
 
 protected:
 
@@ -236,13 +236,13 @@ protected:
         return index_base_;
     }
     //得到数据区的基础地质
-    inline  _value_type* getdatabase()
+    inline  T* getdatabase()
     {
         return data_base_;
     }
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type& val)
+    size_t create_node(const T& val)
     {
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
@@ -258,7 +258,7 @@ protected:
         (index_base_ + freenode_->idx_next_)->idx_prev_ = (index_base_ + node)->idx_prev_;
 
         //用placement new生产对象
-        new (data_base_ + node) _value_type(val);
+        new (data_base_ + node) T(val);
 
         list_head_->size_use_node_++;
         list_head_->size_free_node_--;
@@ -293,7 +293,7 @@ public:
     //内存区的构成为 定义区,index区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode;
+        return  sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(T) * numnode;
     }
 
     self* getinstance()
@@ -328,7 +328,7 @@ public:
         instance->smem_base_ = pmmap;
         instance->list_head_ = listhead;
         instance->index_base_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head));
-        instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->data_base_ = reinterpret_cast<T*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //这两个家伙用于FREENODE,USENODE的使用
         instance->freenode_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode));
@@ -425,7 +425,7 @@ public:
 protected:
     //通过偏移序列号插入,如果你胡乱使用,不是非常安全,FREENODE也是有POS的.
     //插入在这个POS节点的前面
-    size_t insert(size_t pos, const _value_type& val)
+    size_t insert(size_t pos, const T& val)
     {
         size_t node = create_node(val);
 
@@ -448,7 +448,7 @@ public:
 
     //通过迭代器插入,推荐使用这个函数,
     //插入在这个迭代器节点的前面
-    std::pair<iterator, bool> insert(const iterator& pos, const _value_type& val)
+    std::pair<iterator, bool> insert(const iterator& pos, const T& val)
     {
         size_t tmp = insert(pos.getserial(), val);
 
@@ -488,13 +488,13 @@ public:
     }
 
     //有了迭代器,这些函数居然如此简单,想不到吧
-    bool push_front(const _value_type& x)
+    bool push_front(const T& x)
     {
         std::pair<iterator, bool> tmp = insert(begin(), x);
         return tmp.second;
     }
 
-    bool push_back(const _value_type& x)
+    bool push_back(const T& x)
     {
         std::pair<iterator, bool> tmp = insert(end(), x);
         return tmp.second;
@@ -597,7 +597,7 @@ protected:
     //索引数据区指针,
     _shm_list_index* index_base_ = nullptr;
     //数据区起始指针,
-    _value_type* data_base_ = nullptr;
+    T* data_base_ = nullptr;
 
     //FREE NODE的头指针,N+1个索引位表示
     _shm_list_index* freenode_ = nullptr;

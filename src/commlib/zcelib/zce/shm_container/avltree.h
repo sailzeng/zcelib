@@ -31,7 +31,7 @@
 
 namespace zce::shmc
 {
-template<class _value_type, class _key_type, class _extract_key, class _compare_key> class avl_tree;
+template<class T, class _key_type, class _extract_key, class _compare_key> class avl_tree;
 
 ///AVL TREE的头部数据区
 class _avl_tree_head
@@ -95,21 +95,21 @@ public:
 };
 
 //AVL tree的迭代器
-template < class _value_type,
+template < class T,
     class _key_type,
     class _extract_key,
     class _compare_key >
-    class _avl_tree_iterator
+class _avl_tree_iterator
 {
-    typedef _avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
+    typedef _avl_tree_iterator<T, _key_type, _extract_key, _compare_key> iterator;
 
-    typedef avl_tree<_value_type, _key_type, _extract_key, _compare_key> shm_avl_tree_t;
+    typedef avl_tree<T, _key_type, _extract_key, _compare_key> shm_avl_tree_t;
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type* pointer;
-    typedef _value_type& reference;
-    typedef _value_type value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef T value_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
@@ -152,13 +152,13 @@ public:
         return !(*this == x);
     }
 
-    _value_type& operator*() const
+    T& operator*() const
     {
         return *(operator->());
     }
 
     //在多线程的环境下提供这个运送符号是不安全的,没有加锁,上层自己保证
-    _value_type* operator->() const
+    T* operator->() const
     {
         return avl_tree_inst_->getdatabase() + serial_;
     }
@@ -271,27 +271,27 @@ protected:
 * @tparam     _extract_key  如果从_value_type中获取_key_type的方法
 * @tparam     _compare_key  比较方法
 */
-template < class _value_type,
+template < class T,
     class _key_type,
-    class _extract_key = smem_identity<_value_type>,
+    class _extract_key = smem_identity<T>,
     class _compare_key = std::less<_key_type> >
-    class avl_tree
+class avl_tree
 {
 private:
     //定义自己
-    typedef avl_tree < _value_type,
+    typedef avl_tree < T,
         _key_type,
         _extract_key,
         _compare_key > self;
 public:
     //定义迭代器
-    typedef _avl_tree_iterator < _value_type,
+    typedef _avl_tree_iterator < T,
         _key_type,
         _extract_key,
         _compare_key > iterator;
 
     //迭代器友元
-    friend class _avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
+    friend class _avl_tree_iterator<T, _key_type, _extract_key, _compare_key>;
 
 protected:
 
@@ -312,14 +312,14 @@ public:
     }
 
     //得到数据区的基础地质
-    inline  _value_type* getdatabase()
+    inline  T* getdatabase()
     {
         return data_base_;
     }
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type& val)
+    size_t create_node(const T& val)
     {
         //如果没有空间可以分配
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -339,7 +339,7 @@ protected:
         (index_base_ + new_node)->right_ = SHM_CNTR_INVALID_POINT;
         (index_base_ + new_node)->balanced_ = 0;
 
-        new (data_base_ + new_node)_value_type(val);
+        new (data_base_ + new_node)T(val);
 
         return new_node;
     }
@@ -370,7 +370,7 @@ public:
     {
         return  sizeof(_avl_tree_head)
             + sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
-            + sizeof(_value_type) * numnode;
+            + sizeof(T) * numnode;
     }
 
     //初始化
@@ -405,7 +405,7 @@ public:
             pmmap +
             sizeof(_avl_tree_head));
         //数据区
-        instance->data_base_ = reinterpret_cast<_value_type*>(
+        instance->data_base_ = reinterpret_cast<T*>(
             pmmap +
             sizeof(_shm_rb_tree_head) +
             sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
@@ -561,7 +561,7 @@ public:
         return (index_base_ + x)->balanced_;
     }
 
-    inline const _value_type& value(size_t x)
+    inline const T& value(size_t x)
     {
         return *(data_base_ + x);
     }
@@ -602,7 +602,7 @@ protected:
     * @param      y   插入点的父节点
     * @param      val 插入的数据
     */
-    std::pair<iterator, bool> _insert(size_t x, size_t y, const _value_type& val)
+    std::pair<iterator, bool> _insert(size_t x, size_t y, const T& val)
     {
         //分配一个空间
         size_t z = create_node(val);
@@ -1160,7 +1160,7 @@ public:
     * @return     std::pair<iterator, bool>  返回的iterator为迭代器，bool为是否插入成功
     * @param      v        插入的_value_type的数据
     */
-    std::pair<iterator, bool> insert_equal(const _value_type& v)
+    std::pair<iterator, bool> insert_equal(const T& v)
     {
         //如果依据满了，也返回失败
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -1186,7 +1186,7 @@ public:
     * @return     std::pair<iterator, bool> 返回的iterator为迭代器，bool为是否插入成功
     * @param      v 插入的_value_type的数据
     */
-    std::pair<iterator, bool> insert_unique(const _value_type& v)
+    std::pair<iterator, bool> insert_unique(const T& v)
     {
         //如果依据满了，也返回失败
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -1280,7 +1280,7 @@ public:
     }
 
     //通过value删除节点，SET使用
-    size_t erase_unique_value(const _value_type& v)
+    size_t erase_unique_value(const T& v)
     {
         _extract_key get_key;
         return erase_unique(get_key(v));
@@ -1295,7 +1295,7 @@ public:
     }
 
     //通过值删除节点，MULTISET用
-    size_t erase_equal_value(const _value_type& v)
+    size_t erase_equal_value(const T& v)
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
@@ -1372,14 +1372,14 @@ public:
     }
 
     //找value相同的节点
-    iterator find_value(const _value_type& v)
+    iterator find_value(const T& v)
     {
         _extract_key get_key;
         return find(get_key(v));
     }
 
     //找value相同的节点，如未找到则插入
-    _value_type& find_or_insert(const _value_type& v)
+    T& find_or_insert(const T& v)
     {
         iterator iter = find_value(v);
 
@@ -1393,7 +1393,7 @@ public:
     }
 
     //调试代码，如果_value_type是整数 的时候生效，否则无效
-    void debug_note(size_t x, typename std::enable_if<std::is_integral<_value_type>::value >::type* /*ptr*/ = 0)
+    void debug_note(size_t x, typename std::enable_if<std::is_integral<T>::value >::type* /*ptr*/ = 0)
     {
         std::cout << "Note :" << std::setw(6) << x
             << " Data:" << std::setw(8) << data_base_[x]
@@ -1447,7 +1447,7 @@ protected:
     _avl_tree_index* index_base_ = nullptr;
 
     ///数据区起始指针,
-    _value_type* data_base_ = nullptr;
+    T* data_base_ = nullptr;
 
     ///头节点的头指针,N+1个索引位表示
     _avl_tree_index* head_index_ = nullptr;
@@ -1457,68 +1457,68 @@ protected:
 };
 
 //用AVL Tree实现SET，不区分multiset和set，通过不通的insert自己区分
-template < class _value_type,
-    class _compare_key = std::less<_value_type> >
-    class mmap_avl_set :
-    public avl_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
+template < class T,
+    class _compare_key = std::less<T> >
+class mmap_avl_set :
+    public avl_tree< T, T, smem_identity<T>, _compare_key >
 {
 protected:
 
-    mmap_avl_set<_value_type, _compare_key >() = default;
+    mmap_avl_set<T, _compare_key >() = default;
 public:
-    ~mmap_avl_set<_value_type, _compare_key >() = default;
+    ~mmap_avl_set<T, _compare_key >() = default;
 
 public:
 
-    static mmap_avl_set< _value_type, _compare_key  >*
+    static mmap_avl_set< T, _compare_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_set< _value_type, _compare_key  > *>(
-            avl_tree < _value_type,
-            _value_type,
-            smem_identity<_value_type>,
+        return reinterpret_cast<mmap_set< T, _compare_key  > *>(
+            avl_tree < T,
+            T,
+            smem_identity<T>,
             _compare_key >::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用AVL Tree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template < class _key_type,
-    class _value_type,
-    class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
-    class _compare_key = std::less<_value_type>  >
-    class mmap_avl_map :
-    public avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
+    class T,
+    class _extract_key = mmap_select1st <std::pair <_key_type, T> >,
+    class _compare_key = std::less<T>  >
+class mmap_avl_map :
+    public avl_tree< std::pair <_key_type, T>, _key_type, _extract_key, _compare_key  >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    mmap_avl_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void* pmmap, bool if_restore) :
-        avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
+    mmap_avl_map<_key_type, T, _extract_key, _compare_key >(size_t numnode, void* pmmap, bool if_restore) :
+        avl_tree< std::pair <_key_type, T>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~mmap_avl_map<_key_type, _value_type, _extract_key, _compare_key >()
+    ~mmap_avl_map<_key_type, T, _extract_key, _compare_key >()
     {
     }
 public:
-    static mmap_avl_map< _key_type, _value_type, _extract_key, _compare_key  >*
+    static mmap_avl_map< _key_type, T, _extract_key, _compare_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast <mmap_avl_map < _key_type,
-            _value_type,
+            T,
             _extract_key,
             _compare_key  > *> (
-            avl_tree < std::pair < _key_type,
-            _value_type >,
-            _key_type,
-            _extract_key,
-            _compare_key >::initialize(numnode, pmmap, if_restore));
+                avl_tree < std::pair < _key_type,
+                T >,
+                _key_type,
+                _extract_key,
+                _compare_key >::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
-    _value_type& operator[](const _key_type& key)
+    T& operator[](const _key_type& key)
     {
-        return (find_or_insert(std::pair<_key_type, _value_type >(key, _value_type()))).second;
+        return (find_or_insert(std::pair<_key_type, T >(key, T()))).second;
     }
 };
 };

@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
-#define ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 #include "zce/config/property_tree.h"
@@ -47,4 +46,4 @@ protected:
                          zce::PropertyTree* propertytree);
 };
 
-#endif //ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
+

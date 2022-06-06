@@ -32,9 +32,9 @@ namespace zce
 * @tparam     _value_type      消息队列放入的数据类型
 * @tparam     _container_type  消息队列内部容器类型
 */
-template < typename _value_type,
-    typename _container_type >
-    class Message_Queue : public zce::NON_Copyable
+template < typename T,
+    typename C >
+class Message_Queue : public zce::NON_Copyable
 {
 public:
 
@@ -78,7 +78,7 @@ public:
     }
 
     //放入数据，一直等待
-    int enqueue(const _value_type& value_data)
+    int enqueue(const T& value_data)
     {
         sem_full_.lock();
 
@@ -95,7 +95,7 @@ public:
     }
 
     //放入一个数据，进行超时等待
-    int enqueue(const _value_type& value_data,
+    int enqueue(const T& value_data,
                 const zce::Time_Value& wait_time)
     {
         bool bret = false;
@@ -120,7 +120,7 @@ public:
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
-    int try_enqueue(const _value_type& value_data)
+    int try_enqueue(const T& value_data)
     {
         bool bret = false;
         bret = sem_full_.try_lock();
@@ -145,7 +145,7 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(_value_type& value_data,
+    int dequeue(T& value_data,
                 const zce::Time_Value& wait_time)
     {
         bool bret = false;
@@ -171,7 +171,7 @@ public:
     }
 
     //取出一个数据，一直等待
-    int dequeue(_value_type& value_data)
+    int dequeue(T& value_data)
     {
         sem_empty_.lock();
 
@@ -189,7 +189,7 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int try_dequeue(_value_type& value_data)
+    int try_dequeue(T& value_data)
     {
         bool bret = false;
         bret = sem_empty_.try_lock();
@@ -232,7 +232,7 @@ public:
 protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(_value_type& value_data,
+    int dequeue(T& value_data,
                 bool if_wait_timeout,
                 const zce::Time_Value& wait_time)
     {
@@ -284,7 +284,7 @@ protected:
     ZCE_MT_SYNCH::SEMAPHORE                        sem_empty_;
 
     //容器类型，可以是list,dequeue,
-    _container_type                                message_queue_;
+    C                                message_queue_;
 };
 
 /*!
@@ -293,8 +293,8 @@ protected:
 * @tparam     _value_type 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <typename _value_type >
-class MsgQueue_List : public Message_Queue<_value_type, std::list<_value_type> >
+template <typename T >
+class MsgQueue_List : public Message_Queue<T, std::list<_value_type> >
 {
 public:
     //
@@ -314,8 +314,8 @@ public:
 * @tparam     _value_type 消息队列保存的数据类型
 * note       封装的主要就是为了给你一些语法糖
 */
-template <typename _value_type >
-class MsgQueue_Deque : public Message_Queue<_value_type, std::deque<_value_type> >
+template <typename T >
+class MsgQueue_Deque : public Message_Queue<T, std::deque<_value_type> >
 {
 public:
     //
@@ -335,8 +335,8 @@ public:
 * @tparam     _value_type 消息队列保存的数据类型
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
-template <typename _value_type >
-class MsgQueue_Rings : public Message_Queue<_value_type, zce::lord_rings<_value_type> >
+template <typename T >
+class MsgQueue_Rings : public Message_Queue<T, zce::lord_rings<_value_type> >
 {
 public:
     //

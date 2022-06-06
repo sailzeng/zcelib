@@ -37,7 +37,7 @@
 
 namespace zce
 {
-template < class _value_type,
+template < class T,
     class _key_type,
     class _hash_fun,
     class _extract_key,
@@ -50,15 +50,15 @@ template < class _value_type,
 *             只提供了单向迭代器，++，
 *             模版参数我就不解释，反正和hash_table一致，你看下面的说明把。
 */
-template <class _value_type, class _key_type, class _hash_fun, class _extract_key, class _equal_key>
+template <class T, class _key_type, class _hash_fun, class _extract_key, class _equal_key>
 class _shm_hashtable_iterator
 {
 protected:
 
     ///hash_type定义，方便使用
-    typedef shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key> shm_hashtable_t;
+    typedef shm_hashtable<T, _key_type, _hash_fun, _extract_key, _equal_key> shm_hashtable_t;
     ///迭代器定义，方便下面的使用
-    typedef _shm_hashtable_iterator<_value_type, _key_type, _hash_fun, _extract_key, _equal_key> iterator;
+    typedef _shm_hashtable_iterator<T, _key_type, _hash_fun, _extract_key, _equal_key> iterator;
 
 public:
 
@@ -98,12 +98,12 @@ public:
     }
 
     ///提领操作
-    _value_type& operator*() const
+    T& operator*() const
     {
         return *(ht_instance_->data_base_ + serial_);
     }
     ///在多线程的环境下提供这个运送符号是不安全的,我没有加锁,原因如说明
-    _value_type* operator->() const
+    T* operator->() const
     {
         //
         return &(operator*());
@@ -195,23 +195,23 @@ public:
 * @tparam     _equal_key    比较键值是否相等的方法,或者函数对象
 * @note
 */
-template < class _value_type,
+template < class T,
     class _key_type,
     class _hash_fun = smem_hash<_key_type>,
-    class _extract_key = smem_identity<_value_type>,
+    class _extract_key = smem_identity<T>,
     class _equal_key = std::equal_to<_key_type> >
-    class shm_hashtable
+class shm_hashtable
 {
 private:
     //定义自己
-    typedef shm_hashtable<_value_type, _key_type, _hash_fun, _extract_key, _equal_key> self;
+    typedef shm_hashtable<T, _key_type, _hash_fun, _extract_key, _equal_key> self;
 
 public:
     //定义迭代器
-    typedef _shm_hashtable_iterator<_value_type, _key_type, _hash_fun, _extract_key, _equal_key> iterator;
+    typedef _shm_hashtable_iterator<T, _key_type, _hash_fun, _extract_key, _equal_key> iterator;
 
     //友元
-    friend class _shm_hashtable_iterator<_value_type, _key_type, _hash_fun, _extract_key, _equal_key>;
+    friend class _shm_hashtable_iterator<T, _key_type, _hash_fun, _extract_key, _equal_key>;
 
 protected:
 
@@ -227,7 +227,7 @@ public:
 protected:
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const _value_type& val)
+    size_t create_node(const T& val)
     {
         //如果没有空间可以分配
         if (hash_head_->sz_freenode_ == 0)
@@ -242,7 +242,7 @@ protected:
         ++hash_head_->sz_usenode_;
 
         //用placement new进行赋值
-        new (data_base_ + new_node)_value_type(val);
+        new (data_base_ + new_node)T(val);
 
         return new_node;
     }
@@ -275,7 +275,7 @@ public:
         zce::hash_prime(req_num, real_num);
         return  sizeof(_shm_hash_table_head) +
             sizeof(size_t) * (real_num)+
-            sizeof(_value_type) * real_num +
+            sizeof(T) * real_num +
             sizeof(size_t) * (real_num);
     }
 
@@ -323,7 +323,7 @@ public:
         }
 
         self* instance
-            = new shm_hashtable< _value_type, _key_type, _hash_fun, _extract_key, _equal_key  >();
+            = new shm_hashtable< T, _key_type, _hash_fun, _extract_key, _equal_key  >();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
 
@@ -337,8 +337,8 @@ public:
         instance->index_base_ = reinterpret_cast<size_t*>(tmp_base);
         tmp_base = tmp_base + sizeof(size_t) * (real_num);
 
-        instance->data_base_ = reinterpret_cast<_value_type*>(tmp_base);
-        tmp_base = tmp_base + sizeof(_value_type) * (real_num);
+        instance->data_base_ = reinterpret_cast<T*>(tmp_base);
+        tmp_base = tmp_base + sizeof(T) * (real_num);
 
         instance->next_index_ = reinterpret_cast<size_t*>(tmp_base);
 
@@ -382,7 +382,7 @@ public:
     }
 
     //从value中取值
-    size_t bkt_num_value(const _value_type& obj) const
+    size_t bkt_num_value(const T& obj) const
     {
         _extract_key get_key;
         return static_cast<size_t>(bkt_num_key(get_key(obj)));
@@ -452,14 +452,14 @@ public:
         return iterator(first, this);
     }
     //
-    iterator find_value(const _value_type& val)
+    iterator find_value(const T& val)
     {
         _extract_key get_key;
         return find(get_key(val));
     }
 
     //
-    _value_type& find_or_insert(const _value_type& val)
+    T& find_or_insert(const T& val)
     {
         iterator iter = find_value(val);
 
@@ -477,7 +477,7 @@ public:
     * @return     std::pair<iterator, bool> iterator为返回的迭代器，bool为是否插入成功，
     * @param      val 插入的数据
     */
-    std::pair<iterator, bool> insert_unique(const _value_type& val)
+    std::pair<iterator, bool> insert_unique(const T& val)
     {
         size_t idx = bkt_num_value(val);
         size_t first_idx = *(index_base_ + idx);
@@ -526,7 +526,7 @@ public:
     * @return     std::pair<iterator, bool> iterator为返回的迭代器，bool为是否插入成功，
     * @param      val 插入的数据
     */
-    std::pair<iterator, bool> insert_equal(const _value_type& val)
+    std::pair<iterator, bool> insert_equal(const T& val)
     {
         size_t idx = bkt_num_value(val);
         size_t first_idx = *(index_base_ + idx);
@@ -803,62 +803,62 @@ protected:
     size_t* index_base_;
 
     //数据区起始指针,
-    _value_type* data_base_;
+    T* data_base_;
 
     //这个元素后面跟的开链的索引
     size_t* next_index_;
 };
 
-template<class _value_type, class _hash_fun = smem_hash<_value_type>, class _equal_key = std::equal_to<_value_type> >
+template<class T, class _hash_fun = smem_hash<T>, class _equal_key = std::equal_to<T> >
 class shm_hashset :
-    public shm_hashtable< _value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key  >
+    public shm_hashtable< T, T, _hash_fun, smem_identity<T>, _equal_key  >
 {
 public:
     //定义迭代器
     //typedef shm_hashtable< _value_type,_value_type ,_hash_fun, _extract_key,_equal_key  >::iterator iterator;
 
 protected:
-    shm_hashset<_value_type, _hash_fun, _equal_key >() = default;
+    shm_hashset<T, _hash_fun, _equal_key >() = default;
 
 public:
-    ~shm_hashset<_value_type, _hash_fun, _equal_key >() = default;
+    ~shm_hashset<T, _hash_fun, _equal_key >() = default;
 
 public:
-    static shm_hashset< _value_type, _hash_fun, _equal_key  >*
+    static shm_hashset< T, _hash_fun, _equal_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashset< _value_type, _hash_fun, _equal_key  > *>(
-            shm_hashtable<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<shm_hashset< T, _hash_fun, _equal_key  > *>(
+            shm_hashtable<T, T, _hash_fun, smem_identity<T>, _equal_key>::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //HASH MAP
-template<class _key_type, class _value_type, class _hash_fun = smem_hash<_key_type>, class _equal_key = std::equal_to<_key_type> >
+template<class _key_type, class T, class _hash_fun = smem_hash<_key_type>, class _equal_key = std::equal_to<_key_type> >
 class shm_hashmap :
-    public shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, mmap_select1st <std::pair <_key_type, _value_type> >, _equal_key  >
+    public shm_hashtable< std::pair <_key_type, T>, _key_type, _hash_fun, mmap_select1st <std::pair <_key_type, T> >, _equal_key  >
 {
 protected:
 
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashmap<_key_type, _value_type, _hash_fun, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
-        shm_hashtable< std::pair <_key_type, _value_type>, _key_type, mmap_select1st <std::pair <_key_type, _value_type> >, _equal_key  >(numnode, pmmap, if_restore)
+    shm_hashmap<_key_type, T, _hash_fun, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
+        shm_hashtable< std::pair <_key_type, T>, _key_type, mmap_select1st <std::pair <_key_type, T> >, _equal_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~shm_hashmap<_key_type, _value_type, _hash_fun, _equal_key >()
+    ~shm_hashmap<_key_type, T, _hash_fun, _equal_key >()
     {
     }
 public:
-    static shm_hashmap< _key_type, _value_type, _hash_fun, _equal_key  >*
+    static shm_hashmap< _key_type, T, _hash_fun, _equal_key  >*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashmap< _key_type, _value_type, _hash_fun, _equal_key  > *>(
-            shm_hashtable< std::pair <_key_type, _value_type>, _key_type, _hash_fun, mmap_select1st <std::pair <_key_type, _value_type> >, _equal_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<shm_hashmap< _key_type, T, _hash_fun, _equal_key  > *>(
+            shm_hashtable< std::pair <_key_type, T>, _key_type, _hash_fun, mmap_select1st <std::pair <_key_type, T> >, _equal_key>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
-    _value_type& operator[](const _key_type& key)
+    T& operator[](const _key_type& key)
     {
         return (find(key)).second;
     }
