@@ -7,12 +7,12 @@ namespace zce
 /*!
 * @brief      用条件变量+容器实现的消息队列，对于我个人来说，条件变量有点怪，装B？请问condi传入Mutex的目的是？
 *
-* @tparam     _value_type 消息队列放入的数据类型
-* @tparam     _container_type 消息队列内部容器类型
+* @tparam     T 消息队列放入的数据类型
+* @tparam     C 消息队列内部容器类型
 * note
 */
 template <typename T, typename C = std::deque<T> >
-class Task_MsgQueue
+class msgqueue_condi
 {
 protected:
 
@@ -29,20 +29,20 @@ protected:
 public:
 
     //构造函数和析构函数
-    Task_MsgQueue(size_t queue_max_size) :
+    msgqueue_condi(size_t queue_max_size) :
         queue_max_size_(queue_max_size),
         queue_cur_size_(0)
     {
     }
 
-    ~Task_MsgQueue()
+    ~msgqueue_condi()
     {
     }
 
     //QUEUE是否为NULL
     inline bool empty()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::unique_lock<std::mutex> guard(queue_lock_);
         if (queue_cur_size_ == 0)
         {
             return true;
@@ -66,7 +66,7 @@ public:
     //放入，一直等待
     int enqueue(const T& value_data)
     {
-        zce::Time_Value  nouse_timeout;
+        std::chrono::microseconds nouse_timeout;
         return enqueue_interior(value_data,
                                 MQW_WAIT_FOREVER,
                                 nouse_timeout);
@@ -74,17 +74,17 @@ public:
 
     //有超时放入
     int enqueue(const T& value_data,
-                const zce::Time_Value& wait_time)
+                std::chrono::microseconds& dura)
     {
         return enqueue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
-                                wait_time);
+                                dura);
     }
 
     //尝试放入，立即返回
     int try_enqueue(const T& value_data)
     {
-        zce::Time_Value  nouse_timeout;
+        std::chrono::microseconds nouse_timeout;
         return enqueue_interior(value_data,
                                 MQW_NO_WAIT,
                                 nouse_timeout);
@@ -93,7 +93,7 @@ public:
     //取出
     int dequeue(T& value_data)
     {
-        zce::Time_Value  nouse_timeout;
+        std::chrono::microseconds nouse_timeout;
         return dequeue_interior(value_data,
                                 MQW_WAIT_FOREVER,
                                 nouse_timeout);
@@ -101,17 +101,17 @@ public:
 
     //有超时处理的取出
     int dequeue(T& value_data,
-                const zce::Time_Value& wait_time)
+                const std::chrono::microseconds& dura)
     {
         return dequeue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
-                                wait_time);
+                                dura);
     }
 
     //尝试取出，立即返回
     int try_dequeue(T& value_data)
     {
-        zce::Time_Value  nouse_timeout;
+        std::chrono::microseconds nouse_timeout;
         return dequeue_interior(value_data,
                                 MQW_NO_WAIT,
                                 nouse_timeout);
@@ -119,14 +119,14 @@ public:
 
     void clear()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::unique_lock<std::mutex> guard(queue_lock_);
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
 
     size_t size()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::unique_lock<std::mutex> guard(queue_lock_);
         return queue_cur_size_;
     }
 
@@ -135,12 +135,12 @@ protected:
     //放入一个数据，根据参数确定是否等待一个相对时间
     int enqueue_interior(const T& value_data,
                          MQW_WAIT_MODEL wait_model,
-                         const timeval& wait_time)
+                         const std::chrono::microseconds& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
         {
-            std::lock_guard<std::mutex> guard(queue_lock_);
+            std::unique_lock<std::mutex> lock(queue_lock_);
             bool bret = false;
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，必须重入检查
@@ -151,10 +151,10 @@ protected:
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混,WINDOWS下的实现应该是用信号灯模拟的
-                    bret = cond_enqueue_.duration_wait(&queue_lock_, wait_time);
+                    auto cvs = cv_en_.wait_for(lock, wait_time);
 
                     //如果超时了，返回false
-                    if (!bret)
+                    if (cvs == std::cv_status::timeout)
                     {
                         zce::last_error(ETIMEDOUT);
                         return -1;
@@ -162,7 +162,7 @@ protected:
                 }
                 else if (wait_model == MQW_WAIT_FOREVER)
                 {
-                    cond_enqueue_.wait(&queue_lock_);
+                    cv_en_.wait(lock);
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
@@ -175,8 +175,8 @@ protected:
             ++queue_cur_size_;
         }
 
-        //通知所有等待的人
-        cond_dequeue_.broadcast();
+        //通知一个等待的人
+        cv_de_.notify_one();
 
         return 0;
     }
@@ -184,12 +184,11 @@ protected:
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue_interior(_value_type& value_data,
                          MQW_WAIT_MODEL wait_model,
-                         const zce::Time_Value& wait_time)
+                         const std::chrono::microseconds& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
-            bool bret = false;
+            std::unique_lock<std::mutex> lock(queue_lock_);
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，
             //详细见pthread_condi的说明，
@@ -200,10 +199,10 @@ protected:
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混
-                    bret = cond_dequeue_.duration_wait(&queue_lock_, wait_time);
+                    auto cvs = cv_de_.wait_for(lock, wait_time);
 
                     //如果超时了，返回false
-                    if (!bret)
+                    if (cvs == std::cv_status::timeout)
                     {
                         zce::last_error(ETIMEDOUT);
                         return -1;
@@ -211,7 +210,7 @@ protected:
                 }
                 else if (wait_model == MQW_WAIT_FOREVER)
                 {
-                    cond_dequeue_.wait(&queue_lock_);
+                    cv_de_.wait(lock);
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
@@ -226,8 +225,8 @@ protected:
             --queue_cur_size_;
         }
 
-        //通知所有等待的人
-        cond_enqueue_.broadcast();
+        //通知一个等待的人
+        cv_en_.notify_one();
 
         return 0;
     }
@@ -257,17 +256,17 @@ protected:
 * @tparam     _value_type 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <typename _value_type >
-class ZCE_Msgqueue_List_Condi : public ZCE_Message_Queue_Condi<_value_type, std::list<_value_type> >
+template <typename T>
+class msgqueue_condi_list : public msgqueue_condi<T, std::list<T> >
 {
 public:
     //
-    explicit ZCE_Msgqueue_List_Condi(size_t queue_max_size) :
-        ZCE_Message_Queue_Condi<_value_type, std::list<_value_type> >(queue_max_size)
+    explicit msgqueue_condi_list(size_t queue_max_size) :
+        msgqueue_condi<T, std::list<T> >(queue_max_size)
     {
     }
 
-    ~ZCE_Msgqueue_List_Condi()
+    ~msgqueue_condi_list()
     {
     }
 };
@@ -278,17 +277,17 @@ public:
 * @tparam     _value_type 消息队列保存的数据类型
 * note
 */
-template <class _value_type >
-class ZCE_Msgqueue_Deque_Condi : public ZCE_Message_Queue_Condi<_value_type, std::deque<_value_type> >
+template <class T >
+class msgqueue_condi_deque : public msgqueue_condi<T, std::deque<T> >
 {
 public:
     //
-    explicit ZCE_Msgqueue_Deque_Condi(size_t queue_max_size) :
-        ZCE_Message_Queue_Condi<_value_type, std::deque<_value_type> >(queue_max_size)
+    explicit msgqueue_condi_deque(size_t queue_max_size) :
+        msgqueue_condi<T, std::deque<T> >(queue_max_size)
     {
     }
 
-    ~ZCE_Msgqueue_Deque_Condi()
+    ~msgqueue_condi_deque()
     {
     }
 };
@@ -299,18 +298,18 @@ public:
 * @tparam     _value_type 消息队列保存的数据类型
 * note       封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
-template <class _value_type >
-class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >
+template <class T >
+class msgqueue_condi_ring : public msgqueue_condi<T, zce::lord_rings<T> >
 {
 public:
     //
-    explicit ZCE_Msgqueue_Rings_Condi(size_t queue_max_size) :
-        ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >(queue_max_size)
+    explicit msgqueue_condi_ring(size_t queue_max_size) :
+        msgqueue_condi<T, zce::lord_rings<T> >(queue_max_size)
     {
-        ZCE_Message_Queue_Condi<_value_type, zce::lord_rings<_value_type> >::message_queue_.resize(queue_max_size);
+        msgqueue_condi<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
     }
 
-    ~ZCE_Msgqueue_Rings_Condi()
+    ~msgqueue_condi_ring()
     {
     }
 };
