@@ -382,138 +382,55 @@ public:
     //放入数据，一直等待
     int enqueue(const T& value_data)
     {
-        sem_full_.lock();
-
-        //注意这段代码必须用{}保护，因为你必须先保证数据取出
-        {
-            std::lock_guard<std::mutex> lock_guard(queue_lock_);
-
-            message_queue_.push_back(value_data);
-            ++queue_cur_size_;
-        }
-        sem_empty_.unlock();
-
-        return 0;
+        std::chrono::microseconds no_use;
+        return dequeue(value_data,
+                       MQW_WAIT_FOREVER,
+                       no_use);
     }
 
     //放入一个数据，进行超时等待
     int enqueue(const T& value_data,
-                const zce::Time_Value& wait_time)
+                std::chrono::microseconds& wait_time)
     {
-        bool bret = false;
-        bret = sem_full_.lock_for(wait_time);
-
-        //如果超时了，返回false
-        if (!bret)
-        {
-            return -1;
-        }
-
-        //注意这段代码必须用{}保护，因为你必须先保证数据取出
-        {
-            std::lock_guard<std::mutex> lock_guard(queue_lock_);
-
-            message_queue_.push_back(value_data);
-            ++queue_cur_size_;
-        }
-        sem_empty_.unlock();
-
-        return 0;
+        return dequeue(value_data,
+                       MQW_WAIT_TIMEOUT,
+                       wait_time);
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
     int try_enqueue(const T& value_data)
     {
-        bool bret = false;
-        bret = sem_full_.try_lock();
-
-        //如果超时了，返回false
-        if (!bret)
-        {
-            errno = EWOULDBLOCK;
-            return -1;
-        }
-
-        //注意这段代码必须用{}保护，因为你必须先保证数据取出
-        {
-            std::lock_guard<std::mutex> lock_guard(queue_lock_);
-
-            message_queue_.push_back(value_data);
-            ++queue_cur_size_;
-        }
-        sem_empty_.unlock();
-
-        return 0;
+        std::chrono::microseconds no_use;
+        return dequeue(value_data,
+                       MQW_NO_WAIT,
+                       no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(T& value_data,
-                const zce::Time_Value& wait_time)
+                std::chrono::microseconds& wait_time)
     {
-        bool bret = false;
-        bret = sem_empty_.lock_for(wait_time);
-
-        //如果超时了，返回false
-        if (!bret)
-        {
-            return -1;
-        }
-
-        //注意这段代码必须用{}保护，因为你必须先保证数据取出
-        {
-            std::lock_guard<std::mutex> guard(queue_lock_);
-            //
-            value_data = *message_queue_.begin();
-            message_queue_.pop_front();
-            --queue_cur_size_;
-        }
-        sem_full_.unlock();
-
-        return 0;
+        return dequeue(value_data,
+                       MQW_WAIT_TIMEOUT,
+                       wait_time);
     }
 
     //取出一个数据，一直等待
     int dequeue(T& value_data)
     {
-        sem_empty_.lock();
-
-        //注意这段代码必须用{}保护，因为你必须先保证数据取出
-        {
-            std::lock_guard<std::mutex> guard(queue_lock_);
-            //
-            value_data = *message_queue_.begin();
-            message_queue_.pop_front();
-            --queue_cur_size_;
-        }
-        sem_full_.unlock();
-
-        return 0;
+        std::chrono::microseconds no_use;
+        return dequeue(value_data,
+                       MQW_WAIT_FOREVER,
+                       no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int try_dequeue(T& value_data)
     {
-        bool bret = false;
-        bret = sem_empty_.try_lock();
-
-        //如果超时了，返回false
-        if (!bret)
-        {
-            errno = EWOULDBLOCK;
-            return -1;
-        }
-
-        //注意这段代码必须用{}保护，因为你必须先保证数据取出
-        {
-            std::lock_guard<std::mutex> guard(queue_lock_);
-            //
-            value_data = *message_queue_.begin();
-            message_queue_.pop_front();
-            --queue_cur_size_;
-        }
-        sem_full_.unlock();
-
-        return 0;
+        std::chrono::microseconds no_use;
+        return dequeue(value_data,
+                       MQW_NO_WAIT,
+                       no_use);
     }
 
     //清理消息队列
@@ -533,18 +450,34 @@ public:
 
 protected:
 
+
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(T& value_data,
-                bool if_wait_timeout,
-                const zce::Time_Value& wait_time)
+                MQW_WAIT_MODEL model,
+                std::chrono::microseconds& wait_time)
     {
         //进行超时等待
-        if (if_wait_timeout)
+        bool bret = false;
+        if (model == MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT)
         {
-            bool bret = false;
-            bret = sem_empty_.lock_for(wait_time);
-
+            bret = sem_empty_.try_acquire_for(wait_time);
             //如果超时了，返回false
+            if (!bret)
+            {
+                return -1;
+            }
+        }
+        else if (model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
+        {
+            bret = sem_empty_.acquire();
+            if (!bret)
+            {
+                return -1;
+            }
+        }
+        else if (model == MQW_WAIT_MODEL::MQW_NO_WAIT)
+        {
+            bret = sem_empty_.try_acquire();
             if (!bret)
             {
                 return -1;
@@ -552,7 +485,6 @@ protected:
         }
         else
         {
-            sem_empty_.lock();
         }
 
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
@@ -563,7 +495,56 @@ protected:
             message_queue_.pop_front();
             --queue_cur_size_;
         }
-        sem_full_.unlock();
+        sem_full_.release();
+
+        return 0;
+    }
+
+
+    int enqueue(const T& value_data,
+                MQW_WAIT_MODEL model,
+                std::chrono::microseconds& wait_time)
+    {
+        bool bret = false;
+        if (model == MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT)
+        {
+            bret = sem_full_.acquire_for(wait_time);
+            //如果超时了，返回false
+            if (!bret)
+            {
+                return -1;
+            }
+        }
+        else if (model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
+        {
+            bret = sem_full_.acquire();
+            if (!bret)
+            {
+                return -1;
+            }
+        }
+        else if (model == MQW_WAIT_MODEL::MQW_NO_WAIT)
+        {
+            bret = sem_full_.try_acquire();
+            //如果超时了，返回false
+            if (!bret)
+            {
+                errno = EWOULDBLOCK;
+                return -1;
+            }
+        }
+        else
+        {
+        }
+
+        //注意这段代码必须用{}保护，因为你必须先保证数据取出
+        {
+            std::lock_guard<std::mutex> lock_guard(queue_lock_);
+
+            message_queue_.push_back(value_data);
+            ++queue_cur_size_;
+        }
+        sem_empty_.release();
 
         return 0;
     }
