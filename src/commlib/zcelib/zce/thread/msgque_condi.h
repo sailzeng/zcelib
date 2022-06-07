@@ -255,10 +255,10 @@ protected:
     zce::Thread_Light_Mutex      queue_lock_;
 
     //插入保护的条件变量
-    zce::Thread_Condition_Mutex  cond_enqueue_;
+    zce::Thread_Condition        cond_enqueue_;
 
     //取出进行保护的条件变量
-    zce::Thread_Condition_Mutex  cond_dequeue_;
+    zce::Thread_Condition        cond_dequeue_;
 
     //容器类型，可以是list,dequeue,
     C              message_queue_;
@@ -440,8 +440,7 @@ protected:
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
         {
-            std::lock_guard<std::mutex> guard(queue_lock_);
-            bool bret = false;
+            std::unique_lock<std::mutex> guard(queue_lock_);
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，必须重入检查
             //详细见pthread_condi的说明，
@@ -451,10 +450,10 @@ protected:
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混,WINDOWS下的实现应该是用信号灯模拟的
-                    bret = cv_en_.wait_for(&queue_lock_, wait_time);
+                    auto status = cv_en_.wait_for(guard, wait_time);
 
                     //如果超时了，返回false
-                    if (!bret)
+                    if (status == std::cv_status::timeout)
                     {
                         zce::last_error(ETIMEDOUT);
                         return -1;
@@ -462,7 +461,7 @@ protected:
                 }
                 else if (wait_model == MQW_WAIT_FOREVER)
                 {
-                    cv_en_.wait(&queue_lock_);
+                    cv_en_.wait(guard);
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
@@ -475,7 +474,7 @@ protected:
             ++queue_cur_size_;
         }
 
-        //通知所有等待的人
+        //通知一个等待的人
         cv_de_.notify_one();
 
         return 0;
@@ -488,8 +487,7 @@ protected:
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
-            bool bret = false;
+            std::unique_lock<std::mutex> guard(queue_lock_);
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，
             //详细见pthread_condi的说明，
@@ -500,10 +498,10 @@ protected:
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混
-                    bret = cv_de_.wait_for(&queue_lock_, wait_time);
+                    auto status = cv_de_.wait_for(guard, wait_time);
 
                     //如果超时了，返回false
-                    if (!bret)
+                    if (status == std::cv_status::timeout)
                     {
                         zce::last_error(ETIMEDOUT);
                         return -1;
@@ -511,7 +509,7 @@ protected:
                 }
                 else if (wait_model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
                 {
-                    cv_de_.wait(&queue_lock_);
+                    cv_de_.wait(guard);
                 }
                 else if (wait_model == MQW_WAIT_MODEL::MQW_NO_WAIT)
                 {
@@ -526,8 +524,8 @@ protected:
             --queue_cur_size_;
         }
 
-        //通知所有等待的人
-        cv_en_.broadcast();
+        //通知一个等待的人
+        cv_en_.notify_one();
 
         return 0;
     }

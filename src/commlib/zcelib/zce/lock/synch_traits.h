@@ -35,8 +35,8 @@ public:
     typedef Process_Mutex                       PROCESS_MUTEX;
     typedef Thread_Recursive_Mutex              RECURSIVE_MUTEX;
     typedef Thread_RW_Mutex                     RW_MUTEX;
-    typedef Thread_Condition_Mutex              CONDITION;
-    typedef Thread_Condition_Recursive_Mutex    RECURSIVE_CONDITION;
+    typedef Thread_Condition                    CONDITION;
+    typedef Thread_Recursive_Condition          RECURSIVE_CONDITION;
     typedef Thread_Semaphore                    SEMAPHORE;
     typedef Null_Mutex                          NULL_SEMAPHORE;
 };

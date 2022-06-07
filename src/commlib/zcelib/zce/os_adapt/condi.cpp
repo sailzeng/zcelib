@@ -90,7 +90,6 @@ int zce::pthread_cond_initex(pthread_cond_t* cond,
 #if defined (ZCE_OS_WINDOWS)
     //默认还是用递归的锁
     attr.outer_lock_type_ |= PTHREAD_MUTEX_RECURSIVE;
-
     if (win_mutex_or_sema)
     {
         attr.outer_lock_type_ |= PTHREAD_MUTEX_TIMEOUT;
@@ -143,8 +142,6 @@ int zce::pthread_cond_timedwait(pthread_cond_t* cond,
         ZCE_ASSERT(false);
         return EINVAL;
     }
-
-
     DWORD wait_msec = INFINITE;
 
     //如果有超时，计算相对超时时间
@@ -177,9 +174,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t* cond,
             return EINVAL;
         }
     }
-
     return 0;
-
 
 #elif defined (ZCE_OS_LINUX)
     //
