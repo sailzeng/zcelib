@@ -383,54 +383,54 @@ public:
     int enqueue(const T& value_data)
     {
         std::chrono::microseconds no_use;
-        return dequeue(value_data,
-                       MQW_WAIT_FOREVER,
-                       no_use);
+        return enqueue_i(value_data,
+                         MQW_WAIT_FOREVER,
+                         no_use);
     }
 
     //放入一个数据，进行超时等待
     int enqueue(const T& value_data,
                 std::chrono::microseconds& wait_time)
     {
-        return dequeue(value_data,
-                       MQW_WAIT_TIMEOUT,
-                       wait_time);
+        return enqueue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_time);
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
     int try_enqueue(const T& value_data)
     {
         std::chrono::microseconds no_use;
-        return dequeue(value_data,
-                       MQW_NO_WAIT,
-                       no_use);
+        return enqueue_i(value_data,
+                         MQW_NO_WAIT,
+                         no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(T& value_data,
                 std::chrono::microseconds& wait_time)
     {
-        return dequeue(value_data,
-                       MQW_WAIT_TIMEOUT,
-                       wait_time);
+        return dequeue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_time);
     }
 
     //取出一个数据，一直等待
     int dequeue(T& value_data)
     {
         std::chrono::microseconds no_use;
-        return dequeue(value_data,
-                       MQW_WAIT_FOREVER,
-                       no_use);
+        return dequeue_i(value_data,
+                         MQW_WAIT_FOREVER,
+                         no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int try_dequeue(T& value_data)
     {
         std::chrono::microseconds no_use;
-        return dequeue(value_data,
-                       MQW_NO_WAIT,
-                       no_use);
+        return dequeue_i(value_data,
+                         MQW_NO_WAIT,
+                         no_use);
     }
 
     //清理消息队列
@@ -452,9 +452,9 @@ protected:
 
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(T& value_data,
-                MQW_WAIT_MODEL model,
-                std::chrono::microseconds& wait_time)
+    int dequeue_i(T& value_data,
+                  MQW_WAIT_MODEL model,
+                  std::chrono::microseconds& wait_time)
     {
         //进行超时等待
         bool bret = false;
@@ -469,11 +469,7 @@ protected:
         }
         else if (model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
         {
-            bret = sem_empty_.acquire();
-            if (!bret)
-            {
-                return -1;
-            }
+            sem_empty_.acquire();
         }
         else if (model == MQW_WAIT_MODEL::MQW_NO_WAIT)
         {
@@ -501,14 +497,14 @@ protected:
     }
 
 
-    int enqueue(const T& value_data,
-                MQW_WAIT_MODEL model,
-                std::chrono::microseconds& wait_time)
+    int enqueue_i(const T& value_data,
+                  MQW_WAIT_MODEL model,
+                  std::chrono::microseconds& wait_time)
     {
         bool bret = false;
         if (model == MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT)
         {
-            bret = sem_full_.acquire_for(wait_time);
+            bret = sem_full_.try_acquire_for(wait_time);
             //如果超时了，返回false
             if (!bret)
             {
@@ -517,11 +513,7 @@ protected:
         }
         else if (model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
         {
-            bret = sem_full_.acquire();
-            if (!bret)
-            {
-                return -1;
-            }
+            sem_full_.acquire();
         }
         else if (model == MQW_WAIT_MODEL::MQW_NO_WAIT)
         {
