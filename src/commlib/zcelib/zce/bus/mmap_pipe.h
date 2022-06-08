@@ -121,7 +121,8 @@ public:
         //
         if (!bret)
         {
-            ZCE_LOG(RS_ALERT, "[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
+            ZCE_LOG(RS_ALERT,
+                    "[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
                     "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
                     pipe_id,
                     node->size_of_node_,
@@ -161,7 +162,7 @@ public:
     * @param      node
     * @note
     */
-    inline int read_front_bus(size_t pipe_id, bus_node *& node)
+    inline int read_front_bus(size_t pipe_id, bus_node*& node)
     {
         if (bus_pipe_pointer_[pipe_id]->empty())
         {

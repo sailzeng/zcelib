@@ -579,7 +579,6 @@ public:
     ~msglist_sema() = default;
 };
 
-
 template <typename T >
 class msgdeque_sema : public msgqueue_sema<T, std::deque<T> >
 {

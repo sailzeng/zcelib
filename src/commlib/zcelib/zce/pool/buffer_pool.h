@@ -5,23 +5,24 @@
 
 namespace zce
 {
+template<typename BUFFER>
 class buffer_pool
 {
 protected:
 
     //每个桶里面存放一种尺寸的BUFFER
-    typedef zce::object_pool<zce::queue_buffer>  bucket;
+    typedef zce::object_pool<BUFFER>  bucket;
 
 public:
     //构造函数，析构函数，赋值函数
     buffer_pool() = default;
-    buffer_pool(const buffer_pool &) = delete;
-    buffer_pool & operator= (const buffer_pool &) = delete;
+    buffer_pool(const buffer_pool&) = delete;
+    buffer_pool& operator= (const buffer_pool&) = delete;
     ~buffer_pool()
     {
         terminate();
     }
-    
+
     /*!
     * @brief      初始化
     * @return     bool
@@ -29,7 +30,7 @@ public:
     * @param      bucket_size_ary     每个桶装的buffer的size的队列，队列长度由bucket_num决定
     * @param      init_node_size      每个桶初始化的尺寸
     * @param      extend_node_size    每个桶扩展的尺寸
-    * @note       
+    * @note
     */
     bool initialize(size_t bucket_num,
                     const size_t bucket_size_ary[],
@@ -43,12 +44,12 @@ public:
         pools_.resize(bucket_num);
         for (size_t i = 0; i < bucket_num; ++i)
         {
-            std::function<bool(zce::queue_buffer *)> init_fun =
-                std::bind(&zce::queue_buffer::initialize,
+            std::function<bool(BUFFER*)> init_fun =
+                std::bind(&BUFFER::initialize,
                           std::placeholders::_1,
                           bucket_bufsize_[i]);
-            std::function<void(zce::queue_buffer *)> clear_fun =
-                std::bind(&zce::queue_buffer::clear,
+            std::function<void(BUFFER*)> clear_fun =
+                std::bind(&BUFFER::clear,
                           std::placeholders::_1);
 
             ret = pools_[i].initialize(init_node_size,
@@ -73,9 +74,9 @@ public:
     }
 
     bool alloc_buffer(size_t expect_buf_size,
-                      zce::queue_buffer *&buf)
+                      BUFFER*& buf)
     {
-        bucket * node = get_bucket(expect_buf_size);
+        bucket* node = get_bucket(expect_buf_size);
         if (node)
         {
             buf = node->alloc_object();
@@ -88,9 +89,9 @@ public:
     }
 
     //
-    void free_buffer(zce::queue_buffer *buf)
+    void free_buffer(BUFFER* buf)
     {
-        bucket * node = get_bucket(buf->capacity());
+        bucket* node = get_bucket(buf->capacity());
         assert(node);
         if (node)
         {
@@ -113,8 +114,8 @@ public:
 
 protected:
 
-    //取得桶的数量
-    bucket *get_bucket(size_t expect_buf_size)
+    //取得合适的桶，
+    bucket* get_bucket(size_t expect_buf_size)
     {
         for (size_t i = 0; i < bucket_number_; i++)
         {
@@ -136,4 +137,7 @@ protected:
     //桶组成的池子
     std::vector<bucket> pools_;
 };
+
+typedef buffer_pool<cycle_buffer> cycle_buffer_pool;
+typedef buffer_pool<queue_buffer> queue_buffer_pool;
 }

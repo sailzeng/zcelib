@@ -114,13 +114,13 @@ public:
 public:
 
     //向SEND队列发送数据,让TASK接收
-    template< class POOL_OBJ>
+    template< class T>
     int enqueue_sendqueue(
         uint32_t cmd,
         uint32_t user_id,
         uint32_t fsm_id,
         uint32_t backfill_fsm_id,
-        const POOL_OBJ& msg,
+        const T& msg,
         uint32_t option = 0)
     {
         soar::SERVICES_ID proxysvc(0, 0);
@@ -136,14 +136,14 @@ public:
     }
 
     //向SEND队列发送数据,让TASK接收
-    template< class POOL_OBJ>
+    template< class T>
     int enqueue_sendqueue(uint32_t cmd,
                           uint32_t fsm_id,
                           uint32_t backfill_fsm_id,
                           const soar::SERVICES_ID& rcvsvc,
                           const soar::SERVICES_ID& proxysvc,
                           const soar::SERVICES_ID& sndsvc,
-                          const POOL_OBJ& msg,
+                          const T& msg,
                           uint32_t option)
     {
         soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(trans_send_buffer_);

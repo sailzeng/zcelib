@@ -21,16 +21,17 @@
 namespace zce
 {
 //================================================================================
+//!循环的一个buffer，里面存放数据，操作方式是fifo的
 class cycle_buffer
 {
 public:
     //构造，析构，赋值函数，为了加速，写了右值处理的函数
     cycle_buffer() = default;
     ~cycle_buffer();
-    cycle_buffer(const cycle_buffer & others);
-    cycle_buffer(cycle_buffer && others) noexcept;
-    cycle_buffer& operator=(const cycle_buffer & others);
-    cycle_buffer& operator=(cycle_buffer && others) noexcept;
+    cycle_buffer(const cycle_buffer& others);
+    cycle_buffer(cycle_buffer&& others) noexcept;
+    cycle_buffer& operator=(const cycle_buffer& others);
+    cycle_buffer& operator=(cycle_buffer&& others) noexcept;
 
     void clear();
 
@@ -61,17 +62,17 @@ public:
     }
 
     ///将一个data_len长度数据data放入cycle_buffer尾部
-    bool push_end(const char * data,
+    bool push_end(const char* data,
                   size_t data_len,
-                  char *&write_ptr);
+                  char*& write_ptr);
 
     ///在尾部填充长度为fill_len，的fill_data的字符
     bool push_end(char fill_ch,
                   size_t fill_len,
-                  char *&write_ptr);
+                  char*& write_ptr);
 
     ///从cycle_buffer头部，取出一个data_len长度的数据放入data
-    bool pop_front(char * const data,
+    bool pop_front(char* const data,
                    size_t data_len);
 
     ///从cycle_buffer头部，抛弃一个data_len长度的数据
@@ -79,25 +80,25 @@ public:
 
     ///从偏移量pos的位置开始，填充
     bool set_data(size_t pos,
-                  const char * data,
+                  const char* data,
                   size_t fill_len,
-                  char *&write_ptr);
+                  char*& write_ptr);
 
     ///从pos（相对于cycbuf_begin_）读取数据，
     bool get_data(size_t pos,
-                  char *data,
+                  char* data,
                   size_t read_len);
 
     ///从绝对位置read_ptr开始读取数据
-    bool acquire_data(const char *read_ptr,
-                      char *data,
+    bool acquire_data(const char* read_ptr,
+                      char* data,
                       size_t read_len);
 
     ///重新调整整个buffer的尺寸，缩小，或者增大尾部。
     bool reduce(size_t buf_len);
 
     //得到某个位置的数据指针
-    inline char *point(size_t offset = 0)
+    inline char* point(size_t offset = 0)
     {
         return cycbuf_data_ +
             (cycbuf_begin_ + offset) % size_of_cycle_;
@@ -125,6 +126,7 @@ protected:
 };
 
 //================================================================================
+//!一个只能向尾部添加数据的BUFFER
 class queue_buffer
 {
 public:
@@ -138,8 +140,7 @@ public:
 
     //根据size_of_buffer的长度初始化buffer
     bool initialize(size_t size_of_buffer);
-
-    //
+    //清理
     void clear();
 
     ///容量
@@ -189,7 +190,7 @@ public:
     ///继续在尾部增加数据
     bool add(const char* data, size_t szdata);
 
-    inline char *point(size_t offset = 0)
+    inline char* point(size_t offset = 0)
     {
         return buffer_data_ + offset;
     }
@@ -202,6 +203,6 @@ protected:
     size_t      size_of_use_ = 0;
 
     //数据缓冲区
-    char       *buffer_data_ = nullptr;
+    char* buffer_data_ = nullptr;
 };
 }

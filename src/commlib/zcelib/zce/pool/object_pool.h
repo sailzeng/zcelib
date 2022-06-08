@@ -5,7 +5,7 @@
 
 namespace zce
 {
-template<typename POOL_OBJ>
+template<typename T>
 class object_pool
 {
 public:
@@ -13,8 +13,8 @@ public:
     //构造函数，析构函数，赋值函数
     object_pool() = default;
     ~object_pool() = default;
-    object_pool(const object_pool &) = default;
-    object_pool & operator= (const object_pool &) = delete;
+    object_pool(const object_pool&) = default;
+    object_pool& operator= (const object_pool&) = delete;
 
     /*!
     * @brief
@@ -27,8 +27,8 @@ public:
     */
     bool initialize(size_t init_pool_size,
                     size_t extend_size,
-                    std::function <bool(POOL_OBJ*) > &init_fun,
-                    std::function <void(POOL_OBJ*) > &clear_fun)
+                    std::function <bool(T*) >& init_fun,
+                    std::function <void(T*) >& clear_fun)
     {
         extend_size_ = extend_size;
         init_fun_ = init_fun;
@@ -47,23 +47,23 @@ public:
         return true;
     }
 
-    //最后的销毁处理
+    //!最后的销毁处理
     void terminate()
     {
         size_t sz = obj_pool_.size();
         for (size_t i = 0; i < sz; i++)
         {
-            POOL_OBJ* ptr = nullptr;
+            T* ptr = nullptr;
             obj_pool_.pop_front(ptr);
             delete ptr;
         }
     }
 
-    //分配一个对象
-    POOL_OBJ *alloc_object()
+    //!分配一个对象
+    T* alloc_object()
     {
         auto ret = false;
-        POOL_OBJ* ptr = nullptr;
+        T* ptr = nullptr;
         if (obj_pool_.size() == 0)
         {
             ret = obj_pool_.resize(pool_capacity_ + extend_size_);
@@ -83,7 +83,7 @@ public:
     }
 
     //归还一个对象
-    void free_object(POOL_OBJ* ptr)
+    void free_object(T* ptr)
     {
         clear_fun_(ptr);
         obj_pool_.push_back(ptr);
@@ -111,7 +111,8 @@ protected:
 
     bool extend(size_t extend_size)
     {
-        ZCE_LOG(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], capacity[%u], extend[%u] , old capacity[%u] .",
+        ZCE_LOG(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "
+                "capacity[%u], extend[%u] , old capacity[%u] .",
                 typeid(this).name(),
                 obj_pool_.size(),
                 obj_pool_.capacity(),
@@ -120,7 +121,7 @@ protected:
         //
         for (size_t i = 0; i < extend_size; ++i)
         {
-            POOL_OBJ* new_ptr = new POOL_OBJ();
+            T* new_ptr = new T();
             if (new_ptr == nullptr)
             {
                 return false;
@@ -143,12 +144,12 @@ protected:
     size_t extend_size_ = 0;
 
     //对象池子
-    zce::lord_rings<POOL_OBJ*>   obj_pool_;
+    zce::lord_rings<T*>   obj_pool_;
 
     //T的初始化函数，
-    std::function <bool(POOL_OBJ*) > init_fun_;
+    std::function <bool(T*) > init_fun_;
 
     //T的clear函数，用于收到归还数据后的回收
-    std::function <void(POOL_OBJ*) > clear_fun_;
+    std::function <void(T*) > clear_fun_;
 };
 }
