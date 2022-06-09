@@ -5,6 +5,10 @@ namespace zce
 {
 //=========================================================================================
 //class cycle_buffer
+cycle_buffer::cycle_buffer(size_t size_of_buffer)
+{
+    initialize(size_of_buffer);
+}
 
 cycle_buffer::~cycle_buffer()
 {
@@ -15,7 +19,7 @@ cycle_buffer::~cycle_buffer()
     }
 }
 
-cycle_buffer::cycle_buffer(const cycle_buffer & others)
+cycle_buffer::cycle_buffer(const cycle_buffer& others)
     :size_of_cycle_(others.size_of_cycle_)
     , cycbuf_begin_(others.cycbuf_begin_)
     , cycbuf_end_(others.cycbuf_end_)
@@ -27,7 +31,7 @@ cycle_buffer::cycle_buffer(const cycle_buffer & others)
     }
 }
 
-cycle_buffer::cycle_buffer(cycle_buffer && others) noexcept
+cycle_buffer::cycle_buffer(cycle_buffer&& others) noexcept
     :size_of_cycle_(others.size_of_cycle_)
     , cycbuf_begin_(others.cycbuf_begin_)
     , cycbuf_end_(others.cycbuf_end_)
@@ -39,7 +43,7 @@ cycle_buffer::cycle_buffer(cycle_buffer && others) noexcept
     others.cycbuf_data_ = nullptr;
 }
 
-cycle_buffer& cycle_buffer::operator=(const cycle_buffer & others)
+cycle_buffer& cycle_buffer::operator=(const cycle_buffer& others)
 {
     if (this == &others)
     {
@@ -61,7 +65,7 @@ cycle_buffer& cycle_buffer::operator=(const cycle_buffer & others)
     return *this;
 }
 
-cycle_buffer& cycle_buffer::operator=(cycle_buffer && others) noexcept
+cycle_buffer& cycle_buffer::operator=(cycle_buffer&& others) noexcept
 {
     if (this == &others)
     {
@@ -78,15 +82,6 @@ cycle_buffer& cycle_buffer::operator=(cycle_buffer && others) noexcept
     return *this;
 }
 
-void cycle_buffer::clear()
-{
-    cycbuf_begin_ = 0;
-    cycbuf_end_ = 0;
-#if defined DEBUG || defined _DEBUG
-    ::memset(cycbuf_data_, 0, size_of_cycle_);
-#endif
-}
-
 bool cycle_buffer::initialize(size_t size_of_buffer)
 {
     assert(cycbuf_data_ == nullptr);
@@ -96,6 +91,15 @@ bool cycle_buffer::initialize(size_t size_of_buffer)
 
     clear();
     return true;
+}
+
+void cycle_buffer::clear()
+{
+    cycbuf_begin_ = 0;
+    cycbuf_end_ = 0;
+#if defined DEBUG || defined _DEBUG
+    ::memset(cycbuf_data_, 0, size_of_cycle_);
+#endif
 }
 
 //得到已经使用空间的尺寸
@@ -122,9 +126,9 @@ size_t cycle_buffer::free()
 }
 
 //将一个data_len长度数据data放入cycle_buffer尾部
-bool cycle_buffer::push_end(const char * data,
+bool cycle_buffer::push_end(const char* data,
                             size_t data_len,
-                            char *&write_ptr)
+                            char*& write_ptr)
 {
     assert(data != NULL);
     write_ptr = nullptr;
@@ -156,7 +160,7 @@ bool cycle_buffer::push_end(const char * data,
 //在尾部填充长度为fill_len，的fill_data的字符
 bool cycle_buffer::push_end(char fill_ch,
                             size_t fill_len,
-                            char *&write_ptr)
+                            char*& write_ptr)
 {
     //检查队列的空间是否够用
     if (free() < fill_len)
@@ -184,7 +188,7 @@ bool cycle_buffer::push_end(char fill_ch,
 }
 
 //从cycle_buffer头部，取出一个data_len长度的数据放入data
-bool cycle_buffer::pop_front(char * const data, size_t data_len)
+bool cycle_buffer::pop_front(char* const data, size_t data_len)
 {
     assert(data != NULL && data_len > 0);
 
@@ -227,9 +231,9 @@ bool cycle_buffer::pop_front(size_t data_len)
 
 ///从偏移量的位置开始，填充
 bool cycle_buffer::set_data(size_t pos,
-                            const char * data,
+                            const char* data,
                             size_t data_len,
-                            char *&write_ptr)
+                            char*& write_ptr)
 {
     //检查队列的空间是否够用
     assert(size() >= pos + data_len);
@@ -268,7 +272,7 @@ bool cycle_buffer::reduce(size_t buf_len)
 
 ///从pos（相对于cycbuf_begin_）读取数据，
 bool cycle_buffer::get_data(size_t pos,
-                            char *data,
+                            char* data,
                             size_t read_len)
 {
     if (size() < pos + read_len)
@@ -276,7 +280,7 @@ bool cycle_buffer::get_data(size_t pos,
         return false;
     }
     size_t r_pos = ((cycbuf_begin_ + pos) % size_of_cycle_);
-    char *read_ptr = cycbuf_data_ + r_pos;
+    char* read_ptr = cycbuf_data_ + r_pos;
     if (read_ptr + read_len > cycbuf_data_ + size_of_cycle_)
     {
         size_t first = size_of_cycle_ - r_pos;
@@ -291,8 +295,8 @@ bool cycle_buffer::get_data(size_t pos,
     return true;
 }
 ///从绝对位置read_ptr开始读取数据
-bool cycle_buffer::acquire_data(const char *read_ptr,
-                                char *data,
+bool cycle_buffer::acquire_data(const char* read_ptr,
+                                char* data,
                                 size_t read_len)
 {
     assert(read_ptr && data && read_len > 0);
@@ -322,7 +326,12 @@ bool cycle_buffer::acquire_data(const char *read_ptr,
 }
 
 //=========================================================================================
-//class queue_buffer
+//!class queue_buffer
+//!队列形状的buffer，
+queue_buffer::queue_buffer(size_t size_of_buffer)
+{
+    initialize(size_of_buffer);
+}
 
 queue_buffer::~queue_buffer()
 {
@@ -332,7 +341,7 @@ queue_buffer::~queue_buffer()
         buffer_data_ = nullptr;
     }
 }
-queue_buffer::queue_buffer(const queue_buffer & others) :
+queue_buffer::queue_buffer(const queue_buffer& others) :
     size_of_capacity_(others.size_of_capacity_),
     size_of_use_(others.size_of_use_),
     buffer_data_(nullptr)
@@ -347,7 +356,7 @@ queue_buffer::queue_buffer(const queue_buffer & others) :
     }
 }
 
-queue_buffer::queue_buffer(queue_buffer && others) noexcept :
+queue_buffer::queue_buffer(queue_buffer&& others) noexcept :
     size_of_capacity_(others.size_of_capacity_),
     size_of_use_(others.size_of_use_),
     buffer_data_(others.buffer_data_)
@@ -356,7 +365,7 @@ queue_buffer::queue_buffer(queue_buffer && others) noexcept :
 }
 
 //赋值函数
-queue_buffer& queue_buffer::operator=(const queue_buffer & others)
+queue_buffer& queue_buffer::operator=(const queue_buffer& others)
 {
     if (buffer_data_)
     {
@@ -377,7 +386,7 @@ queue_buffer& queue_buffer::operator=(const queue_buffer & others)
     return *this;
 }
 //右值赋值函数，
-queue_buffer& queue_buffer::operator=(queue_buffer && others) noexcept
+queue_buffer& queue_buffer::operator=(queue_buffer&& others) noexcept
 {
     if (this == &others)
     {
@@ -438,7 +447,7 @@ bool queue_buffer::set(const size_t offset,
 }
 
 //读取数据
-bool queue_buffer::get(char* data, size_t & szdata)
+bool queue_buffer::get(char* data, size_t& szdata)
 {
     if (szdata < size_of_use_)
     {

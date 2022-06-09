@@ -21,21 +21,28 @@
 namespace zce
 {
 //================================================================================
-//!循环的一个buffer，里面存放数据，操作方式是fifo的
+//!环形的一个buffer，里面存放数据，操作方式是fifo的
 class cycle_buffer
 {
 public:
-    //构造，析构，赋值函数，为了加速，写了右值处理的函数
+    //!构造，析构，赋值函数，为了加速，写了右值处理的函数
     cycle_buffer() = default;
+    cycle_buffer(size_t buf_size);
     ~cycle_buffer();
     cycle_buffer(const cycle_buffer& others);
     cycle_buffer(cycle_buffer&& others) noexcept;
     cycle_buffer& operator=(const cycle_buffer& others);
     cycle_buffer& operator=(cycle_buffer&& others) noexcept;
 
+    //!初始化
+    bool initialize(size_t buf_size);
+
     void clear();
 
-    bool initialize(size_t size_of_buffer);
+    static cycle_buffer* new_slef(size_t buf_size)
+    {
+        return new cycle_buffer(buf_size);
+    }
 
     ///得到已经使用空间的尺寸
     size_t size();
@@ -106,9 +113,9 @@ public:
 
 protected:
 
-    ///判断是非为满的间隔，你可以认为环形队列还是一个前闭后开的结构
-    ///cycbuf_begin_ = cycbuf_end_ 表示队列为NULL
-    ///cycbuf_begin_ = cycbuf_end_ + JUDGE_FULL_INTERVAL 表示队列满
+    //!判断是非为满的间隔，你可以认为环形队列还是一个前闭后开的结构
+    //!cycbuf_begin_ = cycbuf_end_ 表示队列为NULL
+    //!cycbuf_begin_ = cycbuf_end_ + JUDGE_FULL_INTERVAL 表示队列满
     static const size_t   JUDGE_FULL_INTERVAL = 4;
 
 protected:
@@ -130,38 +137,45 @@ protected:
 class queue_buffer
 {
 public:
-    //构造，析构，赋值函数，为了加速，写了右值处理的函数
+    //!构造，析构，赋值函数，为了加速，写了右值处理的函数
     queue_buffer() = default;
+    queue_buffer(size_t buf_size);
     ~queue_buffer();
     queue_buffer(const queue_buffer& others);
     queue_buffer(queue_buffer&& others) noexcept;
     queue_buffer& operator=(const queue_buffer& others);
     queue_buffer& operator=(queue_buffer&& others) noexcept;
 
-    //根据size_of_buffer的长度初始化buffer
-    bool initialize(size_t size_of_buffer);
-    //清理
+    //!初始化
+    bool initialize(size_t buf_size);
+
+    //!清理
     void clear();
 
-    ///容量
+    static queue_buffer* new_self(size_t buf_size)
+    {
+        return new queue_buffer(buf_size);
+    }
+
+    //!容量
     inline size_t capacity()
     {
         return size_of_capacity_;
     }
 
-    //已经使用的空间
+    //!已经使用的空间
     inline size_t size()
     {
         return size_of_use_;
     }
 
-    //剩余的空间
+    //!剩余的空间
     inline size_t free()
     {
         return size_of_capacity_ - size_of_use_;
     }
 
-    //是否已经满了
+    //!是否已经满了
     inline bool full()
     {
         if (size_of_use_ >= size_of_capacity_)
@@ -171,7 +185,7 @@ public:
         return false;
     }
 
-    //是否为空
+    //!是否为空
     inline bool empty()
     {
         if (size_of_use_ == 0)
@@ -181,13 +195,13 @@ public:
         return false;
     };
 
-    ///填充数据data,长度为szdata
+    //!填充数据data,长度为szdata
     bool set(const char* data, size_t szdata);
-    ///从偏移offset开始，填充数据data,长度为szdata,
+    //!从偏移offset开始，填充数据data,长度为szdata,
     bool set(size_t offset, const char* data, size_t szdata);
-    ///读取数据
+    //!读取数据
     bool get(char* data, size_t& szdata);
-    ///继续在尾部增加数据
+    //!继续在尾部增加数据
     bool add(const char* data, size_t szdata);
 
     inline char* point(size_t offset = 0)

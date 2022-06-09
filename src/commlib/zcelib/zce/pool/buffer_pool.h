@@ -5,13 +5,13 @@
 
 namespace zce
 {
-template<typename BUFFER>
+template<typename B>
 class buffer_pool
 {
 protected:
 
-    //每个桶里面存放一种尺寸的BUFFER
-    typedef zce::object_pool<BUFFER>  bucket;
+    //每个桶里面存放一种尺寸的B
+    typedef zce::object_pool<B>  bucket;
 
 public:
     //构造函数，析构函数，赋值函数
@@ -23,6 +23,8 @@ public:
         terminate();
     }
 
+
+    typedef B* (*FunType)(size_t);
     /*!
     * @brief      初始化
     * @return     bool
@@ -34,6 +36,7 @@ public:
     */
     bool initialize(size_t bucket_num,
                     const size_t bucket_size_ary[],
+                    std::function <B* (size_t) > new_f,
                     size_t init_node_size,
                     size_t extend_node_size)
     {
@@ -42,20 +45,15 @@ public:
         bucket_bufsize_.assign(bucket_size_ary, bucket_size_ary + bucket_num);
         std::sort(bucket_bufsize_.begin(), bucket_bufsize_.end());
         pools_.resize(bucket_num);
+
         for (size_t i = 0; i < bucket_num; ++i)
         {
-            std::function<bool(BUFFER*)> init_fun =
-                std::bind(&BUFFER::initialize,
-                          std::placeholders::_1,
+            std::function<B* ()> new_fun =
+                std::bind(&B::new_self,
                           bucket_bufsize_[i]);
-            std::function<void(BUFFER*)> clear_fun =
-                std::bind(&BUFFER::clear,
-                          std::placeholders::_1);
-
             ret = pools_[i].initialize(init_node_size,
                                        extend_node_size,
-                                       init_fun,
-                                       clear_fun);
+                                       &new_fun);
             if (ret != true)
             {
                 return ret;
@@ -74,7 +72,7 @@ public:
     }
 
     bool alloc_buffer(size_t expect_buf_size,
-                      BUFFER*& buf)
+                      B*& buf)
     {
         bucket* node = get_bucket(expect_buf_size);
         if (node)
@@ -89,7 +87,7 @@ public:
     }
 
     //
-    void free_buffer(BUFFER* buf)
+    void free_buffer(B* buf)
     {
         bucket* node = get_bucket(buf->capacity());
         assert(node);

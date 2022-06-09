@@ -21,18 +21,18 @@ public:
     * @return     bool 是否初始化成果
     * @param      init_pool_size
     * @param      extend_size  每次扩展的尺寸
-    * @param      init_fun     T*的初始化函数
-    * @param      clear_fun    T*的清理函数，用于归还时处理
+    * @param      new_fun      T*的new函数，如果为空直接使用new，
     * @note
     */
     bool initialize(size_t init_pool_size,
                     size_t extend_size,
-                    std::function <bool(T*) >& init_fun,
-                    std::function <void(T*) >& clear_fun)
+                    std::function <T* () >* new_fun = nullptr)
     {
         extend_size_ = extend_size;
-        init_fun_ = init_fun;
-        clear_fun_ = clear_fun;
+        if (new_fun)
+        {
+            new_fun_ = new std::function <T* () >(*new_fun);
+        }
         bool ret = obj_pool_.initialize(init_pool_size);
         if (ret != true)
         {
@@ -85,7 +85,6 @@ public:
     //归还一个对象
     void free_object(T* ptr)
     {
-        clear_fun_(ptr);
         obj_pool_.push_back(ptr);
         return;
     }
@@ -121,16 +120,20 @@ protected:
         //
         for (size_t i = 0; i < extend_size; ++i)
         {
-            T* new_ptr = new T();
+            T* new_ptr = nullptr;
+            if (new_fun_)
+            {
+                new_ptr = (*new_fun_)();
+            }
+            else
+            {
+                new_ptr = new T();
+            }
             if (new_ptr == nullptr)
             {
                 return false;
             }
-            bool ret = init_fun_(new_ptr);
-            if (!ret)
-            {
-                return false;
-            }
+
             obj_pool_.push_back(new_ptr);
         }
         return true;
@@ -147,9 +150,7 @@ protected:
     zce::lord_rings<T*>   obj_pool_;
 
     //T的初始化函数，
-    std::function <bool(T*) > init_fun_;
+    std::function <T* ()>* new_fun_ = nullptr;
 
-    //T的clear函数，用于收到归还数据后的回收
-    std::function <void(T*) > clear_fun_;
 };
 }

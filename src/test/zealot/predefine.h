@@ -91,6 +91,11 @@
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>
 
+#include <zce/util/buffer.h>
+#include <zce/pool/object_pool.h>
+#include <zce/pool/buffer_pool.h>
+#include <zce/pool/multiobjs_pool.h>
+
 #include <thread>
 #include <mutex>
 
@@ -135,7 +140,7 @@ int test_osadapt_perf(int argc, char* argv[]);
 int test_nonr_thread_mutex(int argc, char* argv[]);
 int test_msgqueue_condi(int argc, char* argv[]);
 
-int test_host_name_fun(int, char*[]);
+int test_host_name_fun(int, char* []);
 
 int test_rw_lock1(int argc, char* argv[]);
 int test_rw_lock2(int argc, char* argv[]);
