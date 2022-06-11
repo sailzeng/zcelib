@@ -9,8 +9,10 @@ template<typename T>
 class object_pool
 {
 public:
+    //!对象池子对象
+    typedef T object;
 
-    //构造函数，析构函数，赋值函数
+    //!构造函数，析构函数，赋值函数
     object_pool() = default;
     ~object_pool() = default;
     object_pool(const object_pool&) = default;

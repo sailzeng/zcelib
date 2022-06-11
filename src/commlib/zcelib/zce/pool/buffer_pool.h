@@ -14,7 +14,10 @@ protected:
     typedef zce::object_pool<B>  bucket;
 
 public:
-    //构造函数，析构函数，赋值函数
+    //
+    typedef B buffer;
+
+    //!构造函数，析构函数，赋值函数
     buffer_pool() = default;
     buffer_pool(const buffer_pool&) = delete;
     buffer_pool& operator= (const buffer_pool&) = delete;

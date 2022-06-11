@@ -60,12 +60,42 @@ class CC
 
 int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
 {
-    zce::multiobjs_pool<CA, CB, CC, int, double> m_o;
-    m_o.initialize<0>(10, 01);
-    m_o.initialize<1>(10, 01);
-    m_o.initialize<2>(10, 01);
-    m_o.initialize<3>(10, 01);
-    m_o.initialize<4>(10, 01);
+    zce::multiobjs_pool<CA, CB, CC, int, double> m_o_1;
+    m_o_1.initialize<0>(10, 10);
+    m_o_1.initialize<1>(10, 10);
+    m_o_1.initialize<2>(10, 10);
+    m_o_1.initialize<3>(10, 10);
+    m_o_1.initialize<4>(10, 10);
+    auto sz = m_o_1.size<0>();
+
+    auto a_1_1 = m_o_1.alloc_object<0>();
+    auto a_1_2 = m_o_1.alloc_object<0>();
+    m_o_1.free_object<0>(a_1_1);
+    m_o_1.free_object<0>(a_1_2);
+
+    m_o_1.terminate<0>();
+    m_o_1.terminate<1>();
+    m_o_1.terminate<2>();
+    m_o_1.terminate<3>();
+    m_o_1.terminate<4>();
+
+    zce::multiobjs_pool<CA, CB, CC, int, double> m_o_2;
+    m_o_2.initialize<CA>(10, 10);
+    m_o_2.initialize<CB>(10, 10);
+    m_o_2.initialize<CC>(10, 10);
+    m_o_2.initialize<int>(10, 10);
+    m_o_2.initialize<double>(10, 10);
+
+    auto a_2_1 = m_o_2.alloc_object<CA>();
+    auto a_2_2 = m_o_2.alloc_object<CA>();
+    m_o_2.free_object<CA>(a_2_1);
+    m_o_2.free_object<CA>(a_2_2);
+
+    m_o_2.terminate<CA>();
+    m_o_2.terminate<CB>();
+    m_o_2.terminate<CC>();
+    m_o_2.terminate<int>();
+    m_o_2.terminate<double>();
 
     return 0;
 }
