@@ -37,9 +37,9 @@ class Thread_RW_Mutex : public zce::Lock_Base
 {
 public:
     //!读锁的GUARD
-    typedef zce::Shared_Guard<Thread_RW_Mutex>  LOCK_READ_GUARD;
+    typedef zce::Shared_Guard<Thread_RW_Mutex>  LOCK_SHARED_GUARD;
     //!写锁的GUARD
-    typedef zce::Write_Guard<Thread_RW_Mutex> LOCK_WRITE_GUARD;
+    typedef zce::Unique_Guard<Thread_RW_Mutex> LOCK_UNIQUE_GUARD;
 
 public:
     //!构造函数
@@ -75,7 +75,7 @@ public:
 
 protected:
 
-    //线程锁
+    //!线程锁
     pthread_rwlock_t  rw_lock_;
 };
 
@@ -90,9 +90,9 @@ class Thread_Win_RW_Mutex : public zce::Lock_Base
 {
 public:
     //!读锁的GUARD
-    typedef zce::Shared_Guard<Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
+    typedef zce::Shared_Guard<Thread_Win_RW_Mutex>  LOCK_SHARED_GUARD;
     //!写锁的GUARD
-    typedef zce::Write_Guard<Thread_Win_RW_Mutex> LOCK_WRITE_GUARD;
+    typedef zce::Unique_Guard<Thread_Win_RW_Mutex> LOCK_UNIQUE_GUARD;
 
 public:
     //构造函数

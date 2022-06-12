@@ -433,7 +433,7 @@ typedef __int64             int64_t;
 //外部库的告警，在这个地方屏蔽了。
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
-#pragma warning ( disable : 4244 4100 4512 4100 4996 26495 26812)
+#pragma warning ( disable : 4244 4100 4512 4100 4996 26495 26812 26485)
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"

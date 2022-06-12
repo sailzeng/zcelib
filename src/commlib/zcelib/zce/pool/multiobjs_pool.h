@@ -4,7 +4,12 @@
 
 namespace zce
 {
-
+/*!
+* @brief      多对象池子，可以用于分配对象，避免反复使用new or delete
+*             要分配的对象作为模板参数
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     ... T 多种对象类型，
+*/
 template< typename LOCK, typename... T >
 class multiobjs_pool
 {

@@ -6,6 +6,12 @@
 
 namespace zce
 {
+/*!
+* @brief      一个内存buffer的池子，可以给出若干buffer的预制长度，
+*             虫子内部保存多种初始化的buffer，选择最合适的分配
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex，看是否需要现场安全
+* @tparam     B Buffer的类型，可以是cycle_buffer or queue_buffer
+*/
 template<typename LOCK, typename B>
 class buffer_pool
 {
@@ -90,7 +96,7 @@ public:
         return true;
     }
 
-    //
+    //!
     void free_buffer(B* buf)
     {
         bucket* node = get_bucket(buf->capacity());
@@ -101,7 +107,7 @@ public:
         }
     }
 
-    //
+    //!
     void dump(zce::LOG_PRIORITY log_priority)
     {
         for (size_t i = 0; i < bucket_number_; i++)
@@ -116,7 +122,7 @@ public:
 
 protected:
 
-    //取得合适的桶，
+    //!取得合适的桶，
     bucket* get_bucket(size_t expect_buf_size)
     {
         for (size_t i = 0; i < bucket_number_; i++)
@@ -132,16 +138,16 @@ protected:
 
 protected:
 
-    //桶的数量
+    //!桶的数量
     size_t bucket_number_;
-    //桶的容量
+    //!桶的容量
     std::vector<size_t> bucket_bufsize_;
-    //桶组成的池子
+    //!桶组成的池子
     std::vector<bucket> pools_;
 };
 
-typedef buffer_pool<zce::Null_Lock, cycle_buffer> cycle_buffer_pool;
-typedef buffer_pool<zce::Null_Lock, queue_buffer> queue_buffer_pool;
+typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;
+typedef buffer_pool<zce::null_lock, queue_buffer> queue_buffer_pool;
 typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_lock;
 typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_lock;
 

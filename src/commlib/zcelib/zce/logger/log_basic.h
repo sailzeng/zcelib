@@ -146,6 +146,7 @@ public:
                       bool trunc_old = false,
                       bool is_thread_synchro = false,
                       bool auto_new_line = true,
+                      bool thread_output = false,
                       int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
                       int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
@@ -167,6 +168,7 @@ public:
                       bool trunc_old = false,
                       bool is_thread_synchro = false,
                       bool auto_new_line = true,
+                      bool thread_output = false,
                       int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
                       int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
@@ -187,23 +189,25 @@ public:
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,
     @return     int                返回0标识初始化成功
     @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
+    @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     @param[in]  div_log_file
     @param[in]  log_file_prefix
     @param[in]  is_thread_synchro
     @param[in]  auto_new_line
+    @param[in]  thread_output     使用独立的线程打印
     @param[in]  max_size_log_file 日志文件的最大尺寸
     @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
-    @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int initialize(unsigned int output_way,
+    int initialize(int output_way,
+                   int head_record,
                    LOGFILE_DEVIDE div_log_file,
                    const char* log_file_prefix,
                    bool trunc_old,
                    bool is_thread_synchro,
                    bool auto_new_line,
+                   bool thread_output,
                    size_t max_size_log_file,
-                   size_t reserve_file_num,
-                   unsigned int head_record) noexcept;
+                   size_t reserve_file_num) noexcept;
 
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
@@ -382,35 +386,38 @@ protected:
     Thread_Light_Mutex protect_lock_;
 
     ///是否进行自动换行
-    bool                   auto_new_line_ = true;
+    bool auto_new_line_ = true;
+    //!
+    bool trunc_old_ = false;
 
-    bool                   trunc_old_ = false;
+    //!线程输出日志
+    bool thread_output_ = false;
 
-    ///文件的最大尺寸
-    size_t                 max_size_log_file_ = DEFAULT_LOG_SIZE;
+    //!文件的最大尺寸
+    size_t max_size_log_file_ = DEFAULT_LOG_SIZE;
 
-    ///保留文件的个数,如果有太多文件要删除,为0表示不删除
-    size_t                 reserve_file_num_ = DEFAULT_RESERVE_FILENUM;
+    //!保留文件的个数,如果有太多文件要删除,为0表示不删除
+    size_t reserve_file_num_ = DEFAULT_RESERVE_FILENUM;
 
-    ///默认记录的数据,按照和LOG_HEAD_RECORD_INFO 异或
-    int                    record_info_ = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL;
+    //!默认记录的数据,按照和LOG_HEAD_RECORD_INFO 异或
+    int record_info_ = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL;
 
     ///当前的大概时间,按小时记录,避免进行过多的时间判断
-    time_t                 current_click_ = 1;
+    time_t current_click_ = 1;
 
-    ///输出日志信息的Mask值,小于这个信息的信息不予以输出
+    //!输出日志信息的Mask值,小于这个信息的信息不予以输出
     zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
-    ///日志文件的尺寸
-    size_t                 size_log_file_ = 0;
+    //!日志文件的尺寸
+    size_t size_log_file_ = 0;
 
-    ///是否输出日志信息,可以用于暂时屏蔽
-    bool                   is_output_log_ = true;
+    //!是否输出日志信息,可以用于暂时屏蔽
+    bool is_output_log_ = true;
 
-    ///日志的文件句柄
+    //!日志的文件句柄
     std::ofstream         log_file_handle_;
 
-    //r
+    //!时间日志文件列表，
     std::list<std::string> time_logfile_list_;
 };
 }

@@ -19,6 +19,12 @@
 
 namespace zce
 {
+/*!
+* @brief      （单）对象池子，可以用于分配对象，避免反复使用new or delete
+*
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     T 对象类型，
+*/
 template<typename LOCK, typename T>
 class object_pool
 {

@@ -36,19 +36,21 @@ int LogTrace_Base::init_time_log(LOGFILE_DEVIDE div_log_file,
                                  bool trunc_log,
                                  bool is_thread_synchro,
                                  bool auto_new_line,
+                                 bool thread_output,
                                  int output_way,
                                  int head_record) noexcept
 {
     assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file && LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
     return initialize(output_way,
+                      head_record,
                       div_log_file,
                       log_file_prefix,
                       trunc_log,
                       is_thread_synchro,
                       auto_new_line,
+                      thread_output,
                       0,
-                      reserve_file_num,
-                      head_record);
+                      reserve_file_num);
 }
 
 //初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
@@ -58,6 +60,7 @@ int LogTrace_Base::init_size_log(const char* log_file_prefix,
                                  bool trunc_log,
                                  bool is_thread_synchro,
                                  bool auto_new_line,
+                                 bool thread_output,
                                  int output_way,
                                  int head_record) noexcept
 {
@@ -70,14 +73,15 @@ int LogTrace_Base::init_size_log(const char* log_file_prefix,
     }
 
     return initialize(output_way,
+                      head_record,
                       div_log_file,
                       log_file_prefix,
                       trunc_log,
                       is_thread_synchro,
                       auto_new_line,
+                      thread_output,
                       max_size_log_file,
-                      reserve_file_num,
-                      head_record);
+                      reserve_file_num);
 }
 
 //初始化函数，用于标准输出
@@ -98,26 +102,28 @@ int LogTrace_Base::init_stdout(bool use_err_out,
     }
 
     return initialize(output_way,
+                      head_record,
                       LOGFILE_DEVIDE::NONE,
                       "",
                       false,
                       is_thread_synchro,
                       auto_new_line,
+                      false,
                       0,
-                      0,
-                      head_record);
+                      0);
 }
 
 //初始化函数,参数最齐全的一个
-int LogTrace_Base::initialize(unsigned int output_way,
+int LogTrace_Base::initialize(int output_way,
+                              int head_record,
                               LOGFILE_DEVIDE div_log_file,
                               const char* log_file_prefix,
                               bool trunc_old,
                               bool is_thread_synchro,
                               bool auto_new_line,
+                              bool thread_output,
                               size_t max_size_log_file,
-                              size_t reserve_file_num,
-                              unsigned int head_record) noexcept
+                              size_t reserve_file_num) noexcept
 {
     output_way_ = output_way;
     div_log_file_ = div_log_file;
@@ -493,7 +499,7 @@ void LogTrace_Base::del_old_logfile() noexcept
 void LogTrace_Base::create_time_logname(const timeval& cur_time,
                                         std::string& logfilename) noexcept
 {
-    time_t cur_t = cur_time.tv_sec;
+    const time_t cur_t = cur_time.tv_sec;
     tm curtm = *localtime(&(cur_t));
     char tmpbuf[64] = { 0 };
     size_t buflen = sizeof(tmpbuf) - 1;
@@ -677,13 +683,15 @@ void LogTrace_Base::output_log_info(const timeval& now_time,
     if (output_way_ & static_cast<int>(LOG_OUTPUT::STDOUT))
     {
         //cout是行缓冲
-        std::cout.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
+        std::cout.write(log_tmp_buffer,
+                        static_cast<std::streamsize>(sz_use_len));
     }
 
     if (output_way_ & static_cast<int>(LOG_OUTPUT::ERROUT))
     {
         //cerr没有缓冲，云飞说的
-        std::cerr.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
+        std::cerr.write(log_tmp_buffer,
+                        static_cast<std::streamsize>(sz_use_len));
     }
 
     //WIN32 下的调试输出,向调试窗口输出

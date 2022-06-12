@@ -131,22 +131,22 @@ protected:
 };
 
 /*!
-* @brief      读写锁，写锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
+* @brief      读写锁中的写锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
 * @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock Thread_RW_Mutex
 */
 template <class zce_lock>
-class Write_Guard : public zce::NON_Copyable
+class Unique_Guard : public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    Write_Guard(zce_lock& lock) :
+    Unique_Guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock_write();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    Write_Guard(zce_lock& lock, bool block) :
+    Unique_Guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -156,26 +156,26 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~Write_Guard()
+    ~Unique_Guard()
     {
         lock_->unlock();
     }
 
     ///读取锁
-    void lock_write()
+    void lock()
     {
-        return lock_->lock_write();
+        return lock_->lock();
     }
     ///尝试读取锁
-    bool try_lock_write()
+    bool try_lock()
     {
-        return lock_->try_lock_write();
+        return lock_->try_lock();
     }
 
     ///解锁,如果是读写锁也只需要这一个函数
-    void unlock_write()
+    void unlock()
     {
-        return lock_->unlock_write();
+        return lock_->unlock();
     }
 
 protected:

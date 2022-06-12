@@ -38,8 +38,8 @@ class Null_Lock : public zce::Lock_Base
 public:
     //NULL锁的GUARD
     typedef Lock_Guard<zce::Null_Lock>      LOCK_GUARD;
-    typedef Shared_Guard<zce::Null_Lock>    LOCK_READ_GUARD;
-    typedef Write_Guard<zce::Null_Lock>     LOCK_WRITE_GUARD;
+    typedef Shared_Guard<zce::Null_Lock>    LOCK_SHARED_GUARD;
+    typedef Unique_Guard<zce::Null_Lock>    LOCK_UNIQUE_GUARD;
 
 public:
     ///构造函数
@@ -87,22 +87,60 @@ public:
         return true;
     }
     ///绝对时间超时的读取锁，
-    bool try_lock_shared_until(const zce::Time_Value& /*abs_time*/) noexcept override
+    bool try_lock_shared_until(
+        const zce::Time_Value& /*abs_time*/) noexcept override
     {
         return true;
     }
     ///相对时间超时的读取锁，
-    bool try_lock_shared_for(const zce::Time_Value& /*relative_time*/) noexcept override
+    bool try_lock_shared_for(
+        const zce::Time_Value& /*relative_time*/) noexcept override
     {
         return true;
     }
-
-
-protected:
-    // A dummy lock.
-    int    lock_;
 };
 
+//!为了C++标准定义一个
+typedef Null_Lock null_lock;
+
+//=====================================================================
+class Null_Semaphore : public Semaphore_Base
+{
+    ///信号灯的GUARD
+    typedef zce::Semaphore_Guard<Null_Semaphore> LOCK_GUARD;
+
+public:
+
+    Null_Semaphore() = default;
+    virtual ~Null_Semaphore(void) = default;
+
+    //!
+    void acquire() noexcept override
+    {
+    }
+    //!
+    bool try_acquire() noexcept override
+    {
+        return true;
+    }
+    //!
+    void release() noexcept override
+    {
+    }
+    //!
+    bool try_acquire_until(
+        const zce::Time_Value& /*abs_time*/) noexcept override
+    {
+        return true;
+    }
+    //!
+    bool try_acquire_for(
+        const zce::Time_Value& /*relative_time*/) noexcept override
+    {
+        return true;
+    }
+};
+//=====================================================================
 /*!
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
@@ -136,15 +174,11 @@ private:
     void notify_one(void) noexcept override
     {
     }
-
     //!给所有的等待线程广播信号 Signal *all* waiting threads.
     void notify_all(void) noexcept override
     {
     }
 
-protected:
-    // A dummy lock.
-    int    lock_;
 };
 }
 
