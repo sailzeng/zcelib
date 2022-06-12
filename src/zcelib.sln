@@ -1,0 +1,133 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commlib", "commlib", "{E3E63F9D-ADF2-451D-82DE-E89530D142F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D3352ACF-CC1E-456E-AEA2-79CAF505FA9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "makefile", "makefile", "{A927BDE9-D270-48DC-8DEA-B8D636877EAC}"
+	ProjectSection(SolutionItems) = preProject
+		make\makefile.define = make\makefile.define
+		make\makefile.rule = make\makefile.rule
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commsvr", "commsvr", "{77938720-9F15-4AED-AA59-D74E375244B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cfgfile", "cfgfile", "{4DEED325-86F5-43A8-8DF0-729785F52BF8}"
+	ProjectSection(SolutionItems) = preProject
+		..\run\cfg\common.cfg = ..\run\cfg\common.cfg
+		..\run\cfg\ogre4asvrd.cfg = ..\run\cfg\ogre4asvrd.cfg
+		..\run\cfg\svctable.cfg = ..\run\cfg\svctable.cfg
+		..\run\cfg\zergsvrd.cfg = ..\run\cfg\zergsvrd.cfg
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soarlib", "commlib\soarlib\soarlib.vcxproj", "{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zcelib", "commlib\zcelib\zcelib.vcxproj", "{C2D23FE7-03ED-4516-9603-604BA4617FDB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wormholesvrd", "commsvr\wormholesvrd\wormholesvrd.vcxproj", "{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zergsvrd", "commsvr\zergsvrd\zergsvrd.vcxproj", "{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7} = {C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ogremod", "ogremod", "{4339808F-E2E2-4949-8C3F-56F76E69B866}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{0A482110-AF2B-43D9-A1F1-94484BDCBC0B}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9F4B4597-DC4F-46A1-9FDD-F2C9C4E9BECE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zealot", "test\zealot\zealot.vcxproj", "{0FA45C38-5F6C-4715-8726-6D32A2069743}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogre4asvrd", "commsvr\ogre4asvrd\ogre4asvrd.vcxproj", "{505A176A-146F-4254-95D4-689D0B93A803}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmake", "cmake", "{3F89E352-0D19-4ADC-9040-DD109697CB17}"
+	ProjectSection(SolutionItems) = preProject
+		CMakeLists.txt = CMakeLists.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|Win32.Build.0 = Debug|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|x64.ActiveCfg = Debug|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|x64.Build.0 = Debug|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|Win32.ActiveCfg = Release|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|Win32.Build.0 = Release|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|x64.ActiveCfg = Release|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|x64.Build.0 = Release|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|Win32.Build.0 = Debug|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|x64.ActiveCfg = Debug|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|x64.Build.0 = Debug|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|Win32.ActiveCfg = Release|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|Win32.Build.0 = Release|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|x64.ActiveCfg = Release|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|x64.Build.0 = Release|x64
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Debug|Win32.Build.0 = Debug|Win32
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Debug|x64.ActiveCfg = Debug|x64
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Debug|x64.Build.0 = Debug|x64
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Release|Win32.ActiveCfg = Release|Win32
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Release|Win32.Build.0 = Release|Win32
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Release|x64.ActiveCfg = Release|x64
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}.Release|x64.Build.0 = Release|x64
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|Win32.Build.0 = Debug|Win32
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|x64.ActiveCfg = Debug|x64
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|x64.Build.0 = Debug|x64
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|Win32.ActiveCfg = Release|Win32
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|Win32.Build.0 = Release|Win32
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|x64.ActiveCfg = Release|x64
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|x64.Build.0 = Release|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|Win32.Build.0 = Debug|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|x64.ActiveCfg = Debug|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|x64.Build.0 = Debug|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|Win32.ActiveCfg = Release|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|Win32.Build.0 = Release|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|x64.ActiveCfg = Release|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|x64.Build.0 = Release|x64
+		{505A176A-146F-4254-95D4-689D0B93A803}.Debug|Win32.ActiveCfg = Debug|Win32
+		{505A176A-146F-4254-95D4-689D0B93A803}.Debug|Win32.Build.0 = Debug|Win32
+		{505A176A-146F-4254-95D4-689D0B93A803}.Debug|x64.ActiveCfg = Debug|x64
+		{505A176A-146F-4254-95D4-689D0B93A803}.Debug|x64.Build.0 = Debug|x64
+		{505A176A-146F-4254-95D4-689D0B93A803}.Release|Win32.ActiveCfg = Release|Win32
+		{505A176A-146F-4254-95D4-689D0B93A803}.Release|Win32.Build.0 = Release|Win32
+		{505A176A-146F-4254-95D4-689D0B93A803}.Release|x64.ActiveCfg = Release|x64
+		{505A176A-146F-4254-95D4-689D0B93A803}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7} = {E3E63F9D-ADF2-451D-82DE-E89530D142F7}
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {E3E63F9D-ADF2-451D-82DE-E89530D142F7}
+		{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7} = {77938720-9F15-4AED-AA59-D74E375244B6}
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2} = {77938720-9F15-4AED-AA59-D74E375244B6}
+		{4339808F-E2E2-4949-8C3F-56F76E69B866} = {77938720-9F15-4AED-AA59-D74E375244B6}
+		{0FA45C38-5F6C-4715-8726-6D32A2069743} = {D3352ACF-CC1E-456E-AEA2-79CAF505FA9B}
+		{505A176A-146F-4254-95D4-689D0B93A803} = {77938720-9F15-4AED-AA59-D74E375244B6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA5639EC-1328-41CC-AFC4-49D75EFB0BE2}
+	EndGlobalSection
+EndGlobal

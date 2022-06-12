@@ -52,7 +52,10 @@ class CB
 
 class CC
 {
-
+    int c_1_;
+    int c_2_;
+    int c_3_;
+    int c_4_;
 };
 
 
@@ -91,6 +94,19 @@ int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
     m_o_2.free_object<CA>(a_2_1);
     m_o_2.free_object<CA>(a_2_2);
 
+    CC* c_ary[20];
+    for (size_t i = 0; i < 20; ++i)
+    {
+        c_ary[i] = m_o_2.alloc_object<CC>();
+        ZCE_LOG(RS_INFO, "CC pool size %u", m_o_2.size<CC>());
+        ZCE_LOG(RS_INFO, "CC pool capacity %u", m_o_2.capacity<CC>());
+    }
+    for (size_t i = 0; i < 20; ++i)
+    {
+        m_o_2.free_object<CC>(c_ary[i]);
+        ZCE_LOG(RS_INFO, "CC pool size %u", m_o_2.size<CC>());
+        ZCE_LOG(RS_INFO, "CC pool capacity %u", m_o_2.capacity<CC>());
+    }
     m_o_2.terminate<CA>();
     m_o_2.terminate<CB>();
     m_o_2.terminate<CC>();
