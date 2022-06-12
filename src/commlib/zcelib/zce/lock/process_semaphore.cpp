@@ -18,14 +18,16 @@ Process_Semaphore::Process_Semaphore(unsigned int init_value,
     int ret = 0;
 
     sema_name_[0] = '\0';
-    sema_name_[sizeof(sema_name_) - 1] = '\0';
+    sema_name_[PATH_MAX] = '\0';
 
     //玩有名的信号灯,名字可以考虑用unique_name函数获得
-
-    strncpy(sema_name_, sem_name, PATH_MAX);
-
-    lock_ = zce::sem_open(sem_name, O_CREAT, ZCE_DEFAULT_FILE_PERMS, init_value);
-
+    strncpy(sema_name_,
+            sem_name,
+            PATH_MAX);
+    lock_ = zce::sem_open(sem_name,
+                          O_CREAT,
+                          ZCE_DEFAULT_FILE_PERMS,
+                          init_value);
     if (!lock_)
     {
         ret = -1;
@@ -60,11 +62,10 @@ Process_Semaphore::~Process_Semaphore()
 }
 
 //锁定
-void Process_Semaphore::lock()
+void Process_Semaphore::acquire() noexcept
 {
     //信号灯锁定
-    int ret = zce::sem_wait(lock_);
-
+    auto ret = zce::sem_wait(lock_);
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_wait", ret);
@@ -73,11 +74,10 @@ void Process_Semaphore::lock()
 }
 
 //尝试锁定
-bool Process_Semaphore::try_lock()
+bool Process_Semaphore::try_acquire() noexcept
 {
     //信号灯锁定
-    int ret = zce::sem_trywait(lock_);
-
+    auto ret = zce::sem_trywait(lock_);
     if (0 != ret)
     {
         return false;
@@ -87,10 +87,9 @@ bool Process_Semaphore::try_lock()
 }
 
 //解锁,
-void Process_Semaphore::unlock()
+void Process_Semaphore::release() noexcept
 {
-    int ret = zce::sem_post(lock_);
-
+    auto ret = zce::sem_post(lock_);
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_post", ret);
@@ -99,9 +98,9 @@ void Process_Semaphore::unlock()
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool Process_Semaphore::wait_until(const zce::Time_Value& abs_time)
+bool Process_Semaphore::try_acquire_until(const zce::Time_Value& abs_time) noexcept
 {
-    int ret = 0;
+    auto ret = 0;
     ret = zce::sem_timedwait(lock_, abs_time);
 
     if (0 != ret)
@@ -118,10 +117,10 @@ bool Process_Semaphore::wait_until(const zce::Time_Value& abs_time)
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool Process_Semaphore::wait_for(const zce::Time_Value& relative_time)
+bool Process_Semaphore::try_acquire_for(const zce::Time_Value& relative_time) noexcept
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return wait_until(abs_time);
+    return try_acquire_until(abs_time);
 }
 }

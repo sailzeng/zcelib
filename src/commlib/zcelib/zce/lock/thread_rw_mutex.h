@@ -36,42 +36,41 @@ namespace zce
 class Thread_RW_Mutex : public zce::Lock_Base
 {
 public:
-    ///读锁的GUARD
-    typedef zce::Read_Guard<Thread_RW_Mutex>  LOCK_READ_GUARD;
-    ///写锁的GUARD
+    //!读锁的GUARD
+    typedef zce::Shared_Guard<Thread_RW_Mutex>  LOCK_READ_GUARD;
+    //!写锁的GUARD
     typedef zce::Write_Guard<Thread_RW_Mutex> LOCK_WRITE_GUARD;
 
 public:
-    //构造函数
+    //!构造函数
     Thread_RW_Mutex();
     virtual ~Thread_RW_Mutex();
 
 public:
-    //读取锁
-    virtual void lock_read();
+    //!读取锁
+    virtual void lock_shared() noexcept;
     //尝试读取锁
-    virtual bool try_lock_read();
+    virtual bool try_lock_shared() noexcept;
+    //!绝对时间
+    bool try_lock_shared_until(const zce::Time_Value& abs_time) noexcept override;
+    //!相对时间
+    bool try_lock_shared_for(const zce::Time_Value& relative_time) noexcept override;
+    //!解读锁
+    void unlock_shared() noexcept override;
 
-    //绝对时间
-    virtual bool systime_lock_read(const zce::Time_Value& abs_time);
-    //相对时间
-    virtual bool duration_lock_read(const zce::Time_Value& relative_time);
 
-    //写锁定
-    virtual void lock_write();
-    //尝试读取锁
-    virtual bool try_lock_write();
-    //写锁定超时，绝对时间
-    virtual bool systime_lock_write(const zce::Time_Value& abs_time);
-    //写锁定超时，相对时间
-    virtual bool duration_lock_write(const zce::Time_Value& relative_time);
+    //!写锁定
+    void lock() noexcept;
+    //!尝试读取锁
+    bool try_lock() noexcept;
+    //!写锁定超时，绝对时间
+    bool try_lock_until(const zce::Time_Value& abs_time) noexcept override;
+    //!写锁定超时，相对时间
+    bool try_lock_for(const zce::Time_Value& relative_time) noexcept override;
+    //!解写锁
+    void unlock() noexcept override;
 
-    ///解写锁
-    virtual void unlock_write();
-    ///解读锁
-    virtual void unlock_read();
-
-    ///取出内部的锁的指针
+    //!取出内部的锁的指针
     pthread_rwlock_t* get_lock();
 
 protected:
@@ -90,9 +89,9 @@ protected:
 class Thread_Win_RW_Mutex : public zce::Lock_Base
 {
 public:
-    ///读锁的GUARD
-    typedef zce::Read_Guard<Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
-    ///写锁的GUARD
+    //!读锁的GUARD
+    typedef zce::Shared_Guard<Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
+    //!写锁的GUARD
     typedef zce::Write_Guard<Thread_Win_RW_Mutex> LOCK_WRITE_GUARD;
 
 public:
@@ -101,28 +100,26 @@ public:
     virtual ~Thread_Win_RW_Mutex();
 
 public:
-    //读取锁
-    virtual void lock_read();
-    //尝试读取锁
-    virtual bool try_lock_read();
+    //!读取锁
+    void lock_shared() noexcept override;
+    //!尝试读取锁
+    bool try_lock_shared() noexcept override;
+    //!解读锁
+    void unlock_shared() noexcept override;
 
-    //写锁定
-    virtual void lock_write();
-    //尝试读取锁
-    virtual bool try_lock_write();
+    //!写锁定
+    void lock() noexcept override;
+    //!尝试读取锁
+    bool try_lock() noexcept override;
+    //!解写锁
+    void unlock() noexcept override;
 
-    ///解读锁
-    virtual void unlock_read();
-
-    ///解写锁
-    virtual void unlock_write();
-
-    ///取出内部的锁的指针
+    //!取出内部的锁的指针
     SRWLOCK* get_lock();
 
 protected:
 
-    ///WINSVR 2008以后，WINDOWS自己实现的读写锁
+    //!WINSVR 2008以后，WINDOWS自己实现的读写锁
     SRWLOCK                rwlock_slim_;
 };
 

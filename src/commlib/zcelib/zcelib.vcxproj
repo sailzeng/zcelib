@@ -216,8 +216,12 @@
     <None Include="cpp.hint" />
     <None Include="makefile" />
     <None Include="zcelib.ruleset" />
+    <None Include="zce\version.h.in" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="zce\aio\aio_base.cpp" />
+    <ClCompile Include="zce\aio\aio_manager.cpp" />
+    <ClCompile Include="zce\aio\aio_task.cpp" />
     <ClCompile Include="zce\async\async_base.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
@@ -252,9 +256,7 @@
     <ClCompile Include="zce\event\reactor_epoll.cpp" />
     <ClCompile Include="zce\event\reactor_select.cpp" />
     <ClCompile Include="zce\event\reactor_wfmo.cpp" />
-    <ClCompile Include="zce\lock\lock_base.cpp" />
     <ClCompile Include="zce\lock\file_lock.cpp" />
-    <ClCompile Include="zce\lock\null_lock.cpp" />
     <ClCompile Include="zce\lock\process_mutex.cpp" />
     <ClCompile Include="zce\lock\process_semaphore.cpp" />
     <ClCompile Include="zce\lock\record_lock.cpp" />
@@ -335,10 +337,14 @@
     <ClCompile Include="zce\uuid\generator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="zce\aio\aio_base.h" />
+    <ClInclude Include="zce\aio\aio_manager.h" />
+    <ClInclude Include="zce\aio\aio_task.h" />
     <ClInclude Include="zce\async\async_base.h" />
     <ClInclude Include="zce\async\coroutine.h" />
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\async\lua_thread.h" />
+    <ClInclude Include="zce\comm\common.h" />
     <ClInclude Include="zce\lockfree\ptr_ring.h" />
     <ClInclude Include="zce\lockfree\spsc_ring.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
@@ -478,6 +484,10 @@
     <ClInclude Include="zce\time\time_value.h" />
     <ClInclude Include="zce\util\static_list.h" />
     <ClInclude Include="zce\uuid\generator.h" />
+    <ClInclude Include="zce\version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

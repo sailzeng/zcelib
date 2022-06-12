@@ -29,7 +29,7 @@ class File_Lock : public zce::NON_Copyable
 public:
 
     ///读锁的GUARD
-    typedef Read_Guard<File_Lock> LOCK_READ_GUARD;
+    typedef Shared_Guard<File_Lock> LOCK_READ_GUARD;
     ///写锁的GUARD
     typedef Write_Guard<File_Lock> LOCK_WRITE_GUARD;
 

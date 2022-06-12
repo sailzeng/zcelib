@@ -25,8 +25,7 @@
 *             http://www.cnblogs.com/fullsail/archive/2012/10/21/2732873.html
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_FILE_H_
-#define ZCE_LIB_OS_ADAPT_FILE_H_
+#pragma once
 
 #include "zce/os_adapt/common.h"
 
@@ -52,13 +51,22 @@ ZCE_HANDLE open(const char* filename,
 int close(ZCE_HANDLE handle);
 
 /*!
-* @brief      读取文件，WINDOWS下，长度无法突破32位的
+* @brief      读取文件，WINDOWS下，从当前位置开始读取，长度无法突破32位的
 * @return     ssize_t 错误返回-1，，正确返回读取的字节长度（也可能为0），errno 表示错误原因
 * @param      file_handle 文件句柄
 * @param      buf 读取的buffer参数
 * @param      count buffer的长度，WINDOWS下，长度无法突破32位的，当然……（当然其实函数的语义看32位下只能是2G），你懂得
 */
-ssize_t read(ZCE_HANDLE file_handle, void* buf, size_t count);
+ssize_t read(ZCE_HANDLE file_handle,
+             void* buf,
+             size_t count) noexcept;
+
+//! @brief      读取文件，从起始文件的偏移量的文职开始读取
+//! @param      offset 偏移量，从起始文件的偏移量
+ssize_t read(ZCE_HANDLE file_handle,
+             void* buf,
+             ssize_t offset,
+             size_t count) noexcept;
 
 /*!
 * @brief      写如文件，
@@ -68,7 +76,16 @@ ssize_t read(ZCE_HANDLE file_handle, void* buf, size_t count);
 * @param      count buffer的长度，WINDOWS下，长度无法突破32位的，当然有人需要写入4G数据吗？
 * @note       注意Windows下默认调用的WriteFile还是有缓冲的，我为了和POSIX统一，还是用了FlushFileBuffers
 */
-ssize_t write(ZCE_HANDLE file_handle, const void* buf, size_t count);
+ssize_t write(ZCE_HANDLE file_handle,
+              const void* buf,
+              size_t count) noexcept;
+
+//! @brief      写入文件，从起始文件的偏移量的文职开始写入
+//! @param      offset 偏移量，从起始文件的偏移量
+ssize_t write(ZCE_HANDLE file_handle,
+              const void* buf,
+              ssize_t offset,
+              size_t count) noexcept;
 
 /*!
 * @brief      在文件内进行偏移
@@ -77,7 +94,9 @@ ssize_t write(ZCE_HANDLE file_handle, const void* buf, size_t count);
 * @param      offset
 * @param      whence
 */
-ssize_t lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence);
+ssize_t lseek(ZCE_HANDLE file_handle,
+              ssize_t offset,
+              int whence) noexcept;
 
 /*!
 * @brief      断文件，倒霉的是WINDOWS下又TMD 没有，
@@ -196,9 +215,9 @@ protected:
 
 //! 自动释放的ZCE_HANDLE
 //! 这样使用 zce::AUTO_HANDLE fd(::fopen("xxx"),::fclose);
-using AUTO_FILE = std::unique_ptr<FILE, decltype(::fclose) *>;
+using AUTO_FILE = std::unique_ptr<FILE, decltype(::fclose)*>;
 
-using AUTO_STDFILE = std::unique_ptr<std::FILE, decltype(std::fclose) *>;
+using AUTO_STDFILE = std::unique_ptr<std::FILE, decltype(std::fclose)*>;
 };
 
-#endif //ZCE_LIB_OS_ADAPT_FILE_H_
+

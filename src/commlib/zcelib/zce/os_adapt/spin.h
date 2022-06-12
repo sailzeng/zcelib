@@ -50,7 +50,8 @@ namespace zce
 * @param[in]  lock       SPIN对象
 * @param[in]  pshared    共享的访问，是多线程共享PTHREAD_PROCESS_PRIVATE，还是多进程共享
 */
-int pthread_spin_init(pthread_spinlock_t* lock, int pshared);
+int pthread_spin_init(pthread_spinlock_t* lock,
+                      int pshared) noexcept;
 
 /*!
 * @brief      SPIN 锁的初始化扩展版本，非标准函数，但在WIN下多进程间使用，使用这个才行，（必须有名字）
@@ -61,35 +62,35 @@ int pthread_spin_init(pthread_spinlock_t* lock, int pshared);
 */
 int pthread_spin_initex(pthread_spinlock_t* lock,
                         bool process_share = false,
-                        const char* spin_name = NULL);
+                        const char* spin_name = NULL) noexcept;
 
 /*!
 * @brief      SPIN 锁的销毁
 * @return     int    0表示成功，非0表示失败以及错误原因
 * @param[in]  lock   SPIN对象
 */
-int pthread_spin_destroy(pthread_spinlock_t* lock);
+int pthread_spin_destroy(pthread_spinlock_t* lock) noexcept;
 
 /*!
 * @brief      SPIN 锁的加锁
 * @return     int   0表示成功，非0表示失败以及错误原因
 * @param[in]  lock  SPIN对象
 */
-int pthread_spin_lock(pthread_spinlock_t* lock);
+int pthread_spin_lock(pthread_spinlock_t* lock) noexcept;
 
 /*!
 * @brief      SPIN 锁的尝试加锁
 * @return     int   0表示成功，非0表示失败以及错误原因
 * @param[in]  lock  SPIN对象
 */
-int pthread_spin_trylock(pthread_spinlock_t* lock);
+int pthread_spin_trylock(pthread_spinlock_t* lock) noexcept;
 
 /*!
 * @brief      SPIN 锁的解锁
 * @return     int   0表示成功，非0表示失败以及错误原因
 * @param[in]  lock  SPIN对象
 */
-int pthread_spin_unlock(pthread_spinlock_t* lock);
+int pthread_spin_unlock(pthread_spinlock_t* lock) noexcept;
 };
 
 #endif //ZCE_LIB_OS_ADAPT_SPIN_H_

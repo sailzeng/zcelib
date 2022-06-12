@@ -86,7 +86,7 @@ static const time_t TIMEZONE_SECONDS = timezone;
 inline int gettimeofday(struct timeval* tv, struct timezone* tz = NULL);
 
 //别名而已，
-inline int system_clock(struct ::timeval *tv);
+inline int system_clock(struct ::timeval* tv);
 
 /*!
 * @brief      非标准函数，得到稳定的时间，
@@ -100,7 +100,7 @@ inline int system_clock(struct ::timeval *tv);
 *             你老不要49天就只调用一次这个函数呀，那样我保证不了你的TICK的效果，你老至少每天调用一次吧。
 *             LINUX 下，测试后发现很多系统没有gethrtime函数，用POSIX的新函数clock_gettime代替。
 */
-int steady_clock(timeval *tv);
+int steady_clock(timeval* tv);
 
 ///得到服务器从启动到现在的毫秒数，内部采用系统函数，而不使用std::clock函数处理，
 ///提供更高的使用便捷性，不用考虑回环等问题
@@ -340,46 +340,41 @@ bool timeval_havetime(const timeval& tv);
 * @param      sec           秒
 * @param      usec          微秒
 */
-const timeval make_timeval(time_t sec, time_t usec);
+const timeval make_timeval(time_t sec, time_t usec) noexcept;
 
 /*!
 * @brief      将类型为std::clock_t值 转换得到timeval这个结构
 * @return     const timeval 转换后的timeval结果
 * @param      clock_value   进行转换的参数
 */
-const timeval make_timeval(std::clock_t clock_value);
+const timeval make_timeval(std::clock_t clock_value) noexcept;
 
 /*!
 * @brief      将timespec结构转换得到timeval结构
 * @return     const timeval 转换后的timeval结果
 * @param      timespec_val  进行转换的参数
 */
-const timeval make_timeval(const ::timespec* timespec_val);
+const timeval make_timeval(const ::timespec* timespec_val) noexcept;
 
 /*!
 * @brief      将CPP11的duration的数据结构转换得到timeval结构
 * @return     const timeval 转换后的timeval结果
 * @param      val  进行转换的参数
 */
-const timeval make_timeval(const std::chrono::hours& val);
-const timeval make_timeval(const std::chrono::minutes& val);
-const timeval make_timeval(const std::chrono::seconds& val);
-const timeval make_timeval(const std::chrono::milliseconds& val);
-const timeval make_timeval(const std::chrono::microseconds& val);
-const timeval make_timeval(const std::chrono::nanoseconds& val);
+const timeval make_timeval(const std::chrono::hours& val) noexcept;
+const timeval make_timeval(const std::chrono::minutes& val) noexcept;
+const timeval make_timeval(const std::chrono::seconds& val) noexcept;
+const timeval make_timeval(const std::chrono::milliseconds& val) noexcept;
+const timeval make_timeval(const std::chrono::microseconds& val) noexcept;
+const timeval make_timeval(const std::chrono::nanoseconds& val) noexcept;
 
 /*!
 * @brief      将CPP11的time_point的数据结构转换得到timeval结构
 * @return     const timeval 转换后的timeval结果
 * @param      val  进行转换的参数
 */
-const timeval make_timeval(const std::chrono::system_clock::time_point& val);
-const timeval make_timeval(const std::chrono::steady_clock::time_point& val);
-
-
-void make_chrono(const timeval& tv, const std::chrono::milliseconds& val);
-void make_chrono(const timeval& tv, const std::chrono::microseconds& val);
-void make_chrono(const timeval& tv, const std::chrono::nanoseconds& val);
+const timeval make_timeval(const std::chrono::system_clock::time_point& val) noexcept;
+const timeval make_timeval(const std::chrono::steady_clock::time_point& val) noexcept;
 
 //WINDOWS API常用的几个参数
 #if defined (ZCE_OS_WINDOWS)
@@ -388,7 +383,7 @@ void make_chrono(const timeval& tv, const std::chrono::nanoseconds& val);
 * @return     const timeval
 * @param      file_time
 */
-const timeval make_timeval(const FILETIME* file_time);
+const timeval make_timeval(const FILETIME* file_time) noexcept;
 
 /*!
 * @brief      转换SYSTEMTIME到timeval
@@ -396,16 +391,20 @@ const timeval make_timeval(const FILETIME* file_time);
 * @param      system_time
 * @note
 */
-const timeval make_timeval(const SYSTEMTIME* system_time);
+const timeval make_timeval(const SYSTEMTIME* system_time) noexcept;
 
 /*!
 * @brief      将FILETIME的参数视为一个时长（相对时间 如25s），转换FILETIME到timeval ，
 * @return     const timeval
 * @param      file_time
 */
-const timeval make_timeval2(const FILETIME* file_time);
+const timeval make_timeval2(const FILETIME* file_time) noexcept;
 
 #endif
+
+void make_chrono(const timeval& tv, const std::chrono::milliseconds& val) noexcept;
+void make_chrono(const timeval& tv, const std::chrono::microseconds& val) noexcept;
+void make_chrono(const timeval& tv, const std::chrono::nanoseconds& val) noexcept;
 
 //我整体对timespec不想做太多支持，
 
@@ -584,7 +583,7 @@ inline int zce::gettimeofday(struct timeval* tv, struct timezone* tz)
 #endif //
 }
 
-inline int zce::system_clock(struct ::timeval *tv)
+inline int zce::system_clock(struct ::timeval* tv)
 {
     return zce::gettimeofday(tv);
 }

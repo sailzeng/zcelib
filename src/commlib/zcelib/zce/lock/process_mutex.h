@@ -36,19 +36,19 @@ public:
     virtual ~Process_Mutex(void);
 
     ///锁定
-    virtual void lock();
+    void lock() noexcept override;
 
     ///尝试锁定
-    virtual bool try_lock();
+    bool try_lock() noexcept override;
 
     ///解锁,
-    virtual void unlock();
+    void unlock() noexcept override;
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool lock(const zce::Time_Value& abs_time);
+    bool try_lock_until(const zce::Time_Value& abs_time) noexcept override;
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool lock_for(const zce::Time_Value& relative_time);
+    bool try_lock_for(const zce::Time_Value& relative_time) noexcept override;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();

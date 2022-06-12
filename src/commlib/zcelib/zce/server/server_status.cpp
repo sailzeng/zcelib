@@ -183,7 +183,7 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
         if (iter == conf_stat_map_.end())
         {
             conf_stat_map_.insert(STATUS_WITHNAME_MAP::value_type(item_ary[i].statics_item_.item_id_.statics_id_,
-                                  item_ary[i]));
+                                                                  item_ary[i]));
         }
         else
         {
@@ -229,7 +229,7 @@ void Server_Status::multi_thread_guard(bool multi_thread)
     }
     else
     {
-        stat_lock_ = new zce::Null_Mutex();
+        stat_lock_ = new zce::Null_Lock();
     }
 }
 

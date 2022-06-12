@@ -37,7 +37,7 @@ int LogTrace_Base::init_time_log(LOGFILE_DEVIDE div_log_file,
                                  bool is_thread_synchro,
                                  bool auto_new_line,
                                  int output_way,
-                                 int head_record)
+                                 int head_record) noexcept
 {
     assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file && LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
     return initialize(output_way,
@@ -59,7 +59,7 @@ int LogTrace_Base::init_size_log(const char* log_file_prefix,
                                  bool is_thread_synchro,
                                  bool auto_new_line,
                                  int output_way,
-                                 int head_record)
+                                 int head_record) noexcept
 {
     LOGFILE_DEVIDE div_log_file = LOGFILE_DEVIDE::BY_SIZE_NAME_ID;
 
@@ -84,7 +84,7 @@ int LogTrace_Base::init_size_log(const char* log_file_prefix,
 int LogTrace_Base::init_stdout(bool use_err_out,
                                bool is_thread_synchro,
                                bool auto_new_line,
-                               int head_record)
+                               int head_record) noexcept
 {
     unsigned int output_way = 0;
 
@@ -117,7 +117,7 @@ int LogTrace_Base::initialize(unsigned int output_way,
                               bool auto_new_line,
                               size_t max_size_log_file,
                               size_t reserve_file_num,
-                              unsigned int head_record)
+                              unsigned int head_record) noexcept
 {
     output_way_ = output_way;
     div_log_file_ = div_log_file;
@@ -176,7 +176,7 @@ void LogTrace_Base::terminate()
 }
 
 //配置日志文件
-void LogTrace_Base::make_configure(void)
+void LogTrace_Base::make_configure(void) noexcept
 {
     //检查max_size_log_file_等参数的大小范围
     if (max_size_log_file_ < MIN_LOG_SIZE)
@@ -280,7 +280,7 @@ bool LogTrace_Base::get_thread_synchro(void)
 
 //得到新的日志文件文件名称
 void LogTrace_Base::open_new_logfile(bool initiate,
-                                     const timeval& current_time)
+                                     const timeval& current_time) noexcept
 {
     //是否要生成新的文件名称
     bool to_new_file = false;
@@ -431,7 +431,7 @@ void LogTrace_Base::open_new_logfile(bool initiate,
     }
 }
 
-void LogTrace_Base::del_old_logfile()
+void LogTrace_Base::del_old_logfile() noexcept
 {
     //如果保留所有日志，或者分割日志的时间为 月 或者 年
     if (reserve_file_num_ > 0)
@@ -491,7 +491,7 @@ void LogTrace_Base::del_old_logfile()
 
 //根据日期得到文件名称
 void LogTrace_Base::create_time_logname(const timeval& cur_time,
-                                        std::string& logfilename)
+                                        std::string& logfilename) noexcept
 {
     time_t cur_t = cur_time.tv_sec;
     tm curtm = *localtime(&(cur_t));
@@ -501,45 +501,45 @@ void LogTrace_Base::create_time_logname(const timeval& cur_time,
     switch (div_log_file_)
     {
         //以小时为单位得到文件名称
-        case LOGFILE_DEVIDE::BY_TIME_HOUR:
-        case LOGFILE_DEVIDE::BY_TIME_SIX_HOUR:
-        {
-            strftime(tmpbuf, buflen, "_%Y%m%d_%H", &curtm);
+    case LOGFILE_DEVIDE::BY_TIME_HOUR:
+    case LOGFILE_DEVIDE::BY_TIME_SIX_HOUR:
+    {
+        strftime(tmpbuf, buflen, "_%Y%m%d_%H", &curtm);
 #if defined ZCE_LOG_TEST && ZCE_LOG_TEST== 1
-            strftime(tmpbuf, buflen, "_%Y%m%d_%H%M", &curtm);
+        strftime(tmpbuf, buflen, "_%Y%m%d_%H%M", &curtm);
 #endif
-            ::strcat(tmpbuf, STR_LOG_POSTFIX);
+        ::strcat(tmpbuf, STR_LOG_POSTFIX);
 
-            break;
-        }
+        break;
+    }
 
-        case LOGFILE_DEVIDE::BY_TIME_DAY:
-            ::strftime(tmpbuf, buflen, "_%Y%m%d", &curtm);
-            ::strcat(tmpbuf, STR_LOG_POSTFIX);
-            break;
+    case LOGFILE_DEVIDE::BY_TIME_DAY:
+        ::strftime(tmpbuf, buflen, "_%Y%m%d", &curtm);
+        ::strcat(tmpbuf, STR_LOG_POSTFIX);
+        break;
 
-            //
-        case LOGFILE_DEVIDE::BY_TIME_MONTH:
-            ::strftime(tmpbuf, buflen, "_%Y%m", &curtm);
-            ::strcat(tmpbuf, STR_LOG_POSTFIX);
-            break;
+        //
+    case LOGFILE_DEVIDE::BY_TIME_MONTH:
+        ::strftime(tmpbuf, buflen, "_%Y%m", &curtm);
+        ::strcat(tmpbuf, STR_LOG_POSTFIX);
+        break;
 
-        case LOGFILE_DEVIDE::BY_TIME_YEAR:
-            ::strftime(tmpbuf, buflen, "_%Y", &curtm);
-            ::strcat(tmpbuf, STR_LOG_POSTFIX);
-            break;
+    case LOGFILE_DEVIDE::BY_TIME_YEAR:
+        ::strftime(tmpbuf, buflen, "_%Y", &curtm);
+        ::strcat(tmpbuf, STR_LOG_POSTFIX);
+        break;
 
-        case LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND:
-            char mill_sec_str[16];
-            ::strftime(tmpbuf, buflen, "_%Y%m%d_%H%M%s_", &curtm);
-            snprintf(mill_sec_str, 15, "%03d", static_cast<int>(cur_time.tv_usec / 1000));
-            ::strcat(tmpbuf, mill_sec_str);
-            ::strcat(tmpbuf, STR_LOG_POSTFIX);
-            break;
-            //Never goto here.
-        default:
-            ::strcat(tmpbuf, STR_LOG_POSTFIX);
-            break;
+    case LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND:
+        char mill_sec_str[16];
+        ::strftime(tmpbuf, buflen, "_%Y%m%d_%H%M%s_", &curtm);
+        snprintf(mill_sec_str, 15, "%03d", static_cast<int>(cur_time.tv_usec / 1000));
+        ::strcat(tmpbuf, mill_sec_str);
+        ::strcat(tmpbuf, STR_LOG_POSTFIX);
+        break;
+        //Never goto here.
+    default:
+        ::strcat(tmpbuf, STR_LOG_POSTFIX);
+        break;
     }
 
     logfilename = log_file_prefix_;
@@ -547,7 +547,8 @@ void LogTrace_Base::create_time_logname(const timeval& cur_time,
 }
 
 //根据ID得到文件名称f
-void LogTrace_Base::create_id_logname(size_t logfileid, std::string& log_filename)
+void LogTrace_Base::create_id_logname(size_t logfileid,
+                                      std::string& log_filename) noexcept
 {
     char tmpbuf[32];
 
@@ -572,7 +573,7 @@ void LogTrace_Base::stringbuf_loghead(LOG_PRIORITY outlevel,
                                       const timeval& now_time,
                                       char* log_tmp_buffer,
                                       size_t sz_buf_len,
-                                      size_t& sz_use_len)
+                                      size_t& sz_use_len) noexcept
 {
     sz_use_len = 0;
 
@@ -593,33 +594,33 @@ void LogTrace_Base::stringbuf_loghead(LOG_PRIORITY outlevel,
     {
         switch (outlevel)
         {
-            case RS_TRACE:
-                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[TRACE]");
-                sz_buf_len -= sz_use_len;
-                break;
+        case RS_TRACE:
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[TRACE]");
+            sz_buf_len -= sz_use_len;
+            break;
 
-            case RS_DEBUG:
-                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[DEBUG]");
-                sz_buf_len -= sz_use_len;
-                break;
+        case RS_DEBUG:
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[DEBUG]");
+            sz_buf_len -= sz_use_len;
+            break;
 
-            case RS_INFO:
-                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[INFO]");
-                sz_buf_len -= sz_use_len;
-                break;
+        case RS_INFO:
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[INFO]");
+            sz_buf_len -= sz_use_len;
+            break;
 
-            case RS_ERROR:
-                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[ERROR]");
-                sz_buf_len -= sz_use_len;
-                break;
+        case RS_ERROR:
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[ERROR]");
+            sz_buf_len -= sz_use_len;
+            break;
 
-            case RS_FATAL:
-                sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[FATAL]");
-                sz_buf_len -= sz_use_len;
-                break;
+        case RS_FATAL:
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[FATAL]");
+            sz_buf_len -= sz_use_len;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -643,7 +644,7 @@ void LogTrace_Base::stringbuf_loghead(LOG_PRIORITY outlevel,
 
 void LogTrace_Base::output_log_info(const timeval& now_time,
                                     char* log_tmp_buffer,
-                                    size_t sz_use_len)
+                                    size_t sz_use_len) noexcept
 {
     //如果要线程同步，在这个地方加锁，由于使用了条件判断是否加锁，而不是模版，所以这个地方没有用GRUAD，
     if (is_thread_synchro_)

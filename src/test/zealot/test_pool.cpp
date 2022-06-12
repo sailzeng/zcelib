@@ -58,12 +58,9 @@ class CC
     int c_4_;
 };
 
-
-
-
 int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
 {
-    zce::multiobjs_pool<CA, CB, CC, int, double> m_o_1;
+    zce::multiobjs_pool<zce::Null_Lock, CA, CB, CC, int, double> m_o_1;
     m_o_1.initialize<0>(10, 10);
     m_o_1.initialize<1>(10, 10);
     m_o_1.initialize<2>(10, 10);
@@ -82,7 +79,7 @@ int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
     m_o_1.terminate<3>();
     m_o_1.terminate<4>();
 
-    zce::multiobjs_pool<CA, CB, CC, int, double> m_o_2;
+    zce::multiobjs_pool<std::mutex, CA, CB, CC, int, double> m_o_2;
     m_o_2.initialize<CA>(10, 10);
     m_o_2.initialize<CB>(10, 10);
     m_o_2.initialize<CC>(10, 10);

@@ -1,3 +1,17 @@
+/*!
+* @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
+* @filename   zce/pool/object_pool.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date
+* @brief
+* @details
+*
+*
+*
+* @note
+*
+*/
 #pragma once
 
 #include "zce/logger/logging.h"
@@ -5,7 +19,7 @@
 
 namespace zce
 {
-template<typename T>
+template<typename LOCK, typename T>
 class object_pool
 {
 public:
@@ -30,6 +44,7 @@ public:
                     size_t extend_size,
                     std::function <T* () >* new_fun = nullptr)
     {
+        std::lock_guard<LOCK> lock;
         extend_size_ = extend_size;
         if (new_fun)
         {
@@ -52,6 +67,7 @@ public:
     //!最后的销毁处理
     void terminate()
     {
+        std::lock_guard<LOCK> lock;
         size_t sz = obj_pool_.size();
         for (size_t i = 0; i < sz; i++)
         {
@@ -64,6 +80,7 @@ public:
     //!分配一个对象
     T* alloc_object()
     {
+        std::lock_guard<LOCK> lock;
         auto ret = false;
         T* ptr = nullptr;
         if (obj_pool_.size() == 0)
@@ -87,24 +104,29 @@ public:
     //归还一个对象
     void free_object(T* ptr)
     {
+        std::lock_guard<LOCK> lock;
         obj_pool_.push_back(ptr);
         return;
     }
 
     inline size_t size()
     {
+        std::lock_guard<LOCK> lock;
         return obj_pool_.size();
     }
     inline size_t capacity()
     {
+        std::lock_guard<LOCK> lock;
         return obj_pool_.capacity();
     }
     inline bool empty()
     {
+        std::lock_guard<LOCK> lock;
         return obj_pool_.empty();
     }
     inline bool full()
     {
+        std::lock_guard<LOCK> lock;
         return obj_pool_.full();
     }
 
@@ -153,6 +175,8 @@ protected:
 
     //T的初始化函数，
     std::function <T* ()>* new_fun_ = nullptr;
-
+    //
+    LOCK lock_;
 };
+
 }

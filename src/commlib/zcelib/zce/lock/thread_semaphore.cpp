@@ -15,7 +15,6 @@ Thread_Semaphore::Thread_Semaphore(unsigned int init_value) :
 
     lock_ = new sem_t();
     ret = zce::sem_init(lock_, 0, init_value);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_init fail.", ret);
@@ -29,16 +28,14 @@ Thread_Semaphore::~Thread_Semaphore()
     {
         return;
     }
-
     zce::sem_destroy(lock_);
-
     //sem_destroy不会释放，
     delete lock_;
     lock_ = NULL;
 }
 
 //锁定
-void Thread_Semaphore::lock()
+void Thread_Semaphore::acquire() noexcept
 {
     //信号灯锁定
     int ret = zce::sem_wait(lock_);
@@ -51,7 +48,7 @@ void Thread_Semaphore::lock()
 }
 
 //尝试锁定
-bool Thread_Semaphore::try_lock()
+bool Thread_Semaphore::try_acquire() noexcept
 {
     //信号灯锁定
     int ret = zce::sem_trywait(lock_);
@@ -65,7 +62,7 @@ bool Thread_Semaphore::try_lock()
 }
 
 //解锁,
-void Thread_Semaphore::unlock()
+void Thread_Semaphore::release() noexcept
 {
     int ret = zce::sem_post(lock_);
 
@@ -77,7 +74,7 @@ void Thread_Semaphore::unlock()
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool Thread_Semaphore::wait_until(const zce::Time_Value& abs_time)
+bool Thread_Semaphore::try_acquire_until(const zce::Time_Value& abs_time) noexcept
 {
     int ret = 0;
     ret = zce::sem_timedwait(lock_, abs_time);
@@ -96,10 +93,10 @@ bool Thread_Semaphore::wait_until(const zce::Time_Value& abs_time)
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool Thread_Semaphore::wait_for(const zce::Time_Value& relative_time)
+bool Thread_Semaphore::try_acquire_for(const zce::Time_Value& relative_time) noexcept
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return wait_until(abs_time);
+    return try_acquire_until(abs_time);
 }
 }

@@ -5,7 +5,8 @@
 #include "zce/os_adapt/spin.h"
 
 //SPIN 锁的初始化
-int zce::pthread_spin_init(pthread_spinlock_t* lock, int pshared)
+int zce::pthread_spin_init(pthread_spinlock_t* lock,
+                           int pshared) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -32,7 +33,7 @@ int zce::pthread_spin_init(pthread_spinlock_t* lock, int pshared)
 //SPIN 锁的初始化扩展版本
 int zce::pthread_spin_initex(pthread_spinlock_t* lock,
                              bool process_share,
-                             const char* spin_name)
+                             const char* spin_name) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -69,7 +70,7 @@ int zce::pthread_spin_initex(pthread_spinlock_t* lock,
 }
 
 //SPIN 锁的销毁
-int zce::pthread_spin_destroy(pthread_spinlock_t* lock)
+int zce::pthread_spin_destroy(pthread_spinlock_t* lock) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
@@ -80,7 +81,7 @@ int zce::pthread_spin_destroy(pthread_spinlock_t* lock)
 }
 
 //SPIN 锁的加锁
-int zce::pthread_spin_lock(pthread_spinlock_t* lock)
+int zce::pthread_spin_lock(pthread_spinlock_t* lock)noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
@@ -91,7 +92,7 @@ int zce::pthread_spin_lock(pthread_spinlock_t* lock)
 }
 
 //SPIN 锁的尝试加锁
-int zce::pthread_spin_trylock(pthread_spinlock_t* lock)
+int zce::pthread_spin_trylock(pthread_spinlock_t* lock) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
@@ -102,7 +103,7 @@ int zce::pthread_spin_trylock(pthread_spinlock_t* lock)
 }
 
 //SPIN 锁的解锁
-int zce::pthread_spin_unlock(pthread_spinlock_t* lock)
+int zce::pthread_spin_unlock(pthread_spinlock_t* lock) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟

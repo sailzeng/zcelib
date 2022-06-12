@@ -25,7 +25,7 @@ LogMsg::~LogMsg()
 //输出va_list的参数信息
 void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
                            const char* str_format,
-                           va_list args)
+                           va_list args) noexcept
 {
     //如果日志输出开关关闭
     if (is_output_log_ == false)
@@ -44,7 +44,7 @@ void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
 
     //我要保留一个位置放'\0'，以及一个\n
     //用static 变量，保证只初始化一次， 用thread_local 保证每个线程一个
-    static thread_local char *log_buffer = new char[SIZE_OF_LOG_BUFFER + 2];
+    static thread_local char* log_buffer = new char[SIZE_OF_LOG_BUFFER + 2];
     log_buffer[SIZE_OF_LOG_BUFFER + 1] = '\0';
 
     //还是为\n考虑留一个空间
@@ -93,7 +93,7 @@ void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
 void LogMsg::debug_assert(const char* file_name,
                           const int file_line,
                           const char* function_name,
-                          const char* expression_name)
+                          const char* expression_name) noexcept
 {
     write_logmsg(RS_FATAL, "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],EXPRESSION:[%s].",
                  file_name,
@@ -107,7 +107,7 @@ void LogMsg::debug_assert_ex(const char* file_name,
                              const int file_line,
                              const char* function_name,
                              const char* expression_name,
-                             const char* out_string)
+                             const char* out_string) noexcept
 {
     write_logmsg(RS_FATAL,
                  "Assertion failed: FILENAME:[%s],LINENO:[%d],FUN:[%s],"
@@ -121,7 +121,7 @@ void LogMsg::debug_assert_ex(const char* file_name,
 
 //调用vwrite_logmsg完成实际输出
 void LogMsg::write_logmsg(LOG_PRIORITY dbglevel,
-                          const char* str_format, ...)
+                          const char* str_format, ...) noexcept
 {
     va_list args;
 

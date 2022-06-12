@@ -5,14 +5,13 @@
 namespace zce
 {
 
-template< class... T >
+template< typename LOCK, typename... T >
 class multiobjs_pool
 {
 public:
 
     multiobjs_pool()
     {
-
     }
     ~multiobjs_pool()
     {
@@ -25,9 +24,9 @@ public:
                     size_t extend_node_size,
                     std::function <O* () >* new_fun = nullptr)
     {
-        return std::get<object_pool<O> >(pools_).initialize(init_node_size,
-                                                            extend_node_size,
-                                                            new_fun);
+        return std::get<object_pool_t<O> >(pools_).initialize(init_node_size,
+                                                              extend_node_size,
+                                                              new_fun);
     }
     template<typename O>
     void terminate()
@@ -73,7 +72,7 @@ public:
     bool initialize(size_t init_node_size,
                     size_t extend_node_size,
                     std::function <typename std::tuple_element<I, \
-                    std::tuple<object_pool<T>...> >::type::object* () >* new_fun = nullptr)
+                    std::tuple<object_pool<LOCK, T>...> >::type::object* () >* new_fun = nullptr)
     {
         return std::get<I>(pools_).initialize(init_node_size,
                                               extend_node_size,
@@ -109,21 +108,22 @@ public:
 
     //!分配一个对象
     template<size_t I>
-    typename std::tuple_element<I, std::tuple<object_pool<T>...> >::type::object* alloc_object()
+    typename std::tuple_element<I, std::tuple<object_pool<LOCK, T>...> >::type::object*
+        alloc_object()
     {
         return std::get<I>(pools_).alloc_object();
     }
     //归还一个对象
     template<size_t I >
     void free_object(typename std::tuple_element<I,
-                     std::tuple<object_pool<T>...> >::type::object* ptr)
+                     std::tuple<object_pool<LOCK, T>...> >::type::object* ptr)
     {
         return std::get<I>(pools_).free_object(ptr);
     }
 
 protected:
     //!对象池子堆
-    std::tuple<object_pool<T>... > pools_;
+    std::tuple<object_pool<LOCK, T>... > pools_;
 };
 
 }

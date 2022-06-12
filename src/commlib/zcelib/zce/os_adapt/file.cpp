@@ -6,10 +6,12 @@
 #include "zce/os_adapt/file.h"
 
 //读取文件
-ssize_t zce::read(ZCE_HANDLE file_handle, void* buf, size_t count)
+ssize_t zce::read(ZCE_HANDLE file_handle,
+                  void* buf, size_t count) noexcept
 {
     //WINDOWS下，长度无法突破32位的，参数限制了ReadFileEx也一样，大概WINDOWS认为没人这样读取文件
     //位置当然你是可以调整的
+    //ReadFileEx只是能异步读取
 #if defined (ZCE_OS_WINDOWS)
     DWORD ok_len;
     BOOL ret_bool = ::ReadFile(file_handle,
@@ -20,7 +22,7 @@ ssize_t zce::read(ZCE_HANDLE file_handle, void* buf, size_t count)
 
     if (ret_bool)
     {
-        return (ssize_t)ok_len;
+        return static_cast<ssize_t>(ok_len);
     }
     else
     {
@@ -32,14 +34,25 @@ ssize_t zce::read(ZCE_HANDLE file_handle, void* buf, size_t count)
 #endif
 }
 
+//ssize_t zce::read(ZCE_HANDLE file_handle,
+//                  void* buf,
+//                  ssize_t offset,
+//                  size_t count) noexcept
+//{
+//
+//    return zce::read(file_handle, buf, count);
+//}
+
 //写如文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
 //Windows下尽量向POSIX 靠拢了
-ssize_t zce::write(ZCE_HANDLE file_handle, const void* buf, size_t count)
+ssize_t zce::write(ZCE_HANDLE file_handle,
+                   const void* buf,
+                   size_t count) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
     DWORD ok_len;
-    BOOL ret_bool = ::WriteFile(file_handle,
+    auto ret_bool = ::WriteFile(file_handle,
                                 buf,
                                 static_cast<DWORD> (count),
                                 &ok_len,
@@ -129,7 +142,7 @@ int zce::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
 }
 
 //在文件内进行偏移
-ssize_t zce::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
+ssize_t zce::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -157,7 +170,7 @@ ssize_t zce::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
     loff.QuadPart = offset;
 
     LARGE_INTEGER new_pos;
-    BOOL bret = ::SetFilePointerEx(file_handle,
+    auto bret = ::SetFilePointerEx(file_handle,
                                    loff,
                                    &new_pos,
                                    dwmovemethod);
@@ -198,7 +211,7 @@ int zce::filesize(ZCE_HANDLE file_handle, size_t* file_size)
 #if defined (ZCE_OS_WINDOWS)
 
     LARGE_INTEGER size;
-    BOOL ret_bool = ::GetFileSizeEx(file_handle, &size);
+    auto ret_bool = ::GetFileSizeEx(file_handle, &size);
 
     if (!ret_bool)
     {
@@ -322,7 +335,7 @@ ZCE_HANDLE zce::open(const char* filename,
 
         distance_to_move.QuadPart = 0;
         new_file_pointer.QuadPart = 0;
-        BOOL bret = ::SetFilePointerEx(openfile_handle,
+        auto bret = ::SetFilePointerEx(openfile_handle,
                                        distance_to_move,
                                        &new_file_pointer,
                                        FILE_END);
@@ -349,7 +362,7 @@ int zce::close(ZCE_HANDLE handle)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
-    BOOL bret = ::CloseHandle(handle);
+    auto bret = ::CloseHandle(handle);
 
     if (bret == TRUE)
     {

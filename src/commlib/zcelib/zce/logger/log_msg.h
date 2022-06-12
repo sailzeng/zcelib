@@ -60,7 +60,7 @@ protected:
     */
     void vwrite_logmsg(LOG_PRIORITY outlevel,
                        const char* str_format,
-                       va_list args);
+                       va_list args) noexcept;
 
     template <typename... out_type >
     void foo_write_logmsg(LOG_PRIORITY outlevel,
@@ -134,24 +134,24 @@ public:
     static void debug_assert(const char* file_name,
                              const int file_line,
                              const char* fuction_name,
-                             const char* expression_name);
+                             const char* expression_name) noexcept;
 
     ///利用单子对象，输出Aseert调试信息,增强版本函数
     static void debug_assert_ex(const char* file_name,
                                 const int file_line,
                                 const char* fuction_name,
                                 const char* expression_name,
-                                const char* out_string);
+                                const char* out_string) noexcept;
 
     ///利用单子对象，打印日志信息
     static void write_logmsg(LOG_PRIORITY dbglevel,
                              const char* str_format,
-                             ...);
+                             ...) noexcept;
 
     template <typename... out_type >
     static void write_logplus(LOG_PRIORITY outlevel,
                               const char* str_format,
-                              const out_type &...out_data)
+                              const out_type &...out_data) noexcept
     {
         log_instance_->foo_write_logmsg(outlevel,
                                         str_format,

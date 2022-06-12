@@ -14,7 +14,7 @@ Class           : Thread_Spin_Mutex
 ************************************************************************************************************/
 
 //构造函数
-Thread_Spin_Mutex::Thread_Spin_Mutex()
+Thread_Spin_Mutex::Thread_Spin_Mutex() noexcept
 {
     int ret = 0;
 
@@ -43,7 +43,7 @@ Thread_Spin_Mutex::~Thread_Spin_Mutex(void)
 }
 
 //锁定
-void Thread_Spin_Mutex::lock()
+void Thread_Spin_Mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_spin_lock(&lock_);
@@ -56,7 +56,7 @@ void Thread_Spin_Mutex::lock()
 }
 
 //尝试锁定
-bool Thread_Spin_Mutex::try_lock()
+bool Thread_Spin_Mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_spin_trylock(&lock_);
@@ -70,7 +70,7 @@ bool Thread_Spin_Mutex::try_lock()
 }
 
 //解锁,
-void Thread_Spin_Mutex::unlock()
+void Thread_Spin_Mutex::unlock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_spin_unlock(&lock_);

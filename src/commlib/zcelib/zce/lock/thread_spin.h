@@ -41,18 +41,18 @@ public:
 public:
 
     //构造函数
-    Thread_Spin_Mutex();
+    Thread_Spin_Mutex() noexcept;
     ///析构函数
     virtual ~Thread_Spin_Mutex(void);
 
     ///锁定
-    virtual void lock() override;
+    virtual void lock()noexcept override;
 
     ///尝试锁定
-    virtual bool try_lock() override;
+    virtual bool try_lock()noexcept override;
 
     ///解锁,
-    virtual void unlock() override;
+    virtual void unlock()noexcept override;
 
     ///取出内部的锁的指针
     pthread_spinlock_t* get_lock();

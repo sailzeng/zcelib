@@ -2,16 +2,17 @@
 
 #include "zce/util/buffer.h"
 #include "zce/pool/object_pool.h"
+#include "zce/lock/null_lock.h"
 
 namespace zce
 {
-template<typename B>
+template<typename LOCK, typename B>
 class buffer_pool
 {
 protected:
 
     //每个桶里面存放一种尺寸的B
-    typedef zce::object_pool<B>  bucket;
+    typedef zce::object_pool<LOCK, B>  bucket;
 
 public:
     //
@@ -139,6 +140,10 @@ protected:
     std::vector<bucket> pools_;
 };
 
-typedef buffer_pool<cycle_buffer> cycle_buffer_pool;
-typedef buffer_pool<queue_buffer> queue_buffer_pool;
+typedef buffer_pool<zce::Null_Lock, cycle_buffer> cycle_buffer_pool;
+typedef buffer_pool<zce::Null_Lock, queue_buffer> queue_buffer_pool;
+typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_lock;
+typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_lock;
+
+
 }

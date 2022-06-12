@@ -215,7 +215,7 @@ int zce::pthread_cond_wait(pthread_cond_t* cond,
 }
 
 //
-int zce::pthread_cond_broadcast(pthread_cond_t* cond)
+int zce::pthread_cond_broadcast(pthread_cond_t* cond) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -229,7 +229,7 @@ int zce::pthread_cond_broadcast(pthread_cond_t* cond)
 }
 
 //发信号
-int zce::pthread_cond_signal(pthread_cond_t* cond)
+int zce::pthread_cond_signal(pthread_cond_t* cond) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 

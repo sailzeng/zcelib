@@ -427,7 +427,7 @@
 namespace zce
 {
 //取得最后的errno，在Windows下有点
-inline int last_error(void)
+inline int last_error(void) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     // zce::last_error() prefers errnor since started out as a way to
@@ -435,8 +435,8 @@ inline int last_error(void)
     // C++ socket wrapper facades.  On Windows, some things that would
     // use errno on UNIX require ::GetLastError(), so this method tries
     // to shield the rest of ACE from having to know about this.
-    int lerror = ::GetLastError();
-    int lerrno = errno;
+    const int lerror = ::GetLastError();
+    const int lerrno = errno;
     return (lerrno == 0) ? lerror : lerrno;
 #elif defined (ZCE_OS_LINUX)
     return errno;

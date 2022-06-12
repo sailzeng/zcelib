@@ -31,84 +31,104 @@
 */
 namespace zce
 {
-class Lock_Base : public zce::NON_Copyable
+class Lock_Base
 {
 protected:
     ///构造函数和析构函数，允许析构，不允许构造的写法
-    Lock_Base(const char* ptr = NULL);
+    Lock_Base() = default;
 public:
     ///析构函数
-    virtual ~Lock_Base(void);
+    virtual ~Lock_Base(void) = default;
 
     ///允许Lock_Ptr_Guard使用一些函数
     friend class Lock_Ptr_Guard;
 
     //为了避免其他人的使用，特此将这些函数隐藏起来
 private:
-    ///锁定
-    virtual void lock();
+    //!锁定
+    virtual void lock() noexcept
+    {
+    };
+    //!尝试锁定
+    virtual bool try_lock() noexcept
+    {
+        return false;
+    };
+    //!解锁,
+    virtual void unlock() noexcept
+    {
+    };
+    //!尝试锁定，直至等待时长结束，若成功获得锁则为 true ，否则为 false 
+    virtual bool try_lock_for(const zce::Time_Value& /*duration*/) noexcept
+    {
+        return false;
+    }
+    //!尝试锁定， 直至绝对时间点,若成功获得锁则为 true ，否则为 false 
+    virtual bool try_lock_until(const zce::Time_Value& /*abs_time*/) noexcept
+    {
+        return false;
+    }
 
-    ///尝试锁定
-    virtual bool try_lock();
 
-    ///解锁,
-    virtual void unlock();
+    //!读取锁
+    virtual void lock_shared() noexcept
+    {
+    }
+    //!尝试读取锁
+    virtual bool try_lock_shared() noexcept
+    {
+        return false;
+    }
+    //!绝对时间,获取读取（共享）锁的，等待至绝对时间超时@param  abs_time 绝对时间
+    virtual bool try_lock_shared_until(const zce::Time_Value& /*abs_time*/) noexcept
+    {
+        return false;
+    }
+    //!相对时间,获取读取（共享）锁的，等待至相对时间超时 @param  relative_time 相对时间
+    virtual bool try_lock_shared_for(const zce::Time_Value& /*relative_time*/) noexcept
+    {
+        return false;
+    }
+    //!解锁读取锁
+    virtual void unlock_shared() noexcept
+    {
+    }
+};
 
-    ///解锁读
-    virtual void unlock_read();
+//======================================================
+/*!
+* @brief      Semaphore 信号灯的基类，信号灯的
+*             扩展应该都是从这个基类扩展
+*
+*/
+class Semaphore_Base
+{
+protected:
+    ///构造函数,protected，允许析构，不允许构造的写法
+    Semaphore_Base() = default;
+public:
+    ///析构函数，
+    virtual ~Semaphore_Base() = default;
 
-    ///解锁写
-    virtual void unlock_write();
+    virtual void acquire() noexcept
+    {
+    }
+    virtual void release() noexcept
+    {
+    }
+    virtual bool try_acquire() noexcept
+    {
+        return false;
+    }
+    virtual bool try_acquire_for(const zce::Time_Value& /*abs_time*/) noexcept
+    {
+        return false;
+    }
 
-    /*!
-    * @brief      绝对时间超时的的锁定，超时后解锁，返回是否超时
-    * @return     virtual bool
-    * @param      abs_time
-    * @note
-    */
-    virtual bool lock(const zce::Time_Value& abs_time);
-
-    /*!
-    * @brief      获得锁，等待一个相对时间
-    * @return     bool          返回true成功获取锁，false失败，（超时等）
-    * @param      relative_time 等待的相对时间，
-    */
-    virtual bool lock_for(const zce::Time_Value& relative_time);
-
-    ///读取锁
-    virtual void lock_read();
-    ///尝试读取锁
-    virtual bool try_lock_read();
-
-    ///绝对时间,获取读取（共享）锁的，等待至绝对时间超时
-    ///@param  abs_time 绝对时间
-    virtual bool timed_lock_read(const zce::Time_Value& /*abs_time*/);
-    ///相对时间,获取读取（共享）锁的，等待至相对时间超时
-    ///@param  relative_time 相对时间
-    virtual bool duration_lock_read(const zce::Time_Value& /*relative_time*/);
-
-    ///写锁定
-    virtual void lock_write();
-    /*!
-    * @brief      尝试读取锁
-    * @return     bool  返回true成功获取锁，false失败，
-    */
-    virtual bool try_lock_write();
-
-    /*!
-    * @brief      绝对时间,获取写入（独占）锁的，等待至绝对时间超时
-    * @return     bool     返回true成功获取锁，false失败，
-    * @param      abs_time 绝对时间
-    * @note
-    */
-    virtual bool timed_lock_write(const zce::Time_Value& abs_time);
-
-    /*!
-    * @brief      相对时间,获取写入（独占）锁的，等待至相对时间超时
-    * @return     bool          返回true成功获取锁，false失败，
-    * @param      relative_time 相对时间
-    */
-    virtual bool duration_lock_write(const zce::Time_Value& relative_time);
+    virtual bool try_acquire_until(const zce::Time_Value& /*abs_time*/) noexcept
+    {
+        return false;
+    }
 };
 
 //======================================================
@@ -118,31 +138,41 @@ private:
 *             扩展应该都是从这个基类扩展
 *
 */
-class Condition_Base : public zce::NON_Copyable
+class Condition_Base
 {
 protected:
     ///构造函数,protected，允许析构，不允许构造的写法
-    Condition_Base();
+    Condition_Base() = default;
 public:
     ///析构函数，
-    virtual ~Condition_Base();
+    virtual ~Condition_Base() = default;
 
     //为了避免其他人的使用，特此将这些函数隐藏起来
 private:
 
     ///等待,
-    virtual void wait(zce::Lock_Base* external_mutex);
-
+    virtual void wait(zce::Lock_Base* /*external_mutex*/) noexcept
+    {
+    }
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(zce::Lock_Base* external_mutex, const zce::Time_Value& abs_time);
-
+    virtual bool wait_until(zce::Lock_Base* /*external_mutex*/,
+                            const zce::Time_Value& /*abs_time*/) noexcept
+    {
+        return false;
+    }
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(zce::Lock_Base* external_mutex, const zce::Time_Value& relative_time);
-
+    virtual bool wait_for(zce::Lock_Base* /*external_mutex*/,
+                          const zce::Time_Value& /*relative_time*/) noexcept
+    {
+        return false;
+    }
     /// 给一个等待线程发送信号 Signal one waiting thread.
-    virtual void signal(void);
-
+    virtual void notify_one(void) noexcept
+    {
+    }
     ///给所有的等待线程广播信号 Signal *all* waiting threads.
-    virtual void broadcast(void);
+    virtual void notify_all(void) noexcept
+    {
+    }
 };
 }

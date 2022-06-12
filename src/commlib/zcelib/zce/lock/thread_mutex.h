@@ -42,13 +42,13 @@ public:
     virtual ~Thread_Light_Mutex(void);
 
     ///锁定
-    virtual void lock();
+    virtual void lock() noexcept;
 
     ///尝试锁定
-    virtual bool try_lock();
+    virtual bool try_lock() noexcept;
 
     ///解锁,
-    virtual void unlock();
+    virtual void unlock() noexcept;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();
@@ -76,19 +76,19 @@ public:
     virtual ~Thread_Recursive_Mutex(void);
 
     ///锁定
-    virtual void lock();
+    void lock()  noexcept override;
 
     ///尝试锁定
-    virtual bool try_lock();
+    bool try_lock()  noexcept override;
 
     ///解锁,
-    virtual void unlock();
+    void unlock()  noexcept override;
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool wait_until(const zce::Time_Value& abs_time);
+    bool try_lock_until(const zce::Time_Value& abs_time)  noexcept override;
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool wait_for(const zce::Time_Value& relative_time);
+    bool try_lock_for(const zce::Time_Value& relative_time)  noexcept override;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();
@@ -117,19 +117,19 @@ public:
     virtual ~Thread_NONR_Mutex(void);
 public:
     ///锁定
-    virtual void lock();
+    virtual void lock() noexcept;
 
     ///尝试锁定
-    virtual bool try_lock();
+    virtual bool try_lock() noexcept;
 
     ///解锁
-    virtual void unlock();
+    virtual void unlock() noexcept;
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool wait_until(const zce::Time_Value& abs_time);
+    virtual bool wait_until(const zce::Time_Value& abs_time) noexcept;
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool wait_for(const zce::Time_Value& relative_time);
+    virtual bool wait_for(const zce::Time_Value& relative_time) noexcept;
 
 protected:
 

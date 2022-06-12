@@ -21,9 +21,9 @@ public:
         int abc = 0;
         for (size_t i = 0; i < TEST_NUMBER; ++i)
         {
-            light_rw.lock_read();
+            light_rw.try_lock_shared();
             abc = g_daomei_foo;
-            light_rw.unlock_read();
+            light_rw.unlock_shared();
         }
         ZCE_UNUSED_ARG(abc);
         return 0;
@@ -44,9 +44,9 @@ public:
     {
         for (size_t i = 0; i < TEST_NUMBER; ++i)
         {
-            light_rw.lock_write();
+            light_rw.lock();
             g_daomei_foo++;
-            light_rw.unlock_write();
+            light_rw.unlock();
         }
 
         return 0;
@@ -98,9 +98,9 @@ public:
         int abc = 0;
         for (size_t i = 0; i < TEST_NUMBER; ++i)
         {
-            rw_lock.lock_read();
+            rw_lock.lock_shared();
             abc = g_daomei_foo;
-            rw_lock.unlock_read();
+            rw_lock.unlock_shared();
         }
         ZCE_UNUSED_ARG(abc);
         return 0;
@@ -121,9 +121,9 @@ public:
     {
         for (size_t i = 0; i < TEST_NUMBER; ++i)
         {
-            rw_lock.lock_write();
+            rw_lock.lock();
             g_daomei_foo++;
-            rw_lock.unlock_write();
+            rw_lock.unlock();
         }
 
         return 0;

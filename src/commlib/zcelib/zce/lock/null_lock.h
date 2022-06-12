@@ -18,8 +18,7 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCK_NULL_LOCK_H_
-#define ZCE_LIB_LOCK_NULL_LOCK_H_
+#pragma once
 
 #include "zce/lock/lock_guard.h"
 #include "zce/lock/lock_base.h"
@@ -34,57 +33,70 @@ class Time_Value;
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
 */
-class Null_Mutex : public zce::Lock_Base
+class Null_Lock : public zce::Lock_Base
 {
 public:
     //NULL锁的GUARD
-    typedef Lock_Guard<zce::Null_Mutex>      LOCK_GUARD;
-
-    typedef Read_Guard<zce::Null_Mutex>      LOCK_READ_GUARD;
-
-    typedef Write_Guard<zce::Null_Mutex>     LOCK_WRITE_GUARD;
+    typedef Lock_Guard<zce::Null_Lock>      LOCK_GUARD;
+    typedef Shared_Guard<zce::Null_Lock>    LOCK_READ_GUARD;
+    typedef Write_Guard<zce::Null_Lock>     LOCK_WRITE_GUARD;
 
 public:
     ///构造函数
-    Null_Mutex(const char* ptr = NULL);
+    Null_Lock() = default;
     ///析构函数
-    virtual ~Null_Mutex(void);
+    virtual ~Null_Lock(void) = default;
 
 public:
     ///锁定
-    virtual void lock();
-
+    void lock() noexcept override
+    {
+    }
     ///尝试锁定
-    virtual bool try_lock();
-
+    bool try_lock() noexcept override
+    {
+        return true;
+    }
     ///解锁,
-    virtual void unlock();
-
-    ///绝对时间超时的的锁定，超时后解锁，返回是否超时
-    virtual bool lock(const zce::Time_Value& /*abs_time*/);
+    void unlock() noexcept override
+    {
+    }
+    ///尝试锁定，等待到超时时间点（绝对时间）后解锁，返回是否锁定
+    bool try_lock_until(const zce::Time_Value&) noexcept override
+    {
+        return true;
+    }
     ///相对时间
-    virtual bool lock_for(const zce::Time_Value& /*relative_time*/);
-
+    bool try_lock_for(const zce::Time_Value&) noexcept override
+    {
+        return true;
+    }
     //相对与BOOST的shared的共享-独占锁的叫法，我还是倾向读写锁
 
     ///读取锁
-    virtual void lock_read();
+    void lock_shared() noexcept override
+    {
+    }
+    ///解锁读取锁
+    void unlock_shared() noexcept override
+    {
+    }
     ///尝试读取锁
-    virtual bool try_lock_read();
-
+    bool try_lock_shared() noexcept override
+    {
+        return true;
+    }
     ///绝对时间超时的读取锁，
-    virtual bool timed_lock_read(const zce::Time_Value& /*abs_time*/);
+    bool try_lock_shared_until(const zce::Time_Value& /*abs_time*/) noexcept override
+    {
+        return true;
+    }
     ///相对时间超时的读取锁，
-    virtual bool duration_lock_read(const zce::Time_Value& /*relative_time*/);
+    bool try_lock_shared_for(const zce::Time_Value& /*relative_time*/) noexcept override
+    {
+        return true;
+    }
 
-    ///写锁定
-    virtual void lock_write();
-    ///尝试读取锁
-    virtual bool try_lock_write();
-    ///写锁定超时
-    virtual bool timed_lock_write(const zce::Time_Value& /*abs_time*/);
-    //相对时间
-    virtual bool duration_lock_write(const zce::Time_Value& /*relative_time*/);
 
 protected:
     // A dummy lock.
@@ -99,25 +111,36 @@ class Null_Condition : public Condition_Base
 {
 public:
     //
-    Null_Condition();
-    virtual ~Null_Condition();
+    Null_Condition() = default;
+    virtual ~Null_Condition() = default;
 
 private:
 
-    ///等待
-    virtual void wait(zce::Null_Mutex* /*external_mutex*/);
+    //!等待
+    void wait(zce::Lock_Base* /*external_mutex*/) noexcept override
+    {
+    }
+    //!绝对时间超时的的等待，超时后解锁
+    bool wait_until(zce::Lock_Base* /*external_mutex*/,
+                    const zce::Time_Value& /*abs_time*/) noexcept override
+    {
+        return true;
+    }
+    //!相对时间的超时锁定等待，超时后，解锁
+    bool wait_for(zce::Lock_Base* /*external_mutex*/,
+                  const zce::Time_Value& /*relative_time*/) noexcept override
+    {
+        return true;
+    }
+    //!给一个等待线程发送信号 Signal one waiting thread.
+    void notify_one(void) noexcept override
+    {
+    }
 
-    ///绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(zce::Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*abs_time*/);
-
-    ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(zce::Null_Mutex* /*external_mutex*/, const zce::Time_Value& /*relative_time*/);
-
-    /// 给一个等待线程发送信号 Signal one waiting thread.
-    virtual void signal(void);
-
-    ///给所有的等待线程广播信号 Signal *all* waiting threads.
-    virtual void broadcast(void);
+    //!给所有的等待线程广播信号 Signal *all* waiting threads.
+    void notify_all(void) noexcept override
+    {
+    }
 
 protected:
     // A dummy lock.
@@ -125,4 +148,3 @@ protected:
 };
 }
 
-#endif //ZCE_LIB_LOCK_NULL_LOCK_H_

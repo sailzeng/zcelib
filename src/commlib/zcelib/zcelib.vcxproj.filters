@@ -19,6 +19,7 @@
     </None>
     <None Include="zcelib.ruleset" />
     <None Include="cpp.hint" />
+    <None Include="zce\version.h.in" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce\net\http_client.cpp">
@@ -141,9 +142,6 @@
     <ClCompile Include="zce\util\random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\lock\lock_base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\lock\file_lock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -160,9 +158,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\lock\thread_condi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\lock\null_lock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\lock\process_mutex.cpp">
@@ -331,6 +326,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\net\ping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\aio\aio_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\aio\aio_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\aio\aio_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -764,5 +768,23 @@
     <ClInclude Include="zce\pool\multiobjs_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\version.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\comm\common.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\aio\aio_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\aio\aio_manager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\aio\aio_task.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

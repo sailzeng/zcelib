@@ -169,7 +169,7 @@ int pthread_cond_timedwait(pthread_cond_t* cond,
 *             如果是WIN2008以下版本模拟实现，建议加上，否则会有问题，
 *             如果是真实的条件变量，那么应该是可以不加外部锁，但如果修改的条件是一个共享数据，要加锁
 */
-int pthread_cond_broadcast(pthread_cond_t* cond);
+int pthread_cond_broadcast(pthread_cond_t* cond) noexcept;
 
 /*!
 * @brief      条件变量解锁发信号。
@@ -177,7 +177,7 @@ int pthread_cond_broadcast(pthread_cond_t* cond);
 * @param      cond 条件变量对象
 * @note       建议参考pthread_cond_broadcast说明段。
 */
-int pthread_cond_signal(pthread_cond_t* cond);
+int pthread_cond_signal(pthread_cond_t* cond) noexcept;
 
 //====================================================================================================
 };

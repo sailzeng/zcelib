@@ -80,7 +80,7 @@ Process_Mutex::~Process_Mutex(void)
 }
 
 //锁定
-void Process_Mutex::lock()
+void Process_Mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(lock_);
@@ -93,7 +93,7 @@ void Process_Mutex::lock()
 }
 
 //尝试锁定
-bool Process_Mutex::try_lock()
+bool Process_Mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(lock_);
@@ -107,7 +107,7 @@ bool Process_Mutex::try_lock()
 }
 
 //解锁,
-void Process_Mutex::unlock()
+void Process_Mutex::unlock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(lock_);
@@ -120,7 +120,7 @@ void Process_Mutex::unlock()
 }
 
 //绝对时间
-bool Process_Mutex::lock(const zce::Time_Value& abs_time)
+bool Process_Mutex::try_lock_until(const zce::Time_Value& abs_time) noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(lock_, abs_time);
@@ -135,11 +135,11 @@ bool Process_Mutex::lock(const zce::Time_Value& abs_time)
 }
 
 //相对时间
-bool Process_Mutex::lock_for(const zce::Time_Value& relative_time)
+bool Process_Mutex::try_lock_for(const zce::Time_Value& relative_time) noexcept
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
-    return lock(abs_time);
+    return try_lock_until(abs_time);
 }
 
 //取出内部的锁的指针

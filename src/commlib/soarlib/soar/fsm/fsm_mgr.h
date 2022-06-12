@@ -90,7 +90,7 @@ protected:
     ///内部的APPFRAME的消息队列，
     typedef zce::MsgQueue_Deque<soar::Zerg_Frame*> Inner_Frame_Queue;
     ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
-    typedef ZergFrame_Mallocor<zce::Null_Mutex> Inner_Frame_Mallocor;
+    typedef ZergFrame_Mallocor<zce::Null_Lock> Inner_Frame_Mallocor;
     //内部的锁的数量
     typedef std::unordered_set<ONLYONE_LOCK, HASH_OF_LOCK, EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
 

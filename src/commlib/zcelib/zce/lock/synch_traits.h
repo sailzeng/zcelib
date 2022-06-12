@@ -31,14 +31,14 @@ class MT_SYNCH
 {
 public:
     typedef Thread_Light_Mutex                  MUTEX;
-    typedef Null_Mutex                          NULL_MUTEX;
+    typedef Null_Lock                           NULL_MUTEX;
     typedef Process_Mutex                       PROCESS_MUTEX;
     typedef Thread_Recursive_Mutex              RECURSIVE_MUTEX;
     typedef Thread_RW_Mutex                     RW_MUTEX;
     typedef Thread_Condition                    CONDITION;
     typedef Thread_Recursive_Condition          RECURSIVE_CONDITION;
     typedef Thread_Semaphore                    SEMAPHORE;
-    typedef Null_Mutex                          NULL_SEMAPHORE;
+    typedef Null_Lock                           NULL_SEMAPHORE;
 };
 
 /*!
@@ -47,14 +47,14 @@ public:
 class ZCE_NULL_SYNCH
 {
 public:
-    typedef Null_Mutex               MUTEX;
-    typedef Null_Mutex               NULL_MUTEX;
-    typedef Null_Mutex               PROCESS_MUTEX;
-    typedef Null_Mutex               RECURSIVE_MUTEX;
-    typedef Null_Mutex               RW_MUTEX;
-    typedef Null_Condition           CONDITION;
-    typedef Null_Condition           RECURSIVE_CONDITION;
-    typedef Null_Mutex               SEMAPHORE;
-    typedef Null_Mutex               NULL_SEMAPHORE;
+    typedef Null_Lock               MUTEX;
+    typedef Null_Lock               NULL_MUTEX;
+    typedef Null_Lock               PROCESS_MUTEX;
+    typedef Null_Lock               RECURSIVE_MUTEX;
+    typedef Null_Lock               RW_MUTEX;
+    typedef Null_Condition          CONDITION;
+    typedef Null_Condition          RECURSIVE_CONDITION;
+    typedef Null_Lock               SEMAPHORE;
+    typedef Null_Lock               NULL_SEMAPHORE;
 };
 }

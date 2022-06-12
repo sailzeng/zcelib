@@ -147,7 +147,7 @@ public:
                       bool is_thread_synchro = false,
                       bool auto_new_line = true,
                       int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                      int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL);
+                      int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
     @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
@@ -168,7 +168,7 @@ public:
                       bool is_thread_synchro = false,
                       bool auto_new_line = true,
                       int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                      int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL);
+                      int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
     @brief      初始化函数，用于标准输出
@@ -181,7 +181,7 @@ public:
     int init_stdout(bool use_err_out = true,
                     bool auto_new_line = true,
                     bool is_thread_synchro = false,
-                    int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL);
+                    int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,
@@ -203,7 +203,7 @@ public:
                    bool auto_new_line,
                    size_t max_size_log_file,
                    size_t reserve_file_num,
-                   unsigned int head_record);
+                   unsigned int head_record) noexcept;
 
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
@@ -271,7 +271,7 @@ public:
     */
     void output_log_info(const timeval& now_time,
                          char* log_tmp_buffer,
-                         size_t sz_use_len);
+                         size_t sz_use_len) noexcept;
 
 protected:
 
@@ -281,7 +281,7 @@ protected:
     @param      idlogfilename 生成的日志文件名称
     */
     void create_id_logname(size_t logfileid,
-                           std::string& idlogfilename);
+                           std::string& idlogfilename) noexcept;
 
     /*!
     @brief      根据日期得到文件名称
@@ -289,12 +289,12 @@ protected:
     @param      logfilename 生成的日志文件名称
     */
     void create_time_logname(const timeval& cur_time,
-                             std::string& logfilename);
+                             std::string& logfilename) noexcept;
 
     /*!
     @brief      处理超期的日志文件，
     */
-    void del_old_logfile();
+    void del_old_logfile() noexcept;
 
     /*!
     @brief      将日志的头部信息输出到一个Stringbuf中
@@ -308,19 +308,20 @@ protected:
                            const timeval& now_time,
                            char* log_tmp_buffer,
                            size_t sz_buf_len,
-                           size_t& sz_use_len);
+                           size_t& sz_use_len) noexcept;
 
     /*!
     @brief      生成配置信息,修改错误配置,
     */
-    void make_configure(void);
+    void make_configure(void) noexcept;
 
     /*!
     @brief      （如果有必要，）得到新的日志文件，
     @param      init     是否是初始化阶段
     @param      current_time  当前时间
     */
-    void open_new_logfile(bool initiate, const timeval& current_time);
+    void open_new_logfile(bool initiate,
+                          const timeval& current_time) noexcept;
 
 public:
 

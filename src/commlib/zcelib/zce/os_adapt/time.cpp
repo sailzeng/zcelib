@@ -31,7 +31,7 @@
 //缺点：如果两次调用之间的时间如果过长，超过49天，我无法保证你得到准确的值
 //你老不要49天就只调用一次这个函数呀，那样我保证不了你的TICK的效果，你老至少每天调用一次吧。
 //内部为了上一次调用的时间，用了static 变量，又为了保护static，给了锁，
-int zce::steady_clock(timeval *tv)
+int zce::steady_clock(timeval* tv)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -836,7 +836,7 @@ bool zce::timeval_havetime(const timeval& tv)
 }
 
 //这只timeval这个结构
-const timeval zce::make_timeval(time_t sec, time_t usec)
+const timeval zce::make_timeval(time_t sec, time_t usec) noexcept
 {
     timeval to_timeval;
 #if defined (ZCE_OS_WINDOWS)
@@ -851,7 +851,7 @@ const timeval zce::make_timeval(time_t sec, time_t usec)
 }
 
 //转换得到timeval这个结构
-const timeval zce::make_timeval(std::clock_t clock_value)
+const timeval zce::make_timeval(std::clock_t clock_value) noexcept
 {
     timeval to_timeval;
 
@@ -866,7 +866,7 @@ const timeval zce::make_timeval(std::clock_t clock_value)
 }
 
 //转换得到timeval这个结构
-const timeval zce::make_timeval(const ::timespec* timespec_val)
+const timeval zce::make_timeval(const ::timespec* timespec_val) noexcept
 {
     //每次我自己看见这段代码都会疑惑好半天，实际我没有错，好吧，写点注释把，
     //NSEC 纳秒 10-9s
@@ -878,42 +878,42 @@ const timeval zce::make_timeval(const ::timespec* timespec_val)
     return to_timeval;
 }
 
-const timeval zce::make_timeval(const std::chrono::hours& val)
+const timeval zce::make_timeval(const std::chrono::hours& val) noexcept
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * zce::ONE_HOUR_SECONDS);
     to_timeval.tv_usec = 0;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::minutes& val)
+const timeval zce::make_timeval(const std::chrono::minutes& val) noexcept
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * zce::ONE_MINUTE_SECONDS);
     to_timeval.tv_usec = 0;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::seconds& val)
+const timeval zce::make_timeval(const std::chrono::seconds& val) noexcept
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count());
     to_timeval.tv_usec = 0;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::milliseconds& val)
+const timeval zce::make_timeval(const std::chrono::milliseconds& val) noexcept
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_MSEC);
     to_timeval.tv_usec = (val.count() % SEC_PER_MSEC) * 1000;
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::microseconds& val)
+const timeval zce::make_timeval(const std::chrono::microseconds& val) noexcept
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_USEC);
     to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>((val.count() % SEC_PER_USEC));
     return to_timeval;
 }
-const timeval zce::make_timeval(const std::chrono::nanoseconds& val)
+const timeval zce::make_timeval(const std::chrono::nanoseconds& val) noexcept
 {
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_NSEC);
@@ -922,15 +922,15 @@ const timeval zce::make_timeval(const std::chrono::nanoseconds& val)
 }
 
 //将CPP11的time_point的数据结构转换得到timeval结构
-const timeval zce::make_timeval(const std::chrono::system_clock::time_point& val)
+const timeval zce::make_timeval(const std::chrono::system_clock::time_point& val) noexcept
 {
-    std::chrono::nanoseconds tval =
+    const std::chrono::nanoseconds tval =
         std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
     return zce::make_timeval(tval);
 }
-const timeval zce::make_timeval(const std::chrono::steady_clock::time_point& val)
+const timeval zce::make_timeval(const std::chrono::steady_clock::time_point& val) noexcept
 {
-    std::chrono::nanoseconds tval =
+    const std::chrono::nanoseconds tval =
         std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
     return zce::make_timeval(tval);
 }
@@ -938,7 +938,7 @@ const timeval zce::make_timeval(const std::chrono::steady_clock::time_point& val
 #if defined (ZCE_OS_WINDOWS)
 
 //转换FILETIME到timeval
-const timeval zce::make_timeval(const FILETIME* file_time)
+const timeval zce::make_timeval(const FILETIME* file_time) noexcept
 {
     timeval to_timeval;
 
@@ -958,7 +958,7 @@ const timeval zce::make_timeval(const FILETIME* file_time)
 }
 
 //转换SYSTEMTIME到timeval
-const timeval zce::make_timeval(const SYSTEMTIME* system_time)
+const timeval zce::make_timeval(const SYSTEMTIME* system_time) noexcept
 {
     FILETIME ft;
     ::SystemTimeToFileTime(system_time, &ft);
@@ -966,7 +966,7 @@ const timeval zce::make_timeval(const SYSTEMTIME* system_time)
 }
 
 //转换FILETIME到timeval,这个是把FILETIME当着一个时长看待进行的
-const timeval zce::make_timeval2(const FILETIME* file_time)
+const timeval zce::make_timeval2(const FILETIME* file_time) noexcept
 {
     timeval to_timeval;
 
