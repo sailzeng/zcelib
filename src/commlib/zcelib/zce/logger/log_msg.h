@@ -75,7 +75,7 @@ enum class LOG_OUTPUT
     WINDBG = (0x1 << 4)
 };
 
-class LogMsg 
+class LogMsg
 {
 public:
 
@@ -130,18 +130,6 @@ protected:
                       int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
                       int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
-        /*!
-    @brief      设置默认输出的信息类型
-    @return     unsigned int
-    @param      recdinfo
-    */
-    unsigned int set_log_head(unsigned int recdinfo);
-    /*!
-    @brief      取得默认输出的信息类型
-    @return     unsigned int
-    */
-    unsigned int get_log_head(void);
-
     /*!
     @brief      初始化函数，用于标准输出
     @return     int                返回0标识初始化成功
@@ -154,6 +142,18 @@ protected:
                     bool auto_new_line = true,
                     bool is_thread_synchro = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
+
+    /*!
+    @brief      设置默认输出的信息类型
+    @return     unsigned int
+    @param      recdinfo
+    */
+    unsigned int set_log_head(int recdinfo);
+    /*!
+    @brief      取得默认输出的信息类型
+    @return     unsigned int
+    */
+    unsigned int get_log_head(void);
 
     /*!
     @brief      设置日志输出级别的Level
@@ -172,7 +172,7 @@ protected:
     @return     unsigned int
     @param      output_way
     */
-    unsigned int set_output_way(unsigned int output_way);
+    unsigned int set_output_way(int output_way);
     /*!
     @brief      设置默认输出的位置
     @return     unsigned int
@@ -202,6 +202,18 @@ protected:
                            char* log_tmp_buffer,
                            size_t sz_buf_len,
                            size_t& sz_use_len) noexcept;
+
+    /*!
+    @brief      设置是否线程同步
+    @return     bool              旧（原）有的是否多线程同步值，
+    @param      if_thread_synchro 是否进行多线程同步保护
+    */
+    bool set_thread_synchro(bool if_thread_synchro);
+    /*!
+    @brief      取得是否进行线程同步
+    @return     bool   当前的是否多线程同步值
+    */
+    bool get_thread_synchro(void);
 
     /*!
     @brief      打开/关闭日志输出开关
@@ -334,6 +346,11 @@ protected:
     static const size_t  SIZE_OF_LOG_BUFFER = 8192 - 2;
 #endif
 
+    ///是否进行多线程的同步
+    bool is_thread_synchro_ = false;
+
+    ///同步锁
+    Thread_Light_Mutex protect_lock_;
 
     ///输出的方式，LOG_OUTPUT的枚举值组合 @ref LOG_OUTPUT
     int output_way_ = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT;
@@ -342,8 +359,7 @@ protected:
     bool auto_new_line_ = true;
 
     //!默认记录的数据,按照和LOG_HEAD_RECORD_INFO 异或
-    int record_info_ = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL;
-
+    int head_record_ = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL;
 
     //!输出日志信息的Mask值,小于这个信息的信息不予以输出
     zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
@@ -351,7 +367,7 @@ protected:
     //!是否输出日志信息,可以用于暂时屏蔽
     bool is_output_log_ = true;
 
-    //!
+    //!日志文件
     Log_File log_file_;
 
 protected:

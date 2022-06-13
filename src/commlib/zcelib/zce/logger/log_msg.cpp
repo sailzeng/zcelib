@@ -25,35 +25,48 @@ LogMsg::~LogMsg()
 
 //初始化函数,用于时间分割日志的构造
 int LogMsg::init_time_log(LOGFILE_DEVIDE div_log_file,
-                            const char* log_file_prefix,
-                            size_t reserve_file_num,
-                            bool trunc_log,
-                            bool is_thread_synchro,
-                            bool auto_new_line,
-                            bool thread_output) noexcept
+                          const char* log_file_prefix,
+                          size_t reserve_file_num,
+                          bool trunc_log,
+                          bool is_thread_synchro,
+                          bool auto_new_line,
+                          bool thread_output,
+                          int output_way,
+                          int head_record) noexcept
 {
-    assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file && LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
-    return log_file_.initialize(div_log_file,
-                      log_file_prefix,
-                      trunc_log,
-                      is_thread_synchro,
-                      auto_new_line,
-                      thread_output,
-                      0,
-                      reserve_file_num);
+    output_way_ = output_way;
+    head_record_ = head_record;
+    auto_new_line_ = auto_new_line;
+    is_thread_synchro_ = is_thread_synchro;
+    permit_outlevel_ = RS_DEBUG;
+    assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file &&
+           LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
+    return log_file_.initialize(output_way,
+                                div_log_file,
+                                log_file_prefix,
+                                trunc_log,
+                                thread_output,
+                                0,
+                                reserve_file_num);
 }
 
 //初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
 int LogMsg::init_size_log(const char* log_file_prefix,
-                            size_t max_size_log_file,
-                            unsigned int reserve_file_num,
-                            bool trunc_log,
-                            bool is_thread_synchro,
-                            bool auto_new_line,
-                            bool thread_output) noexcept
+                          size_t max_size_log_file,
+                          unsigned int reserve_file_num,
+                          bool trunc_log,
+                          bool is_thread_synchro,
+                          bool auto_new_line,
+                          bool thread_output,
+                          int output_way,
+                          int head_record) noexcept
 {
     LOGFILE_DEVIDE div_log_file = LOGFILE_DEVIDE::BY_SIZE_NAME_ID;
-
+    output_way_ = output_way;
+    head_record_ = head_record;
+    auto_new_line_ = auto_new_line;
+    is_thread_synchro_ = is_thread_synchro;
+    permit_outlevel_ = RS_DEBUG;
     //如果不标识文件分割大小
     if (0 == max_size_log_file)
     {
@@ -61,15 +74,40 @@ int LogMsg::init_size_log(const char* log_file_prefix,
     }
 
     return log_file_.initialize(output_way,
-                      head_record,
-                      div_log_file,
-                      log_file_prefix,
-                      trunc_log,
-                      is_thread_synchro,
-                      auto_new_line,
-                      thread_output,
-                      max_size_log_file,
-                      reserve_file_num);
+                                div_log_file,
+                                log_file_prefix,
+                                trunc_log,
+                                thread_output,
+                                max_size_log_file,
+                                reserve_file_num);
+}
+
+//初始化函数，用于标准输出
+int LogMsg::init_stdout(bool use_err_out,
+                        bool is_thread_synchro,
+                        bool auto_new_line,
+                        int head_record) noexcept
+{
+    unsigned int output_way = 0;
+    if (use_err_out)
+    {
+        output_way |= static_cast<int>(LOG_OUTPUT::ERROUT);
+    }
+    else
+    {
+        output_way |= static_cast<int>(LOG_OUTPUT::STDOUT);
+    }
+    output_way_ = output_way;
+    head_record_ = head_record;
+    auto_new_line_ = auto_new_line;
+    is_thread_synchro_ = is_thread_synchro;
+    return log_file_.initialize(output_way,
+                                LOGFILE_DEVIDE::NONE,
+                                "",
+                                false,
+                                false,
+                                0,
+                                0);
 }
 
 //打开日志输出开关
@@ -78,41 +116,40 @@ void LogMsg::enable_output(bool enable_out)
     is_output_log_ = enable_out;
 }
 
-//设置日志输出Level
+//!设置日志输出Level
 LOG_PRIORITY LogMsg::set_log_priority(LOG_PRIORITY outlevel)
 {
     LOG_PRIORITY oldlevel = permit_outlevel_;
     permit_outlevel_ = outlevel;
     return oldlevel;
 }
-//取得输出Level
+//!取得输出Level
 LOG_PRIORITY LogMsg::get_log_priority(void)
 {
     return permit_outlevel_;
 }
 
-//设置默认输出的信息类型
-unsigned int LogMsg::set_log_head(unsigned int recdinfo)
+//!设置默认输出的信息类型
+unsigned int LogMsg::set_log_head(int recdinfo)
 {
     unsigned int tmprecdinfo = recdinfo;
-    record_info_ = recdinfo;
+    head_record_ = recdinfo;
     return tmprecdinfo;
 }
-//取得默认输出的信息类型
+//!取得默认输出的信息类型
 unsigned int LogMsg::get_log_head(void)
 {
-    return record_info_;
+    return head_record_;
 }
 
-//设置同步输出的标示
-//如果开始没有设置文件同步输出,后面不调整.
-unsigned int LogMsg::set_output_way(unsigned int output_way)
+//!设置同步输出的标示
+//!如果开始没有设置文件同步输出,后面不调整.
+unsigned int LogMsg::set_output_way(int output_way)
 {
     //
-    unsigned int tmpsynchr = output_way_;
+    int tmp = output_way_;
     output_way_ = output_way;
-
-    return tmpsynchr;
+    return tmp;
 }
 
 //取得同步输出的标示
@@ -122,14 +159,14 @@ unsigned int LogMsg::get_output_way(void)
 }
 
 //设置是否线程同步
-bool Log_File::set_thread_synchro(bool is_thread_synchro)
+bool LogMsg::set_thread_synchro(bool is_thread_synchro)
 {
     bool old_synchro = is_thread_synchro_;
     is_thread_synchro_ = is_thread_synchro;
     return old_synchro;
 }
 //取得是否进行线程同步
-bool Log_File::get_thread_synchro(void)
+bool LogMsg::get_thread_synchro(void)
 {
     return is_thread_synchro_;
 }
@@ -249,15 +286,15 @@ void LogMsg::write_logmsg(LOG_PRIORITY dbglevel,
 
 //将日志的头部信息输出到一个Stringbuf中
 void LogMsg::stringbuf_loghead(LOG_PRIORITY outlevel,
-                                 const timeval& now_time,
-                                 char* log_tmp_buffer,
-                                 size_t sz_buf_len,
-                                 size_t& sz_use_len) noexcept
+                               const timeval& now_time,
+                               char* log_tmp_buffer,
+                               size_t sz_buf_len,
+                               size_t& sz_use_len) noexcept
 {
     sz_use_len = 0;
 
     //如果纪录时间
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::CURRENTTIME))
+    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::CURRENTTIME))
     {
         //转换为语句
         timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
@@ -269,7 +306,7 @@ void LogMsg::stringbuf_loghead(LOG_PRIORITY outlevel,
     }
 
     //如果记录日志级别
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::LOGLEVEL))
+    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::LOGLEVEL))
     {
         switch (outlevel)
         {
@@ -304,14 +341,14 @@ void LogMsg::stringbuf_loghead(LOG_PRIORITY outlevel,
     }
 
     //如果纪录当前的PID
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::PROCESS_ID))
+    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::PROCESS_ID))
     {
         sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]",
                                static_cast<unsigned int>(getpid()));
         sz_buf_len -= sz_use_len;
     }
 
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::THREAD_ID))
+    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::THREAD_ID))
     {
         sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
                                sz_buf_len,
@@ -322,8 +359,8 @@ void LogMsg::stringbuf_loghead(LOG_PRIORITY outlevel,
 }
 
 void LogMsg::output_log_info(const timeval& now_time,
-                                    char* log_tmp_buffer,
-                                    size_t sz_use_len) noexcept
+                             char* log_tmp_buffer,
+                             size_t sz_use_len) noexcept
 {
     //如果要线程同步，在这个地方加锁，由于使用了条件判断是否加锁，而不是模版，所以这个地方没有用GRUAD，
     if (is_thread_synchro_)
@@ -334,22 +371,9 @@ void LogMsg::output_log_info(const timeval& now_time,
     //记录到文件中
     if (output_way_ & static_cast<int>(LOG_OUTPUT::LOGFILE))
     {
-        //得到新的文件名字
-        open_new_logfile(false, now_time);
-
-        //如果文件状态OK
-        if (log_file_handle_)
-        {
-            log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
-
-            //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
-            //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
-            //是否可以优化呢，这是一个两难问题
-            log_file_handle_.flush();
-
-            //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
-            size_log_file_ += sz_use_len;
-        }
+        log_file_.fileout_log_info(now_time,
+                                   log_tmp_buffer,
+                                   sz_use_len);
     }
 
     //如果有同步要求输出的地方
@@ -373,7 +397,6 @@ void LogMsg::output_log_info(const timeval& now_time,
     {
         ::OutputDebugStringA(log_tmp_buffer);
     }
-
 #endif
 
     //如果有线程同步，在这个地方解锁
@@ -479,7 +502,6 @@ void LogMsg::clean_instance()
     {
         delete log_instance_;
     }
-
     log_instance_ = NULL;
     return;
 }

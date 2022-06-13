@@ -31,61 +31,26 @@ Log_File::~Log_File()
 
 
 
-//初始化函数，用于标准输出
-int Log_File::init_stdout(bool use_err_out,
-                               bool is_thread_synchro,
-                               bool auto_new_line,
-                               int head_record) noexcept
-{
-    unsigned int output_way = 0;
 
-    if (use_err_out)
-    {
-        output_way |= static_cast<int>(LOG_OUTPUT::ERROUT);
-    }
-    else
-    {
-        output_way |= static_cast<int>(LOG_OUTPUT::STDOUT);
-    }
-
-    return initialize(output_way,
-                      head_record,
-                      LOGFILE_DEVIDE::NONE,
-                      "",
-                      false,
-                      is_thread_synchro,
-                      auto_new_line,
-                      false,
-                      0,
-                      0);
-}
 
 //初始化函数,参数最齐全的一个
 int Log_File::initialize(int output_way,
-                              int head_record,
-                              LOGFILE_DEVIDE div_log_file,
-                              const char* log_file_prefix,
-                              bool trunc_old,
-                              bool is_thread_synchro,
-                              bool auto_new_line,
-                              bool thread_output,
-                              size_t max_size_log_file,
-                              size_t reserve_file_num) noexcept
+                         LOGFILE_DEVIDE div_log_file,
+                         const char* log_file_prefix,
+                         bool trunc_old,
+                         bool thread_output,
+                         size_t max_size_log_file,
+                         size_t reserve_file_num) noexcept
 {
-    output_way_ = output_way;
     div_log_file_ = div_log_file;
 
-    is_thread_synchro_ = is_thread_synchro;
-    auto_new_line_ = auto_new_line;
     trunc_old_ = trunc_old;
     max_size_log_file_ = max_size_log_file;
     reserve_file_num_ = reserve_file_num;
-    record_info_ = head_record;
     current_click_ = 1;
-    permit_outlevel_ = RS_TRACE;
+    thread_output_ = thread_output;
     size_log_file_ = 0;
 
-    is_output_log_ = true;
 
     //断言检查输入参数
     if (log_file_prefix != NULL)
@@ -95,13 +60,13 @@ int Log_File::initialize(int output_way,
     //如果文件参数不齐全
     else
     {
-        assert(0 == (output_way_ & static_cast<int>(LOG_OUTPUT::LOGFILE)));
+        assert(0 == (output_way & static_cast<int>(LOG_OUTPUT::LOGFILE)));
     }
 
     //
     make_configure();
     //如果需要日志文件输出，输出一个文件
-    if (output_way_ & static_cast<int>(LOG_OUTPUT::LOGFILE))
+    if (output_way & static_cast<int>(LOG_OUTPUT::LOGFILE))
     {
         timeval now_time(gettimeofday());
         open_new_logfile(true, now_time);
@@ -119,13 +84,8 @@ void Log_File::terminate()
     }
 
     current_click_ = 1;
-    permit_outlevel_ = RS_TRACE;
-
     div_log_file_ = LOGFILE_DEVIDE::NONE;
-    output_way_ = static_cast<int>(LOG_OUTPUT::LOGFILE) | static_cast<int>(LOG_OUTPUT::ERROUT);
-
     size_log_file_ = 0;
-    is_output_log_ = true;
 }
 
 //配置日志文件
@@ -171,7 +131,7 @@ void Log_File::make_configure(void) noexcept
 
 //得到新的日志文件文件名称
 void Log_File::open_new_logfile(bool initiate,
-                                     const timeval& current_time) noexcept
+                                const timeval& current_time) noexcept
 {
     //是否要生成新的文件名称
     bool to_new_file = false;
@@ -382,7 +342,7 @@ void Log_File::del_old_logfile() noexcept
 
 //根据日期得到文件名称
 void Log_File::create_time_logname(const timeval& cur_time,
-                                        std::string& logfilename) noexcept
+                                   std::string& logfilename) noexcept
 {
     const time_t cur_t = cur_time.tv_sec;
     tm curtm = *localtime(&(cur_t));
@@ -439,7 +399,7 @@ void Log_File::create_time_logname(const timeval& cur_time,
 
 //根据ID得到文件名称f
 void Log_File::create_id_logname(size_t logfileid,
-                                      std::string& log_filename) noexcept
+                                 std::string& log_filename) noexcept
 {
     char tmpbuf[32];
 
@@ -459,7 +419,27 @@ void Log_File::create_id_logname(size_t logfileid,
     log_filename += tmpbuf;
 }
 
+void Log_File::fileout_log_info(const timeval& now_time,
+                                char* log_tmp_buffer,
+                                size_t sz_use_len) noexcept
+{
+    //得到新的文件名字
+    open_new_logfile(false, now_time);
 
+    //如果文件状态OK
+    if (log_file_handle_)
+    {
+        log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
+
+        //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
+        //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
+        //是否可以优化呢，这是一个两难问题
+        log_file_handle_.flush();
+
+        //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
+        size_log_file_ += sz_use_len;
+    }
+}
 
 
 }

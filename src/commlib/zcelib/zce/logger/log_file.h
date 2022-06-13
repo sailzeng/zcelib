@@ -102,17 +102,15 @@ public:
     @return     int                返回0标识初始化成功
     @param[in]  div_log_file
     @param[in]  log_file_prefix
-    @param[in]  is_thread_synchro
     @param[in]  auto_new_line
     @param[in]  thread_output     使用独立的线程打印
     @param[in]  max_size_log_file 日志文件的最大尺寸
     @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
     */
-    int initialize(LOGFILE_DEVIDE div_log_file,
+    int initialize(int output_way,
+                   LOGFILE_DEVIDE div_log_file,
                    const char* log_file_prefix,
                    bool trunc_old,
-                   bool is_thread_synchro,
-                   bool auto_new_line,
                    bool thread_output,
                    size_t max_size_log_file,
                    size_t reserve_file_num) noexcept;
@@ -122,21 +120,10 @@ public:
     */
     void terminate();
 
-    /*!
-    @brief      设置是否线程同步
-    @return     bool              旧（原）有的是否多线程同步值，
-    @param      if_thread_synchro 是否进行多线程同步保护
-    */
-    bool set_thread_synchro(bool if_thread_synchro);
-    /*!
-    @brief      取得是否进行线程同步
-    @return     bool   当前的是否多线程同步值
-    */
-    bool get_thread_synchro(void);
 
-
-
-
+    void fileout_log_info(const timeval& now_time,
+                          char* log_tmp_buffer,
+                          size_t sz_use_len) noexcept;
 protected:
 
     /*!
@@ -160,8 +147,6 @@ protected:
     */
     void del_old_logfile() noexcept;
 
-
-
     /*!
     @brief      生成配置信息,修改错误配置,
     */
@@ -174,8 +159,6 @@ protected:
     */
     void open_new_logfile(bool initiate,
                           const timeval& current_time) noexcept;
-
-
 
 public:
 
@@ -218,12 +201,6 @@ protected:
     //而同步的点应该有两个，1.文件的更换，这个要避免几个人同时重入，2.向缓冲区写入的时候，
     //对于2，其实由于我写入的数据区长度最大只有4K，所以其实理论上可以逃避这个问题，当然这样不能使用带有缓冲的输出,只能用write
 
-    ///是否进行多线程的同步
-    bool is_thread_synchro_ = false;
-
-    ///同步锁
-    Thread_Light_Mutex protect_lock_;
-
     //!
     bool trunc_old_ = false;
 
@@ -236,11 +213,8 @@ protected:
     //!保留文件的个数,如果有太多文件要删除,为0表示不删除
     size_t reserve_file_num_ = DEFAULT_RESERVE_FILENUM;
 
-
-
     ///当前的大概时间,按小时记录,避免进行过多的时间判断
     time_t current_click_ = 1;
-
 
     //!日志文件的尺寸
     size_t size_log_file_ = 0;
