@@ -229,7 +229,7 @@
     <ClCompile Include="zce\async\coroutine.cpp" />
     <ClCompile Include="zce\async\fsm.cpp" />
     <ClCompile Include="zce\async\lua_thread.cpp" />
-    <ClCompile Include="zce\logger\log_basic.cpp" />
+    <ClCompile Include="zce\logger\log_file.cpp" />
     <ClCompile Include="zce\logger\log_msg.cpp" />
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
@@ -349,7 +349,7 @@
     <ClInclude Include="zce\lockfree\spsc_ring.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
     <ClInclude Include="zce\logger\logging.h" />
-    <ClInclude Include="zce\logger\log_basic.h" />
+    <ClInclude Include="zce\logger\log_file.h" />
     <ClInclude Include="zce\logger\log_msg.h" />
     <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\net\dns_resolve.h" />

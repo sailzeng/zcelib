@@ -1,20 +1,20 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/dirent.h"
-#include "zce/os_adapt/thread.h"
+
 #include "zce/os_adapt/process.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/string.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/file.h"
-#include "zce/logger/log_basic.h"
+#include "zce/logger/log_file.h"
 
 namespace zce
 {
-const char LogTrace_Base::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
+const char Log_File::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 
 //构造函数
-LogTrace_Base::LogTrace_Base()
+Log_File::Log_File()
 {
     //预先分配空间
     log_file_name_.reserve(PATH_MAX + 32);
@@ -23,14 +23,14 @@ LogTrace_Base::LogTrace_Base()
 }
 
 //
-LogTrace_Base::~LogTrace_Base()
+Log_File::~Log_File()
 {
     //注销
     terminate();
 }
 
 //初始化函数,用于时间分割日志的构造
-int LogTrace_Base::init_time_log(LOGFILE_DEVIDE div_log_file,
+int Log_File::init_time_log(LOGFILE_DEVIDE div_log_file,
                                  const char* log_file_prefix,
                                  size_t reserve_file_num,
                                  bool trunc_log,
@@ -54,7 +54,7 @@ int LogTrace_Base::init_time_log(LOGFILE_DEVIDE div_log_file,
 }
 
 //初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
-int LogTrace_Base::init_size_log(const char* log_file_prefix,
+int Log_File::init_size_log(const char* log_file_prefix,
                                  size_t max_size_log_file,
                                  unsigned int reserve_file_num,
                                  bool trunc_log,
@@ -85,7 +85,7 @@ int LogTrace_Base::init_size_log(const char* log_file_prefix,
 }
 
 //初始化函数，用于标准输出
-int LogTrace_Base::init_stdout(bool use_err_out,
+int Log_File::init_stdout(bool use_err_out,
                                bool is_thread_synchro,
                                bool auto_new_line,
                                int head_record) noexcept
@@ -114,7 +114,7 @@ int LogTrace_Base::init_stdout(bool use_err_out,
 }
 
 //初始化函数,参数最齐全的一个
-int LogTrace_Base::initialize(int output_way,
+int Log_File::initialize(int output_way,
                               int head_record,
                               LOGFILE_DEVIDE div_log_file,
                               const char* log_file_prefix,
@@ -164,7 +164,7 @@ int LogTrace_Base::initialize(int output_way,
 }
 
 //关闭日志，注意关闭后，必须重新初始化
-void LogTrace_Base::terminate()
+void Log_File::terminate()
 {
     if (log_file_handle_.is_open())
     {
@@ -182,7 +182,7 @@ void LogTrace_Base::terminate()
 }
 
 //配置日志文件
-void LogTrace_Base::make_configure(void) noexcept
+void Log_File::make_configure(void) noexcept
 {
     //检查max_size_log_file_等参数的大小范围
     if (max_size_log_file_ < MIN_LOG_SIZE)
@@ -222,70 +222,8 @@ void LogTrace_Base::make_configure(void) noexcept
     }
 }
 
-//打开日志输出开关
-void LogTrace_Base::enable_output(bool enable_out)
-{
-    is_output_log_ = enable_out;
-}
-
-//设置日志输出Level
-LOG_PRIORITY LogTrace_Base::set_log_priority(LOG_PRIORITY outlevel)
-{
-    LOG_PRIORITY oldlevel = permit_outlevel_;
-    permit_outlevel_ = outlevel;
-    return oldlevel;
-}
-//取得输出Level
-LOG_PRIORITY LogTrace_Base::get_log_priority(void)
-{
-    return permit_outlevel_;
-}
-
-//设置默认输出的信息类型
-unsigned int LogTrace_Base::set_log_head(unsigned int recdinfo)
-{
-    unsigned int tmprecdinfo = recdinfo;
-    record_info_ = recdinfo;
-    return tmprecdinfo;
-}
-//取得默认输出的信息类型
-unsigned int LogTrace_Base::get_log_head(void)
-{
-    return record_info_;
-}
-
-//设置同步输出的标示
-//如果开始没有设置文件同步输出,后面不调整.
-unsigned int LogTrace_Base::set_output_way(unsigned int output_way)
-{
-    //
-    unsigned int tmpsynchr = output_way_;
-    output_way_ = output_way;
-
-    return tmpsynchr;
-}
-
-//取得同步输出的标示
-unsigned int LogTrace_Base::get_output_way(void)
-{
-    return output_way_;
-}
-
-//设置是否线程同步
-bool LogTrace_Base::set_thread_synchro(bool is_thread_synchro)
-{
-    bool old_synchro = is_thread_synchro_;
-    is_thread_synchro_ = is_thread_synchro;
-    return old_synchro;
-}
-//取得是否进行线程同步
-bool LogTrace_Base::get_thread_synchro(void)
-{
-    return is_thread_synchro_;
-}
-
 //得到新的日志文件文件名称
-void LogTrace_Base::open_new_logfile(bool initiate,
+void Log_File::open_new_logfile(bool initiate,
                                      const timeval& current_time) noexcept
 {
     //是否要生成新的文件名称
@@ -437,7 +375,7 @@ void LogTrace_Base::open_new_logfile(bool initiate,
     }
 }
 
-void LogTrace_Base::del_old_logfile() noexcept
+void Log_File::del_old_logfile() noexcept
 {
     //如果保留所有日志，或者分割日志的时间为 月 或者 年
     if (reserve_file_num_ > 0)
@@ -496,7 +434,7 @@ void LogTrace_Base::del_old_logfile() noexcept
 }
 
 //根据日期得到文件名称
-void LogTrace_Base::create_time_logname(const timeval& cur_time,
+void Log_File::create_time_logname(const timeval& cur_time,
                                         std::string& logfilename) noexcept
 {
     const time_t cur_t = cur_time.tv_sec;
@@ -553,7 +491,7 @@ void LogTrace_Base::create_time_logname(const timeval& cur_time,
 }
 
 //根据ID得到文件名称f
-void LogTrace_Base::create_id_logname(size_t logfileid,
+void Log_File::create_id_logname(size_t logfileid,
                                       std::string& log_filename) noexcept
 {
     char tmpbuf[32];
@@ -574,209 +512,7 @@ void LogTrace_Base::create_id_logname(size_t logfileid,
     log_filename += tmpbuf;
 }
 
-//将日志的头部信息输出到一个Stringbuf中
-void LogTrace_Base::stringbuf_loghead(LOG_PRIORITY outlevel,
-                                      const timeval& now_time,
-                                      char* log_tmp_buffer,
-                                      size_t sz_buf_len,
-                                      size_t& sz_use_len) noexcept
-{
-    sz_use_len = 0;
 
-    //如果纪录时间
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::CURRENTTIME))
-    {
-        //转换为语句
-        timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
-        //别计算了，快点
-        sz_use_len = TIMESTR_ISO_USEC_LEN;
 
-        sz_buf_len -= sz_use_len;
-    }
-
-    //如果记录日志级别
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::LOGLEVEL))
-    {
-        switch (outlevel)
-        {
-        case RS_TRACE:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[TRACE]");
-            sz_buf_len -= sz_use_len;
-            break;
-
-        case RS_DEBUG:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[DEBUG]");
-            sz_buf_len -= sz_use_len;
-            break;
-
-        case RS_INFO:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[INFO]");
-            sz_buf_len -= sz_use_len;
-            break;
-
-        case RS_ERROR:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[ERROR]");
-            sz_buf_len -= sz_use_len;
-            break;
-
-        case RS_FATAL:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[FATAL]");
-            sz_buf_len -= sz_use_len;
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    //如果纪录当前的PID
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::PROCESS_ID))
-    {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]",
-                               static_cast<unsigned int>(getpid()));
-        sz_buf_len -= sz_use_len;
-    }
-
-    if (ZCE_U32_BIT_IS_SET(record_info_, LOG_HEAD::THREAD_ID))
-    {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
-                               sz_buf_len,
-                               "[TID:%u]",
-                               static_cast<unsigned int>(pthread_self()));
-        sz_buf_len -= sz_use_len;
-    }
-}
-
-void LogTrace_Base::output_log_info(const timeval& now_time,
-                                    char* log_tmp_buffer,
-                                    size_t sz_use_len) noexcept
-{
-    //如果要线程同步，在这个地方加锁，由于使用了条件判断是否加锁，而不是模版，所以这个地方没有用GRUAD，
-    if (is_thread_synchro_)
-    {
-        protect_lock_.lock();
-    }
-
-    //记录到文件中
-    if (output_way_ & static_cast<int>(LOG_OUTPUT::LOGFILE))
-    {
-        //得到新的文件名字
-        open_new_logfile(false, now_time);
-
-        //如果文件状态OK
-        if (log_file_handle_)
-        {
-            log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
-
-            //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
-            //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
-            //是否可以优化呢，这是一个两难问题
-            log_file_handle_.flush();
-
-            //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
-            size_log_file_ += sz_use_len;
-        }
-    }
-
-    //如果有同步要求输出的地方
-    if (output_way_ & static_cast<int>(LOG_OUTPUT::STDOUT))
-    {
-        //cout是行缓冲
-        std::cout.write(log_tmp_buffer,
-                        static_cast<std::streamsize>(sz_use_len));
-    }
-
-    if (output_way_ & static_cast<int>(LOG_OUTPUT::ERROUT))
-    {
-        //cerr没有缓冲，云飞说的
-        std::cerr.write(log_tmp_buffer,
-                        static_cast<std::streamsize>(sz_use_len));
-    }
-
-    //WIN32 下的调试输出,向调试窗口输出
-#ifdef ZCE_OS_WINDOWS
-    if (output_way_ & static_cast<int>(LOG_OUTPUT::WINDBG))
-    {
-        ::OutputDebugStringA(log_tmp_buffer);
-    }
-
-#endif
-
-    //如果有线程同步，在这个地方解锁
-    if (is_thread_synchro_)
-    {
-        protect_lock_.unlock();
-    }
-}
-
-//通过字符串得到对应的日志策略,
-LOG_PRIORITY LogTrace_Base::log_priorities(const char* str_priority)
-{
-    if (strcasecmp(str_priority, ("TRACE")) == 0)
-    {
-        return RS_TRACE;
-    }
-    else if (strcasecmp(str_priority, ("DEBUG")) == 0)
-    {
-        return RS_DEBUG;
-    }
-    else if (strcasecmp(str_priority, ("INFO")) == 0)
-    {
-        return RS_INFO;
-    }
-    else if (strcasecmp(str_priority, ("ERROR")) == 0)
-    {
-        return RS_ERROR;
-    }
-    else if (strcasecmp(str_priority, ("ALERT")) == 0)
-    {
-        return RS_ALERT;
-    }
-    else if (strcasecmp(str_priority, ("FATAL")) == 0)
-    {
-        return RS_FATAL;
-    }
-    else
-    {
-        return RS_DEBUG;
-    }
-}
-
-//通过字符串得到对应的日志策略,
-LOGFILE_DEVIDE LogTrace_Base::log_file_devide(const char* str_devide)
-{
-    if (strcasecmp(str_devide, ("SIZE_ID")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_SIZE_NAME_ID;
-    }
-    else if (strcasecmp(str_devide, ("HOUR")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_TIME_HOUR;
-    }
-    else if (strcasecmp(str_devide, ("SIXHOUR")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_TIME_SIX_HOUR;
-    }
-    else if (strcasecmp(str_devide, ("DAY")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_TIME_DAY;
-    }
-    else if (strcasecmp(str_devide, ("MONTH")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_TIME_MONTH;
-    }
-    else if (strcasecmp(str_devide, ("YEAR")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_TIME_YEAR;
-    }
-    else if (strcasecmp(str_devide, ("SIZE_MILLSENCOND")) == 0)
-    {
-        return LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND;
-    }
-    else
-    {
-        return LOGFILE_DEVIDE::BY_TIME_DAY;
-    }
-}
 }

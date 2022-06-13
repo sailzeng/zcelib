@@ -24,7 +24,7 @@
 //定义日志输出,则实用内部的函数作为输出定义
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
-#include "zce/logger/log_basic.h"
+#include "zce/logger/log_file.h"
 #include "zce/logger/log_msg.h"
 
 //打开输出

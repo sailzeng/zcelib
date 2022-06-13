@@ -295,7 +295,7 @@
     <ClCompile Include="zce\logger\log_msg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\logger\log_basic.cpp">
+    <ClCompile Include="zce\logger\log_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\sqlite\sqlite_handler.cpp">
@@ -711,7 +711,7 @@
     <ClInclude Include="zce\logger\priority.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\logger\log_basic.h">
+    <ClInclude Include="zce\logger\log_file.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\algorithm.h">
