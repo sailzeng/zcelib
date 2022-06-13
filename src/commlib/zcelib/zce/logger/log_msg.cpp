@@ -23,6 +23,55 @@ LogMsg::~LogMsg()
 {
 }
 
+//初始化函数,用于时间分割日志的构造
+int LogMsg::init_time_log(LOGFILE_DEVIDE div_log_file,
+                            const char* log_file_prefix,
+                            size_t reserve_file_num,
+                            bool trunc_log,
+                            bool is_thread_synchro,
+                            bool auto_new_line,
+                            bool thread_output) noexcept
+{
+    assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file && LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
+    return log_file_.initialize(div_log_file,
+                      log_file_prefix,
+                      trunc_log,
+                      is_thread_synchro,
+                      auto_new_line,
+                      thread_output,
+                      0,
+                      reserve_file_num);
+}
+
+//初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
+int LogMsg::init_size_log(const char* log_file_prefix,
+                            size_t max_size_log_file,
+                            unsigned int reserve_file_num,
+                            bool trunc_log,
+                            bool is_thread_synchro,
+                            bool auto_new_line,
+                            bool thread_output) noexcept
+{
+    LOGFILE_DEVIDE div_log_file = LOGFILE_DEVIDE::BY_SIZE_NAME_ID;
+
+    //如果不标识文件分割大小
+    if (0 == max_size_log_file)
+    {
+        div_log_file = LOGFILE_DEVIDE::NONE;
+    }
+
+    return log_file_.initialize(output_way,
+                      head_record,
+                      div_log_file,
+                      log_file_prefix,
+                      trunc_log,
+                      is_thread_synchro,
+                      auto_new_line,
+                      thread_output,
+                      max_size_log_file,
+                      reserve_file_num);
+}
+
 //打开日志输出开关
 void LogMsg::enable_output(bool enable_out)
 {
