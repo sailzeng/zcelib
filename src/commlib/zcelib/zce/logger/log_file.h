@@ -30,6 +30,7 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/lock/thread_mutex.h"
+#include "zce/pool/buffer_pool.h"
 #include "zce/logger/priority.h"
 
 ///日志文件的分割方法,以及对应的名称关系
@@ -205,7 +206,7 @@ protected:
     bool trunc_old_ = false;
 
     //!线程输出日志
-    bool thread_output_ = false;
+    bool thread_outfile_ = false;
 
     //!文件的最大尺寸
     size_t max_size_log_file_ = DEFAULT_LOG_SIZE;
@@ -225,5 +226,10 @@ protected:
 
     //!时间日志文件列表，
     std::list<std::string> time_logfile_list_;
+
+    //!
+    zce::queue_buffer_pool_lock buf_pool_;
+    //
+    std::thread thread_outlog_;
 };
 }

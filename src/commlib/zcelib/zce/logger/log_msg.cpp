@@ -37,7 +37,7 @@ int LogMsg::init_time_log(LOGFILE_DEVIDE div_log_file,
     output_way_ = output_way;
     head_record_ = head_record;
     auto_new_line_ = auto_new_line;
-    is_thread_synchro_ = is_thread_synchro;
+    multithread_out_ = is_thread_synchro;
     permit_outlevel_ = RS_DEBUG;
     assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file &&
            LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
@@ -84,7 +84,7 @@ int LogMsg::init_size_log(const char* log_file_prefix,
 
 //初始化函数，用于标准输出
 int LogMsg::init_stdout(bool use_err_out,
-                        bool is_thread_synchro,
+                        bool multithread_out,
                         bool auto_new_line,
                         int head_record) noexcept
 {
@@ -100,7 +100,7 @@ int LogMsg::init_stdout(bool use_err_out,
     output_way_ = output_way;
     head_record_ = head_record;
     auto_new_line_ = auto_new_line;
-    is_thread_synchro_ = is_thread_synchro;
+    multithread_out_ = multithread_out;
     return log_file_.initialize(output_way,
                                 LOGFILE_DEVIDE::NONE,
                                 "",
@@ -159,16 +159,16 @@ unsigned int LogMsg::get_output_way(void)
 }
 
 //设置是否线程同步
-bool LogMsg::set_thread_synchro(bool is_thread_synchro)
+bool LogMsg::set_thread_synchro(bool multithread_out)
 {
-    bool old_synchro = is_thread_synchro_;
-    is_thread_synchro_ = is_thread_synchro;
-    return old_synchro;
+    bool old_multi = multithread_out_;
+    multithread_out_ = multithread_out;
+    return old_multi;
 }
 //取得是否进行线程同步
 bool LogMsg::get_thread_synchro(void)
 {
-    return is_thread_synchro_;
+    return multithread_out_;
 }
 
 //输出va_list的参数信息
@@ -363,7 +363,7 @@ void LogMsg::output_log_info(const timeval& now_time,
                              size_t sz_use_len) noexcept
 {
     //如果要线程同步，在这个地方加锁，由于使用了条件判断是否加锁，而不是模版，所以这个地方没有用GRUAD，
-    if (is_thread_synchro_)
+    if (multithread_out_)
     {
         protect_lock_.lock();
     }
@@ -400,7 +400,7 @@ void LogMsg::output_log_info(const timeval& now_time,
 #endif
 
     //如果有线程同步，在这个地方解锁
-    if (is_thread_synchro_)
+    if (multithread_out_)
     {
         protect_lock_.unlock();
     }
@@ -483,7 +483,6 @@ LogMsg* LogMsg::instance()
     {
         log_instance_ = new LogMsg();
     }
-
     return log_instance_;
 }
 

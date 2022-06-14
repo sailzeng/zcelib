@@ -38,7 +38,7 @@ int Log_File::initialize(int output_way,
                          LOGFILE_DEVIDE div_log_file,
                          const char* log_file_prefix,
                          bool trunc_old,
-                         bool thread_output,
+                         bool thread_outfile,
                          size_t max_size_log_file,
                          size_t reserve_file_num) noexcept
 {
@@ -48,7 +48,7 @@ int Log_File::initialize(int output_way,
     max_size_log_file_ = max_size_log_file;
     reserve_file_num_ = reserve_file_num;
     current_click_ = 1;
-    thread_output_ = thread_output;
+    thread_outfile_ = thread_outfile;
     size_log_file_ = 0;
 
 

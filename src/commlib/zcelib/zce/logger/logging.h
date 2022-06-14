@@ -21,7 +21,7 @@
 #include "zce/config.h"
 #include "zce/os_adapt/error.h"
 
-//定义日志输出,则实用内部的函数作为输出定义
+//定义日志输出,则实用内部的函数作为输出定义，如果关闭日志，只printf输出日志内容
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
 #include "zce/logger/log_file.h"
@@ -47,18 +47,6 @@
 #define ZNO_LOG(...)        (void(0))
 #endif
 
-#if _MSC_VER <= 1300
-
-//提供一些简写的方式，虽然我也觉得不是特别好
-#define ZLOG_TRACE            zce::LogMsg::debug_traceex
-#define ZLOG_DEBUG            zce::LogMsg::debug_debugex
-#define ZLOG_INFO             zce::LogMsg::debug_infoex
-#define ZLOG_ERROR            zce::LogMsg::debug_errorex
-#define ZLOG_ALERT            zce::LogMsg::debug_alertex
-#define ZLOG_FATAL            zce::LogMsg::debug_fatalex
-
-#else
-
 #define ZLOG_TRACE(...)       zce::LogMsg::write_logmsg(RS_TRACE,__VA_ARGS__)
 #define ZLOG_DEBUG(...)       zce::LogMsg::write_logmsg(RS_DEBUG,__VA_ARGS__)
 #define ZLOG_INFO(...)        zce::LogMsg::write_logmsg(RS_INFO,__VA_ARGS__)
@@ -66,7 +54,6 @@
 #define ZLOG_ALERT(...)       zce::LogMsg::write_logmsg(RS_ALERT,__VA_ARGS__)
 #define ZLOG_FATAL(...)       zce::LogMsg::write_logmsg(RS_FATAL,__VA_ARGS__)
 
-#endif
 
 //----------------------------------------------------------------------------------
 //无论，DEBUG版本，REALSE版本也起作用的一些断言，这些宏在所有版本都起作用，用于一些在运行时期也要判断的东东
@@ -123,8 +110,10 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 //如果没有定义使用ZCE内部的日志输出，使用printf作为输出方法，
 #else
 
+namespace zce
+{
 //==========================================================================================================
-class ZCE_Trace_Printf
+class Log_Printf
 {
 public:
 
@@ -181,15 +170,15 @@ public:
         va_list args;
         va_start(args, str_format);
 
-        ZCE_Trace_Printf::instance()->vwrite_logmsg(dbglevel, str_format, args);
+        Log_Printf::instance()->vwrite_logmsg(dbglevel, str_format, args);
 
         va_end(args);
     }
 
     //实例的获得
-    static ZCE_Trace_Printf* instance()
+    static Log_Printf* instance()
     {
-        static ZCE_Trace_Printf log_instance;
+        static Log_Printf log_instance;
         return &log_instance;
     }
 
@@ -202,18 +191,19 @@ protected:
     //!是否输出日志信息,可以用于暂时屏蔽
     bool                  is_output_log_ = true;
 };
+}
 
-#define ZLOG_ENABLE           ZCE_Trace_Printf::instance()->enable_output(true)
-#define ZLOG_DISABLE          ZCE_Trace_Printf::instance()->enable_output(false)
-#define ZLOG_SET_OUTLEVEL     ZCE_Trace_Printf::instance()->set_log_priority
-#define ZCE_LOG               ZCE_Trace_Printf::write_logmsg
+#define ZLOG_ENABLE           zce::Log_Printf::instance()->enable_output(true)
+#define ZLOG_DISABLE          zce::Log_Printf::instance()->enable_output(false)
+#define ZLOG_SET_OUTLEVEL     zce::Log_Printf::instance()->set_log_priority
+#define ZCE_LOG               zce::Log_Printf::write_logmsg
 
-#define ZLOG_TRACE(...)       ZCE_Trace_Printf::write_logmsg(RS_TRACE,__VA_ARGS__)
-#define ZLOG_DEBUG(...)       ZCE_Trace_Printf::write_logmsg(RS_DEBUG,__VA_ARGS__)
-#define ZLOG_INFO(...)        ZCE_Trace_Printf::write_logmsg(RS_INFO,__VA_ARGS__)
-#define ZLOG_ERROR(...)       ZCE_Trace_Printf::write_logmsg(RS_ERROR,__VA_ARGS__)
-#define ZLOG_ALERT(...)       ZCE_Trace_Printf::write_logmsg(RS_ALERT,__VA_ARGS__)
-#define ZLOG_FATAL(...)       ZCE_Trace_Printf::write_logmsg(RS_FATAL,__VA_ARGS__)
+#define ZLOG_TRACE(...)       zce::Log_Printf::write_logmsg(RS_TRACE,__VA_ARGS__)
+#define ZLOG_DEBUG(...)       zce::Log_Printf::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#define ZLOG_INFO(...)        zce::Log_Printf::write_logmsg(RS_INFO,__VA_ARGS__)
+#define ZLOG_ERROR(...)       zce::Log_Printf::write_logmsg(RS_ERROR,__VA_ARGS__)
+#define ZLOG_ALERT(...)       zce::Log_Printf::write_logmsg(RS_ALERT,__VA_ARGS__)
+#define ZLOG_FATAL(...)       zce::Log_Printf::write_logmsg(RS_FATAL,__VA_ARGS__)
 
 #ifndef ZCE_ASSERT_ALL
 #define ZCE_ASSERT_ALL(expr) assert(expr)

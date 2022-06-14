@@ -347,7 +347,7 @@ protected:
 #endif
 
     ///是否进行多线程的同步
-    bool is_thread_synchro_ = false;
+    bool multithread_out_ = false;
 
     ///同步锁
     Thread_Light_Mutex protect_lock_;
