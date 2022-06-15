@@ -69,7 +69,42 @@ int Log_File::initialize(int output_way,
     if (output_way & static_cast<int>(LOG_OUTPUT::LOGFILE))
     {
         timeval now_time(gettimeofday());
-        open_new_logfile(true, now_time);
+        //把时间日志的旧日志都扫描出来，便于删除处理
+        if (LOGFILE_DEVIDE::BY_TIME_HOUR == div_log_file_ ||
+            LOGFILE_DEVIDE::BY_TIME_SIX_HOUR == div_log_file_ ||
+            LOGFILE_DEVIDE::BY_TIME_DAY == div_log_file_ ||
+            LOGFILE_DEVIDE::BY_TIME_MONTH == div_log_file_ ||
+            LOGFILE_DEVIDE::BY_TIME_YEAR == div_log_file_ ||
+            LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND == div_log_file_)
+        {
+            int ret = 0;
+            std::vector<std::string> file_name_ary;
+            ret = readdir_nameary(log_file_dir_.c_str(),
+                                  log_file_prefix_.c_str(),
+                                  STR_LOG_POSTFIX,
+                                  false,
+                                  true,
+                                  file_name_ary);
+            if (ret != 0)
+            {
+                fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n",
+                        log_file_dir_.c_str(),
+                        log_file_prefix_.c_str(),
+                        errno,
+                        strerror(errno));
+            }
+
+            std::sort(file_name_ary.begin(), file_name_ary.end());
+
+            for (auto file_name : file_name_ary)
+            {
+                std::string log_file = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + file_name;
+                time_logfile_list_.push_back(file_name);
+            }
+        }
+
+        buf_pool_.initialize(8, );
+
     }
 
     return 0;
@@ -130,50 +165,10 @@ void Log_File::make_configure(void) noexcept
 }
 
 //得到新的日志文件文件名称
-void Log_File::open_new_logfile(bool initiate,
-                                const timeval& current_time) noexcept
+void Log_File::open_new_logfile(const timeval& current_time) noexcept
 {
     //是否要生成新的文件名称
     bool to_new_file = false;
-    if (initiate)
-    {
-        to_new_file = true;
-
-        //把时间日志的旧日志都扫描出来，便于删除处理
-        if (LOGFILE_DEVIDE::BY_TIME_HOUR == div_log_file_ ||
-            LOGFILE_DEVIDE::BY_TIME_SIX_HOUR == div_log_file_ ||
-            LOGFILE_DEVIDE::BY_TIME_DAY == div_log_file_ ||
-            LOGFILE_DEVIDE::BY_TIME_MONTH == div_log_file_ ||
-            LOGFILE_DEVIDE::BY_TIME_YEAR == div_log_file_ ||
-            LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND == div_log_file_)
-        {
-            int ret = 0;
-            std::vector<std::string> file_name_ary;
-            ret = readdir_nameary(log_file_dir_.c_str(),
-                                  log_file_prefix_.c_str(),
-                                  STR_LOG_POSTFIX,
-                                  false,
-                                  true,
-                                  file_name_ary);
-            if (ret != 0)
-            {
-                fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n",
-                        log_file_dir_.c_str(),
-                        log_file_prefix_.c_str(),
-                        errno,
-                        strerror(errno));
-            }
-
-            std::sort(file_name_ary.begin(), file_name_ary.end());
-
-            for (auto file_name : file_name_ary)
-            {
-                std::string log_file = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + file_name;
-                time_logfile_list_.push_back(file_name);
-            }
-        }
-    }
-
     time_t cur_click = 0;
 
     if (LOGFILE_DEVIDE::BY_TIME_HOUR == div_log_file_ ||
@@ -423,21 +418,29 @@ void Log_File::fileout_log_info(const timeval& now_time,
                                 char* log_tmp_buffer,
                                 size_t sz_use_len) noexcept
 {
-    //得到新的文件名字
-    open_new_logfile(false, now_time);
 
-    //如果文件状态OK
-    if (log_file_handle_)
+    if (thread_outfile_)
     {
-        log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
+        buf_pool_.alloc_buffer(sz_use_len);
+    }
+    else
+    {
+        //得到新的文件名字
+        open_new_logfile(now_time);
 
-        //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
-        //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
-        //是否可以优化呢，这是一个两难问题
-        log_file_handle_.flush();
+        //如果文件状态OK
+        if (log_file_handle_)
+        {
+            log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
 
-        //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
-        size_log_file_ += sz_use_len;
+            //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
+            //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
+            //是否可以优化呢，这是一个两难问题
+            log_file_handle_.flush();
+
+            //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
+            size_log_file_ += sz_use_len;
+        }
     }
 }
 

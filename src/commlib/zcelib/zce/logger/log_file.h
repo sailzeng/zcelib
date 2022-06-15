@@ -155,11 +155,9 @@ protected:
 
     /*!
     @brief      （如果有必要，）得到新的日志文件，
-    @param      init     是否是初始化阶段
     @param      current_time  当前时间
     */
-    void open_new_logfile(bool initiate,
-                          const timeval& current_time) noexcept;
+    void open_new_logfile(const timeval& current_time) noexcept;
 
 public:
 
@@ -229,7 +227,7 @@ protected:
 
     //!
     zce::queue_buffer_pool_lock buf_pool_;
-    //
+    //!
     std::thread thread_outlog_;
 };
 }
