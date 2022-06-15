@@ -114,7 +114,7 @@ int Log_File::initialize(int output_way,
                              &zce::queue_buffer::new_self,
                              POOL_INIT,
                              POOL_ONCE_EXTEND);
-
+        thread_outlog_ = std::thread();
     }
     vaild_ = true;
     return 0;
@@ -429,10 +429,29 @@ void Log_File::fileout_log_info(const timeval& now_time,
                                 char* log_tmp_buffer,
                                 size_t sz_use_len) noexcept
 {
-
+    //线程输出日志文件
     if (thread_outfile_)
     {
         //buf_pool_.alloc_buffer(sz_use_len);
+        zce::queue_buffer* buf = nullptr;
+        bool ret = buf_pool_.alloc_buffer(sz_use_len, buf);
+        if (!ret)
+        {
+            ZCE_LOG(RS_ALERT, "alloc_buffer fail .alloc len :%u.", sz_use_len);
+            return;
+        }
+        buf->clear();
+        buf->add(log_tmp_buffer, sz_use_len);
+        LOG_RECORD logbuf;
+        logbuf.rec_buf_ = buf;
+        logbuf.rec_time_ = now_time;
+        ret = msg_queue_.enqueue(logbuf);
+        if (!ret)
+        {
+            ZCE_LOG(RS_ALERT, "msg_queue_.enqueue fail .queue len :%u.",
+                    msg_queue_.size());
+            return;
+        }
     }
     else
     {
@@ -452,6 +471,30 @@ void Log_File::fileout_log_info(const timeval& now_time,
             //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
             size_log_file_ += sz_use_len;
         }
+    }
+}
+
+void Log_File::thread_work()
+{
+    bool ret = false;
+    LOG_RECORD logbuf;
+    ret = msg_queue_.dequeue(logbuf);
+    //得到新的文件名字
+    open_new_logfile(logbuf.rec_time_);
+    size_t sz_use_len = logbuf.rec_buf_->size();
+    //如果文件状态OK
+    if (log_file_handle_)
+    {
+        log_file_handle_.write(logbuf.rec_buf_->point(),
+                               static_cast<std::streamsize>(sz_use_len));
+
+        //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
+        //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
+        //是否可以优化呢，这是一个两难问题
+        log_file_handle_.flush();
+
+        //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
+        size_log_file_ += sz_use_len;
     }
 }
 

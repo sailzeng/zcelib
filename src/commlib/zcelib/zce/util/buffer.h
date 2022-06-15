@@ -204,6 +204,7 @@ public:
     //!继续在尾部增加数据
     bool add(const char* data, size_t szdata);
 
+    //
     inline char* point(size_t offset = 0)
     {
         return buffer_data_ + offset;

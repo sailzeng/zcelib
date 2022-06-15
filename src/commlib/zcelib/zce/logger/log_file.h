@@ -157,6 +157,8 @@ protected:
     */
     void open_new_logfile(const timeval& current_time) noexcept;
 
+
+    void thread_work();
 public:
 
     ///默认的保留的文件的数量
@@ -197,7 +199,16 @@ public:
     //!
     static const size_t  POOL_ONCE_EXTEND = 16;
     //!
-    static const size_t  MAX_LEN_MSG_QUEUE = 1024;
+    static const size_t  MAX_LEN_MSG_QUEUE = 4096;
+
+    struct LOG_RECORD
+    {
+        //!
+        timeval rec_time_;
+        //!
+        queue_buffer* rec_buf_ = nullptr;
+
+    };
 protected:
     //!
     bool vaild_ = false;
@@ -251,6 +262,6 @@ protected:
     zce::queue_buffer_pool_lock buf_pool_;
 
     //!
-    zce::msgring_condi<queue_buffer>  msg_queue_;
+    zce::msgring_condi<LOG_RECORD>  msg_queue_;
 };
 }

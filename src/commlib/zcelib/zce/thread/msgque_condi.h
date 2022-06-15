@@ -75,7 +75,7 @@ public:
     }
 
     //放入，一直等待
-    int enqueue(const T& value_data)
+    bool enqueue(const T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
@@ -84,8 +84,8 @@ public:
     }
 
     //有超时放入
-    int enqueue(const T& value_data,
-                const zce::Time_Value& wait_time)
+    bool enqueue(const T& value_data,
+                 const zce::Time_Value& wait_time)
     {
         return enqueue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -93,7 +93,7 @@ public:
     }
 
     //尝试放入，立即返回
-    int try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
@@ -102,7 +102,7 @@ public:
     }
 
     //取出
-    int dequeue(T& value_data)
+    bool dequeue(T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
@@ -111,8 +111,8 @@ public:
     }
 
     //有超时处理的取出
-    int dequeue(T& value_data,
-                const zce::Time_Value& wait_time)
+    bool dequeue(T& value_data,
+                 const zce::Time_Value& wait_time)
     {
         return dequeue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -120,7 +120,7 @@ public:
     }
 
     //尝试取出，立即返回
-    int try_dequeue(T& value_data)
+    bool try_dequeue(T& value_data)
     {
         zce::Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
@@ -144,9 +144,9 @@ public:
 protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
-    int enqueue_interior(const T& value_data,
-                         MQW_WAIT_MODEL wait_model,
-                         const timeval& wait_time)
+    bool enqueue_interior(const T& value_data,
+                          MQW_WAIT_MODEL wait_model,
+                          const timeval& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
@@ -167,7 +167,7 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        return -1;
+                        return false;
                     }
                 }
                 else if (wait_model == MQW_WAIT_FOREVER)
@@ -176,7 +176,7 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    return -1;
+                    return false;
                 }
             }
 
@@ -187,13 +187,13 @@ protected:
         //通知所有等待的人
         cond_dequeue_.broadcast();
 
-        return 0;
+        return true;
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue_interior(T& value_data,
-                         MQW_WAIT_MODEL wait_model,
-                         const zce::Time_Value& wait_time)
+    bool dequeue_interior(T& value_data,
+                          MQW_WAIT_MODEL wait_model,
+                          const zce::Time_Value& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
@@ -214,7 +214,7 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        return -1;
+                        return false;
                     }
                 }
                 else if (wait_model == MQW_WAIT_FOREVER)
@@ -223,7 +223,7 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    return -1;
+                    return false;
                 }
             }
 
@@ -236,7 +236,7 @@ protected:
         //通知所有等待的人
         cond_enqueue_.broadcast();
 
-        return 0;
+        return true;
     }
 
 protected:
@@ -355,12 +355,11 @@ public:
         {
             return true;
         }
-
         return false;
     }
 
     //放入，一直等待
-    int enqueue(const T& value_data)
+    bool enqueue(const T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
         return enqueue_interior(value_data,
@@ -369,8 +368,8 @@ public:
     }
 
     //有超时放入
-    int enqueue(const T& value_data,
-                const zce::Time_Value& wait_time)
+    bool enqueue(const T& value_data,
+                 const zce::Time_Value& wait_time)
     {
         return enqueue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -378,7 +377,7 @@ public:
     }
 
     //尝试放入，立即返回
-    int try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
         return enqueue_interior(value_data,
@@ -387,7 +386,7 @@ public:
     }
 
     //取出
-    int dequeue(T& value_data)
+    bool dequeue(T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
         return dequeue_interior(value_data,
@@ -396,8 +395,8 @@ public:
     }
 
     //有超时处理的取出
-    int dequeue(T& value_data,
-                const std::chrono::microseconds& wait_time)
+    bool dequeue(T& value_data,
+                 const std::chrono::microseconds& wait_time)
     {
         return dequeue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -405,7 +404,7 @@ public:
     }
 
     //尝试取出，立即返回
-    int try_dequeue(T& value_data)
+    bool try_dequeue(T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
         return dequeue_interior(value_data,
@@ -429,9 +428,9 @@ public:
 protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
-    int enqueue_interior(const T& value_data,
-                         MQW_WAIT_MODEL wait_model,
-                         std::chrono::microseconds& wait_time)
+    bool enqueue_interior(const T& value_data,
+                          MQW_WAIT_MODEL wait_model,
+                          std::chrono::microseconds& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
@@ -451,7 +450,7 @@ protected:
                     //如果超时了，返回false
                     if (status == std::cv_status::timeout)
                     {
-                        return -1;
+                        return false;
                     }
                 }
                 else if (wait_model == MQW_WAIT_FOREVER)
@@ -460,7 +459,7 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    return -1;
+                    return false;
                 }
             }
 
@@ -471,13 +470,13 @@ protected:
         //通知一个等待的人
         cv_de_.notify_one();
 
-        return 0;
+        return true;
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue_interior(T& value_data,
-                         MQW_WAIT_MODEL wait_model,
-                         std::chrono::microseconds& wait_time)
+    bool dequeue_interior(T& value_data,
+                          MQW_WAIT_MODEL wait_model,
+                          std::chrono::microseconds& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
@@ -497,7 +496,7 @@ protected:
                     //如果超时了，返回false
                     if (status == std::cv_status::timeout)
                     {
-                        return -1;
+                        return false;
                     }
                 }
                 else if (wait_model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
@@ -506,7 +505,7 @@ protected:
                 }
                 else if (wait_model == MQW_WAIT_MODEL::MQW_NO_WAIT)
                 {
-                    return -1;
+                    return false;
                 }
             }
 
@@ -519,7 +518,7 @@ protected:
         //通知一个等待的人
         cv_en_.notify_one();
 
-        return 0;
+        return true;
     }
 
 protected:
