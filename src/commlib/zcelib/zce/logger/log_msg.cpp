@@ -28,7 +28,7 @@ int LogMsg::init_time_log(LOGFILE_DEVIDE div_log_file,
                           const char* log_file_prefix,
                           size_t reserve_file_num,
                           bool trunc_log,
-                          bool is_thread_synchro,
+                          bool multithread_out,
                           bool auto_new_line,
                           bool thread_output,
                           int output_way,
@@ -37,7 +37,7 @@ int LogMsg::init_time_log(LOGFILE_DEVIDE div_log_file,
     output_way_ = output_way;
     head_record_ = head_record;
     auto_new_line_ = auto_new_line;
-    multithread_out_ = is_thread_synchro;
+    multithread_out_ = multithread_out;
     permit_outlevel_ = RS_DEBUG;
     assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file &&
            LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
@@ -55,7 +55,7 @@ int LogMsg::init_size_log(const char* log_file_prefix,
                           size_t max_size_log_file,
                           unsigned int reserve_file_num,
                           bool trunc_log,
-                          bool is_thread_synchro,
+                          bool multithread_out,
                           bool auto_new_line,
                           bool thread_output,
                           int output_way,
@@ -65,7 +65,7 @@ int LogMsg::init_size_log(const char* log_file_prefix,
     output_way_ = output_way;
     head_record_ = head_record;
     auto_new_line_ = auto_new_line;
-    is_thread_synchro_ = is_thread_synchro;
+    multithread_out_ = multithread_out;
     permit_outlevel_ = RS_DEBUG;
     //如果不标识文件分割大小
     if (0 == max_size_log_file)

@@ -337,6 +337,9 @@
     <ClCompile Include="zce\aio\aio_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\logger\log_print.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -781,6 +784,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\aio\aio_task.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\logger\log_print.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -231,6 +231,7 @@
     <ClCompile Include="zce\async\lua_thread.cpp" />
     <ClCompile Include="zce\logger\log_file.cpp" />
     <ClCompile Include="zce\logger\log_msg.cpp" />
+    <ClCompile Include="zce\logger\log_print.cpp" />
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
@@ -351,6 +352,7 @@
     <ClInclude Include="zce\logger\logging.h" />
     <ClInclude Include="zce\logger\log_file.h" />
     <ClInclude Include="zce\logger\log_msg.h" />
+    <ClInclude Include="zce\logger\log_print.h" />
     <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\net\dns_resolve.h" />
     <ClInclude Include="zce\net\ping.h" />

@@ -14,7 +14,7 @@
 */
 #pragma once
 
-#include "zce/logger/logging.h"
+#include "zce/logger/log_print.h"
 #include "zce/util/lord_rings.h"
 
 namespace zce
@@ -50,7 +50,7 @@ public:
                     size_t extend_size,
                     std::function <T* () >* new_fun = nullptr)
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         extend_size_ = extend_size;
         if (new_fun)
         {
@@ -73,7 +73,7 @@ public:
     //!最后的销毁处理
     void terminate()
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         size_t sz = obj_pool_.size();
         for (size_t i = 0; i < sz; i++)
         {
@@ -86,7 +86,7 @@ public:
     //!分配一个对象
     T* alloc_object()
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         auto ret = false;
         T* ptr = nullptr;
         if (obj_pool_.size() == 0)
@@ -110,19 +110,19 @@ public:
     //归还一个对象
     void free_object(T* ptr)
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         obj_pool_.push_back(ptr);
         return;
     }
 
     inline size_t size()
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         return obj_pool_.size();
     }
     inline size_t capacity()
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         return obj_pool_.capacity();
     }
     inline bool empty()
@@ -132,7 +132,7 @@ public:
     }
     inline bool full()
     {
-        std::lock_guard<LOCK> lock;
+        std::lock_guard<LOCK> lock(lock_);
         return obj_pool_.full();
     }
 
@@ -140,13 +140,13 @@ protected:
 
     bool extend(size_t extend_size)
     {
-        ZCE_LOG(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "
-                "capacity[%u], extend[%u] , old capacity[%u] .",
-                typeid(this).name(),
-                obj_pool_.size(),
-                obj_pool_.capacity(),
-                extend_size,
-                pool_capacity_);
+        ZPRINT(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "
+               "capacity[%u], extend[%u] , old capacity[%u] .",
+               typeid(this).name(),
+               obj_pool_.size(),
+               obj_pool_.capacity(),
+               extend_size,
+               pool_capacity_);
         //
         for (size_t i = 0; i < extend_size; ++i)
         {
