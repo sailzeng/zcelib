@@ -244,7 +244,7 @@ protected:
 
     //!时间日志文件列表，
     std::list<std::string> time_logfile_list_;
-    
+
     //!输出到文件的现场
     std::thread thread_outlog_;
     //!

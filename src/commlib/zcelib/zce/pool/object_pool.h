@@ -35,8 +35,6 @@ public:
     //!构造函数，析构函数，赋值函数
     object_pool() = default;
     ~object_pool() = default;
-    object_pool(const object_pool&) = default;
-    object_pool& operator= (const object_pool&) = delete;
 
     /*!
     * @brief
@@ -138,6 +136,7 @@ public:
 
 protected:
 
+    //!扩展
     bool extend(size_t extend_size)
     {
         ZPRINT(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "

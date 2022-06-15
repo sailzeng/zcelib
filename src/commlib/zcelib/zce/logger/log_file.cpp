@@ -23,7 +23,7 @@ const size_t  Log_File::BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY] =
 };
 
 //构造函数
-Log_File::Log_File():
+Log_File::Log_File() :
     msg_queue_(MAX_LEN_MSG_QUEUE)
 {
     //预先分配空间
@@ -114,7 +114,6 @@ int Log_File::initialize(int output_way,
                              &zce::queue_buffer::new_self,
                              POOL_INIT,
                              POOL_ONCE_EXTEND);
-        
 
     }
     vaild_ = true;

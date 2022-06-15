@@ -135,7 +135,7 @@ public:
     * @return     const char* 字段的名称
     * @param      column 字段的列号,从1开始
     */
-    const char* field_name(int column)
+    const char* field_name(size_t column)
     {
         return result_[column - 1];
     }
@@ -146,7 +146,7 @@ public:
     * @param      row    字段的列号,从1开始
     * @param      column 字段的行号,从1开始
     */
-    const char* field_cstr(int row, int column)
+    const char* field_cstr(size_t row, size_t column)
     {
         return result_[row * column_ + column - 1];
     }
@@ -160,7 +160,7 @@ public:
     * @note
     */
     template <typename value_type>
-    value_type field_data(int row, int column)
+    value_type field_data(size_t row, size_t column)
     {
         return zce::from_str<value_type>(result_[row * column_ + column - 1]);
     }

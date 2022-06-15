@@ -65,7 +65,7 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
     {
         return -1;
     }
-    int id;
+    size_t id;
     std::string name;
     int age;
     std::string address;
@@ -77,7 +77,7 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
         id = 1 + i;
         name = "aaaa";
         name += std::to_string(i);
-        age = 22 + i;
+        age = (int)(22 + i);
         address = "aaaa.aaaa";
         address += std::to_string(i);
         salary = 1000.11 + i * 1000;

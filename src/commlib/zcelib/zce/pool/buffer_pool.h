@@ -26,15 +26,11 @@ public:
 
     //!构造函数，析构函数，赋值函数
     buffer_pool() = default;
-    buffer_pool(const buffer_pool&) = delete;
-    buffer_pool& operator= (const buffer_pool&) = delete;
     ~buffer_pool()
     {
         terminate();
     }
 
-
-    typedef B* (*FunType)(size_t);
     /*!
     * @brief      初始化
     * @return     bool
@@ -52,9 +48,11 @@ public:
     {
         bool ret = false;
         bucket_number_ = bucket_num;
-        bucket_bufsize_.assign(bucket_size_ary, bucket_size_ary + bucket_num);
-        std::sort(bucket_bufsize_.begin(), bucket_bufsize_.end());
-        pools_.resize(bucket_num);
+        bucket_bufsize_ = new size_t[bucket_num];
+        memcpy(bucket_bufsize_, bucket_size_ary, bucket_num * sizeof(size_t));
+        std::sort(bucket_bufsize_,
+                  bucket_bufsize_ + bucket_num);
+        pools_ = new bucket[bucket_num];
 
         for (size_t i = 0; i < bucket_num; ++i)
         {
@@ -78,6 +76,16 @@ public:
         for (size_t i = 0; i < bucket_number_; ++i)
         {
             pools_[i].terminate();
+        }
+        if (bucket_bufsize_)
+        {
+            delete bucket_bufsize_;
+            bucket_bufsize_ = nullptr;
+        }
+        if (pools_)
+        {
+            delete pools_;
+            pools_ = nullptr;
         }
     }
 
@@ -139,11 +147,11 @@ protected:
 protected:
 
     //!桶的数量
-    size_t bucket_number_;
+    size_t bucket_number_ = 0;
     //!桶的容量
-    std::vector<size_t> bucket_bufsize_;
+    size_t* bucket_bufsize_ = nullptr;
     //!桶组成的池子
-    std::vector<bucket> pools_;
+    bucket* pools_ = nullptr;
 };
 
 typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;

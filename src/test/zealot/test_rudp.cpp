@@ -52,7 +52,7 @@ int test_rudp(int argc, char* argv[])
                                                false,
                                                true,
                                                (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                                               static_cast<int>(LOG_HEAD::LOGLEVEL));
+                                               (int)(LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
         return test_rudp_core(argc, argv);
     }
@@ -65,14 +65,14 @@ int test_rudp(int argc, char* argv[])
                                                false,
                                                true,
                                                (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                                               static_cast<int>(LOG_HEAD::LOGLEVEL));
+                                               (int)(LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
         test_rudp_client(argc, argv);
     }
     return 0;
 }
 
-ssize_t core_recv(zce::rudp::ACCEPT *peer)
+ssize_t core_recv(zce::rudp::ACCEPT* peer)
 {
     ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv data len [%u]",
             peer->session_id(),
@@ -109,15 +109,15 @@ ssize_t core_recv(zce::rudp::ACCEPT *peer)
     return 0;
 }
 
-zce::rudp::ACCEPT *g_accpet_rudp = nullptr;
+zce::rudp::ACCEPT* g_accpet_rudp = nullptr;
 
-int core_accept(zce::rudp::ACCEPT *peer)
+int core_accept(zce::rudp::ACCEPT* peer)
 {
     g_accpet_rudp = peer;
     return 0;
 }
 
-ssize_t client_recv(zce::rudp::CLIENT *peer)
+ssize_t client_recv(zce::rudp::CLIENT* peer)
 {
     ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv data len [%u]",
             peer->session_id(),
@@ -179,10 +179,10 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
     */
     zce::rudp::CORE core;
     sockaddr_in core_addr;
-    std::function<ssize_t(zce::rudp::ACCEPT *)> callbak_recv(core_recv);
-    std::function<int(zce::rudp::ACCEPT *)> callbak_accept(core_accept);
+    std::function<ssize_t(zce::rudp::ACCEPT*)> callbak_recv(core_recv);
+    std::function<int(zce::rudp::ACCEPT*)> callbak_accept(core_accept);
     zce::set_sockaddr_in(&core_addr, "0.0.0.0", 888);
-    ret = core.open((sockaddr *)&core_addr,
+    ret = core.open((sockaddr*)&core_addr,
                     1024,
                     10 * 1024 * 1024,
                     10 * 1024 * 1024,
@@ -272,9 +272,9 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
     }
     zce::rudp::CLIENT client;
     sockaddr_in reomote_addr;
-    std::function<ssize_t(zce::rudp::CLIENT *)> callbak_fun(client_recv);
+    std::function<ssize_t(zce::rudp::CLIENT*)> callbak_fun(client_recv);
     zce::set_sockaddr_in(&reomote_addr, "127.0.0.1", 888);
-    ret = client.open((sockaddr *)&reomote_addr,
+    ret = client.open((sockaddr*)&reomote_addr,
                       10 * 1024 * 1024,
                       10 * 1024 * 1024,
                       &callbak_fun);

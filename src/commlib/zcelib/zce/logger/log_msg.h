@@ -40,9 +40,6 @@
 #include "zce/string/extend.h"
 #include "zce/logger/log_file.h"
 
-namespace zce
-{
-
 ///默认记录的数据,在每条日志的头部
 enum class LOG_HEAD
 {
@@ -75,6 +72,8 @@ enum class LOG_OUTPUT
     WINDBG = (0x1 << 4)
 };
 
+namespace zce
+{
 class LogMsg
 {
 public:
@@ -82,7 +81,6 @@ public:
     ///构造函数
     LogMsg();
     virtual ~LogMsg();
-protected:
 
     /*!
     @brief      初始化函数,用于时间分割日志的构造
@@ -141,7 +139,7 @@ protected:
                     bool is_thread_synchro = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
-    
+
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
     */
@@ -257,7 +255,7 @@ protected:
         //我要保留一个位置放'\0',还为\n考虑留一个空间,注意thread_local
         static thread_local char \
             log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER];
-        log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER -1] = '\0';
+        log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
         size_t sz_buf_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
         size_t sz_use_len = 0;
