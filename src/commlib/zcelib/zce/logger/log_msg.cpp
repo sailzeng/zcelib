@@ -8,6 +8,9 @@
 
 namespace zce
 {
+
+
+
 LogMsg* LogMsg::log_instance_ = NULL;
 
 /******************************************************************************************
@@ -110,6 +113,13 @@ int LogMsg::init_stdout(bool use_err_out,
                                 0);
 }
 
+void LogMsg::terminate()
+{
+    is_output_log_ = false;
+    permit_outlevel_ = RS_DEBUG;
+    log_file_.terminate();
+}
+
 //打开日志输出开关
 void LogMsg::enable_output(bool enable_out)
 {
@@ -146,7 +156,6 @@ unsigned int LogMsg::get_log_head(void)
 //!如果开始没有设置文件同步输出,后面不调整.
 unsigned int LogMsg::set_output_way(int output_way)
 {
-    //
     int tmp = output_way_;
     output_way_ = output_way;
     return tmp;
@@ -191,13 +200,13 @@ void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
     //得到当前时间
     timeval now_time_val(gettimeofday());
 
-    //我要保留一个位置放'\0'，以及一个\n
     //用static 变量，保证只初始化一次， 用thread_local 保证每个线程一个
-    static thread_local char* log_buffer = new char[SIZE_OF_LOG_BUFFER + 2];
-    log_buffer[SIZE_OF_LOG_BUFFER + 1] = '\0';
+    static thread_local char* log_buffer = \
+        new char[Log_File::SIZE_OF_LOG_BUFFER ];
+    log_buffer[Log_File::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
-    //还是为\n考虑留一个空间
-    size_t sz_buf_len = SIZE_OF_LOG_BUFFER;
+    //我要保留一个位置放'\0'，以及一个\n
+    size_t sz_buf_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
     size_t sz_use_len = 0;
 
     //输出头部信息
@@ -211,10 +220,10 @@ void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
     //得到打印信息,_vsnprintf为特殊函数
     int len_of_out = vsnprintf(log_buffer + sz_use_len, sz_buf_len, str_format, args);
 
-    //如果输出的字符串比想想的长
+    //如果输出的字符串比想想的长，-2是因为后面有'\0','\n'
     if (len_of_out >= static_cast<int>(sz_buf_len) || len_of_out < 0)
     {
-        sz_use_len = SIZE_OF_LOG_BUFFER;
+        sz_use_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
         sz_buf_len = 0;
     }
     else
@@ -273,14 +282,11 @@ void LogMsg::write_logmsg(LOG_PRIORITY dbglevel,
                           const char* str_format, ...) noexcept
 {
     va_list args;
-
     va_start(args, str_format);
-
     if (log_instance_)
     {
         log_instance_->vwrite_logmsg(dbglevel, str_format, args);
     }
-
     va_end(args);
 }
 

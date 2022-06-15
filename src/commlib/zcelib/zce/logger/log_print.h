@@ -11,8 +11,7 @@ class Log_Printf
 public:
 
     //输出va_list的参数信息
-    void vwrite_logmsg(zce::LOG_PRIORITY outlevel,
-                       const char* str_format,
+    void vwrite_logmsg(const char* str_format,
                        va_list args);
     //写日志
     void write_logmsg(zce::LOG_PRIORITY outlevel,
@@ -40,4 +39,4 @@ protected:
 #define ZPRINT_ENABLE           zce::Log_Printf::instance()->enable_output(true)
 #define ZPRINT_DISABLE          zce::Log_Printf::instance()->enable_output(false)
 #define ZPRINT_SET_OUTLEVEL     zce::Log_Printf::instance()->set_log_priority
-#define ZPRINT                  zce::Log_Printf::write_logmsg
+#define ZPRINT                  zce::Log_Printf::instance()->write_logmsg

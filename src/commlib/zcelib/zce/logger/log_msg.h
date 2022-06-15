@@ -82,7 +82,6 @@ public:
     ///构造函数
     LogMsg();
     virtual ~LogMsg();
-
 protected:
 
     /*!
@@ -96,7 +95,6 @@ protected:
     @param[in]  auto_new_line     日志记录的末尾是否自动的换行，new一行
     @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
     @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
-
     */
     int init_time_log(LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
@@ -142,6 +140,12 @@ protected:
                     bool auto_new_line = true,
                     bool is_thread_synchro = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
+
+    
+    /*!
+    @brief      关闭日志，注意关闭后，必须重新初始化
+    */
+    void terminate();
 
     /*!
     @brief      设置默认输出的信息类型
@@ -250,11 +254,12 @@ protected:
         //得到当前时间
         timeval now_time_val(gettimeofday());
 
-        //我要保留一个位置放'\0',还为\n考虑留一个空间
-        static thread_local char log_tmp_buffer[SIZE_OF_LOG_BUFFER + 2];
-        log_tmp_buffer[SIZE_OF_LOG_BUFFER + 1] = '\0';
+        //我要保留一个位置放'\0',还为\n考虑留一个空间,注意thread_local
+        static thread_local char \
+            log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER];
+        log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER -1] = '\0';
 
-        size_t sz_buf_len = SIZE_OF_LOG_BUFFER;
+        size_t sz_buf_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
         size_t sz_use_len = 0;
 
         stringbuf_loghead(outlevel,
@@ -335,22 +340,12 @@ public:
     static LOGFILE_DEVIDE log_file_devide(const char* str_devide);
 
 protected:
-    ///由于我内部还是使用的C++的ofstream 作为输出对象，所以我在多线程下还是使用了锁。
 
-#if defined LARGE_LOG && LARGE_LOG == 1
-    //!巨型日志
-    static const size_t SIZE_OF_LOG_BUFFER = 512 * 1024 - 2;
-#else
-    //!日志的缓冲区的尺寸,这儿用了8K，很长了，-2是因为\0 和\n
-    //!但如果直接用write 函数写，4096(-1)是一个更合适的值，
-    static const size_t  SIZE_OF_LOG_BUFFER = 8192 - 2;
-#endif
-
-    ///是否进行多线程的同步
+    //!是否进行多线程的同步
     bool multithread_out_ = false;
 
-    ///同步锁
-    Thread_Light_Mutex protect_lock_;
+    //!由于我内部还是使用的C++的ofstream 作为输出对象，所以我在多线程下还是使用了锁。
+    std::mutex protect_lock_;
 
     ///输出的方式，LOG_OUTPUT的枚举值组合 @ref LOG_OUTPUT
     int output_way_ = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT;

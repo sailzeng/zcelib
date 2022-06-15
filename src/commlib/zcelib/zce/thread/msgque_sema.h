@@ -450,7 +450,6 @@ public:
 
 protected:
 
-
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue_i(T& value_data,
                   MQW_WAIT_MODEL model,

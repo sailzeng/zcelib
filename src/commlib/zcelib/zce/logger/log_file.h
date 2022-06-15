@@ -30,8 +30,10 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/lock/thread_mutex.h"
+#include "zce/thread/msgque_condi.h"
 #include "zce/pool/buffer_pool.h"
 #include "zce/logger/priority.h"
+
 
 ///日志文件的分割方法,以及对应的名称关系
 ///默认的分割方法是按照时间.分割就是按照每天一个文件,文件名称中记录时间
@@ -97,7 +99,6 @@ public:
     ///析构函数
     virtual ~Log_File();
 
-
     /*!
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,
     @return     int                返回0标识初始化成功
@@ -116,11 +117,8 @@ public:
                    size_t max_size_log_file,
                    size_t reserve_file_num) noexcept;
 
-    /*!
-    @brief      关闭日志，注意关闭后，必须重新初始化
-    */
+    //!日志销毁
     void terminate();
-
 
     void fileout_log_info(const timeval& now_time,
                           char* log_tmp_buffer,
@@ -180,9 +178,31 @@ public:
     ///日志后缀的4个字母.log，什么，你想用.tlog？BS
     static const char STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1];
 
-protected:
 
-    ///日志分片的处理方式
+#if defined LARGE_LOG && LARGE_LOG == 1
+    //!巨型日志
+    static const size_t SIZE_OF_LOG_BUFFER = 512 * 1024;
+#else
+    //!日志的缓冲区的尺寸,这儿用了8K，很长了，末尾有是因为\0 和\n
+    //!但如果直接用write 函数写，4096(-1)是一个更合适的值，
+    static const size_t  SIZE_OF_LOG_BUFFER = 8192;
+
+#endif
+    //!
+    static const size_t  SIZE_OF_BUCKET_ARY = 4;
+    //!
+    static const size_t  BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY];
+    //!
+    static const size_t  POOL_INIT = 8;
+    //!
+    static const size_t  POOL_ONCE_EXTEND = 16;
+    //!
+    static const size_t  MAX_LEN_MSG_QUEUE = 1024;
+protected:
+    //!
+    bool vaild_ = false;
+
+    //日志分片的处理方式
     LOGFILE_DEVIDE div_log_file_ = LOGFILE_DEVIDE::NONE;
 
     ///日志文件名的前缀,包括路径
@@ -224,10 +244,13 @@ protected:
 
     //!时间日志文件列表，
     std::list<std::string> time_logfile_list_;
-
+    
+    //!输出到文件的现场
+    std::thread thread_outlog_;
     //!
     zce::queue_buffer_pool_lock buf_pool_;
+
     //!
-    std::thread thread_outlog_;
+    zce::msgring_condi<queue_buffer>  msg_queue_;
 };
 }

@@ -167,7 +167,6 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        zce::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
@@ -177,7 +176,6 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    zce::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }
@@ -216,7 +214,6 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        zce::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
@@ -226,7 +223,6 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    zce::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }
@@ -455,7 +451,6 @@ protected:
                     //如果超时了，返回false
                     if (status == std::cv_status::timeout)
                     {
-                        zce::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
@@ -465,7 +460,6 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    zce::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }
@@ -503,7 +497,6 @@ protected:
                     //如果超时了，返回false
                     if (status == std::cv_status::timeout)
                     {
-                        zce::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
@@ -513,7 +506,6 @@ protected:
                 }
                 else if (wait_model == MQW_WAIT_MODEL::MQW_NO_WAIT)
                 {
-                    zce::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }

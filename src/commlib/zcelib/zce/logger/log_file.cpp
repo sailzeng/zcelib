@@ -13,8 +13,18 @@ namespace zce
 {
 const char Log_File::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 
+//!
+const size_t  Log_File::BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY] =
+{
+    SIZE_OF_LOG_BUFFER / 8,
+    SIZE_OF_LOG_BUFFER / 4,
+    SIZE_OF_LOG_BUFFER / 2,
+    SIZE_OF_LOG_BUFFER
+};
+
 //构造函数
-Log_File::Log_File()
+Log_File::Log_File():
+    msg_queue_(MAX_LEN_MSG_QUEUE)
 {
     //预先分配空间
     log_file_name_.reserve(PATH_MAX + 32);
@@ -28,10 +38,6 @@ Log_File::~Log_File()
     //注销
     terminate();
 }
-
-
-
-
 
 //初始化函数,参数最齐全的一个
 int Log_File::initialize(int output_way,
@@ -103,10 +109,15 @@ int Log_File::initialize(int output_way,
             }
         }
 
-        buf_pool_.initialize(8, );
+        buf_pool_.initialize(SIZE_OF_BUCKET_ARY,
+                             BUCKET_SIZE_ARY,
+                             &zce::queue_buffer::new_self,
+                             POOL_INIT,
+                             POOL_ONCE_EXTEND);
+        
 
     }
-
+    vaild_ = true;
     return 0;
 }
 
@@ -121,6 +132,7 @@ void Log_File::terminate()
     current_click_ = 1;
     div_log_file_ = LOGFILE_DEVIDE::NONE;
     size_log_file_ = 0;
+    vaild_ = false;
 }
 
 //配置日志文件
@@ -421,7 +433,7 @@ void Log_File::fileout_log_info(const timeval& now_time,
 
     if (thread_outfile_)
     {
-        buf_pool_.alloc_buffer(sz_use_len);
+        //buf_pool_.alloc_buffer(sz_use_len);
     }
     else
     {
