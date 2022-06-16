@@ -51,12 +51,11 @@ int Log_File::initialize(int output_way,
     div_log_file_ = div_log_file;
 
     trunc_old_ = trunc_old;
-    max_size_log_file_ = max_size_log_file;
-    reserve_file_num_ = reserve_file_num;
     current_click_ = 1;
     thread_outfile_ = thread_outfile;
     size_log_file_ = 0;
-
+    max_size_log_file_ = max_size_log_file;
+    reserve_file_num_ = reserve_file_num;
 
     //断言检查输入参数
     if (log_file_prefix != NULL)
@@ -93,15 +92,14 @@ int Log_File::initialize(int output_way,
                                   file_name_ary);
             if (ret != 0)
             {
-                fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n",
-                        log_file_dir_.c_str(),
-                        log_file_prefix_.c_str(),
-                        errno,
-                        strerror(errno));
+                ZPRINT(RS_ALERT, "readdir %s | %s fail. err=%d|%s\n",
+                       log_file_dir_.c_str(),
+                       log_file_prefix_.c_str(),
+                       errno,
+                       strerror(errno));
             }
 
             std::sort(file_name_ary.begin(), file_name_ary.end());
-
             for (auto file_name : file_name_ary)
             {
                 std::string log_file = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + file_name;
@@ -178,10 +176,10 @@ void Log_File::make_configure(void) noexcept
     if (mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
         // 创建失败，
-        fprintf(stderr, "mkdir %s fail. err=%d|%s\n",
-                log_file_dir_.c_str(),
-                errno,
-                strerror(errno));
+        ZPRINT(RS_ALERT, "mkdir %s fail. err=%d|%s\n",
+               log_file_dir_.c_str(),
+               errno,
+               strerror(errno));
     }
 }
 
@@ -275,14 +273,14 @@ void Log_File::open_new_logfile(const timeval& current_time) noexcept
         log_file_handle_.open(log_file_name_.c_str(), mode);
         if (log_file_handle_)
         {
-            fprintf(stderr, "Open log file name [%s] ok.",
-                    log_file_name_.c_str());
+            ZPRINT(RS_ALERT, "Open log file name [%s] ok.",
+                   log_file_name_.c_str());
         }
         else
         {
-            fprintf(stderr, "Open log file name [%s] fail. errno=%d.",
-                    log_file_name_.c_str(),
-                    errno);
+            ZPRINT(RS_ALERT, "Open log file name [%s] fail. errno=%d.",
+                   log_file_name_.c_str(),
+                   errno);
         }
         size_log_file_ = static_cast<size_t>(log_file_handle_.tellp());
 
