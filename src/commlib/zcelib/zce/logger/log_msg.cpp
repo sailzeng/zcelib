@@ -115,7 +115,7 @@ int LogMsg::init_stdout(bool use_err_out,
 
 void LogMsg::terminate()
 {
-    is_output_log_ = false;
+    allow_output_log_ = false;
     permit_outlevel_ = RS_DEBUG;
     log_file_.terminate();
 }
@@ -123,7 +123,7 @@ void LogMsg::terminate()
 //打开日志输出开关
 void LogMsg::enable_output(bool enable_out)
 {
-    is_output_log_ = enable_out;
+    allow_output_log_ = enable_out;
 }
 
 //!设置日志输出Level
@@ -186,7 +186,7 @@ void LogMsg::vwrite_logmsg(LOG_PRIORITY outlevel,
                            va_list args) noexcept
 {
     //如果日志输出开关关闭
-    if (is_output_log_ == false)
+    if (allow_output_log_ == false)
     {
         return;
     }

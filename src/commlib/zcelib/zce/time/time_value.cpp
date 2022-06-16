@@ -182,8 +182,8 @@ void Time_Value::set(LPSYSTEMTIME system_time)
 {
     zce_time_value_ = zce::make_timeval(system_time);
 }
-
 #endif
+
 
 //用clock_t 设置时间，被迫用这个函数名字，避免和其他函数冲突
 void Time_Value::set_by_clock_t(clock_t time)

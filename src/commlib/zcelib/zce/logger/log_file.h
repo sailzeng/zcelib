@@ -255,12 +255,12 @@ protected:
 
     //!时间日志文件列表，
     std::list<std::string> time_logfile_list_;
-
+    //!
+    bool out_thread_run_ = true;
     //!输出到文件的现场
     std::thread thread_outlog_;
     //!
     zce::queue_buffer_pool_lock buf_pool_;
-
     //!
     zce::msgring_condi<LOG_RECORD>  msg_queue_;
 };

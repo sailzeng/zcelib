@@ -368,8 +368,8 @@ public:
     }
 
     //有超时放入
-    bool enqueue(const T& value_data,
-                 const zce::Time_Value& wait_time)
+    bool enqueue_wait(const T& value_data,
+                      std::chrono::microseconds& wait_time)
     {
         return enqueue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -395,14 +395,20 @@ public:
     }
 
     //有超时处理的取出
-    bool dequeue(T& value_data,
-                 const std::chrono::microseconds& wait_time)
+    bool dequeue_wait(T& value_data,
+                      const std::chrono::microseconds& wait_time)
     {
         return dequeue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
                                 wait_time);
     }
-
+    bool dequeue_wait(T& value_data,
+                      const zce::Time_Value& wait_time)
+    {
+        return dequeue_interior(value_data,
+                                MQW_WAIT_TIMEOUT,
+                                wait_time);
+    }
     //尝试取出，立即返回
     bool try_dequeue(T& value_data)
     {
@@ -476,7 +482,7 @@ protected:
     //取出一个数据，根据参数确定是否等待一个相对时间
     bool dequeue_interior(T& value_data,
                           MQW_WAIT_MODEL wait_model,
-                          std::chrono::microseconds& wait_time)
+                          const std::chrono::microseconds& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {

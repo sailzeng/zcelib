@@ -238,7 +238,7 @@ public:
                           const out_type &...out_data)
     {
         //如果日志输出开关关闭
-        if (is_output_log_ == false)
+        if (allow_output_log_ == false)
         {
             return;
         }
@@ -358,7 +358,7 @@ protected:
     zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
     //!是否输出日志信息,可以用于暂时屏蔽
-    bool is_output_log_ = true;
+    bool allow_output_log_ = true;
 
     //!日志文件
     Log_File log_file_;

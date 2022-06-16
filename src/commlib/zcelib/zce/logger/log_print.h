@@ -9,6 +9,8 @@ namespace zce
 class Log_Printf
 {
 public:
+    Log_Printf();
+    ~Log_Printf();
 
     //输出va_list的参数信息
     void vwrite_logmsg(const char* str_format,
@@ -23,10 +25,18 @@ public:
     //设置日志输出Level
     zce::LOG_PRIORITY set_log_priority(zce::LOG_PRIORITY outlevel);
 
-
-    //
+    //!
     static Log_Printf* instance();
+    //!
+    void clean_instance();
+
 protected:
+    //!实例指针
+    static Log_Printf* instance_;
+
+protected:
+    //!
+    FILE * print_fp_ = nullptr;
 
     //!输出日志信息的Mask值,小于这个信息的信息不予以输出
     zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;

@@ -146,6 +146,14 @@ public:
     void set(const std::chrono::system_clock::time_point& val);
     void set(const std::chrono::steady_clock::time_point& val);
 
+    void to(std::chrono::seconds& val);
+    void to(std::chrono::milliseconds& val);
+    void to(std::chrono::microseconds& val);
+    void to(std::chrono::nanoseconds& val);
+
+    void to(std::chrono::system_clock::time_point& val);
+    void to(std::chrono::steady_clock::time_point& val);
+
 #ifdef ZCE_OS_WINDOWS
 
     /*!

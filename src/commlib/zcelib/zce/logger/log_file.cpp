@@ -108,13 +108,21 @@ int Log_File::initialize(int output_way,
                 time_logfile_list_.push_back(file_name);
             }
         }
+        out_thread_run_ = false;
+        //!如果使用线程输出文件
+        if (thread_outfile_)
+        {
+            out_thread_run_ = true;
+            buf_pool_.initialize(SIZE_OF_BUCKET_ARY,
+                                 BUCKET_SIZE_ARY,
+                                 &zce::queue_buffer::new_self,
+                                 POOL_INIT,
+                                 POOL_ONCE_EXTEND);
+            thread_outlog_ = std::thread(&Log_File::thread_work,
+                                         this);
+        }
 
-        buf_pool_.initialize(SIZE_OF_BUCKET_ARY,
-                             BUCKET_SIZE_ARY,
-                             &zce::queue_buffer::new_self,
-                             POOL_INIT,
-                             POOL_ONCE_EXTEND);
-        thread_outlog_ = std::thread();
+
     }
     vaild_ = true;
     return 0;
@@ -131,6 +139,8 @@ void Log_File::terminate()
     current_click_ = 1;
     div_log_file_ = LOGFILE_DEVIDE::NONE;
     size_log_file_ = 0;
+    out_thread_run_ = false;
+    thread_outlog_.join();
     vaild_ = false;
 }
 
@@ -437,19 +447,20 @@ void Log_File::fileout_log_info(const timeval& now_time,
         bool ret = buf_pool_.alloc_buffer(sz_use_len, buf);
         if (!ret)
         {
-            ZCE_LOG(RS_ALERT, "alloc_buffer fail .alloc len :%u.", sz_use_len);
+            ZPRINT(RS_ALERT, "alloc_buffer fail .alloc len :%u.", sz_use_len);
             return;
         }
         buf->clear();
         buf->add(log_tmp_buffer, sz_use_len);
         LOG_RECORD logbuf;
+        std::chrono::microseconds wait_time(50);
         logbuf.rec_buf_ = buf;
         logbuf.rec_time_ = now_time;
-        ret = msg_queue_.enqueue(logbuf);
+        ret = msg_queue_.enqueue_wait(logbuf, wait_time);
         if (!ret)
         {
-            ZCE_LOG(RS_ALERT, "msg_queue_.enqueue fail .queue len :%u.",
-                    msg_queue_.size());
+            ZPRINT(RS_ALERT, "msg_queue_.enqueue fail .queue len :%u.",
+                   msg_queue_.size());
             return;
         }
     }
@@ -476,26 +487,34 @@ void Log_File::fileout_log_info(const timeval& now_time,
 
 void Log_File::thread_work()
 {
-    bool ret = false;
-    LOG_RECORD logbuf;
-    ret = msg_queue_.dequeue(logbuf);
-    //得到新的文件名字
-    open_new_logfile(logbuf.rec_time_);
-    size_t sz_use_len = logbuf.rec_buf_->size();
-    //如果文件状态OK
-    if (log_file_handle_)
+    bool get_rec = false;
+    do
     {
-        log_file_handle_.write(logbuf.rec_buf_->point(),
-                               static_cast<std::streamsize>(sz_use_len));
+        LOG_RECORD logbuf;
+        std::chrono::microseconds wait_time(50);
+        get_rec = msg_queue_.dequeue_wait(logbuf,
+                                          wait_time);
+        if (get_rec)
+        {
+            //得到新的文件名字
+            open_new_logfile(logbuf.rec_time_);
+            size_t sz_use_len = logbuf.rec_buf_->size();
+            //如果文件状态OK
+            if (log_file_handle_)
+            {
+                log_file_handle_.write(logbuf.rec_buf_->point(),
+                                       static_cast<std::streamsize>(sz_use_len));
 
-        //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
-        //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
-        //是否可以优化呢，这是一个两难问题
-        log_file_handle_.flush();
+                //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
+                //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
+                //是否可以优化呢，这是一个两难问题
+                log_file_handle_.flush();
 
-        //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
-        size_log_file_ += sz_use_len;
-    }
+                //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
+                size_log_file_ += sz_use_len;
+            }
+        }
+    } while (out_thread_run_ || get_rec);
 }
 
 

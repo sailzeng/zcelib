@@ -1,8 +1,26 @@
 #include "zce/predefine.h"
+#include "zce/os_adapt/dirent.h"
 #include "zce/logger/log_print.h"
 
 
 //==========================================================================================================
+zce::Log_Printf *zce::Log_Printf::instance_ = nullptr;
+
+zce::Log_Printf::Log_Printf()
+{
+    zce::mkdir("./log");
+    print_fp_ = ::fopen("./log/log_print.log", "a+");
+}
+
+zce::Log_Printf::~Log_Printf()
+{
+    if (print_fp_)
+    {
+        ::fclose(print_fp_);
+        print_fp_ = nullptr;
+    }
+}
+
 
 //输出va_list的参数信息
 void zce::Log_Printf::vwrite_logmsg(const char* str_format,
@@ -11,6 +29,11 @@ void zce::Log_Printf::vwrite_logmsg(const char* str_format,
     //得到打印信息,_vsnprintf为特殊函数
     vfprintf(stderr, str_format, args);
     fprintf(stderr, "\n");
+    if (print_fp_)
+    {
+        vfprintf(print_fp_, str_format, args);
+        fprintf(print_fp_, "\n");
+    }
 }
 
 //写日志
@@ -52,7 +75,19 @@ zce::LOG_PRIORITY zce::Log_Printf::set_log_priority(zce::LOG_PRIORITY outlevel)
 //实例的获得
 zce::Log_Printf* zce::Log_Printf::instance()
 {
-    static zce::Log_Printf log_instance;
-    return &log_instance;
+    if (instance_ == nullptr)
+    {
+        instance_ = new zce::Log_Printf();
+    }
+    return instance_;
+}
+
+void zce::Log_Printf::clean_instance()
+{
+    if (instance_)
+    {
+        delete instance_;
+        instance_ = nullptr;
+    }
 }
 
