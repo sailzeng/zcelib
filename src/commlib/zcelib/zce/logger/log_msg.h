@@ -74,13 +74,13 @@ enum class LOG_OUTPUT
 
 namespace zce
 {
-class LogMsg
+class Log_Msg
 {
 public:
 
     ///构造函数
-    LogMsg();
-    virtual ~LogMsg();
+    Log_Msg();
+    virtual ~Log_Msg();
 
     /*!
     @brief      初始化函数,用于时间分割日志的构造
@@ -88,7 +88,7 @@ public:
     @param[in]  div_log_file      分割日志的方式
     @param[in]  log_file_prefix   日志的前缀
     @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
-    @param[in]  trunc_old         是否截断原有的日志文件的信息，
+    @param[in]  trunc_old         是否删除原有的日志文件的信息，
     @param[in]  is_thread_synchro 是否进行线程同步，
     @param[in]  auto_new_line     日志记录的末尾是否自动的换行，new一行
     @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
@@ -97,11 +97,11 @@ public:
     int init_time_log(LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
                       size_t reserve_file_num = Log_File::DEFAULT_RESERVE_FILENUM,
-                      bool trunc_old = false,
-                      bool is_thread_synchro = false,
+                      bool multithread_log = false,
+                      bool thread_output_file = false,
                       bool auto_new_line = true,
-                      bool thread_output = false,
-                      int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                      bool trunc_old = false,
+                      int output_way = DEFUALT_LOG_OUTPUT,
                       int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
@@ -109,21 +109,22 @@ public:
     @return     int                返回0标识初始化成功
     @param[in]  log_file_prefix    日志的前缀
     @param[in]  max_size_log_file  日志文件的最大尺寸，目前最大尺寸内部用的4G
-    @param[in]  trunc_old          是否截断原有的日志文件的信息，
-    @param[in]  is_thread_synchro  是否进行线程同步
-    @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
     @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
+    @param[in]  is_thread_synchro  是否进行线程同步
+    @param[in]  thread_output_file 使用线程输出文件
+    @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
+    @param[in]  trunc_old          是否截断原有的日志文件的信息，
     @param[in]  output_way         日志输出的方式，参考 @ref LOG_OUTPUT
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_size_log(const char* log_file_prefix,
                       size_t max_size_log_file = Log_File::DEFAULT_LOG_SIZE,
-                      unsigned int reserve_file_num = Log_File::DEFAULT_RESERVE_FILENUM,
-                      bool trunc_old = false,
-                      bool is_thread_synchro = false,
+                      size_t reserve_file_num = Log_File::DEFAULT_RESERVE_FILENUM,
+                      bool multithread_log = false,
+                      bool thread_output_file = false,
                       bool auto_new_line = true,
-                      bool thread_output = false,
-                      int output_way = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
+                      bool trunc_old = false,
+                      int output_way = DEFUALT_LOG_OUTPUT,
                       int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
@@ -136,7 +137,7 @@ public:
     */
     int init_stdout(bool use_err_out = true,
                     bool auto_new_line = true,
-                    bool is_thread_synchro = false,
+                    bool multithread_log = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
 
@@ -295,9 +296,9 @@ public:
 public:
 
     //实例的赋值
-    static void instance(LogMsg*);
+    static void instance(Log_Msg*);
     //实例的获得
-    static LogMsg* instance();
+    static Log_Msg* instance();
     //清除实例
     static void clean_instance();
 
@@ -331,16 +332,23 @@ public:
 
 public:
 
-    ///根据字符串，得到日志级别
+    //!根据字符串，得到日志级别
     static zce::LOG_PRIORITY log_priorities(const char* str_priority);
 
-    ///根据字符串,得到日志分割方式的枚举
+    //!根据字符串,得到日志分割方式的枚举
     static LOGFILE_DEVIDE log_file_devide(const char* str_devide);
+
+    //!
+#if defined DEBUG || defined _DEBUG
+    static const int DEFUALT_LOG_OUTPUT = ((int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT);
+#else
+    static const int DEFUALT_LOG_OUTPUT = ((int)LOG_OUTPUT::LOGFILE;
+#endif
 
 protected:
 
     //!是否进行多线程的同步
-    bool multithread_out_ = false;
+    bool multithread_log_ = false;
 
     //!由于我内部还是使用的C++的ofstream 作为输出对象，所以我在多线程下还是使用了锁。
     std::mutex protect_lock_;
@@ -366,6 +374,6 @@ protected:
 protected:
 
     ///单子实例指针
-    static LogMsg* log_instance_;
+    static Log_Msg * log_instance_;
 };
 }

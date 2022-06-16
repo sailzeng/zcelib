@@ -104,16 +104,16 @@ public:
     @return     int                返回0标识初始化成功
     @param[in]  div_log_file
     @param[in]  log_file_prefix
-    @param[in]  auto_new_line
-    @param[in]  thread_output     使用独立的线程打印
-    @param[in]  max_size_log_file 日志文件的最大尺寸
-    @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
+    @param[in]  trunc_old
+    @param[in]  thread_output_file 使用独立的线程打印
+    @param[in]  max_size_log_file  日志文件的最大尺寸
+    @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
     */
     int initialize(int output_way,
                    LOGFILE_DEVIDE div_log_file,
                    const char* log_file_prefix,
                    bool trunc_old,
-                   bool thread_output,
+                   bool thread_output_file,
                    size_t max_size_log_file,
                    size_t reserve_file_num) noexcept;
 
@@ -231,7 +231,7 @@ protected:
     //而同步的点应该有两个，1.文件的更换，这个要避免几个人同时重入，2.向缓冲区写入的时候，
     //对于2，其实由于我写入的数据区长度最大只有4K，所以其实理论上可以逃避这个问题，当然这样不能使用带有缓冲的输出,只能用write
 
-    //!
+    //!删除日志文件原有的信息
     bool trunc_old_ = false;
 
     //!线程输出日志

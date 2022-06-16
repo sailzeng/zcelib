@@ -337,17 +337,16 @@ public:
 * @tparam     T  消息队列放入的数据类型
 * @tparam     C  消息队列内部容器类型
 */
-template < typename T,
-    typename C >
+template < size_t MAX, typename T, typename C >
 class msgqueue_sema
 {
 public:
 
     //
-    explicit msgqueue_sema(size_t queue_max_size) :
-        queue_max_size_(queue_max_size),
+    explicit msgqueue_sema() :
+        queue_max_size_(MAX),
         queue_cur_size_(0),
-        sem_full_(static_cast<unsigned int>(queue_max_size)),
+        sem_full_(MAX),
         sem_empty_(0)
     {
     }
@@ -381,7 +380,7 @@ public:
     }
 
     //放入数据，一直等待
-    int enqueue(const T& value_data)
+    bool enqueue(const T& value_data)
     {
         std::chrono::microseconds no_use;
         return enqueue_i(value_data,
@@ -390,8 +389,8 @@ public:
     }
 
     //放入一个数据，进行超时等待
-    int enqueue(const T& value_data,
-                std::chrono::microseconds& wait_time)
+    bool enqueue_wait(const T& value_data,
+                      std::chrono::microseconds& wait_time)
     {
         return enqueue_i(value_data,
                          MQW_WAIT_TIMEOUT,
@@ -399,7 +398,7 @@ public:
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
-    int try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value_data)
     {
         std::chrono::microseconds no_use;
         return enqueue_i(value_data,
@@ -408,8 +407,8 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(T& value_data,
-                std::chrono::microseconds& wait_time)
+    bool dequeue_wait(T& value_data,
+                      std::chrono::microseconds& wait_time)
     {
         return dequeue_i(value_data,
                          MQW_WAIT_TIMEOUT,
@@ -417,7 +416,7 @@ public:
     }
 
     //取出一个数据，一直等待
-    int dequeue(T& value_data)
+    bool dequeue(T& value_data)
     {
         std::chrono::microseconds no_use;
         return dequeue_i(value_data,
@@ -426,7 +425,7 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int try_dequeue(T& value_data)
+    bool try_dequeue(T& value_data)
     {
         std::chrono::microseconds no_use;
         return dequeue_i(value_data,
@@ -452,9 +451,9 @@ public:
 protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue_i(T& value_data,
-                  MQW_WAIT_MODEL model,
-                  std::chrono::microseconds& wait_time)
+    bool dequeue_i(T& value_data,
+                   MQW_WAIT_MODEL model,
+                   std::chrono::microseconds& wait_time)
     {
         //进行超时等待
         bool bret = false;
@@ -464,7 +463,7 @@ protected:
             //如果超时了，返回false
             if (!bret)
             {
-                return -1;
+                return false;
             }
         }
         else if (model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
@@ -476,7 +475,7 @@ protected:
             bret = sem_empty_.try_acquire();
             if (!bret)
             {
-                return -1;
+                return false;
             }
         }
         else
@@ -493,13 +492,13 @@ protected:
         }
         sem_full_.release();
 
-        return 0;
+        return true;
     }
 
 
-    int enqueue_i(const T& value_data,
-                  MQW_WAIT_MODEL model,
-                  std::chrono::microseconds& wait_time)
+    bool enqueue_i(const T& value_data,
+                   MQW_WAIT_MODEL model,
+                   std::chrono::microseconds& wait_time)
     {
         bool bret = false;
         if (model == MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT)
@@ -508,7 +507,7 @@ protected:
             //如果超时了，返回false
             if (!bret)
             {
-                return -1;
+                return false;
             }
         }
         else if (model == MQW_WAIT_MODEL::MQW_WAIT_FOREVER)
@@ -522,7 +521,7 @@ protected:
             if (!bret)
             {
                 errno = EWOULDBLOCK;
-                return -1;
+                return false;
             }
         }
         else
@@ -538,25 +537,23 @@ protected:
         }
         sem_empty_.release();
 
-        return 0;
+        return true;
     }
 
 protected:
-
-    //QUEUE的最大尺寸
+    //!
     size_t                  queue_max_size_;
-
-    //由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
+    //!由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
     size_t                  queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
     std::mutex              queue_lock_;
 
     //信号灯，满的信号灯
-    std::binary_semaphore   sem_full_;
+    std::counting_semaphore<MAX>   sem_full_;
 
     //信号灯，空的信号灯，当数据
-    std::binary_semaphore   sem_empty_;
+    std::counting_semaphore<MAX>   sem_empty_;
 
     //容器类型，可以是list,dequeue,
     C                       message_queue_;
@@ -568,36 +565,36 @@ protected:
 * @tparam     T 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <typename T >
-class msglist_sema : public msgqueue_sema<T, std::list<T> >
+template <size_t MAX, typename T >
+class msglist_sema : public msgqueue_sema<MAX, T, std::list<T> >
 {
 public:
-    explicit msglist_sema(size_t queue_max_size) :
-        msgqueue_sema<T, std::list<T> >(queue_max_size)
+    msglist_sema() :
+        msgqueue_sema<MAX, T, std::list<T> >()
     {
     }
     ~msglist_sema() = default;
 };
 
-template <typename T >
-class msgdeque_sema : public msgqueue_sema<T, std::deque<T> >
+template <size_t MAX, typename T >
+class msgdeque_sema : public msgqueue_sema<MAX, T, std::deque<T> >
 {
 public:
-    explicit msgdeque_sema(size_t queue_max_size) :
-        msgqueue_sema<T, std::deque<T> >(queue_max_size)
+    msgdeque_sema() :
+        msgqueue_sema<MAX, T, std::deque<T> >()
     {
     }
     ~msgdeque_sema() = default;
 };
 
-template <typename T >
-class msgrings_sema : public msgqueue_sema<T, zce::lord_rings<T> >
+template <size_t MAX, typename T >
+class msgrings_sema : public msgqueue_sema<MAX, T, zce::lord_rings<T> >
 {
 public:
-    explicit msgrings_sema(size_t queue_max_size) :
-        msgqueue_sema<T, zce::lord_rings<T> >(queue_max_size)
+    msgrings_sema() :
+        msgqueue_sema<MAX, T, zce::lord_rings<T> >()
     {
-        msgqueue_sema<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
+        msgqueue_sema<MAX, T, zce::lord_rings<T> >::message_queue_.resize(MAX);
     }
     ~msgrings_sema() = default;
 };

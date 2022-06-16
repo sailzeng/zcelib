@@ -70,7 +70,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/;$(LibraryPath)</LibraryPath>
@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>MixedRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -89,7 +89,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
@@ -97,7 +97,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <OutDir>$(ProjectDir)../../../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>

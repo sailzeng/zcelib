@@ -72,7 +72,7 @@ int svrd_main(int argc, const char* argv[])
     //
     application_class::clean_instance();
     //关闭日志
-    zce::LogMsg::clean_instance();
+    zce::Log_Msg::clean_instance();
 
     return 0;
 }

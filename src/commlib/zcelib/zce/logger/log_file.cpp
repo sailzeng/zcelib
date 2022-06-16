@@ -445,7 +445,8 @@ void Log_File::fileout_log_info(const timeval& now_time,
         bool ret = buf_pool_.alloc_buffer(sz_use_len, buf);
         if (!ret)
         {
-            ZPRINT(RS_ALERT, "alloc_buffer fail .alloc len :%u.", sz_use_len);
+            ZPRINT(RS_ALERT, "alloc_buffer fail .alloc len :%u.",
+                   sz_use_len);
             return;
         }
         buf->clear();

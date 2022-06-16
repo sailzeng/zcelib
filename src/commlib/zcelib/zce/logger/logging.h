@@ -28,18 +28,18 @@
 #include "zce/logger/log_msg.h"
 
 //打开输出
-#define ZLOG_ENABLE           zce::LogMsg::instance()->enable_output(true)
+#define ZLOG_ENABLE           zce::Log_Msg::instance()->enable_output(true)
 //关闭输出
-#define ZLOG_DISABLE          zce::LogMsg::instance()->enable_output(false)
+#define ZLOG_DISABLE          zce::Log_Msg::instance()->enable_output(false)
 //输出MASK级别,小于这个级别的日志信息不予输出
-#define ZLOG_SET_OUTLEVEL     zce::LogMsg::instance()->set_log_priority
+#define ZLOG_SET_OUTLEVEL     zce::Log_Msg::instance()->set_log_priority
 
 //当年还用过一套为GCC2.9定义的双括号的红，土死了，后来不打算兼容那么多版本，我懒
 
 //使用调试级别输出日志
-#define ZCE_LOG               zce::LogMsg::write_logmsg
+#define ZCE_LOG               zce::Log_Msg::write_logmsg
 
-#define ZPP_LOG               zce::LogMsg::write_logplus
+#define ZPP_LOG               zce::Log_Msg::write_logplus
 
 #if defined ZCE_OS_WINDOWS
 #define ZNO_LOG             __noop
@@ -47,12 +47,12 @@
 #define ZNO_LOG(...)        (void(0))
 #endif
 
-#define ZLOG_TRACE(...)       zce::LogMsg::write_logmsg(RS_TRACE,__VA_ARGS__)
-#define ZLOG_DEBUG(...)       zce::LogMsg::write_logmsg(RS_DEBUG,__VA_ARGS__)
-#define ZLOG_INFO(...)        zce::LogMsg::write_logmsg(RS_INFO,__VA_ARGS__)
-#define ZLOG_ERROR(...)       zce::LogMsg::write_logmsg(RS_ERROR,__VA_ARGS__)
-#define ZLOG_ALERT(...)       zce::LogMsg::write_logmsg(RS_ALERT,__VA_ARGS__)
-#define ZLOG_FATAL(...)       zce::LogMsg::write_logmsg(RS_FATAL,__VA_ARGS__)
+#define ZLOG_TRACE(...)       zce::Log_Msg::write_logmsg(RS_TRACE,__VA_ARGS__)
+#define ZLOG_DEBUG(...)       zce::Log_Msg::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#define ZLOG_INFO(...)        zce::Log_Msg::write_logmsg(RS_INFO,__VA_ARGS__)
+#define ZLOG_ERROR(...)       zce::Log_Msg::write_logmsg(RS_ERROR,__VA_ARGS__)
+#define ZLOG_ALERT(...)       zce::Log_Msg::write_logmsg(RS_ALERT,__VA_ARGS__)
+#define ZLOG_FATAL(...)       zce::Log_Msg::write_logmsg(RS_FATAL,__VA_ARGS__)
 
 
 //----------------------------------------------------------------------------------
@@ -83,12 +83,12 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #if defined (ZCE_OS_WINDOWS)
 #define ZCE_ASSERT_ALL(expr) \
     (void) ((!!(expr)) || \
-            (zce::LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
+            (zce::Log_Msg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_ALL(expr) \
     (void) ((!!(expr)) || \
-            (zce::LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
+            (zce::Log_Msg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
             (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL
@@ -97,12 +97,12 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #if defined (ZCE_OS_WINDOWS)
 #define ZCE_ASSERT_ALL_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (zce::LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
+            (zce::Log_Msg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_ALL_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (zce::LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
+            (zce::Log_Msg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
             (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL_EX

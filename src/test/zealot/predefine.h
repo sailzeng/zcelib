@@ -5,6 +5,7 @@
 
 #include <zce/predefine.h>
 #include <zce/logger/logging.h>
+#include <zce/logger/log_file.h>
 #include <zce/logger/log_msg.h>
 
 #include <zce/os_adapt/common.h>

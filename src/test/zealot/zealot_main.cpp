@@ -8,18 +8,22 @@ int main(int argc, char* argv[])
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 
-#define ZCE_USE_LOGMSG 1
-#if 0
-    zce::LogMsg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                           "E:\\My.Log\\TEST_2",
-                                           0,
-                                           true,
-                                           false,
-                                           true,
-                                           ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                                           static_cast<int>(LOG_HEAD::LOGLEVEL));
+    zce::Log_Msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                            "E:\\My.Log\\TEST_2",
+                                            zce::Log_File::DEFAULT_LOG_SIZE,
+                                            false,
+                                            true,
+                                            false,
+                                            true,
+                                            ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
+                                            static_cast<int>(LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);
-#endif
+
+    for (size_t i = 0; i < 100; ++i)
+    {
+        ZCE_LOG(RS_INFO, "Hallelujah");
+    }
+
     test_multiobj_pool(argc, argv);
 #if 0
     test_dns_resolve(argc, argv);

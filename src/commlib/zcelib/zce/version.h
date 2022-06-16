@@ -1,3 +1,35 @@
+/*
+   《回答》 北岛
+　　卑鄙是卑鄙者的通行证，
+　　高尚是高尚者的墓志铭，
+　　看吧，在那镀金的天空中，
+　　飘满了死者弯曲的倒影。
+　　冰川纪过去了，
+　　为什么到处都是冰凌？
+　　好望角发现了，
+　　为什么死海里千帆相竞？
+　　我来到这个世界上，
+　　只带着纸、绳索和身影，
+　　为了在审判前，
+　　宣读那些被判决的声音。
+　　告诉你吧，世界
+　　我——不——相——信！
+　　纵使你脚下有一千名挑战者，
+　　那就把我算作第一千零一名。
+　　我不相信天是蓝的，
+　　我不相信雷的回声，
+　　我不相信梦是假的，
+　　我不相信死无报应。
+　　如果海洋注定要决堤，
+　　就让所有的苦水都注入我心中，
+　　如果陆地注定要上升，
+　　就让人类重新选择生存的峰顶。
+　　新的转机和闪闪星斗，
+　　正在缀满没有遮拦的天空。
+　　那是五千年的象形文字，
+　　那是未来人们凝视的眼睛。
+*/
+
 #pragma once
 
 //服务器的版本信息，每个版本应该主动改写这个
@@ -52,11 +84,11 @@
 
 #ifndef ZCE_VERSION_DECLARE
 #define ZCE_VERSION_DECLARE(name)   #name"Server Version :" ZCE_JION_VER_STRING "  .\n" \
-    ZCE_BUILD_TYPE_STRING
-    "Compilation Timestamp :" __DATE__ " " __TIME__ " .\n" \
-    "Copyright :(C) 2008-2012 . My Team (We are best!). All rights reserved. \n"  \
-    "Author :sail and her firends.\n" \
-    "Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
+    ZCE_BUILD_TYPE_STRING \
+"Compilation Timestamp :" __DATE__ " " __TIME__ " .\n" \
+"Copyright :(C) 2008-2012 . My Team (We are best!). All rights reserved. \n"  \
+"Author :sail and her firends.\n" \
+"Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
 #endif
 
 
