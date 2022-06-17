@@ -79,7 +79,7 @@ public:
     }
 
     //放入数据，一直等待
-    int enqueue(const T& value_data)
+    bool enqueue(const T& value_data)
     {
         sem_full_.lock();
 
@@ -96,8 +96,8 @@ public:
     }
 
     //放入一个数据，进行超时等待
-    int enqueue(const T& value_data,
-                const zce::Time_Value& wait_time)
+    bool enqueue(const T& value_data,
+                 const zce::Time_Value& wait_time)
     {
         bool bret = false;
         bret = sem_full_.lock_for(wait_time);
@@ -121,7 +121,7 @@ public:
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
-    int try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value_data)
     {
         bool bret = false;
         bret = sem_full_.try_lock();
@@ -146,8 +146,8 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(T& value_data,
-                const zce::Time_Value& wait_time)
+    bool dequeue(T& value_data,
+                 const zce::Time_Value& wait_time)
     {
         bool bret = false;
         bret = sem_empty_.lock_for(wait_time);
@@ -172,7 +172,7 @@ public:
     }
 
     //取出一个数据，一直等待
-    int dequeue(T& value_data)
+    bool dequeue(T& value_data)
     {
         sem_empty_.lock();
 
@@ -190,7 +190,7 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int try_dequeue(T& value_data)
+    bool try_dequeue(T& value_data)
     {
         bool bret = false;
         bret = sem_empty_.try_lock();
@@ -232,10 +232,17 @@ public:
 
 protected:
 
+    bool enqueue_i(const T& value_data,
+                   MQW_WAIT_MODEL model,
+                   const zce::Time_Value& wait_time)
+    {
+        return true;
+    }
+
     //取出一个数据，根据参数确定是否等待一个相对时间
-    int dequeue(T& value_data,
-                bool if_wait_timeout,
-                const zce::Time_Value& wait_time)
+    bool dequeue_i(T& value_data,
+                   MQW_WAIT_MODEL model,
+                   const zce::Time_Value& wait_time)
     {
         //进行超时等待
         if (if_wait_timeout)
@@ -246,7 +253,7 @@ protected:
             //如果超时了，返回false
             if (!bret)
             {
-                return -1;
+                return false;
             }
         }
         else
@@ -264,7 +271,7 @@ protected:
         }
         sem_full_.unlock();
 
-        return 0;
+        return true;
     }
 
 protected:

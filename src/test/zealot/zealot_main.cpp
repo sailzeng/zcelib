@@ -13,8 +13,8 @@ int main(int argc, char* argv[])
                                             zce::Log_File::DEFAULT_LOG_SIZE,
                                             false,
                                             true,
-                                            false,
                                             true,
+                                            false,
                                             ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
                                             static_cast<int>(LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);

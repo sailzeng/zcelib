@@ -83,16 +83,17 @@ public:
     virtual ~Log_Msg();
 
     /*!
-    @brief      初始化函数,用于时间分割日志的构造
-    @return     int               返回0标识初始化成功
-    @param[in]  div_log_file      分割日志的方式
-    @param[in]  log_file_prefix   日志的前缀
-    @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
-    @param[in]  trunc_old         是否删除原有的日志文件的信息，
-    @param[in]  is_thread_synchro 是否进行线程同步，
-    @param[in]  auto_new_line     日志记录的末尾是否自动的换行，new一行
-    @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
-    @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
+    * @brief      初始化函数,用于时间分割日志的构造
+    * @return     int                返回0标识初始化成功
+    * @param[in]  div_log_file       分割日志的方式，时间分割有多种方式
+    * @param[in]  log_file_prefix    日志的前缀，包括目录信息
+    * @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
+    * @param[in]  multithread_log    是否是多线程进行日志输出，如果是进行线程同步，
+    * @param[in]  thread_output_file 是否使用独立的线程进行日志文件的输出，避免主线程的等待日志输出
+    * @param[in]  trunc_old          是否删除原有的（覆盖原有老文件）日志文件的信息，
+    * @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
+    * @param[in]  output_way         日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
+    * @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_time_log(LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
@@ -107,7 +108,7 @@ public:
     /*!
     @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
     @return     int                返回0标识初始化成功
-    @param[in]  log_file_prefix    日志的前缀
+    @param[in]  log_file_prefix    日志的前缀，包括目录信息
     @param[in]  max_size_log_file  日志文件的最大尺寸，目前最大尺寸内部用的4G
     @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
     @param[in]  is_thread_synchro  是否进行线程同步
