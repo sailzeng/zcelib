@@ -2,13 +2,19 @@
 
 #pragma once
 
-#include "zce/os_adapt/common.h"
 
+
+//!
 namespace zce::aio
 {
 
 class base
 {
+public:
+    //!
+    base(manager *);
+    ~base();
+
     //!
     int fs_open(const char* path,
                 int flags,
@@ -28,12 +34,19 @@ class base
                  const char bufs[],
                  unsigned int nbufs,
                  int64_t offset);
-
+    //!
     int fs_rename(const char* path,
                   const char* new_path);
-
+    //!
     int fs_ftruncate(ZCE_HANDLE file,
                      int64_t offset);
+protected:
+    //!
+
+protected:
+    //!
+    zce::aio::manager  *manager_;
+    //!
 
 };
 

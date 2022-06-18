@@ -215,7 +215,8 @@ void Log_Msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     sz_buf_len -= sz_use_len;
 
     //得到打印信息,_vsnprintf为特殊函数
-    int len_of_out = vsnprintf(log_buffer + sz_use_len, sz_buf_len, str_format, args);
+    int len_of_out = vsnprintf(log_buffer + sz_use_len,
+                               sz_buf_len, str_format, args);
 
     //如果输出的字符串比想想的长，-2是因为后面有'\0','\n'
     if (len_of_out >= static_cast<int>(sz_buf_len) || len_of_out < 0)
@@ -315,27 +316,42 @@ void Log_Msg::stringbuf_loghead(LOG_PRIORITY outlevel,
         switch (outlevel)
         {
         case RS_TRACE:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[TRACE]");
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
+                                   sz_buf_len,
+                                   "%s",
+                                   "[TRACE]");
             sz_buf_len -= sz_use_len;
             break;
 
         case RS_DEBUG:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[DEBUG]");
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
+                                   sz_buf_len,
+                                   "%s",
+                                   "[DEBUG]");
             sz_buf_len -= sz_use_len;
             break;
 
         case RS_INFO:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[INFO]");
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
+                                   sz_buf_len,
+                                   "%s",
+                                   "[INFO]");
             sz_buf_len -= sz_use_len;
             break;
 
         case RS_ERROR:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[ERROR]");
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
+                                   sz_buf_len,
+                                   "%s",
+                                   "[ERROR]");
             sz_buf_len -= sz_use_len;
             break;
 
         case RS_FATAL:
-            sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "%s", "[FATAL]");
+            sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
+                                   sz_buf_len,
+                                   "%s",
+                                   "[FATAL]");
             sz_buf_len -= sz_use_len;
             break;
 

@@ -61,11 +61,8 @@ public:
 
     //!构造函数
     Thread_Recursive_Condition();
-
     //!析构函数
     virtual ~Thread_Recursive_Condition(void);
-
-    //!我根据Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex给了特化实现
 
     //!等待
     virtual void wait(Thread_Recursive_Mutex* external_mutex) noexcept;

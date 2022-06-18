@@ -25,7 +25,8 @@ namespace zce
 * @param      fname DLL的文件名称
 * @param      mode 打开的模式
 */
-ZCE_SHLIB_HANDLE dlopen(const char* fname, int mode = ZCE_DEFAULT_SHLIB_MODE);
+ZCE_SHLIB_HANDLE dlopen(const char* fname,
+                        int mode = ZCE_DEFAULT_SHLIB_MODE);
 
 /*!
 * @brief      关闭动态库
@@ -41,7 +42,8 @@ int dlclose(ZCE_SHLIB_HANDLE handle);
 * @param      symbolname 函数符号的名称
 * @note
 */
-void* dlsym(ZCE_SHLIB_HANDLE handle, const char* symbolname);
+void* dlsym(ZCE_SHLIB_HANDLE handle,
+            const char* symbolname);
 
 /*!
 * @brief      返回动态库函数的错误描述

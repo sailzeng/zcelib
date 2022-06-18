@@ -321,7 +321,6 @@ void Log_File::del_old_logfile() noexcept
                 }
             }
         }
-
         //如果是安装尺寸风格文件的
         else if (LOGFILE_DEVIDE::BY_SIZE_NAME_ID == div_log_file_)
         {
@@ -339,17 +338,17 @@ void Log_File::del_old_logfile() noexcept
             {
                 create_id_logname(i - 1, oldlogfilename);
                 create_id_logname(i, renamefilename);
-                int ret = ::rename(oldlogfilename.c_str(), renamefilename.c_str());
+                int ret = ::rename(oldlogfilename.c_str(),
+                                   renamefilename.c_str());
                 if (ret != 0)
                 {
-                    fprintf(stderr, "Log file rename fail,errno = %d. old file[%s] new file [%s] ",
-                            errno,
-                            oldlogfilename.c_str(),
-                            renamefilename.c_str());
+                    ZPRINT(RS_ALERT, "Log file rename fail,errno = %d. old file[%s] new file [%s] ",
+                           errno,
+                           oldlogfilename.c_str(),
+                           renamefilename.c_str());
                 }
             }
         }
-
         clear_last_error();
     }
 }

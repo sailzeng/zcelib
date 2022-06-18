@@ -24,22 +24,22 @@ void* mmap(void* addr,
            int prot,
            int flags,
            ZCE_HANDLE handle,
-           size_t off = 0);
+           size_t off = 0) noexcept;
 
 //
 int mprotect(const void* addr,
              size_t len,
-             int prot);
+             int prot) noexcept;
 
 //将内存变化同步到文件中去，不建议你频繁调用这个函数，OS会自动做这个事情，
 //一般情况，你在退出时调用一次就OK了。
 int msync(void* addr,
           size_t len,
-          int sync = MS_SYNC);
+          int sync = MS_SYNC) noexcept;
 
 //解除文件映射
 int munmap(void* addr,
-           size_t len);
+           size_t len) noexcept;
 
 //int madvise (caddr_t addr,
 //    size_t len,
@@ -56,11 +56,11 @@ int munmap(void* addr,
 */
 ZCE_HANDLE shm_open(const char* filename,
                     int mode,
-                    mode_t perms = 0);
+                    mode_t perms = 0) noexcept;
 
 //Posix内存的删除文件
 ////Create/open POSIX shared memory objects
-int shm_unlink(const char* path);
+int shm_unlink(const char* path) noexcept;
 
 //-------------------------------------------------------------------------------------------------
 //SystemV的共享内存
@@ -77,7 +77,7 @@ int shm_unlink(const char* path);
 * @param      shmflg
 * @note
 */
-ZCE_HANDLE shmget(key_t sysv_key, size_t size, int shmflg);
+ZCE_HANDLE shmget(key_t sysv_key, size_t size, int shmflg) noexcept;
 
 /*!
 * @brief      打开已经shmget的共享内存区
@@ -87,7 +87,7 @@ ZCE_HANDLE shmget(key_t sysv_key, size_t size, int shmflg);
 * @param      shmflg
 * @note
 */
-void* shmat(ZCE_HANDLE shmid, const void* shmaddr, int shmflg);
+void* shmat(ZCE_HANDLE shmid, const void* shmaddr, int shmflg) noexcept;
 
 /*!
 * @brief      短接这个内存区
@@ -95,7 +95,7 @@ void* shmat(ZCE_HANDLE shmid, const void* shmaddr, int shmflg);
 * @param      shmaddr
 * @note
 */
-int shmdt(const void* shmaddr);
+int shmdt(const void* shmaddr) noexcept;
 
 /*!
 * @brief      对共享内存区提供多种操作
@@ -105,7 +105,7 @@ int shmdt(const void* shmaddr);
 * @param      buf
 * @note
 */
-int shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds* buf);
+int shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds* buf) noexcept;
 };
 
 #endif //ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_

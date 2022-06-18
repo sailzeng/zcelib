@@ -9,7 +9,7 @@ namespace zce
 class Log_Printf
 {
 public:
-    Log_Printf();
+    Log_Printf() = default;
     ~Log_Printf();
 
     //输出va_list的参数信息
@@ -18,6 +18,9 @@ public:
     //写日志
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char* str_format, ...);
+
+    //!打开或者关闭文件输出
+    void enable_fileout(bool enable_out);
 
     //打开日志输出开关
     void enable_output(bool enable_out);
@@ -35,7 +38,7 @@ protected:
     static Log_Printf* instance_;
 
 protected:
-    //!
+    //!打印输出的日志
     FILE * print_fp_ = nullptr;
 
     //!输出日志信息的Mask值,小于这个信息的信息不予以输出
@@ -48,5 +51,7 @@ protected:
 
 #define ZPRINT_ENABLE           zce::Log_Printf::instance()->enable_output(true)
 #define ZPRINT_DISABLE          zce::Log_Printf::instance()->enable_output(false)
+#define ZPRINT_ENABLE_FILEOUT   zce::Log_Printf::instance()->enable_fileout(true)
+#define ZPRINT_DISABLE_FILEOUT  zce::Log_Printf::instance()->enable_fileout(false)
 #define ZPRINT_SET_OUTLEVEL     zce::Log_Printf::instance()->set_log_priority
 #define ZPRINT                  zce::Log_Printf::instance()->write_logmsg

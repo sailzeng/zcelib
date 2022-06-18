@@ -10,7 +10,7 @@ void* zce::mmap(void* addr,
                 int prot,
                 int flags,
                 ZCE_HANDLE file_handle,
-                size_t off)
+                size_t off) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -129,7 +129,9 @@ void* zce::mmap(void* addr,
 #endif
 }
 
-int zce::mprotect(const void* addr, size_t len, int prot)
+int zce::mprotect(const void* addr,
+                  size_t len,
+                  int prot) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -182,7 +184,9 @@ int zce::mprotect(const void* addr, size_t len, int prot)
 #endif
 }
 
-int zce::msync(void* addr, size_t len, int sync)
+int zce::msync(void* addr,
+               size_t len,
+               int sync) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(sync);
@@ -201,7 +205,8 @@ int zce::msync(void* addr, size_t len, int sync)
 #endif
 }
 
-int zce::munmap(void* addr, size_t len)
+int zce::munmap(void* addr,
+                size_t len) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(len);
@@ -221,7 +226,7 @@ int zce::munmap(void* addr, size_t len)
 
 ZCE_HANDLE zce::shm_open(const char* file_path,
                          int mode,
-                         mode_t perms)
+                         mode_t perms) noexcept
 {
     //
 #if defined (ZCE_OS_WINDOWS)
@@ -231,7 +236,11 @@ ZCE_HANDLE zce::shm_open(const char* file_path,
 
     char shm_file_name[PATH_MAX + 1];
     shm_file_name[PATH_MAX] = '\0';
-    snprintf(shm_file_name, PATH_MAX, "%s%s", ZCE_POSIX_MMAP_DIRECTORY, file_path);
+    snprintf(shm_file_name,
+             PATH_MAX,
+             "%s%s",
+             ZCE_POSIX_MMAP_DIRECTORY,
+             file_path);
 
     return zce::open(shm_file_name, mode, perms);
 
@@ -240,7 +249,7 @@ ZCE_HANDLE zce::shm_open(const char* file_path,
 #endif
 }
 
-int zce::shm_unlink(const char* file_path)
+int zce::shm_unlink(const char* file_path) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -262,7 +271,9 @@ int zce::shm_unlink(const char* file_path)
 //我个人对System V的IPC没有爱，一方面毕竟不如POSIX IPC在标准上站住了脚，System V的IPC这方面要弱一点，另一方面System V IPC 的接口设计也不如POSIX那么优雅，
 
 //创建或者访问一个共享内存区
-ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
+ZCE_HANDLE zce::shmget(key_t sysv_key,
+                       size_t size,
+                       int oflag) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -320,7 +331,9 @@ ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
 }
 
 //打开已经shmget的共享内存区
-void* zce::shmat(ZCE_HANDLE shmid, const void* shmaddr, int shmflg)
+void* zce::shmat(ZCE_HANDLE shmid,
+                 const void* shmaddr,
+                 int shmflg) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -374,7 +387,7 @@ void* zce::shmat(ZCE_HANDLE shmid, const void* shmaddr, int shmflg)
 }
 
 //短接这个内存区
-int zce::shmdt(const void* shmaddr)
+int zce::shmdt(const void* shmaddr) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     BOOL ret_bool = ::UnmapViewOfFile(shmaddr);
@@ -392,7 +405,8 @@ int zce::shmdt(const void* shmaddr)
 }
 
 //对共享内存区提供多种操作
-int zce::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds* buf)
+int zce::shmctl(ZCE_HANDLE shmid, int cmd,
+                struct shmid_ds* buf) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 

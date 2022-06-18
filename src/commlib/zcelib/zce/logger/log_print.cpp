@@ -6,11 +6,6 @@
 //==========================================================================================================
 zce::Log_Printf *zce::Log_Printf::instance_ = nullptr;
 
-zce::Log_Printf::Log_Printf()
-{
-    zce::mkdir("./log");
-    print_fp_ = ::fopen("./log/log_print.log", "a+");
-}
 
 zce::Log_Printf::~Log_Printf()
 {
@@ -20,7 +15,6 @@ zce::Log_Printf::~Log_Printf()
         print_fp_ = nullptr;
     }
 }
-
 
 //输出va_list的参数信息
 void zce::Log_Printf::vwrite_logmsg(const char* str_format,
@@ -55,6 +49,26 @@ void zce::Log_Printf::write_logmsg(zce::LOG_PRIORITY outlevel,
     va_start(args, str_format);
     vwrite_logmsg(str_format, args);
     va_end(args);
+}
+
+void zce::Log_Printf::enable_fileout(bool enable_out)
+{
+    if (enable_out)
+    {
+        zce::mkdir("./log");
+        if (!print_fp_)
+        {
+            print_fp_ = ::fopen("./log/log_print.log", "a+");
+        }
+    }
+    else
+    {
+        if (print_fp_)
+        {
+            ::fclose(print_fp_);
+            print_fp_ = nullptr;
+        }
+    }
 }
 
 //打开日志输出开关

@@ -51,7 +51,7 @@ void Thread_Condition::wait(Thread_Light_Mutex* external_mutex)noexcept
 
 //绝对时间超时的的等待，超时后解锁
 bool Thread_Condition::wait_until(Thread_Light_Mutex* external_mutex,
-                                                        const zce::Time_Value& abs_time) noexcept
+                                  const zce::Time_Value& abs_time) noexcept
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -67,7 +67,7 @@ bool Thread_Condition::wait_until(Thread_Light_Mutex* external_mutex,
 
 //相对时间的超时锁定等待，超时后，解锁
 bool Thread_Condition::wait_for(Thread_Light_Mutex* external_mutex,
-                                                      const zce::Time_Value& relative_time) noexcept
+                                const zce::Time_Value& relative_time) noexcept
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
@@ -99,7 +99,30 @@ void Thread_Condition::notify_all(void) noexcept
 }
 
 //---------------------------------------------------------------------------------------
-//为Thread_Recursive_Mutex做的特化
+//为Thread_Recursive_Mutex做的处理
+Thread_Recursive_Condition::Thread_Recursive_Condition()
+{
+    int ret = 0;
+    ret = zce::pthread_cond_initex(&lock_, false);
+    if (0 != ret)
+    {
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_initex =%u", ret);
+        return;
+    }
+}
+
+//!析构函数
+Thread_Recursive_Condition::~Thread_Recursive_Condition(void)
+{
+    //销毁条件变量
+    const int ret = zce::pthread_cond_destroy(&lock_);
+    if (0 != ret)
+    {
+        ZPRINT(RS_ERROR, "zce::pthread_cond_destroy ret =%u", ret);
+        return;
+    }
+}
+
 //等待
 void Thread_Recursive_Condition::wait(Thread_Recursive_Mutex* external_mutex) noexcept
 {
@@ -116,24 +139,22 @@ void Thread_Recursive_Condition::wait(Thread_Recursive_Mutex* external_mutex) no
 
 //绝对时间超时的的等待，超时后解锁
 bool Thread_Recursive_Condition::wait_until(Thread_Recursive_Mutex* external_mutex,
-                                             const zce::Time_Value& abs_time) noexcept
+                                            const zce::Time_Value& abs_time) noexcept
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
                                           abs_time);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_init", ret);
         return false;
     }
-
     return true;
 }
 
 //相对时间的超时锁定等待，超时后，解锁
 bool Thread_Recursive_Condition::wait_for(Thread_Recursive_Mutex* external_mutex,
-                                                          const zce::Time_Value& relative_time) noexcept
+                                          const zce::Time_Value& relative_time) noexcept
 {
     zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
