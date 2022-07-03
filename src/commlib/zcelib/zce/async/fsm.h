@@ -48,9 +48,7 @@ protected:
     * @param[in]  outer_data 传入参数，外部调用数据
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(const void* outer_data,
-                        size_t data_len,
-                        bool& running) = 0;
+    virtual void on_run(bool& running) = 0;
 
     /*!
     * @brief      状态机对象超时处理，默认continue_run返回false，让系统回收，

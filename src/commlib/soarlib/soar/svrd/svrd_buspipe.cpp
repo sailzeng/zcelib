@@ -6,7 +6,7 @@ namespace soar
 {
 Svrd_BusPipe* Svrd_BusPipe::zerg_bus_instance_ = NULL;
 
-char Svrd_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
+char Svrd_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_FRAME];
 
 Svrd_BusPipe::Svrd_BusPipe() :
     TwoWay_BusPipe()
@@ -114,10 +114,11 @@ int Svrd_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO SEND PIPE FRAME:", proc_frame);
 
-    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME ||
-        proc_frame->length_ < soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD)
+    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_FRAME ||
+        proc_frame->length_ < soar::Zerg_Frame::LEN_OF_HEAD)
     {
-        ZCE_LOG(RS_ERROR, "[framework][send bus] Frame Len is error ,frame length :%u ,Please check your code.",
+        ZCE_LOG(RS_ERROR, "[framework][send bus] Frame Len is error ,"
+                "frame length :%u ,Please check your code.",
                 proc_frame->length_);
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
@@ -158,10 +159,11 @@ int Svrd_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO RECV PIPE FRAME:", proc_frame);
 
-    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME ||
-        proc_frame->length_ < soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD)
+    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_FRAME ||
+        proc_frame->length_ < soar::Zerg_Frame::LEN_OF_HEAD)
     {
-        ZCE_LOG(RS_ERROR, "[framework][recv bus] Frame Len is error ,frame length :%u ,Please check your code.",
+        ZCE_LOG(RS_ERROR, "[framework][recv bus] Frame Len is error ,"
+                "frame length :%u ,Please check your code.",
                 proc_frame->length_);
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }

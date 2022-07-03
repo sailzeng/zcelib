@@ -30,7 +30,7 @@ class FSMTask_Manger : public FSM_Manager
 protected:
 
     //zce::MsgQueue_Deque底层实现用的Deque
-    typedef zce::MsgQueue_Deque<soar::Zerg_Frame*>  APPFRAME_MESSAGE_QUEUE;
+    typedef zce::MsgRings_Sema<soar::Zerg_Frame*>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
     typedef ZergFrame_Mallocor<typename zce::MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
@@ -138,6 +138,7 @@ public:
     //向SEND队列发送数据,让TASK接收
     template< class T>
     int enqueue_sendqueue(uint32_t cmd,
+                          uint32_t user_id,
                           uint32_t fsm_id,
                           uint32_t backfill_fsm_id,
                           const soar::SERVICES_ID& rcvsvc,
@@ -147,7 +148,7 @@ public:
                           uint32_t option)
     {
         soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(trans_send_buffer_);
-        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_FRAME, option, cmd);
 
         rsp_msg->user_id_ = user_id;
         rsp_msg->fsm_id_ = fsm_id;
@@ -159,7 +160,7 @@ public:
         rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, msg);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA, msg);
 
         if (ret != 0)
         {

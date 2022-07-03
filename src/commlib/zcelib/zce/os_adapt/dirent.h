@@ -52,8 +52,8 @@ struct DIR
     /// The struct for intermediate results.
     WIN32_FIND_DATAA  fdata_;
 
-    ///是否已经就开始找的标志
-    int               started_reading_;
+    ///是否已经进行了第一次读取，Windows 下读取函数第一次和后面不一样
+    int               already_first_read_;
 };
 
 #endif
@@ -66,7 +66,7 @@ namespace zce
 * @param      dir_name 目录名称
 * @note       可以认为操作数序是opendir，readdir（readdir_r），closedir，参考closedir，readdir
 */
-DIR* opendir(const char* dirname);
+struct DIR* opendir(const char* dirname);
 
 /*!
 * @brief      关闭打开的目录（的句柄），
@@ -74,7 +74,7 @@ DIR* opendir(const char* dirname);
 * @param      dir_handle DIR的句柄,在读取目录完毕后，必须要关闭，
 * @note       可以认为操作数序是opendir，readdir，closedir
 */
-int closedir(DIR* dir_handle);
+int closedir(struct DIR* dir_handle);
 
 /*!
 * @brief      读取一个目录项，并且返回，
@@ -122,13 +122,13 @@ int readdir_nameary(const char* dirname,
 * @brief      扫描一个目录里面的目录项目，就一个函数，看上去简单，而且可以利用选择器等工具加快开发速度，但要注意结果释放
 * @return     int           返回扫描到的项目的数量，返回值<0表示失败
 * @param      dirname       目录的名字，
-* @param      namelist      注意这个是一个指向数组指针的指针，里面的每个数据也要施放，数组也要释放
+* @param      namelist      返回的文件名称列表，注意这个是一个指向数组指针的指针，里面的每个数据也要施放，数组也要释放
 * @param      (*selector)   选择器的函数指针，可以为NULL，选择器返回非0表示选择
 * @param      (*comparator) 排序器具的函数指针，可以为NULL
 * @note       namelist 返回的数据一定释放，而且是2次释放，可以用free_scandir_list函数释放
 */
 int scandir(const char* dirname,
-            dirent** namelist[],
+            struct dirent** namelist[],
             int (*selector)(const struct dirent*),
             int (*comparator)(const struct dirent**, const struct dirent**));
 
@@ -137,7 +137,7 @@ int scandir(const char* dirname,
 * @param      list_number scandir 函数的成功返回值,>0
 * @param      namelist    scandir 函数返回的namelist参数
 */
-void free_scandir_result(int list_number, dirent* namelist[]);
+void free_scandir_result(int list_number, struct  dirent* namelist[]);
 
 /*!
 * @brief      用于目录排序的比较，就是那个comparator参数函数指针的参数
@@ -166,7 +166,9 @@ const char* basename(const char* pathname, char* filename, size_t buf_len);
 * @param[in]  buf_len    dir_name参数BUFFER的长度
 * @note       目录名称的末尾没有带分隔符
 */
-const char* dirname(const char* path_name, char* dir_name, size_t buf_len);
+const char* dirname(const char* path_name,
+                    char* dir_name,
+                    size_t buf_len);
 
 /*!
 * @brief      得到当前目录
@@ -189,7 +191,8 @@ int chdir(const char* dirname);
 * @param      pathname 路径字符串，
 * @param      mode     目录的共享模式，WINDOWS下，此参数无效,
 */
-int mkdir(const char* pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
+int mkdir(const char* pathname,
+          mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
 * @brief      递归的建立目录，非标准函数，如果想一次建立多层目录，用这个函数
@@ -197,7 +200,8 @@ int mkdir(const char* pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 * @param      pathname 路径字符串，
 * @param      mode 目录的共享模式，WINDOWS下，此参数无效,
 */
-int mkdir_recurse(const char* pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
+int mkdir_recurse(const char* pathname,
+                  mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
 * @brief      删除某个目录

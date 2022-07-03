@@ -82,9 +82,7 @@ public:
     * @param[in]  data_len  数据长度
     * @param[out] running   异步对象是否继续运行，如果不继续(返回false)，
     */
-    virtual void on_run(const void* recv_data,
-                        size_t data_len,
-                        bool& running) = 0;
+    virtual void on_run(bool& running) = 0;
 
     /*!
     * @brief      异步对象超时处理
@@ -105,16 +103,6 @@ public:
     * @param      error_no
     */
     void set_errorno(int error_no);
-
-    /*!
-    * @brief      收到数据，保存接收到外部数据的指针，
-    */
-    virtual void receive_data(const void* recv_data,
-                              size_t data_len)
-    {
-        receive_data_ = recv_data;
-        recv_data_len_ = data_len;
-    }
 
 protected:
 
@@ -154,10 +142,6 @@ protected:
     ///日志跟踪的优先级
     zce::LOG_PRIORITY trace_log_pri_ = RS_INFO;
 
-    ///收到的外部数据，
-    const void* receive_data_ = NULL;
-    ///收到的外部长度
-    size_t recv_data_len_ = 0;
 };
 
 //=======================================================================================
@@ -250,28 +234,20 @@ public:
     * @brief      创建一个异步对象
     * @return     int
     * @param      cmd         创建的命令，如果是注册命令，会创建一个异步对象进行处理
-    * @param      recv_data  外部数据，带给异步对象，给他处理
-    * @param      data_len    外部数据的长度
     * @param      id          返回参数，内部创建异步对象的ID，
     * @param      running     返回后，异步对象是否在继续运行
     */
     int create_asyncobj(uint32_t cmd,
-                        void* recv_data,
-                        size_t data_len,
                         uint32_t& id,
-                        bool& running);
+                        bool& continued);
 
     /*!
     * @brief      激活某个已经运行的异步对象,
     * @return     int
-    * @param      recv_data
-    * @param      data_len
-    * @param      running     返回后，异步对象是否在继续运行
+    * @param      continued     返回后，异步对象是否在继续运行
     */
     int active_asyncobj(uint32_t id,
-                        void* recv_data,
-                        size_t data_len,
-                        bool& continue_running);
+                        bool& continued);
 
     /*!
     * @brief      打印管理器的基本信息，运行状态

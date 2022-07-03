@@ -201,7 +201,7 @@ struct pthread_rwlock_t
 
 typedef unsigned int          mode_t;
 
-typedef struct __stat64       zce_os_stat;
+//typedef struct __stat64       zce_os_stat;
 
 //注意S_IFDIR 和 S_ISDIR 的区别，S_ISDIR是一个宏用于判定是否是一个目录
 

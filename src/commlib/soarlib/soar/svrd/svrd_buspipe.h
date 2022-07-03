@@ -84,7 +84,7 @@ protected:
     ///这个服务器的配置信息.
     soar::SERVICES_INFO  zerg_svr_info_;
     ///发送的缓冲区
-    static char          send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
+    static char          send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_FRAME];
 
     ///监控对象
     soar::Stat_Monitor* monitor_ = nullptr;

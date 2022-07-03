@@ -59,21 +59,19 @@ protected:
     * @brief      LUA Thread 的运行
     *             继承zce::Async_Object的函数，
     */
-    virtual void on_run(const void* recv_data,
-                        size_t data_len,
-                        bool& running) override;
+    virtual void on_run(bool& continued) override;
 
     /*!
     * @brief      异步对象超时处理
     *             继承zce::Async_Object的函数，
     */
     virtual void on_timeout(const zce::Time_Value& now_time,
-                            bool& running) override;
+                            bool& continued) override;
 
 protected:
 
     ///
-    zce::Lua_Tie  *mgr_lua_tie_ = nullptr;
+    zce::Lua_Tie* mgr_lua_tie_ = nullptr;
 
     ///Lua协程对象
     zce::Lua_Thread lua_thread_;
@@ -96,7 +94,7 @@ public:
     Async_LuaTheadMgr();
     virtual ~Async_LuaTheadMgr();
 
-    inline zce::Lua_Tie  *mgr_lua_tie()
+    inline zce::Lua_Tie* mgr_lua_tie()
     {
         return &mgr_lua_tie_;
     }

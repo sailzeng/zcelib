@@ -57,7 +57,7 @@ public:
 
 public:
     //
-    static const unsigned int CAPACITY_OF_BUFFER = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME + 16;
+    static const unsigned int CAPACITY_OF_BUFFER = soar::Zerg_Frame::MAX_LEN_OF_FRAME + 16;
 
 public:
 

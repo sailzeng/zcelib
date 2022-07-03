@@ -62,11 +62,13 @@ ssize_t read(ZCE_HANDLE file_handle,
              size_t count) noexcept;
 
 //! @brief      读取文件，从起始文件的偏移量的文职开始读取
-//! @param      offset 偏移量，从起始文件的偏移量
+//! @param      offset 偏移量，
+//! @param      whence 偏移的其实地址
 ssize_t read(ZCE_HANDLE file_handle,
              void* buf,
-             ssize_t offset,
-             size_t count) noexcept;
+             size_t count,
+             off_t offset,
+             int whence = SEEK_CUR) noexcept;
 
 /*!
 * @brief      写如文件，
@@ -84,19 +86,20 @@ ssize_t write(ZCE_HANDLE file_handle,
 //! @param      offset 偏移量，从起始文件的偏移量
 ssize_t write(ZCE_HANDLE file_handle,
               const void* buf,
-              ssize_t offset,
-              size_t count) noexcept;
+              size_t count,
+              off_t offset,
+              int whence = SEEK_CUR) noexcept;
 
 /*!
 * @brief      在文件内进行偏移
-* @return     ssize_t 返回当前的位置
+* @return     off_t 返回从起始位置到偏移位置的长度，返回-1表示错误
 * @param      file_handle
-* @param      offset
-* @param      whence
+* @param      offset 偏移量
+* @param      whence 根据参数whence来移动读写位置的位移数
 */
-ssize_t lseek(ZCE_HANDLE file_handle,
-              ssize_t offset,
-              int whence) noexcept;
+off_t lseek(ZCE_HANDLE file_handle,
+            off_t offset,
+            int whence) noexcept;
 
 /*!
 * @brief      断文件，倒霉的是WINDOWS下又TMD 没有，
@@ -104,10 +107,12 @@ ssize_t lseek(ZCE_HANDLE file_handle,
 * @param      file_handle 操作的文件句柄
 * @param      offset      截断的大小
 */
-int ftruncate(ZCE_HANDLE file_handle, size_t  offset);
+int ftruncate(ZCE_HANDLE file_handle,
+              size_t  offset);
 
 ///截断文件,根据文件名称
-int truncate(const char* filename, size_t offset);
+int truncate(const char* filename,
+             size_t offset);
 
 /*!
 * @brief      通过文件句柄,得到文件的长度，关于文件长度的问题，你应该看看文件开始的注释段落
@@ -119,7 +124,8 @@ int truncate(const char* filename, size_t offset);
 *             原来用作为返回值，但由于在WINDOWS32下不超过2G，感觉不好，又改了成了size_t，
 *             但是用size_t作为返回值又恶心,0到底是错误还是尺寸0？所以函数被改成了这样，中规中矩
 */
-int filesize(ZCE_HANDLE file_handle, size_t* file_size);
+int filesize(ZCE_HANDLE file_handle,
+             size_t* file_size);
 
 ///
 /*!
@@ -129,7 +135,8 @@ int filesize(ZCE_HANDLE file_handle, size_t* file_size);
 * @param      file_size 文件的大小
 * @note       不重载filesize的原因是filelen，filesize第一个参数都可能是指针
 */
-int filelen(const char* filename, size_t* file_size);
+int filelen(const char* filename,
+            size_t* file_size);
 
 /*!
 * @brief      用模版名称建立并且打开一个临时文件，
@@ -138,10 +145,10 @@ int filelen(const char* filename, size_t* file_size);
 */
 ZCE_HANDLE mkstemp(char* template_name);
 
-//得到文件的stat信息，你可以认为zce_os_stat就是stat，只是在WINDOWS下stat64,主要是为了长文件考虑的
-int stat(const char* path, zce_os_stat* buf);
+//得到文件的stat信息，你可以这就是stat，只是在WINDOWS下stat64,主要是为了长文件考虑的
+int stat(const char* path, struct stat* buf);
 //通过文件句柄得到文件stat
-int fstat(ZCE_HANDLE file_handle, zce_os_stat* buf);
+int fstat(ZCE_HANDLE file_handle, struct stat* buf);
 
 ///路径是否是一个目录，如果是返回true，如果不是返回false
 bool is_directory(const char* path_name);

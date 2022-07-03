@@ -328,16 +328,16 @@
     <ClCompile Include="zce\net\ping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\aio\aio_base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\aio\aio_manager.cpp">
+    <ClCompile Include="zce\aio\worker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\aio\aio_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\logger\log_print.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\aio\caller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -777,16 +777,16 @@
     <ClInclude Include="zce\comm\common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\aio\aio_base.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\aio\aio_manager.h">
+    <ClInclude Include="zce\aio\worker.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\aio\aio_task.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\logger\log_print.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\aio\caller.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -68,7 +68,7 @@ protected:
     void yeild_main_exit();
 
     ///切换回协程，也就是切换到他自己运行
-    void yeild_coroutine();
+    void resume_coroutine();
 
     /*!
     * @brief      等待time_out 时间后超时，设置定时器后，切换协程到main
@@ -81,9 +81,7 @@ protected:
     * @brief      继承zce::Async_Object的函数，
     *             协程对象的运行处理
     */
-    virtual void on_run(const void* outer_data,
-                        size_t data_len,
-                        bool& running) override;
+    virtual void on_run(bool& running) override;
 
     /*!
     * @brief      异步对象超时处理

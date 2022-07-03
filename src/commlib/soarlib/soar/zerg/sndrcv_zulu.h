@@ -58,7 +58,7 @@ public:
                          const soar::SERVICES_ID& recv_service,
                          const soar::SERVICES_ID& send_service,
                          const soar::SERVICES_ID& proxy_service,
-                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
+                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME);
 
     //链接服务器,time_wait不能用const是有原因的，因为部分select的zce::Time_Value是返回剩余时间的
     int connect_zulu_server(zce::Time_Value* time_wait);
@@ -161,7 +161,7 @@ int Zulu_SendRecv_Msg::receive_svc_msg(uint32_t cmd,
         else
         {
             //如果还有data的数据，进行解码
-            if (msg_recv_frame_->length_ > soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD)
+            if (msg_recv_frame_->length_ > soar::Zerg_Frame::LEN_OF_HEAD)
             {
                 ret = msg_recv_frame_->appdata_decode(info);
                 if (ret != 0)
@@ -213,7 +213,7 @@ int Zulu_SendRecv_Msg::send_svc_msg(uint32_t user_id,
     msg_send_frame_->user_id_ = user_id;
     msg_send_frame_->business_id_ = business_id;
     //编码
-    ret = msg_send_frame_->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = msg_send_frame_->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA, info);
 
     if (ret != 0)
     {

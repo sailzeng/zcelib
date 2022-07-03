@@ -50,13 +50,15 @@ protected:
     template <class T>
     int pushbak_mgr_recvqueue(const soar::Zerg_Frame* recv_frame,
                               uint32_t cmd,
-                              const T& msg,
+                              const T& info,
                               uint32_t option
     )
     {
-        soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(task_frame_buf_);
-        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
-
+        soar::Zerg_Frame* rsp_msg =
+            reinterpret_cast<soar::Zerg_Frame*>(task_frame_buf_);
+        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+                           option,
+                           cmd);
         rsp_msg->user_id_ = recv_frame->user_id_;
 
         rsp_msg->recv_service_ = recv_frame->send_service_;
@@ -68,7 +70,8 @@ protected:
         rsp_msg->backfill_fsm_id_ = recv_frame->fsm_id_;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+                                          info);
 
         if (ret != 0)
         {
@@ -86,7 +89,10 @@ protected:
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
+            ZCE_LOG(RS_ERROR,
+                    "[framework] Wait NULL seconds to enqueue_recvqueue but fail."
+                    "Recv queue is full or transaction main "
+                    "task process too slow to process request.");
             return ret;
         }
 
@@ -97,7 +103,7 @@ protected:
     //将数据放入管理器，
     template <class T>
     int pushbak_mgr_recvqueue(uint32_t cmd,
-                              const T& msg,
+                              const T& info,
                               uint32_t backfill_fsm_id,
                               uint32_t user_id = 0,
                               uint32_t option = 0
@@ -115,11 +121,11 @@ protected:
 
         //填写自己transaction_id_,
         rsp_msg->fsm_id_ = 0;
-        rsp_msg->backfill_fsm_id_ = backfill_trans_id;
-        rsp_msg->app_id_ = 0;
+        rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+                                          info);
 
         if (ret != 0)
         {
@@ -138,7 +144,8 @@ protected:
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full "
+            ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to "
+                    "enqueue_recvqueue but fail.Recv queue is full "
                     "or transaction main task process too slow to process request.");
             return ret;
         }

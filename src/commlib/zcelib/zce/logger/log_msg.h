@@ -142,6 +142,16 @@ public:
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
 
+    int init_log(int output_way,
+                 LOGFILE_DEVIDE div_log_file,
+                 const char* log_file_prefix,
+                 bool multithread_log,
+                 bool thread_output_file,
+                 bool auto_new_line,
+                 size_t max_size_log_file,
+                 size_t reserve_file_num,
+                 int head_record) noexcept;
+
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
     */

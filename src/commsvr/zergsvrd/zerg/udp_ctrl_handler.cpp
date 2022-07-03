@@ -152,7 +152,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
     soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*> (dgram_databuf_->buffer_data_);
 
     recvret = dgram_peer_.recvfrom(dgram_databuf_->buffer_data_,
-                                   soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,
+                                   soar::Zerg_Frame::MAX_LEN_OF_DATA,
                                    0,
                                    &remote_addr);
 

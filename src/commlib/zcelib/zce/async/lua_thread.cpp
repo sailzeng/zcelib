@@ -21,7 +21,7 @@ Async_LuaThead::~Async_LuaThead()
 int Async_LuaThead::initialize()
 {
     zce::Async_Object::initialize();
-    auto luathread_mgr = static_cast <Async_LuaTheadMgr *>(async_mgr_);
+    auto luathread_mgr = static_cast <Async_LuaTheadMgr*>(async_mgr_);
     mgr_lua_tie_ = luathread_mgr->mgr_lua_tie();
     mgr_lua_tie_->new_thread(&lua_thread_);
 
@@ -38,14 +38,10 @@ void Async_LuaThead::terminate()
 }
 
 //调用协程
-void Async_LuaThead::on_run(const void* outer_data, size_t data_len, bool& running)
+void Async_LuaThead::on_run(bool& running)
 {
-    receive_data(outer_data, data_len);
     running = false;
     mgr_lua_tie_->resume_thread(&lua_thread_, 0);
-
-    receive_data_ = NULL;
-    recv_data_len_ = 0;
 
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_STATE::CONTINUE)

@@ -536,7 +536,7 @@ int TCP_Svc_Handler::timer_timeout(const zce::Time_Value& now_time, const void* 
             //如果是监听的端口，而且有相应的超时判断
             if (HANDLER_MODE_ACCEPTED == handler_mode_ &&
                 ((0 == start_live_time_ && 0 < accepted_timeout_) ||
-                (0 < start_live_time_ && 0 < receive_timeout_)))
+                 (0 < start_live_time_ && 0 < receive_timeout_)))
             {
                 ZCE_LOG(RS_ERROR, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s]"
                         "want to close handle. live time %lu. recieve times=%u.",
@@ -642,7 +642,7 @@ int TCP_Svc_Handler::handle_close()
             zerg::Buffer* close_buf = zbuffer_storage_->allocate_buffer();
             soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(close_buf->buffer_data_);
 
-            proc_frame->init_head(soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
+            proc_frame->init_head(soar::Zerg_Frame::LEN_OF_HEAD, 0, INNER_REG_SOCKET_CLOSED);
             proc_frame->send_service_ = peer_svr_id_;
             zerg_comm_mgr_->pushback_recvpipe(proc_frame);
             zbuffer_storage_->free_byte_buffer(close_buf);
@@ -962,14 +962,14 @@ int TCP_Svc_Handler::check_recv_full_frame(bool& bfull,
         whole_frame_len = ntohl(whole_frame_len);
 
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
-        if (whole_frame_len > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME || whole_frame_len < soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD)
+        if (whole_frame_len > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME || whole_frame_len < soar::Zerg_Frame::LEN_OF_HEAD)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
                     peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                     whole_frame_len,
-                    soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+                    soar::Zerg_Frame::MAX_LEN_OF_FRAME,
                     rcv_buffer_->size_of_use_,
                     rcv_buffer_->size_of_buffer_);
             //
@@ -1449,7 +1449,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
     zerg::Buffer* tmpbuf = zbuffer_storage_->allocate_buffer();
     soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(tmpbuf->buffer_data_);
 
-    proc_frame->init_head(soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD, option, cmd);
+    proc_frame->init_head(soar::Zerg_Frame::LEN_OF_HEAD, option, cmd);
     //注册命令
     proc_frame->send_service_ = my_svc_id_;
 
@@ -1461,7 +1461,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
 
     //
     proc_frame->recv_service_ = recv_services_info;
-    tmpbuf->size_of_buffer_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
+    tmpbuf->size_of_buffer_ = soar::Zerg_Frame::LEN_OF_HEAD;
 
     //
     return put_frame_to_sendlist(tmpbuf);
@@ -1598,11 +1598,11 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     ////下面的代码用于合并的测试，平常会注释掉
     //else
     //{
-    //    ZCE_LOG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_APPFRAME=%u,"
+    //    ZCE_LOG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_FRAME=%u,"
     //        "snd_buffer_deque_[sz_deque-2]->size_of_capacity_=%u,"
     //        "snd_buffer_deque_[sz_deque-1]->size_of_capacity_=%u.",
     //        sz_deque,
-    //        soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+    //        soar::Zerg_Frame::MAX_LEN_OF_FRAME,
     //        snd_buffer_deque_[sz_deque-2]->size_of_capacity_,
     //        snd_buffer_deque_[sz_deque-1]->size_of_capacity_);
     //}

@@ -47,15 +47,11 @@ void Async_Coroutine::terminate()
 }
 
 //调用协程
-void Async_Coroutine::on_run(const void* outer_data, size_t data_len, bool& continue_run)
+void Async_Coroutine::on_run(bool& continue_run)
 {
-    receive_data(outer_data, data_len);
     continue_run = false;
 
-    yeild_coroutine();
-
-    receive_data_ = NULL;
-
+    resume_coroutine();
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
     {
@@ -77,7 +73,7 @@ void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
 {
     running = false;
     coroutine_state_ = COROUTINE_STATE::TIMEOUT;
-    yeild_coroutine();
+    resume_coroutine();
 
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
@@ -98,20 +94,20 @@ void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
 void Async_Coroutine::yeild_main_continue()
 {
     coroutine_state_ = COROUTINE_STATE::CONTINUE;
-    zce::yeild_main(&handle_);
+    zce::yeild_coroutine(&handle_);
 }
 
 //切换回Main,协程退出
 void Async_Coroutine::yeild_main_exit()
 {
     coroutine_state_ = COROUTINE_STATE::EXIT;
-    zce::yeild_main(&handle_);
+    zce::yeild_coroutine(&handle_);
 }
 
 //切换回协程，也就是切换到他自己运行
-void Async_Coroutine::yeild_coroutine()
+void Async_Coroutine::resume_coroutine()
 {
-    zce::yeild_coroutine(&handle_);
+    zce::resume_coroutine(&handle_);
 }
 
 //协程对象的运行函数

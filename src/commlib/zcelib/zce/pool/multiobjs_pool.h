@@ -25,46 +25,46 @@ public:
                     size_t extend_node_size,
                     std::function <O* () >* new_fun = nullptr)
     {
-        return std::get<object_pool<LOCK, O> >(pools_).initialize(init_node_size,
-                                                                  extend_node_size,
-                                                                  new_fun);
+        return std::get<zce::object_pool<LOCK, O> >(pools_).initialize(init_node_size,
+                                                                       extend_node_size,
+                                                                       new_fun);
     }
     template<typename O>
     void terminate()
     {
-        return std::get<object_pool<LOCK, O> >(pools_).terminate();
+        return std::get<zce::object_pool<LOCK, O> >(pools_).terminate();
     }
     template<typename O>
     inline size_t size()
     {
-        return std::get<object_pool<LOCK, O> >(pools_).size();
+        return std::get<zce::object_pool<LOCK, O> >(pools_).size();
     }
     template<typename O>
     size_t capacity()
     {
-        return std::get<object_pool<LOCK, O> >(pools_).capacity();
+        return std::get<zce::object_pool<LOCK, O> >(pools_).capacity();
     }
     template<typename O>
     bool empty()
     {
-        return std::get<object_pool<LOCK, O> >(pools_).empty();
+        return std::get<zce::object_pool<LOCK, O> >(pools_).empty();
     }
     template<typename O>
     bool full()
     {
-        return std::get<object_pool<LOCK, O> >(pools_).full();
+        return std::get<zce::object_pool<LOCK, O> >(pools_).full();
     }
     //!分配一个对象
     template<typename O>
     typename O* alloc_object()
     {
-        return std::get<object_pool<LOCK, O> >(pools_).alloc_object();
+        return std::get<zce::object_pool<LOCK, O> >(pools_).alloc_object();
     }
     //归还一个对象
     template<typename O>
     void free_object(O* ptr)
     {
-        return std::get<object_pool<LOCK, O> >(pools_).free_object(ptr);
+        return std::get<zce::object_pool<LOCK, O> >(pools_).free_object(ptr);
     }
 
     //=======================================

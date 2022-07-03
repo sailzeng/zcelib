@@ -39,7 +39,7 @@ public:
     * @note
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
-                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
+                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME);
 
     /*!
     * @brief      根据要求的的FRAME尺寸大小，分配一个FRAME
@@ -336,7 +336,7 @@ void ZergFrame_Mallocor<zce_lock>::clean_instance()
 }
 
 //
-typedef ZergFrame_Mallocor<zce::Null_Mutex> NULLMUTEX_APPFRAME_MALLOCOR;
+typedef ZergFrame_Mallocor<zce::Null_Lock> NULLMUTEX_APPFRAME_MALLOCOR;
 typedef ZergFrame_Mallocor<zce::Thread_Light_Mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

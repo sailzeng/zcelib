@@ -56,11 +56,9 @@ void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
     return;
 }
 
-void FSM_Base::on_run(void* outer_data,
-                      size_t /*data_len*/,
-                      bool& continue_run)
+void FSM_Base::on_run(bool& continue_run)
 {
-    soar::Zerg_Frame* recv_frame = (soar::Zerg_Frame*)outer_data;
+    soar::Zerg_Frame* recv_frame = nullptr;
 
     //如果是第一次创建事物的时候，
     if (trans_create_)

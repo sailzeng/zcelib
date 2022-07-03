@@ -166,7 +166,7 @@ void zce::delete_coroutine(coroutine_t* coroutine_hdl)
 }
 
 //切换到协程
-int zce::yeild_coroutine(coroutine_t* coroutine_hdl)
+int zce::resume_coroutine(coroutine_t* coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
@@ -189,7 +189,7 @@ int zce::yeild_coroutine(coroutine_t* coroutine_hdl)
 }
 
 //切换到Main
-int zce::yeild_main(coroutine_t* coroutine_hdl)
+int zce::yeild_coroutine(coroutine_t* coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     int ret = 0;

@@ -97,9 +97,9 @@ int Zulu_SendRecv_Msg::receive_svc_msg(zce::Time_Value* time_wait)
     //
     for (;;)
     {
-        //接收一个帧头,长度必然是LEN_OF_APPFRAME_HEAD,
+        //接收一个帧头,长度必然是LEN_OF_HEAD,
         socket_ret = zulu_stream_.recv_n((void*)(msg_recv_frame_),
-                                         soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD,
+                                         soar::Zerg_Frame::LEN_OF_HEAD,
                                          time_wait);
 
         //ret == 0的情况下一般是链接被断开
@@ -117,7 +117,8 @@ int Zulu_SendRecv_Msg::receive_svc_msg(zce::Time_Value* time_wait)
             //如果错误是信号导致的重入
             int last_error = zce::last_error();
 
-            ZCE_LOG(RS_ERROR, "[framework] RECV soar::Zerg_Frame head error or time out. Ret:%d, error[%u|%s].",
+            ZCE_LOG(RS_ERROR, "[framework] RECV soar::Zerg_Frame head error or "
+                    "time out. Ret:%d, error[%u|%s].",
                     socket_ret,
                     last_error,
                     strerror(last_error));
@@ -142,7 +143,7 @@ int Zulu_SendRecv_Msg::receive_svc_msg(zce::Time_Value* time_wait)
         backfill_trans_id_ = msg_recv_frame_->backfill_fsm_id_;
 
         //数据包的长度
-        data_len = msg_recv_frame_->length_ - soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
+        data_len = msg_recv_frame_->length_ - soar::Zerg_Frame::LEN_OF_HEAD;
 
         if (data_len < 0)
         {

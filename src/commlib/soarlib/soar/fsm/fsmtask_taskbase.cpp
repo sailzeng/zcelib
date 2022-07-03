@@ -12,8 +12,8 @@ FSMTask_TaskBase::FSMTask_TaskBase() :
     task_run_(false),
     task_frame_buf_(NULL)
 {
-    task_frame_buf_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME + 16);
-    task_frame_buf_->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
+    task_frame_buf_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_FRAME + 16);
+    task_frame_buf_->init_head(soar::Zerg_Frame::MAX_LEN_OF_FRAME);
 }
 
 //

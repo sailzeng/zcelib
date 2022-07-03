@@ -42,7 +42,7 @@ public:
     void set_services_id(const soar::SERVICES_ID& recv_service,
                          const soar::SERVICES_ID& send_service,
                          const soar::SERVICES_ID& proxy_service,
-                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
+                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME);
 
     //取得收到的事务ID
     void get_recv_transid(unsigned int& trans_id);

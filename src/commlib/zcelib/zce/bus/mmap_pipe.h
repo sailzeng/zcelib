@@ -274,7 +274,7 @@ int MMAP_BusPipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
     //如果没有这个文件,那么只能重建
     else
     {
-        zce_os_stat mmapfile_stat;
+        struct stat mmapfile_stat;
         ret = zce::stat(bus_mmap_name, &mmapfile_stat);
         //不存在，恢复个毛线
         if (ret != 0)
@@ -365,7 +365,7 @@ int MMAP_BusPipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
 {
     int ret = 0;
 
-    zce_os_stat mmapfile_stat;
+    struct stat mmapfile_stat;
     ret = zce::stat(bus_mmap_name, &mmapfile_stat);
 
     if (ret != 0)

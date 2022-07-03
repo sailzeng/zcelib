@@ -95,14 +95,14 @@ void Zerg_Frame::delete_frame(Zerg_Frame* frame)
 int Zerg_Frame::fill_appdata(const size_t szdata, const char* vardata)
 {
     // 判断长度是否足够
-    if (szdata > MAX_LEN_OF_APPFRAME_DATA)
+    if (szdata > MAX_LEN_OF_DATA)
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
 
     //填写数据区的长度
     memcpy(frame_appdata_, vardata, szdata);
-    length_ = static_cast<uint32_t>(Zerg_Frame::LEN_OF_APPFRAME_HEAD + szdata);
+    length_ = static_cast<uint32_t>(Zerg_Frame::LEN_OF_HEAD + szdata);
     return 0;
 }
 
@@ -171,9 +171,9 @@ void Zerg_Frame::dump_frame_all(zce::LOG_PRIORITY log_priority,
                                 const Zerg_Frame* proc_frame)
 {
     dump_frame_head(log_priority, outer_str, proc_frame);
-    char data_str[MAX_LEN_OF_APPFRAME * 2 + 1];
-    size_t datalen = proc_frame->length_ - LEN_OF_APPFRAME_HEAD;
-    size_t out_len = MAX_LEN_OF_APPFRAME * 2 + 1;
+    char data_str[MAX_LEN_OF_FRAME * 2 + 1];
+    size_t datalen = proc_frame->length_ - LEN_OF_HEAD;
+    size_t out_len = MAX_LEN_OF_FRAME * 2 + 1;
 
     zce::base16_encode(proc_frame->frame_appdata_, datalen, data_str, &out_len);
     ZCE_LOG(log_priority, "[framework] [%s] zerg fame data:%s", outer_str, data_str);
@@ -189,15 +189,15 @@ void Zerg_Frame::clone(Zerg_Frame* dst_frame) const
 //Clone一个APP FRAME 的头部
 void Zerg_Frame::clone_head(Zerg_Frame* clone_frame) const
 {
-    memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);
+    memcpy(clone_frame, this, LEN_OF_HEAD);
     return;
 }
 
 //取得一个头部信息
 void Zerg_Frame::get_head(Zerg_Head& frame_head) const
 {
-    memcpy(&frame_head, this, LEN_OF_APPFRAME_HEAD);
-    frame_head.length_ = LEN_OF_APPFRAME_HEAD;
+    memcpy(&frame_head, this, LEN_OF_HEAD);
+    frame_head.length_ = LEN_OF_HEAD;
     return;
 }
 

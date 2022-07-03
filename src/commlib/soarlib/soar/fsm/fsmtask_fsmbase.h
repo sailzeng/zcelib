@@ -30,13 +30,13 @@ protected:
     //
     template <class T>
     int pushbak_mgr_sendqueue(uint32_t cmd,
-                              const T& msg,
+                              const T& info,
                               uint32_t option = 0)
     {
         soar::SERVICES_ID proxy_svc(0, 0);
         return trans_notify_mgr_->enqueue_sendqueue(cmd,
                                                     this->req_zerg_head_.user_id_,
-                                                    this->transaction_id_,
+                                                    this->asyncobj_id_,
                                                     0,
                                                     info,
                                                     option);

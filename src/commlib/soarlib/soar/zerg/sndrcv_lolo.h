@@ -75,7 +75,7 @@ public:
                          const soar::SERVICES_ID& recv_service,
                          const soar::SERVICES_ID& send_service,
                          const soar::SERVICES_ID& proxy_service,
-                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME,
                          bool is_check_conn_info = false);
 
     //发送数据
@@ -154,7 +154,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
     //保存接收到的事务ID
     recv_trans_id_ = msg_recv_frame_->fsm_id_;
     //数据包的长度
-    data_len = msg_recv_frame_->length_ - Zerg_Frame::LEN_OF_APPFRAME_HEAD;
+    data_len = msg_recv_frame_->length_ - soar::Zerg_Frame::LEN_OF_HEAD;
 
     if (data_len < 0)
     {
@@ -191,7 +191,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
 template< class T1>
 int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
                                         uint32_t cmd,
-                                        const T1& msg,
+                                        const T1& info,
                                         uint32_t backfill_fsm_id,
                                         uint16_t business_id)
 {
@@ -219,7 +219,8 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
     //填写GAME ID
     msg_send_frame_->business_id_ = business_id;
 
-    ret = msg_send_frame_->appdata_encode(Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = msg_send_frame_->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+                                          info);
 
     if (ret != 0)
     {

@@ -181,14 +181,12 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm
     }
 
     bool is_reg_cmd = is_register_cmd(zerg_frame->command_);
-    bool continue_running = false;
-    size_t frame_len = zerg_frame->length_;
+    bool continued = false;
     //是一个激活事务的命令
     if (is_reg_cmd)
     {
-        unsigned int id = 0;
-
-        ret = create_asyncobj(zerg_frame->command_, zerg_frame, frame_len, id, continue_running);
+        uint32_t id = 0;
+        ret = create_asyncobj(zerg_frame->command_, id, continued);
         create_fsm = true;
         //统计技术器
         ++gen_ksm_counter_;
@@ -197,7 +195,7 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm
     }
     else
     {
-        ret = active_asyncobj(zerg_frame->backfill_fsm_id_, zerg_frame, frame_len, continue_running);
+        ret = active_asyncobj(zerg_frame->backfill_fsm_id_, continued);
         if (ret != 0)
         {
             DUMP_ZERG_FRAME_HEAD(RS_ERROR, "No use frame:", zerg_frame);
@@ -226,8 +224,8 @@ int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
                                  size_t buf_len)
 {
     soar::Zerg_Frame* send_frame = trans_send_buffer_;
-    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
-    ::memcpy(send_frame, &zerg_head, soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD);
+    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_FRAME);
+    ::memcpy(send_frame, &zerg_head, soar::Zerg_Frame::LEN_OF_HEAD);
     if (buf_len)
     {
         ::memcpy(send_frame->frame_appdata_,

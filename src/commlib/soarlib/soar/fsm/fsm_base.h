@@ -85,9 +85,7 @@ protected:
     virtual void on_init() final;
 
     ///事物的on_run函数，重载的FSM的，把调用转向到trans_run
-    virtual void on_run(void* outer_data,
-                        size_t data_len,
-                        bool& continue_run) final;
+    virtual void on_run(bool& continue_run) final;
 
     ///状态机对象超时处理，重载的FSM的（异步对象的），把调用转向到trans_timeout
     virtual void on_timeout(const zce::Time_Value& now_time,
@@ -251,7 +249,7 @@ protected:
 template <class T>
 int FSM_Base::request_peer(uint32_t cmd,
                            const soar::SERVICES_ID& rcv_svc,
-                           const T& msg,
+                           const T& info,
                            uint32_t option)
 {
     soar::SERVICES_ID proxy_svc(0, 0);
@@ -272,7 +270,7 @@ int FSM_Base::request_peer(uint32_t cmd,
                            uint32_t user_id,
                            uint32_t backfill_fsm_id,
                            const soar::SERVICES_ID& rcv_svc,
-                           const T& msg,
+                           const T& info,
                            uint32_t option)
 {
     soar::SERVICES_ID proxy_svc(0, 0);
@@ -292,7 +290,7 @@ template< class T>
 int FSM_Base::request_peer(uint32_t cmd,
                            uint32_t user_id,
                            const soar::SERVICES_ID& rcv_svc,
-                           const T& msg,
+                           const T& info,
                            uint32_t option)
 {
     soar::SERVICES_ID proxy_svc(0, 0);
@@ -313,10 +311,10 @@ template< class T>
 int FSM_Base::request_proxy(uint32_t cmd,
                             const soar::SERVICES_ID& proxy_svc,
                             uint16_t rcv_type,
-                            const T& msg,
+                            const T& info,
                             uint32_t option)
 {
-    soar::SERVICES_ID rcv_svc(rcvtype, 0);
+    soar::SERVICES_ID rcv_svc(rcv_type, 0);
     return sendmsg_to_service(cmd,
                               this->req_zerg_head_.user_id_,
                               this->asyncobj_id_,
@@ -334,7 +332,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
                             const soar::SERVICES_ID& proxy_svc,
                             uint16_t rcv_type,
-                            const T& msg,
+                            const T& info,
                             uint32_t option)
 {
     soar::SERVICES_ID rcv_svc(rcv_type, 0);
@@ -356,7 +354,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
                             const soar::SERVICES_ID& proxy_svc,
                             const soar::SERVICES_ID& recvsvc,
-                            const T& msg,
+                            const T& info,
                             uint32_t option)
 {
     return sendmsg_to_service(cmd,
@@ -378,7 +376,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
                             uint32_t backfill_fsm_id,
                             const soar::SERVICES_ID& recvsvc,
                             const soar::SERVICES_ID& proxy_svc,
-                            const T& msg,
+                            const T& info,
                             uint32_t option)
 {
     return sendmsg_to_service(cmd,
@@ -396,11 +394,11 @@ int FSM_Base::request_proxy(uint32_t cmd,
 //回送信息,应答一个请求,只能是除了接受命令的时候才可以调用这个函数,否则....
 template< class T>
 int FSM_Base::response_sendback(uint32_t cmd,
-                                const T& msg,
+                                const T& info,
                                 uint32_t option)
 {
     //加入UDP返回的代码部分
-    if (req_frame_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
+    if (req_zerg_head_.u32_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
     {
         option |= soar::Zerg_Frame::DESC_UDP_FRAME;
     }
@@ -409,10 +407,10 @@ int FSM_Base::response_sendback(uint32_t cmd,
     return sendmsg_to_service(cmd,
                               this->req_zerg_head_.user_id_,
                               this->asyncobj_id_,
-                              this->req_trans_id_,
-                              this->req_snd_service_,
-                              this->req_proxy_service_,
-                              this->req_rcv_service_,
+                              this->req_zerg_head_.fsm_id_,
+                              this->req_zerg_head_.recv_service_,
+                              this->req_zerg_head_.proxy_service_,
+                              this->req_zerg_head_.send_service_,
                               info,
                               option);
 }
@@ -423,11 +421,11 @@ int FSM_Base::response_sendback(uint32_t cmd,
 template< class T>
 int FSM_Base::response_sendback2(uint32_t cmd,
                                  uint32_t user_id,
-                                 const T& msg,
+                                 const T& info,
                                  uint32_t option)
 {
     //加入UDP返回的代码部分
-    if (req_frame_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
+    if (req_zerg_head_.u32_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
     {
         option |= soar::Zerg_Frame::DESC_UDP_FRAME;
     }
@@ -436,10 +434,10 @@ int FSM_Base::response_sendback2(uint32_t cmd,
     return sendmsg_to_service(cmd,
                               user_id,
                               this->asyncobj_id_,
-                              this->req_trans_id_,
-                              this->req_snd_service_,
-                              this->req_proxy_service_,
-                              this->req_rcv_service_,
+                              this->req_zerg_head_.fsm_id_,
+                              this->req_zerg_head_.send_service_,
+                              this->req_zerg_head_.proxy_service_,
+                              this->req_zerg_head_.recv_service_,
                               info,
                               option);
 }
@@ -458,7 +456,7 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                  uint32_t option)
 {
     //如果请求的命令要求要监控，后面的处理进行监控
-    if (req_frame_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (req_zerg_head_.u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
     {
         option |= soar::Zerg_Frame::DESC_TRACK_MONITOR;
     }

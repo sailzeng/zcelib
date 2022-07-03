@@ -40,92 +40,92 @@ int Server_Config_Base::read_start_arg(int argc, const char* argv[])
     {
         switch (c)
         {
-            case 'v':
-            {
-                // 打印版本信息
-                printf("%s\n", TSS_SERVER_VER_DECLARE);
-                exit(0);
-                break;
-            }
+        case 'v':
+        {
+            // 打印版本信息
+            printf("%s\n", TSS_SERVER_VER_DECLARE);
+            exit(0);
+            break;
+        }
 
-            case 'n':
-            {
-                // 从管道恢复数据
-                pipe_cfg_.if_restore_pipe_ = true;
-                break;
-            }
+        case 'n':
+        {
+            // 从管道恢复数据
+            pipe_cfg_.if_restore_pipe_ = true;
+            break;
+        }
 
-            case 'd':
-            {
-                // 后台运行
-                app_run_daemon_ = true;
-                break;
-            }
+        case 'd':
+        {
+            // 后台运行
+            app_run_daemon_ = true;
+            break;
+        }
 
-            case 'r':
-            {
-                // 指定运行目录, 以服务运行时，需要指定此参数
-                printf("app run dir = %s\n", app_run_dir_.c_str());
-                app_run_dir_ = get_opt.optarg;
-                break;
-            }
+        case 'r':
+        {
+            // 指定运行目录, 以服务运行时，需要指定此参数
+            printf("app run dir = %s\n", app_run_dir_.c_str());
+            app_run_dir_ = get_opt.optarg;
+            break;
+        }
 
-            case 'a':
-            {
-                // 主cfgsvr ip地址 端口号用#隔离
-                // 指定了配置地址，则从配置服务器拉配置
-                is_use_cfgsvr_ = true;
-                master_cfgsvr_ip_.set(get_opt.optarg);
-                break;
-            }
+        case 'a':
+        {
+            // 主cfgsvr ip地址 端口号用#隔离
+            // 指定了配置地址，则从配置服务器拉配置
+            is_use_cfgsvr_ = true;
+            master_cfgsvr_ip_.set(get_opt.optarg);
+            break;
+        }
 
-            case 'i':
-            {
-                // 指定了服务器实体id
-                instance_id_ = static_cast<unsigned short>(atoi(get_opt.optarg));
-                break;
-            }
+        case 'i':
+        {
+            // 指定了服务器实体id
+            instance_id_ = static_cast<unsigned short>(atoi(get_opt.optarg));
+            break;
+        }
 
-            case 't':
-            {
-                // 指定了服务器type
-                self_svc_info_.svc_id_.services_type_ = static_cast<unsigned short>(atoi(get_opt.optarg));
-                break;
-            }
+        case 't':
+        {
+            // 指定了服务器type
+            self_svc_info_.svc_id_.services_type_ = static_cast<unsigned short>(atoi(get_opt.optarg));
+            break;
+        }
 
-            case 'p':
-            {
-                // 从服务器拉配置
-                is_use_cfgsvr_ = true;
-                break;
-            }
+        case 'p':
+        {
+            // 从服务器拉配置
+            is_use_cfgsvr_ = true;
+            break;
+        }
 
-            case 'u':
-            {
-                // windows卸载服务
-                win_uninstall_service_ = true;
-                break;
-            }
+        case 'u':
+        {
+            // windows卸载服务
+            win_uninstall_service_ = true;
+            break;
+        }
 
-            case 'm':
-            {
-                // windows安装服务
-                win_install_service_ = true;
-                break;
-            }
+        case 'm':
+        {
+            // windows安装服务
+            win_install_service_ = true;
+            break;
+        }
 
-            case 'h':
-            {
-                usage(argv[0]);
-                exit(0);
-            }
+        case 'h':
+        {
+            usage(argv[0]);
+            exit(0);
+        }
 
-            default:
-            {
-                printf("unknow argu %c\n", c);
-                usage(argv[0]);
-                return SOAR_RET::ERR_ZERG_GET_STARTUP_CONFIG_FAIL;
-            }
+        default:
+        {
+            printf("unknow argu %c\n", c);
+            usage(argv[0]);
+            return SOAR_RET::ERR_ZERG_GET_STARTUP_CONFIG_FAIL;
+        }
         }
     }
 
@@ -265,7 +265,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     std::string temp_value;
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_LEVEL", temp_value);
-    log_config_.log_level_ = zce::Log_File::log_priorities(temp_value.c_str());
+    log_config_.log_level_ = zce::Log_Msg::log_priorities(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -273,7 +273,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     }
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
-    log_config_.log_div_type_ = zce::Log_File::log_file_devide(temp_value.c_str());
+    log_config_.log_div_type_ = zce::Log_Msg::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);

@@ -241,7 +241,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
         initialize(self_svc_info_,
                    config_base_->pipe_cfg_.recv_pipe_len_,
                    config_base_->pipe_cfg_.send_pipe_len_,
-                   soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+                   soar::Zerg_Frame::MAX_LEN_OF_FRAME,
                    config_base_->pipe_cfg_.if_restore_pipe_);
 
     if (0 != ret)
@@ -330,15 +330,15 @@ int App_BusPipe::init_log()
     zce::Log_Msg::instance()->terminate();
 
     // 初始化日志
-    ret = zce::Log_Msg::instance()->initialize(config_base_->log_config_.log_output_,
-                                               config_base_->log_config_.log_div_type_,
-                                               config_base_->log_file_prefix_.c_str(),
-                                               false,
-                                               true,
-                                               true,
-                                               config_base_->log_config_.max_log_file_size_,
-                                               config_base_->log_config_.reserve_file_num_,
-                                               ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
+    ret = zce::Log_Msg::instance()->init_log(config_base_->log_config_.log_output_,
+                                             config_base_->log_config_.log_div_type_,
+                                             config_base_->log_file_prefix_.c_str(),
+                                             true,
+                                             false,
+                                             true,
+                                             config_base_->log_config_.max_log_file_size_,
+                                             config_base_->log_config_.reserve_file_num_,
+                                             ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
     if (0 != ret)
     {
         ZCE_LOG(RS_ERROR, "zce::Log_Msg::instance()->initialize ret fail.");

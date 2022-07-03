@@ -31,34 +31,33 @@ public:
         return dynamic_cast<zce::Async_Object*>(new FSM_1(async_mgr, create_cmd));
     }
 
-    virtual void on_run(const void* outer_data, size_t /*data_len*/, bool& continue_run)
+    virtual void on_run(bool& continue_run)
     {
-        ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
         {
-            case FMS1_STAGE_1:
-                std::cout << "FSM1 stage " << get_stage() << " start." << std::endl;
-                continue_run = true;
-                set_stage(FMS1_STAGE_2);
-                break;
-            case FMS1_STAGE_2:
-                std::cout << "FSM1 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM1_STAGE_3);
-                break;
-            case FSM1_STAGE_3:
-                std::cout << "FSM1 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM1_STAGE_4);
-                break;
-            case FSM1_STAGE_4:
-                std::cout << "FSM1 stage " << get_stage() << " end." << std::endl;
-                continue_run = false;
-                break;
-            default:
-                //一个无法识别的状态
-                ZCE_ASSERT(false);
-                break;
+        case FMS1_STAGE_1:
+            std::cout << "FSM1 stage " << get_stage() << " start." << std::endl;
+            continue_run = true;
+            set_stage(FMS1_STAGE_2);
+            break;
+        case FMS1_STAGE_2:
+            std::cout << "FSM1 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM1_STAGE_3);
+            break;
+        case FSM1_STAGE_3:
+            std::cout << "FSM1 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM1_STAGE_4);
+            break;
+        case FSM1_STAGE_4:
+            std::cout << "FSM1 stage " << get_stage() << " end." << std::endl;
+            continue_run = false;
+            break;
+        default:
+            //一个无法识别的状态
+            ZCE_ASSERT(false);
+            break;
         }
         return;
     }
@@ -93,36 +92,33 @@ public:
         return dynamic_cast<zce::Async_Object*>(new FSM_2(async_mgr, create_cmd));
     }
 
-    virtual void on_run(const void* outer_data,
-                        size_t /*data_len*/,
-                        bool& continue_run)
+    virtual void on_run(bool& continue_run)
     {
-        ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
         {
-            case FMS2_STAGE_1:
-                std::cout << "FSM2 stage " << get_stage() << " start." << std::endl;
-                continue_run = true;
-                set_stage(FMS2_STAGE_2);
-                break;
-            case FMS2_STAGE_2:
-                std::cout << "FSM2 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM2_STAGE_3);
-                break;
-            case FSM2_STAGE_3:
-                std::cout << "FSM2 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM2_STAGE_4);
-                break;
-            case FSM2_STAGE_4:
-                std::cout << "FSM2 stage" << get_stage() << " end." << std::endl;
-                continue_run = false;
-                break;
-            default:
-                //一个无法识别的状态
-                ZCE_ASSERT(false);
-                break;
+        case FMS2_STAGE_1:
+            std::cout << "FSM2 stage " << get_stage() << " start." << std::endl;
+            continue_run = true;
+            set_stage(FMS2_STAGE_2);
+            break;
+        case FMS2_STAGE_2:
+            std::cout << "FSM2 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM2_STAGE_3);
+            break;
+        case FSM2_STAGE_3:
+            std::cout << "FSM2 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM2_STAGE_4);
+            break;
+        case FSM2_STAGE_4:
+            std::cout << "FSM2 stage" << get_stage() << " end." << std::endl;
+            continue_run = false;
+            break;
+        default:
+            //一个无法识别的状态
+            ZCE_ASSERT(false);
+            break;
         }
         return;
     }
@@ -283,7 +279,7 @@ void loop(
 
         /* Save the loop context (this point in the code) into ''loop_context'',
         * and switch to other_context. */
-        zce::yeild_main(loop_context);
+        zce::yeild_coroutine(loop_context);
     }
 
     /* The function falls through to the calling context with an implicit
@@ -336,7 +332,7 @@ int test_coroutine2(int /*argc*/, char* /*argv*/[])
             /* Save this point into main_context2 and switch into the iterator.
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
-            zce::yeild_coroutine(&loop_context);
+            zce::resume_coroutine(&loop_context);
             printf("%d\n", i_from_iterator);
         }
     }

@@ -7,7 +7,8 @@
 
 //读取文件
 ssize_t zce::read(ZCE_HANDLE file_handle,
-                  void* buf, size_t count) noexcept
+                  void* buf,
+                  size_t count) noexcept
 {
     //WINDOWS下，长度无法突破32位的，参数限制了ReadFileEx也一样，大概WINDOWS认为没人这样读取文件
     //位置当然你是可以调整的
@@ -34,16 +35,30 @@ ssize_t zce::read(ZCE_HANDLE file_handle,
 #endif
 }
 
-//ssize_t zce::read(ZCE_HANDLE file_handle,
-//                  void* buf,
-//                  ssize_t offset,
-//                  size_t count) noexcept
-//{
-//
-//    return zce::read(file_handle, buf, count);
-//}
+// 读取文件，从起始文件的偏移量的文职开始读取
+ssize_t zce::read(ZCE_HANDLE file_handle,
+                  void* buf,
+                  size_t count,
+                  off_t offset,
+                  int whence) noexcept
+{
+    if (whence == SEEK_CUR && offset == 0)
+    {
+    }
+    else
+    {
+        off_t off = zce::lseek(file_handle, offset, whence);
+        if (off == -1)
+        {
+            return -1;
+        }
+    }
+    return read(file_handle,
+                buf,
+                count);
+}
 
-//写如文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
+//写文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
 //Windows下尽量向POSIX 靠拢了
 ssize_t zce::write(ZCE_HANDLE file_handle,
                    const void* buf,
@@ -75,6 +90,29 @@ ssize_t zce::write(ZCE_HANDLE file_handle,
 #elif defined (ZCE_OS_LINUX)
     return ::write(file_handle, buf, count);
 #endif
+}
+
+//写文件,
+ssize_t zce::write(ZCE_HANDLE file_handle,
+                   const void* buf,
+                   size_t count,
+                   off_t offset,
+                   int whence) noexcept
+{
+    if (whence == SEEK_CUR && offset == 0)
+    {
+    }
+    else
+    {
+        ssize_t off = lseek(file_handle, offset, whence);
+        if (off == -1)
+        {
+            return -1;
+        }
+    }
+    return write(file_handle,
+                 buf,
+                 count);
 }
 
 //截断文件
@@ -142,7 +180,7 @@ int zce::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
 }
 
 //在文件内进行偏移
-ssize_t zce::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence) noexcept
+off_t zce::lseek(ZCE_HANDLE file_handle, off_t offset, int whence) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -180,7 +218,7 @@ ssize_t zce::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence) noexcept
         return  -1;
     }
 
-    return static_cast<ssize_t>(new_pos.QuadPart);
+    return static_cast<off_t>(new_pos.QuadPart);
 
 #elif defined (ZCE_OS_LINUX)
     //
@@ -390,17 +428,17 @@ ZCE_HANDLE zce::mkstemp(char* template_name)
 }
 
 //通过文件名称得到文件的stat信息，你可以认为zce_os_stat就是stat，只是在WINDOWS下stat64,主要是为了长文件考虑的
-int zce::stat(const char* path, zce_os_stat* file_stat)
+int zce::stat(const char* path, struct stat* file_stat)
 {
 #if defined (ZCE_OS_WINDOWS)
-    return ::_stat64(path, file_stat);
+    return ::stat(path, file_stat);
 #elif defined (ZCE_OS_LINUX)
     return ::stat(path, file_stat);
 #endif
 }
 
 //通过文件的句柄得到文件的stat信息
-int zce::fstat(ZCE_HANDLE file_handle, zce_os_stat* file_stat)
+int zce::fstat(ZCE_HANDLE file_handle, struct stat* file_stat)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -427,10 +465,10 @@ int zce::fstat(ZCE_HANDLE file_handle, zce_os_stat* file_stat)
 
     //_S_IFDIR,
 
-    memset(file_stat, 0, sizeof(zce_os_stat));
+    memset(file_stat, 0, sizeof(struct stat));
     file_stat->st_uid = 0;
     file_stat->st_gid = 0;
-    file_stat->st_size = file_size.QuadPart;
+    file_stat->st_size = static_cast<_off_t>(file_size.QuadPart);
 
     //得到几个时间
     //注意st_ctime这儿呀，这儿的LINUX下和Windows是有些不一样的，st_ctime在LINUX下是状态最后改变时间，而在WINDOWS下是创建时间
@@ -462,7 +500,7 @@ int zce::fstat(ZCE_HANDLE file_handle, zce_os_stat* file_stat)
 bool zce::is_directory(const char* path_name)
 {
     int ret = 0;
-    zce_os_stat file_stat;
+    struct stat file_stat;
     ret = zce::stat(path_name, &file_stat);
     if (0 != ret)
     {
@@ -529,7 +567,7 @@ int zce::read_file_data(const char* filename,
         ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d", filename, zce::last_error());
         return -1;
     }
-    zce::lseek(fd, static_cast<ssize_t>(offset), SEEK_SET);
+    zce::lseek(fd, static_cast<off_t>(offset), SEEK_SET);
     //读取内容
     ssize_t len = zce::read(fd, buffer, buf_len - 1);
     zce::close(fd);
@@ -547,9 +585,9 @@ int zce::read_file_data(const char* filename,
 }
 
 //读取文件的全部数据，
-std::pair<int, std::shared_ptr<char>> zce::read_file_all(const char* filename,
-                                                         size_t* file_len,
-                                                         size_t offset)
+std::pair<int, std::shared_ptr<char> > zce::read_file_all(const char* filename,
+                                                          size_t* file_len,
+                                                          size_t offset)
 {
     int ret = -1;
     std::shared_ptr<char> null_ptr;
@@ -570,7 +608,7 @@ std::pair<int, std::shared_ptr<char>> zce::read_file_all(const char* filename,
     std::shared_ptr<char> ptr(new char[*file_len + 1], std::default_delete<char[]>());
     *(ptr.get() + *file_len) = '\0';
     //调整偏移，读取内容
-    zce::lseek(fd, static_cast<ssize_t>(offset), SEEK_SET);
+    zce::lseek(fd, static_cast<off_t>(offset), SEEK_SET);
     ssize_t len = zce::read(fd, ptr.get(), *file_len);
     zce::close(fd);
     if (len < 0)

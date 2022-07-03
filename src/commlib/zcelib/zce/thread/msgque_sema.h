@@ -209,7 +209,7 @@ protected:
         }
         else if (model == MQW_WAIT_MODEL::MQW_NO_WAIT)
         {
-            bret = sem_empty_.try_acquire();
+            bool bret = sem_empty_.try_acquire();
             //如果超时了，返回false
             if (!bret)
             {

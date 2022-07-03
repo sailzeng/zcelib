@@ -7,7 +7,7 @@
 //为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
 
 //打开一个目录，用于读取
-DIR* zce::opendir(const char* dir_name)
+struct DIR* zce::opendir(const char* dir_name)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -27,7 +27,7 @@ DIR* zce::opendir(const char* dir_name)
 
     //初始化
     dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
-    dir_handle->started_reading_ = 0;
+    dir_handle->already_first_read_ = 0;
     dir_handle->dirent_ = new dirent();
 
     //这两个参数在WINDOWS下没用
@@ -47,7 +47,7 @@ DIR* zce::opendir(const char* dir_name)
 }
 
 //关闭已经打开的目录
-int zce::closedir(DIR* dir_handle)
+int zce::closedir(struct DIR* dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -58,7 +58,7 @@ int zce::closedir(DIR* dir_handle)
     }
 
     dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
-    dir_handle->started_reading_ = 0;
+    dir_handle->already_first_read_ = 0;
 
     //释放相应的资源
     delete dir_handle->dirent_;
@@ -74,12 +74,12 @@ int zce::closedir(DIR* dir_handle)
 }
 
 //
-struct dirent* zce::readdir(DIR* dir_handle)
+struct dirent* zce::readdir(struct DIR* dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     //WIN32第一次读的函数，和后面的函数不一样。
-    if (!dir_handle->started_reading_)
+    if (!dir_handle->already_first_read_)
     {
         char scan_dirname[PATH_MAX + 16];
         //前面验证过是目录，正确使用不会溢出
@@ -101,7 +101,7 @@ struct dirent* zce::readdir(DIR* dir_handle)
 
         dir_handle->current_handle_ = ::FindFirstFileA(scan_dirname,
                                                        &dir_handle->fdata_);
-        dir_handle->started_reading_ = 1;
+        dir_handle->already_first_read_ = 1;
     }
     else
     {
@@ -143,9 +143,9 @@ struct dirent* zce::readdir(DIR* dir_handle)
 }
 
 //read dir 可以重入版本，
-int zce::readdir_r(DIR* dir_handle,
-                   dirent* entry,
-                   dirent** result)
+int zce::readdir_r(struct DIR* dir_handle,
+                   struct dirent* entry,
+                   struct dirent** result)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -276,7 +276,7 @@ int zce::readdir_nameary(const char* dirname,
 //选择器的函数指针
 //比较函数排序函数的指针
 int zce::scandir(const char* dirname,
-                 dirent** namelist[],
+                 struct dirent** namelist[],
                  int (*selector)(const struct dirent*),
                  int (*comparator)(const struct dirent**, const struct dirent**))
 {
@@ -326,7 +326,6 @@ int zce::scandir(const char* dirname,
 
     //关闭DIR
     zce::closedir(dir_handle);
-
     if (occur_fail)
     {
         return -1;
@@ -340,7 +339,6 @@ int zce::scandir(const char* dirname,
 
     //再打开一次使用
     dir_handle = zce::opendir(dirname);
-
     if (dir_handle == 0)
     {
         return -1;
@@ -359,11 +357,9 @@ int zce::scandir(const char* dirname,
     //两次操作好处是代码清晰，不用写realloc这类函数，坏处是第二次和第一次可能结果不一致
     //为什么要增加个数限制，因为两次检查之间，可能有变化
     int twice_nfiles = 0;
-
     for (twice_nfiles = 0; twice_nfiles < once_nfiles; )
     {
         retval = zce::readdir_r(dir_handle, &dir_tmp, &dir_p);
-
         //如果发生失败
         if (retval != 0)
         {
@@ -377,6 +373,7 @@ int zce::scandir(const char* dirname,
             break;
         }
 
+        //如果有选择器函数指针，而且能选上
         if (selector && (*selector)(dir_p) == 0)
         {
             continue;
@@ -396,7 +393,6 @@ int zce::scandir(const char* dirname,
 
     //关闭DIR
     zce::closedir(dir_handle);
-
     //如果出现了错误，释放分配的内存
     if (occur_fail && vector_dir)
     {

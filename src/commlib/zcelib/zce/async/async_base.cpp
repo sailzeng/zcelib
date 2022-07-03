@@ -148,7 +148,8 @@ void Async_Obj_Mgr::terminate()
         //出现了问题，
         if (pool_reg.aysncobj_pool_.size() != pool_reg.aysncobj_pool_.capacity())
         {
-            ZCE_LOG(RS_ERROR, "[ZCELIB] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
+            ZCE_LOG(RS_ERROR, "[ZCELIB] Plase notice!! size[%u] != capacity[%u]"
+                    " may be exist memory leak.",
                     pool_reg.aysncobj_pool_.size(),
                     pool_reg.aysncobj_pool_.capacity());
         }
@@ -225,7 +226,8 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(create_cmd);
     if (mapiter == regaysnc_pool_.end())
     {
-        ZCE_LOG(RS_ERROR, "[ZCELIB] Allocate async object command[%u] error.", create_cmd);
+        ZCE_LOG(RS_ERROR, "[ZCELIB] Allocate async object command[%u] error.", 
+                create_cmd);
         return -1;
     }
 
@@ -242,7 +244,8 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
         size_t capacity_of_pool = reg_async.aysncobj_pool_.capacity();
         reg_async.aysncobj_pool_.resize(capacity_of_pool + pool_extend_size_);
 
-        ZCE_LOG(RS_INFO, "[ZCELIB] Async object pool size[%u],  command[%u], capacity[%u] , resize[%u] .",
+        ZCE_LOG(RS_INFO, "[ZCELIB] Async object pool size[%u],  command[%u],"
+                " capacity[%u] , resize[%u] .",
                 reg_async.aysncobj_pool_.size(),
                 create_cmd,
                 capacity_of_pool,
@@ -264,7 +267,8 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
     reg_async.aysncobj_pool_.pop_front(crt_async);
     async_rec = &reg_async;
 
-    ZCE_LOG(RS_DEBUG, "[ZCELIB] Allocate async object command[%u],after alloc pool size[%u] .",
+    ZCE_LOG(RS_DEBUG, "[ZCELIB] Allocate async object command[%u],"
+            "after alloc pool size[%u] .",
             create_cmd,
             reg_async.aysncobj_pool_.size());
 
@@ -293,15 +297,13 @@ int Async_Obj_Mgr::free_to_pool(Async_Object* free_crtn)
 
 //创建异步对象
 int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
-                                   void* recv_data,
-                                   size_t data_len,
                                    uint32_t& id,
-                                   bool& continue_running)
+                                   bool& running)
 {
     int ret = 0;
     Async_Object* crt_async = NULL;
     ASYNC_OBJECT_RECORD* async_rec = NULL;
-    continue_running = false;
+    running = false;
     //从池子里面找一个异步对象
     ret = allocate_from_pool(cmd, async_rec, crt_async);
     if (ret != 0)
@@ -320,10 +322,9 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
     crt_async->on_init();
 
     //启动丫的
-    crt_async->on_run(recv_data, data_len, continue_running);
-
+    crt_async->on_run(running);
     //如果运行一下就退出了,直接结束回收
-    if (continue_running == false)
+    if (running == false)
     {
         ++async_rec->end_num_;
         crt_async->on_end();
@@ -344,7 +345,7 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
     ZCE_LOG(RS_DEBUG, "[ZCELIB] Async object create. command [%u] create, id [%u],and continue run [%s].",
             cmd,
             id_builder_,
-            continue_running ? "TRUE" : "FALSE");
+            running ? "TRUE" : "FALSE");
 
     return 0;
 }
@@ -367,8 +368,6 @@ int Async_Obj_Mgr::find_running_asyncobj(uint32_t id,
 
 //激活某个已经运行的异步对象
 int Async_Obj_Mgr::active_asyncobj(uint32_t id,
-                                   void* recv_data,
-                                   size_t data_len,
                                    bool& running)
 {
     int ret = 0;
@@ -396,7 +395,7 @@ int Async_Obj_Mgr::active_asyncobj(uint32_t id,
     //激活同时取消定时器
     async_obj->cancel_timeout();
 
-    async_obj->on_run(recv_data, data_len, running);
+    async_obj->on_run(running);
     ++async_rec.active_num_;
 
     //如果不继续运行了，

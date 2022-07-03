@@ -309,14 +309,14 @@ public:
 
     //---------------------------------------------------------------------------
     //包头都尺寸,48
-    static const size_t LEN_OF_APPFRAME_HEAD = 48;
+    static const size_t LEN_OF_HEAD = 48;
 
     //FRAME的一些长度参数,默认的最大长度是64K
     //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
-    static const size_t MAX_LEN_OF_APPFRAME = 64 * 1024;
+    static const size_t MAX_LEN_OF_FRAME = 64 * 1024;
 
     //FRAME的最大长度,根据各个地方的长度而得到
-    static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD;
+    static const size_t MAX_LEN_OF_DATA = MAX_LEN_OF_FRAME - LEN_OF_HEAD;
 
 public:
     ///frame_appdata_ 是一个变长度的字符串序列标示,
@@ -333,7 +333,7 @@ inline size_t Zerg_Frame::get_frame_len() const
 //得到帧头总长度
 inline  size_t Zerg_Frame::get_frame_datalen() const
 {
-    return length_ - LEN_OF_APPFRAME_HEAD;
+    return length_ - LEN_OF_HEAD;
 }
 
 //是否事通信服务器处理的命理

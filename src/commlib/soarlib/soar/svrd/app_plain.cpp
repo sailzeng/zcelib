@@ -10,7 +10,8 @@ SvrdApp_Plain::SvrdApp_Plain() :
     App_BusPipe(),
     nonctrl_recv_buffer_(NULL)
 {
-    nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
+    nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(
+        soar::Zerg_Frame::MAX_LEN_OF_FRAME);
 }
 
 SvrdApp_Plain::~SvrdApp_Plain()

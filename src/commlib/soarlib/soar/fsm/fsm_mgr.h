@@ -88,7 +88,7 @@ protected:
     };
 
     ///内部的APPFRAME的消息队列，
-    typedef zce::MsgQueue_Deque<soar::Zerg_Frame*> Inner_Frame_Queue;
+    typedef zce::MsgRings_Sema<soar::Zerg_Frame*> Inner_Frame_Queue;
     ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
     typedef ZergFrame_Mallocor<zce::Null_Lock> Inner_Frame_Mallocor;
     //内部的锁的数量
@@ -166,7 +166,7 @@ public:
                    size_t running_fsm_num,
                    const soar::SERVICES_INFO& selfsvr,
                    soar::Svrd_BusPipe* zerg_mmap_pipe,
-                   size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+                   size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
 
@@ -337,7 +337,7 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
     tmp_frame->fsm_id_ = fsm_id;
     tmp_frame->backfill_fsm_id_ = backfill_fsm_id;
 
-    ret = tmp_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = tmp_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA, info);
 
     if (ret != 0)
     {
@@ -364,19 +364,28 @@ int FSM_Manager::sendmsg_to_service(uint32_t cmd,
                                     const soar::SERVICES_ID& rcvsvc,
                                     const soar::SERVICES_ID& proxysvc,
                                     const soar::SERVICES_ID& sndsvc,
-                                    const T& msg,
+                                    const T& info,
                                     uint32_t option)
 {
-    //[注意]一下这个地方，recv和send参数两边的顺序是反的
-    return zerg_mmap_pipe_->pipe_sendmsg_to_service(cmd,
-                                                    user_id,
-                                                    fsm_id,
-                                                    backfill_fsm_id,
-                                                    rcvsvc,
-                                                    proxysvc,
-                                                    sndsvc,
-                                                    msg,
-                                                    option);
+    soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(trans_send_buffer_);
+    rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    rsp_msg->user_id_ = user_id;
+    rsp_msg->fsm_id_ = fsm_id;
+    rsp_msg->recv_service_ = rcvsvc;
+    rsp_msg->proxy_service_ = proxysvc;
+    rsp_msg->send_service_ = sndsvc;
+    rsp_msg->u32_option_ = option;
+    //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
+    rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
+
+    //拷贝发送的MSG Block
+    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+                                      info);
+    if (ret != 0)
+    {
+        return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
+    }
+    return zerg_mmap_pipe_->push_back_sendbus(rsp_msg);
 }
 
 //Post一个FRAME数据到消息队列，可以伪造一些消息，但是我不知道提供出来是否是好事
@@ -388,23 +397,23 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
                                    const soar::SERVICES_ID& rcvsvc,
                                    const soar::SERVICES_ID& proxysvc,
                                    const soar::SERVICES_ID& sndsvc,
-                                   const T& msg,
+                                   const T& info,
                                    uint32_t option)
 {
     soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(trans_send_buffer_);
     rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
-
     rsp_msg->user_id_ = user_id;
     rsp_msg->fsm_id_ = fsm_id;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
     rsp_msg->send_service_ = sndsvc;
-
+    rsp_msg->u32_option_ = option;
     //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
     rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
     //拷贝发送的MSG Block
-    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+                                      info);
     if (ret != 0)
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
