@@ -15,8 +15,7 @@ FSM_Base::FSM_Base(FSM_Manager* pmngr,
                    bool trans_locker) :
     zce::Async_FSM(pmngr, create_cmd),
     trans_manager_(pmngr),
-    trans_locker_(trans_locker),
-    trans_create_(true)
+    trans_locker_(trans_locker)
 {
 }
 
@@ -56,10 +55,10 @@ void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
     return;
 }
 
-void FSM_Base::on_run(bool& continue_run)
+void FSM_Base::on_run(bool& continued)
 {
     soar::Zerg_Frame* recv_frame = nullptr;
-
+    trans_manager_->get_process_frame(recv_frame);
     //如果是第一次创建事物的时候，
     if (trans_create_)
     {
@@ -85,7 +84,7 @@ void FSM_Base::on_run(bool& continue_run)
             recv_frame->fsm_id_
     );
 
-    trans_run(recv_frame, continue_run);
+    trans_run(recv_frame, continued);
 
     ZCE_LOG(trace_log_pri_, "%s::trans_run end,transaction id:[%u],trans stage:[%u],"
             "recv frame cmd [%u] trans id:[%u],continue[%s] ,error [%d].",
@@ -94,11 +93,11 @@ void FSM_Base::on_run(bool& continue_run)
             fsm_stage_,
             recv_frame->command_,
             recv_frame->fsm_id_,
-            continue_run ? "TRUE" : "FALSE",
+            continued ? "TRUE" : "FALSE",
             running_errno_
     );
 
-    if (!continue_run)
+    if (!continued)
     {
         if (running_errno_ == 0)
         {

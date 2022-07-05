@@ -149,9 +149,7 @@ int FSM_Manager::process_pipe_frame(size_t& proc_frame,
         //是否创建一个事务，
         bool create_fsm = false;
         //tmp_frame不用回收
-        ret = process_appframe(tmp_frame, create_fsm);
-
-        //
+        ret = process_frame(tmp_frame, create_fsm);
         if (ret != 0)
         {
             continue;
@@ -169,15 +167,17 @@ int FSM_Manager::process_pipe_frame(size_t& proc_frame,
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm)
+int FSM_Manager::process_frame(soar::Zerg_Frame* zerg_frame,
+                               bool& create_fsm)
 {
     create_fsm = false;
     int ret = 0;
-
+    process_frame_ = zerg_frame;
     //如果是跟踪命令，打印出来
     if (zerg_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
     {
-        DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]", zerg_frame);
+        DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]",
+                             zerg_frame);
     }
 
     bool is_reg_cmd = is_register_cmd(zerg_frame->command_);
@@ -202,7 +202,8 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm
             return ret;
         }
 
-        ZCE_LOG(RS_DEBUG, "Find raw Transaction ID: %u. ", zerg_frame->backfill_fsm_id_);
+        ZCE_LOG(RS_DEBUG, "Find raw Transaction ID: %u. ",
+                zerg_frame->backfill_fsm_id_);
     }
     return 0;
 }
@@ -265,8 +266,15 @@ int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame* post_frame)
     return 0;
 }
 
+int FSM_Manager::get_process_frame(soar::Zerg_Frame* zerg_frame)
+{
+    process_frame_ = zerg_frame;
+    return 0;
+}
+
 //处理从接收队列取出的FRAME
-int FSM_Manager::process_queue_frame(size_t& proc_frame, size_t& create_trans)
+int FSM_Manager::process_queue_frame(size_t& proc_frame,
+                                     size_t& create_trans)
 {
     int ret = 0;
     create_trans = 0;
@@ -290,7 +298,7 @@ int FSM_Manager::process_queue_frame(size_t& proc_frame, size_t& create_trans)
         //是否创建一个事务，
         bool bcrtcx = false;
         //tmp_frame  马上回收
-        ret = process_appframe(tmp_frame, bcrtcx);
+        ret = process_frame(tmp_frame, bcrtcx);
         //释放内存
         inner_frame_mallocor_->free_appframe(tmp_frame);
 
@@ -316,13 +324,13 @@ int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame* fake_recv)
 {
     int ret = 0;
 
-    soar::Zerg_Frame* tmp_frame = reinterpret_cast<soar::Zerg_Frame*>(fake_recv_buffer_);
+    soar::Zerg_Frame* tmp_frame =
+        reinterpret_cast<soar::Zerg_Frame*>(fake_recv_buffer_);
     size_t buff_size = fake_recv->length_;
     memcpy(tmp_frame->frame_appdata_, fake_recv, buff_size);
 
     bool crttx = false;
-    ret = process_appframe(tmp_frame, crttx);
-
+    ret = process_frame(tmp_frame, crttx);
     if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
         return ret;
@@ -337,7 +345,6 @@ FSM_Manager* FSM_Manager::instance()
     {
         instance_ = new FSM_Manager();
     }
-
     return instance_;
 }
 
@@ -352,12 +359,12 @@ int FSM_Manager::lock_only_one(uint32_t cmd,
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second)
     {
-        ZCE_LOG(RS_ERROR, "[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
+        ZCE_LOG(RS_ERROR, "[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] "
+                "trans lock id[%u].",
                 cmd,
                 lock_id);
         return -1;
     }
-
     return 0;
 }
 

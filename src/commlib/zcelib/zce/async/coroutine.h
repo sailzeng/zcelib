@@ -32,7 +32,8 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd);
+    Async_Coroutine(zce::Async_Obj_Mgr* async_mgr,
+                    unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -55,19 +56,13 @@ public:
 
 protected:
 
-    ///协程运行,你要重载的函数
+    //!协程运行,你要重载的函数
     virtual void coroutine_run() = 0;
 
-    ///切换回Main，协程还会继续运行
-    void yeild_main_continue();
-
-    ///协程对象的运行函数
+    //!协程对象的运行函数
     void coroutine_do();
 
-    ///切换回Main,协程退出
-    void yeild_main_exit();
-
-    ///切换回协程，也就是切换到他自己运行
+    //!切换回协程，也就是切换到他自己运行
     void resume_coroutine();
 
     /*!
@@ -81,39 +76,28 @@ protected:
     * @brief      继承zce::Async_Object的函数，
     *             协程对象的运行处理
     */
-    virtual void on_run(bool& running) override;
+    virtual void on_run(bool& continued) override;
 
     /*!
     * @brief      异步对象超时处理
     * @param[in]  now_time  发生超时的时间，
-    * @param[out] continue_run 异步对象是否继续运行,
+    * @param[out] continued 异步对象是否继续运行,
     */
     virtual void on_timeout(const zce::Time_Value& now_time,
-                            bool& running) override;
+                            bool& continued) override;
 
 protected:
 
-    ///最小的堆栈
+    //!最小的堆栈
     static const size_t MIN_STACK_SIZE = 16 * 1024;
-    ///默认堆栈
+    //!默认堆栈
     static const size_t DEF_STACK_SIZE = 64 * 1024;
-    ///最大的堆栈
+    //!最大的堆栈
     static const size_t MAX_STACK_SIZE = 256 * 1024;
 
-public:
-
-    ///static 函数，用于协程运行函数，调用协程对象的运行函数
-    static void static_do(void* coroutine, void*, void*);
-
 protected:
 
-    ///协程对象
-    coroutine_t   handle_;
-
-    ///协程的堆栈大小，
-    size_t        stack_size_ = DEF_STACK_SIZE;
-
-    ///协程的状态
+    //!协程的状态
     COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
 };
 
@@ -126,7 +110,6 @@ protected:
 class Async_CoroutineMgr : public zce::Async_Obj_Mgr
 {
 public:
-
     //
     Async_CoroutineMgr();
     virtual ~Async_CoroutineMgr();

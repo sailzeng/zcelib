@@ -101,52 +101,9 @@ public:
     virtual ~FSM_Manager();
 
     //----------------------------------------------------------------------------------------------------------
-protected:
 
-    /*!
-    * @brief      处理一个收到的命令，
-    * @return     int
-    * @param      zerg_frame 处理的事务的帧数据，zerg_frame帧的生命周期由process_appframe函数管理
-    * @param      crttx 是否创建事务
-    * @note
-    */
-    int process_appframe(soar::Zerg_Frame* zerg_frame, bool& create_fsm);
 
 public:
-    //处理管道的数据
-    int process_pipe_frame(size_t& proc_frame,
-                           size_t& create_trans);
-    //处理消息队列的数据
-    int process_queue_frame(size_t& proc_frame,
-                            size_t& create_trans);
-
-    /*!
-    * @brief
-    * @return     int
-    * @param      create_cmd
-    * @param      fsm_base
-    * @param      oneusr_only_one
-    * @note
-    */
-    int register_fsmobj(uint32_t create_cmd,
-                        FSM_Base* fsm_base,
-                        bool usr_only_one);
-
-    /*!
-    * @brief      对某个命令的某些ID（一般是用户）的的事务进行加锁，保证一次只能有一个
-    * @return     int 等于0表示成功
-    * @param      cmd 命令字
-    * @param      lock_id 一般是用户ID
-    */
-    int lock_only_one(uint32_t cmd,
-                      uint32_t lock_id);
-
-    //对某一个用户的一个命令的事务进行
-    void unlock_only_one(uint32_t cmd,
-                         uint32_t lock_id);
-
-    //这个命令是否是锁定的命令
-    bool is_onlyone_cmd(uint32_t cmd);
 
     /*!
     * @brief      初始化
@@ -170,8 +127,44 @@ public:
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
 
-    //
+    //销毁
     void terminate();
+
+    //处理管道的数据
+    int process_pipe_frame(size_t& proc_frame,
+                           size_t& create_trans);
+    //处理消息队列的数据
+    int process_queue_frame(size_t& proc_frame,
+                            size_t& create_trans);
+
+    /*!
+    * @brief
+    * @return     int
+    * @param      create_cmd 注册的命令
+    * @param      fsm_base   FSM的指针，new产生
+    * @param      usr_only_one 是否是一个用户一次处理一个命令
+    * @note
+    */
+    int register_fsmobj(uint32_t create_cmd,
+                        FSM_Base* fsm_base,
+                        bool usr_only_one);
+
+    /*!
+    * @brief      对某个命令的某些ID（一般是用户）的的事务进行加锁，保证一次只能有一个
+    * @return     int 等于0表示成功
+    * @param      cmd 命令字
+    * @param      lock_id 一般是用户ID
+    */
+    int lock_only_one(uint32_t cmd,
+                      uint32_t lock_id);
+
+    //对某一个用户的一个命令的事务进行
+    void unlock_only_one(uint32_t cmd,
+                         uint32_t lock_id);
+
+    //这个命令是否是锁定的命令
+    bool is_onlyone_cmd(uint32_t cmd);
+
 
     //得到一个SvrInfo
     const soar::SERVICES_INFO* self_svc_info();
@@ -181,6 +174,8 @@ public:
     //打开Trans统计信息，得到一个当前时钟
     void enable_trans_statistics(const zce::Time_Value* stat_clock);
 
+    //!得到frame信息
+    int get_process_frame(soar::Zerg_Frame* zerg_frame);
     //----------------------------------------------------------------------------------------------------------
 
     //假装收到一个消息，进行处理,参数有点多，建议你使用的时候再进行一次封装
@@ -195,12 +190,12 @@ public:
                            const T& info,
                            uint32_t option);
 
-    //假装收到一个消息(buffer)
+    //!假装收到一个消息(buffer)
     int fake_receive_frame(const soar::Zerg_Frame* fake_recv);
 
     //----------------------------------------------------------------------------------------------------------
 
-    //Post一个FRAME数据到消息队列，可以伪造一些消息，但是我不知道提供出来是否是好事,
+    //!Post一个FRAME数据到消息队列，可以伪造一些消息，但是我不知道提供出来是否是好事,
     template< class T>
     int post_msg_to_queue(uint32_t cmd,
                           uint32_t user_id,
@@ -212,11 +207,11 @@ public:
                           const T& msg,
                           uint32_t option);
 
-    //发送一个数据到QUEUE
+    //!发送一个数据到QUEUE
     int postmsg_to_queue(soar::Zerg_Frame* post_frame);
 
     //----------------------------------------------------------------------------------------------------------
-    //管理器发送一个命令给一个服务器
+    //!管理器发送一个命令给一个服务器
     template< class T>
     int sendmsg_to_service(uint32_t cmd,
                            uint32_t user_id,
@@ -229,16 +224,24 @@ public:
                            uint32_t option);
 
     //----------------------------------------------------------------------------------------------------------
-    //发送一个数据到PIPE
+    //!发送一个数据到PIPE
     int sendfame_to_pipe(const soar::Zerg_Frame* proc_frame);
 
-    //
+    //!
     int sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
                         const char* buf,
                         size_t buf_len);
 
-private:
+protected:
 
+    /*!
+    * @brief      处理一个收到的命令，
+    * @return     int
+    * @param      zerg_frame 处理的事务的帧数据，zerg_frame帧的生命周期由process_appframe函数管理
+    * @param      crttx 是否创建事务
+    */
+    int process_frame(soar::Zerg_Frame* zerg_frame,
+                      bool& create_fsm);
 public:
     //为了SingleTon类准备
     //实例赋值
@@ -279,26 +282,28 @@ protected:
     //接受数据缓冲区
     soar::Zerg_Frame* trans_recv_buffer_ = nullptr;
 
-    // fake数据缓冲区
+    //! fake数据缓冲区
     soar::Zerg_Frame* fake_recv_buffer_ = nullptr;
+    //! 
+    soar::Zerg_Frame* process_frame_ = nullptr;
 
     //内部FRAME分配器
     Inner_Frame_Mallocor* inner_frame_mallocor_ = nullptr;
     //内部FRAME的队列
     Inner_Frame_Queue* message_queue_ = nullptr;
 
-    //ONLY ONE锁的池子
+    //!ONLY ONE锁的池子
     ONLY_ONE_LOCK_POOL* only_one_lock_pool_ = nullptr;
 
-    //如果一个类型的状态机，一个用户对于只能创建一个，记录（命令字）到这个set
+    //!如果一个类型的状态机，一个用户对于只能创建一个，记录（命令字）到这个set
     std::unordered_set<uint32_t> onlyone_fms_cmd_set_;
 
-    //统计分析的一些变量
-    //产生事务的总量记录
-    uint64_t           gen_ksm_counter_ = 0;
+    //!统计分析的一些变量
+    //!产生事务的总量记录
+    uint64_t gen_ksm_counter_ = 0;
 
 protected:
-    //SingleTon的指针
+    //!SingleTon的指针
     static FSM_Manager* instance_;
 };
 
@@ -346,7 +351,7 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
 
     //处理一个收到的命令，
     bool create_fsm = false;
-    ret = process_appframe(tmp_frame, create_fsm);
+    ret = process_frame(tmp_frame, create_fsm);
     if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
         return ret;
@@ -424,7 +429,7 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework] mgr_postframe_to_msgqueue but fail.Send queue is full "
+        ZCE_LOG(RS_ERROR, "[framework] postmsg_to_queue but fail.Send queue is full "
                 "or task process too slow to process request.");
         return ret;
     }

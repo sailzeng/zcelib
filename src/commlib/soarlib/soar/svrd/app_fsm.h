@@ -18,13 +18,13 @@
 *
 * @note
 */
-class Comm_SvrdApp_FSM : public soar::App_BusPipe
+class SvrdApp_FSM : public soar::App_BusPipe
 {
 protected:
 
     //使用事务处理的Application
-    Comm_SvrdApp_FSM();
-    virtual ~Comm_SvrdApp_FSM();
+    SvrdApp_FSM();
+    virtual ~SvrdApp_FSM();
 
 public:
 

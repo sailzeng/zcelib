@@ -216,33 +216,37 @@ protected:
 
 public:
 
-    //这儿对封装要求很严格，但是我感觉对外暴露的接口足够了。
+    //!这儿对封装要求很严格，但是我感觉对外暴露的接口足够了。
 protected:
 
-    //事件管理器
-    FSM_Manager* trans_manager_ = nullptr;
+    //!事件管理器
+    FSM_Manager*            trans_manager_ = nullptr;
 
-    //是否加事务锁
+    //!是否加事务锁
     bool                    trans_locker_ = false;
 
-    //事物被创建起来
+    //!事物被创建起来
     bool                    trans_create_ = true;
 
-    //请求的状态机的头部
+    //!
+    soar::Zerg_Frame       *recv_frame_ = nullptr;
+    //!
+
+    //! 请求的状态机的头部
     soar::Zerg_Head         req_zerg_head_;
 
-    //事务超时的定时器ID
-    int                     trans_timeout_id_;
-    //发生active后，是否自动停止time out定时器
-    bool                    active_auto_stop_;
-    //事务的定时器ID
-    int                     trans_touchtimer_id_;
+    //!事务超时的定时器ID
+    int                     trans_timeout_id_ = -1;
+    //!发生active后，是否自动停止time out定时器
+    bool                    active_auto_stop_ = true;
+    //!事务的定时器ID
+    int                     trans_touchtimer_id_ = -1;
 
-    //事务的创建时间
-    time_t                  trans_create_time_;
+    //!事务的创建时间
+    time_t                  trans_create_time_ = 0;
 
-    ///日志跟踪的优先级
-    zce::LOG_PRIORITY       trace_log_pri_;
+    //!日志跟踪的优先级
+    zce::LOG_PRIORITY       trace_log_pri_ = RS_INFO;
 };
 
 //请求发送消息的Service,

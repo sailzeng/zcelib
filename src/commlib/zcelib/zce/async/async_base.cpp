@@ -226,7 +226,7 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(create_cmd);
     if (mapiter == regaysnc_pool_.end())
     {
-        ZCE_LOG(RS_ERROR, "[ZCELIB] Allocate async object command[%u] error.", 
+        ZCE_LOG(RS_ERROR, "[ZCELIB] Allocate async object command[%u] error.",
                 create_cmd);
         return -1;
     }
@@ -298,12 +298,12 @@ int Async_Obj_Mgr::free_to_pool(Async_Object* free_crtn)
 //创建异步对象
 int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
                                    uint32_t& id,
-                                   bool& running)
+                                   bool& continued)
 {
     int ret = 0;
     Async_Object* crt_async = NULL;
     ASYNC_OBJECT_RECORD* async_rec = NULL;
-    running = false;
+    continued = false;
     //从池子里面找一个异步对象
     ret = allocate_from_pool(cmd, async_rec, crt_async);
     if (ret != 0)
@@ -322,9 +322,9 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
     crt_async->on_init();
 
     //启动丫的
-    crt_async->on_run(running);
+    crt_async->on_run(continued);
     //如果运行一下就退出了,直接结束回收
-    if (running == false)
+    if (continued == false)
     {
         ++async_rec->end_num_;
         crt_async->on_end();
@@ -342,11 +342,11 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
         }
     }
 
-    ZCE_LOG(RS_DEBUG, "[ZCELIB] Async object create. command [%u] create, id [%u],and continue run [%s].",
+    ZCE_LOG(RS_DEBUG, "[ZCELIB] Async object create. command [%u] create, "
+            "id [%u],and continue run [%s].",
             cmd,
             id_builder_,
-            running ? "TRUE" : "FALSE");
-
+            continued ? "TRUE" : "FALSE");
     return 0;
 }
 

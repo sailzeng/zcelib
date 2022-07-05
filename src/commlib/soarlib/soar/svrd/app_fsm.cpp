@@ -5,18 +5,18 @@
 #include "soar/svrd/cfg_fsm.h"
 
 //
-Comm_SvrdApp_FSM::Comm_SvrdApp_FSM() :
+SvrdApp_FSM::SvrdApp_FSM() :
     soar::App_BusPipe()
 {
 }
 
 //
-Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
+SvrdApp_FSM::~SvrdApp_FSM()
 {
 }
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSM::app_start(int argc, const char* argv[])
+int SvrdApp_FSM::app_start(int argc, const char* argv[])
 {
     int ret = 0;
     ret = soar::App_BusPipe::app_start(argc, argv);
@@ -34,7 +34,6 @@ int Comm_SvrdApp_FSM::app_start(int argc, const char* argv[])
                              svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_info_,
-
                              soar::Svrd_BusPipe::instance());
     soar::FSM_Manager::instance(p_trans_mgr_);
 
@@ -50,7 +49,7 @@ int Comm_SvrdApp_FSM::app_start(int argc, const char* argv[])
 }
 
 //运行处理,
-int Comm_SvrdApp_FSM::app_run()
+int SvrdApp_FSM::app_run()
 {
     ZCE_LOG(RS_INFO, "======================================================================================================");
     ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
@@ -127,7 +126,7 @@ int Comm_SvrdApp_FSM::app_run()
 }
 
 //退出处理
-int Comm_SvrdApp_FSM::app_exit()
+int SvrdApp_FSM::app_exit()
 {
     int ret = 0;
     soar::FSM_Manager::clean_instance();

@@ -7,7 +7,8 @@ namespace zce
 {
 //========================================================================================
 
-Async_Coroutine::Async_Coroutine(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd) :
+Async_Coroutine::Async_Coroutine(zce::Async_Obj_Mgr* async_mgr,
+                                 unsigned int reg_cmd) :
     zce::Async_Object(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
@@ -21,20 +22,7 @@ Async_Coroutine::~Async_Coroutine()
 int Async_Coroutine::initialize()
 {
     zce::Async_Object::initialize();
-    int ret = 0;
-    ret = zce::make_coroutine(&handle_,
-                              stack_size_,
-                              true,
-                              (ZCE_COROUTINE_3PARA)Async_Coroutine::static_do,
-                              (void*)this,
-                              NULL,
-                              NULL
-    );
-    if (ret != 0)
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::make_coroutine return fail.", ret);
-        return ret;
-    }
+
     return 0;
 }
 
@@ -42,47 +30,31 @@ int Async_Coroutine::initialize()
 void Async_Coroutine::terminate()
 {
     zce::Async_Object::terminate();
-    zce::delete_coroutine(&handle_);
     return;
 }
 
 //调用协程
-void Async_Coroutine::on_run(bool& continue_run)
+void Async_Coroutine::on_run(bool& continued)
 {
-    continue_run = false;
-
-    resume_coroutine();
-    //根据调用返回的函数记录的状态值得到当前的状态
-    if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
-    {
-        continue_run = true;
-    }
-    else if (coroutine_state_ == COROUTINE_STATE::EXIT)
-    {
-        continue_run = false;
-    }
-    else
-    {
-        ZCE_ASSERT_ALL(false);
-    }
+    continued = false;
 }
 
 //调用协程
 void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
-                                 bool& running)
+                                 bool& continued)
 {
-    running = false;
+    continued = false;
     coroutine_state_ = COROUTINE_STATE::TIMEOUT;
     resume_coroutine();
 
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
     {
-        running = true;
+        continued = true;
     }
     else if (coroutine_state_ == COROUTINE_STATE::EXIT)
     {
-        running = false;
+        continued = false;
     }
     else
     {
@@ -90,24 +62,11 @@ void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
     }
 }
 
-//切换回Main，协程还会继续运行
-void Async_Coroutine::yeild_main_continue()
-{
-    coroutine_state_ = COROUTINE_STATE::CONTINUE;
-    zce::yeild_coroutine(&handle_);
-}
 
-//切换回Main,协程退出
-void Async_Coroutine::yeild_main_exit()
-{
-    coroutine_state_ = COROUTINE_STATE::EXIT;
-    zce::yeild_coroutine(&handle_);
-}
 
 //切换回协程，也就是切换到他自己运行
 void Async_Coroutine::resume_coroutine()
 {
-    zce::resume_coroutine(&handle_);
 }
 
 //协程对象的运行函数
@@ -116,23 +75,11 @@ void Async_Coroutine::coroutine_do()
     //如果需要协程
     for (;;)
     {
-        //
-        coroutine_run();
-
-        //运行完毕后，返回主程序
-        yeild_main_exit();
     }
 }
 
-///static 函数，用于协程运行函数，调用协程对象的运行函数
-void Async_Coroutine::static_do(void* coroutine,
-                                void*,
-                                void*)
-{
-    ((Async_Coroutine*)coroutine)->coroutine_do();
-}
 
-//等待time_out 时间后超时，设置定时器后，切换协程到main
+//等待time_out 时间后超时，设置定时器后，
 int Async_Coroutine::waitfor_timeout(const zce::Time_Value& time_out)
 {
     int ret = 0;
@@ -141,7 +88,6 @@ int Async_Coroutine::waitfor_timeout(const zce::Time_Value& time_out)
     {
         return ret;
     }
-    yeild_main_continue();
     return 0;
 }
 

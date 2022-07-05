@@ -183,7 +183,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_t
         tmp_frame->recv_service_ = self_svc_info_.svc_id_;
 
         //tmp_frame  马上回收
-        ret = process_appframe(tmp_frame, create_fsm);
+        ret = process_frame(tmp_frame, create_fsm);
         //释放内存
         frame_mallocor_->free_appframe(tmp_frame);
 
