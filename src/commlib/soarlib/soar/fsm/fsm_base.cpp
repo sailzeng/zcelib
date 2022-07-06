@@ -65,28 +65,29 @@ void FSM_Base::on_run(bool& continued)
         create_init(recv_frame);
         trans_create_ = false;
 
-        ZCE_LOG(trace_log_pri_, "%s::trans_run create,transaction id:[%u],trans stage:[%u],"
+        ZCE_LOG(trace_log_pri_,
+                "%s::trans_run create,transaction id:[%u],trans stage:[%u],"
                 "request cmd [%u] trans id:[%u].",
                 typeid(*this).name(),
                 asyncobj_id_,
                 fsm_stage_,
                 req_zerg_head_.command_,
-                req_zerg_head_.fsm_id_
-        );
+                req_zerg_head_.fsm_id_);
     }
 
-    ZCE_LOG(trace_log_pri_, "%s::trans_run start,transaction id:[%u],trans stage:[%u],"
+    ZCE_LOG(trace_log_pri_,
+            "%s::trans_run start,transaction id:[%u],trans stage:[%u],"
             "recv frame cmd [%u] trans id:[%u].",
             typeid(*this).name(),
             asyncobj_id_,
             fsm_stage_,
             recv_frame->command_,
-            recv_frame->fsm_id_
-    );
+            recv_frame->fsm_id_);
 
     trans_run(recv_frame, continued);
 
-    ZCE_LOG(trace_log_pri_, "%s::trans_run end,transaction id:[%u],trans stage:[%u],"
+    ZCE_LOG(trace_log_pri_,
+            "%s::trans_run end,transaction id:[%u],trans stage:[%u],"
             "recv frame cmd [%u] trans id:[%u],continue[%s] ,error [%d].",
             typeid(*this).name(),
             asyncobj_id_,
@@ -231,14 +232,28 @@ void FSM_Base::unlock_cmd_userid()
                                            req_zerg_head_.user_id_);
 }
 
-//DUMP所有的事物的信息
-void FSM_Base::dump_transa_info(std::ostringstream& strstream) const
+//!DUMP输出事务的所有信息
+void FSM_Base::dump(zce::LOG_PRIORITY log_priority,
+                    const char* outstr) const
 {
-    strstream << "ID:" << asyncobj_id_ << " uid:" << req_zerg_head_.user_id_ << " Cmd:" << req_zerg_head_.command_ << " Stage:" << std::dec << fsm_stage_ << " ";
-    strstream << "ReqSndSvr:" << req_zerg_head_.send_service_.services_type_ << "|" << req_zerg_head_.send_service_.services_id_ \
-        << " ReqRcvSvr:" << req_zerg_head_.recv_service_.services_type_ << "|" << req_zerg_head_.recv_service_.services_id_ \
-        << " Reqproxy:" << req_zerg_head_.proxy_service_.services_type_ << "|" << req_zerg_head_.proxy_service_.services_id_ << " ";
-    strstream << "ReqtransID:" << req_zerg_head_.fsm_id_ << " TimeoutID:" << trans_timeout_id_ << " TouchID:" << trans_touchtimer_id_ << " ";
+    ZCE_LOG(log_priority, "%s.FSM ID =%u user id =%u cmd =%u stage=%u timeid=%u"
+            "Request send [%u|%u] proxy [%u|%u] recv[%u|%u] request fmsid[%u]. ",
+            outstr,
+            asyncobj_id_,
+            req_zerg_head_.user_id_,
+            req_zerg_head_.command_,
+            fsm_stage_,
+            trans_timeout_id_,
+            req_zerg_head_.send_service_.services_type_,
+            req_zerg_head_.send_service_.services_id_,
+            req_zerg_head_.proxy_service_.services_type_,
+            req_zerg_head_.proxy_service_.services_id_,
+            req_zerg_head_.recv_service_.services_type_,
+            req_zerg_head_.recv_service_.services_id_,
+            req_zerg_head_.fsm_id_,
+            trans_touchtimer_id_);
     return;
 }
+
+
 }

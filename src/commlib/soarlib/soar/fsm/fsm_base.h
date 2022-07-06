@@ -114,10 +114,9 @@ protected:
     int check_receive_frame(const soar::Zerg_Frame* recv_frame,
                             uint32_t wait_cmd);
 
-    //DUMP所有的事物的信息
-    void dump_transa_info(std::ostringstream& strstream) const;
-    //DUMP输出事务的所有信息
-    void output_trans_info(const char* outstr = "Output Transaction Info") const;
+    //!DUMP所有的事物的信息
+    void dump(zce::LOG_PRIORITY log_priority, const char* outstr) const;
+
 
 protected:
 

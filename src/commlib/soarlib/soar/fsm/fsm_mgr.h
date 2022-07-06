@@ -175,7 +175,7 @@ public:
     void enable_trans_statistics(const zce::Time_Value* stat_clock);
 
     //!得到frame信息
-    int get_process_frame(soar::Zerg_Frame* zerg_frame);
+    int get_process_frame(soar::Zerg_Frame* &zerg_frame);
     //----------------------------------------------------------------------------------------------------------
 
     //假装收到一个消息，进行处理,参数有点多，建议你使用的时候再进行一次封装
