@@ -14,25 +14,13 @@ class Async_LuaThead : public zce::Async_Object
 {
     friend class Async_LuaTheadMgr;
 
-    //
-    enum class COROUTINE_STATE
-    {
-        //
-        INVALID = 0x0,
-        //携程传递给管理器的状态值，
-        CONTINUE = 0x10001,
-        EXIT = 0x10002,
-
-        //超时后，管理器通知携程的状态值
-        TIMEOUT = 0x20002,
-    };
-
 public:
     /*!
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_LuaThead(zce::Async_Obj_Mgr* async_mgr, unsigned int reg_cmd);
+    Async_LuaThead(zce::Async_Obj_Mgr* async_mgr,
+                   uint32_t reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -76,8 +64,6 @@ protected:
     ///Lua协程对象
     zce::Lua_Thread lua_thread_;
 
-    ///协程的状态
-    COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
 };
 
 //====================================================================================

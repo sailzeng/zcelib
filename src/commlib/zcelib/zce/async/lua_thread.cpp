@@ -8,7 +8,7 @@ namespace zce
 //========================================================================================
 
 Async_LuaThead::Async_LuaThead(zce::Async_Obj_Mgr* async_mgr,
-                               unsigned int reg_cmd) :
+                               uint32_t reg_cmd) :
     zce::Async_Object(async_mgr, reg_cmd)
 {
 }
@@ -41,14 +41,13 @@ void Async_LuaThead::terminate()
 void Async_LuaThead::on_run(bool& running)
 {
     running = false;
-    mgr_lua_tie_->resume_thread(&lua_thread_, 0);
-
+    int state = mgr_lua_tie_->resume_thread(&lua_thread_, 0);
     //根据调用返回的函数记录的状态值得到当前的状态
-    if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
+    if (state == LUA_YIELD)
     {
         running = true;
     }
-    else if (coroutine_state_ == COROUTINE_STATE::EXIT)
+    else if (state == LUA_OK)
     {
         running = false;
     }
@@ -63,15 +62,15 @@ void Async_LuaThead::on_timeout(const zce::Time_Value& /*now_time*/,
                                 bool& running)
 {
     running = false;
-    coroutine_state_ = COROUTINE_STATE::TIMEOUT;
-    mgr_lua_tie_->resume_thread(&lua_thread_, 0);
+    //int state = COROUTINE_STATE::TIMEOUT;
+    int state = mgr_lua_tie_->resume_thread(&lua_thread_, 0);
 
     //根据调用返回的函数记录的状态值得到当前的状态
-    if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
+    if (state == LUA_YIELD)
     {
         running = true;
     }
-    else if (coroutine_state_ == COROUTINE_STATE::EXIT)
+    else if (state == LUA_OK)
     {
         running = false;
     }

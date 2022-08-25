@@ -8,7 +8,7 @@ namespace zce
 //========================================================================================
 
 Async_Coroutine::Async_Coroutine(zce::Async_Obj_Mgr* async_mgr,
-                                 unsigned int reg_cmd) :
+                                 uint32_t reg_cmd) :
     zce::Async_Object(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
@@ -45,7 +45,7 @@ void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
 {
     continued = false;
     coroutine_state_ = COROUTINE_STATE::TIMEOUT;
-    resume_coroutine();
+    //resume_coroutine();
 
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
@@ -59,22 +59,6 @@ void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
     else
     {
         ZCE_ASSERT_ALL(false);
-    }
-}
-
-
-
-//切换回协程，也就是切换到他自己运行
-void Async_Coroutine::resume_coroutine()
-{
-}
-
-//协程对象的运行函数
-void Async_Coroutine::coroutine_do()
-{
-    //如果需要协程
-    for (;;)
-    {
     }
 }
 

@@ -3,15 +3,6 @@
 
 #include "soar/svrd/app_bus.h"
 
-#define REGISTER_TRANSACTION_CMD(trans_class, cmd_word ) \
-    { \
-        int __ret_register_ = Transaction_Manager::instance()->register_trans_cmd(cmd_word, \
-                                                                                  new trans_class(ZCE_Timer_Queue::instance(),Transaction_Manager::instance())); \
-        if (__ret_register_ !=  0) \
-        { \
-            return __ret_register_; \
-        } \
-    }
 
 /*!
 * @brief      状态机的APP

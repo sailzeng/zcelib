@@ -161,8 +161,6 @@ int FSM_Manager::process_pipe_frame(size_t& proc_frame,
             ++create_num;
         }
     }
-
-    //
     return 0;
 }
 
@@ -266,9 +264,9 @@ int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame* post_frame)
     return 0;
 }
 
-int FSM_Manager::get_process_frame(soar::Zerg_Frame* &zerg_frame)
+int FSM_Manager::get_process_frame(const soar::Zerg_Frame*& zerg_frame)
 {
-    process_frame_ = zerg_frame;
+    zerg_frame = process_frame_;
     return 0;
 }
 

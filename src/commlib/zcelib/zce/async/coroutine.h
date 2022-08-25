@@ -33,7 +33,7 @@ public:
     * @param      async_mgr ,协程异步管理器的指针
     */
     Async_Coroutine(zce::Async_Obj_Mgr* async_mgr,
-                    unsigned int reg_cmd);
+                    uint32_t reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -58,12 +58,6 @@ protected:
 
     //!协程运行,你要重载的函数
     virtual void coroutine_run() = 0;
-
-    //!协程对象的运行函数
-    void coroutine_do();
-
-    //!切换回协程，也就是切换到他自己运行
-    void resume_coroutine();
 
     /*!
     * @brief      等待time_out 时间后超时，设置定时器后，切换协程到main

@@ -67,7 +67,7 @@ public:
     * @param      recv_frame
     * @param      continue_run
     */
-    virtual void trans_run(soar::Zerg_Frame* recv_frame,
+    virtual void trans_run(const soar::Zerg_Frame* recv_frame,
                            bool& continue_run) = 0;
 
     /*!
@@ -95,7 +95,7 @@ protected:
     * @brief      根据Frame初始化得到对方发送的信息
     * @param      recv_frame 初始化接收的FRAME数据,
     */
-    void create_init(soar::Zerg_Frame* recv_frame);
+    void create_init(const soar::Zerg_Frame* recv_frame);
 
     //lock其实不是真正的锁，目的是保证在同一时刻，只处理一个用户的一个请求。
     //对当前用户的，当前事务命令字进行加锁
@@ -219,7 +219,7 @@ public:
 protected:
 
     //!事件管理器
-    FSM_Manager*            trans_manager_ = nullptr;
+    FSM_Manager* trans_manager_ = nullptr;
 
     //!是否加事务锁
     bool                    trans_locker_ = false;
@@ -228,7 +228,7 @@ protected:
     bool                    trans_create_ = true;
 
     //!
-    soar::Zerg_Frame       *recv_frame_ = nullptr;
+    soar::Zerg_Frame* recv_frame_ = nullptr;
     //!
 
     //! 请求的状态机的头部

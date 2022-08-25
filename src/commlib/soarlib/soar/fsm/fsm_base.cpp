@@ -40,7 +40,7 @@ void FSM_Base::on_init()
 }
 
 //根据Frame初始化得到对方发送的信息
-void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
+void FSM_Base::create_init(const soar::Zerg_Frame* proc_frame)
 {
     proc_frame->get_head(req_zerg_head_);
 
@@ -57,7 +57,7 @@ void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
 
 void FSM_Base::on_run(bool& continued)
 {
-    soar::Zerg_Frame* recv_frame = nullptr;
+    const soar::Zerg_Frame* recv_frame = nullptr;
     trans_manager_->get_process_frame(recv_frame);
     //如果是第一次创建事物的时候，
     if (trans_create_)

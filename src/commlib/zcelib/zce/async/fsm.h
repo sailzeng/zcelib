@@ -36,7 +36,8 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_FSM(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd);
+    Async_FSM(zce::Async_Obj_Mgr* async_mgr,
+              uint32_t create_cmd);
 protected:
     /*!
     * @brief      析构函数

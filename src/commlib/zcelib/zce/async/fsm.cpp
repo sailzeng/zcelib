@@ -7,7 +7,7 @@ namespace zce
 {
 //=====================================================================================
 //状态机的异步对象
-Async_FSM::Async_FSM(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+Async_FSM::Async_FSM(zce::Async_Obj_Mgr* async_mgr, uint32_t create_cmd) :
     Async_Object(async_mgr, create_cmd),
     fsm_stage_(0)
 {
