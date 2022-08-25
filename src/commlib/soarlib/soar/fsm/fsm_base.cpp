@@ -172,7 +172,8 @@ int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
     //
     if (wait_cmd != CMD_INVALID_CMD && recv_frame->command_ != wait_cmd)
     {
-        ZCE_LOG(RS_ERROR, "[framework] %s:check_receive_frame error,FSM id [%u] Wait command[%u],"
+        ZCE_LOG(RS_ERROR,
+                "[framework] %s:check_receive_frame error,FSM id [%u] Wait command[%u],"
                 "Recieve command[%u] transaction ID:[%u].",
                 typeid(*this).name(),
                 asyncobj_id_,
@@ -183,7 +184,6 @@ int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
         return SOAR_RET::ERROR_TRANSACTION_NEED_CMD_ERROR;
     }
 
-    //
     return 0;
 }
 
