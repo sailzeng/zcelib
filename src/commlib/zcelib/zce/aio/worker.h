@@ -26,8 +26,9 @@ public:
     AIO_FS* alloc_aio_fs();
     AIO_MySQL* alloc_aio_mysql();
 
-    int request(AIO_base* base);
+    bool request(AIO_base* base);
 
+    bool response(AIO_base* &base);
 
 protected:
     //!
@@ -35,8 +36,8 @@ protected:
     //!
     std::thread* work_thread_ = nullptr;
     //!
-    zce::msgring_condi<zce::aio::AIO_base>* requst_queue_ = nullptr;
-    zce::msgring_condi<zce::aio::AIO_base>* response_queue_ = nullptr;
+    zce::msgring_condi<zce::aio::AIO_base *>* requst_queue_ = nullptr;
+    zce::msgring_condi<zce::aio::AIO_base *>* response_queue_ = nullptr;
     //!
     zce::multiobjs_pool<std::mutex,
         zce::aio::AIO_FS,

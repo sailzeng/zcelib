@@ -19,4 +19,23 @@ int Worker::initialize(size_t work_thread_num,
     return 0;
 }
 
+
+AIO_FS* Worker::alloc_aio_fs()
+{
+    return aio_obj_pool_.alloc_object <AIO_FS>();
+}
+AIO_MySQL* Worker::alloc_aio_mysql()
+{
+    return aio_obj_pool_.alloc_object <AIO_MySQL>();
+}
+
+bool Worker::request(AIO_base * base)
+{
+    return requst_queue_->try_enqueue(base);
+}
+
+bool Worker::response(AIO_base* &base)
+{
+}
+
 }
