@@ -11,8 +11,8 @@ int Worker::initialize(size_t work_thread_num,
 {
     work_thread_num_ = work_thread_num;
     work_thread_ = new std::thread[work_thread_num_];
-    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_base>(work_queue_len);
-    response_queue_ = new zce::msgring_condi<zce::aio::AIO_base>(work_queue_len);
+    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_base*>(work_queue_len);
+    response_queue_ = new zce::msgring_condi<zce::aio::AIO_base*>(work_queue_len);
     aio_obj_pool_.initialize<AIO_FS>(16, 16);
     aio_obj_pool_.initialize<AIO_MySQL>(16, 16);
 
@@ -34,8 +34,17 @@ bool Worker::request(AIO_base * base)
     return requst_queue_->try_enqueue(base);
 }
 
-bool Worker::response(AIO_base* &base)
+//!´¦ÀíÓ¦´ð
+void Worker::process_response(size_t &num_process)
 {
+    num_process = 0;
+    do
+    {
+        AIO_base* base = nullptr;
+        auto has = response_queue_->try_dequeue(base);
+        base->aio_type_
+    } while (has);
+
 }
 
 }

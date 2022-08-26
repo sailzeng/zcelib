@@ -28,12 +28,18 @@ public:
 
     bool request(AIO_base* base);
 
-    bool response(AIO_base* &base);
+    //!
+    void process_response(size_t& num_process);
 
 protected:
     //!
+    uint32_t caller_id_builder_ = 1;
+
+    std::unordered_map<uint32_t, > process_;
+
+    //! 工作线程
     size_t work_thread_num_ = 0;
-    //!
+    //! 
     std::thread* work_thread_ = nullptr;
     //!
     zce::msgring_condi<zce::aio::AIO_base *>* requst_queue_ = nullptr;

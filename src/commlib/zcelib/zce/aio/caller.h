@@ -29,6 +29,12 @@ struct AIO_base
 {
     //!
     AIO_TYPE  aio_type_;
+
+    //!
+    uint32_t id_;
+
+    //!
+    
 };
 
 //! FS文件
@@ -114,8 +120,7 @@ protected:
     //!
 
 protected:
-    //!
-    int id_;
+    
     //!
     zce::aio::Worker* worker_ = nullptr;
 
