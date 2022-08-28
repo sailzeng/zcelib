@@ -7,10 +7,13 @@
 //!
 namespace zce::aio
 {
+
 class Worker;
+
 //!
-enum class AIO_TYPE
+enum AIO_TYPE
 {
+    FS_BEGIN = 1,
     FS_OPEN,
     FS_CLOSE,
     FS_LSEEK,
@@ -23,22 +26,26 @@ enum class AIO_TYPE
     FS_MKDIR,
     FS_RENAME,
     FS_SCANDIR,
+    FS_END = 99,
+    MYSQL_BEGIN = 100,
+
+    MYSQL_END = 199,
+
 };
 
-struct AIO_base
+struct AIO_Handle
 {
+    //!
+    uint32_t id_;
     //!
     AIO_TYPE  aio_type_;
 
     //!
-    uint32_t id_;
-
-    //!
-    
+    std::function<void(AIO_Handle*)> call_back_;
 };
 
 //! FS文件
-struct AIO_FS :public AIO_base
+struct FS_Handle :public AIO_Handle
 {
 public:
     //!
@@ -66,64 +73,70 @@ public:
 
 };
 
-class AIO_MySQL :public AIO_base
+class MySQL_Handle :public AIO_Handle
 {
 
 };
 
-
-
-class Caller
+namespace caller
 {
-public:
-    //!
-    Caller(zce::aio::Worker*);
-    ~Caller() = default;
 
-    //!打开某个文件
-    int fs_open(const char* path,
-                int flags,
-                int mode);
+//!打开某个文件
+int fs_open(zce::aio::Worker* worker,
+            const char* path,
+            int flags,
+            int mode,
+            std::function<void(AIO_Handle*)> call_back);
 
-    //!关闭某个文件
-    int fs_close(ZCE_HANDLE handle);
+//!关闭某个文件
+int fs_close(zce::aio::Worker* worker,
+             ZCE_HANDLE handle,
+             std::function<void(AIO_Handle*)> call_back);
 
-    //
-    int fs_lseek(ZCE_HANDLE handle,
-                 off_t offset,
-                 int whence);
+//
+int fs_lseek(zce::aio::Worker* worker,
+             ZCE_HANDLE handle,
+             off_t offset,
+             int whence,
+             std::function<void(AIO_Handle*)> call_back);
 
-    //!
-    int fs_read(ZCE_HANDLE handle,
-                const char* read_bufs_,
-                size_t nbufs,
-                ssize_t offset = 0,
-                int whence = SEEK_CUR);
+//!
+int fs_read(zce::aio::Worker* worker,
+            ZCE_HANDLE handle,
+            const char* read_bufs_,
+            size_t nbufs,
+            ssize_t offset,
+            int whence,
+            std::function<void(AIO_Handle*)> call_back);
 
-    //!
-    int fs_write(ZCE_HANDLE handle,
-                 const char* write_bufs_,
-                 size_t nbufs,
-                 ssize_t offset = 0,
-                 int whence = SEEK_CUR);
+//!
+int fs_write(zce::aio::Worker* worker,
+             ZCE_HANDLE handle,
+             const char* write_bufs_,
+             size_t nbufs,
+             ssize_t offset,
+             int whence,
+             std::function<void(AIO_Handle*)> call_back);
 
-    //!
-    int fs_unlink(const char* path);
+//!
+int fs_unlink(zce::aio::Worker* worker,
+              const char* path,
+              std::function<void(AIO_Handle*)> call_back);
 
-    //!
-    int fs_rename(const char* path,
-                  const char* new_path);
-    //!
-    int fs_ftruncate(ZCE_HANDLE handle,
-                     size_t offset);
-protected:
-    //!
+//!
+int fs_rename(zce::aio::Worker* worker,
+              const char* path,
+              const char* new_path,
+              std::function<void(AIO_Handle*)> call_back);
+//!
+int fs_ftruncate(zce::aio::Worker* worker,
+                 ZCE_HANDLE handle,
+                 size_t offset,
+                 std::function<void(AIO_Handle*)> call_back);
+}
 
-protected:
-    
-    //!
-    zce::aio::Worker* worker_ = nullptr;
 
-};
+
+
 
 }

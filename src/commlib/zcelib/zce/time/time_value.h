@@ -146,13 +146,13 @@ public:
     void set(const std::chrono::system_clock::time_point& val);
     void set(const std::chrono::steady_clock::time_point& val);
 
-    void to(std::chrono::seconds& val);
-    void to(std::chrono::milliseconds& val);
-    void to(std::chrono::microseconds& val);
-    void to(std::chrono::nanoseconds& val);
+    void to(std::chrono::seconds& val) const;
+    void to(std::chrono::milliseconds& val) const;
+    void to(std::chrono::microseconds& val) const;
+    void to(std::chrono::nanoseconds& val) const;
 
-    void to(std::chrono::system_clock::time_point& val);
-    void to(std::chrono::steady_clock::time_point& val);
+    void to(std::chrono::system_clock::time_point& val) const;
+    void to(std::chrono::steady_clock::time_point& val) const;
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -191,6 +191,12 @@ public:
     * @param      set_usec 设置的，timeval的微秒部分的数值，注意他和total_usec的区别。
     */
     void usec(time_t set_usec);
+
+    /*!
+    * @brief      得到总共多少秒
+    * @return     uint64_t 返回秒总数
+    */
+    uint64_t total_sec() const;
 
     /*!
     * @brief      得到总共多少毫秒

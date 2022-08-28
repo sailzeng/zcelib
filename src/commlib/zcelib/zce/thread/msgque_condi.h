@@ -405,9 +405,11 @@ public:
     bool dequeue_wait(T& value_data,
                       const zce::Time_Value& wait_time)
     {
+        std::chrono::microseconds wait_mircosec;
+        wait_time.to(wait_mircosec);
         return dequeue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
-                                wait_time);
+                                wait_mircosec);
     }
     //尝试取出，立即返回
     bool try_dequeue(T& value_data)

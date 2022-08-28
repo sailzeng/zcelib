@@ -221,7 +221,6 @@
   <ItemGroup>
     <ClCompile Include="zce\aio\caller.cpp" />
     <ClCompile Include="zce\aio\worker.cpp" />
-    <ClCompile Include="zce\aio\aio_task.cpp" />
     <ClCompile Include="zce\async\async_base.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
@@ -340,7 +339,6 @@
   <ItemGroup>
     <ClInclude Include="zce\aio\caller.h" />
     <ClInclude Include="zce\aio\worker.h" />
-    <ClInclude Include="zce\aio\aio_task.h" />
     <ClInclude Include="zce\async\async_base.h" />
     <ClInclude Include="zce\async\coroutine.h" />
     <ClInclude Include="zce\async\fsm.h" />

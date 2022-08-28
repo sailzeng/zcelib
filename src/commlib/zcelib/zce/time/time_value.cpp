@@ -171,6 +171,24 @@ void Time_Value::set(const std::chrono::steady_clock::time_point& val)
     zce_time_value_ = zce::make_timeval(val);
 }
 
+void Time_Value::to(std::chrono::seconds& val) const
+{
+    val = std::chrono::seconds(this->total_sec());
+}
+void Time_Value::to(std::chrono::milliseconds& val) const
+{
+    val = std::chrono::milliseconds(this->total_msec());
+}
+void Time_Value::to(std::chrono::microseconds& val) const
+{
+    val = std::chrono::milliseconds(this->total_usec());
+}
+void Time_Value::to(std::chrono::nanoseconds& val) const
+{
+    val = std::chrono::milliseconds(this->total_usec() * 1000);
+}
+
+
 #ifdef ZCE_OS_WINDOWS
 //设置Time_Value, 用FILETIME
 void Time_Value::set(LPFILETIME file_time)
@@ -191,6 +209,11 @@ void Time_Value::set_by_clock_t(clock_t time)
     zce_time_value_ = zce::make_timeval(time);
 }
 
+uint64_t Time_Value::total_sec() const
+{
+    return static_cast<uint64_t>(this->zce_time_value_.tv_sec) +
+        this->zce_time_value_.tv_usec / zce::SEC_PER_USEC;
+}
 //得到总共多少毫秒
 uint64_t Time_Value::total_msec() const
 {

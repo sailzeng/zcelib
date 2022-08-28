@@ -5,32 +5,31 @@
 namespace zce::aio
 {
 
-////!打开某个文件
-//int caller::fs_open(const char* path,
-//                    int flags,
-//                    int mode)
-//{
-//
-//}
-//
-////!关闭某个文件
-//int caller::fs_close(ZCE_HANDLE handle)
-//{
-//
-//}
-//
-////
-int Caller::fs_lseek(ZCE_HANDLE handle,
-                     off_t offset,
-                     int whence)
+namespace caller
 {
-    AIO_FS afs;
-    afs.aio_type_ = AIO_TYPE::FS_LSEEK;
-    afs.handle_ = handle;
-    afs.offset_ = offset;
-    afs.whence_ = whence;
-    return worker_->fs_work(this, afs);
+//!
+int fs_lseek(zce::aio::Worker* worker,
+             ZCE_HANDLE handle,
+             off_t offset,
+             int whence,
+             std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_LSEEK);
+
+    hdl->aio_type_ = AIO_TYPE::FS_LSEEK;
+    hdl->handle_ = handle;
+    hdl->offset_ = offset;
+    hdl->whence_ = whence;
+    hdl->call_back_ = call_back;
+    auto succ = worker->request(hdl);
+    if (!succ)
+    {
+        return -1;
+    }
+    return 0;
 }
 
+}
 }
 
