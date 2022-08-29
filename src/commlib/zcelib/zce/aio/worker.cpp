@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/os_adapt/file.h"
 #include "zce/aio/worker.h"
 
 namespace zce::aio
@@ -57,6 +58,7 @@ AIO_Handle* Worker::alloc_handle(AIO_TYPE aio_type)
     {
         return nullptr;
     }
+    handle->aio_type_ = aio_type;
     handle->id_ = caller_id_builder_++;
     return handle;
 }
@@ -137,13 +139,47 @@ void Worker::process_aio(zce::aio::AIO_Handle* base)
     {
     }
 }
-//!
-void Worker::process_fs(zce::aio::FS_Handle* /*base*/)
+//!在线程种处理文件
+void Worker::process_fs(zce::aio::FS_Handle* hdl)
 {
-
+    switch (hdl->aio_type_)
+    {
+    case FS_OPEN:
+        hdl->result_ = zce::open2(hdl->handle_,
+                                  hdl->path_,
+                                  hdl->mode_,
+                                  hdl->flags_);
+        break;
+    case FS_CLOSE:
+        hdl->result_ = zce::close(hdl->handle_);
+        break;
+    case FS_LSEEK:
+        off_t off;
+        hdl->result_ = zce::lseek(hdl->handle_,
+                                  (off_t)hdl->offset_,
+                                  hdl->whence_,
+                                  off);
+        break;
+    case FS_READ:
+        hdl->result_ = zce::read(hdl->handle_,
+                                 hdl->read_bufs_,
+                                 hdl->bufs_count_,
+                                 hdl->result_count_,
+                                 (off_t)hdl->offset_,
+                                 hdl->whence_);
+    case FS_WRITE:
+        hdl->result_ = zce::write(hdl->handle_,
+                                  hdl->write_bufs_,
+                                  hdl->bufs_count_,
+                                  hdl->result_count_,
+                                  (off_t)hdl->offset_,
+                                  hdl->whence_);
+    default:
+        break;
+    }
 }
 //!
-void Worker::process_mysql(zce::aio::MySQL_Handle* /*base*/)
+void Worker::process_mysql(zce::aio::MySQL_Handle* hdl)
 {
 
 }

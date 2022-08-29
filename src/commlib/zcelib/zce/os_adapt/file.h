@@ -35,13 +35,19 @@ namespace zce
 * @brief      打开一个文件
 * @return     ZCE_HANDLE 打开文件的句柄
 * @param      filename   文件名称
-* @param      open_mode  打开文件的模式，两个平台通用的参数O_CREAT，O_APPEND，O_EXCL，O_TRUNC，O_RDONLY, O_WRONLY, and O_RDWR大致这几个
-* @param      perms      文件的共享模式，WINDOWS下我会根据你的输入进行转换（其实差别不小），你可以使用LINUX下的共享方式参数
+* @param      flags  打开文件的模式，两个平台通用的参数O_CREAT，O_APPEND，O_EXCL，O_TRUNC，O_RDONLY, O_WRONLY, and O_RDWR大致这几个
+* @param      mode   文件的共享模式，WINDOWS下我会根据你的输入进行转换（其实差别不小），你可以使用LINUX下的共享方式参数
 * @note       ZCE_DEFAULT_FILE_PERMS 应该是0660
 */
 ZCE_HANDLE open(const char* filename,
-                int open_mode,
-                mode_t perms = ZCE_DEFAULT_FILE_PERMS);
+                int flags,
+                mode_t mode = ZCE_DEFAULT_FILE_PERMS);
+
+//打开一个文件，handle通过参数返回
+int open2(ZCE_HANDLE &handle,
+          const char* filename,
+          int flags,
+          mode_t mode = ZCE_DEFAULT_FILE_PERMS);
 
 /*!
 * @brief      关闭一个文件
@@ -61,15 +67,6 @@ ssize_t read(ZCE_HANDLE file_handle,
              void* buf,
              size_t count) noexcept;
 
-//! @brief      读取文件，从起始文件的偏移量的文职开始读取
-//! @param      offset 偏移量，
-//! @param      whence 偏移的其实地址
-ssize_t read(ZCE_HANDLE file_handle,
-             void* buf,
-             size_t count,
-             off_t offset,
-             int whence = SEEK_CUR) noexcept;
-
 /*!
 * @brief      写如文件，
 * @return     ssize_t 错误返回-1，，正确返回读取的字节长度（也可能为0），errno 表示错误原因
@@ -82,14 +79,6 @@ ssize_t write(ZCE_HANDLE file_handle,
               const void* buf,
               size_t count) noexcept;
 
-//! @brief      写入文件，从起始文件的偏移量的文职开始写入
-//! @param      offset 偏移量，从起始文件的偏移量
-ssize_t write(ZCE_HANDLE file_handle,
-              const void* buf,
-              size_t count,
-              off_t offset,
-              int whence = SEEK_CUR) noexcept;
-
 /*!
 * @brief      在文件内进行偏移
 * @return     off_t 返回从起始位置到偏移位置的长度，返回-1表示错误
@@ -100,6 +89,32 @@ ssize_t write(ZCE_HANDLE file_handle,
 off_t lseek(ZCE_HANDLE file_handle,
             off_t offset,
             int whence) noexcept;
+
+//! @brief      读取文件，从起始文件的偏移量的文职开始读取
+//! @param      offset 偏移量，
+//! @param      whence 偏移的其实地址
+//! @param      read_count 读取数量
+int read(ZCE_HANDLE file_handle,
+         void* buf,
+         size_t buf_count,
+         size_t &read_count,
+         off_t offset,
+         int whence = SEEK_CUR) noexcept;
+
+//! @brief      写入文件，从起始文件的偏移量的文职开始写入
+//! @param      write_count 结果写入的数据
+int write(ZCE_HANDLE file_handle,
+          const void* buf,
+          size_t buf_count,
+          size_t &write_count,
+          off_t offset,
+          int whence = SEEK_CUR) noexcept;
+
+//!
+int lseek(ZCE_HANDLE file_handle,
+          off_t offset,
+          int whence,
+          off_t &result_off) noexcept;
 
 /*!
 * @brief      断文件，倒霉的是WINDOWS下又TMD 没有，

@@ -13,6 +13,8 @@ class Worker;
 //!
 enum AIO_TYPE
 {
+    AIO_INVALID = 0,
+
     FS_BEGIN = 1,
     FS_OPEN,
     FS_CLOSE,
@@ -27,31 +29,36 @@ enum AIO_TYPE
     FS_RENAME,
     FS_SCANDIR,
     FS_END = 99,
-    MYSQL_BEGIN = 100,
 
+    MYSQL_BEGIN = 100,
     MYSQL_END = 199,
 
 };
 
 struct AIO_Handle
 {
+
+    virtual void clear() = 0;
+
+    //!
+    AIO_TYPE  aio_type_;
     //!
     uint32_t id_;
     //!
-    AIO_TYPE  aio_type_;
-
-    //!
     std::function<void(AIO_Handle*)> call_back_;
+
 };
 
 //! FS文件
 struct FS_Handle :public AIO_Handle
 {
+    //!
+    virtual void clear();
 public:
     //!
     int result_ = 0;
     //
-    char* path_ = nullptr;
+    const char* path_ = nullptr;
     //!
     int flags_ = 0;
     //!
@@ -64,59 +71,59 @@ public:
     //!
     char* read_bufs_ = nullptr;
     const char* write_bufs_ = nullptr;
-    size_t nbufs_ = 0;
+    size_t bufs_count_ = 0;
+    size_t result_count_ = 0;
     //!
-    struct stat* file_stat_;
-    //!
-
-    //!
-
+    struct stat* file_stat_ = nullptr;
 };
 
 class MySQL_Handle :public AIO_Handle
 {
-
+    //!
+    virtual void clear() override;
 };
+
+//====================================================
 
 namespace caller
 {
 
-//!打开某个文件
+//!异步打开某个文件，完成后回调函数call_back
 int fs_open(zce::aio::Worker* worker,
             const char* path,
             int flags,
             int mode,
             std::function<void(AIO_Handle*)> call_back);
 
-//!关闭某个文件
+//!异步关闭某个文件，完成后回调函数call_back
 int fs_close(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
              std::function<void(AIO_Handle*)> call_back);
 
-//
+//!移动文件的读写位置,
 int fs_lseek(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
              off_t offset,
              int whence,
              std::function<void(AIO_Handle*)> call_back);
 
-//!
+//!异步读取文件内容
 int fs_read(zce::aio::Worker* worker,
             ZCE_HANDLE handle,
-            const char* read_bufs_,
+            char* read_bufs,
             size_t nbufs,
-            ssize_t offset,
-            int whence,
-            std::function<void(AIO_Handle*)> call_back);
+            std::function<void(AIO_Handle*)> call_back,
+            ssize_t offset = 0,
+            int whence = SEEK_CUR);
 
-//!
+//!异步写入文件内容
 int fs_write(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
-             const char* write_bufs_,
+             const char* write_bufs,
              size_t nbufs,
-             ssize_t offset,
-             int whence,
-             std::function<void(AIO_Handle*)> call_back);
+             std::function<void(AIO_Handle*)> call_back,
+             ssize_t offset = 0,
+             int whence = SEEK_CUR);
 
 //!
 int fs_unlink(zce::aio::Worker* worker,

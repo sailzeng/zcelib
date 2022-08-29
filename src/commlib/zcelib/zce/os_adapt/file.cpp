@@ -35,28 +35,7 @@ ssize_t zce::read(ZCE_HANDLE file_handle,
 #endif
 }
 
-// 读取文件，从起始文件的偏移量的文职开始读取
-ssize_t zce::read(ZCE_HANDLE file_handle,
-                  void* buf,
-                  size_t count,
-                  off_t offset,
-                  int whence) noexcept
-{
-    if (whence == SEEK_CUR && offset == 0)
-    {
-    }
-    else
-    {
-        off_t off = zce::lseek(file_handle, offset, whence);
-        if (off == -1)
-        {
-            return -1;
-        }
-    }
-    return read(file_handle,
-                buf,
-                count);
-}
+
 
 //写文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
 //Windows下尽量向POSIX 靠拢了
@@ -92,95 +71,10 @@ ssize_t zce::write(ZCE_HANDLE file_handle,
 #endif
 }
 
-//写文件,
-ssize_t zce::write(ZCE_HANDLE file_handle,
-                   const void* buf,
-                   size_t count,
-                   off_t offset,
-                   int whence) noexcept
-{
-    if (whence == SEEK_CUR && offset == 0)
-    {
-    }
-    else
-    {
-        ssize_t off = lseek(file_handle, offset, whence);
-        if (off == -1)
-        {
-            return -1;
-        }
-    }
-    return write(file_handle,
-                 buf,
-                 count);
-}
-
-//截断文件
-int zce::truncate(const char* filename, size_t offset)
-{
-#if defined (ZCE_OS_WINDOWS)
-
-    int ret = 0;
-    //打开文件，并且截断，最后关闭
-    ZCE_HANDLE file_handle = zce::open(filename, (O_CREAT | O_RDWR));
-    if (ZCE_INVALID_HANDLE == file_handle)
-    {
-        return -1;
-    }
-
-    ret = zce::ftruncate(file_handle, offset);
-
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    zce::close(file_handle);
-    return 0;
-#endif
-
-#if defined (ZCE_OS_LINUX)
-    return ::truncate(filename, static_cast<off_t>(offset));
-#endif
-}
-
-//截断文件，倒霉的是WINDOWS下又TMD 没有，用BOOST的又非要遵守他的参数规范，我蛋疼
-//其实可以变长，呵呵。
-//注意这儿的fd是WIN32 API OpenFile得到的函数，不是你用ISO函数打开的那个fd，
-int zce::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
-{
-    //Windows2000以前没有 SetFilePointerEx，我不是ACE，我不支持那么多屁事
-#if defined (ZCE_OS_WINDOWS)
-
-    LARGE_INTEGER loff;
-    loff.QuadPart = offset;
-    BOOL bret = ::SetFilePointerEx(file_handle,
-                                   loff,
-                                   0,
-                                   FILE_BEGIN);
-
-    if (bret == FALSE)
-    {
-        return  -1;
-    }
-
-    //linux ftruncate，后，吧指针放到了末尾
-    bret = ::SetEndOfFile(file_handle);
-
-    if (bret == FALSE)
-    {
-        return -1;
-    }
-
-    return 0;
-    //
-#elif defined (ZCE_OS_LINUX)
-    return ::ftruncate(file_handle, static_cast<off_t>(offset));
-#endif
-}
-
 //在文件内进行偏移
-off_t zce::lseek(ZCE_HANDLE file_handle, off_t offset, int whence) noexcept
+off_t zce::lseek(ZCE_HANDLE file_handle,
+                 off_t offset,
+                 int whence) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -227,6 +121,115 @@ off_t zce::lseek(ZCE_HANDLE file_handle, off_t offset, int whence) noexcept
                    whence);
 #endif
 }
+
+// 读取文件，从起始文件的偏移量的文职开始读取
+int zce::read(ZCE_HANDLE file_handle,
+              void* buf,
+              size_t buf_count,
+              size_t &read_count,
+              off_t offset,
+              int whence) noexcept
+{
+    if (whence != SEEK_CUR || offset != 0)
+    {
+        off_t off = zce::lseek(file_handle, offset, whence);
+        if (off == -1)
+        {
+            return -1;
+        }
+    }
+    read_count = 0;
+    auto result = read(file_handle,
+                       buf,
+                       buf_count);
+    if (result < 0)
+    {
+        return -1;
+    }
+    read_count = buf_count;
+    return 0;
+}
+
+//写文件,
+int zce::write(ZCE_HANDLE file_handle,
+               const void* buf,
+               size_t buf_count,
+               size_t &write_count,
+               off_t offset,
+               int whence) noexcept
+{
+    if (whence != SEEK_CUR || offset != 0)
+    {
+        off_t off = zce::lseek(file_handle, offset, whence);
+        if (off == -1)
+        {
+            return -1;
+        }
+    }
+    write_count = 0;
+    auto result = zce::write(file_handle,
+                             buf,
+                             buf_count);
+    if (result < 0)
+    {
+        return -1;
+    }
+    write_count = buf_count;
+    return 0;
+}
+
+//在文件内进行偏移
+int zce::lseek(ZCE_HANDLE file_handle,
+               off_t offset,
+               int whence,
+               off_t &result_off) noexcept
+{
+    result_off = 0;
+    off_t off = zce::lseek(file_handle, offset, whence);
+    if (off == -1)
+    {
+        return -1;
+    }
+    result_off = off;
+    return 0;
+}
+
+//截断文件，倒霉的是WINDOWS下又TMD 没有，用BOOST的又非要遵守他的参数规范，我蛋疼
+//其实可以变长，呵呵。
+//注意这儿的fd是WIN32 API OpenFile得到的函数，不是你用ISO函数打开的那个fd，
+int zce::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
+{
+    //Windows2000以前没有 SetFilePointerEx，我不是ACE，我不支持那么多屁事
+#if defined (ZCE_OS_WINDOWS)
+
+    LARGE_INTEGER loff;
+    loff.QuadPart = offset;
+    BOOL bret = ::SetFilePointerEx(file_handle,
+                                   loff,
+                                   0,
+                                   FILE_BEGIN);
+
+    if (bret == FALSE)
+    {
+        return  -1;
+    }
+
+    //linux ftruncate，后，吧指针放到了末尾
+    bret = ::SetEndOfFile(file_handle);
+
+    if (bret == FALSE)
+    {
+        return -1;
+    }
+
+    return 0;
+    //
+#elif defined (ZCE_OS_LINUX)
+    return ::ftruncate(file_handle, static_cast<off_t>(offset));
+#endif
+}
+
+
 
 //根据文件名称，判断文件的尺寸,如果文件不存在，打不开等，返回-1
 int zce::filelen(const char* filename, size_t* file_size)
@@ -283,8 +286,8 @@ int zce::filesize(ZCE_HANDLE file_handle, size_t* file_size)
 //为什么要提供这个API呢，因为WINDOWS平台大部分都是采用HANDLE处理的
 
 ZCE_HANDLE zce::open(const char* filename,
-                     int open_mode,
-                     mode_t perms)
+                     int flags,
+                     mode_t mode)
 {
     //Windows平台
 #if defined (ZCE_OS_WINDOWS)
@@ -293,47 +296,47 @@ ZCE_HANDLE zce::open(const char* filename,
 
     DWORD access = GENERIC_READ;
 
-    if (ZCE_BIT_IS_SET(open_mode, O_WRONLY))
+    if (ZCE_BIT_IS_SET(flags, O_WRONLY))
     {
         //如果仅仅只能写
         access = GENERIC_WRITE;
     }
-    else if (ZCE_BIT_IS_SET(open_mode, O_RDWR))
+    else if (ZCE_BIT_IS_SET(flags, O_RDWR))
     {
         access = GENERIC_READ | GENERIC_WRITE;
     }
 
     DWORD  creation = OPEN_EXISTING;
 
-    if (ZCE_BIT_IS_SET(open_mode, O_CREAT) && ZCE_BIT_IS_SET(open_mode, O_EXCL))
+    if (ZCE_BIT_IS_SET(flags, O_CREAT) && ZCE_BIT_IS_SET(flags, O_EXCL))
     {
         creation = CREATE_NEW;
     }
-    else if (ZCE_BIT_IS_SET(open_mode, O_CREAT) && ZCE_BIT_IS_SET(open_mode, O_TRUNC))
+    else if (ZCE_BIT_IS_SET(flags, O_CREAT) && ZCE_BIT_IS_SET(flags, O_TRUNC))
     {
         creation = CREATE_ALWAYS;
     }
-    else if (ZCE_BIT_IS_SET(open_mode, O_CREAT))
+    else if (ZCE_BIT_IS_SET(flags, O_CREAT))
     {
         creation = OPEN_ALWAYS;
     }
-    else if (ZCE_BIT_IS_SET(open_mode, O_TRUNC))
+    else if (ZCE_BIT_IS_SET(flags, O_TRUNC))
     {
         creation = TRUNCATE_EXISTING;
     }
 
     DWORD shared_mode = 0;
 
-    if (ZCE_BIT_IS_SET(perms, S_IRGRP)
-        || ZCE_BIT_IS_SET(perms, S_IROTH)
-        || ZCE_BIT_IS_SET(perms, S_IWUSR))
+    if (ZCE_BIT_IS_SET(mode, S_IRGRP)
+        || ZCE_BIT_IS_SET(mode, S_IROTH)
+        || ZCE_BIT_IS_SET(mode, S_IWUSR))
     {
         shared_mode |= FILE_SHARE_READ;
     }
 
-    if (ZCE_BIT_IS_SET(perms, S_IWGRP)
-        || ZCE_BIT_IS_SET(perms, S_IWOTH)
-        || ZCE_BIT_IS_SET(perms, S_IWUSR))
+    if (ZCE_BIT_IS_SET(mode, S_IWGRP)
+        || ZCE_BIT_IS_SET(mode, S_IWOTH)
+        || ZCE_BIT_IS_SET(mode, S_IWUSR))
     {
         shared_mode |= FILE_SHARE_WRITE;
         shared_mode |= FILE_SHARE_DELETE;
@@ -367,7 +370,7 @@ ZCE_HANDLE zce::open(const char* filename,
 
     //如果打开的文件句柄是无效的
 
-    if (openfile_handle != ZCE_INVALID_HANDLE && ZCE_BIT_IS_SET(open_mode, O_APPEND))
+    if (openfile_handle != ZCE_INVALID_HANDLE && ZCE_BIT_IS_SET(flags, O_APPEND))
     {
         LARGE_INTEGER distance_to_move, new_file_pointer;
 
@@ -391,8 +394,23 @@ ZCE_HANDLE zce::open(const char* filename,
     return openfile_handle;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::open(filename, open_mode, perms);
+    return ::open(filename, flags, mode);
 #endif
+}
+
+int zce::open2(ZCE_HANDLE &handle,
+               const char* filename,
+               int flags,
+               mode_t mode)
+{
+    handle = zce::open(filename,
+                       flags,
+                       mode);
+    if (handle == ZCE_INVALID_HANDLE)
+    {
+        return -1;
+    }
+    return 0;
 }
 
 //关闭一个文件
