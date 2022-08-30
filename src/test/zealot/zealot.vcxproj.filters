@@ -80,6 +80,9 @@
     <ClCompile Include="test_rudp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_aio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="predefine.h">

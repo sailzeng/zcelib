@@ -99,6 +99,7 @@ void Worker::process_request()
         if (go)
         {
             ++num_req;
+            process_aio(base);
         }
         else
         {
@@ -138,6 +139,8 @@ void Worker::process_aio(zce::aio::AIO_Handle* base)
     else
     {
     }
+
+    response_queue_->dequeue(base);
 }
 //!在线程种处理文件
 void Worker::process_fs(zce::aio::FS_Handle* hdl)
@@ -167,6 +170,7 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                  hdl->result_count_,
                                  (off_t)hdl->offset_,
                                  hdl->whence_);
+        break;
     case FS_WRITE:
         hdl->result_ = zce::write(hdl->handle_,
                                   hdl->write_bufs_,
@@ -174,12 +178,17 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                   hdl->result_count_,
                                   (off_t)hdl->offset_,
                                   hdl->whence_);
+        break;
+    case FS_STAT:
+        hdl->result_ = zce::fstat(hdl->handle_,
+                                  hdl->file_stat_);
+        break;
     default:
         break;
     }
 }
 //!
-void Worker::process_mysql(zce::aio::MySQL_Handle* hdl)
+void Worker::process_mysql(zce::aio::MySQL_Handle* /*hdl*/)
 {
 
 }

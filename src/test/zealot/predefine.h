@@ -97,6 +97,9 @@
 #include <zce/pool/buffer_pool.h>
 #include <zce/pool/multiobjs_pool.h>
 
+#include <zce/aio/caller.h>
+#include <zce/aio/worker.h>
+
 #include <thread>
 #include <mutex>
 
@@ -246,6 +249,9 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[]);
 
 int test_dns_resolve(int argc, char* argv[]);
 int test_ping(int argc, char* argv[]);
+
+//
+int test_aio1(int argc, char* argv[]);
 
 #endif //
 
