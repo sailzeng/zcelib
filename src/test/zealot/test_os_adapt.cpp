@@ -37,7 +37,7 @@ int test_windows_handle(int  /*argc*/, char* /*argv*/[])
 int test_osadapt_file(int  /*argc*/, char* /*argv*/[])
 {
     size_t file_len = 0;
-    auto pair = zce::read_file_all("C:\\123.txt", &file_len);
+    auto pair = zce::read_file("C:\\123.txt", &file_len);
     if (pair.first != 0)
     {
         return pair.first;

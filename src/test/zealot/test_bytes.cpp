@@ -772,7 +772,7 @@ int test_compress_filedata(const char* file_name)
     auto* file_buffer = new unsigned char[COMPRESS_TEXT_LEN];
     size_t file_len;
     int ret = 0;
-    ret = zce::read_file_data(file_name, (char*)file_buffer, COMPRESS_TEXT_LEN, &file_len);
+    ret = zce::read_file(file_name, (char*)file_buffer, COMPRESS_TEXT_LEN, &file_len);
     if (ret != 0)
     {
         delete[]file_buffer;
@@ -1006,7 +1006,7 @@ int benchmark_compress(const char* file_name)
     auto* file_buffer = new unsigned char[COMPRESS_TEXT_LEN];
     size_t file_len;
     int ret = 0;
-    ret = zce::read_file_data(file_name, (char*)file_buffer, COMPRESS_TEXT_LEN, &file_len);
+    ret = zce::read_file(file_name, (char*)file_buffer, COMPRESS_TEXT_LEN, &file_len);
     if (ret != 0)
     {
         delete[]file_buffer;

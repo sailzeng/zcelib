@@ -568,16 +568,17 @@ int zce::access(const char* pathname, int mode)
 
 //--------------------------------------------------------------------------------------------------
 //非标准函数
-//用只读方式读取一个文件的内容，返回的buffer最后填充'\0',buf_len >= 1
-int zce::read_file_data(const char* filename,
-                        char* buffer,
-                        size_t buf_len,
-                        size_t* read_len,
-                        size_t offset)
+//用只读方式读取一个文件的内容，
+//返回的buffer最后没有，没有，没有填充'\0',buf_len >= 1
+int zce::read_file(const char* filename,
+                   char* buffer,
+                   size_t buf_len,
+                   size_t* read_len,
+                   size_t offset)
 {
     //参数检查
     ZCE_ASSERT(filename && buffer && buf_len >= 1);
-
+    *read_len = 0;
     //打开文件
     ZCE_HANDLE  fd = zce::open(filename, O_RDONLY);
     if (ZCE_INVALID_HANDLE == fd)
@@ -587,25 +588,24 @@ int zce::read_file_data(const char* filename,
     }
     zce::lseek(fd, static_cast<off_t>(offset), SEEK_SET);
     //读取内容
-    ssize_t len = zce::read(fd, buffer, buf_len - 1);
+    ssize_t len = zce::read(fd, buffer, buf_len);
     zce::close(fd);
-
     if (len < 0)
     {
-        ZCE_LOG(RS_ERROR, "read file [%s] fail ,error =%d", filename, zce::last_error());
+        ZCE_LOG(RS_ERROR, "read file [%s] fail ,error =%d",
+                filename,
+                zce::last_error());
         return -1;
     }
 
-    buffer[len] = 0;
     *read_len = len;
-
     return 0;
 }
 
 //读取文件的全部数据，
-std::pair<int, std::shared_ptr<char> > zce::read_file_all(const char* filename,
-                                                          size_t* file_len,
-                                                          size_t offset)
+std::pair<int, std::shared_ptr<char> > zce::read_file(const char* filename,
+                                                      size_t* file_len,
+                                                      size_t offset)
 {
     int ret = -1;
     std::shared_ptr<char> null_ptr;
@@ -620,7 +620,8 @@ std::pair<int, std::shared_ptr<char> > zce::read_file_all(const char* filename,
     if (static_cast<size_t>(-1) == *file_len)
     {
         zce::close(fd);
-        ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d", filename, zce::last_error());
+        ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d",
+                filename, zce::last_error());
         return std::make_pair(ret, null_ptr);
     }
     std::shared_ptr<char> ptr(new char[*file_len + 1], std::default_delete<char[]>());
@@ -631,10 +632,45 @@ std::pair<int, std::shared_ptr<char> > zce::read_file_all(const char* filename,
     zce::close(fd);
     if (len < 0)
     {
-        ZCE_LOG(RS_ERROR, "read file [%s] fail ,error =%d", filename, zce::last_error());
+        ZCE_LOG(RS_ERROR, "read file [%s] fail ,error =%d",
+                filename,
+                zce::last_error());
         return std::make_pair(ret, null_ptr);
     }
 
     ret = 0;
     return std::make_pair(ret, ptr);
+}
+
+int zce::write_file(const char* filename,
+                    const char* buff,
+                    size_t buf_len,
+                    size_t* write_len,
+                    size_t offset)
+{
+    //参数检查
+    ZCE_ASSERT(filename && buff && buf_len >= 1);
+    *write_len = 0;
+    //打开文件
+    ZCE_HANDLE  fd = zce::open(filename, O_WRONLY);
+    if (ZCE_INVALID_HANDLE == fd)
+    {
+        ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d",
+                filename, zce::last_error());
+        return -1;
+    }
+    zce::lseek(fd, static_cast<off_t>(offset), SEEK_SET);
+    //读取内容
+    ssize_t len = zce::write(fd, buff, buf_len);
+    zce::close(fd);
+
+    if (len < 0)
+    {
+        ZCE_LOG(RS_ERROR, "write file [%s] fail ,error =%d",
+                filename, zce::last_error());
+        return -1;
+    }
+
+    *write_len = len;
+    return 0;
 }

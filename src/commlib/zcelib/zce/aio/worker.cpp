@@ -164,6 +164,20 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                   off);
         break;
     case FS_READ:
+        hdl->result_ = zce::read_file(hdl->path_,
+                                      hdl->read_bufs_,
+                                      hdl->bufs_count_,
+                                      &hdl->result_count_,
+                                      (off_t)hdl->offset_);
+        break;
+    case FS_WRITE:
+        hdl->result_ = zce::write_file(hdl->path_,
+                                       hdl->write_bufs_,
+                                       hdl->bufs_count_,
+                                       &hdl->result_count_,
+                                       (off_t)hdl->offset_);
+        break;
+    case FS_READFILE:
         hdl->result_ = zce::read(hdl->handle_,
                                  hdl->read_bufs_,
                                  hdl->bufs_count_,
@@ -171,7 +185,7 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                  (off_t)hdl->offset_,
                                  hdl->whence_);
         break;
-    case FS_WRITE:
+    case FS_WRITEFILE:
         hdl->result_ = zce::write(hdl->handle_,
                                   hdl->write_bufs_,
                                   hdl->bufs_count_,

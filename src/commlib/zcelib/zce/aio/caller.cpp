@@ -116,6 +116,7 @@ int fs_read(zce::aio::Worker* worker,
     aio_hdl->bufs_count_ = nbufs;
     aio_hdl->offset_ = offset;
     aio_hdl->whence_ = whence;
+    aio_hdl->call_back_ = call_back;
     auto succ_req = worker->request(aio_hdl);
     if (!succ_req)
     {
@@ -141,6 +142,108 @@ int fs_write(zce::aio::Worker* worker,
     aio_hdl->bufs_count_ = nbufs;
     aio_hdl->offset_ = offset;
     aio_hdl->whence_ = whence;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!异步打开文件，读取文件内容，然后关闭
+int fs_read_file(zce::aio::Worker* worker,
+                 const char *path,
+                 char* read_bufs,
+                 size_t nbufs,
+                 std::function<void(AIO_Handle*)> call_back,
+                 ssize_t offset)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_READFILE);
+
+    aio_hdl->path_ = path;
+    aio_hdl->read_bufs_ = read_bufs;
+    aio_hdl->bufs_count_ = nbufs;
+    aio_hdl->offset_ = offset;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!异步打开文件，写入文件内容，然后关闭
+int fs_write_file(zce::aio::Worker* worker,
+                  const char *path,
+                  const char* write_bufs,
+                  size_t nbufs,
+                  std::function<void(AIO_Handle*)> call_back,
+                  ssize_t offset)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
+    aio_hdl->path_ = path;
+    aio_hdl->write_bufs_ = write_bufs;
+    aio_hdl->bufs_count_ = nbufs;
+    aio_hdl->offset_ = offset;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!
+int fs_unlink(zce::aio::Worker* worker,
+              const char* path,
+              std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_UNLINK);
+    aio_hdl->path_ = path;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!
+int fs_rename(zce::aio::Worker* worker,
+              const char* path,
+              const char* new_path,
+              std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_RENAME);
+    aio_hdl->path_ = path;
+    aio_hdl->new_path_ = new_path;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+//!
+int fs_ftruncate(zce::aio::Worker* worker,
+                 ZCE_HANDLE handle,
+                 size_t offset,
+                 std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_FTRUNCATE);
+    aio_hdl->handle_ = handle;
+    aio_hdl->offset_ = offset;
+    aio_hdl->call_back_ = call_back;
     auto succ_req = worker->request(aio_hdl);
     if (!succ_req)
     {

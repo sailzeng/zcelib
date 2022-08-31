@@ -155,7 +155,7 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_pe
 
     //读取/proc下的文件
     size_t read_len = 0;
-    auto pair = zce::read_file_all(file_name, &read_len);
+    auto pair = zce::read_file(file_name, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
@@ -233,7 +233,7 @@ static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_per
     file_name[PATH_MAX] = '\0';
     snprintf(file_name, PATH_MAX, PROC_PROCESS_MEM, read_pid);
     size_t read_len = 0;
-    auto pair = zce::read_file_all(file_name, &read_len);
+    auto pair = zce::read_file(file_name, &read_len);
     if (0 != pair.first)
     {
         return pair.first;

@@ -21,12 +21,19 @@ enum AIO_TYPE
     FS_LSEEK,
     FS_READ,
     FS_WRITE,
+    //异步读取一个文件
+    FS_READFILE,
+    //异步写入一个文件
+    FS_WRITEFILE,
+    //异步获取文件的stat
     FS_STAT,
     FS_FTRUNCATE,
     FS_UNLINK,
     FS_RMDIR,
     FS_MKDIR,
+    //异步改名
     FS_RENAME,
+    //异步
     FS_SCANDIR,
     FS_END = 99,
 
@@ -73,6 +80,8 @@ public:
     const char* write_bufs_ = nullptr;
     size_t bufs_count_ = 0;
     size_t result_count_ = 0;
+    //!
+    const char* new_path_ = nullptr;
     //!
     struct stat* file_stat_ = nullptr;
 };
@@ -125,12 +134,28 @@ int fs_write(zce::aio::Worker* worker,
              ssize_t offset = 0,
              int whence = SEEK_CUR);
 
-//!
+//!异步打开文件，读取文件内容，然后关闭
+int fs_read_file(zce::aio::Worker* worker,
+                 const char* path,
+                 char* read_bufs,
+                 size_t nbufs,
+                 std::function<void(AIO_Handle*)> call_back,
+                 ssize_t offset = 0);
+
+//!异步打开文件，写入文件内容，然后关闭
+int fs_write_file(zce::aio::Worker* worker,
+                  const char* path,
+                  const char* write_bufs,
+                  size_t nbufs,
+                  std::function<void(AIO_Handle*)> call_back,
+                  ssize_t offset = 0);
+
+//!异步删除文件
 int fs_unlink(zce::aio::Worker* worker,
               const char* path,
               std::function<void(AIO_Handle*)> call_back);
 
-//!
+//!异步改名
 int fs_rename(zce::aio::Worker* worker,
               const char* path,
               const char* new_path,

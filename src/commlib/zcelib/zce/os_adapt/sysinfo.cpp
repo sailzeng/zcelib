@@ -18,7 +18,7 @@ int read_proc_get_cpuhz(struct ZCE_SYSTEM_INFO* info)
     //
     const char* PROC_FILENAME_CPUHZ = "/proc/cpuinfo";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_CPUHZ, &read_len);
+    auto pair = zce::read_file(PROC_FILENAME_CPUHZ, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
@@ -45,7 +45,7 @@ static int read_proc_get_loadavg(struct ZCE_SYSTEM_PERFORMANCE* info)
     //
     const char* PROC_FILENAME_LOADAVG = "/proc/loadavg";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_LOADAVG, &read_len);
+    auto pair = zce::read_file(PROC_FILENAME_LOADAVG, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
@@ -77,7 +77,7 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
     const char* PROC_FILENAME_MEMINFO = "/proc/meminfo";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_MEMINFO, &read_len);
+    auto pair = zce::read_file(PROC_FILENAME_MEMINFO, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
@@ -152,7 +152,7 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
     const char* PROC_FILENAME_STAT = "/proc/stat";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_STAT, &read_len);
+    auto pair = zce::read_file(PROC_FILENAME_STAT, &read_len);
     if (0 != pair.first)
     {
         return pair.first;
@@ -233,7 +233,7 @@ int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE* info)
 {
     const char* PROC_FILENAME_UPTIME = "/proc/uptime";
     size_t read_len = 0;
-    auto pair = zce::read_file_all(PROC_FILENAME_UPTIME, &read_len);
+    auto pair = zce::read_file(PROC_FILENAME_UPTIME, &read_len);
     if (0 != pair.first)
     {
         return pair.first;

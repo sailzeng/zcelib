@@ -95,10 +95,10 @@ class ZCE_XML_Implement INI文件的配置读取，写入实现器
 int ZCE_XML_Implement::read(const char* file_name, zce::PropertyTree* propertytree)
 {
     size_t file_len = 0;
-    auto pair = zce::read_file_all(file_name, &file_len);
+    auto pair = zce::read_file(file_name, &file_len);
     if (0 != pair.first)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,zce::read_file_all."
+        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,zce::read_file."
                 "path=[%s],last error [%d]",
                 file_name,
                 zce::last_error());
