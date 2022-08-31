@@ -126,7 +126,7 @@ off_t zce::lseek(ZCE_HANDLE file_handle,
 int zce::read(ZCE_HANDLE file_handle,
               void* buf,
               size_t buf_count,
-              size_t &read_count,
+              size_t& read_count,
               off_t offset,
               int whence) noexcept
 {
@@ -154,7 +154,7 @@ int zce::read(ZCE_HANDLE file_handle,
 int zce::write(ZCE_HANDLE file_handle,
                const void* buf,
                size_t buf_count,
-               size_t &write_count,
+               size_t& write_count,
                off_t offset,
                int whence) noexcept
 {
@@ -182,7 +182,7 @@ int zce::write(ZCE_HANDLE file_handle,
 int zce::lseek(ZCE_HANDLE file_handle,
                off_t offset,
                int whence,
-               off_t &result_off) noexcept
+               off_t& result_off) noexcept
 {
     result_off = 0;
     off_t off = zce::lseek(file_handle, offset, whence);
@@ -398,7 +398,7 @@ ZCE_HANDLE zce::open(const char* filename,
 #endif
 }
 
-int zce::open2(ZCE_HANDLE &handle,
+int zce::open2(ZCE_HANDLE& handle,
                const char* filename,
                int flags,
                mode_t mode)
@@ -652,7 +652,7 @@ int zce::write_file(const char* filename,
     ZCE_ASSERT(filename && buff && buf_len >= 1);
     *write_len = 0;
     //打开文件
-    ZCE_HANDLE  fd = zce::open(filename, O_WRONLY);
+    ZCE_HANDLE  fd = zce::open(filename, O_CREAT | O_WRONLY);
     if (ZCE_INVALID_HANDLE == fd)
     {
         ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d",

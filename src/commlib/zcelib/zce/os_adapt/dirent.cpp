@@ -276,7 +276,7 @@ int zce::readdir_nameary(const char* dirname,
 //选择器的函数指针
 //比较函数排序函数的指针
 int zce::scandir(const char* dirname,
-                 struct dirent** namelist[],
+                 struct dirent*** namelist,
                  int (*selector)(const struct dirent*),
                  int (*comparator)(const struct dirent**, const struct dirent**))
 {
@@ -438,7 +438,7 @@ int zce::scandir(const char* dirname,
 }
 
 //释放scandir 返回参数的里面的各种分配数据，非标准函数
-void zce::free_scandir_result(int list_number, dirent* namelist[])
+void zce::free_scandir_result(int list_number, struct dirent** namelist)
 {
     ZCE_ASSERT(list_number > 0);
 

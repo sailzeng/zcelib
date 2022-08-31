@@ -128,7 +128,7 @@ int readdir_nameary(const char* dirname,
 * @note       namelist 返回的数据一定释放，而且是2次释放，可以用free_scandir_list函数释放
 */
 int scandir(const char* dirname,
-            struct dirent** namelist[],
+            struct dirent*** namelist,
             int (*selector)(const struct dirent*),
             int (*comparator)(const struct dirent**, const struct dirent**));
 
@@ -137,7 +137,7 @@ int scandir(const char* dirname,
 * @param      list_number scandir 函数的成功返回值,>0
 * @param      namelist    scandir 函数返回的namelist参数
 */
-void free_scandir_result(int list_number, struct  dirent* namelist[]);
+void free_scandir_result(int list_number, struct dirent** namelist);
 
 /*!
 * @brief      用于目录排序的比较，就是那个comparator参数函数指针的参数

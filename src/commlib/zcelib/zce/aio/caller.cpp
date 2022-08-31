@@ -26,6 +26,8 @@ void FS_Handle::clear()
     bufs_count_ = 0;
     result_count_ = 0;
     file_stat_ = nullptr;
+    dirname_ = nullptr;
+    namelist_ = nullptr;
 }
 
 void MySQL_Handle::clear()
@@ -46,7 +48,6 @@ int fs_open(zce::aio::Worker* worker,
 {
     zce::aio::FS_Handle* hdl = (FS_Handle*)
         worker->alloc_handle(AIO_TYPE::FS_OPEN);
-
     hdl->path_ = path;
     hdl->flags_ = flags;
     hdl->mode_ = mode;
@@ -66,7 +67,6 @@ int fs_close(zce::aio::Worker* worker,
 {
     zce::aio::FS_Handle* hdl = (FS_Handle*)
         worker->alloc_handle(AIO_TYPE::FS_CLOSE);
-
     hdl->handle_ = handle;
     hdl->call_back_ = call_back;
     auto succ_req = worker->request(hdl);
@@ -86,7 +86,6 @@ int fs_lseek(zce::aio::Worker* worker,
 {
     zce::aio::FS_Handle* hdl = (FS_Handle*)
         worker->alloc_handle(AIO_TYPE::FS_LSEEK);
-
     hdl->handle_ = handle;
     hdl->offset_ = offset;
     hdl->whence_ = whence;
@@ -110,7 +109,6 @@ int fs_read(zce::aio::Worker* worker,
 {
     zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
         worker->alloc_handle(AIO_TYPE::FS_READ);
-
     aio_hdl->handle_ = handle;
     aio_hdl->read_bufs_ = read_bufs;
     aio_hdl->bufs_count_ = nbufs;
@@ -136,7 +134,6 @@ int fs_write(zce::aio::Worker* worker,
 {
     zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
         worker->alloc_handle(AIO_TYPE::FS_WRITE);
-
     aio_hdl->handle_ = handle;
     aio_hdl->write_bufs_ = write_bufs;
     aio_hdl->bufs_count_ = nbufs;
@@ -151,9 +148,28 @@ int fs_write(zce::aio::Worker* worker,
     return 0;
 }
 
+//!异步截断文件
+int fs_ftruncate(zce::aio::Worker* worker,
+                 ZCE_HANDLE handle,
+                 size_t offset,
+                 std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_FTRUNCATE);
+    aio_hdl->handle_ = handle;
+    aio_hdl->offset_ = offset;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
 //!异步打开文件，读取文件内容，然后关闭
 int fs_read_file(zce::aio::Worker* worker,
-                 const char *path,
+                 const char* path,
                  char* read_bufs,
                  size_t nbufs,
                  std::function<void(AIO_Handle*)> call_back,
@@ -161,7 +177,6 @@ int fs_read_file(zce::aio::Worker* worker,
 {
     zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
         worker->alloc_handle(AIO_TYPE::FS_READFILE);
-
     aio_hdl->path_ = path;
     aio_hdl->read_bufs_ = read_bufs;
     aio_hdl->bufs_count_ = nbufs;
@@ -177,7 +192,7 @@ int fs_read_file(zce::aio::Worker* worker,
 
 //!异步打开文件，写入文件内容，然后关闭
 int fs_write_file(zce::aio::Worker* worker,
-                  const char *path,
+                  const char* path,
                   const char* write_bufs,
                   size_t nbufs,
                   std::function<void(AIO_Handle*)> call_back,
@@ -198,7 +213,7 @@ int fs_write_file(zce::aio::Worker* worker,
     return 0;
 }
 
-//!
+//!异步删除文件
 int fs_unlink(zce::aio::Worker* worker,
               const char* path,
               std::function<void(AIO_Handle*)> call_back)
@@ -233,16 +248,72 @@ int fs_rename(zce::aio::Worker* worker,
     }
     return 0;
 }
-//!
-int fs_ftruncate(zce::aio::Worker* worker,
-                 ZCE_HANDLE handle,
-                 size_t offset,
-                 std::function<void(AIO_Handle*)> call_back)
+
+//!异步获取stat
+int fs_stat(zce::aio::Worker* worker,
+            const char* path,
+            struct stat* file_stat,
+            std::function<void(AIO_Handle*)> call_back)
 {
     zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
-        worker->alloc_handle(AIO_TYPE::FS_FTRUNCATE);
-    aio_hdl->handle_ = handle;
-    aio_hdl->offset_ = offset;
+        worker->alloc_handle(AIO_TYPE::FS_STAT);
+    aio_hdl->path_ = path;
+    aio_hdl->file_stat_ = file_stat;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!异步scandir
+int fs_scandir(zce::aio::Worker* worker,
+               const char* dirname,
+               struct dirent*** namelist,
+               std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_SCANDIR);
+    aio_hdl->dirname_ = dirname;
+    aio_hdl->namelist_ = namelist;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!异步建立dir
+int fs_mkdir(zce::aio::Worker* worker,
+             const char* dirname,
+             int mode,
+             std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_MKDIR);
+    aio_hdl->dirname_ = dirname;
+    aio_hdl->mode_ = mode;
+    aio_hdl->call_back_ = call_back;
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//!异步删除dir
+int fs_rmdir(zce::aio::Worker* worker,
+             const char* dirname,
+             std::function<void(AIO_Handle*)> call_back)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_RMDIR);
+    aio_hdl->dirname_ = dirname;
     aio_hdl->call_back_ = call_back;
     auto succ_req = worker->request(aio_hdl);
     if (!succ_req)

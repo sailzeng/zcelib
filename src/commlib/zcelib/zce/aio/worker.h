@@ -34,8 +34,9 @@ public:
     //!
     void process_request();
 
-    //!
-    void process_response(size_t& num_rsp);
+    //! 
+    void process_response(size_t& num_rsp,
+                          zce::Time_Value* wait_time);
 
     //!
     void process_aio(zce::aio::AIO_Handle* base);

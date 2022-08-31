@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         ZCE_LOG(RS_INFO, "Hallelujah");
     }
 
-    test_multiobj_pool(argc, argv);
+    test_aio1(argc, argv);
 #if 0
     test_dns_resolve(argc, argv);
     test_rudp(argc, argv);

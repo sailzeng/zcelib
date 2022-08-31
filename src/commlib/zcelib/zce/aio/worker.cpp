@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/file.h"
+#include "zce/os_adapt/dirent.h"
 #include "zce/aio/worker.h"
 
 namespace zce::aio
@@ -109,17 +110,28 @@ void Worker::process_request()
 }
 
 //!处理应答
-void Worker::process_response(size_t& num_rsp)
+void Worker::process_response(size_t& num_rsp, zce::Time_Value* wait_time)
 {
     num_rsp = 0;
     bool go = false;
     do
     {
         AIO_Handle* base = nullptr;
-        go = response_queue_->try_dequeue(base);
-        base->call_back_(base);
-        free_handle(base);
-        ++num_rsp;
+        if (wait_time)
+        {
+            go = response_queue_->dequeue_wait(base, *wait_time);
+        }
+        else
+        {
+            go = response_queue_->try_dequeue(base);
+        }
+        if (go)
+        {
+            base->call_back_(base);
+            free_handle(base);
+            ++num_rsp;
+        }
+
     } while (go);
 }
 
@@ -139,8 +151,8 @@ void Worker::process_aio(zce::aio::AIO_Handle* base)
     else
     {
     }
-
-    response_queue_->dequeue(base);
+    //放入应答队列
+    response_queue_->enqueue(base);
 }
 //!在线程种处理文件
 void Worker::process_fs(zce::aio::FS_Handle* hdl)
@@ -163,21 +175,8 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                   hdl->whence_,
                                   off);
         break;
+
     case FS_READ:
-        hdl->result_ = zce::read_file(hdl->path_,
-                                      hdl->read_bufs_,
-                                      hdl->bufs_count_,
-                                      &hdl->result_count_,
-                                      (off_t)hdl->offset_);
-        break;
-    case FS_WRITE:
-        hdl->result_ = zce::write_file(hdl->path_,
-                                       hdl->write_bufs_,
-                                       hdl->bufs_count_,
-                                       &hdl->result_count_,
-                                       (off_t)hdl->offset_);
-        break;
-    case FS_READFILE:
         hdl->result_ = zce::read(hdl->handle_,
                                  hdl->read_bufs_,
                                  hdl->bufs_count_,
@@ -185,7 +184,7 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                  (off_t)hdl->offset_,
                                  hdl->whence_);
         break;
-    case FS_WRITEFILE:
+    case FS_WRITE:
         hdl->result_ = zce::write(hdl->handle_,
                                   hdl->write_bufs_,
                                   hdl->bufs_count_,
@@ -193,9 +192,29 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                   (off_t)hdl->offset_,
                                   hdl->whence_);
         break;
+    case FS_READFILE:
+        hdl->result_ = zce::read_file(hdl->path_,
+                                      hdl->read_bufs_,
+                                      hdl->bufs_count_,
+                                      &hdl->result_count_,
+                                      (off_t)hdl->offset_);
+        break;
+    case FS_WRITEFILE:
+        hdl->result_ = zce::write_file(hdl->path_,
+                                       hdl->write_bufs_,
+                                       hdl->bufs_count_,
+                                       &hdl->result_count_,
+                                       (off_t)hdl->offset_);
+        break;
     case FS_STAT:
         hdl->result_ = zce::fstat(hdl->handle_,
                                   hdl->file_stat_);
+        break;
+    case FS_SCANDIR:
+        hdl->result_ = zce::scandir(hdl->dirname_,
+                                    hdl->namelist_,
+                                    NULL,
+                                    NULL);
         break;
     default:
         break;
