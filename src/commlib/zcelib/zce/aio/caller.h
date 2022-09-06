@@ -58,7 +58,7 @@ struct FS_Handle :public AIO_Handle
     virtual void clear();
 public:
     //!结果
-    int result_ = 0;
+    int result_ = -1;
     //路径，注意，这儿保存的是指针，在返回前对应的数据要能使用
     const char* path_ = nullptr;
     //!打开文件标志
@@ -67,17 +67,21 @@ public:
     int mode_ = 0;
     //! 
     ZCE_HANDLE handle_ = ZCE_INVALID_HANDLE;
+
     //!文件偏移的参数
     ssize_t offset_ = 0;
     //!
     int whence_ = SEEK_CUR;
-    //!
+
+    //!读取，写入的buf，buf的长度，结果的长度
     char* read_bufs_ = nullptr;
     const char* write_bufs_ = nullptr;
     size_t bufs_count_ = 0;
     size_t result_count_ = 0;
-    //!
+
+    //!改名的路径
     const char* new_path_ = nullptr;
+
     //!
     struct stat* file_stat_ = nullptr;
 
@@ -95,8 +99,6 @@ class MySQL_Handle :public AIO_Handle
 
 //====================================================
 
-namespace caller
-{
 
 //!异步打开某个文件，完成后回调函数call_back
 int fs_open(zce::aio::Worker* worker,
@@ -191,10 +193,54 @@ int fs_rmdir(zce::aio::Worker* worker,
              const char* dirname,
              std::function<void(AIO_Handle*)> call_back);
 
-}
 
+//==================================================================
 
+struct await_aiofs
+{
 
+    await_aiofs(zce::aio::Worker* worker,
+                zce::aio::FS_Handle* fs_hdl) :
+        worker_(worker),
+        fs_hdl_(fs_hdl)
+    {
+    };
+    ~await_aiofs() = default;
 
+    bool await_ready();
+    //
+    void await_suspend(std::coroutine_handle<> awaiting)
+    {
+        awaiting_ = awaiting;
+    }
+    //
+    FS_Handle await_resume()
+    {
+        return return_hdl_;
+    }
+
+    void resume(AIO_Handle* return_hdl);
+
+    //!
+    zce::aio::Worker* worker_ = nullptr;
+    zce::aio::FS_Handle* fs_hdl_ = nullptr;
+    //!返回的句柄
+    FS_Handle return_hdl_;
+    //!协程的句柄
+    std::coroutine_handle<> awaiting_;
+
+};
+
+await_aiofs co_read_file(zce::aio::Worker* worker,
+                         const char* path,
+                         char* read_bufs,
+                         size_t nbufs,
+                         ssize_t offset = 0);
+
+await_aiofs co_write_file(zce::aio::Worker* worker,
+                          const char* path,
+                          const char* write_bufs,
+                          size_t nbufs,
+                          ssize_t offset = 0);
 
 }

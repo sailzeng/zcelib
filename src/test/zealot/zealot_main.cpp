@@ -11,8 +11,8 @@ int main(int argc, char* argv[])
     zce::Log_Msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                             "E:\\My.Log\\TEST_2",
                                             zce::Log_File::DEFAULT_LOG_SIZE,
-                                            false,
                                             true,
+                                            false,
                                             true,
                                             false,
                                             ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
@@ -24,7 +24,8 @@ int main(int argc, char* argv[])
         ZCE_LOG(RS_INFO, "Hallelujah");
     }
 
-    test_aio1(argc, argv);
+    //test_aio1(argc, argv);
+    test_aio3(argc, argv);
 #if 0
     test_dns_resolve(argc, argv);
     test_rudp(argc, argv);

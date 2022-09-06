@@ -67,6 +67,7 @@ AIO_Handle* Worker::alloc_handle(AIO_TYPE aio_type)
 
 void Worker::free_handle(zce::aio::AIO_Handle* base)
 {
+    base->clear();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {

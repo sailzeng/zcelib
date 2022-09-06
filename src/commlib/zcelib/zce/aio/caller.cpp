@@ -25,6 +25,7 @@ void FS_Handle::clear()
     write_bufs_ = nullptr;
     bufs_count_ = 0;
     result_count_ = 0;
+    new_path_ = nullptr;
     file_stat_ = nullptr;
     dirname_ = nullptr;
     namelist_ = nullptr;
@@ -37,8 +38,6 @@ void MySQL_Handle::clear()
 
 //====================================================
 
-namespace caller
-{
 //!异步打开某个文件，完成后回调函数call_back
 int fs_open(zce::aio::Worker* worker,
             const char* path,
@@ -323,6 +322,72 @@ int fs_rmdir(zce::aio::Worker* worker,
     return 0;
 }
 
+//====================================================
+
+//
+FS_Handle await_aiofs::await_resume()
+{
+    return return_hdl_;
 }
+
+bool await_aiofs::await_ready()
+{
+    fs_hdl_->call_back_ = std::bind(&await_aiofs::resume,
+                                    this,
+                                    std::placeholders::_1);
+    bool succ_req = worker_->request(fs_hdl_);
+    if (succ_req)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+void await_aiofs::resume(AIO_Handle* return_hdl)
+{
+    FS_Handle* fs_hdl = (FS_Handle*)return_hdl;
+    return_hdl_ = *fs_hdl;
+    awaiting_.resume();
+    return;
+}
+
+//AIO 协程的co_await 函数
+
+await_aiofs co_read_file(zce::aio::Worker* worker,
+                         const char* path,
+                         char* read_bufs,
+                         size_t nbufs,
+                         ssize_t offset)
+{
+
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_READFILE);
+    aio_hdl->path_ = path;
+    aio_hdl->read_bufs_ = read_bufs;
+    aio_hdl->bufs_count_ = nbufs;
+    aio_hdl->offset_ = offset;
+
+    return await_aiofs(worker, aio_hdl);
+}
+
+await_aiofs co_write_file(zce::aio::Worker* worker,
+                          const char* path,
+                          const char* write_bufs,
+                          size_t nbufs,
+                          ssize_t offset)
+{
+    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+        worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
+    aio_hdl->path_ = path;
+    aio_hdl->write_bufs_ = write_bufs;
+    aio_hdl->bufs_count_ = nbufs;
+    aio_hdl->offset_ = offset;
+
+    return await_aiofs(worker, aio_hdl);
+}
+
 }
 

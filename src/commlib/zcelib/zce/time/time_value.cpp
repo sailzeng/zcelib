@@ -181,11 +181,11 @@ void Time_Value::to(std::chrono::milliseconds& val) const
 }
 void Time_Value::to(std::chrono::microseconds& val) const
 {
-    val = std::chrono::milliseconds(this->total_usec());
+    val = std::chrono::microseconds(this->total_usec());
 }
 void Time_Value::to(std::chrono::nanoseconds& val) const
 {
-    val = std::chrono::milliseconds(this->total_usec() * 1000);
+    val = std::chrono::nanoseconds(this->total_usec() * 1000);
 }
 
 
