@@ -359,7 +359,7 @@ template<>
 void SQLite_STMT::column(int result_col, short& val)
 {
     val = static_cast<short>(::sqlite3_column_int(prepared_statement_,
-                             result_col));
+                                                  result_col));
     return;
 }
 
@@ -391,7 +391,7 @@ template<>
 void SQLite_STMT::column(int result_col, unsigned char& val)
 {
     val = static_cast<unsigned char>(::sqlite3_column_int(prepared_statement_,
-                                     result_col));
+                                                          result_col));
     return;
 }
 
@@ -399,7 +399,7 @@ template<>
 void SQLite_STMT::column(int result_col, unsigned short& val)
 {
     val = static_cast<unsigned short>(::sqlite3_column_int(prepared_statement_,
-                                      result_col));
+                                                           result_col));
     return;
 }
 
@@ -407,7 +407,7 @@ template<>
 void SQLite_STMT::column(int result_col, unsigned int& val)
 {
     val = static_cast<unsigned int>(sqlite3_column_int(prepared_statement_,
-                                    result_col));
+                                                       result_col));
     return;
 }
 
@@ -415,7 +415,7 @@ template<>
 void SQLite_STMT::column(int result_col, unsigned long& val)
 {
     val = static_cast<unsigned long>(sqlite3_column_int(prepared_statement_,
-                                     result_col));
+                                                        result_col));
 
     return;
 }
@@ -424,7 +424,7 @@ template<>
 void SQLite_STMT::column(int result_col, unsigned long long& val)
 {
     val = static_cast<unsigned long long> (sqlite3_column_int64(prepared_statement_,
-                                           result_col));
+                                                                result_col));
     return;
 }
 
@@ -432,7 +432,7 @@ template<>
 void SQLite_STMT::column(int result_col, float& val)
 {
     val = static_cast<float> (sqlite3_column_double(prepared_statement_,
-                              result_col));
+                                                    result_col));
 
     return;
 }
@@ -451,7 +451,7 @@ void SQLite_STMT::column(int result_col, char* val)
     //Fisk这个变态让我改了地方，为了安全检查。
     strncpy(val,
             reinterpret_cast<const char*>(sqlite3_column_text(prepared_statement_,
-            result_col)),
+                                                              result_col)),
             static_cast<size_t>(sqlite3_column_bytes(prepared_statement_, result_col)));
     return;
 }
@@ -461,7 +461,7 @@ template<>
 void SQLite_STMT::column(int result_col, SQLite_STMT::BLOB_column& val)
 {
     *val.binary_len_ = ::sqlite3_column_bytes(prepared_statement_, result_col);
-    //为了获取二进制数据，与ZCE_Mysql_Result相对应,长度不+1
+    //为了获取二进制数据，与zce::mysql::Result相对应,长度不+1
     memcpy(val.binary_data_, ::sqlite3_column_blob(prepared_statement_, result_col),
            *val.binary_len_);
     return;
@@ -471,7 +471,7 @@ template<>
 void SQLite_STMT::column(int result_col, std::string& val)
 {
     val.assign(reinterpret_cast<const char*>(sqlite3_column_text(prepared_statement_,
-               result_col)),
+                                                                 result_col)),
                ::sqlite3_column_bytes(prepared_statement_, result_col));
     return;
 }

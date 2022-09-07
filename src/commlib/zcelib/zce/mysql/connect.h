@@ -12,29 +12,25 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_DB_CONNECT_H_
-#define ZCE_LIB_MYSQL_DB_CONNECT_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
 #include "zce/util/non_copyable.h"
 
+namespace zce::mysql
+{
 /*!
 * @brief      MYSQL的连接器
 */
-class ZCE_Mysql_Connect : public zce::NON_Copyable
+class Connect : public zce::NON_Copyable
 {
 public:
-    /*!
-    * @brief      构造函数
-    */
-    ZCE_Mysql_Connect();
 
-    /*!
-    * @brief      析构函数
-    */
-    ~ZCE_Mysql_Connect();
+    //构造函数,析构函数
+    Connect();
+    ~Connect();
 
     /*!
     * @brief      连接数据服务器,通过IP地址，主机名称
@@ -116,13 +112,13 @@ public:
     * @brief      返回错误消息
     * @return     const char* 返回错误描述消息
     */
-    inline const char* get_error_message();
+    inline const char* error_message();
 
     /*!
     * @brief      返回错误号
     * @return     unsigned int 返回的错误ID
     */
-    inline unsigned int get_error_no();
+    inline unsigned int error_no();
 
     /*!
     * @brief      得到MYSQL的句柄
@@ -211,32 +207,31 @@ private:
     MYSQL     mysql_handle_;
 
     //是否连接MYSQL数据库
-    bool      if_connected_;
+    bool      if_connected_ = false;
 };
 
 //得到MYSQL的句柄
-inline MYSQL* ZCE_Mysql_Connect::get_mysql_handle()
+inline MYSQL* zce::mysql::Connect::get_mysql_handle()
 {
     return &mysql_handle_;
 }
 //检查状态是否连接
-inline bool ZCE_Mysql_Connect::is_connected()
+inline bool zce::mysql::Connect::is_connected()
 {
     return if_connected_;
 }
 
 //得到错误信息
-inline const char* ZCE_Mysql_Connect::get_error_message()
+inline const char* zce::mysql::Connect::error_message()
 {
     return mysql_error(&mysql_handle_);
 }
 
 //得到错误的ID
-inline unsigned int ZCE_Mysql_Connect::get_error_no()
+inline unsigned int zce::mysql::Connect::error_no()
 {
     return mysql_errno(&mysql_handle_);
 }
 
 #endif //#if defined ZCE_USE_MYSQL
-
-#endif //ZCE_LIB_MYSQL_DB_CONNECT_H_
+}

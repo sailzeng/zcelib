@@ -10,8 +10,8 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_DB_FIELD_H_
-#define ZCE_LIB_MYSQL_DB_FIELD_H_
+#pragma once
+
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -21,15 +21,17 @@
 #pragma warning ( disable : 26812)
 #endif
 
+namespace zce::mysql
+{
+
 /*!
 @brief      MySQL的字段封装
-
 */
-class ZCE_Mysql_Field
+class Field
 {
 public:
     //构造函数
-    ZCE_Mysql_Field() :
+    Field() :
         field_data_(NULL),
         field_length_(0),
         field_type_(FIELD_TYPE_NULL)
@@ -37,7 +39,7 @@ public:
     };
 
     //构造函数
-    ZCE_Mysql_Field(const char* fdata, unsigned int flength, enum_field_types ftype) :
+    Field(const char* fdata, unsigned int flength, enum_field_types ftype) :
         field_data_(fdata),
         field_length_(flength),
         field_type_(ftype)
@@ -45,7 +47,7 @@ public:
     };
 
     ///析构函数
-    ~ZCE_Mysql_Field()
+    ~Field()
     {
     };
 
@@ -119,7 +121,9 @@ protected:
 };
 
 //设置值
-inline void ZCE_Mysql_Field::set_field(const char* fdata, unsigned int flength, enum_field_types ftype)
+inline void Field::set_field(const char* fdata,
+                             unsigned int flength,
+                             enum_field_types ftype)
 {
     field_data_ = fdata;
     field_length_ = flength;
@@ -127,25 +131,25 @@ inline void ZCE_Mysql_Field::set_field(const char* fdata, unsigned int flength, 
 };
 
 //得到Field 类型
-inline enum_field_types ZCE_Mysql_Field::get_type() const
+inline enum_field_types Field::get_type() const
 {
     return field_type_;
 }
 
 //得到Field长度
-inline unsigned int ZCE_Mysql_Field::get_length() const
+inline unsigned int Field::get_length() const
 {
     return field_length_;
 }
 
 //
-inline const char* ZCE_Mysql_Field::get_data() const
+inline const char* Field::get_data() const
 {
     return field_data_;
 };
 
 //是否数据为空
-inline bool ZCE_Mysql_Field::is_null() const
+inline bool Field::is_null() const
 {
     if (field_data_ == NULL)
     {
@@ -156,7 +160,7 @@ inline bool ZCE_Mysql_Field::is_null() const
 };
 
 //高速的得到字符串,在字符串较为长时最好使用这个函数
-inline ZCE_Mysql_Field::operator std::string() const
+inline Field::operator std::string() const
 {
     std::string tmp_str;
     tmp_str.reserve(field_length_);
@@ -168,6 +172,9 @@ inline ZCE_Mysql_Field::operator std::string() const
 #pragma warning ( pop )
 #endif
 
-#endif //#if defined MYSQL_VERSION_ID
+}
 
-#endif //ZCE_LIB_MYSQL_DB_FIELD_H_
+#endif 
+
+
+

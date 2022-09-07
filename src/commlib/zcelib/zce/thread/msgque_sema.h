@@ -339,12 +339,10 @@ public:
     inline bool full()
     {
         std::lock_guard<std::mutex> guard(queue_lock_);
-
         if (queue_cur_size_ == queue_max_size_)
         {
             return true;
         }
-
         return false;
     }
 

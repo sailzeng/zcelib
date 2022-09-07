@@ -5,15 +5,18 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
+namespace zce::mysql
+{
+
 //High Speed 得到String
-void ZCE_Mysql_Field::get_string(std::string& tmpstr) const
+void Field::get_string(std::string& tmpstr) const
 {
     tmpstr.reserve(field_length_);
     tmpstr.assign(field_data_, field_length_);
 }
 
 //得到字符型
-ZCE_Mysql_Field::operator char() const
+Field::operator char() const
 {
     char  tmp_tinyint = 0;
 
@@ -30,7 +33,7 @@ ZCE_Mysql_Field::operator char() const
 }
 
 //得到短整型
-ZCE_Mysql_Field::operator short() const
+Field::operator short() const
 {
     short tmp_short = 0;
 
@@ -45,7 +48,7 @@ ZCE_Mysql_Field::operator short() const
 }
 
 //得到长整型
-ZCE_Mysql_Field::operator long() const
+Field::operator long() const
 {
     long tmp_long = 0;
 
@@ -59,7 +62,7 @@ ZCE_Mysql_Field::operator long() const
 }
 
 //得到int整型
-ZCE_Mysql_Field::operator int() const
+Field::operator int() const
 {
     int tmp_int = 0;
 
@@ -73,7 +76,7 @@ ZCE_Mysql_Field::operator int() const
 }
 
 //得到int整型
-ZCE_Mysql_Field::operator unsigned int() const
+Field::operator unsigned int() const
 {
     unsigned int tmp_uint = 0;
 
@@ -87,7 +90,7 @@ ZCE_Mysql_Field::operator unsigned int() const
 }
 
 //转换为INT64类型
-inline ZCE_Mysql_Field::operator long long() const
+inline Field::operator long long() const
 {
     long long tmp_longlong = 0;
 
@@ -101,7 +104,7 @@ inline ZCE_Mysql_Field::operator long long() const
 }
 
 //转换为8位无符号整型
-ZCE_Mysql_Field::operator unsigned char() const
+Field::operator unsigned char() const
 {
     unsigned char  tmp_utinyint = 0;
     unsigned short tmpshort = 0;
@@ -117,7 +120,7 @@ ZCE_Mysql_Field::operator unsigned char() const
 }
 
 //转换为16位的无符号整型
-ZCE_Mysql_Field::operator unsigned short() const
+Field::operator unsigned short() const
 {
     unsigned short tmp_ushort = 0;
 
@@ -131,7 +134,7 @@ ZCE_Mysql_Field::operator unsigned short() const
     return tmp_ushort;
 }
 //转换为32位32无符号长整型
-ZCE_Mysql_Field::operator unsigned long() const
+Field::operator unsigned long() const
 {
     long tmp_ulong = 0;
 
@@ -145,7 +148,7 @@ ZCE_Mysql_Field::operator unsigned long() const
 }
 
 //转换为64位无符号长整型
-ZCE_Mysql_Field::operator unsigned long long() const
+Field::operator unsigned long long() const
 {
     unsigned long long tmp_ulonglong = 0;
 
@@ -159,7 +162,7 @@ ZCE_Mysql_Field::operator unsigned long long() const
 }
 
 //转换为FLOAT类型
-ZCE_Mysql_Field::operator float() const
+Field::operator float() const
 {
     float tmpfloat = 0.0;
     //转换得到FLOAT浮点型
@@ -172,7 +175,7 @@ ZCE_Mysql_Field::operator float() const
 }
 
 //转换为DOUBLE类型
-ZCE_Mysql_Field::operator double() const
+Field::operator double() const
 {
     double tmpdouble = 0.0;
     //转换得到DOBULE浮点型
@@ -182,6 +185,8 @@ ZCE_Mysql_Field::operator double() const
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
     return tmpdouble;
+}
+
 }
 
 //如果你要用MYSQL的库

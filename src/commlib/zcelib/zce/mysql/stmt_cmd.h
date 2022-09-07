@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_STMT_COMMAND_H_
-#define ZCE_LIB_MYSQL_STMT_COMMAND_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -24,32 +23,34 @@
 #if MYSQL_VERSION_ID >= 40100
 
 /*********************************************************************************
-class ZCE_Mysql_STMT_Command
+class STMT_Command
 *********************************************************************************/
 
-class ZCE_Mysql_Connect;
-class ZCE_Mysql_STMT_Bind;
-class ZCE_Mysql_Result;
+namespace zce::mysql
+{
+class Connect;
+class STMT_Bind;
+class Result;
 
-class ZCE_Mysql_STMT_Command
+class STMT_Command
 {
 public:
     //
-    ZCE_Mysql_STMT_Command();
+    STMT_Command();
     //指定一个connect
-    ZCE_Mysql_STMT_Command(ZCE_Mysql_Connect*);
+    STMT_Command(zce::mysql::Connect*);
     //
-    ~ZCE_Mysql_STMT_Command();
+    ~STMT_Command();
 
     /*!
-    * @brief      设置Command的ZCE_Mysql_Connect
+    * @brief      设置Command的zce::mysql::Connect
     * @return     int
-    * @param      ZCE_Mysql_Connect* 设置的链接
+    * @param      zce::mysql::Connect* 设置的链接
     */
-    int set_connection(ZCE_Mysql_Connect*);
+    int set_connection(zce::mysql::Connect*);
 
-    //得到此Command的ZCE_Mysql_Connect对象
-    inline ZCE_Mysql_Connect* get_connection();
+    //得到此Command的zce::mysql::Connect对象
+    inline zce::mysql::Connect* get_connection();
 
     inline MYSQL_STMT* get_stmt_handle();
 
@@ -62,13 +63,13 @@ public:
     * @note
     */
     int set_stmt_command(const std::string& sqlcmd,
-                         ZCE_Mysql_STMT_Bind* bindparam,
-                         ZCE_Mysql_STMT_Bind* bindresult);
+                         STMT_Bind* bindparam,
+                         STMT_Bind* bindresult);
 
     //设置SQL Command语句,TXT,BIN语句都可以,同时绑定参数,结果
     int set_stmt_command(const char* stmtcmd, size_t szsql,
-                         ZCE_Mysql_STMT_Bind* bindparam,
-                         ZCE_Mysql_STMT_Bind* bindresult);
+                         STMT_Bind* bindparam,
+                         STMT_Bind* bindresult);
 
     //得到SQL Command语句,TXT型
     const char* get_stmt_command() const;
@@ -107,14 +108,14 @@ public:
     inline unsigned int get_num_of_result_fields() const;
 
     //将参数转化为MetaData,MySQL的结果集合
-    void param_2_metadata(ZCE_Mysql_Result*) const;
+    void param_2_metadata(zce::mysql::Result*) const;
     //将结果转化为MetaData,MySQL的结果集合
-    void result_2_metadata(ZCE_Mysql_Result*) const;
+    void result_2_metadata(zce::mysql::Result*) const;
 
     // 返回错误消息
-    inline const char* get_error_message() const;
+    inline const char* error_message() const;
     // 返回错误号
-    inline unsigned int get_error_no() const;
+    inline unsigned int error_no() const;
 
 protected:
 
@@ -125,8 +126,8 @@ protected:
     * @param      bindresult   绑定的结果
     * @note
     */
-    int stmt_prepare_bind(ZCE_Mysql_STMT_Bind* bindparam,
-                          ZCE_Mysql_STMT_Bind* bindresult);
+    int stmt_prepare_bind(STMT_Bind* bindparam,
+                          STMT_Bind* bindresult);
     //SQL 执行命令，这个事一个基础函数，内部调用
     int _execute(unsigned int* num_affect, unsigned int* lastid);
 
@@ -137,7 +138,7 @@ protected:
 protected:
 
     ///联接
-    ZCE_Mysql_Connect* mysql_connect_;
+    zce::mysql::Connect* mysql_connect_;
 
     ///STMT SQL 命令
     std::string         stmt_command_;
@@ -146,48 +147,45 @@ protected:
     MYSQL_STMT* mysql_stmt_;
 
     ///是否绑定结果了
-    bool               is_bind_result_;
+    bool                is_bind_result_;
 };
 
 //得到connect 的句柄
-inline ZCE_Mysql_Connect* ZCE_Mysql_STMT_Command::get_connection()
+inline zce::mysql::Connect* STMT_Command::get_connection()
 {
     return mysql_connect_;
 }
 
 //返回STMT Handle
-inline MYSQL_STMT* ZCE_Mysql_STMT_Command::get_stmt_handle()
+inline MYSQL_STMT* STMT_Command::get_stmt_handle()
 {
     return mysql_stmt_;
 }
 
 // 返回错误消息
-inline const char* ZCE_Mysql_STMT_Command::get_error_message() const
+inline const char* STMT_Command::error_message() const
 {
     return mysql_stmt_error(mysql_stmt_);
 }
 
 // 返回错误号
-inline unsigned int ZCE_Mysql_STMT_Command::get_error_no() const
+inline unsigned int STMT_Command::error_no() const
 {
     return mysql_stmt_errno(mysql_stmt_);
 }
 
 //返回结果集的行数目
-inline unsigned int ZCE_Mysql_STMT_Command::get_num_of_result_rows() const
+inline unsigned int STMT_Command::get_num_of_result_rows() const
 {
     return static_cast <unsigned int>(mysql_stmt_num_rows(mysql_stmt_));
 }
 
 //返回结果集的列数目
-inline unsigned int ZCE_Mysql_STMT_Command::get_num_of_result_fields() const
+inline unsigned int STMT_Command::get_num_of_result_fields() const
 {
     return static_cast <unsigned int>(mysql_stmt_field_count(mysql_stmt_));
 }
-
 #endif //MYSQL_VERSION_ID >= 40100
-
+}
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
-
-#endif //ZCE_LIB_MYSQL_STMT_COMMAND_H_

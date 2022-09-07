@@ -14,8 +14,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_DB_COMMAND_H_
-#define ZCE_LIB_MYSQL_DB_COMMAND_H_
+#pragma once
 
 //如果你要用MYSQL的库，会包含MYSQL的头文件
 #if defined ZCE_USE_MYSQL
@@ -24,32 +23,34 @@
 #include "zce/mysql/connect.h"
 #include "zce/mysql/result.h"
 
+namespace zce::mysql
+{
 /*!
 * @brief      MYSQL的命令对象，用于处理SQL语句的执行，获得结果集
 *
 */
-class ZCE_Mysql_Command : public zce::NON_Copyable
+class Command : public zce::NON_Copyable
 {
 public:
     ///命令对象的构造函数
-    ZCE_Mysql_Command();
+    Command();
     ///命令对象的构造函数，指定一个connect
-    ZCE_Mysql_Command(ZCE_Mysql_Connect*);
+    Command(zce::mysql::Connect*);
     ///命令对象的析构函数
-    ~ZCE_Mysql_Command();
+    ~Command();
 
     /*!
-    * @brief      设置Command的ZCE_Mysql_Connect
+    * @brief      设置Command的zce::mysql::Connect
     * @return     int  0成功，-1失败
     * @param      conn 链接对象，必须已经链接成功喔
     */
-    int set_connection(ZCE_Mysql_Connect* conn);
+    int set_connection(zce::mysql::Connect* conn);
 
     /*!
-    * @brief      得到此Command的ZCE_Mysql_Connect对象
-    * @return     ZCE_Mysql_Connect*
+    * @brief      得到此Command的zce::mysql::Connect对象
+    * @return     zce::mysql::Connect*
     */
-    inline ZCE_Mysql_Connect* get_connection();
+    inline zce::mysql::Connect* get_connection();
 
     /*!
     * @brief      设置SQL Command语句,为BIN型的SQL语句准备
@@ -107,7 +108,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      sqlresult   返回的结果集合
     */
-    int execute(uint64_t& num_affect, ZCE_Mysql_Result& sql_result);
+    int execute(uint64_t& num_affect, zce::mysql::Result& sql_result);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
@@ -115,7 +116,7 @@ public:
     * @return     int
     * @param      sqlresult 返回的结果集合
     */
-    int execute(ZCE_Mysql_Result& sqlresult);
+    int execute(zce::mysql::Result& sqlresult);
 
 #if MYSQL_VERSION_ID > 40100
 
@@ -125,30 +126,31 @@ public:
     * @param[out] sqlresult 返回的MySQL结果集合
     * @param[out] bstore    使用mysql_store_result取回结果集合，还是mysql_use_result
     */
-    int fetch_next_multi_result(ZCE_Mysql_Result& sqlresult, bool bstore = true);
+    int fetch_next_multi_result(zce::mysql::Result& sqlresult,
+                                bool bstore = true);
 
 #endif //MYSQL_VERSION_ID > 40100
 
     ///C++ 的一些习惯用法，为了执着的C++爱好使用者编写,在写这段代码的时候，好像对C++的流颇有兴趣……
     /// =操作符,
-    inline ZCE_Mysql_Command& operator =(const char* sqlcmd);
-    inline ZCE_Mysql_Command& operator =(const std::string& sqlcmd);
+    inline Command& operator =(const char* sqlcmd);
+    inline Command& operator =(const std::string& sqlcmd);
 
     ///+=操作符号,用于向SQL Command 后部添加STR
-    inline ZCE_Mysql_Command& operator +=(const char* sqlcmd);
-    inline ZCE_Mysql_Command& operator +=(const std::string& sqlcmd);
+    inline Command& operator +=(const char* sqlcmd);
+    inline Command& operator +=(const std::string& sqlcmd);
 
     /*!
     * @brief      返回错误消息
     * @return     const char*
     */
-    inline const char* get_error_message();
+    inline const char* error_message();
 
     /*!
     * @brief      返回错误ID
     * @return     unsigned int
     */
-    inline unsigned int get_error_no();
+    inline unsigned int error_no();
 
     //这些函数都是4.1后的版本功能
 #if MYSQL_VERSION_ID > 40100
@@ -188,7 +190,7 @@ protected:
     */
     int execute(uint64_t* num_affect,
                 uint64_t* last_id,
-                ZCE_Mysql_Result* sqlresult,
+                zce::mysql::Result* sqlresult,
                 bool bstore);
 
 protected:
@@ -198,7 +200,7 @@ protected:
 protected:
 
     ///联接
-    ZCE_Mysql_Connect* mysql_connect_ = NULL;
+    zce::mysql::Connect* mysql_connect_ = NULL;
     ///SQL
     std::string mysql_command_;
 
@@ -210,19 +212,19 @@ protected:
 #if MYSQL_VERSION_ID > 40100
 
 //得到错误信息
-inline int ZCE_Mysql_Command::set_auto_commit(bool bauto)
+inline int Command::set_auto_commit(bool bauto)
 {
     return mysql_connect_->set_auto_commit(bauto);
 }
 
 //得到错误信息
-inline int ZCE_Mysql_Command::trans_commit()
+inline int Command::trans_commit()
 {
     return mysql_connect_->trans_commit();
 }
 
 //得到错误信息
-inline int ZCE_Mysql_Command::trans_rollback()
+inline int Command::trans_rollback()
 {
     return mysql_connect_->trans_rollback();
 }
@@ -230,25 +232,25 @@ inline int ZCE_Mysql_Command::trans_rollback()
 #endif //MYSQL_VERSION_ID > 40100
 
 //得到connect 的句柄
-inline ZCE_Mysql_Connect* ZCE_Mysql_Command::get_connection()
+inline zce::mysql::Connect* Command::get_connection()
 {
     return mysql_connect_;
 }
 
 //得到错误信息
-inline const char* ZCE_Mysql_Command::get_error_message()
+inline const char* Command::error_message()
 {
-    return mysql_connect_->get_error_message();
+    return mysql_connect_->error_message();
 }
 
 //得到错误的ID
-inline unsigned int ZCE_Mysql_Command::get_error_no()
+inline unsigned int Command::error_no()
 {
-    return mysql_connect_->get_error_no();
+    return mysql_connect_->error_no();
 }
 
 //SQL预计的赋值，
-inline int ZCE_Mysql_Command::set_sql_command(const char* sqlcmd, size_t szsql)
+inline int Command::set_sql_command(const char* sqlcmd, size_t szsql)
 {
     //如果错误,返回
     if (sqlcmd == NULL)
@@ -263,38 +265,37 @@ inline int ZCE_Mysql_Command::set_sql_command(const char* sqlcmd, size_t szsql)
 }
 
 //为TXT,BIN二进制的SQL命令提供的赋值方式 ,
-inline int ZCE_Mysql_Command::set_sql_command(const std::string& sqlcmd)
+inline int Command::set_sql_command(const std::string& sqlcmd)
 {
     mysql_command_ = sqlcmd;
     return 0;
 }
 
 //
-inline ZCE_Mysql_Command& ZCE_Mysql_Command::operator =(const char* sqlcmd)
+inline Command& Command::operator =(const char* sqlcmd)
 {
     set_sql_command(sqlcmd);
     return *this;
 }
 //
-inline ZCE_Mysql_Command& ZCE_Mysql_Command::operator =(const std::string& sqlcmd)
+inline Command& Command::operator =(const std::string& sqlcmd)
 {
     set_sql_command(sqlcmd);
     return *this;
 }
 
 //
-inline ZCE_Mysql_Command& ZCE_Mysql_Command::operator +=(const char* sqlcmd)
+inline Command& Command::operator +=(const char* sqlcmd)
 {
     mysql_command_.append(sqlcmd);
     return *this;
 }
 
-inline ZCE_Mysql_Command& ZCE_Mysql_Command::operator +=(const std::string& sqlcmd)
+inline Command& Command::operator +=(const std::string& sqlcmd)
 {
     mysql_command_.append(sqlcmd);
     return *this;
+}
 }
 
 #endif //#if defined ZCE_USE_MYSQL
-
-#endif //ZCE_LIB_MYSQL_DB_COMMAND_H_

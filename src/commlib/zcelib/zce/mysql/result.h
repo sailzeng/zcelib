@@ -25,8 +25,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_DB_RESULT_H_
-#define ZCE_LIB_MYSQL_DB_RESULT_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -39,9 +38,11 @@
 /*!
 * @brief      MYSQL的结果集封装
 *             考虑一下，也让这个东东NO Copyable了，
-*
 */
-class ZCE_Mysql_Result : zce::NON_Copyable
+namespace zce::mysql
+{
+
+class Result : zce::NON_Copyable
 {
 public:
 
@@ -52,11 +53,11 @@ public:
 
 public:
     ///构造函数
-    ZCE_Mysql_Result();
+    Result();
     ///构造函数
-    ZCE_Mysql_Result(MYSQL_RES* sqlresult);
+    Result(MYSQL_RES* sqlresult);
     ///析构函数
-    ~ZCE_Mysql_Result();
+    ~Result();
 
     ///结果集合是否为空
     inline bool is_null();
@@ -69,7 +70,7 @@ public:
     void set_mysql_result(MYSQL_RES* sqlresult);
 
     ///根据Field ID返回表定义列域名,注意计算得到的列的名字也可能是空
-    inline char* field_name(unsigned int fieldid) const;
+    inline char* field_name(size_t fieldid) const;
 
     /*!
     * @brief      根据Field Name得到Field ID,列号
@@ -78,7 +79,7 @@ public:
     * @param[out] fieldid    返回的列名称对应列ID
     */
     inline int field_index(const char* fname,
-                           unsigned int& fieldid) const;
+                           size_t& fieldid) const;
 
     /*!
     * @brief      返回结果集的行数目
@@ -97,7 +98,7 @@ public:
     * @return     ZCE_MySQL_Field
     * @param[in]  fieldid          取的字段下标
     */
-    ZCE_Mysql_Field operator[](unsigned int fieldid) const;
+    zce::mysql::Field operator[](size_t fieldid) const;
 
     /*!
     * @brief      通过列ID，查询当前行的字段，性能好，下标定位
@@ -105,7 +106,7 @@ public:
     * @param[in]  fieldid  列ID，从0开始
     * @param[out] ffield   返回列的值
     */
-    int get_field(unsigned int fieldid, ZCE_Mysql_Field& ffield) const;
+    int get_field(size_t fieldid, zce::mysql::Field& ffield) const;
 
     /*!
     * @brief      通过列名称查询当前行的某个字段的值，但性能并不好
@@ -113,7 +114,7 @@ public:
     * @param      fname   列字段的名称，SQL中的名称，如果是复杂的SQL SELECT，列名字会比较怪异，
     * @param      ffield  返回参数，列数据的封装
     */
-    int get_field(const char*, ZCE_Mysql_Field& ffield) const;
+    int get_field(const char*, zce::mysql::Field& ffield) const;
 
     /*!
     * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
@@ -121,7 +122,7 @@ public:
     * @param      fieldid     下标
     * @note
     */
-    inline const char* field_data(const unsigned int fieldid) const;
+    inline const char* field_data(size_t fieldid) const;
 
     /*!
     * @brief      在当前行，当前列，得到字段值,将数据的指针作为作为返回值
@@ -136,7 +137,7 @@ public:
     * @param      fieldid   列ID
     * @param      pfdata    列数据的指针
     */
-    inline int field_data(unsigned int fieldid, char* pfdata) const;
+    inline int field_data(size_t fieldid, char* pfdata) const;
 
     /*!
     * @brief      根据列名字得到字段值
@@ -153,7 +154,7 @@ public:
     * @param      flength
     * @note
     */
-    inline int field_length(unsigned int fieldid, unsigned int& flength) const;
+    inline int field_length(size_t fieldid, unsigned int& flength) const;
 
     /*!
     * @brief      根据列名字得到字段的长度
@@ -172,7 +173,7 @@ public:
     * @param      fieldid      列字段ID
     * @param      ftype        列数据的长度，要参考MYSQL CAPI 的enum_field_types
     */
-    inline int field_type(unsigned int fieldid, enum_field_types& ftype) const;
+    inline int field_type(size_t fieldid, enum_field_types& ftype) const;
 
     /*!
     * @brief      根据列名字得到字段的类型
@@ -204,7 +205,7 @@ public:
     * @return     int  0成功，-1失败
     * @param      row_id 行ID
     */
-    int seek_row(unsigned int row_id);
+    int seek_row(size_t row_id);
 
     /*!
     * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
@@ -220,29 +221,29 @@ public:
     /// >> 操作符号,用于将结果输出到val中
     ///早年为了安全，>>操作前还做了各种防止溢出的检查，结果反而导致一个bug，
     ///所以后来改为还是由调用者包装边界安全把
-    ZCE_Mysql_Result& operator >> (char& val);
-    ZCE_Mysql_Result& operator >> (short& val);
-    ZCE_Mysql_Result& operator >> (int& val);
-    ZCE_Mysql_Result& operator >> (long& val);
-    ZCE_Mysql_Result& operator >> (long long& val);
+    Result& operator >> (char& val);
+    Result& operator >> (short& val);
+    Result& operator >> (int& val);
+    Result& operator >> (long& val);
+    Result& operator >> (long long& val);
 
-    ZCE_Mysql_Result& operator >> (unsigned char& val);
-    ZCE_Mysql_Result& operator >> (unsigned short& val);
-    ZCE_Mysql_Result& operator >> (unsigned int& val);
-    ZCE_Mysql_Result& operator >> (unsigned long& val);
-    ZCE_Mysql_Result& operator >> (unsigned long long& val);
+    Result& operator >> (unsigned char& val);
+    Result& operator >> (unsigned short& val);
+    Result& operator >> (unsigned int& val);
+    Result& operator >> (unsigned long& val);
+    Result& operator >> (unsigned long long& val);
 
-    ZCE_Mysql_Result& operator >> (float& val);
-    ZCE_Mysql_Result& operator >> (double& val);
+    Result& operator >> (float& val);
+    Result& operator >> (double& val);
 
-    ZCE_Mysql_Result& operator >> (bool& val);
+    Result& operator >> (bool& val);
 
-    ZCE_Mysql_Result& operator >> (char* val);
-    ZCE_Mysql_Result& operator >> (unsigned char* val);
-    ZCE_Mysql_Result& operator >> (std::string& val);
+    Result& operator >> (char* val);
+    Result& operator >> (unsigned char* val);
+    Result& operator >> (std::string& val);
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-    ZCE_Mysql_Result& operator >> (BINARY*);
+    Result& operator >> (BINARY*);
 
 private:
     ///结果集合
@@ -267,7 +268,7 @@ private:
 };
 
 //Description     : 查询结果集合是否为空
-inline bool ZCE_Mysql_Result::is_null()
+inline bool Result::is_null()
 {
     if (mysql_result_)
     {
@@ -279,7 +280,7 @@ inline bool ZCE_Mysql_Result::is_null()
 
 //根据列名得到列ID,从0开始排序
 //循环比较,效率比较低
-inline int ZCE_Mysql_Result::field_index(const char* fname, unsigned int& field_id) const
+inline int Result::field_index(const char* fname, size_t& field_id) const
 {
     //循环比较所有的列名,效率比较低下
     for (unsigned int i = 0; i < num_result_field_; ++i)
@@ -291,13 +292,12 @@ inline int ZCE_Mysql_Result::field_index(const char* fname, unsigned int& field_
             return 0;
         }
     }
-
     return -1;
 }
 
 //根据列Field ID 返回表定义列域名,列域名字,可能为空
 //计算得到的列的列名字也可能是空,
-inline char* ZCE_Mysql_Result::field_name(unsigned int fieldid) const
+inline char* Result::field_name(size_t fieldid) const
 {
     //检查结果集合为空,或者参数nfield错误
     if (mysql_result_ == NULL || fieldid >= num_result_field_)
@@ -310,19 +310,19 @@ inline char* ZCE_Mysql_Result::field_name(unsigned int fieldid) const
 }
 
 //返回结果集的行数目,num_result_row_ 结果在execute函数中也可以得到
-inline unsigned int ZCE_Mysql_Result::num_of_rows() const
+inline unsigned int Result::num_of_rows() const
 {
     return num_result_row_;
 }
 
 //返回结果集的列数目
-inline unsigned int ZCE_Mysql_Result::num_of_fields() const
+inline unsigned int Result::num_of_fields() const
 {
     return num_result_field_;
 }
 
 //根据字段列ID,得到字段值
-const char* ZCE_Mysql_Result::field_data(const unsigned int fieldid) const
+const char* Result::field_data(size_t fieldid) const
 {
     if (current_row_ == NULL || fieldid >= num_result_field_)
     {
@@ -333,7 +333,7 @@ const char* ZCE_Mysql_Result::field_data(const unsigned int fieldid) const
 }
 
 //根据字段列ID,得到字段值的指针，长度你自己保证
-inline int ZCE_Mysql_Result::field_data(unsigned int fieldid, char* pfdata) const
+inline int Result::field_data(size_t fieldid, char* pfdata) const
 {
     //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
     if (current_row_ == NULL || fieldid >= num_result_field_ || pfdata == NULL)
@@ -347,7 +347,7 @@ inline int ZCE_Mysql_Result::field_data(unsigned int fieldid, char* pfdata) cons
 }
 
 //根据字段顺序ID,得到字段表结构定义的类型
-inline int ZCE_Mysql_Result::field_type(unsigned int fieldid, enum_field_types& ftype) const
+inline int Result::field_type(size_t fieldid, enum_field_types& ftype) const
 {
     //检查结果集合为空,或者参数nfield错误
     if (current_row_ == NULL || fieldid >= num_result_field_)
@@ -361,7 +361,7 @@ inline int ZCE_Mysql_Result::field_type(unsigned int fieldid, enum_field_types& 
 }
 
 //根据Field ID 得到此列值的实际长度
-inline int ZCE_Mysql_Result::field_length(unsigned int fieldid, unsigned int& flength) const
+inline int Result::field_length(size_t fieldid, unsigned int& flength) const
 {
     //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
     if (current_row_ == NULL && fieldid >= num_result_field_)
@@ -374,13 +374,13 @@ inline int ZCE_Mysql_Result::field_length(unsigned int fieldid, unsigned int& fl
     return 0;
 }
 
-inline unsigned int ZCE_Mysql_Result::get_cur_field_length()
+inline unsigned int Result::get_cur_field_length()
 {
     return static_cast<unsigned int>(fields_length_[current_field_]);
 }
 
 //根据字段的序列值得到字段值
-inline int ZCE_Mysql_Result::get_field(unsigned int fieldid, ZCE_Mysql_Field& ffield) const
+inline int Result::get_field(size_t fieldid, zce::mysql::Field& ffield) const
 {
     //进行安全检查，如果错误返回
     if (current_row_ == NULL || fieldid >= num_result_field_)
@@ -393,25 +393,20 @@ inline int ZCE_Mysql_Result::get_field(unsigned int fieldid, ZCE_Mysql_Field& ff
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2004年7月22日
-Function        : ZCE_Mysql_Result::operator[]
-Return          : ZCE_MySQL_Field
-Parameter List  :
-  Param1: unsigned int fieldid
-Description     : 根据列序号ID得到字段FIELD，
-Calls           :
-Called By       :
-Other           : []操作符号函数不检查检查列ID,自己保证参数
-Modify Record   :
-******************************************************************************************/
-inline ZCE_Mysql_Field ZCE_Mysql_Result::operator[](unsigned int fieldid) const
+
+//根据列序号ID得到字段FIELD，
+//[]操作符号函数不检查检查列ID,自己保证参数
+inline zce::mysql::Field Result::operator[](size_t fieldid) const
 {
-    ZCE_Mysql_Field ffield(current_row_[fieldid], fields_length_[fieldid], mysql_fields_[fieldid].type);
+    zce::mysql::Field ffield(current_row_[fieldid],
+                             fields_length_[fieldid],
+                             mysql_fields_[fieldid].type);
     return ffield;
+}
+
 }
 
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
 
-#endif //ZCE_LIB_MYSQL_DB_RESULT_H_
+

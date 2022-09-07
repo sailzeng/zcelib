@@ -1,13 +1,16 @@
-
-
 #pragma once
 #include "zce/os_adapt/common.h"
 
+//前向声明
+namespace zce::mysql
+{
+class Connect;
+class Result;
+}
 
 //!
 namespace zce::aio
 {
-
 class Worker;
 
 //!
@@ -31,15 +34,21 @@ enum AIO_TYPE
     FS_RENAME,
     FS_SCANDIR,
     FS_END = 99,
-
+    //
     MYSQL_BEGIN = 100,
+    MYSQL_CONNECT,
+    MYSQL_DISCONNECT,
+    MYSQL_QUERY_NOSELECT,
+    MYSQL_QUERY_SELECT,
     MYSQL_END = 199,
+    //
+    HOST_BEGIN = 200,
 
+    HOST_END = 299,
 };
 
 struct AIO_Handle
 {
-
     virtual void clear() = 0;
 
     //!
@@ -48,7 +57,6 @@ struct AIO_Handle
     uint32_t id_;
     //!
     std::function<void(AIO_Handle*)> call_back_;
-
 };
 
 //! FS文件
@@ -65,7 +73,7 @@ public:
     int flags_ = 0;
     //!打开文件模式
     int mode_ = 0;
-    //! 
+    //!
     ZCE_HANDLE handle_ = ZCE_INVALID_HANDLE;
 
     //!文件偏移的参数
@@ -91,14 +99,30 @@ public:
     struct dirent*** namelist_ = nullptr;
 };
 
-class MySQL_Handle :public AIO_Handle
+struct MySQL_Handle :public AIO_Handle
 {
     //!
     virtual void clear() override;
+    //!
+    zce::mysql::Connect* db_connect_ = nullptr;
+    const char* host_name = nullptr;
+    const char* user = nullptr;
+    const char* pwd = nullptr;
+    unsigned int port = MYSQL_PORT;
+    const char* sql = nullptr;
+    size_t sql_len = 0;
+    uint64_t* num_affect = nullptr;
+    uint64_t* insert_id = nullptr;
+    zce::mysql::Result* db_result = nullptr;
+};
+
+struct Host_Handle :public AIO_Handle
+{
+    //!清理
+    virtual void clear();
 };
 
 //====================================================
-
 
 //!异步打开某个文件，完成后回调函数call_back
 int fs_open(zce::aio::Worker* worker,
@@ -193,8 +217,8 @@ int fs_rmdir(zce::aio::Worker* worker,
              const char* dirname,
              std::function<void(AIO_Handle*)> call_back);
 
-
-//==================================================================
+//========================================================================================
+//
 //AIO 文件处理相关的awaiter等待体
 struct await_aiofs
 {
@@ -237,5 +261,4 @@ await_aiofs co_write_file(zce::aio::Worker* worker,
                           const char* write_bufs,
                           size_t nbufs,
                           ssize_t offset = 0);
-
 }

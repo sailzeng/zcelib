@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
-#define ZCE_LIB_MYSQL_STMT_RESULT_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -26,23 +25,27 @@
 
 #include "zce/logger/logging.h"
 
+namespace zce::mysql
+{
+
+
 /*!
 * @brief MYSQL_BIND 的包装封装累，
 *
-* @note  ZCE_Mysql_STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
+* @note  STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
 *        外部的保存生命周期，请慎重处理。
 */
-class ZCE_Mysql_STMT_Bind
+class STMT_Bind
 {
 public:
 
     /*!
-    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    * @brief      仅仅是为了适配 STMT_Bind << 的操作符号
     *             绑定2进制参数数据，用于 mysql_stmt_bind_param
     */
     class BinData_Param
     {
-        friend class ZCE_Mysql_STMT_Bind;
+        friend class STMT_Bind;
 
     public:
 
@@ -74,12 +77,12 @@ public:
     };
 
     /*!
-    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    * @brief      仅仅是为了适配 STMT_Bind << 的操作符号
     *             绑定2进制结果数据，用于 mysql_stmt_bind_result
     */
     class BinData_Result
     {
-        friend class ZCE_Mysql_STMT_Bind;
+        friend class STMT_Bind;
 
     public:
 
@@ -111,12 +114,12 @@ public:
     };
 
     /*!
-    @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    @brief      仅仅是为了适配 STMT_Bind << 的操作符号
 
     */
     class TimeData
     {
-        friend class ZCE_Mysql_STMT_Bind;
+        friend class STMT_Bind;
     public:
         //
         TimeData(enum_field_types timetype, MYSQL_TIME* pstmttime) :
@@ -142,13 +145,13 @@ public:
     };
 
     /*!
-    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    * @brief      仅仅是为了适配 STMT_Bind << 的操作符号
     *             绑定一个空参数
     * @note
     */
     class NULL_Param
     {
-        friend class ZCE_Mysql_STMT_Bind;
+        friend class STMT_Bind;
 
     public:
         NULL_Param(my_bool* is_null) :
@@ -165,7 +168,7 @@ public:
 protected:
 
     //定义出来不实现,让你无法用,有很多地方有我分配的指针,不能给你浅度复制
-    ZCE_Mysql_STMT_Bind& operator=(const ZCE_Mysql_STMT_Bind& others);
+    STMT_Bind& operator=(const STMT_Bind& others);
 
 public:
 
@@ -173,9 +176,9 @@ public:
     * @brief      构造函数
     * @param      numbind  要绑定变量,结果的个数
     */
-    ZCE_Mysql_STMT_Bind(size_t numbind);
+    STMT_Bind(size_t numbind);
     //
-    ~ZCE_Mysql_STMT_Bind();
+    ~STMT_Bind();
 
     /*!
     * @brief      绑定一个参数
@@ -237,16 +240,16 @@ public:
 
     ///为了使用几个类型的适配器
     ///绑定二进制数据，的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Param& val);
+    void bind(size_t bind_col, STMT_Bind::BinData_Param& val);
     ///绑定二进制结果的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result& val);
+    void bind(size_t bind_col, STMT_Bind::BinData_Result& val);
     ///绑定时间的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData& val);
+    void bind(size_t bind_col, STMT_Bind::TimeData& val);
     ///绑定空的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param& val);
+    void bind(size_t bind_col, STMT_Bind::NULL_Param& val);
 
     template <typename bind_type>
-    ZCE_Mysql_STMT_Bind& operator << (bind_type& val)
+    STMT_Bind& operator << (bind_type& val)
     {
         bind(current_bind_, val);
         ++current_bind_;
@@ -269,6 +272,8 @@ protected:
 #pragma warning ( pop )
 #endif
 
+}
+
 #endif //#if defined ZCE_USE_MYSQL
 
-#endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
+
