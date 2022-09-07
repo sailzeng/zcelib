@@ -14,7 +14,7 @@ int test_nonr_thread_mutex(int, char* [])
 
 //zce::MsgQueue_Deque<ZCE_MT_SYNCH,int>   message_queue_(100);
 //zce::MsgList_Condi <int >  message_queue_(100);
-zce::msglist_sema <100, int >  message_queue_;
+zce::msglist_sema <int >  message_queue_(100);
 //ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 
 zce::Thread_Light_Mutex  io_mutex;

@@ -6,6 +6,93 @@ namespace zce
 {
 //====================================================================================
 
+struct coro_ret
+{
+    struct promise_type;
+    using handle_type = std::coroutine_handle<promise_type>;
+
+    struct promise_type
+    {
+        promise_type() = default;
+        ~promise_type() = default;
+
+        auto get_return_object()
+        {
+            return coro_ret{ handle_type::from_promise(*this) };
+        }
+        //注意这个函数,如果返回std::suspend_never{}，就不挂起，
+        //返回std::suspend_always{} 挂起
+        auto initial_suspend()
+        {
+            return std::suspend_never{};
+            //return std::suspend_always{};
+        }
+        //co_return 后这个函数会被调用
+        void return_value(int v)
+        {
+            return_data_ = v;
+            return;
+        }
+        auto yield_value(int v)
+        {
+            return_data_ = v;
+            return std::suspend_always{};
+        }
+        auto final_suspend() noexcept
+        {
+            return std::suspend_never{};
+        }
+        void unhandled_exception()
+        {
+            std::exit(1);
+        }
+        //返回值
+        int return_data_;
+    };
+    coro_ret()
+    {
+    }
+    coro_ret(handle_type h)
+        : coro_handle_(h)
+    {
+    }
+    coro_ret(const coro_ret&) = delete;
+    coro_ret(coro_ret&& s)
+        : coro_handle_(s.coro_handle_)
+    {
+        s.coro_handle_ = nullptr;
+    }
+    ~coro_ret()
+    {
+        if (coro_handle_)
+            coro_handle_.destroy();
+    }
+    coro_ret& operator=(const coro_ret&) = delete;
+    coro_ret& operator=(coro_ret&& s)
+    {
+        coro_handle_ = s.coro_handle_;
+        s.coro_handle_ = nullptr;
+        return *this;
+    }
+
+    bool done()
+    {
+        return coro_handle_.done();
+    }
+
+    bool move_next()
+    {
+        coro_handle_.resume();
+        return coro_handle_.done();
+    }
+
+    int get()
+    {
+        return coro_handle_.promise().return_data_;
+    }
+
+    handle_type coro_handle_;
+};
 /*!
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
@@ -57,7 +144,7 @@ public:
 protected:
 
     //!协程运行,你要重载的函数
-    virtual void coroutine_run() = 0;
+    virtual coro_ret coroutine_run() = 0;
 
     /*!
     * @brief      等待time_out 时间后超时，设置定时器后，切换协程到main
@@ -70,7 +157,8 @@ protected:
     * @brief      继承zce::Async_Object的函数，
     *             协程对象的运行处理
     */
-    virtual void on_run(bool& continued) override;
+    virtual void on_run(bool first_run,
+                        bool& continue_run) override;
 
     /*!
     * @brief      异步对象超时处理
@@ -80,17 +168,10 @@ protected:
     virtual void on_timeout(const zce::Time_Value& now_time,
                             bool& continued) override;
 
-protected:
-
-    //!最小的堆栈
-    static const size_t MIN_STACK_SIZE = 16 * 1024;
-    //!默认堆栈
-    static const size_t DEF_STACK_SIZE = 64 * 1024;
-    //!最大的堆栈
-    static const size_t MAX_STACK_SIZE = 256 * 1024;
 
 protected:
-
+    //!
+    coro_ret         coroutine_ret_;
     //!协程的状态
     COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
 };

@@ -47,7 +47,7 @@ protected:
     * @brief      LUA Thread 的运行
     *             继承zce::Async_Object的函数，
     */
-    virtual void on_run(bool& continued) override;
+    virtual void on_run(bool first_run, bool& continue_run) override;
 
     /*!
     * @brief      异步对象超时处理
@@ -55,6 +55,9 @@ protected:
     */
     virtual void on_timeout(const zce::Time_Value& now_time,
                             bool& continued) override;
+
+
+    virtual int luathread_run() = 0;
 
 protected:
 

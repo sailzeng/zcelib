@@ -18,8 +18,9 @@ Async_FSM::~Async_FSM()
 }
 
 //状态机运行的代码，这只是一个参考示例
-void Async_FSM::on_run(bool& running)
+void Async_FSM::on_run(bool first_run, bool& running)
 {
+
     enum
     {
         //开始
@@ -29,6 +30,10 @@ void Async_FSM::on_run(bool& running)
         //结束
         STAGE_4 = 4,
     };
+    if (first_run)
+    {
+        set_stage(STAGE_1);
+    }
     switch (get_stage())
     {
     case STAGE_1:

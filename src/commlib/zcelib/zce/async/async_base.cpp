@@ -63,10 +63,6 @@ void Async_Object::cancel_timeout()
     }
 }
 
-//异步对象开始
-void Async_Object::on_init()
-{
-}
 
 //目前基类做的结束操作就是清理定时器
 void Async_Object::on_end()
@@ -319,10 +315,9 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
     crt_async->asyncobj_id_ = id_builder_;
 
     ++async_rec->create_num_;
-    crt_async->on_init();
 
     //启动丫的
-    crt_async->on_run(continued);
+    crt_async->on_run(true, continued);
     //如果运行一下就退出了,直接结束回收
     if (continued == false)
     {
@@ -395,7 +390,7 @@ int Async_Obj_Mgr::active_asyncobj(uint32_t id,
     //激活同时取消定时器
     async_obj->cancel_timeout();
 
-    async_obj->on_run(running);
+    async_obj->on_run(false, running);
     ++async_rec.active_num_;
 
     //如果不继续运行了，

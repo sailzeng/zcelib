@@ -17,7 +17,7 @@ public:
     FSM_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
         Async_FSM(async_mgr, create_cmd)
     {
-        set_stage(FMS1_STAGE_1);
+
     }
 
 protected:
@@ -31,8 +31,12 @@ public:
         return dynamic_cast<zce::Async_Object*>(new FSM_1(async_mgr, create_cmd));
     }
 
-    virtual void on_run(bool& continue_run)
+    virtual void on_run(bool first_run, bool& continue_run)
     {
+        if (first_run)
+        {
+            set_stage(FMS1_STAGE_1);
+        }
         switch (get_stage())
         {
         case FMS1_STAGE_1:
@@ -80,7 +84,7 @@ public:
     FSM_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
         Async_FSM(async_mgr, create_cmd)
     {
-        set_stage(FMS2_STAGE_1);
+
     }
 protected:
     virtual ~FSM_2()
@@ -92,8 +96,12 @@ public:
         return dynamic_cast<zce::Async_Object*>(new FSM_2(async_mgr, create_cmd));
     }
 
-    virtual void on_run(bool& continue_run)
+    virtual void on_run(bool first_run, bool& continue_run)
     {
+        if (first_run)
+        {
+            set_stage(FMS2_STAGE_1);
+        }
         switch (get_stage())
         {
         case FMS2_STAGE_1:

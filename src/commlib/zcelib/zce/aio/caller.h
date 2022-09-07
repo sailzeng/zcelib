@@ -195,48 +195,43 @@ int fs_rmdir(zce::aio::Worker* worker,
 
 
 //==================================================================
-
+//AIO 文件处理相关的awaiter等待体
 struct await_aiofs
 {
-
     await_aiofs(zce::aio::Worker* worker,
-                zce::aio::FS_Handle* fs_hdl) :
-        worker_(worker),
-        fs_hdl_(fs_hdl)
-    {
-    };
+                zce::aio::FS_Handle* fs_hdl);
     ~await_aiofs() = default;
 
+    //是否准备好
     bool await_ready();
-    //
-    void await_suspend(std::coroutine_handle<> awaiting)
-    {
-        awaiting_ = awaiting;
-    }
-    //
-    FS_Handle await_resume()
-    {
-        return return_hdl_;
-    }
+    //挂起操作
+    void await_suspend(std::coroutine_handle<> awaiting);
 
+    //!恢复后返回结果
+    FS_Handle await_resume();
+
+    //!回调函数
     void resume(AIO_Handle* return_hdl);
 
-    //!
+    //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::Worker* worker_ = nullptr;
+    //!请求的文件操作句柄
     zce::aio::FS_Handle* fs_hdl_ = nullptr;
-    //!返回的句柄
-    FS_Handle return_hdl_;
-    //!协程的句柄
+    //!完成后返回的句柄
+    zce::aio::FS_Handle return_hdl_;
+    //!协程的句柄（调用者）
     std::coroutine_handle<> awaiting_;
-
 };
 
+//AIO 协程的co_await 函数
+
+//!协程co_await AIO读取文件
 await_aiofs co_read_file(zce::aio::Worker* worker,
                          const char* path,
                          char* read_bufs,
                          size_t nbufs,
                          ssize_t offset = 0);
-
+//!协程co_await AIO写入文件
 await_aiofs co_write_file(zce::aio::Worker* worker,
                           const char* path,
                           const char* write_bufs,

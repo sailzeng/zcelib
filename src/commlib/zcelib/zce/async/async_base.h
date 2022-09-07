@@ -74,15 +74,15 @@ public:
     /*!
     * @brief      异步对象开始,可以用来做每次重新进行初始化时候的事情
     */
-    virtual void on_init();
+    //virtual void on_init();
 
     /*!
     * @brief      异步对象运行
-    * @param[in]  recv_data 收到的数据
-    * @param[in]  data_len  数据长度
-    * @param[out] running   异步对象是否继续运行，如果不继续(返回false)，
+    * @param[in]  first_run  是不是第一次运行，还是再次唤醒
+    * @param[out] continue_run   异步对象是否继续运行，如果不继续(返回false)，
     */
-    virtual void on_run(bool& running) = 0;
+    virtual void on_run(bool first_run,
+                        bool& continue_run) = 0;
 
     /*!
     * @brief      异步对象超时处理

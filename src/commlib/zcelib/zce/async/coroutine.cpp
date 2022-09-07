@@ -18,25 +18,40 @@ Async_Coroutine::~Async_Coroutine()
 {
 }
 
-//初始化协程的对象
-int Async_Coroutine::initialize()
-{
-    zce::Async_Object::initialize();
-
-    return 0;
-}
-
-//清理协程对象
-void Async_Coroutine::terminate()
-{
-    zce::Async_Object::terminate();
-    return;
-}
 
 //调用协程
-void Async_Coroutine::on_run(bool& continued)
+void Async_Coroutine::on_run(bool first_run,
+                             bool& continue_run)
 {
-    continued = false;
+    continue_run = true;
+    int ret = 0;
+    if (first_run)
+    {
+        ret = coroutine_ret_.get();
+        coroutine_ret_ = coroutine_run();
+        if (ret != 0)
+        {
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "coroutine_run return fail.",
+                                  ret);
+            return;
+        }
+        //!
+        if (coroutine_ret_.done())
+        {
+            continue_run = false;
+        }
+        return;
+    }
+    else
+    {
+        bool done = coroutine_ret_.move_next();
+        if (done)
+        {
+            continue_run = false;
+        }
+        return;
+    }
+
 }
 
 //调用协程

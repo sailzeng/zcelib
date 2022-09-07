@@ -324,17 +324,20 @@ int fs_rmdir(zce::aio::Worker* worker,
 
 //====================================================
 
-//
-FS_Handle await_aiofs::await_resume()
+await_aiofs::await_aiofs(zce::aio::Worker* worker,
+                         zce::aio::FS_Handle* fs_hdl) :
+    worker_(worker),
+    fs_hdl_(fs_hdl)
 {
-    return return_hdl_;
 }
 
 bool await_aiofs::await_ready()
 {
+    //回调函数
     fs_hdl_->call_back_ = std::bind(&await_aiofs::resume,
                                     this,
                                     std::placeholders::_1);
+    //将一个文件操作句柄放入请求队列
     bool succ_req = worker_->request(fs_hdl_);
     if (succ_req)
     {
@@ -346,6 +349,17 @@ bool await_aiofs::await_ready()
     }
 }
 
+//
+void await_aiofs::await_suspend(std::coroutine_handle<> awaiting)
+{
+    awaiting_ = awaiting;
+}
+//!
+FS_Handle await_aiofs::await_resume()
+{
+    return return_hdl_;
+}
+//!回调函数
 void await_aiofs::resume(AIO_Handle* return_hdl)
 {
     FS_Handle* fs_hdl = (FS_Handle*)return_hdl;

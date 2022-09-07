@@ -38,23 +38,35 @@ void Async_LuaThead::terminate()
 }
 
 //调用协程
-void Async_LuaThead::on_run(bool& running)
+void Async_LuaThead::on_run(bool first_run, bool& continue_run)
 {
-    running = false;
-    int state = mgr_lua_tie_->resume_thread(&lua_thread_, 0);
-    //根据调用返回的函数记录的状态值得到当前的状态
-    if (state == LUA_YIELD)
+    continue_run = true;
+    if (first_run)
     {
-        running = true;
-    }
-    else if (state == LUA_OK)
-    {
-        running = false;
+        int ret = luathread_run();
+        if (ret != 0)
+        {
+            continue_run = false;
+        }
     }
     else
     {
-        ZCE_ASSERT_ALL(false);
+        int state = mgr_lua_tie_->resume_thread(&lua_thread_, 0);
+        //根据调用返回的函数记录的状态值得到当前的状态
+        if (state == LUA_YIELD)
+        {
+            continue_run = true;
+        }
+        else if (state == LUA_OK)
+        {
+            continue_run = false;
+        }
+        else
+        {
+            ZCE_ASSERT_ALL(false);
+        }
     }
+
 }
 
 //调用协程

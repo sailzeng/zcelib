@@ -301,21 +301,21 @@ public:
 //===============================================================================================
 
 /*!
-* @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
+* @brief      用C++20信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
 *
 * @tparam     T  消息队列放入的数据类型
 * @tparam     C  消息队列内部容器类型
 */
-template < size_t MAX, typename T, typename C >
+template <typename T, typename C >
 class msgqueue_sema
 {
 public:
 
     //
-    explicit msgqueue_sema() :
-        queue_max_size_(MAX),
+    explicit msgqueue_sema(size_t queue_max_size) :
+        queue_max_size_(queue_max_size),
         queue_cur_size_(0),
-        sem_full_(MAX),
+        sem_full_(queue_max_size),
         sem_empty_(0)
     {
     }
@@ -519,10 +519,10 @@ protected:
     std::mutex              queue_lock_;
 
     //信号灯，满的信号灯
-    std::counting_semaphore<MAX>   sem_full_;
+    std::binary_semaphore   sem_full_;
 
     //信号灯，空的信号灯，当数据
-    std::counting_semaphore<MAX>   sem_empty_;
+    std::binary_semaphore   sem_empty_;
 
     //容器类型，可以是list,dequeue,
     C                       message_queue_;
@@ -534,36 +534,36 @@ protected:
 * @tparam     T 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <size_t MAX, typename T >
-class msglist_sema : public msgqueue_sema<MAX, T, std::list<T> >
+template <typename T >
+class msglist_sema : public msgqueue_sema<T, std::list<T> >
 {
 public:
-    msglist_sema() :
-        msgqueue_sema<MAX, T, std::list<T> >()
+    msglist_sema(size_t queue_max_size) :
+        msgqueue_sema<T, std::list<T> >(queue_max_size)
     {
     }
     ~msglist_sema() = default;
 };
 
-template <size_t MAX, typename T >
-class msgdeque_sema : public msgqueue_sema<MAX, T, std::deque<T> >
+template <typename T >
+class msgdeque_sema : public msgqueue_sema<T, std::deque<T> >
 {
 public:
-    msgdeque_sema() :
-        msgqueue_sema<MAX, T, std::deque<T> >()
+    msgdeque_sema(size_t queue_max_size) :
+        msgqueue_sema<T, std::deque<T> >(queue_max_size)
     {
     }
     ~msgdeque_sema() = default;
 };
 
-template <size_t MAX, typename T >
-class msgrings_sema : public msgqueue_sema<MAX, T, zce::lord_rings<T> >
+template <typename T >
+class msgrings_sema : public msgqueue_sema<T, zce::lord_rings<T> >
 {
 public:
-    msgrings_sema() :
-        msgqueue_sema<MAX, T, zce::lord_rings<T> >()
+    msgrings_sema(size_t queue_max_size) :
+        msgqueue_sema<T, zce::lord_rings<T> >(queue_max_size)
     {
-        msgqueue_sema<MAX, T, zce::lord_rings<T> >::message_queue_.resize(MAX);
+        msgqueue_sema<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
     }
     ~msgrings_sema() = default;
 };

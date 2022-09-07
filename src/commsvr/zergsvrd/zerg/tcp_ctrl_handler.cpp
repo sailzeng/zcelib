@@ -962,7 +962,7 @@ int TCP_Svc_Handler::check_recv_full_frame(bool& bfull,
         whole_frame_len = ntohl(whole_frame_len);
 
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
-        if (whole_frame_len > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME || whole_frame_len < soar::Zerg_Frame::LEN_OF_HEAD)
+        if (whole_frame_len > soar::Zerg_Frame::MAX_LEN_OF_FRAME || whole_frame_len < soar::Zerg_Frame::LEN_OF_HEAD)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
                     peer_svr_id_.services_type_,
@@ -1580,7 +1580,7 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     }
 
     //如果倒数第2个桶有能力放下倒数第1个桶的FRAME数据，则进行合并操作。
-    if (soar::Zerg_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_buffer_ > snd_buffer_deque_[sz_deque - 1]->size_of_buffer_)
+    if (soar::Zerg_Frame::MAX_LEN_OF_FRAME - snd_buffer_deque_[sz_deque - 2]->size_of_buffer_ > snd_buffer_deque_[sz_deque - 1]->size_of_buffer_)
     {
         //将倒数第1个节点的数据放入倒数第2个节点中间。所以实际的Cache能力是非常强的，
         //空间利用率也很高。越发佩服我自己了。

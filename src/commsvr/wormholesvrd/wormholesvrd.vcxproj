@@ -137,7 +137,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -155,7 +155,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -175,7 +175,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -197,7 +197,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>predefine.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
