@@ -95,7 +95,7 @@ public:
 
     //!scandir打开
     const char* dirname_ = nullptr;
-    //!scandir返回的dirent，你
+    //!scandir返回的dirent，你需要自己清理
     struct dirent*** namelist_ = nullptr;
 };
 
@@ -104,16 +104,17 @@ struct MySQL_Handle :public AIO_Handle
     //!
     virtual void clear() override;
     //!
+    int result_ = -1;
     zce::mysql::Connect* db_connect_ = nullptr;
-    const char* host_name = nullptr;
-    const char* user = nullptr;
-    const char* pwd = nullptr;
-    unsigned int port = MYSQL_PORT;
-    const char* sql = nullptr;
-    size_t sql_len = 0;
-    uint64_t* num_affect = nullptr;
-    uint64_t* insert_id = nullptr;
-    zce::mysql::Result* db_result = nullptr;
+    const char* host_name_ = nullptr;
+    const char* user_ = nullptr;
+    const char* pwd_ = nullptr;
+    unsigned int port_ = MYSQL_PORT;
+    const char* sql_ = nullptr;
+    size_t sql_len_ = 0;
+    uint64_t* num_affect_ = nullptr;
+    uint64_t* insert_id_ = nullptr;
+    zce::mysql::Result* db_result_ = nullptr;
 };
 
 struct Host_Handle :public AIO_Handle
@@ -217,16 +218,49 @@ int fs_rmdir(zce::aio::Worker* worker,
              const char* dirname,
              std::function<void(AIO_Handle*)> call_back);
 
+//!链接数据
+int mysql_connect(zce::aio::Worker* worker,
+                  zce::mysql::Connect* db_connect,
+                  const char* host_name,
+                  const char* user,
+                  const char* pwd,
+                  unsigned int port, //默认填写MYSQL_PORT
+                  std::function<void(AIO_Handle*)> call_back);
+
+//!断开数据库链接
+int mysql_disconnect(zce::aio::Worker* worker,
+                     zce::mysql::Connect* db_connect,
+                     std::function<void(AIO_Handle*)> call_back);
+
+
+//!查询，非SELECT语句
+int mysql_query(zce::aio::Worker* worker,
+                zce::mysql::Connect* db_connect,
+                const char* sql,
+                size_t sql_len,
+                uint64_t* num_affect,
+                uint64_t* insert_id,
+                std::function<void(AIO_Handle*)> call_back);
+
+//!查询，SELECT语句
+int mysql_query(zce::aio::Worker* worker,
+                zce::mysql::Connect* db_connect,
+                const char* sql,
+                size_t sql_len,
+                uint64_t* num_affect,
+                zce::mysql::Result* db_result,
+                std::function<void(AIO_Handle*)> call_back);
+
 //========================================================================================
 //
-//AIO 文件处理相关的awaiter等待体
+//AIO FS文件处理相关的awaiter等待体
 struct await_aiofs
 {
     await_aiofs(zce::aio::Worker* worker,
                 zce::aio::FS_Handle* fs_hdl);
     ~await_aiofs() = default;
 
-    //是否准备好
+    //请求进行AIO操作，如果请求成功.return false挂起协程
     bool await_ready();
     //挂起操作
     void await_suspend(std::coroutine_handle<> awaiting);
@@ -234,7 +268,7 @@ struct await_aiofs
     //!恢复后返回结果
     FS_Handle await_resume();
 
-    //!回调函数
+    //!回调函数，AIO操作完成后恢复时调用
     void resume(AIO_Handle* return_hdl);
 
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
@@ -247,6 +281,35 @@ struct await_aiofs
     std::coroutine_handle<> awaiting_;
 };
 
+//AIO FS文件处理相关的awaiter等待体
+struct await_aiomysql
+{
+    await_aiomysql(zce::aio::Worker* worker,
+                   zce::aio::MySQL_Handle* mysql_hdl);
+    ~await_aiomysql() = default;
+
+    //请求进行AIO操作，如果请求成功.return false挂起协程
+    bool await_ready();
+    //挂起操作
+    void await_suspend(std::coroutine_handle<> awaiting);
+
+    //!恢复后返回结果
+    MySQL_Handle await_resume();
+
+    //!回调函数，AIO操作完成后恢复时调用
+    void resume(AIO_Handle* return_hdl);
+
+    //!工作者，具有请求，应答管道，处理IO多线程的管理者
+    zce::aio::Worker* worker_ = nullptr;
+    //!请求的文件操作句柄
+    zce::aio::MySQL_Handle* mysql_hdl_ = nullptr;
+    //!完成后返回的句柄
+    zce::aio::MySQL_Handle return_hdl_;
+    //!协程的句柄（调用者）
+    std::coroutine_handle<> awaiting_;
+};
+
+//========================================================================================
 //AIO 协程的co_await 函数
 
 //!协程co_await AIO读取文件
@@ -261,4 +324,33 @@ await_aiofs co_write_file(zce::aio::Worker* worker,
                           const char* write_bufs,
                           size_t nbufs,
                           ssize_t offset = 0);
+
+//!链接数据
+await_aiomysql co_mysql_connect(zce::aio::Worker* worker,
+                                zce::mysql::Connect* db_connect,
+                                const char* host_name,
+                                const char* user,
+                                const char* pwd,
+                                unsigned int port);
+
+//!断开数据库链接
+await_aiomysql co_mysql_disconnect(zce::aio::Worker* worker,
+                                   zce::mysql::Connect* db_connect);
+
+
+//!查询，非SELECT语句
+await_aiomysql co_mysql_query(zce::aio::Worker* worker,
+                              zce::mysql::Connect* db_connect,
+                              const char* sql,
+                              size_t sql_len,
+                              uint64_t* num_affect,
+                              uint64_t* insert_id);
+
+//!查询，SELECT语句
+await_aiomysql co_mysql_query(zce::aio::Worker* worker,
+                              zce::mysql::Connect* db_connect,
+                              const char* sql,
+                              size_t sql_len,
+                              uint64_t* num_affect,
+                              zce::mysql::Result* db_result);
 }

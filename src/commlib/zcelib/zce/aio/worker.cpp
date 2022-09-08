@@ -1,6 +1,7 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/dirent.h"
+#include "zce/mysql/execute.h"
 #include "zce/aio/worker.h"
 
 namespace zce::aio
@@ -222,9 +223,42 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
     }
 }
 //!
-void Worker::process_mysql(zce::aio::MySQL_Handle* /*hdl*/)
+void Worker::process_mysql(zce::aio::MySQL_Handle* hdl)
 {
-
+    switch (hdl->aio_type_)
+    {
+    case MYSQL_CONNECT:
+        hdl->result_ = zce::mysql::execute::connect(
+            hdl->db_connect_,
+            hdl->host_name_,
+            hdl->user_,
+            hdl->pwd_,
+            hdl->port_);
+        break;
+    case MYSQL_DISCONNECT:
+        hdl->result_ = 0;
+        zce::mysql::execute::disconnect(
+            hdl->db_connect_);
+        break;
+    case MYSQL_QUERY_NOSELECT:
+        hdl->result_ = zce::mysql::execute::query(
+            hdl->db_connect_,
+            hdl->sql_,
+            hdl->sql_len_,
+            hdl->num_affect_,
+            hdl->insert_id_);
+        break;
+    case MYSQL_QUERY_SELECT:
+        hdl->result_ = zce::mysql::execute::query(
+            hdl->db_connect_,
+            hdl->sql_,
+            hdl->sql_len_,
+            hdl->num_affect_,
+            hdl->db_result_);
+        break;
+    default:
+        break;
+    }
 }
 
 }

@@ -161,7 +161,7 @@ int query(zce::mysql::Connect* db_connect,
           uint64_t* num_affect,
           zce::mysql::Result* db_result);
 
-//!
+//!查询,SELECT语句，用USE result的方式进行查询
 int query(zce::mysql::Connect* db_connect,
           const char* sql,
           size_t sql_len,
