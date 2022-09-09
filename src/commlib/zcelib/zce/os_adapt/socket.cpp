@@ -18,29 +18,29 @@ sockaddr_any::~sockaddr_any()
 {
 }
 
-sockaddr_any::sockaddr_any(const ::sockaddr_in &sa)
+sockaddr_any::sockaddr_any(const ::sockaddr_in& sa)
 {
     ::memcpy(&in_, &sa, sizeof(sockaddr_in));
 }
 
-sockaddr_any::sockaddr_any(const ::sockaddr_in6 &sa)
+sockaddr_any::sockaddr_any(const ::sockaddr_in6& sa)
 {
     ::memcpy(&in6_, &sa, sizeof(sockaddr_in6));
 }
 
-sockaddr_any::sockaddr_any(const ::sockaddr *sa, socklen_t sa_len)
+sockaddr_any::sockaddr_any(const ::sockaddr* sa, socklen_t sa_len)
 {
     set(sa, sa_len);
 }
 
-bool sockaddr_any::operator == (const sockaddr_any &others) const
+bool sockaddr_any::operator == (const sockaddr_any& others) const
 {
-    const sockaddr *addr_ptr = (const sockaddr *)&others;
+    const sockaddr* addr_ptr = (const sockaddr*)&others;
     if (addr_ptr->sa_family == AF_INET)
     {
         //避免比较sin_zero一类数据
-        const sockaddr_in *s = (sockaddr_in *)this;
-        const sockaddr_in *o = (sockaddr_in *)&others;
+        const sockaddr_in* s = (sockaddr_in*)this;
+        const sockaddr_in* o = (sockaddr_in*)&others;
         //比较地址协议簇，地址，端口
         if (o->sin_family == s->sin_family &&
             o->sin_addr.s_addr == s->sin_addr.s_addr &&
@@ -51,8 +51,8 @@ bool sockaddr_any::operator == (const sockaddr_any &others) const
     }
     else if (addr_ptr->sa_family == AF_INET6)
     {
-        const sockaddr_in6 *s = (sockaddr_in6 *)this;
-        const sockaddr_in6 *o = (sockaddr_in6 *)&others;
+        const sockaddr_in6* s = (sockaddr_in6*)this;
+        const sockaddr_in6* o = (sockaddr_in6*)&others;
         //比较地址协议簇，地址，端口
         if (o->sin6_family == s->sin6_family &&
             0 == ::memcmp(&(o->sin6_addr), &(s->sin6_addr), sizeof(in6_addr)) &&
@@ -68,7 +68,7 @@ bool sockaddr_any::operator == (const sockaddr_any &others) const
     return false;
 }
 
-sockaddr_any& sockaddr_any::operator = (const ::sockaddr *sa)
+sockaddr_any& sockaddr_any::operator = (const ::sockaddr* sa)
 {
     if (sa->sa_family == AF_INET)
     {
@@ -84,18 +84,18 @@ sockaddr_any& sockaddr_any::operator = (const ::sockaddr *sa)
     }
     return *this;
 }
-sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in &sa)
+sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in& sa)
 {
     ::memcpy(&this->in_, &sa, sizeof(sockaddr_in));
     return *this;
 }
-sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in6 &sa)
+sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in6& sa)
 {
     ::memcpy(&this->in6_, &sa, sizeof(sockaddr_in6));
     return *this;
 }
 
-void sockaddr_any::set(const ::sockaddr *sa, socklen_t sa_len)
+void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
 {
     if (sa_len == sizeof(::sockaddr_in))
     {
@@ -128,7 +128,7 @@ int sockaddr_any::get_family() const
 
 size_t sockaddr_ip_hash::operator()(const zce::sockaddr_any& s) const
 {
-    const sockaddr *addr_ptr = (const sockaddr *)&s;
+    const sockaddr* addr_ptr = (const sockaddr*)&s;
     if (addr_ptr->sa_family == AF_INET)
     {
         return zce::hash_js((char*)addr_ptr, sizeof(sockaddr_in));
@@ -175,7 +175,7 @@ int socket_init(int version_high, int version_low)
 }
 
 //打开socket 句柄，简化处理的函数，非标准，通常用于客户端本地端口
-int open_socket(ZCE_SOCKET *handle,
+int open_socket(ZCE_SOCKET* handle,
                 int type,
                 int family,
                 int protocol,
@@ -217,7 +217,7 @@ int open_socket(ZCE_SOCKET *handle,
 }
 
 //打开socket 句柄，同时绑定本地地址，简化处理的函数，非标准，通常用于监听端口
-int zce::open_socket(ZCE_SOCKET *handle,
+int zce::open_socket(ZCE_SOCKET* handle,
                      int type,
                      const sockaddr* local_addr,
                      socklen_t addrlen,
@@ -532,25 +532,25 @@ int sock_enable(ZCE_SOCKET handle, int flags)
 
     switch (flags)
     {
-        case O_NONBLOCK:
-            // nonblocking argument (1)
-            // blocking:            (0)
-        {
-            u_long nonblock = 1;
-            int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
+    case O_NONBLOCK:
+        // nonblocking argument (1)
+        // blocking:            (0)
+    {
+        u_long nonblock = 1;
+        int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
 
-            //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
-            if (SOCKET_ERROR == zce_result)
-            {
-                errno = ::WSAGetLastError();
-            }
-
-            return zce_result;
-        }
-        default:
+        //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
+        if (SOCKET_ERROR == zce_result)
         {
-            return (-1);
+            errno = ::WSAGetLastError();
         }
+
+        return zce_result;
+    }
+    default:
+    {
+        return (-1);
+    }
     }
 
 #elif defined (ZCE_OS_LINUX)
@@ -580,24 +580,24 @@ int sock_disable(ZCE_SOCKET handle, int flags)
 
     switch (flags)
     {
-        case O_NONBLOCK:
-            // nonblocking argument (1)
-            // blocking:            (0)
+    case O_NONBLOCK:
+        // nonblocking argument (1)
+        // blocking:            (0)
+    {
+        u_long nonblock = 0;
+        int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
+
+        //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
+        if (SOCKET_ERROR == zce_result)
         {
-            u_long nonblock = 0;
-            int zce_result = ::ioctlsocket(handle, FIONBIO, &nonblock);
-
-            //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
-            if (SOCKET_ERROR == zce_result)
-            {
-                errno = ::WSAGetLastError();
-            }
-
-            return zce_result;
+            errno = ::WSAGetLastError();
         }
 
-        default:
-            return (-1);
+        return zce_result;
+    }
+
+    default:
+        return (-1);
     }
 
 #elif defined (ZCE_OS_LINUX)
@@ -1824,7 +1824,6 @@ bool is_internal(uint32_t ipv4_addr_val)
     return (ZCE_IS_INTERNAL(ipv4_addr_val));
 }
 
-
 //-------------------------------------------------------------------------------------
 //域名解析，转换IP地址的几个函数
 
@@ -1995,8 +1994,8 @@ int getaddrinfo(const char* nodename,
                 const addrinfo* hints,
                 addrinfo** result)
 {
-    return ::getaddrinfo(nodename, 
-                         service, 
+    return ::getaddrinfo(nodename,
+                         service,
                          hints,
                          result);
 }
@@ -2053,8 +2052,8 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
     *ary_addr_num = num_addr;
 
     prc_node = result;
-    for (size_t j = 0; 
-         (j < *ary_addr6_num) && (prc_node != NULL); 
+    for (size_t j = 0;
+         (j < *ary_addr6_num) && (prc_node != NULL);
          prc_node = prc_node->ai_next, ++j)
     {
         if (AF_INET6 == prc_node->ai_family)
@@ -2066,8 +2065,8 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
     *ary_addr6_num = num_addr6;
 }
 
-//非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便
-int getaddrinfo_to_addrary(const char* nodename,
+//非标准函数,得到某个域名的IPV4 和IPV6的地址数组，使用起来比较容易和方便
+int getaddrinfo_to_addrary(const char* hostname,
                            const char* service,
                            size_t* ary_addr_num,
                            sockaddr_in ary_addr[],
@@ -2082,7 +2081,7 @@ int getaddrinfo_to_addrary(const char* nodename,
     hints.ai_family = AF_UNSPEC;
     //hints.ai_socktype = 0; 返回所有类型
     //hints.ai_flags = 0;
-    ret = zce::getaddrinfo(nodename,
+    ret = zce::getaddrinfo(hostname,
                            service,
                            &hints,
                            &result);
@@ -2090,7 +2089,6 @@ int getaddrinfo_to_addrary(const char* nodename,
     {
         return ret;
     }
-
     if (!result)
     {
         errno = EINVAL;
@@ -2109,6 +2107,7 @@ int getaddrinfo_to_addrary(const char* nodename,
 }
 
 int zce::getaddrinfo_to_addr(const char* nodename,
+                             const char* service,
                              sockaddr* addr,
                              socklen_t addr_len)
 {
@@ -2121,7 +2120,7 @@ int zce::getaddrinfo_to_addr(const char* nodename,
     //优先分析nodename是否是数值地址
     hints.ai_flags = AI_PASSIVE;
     ret = zce::getaddrinfo(nodename,
-                           NULL,
+                           service,
                            &hints,
                            &result);
     if (ret != 0)
@@ -2143,7 +2142,7 @@ int zce::getaddrinfo_to_addr(const char* nodename,
         errno = EINVAL;
         return -1;
     }
-    
+
     getaddrinfo_result_to_oneaddr(result, addr, addr_len);
     //释放空间
     zce::freeaddrinfo(result);
@@ -2160,19 +2159,19 @@ int getnameinfo(const struct sockaddr* sa,
                 int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
-    return ::getnameinfo(sa, 
-                         salen, 
-                         host, 
-                         static_cast<DWORD>(hostlen), 
-                         serv, 
+    return ::getnameinfo(sa,
+                         salen,
+                         host,
+                         static_cast<DWORD>(hostlen),
+                         serv,
                          static_cast<DWORD>(servlen), flags);
 #elif defined (ZCE_OS_LINUX)
-    return ::getnameinfo(sa, 
-                         salen, 
-                         host, 
-                         hostlen, 
-                         serv, 
-                         servlen, 
+    return ::getnameinfo(sa,
+                         salen,
+                         host,
+                         hostlen,
+                         serv,
+                         servlen,
                          flags);
 #endif
 }

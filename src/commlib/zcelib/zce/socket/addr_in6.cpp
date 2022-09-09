@@ -144,6 +144,7 @@ int Sockaddr_In6::getaddrinfo(const char* nodename,
 {
     in6_addr_.sin6_port = ntohs(port_number);
     return zce::getaddrinfo_to_addr(nodename,
+                                    nullptr,
                                     sockaddr_ptr_,
                                     sizeof(sockaddr_in6));
 }

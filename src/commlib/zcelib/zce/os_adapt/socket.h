@@ -36,18 +36,18 @@ class sockaddr_any
 public:
     sockaddr_any();
     ~sockaddr_any();
-    sockaddr_any(const ::sockaddr *sa, socklen_t sa_len);
-    explicit sockaddr_any(const ::sockaddr_in &sa);
-    explicit sockaddr_any(const ::sockaddr_in6 &sa);
+    sockaddr_any(const ::sockaddr* sa, socklen_t sa_len);
+    explicit sockaddr_any(const ::sockaddr_in& sa);
+    explicit sockaddr_any(const ::sockaddr_in6& sa);
 
-    bool operator == (const sockaddr_any &others) const;
+    bool operator == (const sockaddr_any& others) const;
 
     //!根据addr->sa_family判别sockaddr的类型
-    sockaddr_any& operator = (const ::sockaddr *addr);
-    sockaddr_any& operator = (const ::sockaddr_in &addr_in);
-    sockaddr_any& operator = (const ::sockaddr_in6 &addr_in6);
+    sockaddr_any& operator = (const ::sockaddr* addr);
+    sockaddr_any& operator = (const ::sockaddr_in& addr_in);
+    sockaddr_any& operator = (const ::sockaddr_in6& addr_in6);
 
-    void set(const ::sockaddr *sa, socklen_t sa_len);
+    void set(const ::sockaddr* sa, socklen_t sa_len);
 
     void set_family(int family);
 
@@ -105,7 +105,7 @@ inline ZCE_SOCKET socket(int family,
 * @param[in]  reuse_addr  是否重用地址
 * @note       family      protocol参数参考socket函数
 */
-int open_socket(ZCE_SOCKET *handle,
+int open_socket(ZCE_SOCKET* handle,
                 int type,
                 int family,
                 int protocol = 0,
@@ -118,7 +118,7 @@ int open_socket(ZCE_SOCKET *handle,
 * @param      addrlen    要绑定的本地地址长度
 * @note       其他参数，返回参考前面的函数
 */
-int open_socket(ZCE_SOCKET *handle,
+int open_socket(ZCE_SOCKET* handle,
                 int type,
                 const sockaddr* local_addr,
                 socklen_t addrlen,
@@ -592,14 +592,14 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        zce::Time_Value& /*timeout_tv*/,
                        int flags = 0);
 
-//==================================================================================================
+//=================================================================================================
 //这组函数提供仅仅为了代码测试，暂时不对外提供
 //这组函数是使用SO_RCVTIMEO，SO_SNDTIMEO得到一组超时处理函数
 
 /*!
 * @brief      接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n
-*             recvn_timeout2 和 recvn_timeout 的区别是带recvn_timeout2的名字函数是使用是SO_RCVTIMEO选项进行超时处理，
-*             记时不是特别准确，
+*             recvn_timeout2 和 recvn_timeout 的区别是带recvn_timeout2的名字函数是使用是
+*             SO_RCVTIMEO选项进行超时处理，记时不是特别准确，
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
 */
 ssize_t recvn_timeout2(ZCE_SOCKET handle,
@@ -610,8 +610,8 @@ ssize_t recvn_timeout2(ZCE_SOCKET handle,
 
 /*!
 * @brief      发送数据，发送len长的数据或者超时后返回，除了timeout_tv参数，请参考@ref sendv_n
-*             sendn_timeout2 和 sendn_timeout 的区别是带sendn_timeout2的名字函数是使用是SO_SNDTIMEO选项进行超时处理，
-*             记时不是特别准确，
+*             sendn_timeout2 和 sendn_timeout 的区别是带sendn_timeout2的名字函数是使用是
+*             SO_SNDTIMEO选项进行超时处理，记时不是特别准确，
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
 */
 ssize_t sendn_timeout2(ZCE_SOCKET handle,
@@ -909,8 +909,8 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
                                    sockaddr_in6 ary_addr6[]);
 
 /*!
-* @brief         非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便,
-*                底层使用getaddrinfo
+* @brief         非标准函数,得到某个域名的IPV4和IPV6的地址数组，使用起来比较容
+*                易和方便,底层使用getaddrinfo
 * @return        int            0成功，其他失败
 * @param[in]     notename       域名
 * @param[in]     service        服务名称，可以是"HTTP"，也可以是"80"
@@ -919,7 +919,7 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
 * @param[in,out] ary_addr6_num  输入时数组的长度，输出返回实际获得的地址个数
 * @param[out]    ary_sock_addr6 域名对应的sockaddr_in6 数组
 */
-int getaddrinfo_to_addrary(const char* notename,
+int getaddrinfo_to_addrary(const char* hostname,
                            const char* service,
                            size_t* ary_addr_num,
                            sockaddr_in ary_addr[],
@@ -934,7 +934,8 @@ int getaddrinfo_to_addrary(const char* notename,
 * @param[out] addr     返回的地址
 * @param[in]  addr_len 地址的长度
 */
-int getaddrinfo_to_addr(const char* host_name,
+int getaddrinfo_to_addr(const char* hostname,
+                        const char* service,
                         sockaddr* addr,
                         socklen_t addr_len);
 
@@ -948,7 +949,7 @@ int getaddrinfo_to_addr(const char* host_name,
 * @param[out] serv    返回的服务名称buffer
 * @param[in]  servlen 服务名称buffer的长度
 * @param[in]  flags   flags 参数，可以使用的值包括
-*                     NI_NOFQDN        对于本地主机, 仅返回完全限定域名的节点名部分.比如bear.qq.com，返回点bear，而不返回.qq.com
+*                     NI_NOFQDN       对于本地主机, 仅返回完全限定域名的节点名部分.比如bear.qq.com，返回点bear，而不返回.qq.com
 *                     NI_NUMERICHOST  host参数返回数字的IP地址信息信息
 *                     NI_NAMEREQD     如果IP地址不能解析为域名，返回一个错误
 *                     NI_NUMERICSERV  serv参数返回数值的字符串信息
@@ -979,7 +980,8 @@ int getnameinfo_sockaddr(const sockaddr* sock_addr,
 * @param[out] name       返回的主机名称，
 * @param[in]  name_len   主机名称的buffer长度
 */
-inline int gethostname(char* name, size_t name_len);
+inline int gethostname(char* name,
+                       size_t name_len);
 
 //-------------------------------------------------------------------------------------
 //为sockaddr_in增加的一组函数，方便使用,

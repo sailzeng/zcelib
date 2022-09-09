@@ -48,7 +48,8 @@ enum AIO_TYPE
     HOST_END = 299,
 };
 
-struct AIO_Handle
+//! AIO异步操作的原子
+struct AIO_Atom
 {
     virtual void clear() = 0;
 
@@ -57,11 +58,11 @@ struct AIO_Handle
     //!
     uint32_t id_;
     //!
-    std::function<void(AIO_Handle*)> call_back_;
+    std::function<void(AIO_Atom*)> call_back_;
 };
 
-//! FS文件
-struct FS_Handle :public AIO_Handle
+//! FS文件操作的
+struct FS_Atom :public AIO_Atom
 {
     //!清理
     virtual void clear();
@@ -100,7 +101,7 @@ public:
     struct dirent*** namelist_ = nullptr;
 };
 
-struct MySQL_Handle :public AIO_Handle
+struct MySQL_Atom :public AIO_Atom
 {
     //!
     virtual void clear() override;
@@ -117,11 +118,22 @@ struct MySQL_Handle :public AIO_Handle
     uint64_t* insert_id_ = nullptr;
     zce::mysql::Result* db_result_ = nullptr;
 };
-
-struct Host_Handle :public AIO_Handle
+//
+struct Host_Atom :public AIO_Atom
 {
     //!清理
     virtual void clear();
+    //!参数
+    int result_ = -1;
+    const char* hostname_ = nullptr;
+    const char* service_ = nullptr;
+    size_t* ary_addr_num_ = nullptr;
+    sockaddr_in* ary_addr_ = nullptr;
+    size_t* ary_addr6_num_ = nullptr;
+    sockaddr_in6* ary_addr6_ = nullptr;
+    //
+    sockaddr* addr_ = nullptr;
+    socklen_t addr_len_ = 0;
 };
 
 //====================================================
@@ -131,26 +143,26 @@ int fs_open(zce::aio::Worker* worker,
             const char* path,
             int flags,
             int mode,
-            std::function<void(AIO_Handle*)> call_back);
+            std::function<void(AIO_Atom*)> call_back);
 
 //!异步关闭某个文件，完成后回调函数call_back
 int fs_close(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
-             std::function<void(AIO_Handle*)> call_back);
+             std::function<void(AIO_Atom*)> call_back);
 
 //!移动文件的读写位置,
 int fs_lseek(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
              off_t offset,
              int whence,
-             std::function<void(AIO_Handle*)> call_back);
+             std::function<void(AIO_Atom*)> call_back);
 
 //!异步读取文件内容
 int fs_read(zce::aio::Worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
-            std::function<void(AIO_Handle*)> call_back,
+            std::function<void(AIO_Atom*)> call_back,
             ssize_t offset = 0,
             int whence = SEEK_CUR);
 
@@ -159,7 +171,7 @@ int fs_write(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
-             std::function<void(AIO_Handle*)> call_back,
+             std::function<void(AIO_Atom*)> call_back,
              ssize_t offset = 0,
              int whence = SEEK_CUR);
 
@@ -167,14 +179,14 @@ int fs_write(zce::aio::Worker* worker,
 int fs_ftruncate(zce::aio::Worker* worker,
                  ZCE_HANDLE handle,
                  size_t offset,
-                 std::function<void(AIO_Handle*)> call_back);
+                 std::function<void(AIO_Atom*)> call_back);
 
 //!异步打开文件，读取文件内容，然后关闭
 int fs_read_file(zce::aio::Worker* worker,
                  const char* path,
                  char* read_bufs,
                  size_t nbufs,
-                 std::function<void(AIO_Handle*)> call_back,
+                 std::function<void(AIO_Atom*)> call_back,
                  ssize_t offset = 0);
 
 //!异步打开文件，写入文件内容，然后关闭
@@ -182,43 +194,43 @@ int fs_write_file(zce::aio::Worker* worker,
                   const char* path,
                   const char* write_bufs,
                   size_t nbufs,
-                  std::function<void(AIO_Handle*)> call_back,
+                  std::function<void(AIO_Atom*)> call_back,
                   ssize_t offset = 0);
 
 //!异步删除文件
 int fs_unlink(zce::aio::Worker* worker,
               const char* path,
-              std::function<void(AIO_Handle*)> call_back);
+              std::function<void(AIO_Atom*)> call_back);
 
 //!异步改名
 int fs_rename(zce::aio::Worker* worker,
               const char* path,
               const char* new_path,
-              std::function<void(AIO_Handle*)> call_back);
+              std::function<void(AIO_Atom*)> call_back);
 
 //!异步获取stat
 int fs_stat(zce::aio::Worker* worker,
             const char* path,
             struct stat* file_stat,
-            std::function<void(AIO_Handle*)> call_back);
+            std::function<void(AIO_Atom*)> call_back);
 
 //! 异步scandir,参数参考scandir
 //! namelist请使用，可以用free_scandir_list函数释放
 int fs_scandir(zce::aio::Worker* worker,
                const char* dirname,
                struct dirent*** namelist,
-               std::function<void(AIO_Handle*)> call_back);
+               std::function<void(AIO_Atom*)> call_back);
 
 //!异步建立dir
 int fs_mkdir(zce::aio::Worker* worker,
              const char* dirname,
              int mode,
-             std::function<void(AIO_Handle*)> call_back);
+             std::function<void(AIO_Atom*)> call_back);
 
 //!异步删除dir
 int fs_rmdir(zce::aio::Worker* worker,
              const char* dirname,
-             std::function<void(AIO_Handle*)> call_back);
+             std::function<void(AIO_Atom*)> call_back);
 
 //!链接数据
 int mysql_connect(zce::aio::Worker* worker,
@@ -227,13 +239,12 @@ int mysql_connect(zce::aio::Worker* worker,
                   const char* user,
                   const char* pwd,
                   unsigned int port, //默认填写MYSQL_PORT
-                  std::function<void(AIO_Handle*)> call_back);
+                  std::function<void(AIO_Atom*)> call_back);
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::Worker* worker,
                      zce::mysql::Connect* db_connect,
-                     std::function<void(AIO_Handle*)> call_back);
-
+                     std::function<void(AIO_Atom*)> call_back);
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::Worker* worker,
@@ -242,7 +253,7 @@ int mysql_query(zce::aio::Worker* worker,
                 size_t sql_len,
                 uint64_t* num_affect,
                 uint64_t* insert_id,
-                std::function<void(AIO_Handle*)> call_back);
+                std::function<void(AIO_Atom*)> call_back);
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::Worker* worker,
@@ -251,20 +262,25 @@ int mysql_query(zce::aio::Worker* worker,
                 size_t sql_len,
                 uint64_t* num_affect,
                 zce::mysql::Result* db_result,
-                std::function<void(AIO_Handle*)> call_back);
+                std::function<void(AIO_Atom*)> call_back);
 
 //!
-int host_getaddrinfo_ary(const char* notename,
-                           const char* service,
-                           size_t* ary_addr_num,
-                           sockaddr_in ary_addr[],
-                           size_t* ary_addr6_num,
-                           sockaddr_in6 ary_addr6[]);
+int host_getaddrinfo_ary(zce::aio::Worker* worker,
+                         const char* notename,
+                         const char* service,
+                         size_t* ary_addr_num,
+                         sockaddr_in* ary_addr,
+                         size_t* ary_addr6_num,
+                         sockaddr_in6* ary_addr6,
+                         std::function<void(AIO_Atom*)> call_back);
 
-
-int host_getaddrinfo_one(const char* host_name,
-                        sockaddr* addr,
-                        socklen_t addr_len);
+//!
+int host_getaddrinfo_one(zce::aio::Worker* worker,
+                         const char* host_name,
+                         const char* service,
+                         sockaddr* addr,
+                         socklen_t addr_len,
+                         std::function<void(AIO_Atom*)> call_back);
 
 //========================================================================================
 //
@@ -272,7 +288,7 @@ int host_getaddrinfo_one(const char* host_name,
 struct await_aiofs
 {
     await_aiofs(zce::aio::Worker* worker,
-                zce::aio::FS_Handle* fs_hdl);
+                zce::aio::FS_Atom* fs_hdl);
     ~await_aiofs() = default;
 
     //请求进行AIO操作，如果请求成功.return false挂起协程
@@ -281,17 +297,17 @@ struct await_aiofs
     void await_suspend(std::coroutine_handle<> awaiting);
 
     //!恢复后返回结果
-    FS_Handle await_resume();
+    FS_Atom await_resume();
 
     //!回调函数，AIO操作完成后恢复时调用
-    void resume(AIO_Handle* return_hdl);
+    void resume(AIO_Atom* return_hdl);
 
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::Worker* worker_ = nullptr;
     //!请求的文件操作句柄
-    zce::aio::FS_Handle* fs_hdl_ = nullptr;
+    zce::aio::FS_Atom* fs_hdl_ = nullptr;
     //!完成后返回的句柄
-    zce::aio::FS_Handle return_hdl_;
+    zce::aio::FS_Atom return_hdl_;
     //!协程的句柄（调用者）
     std::coroutine_handle<> awaiting_;
 };
@@ -300,7 +316,7 @@ struct await_aiofs
 struct await_aiomysql
 {
     await_aiomysql(zce::aio::Worker* worker,
-                   zce::aio::MySQL_Handle* mysql_hdl);
+                   zce::aio::MySQL_Atom* mysql_hdl);
     ~await_aiomysql() = default;
 
     //请求进行AIO操作，如果请求成功.return false挂起协程
@@ -309,17 +325,17 @@ struct await_aiomysql
     void await_suspend(std::coroutine_handle<> awaiting);
 
     //!恢复后返回结果
-    MySQL_Handle await_resume();
+    MySQL_Atom await_resume();
 
     //!回调函数，AIO操作完成后恢复时调用
-    void resume(AIO_Handle* return_hdl);
+    void resume(AIO_Atom* return_hdl);
 
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::Worker* worker_ = nullptr;
     //!请求的文件操作句柄
-    zce::aio::MySQL_Handle* mysql_hdl_ = nullptr;
+    zce::aio::MySQL_Atom* mysql_hdl_ = nullptr;
     //!完成后返回的句柄
-    zce::aio::MySQL_Handle return_hdl_;
+    zce::aio::MySQL_Atom return_hdl_;
     //!协程的句柄（调用者）
     std::coroutine_handle<> awaiting_;
 };

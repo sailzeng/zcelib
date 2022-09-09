@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "zce/pool/multiobjs_pool.h"
@@ -8,7 +6,6 @@
 
 namespace zce::aio
 {
-
 class Worker
 {
 public:
@@ -23,13 +20,13 @@ public:
     //!销毁
     void terminate();
 
-    //! 根据AIO_TYPE，请求一个AIO_Handle
-    AIO_Handle* alloc_handle(AIO_TYPE aio_type);
-    //! 释放一个AIO_Handle，根据AIO_TYPE归还到不同的池子里面。
-    void free_handle(zce::aio::AIO_Handle* base);
+    //! 根据AIO_TYPE，请求一个AIO_Atom
+    AIO_Atom* alloc_handle(AIO_TYPE aio_type);
+    //! 释放一个AIO_Atom，根据AIO_TYPE归还到不同的池子里面。
+    void free_handle(zce::aio::AIO_Atom* base);
 
     //!在请求队列放入一个请求
-    bool request(zce::aio::AIO_Handle* base);
+    bool request(zce::aio::AIO_Atom* base);
 
     //! 处理请求
     void process_request();
@@ -38,13 +35,15 @@ public:
     void process_response(size_t& num_rsp,
                           zce::Time_Value* wait_time);
 
-    //!处理AIO操作，会根据type分解工作到下面这些函数
-    void process_aio(zce::aio::AIO_Handle* base);
+    //!在线程中处理AIO操作，会根据type分解工作到下面这些函数
+    void process_aio(zce::aio::AIO_Atom* base);
 
-    //!处理文件操作
-    void process_fs(zce::aio::FS_Handle* base);
-    //!处理MySQL
-    void process_mysql(zce::aio::MySQL_Handle* base);
+    //!在线程中处理文件操作
+    void process_fs(zce::aio::FS_Atom* base);
+    //!在线程中处理MySQL操作请求
+    void process_mysql(zce::aio::MySQL_Atom* base);
+    //!在线程中处理Gat Host Addr请求
+    void process_host(zce::aio::Host_Atom* base);
 
 protected:
 
@@ -57,12 +56,15 @@ protected:
     std::thread** work_thread_ = nullptr;
     //! 线程是否继续干活
     bool worker_running_ = true;
+
     //! 请求，应答队列，用于Caller 和Worker 线程交互
-    zce::msgring_condi<zce::aio::AIO_Handle*>* requst_queue_ = nullptr;
-    zce::msgring_condi<zce::aio::AIO_Handle*>* response_queue_ = nullptr;
+    zce::msgring_condi<zce::aio::AIO_Atom*>* requst_queue_ = nullptr;
+    zce::msgring_condi<zce::aio::AIO_Atom*>* response_queue_ = nullptr;
+
     //! 对象池子，用于分配对象
     zce::multiobjs_pool<std::mutex,
-        zce::aio::FS_Handle,
-        zce::aio::MySQL_Handle> aio_obj_pool_;
+        zce::aio::FS_Atom,
+        zce::aio::MySQL_Atom,
+        zce::aio::Host_Atom> aio_obj_pool_;
 };
 }

@@ -95,6 +95,7 @@ int Sockaddr_Any::getaddrinfo(const char* node_name,
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
         ret = zce::getaddrinfo_to_addr(node_name,
+                                       nullptr,
                                        sockaddr_ptr_,
                                        sizeof(sockaddr_in));
         if (ret != 0)
@@ -109,6 +110,7 @@ int Sockaddr_Any::getaddrinfo(const char* node_name,
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
         ret = zce::getaddrinfo_to_addr(node_name,
+                                       nullptr,
                                        sockaddr_ptr_,
                                        sizeof(sockaddr_in6));
         if (ret != 0)
@@ -136,6 +138,7 @@ int Sockaddr_Any::getaddrinfo(int family,
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
         sockaddr_size_ = sizeof(sockaddr_in);
         ret = zce::getaddrinfo_to_addr(node_name,
+                                       nullptr,
                                        sockaddr_ptr_,
                                        sizeof(sockaddr_in));
         in4_addr_.sin_family = AF_INET;
@@ -151,6 +154,7 @@ int Sockaddr_Any::getaddrinfo(int family,
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
         sockaddr_size_ = sizeof(sockaddr_in6);
         ret = zce::getaddrinfo_to_addr(node_name,
+                                       nullptr,
                                        sockaddr_ptr_,
                                        sizeof(sockaddr_in6));
         if (ret != 0)
@@ -247,8 +251,8 @@ bool Sockaddr_Any::operator == (const Sockaddr_Any& others) const
     else if (sockaddr_ptr_->sa_family == AF_INET6 &&
              others.in6_addr_.sin6_family == this->in6_addr_.sin6_family &&
              0 == memcmp(&(others.in6_addr_.sin6_addr),
-             &(this->in6_addr_.sin6_addr),
-             sizeof(in6_addr)) &&
+                         &(this->in6_addr_.sin6_addr),
+                         sizeof(in6_addr)) &&
              others.in6_addr_.sin6_port == this->in6_addr_.sin6_port)
     {
         return true;

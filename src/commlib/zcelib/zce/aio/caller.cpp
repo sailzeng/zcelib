@@ -4,16 +4,15 @@
 
 namespace zce::aio
 {
-
-void AIO_Handle::clear()
+void AIO_Atom::clear()
 {
     aio_type_ = AIO_INVALID;
     id_ = 0;
 }
 
-void FS_Handle::clear()
+void FS_Atom::clear()
 {
-    AIO_Handle::clear();
+    AIO_Atom::clear();
     result_ = 0;
     path_ = nullptr;
     flags_ = 0;
@@ -31,9 +30,9 @@ void FS_Handle::clear()
     namelist_ = nullptr;
 }
 
-void MySQL_Handle::clear()
+void MySQL_Atom::clear()
 {
-    AIO_Handle::clear();
+    AIO_Atom::clear();
     result_ = 0;
     db_connect_ = nullptr;
     host_name_ = nullptr;
@@ -47,6 +46,17 @@ void MySQL_Handle::clear()
     db_result_ = nullptr;
 }
 
+void Host_Atom::clear()
+{
+    AIO_Atom::clear();
+    hostname_ = nullptr;
+    service_ = nullptr;
+    ary_addr_num_ = nullptr;
+    ary_addr_ = nullptr;
+    ary_addr6_num_ = nullptr;
+    ary_addr6_ = nullptr;
+}
+
 //====================================================
 
 //!异步打开某个文件，完成后回调函数call_back
@@ -54,9 +64,9 @@ int fs_open(zce::aio::Worker* worker,
             const char* path,
             int flags,
             int mode,
-            std::function<void(AIO_Handle*)> call_back)
+            std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* hdl = (FS_Handle*)
+    zce::aio::FS_Atom* hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_OPEN);
     hdl->path_ = path;
     hdl->flags_ = flags;
@@ -73,9 +83,9 @@ int fs_open(zce::aio::Worker* worker,
 //!关闭某个文件
 int fs_close(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
-             std::function<void(AIO_Handle*)> call_back)
+             std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* hdl = (FS_Handle*)
+    zce::aio::FS_Atom* hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_CLOSE);
     hdl->handle_ = handle;
     hdl->call_back_ = call_back;
@@ -92,9 +102,9 @@ int fs_lseek(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
              off_t offset,
              int whence,
-             std::function<void(AIO_Handle*)> call_back)
+             std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* hdl = (FS_Handle*)
+    zce::aio::FS_Atom* hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_LSEEK);
     hdl->handle_ = handle;
     hdl->offset_ = offset;
@@ -113,11 +123,11 @@ int fs_read(zce::aio::Worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
-            std::function<void(AIO_Handle*)> call_back,
+            std::function<void(AIO_Atom*)> call_back,
             ssize_t offset,
             int whence)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_READ);
     aio_hdl->handle_ = handle;
     aio_hdl->read_bufs_ = read_bufs;
@@ -138,11 +148,11 @@ int fs_write(zce::aio::Worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
-             std::function<void(AIO_Handle*)> call_back,
+             std::function<void(AIO_Atom*)> call_back,
              ssize_t offset,
              int whence)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_WRITE);
     aio_hdl->handle_ = handle;
     aio_hdl->write_bufs_ = write_bufs;
@@ -162,9 +172,9 @@ int fs_write(zce::aio::Worker* worker,
 int fs_ftruncate(zce::aio::Worker* worker,
                  ZCE_HANDLE handle,
                  size_t offset,
-                 std::function<void(AIO_Handle*)> call_back)
+                 std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_FTRUNCATE);
     aio_hdl->handle_ = handle;
     aio_hdl->offset_ = offset;
@@ -182,10 +192,10 @@ int fs_read_file(zce::aio::Worker* worker,
                  const char* path,
                  char* read_bufs,
                  size_t nbufs,
-                 std::function<void(AIO_Handle*)> call_back,
+                 std::function<void(AIO_Atom*)> call_back,
                  ssize_t offset)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_READFILE);
     aio_hdl->path_ = path;
     aio_hdl->read_bufs_ = read_bufs;
@@ -205,10 +215,10 @@ int fs_write_file(zce::aio::Worker* worker,
                   const char* path,
                   const char* write_bufs,
                   size_t nbufs,
-                  std::function<void(AIO_Handle*)> call_back,
+                  std::function<void(AIO_Atom*)> call_back,
                   ssize_t offset)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
     aio_hdl->path_ = path;
     aio_hdl->write_bufs_ = write_bufs;
@@ -226,9 +236,9 @@ int fs_write_file(zce::aio::Worker* worker,
 //!异步删除文件
 int fs_unlink(zce::aio::Worker* worker,
               const char* path,
-              std::function<void(AIO_Handle*)> call_back)
+              std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_UNLINK);
     aio_hdl->path_ = path;
     aio_hdl->call_back_ = call_back;
@@ -244,9 +254,9 @@ int fs_unlink(zce::aio::Worker* worker,
 int fs_rename(zce::aio::Worker* worker,
               const char* path,
               const char* new_path,
-              std::function<void(AIO_Handle*)> call_back)
+              std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_RENAME);
     aio_hdl->path_ = path;
     aio_hdl->new_path_ = new_path;
@@ -263,9 +273,9 @@ int fs_rename(zce::aio::Worker* worker,
 int fs_stat(zce::aio::Worker* worker,
             const char* path,
             struct stat* file_stat,
-            std::function<void(AIO_Handle*)> call_back)
+            std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_STAT);
     aio_hdl->path_ = path;
     aio_hdl->file_stat_ = file_stat;
@@ -282,9 +292,9 @@ int fs_stat(zce::aio::Worker* worker,
 int fs_scandir(zce::aio::Worker* worker,
                const char* dirname,
                struct dirent*** namelist,
-               std::function<void(AIO_Handle*)> call_back)
+               std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_SCANDIR);
     aio_hdl->dirname_ = dirname;
     aio_hdl->namelist_ = namelist;
@@ -301,9 +311,9 @@ int fs_scandir(zce::aio::Worker* worker,
 int fs_mkdir(zce::aio::Worker* worker,
              const char* dirname,
              int mode,
-             std::function<void(AIO_Handle*)> call_back)
+             std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_MKDIR);
     aio_hdl->dirname_ = dirname;
     aio_hdl->mode_ = mode;
@@ -319,9 +329,9 @@ int fs_mkdir(zce::aio::Worker* worker,
 //!异步删除dir
 int fs_rmdir(zce::aio::Worker* worker,
              const char* dirname,
-             std::function<void(AIO_Handle*)> call_back)
+             std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_RMDIR);
     aio_hdl->dirname_ = dirname;
     aio_hdl->call_back_ = call_back;
@@ -340,9 +350,9 @@ int mysql_connect(zce::aio::Worker* worker,
                   const char* user,
                   const char* pwd,
                   unsigned int port,
-                  std::function<void(AIO_Handle*)> call_back)
+                  std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_CONNECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->host_name_ = host_name;
@@ -361,9 +371,9 @@ int mysql_connect(zce::aio::Worker* worker,
 //!断开数据库链接
 int mysql_disconnect(zce::aio::Worker* worker,
                      zce::mysql::Connect* db_connect,
-                     std::function<void(AIO_Handle*)> call_back)
+                     std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_DISCONNECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->call_back_ = call_back;
@@ -375,7 +385,6 @@ int mysql_disconnect(zce::aio::Worker* worker,
     return 0;
 }
 
-
 //!查询，非SELECT语句
 int mysql_query(zce::aio::Worker* worker,
                 zce::mysql::Connect* db_connect,
@@ -383,9 +392,9 @@ int mysql_query(zce::aio::Worker* worker,
                 size_t sql_len,
                 uint64_t* num_affect,
                 uint64_t* insert_id,
-                std::function<void(AIO_Handle*)> call_back)
+                std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_QUERY_NOSELECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->sql_ = sql;
@@ -409,9 +418,9 @@ int mysql_query(zce::aio::Worker* worker,
                 size_t sql_len,
                 uint64_t* num_affect,
                 zce::mysql::Result* db_result,
-                std::function<void(AIO_Handle*)> call_back)
+                std::function<void(AIO_Atom*)> call_back)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_QUERY_SELECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->sql_ = sql;
@@ -428,10 +437,61 @@ int mysql_query(zce::aio::Worker* worker,
     return 0;
 }
 
+//!
+int host_getaddrinfo_ary(zce::aio::Worker* worker,
+                         const char* hostname,
+                         const char* service,
+                         size_t* ary_addr_num,
+                         sockaddr_in* ary_addr,
+                         size_t* ary_addr6_num,
+                         sockaddr_in6* ary_addr6,
+                         std::function<void(AIO_Atom*)> call_back)
+{
+    zce::aio::Host_Atom* aio_hdl = (Host_Atom*)
+        worker->alloc_handle(AIO_TYPE::GETADDRINFO_ARY);
+    aio_hdl->hostname_ = hostname;
+    aio_hdl->service_ = service;
+    aio_hdl->ary_addr_num_ = ary_addr_num;
+    aio_hdl->ary_addr_ = ary_addr;
+    aio_hdl->ary_addr6_num_ = ary_addr6_num;
+    aio_hdl->ary_addr6_ = ary_addr6;
+    aio_hdl->call_back_ = call_back;
+
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+int host_getaddrinfo_one(zce::aio::Worker* worker,
+                         const char* hostname,
+                         const char* service,
+                         sockaddr* addr,
+                         socklen_t addr_len,
+                         std::function<void(AIO_Atom*)> call_back)
+{
+    zce::aio::Host_Atom* aio_hdl = (Host_Atom*)
+        worker->alloc_handle(AIO_TYPE::GETADDRINFO_ONE);
+    aio_hdl->hostname_ = hostname;
+    aio_hdl->service_ = service;
+    aio_hdl->addr_ = addr;
+    aio_hdl->addr_len_ = addr_len;
+    aio_hdl->call_back_ = call_back;
+
+    auto succ_req = worker->request(aio_hdl);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
 //====================================================
 //await_aiofs是co_wait 文件操作的等待体
 await_aiofs::await_aiofs(zce::aio::Worker* worker,
-                         zce::aio::FS_Handle* fs_hdl) :
+                         zce::aio::FS_Atom* fs_hdl) :
     worker_(worker),
     fs_hdl_(fs_hdl)
 {
@@ -460,14 +520,14 @@ void await_aiofs::await_suspend(std::coroutine_handle<> awaiting)
     awaiting_ = awaiting;
 }
 //!回复后的操作。返回结果
-FS_Handle await_aiofs::await_resume()
+FS_Atom await_aiofs::await_resume()
 {
     return return_hdl_;
 }
 //!回调函数
-void await_aiofs::resume(AIO_Handle* return_hdl)
+void await_aiofs::resume(AIO_Atom* return_hdl)
 {
-    FS_Handle* fs_hdl = (FS_Handle*)return_hdl;
+    FS_Atom* fs_hdl = (FS_Atom*)return_hdl;
     return_hdl_ = *fs_hdl;
     awaiting_.resume();
     return;
@@ -475,7 +535,7 @@ void await_aiofs::resume(AIO_Handle* return_hdl)
 
 //await_aiomysql是co_wait MySQL操作的等待体
 await_aiomysql::await_aiomysql(zce::aio::Worker* worker,
-                               zce::aio::MySQL_Handle* mysql_hdl) :
+                               zce::aio::MySQL_Atom* mysql_hdl) :
     worker_(worker),
     mysql_hdl_(mysql_hdl)
 {
@@ -504,19 +564,18 @@ void await_aiomysql::await_suspend(std::coroutine_handle<> awaiting)
     awaiting_ = awaiting;
 }
 //!回复后的操作。返回结果
-MySQL_Handle await_aiomysql::await_resume()
+MySQL_Atom await_aiomysql::await_resume()
 {
     return return_hdl_;
 }
 //!回调函数
-void await_aiomysql::resume(AIO_Handle* return_hdl)
+void await_aiomysql::resume(AIO_Atom* return_hdl)
 {
-    MySQL_Handle* mysql_hdl = (MySQL_Handle*)return_hdl;
+    MySQL_Atom* mysql_hdl = (MySQL_Atom*)return_hdl;
     return_hdl_ = *mysql_hdl;
     awaiting_.resume();
     return;
 }
-
 
 //============================================================================
 
@@ -527,7 +586,7 @@ await_aiofs co_read_file(zce::aio::Worker* worker,
                          size_t nbufs,
                          ssize_t offset)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_READFILE);
     aio_hdl->path_ = path;
     aio_hdl->read_bufs_ = read_bufs;
@@ -543,7 +602,7 @@ await_aiofs co_write_file(zce::aio::Worker* worker,
                           size_t nbufs,
                           ssize_t offset)
 {
-    zce::aio::FS_Handle* aio_hdl = (FS_Handle*)
+    zce::aio::FS_Atom* aio_hdl = (FS_Atom*)
         worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
     aio_hdl->path_ = path;
     aio_hdl->write_bufs_ = write_bufs;
@@ -561,7 +620,7 @@ await_aiomysql co_mysql_connect(zce::aio::Worker* worker,
                                 const char* pwd,
                                 unsigned int port)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_CONNECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->host_name_ = host_name;
@@ -576,12 +635,11 @@ await_aiomysql co_mysql_connect(zce::aio::Worker* worker,
 await_aiomysql co_mysql_disconnect(zce::aio::Worker* worker,
                                    zce::mysql::Connect* db_connect)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_DISCONNECT);
     aio_hdl->db_connect_ = db_connect;
     return await_aiomysql(worker, aio_hdl);
 }
-
 
 //!查询，非SELECT语句
 await_aiomysql co_mysql_query(zce::aio::Worker* worker,
@@ -591,7 +649,7 @@ await_aiomysql co_mysql_query(zce::aio::Worker* worker,
                               uint64_t* num_affect,
                               uint64_t* insert_id)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_QUERY_NOSELECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->sql_ = sql;
@@ -610,7 +668,7 @@ await_aiomysql co_mysql_query(zce::aio::Worker* worker,
                               uint64_t* num_affect,
                               zce::mysql::Result* db_result)
 {
-    zce::aio::MySQL_Handle* aio_hdl = (MySQL_Handle*)
+    zce::aio::MySQL_Atom* aio_hdl = (MySQL_Atom*)
         worker->alloc_handle(AIO_TYPE::MYSQL_QUERY_SELECT);
     aio_hdl->db_connect_ = db_connect;
     aio_hdl->sql_ = sql;
@@ -620,6 +678,4 @@ await_aiomysql co_mysql_query(zce::aio::Worker* worker,
 
     return await_aiomysql(worker, aio_hdl);
 }
-
 }
-

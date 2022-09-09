@@ -2,15 +2,15 @@
 
 ZCE_HANDLE file_handle = ZCE_INVALID_HANDLE;
 
-void on_writefile(zce::aio::AIO_Handle* ahdl)
+void on_writefile(zce::aio::AIO_Atom* ahdl)
 {
-    auto fhdl = (zce::aio::FS_Handle*)(ahdl);
+    auto fhdl = (zce::aio::FS_Atom*)(ahdl);
     std::cout << "on_writefile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_count_ << std::endl;
 }
 
-void on_readfile(zce::aio::AIO_Handle* ahdl)
+void on_readfile(zce::aio::AIO_Atom* ahdl)
 {
-    auto fhdl = (zce::aio::FS_Handle*)(ahdl);
+    auto fhdl = (zce::aio::FS_Atom*)(ahdl);
     std::cout << "on_readfile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_count_ << std::endl;
     if (fhdl->result_ == 0 && fhdl->result_count_ > 0)
     {

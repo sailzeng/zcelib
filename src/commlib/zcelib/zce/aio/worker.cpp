@@ -1,13 +1,12 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/dirent.h"
+#include "zce/os_adapt/socket.h"
 #include "zce/mysql/execute.h"
 #include "zce/aio/worker.h"
 
 namespace zce::aio
 {
-
-
 //!
 int Worker::initialize(size_t work_thread_num,
                        size_t work_queue_len)
@@ -21,11 +20,11 @@ int Worker::initialize(size_t work_thread_num,
                                           this);
     }
 
-    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_Handle*>(work_queue_len);
-    response_queue_ = new zce::msgring_condi<zce::aio::AIO_Handle*>(work_queue_len);
-    aio_obj_pool_.initialize<zce::aio::FS_Handle>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::MySQL_Handle>(16, 16);
-
+    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_Atom*>(work_queue_len);
+    response_queue_ = new zce::msgring_condi<zce::aio::AIO_Atom*>(work_queue_len);
+    aio_obj_pool_.initialize<zce::aio::FS_Atom>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::MySQL_Atom>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::Host_Atom>(16, 16);
     return 0;
 }
 
@@ -42,19 +41,23 @@ void Worker::terminate()
     delete[] work_thread_;
 }
 
-
-AIO_Handle* Worker::alloc_handle(AIO_TYPE aio_type)
+AIO_Atom* Worker::alloc_handle(AIO_TYPE aio_type)
 {
-    AIO_Handle* handle = nullptr;
+    AIO_Atom* handle = nullptr;
     if (aio_type > AIO_TYPE::FS_BEGIN &&
         aio_type < AIO_TYPE::FS_END)
     {
-        handle = aio_obj_pool_.alloc_object<FS_Handle>();
+        handle = aio_obj_pool_.alloc_object<FS_Atom>();
     }
     else if (aio_type > AIO_TYPE::MYSQL_BEGIN &&
              aio_type < AIO_TYPE::MYSQL_END)
     {
-        handle = aio_obj_pool_.alloc_object<MySQL_Handle>();
+        handle = aio_obj_pool_.alloc_object<MySQL_Atom>();
+    }
+    else if (aio_type > AIO_TYPE::HOST_BEGIN &&
+             aio_type < AIO_TYPE::HOST_END)
+    {
+        handle = aio_obj_pool_.alloc_object<Host_Atom>();
     }
     else
     {
@@ -65,26 +68,30 @@ AIO_Handle* Worker::alloc_handle(AIO_TYPE aio_type)
     return handle;
 }
 
-
-void Worker::free_handle(zce::aio::AIO_Handle* base)
+void Worker::free_handle(zce::aio::AIO_Atom* base)
 {
     base->clear();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {
-        aio_obj_pool_.free_object<FS_Handle>(static_cast<FS_Handle*>(base));
+        aio_obj_pool_.free_object<FS_Atom>(static_cast<FS_Atom*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
              base->aio_type_ < AIO_TYPE::MYSQL_END)
     {
-        aio_obj_pool_.free_object<MySQL_Handle>(static_cast<MySQL_Handle*>(base));
+        aio_obj_pool_.free_object<MySQL_Atom>(static_cast<MySQL_Atom*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::HOST_BEGIN &&
+             base->aio_type_ < AIO_TYPE::HOST_END)
+    {
+        aio_obj_pool_.free_object<Host_Atom>(static_cast<Host_Atom*>(base));
     }
     else
     {
     }
 }
 
-bool Worker::request(AIO_Handle* base)
+bool Worker::request(AIO_Atom* base)
 {
     return requst_queue_->try_enqueue(base);
 }
@@ -96,7 +103,7 @@ void Worker::process_request()
     bool go = false;
     do
     {
-        AIO_Handle* base = nullptr;
+        AIO_Atom* base = nullptr;
         zce::Time_Value tv(0, 2000);
         go = requst_queue_->dequeue_wait(base, tv);
         if (go)
@@ -118,7 +125,7 @@ void Worker::process_response(size_t& num_rsp, zce::Time_Value* wait_time)
     bool go = false;
     do
     {
-        AIO_Handle* base = nullptr;
+        AIO_Atom* base = nullptr;
         if (wait_time)
         {
             go = response_queue_->dequeue_wait(base, *wait_time);
@@ -133,22 +140,26 @@ void Worker::process_response(size_t& num_rsp, zce::Time_Value* wait_time)
             free_handle(base);
             ++num_rsp;
         }
-
     } while (go);
 }
 
 //!
-void Worker::process_aio(zce::aio::AIO_Handle* base)
+void Worker::process_aio(zce::aio::AIO_Atom* base)
 {
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {
-        process_fs(static_cast<zce::aio::FS_Handle*>(base));
+        process_fs(static_cast<zce::aio::FS_Atom*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
              base->aio_type_ < AIO_TYPE::MYSQL_END)
     {
-        process_mysql(static_cast<zce::aio::MySQL_Handle*>(base));
+        process_mysql(static_cast<zce::aio::MySQL_Atom*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::HOST_BEGIN &&
+             base->aio_type_ < AIO_TYPE::HOST_END)
+    {
+        process_host(static_cast<zce::aio::Host_Atom*>(base));
     }
     else
     {
@@ -156,8 +167,8 @@ void Worker::process_aio(zce::aio::AIO_Handle* base)
     //放入应答队列
     response_queue_->enqueue(base);
 }
-//!在线程种处理文件
-void Worker::process_fs(zce::aio::FS_Handle* hdl)
+//!在线程中处理文件
+void Worker::process_fs(zce::aio::FS_Atom* hdl)
 {
     switch (hdl->aio_type_)
     {
@@ -221,43 +232,68 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
         break;
     }
 }
-//!
-void Worker::process_mysql(zce::aio::MySQL_Handle* hdl)
+//在线程处理MySQL操作请求
+void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
 {
-    switch (hdl->aio_type_)
+    switch (atom->aio_type_)
     {
     case MYSQL_CONNECT:
-        hdl->result_ = zce::mysql::execute::connect(
-            hdl->db_connect_,
-            hdl->host_name_,
-            hdl->user_,
-            hdl->pwd_,
-            hdl->port_);
+        atom->result_ = zce::mysql::execute::connect(
+            atom->db_connect_,
+            atom->host_name_,
+            atom->user_,
+            atom->pwd_,
+            atom->port_);
         break;
     case MYSQL_DISCONNECT:
-        hdl->result_ = 0;
+        atom->result_ = 0;
         zce::mysql::execute::disconnect(
-            hdl->db_connect_);
+            atom->db_connect_);
         break;
     case MYSQL_QUERY_NOSELECT:
-        hdl->result_ = zce::mysql::execute::query(
-            hdl->db_connect_,
-            hdl->sql_,
-            hdl->sql_len_,
-            hdl->num_affect_,
-            hdl->insert_id_);
+        atom->result_ = zce::mysql::execute::query(
+            atom->db_connect_,
+            atom->sql_,
+            atom->sql_len_,
+            atom->num_affect_,
+            atom->insert_id_);
         break;
     case MYSQL_QUERY_SELECT:
-        hdl->result_ = zce::mysql::execute::query(
-            hdl->db_connect_,
-            hdl->sql_,
-            hdl->sql_len_,
-            hdl->num_affect_,
-            hdl->db_result_);
+        atom->result_ = zce::mysql::execute::query(
+            atom->db_connect_,
+            atom->sql_,
+            atom->sql_len_,
+            atom->num_affect_,
+            atom->db_result_);
         break;
     default:
         break;
     }
 }
 
+//在线程中处理Gat Host Addr请求
+void Worker::process_host(zce::aio::Host_Atom* atom)
+{
+    switch (atom->aio_type_)
+    {
+    case GETADDRINFO_ARY:
+        atom->result_ = zce::getaddrinfo_to_addrary(
+            atom->hostname_,
+            atom->service_,
+            atom->ary_addr_num_,
+            atom->ary_addr_,
+            atom->ary_addr6_num_,
+            atom->ary_addr6_);
+        break;
+    case GETADDRINFO_ONE:
+        atom->result_ = zce::getaddrinfo_to_addr(
+            atom->hostname_,
+            atom->service_,
+            atom->addr_,
+            atom->addr_len_);
+        break;
+    default:
+        break;
+    }
+}
 }

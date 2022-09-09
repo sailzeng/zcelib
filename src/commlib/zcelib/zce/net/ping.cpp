@@ -52,7 +52,7 @@ struct _ICMP_ECHO
 
 #pragma pack ()
 
-int Ping::initialize(::sockaddr *ping_addr,
+int Ping::initialize(::sockaddr* ping_addr,
                      socklen_t addr_len)
 {
     addr_len_ = addr_len;
@@ -80,7 +80,7 @@ int Ping::initialize(::sockaddr *ping_addr,
 }
 
 int Ping::initialize(int svr_family,
-                     const char *ping_svr)
+                     const char* ping_svr)
 {
     int ret = 0;
     addr_family_ = svr_family;
@@ -101,7 +101,8 @@ int Ping::initialize(int svr_family,
         assert(false);
     }
     ret = getaddrinfo_to_addr(ping_svr,
-                              (sockaddr *)&ping_addr_,
+                              nullptr,
+                              (sockaddr*)&ping_addr_,
                               addr_len_);
     if (ret != 0)
     {
@@ -151,7 +152,7 @@ int Ping::initialize()
         return ret;
     }
     ret = zce::getsockname(ping_socket_,
-                           (sockaddr *)&local_addr_,
+                           (sockaddr*)&local_addr_,
                            &addr_len_);
     return 0;
 }
@@ -194,8 +195,8 @@ int Ping::send_echo(uint32_t ident,
 {
     // allocate memory for icmp packet
     char buffer[MTU];
-    struct _ICMP_ECHO *icmp = (struct _ICMP_ECHO *)(buffer + sizeof(_ICMP_ECHO));
-    struct _ICMPV6_PSEUDO *v6_pseudo = (struct _ICMPV6_PSEUDO *)(buffer);
+    struct _ICMP_ECHO* icmp = (struct _ICMP_ECHO*)(buffer + sizeof(_ICMP_ECHO));
+    struct _ICMPV6_PSEUDO* v6_pseudo = (struct _ICMPV6_PSEUDO*)(buffer);
 
     // fill header files
     if (addr_family_ == AF_INET)
@@ -231,7 +232,7 @@ int Ping::send_echo(uint32_t ident,
         icmp->sending_ts_ = htonll(zce::clock_ms());
 
         icmp->check_sum_ = htons(
-            calculate_checksum((char *)v6_pseudo, sizeof(_ICMPV6_PSEUDO) + sizeof(_ICMP_ECHO)));
+            calculate_checksum((char*)v6_pseudo, sizeof(_ICMPV6_PSEUDO) + sizeof(_ICMP_ECHO)));
     }
     else
     {
@@ -252,10 +253,10 @@ int Ping::send_echo(uint32_t ident,
     return 0;
 }
 
-int Ping::recv_echo(uint32_t *ident,
-                    uint32_t *seq,
-                    uint64_t *take_msec,
-                    uint8_t *ttl,
+int Ping::recv_echo(uint32_t* ident,
+                    uint32_t* seq,
+                    uint64_t* take_msec,
+                    uint8_t* ttl,
                     zce::Time_Value* timeout_tv)
 {
     // allocate buffer
@@ -361,7 +362,7 @@ int Ping::ping(size_t test_num)
             fprintf(stdout,
                     "%04u. %s Rely size=%zu,time=%llums,TTL=%u.\n",
                     send_seq,
-                    zce::sockaddr_ntop((sockaddr *)&ping_addr_, addr_buf, 63),
+                    zce::sockaddr_ntop((sockaddr*)&ping_addr_, addr_buf, 63),
                     sizeof(_ICMP_ECHO),
                     ms,
                     ttl);
