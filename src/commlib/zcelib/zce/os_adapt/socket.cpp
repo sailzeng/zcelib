@@ -1819,6 +1819,12 @@ bool is_internal(const sockaddr* sock_addr)
     return false;
 }
 
+bool is_internal(uint32_t ipv4_addr_val)
+{
+    return (ZCE_IS_INTERNAL(ipv4_addr_val));
+}
+
+
 //-------------------------------------------------------------------------------------
 //域名解析，转换IP地址的几个函数
 
@@ -1835,13 +1841,10 @@ hostent* gethostbyname2(const char* hostname,
 #if defined (ZCE_OS_WINDOWS)
 
     hostent* hostent_ptr = ::gethostbyname(hostname);
-
-    //
     if (hostent_ptr->h_addrtype != af)
     {
         return NULL;
     }
-
     return hostent_ptr;
 
 #elif defined (ZCE_OS_LINUX)
@@ -1973,8 +1976,7 @@ int gethostbyaddr_in6(const sockaddr_in6* sock_addr6,
 {
     struct hostent* hostent_ptr = zce::gethostbyaddr(sock_addr6,
                                                      sizeof(sockaddr_in6),
-                                                     sock_addr6->sin6_family
-    );
+                                                     sock_addr6->sin6_family);
 
     //如果返回失败
     if (!hostent_ptr)
@@ -1993,7 +1995,10 @@ int getaddrinfo(const char* nodename,
                 const addrinfo* hints,
                 addrinfo** result)
 {
-    return ::getaddrinfo(nodename, service, hints, result);
+    return ::getaddrinfo(nodename, 
+                         service, 
+                         hints,
+                         result);
 }
 
 //释放getaddrinfo得到的结果
@@ -2033,7 +2038,9 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
 {
     addrinfo* prc_node = result;
     size_t num_addr = 0, num_addr6 = 0;
-    for (size_t i = 0; (i < *ary_addr_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
+    for (size_t i = 0;
+         (i < *ary_addr_num) && (prc_node != NULL);
+         prc_node = prc_node->ai_next, ++i)
     {
         //只取相应的地址
         if (AF_INET == prc_node->ai_family)
@@ -2046,7 +2053,9 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
     *ary_addr_num = num_addr;
 
     prc_node = result;
-    for (size_t j = 0; (j < *ary_addr6_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++j)
+    for (size_t j = 0; 
+         (j < *ary_addr6_num) && (prc_node != NULL); 
+         prc_node = prc_node->ai_next, ++j)
     {
         if (AF_INET6 == prc_node->ai_family)
         {
@@ -2059,6 +2068,7 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
 
 //非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便
 int getaddrinfo_to_addrary(const char* nodename,
+                           const char* service,
                            size_t* ary_addr_num,
                            sockaddr_in ary_addr[],
                            size_t* ary_addr6_num,
@@ -2073,7 +2083,7 @@ int getaddrinfo_to_addrary(const char* nodename,
     //hints.ai_socktype = 0; 返回所有类型
     //hints.ai_flags = 0;
     ret = zce::getaddrinfo(nodename,
-                           NULL,
+                           service,
                            &hints,
                            &result);
     if (ret != 0)
@@ -2133,12 +2143,10 @@ int zce::getaddrinfo_to_addr(const char* nodename,
         errno = EINVAL;
         return -1;
     }
-
+    
     getaddrinfo_result_to_oneaddr(result, addr, addr_len);
-
     //释放空间
     zce::freeaddrinfo(result);
-
     return 0;
 }
 
@@ -2152,9 +2160,20 @@ int getnameinfo(const struct sockaddr* sa,
                 int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
-    return ::getnameinfo(sa, salen, host, static_cast<DWORD>(hostlen), serv, static_cast<DWORD>(servlen), flags);
+    return ::getnameinfo(sa, 
+                         salen, 
+                         host, 
+                         static_cast<DWORD>(hostlen), 
+                         serv, 
+                         static_cast<DWORD>(servlen), flags);
 #elif defined (ZCE_OS_LINUX)
-    return ::getnameinfo(sa, salen, host, hostlen, serv, servlen, flags);
+    return ::getnameinfo(sa, 
+                         salen, 
+                         host, 
+                         hostlen, 
+                         serv, 
+                         servlen, 
+                         flags);
 #endif
 }
 

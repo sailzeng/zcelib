@@ -17,7 +17,7 @@ class Worker;
 enum AIO_TYPE
 {
     AIO_INVALID = 0,
-
+    //文件处理
     FS_BEGIN = 1,
     FS_OPEN,
     FS_CLOSE,
@@ -43,7 +43,8 @@ enum AIO_TYPE
     MYSQL_END = 199,
     //
     HOST_BEGIN = 200,
-
+    GETADDRINFO_ONE,
+    GETADDRINFO_ARY,
     HOST_END = 299,
 };
 
@@ -90,12 +91,12 @@ public:
     //!改名的路径
     const char* new_path_ = nullptr;
 
-    //!
+    //!文件stat
     struct stat* file_stat_ = nullptr;
 
-    //!scandir打开
+    //! scandir打开
     const char* dirname_ = nullptr;
-    //!scandir返回的dirent，你需要自己清理
+    //! scandir返回的dirent，数量看result_,你需要自己清理
     struct dirent*** namelist_ = nullptr;
 };
 
@@ -201,7 +202,8 @@ int fs_stat(zce::aio::Worker* worker,
             struct stat* file_stat,
             std::function<void(AIO_Handle*)> call_back);
 
-//!异步scandir
+//! 异步scandir,参数参考scandir
+//! namelist请使用，可以用free_scandir_list函数释放
 int fs_scandir(zce::aio::Worker* worker,
                const char* dirname,
                struct dirent*** namelist,
@@ -250,6 +252,19 @@ int mysql_query(zce::aio::Worker* worker,
                 uint64_t* num_affect,
                 zce::mysql::Result* db_result,
                 std::function<void(AIO_Handle*)> call_back);
+
+//!
+int host_getaddrinfo_ary(const char* notename,
+                           const char* service,
+                           size_t* ary_addr_num,
+                           sockaddr_in ary_addr[],
+                           size_t* ary_addr6_num,
+                           sockaddr_in6 ary_addr6[]);
+
+
+int host_getaddrinfo_one(const char* host_name,
+                        sockaddr* addr,
+                        socklen_t addr_len);
 
 //========================================================================================
 //
@@ -336,7 +351,6 @@ await_aiomysql co_mysql_connect(zce::aio::Worker* worker,
 //!断开数据库链接
 await_aiomysql co_mysql_disconnect(zce::aio::Worker* worker,
                                    zce::mysql::Connect* db_connect);
-
 
 //!查询，非SELECT语句
 await_aiomysql co_mysql_query(zce::aio::Worker* worker,

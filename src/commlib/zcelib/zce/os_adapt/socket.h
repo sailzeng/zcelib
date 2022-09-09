@@ -851,7 +851,8 @@ int gethostbyaddr_in6(const sockaddr_in6* sock_addr6,
                       char* host_name,
                       size_t name_len);
 
-//几个更加高级一些的的函数，Posix 1g的函数，推荐使用他们，他们可能可以重入（要看底层实现，如果底层就是gethostbyname，那么……）
+//几个更加高级一些的的函数，Posix 1g的函数，推荐使用他们，他们可能可以重入
+// （要看底层实现，如果底层就是gethostbyname，那么……）
 //高级部分函数详细间《UNIX网络编程》卷1的第11章
 
 /*!
@@ -908,15 +909,18 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
                                    sockaddr_in6 ary_addr6[]);
 
 /*!
-* @brief         非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便,底层使用getaddrinfo
+* @brief         非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便,
+*                底层使用getaddrinfo
 * @return        int            0成功，其他失败
 * @param[in]     notename       域名
+* @param[in]     service        服务名称，可以是"HTTP"，也可以是"80"
 * @param[in,out] ary_addr_num   输入时数组的长度，输出返回实际获得的数组长度
 * @param[out]    ary_sock_addr  域名对应的sockaddr_in 数组信息
 * @param[in,out] ary_addr6_num  输入时数组的长度，输出返回实际获得的地址个数
 * @param[out]    ary_sock_addr6 域名对应的sockaddr_in6 数组
 */
 int getaddrinfo_to_addrary(const char* notename,
+                           const char* service,
                            size_t* ary_addr_num,
                            sockaddr_in ary_addr[],
                            size_t* ary_addr6_num,
@@ -925,7 +929,8 @@ int getaddrinfo_to_addrary(const char* notename,
 /*!
 * @brief
 * @return     int      0成功，其他失败
-* @param[in]  notename 域名OR数值地址格式，内部会先进行数值地址转换。避免耗时，不成功再进行域名解析
+* @param[in]  notename 域名OR数值地址格式，内部会先进行数值地址转换。避免耗时，
+*                      不成功再进行域名解析
 * @param[out] addr     返回的地址
 * @param[in]  addr_len 地址的长度
 */

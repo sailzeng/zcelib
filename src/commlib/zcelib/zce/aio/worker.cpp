@@ -217,7 +217,6 @@ void Worker::process_fs(zce::aio::FS_Handle* hdl)
                                     hdl->namelist_,
                                     NULL,
                                     NULL);
-        break;
     default:
         break;
     }
