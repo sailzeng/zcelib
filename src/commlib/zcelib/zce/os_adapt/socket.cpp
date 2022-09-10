@@ -889,6 +889,7 @@ int connect_timeout(ZCE_SOCKET handle,
     if (host_name)
     {
         ret = zce::getaddrinfo_to_addr(host_name,
+                                       nullptr,
                                        host_addr,
                                        addr_len);
         if (ret != 0)
@@ -1588,7 +1589,7 @@ int inet_pton(int family,
     {
         errno = EAFNOSUPPORT;
         return 0;
-    }
+}
 #endif
 
 #elif defined (ZCE_OS_LINUX)
@@ -1672,7 +1673,7 @@ const char* inet_ntop(int family,
     {
         errno = EAFNOSUPPORT;
         return NULL;
-    }
+}
 #endif
 #elif defined (ZCE_OS_LINUX)
     //LINuX下有这个函数

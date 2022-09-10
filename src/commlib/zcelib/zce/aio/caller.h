@@ -29,23 +29,26 @@ enum AIO_TYPE
     FS_STAT,
     FS_FTRUNCATE,
     FS_UNLINK,
-    FS_RMDIR,
-    FS_MKDIR,
     FS_RENAME,
-    FS_SCANDIR,
     FS_END = 99,
+
+    DIR_BEGIN = 100,
+    DIR_RMDIR,
+    DIR_MKDIR,
+    DIR_SCANDIR,
+    DIR_END = 199,
     //
-    MYSQL_BEGIN = 100,
+    MYSQL_BEGIN = 200,
     MYSQL_CONNECT,
     MYSQL_DISCONNECT,
     MYSQL_QUERY_NOSELECT,
     MYSQL_QUERY_SELECT,
-    MYSQL_END = 199,
+    MYSQL_END = 299,
     //
-    HOST_BEGIN = 200,
-    GETADDRINFO_ONE,
-    GETADDRINFO_ARY,
-    HOST_END = 299,
+    HOST_BEGIN = 300,
+    HOST_GETADDRINFO_ONE,
+    HOST_GETADDRINFO_ARY,
+    HOST_END = 399,
 };
 
 //! AIO异步操作的原子
@@ -61,7 +64,7 @@ struct AIO_Atom
     std::function<void(AIO_Atom*)> call_back_;
 };
 
-//! FS文件操作的
+//! FS文件操作的原子
 struct FS_Atom :public AIO_Atom
 {
     //!清理
@@ -91,12 +94,21 @@ public:
 
     //!改名的路径
     const char* new_path_ = nullptr;
-
     //!文件stat
     struct stat* file_stat_ = nullptr;
+};
 
-    //! scandir打开
+//! 目录操作的原子
+struct Dir_Atom :public AIO_Atom
+{
+    //!清理
+    virtual void clear();
+    //!结果
+    int result_ = -1;
+    //! 打开,处理的目录
     const char* dirname_ = nullptr;
+    //!打开文件模式
+    int mode_ = 0;
     //! scandir返回的dirent，数量看result_,你需要自己清理
     struct dirent*** namelist_ = nullptr;
 };
@@ -216,21 +228,21 @@ int fs_stat(zce::aio::Worker* worker,
 
 //! 异步scandir,参数参考scandir
 //! namelist请使用，可以用free_scandir_list函数释放
-int fs_scandir(zce::aio::Worker* worker,
-               const char* dirname,
-               struct dirent*** namelist,
-               std::function<void(AIO_Atom*)> call_back);
+int dir_scandir(zce::aio::Worker* worker,
+                const char* dirname,
+                struct dirent*** namelist,
+                std::function<void(AIO_Atom*)> call_back);
 
 //!异步建立dir
-int fs_mkdir(zce::aio::Worker* worker,
-             const char* dirname,
-             int mode,
-             std::function<void(AIO_Atom*)> call_back);
+int dir_mkdir(zce::aio::Worker* worker,
+              const char* dirname,
+              int mode,
+              std::function<void(AIO_Atom*)> call_back);
 
 //!异步删除dir
-int fs_rmdir(zce::aio::Worker* worker,
-             const char* dirname,
-             std::function<void(AIO_Atom*)> call_back);
+int dir_rmdir(zce::aio::Worker* worker,
+              const char* dirname,
+              std::function<void(AIO_Atom*)> call_back);
 
 //!链接数据
 int mysql_connect(zce::aio::Worker* worker,
@@ -264,123 +276,151 @@ int mysql_query(zce::aio::Worker* worker,
                 zce::mysql::Result* db_result,
                 std::function<void(AIO_Atom*)> call_back);
 
-//!
-int host_getaddrinfo_ary(zce::aio::Worker* worker,
-                         const char* notename,
-                         const char* service,
-                         size_t* ary_addr_num,
-                         sockaddr_in* ary_addr,
-                         size_t* ary_addr6_num,
-                         sockaddr_in6* ary_addr6,
-                         std::function<void(AIO_Atom*)> call_back);
+//!host 函数，用于获取地址，AIO_Atom 可以转化为Host_Atom使用
 
-//!
-int host_getaddrinfo_one(zce::aio::Worker* worker,
-                         const char* host_name,
-                         const char* service,
-                         sockaddr* addr,
-                         socklen_t addr_len,
-                         std::function<void(AIO_Atom*)> call_back);
+//!获得host对应的多个地址信息，包括IPV4，IPV6，类似getaddrinfo_ary，
+int host_getaddr_ary(zce::aio::Worker* worker,
+                     const char* hostname,
+                     const char* service,
+                     size_t* ary_addr_num,
+                     sockaddr_in* ary_addr,
+                     size_t* ary_addr6_num,
+                     sockaddr_in6* ary_addr6,
+                     std::function<void(AIO_Atom*)> call_back);
+
+//!获得host对应的一个地址信息，类似getaddrinfo_one
+int host_getaddr_one(zce::aio::Worker* worker,
+                     const char* hostname,
+                     const char* service,
+                     sockaddr* addr,
+                     socklen_t addr_len,
+                     std::function<void(AIO_Atom*)> call_back);
 
 //========================================================================================
 //
 //AIO FS文件处理相关的awaiter等待体
-struct await_aiofs
+template <typename RA>
+struct awaiter
 {
-    await_aiofs(zce::aio::Worker* worker,
-                zce::aio::FS_Atom* fs_hdl);
-    ~await_aiofs() = default;
+    typedef awaiter<RA> self;
+
+    awaiter(zce::aio::Worker* worker,
+            RA* request_atom) :
+        worker_(worker),
+        request_atom_(request_atom)
+    {
+    }
+    ~awaiter() = default;
 
     //请求进行AIO操作，如果请求成功.return false挂起协程
-    bool await_ready();
+    bool await_ready()
+    {
+        //绑定回调函数
+        request_atom_->call_back_ = std::bind(&self::resume,
+                                              this,
+                                              std::placeholders::_1);
+        //将一个文件操作句柄放入请求队列
+        bool succ_req = worker_->request(request_atom_);
+        if (succ_req)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     //挂起操作
-    void await_suspend(std::coroutine_handle<> awaiting);
-
-    //!恢复后返回结果
-    FS_Atom await_resume();
-
+    void await_suspend(std::coroutine_handle<> awaiting)
+    {
+        awaiting_ = awaiting;
+    }
+    //!回复后的操作。恢复后返回结果
+    RA await_resume()
+    {
+        return return_atom_;
+    }
     //!回调函数，AIO操作完成后恢复时调用
-    void resume(AIO_Atom* return_hdl);
+    void resume(AIO_Atom* return_hdl)
+    {
+        RA* fs_hdl = (RA*)return_hdl;
+        return_atom_ = *fs_hdl;
+        awaiting_.resume();
+        return;
+    }
 
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::Worker* worker_ = nullptr;
     //!请求的文件操作句柄
-    zce::aio::FS_Atom* fs_hdl_ = nullptr;
+    RA* request_atom_ = nullptr;
     //!完成后返回的句柄
-    zce::aio::FS_Atom return_hdl_;
+    RA return_atom_;
     //!协程的句柄（调用者）
     std::coroutine_handle<> awaiting_;
 };
 
-//AIO FS文件处理相关的awaiter等待体
-struct await_aiomysql
-{
-    await_aiomysql(zce::aio::Worker* worker,
-                   zce::aio::MySQL_Atom* mysql_hdl);
-    ~await_aiomysql() = default;
-
-    //请求进行AIO操作，如果请求成功.return false挂起协程
-    bool await_ready();
-    //挂起操作
-    void await_suspend(std::coroutine_handle<> awaiting);
-
-    //!恢复后返回结果
-    MySQL_Atom await_resume();
-
-    //!回调函数，AIO操作完成后恢复时调用
-    void resume(AIO_Atom* return_hdl);
-
-    //!工作者，具有请求，应答管道，处理IO多线程的管理者
-    zce::aio::Worker* worker_ = nullptr;
-    //!请求的文件操作句柄
-    zce::aio::MySQL_Atom* mysql_hdl_ = nullptr;
-    //!完成后返回的句柄
-    zce::aio::MySQL_Atom return_hdl_;
-    //!协程的句柄（调用者）
-    std::coroutine_handle<> awaiting_;
-};
+typedef zce::aio::awaiter<zce::aio::FS_Atom> awaiter_fs;
+typedef zce::aio::awaiter<zce::aio::Dir_Atom> awaiter_dir;
+typedef zce::aio::awaiter<zce::aio::MySQL_Atom> awaiter_mysql;
+typedef zce::aio::awaiter<zce::aio::Host_Atom> awaiter_host;
 
 //========================================================================================
 //AIO 协程的co_await 函数
 
 //!协程co_await AIO读取文件
-await_aiofs co_read_file(zce::aio::Worker* worker,
+awaiter_fs co_read_file(zce::aio::Worker* worker,
+                        const char* path,
+                        char* read_bufs,
+                        size_t nbufs,
+                        ssize_t offset = 0);
+//!协程co_await AIO写入文件
+awaiter_fs co_write_file(zce::aio::Worker* worker,
                          const char* path,
-                         char* read_bufs,
+                         const char* write_bufs,
                          size_t nbufs,
                          ssize_t offset = 0);
-//!协程co_await AIO写入文件
-await_aiofs co_write_file(zce::aio::Worker* worker,
-                          const char* path,
-                          const char* write_bufs,
-                          size_t nbufs,
-                          ssize_t offset = 0);
 
 //!链接数据
-await_aiomysql co_mysql_connect(zce::aio::Worker* worker,
-                                zce::mysql::Connect* db_connect,
-                                const char* host_name,
-                                const char* user,
-                                const char* pwd,
-                                unsigned int port);
+awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
+                               zce::mysql::Connect* db_connect,
+                               const char* host_name,
+                               const char* user,
+                               const char* pwd,
+                               unsigned int port);
 
 //!断开数据库链接
-await_aiomysql co_mysql_disconnect(zce::aio::Worker* worker,
-                                   zce::mysql::Connect* db_connect);
+awaiter_mysql co_mysql_disconnect(zce::aio::Worker* worker,
+                                  zce::mysql::Connect* db_connect);
 
 //!查询，非SELECT语句
-await_aiomysql co_mysql_query(zce::aio::Worker* worker,
-                              zce::mysql::Connect* db_connect,
-                              const char* sql,
-                              size_t sql_len,
-                              uint64_t* num_affect,
-                              uint64_t* insert_id);
+awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
+                             zce::mysql::Connect* db_connect,
+                             const char* sql,
+                             size_t sql_len,
+                             uint64_t* num_affect,
+                             uint64_t* insert_id);
 
 //!查询，SELECT语句
-await_aiomysql co_mysql_query(zce::aio::Worker* worker,
-                              zce::mysql::Connect* db_connect,
-                              const char* sql,
-                              size_t sql_len,
-                              uint64_t* num_affect,
-                              zce::mysql::Result* db_result);
-}
+awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
+                             zce::mysql::Connect* db_connect,
+                             const char* sql,
+                             size_t sql_len,
+                             uint64_t* num_affect,
+                             zce::mysql::Result* db_result);
+
+//!
+awaiter_host co_host_getaddr_ary(zce::aio::Worker* worker,
+                                 const char* hostname,
+                                 const char* service,
+                                 size_t* ary_addr_num,
+                                 sockaddr_in* ary_addr,
+                                 size_t* ary_addr6_num,
+                                 sockaddr_in6* ary_addr6);
+
+//!获得host对应的一个地址信息，类似getaddrinfo_one
+awaiter_host co_host_getaddr_one(zce::aio::Worker* worker,
+                                 const char* hostname,
+                                 const char* service,
+                                 sockaddr* addr,
+                                 socklen_t addr_len);
+}//namespace zce::aio

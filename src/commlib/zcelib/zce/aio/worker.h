@@ -40,6 +40,8 @@ public:
 
     //!在线程中处理文件操作
     void process_fs(zce::aio::FS_Atom* base);
+    //!在线程中处理目录操作
+    void process_dir(zce::aio::Dir_Atom* hdl);
     //!在线程中处理MySQL操作请求
     void process_mysql(zce::aio::MySQL_Atom* base);
     //!在线程中处理Gat Host Addr请求
@@ -64,6 +66,7 @@ protected:
     //! 对象池子，用于分配对象
     zce::multiobjs_pool<std::mutex,
         zce::aio::FS_Atom,
+        zce::aio::Dir_Atom,
         zce::aio::MySQL_Atom,
         zce::aio::Host_Atom> aio_obj_pool_;
 };

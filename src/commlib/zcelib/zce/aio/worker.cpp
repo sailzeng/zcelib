@@ -23,6 +23,7 @@ int Worker::initialize(size_t work_thread_num,
     requst_queue_ = new zce::msgring_condi<zce::aio::AIO_Atom*>(work_queue_len);
     response_queue_ = new zce::msgring_condi<zce::aio::AIO_Atom*>(work_queue_len);
     aio_obj_pool_.initialize<zce::aio::FS_Atom>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::Dir_Atom>(16, 16);
     aio_obj_pool_.initialize<zce::aio::MySQL_Atom>(16, 16);
     aio_obj_pool_.initialize<zce::aio::Host_Atom>(16, 16);
     return 0;
@@ -48,6 +49,11 @@ AIO_Atom* Worker::alloc_handle(AIO_TYPE aio_type)
         aio_type < AIO_TYPE::FS_END)
     {
         handle = aio_obj_pool_.alloc_object<FS_Atom>();
+    }
+    else if (aio_type > AIO_TYPE::DIR_BEGIN &&
+             aio_type < AIO_TYPE::DIR_END)
+    {
+        handle = aio_obj_pool_.alloc_object<Dir_Atom>();
     }
     else if (aio_type > AIO_TYPE::MYSQL_BEGIN &&
              aio_type < AIO_TYPE::MYSQL_END)
@@ -75,6 +81,11 @@ void Worker::free_handle(zce::aio::AIO_Atom* base)
         base->aio_type_ < AIO_TYPE::FS_END)
     {
         aio_obj_pool_.free_object<FS_Atom>(static_cast<FS_Atom*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::DIR_BEGIN &&
+             base->aio_type_ < AIO_TYPE::DIR_END)
+    {
+        aio_obj_pool_.free_object<Dir_Atom>(static_cast<Dir_Atom*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
              base->aio_type_ < AIO_TYPE::MYSQL_END)
@@ -151,6 +162,11 @@ void Worker::process_aio(zce::aio::AIO_Atom* base)
     {
         process_fs(static_cast<zce::aio::FS_Atom*>(base));
     }
+    else if (base->aio_type_ > AIO_TYPE::DIR_BEGIN &&
+             base->aio_type_ < AIO_TYPE::DIR_END)
+    {
+        process_dir(static_cast<zce::aio::Dir_Atom*>(base));
+    }
     else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
              base->aio_type_ < AIO_TYPE::MYSQL_END)
     {
@@ -168,70 +184,90 @@ void Worker::process_aio(zce::aio::AIO_Atom* base)
     response_queue_->enqueue(base);
 }
 //!在线程中处理文件
-void Worker::process_fs(zce::aio::FS_Atom* hdl)
+void Worker::process_fs(zce::aio::FS_Atom* atom)
 {
-    switch (hdl->aio_type_)
+    switch (atom->aio_type_)
     {
     case FS_OPEN:
-        hdl->result_ = zce::open2(hdl->handle_,
-                                  hdl->path_,
-                                  hdl->mode_,
-                                  hdl->flags_);
+        atom->result_ = zce::open2(atom->handle_,
+                                   atom->path_,
+                                   atom->mode_,
+                                   atom->flags_);
         break;
     case FS_CLOSE:
-        hdl->result_ = zce::close(hdl->handle_);
+        atom->result_ = zce::close(atom->handle_);
         break;
     case FS_LSEEK:
         off_t off;
-        hdl->result_ = zce::lseek(hdl->handle_,
-                                  (off_t)hdl->offset_,
-                                  hdl->whence_,
-                                  off);
+        atom->result_ = zce::lseek(atom->handle_,
+                                   (off_t)atom->offset_,
+                                   atom->whence_,
+                                   off);
         break;
 
     case FS_READ:
-        hdl->result_ = zce::read(hdl->handle_,
-                                 hdl->read_bufs_,
-                                 hdl->bufs_count_,
-                                 hdl->result_count_,
-                                 (off_t)hdl->offset_,
-                                 hdl->whence_);
+        atom->result_ = zce::read(atom->handle_,
+                                  atom->read_bufs_,
+                                  atom->bufs_count_,
+                                  atom->result_count_,
+                                  (off_t)atom->offset_,
+                                  atom->whence_);
         break;
     case FS_WRITE:
-        hdl->result_ = zce::write(hdl->handle_,
-                                  hdl->write_bufs_,
-                                  hdl->bufs_count_,
-                                  hdl->result_count_,
-                                  (off_t)hdl->offset_,
-                                  hdl->whence_);
+        atom->result_ = zce::write(atom->handle_,
+                                   atom->write_bufs_,
+                                   atom->bufs_count_,
+                                   atom->result_count_,
+                                   (off_t)atom->offset_,
+                                   atom->whence_);
         break;
     case FS_READFILE:
-        hdl->result_ = zce::read_file(hdl->path_,
-                                      hdl->read_bufs_,
-                                      hdl->bufs_count_,
-                                      &hdl->result_count_,
-                                      (off_t)hdl->offset_);
+        atom->result_ = zce::read_file(atom->path_,
+                                       atom->read_bufs_,
+                                       atom->bufs_count_,
+                                       &atom->result_count_,
+                                       (off_t)atom->offset_);
         break;
     case FS_WRITEFILE:
-        hdl->result_ = zce::write_file(hdl->path_,
-                                       hdl->write_bufs_,
-                                       hdl->bufs_count_,
-                                       &hdl->result_count_,
-                                       (off_t)hdl->offset_);
+        atom->result_ = zce::write_file(atom->path_,
+                                        atom->write_bufs_,
+                                        atom->bufs_count_,
+                                        &atom->result_count_,
+                                        (off_t)atom->offset_);
         break;
     case FS_STAT:
-        hdl->result_ = zce::fstat(hdl->handle_,
-                                  hdl->file_stat_);
+        atom->result_ = zce::fstat(atom->handle_,
+                                   atom->file_stat_);
         break;
-    case FS_SCANDIR:
-        hdl->result_ = zce::scandir(hdl->dirname_,
-                                    hdl->namelist_,
-                                    NULL,
-                                    NULL);
+
     default:
         break;
     }
 }
+
+//
+void Worker::process_dir(zce::aio::Dir_Atom* atom)
+{
+    switch (atom->aio_type_)
+    {
+    case DIR_MKDIR:
+        atom->result_ = zce::mkdir(atom->dirname_,
+                                   atom->mode_);
+        break;
+    case DIR_RMDIR:
+        atom->result_ = zce::rmdir(atom->dirname_);
+        break;
+    case DIR_SCANDIR:
+        atom->result_ = zce::scandir(atom->dirname_,
+                                     atom->namelist_,
+                                     NULL,
+                                     NULL);
+        break;
+    default:
+        break;
+    }
+}
+
 //在线程处理MySQL操作请求
 void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
 {
@@ -276,7 +312,7 @@ void Worker::process_host(zce::aio::Host_Atom* atom)
 {
     switch (atom->aio_type_)
     {
-    case GETADDRINFO_ARY:
+    case HOST_GETADDRINFO_ARY:
         atom->result_ = zce::getaddrinfo_to_addrary(
             atom->hostname_,
             atom->service_,
@@ -285,7 +321,7 @@ void Worker::process_host(zce::aio::Host_Atom* atom)
             atom->ary_addr6_num_,
             atom->ary_addr6_);
         break;
-    case GETADDRINFO_ONE:
+    case HOST_GETADDRINFO_ONE:
         atom->result_ = zce::getaddrinfo_to_addr(
             atom->hostname_,
             atom->service_,
