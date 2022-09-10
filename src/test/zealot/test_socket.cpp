@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-int test_host_name_fun(int, char*[])
+int test_host_name_fun(int, char* [])
 {
     int ret = 0;
 
@@ -20,6 +20,7 @@ int test_host_name_fun(int, char*[])
     ary_addr_num = 16;
     ary_addr6_num = 16;
     ret = zce::getaddrinfo_to_addrary("www.google.com.hk",
+                                      "80",
                                       &ary_addr_num,
                                       ary_sock_addr,
                                       &ary_addr6_num,
@@ -28,6 +29,7 @@ int test_host_name_fun(int, char*[])
     ary_addr_num = 16;
     ary_addr6_num = 16;
     ret = zce::getaddrinfo_to_addrary("www.google.com.hk",
+                                      "80",
                                       &ary_addr_num,
                                       ary_sock_addr,
                                       &ary_addr6_num,
@@ -159,33 +161,39 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     addr_in6.sin6_family = AF_INET6;
     char ip_str[256];
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME1,
+                                   "80",
                                    (sockaddr*)(&addr_in),
                                    sizeof(addr_in));
     inet_ntop(addr_in.sin_family, (void*)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME1 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME1,
+                                   "80",
                                    (sockaddr*)(&addr_in6),
                                    sizeof(addr_in6));
     inet_ntop(addr_in6.sin6_family, (void*)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME1 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
 
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME2,
+                                   "80",
                                    (sockaddr*)(&addr_in6),
                                    sizeof(addr_in6));
     inet_ntop(addr_in6.sin6_family, (void*)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME2 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME2,
+                                   "80",
                                    (sockaddr*)(&addr_in),
                                    sizeof(addr_in));
     inet_ntop(addr_in.sin_family, (void*)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME2 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
 
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME3,
+                                   "80",
                                    (sockaddr*)(&addr_in),
                                    sizeof(addr_in));
     inet_ntop(addr_in.sin_family, (void*)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME3 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME3,
+                                   "80",
                                    (sockaddr*)(&addr_in6),
                                    sizeof(addr_in6));
     inet_ntop(addr_in6.sin6_family, (void*)&(addr_in6.sin6_addr), ip_str, 256);
@@ -217,7 +225,7 @@ int test_dns_resolve([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     size_t arrays_size = ARRAYS_SIZE;
     sockaddr_in addrs_ary[ARRAYS_SIZE];
     zce::Time_Value tv(5);
-    ret = dns.answer(&tid, AF_INET, (sockaddr *)addrs_ary, &arrays_size, &tv);
+    ret = dns.answer(&tid, AF_INET, (sockaddr*)addrs_ary, &arrays_size, &tv);
     printf("query ret=%d tid = %x arrays_size = %llu\n", ret, tid, arrays_size);
     if (ret != 0)
     {

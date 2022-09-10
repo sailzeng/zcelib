@@ -113,6 +113,7 @@ struct Dir_Atom :public AIO_Atom
     struct dirent*** namelist_ = nullptr;
 };
 
+//! 数据库操作原子
 struct MySQL_Atom :public AIO_Atom
 {
     //!
@@ -130,7 +131,8 @@ struct MySQL_Atom :public AIO_Atom
     uint64_t* insert_id_ = nullptr;
     zce::mysql::Result* db_result_ = nullptr;
 };
-//
+
+//!
 struct Host_Atom :public AIO_Atom
 {
     //!清理
@@ -380,7 +382,7 @@ awaiter_fs co_write_file(zce::aio::Worker* worker,
                          size_t nbufs,
                          ssize_t offset = 0);
 
-//!链接数据
+//!协程co_await 链接数据
 awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
                                zce::mysql::Connect* db_connect,
                                const char* host_name,
@@ -388,11 +390,11 @@ awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
                                const char* pwd,
                                unsigned int port);
 
-//!断开数据库链接
+//!协程co_await 断开数据库链接
 awaiter_mysql co_mysql_disconnect(zce::aio::Worker* worker,
                                   zce::mysql::Connect* db_connect);
 
-//!查询，非SELECT语句
+//!协程co_await 查询，非SELECT语句
 awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
                              zce::mysql::Connect* db_connect,
                              const char* sql,
@@ -400,7 +402,7 @@ awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
                              uint64_t* num_affect,
                              uint64_t* insert_id);
 
-//!查询，SELECT语句
+//!协程co_await 查询，SELECT语句
 awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
                              zce::mysql::Connect* db_connect,
                              const char* sql,
@@ -408,7 +410,7 @@ awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
                              uint64_t* num_affect,
                              zce::mysql::Result* db_result);
 
-//!
+//!协程co_await getaddrinfo_ary
 awaiter_host co_host_getaddr_ary(zce::aio::Worker* worker,
                                  const char* hostname,
                                  const char* service,
@@ -417,7 +419,7 @@ awaiter_host co_host_getaddr_ary(zce::aio::Worker* worker,
                                  size_t* ary_addr6_num,
                                  sockaddr_in6* ary_addr6);
 
-//!获得host对应的一个地址信息，类似getaddrinfo_one
+//!协程co_await ，类似getaddrinfo_one
 awaiter_host co_host_getaddr_one(zce::aio::Worker* worker,
                                  const char* hostname,
                                  const char* service,

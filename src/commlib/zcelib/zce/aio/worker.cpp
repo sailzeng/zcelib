@@ -245,7 +245,7 @@ void Worker::process_fs(zce::aio::FS_Atom* atom)
     }
 }
 
-//
+//!
 void Worker::process_dir(zce::aio::Dir_Atom* atom)
 {
     switch (atom->aio_type_)
