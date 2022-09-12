@@ -142,7 +142,7 @@ int Zerg_Config::read_cfgfile()
     zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.cfg";
 
     zce::PropertyTree pt_tree;
-    ret = ZCE_INI_Implement::read(zerg_cfg_file_.c_str(), &pt_tree);
+    ret = zce::cfg::read_ini(zerg_cfg_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
             zerg_cfg_file_.c_str(), ret);
     if (ret != 0)
@@ -163,7 +163,7 @@ int Zerg_Config::read_cfgfile()
     }
 
     pt_tree.clear();
-    ret = ZCE_INI_Implement::read(svc_table_file_.c_str(), &pt_tree);
+    ret = zce::cfg::read_ini(svc_table_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "zergsvr read svcid table file [%s] ret [%d].",
             svc_table_file_.c_str(),
             ret);

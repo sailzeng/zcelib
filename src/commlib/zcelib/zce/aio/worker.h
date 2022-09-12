@@ -71,6 +71,7 @@ protected:
         zce::aio::FS_Atom,
         zce::aio::Dir_Atom,
         zce::aio::MySQL_Atom,
-        zce::aio::Host_Atom> aio_obj_pool_;
+        zce::aio::Host_Atom,
+        zce::aio::Socket_Atom> aio_obj_pool_;
 };
 }

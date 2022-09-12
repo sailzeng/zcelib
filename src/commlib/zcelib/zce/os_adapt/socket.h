@@ -115,13 +115,13 @@ int open_socket(ZCE_SOCKET* handle,
 * @brief      打开socket 句柄，同时绑定本地地址，简化处理的函数，非标准，通常用于监听端口
 * @return     int
 * @param      local_addr 要绑定的本地地址
-* @param      addrlen    要绑定的本地地址长度
+* @param      addr_len   要绑定的本地地址长度
 * @note       其他参数，返回参考前面的函数
 */
 int open_socket(ZCE_SOCKET* handle,
                 int type,
                 const sockaddr* local_addr,
-                socklen_t addrlen,
+                socklen_t addr_len,
                 int protocol = 0,
                 bool reuse_addr = true);
 
@@ -130,22 +130,22 @@ int open_socket(ZCE_SOCKET* handle,
 * @return     inline ZCE_SOCKET  返回接受的SOCKET句柄，返回句柄等于，ZCE_INVALID_SOCKET标识失败
 * @param      handle             监听端口的句柄
 * @param      addr               accept的SOCKET的地址信息，sockaddr的其实可以是各种协议族
-* @param      addrlen            accept的SOCKET的地址长度
+* @param      addr_len           accept的SOCKET的地址长度
 */
 inline ZCE_SOCKET accept(ZCE_SOCKET handle,
                          sockaddr* addr,
-                         socklen_t* addrlen);
+                         socklen_t* addr_len);
 
 /*!
 * @brief      绑定一个地址，主要用于监听端口，当然其他操作也可以用，本地端口（CONNECT出去的端口），一般不指定本地地址
 * @return     int      0标识成功
 * @param      handle   绑定操作的地址
 * @param      addr     句柄要求绑定的的地址信息，sockaddr的其实可以是各种协议族
-* @param      addrlen  句柄要求绑定的的地址长度
+* @param      addr_len 句柄要求绑定的的地址长度
 */
 int bind(ZCE_SOCKET handle,
          const struct sockaddr* addr,
-         socklen_t addrlen);
+         socklen_t addr_len);
 
 /*!
 * @brief      关闭句柄，为什么不定义close函数？为了在WIN下兼容，其没用用close这个函数，
@@ -181,37 +181,37 @@ int sock_disable(ZCE_SOCKET handle, int value);
 
 /*!
 * @brief      连接某个地址
-* @return     int     0成功，-1失败
-* @param[in]  handle  链接的的句柄
-* @param[in]  addr    链接目标的地址信息
-* @param[in]  addrlen 链接目标的地址长度
+* @return     int      0成功，-1失败
+* @param[in]  handle   链接的的句柄
+* @param[in]  addr     链接目标的地址信息
+* @param[in]  addr_len 链接目标的地址长度
 * @note
 */
 inline int connect(ZCE_SOCKET handle,
                    const sockaddr* addr,
-                   socklen_t addrlen);
+                   socklen_t addr_len);
 
 /*!
 * @brief      (TCP)取得对端的地址信息
-* @return     int     0成功，-1失败
-* @param      handle  取对端的地址的句柄
-* @param[out] addr    返回的地址信息
-* @param[out] addrlen 返回的地址长度
+* @return     int      0成功，-1失败
+* @param      handle   取对端的地址的句柄
+* @param[out] addr     返回的地址信息
+* @param[out] addr_len 返回的地址长度
 */
 inline int getpeername(ZCE_SOCKET handle,
                        sockaddr* addr,
-                       socklen_t* addrlen);
+                       socklen_t* addr_len);
 
 /*!
 * @brief      取得本地的地址信息，BIND的地址，或者是OS分配的本地地址
-* @return     int     0成功，-1失败
-* @param      handle  句柄ID
-* @param[out] addr    返回的地址地址信息
-* @param[out] addrlen 返回的地址长度
+* @return     int      0成功，-1失败
+* @param      handle   句柄ID
+* @param[out] addr     返回的地址地址信息
+* @param[out] addr_len 返回的地址长度
 */
 inline int getsockname(ZCE_SOCKET handle,
                        sockaddr* addr,
-                       socklen_t* addrlen);
+                       socklen_t* addr_len);
 
 /*!
 * @brief      取得句柄的某个选项值
@@ -295,31 +295,31 @@ inline ssize_t send(ZCE_SOCKET handle,
 * @param[in]  len      接收数据的buffer的长度
 * @param[in]  flags    接受操作的flag 默认为0，MSG_DONTWAI LINUX支持，相当于非阻塞接收
 * @param[out] addr     数据来源的地址，from可以和from_len一起为NULL,表示不关心从哪儿来的数据
-* @param[out] addrlen  数据来源地址的长度
+* @param[out] addr_len 数据来源地址的长度
 */
 inline ssize_t recvfrom(ZCE_SOCKET handle,
                         void* buf,
                         size_t len,
                         int flags,
                         sockaddr* addr,
-                        socklen_t* addrlen);
+                        socklen_t* addr_len);
 
 /*!
 * @brief      UDP发送
 * @return     ssize_t  -1表示失败（失败原因从errno获得），0表示端口被断开，>0表示接收到的数据 数据长度
-* @param[in]  handle  操作的句柄
-* @param[in]  buf     发送数据的buffer
-* @param[in]  len     发送数据的buffer的长度
-* @param[in]  flags   发送操作的flag 默认为0，MSG_DONTWAI LINUX支持，相当于非阻塞发送
-* @param[in]  addr    目标的地址
-* @param[in]  addrlen 目标的地址的长度
+* @param[in]  handle   操作的句柄
+* @param[in]  buf      发送数据的buffer
+* @param[in]  len      发送数据的buffer的长度
+* @param[in]  flags    发送操作的flag 默认为0，MSG_DONTWAI LINUX支持，相当于非阻塞发送
+* @param[in]  addr     目标的地址
+* @param[in]  addr_len 目标的地址的长度
 */
 inline ssize_t sendto(ZCE_SOCKET handle,
                       const void* buf,
                       size_t len,
                       int flags,
                       const struct sockaddr* addr,
-                      socklen_t addrlen);
+                      socklen_t addr_len);
 
 //--------------------------------------------------------------------------------------------
 //下面两个函数是非标准函数，并且并不会刻意阻塞
@@ -490,7 +490,7 @@ inline ssize_t recvfrom(ZCE_SOCKET handle,
 * @param[in]  buf        发送数据的buffer
 * @param[in]  len        发送数据的buffer的长度
 * @param[in]  addr       目标的地址
-* @param[in]  addrlen    目标的地址的长度
+* @param[in]  addr_len   目标的地址的长度
 * @param[in]  timeout_tv 此参数没有意义
 * @param[in]  flags      接收操作的flag 参考@ref send
 * @note
@@ -499,7 +499,7 @@ inline ssize_t sendto(ZCE_SOCKET handle,
                       const void* buf,
                       size_t len,
                       const sockaddr* addr,
-                      int addrlen,
+                      int addr_len,
                       zce::Time_Value* timeout_tv = NULL,
                       int flags = 0);
 
@@ -514,13 +514,13 @@ inline ssize_t sendto(ZCE_SOCKET handle,
 * @return     int 0成功，非0表示失败，以及错误ID
 * @param      handle      操作的句柄
 * @param      addr        地址
-* @param      addrlen     地址长度
+* @param      addr_len    地址长度
 * @param      timeout_tv  超时时间
 * @note
 */
 int connect_timeout(ZCE_SOCKET handle,
                     const sockaddr* addr,
-                    socklen_t addrlen,
+                    socklen_t addr_len,
                     zce::Time_Value& timeout_tv);
 
 /*!
@@ -588,7 +588,7 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        const void* buf,
                        size_t len,
                        const sockaddr* addr,
-                       socklen_t addrlen,
+                       socklen_t addr_len,
                        zce::Time_Value& /*timeout_tv*/,
                        int flags = 0);
 
@@ -641,7 +641,7 @@ ssize_t sendto_timeout2(ZCE_SOCKET handle,
                         const void* buf,
                         size_t len,
                         const sockaddr* addr,
-                        socklen_t addrlen,
+                        socklen_t addr_len,
                         zce::Time_Value& /*timeout_tv*/,
                         int flags = 0);
 
@@ -1204,13 +1204,13 @@ inline ZCE_SOCKET zce::socket(int family,
 // 接收一个accept请求的socket
 inline ZCE_SOCKET zce::accept(ZCE_SOCKET handle,
                               sockaddr* addr,
-                              socklen_t* addrlen)
+                              socklen_t* addr_len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     ZCE_SOCKET accept_hdl = ::accept(handle,
                                      addr,
-                                     addrlen);
+                                     addr_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (ZCE_INVALID_SOCKET == accept_hdl)
@@ -1223,20 +1223,20 @@ inline ZCE_SOCKET zce::accept(ZCE_SOCKET handle,
 #elif defined (ZCE_OS_LINUX)
     return ::accept(handle,
                     addr,
-                    addrlen);
+                    addr_len);
 #endif
 }
 
 //绑定IP地址协议，，
 inline int zce::bind(ZCE_SOCKET handle,
                      const sockaddr* addr,
-                     socklen_t addrlen)
+                     socklen_t addr_len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int zce_result = ::bind(handle,
                             addr,
-                            addrlen);
+                            addr_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (SOCKET_ERROR == zce_result)
@@ -1248,7 +1248,7 @@ inline int zce::bind(ZCE_SOCKET handle,
 #elif defined (ZCE_OS_LINUX)
     return ::bind(handle,
                   addr,
-                  addrlen);
+                  addr_len);
 #endif
 }
 
@@ -1273,12 +1273,12 @@ inline int zce::close_socket(ZCE_SOCKET handle)
 //连接服务器
 inline int zce::connect(ZCE_SOCKET handle,
                         const sockaddr* addr,
-                        socklen_t addrlen)
+                        socklen_t addr_len)
 {
 #if defined ZCE_OS_WINDOWS
     int zce_result = ::connect(handle,
                                addr,
-                               addrlen);
+                               addr_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (SOCKET_ERROR == zce_result)
@@ -1290,19 +1290,19 @@ inline int zce::connect(ZCE_SOCKET handle,
 #elif defined (ZCE_OS_LINUX)
     return ::connect(handle,
                      addr,
-                     addrlen);
+                     addr_len);
 #endif
 }
 
 //取得对端的地址信息
 inline int zce::getpeername(ZCE_SOCKET handle,
                             sockaddr* addr,
-                            socklen_t* addrlen)
+                            socklen_t* addr_len)
 {
 #if defined ZCE_OS_WINDOWS
     int zce_result = ::getpeername(handle,
                                    addr,
-                                   addrlen);
+                                   addr_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (SOCKET_ERROR == zce_result)
@@ -1314,20 +1314,20 @@ inline int zce::getpeername(ZCE_SOCKET handle,
 #elif defined (ZCE_OS_LINUX)
     return ::getpeername(handle,
                          addr,
-                         addrlen);
+                         addr_len);
 #endif
 }
 
 //取得对端的地址信息
 inline int zce::getsockname(ZCE_SOCKET handle,
                             sockaddr* addr,
-                            socklen_t* addrlen)
+                            socklen_t* addr_len)
 {
 #if defined ZCE_OS_WINDOWS
 
     int zce_result = ::getsockname(handle,
                                    addr,
-                                   addrlen);
+                                   addr_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (SOCKET_ERROR == zce_result)
@@ -1339,7 +1339,7 @@ inline int zce::getsockname(ZCE_SOCKET handle,
 #elif defined (ZCE_OS_LINUX)
     return ::getsockname(handle,
                          addr,
-                         addrlen);
+                         addr_len);
 #endif
 }
 
@@ -1602,7 +1602,7 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            size_t len,
                            int flags,
                            const struct sockaddr* addr,
-                           socklen_t addrlen)
+                           socklen_t addr_len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -1611,7 +1611,7 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                                     static_cast<int> (len),
                                     flags,
                                     addr,
-                                    addrlen);
+                                    addr_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (SOCKET_ERROR == zce_result)
@@ -1627,7 +1627,7 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                     len,
                     flags,
                     addr,
-                    addrlen);
+                    addr_len);
 #endif
 }
 
@@ -1722,7 +1722,7 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            const void* buf,
                            size_t len,
                            const sockaddr* addr,
-                           int addrlen,
+                           int addr_len,
                            zce::Time_Value* timeout_tv,
                            int flags)
 {
@@ -1732,7 +1732,7 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                                    buf,
                                    len,
                                    addr,
-                                   addrlen,
+                                   addr_len,
                                    *timeout_tv,
                                    flags);
     }
@@ -1743,7 +1743,7 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            len,
                            flags,
                            addr,
-                           addrlen);
+                           addr_len);
     }
 }
 

@@ -33,8 +33,8 @@ Server_Config_Base::~Server_Config_Base()
 int Server_Config_Base::read_start_arg(int argc, const char* argv[])
 {
     // 指明RETURN_IN_ORDER 不调整顺序
-    ZCE_Get_Option get_opt(argc, (char**)argv,
-                           "umvndhpi:t:r:a:", 1, 0, ZCE_Get_Option::RETURN_IN_ORDER);
+    zce::Get_Option get_opt(argc, (char**)argv,
+                            "umvndhpi:t:r:a:", 1, 0, Get_Option::RETURN_IN_ORDER);
     int c = 0;
     while ((c = get_opt()) != EOF)
     {
@@ -182,7 +182,7 @@ int Server_Config_Base::read_cfgfile()
     common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";
 
     zce::PropertyTree pt_tree;
-    ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(), &pt_tree);
+    ret = zce::cfg::read_ini(common_cfg_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "Application read config file [%s] ret [%d].",
             common_cfg_file_.c_str(), ret);
     if (ret != 0)

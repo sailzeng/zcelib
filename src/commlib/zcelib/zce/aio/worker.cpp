@@ -26,6 +26,7 @@ int Worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::Dir_Atom>(16, 16);
     aio_obj_pool_.initialize<zce::aio::MySQL_Atom>(16, 16);
     aio_obj_pool_.initialize<zce::aio::Host_Atom>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::Socket_Atom>(16, 16);
     return 0;
 }
 
@@ -351,20 +352,24 @@ void Worker::process_host(zce::aio::Host_Atom* atom)
 //在线程中处理Socket请求
 void Worker::process_socket(zce::aio::Socket_Atom* atom)
 {
+    ssize_t len = 0;
     switch (atom->aio_type_)
     {
     case SOCKET_CONNECT:
-        atom->result_ = zce::connect(
+        atom->result_ = zce::connect_timeout(
             atom->handle_,
             atom->addr_,
-            atom->addrlen_);
+            atom->addr_len_,
+            *atom->timeout_tv_);
         break;
     case SOCKET_RECV:
-        ssize_t len = zce::recv(
+        len = zce::recvn_timeout(
             atom->handle_,
             atom->rcv_buf_,
             atom->len_,
-            atom->flags_);
+            *atom->timeout_tv_,
+            atom->flags_,
+            true);
         if (len > 0)
         {
             atom->result_ = 0;
@@ -377,10 +382,11 @@ void Worker::process_socket(zce::aio::Socket_Atom* atom)
         }
         break;
     case SOCKET_SEND:
-        ssize_t len = zce::send(
+        len = zce::sendn_timeout(
             atom->handle_,
             atom->snd_buf_,
             atom->len_,
+            *atom->timeout_tv_,
             atom->flags_);
         if (len > 0)
         {

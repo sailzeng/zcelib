@@ -5,12 +5,15 @@
 #include "zce/logger/logging.h"
 #include "zce/config/file_implement.h"
 
+namespace zce::cfg
+{
 /******************************************************************************************
-class ZCE_INI_Implement INI文件的配置读取，写入实现器
+class zce::cfg::read_ini INI文件的配置读取，写入实现器
 ******************************************************************************************/
-
+//每行的最大长度
+static const size_t LINE_BUFFER_LEN = 8191;
 //
-int ZCE_INI_Implement::read(const char* file_name, zce::PropertyTree* propertytree)
+int read_ini(const char* file_name, zce::PropertyTree* propertytree)
 {
     //1行的最大值
     std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
@@ -28,7 +31,7 @@ int ZCE_INI_Implement::read(const char* file_name, zce::PropertyTree* propertytr
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]",
+        ZCE_LOG(RS_ERROR, "[zcelib]: INI_Implement::read config fail.path=[%s] ,last error [%d]",
                 file_name,
                 zce::last_error());
         return -1;
@@ -86,19 +89,25 @@ int ZCE_INI_Implement::read(const char* file_name, zce::PropertyTree* propertytr
     return 0;
 }
 
+int write_ini(const char* /*file_name*/,
+              const zce::PropertyTree* /*propertytree*/)
+{
+    return 0;
+}
+
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
 
 /******************************************************************************************
-class ZCE_XML_Implement INI文件的配置读取，写入实现器
+class XML_Implement INI文件的配置读取，写入实现器
 ******************************************************************************************/
 
-int ZCE_XML_Implement::read(const char* file_name, zce::PropertyTree* propertytree)
+int read_xml(const char* file_name, zce::PropertyTree* propertytree)
 {
     size_t file_len = 0;
     auto pair = zce::read_file(file_name, &file_len);
     if (0 != pair.first)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,zce::read_file."
+        ZCE_LOG(RS_ERROR, "[zcelib]: XML_Implement::read fail,zce::read_file."
                 "path=[%s],last error [%d]",
                 file_name,
                 zce::last_error());
@@ -114,7 +123,7 @@ int ZCE_XML_Implement::read(const char* file_name, zce::PropertyTree* propertytr
 
         const rapidxml::xml_node<char>* root = doc->first_node();
         //广度遍历dom tree
-        read_dfs(root, propertytree);
+        read_xml_dfs(root, propertytree);
     }
     catch (rapidxml::parse_error& e)
     {
@@ -128,8 +137,8 @@ int ZCE_XML_Implement::read(const char* file_name, zce::PropertyTree* propertytr
 }
 
 //深度优先读写
-void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char>* node,
-                                 zce::PropertyTree* propertytree)
+void read_xml_dfs(const rapidxml::xml_node<char>* node,
+                  zce::PropertyTree* propertytree)
 {
     if (NULL == node->value() && NULL == node->first_attribute() && NULL == node->first_node())
     {
@@ -162,10 +171,11 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char>* node,
         rapidxml::xml_node<char>* node_child = node->first_node();
         do
         {
-            read_dfs(node_child, pt_note);
+            read_xml_dfs(node_child, pt_note);
             node_child = node_child->next_sibling();
         } while (node_child);
     }
 }
 
 #endif
+}

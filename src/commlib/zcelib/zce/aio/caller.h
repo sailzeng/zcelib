@@ -46,6 +46,10 @@
 #pragma once
 #include "zce/os_adapt/common.h"
 
+namespace zce
+{
+class Time_Value;
+}
 //前向声明
 namespace zce::mysql
 {
@@ -212,13 +216,13 @@ struct Socket_Atom :public AIO_Atom
     //!参数
     int result_ = -1;
     //
-    ZCE_SOCKET handle_;
-    //
-    const sockaddr* addr_;
-    socklen_t addrlen_;
-    const void* snd_buf_;
-    void* rcv_buf_;
-    size_t len_;
+    ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
+    const sockaddr* addr_ = nullptr;
+    socklen_t addr_len_ = 0;
+    const void* snd_buf_ = nullptr;
+    void* rcv_buf_ = nullptr;
+    size_t len_ = 0;
+    zce::Time_Value* timeout_tv_ = nullptr;
     size_t result_count_ = 0;
     int flags_ = 0;
 };
@@ -374,7 +378,8 @@ int host_getaddr_one(zce::aio::Worker* worker,
 int socket_connect(zce::aio::Worker* worker,
                    ZCE_SOCKET handle,
                    const sockaddr* addr,
-                   socklen_t addrlen,
+                   socklen_t addr_len,
+                   zce::Time_Value* timeout_tv,
                    std::function<void(AIO_Atom*)> call_back);
 
 //!
@@ -382,6 +387,7 @@ int socket_recv(zce::aio::Worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
+                zce::Time_Value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags = 0);
 
@@ -390,6 +396,7 @@ int socket_send(zce::aio::Worker* worker,
                 ZCE_SOCKET handle,
                 const void* buf,
                 size_t len,
+                zce::Time_Value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags = 0);
 }//namespace zce::aio

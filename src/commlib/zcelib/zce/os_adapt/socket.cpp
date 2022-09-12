@@ -220,7 +220,7 @@ int open_socket(ZCE_SOCKET* handle,
 int zce::open_socket(ZCE_SOCKET* handle,
                      int type,
                      const sockaddr* local_addr,
-                     socklen_t addrlen,
+                     socklen_t addr_len,
                      int protocol,
                      bool reuse_addr)
 {
@@ -237,7 +237,7 @@ int zce::open_socket(ZCE_SOCKET* handle,
     //如果要绑定本地地址，一般SOCKET无须此步
     if (local_addr)
     {
-        ret = zce::bind(*handle, local_addr, addrlen);
+        ret = zce::bind(*handle, local_addr, addr_len);
         if (ret != 0)
         {
             close_socket(*handle);
@@ -1176,7 +1176,7 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        const void* buf,
                        size_t len,
                        const sockaddr* addr,
-                       socklen_t addrlen,
+                       socklen_t addr_len,
                        zce::Time_Value& /*timeout_tv*/,
                        int flags)
 {
@@ -1185,8 +1185,7 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        len,
                        flags,
                        addr,
-                       addrlen
-    );
+                       addr_len);
 }
 
 //--------------------------------------------------------------------------------------------
@@ -1324,7 +1323,7 @@ ssize_t recvfrom_timeout2(ZCE_SOCKET handle,
                           void* buf,
                           size_t len,
                           sockaddr* addr,
-                          socklen_t* addrlen,
+                          socklen_t* addr_len,
                           zce::Time_Value& timeout_tv,
                           int flags)
 {
@@ -1352,7 +1351,7 @@ ssize_t recvfrom_timeout2(ZCE_SOCKET handle,
                                         len,
                                         flags,
                                         addr,
-                                        addrlen);
+                                        addr_len);
 
     return recv_result;
 }
@@ -1363,7 +1362,7 @@ ssize_t sendto_timeout2(ZCE_SOCKET handle,
                         const void* buf,
                         size_t len,
                         const sockaddr* addr,
-                        socklen_t addrlen,
+                        socklen_t addr_len,
                         zce::Time_Value& /*timeout_tv*/,
                         int flags)
 {
@@ -1372,8 +1371,7 @@ ssize_t sendto_timeout2(ZCE_SOCKET handle,
                        len,
                        flags,
                        addr,
-                       addrlen
-    );
+                       addr_len);
 }
 
 //--------------------------------------------------------------------------------------------
@@ -1589,7 +1587,7 @@ int inet_pton(int family,
     {
         errno = EAFNOSUPPORT;
         return 0;
-}
+    }
 #endif
 
 #elif defined (ZCE_OS_LINUX)
@@ -1673,7 +1671,7 @@ const char* inet_ntop(int family,
     {
         errno = EAFNOSUPPORT;
         return NULL;
-}
+    }
 #endif
 #elif defined (ZCE_OS_LINUX)
     //LINuX下有这个函数

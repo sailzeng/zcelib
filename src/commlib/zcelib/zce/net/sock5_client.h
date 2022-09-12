@@ -40,13 +40,13 @@ int socks5_initialize(ZCE_SOCKET handle,
 * @param      host_name  跳转的域名，域名和地址只选一个，优先域名，为NULL
 * @param      port       跳转的端口
 * @param      addr       跳转的地址
-* @param      addrlen    跳转的地址的长度
+* @param      addr_len   跳转的地址的长度
 * @param      timeout_tv 超时时间
 */
 int socks5_connect_host(ZCE_SOCKET handle,
                         const char* host_name,
                         const sockaddr* host_addr,
-                        int addrlen,
+                        int addr_len,
                         uint16_t host_port,
                         zce::Time_Value& timeout_tv);
 

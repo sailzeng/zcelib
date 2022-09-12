@@ -499,12 +499,17 @@ int host_getaddr_one(zce::aio::Worker* worker,
 int socket_connect(zce::aio::Worker* worker,
                    ZCE_SOCKET handle,
                    const sockaddr* addr,
-                   socklen_t addrlen,
+                   socklen_t addr_len,
+                   zce::Time_Value* timeout_tv,
                    std::function<void(AIO_Atom*)> call_back)
 {
     zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
         worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT);
-
+    aio_atom->handle_ = handle;
+    aio_atom->addr_ = addr;
+    aio_atom->addr_len_ = addr_len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);
     if (!succ_req)
     {
@@ -518,12 +523,18 @@ int socket_recv(zce::aio::Worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
+                zce::Time_Value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags)
 {
     zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
         worker->alloc_handle(AIO_TYPE::SOCKET_RECV);
-
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = buf;
+    aio_atom->len_ = len;
+    aio_atom->flags_ = flags;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);
     if (!succ_req)
     {
@@ -537,12 +548,18 @@ int socket_send(zce::aio::Worker* worker,
                 ZCE_SOCKET handle,
                 const void* buf,
                 size_t len,
+                zce::Time_Value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags)
 {
     zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
         worker->alloc_handle(AIO_TYPE::SOCKET_SEND);
-
+    aio_atom->handle_ = handle;
+    aio_atom->snd_buf_ = buf;
+    aio_atom->len_ = len;
+    aio_atom->flags_ = flags;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);
     if (!succ_req)
     {

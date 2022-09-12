@@ -73,12 +73,14 @@
   * POSSIBILITY OF SUCH DAMAGE.
   */
 
-  /************************************************************************************************************
-  Class           : ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION
-  ************************************************************************************************************/
-ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
+namespace zce
+{
+/************************************************************************************************************
+Class           : Get_Option::ZCE_GETOPT_LONG_OPTION
+************************************************************************************************************/
+Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
     const char* name,
-    ZCE_Get_Option::OPTION_ARG_MODE has_arg,
+    Get_Option::OPTION_ARG_MODE has_arg,
     int val)
     : name_(name),
     has_arg_(has_arg),
@@ -86,26 +88,26 @@ ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
 {
 }
 
-ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(void) :
-    has_arg_(ZCE_Get_Option::OPTION_ARG_MODE::NO_ARG),
+Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(void) :
+    has_arg_(Get_Option::OPTION_ARG_MODE::NO_ARG),
     val_(0)
 {
 }
 
-ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::~ZCE_GETOPT_LONG_OPTION(void)
+Get_Option::ZCE_GETOPT_LONG_OPTION::~ZCE_GETOPT_LONG_OPTION(void)
 {
 }
 
 /************************************************************************************************************
-Class           : ZCE_Get_Option
+Class           : Get_Option
 ************************************************************************************************************/
-ZCE_Get_Option::ZCE_Get_Option(int argc,
-                               char** argv,
-                               const char* optstring,
-                               int skip,
-                               int report_errors,
-                               int ordering,
-                               int long_only)
+Get_Option::Get_Option(int argc,
+                       char** argv,
+                       const char* optstring,
+                       int skip,
+                       int report_errors,
+                       int ordering,
+                       int long_only)
     : argc_(argc),
     argv_(argv),
     optind(skip),
@@ -142,22 +144,22 @@ ZCE_Get_Option::ZCE_Get_Option(int argc,
     {
         switch (optstring[offset++])
         {
-            case '+':
-                this->ordering_ = REQUIRE_ORDER;
-                break;
+        case '+':
+            this->ordering_ = REQUIRE_ORDER;
+            break;
 
-            case '-':
-                this->ordering_ = RETURN_IN_ORDER;
-                break;
+        case '-':
+            this->ordering_ = RETURN_IN_ORDER;
+            break;
 
-            case ':':
-                this->has_colon_ = 1;
-                break;
+        case ':':
+            this->has_colon_ = 1;
+            break;
 
-            default:
-                // Quit as soon as we see something else...
-                done = 1;
-                break;
+        default:
+            // Quit as soon as we see something else...
+            done = 1;
+            break;
         }
     }
 
@@ -167,12 +169,12 @@ ZCE_Get_Option::ZCE_Get_Option(int argc,
     }
 }
 
-ZCE_Get_Option::~ZCE_Get_Option(void)
+Get_Option::~Get_Option(void)
 {
 }
 
 int
-ZCE_Get_Option::nextchar_i(void)
+Get_Option::nextchar_i(void)
 {
     if (this->ordering_ == PERMUTE_ARGS)
         if (this->permute() == EOF)
@@ -224,7 +226,7 @@ ZCE_Get_Option::nextchar_i(void)
 }
 
 int
-ZCE_Get_Option::long_option_i(void)
+Get_Option::long_option_i(void)
 {
     char* s = this->nextchar_;
     int hits = 0;
@@ -371,7 +373,7 @@ ZCE_Get_Option::long_option_i(void)
 }
 
 int
-ZCE_Get_Option::short_option_i(void)
+Get_Option::short_option_i(void)
 {
     /* Look at and handle the next option-character.  */
     char opt = *this->nextchar_++;
@@ -466,7 +468,7 @@ ZCE_Get_Option::short_option_i(void)
 }
 
 int
-ZCE_Get_Option::operator () (void)
+Get_Option::operator () (void)
 {
     // First of all, make sure we reinitialize any pointers..
     this->optarg = 0;
@@ -492,7 +494,7 @@ ZCE_Get_Option::operator () (void)
     }
 
     if (((this->argv_[this->optind][0] == '-')
-        && (this->argv_[this->optind][1] == '-')) || this->long_only_)
+         && (this->argv_[this->optind][1] == '-')) || this->long_only_)
     {
         return this->long_option_i();
     }
@@ -501,16 +503,16 @@ ZCE_Get_Option::operator () (void)
 }
 
 int
-ZCE_Get_Option::long_option(const char* name,
-                            OPTION_ARG_MODE has_arg)
+Get_Option::long_option(const char* name,
+                        OPTION_ARG_MODE has_arg)
 {
     return this->long_option(name, 0, has_arg);
 }
 
 int
-ZCE_Get_Option::long_option(const char* name,
-                            int short_option,
-                            OPTION_ARG_MODE has_arg)
+Get_Option::long_option(const char* name,
+                        int short_option,
+                        OPTION_ARG_MODE has_arg)
 {
     // We only allow valid alpha-numeric characters as short options.
     // If short_options is not a valid alpha-numeric, we can still return it
@@ -525,7 +527,7 @@ ZCE_Get_Option::long_option(const char* name,
 
         if ((s = const_cast<char*> (
             ::strchr(this->optstring_.c_str(),
-            short_option))) != 0)
+                     short_option))) != 0)
         {
             // Short option exists, so verify the argument options
             if (s[1] == ':')
@@ -595,7 +597,7 @@ ZCE_Get_Option::long_option(const char* name,
 }
 
 const char*
-ZCE_Get_Option::long_option(void) const
+Get_Option::long_option(void) const
 {
     if (this->long_option_)
     {
@@ -606,7 +608,7 @@ ZCE_Get_Option::long_option(void) const
 }
 
 void
-ZCE_Get_Option::permute_args(void)
+Get_Option::permute_args(void)
 {
     u_long cyclelen, i, j, ncycle, nnonopts, nopts;
     u_long opt_end = this->optind;
@@ -646,7 +648,7 @@ ZCE_Get_Option::permute_args(void)
 }
 
 int
-ZCE_Get_Option::permute(void)
+Get_Option::permute(void)
 {
     //
     if (this->nonopt_start_ != this->nonopt_end_
@@ -660,7 +662,7 @@ ZCE_Get_Option::permute(void)
     // Skip over args untill we find the next option.
     while (this->optind < this->argc_
            && (this->argv_[this->optind][0] != '-'
-           || this->argv_[this->optind][1] == '\0'))
+               || this->argv_[this->optind][1] == '\0'))
     {
         this->optind++;
     }
@@ -670,7 +672,7 @@ ZCE_Get_Option::permute(void)
 
     if (this->optind != this->argc_
         && ::strcmp(this->argv_[this->optind],
-        ("--")) == 0)
+                    ("--")) == 0)
     {
         // We found the marker for the end of the options.
         ++this->optind;
@@ -693,4 +695,5 @@ ZCE_Get_Option::permute(void)
     }
 
     return 0;
+}
 }

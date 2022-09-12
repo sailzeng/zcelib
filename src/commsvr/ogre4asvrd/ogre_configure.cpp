@@ -114,7 +114,7 @@ int Ogre_Server_Config::read_cfgfile()
     ogre_cfg_file_ = app_run_dir_ + "/cfg/ogre4asvrd.cfg";
 
     zce::PropertyTree pt_tree;
-    ret = ZCE_INI_Implement::read(ogre_cfg_file_.c_str(), &pt_tree);
+    ret = zce::cfg::read_ini(ogre_cfg_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
             ogre_cfg_file_.c_str(), ret);
     if (ret != 0)

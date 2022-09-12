@@ -22,7 +22,7 @@ int Wormhole_Server_Config::read_cfgfile()
     }
 
     proxy_conf_tree_.clear();
-    ret = ZCE_INI_Implement::read(app_cfg_file_.c_str(), &proxy_conf_tree_);
+    ret = zce::cfg::read_ini(app_cfg_file_.c_str(), &proxy_conf_tree_);
     ZCE_LOG(RS_INFO, "[%s] read config file [%s] ret [%d].",
             Wormhole_Proxy_App::instance()->get_app_basename(),
             app_cfg_file_.c_str(), ret);

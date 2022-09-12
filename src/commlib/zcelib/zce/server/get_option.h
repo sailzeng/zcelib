@@ -14,12 +14,12 @@
 * @note
 *
 */
-#ifndef ZCE_LIB_GET_OPTION_H_
-#define ZCE_LIB_GET_OPTION_H_
 
 #include "zce/util/non_copyable.h"
 
-class  ZCE_Get_Option : public zce::NON_Copyable
+namespace zce
+{
+class  Get_Option : public zce::NON_Copyable
 {
 public:
     /// Mutually exclusive ordering values.
@@ -149,16 +149,16 @@ public:
      */
 
 public:
-    ZCE_Get_Option(int argc,
-                   char** argv,
-                   const char* optstring = (""),
-                   int skip_args = 1,
-                   int report_errors = 0,
-                   int ordering = PERMUTE_ARGS,
-                   int long_only = 0);
+    Get_Option(int argc,
+               char** argv,
+               const char* optstring = (""),
+               int skip_args = 1,
+               int report_errors = 0,
+               int ordering = PERMUTE_ARGS,
+               int long_only = 0);
 
     /// Default dtor.
-    ~ZCE_Get_Option(void);
+    ~Get_Option(void);
 
     /**
      * Scan elements of @a argv (whose length is @a argc) for short option
@@ -326,7 +326,7 @@ public:
 private:
     /**
      * @class ZCE_GETOPT_LONG_OPTION  This class is for internal use
-     * in the ZCE_Get_Option class, and is inaccessible to users.
+     * in the Get_Option class, and is inaccessible to users.
      */
     class ZCE_GETOPT_LONG_OPTION
     {
@@ -335,7 +335,7 @@ private:
 
         /// ctor
         ZCE_GETOPT_LONG_OPTION(const char* name,
-                               ZCE_Get_Option::OPTION_ARG_MODE has_arg,
+                               Get_Option::OPTION_ARG_MODE has_arg,
                                int val = 0);
 
         /// Dtor.
@@ -347,7 +347,7 @@ private:
         std::string    name_;
 
         /// Contains value for <OPTION_ARG_MODE>.
-        ZCE_Get_Option::OPTION_ARG_MODE has_arg_;
+        Get_Option::OPTION_ARG_MODE has_arg_;
 
         /// Contains a valid short option character or zero if it doesn't
         /// have a corresponding short option.  It can also contain a
@@ -421,5 +421,4 @@ private:
     /// Array of long options.
     std::vector<ZCE_GETOPT_LONG_OPTION> long_opts_;
 };
-
-#endif //ZCE_LIB_GET_OPTION_H_
+}
