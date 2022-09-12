@@ -294,15 +294,15 @@ inline ssize_t send(ZCE_SOCKET handle,
 * @param[out] buf      接收数据的buffer
 * @param[in]  len      接收数据的buffer的长度
 * @param[in]  flags    接受操作的flag 默认为0，MSG_DONTWAI LINUX支持，相当于非阻塞接收
-* @param[out] from     数据来源的地址，from可以和from_len一起为NULL,表示不关心从哪儿来的数据
-* @param[out] from_len 数据来源地址的长度
+* @param[out] addr     数据来源的地址，from可以和from_len一起为NULL,表示不关心从哪儿来的数据
+* @param[out] addrlen  数据来源地址的长度
 */
 inline ssize_t recvfrom(ZCE_SOCKET handle,
                         void* buf,
                         size_t len,
                         int flags,
-                        sockaddr* from,
-                        socklen_t* from_len);
+                        sockaddr* addr,
+                        socklen_t* addrlen);
 
 /*!
 * @brief      UDP发送

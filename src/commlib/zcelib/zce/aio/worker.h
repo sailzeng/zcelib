@@ -6,6 +6,7 @@
 
 namespace zce::aio
 {
+//!
 class Worker
 {
 public:
@@ -46,6 +47,8 @@ public:
     void process_mysql(zce::aio::MySQL_Atom* base);
     //!在线程中处理Gat Host Addr请求
     void process_host(zce::aio::Host_Atom* base);
+    //!在线程中处理Socket请求
+    void process_socket(zce::aio::Socket_Atom* base);
 
 protected:
 

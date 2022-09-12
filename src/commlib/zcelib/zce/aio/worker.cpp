@@ -65,6 +65,11 @@ AIO_Atom* Worker::alloc_handle(AIO_TYPE aio_type)
     {
         handle = aio_obj_pool_.alloc_object<Host_Atom>();
     }
+    else if (aio_type > AIO_TYPE::SOCKET_BEGIN &&
+             aio_type < AIO_TYPE::SOCKET_END)
+    {
+        handle = aio_obj_pool_.alloc_object<Socket_Atom>();
+    }
     else
     {
         return nullptr;
@@ -96,6 +101,11 @@ void Worker::free_handle(zce::aio::AIO_Atom* base)
              base->aio_type_ < AIO_TYPE::HOST_END)
     {
         aio_obj_pool_.free_object<Host_Atom>(static_cast<Host_Atom*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
+             base->aio_type_ < AIO_TYPE::SOCKET_END)
+    {
+        aio_obj_pool_.free_object<Socket_Atom>(static_cast<Socket_Atom*>(base));
     }
     else
     {
@@ -176,6 +186,11 @@ void Worker::process_aio(zce::aio::AIO_Atom* base)
              base->aio_type_ < AIO_TYPE::HOST_END)
     {
         process_host(static_cast<zce::aio::Host_Atom*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
+             base->aio_type_ < AIO_TYPE::SOCKET_END)
+    {
+        process_socket(static_cast<zce::aio::Socket_Atom*>(base));
     }
     else
     {
@@ -327,6 +342,56 @@ void Worker::process_host(zce::aio::Host_Atom* atom)
             atom->service_,
             atom->addr_,
             atom->addr_len_);
+        break;
+    default:
+        break;
+    }
+}
+
+//在线程中处理Socket请求
+void Worker::process_socket(zce::aio::Socket_Atom* atom)
+{
+    switch (atom->aio_type_)
+    {
+    case SOCKET_CONNECT:
+        atom->result_ = zce::connect(
+            atom->handle_,
+            atom->addr_,
+            atom->addrlen_);
+        break;
+    case SOCKET_RECV:
+        ssize_t len = zce::recv(
+            atom->handle_,
+            atom->rcv_buf_,
+            atom->len_,
+            atom->flags_);
+        if (len > 0)
+        {
+            atom->result_ = 0;
+            atom->result_count_ = len;
+        }
+        else
+        {
+            atom->result_ = -1;
+            atom->result_count_ = 0;
+        }
+        break;
+    case SOCKET_SEND:
+        ssize_t len = zce::send(
+            atom->handle_,
+            atom->snd_buf_,
+            atom->len_,
+            atom->flags_);
+        if (len > 0)
+        {
+            atom->result_ = 0;
+            atom->result_count_ = len;
+        }
+        else
+        {
+            atom->result_ = -1;
+            atom->result_count_ = 0;
+        }
         break;
     default:
         break;

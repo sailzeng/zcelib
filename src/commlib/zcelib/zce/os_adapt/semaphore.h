@@ -8,7 +8,7 @@
 *
 * @details    Windows 和 Linux 在信号灯上比较接近，
 *
-* @note
+* @note       [不要使用这个代码了，C++20已经有了信号灯]
 *
 */
 
@@ -133,5 +133,3 @@ int sem_timedwait(sem_t* sem,
 */
 int sem_getvalue(sem_t* sem, int* sval) noexcept;
 };
-
-
