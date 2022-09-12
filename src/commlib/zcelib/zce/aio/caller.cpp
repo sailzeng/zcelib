@@ -495,7 +495,7 @@ int host_getaddr_one(zce::aio::Worker* worker,
     return 0;
 }
 
-//!链接数据
+//!超时链接数据
 int socket_connect(zce::aio::Worker* worker,
                    ZCE_SOCKET handle,
                    const sockaddr* addr,
@@ -508,6 +508,28 @@ int socket_connect(zce::aio::Worker* worker,
     aio_atom->handle_ = handle;
     aio_atom->addr_ = addr;
     aio_atom->addr_len_ = addr_len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->call_back_ = call_back;
+    auto succ_req = worker->request(aio_atom);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+int socket_accept(zce::aio::Worker* worker,
+                  ZCE_SOCKET handle,
+                  sockaddr* from,
+                  socklen_t* from_len,
+                  zce::Time_Value* timeout_tv,
+                  std::function<void(AIO_Atom*)> call_back)
+{
+    zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_ACCEPT);
+    aio_atom->handle_ = handle;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);

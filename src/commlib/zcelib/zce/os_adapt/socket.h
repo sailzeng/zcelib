@@ -541,6 +541,12 @@ int connect_timeout(ZCE_SOCKET handle,
                     socklen_t addr_len,
                     zce::Time_Value& timeout_tv);
 
+//!详见accept函数，timeout_tv为等待超时时间
+ZCE_SOCKET accept_timeout(ZCE_SOCKET handle,
+                          sockaddr* from,
+                          socklen_t* from_len,
+                          zce::Time_Value& timeout_tv);
+
 /*!
 * @brief      TCP接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n
 *             recvn_timeout 和 recvn_n 的区别是recvn_n 如果超时参数为NULL，可能立即返回或者一致阻塞等待
@@ -576,7 +582,7 @@ ssize_t recvfrom_timeout(ZCE_SOCKET handle,
                          void* buf,
                          size_t len,
                          sockaddr* from,
-                         socklen_t* from_rlen,
+                         socklen_t* from_len,
                          zce::Time_Value& timeout_tv,
                          int flags = 0);
 
@@ -587,8 +593,8 @@ ssize_t recvfrom_timeout(ZCE_SOCKET handle,
 ssize_t sendto_timeout(ZCE_SOCKET handle,
                        const void* buf,
                        size_t len,
-                       const sockaddr* addr,
-                       socklen_t addr_len,
+                       const sockaddr* to_addr,
+                       socklen_t to_len,
                        zce::Time_Value& /*timeout_tv*/,
                        int flags = 0);
 
@@ -1601,8 +1607,8 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            const void* buf,
                            size_t len,
                            int flags,
-                           const struct sockaddr* addr,
-                           socklen_t addr_len)
+                           const struct sockaddr* to,
+                           socklen_t to_len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -1610,8 +1616,8 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                                     static_cast<const char*>(buf),
                                     static_cast<int> (len),
                                     flags,
-                                    addr,
-                                    addr_len);
+                                    to,
+                                    to_len);
 
     //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
     if (SOCKET_ERROR == zce_result)
@@ -1626,8 +1632,8 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                     buf,
                     len,
                     flags,
-                    addr,
-                    addr_len);
+                    to,
+                    to_len);
 #endif
 }
 
@@ -1721,8 +1727,8 @@ inline ssize_t zce::recvfrom(ZCE_SOCKET handle,
 inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            const void* buf,
                            size_t len,
-                           const sockaddr* addr,
-                           int addr_len,
+                           const sockaddr* to,
+                           int to_len,
                            zce::Time_Value* timeout_tv,
                            int flags)
 {
@@ -1731,8 +1737,8 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
         return zce::sendto_timeout(handle,
                                    buf,
                                    len,
-                                   addr,
-                                   addr_len,
+                                   to,
+                                   to_len,
                                    *timeout_tv,
                                    flags);
     }
@@ -1742,8 +1748,8 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            buf,
                            len,
                            flags,
-                           addr,
-                           addr_len);
+                           to,
+                           to_len);
     }
 }
 

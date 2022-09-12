@@ -920,6 +920,32 @@ int connect_timeout(ZCE_SOCKET handle,
                                 timeout_tv);
 }
 
+ZCE_SOCKET accept_timeout(ZCE_SOCKET handle,
+                          sockaddr* addr,
+                          socklen_t* addr_len,
+                          zce::Time_Value& timeout_tv)
+{
+    int ret = 0;
+    ret = zce::handle_ready(handle,
+                            &timeout_tv,
+                            zce::HANDLE_READY::ACCEPT);
+    const int HANDLE_READY_ONE = 1;
+    if (ret != HANDLE_READY_ONE)
+    {
+        return ZCE_INVALID_SOCKET;
+    }
+
+    //
+    ZCE_SOCKET sock_handle = zce::accept(handle,
+                                         addr,
+                                         addr_len);
+    if (sock_handle == ZCE_INVALID_SOCKET)
+    {
+        return ZCE_INVALID_SOCKET;
+    }
+    return sock_handle;
+}
+
 ssize_t recvn_timeout(ZCE_SOCKET handle,
                       void* buf,
                       size_t len,
@@ -1175,8 +1201,8 @@ ssize_t recvfrom_timeout(ZCE_SOCKET handle,
 ssize_t sendto_timeout(ZCE_SOCKET handle,
                        const void* buf,
                        size_t len,
-                       const sockaddr* addr,
-                       socklen_t addr_len,
+                       const sockaddr* to,
+                       socklen_t to_len,
                        zce::Time_Value& /*timeout_tv*/,
                        int flags)
 {
@@ -1184,8 +1210,8 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        buf,
                        len,
                        flags,
-                       addr,
-                       addr_len);
+                       to,
+                       to_len);
 }
 
 //--------------------------------------------------------------------------------------------

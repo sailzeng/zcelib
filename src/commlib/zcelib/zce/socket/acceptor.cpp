@@ -92,28 +92,15 @@ int Socket_Acceptor::accept(Socket_Stream& new_stream,
                             Time_Value& timeout,
                             Sockaddr_Base* remote_addr) const
 {
-    int ret = 0;
-    ret = zce::handle_ready(socket_handle_,
-                            &timeout,
-                            zce::HANDLE_READY::ACCEPT);
-
-    const int HANDLE_READY_ONE = 1;
-
-    if (ret != HANDLE_READY_ONE)
-    {
-        return -1;
-    }
-
-    //
-    ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
-                                         remote_addr->sockaddr_ptr_,
-                                         &remote_addr->sockaddr_size_);
-
+    ZCE_SOCKET sock_handle =
+        zce::accept_timeout(socket_handle_,
+                            remote_addr->sockaddr_ptr_,
+                            &remote_addr->sockaddr_size_,
+                            timeout);
     if (sock_handle == ZCE_INVALID_SOCKET)
     {
         return -1;
     }
-
     new_stream.set_handle(sock_handle);
     return 0;
 }

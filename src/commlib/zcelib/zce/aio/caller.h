@@ -104,8 +104,8 @@ enum AIO_TYPE
     SOCKET_SEND,
     SOCKET_RECV,
     SOCKET_ACCEPT,
-    SOCKET_SENDTO,  //sendto是非阻塞函数，直接调用也行
     SOCKET_RECVFROM,
+    SOCKET_SENDTO,  //sendto是非阻塞函数，直接调用也行
     SOCKET_END = 399,
 };
 
@@ -225,6 +225,9 @@ struct Socket_Atom :public AIO_Atom
     zce::Time_Value* timeout_tv_ = nullptr;
     size_t result_count_ = 0;
     int flags_ = 0;
+    sockaddr* from_ = nullptr;
+    socklen_t* from_len_ = nullptr;
+    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
 };
 
 //====================================================
@@ -374,7 +377,7 @@ int host_getaddr_one(zce::aio::Worker* worker,
                      socklen_t addr_len,
                      std::function<void(AIO_Atom*)> call_back);
 
-//!链接数据
+//!等待若干时间进行connect，直至超时
 int socket_connect(zce::aio::Worker* worker,
                    ZCE_SOCKET handle,
                    const sockaddr* addr,
@@ -382,7 +385,15 @@ int socket_connect(zce::aio::Worker* worker,
                    zce::Time_Value* timeout_tv,
                    std::function<void(AIO_Atom*)> call_back);
 
-//!
+//!等待若干时间进行accept，直至超时
+int socket_accept(zce::aio::Worker* worker,
+                  ZCE_SOCKET handle,
+                  sockaddr* addr,
+                  socklen_t* addr_len,
+                  zce::Time_Value* timeout_tv,
+                  std::function<void(AIO_Atom*)> call_back);
+
+//!等待若干时间进行recv，直至超时
 int socket_recv(zce::aio::Worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
@@ -391,7 +402,7 @@ int socket_recv(zce::aio::Worker* worker,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags = 0);
 
-//!
+//!等待若干时间进行send，直至超时
 int socket_send(zce::aio::Worker* worker,
                 ZCE_SOCKET handle,
                 const void* buf,
@@ -399,4 +410,17 @@ int socket_send(zce::aio::Worker* worker,
                 zce::Time_Value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags = 0);
+
+//!等待若干时间进行recv数据，直至超时
+int socket_recvfrom(zce::aio::Worker* worker,
+                    ZCE_SOCKET handle,
+                    void* buf,
+                    size_t len,
+                    sockaddr* from,
+                    socklen_t* from_len,
+                    zce::Time_Value* timeout_tv,
+                    std::function<void(AIO_Atom*)> call_back,
+                    int flags = 0);
+
+//!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
 }//namespace zce::aio

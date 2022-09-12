@@ -362,6 +362,21 @@ void Worker::process_socket(zce::aio::Socket_Atom* atom)
             atom->addr_len_,
             *atom->timeout_tv_);
         break;
+    case SOCKET_ACCEPT:
+        atom->accept_hdl_ = zce::accept_timeout(
+            atom->handle_,
+            atom->from_,
+            atom->from_len_,
+            *atom->timeout_tv_);
+        if (atom->accept_hdl_ == ZCE_INVALID_SOCKET)
+        {
+            atom->result_ = -1;
+        }
+        else
+        {
+            atom->result_ = 0;
+        }
+        break;
     case SOCKET_RECV:
         len = zce::recvn_timeout(
             atom->handle_,
@@ -386,6 +401,26 @@ void Worker::process_socket(zce::aio::Socket_Atom* atom)
             atom->handle_,
             atom->snd_buf_,
             atom->len_,
+            *atom->timeout_tv_,
+            atom->flags_);
+        if (len > 0)
+        {
+            atom->result_ = 0;
+            atom->result_count_ = len;
+        }
+        else
+        {
+            atom->result_ = -1;
+            atom->result_count_ = 0;
+        }
+        break;
+    case SOCKET_RECVFROM:
+        len = zce::recvfrom_timeout(
+            atom->handle_,
+            atom->rcv_buf_,
+            atom->len_,
+            atom->from_,
+            atom->from_len_,
             *atom->timeout_tv_,
             atom->flags_);
         if (len > 0)
