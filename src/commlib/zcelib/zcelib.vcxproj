@@ -240,6 +240,7 @@
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
     <ClCompile Include="zce\rudp\rudp.cpp" />
+    <ClCompile Include="zce\script\javascript.cpp" />
     <ClCompile Include="zce\socket\addr_any.cpp" />
     <ClCompile Include="zce\string\from_string.cpp" />
     <ClCompile Include="zce\util\buffer.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="zce\pool\object_pool.h" />
     <ClInclude Include="zce\pool\buffer_pool.h" />
     <ClInclude Include="zce\rudp\rudp.h" />
+    <ClInclude Include="zce\script\javascript.h" />
     <ClInclude Include="zce\socket\addr_any.h" />
     <ClInclude Include="zce\string\from_string.h" />
     <ClInclude Include="zce\util\algorithm.h" />

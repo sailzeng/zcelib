@@ -340,6 +340,9 @@
     <ClCompile Include="zce\aio\awaiter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\script\javascript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -787,6 +790,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\aio\awaiter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\script\javascript.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

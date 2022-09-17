@@ -491,6 +491,10 @@ extern "C"
 
 #endif
 
+#if defined ZCE_USE_V8 && ZCE_USE_V8 == 1
+
+#endif
+
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
 #elif defined (ZCE_OS_LINUX)

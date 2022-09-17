@@ -1,3 +1,22 @@
+/*!
+* @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
+* @filename   zce/aio/awaiter.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date       2022年9月9日
+* @brief
+* @details
+*
+*
+*
+* @note
+*
+*            人生是一场旅程。我们经历了几次轮回，才换来这个旅程。
+*            而这个旅程很短，因此不妨大胆一些，不妨大胆一些去爱一个人，去攀一座山，去追一个梦……
+*            有很多事我都不明白。但我相信一件事。上天让我们来到这个世上，就是为了让我们创造奇迹。
+*
+*
+*/
 #pragma once
 
 #include "zce/pool/multiobjs_pool.h"
