@@ -115,9 +115,12 @@ struct pthread_mutex_t
     };
 };
 
-//在WINDOWS下用临界区（进程内）+SPIN 或者Mutex（进程间）模拟SPIN lock
-//注意这个临界区的行为我加入了SPIN功能，
-typedef pthread_mutex_t  pthread_spinlock_t;
+//在WINDOWS下用atomic_flag模拟SPIN lock，没有进程见
+struct pthread_spinlock_t
+{
+    std::atomic_flag flag_ = ATOMIC_FLAG_INIT;
+};
+
 
 struct pthread_condattr_t
 {
