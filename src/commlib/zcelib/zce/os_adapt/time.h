@@ -358,15 +358,29 @@ const timeval make_timeval(const ::timespec* timespec_val) noexcept;
 
 /*!
 * @brief      将CPP11的duration的数据结构转换得到timeval结构
+*             ，&
+*
 * @return     const timeval 转换后的timeval结果
 * @param      val  进行转换的参数
+* @note       val 可以是 std::chrono::duration的各种变种,比如：
+*             std::chrono::hours,std::chrono::minutes,std::chrono::seconds
+*             std::chrono::milliseconds,std::chrono::microseconds,
+*             std::chrono::nanoseconds,等
+*             也可以是 std::literals::chrono_literals::operator""ms
+*             这类标识
 */
-const timeval make_timeval(const std::chrono::hours& val) noexcept;
-const timeval make_timeval(const std::chrono::minutes& val) noexcept;
-const timeval make_timeval(const std::chrono::seconds& val) noexcept;
-const timeval make_timeval(const std::chrono::milliseconds& val) noexcept;
-const timeval make_timeval(const std::chrono::microseconds& val) noexcept;
-const timeval make_timeval(const std::chrono::nanoseconds& val) noexcept;
+template<class Rep, class Period>
+const timeval make_timeval(const std::chrono::duration<Rep, Period>& val)
+{
+    std::chrono::microseconds usec =
+        std::chrono::duration_cast<std::chrono::microseconds>(val);
+    timeval to_timeval;
+    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>
+        (usec.count() / zce::SEC_PER_USEC);
+    to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>
+        (usec.count() % zce::SEC_PER_USEC);
+    return to_timeval;
+}
 
 /*!
 * @brief      将CPP11的time_point的数据结构转换得到timeval结构
@@ -402,9 +416,12 @@ const timeval make_timeval2(const FILETIME* file_time) noexcept;
 
 #endif
 
-void make_chrono(const timeval& tv, const std::chrono::milliseconds& val) noexcept;
-void make_chrono(const timeval& tv, const std::chrono::microseconds& val) noexcept;
-void make_chrono(const timeval& tv, const std::chrono::nanoseconds& val) noexcept;
+template<class Rep, class Period>
+void make_duration(const timeval& tv, const std::chrono::duration<Rep, Period>& val)
+{
+    std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
+    val = std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(usec);
+}
 
 //我整体对timespec不想做太多支持，
 

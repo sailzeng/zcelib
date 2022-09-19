@@ -25,7 +25,6 @@
 
 namespace zce
 {
-
 /*!
 * @brief      用条件变量+容器实现的消息队列，对于我个人来说，条件变量有点怪，装B？请问condi传入Mutex的目的是？
 *
@@ -46,7 +45,6 @@ public:
     }
 
     ~MsgQueue_Condi() = default;
-
 
     //QUEUE是否为NULL
     inline bool empty()
@@ -362,62 +360,62 @@ public:
     bool enqueue(const T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
-        return enqueue_interior(value_data,
-                                MQW_WAIT_FOREVER,
-                                nouse_timeout);
+        return enqueue_i(value_data,
+                         MQW_WAIT_FOREVER,
+                         nouse_timeout);
     }
 
     //有超时放入
     bool enqueue_wait(const T& value_data,
                       std::chrono::microseconds& wait_time)
     {
-        return enqueue_interior(value_data,
-                                MQW_WAIT_TIMEOUT,
-                                wait_time);
+        return enqueue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_time);
     }
 
     //尝试放入，立即返回
     bool try_enqueue(const T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
-        return enqueue_interior(value_data,
-                                MQW_NO_WAIT,
-                                nouse_timeout);
+        return enqueue_i(value_data,
+                         MQW_NO_WAIT,
+                         nouse_timeout);
     }
 
     //取出
     bool dequeue(T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
-        return dequeue_interior(value_data,
-                                MQW_WAIT_FOREVER,
-                                nouse_timeout);
+        return dequeue_i(value_data,
+                         MQW_WAIT_FOREVER,
+                         nouse_timeout);
     }
 
     //有超时处理的取出
     bool dequeue_wait(T& value_data,
                       const std::chrono::microseconds& wait_time)
     {
-        return dequeue_interior(value_data,
-                                MQW_WAIT_TIMEOUT,
-                                wait_time);
+        return dequeue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_time);
     }
     bool dequeue_wait(T& value_data,
                       const zce::Time_Value& wait_time)
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return dequeue_interior(value_data,
-                                MQW_WAIT_TIMEOUT,
-                                wait_mircosec);
+        return dequeue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_mircosec);
     }
     //尝试取出，立即返回
     bool try_dequeue(T& value_data)
     {
         std::chrono::microseconds nouse_timeout;
-        return dequeue_interior(value_data,
-                                MQW_NO_WAIT,
-                                nouse_timeout);
+        return dequeue_i(value_data,
+                         MQW_NO_WAIT,
+                         nouse_timeout);
     }
 
     void clear()
@@ -436,9 +434,10 @@ public:
 protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
-    bool enqueue_interior(const T& value_data,
-                          MQW_WAIT_MODEL wait_model,
-                          std::chrono::microseconds& wait_time)
+    template<class Rep, class Period>
+    bool enqueue_i(const T& value_data,
+                   MQW_WAIT_MODEL wait_model,
+                   const std::chrono::duration<Rep, Period>& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
@@ -482,9 +481,10 @@ protected:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    bool dequeue_interior(T& value_data,
-                          MQW_WAIT_MODEL wait_model,
-                          const std::chrono::microseconds& wait_time)
+    template<class Rep, class Period>
+    bool dequeue_i(T& value_data,
+                   MQW_WAIT_MODEL wait_model,
+                   const std::chrono::duration<Rep, Period>& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
@@ -576,7 +576,6 @@ public:
     {
     }
     ~msgdeque_condi() = default;
-
 };
 template <class T >
 class msgring_condi : public msgqueue_condi<T, zce::lord_rings<T> >

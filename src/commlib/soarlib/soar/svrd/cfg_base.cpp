@@ -34,7 +34,8 @@ int Server_Config_Base::read_start_arg(int argc, const char* argv[])
 {
     // 指明RETURN_IN_ORDER 不调整顺序
     zce::Get_Option get_opt(argc, (char**)argv,
-                            "umvndhpi:t:r:a:", 1, 0, Get_Option::RETURN_IN_ORDER);
+                            "umvndhpi:t:r:a:", 1, 0, 
+                            zce::Get_Option::RETURN_IN_ORDER);
     int c = 0;
     while ((c = get_opt()) != EOF)
     {
@@ -288,7 +289,9 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     }
 
     //仅仅当分割方式是SIZE时有用
-    ret = conf_tree->path_get_leaf("LOG_CFG", "MAX_FILE_SIZE", log_config_.max_log_file_size_);
+    ret = conf_tree->path_get_leaf("LOG_CFG", 
+                                   "MAX_FILE_SIZE", 
+                                   log_config_.max_log_file_size_);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);

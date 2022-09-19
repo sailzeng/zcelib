@@ -55,31 +55,6 @@ Time_Value::Time_Value(time_t sec)
     zce_time_value_.tv_usec = 0;
 }
 
-Time_Value::Time_Value(const std::chrono::hours& val) :
-    zce_time_value_(zce::make_timeval(val))
-{
-}
-Time_Value::Time_Value(const std::chrono::minutes& val) :
-    zce_time_value_(zce::make_timeval(val))
-{
-}
-Time_Value::Time_Value(const std::chrono::seconds& val) :
-    zce_time_value_(zce::make_timeval(val))
-{
-}
-Time_Value::Time_Value(const std::chrono::milliseconds& val) :
-    zce_time_value_(zce::make_timeval(val))
-{
-}
-Time_Value::Time_Value(const std::chrono::microseconds& val) :
-    zce_time_value_(zce::make_timeval(val))
-{
-}
-Time_Value::Time_Value(const std::chrono::nanoseconds& val) :
-    zce_time_value_(zce::make_timeval(val))
-{
-}
-
 Time_Value::Time_Value(const std::chrono::system_clock::time_point& val) :
     zce_time_value_(zce::make_timeval(val))
 {
@@ -135,31 +110,6 @@ void Time_Value::set(time_t sec)
     zce_time_value_.tv_sec = sec;
 #endif
     zce_time_value_.tv_usec = 0;
-}
-
-void Time_Value::set(const std::chrono::hours& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-void Time_Value::set(const std::chrono::minutes& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-void Time_Value::set(const std::chrono::seconds& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-void Time_Value::set(const std::chrono::milliseconds& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-void Time_Value::set(const std::chrono::microseconds& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-void Time_Value::set(const std::chrono::nanoseconds& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
 }
 
 void Time_Value::set(const std::chrono::system_clock::time_point& val)

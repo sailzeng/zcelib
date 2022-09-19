@@ -71,15 +71,14 @@ public:
     Time_Value(time_t sec);
 
     /*!
-    * @brief      构造函数，用CPP 11的一些duration的值
-    * @param      val CPP11的duration时间
+    * @brief      将CPP11的duration的数据结构转换得到timeval结构
+    * @param      val  进行转换的参数
     */
-    Time_Value(const std::chrono::hours& val);
-    Time_Value(const std::chrono::minutes& val);
-    Time_Value(const std::chrono::seconds& val);
-    Time_Value(const std::chrono::milliseconds& val);
-    Time_Value(const std::chrono::microseconds& val);
-    Time_Value(const std::chrono::nanoseconds& val);
+    template<class Rep, class Period>
+    Time_Value(const std::chrono::duration<Rep, Period>& val)
+    {
+        set(val);
+    }
 
     /*!
     * @brief      构造函数，用CPP 11的一些time_point的值
@@ -136,15 +135,33 @@ public:
     */
     void set_by_clock_t(clock_t time);
 
-    void set(const std::chrono::hours& val);
-    void set(const std::chrono::minutes& val);
-    void set(const std::chrono::seconds& val);
-    void set(const std::chrono::milliseconds& val);
-    void set(const std::chrono::microseconds& val);
-    void set(const std::chrono::nanoseconds& val);
+    /*!
+    * @brief      将CPP11的duration的数据结构转换得到timeval结构
+    * @return     void
+    * @param      val  进行转换的参数
+    * @note       val 可以是 std::chrono::duration的各种变种,比如：
+    *             std::chrono::hours,std::chrono::minutes,std::chrono::seconds
+    *             std::chrono::milliseconds,std::chrono::microseconds,
+    *             std::chrono::nanoseconds,等
+    *             也可以是 std::literals::chrono_literals::operator""ms
+    *             这类标识
+    */
+    template<class Rep, class Period>
+    void set(const std::chrono::duration<Rep, Period>& val)
+    {
+        zce_time_value_ = zce::make_timeval(val);
+        return;
+    }
 
     void set(const std::chrono::system_clock::time_point& val);
     void set(const std::chrono::steady_clock::time_point& val);
+
+    template<class Rep, class Period>
+    void to(const std::chrono::duration<Rep, Period>& val)
+    {
+        zce::make_duration(zce_time_value_,val);
+        return;
+    }
 
     void to(std::chrono::seconds& val) const;
     void to(std::chrono::milliseconds& val) const;

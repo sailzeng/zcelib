@@ -298,7 +298,7 @@ double TSC_Progress_Timer::elapsed_usec() const
 }
 
 /************************************************************************************************************
-Class           : ZCE_Chrono_HR_Timer C++ 11 chrono的定时器，
+Class           : Chrono_HR_Timer C++ 11 chrono的高精度计时器
 ************************************************************************************************************/
 Chrono_HR_Timer::Chrono_HR_Timer() :
     addup_time_(std::chrono::high_resolution_clock::duration::zero())

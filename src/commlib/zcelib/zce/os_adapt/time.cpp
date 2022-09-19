@@ -878,49 +878,6 @@ const timeval zce::make_timeval(const ::timespec* timespec_val) noexcept
     return to_timeval;
 }
 
-const timeval zce::make_timeval(const std::chrono::hours& val) noexcept
-{
-    timeval to_timeval;
-    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * zce::ONE_HOUR_SECONDS);
-    to_timeval.tv_usec = 0;
-    return to_timeval;
-}
-const timeval zce::make_timeval(const std::chrono::minutes& val) noexcept
-{
-    timeval to_timeval;
-    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * zce::ONE_MINUTE_SECONDS);
-    to_timeval.tv_usec = 0;
-    return to_timeval;
-}
-const timeval zce::make_timeval(const std::chrono::seconds& val) noexcept
-{
-    timeval to_timeval;
-    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count());
-    to_timeval.tv_usec = 0;
-    return to_timeval;
-}
-const timeval zce::make_timeval(const std::chrono::milliseconds& val) noexcept
-{
-    timeval to_timeval;
-    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_MSEC);
-    to_timeval.tv_usec = (val.count() % SEC_PER_MSEC) * 1000;
-    return to_timeval;
-}
-const timeval zce::make_timeval(const std::chrono::microseconds& val) noexcept
-{
-    timeval to_timeval;
-    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_USEC);
-    to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>((val.count() % SEC_PER_USEC));
-    return to_timeval;
-}
-const timeval zce::make_timeval(const std::chrono::nanoseconds& val) noexcept
-{
-    timeval to_timeval;
-    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_NSEC);
-    to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>((val.count() % SEC_PER_NSEC) / 1000);
-    return to_timeval;
-}
-
 //将CPP11的time_point的数据结构转换得到timeval结构
 const timeval zce::make_timeval(const std::chrono::system_clock::time_point& val) noexcept
 {

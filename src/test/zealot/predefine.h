@@ -99,6 +99,7 @@
 
 #include <zce/aio/caller.h>
 #include <zce/aio/worker.h>
+#include <zce/aio/awaiter.h>
 
 #include <thread>
 #include <mutex>

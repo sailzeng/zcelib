@@ -15,6 +15,8 @@
 *
 */
 
+#pragma once
+
 #include "zce/util/non_copyable.h"
 
 namespace zce

@@ -356,8 +356,9 @@ public:
     }
 
     //放入一个数据，进行超时等待
+    template<class Rep, class Period>
     bool enqueue_wait(const T& value_data,
-                      std::chrono::microseconds& wait_time)
+                      const std::chrono::duration<Rep, Period>& wait_time)
     {
         return enqueue_i(value_data,
                          MQW_WAIT_TIMEOUT,
@@ -374,8 +375,9 @@ public:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
+    template<class Rep, class Period>
     bool dequeue_wait(T& value_data,
-                      std::chrono::microseconds& wait_time)
+                      const std::chrono::duration<Rep, Period>& wait_time)
     {
         return dequeue_i(value_data,
                          MQW_WAIT_TIMEOUT,
@@ -418,9 +420,10 @@ public:
 protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
+    template<class Rep, class Period>
     bool dequeue_i(T& value_data,
                    MQW_WAIT_MODEL model,
-                   std::chrono::microseconds& wait_time)
+                   const std::chrono::duration<Rep, Period>& wait_time)
     {
         //进行超时等待
         bool bret = false;
@@ -462,10 +465,10 @@ protected:
         return true;
     }
 
-
+    template<class Rep, class Period>
     bool enqueue_i(const T& value_data,
                    MQW_WAIT_MODEL model,
-                   std::chrono::microseconds& wait_time)
+                   const std::chrono::duration<Rep, Period>& wait_time)
     {
         bool bret = false;
         if (model == MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT)
