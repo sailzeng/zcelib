@@ -488,7 +488,8 @@ void Log_File::thread_work()
     do
     {
         LOG_RECORD logbuf;
-        std::chrono::microseconds wait_time(50);
+        using namespace std::chrono_literals;
+        std::chrono::milliseconds wait_time = 10ms;
         get_rec = msg_queue_.dequeue_wait(logbuf,
                                           wait_time);
         if (get_rec)

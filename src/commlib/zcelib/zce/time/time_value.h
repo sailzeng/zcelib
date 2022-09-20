@@ -157,16 +157,11 @@ public:
     void set(const std::chrono::steady_clock::time_point& val);
 
     template<class Rep, class Period>
-    void to(const std::chrono::duration<Rep, Period>& val)
+    void to(std::chrono::duration<Rep, Period>& val) const
     {
-        zce::make_duration(zce_time_value_,val);
+        zce::make_duration(zce_time_value_, val);
         return;
     }
-
-    void to(std::chrono::seconds& val) const;
-    void to(std::chrono::milliseconds& val) const;
-    void to(std::chrono::microseconds& val) const;
-    void to(std::chrono::nanoseconds& val) const;
 
     void to(std::chrono::system_clock::time_point& val) const;
     void to(std::chrono::steady_clock::time_point& val) const;

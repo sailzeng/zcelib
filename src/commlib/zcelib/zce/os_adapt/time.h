@@ -417,7 +417,7 @@ const timeval make_timeval2(const FILETIME* file_time) noexcept;
 #endif
 
 template<class Rep, class Period>
-void make_duration(const timeval& tv, const std::chrono::duration<Rep, Period>& val)
+void make_duration(const timeval& tv, std::chrono::duration<Rep, Period>& val)
 {
     std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
     val = std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(usec);
