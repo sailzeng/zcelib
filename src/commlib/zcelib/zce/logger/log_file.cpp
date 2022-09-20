@@ -119,8 +119,6 @@ int Log_File::initialize(int output_way,
             thread_outlog_ = std::thread(&Log_File::thread_work,
                                          this);
         }
-
-
     }
     vaild_ = true;
     return 0;
@@ -451,7 +449,8 @@ void Log_File::fileout_log_info(const timeval& now_time,
         buf->clear();
         buf->add(log_tmp_buffer, sz_use_len);
         LOG_RECORD logbuf;
-        std::chrono::microseconds wait_time(50);
+        using namespace std::chrono_literals;
+        std::chrono::milliseconds wait_time = 10ms;
         logbuf.rec_buf_ = buf;
         logbuf.rec_time_ = now_time;
         ret = msg_queue_.enqueue_wait(logbuf, wait_time);
@@ -514,6 +513,4 @@ void Log_File::thread_work()
         }
     } while (out_thread_run_ || get_rec);
 }
-
-
 }

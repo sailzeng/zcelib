@@ -366,8 +366,9 @@ public:
     }
 
     //有超时放入
+    template<class Rep, class Period>
     bool enqueue_wait(const T& value_data,
-                      std::chrono::microseconds& wait_time)
+                      const std::chrono::duration<Rep, Period>& wait_time)
     {
         return enqueue_i(value_data,
                          MQW_WAIT_TIMEOUT,
@@ -393,8 +394,9 @@ public:
     }
 
     //有超时处理的取出
+    template<class Rep, class Period>
     bool dequeue_wait(T& value_data,
-                      const std::chrono::microseconds& wait_time)
+                      const std::chrono::duration<Rep, Period>& wait_time)
     {
         return dequeue_i(value_data,
                          MQW_WAIT_TIMEOUT,
