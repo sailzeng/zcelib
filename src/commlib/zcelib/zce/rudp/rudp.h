@@ -211,7 +211,7 @@ protected:
     static constexpr size_t INIT_CWND_SIZE = 4;
 
 protected:
-    //随机数发生器，用于生产session id，和序号ID serial_id
+    //! 随机数发生器，用于生产session id，和序号ID serial_id
     static std::mt19937  random_gen_;
     //! 最小的RTO值
     static time_t min_rto_;
@@ -751,6 +751,5 @@ protected:
     bool is_callbak_accept_ = false;
     //!发生accept的时候，进行回调的函数
     std::function<int(ACCEPT *)> callbak_accept_;
-
 };
 }

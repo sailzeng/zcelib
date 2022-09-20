@@ -27,8 +27,6 @@
 
 namespace zce::mysql
 {
-
-
 /*!
 * @brief MYSQL_BIND 的包装封装累，
 *
@@ -168,7 +166,7 @@ public:
 protected:
 
     //定义出来不实现,让你无法用,有很多地方有我分配的指针,不能给你浅度复制
-    STMT_Bind& operator=(const STMT_Bind& others);
+    STMT_Bind& operator=(const STMT_Bind& others) = delete;
 
 public:
 
@@ -271,9 +269,6 @@ protected:
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
 #endif
-
 }
 
 #endif //#if defined ZCE_USE_MYSQL
-
-

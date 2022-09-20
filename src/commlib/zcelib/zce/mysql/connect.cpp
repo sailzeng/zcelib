@@ -7,7 +7,6 @@
 
 namespace zce::mysql
 {
-
 Connect::Connect()
 {
     //现在都在conect的时候进行初始化了。对应在disconnect 的时候close
@@ -220,19 +219,23 @@ const char* Connect::get_mysql_status()
 }
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
-unsigned int Connect::make_escape_string(char* tostr, const char* fromstr, unsigned int fromlen)
+unsigned int Connect::escape_string(char* tostr,
+                                    const char* fromstr,
+                                    unsigned int fromlen)
 {
-    return mysql_escape_string(tostr, fromstr, fromlen);
+    return ::mysql_escape_string(tostr,
+                                 fromstr,
+                                 fromlen);
 }
 
-unsigned int Connect::make_real_escape_string(char* tostr,
-                                              const char* fromstr,
-                                              unsigned int fromlen)
+unsigned int Connect::real_escape_string(char* tostr,
+                                         const char* fromstr,
+                                         unsigned int fromlen)
 {
-    return mysql_real_escape_string(&mysql_handle_,
-                                    tostr,
-                                    fromstr,
-                                    fromlen);
+    return ::mysql_real_escape_string(&mysql_handle_,
+                                      tostr,
+                                      fromstr,
+                                      fromlen);
 }
 
 //这些函数都是4.1后的版本功能
@@ -284,7 +287,6 @@ int Connect::trans_rollback()
 }
 
 #endif // MYSQL_VERSION_ID > 40100
-
 }
 
 //如果你要用MYSQL的库

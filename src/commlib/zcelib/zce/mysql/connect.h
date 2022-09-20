@@ -160,9 +160,9 @@ public:
     * @param      fromstr      进行转换的字符串
     * @param      fromlen      转换的字符串长度
     */
-    unsigned int make_real_escape_string(char* tostr,
-                                         const char* fromstr,
-                                         unsigned int fromlen);
+    unsigned int real_escape_string(char* tostr,
+                                    const char* fromstr,
+                                    unsigned int fromlen);
 
 protected:
 
@@ -198,9 +198,9 @@ public:
     * @param      fromstr      进行转换的字符串
     * @param      fromlen      转换的字符串长度
     */
-    static unsigned int make_escape_string(char* tostr,
-                                           const char* fromstr,
-                                           unsigned int fromlen);
+    static unsigned int escape_string(char* tostr,
+                                      const char* fromstr,
+                                      unsigned int fromlen);
 
 private:
     //MYSQL的句柄

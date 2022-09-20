@@ -24,7 +24,7 @@ public:
     //
     typedef B buffer;
 
-    //!构造函数，析构函数，赋值函数
+    //! 构造函数，析构函数，赋值函数
     buffer_pool() = default;
     ~buffer_pool()
     {
@@ -35,7 +35,8 @@ public:
     * @brief      初始化
     * @return     bool
     * @param      bucket_num          桶的数量，
-    * @param      bucket_size_ary     每个桶装的buffer的size的队列，队列长度由bucket_num决定
+    * @param      bucket_size_ary     每个桶装的buffer的size的队列，
+    *                                 队列长度由bucket_num决定
     * @param      init_node_size      每个桶初始化的尺寸
     * @param      extend_node_size    每个桶扩展的尺寸
     * @note
@@ -70,7 +71,7 @@ public:
         return true;
     }
 
-    //结束销毁
+    //! 结束销毁
     void terminate()
     {
         for (size_t i = 0; i < bucket_number_; ++i)
@@ -89,6 +90,7 @@ public:
         }
     }
 
+    //! 跟前期待的buf的尺寸，分配buffer，
     bool alloc_buffer(size_t expect_buf_size,
                       B*& buf)
     {
@@ -104,7 +106,7 @@ public:
         return true;
     }
 
-    //!
+    //! 释放buf
     void free_buffer(B* buf)
     {
         bucket* node = get_bucket(buf->capacity());
@@ -115,7 +117,7 @@ public:
         }
     }
 
-    //!
+    //! dump信息
     void dump(zce::LOG_PRIORITY log_priority)
     {
         for (size_t i = 0; i < bucket_number_; i++)
@@ -130,7 +132,7 @@ public:
 
 protected:
 
-    //!取得合适的桶，
+    //! 取得合适的桶，
     bucket* get_bucket(size_t expect_buf_size)
     {
         for (size_t i = 0; i < bucket_number_; i++)
@@ -146,11 +148,11 @@ protected:
 
 protected:
 
-    //!桶的数量
+    //! 桶的数量
     size_t bucket_number_ = 0;
-    //!桶的容量
+    //! 桶的容量
     size_t* bucket_bufsize_ = nullptr;
-    //!桶组成的池子
+    //! 桶组成的池子
     bucket* pools_ = nullptr;
 };
 
@@ -158,6 +160,4 @@ typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;
 typedef buffer_pool<zce::null_lock, queue_buffer> queue_buffer_pool;
 typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_lock;
 typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_lock;
-
-
 }

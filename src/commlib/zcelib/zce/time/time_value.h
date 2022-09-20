@@ -325,7 +325,7 @@ public:
 protected:
 
     ///底层采用timeval记录时间，可能会有一些进度误差，但我实在想不出来，服务器为什么要精细超过usec
-    timeval                        zce_time_value_;
+    timeval                    zce_time_value_;
 
 public:
     ///为0的时间

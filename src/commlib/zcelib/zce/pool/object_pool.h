@@ -170,18 +170,17 @@ protected:
 
 protected:
 
-    //池子容量
+    //! 池子容量
     size_t pool_capacity_ = 0;
-    //扩展的尺寸
+    //! 扩展的尺寸
     size_t extend_size_ = 0;
 
-    //对象池子
+    //! 对象池子
     zce::lord_rings<T*>   obj_pool_;
 
-    //T的初始化函数，
+    //! T的初始化函数，
     std::function <T* ()>* new_fun_ = nullptr;
-    //
+    //!
     LOCK lock_;
 };
-
 }
