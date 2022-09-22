@@ -9,7 +9,6 @@ namespace zce
 //分割符,
 char PropertyTree::SEPARATOR_STRING[2] = ".";
 
-
 //得到子树节点，
 int PropertyTree::path_get_childiter(const std::string& path_str,
                                      PropertyTree::child_iterator& child_iter)

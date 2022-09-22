@@ -31,7 +31,7 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: INI_Implement::read config fail.path=[%s] ,last error [%d]",
+        ZCE_LOG(RS_ERROR, "[zcelib]: zce::cfg::read_ini config fail.path=[%s] ,last error [%d]",
                 file_name,
                 zce::last_error());
         return -1;
@@ -89,9 +89,30 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
     return 0;
 }
 
-int write_ini(const char* /*file_name*/,
+int write_ini(const char* file_name,
               const zce::PropertyTree* /*propertytree*/)
 {
+    //1行的最大值
+    std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
+    std::unique_ptr<char[]> str_key(new char[LINE_BUFFER_LEN + 1]);
+    std::unique_ptr<char[]> str_value(new char[LINE_BUFFER_LEN + 1]);
+
+    one_line[LINE_BUFFER_LEN] = '\0';
+    str_key[LINE_BUFFER_LEN] = '\0';
+    str_value[LINE_BUFFER_LEN] = '\0';
+
+    zce::PropertyTree* cur_node = NULL;
+
+    std::ofstream cfgfile(file_name);
+
+    //文件打不开，返回默认值
+    if (!cfgfile)
+    {
+        ZCE_LOG(RS_ERROR, "[zcelib]: zce::cfg::write_ini config fail.path=[%s] ,last error [%d]",
+                file_name,
+                zce::last_error());
+        return -1;
+    }
     return 0;
 }
 
