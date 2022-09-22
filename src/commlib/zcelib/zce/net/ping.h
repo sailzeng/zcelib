@@ -56,9 +56,9 @@ protected:
     int initialize();
 
 protected:
-    //DNS 包的最大长度
+    //PING 包的最大长度
     static constexpr size_t PING_PACKET_MAX_LEN = 256;
-    //DNS 头部长度
+    //PING 头部长度
     static constexpr size_t DNS_HEADER_LEN = 12;
 
 protected:

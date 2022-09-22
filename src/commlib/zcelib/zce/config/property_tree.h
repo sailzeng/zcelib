@@ -54,9 +54,9 @@ protected:
     //
 public:
 
-    ///构造函数
-    PropertyTree();
-    ~PropertyTree();
+    //!构造函数
+    PropertyTree() = default;
+    ~PropertyTree() = default;
 
     /*!
     * @brief      根据路径得到一个CHILD 子树节点的迭代器
@@ -193,10 +193,10 @@ protected:
 
 protected:
 
-    ///叶子节点的MAP
+    //!叶子节点的MAP
     LEAF_NOTE_TYPE   leaf_node_;
 
-    ///子树节点的MAP
+    //!子树节点的MAP
     CHILDREN_NOTE_TYPE     child_node_;
 };
 }

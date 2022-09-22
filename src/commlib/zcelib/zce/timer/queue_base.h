@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_TIMER_QUEUE_BASE_H_
-#define ZCE_TIMER_QUEUE_BASE_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 #include "zce/time/time_value.h"
@@ -307,5 +306,3 @@ protected:
     static Timer_Queue* instance_;
 };
 }
-
-#endif //# ZCE_LIB_TIMER_QUEUE_BASE_H_

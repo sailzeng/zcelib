@@ -101,41 +101,6 @@ int write_ini(const char* /*file_name*/,
 class XML_Implement INI文件的配置读取，写入实现器
 ******************************************************************************************/
 
-int read_xml(const char* file_name, zce::PropertyTree* propertytree)
-{
-    size_t file_len = 0;
-    auto pair = zce::read_file(file_name, &file_len);
-    if (0 != pair.first)
-    {
-        ZCE_LOG(RS_ERROR, "[zcelib]: XML_Implement::read fail,zce::read_file."
-                "path=[%s],last error [%d]",
-                file_name,
-                zce::last_error());
-        return pair.first;
-    }
-
-    try
-    {
-        // character type defaults to char
-        std::unique_ptr<rapidxml::xml_document<char> > doc(new rapidxml::xml_document<char>);
-        //parse_non_destructive
-        doc->parse<rapidxml::parse_default>(pair.second.get());
-
-        const rapidxml::xml_node<char>* root = doc->first_node();
-        //广度遍历dom tree
-        read_xml_dfs(root, propertytree);
-    }
-    catch (rapidxml::parse_error& e)
-    {
-        ZCE_LOG(RS_ERROR, "[ZCELIB]file [%s] don't parse error what[%s] where[%s].",
-                e.what(),
-                e.where<char>());
-        return -1;
-    }
-
-    return 0;
-}
-
 //深度优先读写
 void read_xml_dfs(const rapidxml::xml_node<char>* node,
                   zce::PropertyTree* propertytree)
@@ -175,6 +140,48 @@ void read_xml_dfs(const rapidxml::xml_node<char>* node,
             node_child = node_child->next_sibling();
         } while (node_child);
     }
+}
+
+int read_xml(const char* file_name, zce::PropertyTree* propertytree)
+{
+    size_t file_len = 0;
+    auto pair = zce::read_file(file_name, &file_len);
+    if (0 != pair.first)
+    {
+        ZCE_LOG(RS_ERROR, "[zcelib]: XML_Implement::read fail,zce::read_file."
+                "path=[%s],last error [%d]",
+                file_name,
+                zce::last_error());
+        return pair.first;
+    }
+
+    try
+    {
+        // character type defaults to char
+        std::unique_ptr<rapidxml::xml_document<char> > doc(new rapidxml::xml_document<char>);
+        //parse_non_destructive
+        doc->parse<rapidxml::parse_default>(pair.second.get());
+
+        const rapidxml::xml_node<char>* root = doc->first_node();
+        //广度遍历dom tree
+        read_xml_dfs(root, propertytree);
+    }
+    catch (rapidxml::parse_error& e)
+    {
+        ZCE_LOG(RS_ERROR, "[ZCELIB]file [%s] don't parse error what[%s] where[%s].",
+                e.what(),
+                e.where<char>());
+        return -1;
+    }
+
+    return 0;
+}
+
+//! 写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
+int write_xml(const char* /*file_name*/,
+              const zce::PropertyTree* /*propertytree*/)
+{
+    return 0;
 }
 
 #endif

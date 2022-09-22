@@ -104,6 +104,6 @@ protected:
     zce::file_lock_t    record_lock_;
 
     //!自己打开的这个文件，也就是调用过open函数
-    bool                  open_by_self_ = false;
+    bool                open_by_self_ = false;
 };
 }
