@@ -92,7 +92,8 @@ public:
     //取得本地的地址信息
     int getsockname(Sockaddr_Base* addr)  const;
 
-    //需要说明的是，UDP也可以用connect函数（UDP的connect并不发起握手,只是记录通信地址），然后可以直接调用send or recv，而不明确要通信的地址
+    //需要说明的是，UDP也可以用connect函数（UDP的connect并不发起握手,只是记录通信地址），
+    //然后可以直接调用send or recv，而不明确要通信的地址
     //所以将connect，send，recv 3个函数放到了base里面，大家都可以使用
 
     //connect某个地址
@@ -110,7 +111,8 @@ public:
 
 protected:
 
-    //SOCKET句柄，LINUX下是int，文件句柄，WINDOWS是一个SOCKET类型，其实就是一个WINDOWS句柄，也就是指针
+    //SOCKET句柄，LINUX下是int，文件句柄，WINDOWS是一个SOCKET类型，
+    //其实就是一个WINDOWS句柄，也就是指针
     ZCE_SOCKET     socket_handle_;
 };
 }

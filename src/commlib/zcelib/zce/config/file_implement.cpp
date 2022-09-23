@@ -142,7 +142,7 @@ class XML_Implement INI文件的配置读取，写入实现器
 void read_xml_dfs(const rapidxml::xml_node<char>* node,
                   zce::PropertyTree* propertytree)
 {
-    if (NULL == node->value() && NULL == node->first_attribute() && 
+    if (NULL == node->value() && NULL == node->first_attribute() &&
         NULL == node->first_node())
     {
         return;
@@ -196,7 +196,7 @@ int read_xml(const char* file_name, zce::PropertyTree* propertytree)
     try
     {
         // character type defaults to char
-        std::unique_ptr<rapidxml::xml_document<char> > 
+        std::unique_ptr<rapidxml::xml_document<char> >
             doc(new rapidxml::xml_document<char>);
         //parse_non_destructive
         doc->parse<rapidxml::parse_default>(pair.second.get());

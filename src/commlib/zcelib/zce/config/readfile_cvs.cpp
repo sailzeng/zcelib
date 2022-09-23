@@ -2,23 +2,15 @@
 #include "zce/logger/logging.h"
 #include "zce/config/readfile_cvs.h"
 
-ReadFile_CVS::ReadFile_CVS(const char* file_name,
-                           size_t read_buf_len,
-                           unsigned char line_delim,
-                           unsigned char word_delim) :
-    readfile_name_(file_name),
-    read_buf_len_(read_buf_len),
-    line_delim_(line_delim),
-    word_delim_(word_delim)
+int ReadFile_CVS::readfile_cvs(const char* file_name,
+                               size_t read_buf_len,
+                               unsigned char line_delim,
+                               unsigned char word_delim)
 {
-}
-
-ReadFile_CVS::~ReadFile_CVS()
-{
-}
-
-int ReadFile_CVS::readfile_cvs()
-{
+    readfile_name_ = file_name;
+    read_buf_len_ = read_buf_len;
+    line_delim_ = line_delim;
+    word_delim_ = word_delim;
     //
     std::ifstream read_file(readfile_name_.c_str(), std::ios::in | std::ios::binary);
     std::string str_readbuf;
