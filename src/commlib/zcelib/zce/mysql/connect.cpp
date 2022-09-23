@@ -215,7 +215,7 @@ int Connect::ping()
 //得到当前数据服务器的状态
 const char* Connect::get_mysql_status()
 {
-    return mysql_stat(&mysql_handle_);
+    return ::mysql_stat(&mysql_handle_);
 }
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
@@ -247,7 +247,7 @@ int Connect::set_auto_commit(bool bauto)
     //my_bool其实是char
     my_bool mode = (bauto == true) ? 1 : 0;
 
-    int ret = mysql_autocommit(&mysql_handle_, mode);
+    int ret = ::mysql_autocommit(&mysql_handle_, mode);
 
     //检查结果,
     if (0 != ret)
@@ -261,7 +261,7 @@ int Connect::set_auto_commit(bool bauto)
 //提交事务Commit Transaction
 int Connect::trans_commit()
 {
-    int ret = mysql_commit(&mysql_handle_);
+    int ret = ::mysql_commit(&mysql_handle_);
 
     //检查结果,
     if (0 != ret)
@@ -275,7 +275,7 @@ int Connect::trans_commit()
 //回滚事务Rollback Transaction
 int Connect::trans_rollback()
 {
-    int ret = mysql_rollback(&mysql_handle_);
+    int ret = ::mysql_rollback(&mysql_handle_);
 
     //检查结果,
     if (0 != ret)

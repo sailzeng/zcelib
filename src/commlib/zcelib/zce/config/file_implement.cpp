@@ -12,7 +12,8 @@ class zce::cfg::read_ini INI文件的配置读取，写入实现器
 ******************************************************************************************/
 //每行的最大长度
 static const size_t LINE_BUFFER_LEN = 8191;
-//
+
+//读取INI文件
 int read_ini(const char* file_name, zce::PropertyTree* propertytree)
 {
     //1行的最大值
@@ -31,7 +32,8 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: zce::cfg::read_ini config fail.path=[%s] ,last error [%d]",
+        ZCE_LOG(RS_ERROR, "[zcelib]: zce::cfg::read_ini config fail.path=[%s] ,"
+                "last error [%d]",
                 file_name,
                 zce::last_error());
         return -1;
@@ -50,7 +52,6 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
         }
 
         //找到一个section
-
         if (one_line[0] == '[' && one_line[strlen(one_line.get()) - 1] == ']')
         {
             //已经找到下一个Section,没有发现相关的Key，返回默认值
@@ -89,29 +90,44 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
     return 0;
 }
 
+//写入INI文件
 int write_ini(const char* file_name,
-              const zce::PropertyTree* /*propertytree*/)
+              const zce::PropertyTree* propertytree)
 {
     //1行的最大值
     std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
-    std::unique_ptr<char[]> str_key(new char[LINE_BUFFER_LEN + 1]);
-    std::unique_ptr<char[]> str_value(new char[LINE_BUFFER_LEN + 1]);
-
     one_line[LINE_BUFFER_LEN] = '\0';
-    str_key[LINE_BUFFER_LEN] = '\0';
-    str_value[LINE_BUFFER_LEN] = '\0';
 
-    zce::PropertyTree* cur_node = NULL;
-
+    const zce::PropertyTree* cur_node = NULL;
     std::ofstream cfgfile(file_name);
 
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: zce::cfg::write_ini config fail.path=[%s] ,last error [%d]",
+        ZCE_LOG(RS_ERROR, "[zcelib]: zce::cfg::write_ini config fail."
+                "path=[%s] ,last error [%d]",
                 file_name,
                 zce::last_error());
         return -1;
+    }
+    auto c_iter = propertytree->child_cbegin();
+    while (c_iter != propertytree->child_cend())
+    {
+        int len = snprintf(one_line.get(),
+                           LINE_BUFFER_LEN,
+                           "[%s]\n",
+                           c_iter->first.c_str());
+        cfgfile.write(one_line.get(), len);
+        cur_node = &c_iter->second;
+        auto l_iter = cur_node->leaf_cbegin();
+        len = snprintf(one_line.get(),
+                       LINE_BUFFER_LEN,
+                       "%s=%s\n",
+                       l_iter->first.c_str(),
+                       l_iter->second.c_str());
+        cfgfile.write(one_line.get(), len);
+        ++l_iter;
+        ++c_iter;
     }
     return 0;
 }
@@ -126,7 +142,8 @@ class XML_Implement INI文件的配置读取，写入实现器
 void read_xml_dfs(const rapidxml::xml_node<char>* node,
                   zce::PropertyTree* propertytree)
 {
-    if (NULL == node->value() && NULL == node->first_attribute() && NULL == node->first_node())
+    if (NULL == node->value() && NULL == node->first_attribute() && 
+        NULL == node->first_node())
     {
         return;
     }
@@ -179,7 +196,8 @@ int read_xml(const char* file_name, zce::PropertyTree* propertytree)
     try
     {
         // character type defaults to char
-        std::unique_ptr<rapidxml::xml_document<char> > doc(new rapidxml::xml_document<char>);
+        std::unique_ptr<rapidxml::xml_document<char> > 
+            doc(new rapidxml::xml_document<char>);
         //parse_non_destructive
         doc->parse<rapidxml::parse_default>(pair.second.get());
 

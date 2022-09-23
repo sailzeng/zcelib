@@ -95,13 +95,17 @@ public:
 
     ///得到（当前node）叶子节点的begin 位置的迭代器
     leaf_iterator leaf_begin();
+    const_leaf_iterator leaf_cbegin() const;
     ///得到（当前node）叶子节点的end 位置的迭代器
     leaf_iterator leaf_end();
+    const_leaf_iterator leaf_cend() const;
 
     ///得到（当前node）子树节点的begin 位置的迭代器
     child_iterator child_begin();
+    const_child_iterator child_cbegin() const;
     ///得到（当前node）子树节点的begin 位置的迭代器
     child_iterator child_end();
+    const_child_iterator child_cend() const;
 
     int path_get_leaf(const std::string& path_str,
                       const std::string& key_str,

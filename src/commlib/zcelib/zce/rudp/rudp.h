@@ -258,7 +258,7 @@ protected:
         ERR = 7,
     };
 
-    //!改变拥塞窗口的事件
+    //!改变"拥塞"窗口的事件
     enum class CWND_EVENT
     {
         INVALID = 0,

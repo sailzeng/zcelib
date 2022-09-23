@@ -8,7 +8,6 @@
 
 namespace zce::mysql
 {
-
 STMT_Command::STMT_Command() :
     mysql_connect_(NULL),
     mysql_stmt_(NULL),
@@ -146,8 +145,8 @@ int STMT_Command::set_stmt_command(const char* sqlcmd,
 }
 
 //SQL 执行命令，这个事一个基础函数，内部调用
-int STMT_Command::_execute(unsigned int* num_affect,
-                           unsigned int* lastid)
+int STMT_Command::execute_i(unsigned int* num_affect,
+                            unsigned int* lastid)
 {
     int tmpret = 0;
 
@@ -187,13 +186,13 @@ int STMT_Command::_execute(unsigned int* num_affect,
 //执行SQL语句,不用输出结果集合的那种
 int STMT_Command::execute(unsigned int& num_affect, unsigned int& lastid)
 {
-    return _execute(&num_affect, &lastid);
+    return execute_i(&num_affect, &lastid);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,
 int STMT_Command::execute(unsigned int& num_affect)
 {
-    return _execute(&num_affect, NULL);
+    return execute_i(&num_affect, NULL);
 }
 
 //
@@ -251,7 +250,6 @@ void STMT_Command::result_2_metadata(zce::mysql::Result* tmpres) const
     tmpres->set_mysql_result(myres);
     return;
 }
-
 }
 
 #endif //MYSQL_VERSION_ID >= 40100

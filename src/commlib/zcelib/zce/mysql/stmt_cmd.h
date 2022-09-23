@@ -49,7 +49,7 @@ public:
     */
     int set_connection(zce::mysql::Connect*);
 
-    //得到此Command的zce::mysql::Connect对象
+    //!得到此Command的zce::mysql::Connect对象
     inline zce::mysql::Connect* get_connection();
 
     inline MYSQL_STMT* get_stmt_handle();
@@ -128,11 +128,11 @@ protected:
     */
     int stmt_prepare_bind(STMT_Bind* bindparam,
                           STMT_Bind* bindresult);
-    //SQL 执行命令，这个事一个基础函数，内部调用
-    int _execute(unsigned int* num_affect, unsigned int* lastid);
+    //!SQL 执行命令，这个事一个基础函数，内部调用
+    int execute_i(unsigned int* num_affect, unsigned int* lastid);
 
 protected:
-    //命令缓冲buf的大小
+    //!命令缓冲buf的大小
     static const size_t SQL_INIT_BUFSIZE = 64 * 1024;
 
 protected:
