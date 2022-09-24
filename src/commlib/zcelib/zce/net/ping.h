@@ -44,7 +44,7 @@ public:
                   uint32_t *seq,
                   uint64_t *take_msec,
                   uint8_t *ttl,
-                  zce::Time_Value* timeout_tv);
+                  zce::time_value* timeout_tv);
 
     int ping(size_t test_num);
 

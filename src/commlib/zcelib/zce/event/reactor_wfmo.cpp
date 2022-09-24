@@ -224,7 +224,7 @@ int WFMO_Reactor::wfmo_socket_event(zce::Event_Handler* event_handler,
 }
 
 //进行IO触发操作
-int WFMO_Reactor::handle_events(zce::Time_Value* time_out, size_t* size_event)
+int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
 {
     int ret = 0;
     *size_event = 0;

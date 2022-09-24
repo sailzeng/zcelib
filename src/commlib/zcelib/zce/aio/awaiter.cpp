@@ -6,7 +6,7 @@ namespace zce::aio
 //============================================================================
 
 //AIO 协程的co_await 函数
-awaiter_fs co_read_file(zce::aio::Worker* worker,
+awaiter_fs co_read_file(zce::aio::worker* worker,
                         const char* path,
                         char* read_bufs,
                         size_t nbufs,
@@ -22,7 +22,7 @@ awaiter_fs co_read_file(zce::aio::Worker* worker,
     return awaiter_fs(worker, aio_atom);
 }
 
-awaiter_fs co_write_file(zce::aio::Worker* worker,
+awaiter_fs co_write_file(zce::aio::worker* worker,
                          const char* path,
                          const char* write_bufs,
                          size_t nbufs,
@@ -39,7 +39,7 @@ awaiter_fs co_write_file(zce::aio::Worker* worker,
 }
 
 //! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
-awaiter_dir co_dir_scandir(zce::aio::Worker* worker,
+awaiter_dir co_dir_scandir(zce::aio::worker* worker,
                            const char* dirname,
                            struct dirent*** namelist)
 {
@@ -52,7 +52,7 @@ awaiter_dir co_dir_scandir(zce::aio::Worker* worker,
 }
 
 //!异步建立dir
-awaiter_dir co_dir_mkdir(zce::aio::Worker* worker,
+awaiter_dir co_dir_mkdir(zce::aio::worker* worker,
                          const char* dirname,
                          int mode)
 {
@@ -64,7 +64,7 @@ awaiter_dir co_dir_mkdir(zce::aio::Worker* worker,
 }
 
 //!异步删除dir
-awaiter_dir co_dir_rmdir(zce::aio::Worker* worker,
+awaiter_dir co_dir_rmdir(zce::aio::worker* worker,
                          const char* dirname)
 {
     zce::aio::Dir_Atom* aio_atom = (Dir_Atom*)
@@ -74,7 +74,7 @@ awaiter_dir co_dir_rmdir(zce::aio::Worker* worker,
 }
 
 //!链接数据
-awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
+awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
                                zce::mysql::connect* db_connect,
                                const char* host_name,
                                const char* user,
@@ -93,7 +93,7 @@ awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
 }
 
 //!断开数据库链接
-awaiter_mysql co_mysql_disconnect(zce::aio::Worker* worker,
+awaiter_mysql co_mysql_disconnect(zce::aio::worker* worker,
                                   zce::mysql::connect* db_connect)
 {
     zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
@@ -103,7 +103,7 @@ awaiter_mysql co_mysql_disconnect(zce::aio::Worker* worker,
 }
 
 //!查询，非SELECT语句
-awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
+awaiter_mysql co_mysql_query(zce::aio::worker* worker,
                              zce::mysql::connect* db_connect,
                              const char* sql,
                              size_t sql_len,
@@ -122,7 +122,7 @@ awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
 }
 
 //!查询，SELECT语句
-awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
+awaiter_mysql co_mysql_query(zce::aio::worker* worker,
                              zce::mysql::connect* db_connect,
                              const char* sql,
                              size_t sql_len,
@@ -140,7 +140,7 @@ awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
     return awaiter_mysql(worker, aio_atom);
 }
 
-awaiter_host co_host_getaddr_ary(zce::aio::Worker* worker,
+awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
                                  const char* hostname,
                                  const char* service,
                                  size_t* ary_addr_num,
@@ -160,7 +160,7 @@ awaiter_host co_host_getaddr_ary(zce::aio::Worker* worker,
 }
 
 //!获得host对应的一个地址信息，类似getaddrinfo_one
-awaiter_host co_host_getaddr_one(zce::aio::Worker* worker,
+awaiter_host co_host_getaddr_one(zce::aio::worker* worker,
                                  const char* hostname,
                                  const char* service,
                                  sockaddr* addr,

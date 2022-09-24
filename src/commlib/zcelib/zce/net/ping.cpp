@@ -257,7 +257,7 @@ int Ping::recv_echo(uint32_t* ident,
                     uint32_t* seq,
                     uint64_t* take_msec,
                     uint8_t* ttl,
-                    zce::Time_Value* timeout_tv)
+                    zce::time_value* timeout_tv)
 {
     // allocate buffer
     char buffer[MTU];
@@ -334,7 +334,7 @@ int Ping::ping(size_t test_num)
             // try to receive and print reply
             uint64_t ms = 0;
             uint8_t ttl = 0;
-            zce::Time_Value timeout_tv(1, 0);
+            zce::time_value timeout_tv(1, 0);
             ret = recv_echo(&recv_ident,
                             &recv_seq,
                             &ms,

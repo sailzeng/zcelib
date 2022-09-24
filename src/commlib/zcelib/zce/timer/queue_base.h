@@ -74,7 +74,7 @@ protected:
         int                 time_id_ = 0;
 
         ///以后每次间隔的触发等待时间
-        zce::Time_Value      interval_time_ = { 0,0 };
+        zce::time_value      interval_time_ = { 0,0 };
 
         ///回调的时候返回的指针，我只是保存他，给你用的。你自己把握好
         const void* action_ = NULL;
@@ -115,12 +115,12 @@ public:
     @param[in]  action        一个指针，在定时器触发会用参数还给你，
     @param[in]  delay_time    第一次触发的时间，为什么要这样设计参数？你自己考虑一下，想想如何在10:00播放第6套广播体操
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
-                              如果参数等于zce::Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
+                              如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
     virtual int schedule_timer(zce::Timer_Handler* timer_hdl,
                                const void* action,
-                               const zce::Time_Value& delay_time,
-                               const zce::Time_Value& interval_time = zce::Time_Value::ZERO_TIME_VALUE) = 0;
+                               const zce::time_value& delay_time,
+                               const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) = 0;
 
     /*!
     @brief      取消定时器，你继承后必须实现这个接口
@@ -146,7 +146,7 @@ protected:
                                   触发模式是 @a TRIGGER_MODE::SYSTEM_CLOCK 那么表示墙上时钟的mesc数量
                                   触发模式是 @a TRIGGER_MODE::CPU_TICK 那么标识CPU Tick的毫秒数量
     */
-    virtual size_t dispatch_timer(const zce::Time_Value& now_time,
+    virtual size_t dispatch_timer(const zce::time_value& now_time,
                                   uint64_t now_trigger_msec) = 0;
 
     /*!
@@ -223,8 +223,8 @@ protected:
     */
     int alloc_timernode(Timer_Handler* timer_hdl,
                         const void* action,
-                        const zce::Time_Value& delay_time_,
-                        const zce::Time_Value& interval_time_,
+                        const zce::time_value& delay_time_,
+                        const zce::time_value& interval_time_,
                         int& time_node_id,
                         ZCE_TIMER_NODE*& alloc_time_node);
 
@@ -250,7 +250,7 @@ protected:
     @return     int           0表示成，否则失败
     @param      first_timeout 最快的时间长度，（不是时间点）
     */
-    int get_first_timeout(zce::Time_Value* first_timeout);
+    int get_first_timeout(zce::time_value* first_timeout);
 
 public:
     //这个地方的单子使用，和其他地方略有不同，要先调用赋值的函数，将子类指针付给这个函数

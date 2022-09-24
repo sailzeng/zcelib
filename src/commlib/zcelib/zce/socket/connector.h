@@ -46,7 +46,7 @@ public:
     */
     int connect(zce::Socket_Stream& new_stream,
                 const zce::Sockaddr_Base* remote_addr,
-                zce::Time_Value& timeout,
+                zce::time_value& timeout,
                 bool reuse_addr = false,
                 int protocol = 0,
                 const Sockaddr_Base* local_addr = NULL);

@@ -14,7 +14,7 @@ class zce::cfg::read_ini INI文件的配置读取，写入实现器
 static const size_t LINE_BUFFER_LEN = 8191;
 
 //读取INI文件
-int read_ini(const char* file_name, zce::PropertyTree* propertytree)
+int read_ini(const char* file_name, zce::propertytree* propertytree)
 {
     //1行的最大值
     std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
@@ -25,7 +25,7 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
     str_key[LINE_BUFFER_LEN] = '\0';
     str_value[LINE_BUFFER_LEN] = '\0';
 
-    zce::PropertyTree* cur_node = NULL;
+    zce::propertytree* cur_node = NULL;
 
     std::ifstream cfgfile(file_name);
 
@@ -63,7 +63,7 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
             //消灭空格
             zce::strtrim(one_line.get());
 
-            zce::PropertyTree* tree_node = NULL;
+            zce::propertytree* tree_node = NULL;
             propertytree->add_child(one_line.get(), tree_node);
             cur_node = tree_node;
 
@@ -92,13 +92,13 @@ int read_ini(const char* file_name, zce::PropertyTree* propertytree)
 
 //写入INI文件
 int write_ini(const char* file_name,
-              const zce::PropertyTree* propertytree)
+              const zce::propertytree* propertytree)
 {
     //1行的最大值
     std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
     one_line[LINE_BUFFER_LEN] = '\0';
 
-    const zce::PropertyTree* cur_node = NULL;
+    const zce::propertytree* cur_node = NULL;
     std::ofstream cfgfile(file_name);
 
     //文件打不开，返回默认值
@@ -140,7 +140,7 @@ class XML_Implement INI文件的配置读取，写入实现器
 
 //深度优先读写
 void read_xml_dfs(const rapidxml::xml_node<char>* node,
-                  zce::PropertyTree* propertytree)
+                  zce::propertytree* propertytree)
 {
     if (NULL == node->value() && NULL == node->first_attribute() &&
         NULL == node->first_node())
@@ -152,7 +152,7 @@ void read_xml_dfs(const rapidxml::xml_node<char>* node,
     {
         return;
     }
-    zce::PropertyTree* pt_note = NULL;
+    zce::propertytree* pt_note = NULL;
     propertytree->add_child(node->name(), pt_note);
 
     if (node->value())
@@ -180,7 +180,7 @@ void read_xml_dfs(const rapidxml::xml_node<char>* node,
     }
 }
 
-int read_xml(const char* file_name, zce::PropertyTree* propertytree)
+int read_xml(const char* file_name, zce::propertytree* propertytree)
 {
     size_t file_len = 0;
     auto pair = zce::read_file(file_name, &file_len);
@@ -216,7 +216,7 @@ int read_xml(const char* file_name, zce::PropertyTree* propertytree)
 
 //! 写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
 int write_xml(const char* /*file_name*/,
-              const zce::PropertyTree* /*propertytree*/)
+              const zce::propertytree* /*propertytree*/)
 {
     return 0;
 }

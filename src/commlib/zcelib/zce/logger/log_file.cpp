@@ -11,10 +11,10 @@
 
 namespace zce
 {
-const char Log_File::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
+const char log_file::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 
 //!
-const size_t  Log_File::BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY] =
+const size_t  log_file::BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY] =
 {
     SIZE_OF_LOG_BUFFER / 8,
     SIZE_OF_LOG_BUFFER / 4,
@@ -23,7 +23,7 @@ const size_t  Log_File::BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY] =
 };
 
 //构造函数
-Log_File::Log_File() :
+log_file::log_file() :
     msg_queue_(MAX_LEN_MSG_QUEUE)
 {
     //预先分配空间
@@ -33,14 +33,14 @@ Log_File::Log_File() :
 }
 
 //
-Log_File::~Log_File()
+log_file::~log_file()
 {
     //注销
     terminate();
 }
 
 //初始化函数,参数最齐全的一个
-int Log_File::initialize(int output_way,
+int log_file::initialize(int output_way,
                          LOGFILE_DEVIDE div_log_file,
                          const char* log_file_prefix,
                          bool trunc_old,
@@ -116,7 +116,7 @@ int Log_File::initialize(int output_way,
                                  &zce::queue_buffer::new_self,
                                  POOL_INIT,
                                  POOL_ONCE_EXTEND);
-            thread_outlog_ = std::thread(&Log_File::thread_work,
+            thread_outlog_ = std::thread(&log_file::thread_work,
                                          this);
         }
     }
@@ -125,7 +125,7 @@ int Log_File::initialize(int output_way,
 }
 
 //关闭日志，注意关闭后，必须重新初始化
-void Log_File::terminate()
+void log_file::terminate()
 {
     if (log_file_handle_.is_open())
     {
@@ -141,7 +141,7 @@ void Log_File::terminate()
 }
 
 //配置日志文件
-void Log_File::make_configure(void) noexcept
+void log_file::make_configure(void) noexcept
 {
     //检查max_size_log_file_等参数的大小范围
     if (max_size_log_file_ < MIN_LOG_SIZE)
@@ -182,7 +182,7 @@ void Log_File::make_configure(void) noexcept
 }
 
 //得到新的日志文件文件名称
-void Log_File::open_new_logfile(const timeval& current_time) noexcept
+void log_file::open_new_logfile(const timeval& current_time) noexcept
 {
     //是否要生成新的文件名称
     bool to_new_file = false;
@@ -294,7 +294,7 @@ void Log_File::open_new_logfile(const timeval& current_time) noexcept
     }
 }
 
-void Log_File::del_old_logfile() noexcept
+void log_file::del_old_logfile() noexcept
 {
     //如果保留所有日志，或者分割日志的时间为 月 或者 年
     if (reserve_file_num_ > 0)
@@ -352,7 +352,7 @@ void Log_File::del_old_logfile() noexcept
 }
 
 //根据日期得到文件名称
-void Log_File::create_time_logname(const timeval& cur_time,
+void log_file::create_time_logname(const timeval& cur_time,
                                    std::string& logfilename) noexcept
 {
     const time_t cur_t = cur_time.tv_sec;
@@ -409,7 +409,7 @@ void Log_File::create_time_logname(const timeval& cur_time,
 }
 
 //根据ID得到文件名称f
-void Log_File::create_id_logname(size_t logfileid,
+void log_file::create_id_logname(size_t logfileid,
                                  std::string& log_filename) noexcept
 {
     char tmpbuf[32];
@@ -430,7 +430,7 @@ void Log_File::create_id_logname(size_t logfileid,
     log_filename += tmpbuf;
 }
 
-void Log_File::fileout_log_info(const timeval& now_time,
+void log_file::fileout_log_info(const timeval& now_time,
                                 char* log_tmp_buffer,
                                 size_t sz_use_len) noexcept
 {
@@ -482,7 +482,7 @@ void Log_File::fileout_log_info(const timeval& now_time,
     }
 }
 
-void Log_File::thread_work()
+void log_file::thread_work()
 {
     bool get_rec = false;
     do

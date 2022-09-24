@@ -115,9 +115,9 @@ zce::Sockaddr_In6 from_str(const char* str)
 }
 
 template<>
-zce::Time_Value from_str(const char* str)
+zce::time_value from_str(const char* str)
 {
-    zce::Time_Value val;
+    zce::time_value val;
     val.from_string(str, false, zce::TIME_STR_FORMAT::ISO_USEC);
     return val;
 }

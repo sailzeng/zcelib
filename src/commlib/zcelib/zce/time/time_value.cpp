@@ -4,35 +4,35 @@
 namespace zce
 {
 //Time_Value默认的zero值
-const Time_Value Time_Value::ZERO_TIME_VALUE(0, 0);
+const time_value time_value::ZERO_TIME_VALUE(0, 0);
 //
-const Time_Value Time_Value::MAX_TIME_VALUE(0x7FFFFFFF, 0x7FFFFFFF);
+const time_value time_value::MAX_TIME_VALUE(0x7FFFFFFF, 0x7FFFFFFF);
 
 //默认构造函数
-Time_Value::Time_Value()
+time_value::time_value()
 {
     zce_time_value_.tv_sec = 0;
     zce_time_value_.tv_usec = 0;
 }
 //析构函数
-Time_Value::~Time_Value()
+time_value::~time_value()
 {
 }
 
 //构造函数，用timeval
-Time_Value::Time_Value(const timeval& time_data)
+time_value::time_value(const timeval& time_data)
 {
     zce_time_value_ = time_data;
 }
 
 //构造函数，用::timespec
-Time_Value::Time_Value(const ::timespec& timespec_val)
+time_value::time_value(const ::timespec& timespec_val)
 {
     zce_time_value_ = zce::make_timeval(&timespec_val);
 }
 
 //构造函数，几个时间数据数据
-Time_Value::Time_Value(time_t sec, time_t usec)
+time_value::time_value(time_t sec, time_t usec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_sec = static_cast<long>(sec);
@@ -44,7 +44,7 @@ Time_Value::Time_Value(time_t sec, time_t usec)
 }
 
 //构造函数，用time_t, usec被置为0
-Time_Value::Time_Value(time_t sec)
+time_value::time_value(time_t sec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_sec = static_cast<long>(sec);
@@ -55,24 +55,24 @@ Time_Value::Time_Value(time_t sec)
     zce_time_value_.tv_usec = 0;
 }
 
-Time_Value::Time_Value(const std::chrono::system_clock::time_point& val) :
+time_value::time_value(const std::chrono::system_clock::time_point& val) :
     zce_time_value_(zce::make_timeval(val))
 {
 }
-Time_Value::Time_Value(const std::chrono::steady_clock::time_point& val) :
+time_value::time_value(const std::chrono::steady_clock::time_point& val) :
     zce_time_value_(zce::make_timeval(val))
 {
 }
 
 #ifdef ZCE_OS_WINDOWS
 //构造函数，用LPFILETIME,FILETIME
-Time_Value::Time_Value(LPFILETIME file_time) :
+time_value::time_value(LPFILETIME file_time) :
     zce_time_value_(zce::make_timeval(file_time))
 {
 }
 
 //构造函数，用LPSYSTEMTIME,SYSTEMTIME
-Time_Value::Time_Value(LPSYSTEMTIME system_time) :
+time_value::time_value(LPSYSTEMTIME system_time) :
     zce_time_value_(zce::make_timeval(system_time))
 {
 }
@@ -80,17 +80,17 @@ Time_Value::Time_Value(LPSYSTEMTIME system_time) :
 #endif
 
 //
-void Time_Value::set(const timeval& time_data)
+void time_value::set(const timeval& time_data)
 {
     zce_time_value_ = time_data;
 }
 //
-void Time_Value::set(const ::timespec& timespec_val)
+void time_value::set(const ::timespec& timespec_val)
 {
     zce_time_value_ = zce::make_timeval(&timespec_val);
 }
 //
-void Time_Value::set(time_t sec, time_t usec)
+void time_value::set(time_t sec, time_t usec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_sec = static_cast<long>(sec);
@@ -102,7 +102,7 @@ void Time_Value::set(time_t sec, time_t usec)
 }
 
 //
-void Time_Value::set(time_t sec)
+void time_value::set(time_t sec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_sec = static_cast<long>(sec);
@@ -112,48 +112,48 @@ void Time_Value::set(time_t sec)
     zce_time_value_.tv_usec = 0;
 }
 
-void Time_Value::set(const std::chrono::system_clock::time_point& val)
+void time_value::set(const std::chrono::system_clock::time_point& val)
 {
     zce_time_value_ = zce::make_timeval(val);
 }
-void Time_Value::set(const std::chrono::steady_clock::time_point& val)
+void time_value::set(const std::chrono::steady_clock::time_point& val)
 {
     zce_time_value_ = zce::make_timeval(val);
 }
 
 #ifdef ZCE_OS_WINDOWS
 //设置Time_Value, 用FILETIME
-void Time_Value::set(LPFILETIME file_time)
+void time_value::set(LPFILETIME file_time)
 {
     zce_time_value_ = zce::make_timeval(file_time);
 }
 //设置Time_Value, 用LPSYSTEMTIME
-void Time_Value::set(LPSYSTEMTIME system_time)
+void time_value::set(LPSYSTEMTIME system_time)
 {
     zce_time_value_ = zce::make_timeval(system_time);
 }
 #endif
 
 //用clock_t 设置时间，被迫用这个函数名字，避免和其他函数冲突
-void Time_Value::set_by_clock_t(clock_t time)
+void time_value::set_by_clock_t(clock_t time)
 {
     zce_time_value_ = zce::make_timeval(time);
 }
 
-uint64_t Time_Value::total_sec() const
+uint64_t time_value::total_sec() const
 {
     return static_cast<uint64_t>(this->zce_time_value_.tv_sec) +
         this->zce_time_value_.tv_usec / zce::SEC_PER_USEC;
 }
 //得到总共多少毫秒
-uint64_t Time_Value::total_msec() const
+uint64_t time_value::total_msec() const
 {
     return static_cast<uint64_t>(this->zce_time_value_.tv_sec) * zce::SEC_PER_MSEC
         + this->zce_time_value_.tv_usec / zce::MSEC_PER_USEC;
 }
 
 //四舍五入得到总共多少毫秒，其实不是真正的四舍五入，而是如果微秒有数据，就返回1毫秒，
-uint64_t Time_Value::total_msec_round() const
+uint64_t time_value::total_msec_round() const
 {
     uint64_t ret_msec = total_msec();
     //可能微秒数据上有数据，但<1000,
@@ -165,7 +165,7 @@ uint64_t Time_Value::total_msec_round() const
 }
 
 //用毫秒作为单位设置Time_Value
-void Time_Value::total_msec(uint64_t set_msec)
+void time_value::total_msec(uint64_t set_msec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_sec = static_cast<long>(set_msec / zce::SEC_PER_MSEC);
@@ -177,13 +177,13 @@ void Time_Value::total_msec(uint64_t set_msec)
 }
 
 //得到总共多少微秒
-uint64_t Time_Value::total_usec() const
+uint64_t time_value::total_usec() const
 {
     return static_cast<uint64_t>(zce_time_value_.tv_sec) * zce::SEC_PER_USEC + zce_time_value_.tv_usec;
 }
 
 //用微秒作为单位，设置Time_Value，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
-void Time_Value::total_usec(uint64_t set_usec)
+void time_value::total_usec(uint64_t set_usec)
 {
     const int SEC_PER_UESC = 1000000;
 #if defined ZCE_OS_WINDOWS
@@ -196,13 +196,13 @@ void Time_Value::total_usec(uint64_t set_usec)
 }
 
 //得到Timevalue的秒部分
-time_t Time_Value::sec(void) const
+time_t time_value::sec(void) const
 {
     return zce_time_value_.tv_sec;
 }
 
 // 设置Timevalue的秒部分
-void Time_Value::sec(time_t sec)
+void time_value::sec(time_t sec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_sec = static_cast<long>(sec);
@@ -212,13 +212,13 @@ void Time_Value::sec(time_t sec)
 }
 
 //得到Timevalue的微秒部分
-time_t Time_Value::usec(void) const
+time_t time_value::usec(void) const
 {
     return zce_time_value_.tv_usec;
 }
 
 //设置Timevalue的微秒部分
-void Time_Value::usec(time_t usec)
+void time_value::usec(time_t usec)
 {
 #if defined ZCE_OS_WINDOWS
     zce_time_value_.tv_usec = static_cast<long>(usec);
@@ -228,20 +228,20 @@ void Time_Value::usec(time_t usec)
 }
 
 //获取当前时间
-void Time_Value::gettimeofday()
+void time_value::gettimeofday()
 {
     zce_time_value_ = zce::gettimeofday();
 }
 
 //
-Time_Value& Time_Value::operator += (const Time_Value& tv)
+time_value& time_value::operator += (const time_value& tv)
 {
     zce_time_value_ = zce::timeval_add(zce_time_value_, tv.zce_time_value_);
     return *this;
 }
 
 // Subtract @a tv to this.
-Time_Value& Time_Value::operator -= (const Time_Value& tv)
+time_value& time_value::operator -= (const time_value& tv)
 {
     //保证返回值里面的时钟>=0
     zce_time_value_ = zce::timeval_sub(zce_time_value_, tv.zce_time_value_, true);
@@ -249,7 +249,7 @@ Time_Value& Time_Value::operator -= (const Time_Value& tv)
 }
 
 // 两个时间进行比较 <
-bool Time_Value::operator < (const Time_Value& tv)
+bool time_value::operator < (const time_value& tv)
 {
     //先比较秒，
     if (zce_time_value_.tv_sec < tv.zce_time_value_.tv_sec)
@@ -268,7 +268,7 @@ bool Time_Value::operator < (const Time_Value& tv)
 }
 
 // 两个时间进行比较 >
-bool Time_Value::operator > (const Time_Value& tv)
+bool time_value::operator > (const time_value& tv)
 {
     //先比较秒，
     if (zce_time_value_.tv_sec > tv.zce_time_value_.tv_sec)
@@ -287,7 +287,7 @@ bool Time_Value::operator > (const Time_Value& tv)
 }
 
 //
-bool Time_Value::operator <= (const Time_Value& tv)
+bool time_value::operator <= (const time_value& tv)
 {
     //先比较秒，
     if (zce_time_value_.tv_sec <= tv.zce_time_value_.tv_sec)
@@ -306,7 +306,7 @@ bool Time_Value::operator <= (const Time_Value& tv)
 }
 
 /// True if @a tv1 >= @a tv2.
-bool Time_Value::operator >= (const Time_Value& tv)
+bool time_value::operator >= (const time_value& tv)
 {
     //先比较秒，
     if (zce_time_value_.tv_sec > tv.zce_time_value_.tv_sec)
@@ -325,7 +325,7 @@ bool Time_Value::operator >= (const Time_Value& tv)
 }
 
 /// True if @a tv1 == @a tv2.
-bool Time_Value::operator == (const Time_Value& tv)
+bool time_value::operator == (const time_value& tv)
 {
     if (zce_time_value_.tv_sec == tv.zce_time_value_.tv_sec &&
         zce_time_value_.tv_usec == tv.zce_time_value_.tv_usec)
@@ -337,46 +337,46 @@ bool Time_Value::operator == (const Time_Value& tv)
 }
 
 /// True if @a tv1 != @a tv2.
-bool Time_Value::operator != (const Time_Value& tv)
+bool time_value::operator != (const time_value& tv)
 {
     return !(*this == tv);
 }
 
-/// Adds two Time_Value objects together, returns the sum.
-Time_Value operator + (const Time_Value& tv1,
-                       const Time_Value& tv2)
+/// Adds two time_value objects together, returns the sum.
+time_value operator + (const time_value& tv1,
+                       const time_value& tv2)
 {
     return zce::timeval_add(tv1.zce_time_value_, tv2.zce_time_value_);
 }
 
-/// Subtracts two Time_Value objects, returns the difference.
-Time_Value operator - (const Time_Value& tv1,
-                       const Time_Value& tv2)
+/// Subtracts two time_value objects, returns the difference.
+time_value operator - (const time_value& tv1,
+                       const time_value& tv2)
 {
     //保证返回值里面的时钟>=0
     return zce::timeval_sub(tv1.zce_time_value_, tv2.zce_time_value_, true);
 }
 
 /// Returns the value of the object as a timeval.
-Time_Value::operator timeval () const
+time_value::operator timeval () const
 {
     return zce_time_value_;
 }
 
 //
-Time_Value::operator const timeval* () const
+time_value::operator const timeval* () const
 {
     return &zce_time_value_;
 }
 
 //
-Time_Value::operator timeval* ()
+time_value::operator timeval* ()
 {
     return &zce_time_value_;
 }
 
 //将时间打印出来
-const char* Time_Value::to_string(char* str_date_time,
+const char* time_value::to_string(char* str_date_time,
                                   size_t datetime_strlen,
                                   size_t& use_buf,
                                   bool utc_time,
@@ -391,7 +391,7 @@ const char* Time_Value::to_string(char* str_date_time,
 }
 
 //从字符串中得到时间
-int Time_Value::from_string(const char* strtm,
+int time_value::from_string(const char* strtm,
                             bool uct_time,
                             zce::TIME_STR_FORMAT fmt)
 {
@@ -402,7 +402,7 @@ int Time_Value::from_string(const char* strtm,
     );
 }
 
-const char* Time_Value::timestamp(char* str_date_time,
+const char* time_value::timestamp(char* str_date_time,
                                   size_t datetime_strlen
 ) const
 {

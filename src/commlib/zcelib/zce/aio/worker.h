@@ -27,12 +27,12 @@
 namespace zce::aio
 {
 //!
-class Worker
+class worker
 {
 public:
 
-    Worker() = default;
-    ~Worker() = default;
+    worker() = default;
+    ~worker() = default;
 
     //!初始化
     int initialize(size_t work_thread_num,
@@ -54,7 +54,7 @@ public:
 
     //! 处理应答
     void process_response(size_t& num_rsp,
-                          zce::Time_Value* wait_time);
+                          zce::time_value* wait_time);
 
     //!在线程中处理AIO操作，会根据type分解工作到下面这些函数
     void process_aio(zce::aio::AIO_Atom* base);

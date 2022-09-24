@@ -66,7 +66,7 @@ int Socket_DataGram::open(const Sockaddr_Base* local_addr,
 ssize_t Socket_DataGram::recvfrom_timeout(void* buf,
                                           size_t len,
                                           Sockaddr_Base* from_addr,
-                                          zce::Time_Value& timeout_tv,
+                                          zce::time_value& timeout_tv,
                                           int flags)  const
 {
     return zce::recvfrom_timeout(socket_handle_,
@@ -83,7 +83,7 @@ ssize_t Socket_DataGram::recvfrom_timeout(void* buf,
 ssize_t Socket_DataGram::sendto_timeout(const void* buf,
                                         size_t len,
                                         const Sockaddr_Base* to_addr,
-                                        zce::Time_Value& timeout_tv,
+                                        zce::time_value& timeout_tv,
                                         int flags)  const
 {
     return zce::sendto_timeout(socket_handle_,

@@ -69,8 +69,8 @@
 
 namespace zce
 {
-template < typename COMPRESS_STRATEGY >
-class ZCE_Compress
+template < typename STRATEGY >
+class compress_pack
 {
 public:
     /*!
@@ -83,8 +83,8 @@ public:
                                               size_t* need_cmpbuf_size)
     {
         //大约可以处理2G的数据，
-        return COMPRESS_STRATEGY::need_comp_size(original_size,
-                                                 need_cmpbuf_size);
+        return STRATEGY::need_comp_size(original_size,
+                                        need_cmpbuf_size);
     }
 
     /*!
@@ -167,7 +167,7 @@ public:
             ZLEUINT16_TO_BYTE((head_pos + 1), ((uint16_t)(original_size)));
         }
         //头部，1字节选项，1个4字节标识原长度字段，
-        else  if (original_size <= COMPRESS_STRATEGY::LZ_MAX_ORIGINAL_SIZE)
+        else  if (original_size <= STRATEGY::LZ_MAX_ORIGINAL_SIZE)
         {
             head_size = 5;
             *head_pos |= 0x4;
@@ -292,18 +292,18 @@ public:
 
 protected:
 
-    COMPRESS_STRATEGY  compress_fmt_;
+    STRATEGY  compress_fmt_;
 };
 
 //=====================================================================================================
 ///ZLZ算法是部分模拟LZ4的代码，但有一些格式变化，
 ///本来我认为我的算法应该更快一些的
-class ZLZ_Compress_Format
+class zlz_format
 {
 public:
 
-    ZLZ_Compress_Format();
-    ~ZLZ_Compress_Format();
+    zlz_format();
+    ~zlz_format();
 
     //压缩核心代码
     void compress_core(const unsigned char original_buf[],
@@ -340,18 +340,18 @@ protected:
     uint32_t* hash_lz_offset_ = nullptr;
 };
 
-//直接的ZLZ的typedef，使用zce::ZLZ_Compress::compress ,decompress函数就可以完成功能
-typedef ZCE_Compress<zce::ZLZ_Compress_Format> ZLZ_Compress;
+//直接的ZLZ的typedef，使用zce::zlz_compress::compress ,decompress函数就可以完成功能
+typedef zce::compress_pack<zce::zlz_format> zlz_compress;
 
 //=====================================================================================================
 
 //ZEN ZLZ 是法改进得到的算法，
-class LZ4_Compress_Format
+class lz4_format
 {
 public:
 
-    LZ4_Compress_Format();
-    ~LZ4_Compress_Format();
+    lz4_format();
+    ~lz4_format();
 
     //压缩核心代码
     void compress_core(const unsigned char* original_buf,
@@ -387,7 +387,7 @@ protected:
 };
 
 //直接的ZEN LZ4的typedef
-typedef ZCE_Compress<LZ4_Compress_Format> LZ4_Compress;
+typedef zce::compress_pack<lz4_format> lz4_compress;
 
 //=====================================================================================================
 };//end of zce

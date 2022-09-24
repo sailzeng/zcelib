@@ -53,9 +53,8 @@ protected:
     * @brief      异步对象超时处理
     *             继承zce::Async_Object的函数，
     */
-    virtual void on_timeout(const zce::Time_Value& now_time,
+    virtual void on_timeout(const zce::time_value& now_time,
                             bool& continued) override;
-
 
     virtual int luathread_run() = 0;
 
@@ -66,7 +65,6 @@ protected:
 
     ///Lua协程对象
     zce::Lua_Thread lua_thread_;
-
 };
 
 //====================================================================================

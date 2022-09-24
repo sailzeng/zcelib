@@ -25,7 +25,7 @@
 
 namespace zce
 {
-class Time_Value;
+class time_value;
 class Sockaddr_In;
 class Sockaddr_In6;
 class UUID64;
@@ -561,10 +561,10 @@ void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const zce::Time_Value& out_data);
+                   const zce::time_value& out_data);
 
 inline void to_string(std::string& stdstr,
-                      const zce::Time_Value& out_data);
+                      const zce::time_value& out_data);
 
 ///输出zce::Sockaddr_In的字符串
 inline void to_str(char* buffer,
@@ -612,11 +612,11 @@ public:
     //is_unsigned 不光对整数生效，对浮点也有作用
     template <typename int_type, typename std::enable_if<(std::is_integral<int_type>::value&&
                                                           std::is_unsigned<int_type>::value), int >::type = 0>
-        Int_Out_Helper(int_type out_data,
-                       size_t width = 0,
-                       int flags = 0,
-                       BASE_NUMBER base = BASE_NUMBER::DECIMAL,
-                       size_t precision = 0) :
+    Int_Out_Helper(int_type out_data,
+                   size_t width = 0,
+                   int flags = 0,
+                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
+                   size_t precision = 0) :
         out_data_(out_data),
         width_(width),
         precision_(precision),
@@ -628,11 +628,11 @@ public:
 
     template <typename int_type, typename std::enable_if<std::is_integral<int_type>::value,
         typename std::enable_if<std::is_signed<int_type>::value, int>::type>::type = 0>
-        Int_Out_Helper(int_type out_data,
-                       size_t width = 0,
-                       int flags = 0,
-                       BASE_NUMBER base = BASE_NUMBER::DECIMAL,
-                       size_t precision = 0) :
+    Int_Out_Helper(int_type out_data,
+                   size_t width = 0,
+                   int flags = 0,
+                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
+                   size_t precision = 0) :
         out_data_(out_data),
         width_(width),
         precision_(precision),

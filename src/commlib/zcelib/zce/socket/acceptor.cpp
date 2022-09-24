@@ -89,7 +89,7 @@ int Socket_Acceptor::accept(Socket_Stream& new_stream,
 
 //
 int Socket_Acceptor::accept(Socket_Stream& new_stream,
-                            Time_Value& timeout,
+                            time_value& timeout,
                             Sockaddr_Base* remote_addr) const
 {
     ZCE_SOCKET sock_handle =

@@ -12,7 +12,6 @@
 
 #pragma once
 
-
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
@@ -23,23 +22,17 @@
 
 namespace zce::mysql
 {
-
 /*!
 @brief      MySQL的字段封装
 */
-class Field
+class field
 {
 public:
     //构造函数
-    Field() :
-        field_data_(NULL),
-        field_length_(0),
-        field_type_(FIELD_TYPE_NULL)
-    {
-    };
+    field() = default;
 
     //构造函数
-    Field(const char* fdata, unsigned int flength, enum_field_types ftype) :
+    field(const char* fdata, unsigned int flength, enum_field_types ftype) :
         field_data_(fdata),
         field_length_(flength),
         field_type_(ftype)
@@ -47,9 +40,7 @@ public:
     };
 
     ///析构函数
-    ~Field()
-    {
-    };
+    ~field() = default;
 
     /*!
     * @brief      设置字段数据
@@ -113,15 +104,15 @@ public:
 protected:
 
     ///字段数据,指针，指向结果集的数据，所以结果集必须存在
-    const char* field_data_;
+    const char*      field_data_ = nullptr;
     ///字段长度
-    unsigned int     field_length_;
+    unsigned int     field_length_ = 0;
     ///字段类型
-    enum_field_types field_type_;
+    enum_field_types field_type_ = FIELD_TYPE_NULL;
 };
 
 //设置值
-inline void Field::set_field(const char* fdata,
+inline void field::set_field(const char* fdata,
                              unsigned int flength,
                              enum_field_types ftype)
 {
@@ -131,25 +122,25 @@ inline void Field::set_field(const char* fdata,
 };
 
 //得到Field 类型
-inline enum_field_types Field::get_type() const
+inline enum_field_types field::get_type() const
 {
     return field_type_;
 }
 
 //得到Field长度
-inline unsigned int Field::get_length() const
+inline unsigned int field::get_length() const
 {
     return field_length_;
 }
 
 //
-inline const char* Field::get_data() const
+inline const char* field::get_data() const
 {
     return field_data_;
 };
 
 //是否数据为空
-inline bool Field::is_null() const
+inline bool field::is_null() const
 {
     if (field_data_ == NULL)
     {
@@ -160,7 +151,7 @@ inline bool Field::is_null() const
 };
 
 //高速的得到字符串,在字符串较为长时最好使用这个函数
-inline Field::operator std::string() const
+inline field::operator std::string() const
 {
     std::string tmp_str;
     tmp_str.reserve(field_length_);
@@ -171,10 +162,6 @@ inline Field::operator std::string() const
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
 #endif
-
 }
 
-#endif 
-
-
-
+#endif

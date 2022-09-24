@@ -24,11 +24,9 @@
 #include "zce/lock/lock_base.h"
 #include "zce/util/non_copyable.h"
 
-
-
 namespace zce
 {
-class Time_Value;
+class time_value;
 /*!
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
@@ -62,12 +60,12 @@ public:
     {
     }
     ///尝试锁定，等待到超时时间点（绝对时间）后解锁，返回是否锁定
-    bool try_lock_until(const zce::Time_Value&) noexcept override
+    bool try_lock_until(const zce::time_value&) noexcept override
     {
         return true;
     }
     ///相对时间
-    bool try_lock_for(const zce::Time_Value&) noexcept override
+    bool try_lock_for(const zce::time_value&) noexcept override
     {
         return true;
     }
@@ -88,13 +86,13 @@ public:
     }
     ///绝对时间超时的读取锁，
     bool try_lock_shared_until(
-        const zce::Time_Value& /*abs_time*/) noexcept override
+        const zce::time_value& /*abs_time*/) noexcept override
     {
         return true;
     }
     ///相对时间超时的读取锁，
     bool try_lock_shared_for(
-        const zce::Time_Value& /*relative_time*/) noexcept override
+        const zce::time_value& /*relative_time*/) noexcept override
     {
         return true;
     }
@@ -129,13 +127,13 @@ public:
     }
     //!
     bool try_acquire_until(
-        const zce::Time_Value& /*abs_time*/) noexcept override
+        const zce::time_value& /*abs_time*/) noexcept override
     {
         return true;
     }
     //!
     bool try_acquire_for(
-        const zce::Time_Value& /*relative_time*/) noexcept override
+        const zce::time_value& /*relative_time*/) noexcept override
     {
         return true;
     }
@@ -160,13 +158,13 @@ private:
     }
     //!绝对时间超时的的等待，超时后解锁
     bool wait_until(zce::Lock_Base* /*external_mutex*/,
-                    const zce::Time_Value& /*abs_time*/) noexcept override
+                    const zce::time_value& /*abs_time*/) noexcept override
     {
         return true;
     }
     //!相对时间的超时锁定等待，超时后，解锁
     bool wait_for(zce::Lock_Base* /*external_mutex*/,
-                  const zce::Time_Value& /*relative_time*/) noexcept override
+                  const zce::time_value& /*relative_time*/) noexcept override
     {
         return true;
     }
@@ -178,7 +176,5 @@ private:
     void notify_all(void) noexcept override
     {
     }
-
 };
 }
-

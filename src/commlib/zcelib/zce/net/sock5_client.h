@@ -31,7 +31,7 @@ namespace zce
 int socks5_initialize(ZCE_SOCKET handle,
                       const char* username,
                       const char* password,
-                      zce::Time_Value& timeout_tv);
+                      zce::time_value& timeout_tv);
 
 /*!
 * @brief      SOCKS5代理初始化，进行用户验证等
@@ -48,12 +48,12 @@ int socks5_connect_host(ZCE_SOCKET handle,
                         const sockaddr* host_addr,
                         int addr_len,
                         uint16_t host_port,
-                        zce::Time_Value& timeout_tv);
+                        zce::time_value& timeout_tv);
 
 //socks5代理，UDP穿透
 int socks5_udp_associate(ZCE_SOCKET handle,
                          const sockaddr* bind_addr,
                          int addr_len,
                          sockaddr* udp_addr,
-                         zce::Time_Value& timeout_tv);
+                         zce::time_value& timeout_tv);
 }

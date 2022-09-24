@@ -8,24 +8,23 @@
 
 namespace zce
 {
-
-Log_Msg* Log_Msg::log_instance_ = nullptr;
+log_msg* log_msg::log_instance_ = nullptr;
 
 /******************************************************************************************
 class Log_Msg
 ******************************************************************************************/
 //析构函数
-Log_Msg::Log_Msg()
+log_msg::log_msg()
 {
 }
 
 //析构函数
-Log_Msg::~Log_Msg()
+log_msg::~log_msg()
 {
 }
 
 //初始化函数,用于时间分割日志的构造
-int Log_Msg::init_time_log(LOGFILE_DEVIDE div_log_file,
+int log_msg::init_time_log(LOGFILE_DEVIDE div_log_file,
                            const char* log_file_prefix,
                            size_t reserve_file_num,
                            bool multithread_log,
@@ -52,7 +51,7 @@ int Log_Msg::init_time_log(LOGFILE_DEVIDE div_log_file,
 }
 
 //初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
-int Log_Msg::init_size_log(const char* log_file_prefix,
+int log_msg::init_size_log(const char* log_file_prefix,
                            size_t max_size_log_file,
                            size_t reserve_file_num,
                            bool multithread_log,
@@ -83,7 +82,7 @@ int Log_Msg::init_size_log(const char* log_file_prefix,
 }
 
 //初始化函数，用于标准输出
-int Log_Msg::init_stdout(bool use_err_out,
+int log_msg::init_stdout(bool use_err_out,
                          bool multithread_log,
                          bool auto_new_line,
                          int head_record) noexcept
@@ -110,7 +109,7 @@ int Log_Msg::init_stdout(bool use_err_out,
                                 0);
 }
 
-void Log_Msg::terminate()
+void log_msg::terminate()
 {
     allow_output_log_ = false;
     permit_outlevel_ = RS_DEBUG;
@@ -118,40 +117,40 @@ void Log_Msg::terminate()
 }
 
 //打开日志输出开关
-void Log_Msg::enable_output(bool enable_out)
+void log_msg::enable_output(bool enable_out)
 {
     allow_output_log_ = enable_out;
 }
 
 //!设置日志输出Level
-LOG_PRIORITY Log_Msg::set_log_priority(LOG_PRIORITY outlevel)
+LOG_PRIORITY log_msg::set_log_priority(LOG_PRIORITY outlevel)
 {
     LOG_PRIORITY oldlevel = permit_outlevel_;
     permit_outlevel_ = outlevel;
     return oldlevel;
 }
 //!取得输出Level
-LOG_PRIORITY Log_Msg::get_log_priority(void)
+LOG_PRIORITY log_msg::get_log_priority(void)
 {
     return permit_outlevel_;
 }
 
 //!设置默认输出的信息类型
-unsigned int Log_Msg::set_log_head(int recdinfo)
+unsigned int log_msg::set_log_head(int recdinfo)
 {
     unsigned int tmprecdinfo = recdinfo;
     head_record_ = recdinfo;
     return tmprecdinfo;
 }
 //!取得默认输出的信息类型
-unsigned int Log_Msg::get_log_head(void)
+unsigned int log_msg::get_log_head(void)
 {
     return head_record_;
 }
 
 //!设置同步输出的标示
 //!如果开始没有设置文件同步输出,后面不调整.
-unsigned int Log_Msg::set_output_way(int output_way)
+unsigned int log_msg::set_output_way(int output_way)
 {
     int tmp = output_way_;
     output_way_ = output_way;
@@ -159,26 +158,26 @@ unsigned int Log_Msg::set_output_way(int output_way)
 }
 
 //取得同步输出的标示
-unsigned int Log_Msg::get_output_way(void)
+unsigned int log_msg::get_output_way(void)
 {
     return output_way_;
 }
 
 //设置是否线程同步
-bool Log_Msg::set_thread_synchro(bool multithread_log)
+bool log_msg::set_thread_synchro(bool multithread_log)
 {
     bool old_multi = multithread_log_;
     multithread_log_ = multithread_log;
     return old_multi;
 }
 //取得是否进行线程同步
-bool Log_Msg::get_thread_synchro(void)
+bool log_msg::get_thread_synchro(void)
 {
     return multithread_log_;
 }
 
 //输出va_list的参数信息
-void Log_Msg::vwrite_logmsg(LOG_PRIORITY outlevel,
+void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
                             const char* str_format,
                             va_list args) noexcept
 {
@@ -199,11 +198,11 @@ void Log_Msg::vwrite_logmsg(LOG_PRIORITY outlevel,
 
     //用static 变量，保证只初始化一次， 用thread_local 保证每个线程一个
     static thread_local char* log_buffer = \
-        new char[Log_File::SIZE_OF_LOG_BUFFER];
-    log_buffer[Log_File::SIZE_OF_LOG_BUFFER - 1] = '\0';
+        new char[log_file::SIZE_OF_LOG_BUFFER];
+    log_buffer[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
     //我要保留一个位置放'\0'，以及一个\n
-    size_t sz_buf_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
+    size_t sz_buf_len = log_file::SIZE_OF_LOG_BUFFER - 2;
     size_t sz_use_len = 0;
 
     //输出头部信息
@@ -221,7 +220,7 @@ void Log_Msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     //如果输出的字符串比想想的长，-2是因为后面有'\0','\n'
     if (len_of_out >= static_cast<int>(sz_buf_len) || len_of_out < 0)
     {
-        sz_use_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
+        sz_use_len = log_file::SIZE_OF_LOG_BUFFER - 2;
         sz_buf_len = 0;
     }
     else
@@ -246,7 +245,7 @@ void Log_Msg::vwrite_logmsg(LOG_PRIORITY outlevel,
 }
 
 //ZASSERT的扩展定义，
-void Log_Msg::debug_assert(const char* file_name,
+void log_msg::debug_assert(const char* file_name,
                            const int file_line,
                            const char* function_name,
                            const char* expression_name) noexcept
@@ -260,7 +259,7 @@ void Log_Msg::debug_assert(const char* file_name,
 }
 
 //Aseert调试,增强版本函数
-void Log_Msg::debug_assert_ex(const char* file_name,
+void log_msg::debug_assert_ex(const char* file_name,
                               const int file_line,
                               const char* function_name,
                               const char* expression_name,
@@ -277,7 +276,7 @@ void Log_Msg::debug_assert_ex(const char* file_name,
 }
 
 //调用vwrite_logmsg完成实际输出
-void Log_Msg::write_logmsg(LOG_PRIORITY dbglevel,
+void log_msg::write_logmsg(LOG_PRIORITY dbglevel,
                            const char* str_format, ...) noexcept
 {
     va_list args;
@@ -290,7 +289,7 @@ void Log_Msg::write_logmsg(LOG_PRIORITY dbglevel,
 }
 
 //将日志的头部信息输出到一个Stringbuf中
-void Log_Msg::stringbuf_loghead(LOG_PRIORITY outlevel,
+void log_msg::stringbuf_loghead(LOG_PRIORITY outlevel,
                                 const timeval& now_time,
                                 char* log_tmp_buffer,
                                 size_t sz_buf_len,
@@ -378,7 +377,7 @@ void Log_Msg::stringbuf_loghead(LOG_PRIORITY outlevel,
     }
 }
 
-void Log_Msg::output_log_info(const timeval& now_time,
+void log_msg::output_log_info(const timeval& now_time,
                               char* log_tmp_buffer,
                               size_t sz_use_len) noexcept
 {
@@ -427,7 +426,7 @@ void Log_Msg::output_log_info(const timeval& now_time,
 }
 
 //通过字符串得到对应的日志策略,
-LOG_PRIORITY Log_Msg::log_priorities(const char* str_priority)
+LOG_PRIORITY log_msg::log_priorities(const char* str_priority)
 {
     if (strcasecmp(str_priority, ("TRACE")) == 0)
     {
@@ -460,7 +459,7 @@ LOG_PRIORITY Log_Msg::log_priorities(const char* str_priority)
 }
 
 //通过字符串得到对应的日志策略,
-LOGFILE_DEVIDE Log_Msg::log_file_devide(const char* str_devide)
+LOGFILE_DEVIDE log_msg::log_file_devide(const char* str_devide)
 {
     if (strcasecmp(str_devide, ("SIZE_ID")) == 0)
     {
@@ -497,17 +496,17 @@ LOGFILE_DEVIDE Log_Msg::log_file_devide(const char* str_devide)
 }
 
 //得到唯一的单子实例
-Log_Msg* Log_Msg::instance()
+log_msg* log_msg::instance()
 {
     if (log_instance_ == NULL)
     {
-        log_instance_ = new Log_Msg();
+        log_instance_ = new log_msg();
     }
     return log_instance_;
 }
 
 //赋值唯一的单子实例
-void Log_Msg::instance(Log_Msg* instatnce)
+void log_msg::instance(log_msg* instatnce)
 {
     clean_instance();
     log_instance_ = instatnce;
@@ -515,7 +514,7 @@ void Log_Msg::instance(Log_Msg* instatnce)
 }
 
 //清除单子实例
-void Log_Msg::clean_instance()
+void log_msg::clean_instance()
 {
     if (log_instance_)
     {

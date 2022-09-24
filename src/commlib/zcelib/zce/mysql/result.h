@@ -97,7 +97,7 @@ public:
     * @return     ZCE_MySQL_Field
     * @param[in]  fieldid          取的字段下标
     */
-    zce::mysql::Field operator[](size_t fieldid) const;
+    zce::mysql::field operator[](size_t fieldid) const;
 
     /*!
     * @brief      通过列ID，查询当前行的字段，性能好，下标定位
@@ -105,7 +105,7 @@ public:
     * @param[in]  fieldid  列ID，从0开始
     * @param[out] ffield   返回列的值
     */
-    int get_field(size_t fieldid, zce::mysql::Field& ffield) const;
+    int get_field(size_t fieldid, zce::mysql::field& ffield) const;
 
     /*!
     * @brief      通过列名称查询当前行的某个字段的值，但性能并不好
@@ -113,7 +113,7 @@ public:
     * @param      fname   列字段的名称，SQL中的名称，如果是复杂的SQL SELECT，列名字会比较怪异，
     * @param      ffield  返回参数，列数据的封装
     */
-    int get_field(const char*, zce::mysql::Field& ffield) const;
+    int get_field(const char*, zce::mysql::field& ffield) const;
 
     /*!
     * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
@@ -379,7 +379,7 @@ inline unsigned int result::get_cur_field_length()
 }
 
 //根据字段的序列值得到字段值
-inline int result::get_field(size_t fieldid, zce::mysql::Field& ffield) const
+inline int result::get_field(size_t fieldid, zce::mysql::field& ffield) const
 {
     //进行安全检查，如果错误返回
     if (current_row_ == NULL || fieldid >= num_result_field_)
@@ -394,9 +394,9 @@ inline int result::get_field(size_t fieldid, zce::mysql::Field& ffield) const
 
 //根据列序号ID得到字段FIELD，
 //[]操作符号函数不检查检查列ID,自己保证参数
-inline zce::mysql::Field result::operator[](size_t fieldid) const
+inline zce::mysql::field result::operator[](size_t fieldid) const
 {
-    zce::mysql::Field ffield(current_row_[fieldid],
+    zce::mysql::field ffield(current_row_[fieldid],
                              fields_length_[fieldid],
                              mysql_fields_[fieldid].type);
     return ffield;

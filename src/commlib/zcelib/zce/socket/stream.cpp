@@ -66,7 +66,7 @@ int Socket_Stream::shutdown(int how) const
 //带超时处理的发送函数，接收N个字节后返回,内部用的是select记录时间，记时不是特别准确，
 ssize_t Socket_Stream::recv_n(void* buf,
                               size_t len,
-                              zce::Time_Value* timeout_tv,
+                              zce::time_value* timeout_tv,
                               int flags)  const
 {
     return zce::recv_n(socket_handle_,
@@ -79,7 +79,7 @@ ssize_t Socket_Stream::recv_n(void* buf,
 //带超时处理的发送函数，发送N个字节后返回,内部用的是select记录时间，记时不是特别准确，
 ssize_t Socket_Stream::send_n(const void* buf,
                               size_t len,
-                              zce::Time_Value* timeout_tv,
+                              zce::time_value* timeout_tv,
                               int flags)  const
 {
     return zce::send_n(socket_handle_,
@@ -92,7 +92,7 @@ ssize_t Socket_Stream::send_n(const void* buf,
 //带超时处理的接受函数，发送N个字节后返回,内部用的是SO_RCVTIMEO，记时不是特别准确，
 ssize_t Socket_Stream::recvn_timeout(void* buf,
                                      size_t len,
-                                     zce::Time_Value& timeout_tv,
+                                     zce::time_value& timeout_tv,
                                      int flags)  const
 {
     return zce::recvn_timeout(socket_handle_,
@@ -105,7 +105,7 @@ ssize_t Socket_Stream::recvn_timeout(void* buf,
 //带超时处理的发送函数，发送N个字节后返回,内部用的是SO_SNDTIMEO，记时不是特别准确，
 ssize_t Socket_Stream::sendn_timeout(void* buf,
                                      size_t len,
-                                     zce::Time_Value& timeout_tv,
+                                     zce::time_value& timeout_tv,
                                      int flags)
 {
     return zce::sendn_timeout(socket_handle_,

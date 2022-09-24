@@ -2,12 +2,10 @@
 #include "zce/os_adapt/dirent.h"
 #include "zce/logger/log_print.h"
 
-
 //==========================================================================================================
-zce::Log_Printf *zce::Log_Printf::instance_ = nullptr;
+zce::log_printf *zce::log_printf::instance_ = nullptr;
 
-
-zce::Log_Printf::~Log_Printf()
+zce::log_printf::~log_printf()
 {
     if (print_fp_)
     {
@@ -17,7 +15,7 @@ zce::Log_Printf::~Log_Printf()
 }
 
 //输出va_list的参数信息
-void zce::Log_Printf::vwrite_logmsg(const char* str_format,
+void zce::log_printf::vwrite_logmsg(const char* str_format,
                                     va_list args)
 {
     //得到打印信息,_vsnprintf为特殊函数
@@ -31,7 +29,7 @@ void zce::Log_Printf::vwrite_logmsg(const char* str_format,
 }
 
 //写日志
-void zce::Log_Printf::write_logmsg(zce::LOG_PRIORITY outlevel,
+void zce::log_printf::write_logmsg(zce::LOG_PRIORITY outlevel,
                                    const char* str_format, ...)
 {
     //如果日志输出开关关闭
@@ -51,7 +49,7 @@ void zce::Log_Printf::write_logmsg(zce::LOG_PRIORITY outlevel,
     va_end(args);
 }
 
-void zce::Log_Printf::enable_fileout(bool enable_out)
+void zce::log_printf::enable_fileout(bool enable_out)
 {
     if (enable_out)
     {
@@ -72,31 +70,30 @@ void zce::Log_Printf::enable_fileout(bool enable_out)
 }
 
 //打开日志输出开关
-void zce::Log_Printf::enable_output(bool enable_out)
+void zce::log_printf::enable_output(bool enable_out)
 {
     is_output_log_ = enable_out;
 }
 
 //设置日志输出Level
-zce::LOG_PRIORITY zce::Log_Printf::set_log_priority(zce::LOG_PRIORITY outlevel)
+zce::LOG_PRIORITY zce::log_printf::set_log_priority(zce::LOG_PRIORITY outlevel)
 {
     zce::LOG_PRIORITY oldlevel = permit_outlevel_;
     permit_outlevel_ = outlevel;
     return oldlevel;
 }
 
-
 //实例的获得
-zce::Log_Printf* zce::Log_Printf::instance()
+zce::log_printf* zce::log_printf::instance()
 {
     if (instance_ == nullptr)
     {
-        instance_ = new zce::Log_Printf();
+        instance_ = new zce::log_printf();
     }
     return instance_;
 }
 
-void zce::Log_Printf::clean_instance()
+void zce::log_printf::clean_instance()
 {
     if (instance_)
     {
@@ -104,4 +101,3 @@ void zce::Log_Printf::clean_instance()
         instance_ = nullptr;
     }
 }
-

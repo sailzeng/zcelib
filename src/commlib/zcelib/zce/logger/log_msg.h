@@ -74,13 +74,13 @@ enum class LOG_OUTPUT
 
 namespace zce
 {
-class Log_Msg
+class log_msg
 {
 public:
 
     ///构造函数
-    Log_Msg();
-    virtual ~Log_Msg();
+    log_msg();
+    virtual ~log_msg();
 
     /*!
     * @brief      初始化函数,用于时间分割日志的构造
@@ -97,7 +97,7 @@ public:
     */
     int init_time_log(LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
-                      size_t reserve_file_num = Log_File::DEFAULT_RESERVE_FILENUM,
+                      size_t reserve_file_num = log_file::DEFAULT_RESERVE_FILENUM,
                       bool multithread_log = false,
                       bool thread_output_file = false,
                       bool auto_new_line = true,
@@ -119,8 +119,8 @@ public:
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_size_log(const char* log_file_prefix,
-                      size_t max_size_log_file = Log_File::DEFAULT_LOG_SIZE,
-                      size_t reserve_file_num = Log_File::DEFAULT_RESERVE_FILENUM,
+                      size_t max_size_log_file = log_file::DEFAULT_LOG_SIZE,
+                      size_t reserve_file_num = log_file::DEFAULT_RESERVE_FILENUM,
                       bool multithread_log = false,
                       bool thread_output_file = false,
                       bool auto_new_line = true,
@@ -140,7 +140,6 @@ public:
                     bool auto_new_line = true,
                     bool multithread_log = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
-
 
     int init_log(int output_way,
                  LOGFILE_DEVIDE div_log_file,
@@ -266,10 +265,10 @@ public:
 
         //我要保留一个位置放'\0',还为\n考虑留一个空间,注意thread_local
         static thread_local char \
-            log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER];
-        log_tmp_buffer[Log_File::SIZE_OF_LOG_BUFFER - 1] = '\0';
+            log_tmp_buffer[log_file::SIZE_OF_LOG_BUFFER];
+        log_tmp_buffer[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
-        size_t sz_buf_len = Log_File::SIZE_OF_LOG_BUFFER - 2;
+        size_t sz_buf_len = log_file::SIZE_OF_LOG_BUFFER - 2;
         size_t sz_use_len = 0;
 
         stringbuf_loghead(outlevel,
@@ -307,9 +306,9 @@ public:
 public:
 
     //实例的赋值
-    static void instance(Log_Msg*);
+    static void instance(log_msg*);
     //实例的获得
-    static Log_Msg* instance();
+    static log_msg* instance();
     //清除实例
     static void clean_instance();
 
@@ -380,11 +379,11 @@ protected:
     bool allow_output_log_ = true;
 
     //!日志文件
-    Log_File log_file_;
+    log_file log_file_;
 
 protected:
 
     ///单子实例指针
-    static Log_Msg * log_instance_;
+    static log_msg * log_instance_;
 };
 }

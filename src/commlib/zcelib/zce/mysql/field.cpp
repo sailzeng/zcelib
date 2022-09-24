@@ -7,16 +7,15 @@
 
 namespace zce::mysql
 {
-
 //High Speed 得到String
-void Field::get_string(std::string& tmpstr) const
+void field::get_string(std::string& tmpstr) const
 {
     tmpstr.reserve(field_length_);
     tmpstr.assign(field_data_, field_length_);
 }
 
 //得到字符型
-Field::operator char() const
+field::operator char() const
 {
     char  tmp_tinyint = 0;
 
@@ -33,7 +32,7 @@ Field::operator char() const
 }
 
 //得到短整型
-Field::operator short() const
+field::operator short() const
 {
     short tmp_short = 0;
 
@@ -48,7 +47,7 @@ Field::operator short() const
 }
 
 //得到长整型
-Field::operator long() const
+field::operator long() const
 {
     long tmp_long = 0;
 
@@ -62,7 +61,7 @@ Field::operator long() const
 }
 
 //得到int整型
-Field::operator int() const
+field::operator int() const
 {
     int tmp_int = 0;
 
@@ -76,7 +75,7 @@ Field::operator int() const
 }
 
 //得到int整型
-Field::operator unsigned int() const
+field::operator unsigned int() const
 {
     unsigned int tmp_uint = 0;
 
@@ -90,7 +89,7 @@ Field::operator unsigned int() const
 }
 
 //转换为INT64类型
-inline Field::operator long long() const
+inline field::operator long long() const
 {
     long long tmp_longlong = 0;
 
@@ -104,7 +103,7 @@ inline Field::operator long long() const
 }
 
 //转换为8位无符号整型
-Field::operator unsigned char() const
+field::operator unsigned char() const
 {
     unsigned char  tmp_utinyint = 0;
     unsigned short tmpshort = 0;
@@ -120,7 +119,7 @@ Field::operator unsigned char() const
 }
 
 //转换为16位的无符号整型
-Field::operator unsigned short() const
+field::operator unsigned short() const
 {
     unsigned short tmp_ushort = 0;
 
@@ -134,7 +133,7 @@ Field::operator unsigned short() const
     return tmp_ushort;
 }
 //转换为32位32无符号长整型
-Field::operator unsigned long() const
+field::operator unsigned long() const
 {
     long tmp_ulong = 0;
 
@@ -148,7 +147,7 @@ Field::operator unsigned long() const
 }
 
 //转换为64位无符号长整型
-Field::operator unsigned long long() const
+field::operator unsigned long long() const
 {
     unsigned long long tmp_ulonglong = 0;
 
@@ -162,7 +161,7 @@ Field::operator unsigned long long() const
 }
 
 //转换为FLOAT类型
-Field::operator float() const
+field::operator float() const
 {
     float tmpfloat = 0.0;
     //转换得到FLOAT浮点型
@@ -175,7 +174,7 @@ Field::operator float() const
 }
 
 //转换为DOUBLE类型
-Field::operator double() const
+field::operator double() const
 {
     double tmpdouble = 0.0;
     //转换得到DOBULE浮点型
@@ -186,7 +185,6 @@ Field::operator double() const
     }
     return tmpdouble;
 }
-
 }
 
 //如果你要用MYSQL的库

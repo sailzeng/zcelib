@@ -41,10 +41,10 @@ public:
     void release() noexcept override;
 
     //绝对时间超时的的锁定，超时后解锁
-    bool try_acquire_until(const zce::Time_Value& abs_time) noexcept override;
+    bool try_acquire_until(const zce::time_value& abs_time) noexcept override;
 
     //相对时间的超时锁定，超时后，解锁
-    bool try_acquire_for(const zce::Time_Value& relative_time) noexcept override;
+    bool try_acquire_for(const zce::time_value& relative_time) noexcept override;
 
 protected:
     //线程锁

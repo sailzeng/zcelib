@@ -67,7 +67,7 @@ void Host_Atom::clear()
 //====================================================
 
 //!异步打开某个文件，完成后回调函数call_back
-int fs_open(zce::aio::Worker* worker,
+int fs_open(zce::aio::worker* worker,
             const char* path,
             int flags,
             int mode,
@@ -88,7 +88,7 @@ int fs_open(zce::aio::Worker* worker,
 }
 
 //!关闭某个文件
-int fs_close(zce::aio::Worker* worker,
+int fs_close(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              std::function<void(AIO_Atom*)> call_back)
 {
@@ -105,7 +105,7 @@ int fs_close(zce::aio::Worker* worker,
 }
 
 //!移动文件的读写位置
-int fs_lseek(zce::aio::Worker* worker,
+int fs_lseek(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              off_t offset,
              int whence,
@@ -126,7 +126,7 @@ int fs_lseek(zce::aio::Worker* worker,
 }
 
 //!异步读取文件内容
-int fs_read(zce::aio::Worker* worker,
+int fs_read(zce::aio::worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
@@ -151,7 +151,7 @@ int fs_read(zce::aio::Worker* worker,
 }
 
 //!异步写入文件内容
-int fs_write(zce::aio::Worker* worker,
+int fs_write(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
@@ -176,7 +176,7 @@ int fs_write(zce::aio::Worker* worker,
 }
 
 //!异步截断文件
-int fs_ftruncate(zce::aio::Worker* worker,
+int fs_ftruncate(zce::aio::worker* worker,
                  ZCE_HANDLE handle,
                  size_t offset,
                  std::function<void(AIO_Atom*)> call_back)
@@ -195,7 +195,7 @@ int fs_ftruncate(zce::aio::Worker* worker,
 }
 
 //!异步打开文件，读取文件内容，然后关闭
-int fs_read_file(zce::aio::Worker* worker,
+int fs_read_file(zce::aio::worker* worker,
                  const char* path,
                  char* read_bufs,
                  size_t nbufs,
@@ -218,7 +218,7 @@ int fs_read_file(zce::aio::Worker* worker,
 }
 
 //!异步打开文件，写入文件内容，然后关闭
-int fs_write_file(zce::aio::Worker* worker,
+int fs_write_file(zce::aio::worker* worker,
                   const char* path,
                   const char* write_bufs,
                   size_t nbufs,
@@ -241,7 +241,7 @@ int fs_write_file(zce::aio::Worker* worker,
 }
 
 //!异步删除文件
-int fs_unlink(zce::aio::Worker* worker,
+int fs_unlink(zce::aio::worker* worker,
               const char* path,
               std::function<void(AIO_Atom*)> call_back)
 {
@@ -258,7 +258,7 @@ int fs_unlink(zce::aio::Worker* worker,
 }
 
 //!
-int fs_rename(zce::aio::Worker* worker,
+int fs_rename(zce::aio::worker* worker,
               const char* path,
               const char* new_path,
               std::function<void(AIO_Atom*)> call_back)
@@ -277,7 +277,7 @@ int fs_rename(zce::aio::Worker* worker,
 }
 
 //!异步获取stat
-int fs_stat(zce::aio::Worker* worker,
+int fs_stat(zce::aio::worker* worker,
             const char* path,
             struct stat* file_stat,
             std::function<void(AIO_Atom*)> call_back)
@@ -296,7 +296,7 @@ int fs_stat(zce::aio::Worker* worker,
 }
 
 //!异步scandir
-int dir_scandir(zce::aio::Worker* worker,
+int dir_scandir(zce::aio::worker* worker,
                 const char* dirname,
                 struct dirent*** namelist,
                 std::function<void(AIO_Atom*)> call_back)
@@ -315,7 +315,7 @@ int dir_scandir(zce::aio::Worker* worker,
 }
 
 //!异步建立dir
-int dir_mkdir(zce::aio::Worker* worker,
+int dir_mkdir(zce::aio::worker* worker,
               const char* dirname,
               int mode,
               std::function<void(AIO_Atom*)> call_back)
@@ -334,7 +334,7 @@ int dir_mkdir(zce::aio::Worker* worker,
 }
 
 //!异步删除dir
-int dir_rmdir(zce::aio::Worker* worker,
+int dir_rmdir(zce::aio::worker* worker,
               const char* dirname,
               std::function<void(AIO_Atom*)> call_back)
 {
@@ -351,7 +351,7 @@ int dir_rmdir(zce::aio::Worker* worker,
 }
 
 //!链接数据
-int mysql_connect(zce::aio::Worker* worker,
+int mysql_connect(zce::aio::worker* worker,
                   zce::mysql::connect* db_connect,
                   const char* host_name,
                   const char* user,
@@ -376,7 +376,7 @@ int mysql_connect(zce::aio::Worker* worker,
 }
 
 //!断开数据库链接
-int mysql_disconnect(zce::aio::Worker* worker,
+int mysql_disconnect(zce::aio::worker* worker,
                      zce::mysql::connect* db_connect,
                      std::function<void(AIO_Atom*)> call_back)
 {
@@ -393,7 +393,7 @@ int mysql_disconnect(zce::aio::Worker* worker,
 }
 
 //!查询，非SELECT语句
-int mysql_query(zce::aio::Worker* worker,
+int mysql_query(zce::aio::worker* worker,
                 zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
@@ -419,7 +419,7 @@ int mysql_query(zce::aio::Worker* worker,
 }
 
 //!查询，SELECT语句
-int mysql_query(zce::aio::Worker* worker,
+int mysql_query(zce::aio::worker* worker,
                 zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
@@ -445,7 +445,7 @@ int mysql_query(zce::aio::Worker* worker,
 }
 
 //!
-int host_getaddr_ary(zce::aio::Worker* worker,
+int host_getaddr_ary(zce::aio::worker* worker,
                      const char* hostname,
                      const char* service,
                      size_t* ary_addr_num,
@@ -472,7 +472,7 @@ int host_getaddr_ary(zce::aio::Worker* worker,
     return 0;
 }
 
-int host_getaddr_one(zce::aio::Worker* worker,
+int host_getaddr_one(zce::aio::worker* worker,
                      const char* hostname,
                      const char* service,
                      sockaddr* addr,
@@ -496,11 +496,11 @@ int host_getaddr_one(zce::aio::Worker* worker,
 }
 
 //!超时链接数据
-int socket_connect(zce::aio::Worker* worker,
+int socket_connect(zce::aio::worker* worker,
                    ZCE_SOCKET handle,
                    const sockaddr* addr,
                    socklen_t addr_len,
-                   zce::Time_Value* timeout_tv,
+                   zce::time_value* timeout_tv,
                    std::function<void(AIO_Atom*)> call_back)
 {
     zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
@@ -518,11 +518,11 @@ int socket_connect(zce::aio::Worker* worker,
     return 0;
 }
 
-int socket_accept(zce::aio::Worker* worker,
+int socket_accept(zce::aio::worker* worker,
                   ZCE_SOCKET handle,
                   sockaddr* from,
                   socklen_t* from_len,
-                  zce::Time_Value* timeout_tv,
+                  zce::time_value* timeout_tv,
                   std::function<void(AIO_Atom*)> call_back)
 {
     zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
@@ -541,11 +541,11 @@ int socket_accept(zce::aio::Worker* worker,
 }
 
 //!
-int socket_recv(zce::aio::Worker* worker,
+int socket_recv(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
-                zce::Time_Value* timeout_tv,
+                zce::time_value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags)
 {
@@ -566,11 +566,11 @@ int socket_recv(zce::aio::Worker* worker,
 }
 
 //!
-int socket_send(zce::aio::Worker* worker,
+int socket_send(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 const void* buf,
                 size_t len,
-                zce::Time_Value* timeout_tv,
+                zce::time_value* timeout_tv,
                 std::function<void(AIO_Atom*)> call_back,
                 int flags)
 {
@@ -590,13 +590,13 @@ int socket_send(zce::aio::Worker* worker,
     return 0;
 }
 
-int socket_recvfrom(zce::aio::Worker* worker,
+int socket_recvfrom(zce::aio::worker* worker,
                     ZCE_SOCKET handle,
                     void* buf,
                     size_t len,
                     sockaddr* from,
                     socklen_t* from_len,
-                    zce::Time_Value* timeout_tv,
+                    zce::time_value* timeout_tv,
                     std::function<void(AIO_Atom*)> call_back,
                     int flags)
 {

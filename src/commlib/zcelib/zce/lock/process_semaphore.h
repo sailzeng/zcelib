@@ -52,7 +52,7 @@ public:
     * @param      abs_time  超时的绝对时间
     */
     bool try_acquire_until(
-        const zce::Time_Value& abs_time) noexcept override;
+        const zce::time_value& abs_time) noexcept override;
 
     /*!
     * @brief      相对时间的超时锁定，超时后，解锁
@@ -60,7 +60,7 @@ public:
     * @param      relative_time  超时的绝对时间
     */
     bool try_acquire_for(
-        const zce::Time_Value& relative_time) noexcept override;
+        const zce::time_value& relative_time) noexcept override;
 
 protected:
 

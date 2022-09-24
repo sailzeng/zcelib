@@ -18,7 +18,6 @@ Async_Coroutine::~Async_Coroutine()
 {
 }
 
-
 //调用协程
 void Async_Coroutine::on_run(bool first_run,
                              bool& continue_run)
@@ -51,11 +50,10 @@ void Async_Coroutine::on_run(bool first_run,
         }
         return;
     }
-
 }
 
 //调用协程
-void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
+void Async_Coroutine::on_timeout(const zce::time_value& /*now_time*/,
                                  bool& continued)
 {
     continued = false;
@@ -77,9 +75,8 @@ void Async_Coroutine::on_timeout(const zce::Time_Value& /*now_time*/,
     }
 }
 
-
 //等待time_out 时间后超时，设置定时器后，
-int Async_Coroutine::waitfor_timeout(const zce::Time_Value& time_out)
+int Async_Coroutine::waitfor_timeout(const zce::time_value& time_out)
 {
     int ret = 0;
     ret = set_timeout(time_out);

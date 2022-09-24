@@ -173,7 +173,7 @@ void to_string(std::string& stdstr,
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const zce::Time_Value& out_data)
+            const zce::time_value& out_data)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -190,7 +190,7 @@ void to_str(char* buffer,
 }
 
 void to_string(std::string& stdstr,
-               const zce::Time_Value& out_data)
+               const zce::time_value& out_data)
 {
     char time_str[MAX_TIMEVAL_STRING_LEN + 1];
     time_str[MAX_TIMEVAL_STRING_LEN] = '\0';

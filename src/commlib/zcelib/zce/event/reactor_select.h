@@ -82,7 +82,7 @@ public:
     * @param      time_out      超时时长
     * @param      size_event    触发的句柄数量
     */
-    virtual int handle_events(zce::Time_Value* time_out, size_t* size_event) override;
+    virtual int handle_events(zce::time_value* time_out, size_t* size_event) override;
 
 protected:
 

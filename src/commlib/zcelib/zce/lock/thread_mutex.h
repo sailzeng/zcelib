@@ -19,7 +19,7 @@
 #include "zce/lock/lock_guard.h"
 #include "zce/time/time_value.h"
 
-class zce::Time_Value;
+class zce::time_value;
 
 namespace zce
 {
@@ -85,10 +85,10 @@ public:
     void unlock()  noexcept override;
 
     ///绝对时间超时的的锁定，超时后解锁
-    bool try_lock_until(const zce::Time_Value& abs_time)  noexcept override;
+    bool try_lock_until(const zce::time_value& abs_time)  noexcept override;
 
     ///相对时间的超时锁定，超时后，解锁
-    bool try_lock_for(const zce::Time_Value& relative_time)  noexcept override;
+    bool try_lock_for(const zce::time_value& relative_time)  noexcept override;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();
@@ -126,10 +126,10 @@ public:
     virtual void unlock() noexcept;
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool wait_until(const zce::Time_Value& abs_time) noexcept;
+    virtual bool wait_until(const zce::time_value& abs_time) noexcept;
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool wait_for(const zce::Time_Value& relative_time) noexcept;
+    virtual bool wait_for(const zce::time_value& relative_time) noexcept;
 
 protected:
 

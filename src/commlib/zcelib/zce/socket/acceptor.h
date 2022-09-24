@@ -29,7 +29,7 @@ public:
 
     //带有超时的处理的accept
     int accept(Socket_Stream& new_stream,
-               Time_Value& timeout,
+               time_value& timeout,
                Sockaddr_Base* remote_addr) const;
 };
 }

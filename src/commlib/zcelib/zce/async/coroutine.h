@@ -151,7 +151,7 @@ protected:
     * @return     int
     * @param      time_out
     */
-    int waitfor_timeout(const zce::Time_Value& time_out);
+    int waitfor_timeout(const zce::time_value& time_out);
 
     /*!
     * @brief      继承zce::Async_Object的函数，
@@ -165,9 +165,8 @@ protected:
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continued 异步对象是否继续运行,
     */
-    virtual void on_timeout(const zce::Time_Value& now_time,
+    virtual void on_timeout(const zce::time_value& now_time,
                             bool& continued) override;
-
 
 protected:
     //!

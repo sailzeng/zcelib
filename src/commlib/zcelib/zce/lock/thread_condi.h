@@ -36,11 +36,11 @@ public:
 
     //!绝对时间超时的的等待，超时后解锁
     virtual bool wait_until(Thread_Light_Mutex* external_mutex,
-                            const zce::Time_Value& abs_time) noexcept;
+                            const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
     virtual bool wait_for(Thread_Light_Mutex* external_mutex,
-                          const zce::Time_Value& relative_time) noexcept;
+                          const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.
     void notify_one(void) noexcept override;
@@ -69,11 +69,11 @@ public:
 
     //!绝对时间超时的的等待，超时后解锁
     virtual bool wait_until(Thread_Recursive_Mutex* external_mutex,
-                            const zce::Time_Value& abs_time) noexcept;
+                            const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
     virtual bool wait_for(Thread_Recursive_Mutex* external_mutex,
-                          const zce::Time_Value& relative_time) noexcept;
+                          const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.
     void notify_one(void) noexcept override;
@@ -86,6 +86,4 @@ protected:
     //!条件变量对象
     pthread_cond_t    lock_;
 };
-
-
 }

@@ -24,7 +24,7 @@ Socket_Connector::~Socket_Connector()
 
 int Socket_Connector::connect(zce::Socket_Stream& new_stream,
                               const zce::Sockaddr_Base* remote_addr,
-                              zce::Time_Value& timeout,
+                              zce::time_value& timeout,
                               bool reuse_addr,
                               int protocol,
                               const Sockaddr_Base* local_addr)

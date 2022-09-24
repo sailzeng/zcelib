@@ -83,7 +83,7 @@ enum class LOGFILE_DEVIDE
 */
 namespace zce
 {
-class Log_File
+class log_file
 {
 protected:
 
@@ -94,9 +94,9 @@ protected:
 public:
 
     ///构造函数,
-    Log_File();
+    log_file();
     ///析构函数
-    virtual ~Log_File();
+    virtual ~log_file();
 
     /*!
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,

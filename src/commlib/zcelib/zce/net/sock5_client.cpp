@@ -23,7 +23,7 @@ const unsigned char SOCKS5_ATYP_IPV6 = 0x4;
 int socks5_initialize(ZCE_SOCKET handle,
                       const char* username,
                       const char* password,
-                      zce::Time_Value& timeout_tv)
+                      zce::time_value& timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
@@ -115,7 +115,7 @@ int socks5_connect_host(ZCE_SOCKET handle,
                         const sockaddr* host_addr,
                         int addr_len,
                         uint16_t host_port,
-                        zce::Time_Value& timeout_tv)
+                        zce::time_value& timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
@@ -202,7 +202,7 @@ int socks5_udp_associate(ZCE_SOCKET handle,
                          const sockaddr* bind_addr,
                          int addr_len,
                          sockaddr* udp_addr,
-                         zce::Time_Value& timeout_tv)
+                         zce::time_value& timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };

@@ -8,7 +8,7 @@
 namespace zce::aio
 {
 //!
-int Worker::initialize(size_t work_thread_num,
+int worker::initialize(size_t work_thread_num,
                        size_t work_queue_len)
 {
     worker_running_ = true;
@@ -16,7 +16,7 @@ int Worker::initialize(size_t work_thread_num,
     work_thread_ = new std::thread * [work_thread_num_];
     for (size_t i = 0; i < work_thread_num_; ++i)
     {
-        work_thread_[i] = new std::thread(&zce::aio::Worker::process_request,
+        work_thread_[i] = new std::thread(&zce::aio::worker::process_request,
                                           this);
     }
 
@@ -31,7 +31,7 @@ int Worker::initialize(size_t work_thread_num,
 }
 
 //!
-void Worker::terminate()
+void worker::terminate()
 {
     worker_running_ = false;
 
@@ -43,7 +43,7 @@ void Worker::terminate()
     delete[] work_thread_;
 }
 
-AIO_Atom* Worker::alloc_handle(AIO_TYPE aio_type)
+AIO_Atom* worker::alloc_handle(AIO_TYPE aio_type)
 {
     AIO_Atom* handle = nullptr;
     if (aio_type > AIO_TYPE::FS_BEGIN &&
@@ -80,7 +80,7 @@ AIO_Atom* Worker::alloc_handle(AIO_TYPE aio_type)
     return handle;
 }
 
-void Worker::free_handle(zce::aio::AIO_Atom* base)
+void worker::free_handle(zce::aio::AIO_Atom* base)
 {
     base->clear();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
@@ -113,20 +113,20 @@ void Worker::free_handle(zce::aio::AIO_Atom* base)
     }
 }
 
-bool Worker::request(AIO_Atom* base)
+bool worker::request(AIO_Atom* base)
 {
     return requst_queue_->try_enqueue(base);
 }
 
 //!处理请求
-void Worker::process_request()
+void worker::process_request()
 {
     size_t num_req = 0;
     bool go = false;
     do
     {
         AIO_Atom* base = nullptr;
-        zce::Time_Value tv(0, 2000);
+        zce::time_value tv(0, 2000);
         go = requst_queue_->dequeue_wait(base, tv);
         if (go)
         {
@@ -141,7 +141,7 @@ void Worker::process_request()
 }
 
 //!处理应答
-void Worker::process_response(size_t& num_rsp, zce::Time_Value* wait_time)
+void worker::process_response(size_t& num_rsp, zce::time_value* wait_time)
 {
     num_rsp = 0;
     bool go = false;
@@ -166,7 +166,7 @@ void Worker::process_response(size_t& num_rsp, zce::Time_Value* wait_time)
 }
 
 //!
-void Worker::process_aio(zce::aio::AIO_Atom* base)
+void worker::process_aio(zce::aio::AIO_Atom* base)
 {
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
@@ -200,7 +200,7 @@ void Worker::process_aio(zce::aio::AIO_Atom* base)
     response_queue_->enqueue(base);
 }
 //!在线程中处理文件
-void Worker::process_fs(zce::aio::FS_Atom* atom)
+void worker::process_fs(zce::aio::FS_Atom* atom)
 {
     switch (atom->aio_type_)
     {
@@ -262,7 +262,7 @@ void Worker::process_fs(zce::aio::FS_Atom* atom)
 }
 
 //!
-void Worker::process_dir(zce::aio::Dir_Atom* atom)
+void worker::process_dir(zce::aio::Dir_Atom* atom)
 {
     switch (atom->aio_type_)
     {
@@ -285,7 +285,7 @@ void Worker::process_dir(zce::aio::Dir_Atom* atom)
 }
 
 //在线程处理MySQL操作请求
-void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
+void worker::process_mysql(zce::aio::MySQL_Atom* atom)
 {
     switch (atom->aio_type_)
     {
@@ -324,7 +324,7 @@ void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
 }
 
 //在线程中处理Gat Host Addr请求
-void Worker::process_host(zce::aio::Host_Atom* atom)
+void worker::process_host(zce::aio::Host_Atom* atom)
 {
     switch (atom->aio_type_)
     {
@@ -350,7 +350,7 @@ void Worker::process_host(zce::aio::Host_Atom* atom)
 }
 
 //在线程中处理Socket请求
-void Worker::process_socket(zce::aio::Socket_Atom* atom)
+void worker::process_socket(zce::aio::Socket_Atom* atom)
 {
     ssize_t len = 0;
     switch (atom->aio_type_)

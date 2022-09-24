@@ -52,21 +52,20 @@ public:
     //尝试读取锁
     virtual bool try_lock_shared() noexcept;
     //!绝对时间
-    bool try_lock_shared_until(const zce::Time_Value& abs_time) noexcept override;
+    bool try_lock_shared_until(const zce::time_value& abs_time) noexcept override;
     //!相对时间
-    bool try_lock_shared_for(const zce::Time_Value& relative_time) noexcept override;
+    bool try_lock_shared_for(const zce::time_value& relative_time) noexcept override;
     //!解读锁
     void unlock_shared() noexcept override;
-
 
     //!写锁定
     void lock() noexcept;
     //!尝试读取锁
     bool try_lock() noexcept;
     //!写锁定超时，绝对时间
-    bool try_lock_until(const zce::Time_Value& abs_time) noexcept override;
+    bool try_lock_until(const zce::time_value& abs_time) noexcept override;
     //!写锁定超时，相对时间
-    bool try_lock_for(const zce::Time_Value& relative_time) noexcept override;
+    bool try_lock_for(const zce::time_value& relative_time) noexcept override;
     //!解写锁
     void unlock() noexcept override;
 

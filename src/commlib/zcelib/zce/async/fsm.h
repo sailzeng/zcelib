@@ -55,7 +55,7 @@ protected:
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const zce::Time_Value& now_time,
+    virtual void on_timeout(const zce::time_value& now_time,
                             bool& running) override;
 
     /*!

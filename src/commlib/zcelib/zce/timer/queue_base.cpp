@@ -63,7 +63,7 @@ int Timer_Queue::initialize(size_t num_timer_node,
     if (trigger_mode_ == TRIGGER_MODE::SYSTEM_CLOCK)
     {
         //得到一个时间长度，用于比较衡量
-        zce::Time_Value  now_time(zce::gettimeofday());
+        zce::time_value  now_time(zce::gettimeofday());
 
         //取得毫秒
         prev_trigger_msec_ = now_time.total_msec();
@@ -188,8 +188,8 @@ int Timer_Queue::cancel_timer(const zce::Timer_Handler* timer_hdl)
 //分配Timer Node
 int Timer_Queue::alloc_timernode(zce::Timer_Handler* timer_hdl,
                                  const void* action,
-                                 const zce::Time_Value& delay_time,
-                                 const zce::Time_Value& interval_time,
+                                 const zce::time_value& delay_time,
+                                 const zce::time_value& interval_time,
                                  int& time_node_id,
                                  ZCE_TIMER_NODE*& alloc_time_node)
 {
@@ -286,7 +286,7 @@ void Timer_Queue::calc_next_trigger(int time_node_id,
     ZCE_TIMER_NODE* prc_time_node = &(time_node_ary_[time_node_id]);
 
     //如果间隔时间为0，且这个定时器还没有触发过，already_trigger_ 判定其实是检查定时器是否被重新设置过
-    if (prc_time_node->interval_time_ == zce::Time_Value::ZERO_TIME_VALUE)
+    if (prc_time_node->interval_time_ == zce::time_value::ZERO_TIME_VALUE)
     {
         //
         continue_trigger = false;
@@ -333,7 +333,7 @@ int Timer_Queue::free_timernode(int time_node_id)
 }
 
 //得到最快将在多少时间后触发
-int Timer_Queue::get_first_timeout(zce::Time_Value* first_timeout)
+int Timer_Queue::get_first_timeout(zce::time_value* first_timeout)
 {
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
@@ -344,7 +344,7 @@ int Timer_Queue::get_first_timeout(zce::Time_Value* first_timeout)
         return -1;
     }
 
-    zce::Time_Value now_time(zce::gettimeofday());
+    zce::time_value now_time(zce::gettimeofday());
     uint64_t now_trigger_msec = 0;
 
     //触发模式
@@ -379,7 +379,7 @@ int Timer_Queue::get_first_timeout(zce::Time_Value* first_timeout)
 
 size_t Timer_Queue::expire()
 {
-    zce::Time_Value now_time(zce::gettimeofday());
+    zce::time_value now_time(zce::gettimeofday());
 
     uint64_t now_trigger_msec = 0;
 

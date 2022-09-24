@@ -43,7 +43,7 @@ public:
     inline ssize_t recvfrom(void* buf,
                             size_t len,
                             Sockaddr_Base* addr,
-                            zce::Time_Value* timeout_tv,
+                            zce::time_value* timeout_tv,
                             int flags = 0) const;
 
     //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
@@ -51,14 +51,14 @@ public:
     inline ssize_t sendto(const void* buf,
                           size_t len,
                           const Sockaddr_Base* addr,
-                          zce::Time_Value*   /*timeout_tv*/,
+                          zce::time_value*   /*timeout_tv*/,
                           int flags = 0) const;
 
     //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用SO_RCVTIMEO实现
     ssize_t recvfrom_timeout(void* buf,
                              size_t len,
                              Sockaddr_Base* addr,
-                             zce::Time_Value& timeout_tv,
+                             zce::time_value& timeout_tv,
                              int flags = 0) const;
 
     //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
@@ -66,7 +66,7 @@ public:
     ssize_t sendto_timeout(const void* buf,
                            size_t len,
                            const Sockaddr_Base* addr,
-                           zce::Time_Value&   /*timeout_tv*/,
+                           zce::time_value&   /*timeout_tv*/,
                            int flags = 0) const;
 };
 
@@ -103,7 +103,7 @@ inline ssize_t Socket_DataGram::sendto(const void* buf,
 inline ssize_t Socket_DataGram::recvfrom(void* buf,
                                          size_t len,
                                          Sockaddr_Base* from_addr,
-                                         zce::Time_Value* timeout_tv,
+                                         zce::time_value* timeout_tv,
                                          int flags)  const
 {
     return zce::recvfrom(socket_handle_,
@@ -120,7 +120,7 @@ inline ssize_t Socket_DataGram::recvfrom(void* buf,
 inline ssize_t Socket_DataGram::sendto(const void* buf,
                                        size_t len,
                                        const Sockaddr_Base* to_addr,
-                                       zce::Time_Value* timeout_tv,
+                                       zce::time_value* timeout_tv,
                                        int flags)  const
 {
     return zce::sendto(socket_handle_,

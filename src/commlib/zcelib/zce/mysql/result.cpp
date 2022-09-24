@@ -169,7 +169,7 @@ int result::field_data(const char* fname, char* pfdata) const
 }
 
 //
-int result::get_field(const char* fname, zce::mysql::Field& ffield) const
+int result::get_field(const char* fname, zce::mysql::field& ffield) const
 {
     //循环比较所有的列名,效率比较低下
     size_t fid = 0;

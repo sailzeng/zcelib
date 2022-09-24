@@ -58,17 +58,16 @@ private:
     virtual void unlock() noexcept
     {
     };
-    //!尝试锁定，直至等待时长结束，若成功获得锁则为 true ，否则为 false 
-    virtual bool try_lock_for(const zce::Time_Value& /*duration*/) noexcept
+    //!尝试锁定，直至等待时长结束，若成功获得锁则为 true ，否则为 false
+    virtual bool try_lock_for(const zce::time_value& /*duration*/) noexcept
     {
         return false;
     }
-    //!尝试锁定， 直至绝对时间点,若成功获得锁则为 true ，否则为 false 
-    virtual bool try_lock_until(const zce::Time_Value& /*abs_time*/) noexcept
+    //!尝试锁定， 直至绝对时间点,若成功获得锁则为 true ，否则为 false
+    virtual bool try_lock_until(const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
-
 
     //!读取锁
     virtual void lock_shared() noexcept
@@ -80,12 +79,12 @@ private:
         return false;
     }
     //!绝对时间,获取读取（共享）锁的，等待至绝对时间超时@param  abs_time 绝对时间
-    virtual bool try_lock_shared_until(const zce::Time_Value& /*abs_time*/) noexcept
+    virtual bool try_lock_shared_until(const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
     //!相对时间,获取读取（共享）锁的，等待至相对时间超时 @param  relative_time 相对时间
-    virtual bool try_lock_shared_for(const zce::Time_Value& /*relative_time*/) noexcept
+    virtual bool try_lock_shared_for(const zce::time_value& /*relative_time*/) noexcept
     {
         return false;
     }
@@ -120,12 +119,12 @@ public:
     {
         return false;
     }
-    virtual bool try_acquire_for(const zce::Time_Value& /*abs_time*/) noexcept
+    virtual bool try_acquire_for(const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
 
-    virtual bool try_acquire_until(const zce::Time_Value& /*abs_time*/) noexcept
+    virtual bool try_acquire_until(const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
@@ -156,13 +155,13 @@ private:
     }
     ///绝对时间超时的的等待，超时后解锁
     virtual bool wait_until(zce::Lock_Base* /*external_mutex*/,
-                            const zce::Time_Value& /*abs_time*/) noexcept
+                            const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
     ///相对时间的超时锁定等待，超时后，解锁
     virtual bool wait_for(zce::Lock_Base* /*external_mutex*/,
-                          const zce::Time_Value& /*relative_time*/) noexcept
+                          const zce::time_value& /*relative_time*/) noexcept
     {
         return false;
     }

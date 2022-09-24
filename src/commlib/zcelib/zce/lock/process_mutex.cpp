@@ -120,7 +120,7 @@ void Process_Mutex::unlock() noexcept
 }
 
 //绝对时间
-bool Process_Mutex::try_lock_until(const zce::Time_Value& abs_time) noexcept
+bool Process_Mutex::try_lock_until(const zce::time_value& abs_time) noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(lock_, abs_time);
@@ -135,7 +135,7 @@ bool Process_Mutex::try_lock_until(const zce::Time_Value& abs_time) noexcept
 }
 
 //相对时间
-bool Process_Mutex::try_lock_for(const zce::Time_Value& relative_time) noexcept
+bool Process_Mutex::try_lock_for(const zce::time_value& relative_time) noexcept
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);

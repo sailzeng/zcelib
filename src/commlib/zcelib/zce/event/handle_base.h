@@ -134,7 +134,7 @@ public:
     virtual zce::ZCE_Reactor* reactor(void) const;
 
     //超时处理，最后考虑再三，没有在反应器里面集成定时器的处理
-    //virtual int timer_timeout (const zce::Time_Value &tv, const void *arg = 0);
+    //virtual int timer_timeout (const zce::time_value &tv, const void *arg = 0);
 
 protected:
 

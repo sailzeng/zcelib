@@ -26,56 +26,56 @@ namespace zce
 * @brief      ZCELIB 里面的时间值，时间对象，
 *
 */
-class Time_Value
+class time_value
 {
 public:
 
     /*!
     * @brief      默认构造函数
     */
-    Time_Value();
+    time_value();
 
-    Time_Value(const Time_Value&) = default;
-    Time_Value(Time_Value&&) = default;
-    Time_Value& operator=(const Time_Value&) = default;
-    Time_Value& operator=(Time_Value&&) = default;
+    time_value(const time_value&) = default;
+    time_value(time_value&&) = default;
+    time_value& operator=(const time_value&) = default;
+    time_value& operator=(time_value&&) = default;
 
     /*!
     * @brief      析构函数
     */
-    ~Time_Value();
+    ~time_value();
 
     /*!
     * @brief      构造函数，用timeval
     * @param      time_data
     */
-    Time_Value(const timeval& time_data);
+    time_value(const timeval& time_data);
 
     /*!
     * @brief      构造函数，用::timespec
     * @param      timespec_val timespec表示时间
     */
-    Time_Value(const ::timespec& timespec_val);
+    time_value(const ::timespec& timespec_val);
 
     /*!
     * @brief      构造函数，几个时间数据数据
     * @param      sec   timeval 中秒数据
     * @param      usec  timeval中的微秒数据
     */
-    Time_Value(time_t sec, time_t usec);
+    time_value(time_t sec, time_t usec);
 
     /*!
     * @brief      构造函数，用time_t, usec被置为0
     * @param      sec
     */
-    Time_Value(time_t sec);
+    time_value(time_t sec);
 
     /*!
     * @brief      将CPP11的duration的数据结构转换得到timeval结构
     * @param      val  进行转换的参数
     */
     template<class Rep, class Period>
-    Time_Value(const std::chrono::duration<Rep, Period>& val)
+    time_value(const std::chrono::duration<Rep, Period>& val)
     {
         set(val);
     }
@@ -84,8 +84,8 @@ public:
     * @brief      构造函数，用CPP 11的一些time_point的值
     * @param      val CPP11的duration时间
     */
-    Time_Value(const std::chrono::system_clock::time_point& val);
-    Time_Value(const std::chrono::steady_clock::time_point& val);
+    time_value(const std::chrono::system_clock::time_point& val);
+    time_value(const std::chrono::steady_clock::time_point& val);
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -93,13 +93,13 @@ public:
     * @brief      构造函数，用LPFILETIME,FILETIME
     * @param      file_time
     */
-    Time_Value(LPFILETIME file_time);
+    time_value(LPFILETIME file_time);
 
     /*!
     * @brief      构造函数，用LPSYSTEMTIME,SYSTEMTIME
     * @param      system_time
     */
-    Time_Value(LPSYSTEMTIME system_time);
+    time_value(LPSYSTEMTIME system_time);
 
 #endif
 
@@ -292,45 +292,44 @@ public:
     void gettimeofday();
 
     /// 加上 @a tv 的时间
-    Time_Value& operator += (const Time_Value& tv);
+    time_value& operator += (const time_value& tv);
 
     /// 减去 @a tv的时间
-    Time_Value& operator -= (const Time_Value& tv);
+    time_value& operator -= (const time_value& tv);
 
     /// 返回true，如果 < @a tv 的时间
-    bool operator < (const Time_Value& tv);
+    bool operator < (const time_value& tv);
     /// 返回true，如果 > @a tv 的时间
-    bool operator > (const Time_Value& tv);
+    bool operator > (const time_value& tv);
 
     /// 返回true，如果 <= @a tv 的时间
-    bool operator <= (const Time_Value& tv);
+    bool operator <= (const time_value& tv);
 
     /// 返回true，如果 >= @a tv 的时间
-    bool operator >= (const Time_Value& tv);
+    bool operator >= (const time_value& tv);
 
     /// 返回true，如果 == @a tv 的时间
-    bool operator == (const Time_Value& tv);
+    bool operator == (const time_value& tv);
 
     /// 返回true，如果 != @a tv 的时间
-    bool operator != (const Time_Value& tv);
+    bool operator != (const time_value& tv);
 
-    /// 将两个 Time_Value 对象 @a tv1 和 @a tv2 加起来，返回结果，
-    friend Time_Value operator + (const Time_Value& tv1,
-                                  const Time_Value& tv2);
+    /// 将两个 time_value 对象 @a tv1 和 @a tv2 加起来，返回结果，
+    friend time_value operator + (const time_value& tv1,
+                                  const time_value& tv2);
 
-    /// 将两个 Time_Value 对象 @a tv1 和 @a tv2 相减，返回结果，
-    friend Time_Value operator - (const Time_Value& tv1,
-                                  const Time_Value& tv2);
-
-protected:
-
-    ///底层采用timeval记录时间，可能会有一些进度误差，但我实在想不出来，服务器为什么要精细超过usec
-    timeval                    zce_time_value_;
+    /// 将两个 time_value 对象 @a tv1 和 @a tv2 相减，返回结果，
+    friend time_value operator - (const time_value& tv1,
+                                  const time_value& tv2);
 
 public:
     ///为0的时间
-    static const Time_Value    ZERO_TIME_VALUE;
+    static const time_value    ZERO_TIME_VALUE;
     ///最大能表示的时间
-    static const Time_Value    MAX_TIME_VALUE;
+    static const time_value    MAX_TIME_VALUE;
+
+protected:
+    ///底层采用timeval记录时间，可能会有一些进度误差，但我实在想不出来，服务器为什么要精细超过usec
+    timeval                    zce_time_value_;
 };
 }

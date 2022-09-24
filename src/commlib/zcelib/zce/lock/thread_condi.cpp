@@ -10,7 +10,7 @@ namespace zce
 {
 //---------------------------------------------------------------------------------------
 //为Thread_Light_Mutex做的特化
-// 
+//
 Thread_Condition::Thread_Condition()
 {
     int ret = 0;
@@ -51,7 +51,7 @@ void Thread_Condition::wait(Thread_Light_Mutex* external_mutex)noexcept
 
 //绝对时间超时的的等待，超时后解锁
 bool Thread_Condition::wait_until(Thread_Light_Mutex* external_mutex,
-                                  const zce::Time_Value& abs_time) noexcept
+                                  const zce::time_value& abs_time) noexcept
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -67,9 +67,9 @@ bool Thread_Condition::wait_until(Thread_Light_Mutex* external_mutex,
 
 //相对时间的超时锁定等待，超时后，解锁
 bool Thread_Condition::wait_for(Thread_Light_Mutex* external_mutex,
-                                const zce::Time_Value& relative_time) noexcept
+                                const zce::time_value& relative_time) noexcept
 {
-    zce::Time_Value abs_time(zce::gettimeofday());
+    zce::time_value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return wait_until(external_mutex, abs_time);
 }
@@ -136,10 +136,9 @@ void Thread_Recursive_Condition::wait(Thread_Recursive_Mutex* external_mutex) no
     }
 }
 
-
 //绝对时间超时的的等待，超时后解锁
 bool Thread_Recursive_Condition::wait_until(Thread_Recursive_Mutex* external_mutex,
-                                            const zce::Time_Value& abs_time) noexcept
+                                            const zce::time_value& abs_time) noexcept
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -154,9 +153,9 @@ bool Thread_Recursive_Condition::wait_until(Thread_Recursive_Mutex* external_mut
 
 //相对时间的超时锁定等待，超时后，解锁
 bool Thread_Recursive_Condition::wait_for(Thread_Recursive_Mutex* external_mutex,
-                                          const zce::Time_Value& relative_time) noexcept
+                                          const zce::time_value& relative_time) noexcept
 {
-    zce::Time_Value abs_time(zce::gettimeofday());
+    zce::time_value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return wait_until(external_mutex, abs_time);
 }

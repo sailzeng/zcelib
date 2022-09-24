@@ -195,7 +195,7 @@ int Select_Reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_
 }
 
 //事件触发
-int Select_Reactor::handle_events(zce::Time_Value* max_wait_time,
+int Select_Reactor::handle_events(zce::time_value* max_wait_time,
                                   size_t* size_event)
 {
     //

@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "zce/logger/priority.h"
@@ -6,11 +5,11 @@
 namespace zce
 {
 //==========================================================================================================
-class Log_Printf
+class log_printf
 {
 public:
-    Log_Printf() = default;
-    ~Log_Printf();
+    log_printf() = default;
+    ~log_printf();
 
     //输出va_list的参数信息
     void vwrite_logmsg(const char* str_format,
@@ -29,13 +28,13 @@ public:
     zce::LOG_PRIORITY set_log_priority(zce::LOG_PRIORITY outlevel);
 
     //!
-    static Log_Printf* instance();
+    static log_printf* instance();
     //!
     void clean_instance();
 
 protected:
     //!实例指针
-    static Log_Printf* instance_;
+    static log_printf* instance_;
 
 protected:
     //!打印输出的日志
@@ -49,9 +48,9 @@ protected:
 };
 }
 
-#define ZPRINT_ENABLE           zce::Log_Printf::instance()->enable_output(true)
-#define ZPRINT_DISABLE          zce::Log_Printf::instance()->enable_output(false)
-#define ZPRINT_ENABLE_FILEOUT   zce::Log_Printf::instance()->enable_fileout(true)
-#define ZPRINT_DISABLE_FILEOUT  zce::Log_Printf::instance()->enable_fileout(false)
-#define ZPRINT_SET_OUTLEVEL     zce::Log_Printf::instance()->set_log_priority
-#define ZPRINT                  zce::Log_Printf::instance()->write_logmsg
+#define ZPRINT_ENABLE           zce::log_printf::instance()->enable_output(true)
+#define ZPRINT_DISABLE          zce::log_printf::instance()->enable_output(false)
+#define ZPRINT_ENABLE_FILEOUT   zce::log_printf::instance()->enable_fileout(true)
+#define ZPRINT_DISABLE_FILEOUT  zce::log_printf::instance()->enable_fileout(false)
+#define ZPRINT_SET_OUTLEVEL     zce::log_printf::instance()->set_log_priority
+#define ZPRINT                  zce::log_printf::instance()->write_logmsg

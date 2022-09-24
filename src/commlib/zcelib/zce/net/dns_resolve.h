@@ -69,7 +69,7 @@ public:
                int family,
                struct sockaddr addrs[],
                size_t *addrs_num,
-               zce::Time_Value* timeout_tv);
+               zce::time_value* timeout_tv);
 
 protected:
 

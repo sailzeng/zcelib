@@ -7,11 +7,11 @@
 namespace zce
 {
 //分割符,
-char PropertyTree::SEPARATOR_STRING[2] = ".";
+char propertytree::SEPARATOR_STRING[2] = ".";
 
 //得到子树节点，
-int PropertyTree::path_get_childiter(const std::string& path_str,
-                                     PropertyTree::child_iterator& child_iter)
+int propertytree::path_get_childiter(const std::string& path_str,
+                                     propertytree::child_iterator& child_iter)
 {
     //找到
     size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
@@ -28,7 +28,7 @@ int PropertyTree::path_get_childiter(const std::string& path_str,
         return -1;
     }
 
-    PropertyTree* child_tree = &(iter_tmp->second);
+    propertytree* child_tree = &(iter_tmp->second);
 
     //还有路径，进行递归查询
     if (str_pos != std::string::npos)
@@ -45,8 +45,8 @@ int PropertyTree::path_get_childiter(const std::string& path_str,
 }
 
 //得到子树节点，const
-int PropertyTree::path_get_childiter(const std::string& path_str,
-                                     PropertyTree::const_child_iterator& child_iter) const
+int propertytree::path_get_childiter(const std::string& path_str,
+                                     propertytree::const_child_iterator& child_iter) const
 {
     //找到
     size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
@@ -62,7 +62,7 @@ int PropertyTree::path_get_childiter(const std::string& path_str,
         return -1;
     }
 
-    const PropertyTree* child_tree = &(iter_tmp->second);
+    const propertytree* child_tree = &(iter_tmp->second);
 
     //还有路径，进行递归查询
     if (str_pos != std::string::npos)
@@ -79,13 +79,13 @@ int PropertyTree::path_get_childiter(const std::string& path_str,
 }
 
 //取得叶子节点的迭代器
-int PropertyTree::path_get_leafiter(const std::string& path_str,
+int propertytree::path_get_leafiter(const std::string& path_str,
                                     const std::string& key_str,
-                                    PropertyTree::leaf_iterator& leaf_iter)
+                                    propertytree::leaf_iterator& leaf_iter)
 {
     int ret = 0;
 
-    PropertyTree::child_iterator child_iter;
+    propertytree::child_iterator child_iter;
     ret = path_get_childiter(path_str, child_iter);
     if (0 != ret)
     {
@@ -96,7 +96,7 @@ int PropertyTree::path_get_leafiter(const std::string& path_str,
         return ret;
     }
 
-    PropertyTree* child_note = &(child_iter->second);
+    propertytree* child_note = &(child_iter->second);
     if (key_str.length() != 0)
     {
         leaf_iter = child_note->leaf_node_.find(key_str);
@@ -118,20 +118,20 @@ int PropertyTree::path_get_leafiter(const std::string& path_str,
 }
 
 //同上，只是const的
-int PropertyTree::path_get_leafiter(const std::string& path_str,
+int propertytree::path_get_leafiter(const std::string& path_str,
                                     const std::string& key_str,
-                                    PropertyTree::const_leaf_iterator& leaf_iter) const
+                                    propertytree::const_leaf_iterator& leaf_iter) const
 {
     int ret = 0;
 
-    PropertyTree::const_child_iterator child_iter;
+    propertytree::const_child_iterator child_iter;
     ret = path_get_childiter(path_str, child_iter);
     if (0 != ret)
     {
         return ret;
     }
 
-    const PropertyTree* child_note = &(child_iter->second);
+    const propertytree* child_note = &(child_iter->second);
     if (key_str.length() != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
@@ -158,10 +158,10 @@ int PropertyTree::path_get_leafiter(const std::string& path_str,
 }
 
 //得到child node的指针
-int PropertyTree::path_get_childptr(const std::string& path_str,
-                                    PropertyTree*& child_ptr)
+int propertytree::path_get_childptr(const std::string& path_str,
+                                    propertytree*& child_ptr)
 {
-    PropertyTree::child_iterator child_iter;
+    propertytree::child_iterator child_iter;
     int ret = path_get_childiter(path_str, child_iter);
     if (0 != ret)
     {
@@ -172,10 +172,10 @@ int PropertyTree::path_get_childptr(const std::string& path_str,
 }
 
 //同上，只是const的
-int PropertyTree::path_get_childptr(const std::string& path_str,
-                                    const PropertyTree*& child_ptr) const
+int propertytree::path_get_childptr(const std::string& path_str,
+                                    const propertytree*& child_ptr) const
 {
-    PropertyTree::const_child_iterator child_iter;
+    propertytree::const_child_iterator child_iter;
     int ret = path_get_childiter(path_str, child_iter);
     if (0 != ret)
     {
@@ -186,48 +186,48 @@ int PropertyTree::path_get_childptr(const std::string& path_str,
 }
 
 ///得到（当前node）叶子节点的begin 位置的迭代器
-PropertyTree::leaf_iterator PropertyTree::leaf_begin()
+propertytree::leaf_iterator propertytree::leaf_begin()
 {
     return leaf_node_.begin();
 }
-PropertyTree::const_leaf_iterator PropertyTree::leaf_cbegin() const
+propertytree::const_leaf_iterator propertytree::leaf_cbegin() const
 {
     return leaf_node_.cbegin();
 }
 ///得到（当前node）叶子节点的end 位置的迭代器
-PropertyTree::leaf_iterator PropertyTree::leaf_end()
+propertytree::leaf_iterator propertytree::leaf_end()
 {
     return leaf_node_.end();
 }
-PropertyTree::const_leaf_iterator PropertyTree::leaf_cend() const
+propertytree::const_leaf_iterator propertytree::leaf_cend() const
 {
     return leaf_node_.cend();
 }
 
 //得到（当前node）子树节点的begin 位置的迭代器
-PropertyTree::child_iterator PropertyTree::child_begin()
+propertytree::child_iterator propertytree::child_begin()
 {
     return child_node_.begin();
 }
-PropertyTree::const_child_iterator PropertyTree::child_cbegin() const
+propertytree::const_child_iterator propertytree::child_cbegin() const
 {
     return child_node_.cbegin();
 }
 //得到（当前node）子树节点的begin 位置的迭代器
-PropertyTree::child_iterator PropertyTree::child_end()
+propertytree::child_iterator propertytree::child_end()
 {
     return child_node_.end();
 }
-PropertyTree::const_child_iterator PropertyTree::child_cend() const
+propertytree::const_child_iterator propertytree::child_cend() const
 {
     return child_node_.cend();
 }
 
 //增加一个新的CHILD,当然里面全部数据为NULL
-void PropertyTree::add_child(const std::string& key_str,
-                             PropertyTree*& new_child_note)
+void propertytree::add_child(const std::string& key_str,
+                             propertytree*& new_child_note)
 {
-    PropertyTree null_node;
+    propertytree null_node;
     CHILDREN_NOTE_TYPE::iterator iter =
         this->child_node_.insert(std::make_pair(key_str, null_node));
 
@@ -236,12 +236,12 @@ void PropertyTree::add_child(const std::string& key_str,
 }
 
 //设置分割符号
-void PropertyTree::set_separator(char separator_char)
+void propertytree::set_separator(char separator_char)
 {
     SEPARATOR_STRING[0] = separator_char;
 }
 
-void PropertyTree::clear()
+void propertytree::clear()
 {
     leaf_node_.clear();
     child_node_.clear();

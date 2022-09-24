@@ -27,7 +27,7 @@ namespace zce
 {
 /*!
 * @brief      配置文件读取后存放的树
-*             将配置文件读取工具读取数据内容后都生成放入ZCE_Conf_PropertyTree中，
+*             将配置文件读取工具读取数据内容后都生成放入zce::propertytree中，
 *             内部有2棵树，
 *             一棵用于存放子树，存放name=>sub tree，
 *             一棵用于存放叶子节点。存放属性key=>value,XML文件的name=>value也存放
@@ -36,7 +36,7 @@ namespace zce
 * @note       因为有2棵树，所以内部也有两个迭代器，
 *
 */
-class PropertyTree
+class propertytree
 {
 protected:
 
@@ -48,15 +48,15 @@ protected:
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
-    typedef std::multimap<std::string, zce::PropertyTree > CHILDREN_NOTE_TYPE;
+    typedef std::multimap<std::string, zce::propertytree > CHILDREN_NOTE_TYPE;
     typedef CHILDREN_NOTE_TYPE::iterator child_iterator;
     typedef CHILDREN_NOTE_TYPE::const_iterator const_child_iterator;
     //
 public:
 
     //!构造函数
-    PropertyTree() = default;
-    ~PropertyTree() = default;
+    propertytree() = default;
+    ~propertytree() = default;
 
     /*!
     * @brief      根据路径得到一个CHILD 子树节点的迭代器
@@ -88,10 +88,10 @@ public:
 
     ///得到path对应的那个child note的指针
     int path_get_childptr(const std::string& path_str,
-                          zce::PropertyTree*& child_ptr);
+                          zce::propertytree*& child_ptr);
     ///同上，只是const的
     int path_get_childptr(const std::string& path_str,
-                          const zce::PropertyTree*& child_ptr) const;
+                          const zce::propertytree*& child_ptr) const;
 
     ///得到（当前node）叶子节点的begin 位置的迭代器
     leaf_iterator leaf_begin();
@@ -109,7 +109,7 @@ public:
 
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
-    * @tparam     val_type 被特化成 zce::Sockaddr_In，Sockaddr_In6，zce::Time_Value
+    * @tparam     val_type 被特化成 zce::Sockaddr_In，Sockaddr_In6，zce::time_value
     *             int32_t ,int64_t,std::string, 等。
     * @return     int      是否正常的读取倒了配置
     * @param      path_str 读取的路径，比如A1.B2.C3.D4，每个点标示一层
@@ -121,7 +121,7 @@ public:
                       const std::string& key_str,
                       val_type& val) const
     {
-        PropertyTree::const_leaf_iterator leaf_iter;
+        propertytree::const_leaf_iterator leaf_iter;
         int ret = path_get_leafiter(path_str, key_str, leaf_iter);
         if (0 != ret)
         {
@@ -179,7 +179,7 @@ public:
 
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
     void add_child(const std::string& key_str,
-                   zce::PropertyTree*& new_child_note);
+                   zce::propertytree*& new_child_note);
 
     ///清理
     void clear();

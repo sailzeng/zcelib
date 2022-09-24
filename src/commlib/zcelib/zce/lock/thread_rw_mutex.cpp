@@ -71,7 +71,7 @@ bool Thread_RW_Mutex::try_lock_shared() noexcept
 }
 
 //绝对时间
-bool Thread_RW_Mutex::try_lock_shared_until(const zce::Time_Value& abs_time) noexcept
+bool Thread_RW_Mutex::try_lock_shared_until(const zce::time_value& abs_time) noexcept
 {
     int ret = 0;
 
@@ -87,9 +87,9 @@ bool Thread_RW_Mutex::try_lock_shared_until(const zce::Time_Value& abs_time) noe
     return true;
 }
 //相对时间
-bool Thread_RW_Mutex::try_lock_shared_for(const zce::Time_Value& relative_time) noexcept
+bool Thread_RW_Mutex::try_lock_shared_for(const zce::time_value& relative_time) noexcept
 {
-    zce::Time_Value abs_time(zce::gettimeofday());
+    zce::time_value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return try_lock_shared_until(abs_time);
 }
@@ -136,7 +136,7 @@ bool Thread_RW_Mutex::try_lock() noexcept
 }
 
 //写锁定超时，绝对时间
-bool Thread_RW_Mutex::try_lock_until(const zce::Time_Value& abs_time) noexcept
+bool Thread_RW_Mutex::try_lock_until(const zce::time_value& abs_time) noexcept
 {
     int ret = 0;
 
@@ -152,9 +152,9 @@ bool Thread_RW_Mutex::try_lock_until(const zce::Time_Value& abs_time) noexcept
 }
 
 //写锁定超时，相对时间
-bool Thread_RW_Mutex::try_lock_for(const zce::Time_Value& relative_time) noexcept
+bool Thread_RW_Mutex::try_lock_for(const zce::time_value& relative_time) noexcept
 {
-    zce::Time_Value abs_time(zce::gettimeofday());
+    zce::time_value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return try_lock_until(abs_time);
 }
@@ -172,8 +172,6 @@ void Thread_RW_Mutex::unlock() noexcept
         return;
     }
 }
-
-
 
 //取出内部的锁的指针
 pthread_rwlock_t* Thread_RW_Mutex::get_lock()

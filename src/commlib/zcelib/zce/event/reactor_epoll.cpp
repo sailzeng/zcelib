@@ -235,7 +235,7 @@ int Epoll_Reactor::schedule_wakeup(zce::Event_Handler* event_handler, int event_
 }
 
 //时间触发
-int Epoll_Reactor::handle_events(zce::Time_Value* time_out, size_t* size_event)
+int Epoll_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
 {
     //默认一直阻塞
     int msec_timeout = -1;

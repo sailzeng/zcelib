@@ -167,7 +167,7 @@ int DNS_Resolve::answer(uint16_t *tid,
                         int family,
                         struct sockaddr addrs[],
                         size_t *addrs_num,
-                        zce::Time_Value* timeout_tv)
+                        zce::time_value* timeout_tv)
 {
     size_t len = DNS_PACKET_MAX_LEN;
     Sockaddr_Any recv_addr;

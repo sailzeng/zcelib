@@ -44,7 +44,7 @@ protected:
 public:
 
     //超时触发
-    virtual int timer_timeout(const zce::Time_Value& now_timenow_time,
+    virtual int timer_timeout(const zce::time_value& now_timenow_time,
                               const void* act = 0) = 0;
     //定时器关闭
     virtual int timer_close();

@@ -307,9 +307,6 @@
     <ClCompile Include="zce\async\lua_thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\rudp\rudp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\net\dns_resolve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -335,6 +332,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\script\javascript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\rudp\base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\rudp\peer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\rudp\client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\rudp\server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -735,9 +744,6 @@
     <ClInclude Include="zce\async\lua_thread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\rudp\rudp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\lockfree\ptr_ring.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -781,6 +787,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\script\javascript.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\rudp\base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\rudp\peer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\rudp\client.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\rudp\server.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

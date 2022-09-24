@@ -66,11 +66,10 @@ void Async_LuaThead::on_run(bool first_run, bool& continue_run)
             ZCE_ASSERT_ALL(false);
         }
     }
-
 }
 
 //调用协程
-void Async_LuaThead::on_timeout(const zce::Time_Value& /*now_time*/,
+void Async_LuaThead::on_timeout(const zce::time_value& /*now_time*/,
                                 bool& running)
 {
     running = false;

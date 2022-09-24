@@ -20,7 +20,6 @@ Async_FSM::~Async_FSM()
 //状态机运行的代码，这只是一个参考示例
 void Async_FSM::on_run(bool first_run, bool& running)
 {
-
     enum
     {
         //开始
@@ -64,7 +63,7 @@ void Async_FSM::on_run(bool first_run, bool& running)
 }
 
 //超时处理
-void Async_FSM::on_timeout(const zce::Time_Value& now_time,
+void Async_FSM::on_timeout(const zce::time_value& now_time,
                            bool& continue_run)
 {
     char time_string[64 + 1];
