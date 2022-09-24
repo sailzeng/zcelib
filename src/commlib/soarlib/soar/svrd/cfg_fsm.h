@@ -68,7 +68,7 @@ public:
     FRAMEWORK_CONFIG framework_config_;
 
     ///
-    zce::PropertyTree framework_ptree_;
+    zce::propertytree framework_ptree_;
 };
 
 #endif //SOARING_LIB_SERVER_CONFIG_TRANS_H_

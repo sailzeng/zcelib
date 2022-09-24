@@ -90,14 +90,14 @@ public:
     template<class T2>
     int receive_svc_msg(uint32_t cmd,
                         T2& msg,
-                        zce::Time_Value* time_wait = NULL);
+                        zce::time_value* time_wait = NULL);
 
     //发送和接收数据，一起一锅搞掂的方式
     template< class T1, class T2>
     int send_recv_msg(unsigned int snd_cmd,
                       uint32_t user_id,
                       const T1& send_info,
-                      zce::Time_Value* time_wait,
+                      zce::time_value* time_wait,
                       bool if_recv,
                       unsigned int rcv_cmd,
                       T2& recv_info,
@@ -109,7 +109,7 @@ public:
 template<class T2>
 int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
                                            T2& msg,
-                                           zce::Time_Value* time_wait)
+                                           zce::time_value* time_wait)
 {
     int ret = 0;
     ssize_t socket_ret = 0;
@@ -255,7 +255,7 @@ template< class T1, class T2>
 int Lolo_SendRecv_Package::send_recv_msg(unsigned int snd_cmd,
                                          uint32_t user_id,
                                          const T1& send_info,
-                                         zce::Time_Value* time_wait,
+                                         zce::time_value* time_wait,
                                          bool if_recv,
                                          unsigned int rcv_cmd,
                                          T2& recv_info,

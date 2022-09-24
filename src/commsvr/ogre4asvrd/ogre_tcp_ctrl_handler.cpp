@@ -137,8 +137,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
     //如果配置了超时出来,N秒必须收到一个包
     if (accept_timeout_ > 0 || receive_timeout_ > 0)
     {
-        zce::Time_Value delay(0, 0);
-        zce::Time_Value interval(0, 0);
+        zce::time_value delay(0, 0);
+        zce::time_value interval(0, 0);
 
         delay.sec(accept_timeout_);
         interval.sec(receive_timeout_);
@@ -334,7 +334,7 @@ int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
 }
 
 //定时触发
-int Ogre_TCP_Svc_Handler::timer_timeout(const zce::Time_Value&/*time*/, const void* arg)
+int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const void* arg)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];

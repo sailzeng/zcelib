@@ -102,7 +102,6 @@ public:
 
     //----------------------------------------------------------------------------------------------------------
 
-
 public:
 
     /*!
@@ -165,14 +164,13 @@ public:
     //这个命令是否是锁定的命令
     bool is_onlyone_cmd(uint32_t cmd);
 
-
     //得到一个SvrInfo
     const soar::SERVICES_INFO* self_svc_info();
     //得到一个SvrID
     const soar::SERVICES_ID* self_svc_id();
 
     //打开Trans统计信息，得到一个当前时钟
-    void enable_trans_statistics(const zce::Time_Value* stat_clock);
+    void enable_trans_statistics(const zce::time_value* stat_clock);
 
     //!得到frame信息
     int get_process_frame(const soar::Zerg_Frame*& zerg_frame);
@@ -275,7 +273,7 @@ protected:
     soar::Svrd_BusPipe* zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
-    const zce::Time_Value* statistics_clock_ = nullptr;
+    const zce::time_value* statistics_clock_ = nullptr;
 
     //发送的缓冲区
     soar::Zerg_Frame* trans_send_buffer_ = nullptr;
@@ -284,7 +282,7 @@ protected:
 
     //! fake数据缓冲区
     soar::Zerg_Frame* fake_recv_buffer_ = nullptr;
-    //! 
+    //!
     soar::Zerg_Frame* process_frame_ = nullptr;
 
     //内部FRAME分配器

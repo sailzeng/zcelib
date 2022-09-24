@@ -93,8 +93,8 @@ int Ogre_Service_App::app_run()
     //microsecond
     const int INTERVAL_MACRO_SECOND = 10000;
 
-    zce::Time_Value sleeptime(0, INTERVAL_MACRO_SECOND);
-    zce::Time_Value interval(0, INTERVAL_MACRO_SECOND);
+    zce::time_value sleeptime(0, INTERVAL_MACRO_SECOND);
+    zce::time_value interval(0, INTERVAL_MACRO_SECOND);
 
     for (; app_run_;)
     {

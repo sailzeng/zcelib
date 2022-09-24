@@ -3,7 +3,7 @@
 //
 int test_conf_xml(int  /*argc*/, char* /*argv*/[])
 {
-    zce::PropertyTree pt_tree;
+    zce::propertytree pt_tree;
 
     int ret = zce::cfg::read_xml("conf/test_0002.xml", &pt_tree);
     if (ret != 0)
@@ -23,7 +23,7 @@ int test_conf_xml(int  /*argc*/, char* /*argv*/[])
 
 int test_conf_ini(int  /*argc*/, char* /*argv*/[])
 {
-    zce::PropertyTree pt_tree;
+    zce::propertytree pt_tree;
 
     int ret = zce::cfg::read_ini("conf/test_0001.ini", &pt_tree);
     if (ret != 0)

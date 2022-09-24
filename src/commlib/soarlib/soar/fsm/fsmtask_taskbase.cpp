@@ -83,7 +83,7 @@ int FSMTask_TaskBase::svc(void)
             //不忙的时候，可以让他等待在队列上
             else
             {
-                zce::Time_Value tv(0, 1000000);
+                zce::time_value tv(0, 1000000);
                 ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame, tv);
             }
 

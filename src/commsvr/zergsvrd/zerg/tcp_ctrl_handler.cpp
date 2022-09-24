@@ -189,8 +189,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
 
     //如果配置了超时出来,N秒必须收到一个包
 
-    zce::Time_Value delay(0, 0);
-    zce::Time_Value interval(0, 0);
+    zce::time_value delay(0, 0);
+    zce::time_value interval(0, 0);
 
     //
     (accepted_timeout_ > 0) ? delay.sec(accepted_timeout_) : delay.sec(STAT_TIMER_INTERVAL_SEC);
@@ -288,8 +288,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
 
     ++num_connect_peer_;
 
-    zce::Time_Value delay(STAT_TIMER_INTERVAL_SEC, 0);
-    zce::Time_Value interval(STAT_TIMER_INTERVAL_SEC, 0);
+    zce::time_value delay(STAT_TIMER_INTERVAL_SEC, 0);
+    zce::time_value interval(STAT_TIMER_INTERVAL_SEC, 0);
 
     timeout_time_id_ = timer_queue()->schedule_timer(this, &TCPCTRL_TIME_ID[0], delay, interval);
 
@@ -516,7 +516,7 @@ int TCP_Svc_Handler::handle_output()
 }
 
 //定时器触发
-int TCP_Svc_Handler::timer_timeout(const zce::Time_Value& now_time, const void* arg)
+int TCP_Svc_Handler::timer_timeout(const zce::time_value& now_time, const void* arg)
 {
     const int timeid = *(static_cast<const int*>(arg));
     const size_t IP_ADDR_LEN = 32;

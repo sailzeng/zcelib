@@ -8,7 +8,7 @@
 
 namespace soar
 {
-zce::Time_Value Server_Timer::now_time_ = zce::gettimeofday();
+zce::time_value Server_Timer::now_time_ = zce::gettimeofday();
 
 //定时器ID,避免New传递,回收
 const int Server_Timer::SERVER_TIMER_ID[] =
@@ -39,7 +39,7 @@ int Server_Timer::initialize(zce::Timer_Queue* queue)
 
     timer_queue()->schedule_timer(this,
                                   &(SERVER_TIMER_ID[0]),
-                                  zce::Time_Value::ZERO_TIME_VALUE,
+                                  zce::time_value::ZERO_TIME_VALUE,
                                   heart_precision_);
 
     //根据设置把这些定时器也开启
@@ -54,7 +54,7 @@ int Server_Timer::initialize(zce::Timer_Queue* queue)
 }
 
 //超时处理
-int Server_Timer::timer_timeout(const zce::Time_Value& now_time,
+int Server_Timer::timer_timeout(const zce::time_value& now_time,
                                 const void* act)
 {
     ZCE_UNUSED_ARG(act);
@@ -85,7 +85,7 @@ int Server_Timer::timer_close()
 }
 
 // 检查监控是否超时
-void Server_Timer::check_monitor(const zce::Time_Value& now_time)
+void Server_Timer::check_monitor(const zce::time_value& now_time)
 {
     time_t now_sec = now_time.sec();
 
@@ -149,13 +149,13 @@ void Server_Timer::report_status()
 }
 
 //设置心跳定时器的进度，默认是0.5s一次，如果觉得不够，在initialize前重新设置
-void Server_Timer::set_heart_precision(const zce::Time_Value& precision)
+void Server_Timer::set_heart_precision(const zce::time_value& precision)
 {
     heart_precision_ = precision;
 }
 
 //增加一个APP的定时器
-void Server_Timer::add_app_timer(const zce::Time_Value& interval, const void* act)
+void Server_Timer::add_app_timer(const zce::time_value& interval, const void* act)
 {
     ZCE_ASSERT(zan_timer_num_ + 1 <= MAX_APP_TIMER_NUMBER);
 

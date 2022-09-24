@@ -21,13 +21,12 @@ void on_readfile(zce::aio::AIO_Atom* ahdl)
         std::cout << "context:" << std::endl;
         std::cout << fhdl->read_bufs_ << std::endl;
     }
-
 }
 
 int test_aio1(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    zce::aio::Worker aio_worker;
+    zce::aio::worker aio_worker;
     ret = aio_worker.initialize(5, 2048);
     if (ret)
     {
@@ -56,18 +55,16 @@ int test_aio1(int /*argc*/, char* /*argv*/[])
     do
     {
         size_t num = 0;
-        zce::Time_Value tv(1, 0);
+        zce::time_value tv(1, 0);
         aio_worker.process_response(num, &tv);
         if (num > 0)
         {
             count += num;
         }
-
     } while (count < 2);
     aio_worker.terminate();
     return 0;
 }
-
 
 template <typename T>
 struct coro_ret
@@ -155,13 +152,10 @@ struct coro_ret
         //返回值
         T return_data_;
     };
-
-
 };
 
-coro_ret<int> coroutine_aio(zce::aio::Worker* worker)
+coro_ret<int> coroutine_aio(zce::aio::worker* worker)
 {
-
     char read_buf[1024];
     std::cout << "Coroutine co_await co_read_file" << std::endl;
     auto r_ret = co_await zce::aio::co_read_file(worker,
@@ -193,7 +187,7 @@ coro_ret<int> coroutine_aio(zce::aio::Worker* worker)
 int test_aio3(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
-    zce::aio::Worker aio_worker;
+    zce::aio::worker aio_worker;
     ret = aio_worker.initialize(5, 2048);
     if (ret)
     {
@@ -211,7 +205,7 @@ int test_aio3(int /*argc*/, char* /*argv*/[])
     do
     {
         size_t num = 0;
-        zce::Time_Value tv(1, 0);
+        zce::time_value tv(1, 0);
         aio_worker.process_response(num, &tv);
         if (num > 0)
         {
@@ -219,7 +213,6 @@ int test_aio3(int /*argc*/, char* /*argv*/[])
         }
         std::cout << "coroutine done ?:" <<
             (c_r.done() ? "true" : "false") << std::endl;
-
     } while (count < 2);
     aio_worker.terminate();
     return 0;

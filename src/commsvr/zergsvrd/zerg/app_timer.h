@@ -17,7 +17,7 @@ protected:
     ~App_Timer();
 
     ///定时器触发
-    virtual int timer_timeout(const zce::Time_Value& time, const void* arg);
+    virtual int timer_timeout(const zce::time_value& time, const void* arg);
 
 public:
 

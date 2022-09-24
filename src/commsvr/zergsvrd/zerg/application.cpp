@@ -159,7 +159,7 @@ int Zerg_App::app_run()
     zce::ZCE_Reactor* preactor = zce::ZCE_Reactor::instance();
     zce::Timer_Queue* p_timer_queue = zce::Timer_Queue::instance();
 
-    zce::Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
+    zce::time_value run_interval(0, IDLE_REACTOR_WAIT_USEC);
 
     for (size_t i = 0; app_run_; ++i)
     {

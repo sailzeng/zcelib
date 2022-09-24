@@ -113,7 +113,7 @@ int Ogre_Server_Config::read_cfgfile()
     // 未指定通讯服务器配置
     ogre_cfg_file_ = app_run_dir_ + "/cfg/ogre4asvrd.cfg";
 
-    zce::PropertyTree pt_tree;
+    zce::propertytree pt_tree;
     ret = zce::cfg::read_ini(ogre_cfg_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
             ogre_cfg_file_.c_str(), ret);
@@ -142,7 +142,7 @@ int Ogre_Server_Config::read_cfgfile()
 }
 
 ///从配置中读取OGRE的配置
-int Ogre_Server_Config::get_ogre_cfg(const zce::PropertyTree* conf_tree)
+int Ogre_Server_Config::get_ogre_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;

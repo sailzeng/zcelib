@@ -240,7 +240,7 @@ int test_container_performance(int  /*argc*/, char* /*argv*/[])
 int test_progress_timer(int  /*argc*/, char* /*argv*/[])
 {
     zce::Chrono_HR_Timer hr_timer;
-    zce::Time_Value sleep_len(2, 5000);
+    zce::time_value sleep_len(2, 5000);
 
     hr_timer.restart();
     zce::sleep(sleep_len);

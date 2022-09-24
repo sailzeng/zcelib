@@ -42,7 +42,7 @@ public:
     virtual int init_proxy_instance();
 
     /// 通过配置文件取得代理的配置信息,这个函数只取过滤命令部分的代码,要使用指定基类访问
-    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
+    virtual int get_proxy_config(const zce::propertytree* conf_tree);
 
     ///代理的处理,返回生产的帧的个数
     virtual int process_proxy(soar::Zerg_Frame* proc_frame) = 0;
@@ -96,7 +96,7 @@ public:
     Echo_Proxy_Process();
     virtual ~Echo_Proxy_Process();
 
-    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
+    virtual int get_proxy_config(const zce::propertytree* conf_tree);
     // 进行代理的处理
     virtual int process_proxy(soar::Zerg_Frame* proc_frame);
 };
@@ -116,7 +116,7 @@ public:
     virtual ~Transmit_Proxy();
 
     ///处理配置文件
-    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
+    virtual int get_proxy_config(const zce::propertytree* conf_tree);
     //
     virtual int process_proxy(soar::Zerg_Frame* proc_frame);
 };
@@ -135,7 +135,7 @@ public:
     virtual ~Broadcast_ProxyProcess();
 
     ///处理配置文件
-    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
+    virtual int get_proxy_config(const zce::propertytree* conf_tree);
     ///
     virtual int process_proxy(soar::Zerg_Frame* proc_frame);
 
@@ -172,7 +172,7 @@ public:
     virtual ~Modulo_ProxyProcess();
 
     ///处理配置文件
-    virtual int get_proxy_config(const zce::PropertyTree* conf_tree);
+    virtual int get_proxy_config(const zce::propertytree* conf_tree);
     ///
     virtual int process_proxy(soar::Zerg_Frame* proc_frame);
 
@@ -234,7 +234,7 @@ protected:
 //    DBModalProxyProcess();
 //    virtual ~DBModalProxyProcess();
 //    //
-//    virtual int get_proxy_config(const zce::PropertyTree *conf_tree);
+//    virtual int get_proxy_config(const zce::propertytree *conf_tree);
 //    //
 //    virtual int process_proxy(soar::Zerg_Frame *proc_frame);
 //};
@@ -302,7 +302,7 @@ protected:
 //    DBModalMGProxyProcess();
 //    virtual ~DBModalMGProxyProcess();
 //    //
-//    virtual int get_proxy_config(const zce::PropertyTree *conf_tree);
+//    virtual int get_proxy_config(const zce::propertytree *conf_tree);
 //    //
 //    virtual int process_proxy(soar::Zerg_Frame *proc_frame);
 //

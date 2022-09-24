@@ -102,10 +102,10 @@ protected:
     //由于
 
     ///从配置中读取框架基础的配置,包括self_svc_id_等
-    int get_common_cfg(const zce::PropertyTree* conf_tree);
+    int get_common_cfg(const zce::propertytree* conf_tree);
 
     ///从配置中读取日志的配置
-    int get_log_cfg(const zce::PropertyTree* conf_tree);
+    int get_log_cfg(const zce::propertytree* conf_tree);
 
 public:
     //

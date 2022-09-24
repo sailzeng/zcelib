@@ -34,7 +34,7 @@ int Server_Config_Base::read_start_arg(int argc, const char* argv[])
 {
     // 指明RETURN_IN_ORDER 不调整顺序
     zce::Get_Option get_opt(argc, (char**)argv,
-                            "umvndhpi:t:r:a:", 1, 0, 
+                            "umvndhpi:t:r:a:", 1, 0,
                             zce::Get_Option::RETURN_IN_ORDER);
     int c = 0;
     while ((c = get_opt()) != EOF)
@@ -182,7 +182,7 @@ int Server_Config_Base::read_cfgfile()
     // 框架的配置是不会变的
     common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";
 
-    zce::PropertyTree pt_tree;
+    zce::propertytree pt_tree;
     ret = zce::cfg::read_ini(common_cfg_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "Application read config file [%s] ret [%d].",
             common_cfg_file_.c_str(), ret);
@@ -218,7 +218,7 @@ void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 }
 
 //从配置中读取self_svc_id_的
-int Server_Config_Base::get_common_cfg(const zce::PropertyTree* conf_tree)
+int Server_Config_Base::get_common_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -260,13 +260,13 @@ int Server_Config_Base::get_common_cfg(const zce::PropertyTree* conf_tree)
 }
 
 //从配置中读取日志的配置
-int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
+int Server_Config_Base::get_log_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_LEVEL", temp_value);
-    log_config_.log_level_ = zce::Log_Msg::log_priorities(temp_value.c_str());
+    log_config_.log_level_ = zce::log_msg::log_priorities(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -274,7 +274,7 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     }
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
-    log_config_.log_div_type_ = zce::Log_Msg::log_file_devide(temp_value.c_str());
+    log_config_.log_div_type_ = zce::log_msg::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -289,8 +289,8 @@ int Server_Config_Base::get_log_cfg(const zce::PropertyTree* conf_tree)
     }
 
     //仅仅当分割方式是SIZE时有用
-    ret = conf_tree->path_get_leaf("LOG_CFG", 
-                                   "MAX_FILE_SIZE", 
+    ret = conf_tree->path_get_leaf("LOG_CFG",
+                                   "MAX_FILE_SIZE",
                                    log_config_.max_log_file_size_);
     if (0 != ret)
     {

@@ -74,7 +74,7 @@ public:
     //
     virtual int handle_output(ZCE_HANDLE);
     //
-    virtual int timer_timeout(const zce::Time_Value& time, const void* arg);
+    virtual int timer_timeout(const zce::time_value& time, const void* arg);
     //
     virtual int handle_close();
 

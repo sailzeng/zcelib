@@ -170,7 +170,7 @@ public:
     virtual int read_cfgfile();
 
     ///从配置中读取OGRE的配置
-    int get_ogre_cfg(const zce::PropertyTree* conf_tree);
+    int get_ogre_cfg(const zce::propertytree* conf_tree);
 
 public:
 

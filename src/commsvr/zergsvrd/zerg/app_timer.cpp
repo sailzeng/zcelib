@@ -23,13 +23,13 @@ App_Timer::App_Timer() :
 {
     //主动重现链接的间隔时间
     const time_t AUTOCONNECT_RETRY_SEC = 5;
-    zce::Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
+    zce::time_value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
 
     add_app_timer(connect_all_internal, &ZERG_TIMER_ID[0]);
 
     //主动重现链接的间隔时间
     const time_t RECORD_MONITOR_SEC = 60;
-    zce::Time_Value monitor_internal(RECORD_MONITOR_SEC, 0);
+    zce::time_value monitor_internal(RECORD_MONITOR_SEC, 0);
 
     add_app_timer(monitor_internal, &ZERG_TIMER_ID[1]);
 }
@@ -39,7 +39,7 @@ App_Timer::~App_Timer()
 }
 
 //
-int App_Timer::timer_timeout(const zce::Time_Value& time_now,
+int App_Timer::timer_timeout(const zce::time_value& time_now,
                              const void* act)
 {
     //等到当前的时间

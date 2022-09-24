@@ -8,9 +8,9 @@ int main(int argc, char* argv[])
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 
-    zce::Log_Msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+    zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                             "E:\\My.Log\\TEST_2",
-                                            zce::Log_File::DEFAULT_LOG_SIZE,
+                                            zce::log_file::DEFAULT_LOG_SIZE,
                                             true,
                                             false,
                                             true,

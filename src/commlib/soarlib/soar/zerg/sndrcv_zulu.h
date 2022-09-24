@@ -45,10 +45,10 @@ public:
 protected:
 
     //接收一个APPFRAME，放入内部的tibetan_recv_appframe_
-    int receive_svc_msg(zce::Time_Value* time_wait = NULL);
+    int receive_svc_msg(zce::time_value* time_wait = NULL);
 
     //将内部的tibetan_send_appframe_发送出去
-    int send_svc_msg(zce::Time_Value* time_wait = NULL);
+    int send_svc_msg(zce::time_value* time_wait = NULL);
 
 public:
 
@@ -61,7 +61,7 @@ public:
                          size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME);
 
     //链接服务器,time_wait不能用const是有原因的，因为部分select的zce::Time_Value是返回剩余时间的
-    int connect_zulu_server(zce::Time_Value* time_wait);
+    int connect_zulu_server(zce::time_value* time_wait);
 
     //关闭内部的连接。
     void close();
@@ -84,7 +84,7 @@ public:
     int send_svc_msg(uint32_t user_id,
                      uint32_t cmd,
                      const T1& snd_info,
-                     zce::Time_Value* time_out = NULL,
+                     zce::time_value* time_out = NULL,
                      uint32_t backfill_fsm_id = 0,
                      uint16_t business_id = 0);
 
@@ -101,11 +101,11 @@ public:
     int receive_svc_msg(uint32_t cmd,
                         T2& rcv_info,
                         bool error_continue = true,
-                        zce::Time_Value* time_out = NULL);
+                        zce::time_value* time_out = NULL);
 
     //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
     int receive_svc_msg(unsigned int& recv_cmd,
-                        zce::Time_Value* time_out = NULL);
+                        zce::time_value* time_out = NULL);
 
     /*!
     * @brief      发送和接收数据，会提前进行连接的。
@@ -115,7 +115,7 @@ public:
     int send_recv_msg(unsigned int snd_cmd,
                       uint32_t user_id,
                       const T1& send_info,
-                      zce::Time_Value* time_wait,
+                      zce::time_value* time_wait,
                       unsigned int rcv_cmd,
                       T2& recv_info,
                       bool error_continue = true,
@@ -128,7 +128,7 @@ template<class T2>
 int Zulu_SendRecv_Msg::receive_svc_msg(uint32_t cmd,
                                        T2& info,
                                        bool error_continue,
-                                       zce::Time_Value* time_wait)
+                                       zce::time_value* time_wait)
 {
     int ret = 0;
 
@@ -191,7 +191,7 @@ template< class T1>
 int Zulu_SendRecv_Msg::send_svc_msg(uint32_t user_id,
                                     uint32_t cmd,
                                     const T1& info,
-                                    zce::Time_Value* time_wait,
+                                    zce::time_value* time_wait,
                                     uint32_t backfill_fsm_id,
                                     uint16_t business_id)
 {
@@ -237,7 +237,7 @@ template< class T1, class T2>
 int Zulu_SendRecv_Msg::send_recv_msg(unsigned int snd_cmd,
                                      uint32_t user_id,
                                      const T1& send_info,
-                                     zce::Time_Value* time_wait,
+                                     zce::time_value* time_wait,
                                      unsigned int rcv_cmd,
                                      T2& recv_info,
                                      bool error_continue,

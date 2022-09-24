@@ -46,7 +46,7 @@ int Wormhole_Server_Config::read_cfgfile()
     return 0;
 }
 
-int Wormhole_Server_Config::get_wormhole_cfg(const zce::PropertyTree* conf_tree)
+int Wormhole_Server_Config::get_wormhole_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;

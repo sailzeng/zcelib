@@ -120,7 +120,7 @@ void FSM_Base::on_run(bool& continued)
     }
 }
 
-void FSM_Base::on_timeout(const zce::Time_Value& now_time,
+void FSM_Base::on_timeout(const zce::time_value& now_time,
                           bool& continue_run)
 {
     ZCE_LOG(trace_log_pri_, "%s::trans_timeout start,transaction id:[%u],trans stage:[%u],",
@@ -254,6 +254,4 @@ void FSM_Base::dump(zce::LOG_PRIORITY log_priority,
             trans_touchtimer_id_);
     return;
 }
-
-
 }

@@ -1,7 +1,8 @@
 #include "predefine.h"
 
 #include <zce/util/random.h>
-#include <zce/rudp/rudp.h>
+#include <zce/rudp/client.h>
+#include <zce/rudp/server.h>
 
 const char TEST_FILE[4][256] =
 {
@@ -45,8 +46,8 @@ int test_rudp(int argc, char* argv[])
 
     if (argc > 1)
     {
-        zce::Log_Msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                                "E:\\My.Log\\CORE",
+        zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                                "E:\\My.Log\\core",
                                                 0,
                                                 true,
                                                 false,
@@ -58,7 +59,7 @@ int test_rudp(int argc, char* argv[])
     }
     else
     {
-        zce::Log_Msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+        zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                                 "E:\\My.Log\\CLIENT",
                                                 0,
                                                 true,
@@ -72,9 +73,9 @@ int test_rudp(int argc, char* argv[])
     return 0;
 }
 
-ssize_t core_recv(zce::rudp::ACCEPT* peer)
+ssize_t core_recv(zce::rudp::accept_peer* peer)
 {
-    ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv data len [%u]",
+    ZCE_LOG(RS_DEBUG, "[core recv] session id[%u] recv data len [%u]",
             peer->session_id(),
             peer->recv_bytes());
 
@@ -101,7 +102,7 @@ ssize_t core_recv(zce::rudp::ACCEPT* peer)
         ZCE_LOG(RS_DEBUG, "");
     }
 
-    ZCE_LOG(RS_DEBUG, "[CORE recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
+    ZCE_LOG(RS_DEBUG, "[core recv] session id[%u] recv wnd len [%u] file size[%u] write size[%u].",
             peer->session_id(),
             peer->recv_bytes(),
             file_size,
@@ -109,15 +110,15 @@ ssize_t core_recv(zce::rudp::ACCEPT* peer)
     return 0;
 }
 
-zce::rudp::ACCEPT* g_accpet_rudp = nullptr;
+zce::rudp::accept_peer* g_accpet_rudp = nullptr;
 
-int core_accept(zce::rudp::ACCEPT* peer)
+int core_accept(zce::rudp::accept_peer* peer)
 {
     g_accpet_rudp = peer;
     return 0;
 }
 
-ssize_t client_recv(zce::rudp::CLIENT* peer)
+ssize_t client_recv(zce::rudp::client* peer)
 {
     ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv data len [%u]",
             peer->session_id(),
@@ -177,23 +178,23 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
         return ret;
     }
     */
-    zce::rudp::CORE core;
+    zce::rudp::server_core server_core;
     sockaddr_in core_addr;
-    std::function<ssize_t(zce::rudp::ACCEPT*)> callbak_recv(core_recv);
-    std::function<int(zce::rudp::ACCEPT*)> callbak_accept(core_accept);
+    std::function<ssize_t(zce::rudp::accept_peer*)> callbak_recv(core_recv);
+    std::function<int(zce::rudp::accept_peer*)> callbak_accept(core_accept);
     zce::set_sockaddr_in(&core_addr, "0.0.0.0", 888);
-    ret = core.open((sockaddr*)&core_addr,
-                    1024,
-                    10 * 1024 * 1024,
-                    10 * 1024 * 1024,
-                    &callbak_recv,
-                    &callbak_accept);
+    ret = server_core.open((sockaddr*)&core_addr,
+                           1024,
+                           10 * 1024 * 1024,
+                           10 * 1024 * 1024,
+                           &callbak_recv,
+                           &callbak_accept);
     if (ret != 0)
     {
         return ret;
     }
 
-    zce::Time_Value tv(0, 100000);
+    zce::time_value tv(0, 100000);
     //size_t remain_file_len = file_size;
     //每次尽力读取4K数据，
     const size_t READ_LEN = 4 * 1024;
@@ -205,8 +206,8 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
         tv.set(0, 10000);
         size_t recv_bytes = 0, recv_num = 0, accept_num = 0;
 
-        core.receive_timeout(&tv, &recv_num, &accept_num, &recv_bytes);
-        core.time_out();
+        server_core.receive_timeout(&tv, &recv_num, &accept_num, &recv_bytes);
+        server_core.time_out();
         //读取文件内容
         /*
         if (remain_file_len > 0 && remain_send_len == 0 && g_accpet_rudp)
@@ -258,7 +259,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
         */
     }
 
-    core.close();
+    server_core.close();
     return 0;
 }
 
@@ -270,9 +271,9 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
     {
         ZCE_LOG(RS_ERROR, "delete file fail.");
     }
-    zce::rudp::CLIENT client;
+    zce::rudp::client client;
     sockaddr_in reomote_addr;
-    std::function<ssize_t(zce::rudp::CLIENT*)> callbak_fun(client_recv);
+    std::function<ssize_t(zce::rudp::client*)> callbak_fun(client_recv);
     zce::set_sockaddr_in(&reomote_addr, "127.0.0.1", 888);
     ret = client.open((sockaddr*)&reomote_addr,
                       10 * 1024 * 1024,
@@ -282,7 +283,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
     {
         return ret;
     }
-    zce::Time_Value tv(3, 0);
+    zce::time_value tv(3, 0);
     ret = client.connect_timeout(&tv);
     if (ret != 0)
     {

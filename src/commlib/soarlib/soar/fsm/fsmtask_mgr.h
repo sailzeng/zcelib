@@ -60,7 +60,7 @@ public:
     void initialize(size_t  szregtrans,
                     size_t sztransmap,
                     const soar::SERVICES_INFO& selfsvr,
-                    const zce::Time_Value& enqueue_timeout,
+                    const zce::time_value& enqueue_timeout,
                     zce::Timer_Queue* timer_queue,
                     soar::Svrd_BusPipe* zerg_mmap_pipe,
                     APPFRAME_MALLOCOR* frame_mallocor);
@@ -83,13 +83,13 @@ public:
     int stop_notify_task();
 
     //从recv的消息队列中去一个数据出来，进行超时等待
-    int dequeue_recvqueue(soar::Zerg_Frame*& get_frame, zce::Time_Value& tv);
+    int dequeue_recvqueue(soar::Zerg_Frame*& get_frame, zce::time_value& tv);
 
     //从recv的消息队列中去一个数据出来，不进行超时等待
     int trydequeue_recvqueue(soar::Zerg_Frame*& get_frame);
 
     //从send的消息队列中去一个数据出来，进行超时等待
-    int dequeue_sendqueue(soar::Zerg_Frame*& get_frame, zce::Time_Value& tv);
+    int dequeue_sendqueue(soar::Zerg_Frame*& get_frame, zce::time_value& tv);
 
     //从send的消息队列中去一个数据出来，不进行超时等待
     int trydequeue_sendqueue(soar::Zerg_Frame*& get_frame);
@@ -200,7 +200,7 @@ public:
     * @note
     */
     int enqueue_recvqueue(const soar::Zerg_Frame* post_frame,
-                          const zce::Time_Value* tv)
+                          const zce::time_value* tv)
     {
         int ret = 0;
         soar::Zerg_Frame* tmp_frame = NULL;
@@ -242,6 +242,6 @@ protected:
     FSMTask_TaskBase** task_list_ = nullptr;
 
     // push数据进队列时，如果队列满了的最多等待时间
-    zce::Time_Value     enqueue_timeout_;
+    zce::time_value     enqueue_timeout_;
 };
 }

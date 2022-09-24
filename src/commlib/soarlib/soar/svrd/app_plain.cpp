@@ -50,7 +50,7 @@ int SvrdApp_Plain::app_run()
 
     size_t prc_frame = 0, idle = 0, proc_data_num = 0;
 
-    zce::Time_Value select_interval(0, 0);
+    zce::time_value select_interval(0, 0);
 
     zce::Timer_Queue* time_queue = zce::Timer_Queue::instance();
     zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance();

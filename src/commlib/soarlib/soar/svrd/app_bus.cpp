@@ -116,7 +116,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
     // 初始化日志用滚动的方式可以保留的天数多点
     std::string init_log_name(config_base_->log_file_prefix_.c_str());
     init_log_name += "_init";
-    zce::Log_Msg::instance()->init_size_log(
+    zce::log_msg::instance()->init_size_log(
         init_log_name.c_str(),
         10 * 1024 * 1024,
         3,
@@ -311,13 +311,13 @@ int App_BusPipe::app_exit()
 //设置日志的优先级
 void App_BusPipe::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
-    zce::Log_Msg::instance()->set_log_priority(log_prio);
+    zce::log_msg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
 zce::LOG_PRIORITY App_BusPipe::get_log_priority()
 {
-    return zce::Log_Msg::instance()->get_log_priority();
+    return zce::log_msg::instance()->get_log_priority();
 }
 
 //日志初始化
@@ -327,10 +327,10 @@ int App_BusPipe::init_log()
 
     ZCE_LOG(RS_DEBUG, "log instance initialize .");
     //关闭原来的日志输出方法
-    zce::Log_Msg::instance()->terminate();
+    zce::log_msg::instance()->terminate();
 
     // 初始化日志
-    ret = zce::Log_Msg::instance()->init_log(config_base_->log_config_.log_output_,
+    ret = zce::log_msg::instance()->init_log(config_base_->log_config_.log_output_,
                                              config_base_->log_config_.log_div_type_,
                                              config_base_->log_file_prefix_.c_str(),
                                              true,

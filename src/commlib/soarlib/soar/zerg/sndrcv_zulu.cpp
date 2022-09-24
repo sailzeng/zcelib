@@ -45,7 +45,7 @@ int Zulu_SendRecv_Msg::set_zulu_svcinfo(const char* svc_ip,
 }
 
 //链接服务器
-int Zulu_SendRecv_Msg::connect_zulu_server(zce::Time_Value* time_wait)
+int Zulu_SendRecv_Msg::connect_zulu_server(zce::time_value* time_wait)
 {
     int ret = 0;
 
@@ -56,7 +56,7 @@ int Zulu_SendRecv_Msg::connect_zulu_server(zce::Time_Value* time_wait)
         //自己定义超时时间10s,如果不能链接认为失败，毕竟都是内网,
         // 默认超时是10s, 如果指定了time_wait则使用time_wait
         // 否则用默认的值
-        zce::Time_Value real_time_wait(10, 0);
+        zce::time_value real_time_wait(10, 0);
 
         if (time_wait != NULL)
         {
@@ -89,7 +89,7 @@ void Zulu_SendRecv_Msg::close()
 }
 
 //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
-int Zulu_SendRecv_Msg::receive_svc_msg(zce::Time_Value* time_wait)
+int Zulu_SendRecv_Msg::receive_svc_msg(zce::time_value* time_wait)
 {
     ssize_t socket_ret = 0;
     int data_len = 0;
@@ -240,7 +240,7 @@ int Zulu_SendRecv_Msg::receive_svc_msg(zce::Time_Value* time_wait)
 }
 
 //发送tibetan_send_appframe_出去，
-int Zulu_SendRecv_Msg::send_svc_msg(zce::Time_Value* time_wait)
+int Zulu_SendRecv_Msg::send_svc_msg(zce::time_value* time_wait)
 {
     msg_send_frame_->send_service_ = msg_send_service_;
     msg_send_frame_->recv_service_ = msg_recv_service_;
@@ -281,7 +281,7 @@ int Zulu_SendRecv_Msg::send_svc_msg(zce::Time_Value* time_wait)
 
 //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
 int Zulu_SendRecv_Msg::receive_svc_msg(unsigned int& recv_cmd,
-                                       zce::Time_Value* time_out)
+                                       zce::time_value* time_out)
 {
     int ret = 0;
 

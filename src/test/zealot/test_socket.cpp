@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-int test_host_name_fun(int, char* [])
+int test_host_name_fun(int, char*[])
 {
     int ret = 0;
 
@@ -224,7 +224,7 @@ int test_dns_resolve([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     const size_t ARRAYS_SIZE = 64;
     size_t arrays_size = ARRAYS_SIZE;
     sockaddr_in addrs_ary[ARRAYS_SIZE];
-    zce::Time_Value tv(5);
+    zce::time_value tv(5);
     ret = dns.answer(&tid, AF_INET, (sockaddr*)addrs_ary, &arrays_size, &tv);
     printf("query ret=%d tid = %x arrays_size = %llu\n", ret, tid, arrays_size);
     if (ret != 0)

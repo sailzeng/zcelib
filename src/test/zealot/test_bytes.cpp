@@ -713,7 +713,7 @@ int test_compress_fun(unsigned char* source_buf, size_t source_len)
     compressbuf_len = 1024;
     decompress_len = 1024;
 
-    zce::ZLZ_Compress zlz_fmt;
+    zce::zlz_compress zlz_fmt;
     ret = zlz_fmt.compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
@@ -739,7 +739,7 @@ int test_compress_fun(unsigned char* source_buf, size_t source_len)
 
     compressbuf_len = 1024;
     decompress_len = 1024;
-    zce::LZ4_Compress lz4_fmt;
+    zce::lz4_compress lz4_fmt;
     ret = lz4_fmt.compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
@@ -781,14 +781,14 @@ int test_compress_filedata(const char* file_name)
     size_t compressbuf_len = 0, decompress_len = 0;
     size_t source_len = file_len;
 
-    ret = zce::LZ4_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
+    ret = zce::lz4_compress::need_compressed_bufsize(file_len, &compressbuf_len);
 
     unsigned char* compress_buf = new unsigned char[COMPRESS_TEXT_LEN];
     unsigned char* decompress_buf = new unsigned char[COMPRESS_TEXT_LEN];
 
     decompress_len = COMPRESS_TEXT_LEN;
     printf("---------------------------------------------------------\n");
-    zce::LZ4_Compress lz4;
+    zce::lz4_compress lz4;
     ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
@@ -828,9 +828,9 @@ int test_compress_filedata(const char* file_name)
 
     printf("---------------------------------------------------------\n");
 
-    ret = zce::ZLZ_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
+    ret = zce::zlz_compress::need_compressed_bufsize(file_len, &compressbuf_len);
     decompress_len = COMPRESS_TEXT_LEN;
-    zce::ZLZ_Compress zlz;
+    zce::zlz_compress zlz;
     ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {

@@ -64,7 +64,7 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
     }
 
     g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.exe(num_affect, insert_id);
+    ret = g_db_command.query(num_affect, insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -104,7 +104,7 @@ int benchmark_db_query(const char* sql,
         g_db_connect.ping();
     }
     g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.exe(num_affect, db_result);
+    ret = g_db_command.query(num_affect, db_result);
     //如果错误
     if (ret != 0)
     {
@@ -144,7 +144,7 @@ int benchmark_db_query(const char* sql,
     }
 
     g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.exe(db_result);
+    ret = g_db_command.query(db_result);
     //如果错误
     if (ret != 0)
     {

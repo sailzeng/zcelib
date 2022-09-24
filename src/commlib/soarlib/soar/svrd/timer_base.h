@@ -75,7 +75,7 @@ public:
     ~Server_Timer();
 
     ///取得当前的时间，用于对时间精度要求不高的场合
-    static zce::Time_Value gettimeofday()
+    static zce::time_value gettimeofday()
     {
         return now_time_;
     }
@@ -83,7 +83,7 @@ public:
 protected:
 
     // 检查监控数据
-    void check_monitor(const zce::Time_Value& now_time);
+    void check_monitor(const zce::time_value& now_time);
 
     // 系统及进程状态采样
     void report_status();
@@ -98,7 +98,7 @@ protected:
     virtual int initialize(zce::Timer_Queue* queue);
 
     /// 定时处理监控数据
-    virtual int timer_timeout(const zce::Time_Value& now_time,
+    virtual int timer_timeout(const zce::time_value& now_time,
                               const void* act = 0);
 
     ///定时器关闭
@@ -106,14 +106,14 @@ protected:
 
     ///设置心跳定时器的进度，默认是0.5s一次，如果觉得不够，在initialize前重新设置
     ///精度USEC
-    void set_heart_precision(const zce::Time_Value& precision);
+    void set_heart_precision(const zce::time_value& precision);
 
     /*!
     * @brief      增加一个APP的定时器
     * @param[in]  interval 增加的定时器的间隔
     * @param[in]  act      增加的定时器的标示
     */
-    void add_app_timer(const zce::Time_Value& interval, const void* act);
+    void add_app_timer(const zce::time_value& interval, const void* act);
 
 protected:
 
@@ -129,7 +129,7 @@ protected:
 protected:
 
     ///心跳的精度，
-    zce::Time_Value heart_precision_ = zce::Time_Value(0, DEF_TIMER_INTERVAL_USEC);
+    zce::time_value heart_precision_ = zce::time_value(0, DEF_TIMER_INTERVAL_USEC);
 
     ///心跳计数器，heartbeat_counter_不从0开始计数是避免第一次模除的时候就发生事情
     uint64_t  heartbeat_counter_ = 1;
@@ -146,12 +146,12 @@ protected:
     ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
     size_t zan_timer_num_ = 0;
     ///
-    zce::Time_Value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
+    zce::time_value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
     ///
     const void* zan_timer_act_[MAX_APP_TIMER_NUMBER] = { 0 };
 
 protected:
     ///当前时间
-    static zce::Time_Value now_time_;
+    static zce::time_value now_time_;
 };
 }

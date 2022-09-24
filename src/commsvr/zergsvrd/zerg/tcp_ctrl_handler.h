@@ -108,7 +108,7 @@ public:
     * @param      time  时间
     * @param      arg   唯一标示参数
     */
-    virtual int timer_timeout(const zce::Time_Value& time, const void* arg);
+    virtual int timer_timeout(const zce::time_value& time, const void* arg);
 
     ///得到Handle对应PEER的端口
     const zce::Sockaddr_In& get_peer();

@@ -157,10 +157,10 @@ public:
     int get_svcinfo_by_svcid(const soar::SERVICES_ID& svc_id, soar::SERVICES_INFO& svc_info) const;
 
     ///从配置中读取ZERG的配置
-    int get_zerg_cfg(const zce::PropertyTree* conf_tree);
+    int get_zerg_cfg(const zce::propertytree* conf_tree);
 
     ///得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
-    int get_svcidtable_cfg(const zce::PropertyTree* conf_tree);
+    int get_svcidtable_cfg(const zce::propertytree* conf_tree);
 
 public:
     ///ZERG的配置文件

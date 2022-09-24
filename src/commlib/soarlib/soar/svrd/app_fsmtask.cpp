@@ -32,7 +32,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
     Server_Config_FSM* svd_config = dynamic_cast<Server_Config_FSM*>(config_base_);
     soar::FSMTask_Manger* trans_mgr = new soar::FSMTask_Manger();
     soar::FSM_Manager::instance(trans_mgr);
-    zce::Time_Value enqueue_timeout;
+    zce::time_value enqueue_timeout;
     enqueue_timeout.sec(svd_config->framework_config_.task_info_.enqueue_timeout_sec_);
     enqueue_timeout.usec(svd_config->framework_config_.task_info_.enqueue_timeout_usec_);
     //事务管理器的初始化
@@ -103,7 +103,7 @@ int Comm_SvrdApp_FSMTask::app_run()
     size_t idle = 0;
 
     soar::FSMTask_Manger* notify_trans_mgr = static_cast<soar::FSMTask_Manger*>(soar::FSM_Manager::instance());
-    zce::Time_Value select_interval(0, 0);
+    zce::time_value select_interval(0, 0);
 
     zce::Timer_Queue* time_queue = zce::Timer_Queue::instance();
     zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance();

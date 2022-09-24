@@ -213,7 +213,7 @@ int FSM_Manager::sendfame_to_pipe(const soar::Zerg_Frame* send_frame)
 }
 
 //打开性能统计
-void FSM_Manager::enable_trans_statistics(const zce::Time_Value* stat_clock)
+void FSM_Manager::enable_trans_statistics(const zce::time_value* stat_clock)
 {
     statistics_clock_ = stat_clock;
 }
