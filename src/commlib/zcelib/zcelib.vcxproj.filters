@@ -280,13 +280,7 @@
     <ClCompile Include="zce\event\reactor_wfmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\config\ini_pasttime.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\config\file_implement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\config\readfile_cvs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\config\property_tree.cpp">
@@ -693,13 +687,7 @@
     <ClInclude Include="zce\event\reactor_wfmo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\config\ini_pasttime.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\config\file_implement.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\config\readfile_cvs.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\config\property_tree.h">

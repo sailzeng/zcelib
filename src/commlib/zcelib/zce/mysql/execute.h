@@ -27,14 +27,14 @@ namespace zce::mysql
 @brief      读取MYSQL数据库的类,用于操作MySQL DB的访问
             这个类里面包装了connect,command,你可以通过zce::mysql::Result获得结果
 */
-class Execute : zce::NON_Copyable
+class execute : zce::NON_Copyable
 {
 public:
 
-    ///构造函数，
-    Execute();
+    ///构造函数，不用处理什么，相关的成员变量的析构都进行了处理
+    execute() = default;
     ///析构函数
-    ~Execute();
+    ~execute() = default;
 
     /*!
     * @brief      初始化服务器,使用hostname进行连接,可以不立即连接和立即连接，你自己控制。
@@ -81,7 +81,7 @@ public:
     int query(const char* sql,
               size_t sql_len,
               uint64_t& num_affect,
-              zce::mysql::Result& db_result);
+              zce::mysql::result& db_result);
 
     /*!
     * @brief      用于SELECT语句,用于use_result得到结果集合的方法
@@ -93,7 +93,7 @@ public:
     */
     int query(const char* sql,
               size_t sql_len,
-              zce::mysql::Result& db_result);
+              zce::mysql::result& db_result);
 
     ///得到MYSQL定义的错误返回
     unsigned int error_message(char* szerr,
@@ -118,7 +118,7 @@ protected:
     ///数据库IP地址
     std::string       db_hostname_;
     ///DB数据库的端口号码
-    unsigned int      db_port_;
+    unsigned int      db_port_ = MYSQL_PORT;
 
     ///UNIX soket file名称，或者命名管道名称
     std::string       db_socket_file_;
@@ -129,44 +129,44 @@ protected:
     std::string       db_password_;
 
     ///MYSQL数据库连接对象
-    zce::mysql::Connect db_connect_;
+    zce::mysql::connect db_connect_;
 
     ///MYSQL命令执行对象
-    zce::mysql::Command db_command_;
+    zce::mysql::command db_command_;
 };
+} //namespace
 
-namespace execute
+namespace zce::mysql::exe
 {
 //!链接MYSQL数据库
-int connect(zce::mysql::Connect* db_connect,
+int connect(zce::mysql::connect* db_connect,
             const char* host_name,
             const char* user,
             const char* pwd,
             unsigned int port = MYSQL_PORT);
 
 //!断开链接
-void disconnect(zce::mysql::Connect* db_connect);
+void disconnect(zce::mysql::connect* db_connect);
 
 //!查询，非SELECT语句
-int query(zce::mysql::Connect* db_connect,
+int query(zce::mysql::connect* db_connect,
           const char* sql,
           size_t sql_len,
           uint64_t* num_affect,
           uint64_t* insert_id);
 
 //!查询，SELECT语句
-int query(zce::mysql::Connect* db_connect,
+int query(zce::mysql::connect* db_connect,
           const char* sql,
           size_t sql_len,
           uint64_t* num_affect,
-          zce::mysql::Result* db_result);
+          zce::mysql::result* db_result);
 
 //!查询,SELECT语句，用USE result的方式进行查询
-int query(zce::mysql::Connect* db_connect,
+int query(zce::mysql::connect* db_connect,
           const char* sql,
           size_t sql_len,
-          zce::mysql::Result* db_result);
-} //namespace execute
-} //namespace zce::mysql
+          zce::mysql::result* db_result);
+} //namespace zce::mysql::exe
 
 #endif //#if defined ZCE_USE_MYSQL

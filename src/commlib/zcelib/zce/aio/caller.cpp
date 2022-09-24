@@ -352,7 +352,7 @@ int dir_rmdir(zce::aio::Worker* worker,
 
 //!链接数据
 int mysql_connect(zce::aio::Worker* worker,
-                  zce::mysql::Connect* db_connect,
+                  zce::mysql::connect* db_connect,
                   const char* host_name,
                   const char* user,
                   const char* pwd,
@@ -377,7 +377,7 @@ int mysql_connect(zce::aio::Worker* worker,
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::Worker* worker,
-                     zce::mysql::Connect* db_connect,
+                     zce::mysql::connect* db_connect,
                      std::function<void(AIO_Atom*)> call_back)
 {
     zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
@@ -394,7 +394,7 @@ int mysql_disconnect(zce::aio::Worker* worker,
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::Worker* worker,
-                zce::mysql::Connect* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -420,11 +420,11 @@ int mysql_query(zce::aio::Worker* worker,
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::Worker* worker,
-                zce::mysql::Connect* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
-                zce::mysql::Result* db_result,
+                zce::mysql::result* db_result,
                 std::function<void(AIO_Atom*)> call_back)
 {
     zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
@@ -580,6 +580,34 @@ int socket_send(zce::aio::Worker* worker,
     aio_atom->snd_buf_ = buf;
     aio_atom->len_ = len;
     aio_atom->flags_ = flags;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->call_back_ = call_back;
+    auto succ_req = worker->request(aio_atom);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+int socket_recvfrom(zce::aio::Worker* worker,
+                    ZCE_SOCKET handle,
+                    void* buf,
+                    size_t len,
+                    sockaddr* from,
+                    socklen_t* from_len,
+                    zce::Time_Value* timeout_tv,
+                    std::function<void(AIO_Atom*)> call_back,
+                    int flags)
+{
+    zce::aio::Socket_Atom* aio_atom = (Socket_Atom*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_SEND);
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = buf;
+    aio_atom->len_ = len;
+    aio_atom->flags_ = flags;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);

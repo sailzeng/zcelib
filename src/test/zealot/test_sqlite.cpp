@@ -9,15 +9,15 @@ int test_sqlite_handle(int /*argc*/, char* /*argv */[])
     {
         return -1;
     }
-    ret = hdl.execute("CREATE TABLE IF NOT EXISTS foo(id INTEGER PRIMARY KEY,name TEXT,age INTEGER,address TEXT,salary REAL)");
+    ret = hdl.exe("CREATE TABLE IF NOT EXISTS foo(id INTEGER PRIMARY KEY,name TEXT,age INTEGER,address TEXT,salary REAL)");
     if (ret != 0)
     {
         return -1;
     }
-    ret = hdl.execute("REPLACE INTO foo(id,name,age,address,salary) VALUES(1,'aaa',22,'aaa.aaa',10000.01)");
-    ret = hdl.execute("REPLACE INTO foo(id,name,age,address,salary) VALUES(2,'bbb',22,'bbb.bbb',20000.00)");
-    ret = hdl.execute("REPLACE INTO foo(id,name,age,address,salary) VALUES(3,'ccc',22,'ccc.ccc',31000.03)");
-    ret = hdl.execute("REPLACE INTO foo(id,name,age,address,salary) VALUES(4,'ddd',25,'ddd.ddd',34000.563)");
+    ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(1,'aaa',22,'aaa.aaa',10000.01)");
+    ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(2,'bbb',22,'bbb.bbb',20000.00)");
+    ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(3,'ccc',22,'ccc.ccc',31000.03)");
+    ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(4,'ddd',25,'ddd.ddd',34000.563)");
     zce::SQLite_Result result;
     ret = hdl.get_table("SELECT id,name,age,address,salary FROM foo", &result);
     if (ret != 0)
@@ -54,7 +54,7 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
     {
         return -1;
     }
-    ret = hdl.execute("CREATE TABLE IF NOT EXISTS ofo(id INTEGER PRIMARY KEY,name TEXT,age INTEGER,address TEXT,salary REAL)");
+    ret = hdl.exe("CREATE TABLE IF NOT EXISTS ofo(id INTEGER PRIMARY KEY,name TEXT,age INTEGER,address TEXT,salary REAL)");
     if (ret != 0)
     {
         return -1;

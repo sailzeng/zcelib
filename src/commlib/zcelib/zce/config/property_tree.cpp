@@ -190,10 +190,18 @@ PropertyTree::leaf_iterator PropertyTree::leaf_begin()
 {
     return leaf_node_.begin();
 }
+PropertyTree::const_leaf_iterator PropertyTree::leaf_cbegin() const
+{
+    return leaf_node_.cbegin();
+}
 ///得到（当前node）叶子节点的end 位置的迭代器
 PropertyTree::leaf_iterator PropertyTree::leaf_end()
 {
     return leaf_node_.end();
+}
+PropertyTree::const_leaf_iterator PropertyTree::leaf_cend() const
+{
+    return leaf_node_.cend();
 }
 
 //得到（当前node）子树节点的begin 位置的迭代器
@@ -201,32 +209,18 @@ PropertyTree::child_iterator PropertyTree::child_begin()
 {
     return child_node_.begin();
 }
+PropertyTree::const_child_iterator PropertyTree::child_cbegin() const
+{
+    return child_node_.cbegin();
+}
 //得到（当前node）子树节点的begin 位置的迭代器
 PropertyTree::child_iterator PropertyTree::child_end()
 {
     return child_node_.end();
 }
-
-/*!
-* @brief      取得一个叶子节点的数据,取回数据是srting
-* @return     int == 0 表示成功
-* @param      path_str 路径，用.表示一段子树
-* @param      val      返回的数值
-*/
-int PropertyTree::path_get_leaf(const std::string& path_str,
-                                const std::string& key_str,
-                                std::string& val) const
+PropertyTree::const_child_iterator PropertyTree::child_cend() const
 {
-    PropertyTree::const_leaf_iterator leaf_iter;
-
-    int ret = path_get_leafiter(path_str, key_str, leaf_iter);
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    val = leaf_iter->second;
-    return 0;
+    return child_node_.cend();
 }
 
 //增加一个新的CHILD,当然里面全部数据为NULL

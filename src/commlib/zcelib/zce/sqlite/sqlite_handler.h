@@ -85,7 +85,7 @@ public:
     int turn_off_synch();
 
     //!执行DDL等不需要结果的SQL
-    int execute(const char* sql_string);
+    int exe(const char* sql_string);
 
     /*!
     * @brief      执行SQL查下的封装,（二进制的不行）

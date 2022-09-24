@@ -75,7 +75,7 @@ int Ogre_IPRestrict_Mgr::check_ip_restrict(const zce::Sockaddr_In& remoteaddress
 
         if (iter == allow_ip_set_.end())
         {
-            ZCE_LOG(RS_INFO, "A NO Allowed IP|Port : %s Connect me.\n",
+            ZCE_LOG(RS_INFO, "A NO Allowed IP|Port : %s connect me.\n",
                     remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }

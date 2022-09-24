@@ -290,7 +290,7 @@ void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
     switch (atom->aio_type_)
     {
     case MYSQL_CONNECT:
-        atom->result_ = zce::mysql::execute::connect(
+        atom->result_ = zce::mysql::exe::connect(
             atom->db_connect_,
             atom->host_name_,
             atom->user_,
@@ -299,11 +299,11 @@ void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
         break;
     case MYSQL_DISCONNECT:
         atom->result_ = 0;
-        zce::mysql::execute::disconnect(
+        zce::mysql::exe::disconnect(
             atom->db_connect_);
         break;
     case MYSQL_QUERY_NOSELECT:
-        atom->result_ = zce::mysql::execute::query(
+        atom->result_ = zce::mysql::exe::query(
             atom->db_connect_,
             atom->sql_,
             atom->sql_len_,
@@ -311,7 +311,7 @@ void Worker::process_mysql(zce::aio::MySQL_Atom* atom)
             atom->insert_id_);
         break;
     case MYSQL_QUERY_SELECT:
-        atom->result_ = zce::mysql::execute::query(
+        atom->result_ = zce::mysql::exe::query(
             atom->db_connect_,
             atom->sql_,
             atom->sql_len_,

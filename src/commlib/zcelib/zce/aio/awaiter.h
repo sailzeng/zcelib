@@ -114,7 +114,7 @@ awaiter_fs co_write_file(zce::aio::Worker* worker,
 
 //!协程co_await 链接数据
 awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
-                               zce::mysql::Connect* db_connect,
+                               zce::mysql::connect* db_connect,
                                const char* host_name,
                                const char* user,
                                const char* pwd,
@@ -122,11 +122,11 @@ awaiter_mysql co_mysql_connect(zce::aio::Worker* worker,
 
 //!协程co_await 断开数据库链接
 awaiter_mysql co_mysql_disconnect(zce::aio::Worker* worker,
-                                  zce::mysql::Connect* db_connect);
+                                  zce::mysql::connect* db_connect);
 
 //!协程co_await 查询，非SELECT语句
 awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
-                             zce::mysql::Connect* db_connect,
+                             zce::mysql::connect* db_connect,
                              const char* sql,
                              size_t sql_len,
                              uint64_t* num_affect,
@@ -148,11 +148,11 @@ awaiter_dir co_dir_rmdir(zce::aio::Worker* worker,
 
 //!协程co_await 查询，SELECT语句
 awaiter_mysql co_mysql_query(zce::aio::Worker* worker,
-                             zce::mysql::Connect* db_connect,
+                             zce::mysql::connect* db_connect,
                              const char* sql,
                              size_t sql_len,
                              uint64_t* num_affect,
-                             zce::mysql::Result* db_result);
+                             zce::mysql::result* db_result);
 
 //!协程co_await getaddrinfo_ary
 awaiter_host co_host_getaddr_ary(zce::aio::Worker* worker,

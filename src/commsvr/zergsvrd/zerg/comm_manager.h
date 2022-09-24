@@ -9,7 +9,7 @@
 //脑子太笨的结果，其实很简单
 //如果一个SVCID对应多个端口，你不区分标识开，那么其他连接者知道连接的SVCID到底是那个端口吗？
 
-class TCP_Accept_Handler;
+class Accept_Handler;
 class UDP_Svc_Handler;
 
 #include "zerg/buf_storage.h"
@@ -24,7 +24,7 @@ namespace zerg
 class Comm_Manager
 {
     //
-    typedef std::vector<TCP_Accept_Handler*> TCPACCEPT_HANDLER_LIST;
+    typedef std::vector<Accept_Handler*> TCPACCEPT_HANDLER_LIST;
     //
     typedef std::vector<UDP_Svc_Handler*> UDPSVC_HANDLER_LIST;
 

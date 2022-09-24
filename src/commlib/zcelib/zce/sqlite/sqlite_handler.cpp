@@ -82,23 +82,23 @@ int SQLite_Handler::error_code()
 //开始一个事务
 int SQLite_Handler::begin_transaction()
 {
-    return execute("BEGIN TRANSACTION;");
+    return exe("BEGIN TRANSACTION;");
 }
 
 //提交一个事务
 int SQLite_Handler::commit_transction()
 {
-    return execute("COMMIT TRANSACTION;");
+    return exe("COMMIT TRANSACTION;");
 }
 
 //将同步选项关闭，可以适当的提高insert的速度，但是为了安全起见，建议不要使用
 int SQLite_Handler::turn_off_synch()
 {
-    return execute("PRAGMA synchronous=OFF;");
+    return exe("PRAGMA synchronous=OFF;");
 }
 
 //!执行DDL等不需要结果的SQL
-int SQLite_Handler::execute(const char* sql_string)
+int SQLite_Handler::exe(const char* sql_string)
 {
     int ret = 0;
     char* err_msg = NULL;
@@ -113,7 +113,7 @@ int SQLite_Handler::execute(const char* sql_string)
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_exec execute sql [%s] fail.:[%d][%s].",
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_exec exe sql [%s] fail.:[%d][%s].",
                 sql_string,
                 ret,
                 err_msg);
@@ -135,7 +135,7 @@ int SQLite_Handler::get_table(const char* sql_string,
                               &(err_msg));
     if (ret != SQLITE_OK)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_get_table execute fail:[%d][%s]",
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_get_table exe fail:[%d][%s]",
                 ret,
                 err_msg);
         ::sqlite3_free(err_msg);

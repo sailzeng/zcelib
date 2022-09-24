@@ -158,6 +158,6 @@ protected:
 
 typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;
 typedef buffer_pool<zce::null_lock, queue_buffer> queue_buffer_pool;
-typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_lock;
-typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_lock;
+typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_s;
+typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_s;
 }

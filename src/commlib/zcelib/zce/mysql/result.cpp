@@ -6,9 +6,8 @@
 
 namespace zce::mysql
 {
-
 //构造函数
-Result::Result() :
+result::result() :
     mysql_result_(NULL),
     current_row_(NULL),
     current_field_(0),
@@ -20,7 +19,7 @@ Result::Result() :
 }
 
 //构造函数
-Result::Result(MYSQL_RES* sqlresult) :
+result::result(MYSQL_RES* sqlresult) :
     mysql_result_(NULL),
     current_row_(NULL),
     current_field_(0),
@@ -33,7 +32,7 @@ Result::Result(MYSQL_RES* sqlresult) :
 }
 
 //析构函数
-Result::~Result()
+result::~result()
 {
     // 释放结果集合的内存资源
     if (mysql_result_ != NULL)
@@ -43,7 +42,7 @@ Result::~Result()
 }
 
 //放入结果集合
-void Result::set_mysql_result(MYSQL_RES* sqlresult)
+void result::set_mysql_result(MYSQL_RES* sqlresult)
 {
     ZCE_ASSERT(sqlresult);
 
@@ -83,7 +82,7 @@ void Result::set_mysql_result(MYSQL_RES* sqlresult)
 }
 
 //如果已经有结果集, 释放原有的结果集,
-void Result::free_result()
+void result::free_result()
 {
     //如果已经有结果集, 释放原有的结果集,
     if (NULL != mysql_result_)
@@ -94,7 +93,7 @@ void Result::free_result()
 }
 
 //检索一个结果集合的下一行,最开始从0行开始
-bool Result::fetch_row_next()
+bool result::fetch_row_next()
 {
     if (mysql_result_ == NULL)
     {
@@ -118,7 +117,7 @@ bool Result::fetch_row_next()
 }
 
 //检索到row_id 行,
-int Result::seek_row(size_t row_id)
+int result::seek_row(size_t row_id)
 {
     //检查结果集合为空,或者参数row错误
     if (mysql_result_ == NULL || row_id >= num_result_row_)
@@ -135,7 +134,7 @@ int Result::seek_row(size_t row_id)
 }
 
 //根据列序号ID得到字段值,data作为返回值
-const char* Result::field_data(const char* fname) const
+const char* result::field_data(const char* fname) const
 {
     //根据列的名字得到Field ID
     size_t fid = 0;
@@ -151,7 +150,7 @@ const char* Result::field_data(const char* fname) const
 }
 
 //根据字段列ID,得到字段值
-int Result::field_data(const char* fname, char* pfdata) const
+int result::field_data(const char* fname, char* pfdata) const
 {
     //根据列的名字得到Field ID
     size_t fid = 0;
@@ -170,7 +169,7 @@ int Result::field_data(const char* fname, char* pfdata) const
 }
 
 //
-int Result::get_field(const char* fname, zce::mysql::Field& ffield) const
+int result::get_field(const char* fname, zce::mysql::Field& ffield) const
 {
     //循环比较所有的列名,效率比较低下
     size_t fid = 0;
@@ -189,7 +188,7 @@ int Result::get_field(const char* fname, zce::mysql::Field& ffield) const
 
 //根据字段名称得到字段表结构定义的类型,效率较低,
 //返回-1 表示错误
-int Result::field_type(const char* fname, enum_field_types& ftype) const
+int result::field_type(const char* fname, enum_field_types& ftype) const
 {
     //循环比较所有的列名,效率比较低下
     size_t fid = 0;
@@ -207,7 +206,7 @@ int Result::field_type(const char* fname, enum_field_types& ftype) const
 }
 
 //根据Field Name 得到此列值的实际长度
-int Result::field_length(const char* fname, unsigned int& flength) const
+int result::field_length(const char* fname, unsigned int& flength) const
 {
     //根据列的名字得到Field ID
     size_t fid = 0;
@@ -225,7 +224,7 @@ int Result::field_length(const char* fname, unsigned int& flength) const
 }
 
 //根据字段顺序ID,得到表结构定义的字段长度
-int Result::field_define_size(unsigned int fieldid, unsigned int& flength) const
+int result::field_define_size(unsigned int fieldid, unsigned int& flength) const
 {
     //检查结果集合为空,或者参数fieldid错误
     if (mysql_result_ == NULL && fieldid >= num_result_field_)
@@ -239,7 +238,7 @@ int Result::field_define_size(unsigned int fieldid, unsigned int& flength) const
 }
 
 //根据字段名称得到表结构定义的字段长度,效率较低
-int Result::field_define_size(const char* fname, unsigned int& fdefsz) const
+int result::field_define_size(const char* fname, unsigned int& fdefsz) const
 {
     //循环比较所有的列名,效率比较低下
     size_t fid = 0;
@@ -258,7 +257,7 @@ int Result::field_define_size(const char* fname, unsigned int& fdefsz) const
 
 //>>操作是给C++的爱好者准备的，但是其在发生问题是无法报错(参数限制),除非你用异常
 //用于结果集合中的当前行，当前列数据输出，输出晚后列值加+1
-Result& Result::operator >> (char& val)
+result& result::operator >> (char& val)
 {
     val = 0;
 
@@ -271,7 +270,7 @@ Result& Result::operator >> (char& val)
     return *this;
 }
 
-Result& Result::operator >> (short& val)
+result& result::operator >> (short& val)
 {
     val = 0;
 
@@ -284,7 +283,7 @@ Result& Result::operator >> (short& val)
     return *this;
 }
 
-Result& Result::operator >> (int& val)
+result& result::operator >> (int& val)
 {
     val = 0;
 
@@ -297,7 +296,7 @@ Result& Result::operator >> (int& val)
     return *this;
 }
 
-Result& Result::operator >> (long& val)
+result& result::operator >> (long& val)
 {
     val = 0;
     //如果结果集为空
@@ -310,7 +309,7 @@ Result& Result::operator >> (long& val)
     return *this;
 }
 
-Result& Result::operator >> (long long& val)
+result& result::operator >> (long long& val)
 {
     val = 0;
     //转换以及检查
@@ -323,7 +322,7 @@ Result& Result::operator >> (long long& val)
     return *this;
 }
 
-Result& Result::operator >> (unsigned char& val)
+result& result::operator >> (unsigned char& val)
 {
     val = 0;
     //如果结果集为空
@@ -336,7 +335,7 @@ Result& Result::operator >> (unsigned char& val)
     return *this;
 }
 
-Result& Result::operator >> (unsigned short& val)
+result& result::operator >> (unsigned short& val)
 {
     val = 0;
     //转换以及检查
@@ -349,7 +348,7 @@ Result& Result::operator >> (unsigned short& val)
     return *this;
 }
 
-Result& Result::operator >> (unsigned long& val)
+result& result::operator >> (unsigned long& val)
 {
     val = 0;
     //转换以及检查
@@ -362,7 +361,7 @@ Result& Result::operator >> (unsigned long& val)
     return *this;
 }
 
-Result& Result::operator >> (unsigned int& val)
+result& result::operator >> (unsigned int& val)
 {
     val = 0;
     //转换以及检查
@@ -375,7 +374,7 @@ Result& Result::operator >> (unsigned int& val)
     return *this;
 }
 
-Result& Result::operator >> (unsigned long long& val)
+result& result::operator >> (unsigned long long& val)
 {
     val = 0;
     //转换以及检查
@@ -388,7 +387,7 @@ Result& Result::operator >> (unsigned long long& val)
     return *this;
 }
 
-Result& Result::operator >> (float& val)
+result& result::operator >> (float& val)
 {
     val = 0.0;
     //转换以及检查
@@ -401,7 +400,7 @@ Result& Result::operator >> (float& val)
     return *this;
 }
 
-Result& Result::operator >> (double& val)
+result& result::operator >> (double& val)
 {
     val = 0.0;
     //转换以及检查
@@ -415,7 +414,7 @@ Result& Result::operator >> (double& val)
 }
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
-Result& Result::operator >> (char* val)
+result& result::operator >> (char* val)
 {
     ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
 
@@ -429,7 +428,7 @@ Result& Result::operator >> (char* val)
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 //考虑过对于unsigned char *做一些特别处理，后来还是算了,用BINARY去考虑了
-Result& Result::operator >> (unsigned char* val)
+result& result::operator >> (unsigned char* val)
 {
     ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
 
@@ -442,7 +441,7 @@ Result& Result::operator >> (unsigned char* val)
 }
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-Result& Result::operator >> (Result::BINARY* val)
+result& result::operator >> (result::BINARY* val)
 {
     ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
 
@@ -453,7 +452,7 @@ Result& Result::operator >> (Result::BINARY* val)
     return *this;
 }
 
-Result& Result::operator >> (std::string& val)
+result& result::operator >> (std::string& val)
 {
     if (current_row_[current_field_])
     {
@@ -467,7 +466,6 @@ Result& Result::operator >> (std::string& val)
     ++current_field_;
     return *this;
 }
-
 }
 
 //如果你要用MYSQL的库

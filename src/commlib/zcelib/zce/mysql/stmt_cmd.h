@@ -23,34 +23,34 @@
 #if MYSQL_VERSION_ID >= 40100
 
 /*********************************************************************************
-class STMT_Command
+class stmt_cmd
 *********************************************************************************/
 
 namespace zce::mysql
 {
-class Connect;
-class STMT_Bind;
-class Result;
+class connect;
+class stmt_bind;
+class result;
 
-class STMT_Command
+class stmt_cmd
 {
 public:
     //
-    STMT_Command();
+    stmt_cmd();
     //指定一个connect
-    STMT_Command(zce::mysql::Connect*);
+    stmt_cmd(zce::mysql::connect*);
     //
-    ~STMT_Command();
+    ~stmt_cmd();
 
     /*!
-    * @brief      设置Command的zce::mysql::Connect
+    * @brief      设置Command的zce::mysql::connect
     * @return     int
-    * @param      zce::mysql::Connect* 设置的链接
+    * @param      zce::mysql::connect* 设置的链接
     */
-    int set_connection(zce::mysql::Connect*);
+    int set_connection(zce::mysql::connect*);
 
     //!得到此Command的zce::mysql::Connect对象
-    inline zce::mysql::Connect* get_connection();
+    inline zce::mysql::connect* get_connection();
 
     inline MYSQL_STMT* get_stmt_handle();
 
@@ -63,13 +63,13 @@ public:
     * @note
     */
     int set_stmt_command(const std::string& sqlcmd,
-                         STMT_Bind* bindparam,
-                         STMT_Bind* bindresult);
+                         stmt_bind* bindparam,
+                         stmt_bind* bindresult);
 
     //设置SQL Command语句,TXT,BIN语句都可以,同时绑定参数,结果
     int set_stmt_command(const char* stmtcmd, size_t szsql,
-                         STMT_Bind* bindparam,
-                         STMT_Bind* bindresult);
+                         stmt_bind* bindparam,
+                         stmt_bind* bindresult);
 
     //得到SQL Command语句,TXT型
     const char* get_stmt_command() const;
@@ -84,7 +84,7 @@ public:
     * @param      num_affect  返回的影响记录条数
     * @param      lastid      返回的LASTID
     */
-    int execute(unsigned int& num_affect, unsigned int& lastid);
+    int exe(unsigned int& num_affect, unsigned int& lastid);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,
@@ -92,7 +92,7 @@ public:
     * @return     int
     * @param      num_affect 返回的影响记录条数
     */
-    int execute(unsigned int& num_affect);
+    int exe(unsigned int& num_affect);
 
     //从结果结合取出数据
     int fetch_row_next() const;
@@ -108,9 +108,9 @@ public:
     inline unsigned int get_num_of_result_fields() const;
 
     //将参数转化为MetaData,MySQL的结果集合
-    void param_2_metadata(zce::mysql::Result*) const;
+    void param_2_metadata(zce::mysql::result*) const;
     //将结果转化为MetaData,MySQL的结果集合
-    void result_2_metadata(zce::mysql::Result*) const;
+    void result_2_metadata(zce::mysql::result*) const;
 
     // 返回错误消息
     inline const char* error_message() const;
@@ -126,8 +126,8 @@ protected:
     * @param      bindresult   绑定的结果
     * @note
     */
-    int stmt_prepare_bind(STMT_Bind* bindparam,
-                          STMT_Bind* bindresult);
+    int stmt_prepare_bind(stmt_bind* bindparam,
+                          stmt_bind* bindresult);
     //!SQL 执行命令，这个事一个基础函数，内部调用
     int execute_i(unsigned int* num_affect, unsigned int* lastid);
 
@@ -138,7 +138,7 @@ protected:
 protected:
 
     ///联接
-    zce::mysql::Connect* mysql_connect_;
+    zce::mysql::connect* mysql_connect_;
 
     ///STMT SQL 命令
     std::string         stmt_command_;
@@ -151,37 +151,37 @@ protected:
 };
 
 //得到connect 的句柄
-inline zce::mysql::Connect* STMT_Command::get_connection()
+inline zce::mysql::connect* stmt_cmd::get_connection()
 {
     return mysql_connect_;
 }
 
 //返回STMT Handle
-inline MYSQL_STMT* STMT_Command::get_stmt_handle()
+inline MYSQL_STMT* stmt_cmd::get_stmt_handle()
 {
     return mysql_stmt_;
 }
 
 // 返回错误消息
-inline const char* STMT_Command::error_message() const
+inline const char* stmt_cmd::error_message() const
 {
     return mysql_stmt_error(mysql_stmt_);
 }
 
 // 返回错误号
-inline unsigned int STMT_Command::error_no() const
+inline unsigned int stmt_cmd::error_no() const
 {
     return mysql_stmt_errno(mysql_stmt_);
 }
 
 //返回结果集的行数目
-inline unsigned int STMT_Command::get_num_of_result_rows() const
+inline unsigned int stmt_cmd::get_num_of_result_rows() const
 {
     return static_cast <unsigned int>(mysql_stmt_num_rows(mysql_stmt_));
 }
 
 //返回结果集的列数目
-inline unsigned int STMT_Command::get_num_of_result_fields() const
+inline unsigned int stmt_cmd::get_num_of_result_fields() const
 {
     return static_cast <unsigned int>(mysql_stmt_field_count(mysql_stmt_));
 }

@@ -251,7 +251,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Connect peer socket Services ID[%u|%u] IP Address:[%s] Success. Set O_NONBLOCK ret =%d.",
+    ZCE_LOG(RS_INFO, "[zergsvr] connect peer socket Services ID[%u|%u] IP Address:[%s] Success. Set O_NONBLOCK ret =%d.",
             peer_svr_id_.services_type_,
             peer_svr_id_.services_id_,
             peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
@@ -316,7 +316,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     opvallen = sizeof(socklen_t);
     socket_peer_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void*>(&rcvbuflen), &opvallen);
     socket_peer_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void*>(&sndbuflen), &opvallen);
-    ZCE_LOG(RS_DEBUG, "[zergsvr] Set Connect Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_DEBUG, "[zergsvr] Set connect Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 #endif
 }
 
@@ -536,9 +536,9 @@ int TCP_Svc_Handler::timer_timeout(const zce::Time_Value& now_time, const void* 
             //如果是监听的端口，而且有相应的超时判断
             if (HANDLER_MODE_ACCEPTED == handler_mode_ &&
                 ((0 == start_live_time_ && 0 < accepted_timeout_) ||
-                 (0 < start_live_time_ && 0 < receive_timeout_)))
+                (0 < start_live_time_ && 0 < receive_timeout_)))
             {
-                ZCE_LOG(RS_ERROR, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s]"
+                ZCE_LOG(RS_ERROR, "[zergsvr] connect or receive expire event,peer services [%u|%u] IP[%s]"
                         "want to close handle. live time %lu. recieve times=%u.",
                         peer_svr_id_.services_type_,
                         peer_svr_id_.services_id_,
@@ -559,7 +559,7 @@ int TCP_Svc_Handler::timer_timeout(const zce::Time_Value& now_time, const void* 
         }
 
         //打印一下各个端口的生存信息
-        ZCE_LOG(RS_DEBUG, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s] live "
+        ZCE_LOG(RS_DEBUG, "[zergsvr] connect or receive expire event,peer services [%u|%u] IP[%s] live "
                 "time %lu. recieve times=%u.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
@@ -667,7 +667,7 @@ int TCP_Svc_Handler::handle_close()
     //不进行主动重新连接,如果有一个新的数据要发送时主动重新连接
     if (handler_mode_ == HANDLER_MODE_CONNECT)
     {
-        ZCE_LOG(RS_INFO, "[zergsvr] Connect peer close, services[%u|%u] socket IP|Port :[%s].",
+        ZCE_LOG(RS_INFO, "[zergsvr] connect peer close, services[%u|%u] socket IP|Port :[%s].",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
                 peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len)
@@ -797,7 +797,7 @@ int TCP_Svc_Handler::preprocess_recvframe(soar::Zerg_Frame* proc_frame)
         //最后调整自己PEER的状态
         peer_status_ = PEER_STATUS_ACTIVE;
 
-        ZCE_LOG(RS_INFO, "[zergsvr] Connect peer services[%u|%u],IP|Prot[%s] active success.",
+        ZCE_LOG(RS_INFO, "[zergsvr] connect peer services[%u|%u],IP|Prot[%s] active success.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
                 peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len)
@@ -863,7 +863,7 @@ int TCP_Svc_Handler::process_connect_register()
     //打印信息
     zce::Sockaddr_In      peeraddr;
     socket_peer_.getpeername(&peeraddr);
-    ZCE_LOG(RS_INFO, "[zergsvr] Connect services[%u|%u] peer socket IP|Port :[%s] Success.",
+    ZCE_LOG(RS_INFO, "[zergsvr] connect services[%u|%u] peer socket IP|Port :[%s] Success.",
             peer_svr_id_.services_type_,
             peer_svr_id_.services_id_,
             peeraddr.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
@@ -1194,7 +1194,7 @@ int TCP_Svc_Handler::process_send_error(zerg::Buffer* tmpbuf, bool frame_encode)
             //如果是要记录的命令，记录下来，可以帮忙回溯一些问题
             if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD)
             {
-                ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame "
+                ZCE_LOG(RS_ERROR, "[zergsvr] connect peer ,send frame fail.frame len[%u] frame command[%u] frame "
                         "uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s],peer status[%u]. ",
                         proc_frame->length_,
                         proc_frame->command_,
@@ -1661,7 +1661,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             {
                 //
                 ZCE_LOG(RS_ERROR, "[zergsvr] Peer services[%u|%u] IP[%s] appFrame Error,Frame Len:%u,"
-                        "Command:%u,Uin:%u "
+                        "command:%u,Uin:%u "
                         "Peer SvrType|SvrID:%u|%u,"
                         "Self SvrType|SvrID:%u|%u,"
                         "Send SvrType|SvrID:%u|%u,"

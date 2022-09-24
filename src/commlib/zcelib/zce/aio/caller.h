@@ -53,8 +53,8 @@ class Time_Value;
 //前向声明
 namespace zce::mysql
 {
-class Connect;
-class Result;
+class connect;
+class result;
 }
 
 //!
@@ -178,7 +178,7 @@ struct MySQL_Atom :public AIO_Atom
     virtual void clear() override;
     //!
     int result_ = -1;
-    zce::mysql::Connect* db_connect_ = nullptr;
+    zce::mysql::connect* db_connect_ = nullptr;
     const char* host_name_ = nullptr;
     const char* user_ = nullptr;
     const char* pwd_ = nullptr;
@@ -187,7 +187,7 @@ struct MySQL_Atom :public AIO_Atom
     size_t sql_len_ = 0;
     uint64_t* num_affect_ = nullptr;
     uint64_t* insert_id_ = nullptr;
-    zce::mysql::Result* db_result_ = nullptr;
+    zce::mysql::result* db_result_ = nullptr;
 };
 
 //!
@@ -327,7 +327,7 @@ int dir_rmdir(zce::aio::Worker* worker,
 
 //!链接数据
 int mysql_connect(zce::aio::Worker* worker,
-                  zce::mysql::Connect* db_connect,
+                  zce::mysql::connect* db_connect,
                   const char* host_name,
                   const char* user,
                   const char* pwd,
@@ -336,12 +336,12 @@ int mysql_connect(zce::aio::Worker* worker,
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::Worker* worker,
-                     zce::mysql::Connect* db_connect,
+                     zce::mysql::connect* db_connect,
                      std::function<void(AIO_Atom*)> call_back);
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::Worker* worker,
-                zce::mysql::Connect* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -350,11 +350,11 @@ int mysql_query(zce::aio::Worker* worker,
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::Worker* worker,
-                zce::mysql::Connect* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
-                zce::mysql::Result* db_result,
+                zce::mysql::result* db_result,
                 std::function<void(AIO_Atom*)> call_back);
 
 //!host 函数，用于获取地址，AIO_Atom 可以转化为Host_Atom使用
@@ -423,4 +423,6 @@ int socket_recvfrom(zce::aio::Worker* worker,
                     int flags = 0);
 
 //!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
+//!
+//!
 }//namespace zce::aio

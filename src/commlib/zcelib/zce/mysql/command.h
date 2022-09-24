@@ -29,28 +29,28 @@ namespace zce::mysql
 * @brief      MYSQL的命令对象，用于处理SQL语句的执行，获得结果集
 *
 */
-class Command : public zce::NON_Copyable
+class command : public zce::NON_Copyable
 {
 public:
     ///命令对象的构造函数
-    Command();
+    command();
     ///命令对象的构造函数，指定一个connect
-    Command(zce::mysql::Connect*);
+    command(zce::mysql::connect*);
     ///命令对象的析构函数
-    ~Command();
+    ~command();
 
     /*!
-    * @brief      设置Command的zce::mysql::Connect
+    * @brief      设置Command的zce::mysql::connect
     * @return     int  0成功，-1失败
     * @param      conn 链接对象，必须已经链接成功喔
     */
-    int set_connection(zce::mysql::Connect* conn);
+    int set_connection(zce::mysql::connect* conn);
 
     /*!
     * @brief      得到此Command的zce::mysql::Connect对象
-    * @return     zce::mysql::Connect*
+    * @return     zce::mysql::connect*
     */
-    inline zce::mysql::Connect* get_connection();
+    inline zce::mysql::connect* get_connection();
 
     /*!
     * @brief      设置SQL Command语句,为BIN型的SQL语句准备
@@ -100,7 +100,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
     */
-    int execute(uint64_t& num_affect, uint64_t& last_id);
+    int query(uint64_t& num_affect, uint64_t& last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -108,7 +108,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      sqlresult   返回的结果集合
     */
-    int execute(uint64_t& num_affect, zce::mysql::Result& sql_result);
+    int query(uint64_t& num_affect, zce::mysql::result& sql_result);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
@@ -116,7 +116,7 @@ public:
     * @return     int
     * @param      sqlresult 返回的结果集合
     */
-    int execute(zce::mysql::Result& sqlresult);
+    int query(zce::mysql::result& sqlresult);
 
 #if MYSQL_VERSION_ID > 40100
 
@@ -126,19 +126,19 @@ public:
     * @param[out] sqlresult 返回的MySQL结果集合
     * @param[out] bstore    使用mysql_store_result取回结果集合，还是mysql_use_result
     */
-    int fetch_next_multi_result(zce::mysql::Result& sqlresult,
+    int fetch_next_multi_result(zce::mysql::result& sqlresult,
                                 bool bstore = true);
 
 #endif //MYSQL_VERSION_ID > 40100
 
     ///C++ 的一些习惯用法，为了执着的C++爱好使用者编写,在写这段代码的时候，好像对C++的流颇有兴趣……
     /// =操作符,
-    inline Command& operator =(const char* sqlcmd);
-    inline Command& operator =(const std::string& sqlcmd);
+    inline command& operator =(const char* sqlcmd);
+    inline command& operator =(const std::string& sqlcmd);
 
-    ///+=操作符号,用于向SQL Command 后部添加STR
-    inline Command& operator +=(const char* sqlcmd);
-    inline Command& operator +=(const std::string& sqlcmd);
+    ///+=操作符号,用于向SQL command 后部添加STR
+    inline command& operator +=(const char* sqlcmd);
+    inline command& operator +=(const std::string& sqlcmd);
 
     /*!
     * @brief      返回错误消息
@@ -188,10 +188,10 @@ protected:
     * @param[out] sqlresult   SQL执行后的结果集合
     * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
     */
-    int execute(uint64_t* num_affect,
-                uint64_t* last_id,
-                zce::mysql::Result* sqlresult,
-                bool bstore);
+    int query(uint64_t* num_affect,
+              uint64_t* last_id,
+              zce::mysql::result* sqlresult,
+              bool bstore);
 
 protected:
     //命令缓冲buf的大小
@@ -200,7 +200,7 @@ protected:
 protected:
 
     ///联接
-    zce::mysql::Connect* mysql_connect_ = NULL;
+    zce::mysql::connect* mysql_connect_ = NULL;
     ///SQL
     std::string mysql_command_;
 
@@ -212,19 +212,19 @@ protected:
 #if MYSQL_VERSION_ID > 40100
 
 //得到错误信息
-inline int Command::set_auto_commit(bool bauto)
+inline int command::set_auto_commit(bool bauto)
 {
     return mysql_connect_->set_auto_commit(bauto);
 }
 
 //得到错误信息
-inline int Command::trans_commit()
+inline int command::trans_commit()
 {
     return mysql_connect_->trans_commit();
 }
 
 //得到错误信息
-inline int Command::trans_rollback()
+inline int command::trans_rollback()
 {
     return mysql_connect_->trans_rollback();
 }
@@ -232,25 +232,25 @@ inline int Command::trans_rollback()
 #endif //MYSQL_VERSION_ID > 40100
 
 //得到connect 的句柄
-inline zce::mysql::Connect* Command::get_connection()
+inline zce::mysql::connect* command::get_connection()
 {
     return mysql_connect_;
 }
 
 //得到错误信息
-inline const char* Command::error_message()
+inline const char* command::error_message()
 {
     return mysql_connect_->error_message();
 }
 
 //得到错误的ID
-inline unsigned int Command::error_no()
+inline unsigned int command::error_no()
 {
     return mysql_connect_->error_no();
 }
 
 //SQL预计的赋值，
-inline int Command::set_sql_command(const char* sqlcmd, size_t szsql)
+inline int command::set_sql_command(const char* sqlcmd, size_t szsql)
 {
     //如果错误,返回
     if (sqlcmd == NULL)
@@ -265,33 +265,33 @@ inline int Command::set_sql_command(const char* sqlcmd, size_t szsql)
 }
 
 //为TXT,BIN二进制的SQL命令提供的赋值方式 ,
-inline int Command::set_sql_command(const std::string& sqlcmd)
+inline int command::set_sql_command(const std::string& sqlcmd)
 {
     mysql_command_ = sqlcmd;
     return 0;
 }
 
 //
-inline Command& Command::operator =(const char* sqlcmd)
+inline command& command::operator =(const char* sqlcmd)
 {
     set_sql_command(sqlcmd);
     return *this;
 }
 //
-inline Command& Command::operator =(const std::string& sqlcmd)
+inline command& command::operator =(const std::string& sqlcmd)
 {
     set_sql_command(sqlcmd);
     return *this;
 }
 
 //
-inline Command& Command::operator +=(const char* sqlcmd)
+inline command& command::operator +=(const char* sqlcmd)
 {
     mysql_command_.append(sqlcmd);
     return *this;
 }
 
-inline Command& Command::operator +=(const std::string& sqlcmd)
+inline command& command::operator +=(const std::string& sqlcmd)
 {
     mysql_command_.append(sqlcmd);
     return *this;

@@ -192,7 +192,6 @@ int read_xml(const char* file_name, zce::PropertyTree* propertytree)
                 zce::last_error());
         return pair.first;
     }
-
     try
     {
         // character type defaults to char
@@ -212,7 +211,6 @@ int read_xml(const char* file_name, zce::PropertyTree* propertytree)
                 e.where<char>());
         return -1;
     }
-
     return 0;
 }
 
@@ -224,4 +222,46 @@ int write_xml(const char* /*file_name*/,
 }
 
 #endif
+
+int read_cvs(const char* file_name,
+             std::vector<std::vector<std::string> > *data,
+             size_t read_line_len,
+             unsigned char word_delim)
+{
+    //1行的最大值
+    std::string readfile_name = file_name;
+    std::unique_ptr<char[]> one_line(new char[read_line_len + 1]);
+
+    //
+    std::ifstream read_file(readfile_name.c_str(), std::ios::in | std::ios::binary);
+
+    //先读取文件，全部读取
+    if (!read_file)
+    {
+        ZCE_LOG(RS_ERROR, "[framework] Batch process file read fail[%s].",
+                readfile_name.c_str());
+        return -1;
+    }
+    ZCE_LOG(RS_INFO, "[framework] Batch process file [%s] open success.file .",
+            readfile_name.c_str());
+
+    //如果文件状态正确,
+    while (read_file)
+    {
+        //
+        read_file.getline(one_line.get(), read_line_len);
+        std::vector<std::string> line_data;
+        auto start_p = one_line.get();
+        auto end_p = std::strchr(start_p, word_delim);
+        while (end_p)
+        {
+            line_data.push_back(std::string(start_p, end_p));
+            start_p = end_p + 1;
+            end_p = std::strchr(start_p, word_delim);
+        }
+        line_data.push_back(std::string(start_p, end_p));
+        data->push_back(std::move(line_data));
+    }
+    return 0;
+}
 }

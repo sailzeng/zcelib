@@ -33,10 +33,10 @@ const char* DB_BENCHMARK_USER = "root";
 const char* DB_BENCHMARK_PASSWORD = "";
 
 //MYSQL数据库连接对象
-static zce::mysql::Connect g_db_connect;
+static zce::mysql::connect g_db_connect;
 
 //MYSQL命令执行对象
-static zce::mysql::Command g_db_command;
+static zce::mysql::command g_db_command;
 
 int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_id, char* szErr)
 {
@@ -64,7 +64,7 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
     }
 
     g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.execute(num_affect, insert_id);
+    ret = g_db_command.exe(num_affect, insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -78,7 +78,7 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
 
 int benchmark_db_query(const char* sql,
                        uint64_t& num_affect,
-                       zce::mysql::Result& db_result,
+                       zce::mysql::result& db_result,
                        char* szErr)
 {
     int ret = 0;
@@ -104,7 +104,7 @@ int benchmark_db_query(const char* sql,
         g_db_connect.ping();
     }
     g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.execute(num_affect, db_result);
+    ret = g_db_command.exe(num_affect, db_result);
     //如果错误
     if (ret != 0)
     {
@@ -117,7 +117,7 @@ int benchmark_db_query(const char* sql,
 }
 
 int benchmark_db_query(const char* sql,
-                       zce::mysql::Result& db_result,
+                       zce::mysql::result& db_result,
                        char* szErr)
 {
     int ret = 0;
@@ -144,7 +144,7 @@ int benchmark_db_query(const char* sql,
     }
 
     g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.execute(db_result);
+    ret = g_db_command.exe(db_result);
     //如果错误
     if (ret != 0)
     {
@@ -228,7 +228,7 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
     );
     if (bexcutesql)
     {
-        zce::mysql::Result db_result;
+        zce::mysql::result db_result;
         uint64_t num_affect;
         //进行查询,
         int ret = benchmark_db_query(tmpsql, num_affect, db_result, szErr);

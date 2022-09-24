@@ -6,8 +6,7 @@
 
 namespace zce::mysql
 {
-
-Command::Command() :
+command::command() :
     mysql_connect_(NULL)
 {
     //保留INITBUFSIZE的空间
@@ -15,7 +14,7 @@ Command::Command() :
     sql_buffer_ = new char[INITBUFSIZE];
 }
 
-Command::Command(zce::mysql::Connect* conn) :
+command::command(zce::mysql::connect* conn) :
     mysql_connect_(NULL)
 {
     //assert(conn != NULL);
@@ -29,7 +28,7 @@ Command::Command(zce::mysql::Connect* conn) :
     sql_buffer_ = new char[INITBUFSIZE];
 }
 
-Command::~Command()
+command::~command()
 {
     if (sql_buffer_)
     {
@@ -39,7 +38,7 @@ Command::~Command()
 }
 
 //为Command设置相关的连接对象，而且是必须已经成功连接上数据的
-int Command::set_connection(zce::mysql::Connect* conn)
+int command::set_connection(zce::mysql::connect* conn)
 {
     if (conn != NULL && conn->is_connected())
     {
@@ -51,7 +50,7 @@ int Command::set_connection(zce::mysql::Connect* conn)
 }
 
 ///设置SQL Command语句,动态参数版本
-int Command::set_sql_command(const char* sql_format, ...)
+int command::set_sql_command(const char* sql_format, ...)
 {
     va_list args;
     va_start(args, sql_format);
@@ -74,14 +73,14 @@ int Command::set_sql_command(const char* sql_format, ...)
     return 0;
 }
 
-//得到SQL Command. 重载多种形式,用于文本类型
-const char* Command::get_sql_command() const
+//得到SQL command. 重载多种形式,用于文本类型
+const char* command::get_sql_command() const
 {
     return mysql_command_.c_str();
 }
 
 // 得到SQL 语句. 类型数据,传入的char buf长度是否足够自己保证
-int Command::get_sql_command(char* cmdbuf, size_t& szbuf) const
+int command::get_sql_command(char* cmdbuf, size_t& szbuf) const
 {
     if (cmdbuf == NULL)
     {
@@ -97,12 +96,12 @@ int Command::get_sql_command(char* cmdbuf, size_t& szbuf) const
     }
 
     szbuf = size_sql;
-    memcpy(cmdbuf, mysql_command_.c_str(), szbuf);
+    ::memcpy(cmdbuf, mysql_command_.c_str(), szbuf);
     return 0;
 }
 
 //
-void Command::get_sql_command(std::string& strcmd) const
+void command::get_sql_command(std::string& strcmd) const
 {
     //预先分配内存,保证效率
     strcmd.reserve(mysql_command_.length());
@@ -111,10 +110,10 @@ void Command::get_sql_command(std::string& strcmd) const
 
 //int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
 //执行SQL语句，功能全集，不对外使用
-int Command::execute(uint64_t* num_affect,
-                     uint64_t* last_id,
-                     zce::mysql::Result* sql_result,
-                     bool bstore)
+int command::query(uint64_t* num_affect,
+                   uint64_t* last_id,
+                   zce::mysql::result* sql_result,
+                   bool bstore)
 {
     //如果没有设置连接或者没有设置命令
     if (mysql_connect_ == NULL || mysql_command_.empty())
@@ -176,31 +175,31 @@ int Command::execute(uint64_t* num_affect,
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
-int Command::execute(uint64_t& num_affect, uint64_t& last_id)
+int command::query(uint64_t& num_affect, uint64_t& last_id)
 {
-    return execute(&num_affect, &last_id, NULL, false);
+    return query(&num_affect, &last_id, NULL, false);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
-int Command::execute(uint64_t& num_affect, zce::mysql::Result& sql_result)
+int command::query(uint64_t& num_affect, zce::mysql::result& sql_result)
 {
-    return execute(&num_affect, NULL, &sql_result, true);
+    return query(&num_affect, NULL, &sql_result, true);
 }
 
 //执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
 //用于结果集太多的处理,如果一次转储结果集会占用太多内存的处理,可以考虑用它,
 //但不推荐使用,一次取一行,交互太多
-int Command::execute(zce::mysql::Result& sql_result)
+int command::query(zce::mysql::result& sql_result)
 {
-    return execute(NULL, NULL, &sql_result, false);
+    return query(NULL, NULL, &sql_result, false);
 }
 
 #if MYSQL_VERSION_ID > 40100
 
 //用于 multiple-statement executions 中得到多个
 //如果
-int Command::fetch_next_multi_result(zce::mysql::Result& sqlresult, bool bstore)
+int command::fetch_next_multi_result(zce::mysql::result& sqlresult, bool bstore)
 {
     int tmpret = ::mysql_next_result(mysql_connect_->get_mysql_handle());
 
@@ -238,7 +237,6 @@ int Command::fetch_next_multi_result(zce::mysql::Result& sqlresult, bool bstore)
 }
 
 #endif //MYSQL_VERSION_ID > 40100
-
 }
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL

@@ -41,8 +41,7 @@
 */
 namespace zce::mysql
 {
-
-class Result : zce::NON_Copyable
+class result : zce::NON_Copyable
 {
 public:
 
@@ -53,11 +52,11 @@ public:
 
 public:
     ///构造函数
-    Result();
+    result();
     ///构造函数
-    Result(MYSQL_RES* sqlresult);
+    result(MYSQL_RES* sqlresult);
     ///析构函数
-    ~Result();
+    ~result();
 
     ///结果集合是否为空
     inline bool is_null();
@@ -221,29 +220,29 @@ public:
     /// >> 操作符号,用于将结果输出到val中
     ///早年为了安全，>>操作前还做了各种防止溢出的检查，结果反而导致一个bug，
     ///所以后来改为还是由调用者包装边界安全把
-    Result& operator >> (char& val);
-    Result& operator >> (short& val);
-    Result& operator >> (int& val);
-    Result& operator >> (long& val);
-    Result& operator >> (long long& val);
+    result& operator >> (char& val);
+    result& operator >> (short& val);
+    result& operator >> (int& val);
+    result& operator >> (long& val);
+    result& operator >> (long long& val);
 
-    Result& operator >> (unsigned char& val);
-    Result& operator >> (unsigned short& val);
-    Result& operator >> (unsigned int& val);
-    Result& operator >> (unsigned long& val);
-    Result& operator >> (unsigned long long& val);
+    result& operator >> (unsigned char& val);
+    result& operator >> (unsigned short& val);
+    result& operator >> (unsigned int& val);
+    result& operator >> (unsigned long& val);
+    result& operator >> (unsigned long long& val);
 
-    Result& operator >> (float& val);
-    Result& operator >> (double& val);
+    result& operator >> (float& val);
+    result& operator >> (double& val);
 
-    Result& operator >> (bool& val);
+    result& operator >> (bool& val);
 
-    Result& operator >> (char* val);
-    Result& operator >> (unsigned char* val);
-    Result& operator >> (std::string& val);
+    result& operator >> (char* val);
+    result& operator >> (unsigned char* val);
+    result& operator >> (std::string& val);
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-    Result& operator >> (BINARY*);
+    result& operator >> (BINARY*);
 
 private:
     ///结果集合
@@ -268,7 +267,7 @@ private:
 };
 
 //Description     : 查询结果集合是否为空
-inline bool Result::is_null()
+inline bool result::is_null()
 {
     if (mysql_result_)
     {
@@ -280,7 +279,7 @@ inline bool Result::is_null()
 
 //根据列名得到列ID,从0开始排序
 //循环比较,效率比较低
-inline int Result::field_index(const char* fname, size_t& field_id) const
+inline int result::field_index(const char* fname, size_t& field_id) const
 {
     //循环比较所有的列名,效率比较低下
     for (unsigned int i = 0; i < num_result_field_; ++i)
@@ -297,7 +296,7 @@ inline int Result::field_index(const char* fname, size_t& field_id) const
 
 //根据列Field ID 返回表定义列域名,列域名字,可能为空
 //计算得到的列的列名字也可能是空,
-inline char* Result::field_name(size_t fieldid) const
+inline char* result::field_name(size_t fieldid) const
 {
     //检查结果集合为空,或者参数nfield错误
     if (mysql_result_ == NULL || fieldid >= num_result_field_)
@@ -310,19 +309,19 @@ inline char* Result::field_name(size_t fieldid) const
 }
 
 //返回结果集的行数目,num_result_row_ 结果在execute函数中也可以得到
-inline unsigned int Result::num_of_rows() const
+inline unsigned int result::num_of_rows() const
 {
     return num_result_row_;
 }
 
 //返回结果集的列数目
-inline unsigned int Result::num_of_fields() const
+inline unsigned int result::num_of_fields() const
 {
     return num_result_field_;
 }
 
 //根据字段列ID,得到字段值
-const char* Result::field_data(size_t fieldid) const
+const char* result::field_data(size_t fieldid) const
 {
     if (current_row_ == NULL || fieldid >= num_result_field_)
     {
@@ -333,7 +332,7 @@ const char* Result::field_data(size_t fieldid) const
 }
 
 //根据字段列ID,得到字段值的指针，长度你自己保证
-inline int Result::field_data(size_t fieldid, char* pfdata) const
+inline int result::field_data(size_t fieldid, char* pfdata) const
 {
     //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
     if (current_row_ == NULL || fieldid >= num_result_field_ || pfdata == NULL)
@@ -347,7 +346,7 @@ inline int Result::field_data(size_t fieldid, char* pfdata) const
 }
 
 //根据字段顺序ID,得到字段表结构定义的类型
-inline int Result::field_type(size_t fieldid, enum_field_types& ftype) const
+inline int result::field_type(size_t fieldid, enum_field_types& ftype) const
 {
     //检查结果集合为空,或者参数nfield错误
     if (current_row_ == NULL || fieldid >= num_result_field_)
@@ -361,7 +360,7 @@ inline int Result::field_type(size_t fieldid, enum_field_types& ftype) const
 }
 
 //根据Field ID 得到此列值的实际长度
-inline int Result::field_length(size_t fieldid, unsigned int& flength) const
+inline int result::field_length(size_t fieldid, unsigned int& flength) const
 {
     //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
     if (current_row_ == NULL && fieldid >= num_result_field_)
@@ -374,13 +373,13 @@ inline int Result::field_length(size_t fieldid, unsigned int& flength) const
     return 0;
 }
 
-inline unsigned int Result::get_cur_field_length()
+inline unsigned int result::get_cur_field_length()
 {
     return static_cast<unsigned int>(fields_length_[current_field_]);
 }
 
 //根据字段的序列值得到字段值
-inline int Result::get_field(size_t fieldid, zce::mysql::Field& ffield) const
+inline int result::get_field(size_t fieldid, zce::mysql::Field& ffield) const
 {
     //进行安全检查，如果错误返回
     if (current_row_ == NULL || fieldid >= num_result_field_)
@@ -393,20 +392,16 @@ inline int Result::get_field(size_t fieldid, zce::mysql::Field& ffield) const
     return 0;
 }
 
-
 //根据列序号ID得到字段FIELD，
 //[]操作符号函数不检查检查列ID,自己保证参数
-inline zce::mysql::Field Result::operator[](size_t fieldid) const
+inline zce::mysql::Field result::operator[](size_t fieldid) const
 {
     zce::mysql::Field ffield(current_row_[fieldid],
                              fields_length_[fieldid],
                              mysql_fields_[fieldid].type);
     return ffield;
 }
-
 }
 
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
-
-

@@ -93,9 +93,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="soar_mmapalloc.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="soar\zerg\frame_malloc.h">
       <Filter>Source Files</Filter>
     </ClInclude>

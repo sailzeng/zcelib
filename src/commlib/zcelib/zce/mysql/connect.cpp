@@ -7,7 +7,7 @@
 
 namespace zce::mysql
 {
-Connect::Connect()
+connect::connect()
 {
     //现在都在conect的时候进行初始化了。对应在disconnect 的时候close
     ::mysql_init(&mysql_handle_);
@@ -15,14 +15,14 @@ Connect::Connect()
     if_connected_ = false;
 }
 
-Connect::~Connect()
+connect::~connect()
 {
-    // disconnect if if_connected_ to Connect
+    // disconnect if if_connected_ to connect
     disconnect();
 }
 
 //如果使用选项文件进行连接
-int Connect::connect_by_optionfile(const char* optfile, const char* group)
+int connect::connect_by_optionfile(const char* optfile, const char* group)
 {
     //如果已经连接,关闭原来的连接
     if (if_connected_ == true)
@@ -62,7 +62,7 @@ int Connect::connect_by_optionfile(const char* optfile, const char* group)
 }
 
 //连接数据服务器
-int Connect::connect_i(const char* host_name,
+int connect::connect_i(const char* host_name,
                        const char* socket_file,
                        const char* user,
                        const char* pwd,
@@ -149,7 +149,7 @@ int Connect::connect_i(const char* host_name,
 }
 
 //连接数据服务器,通过IP地址，主机名称
-int Connect::connect_by_host(const char* host_name,
+int connect::connect_by_host(const char* host_name,
                              const char* user,
                              const char* pwd,
                              const char* db,
@@ -161,7 +161,7 @@ int Connect::connect_by_host(const char* host_name,
 }
 
 //连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
-int Connect::connect_by_socketfile(const char* socket_file,
+int connect::connect_by_socketfile(const char* socket_file,
                                    const char* user,
                                    const char* pwd,
                                    const char* db,
@@ -172,7 +172,7 @@ int Connect::connect_by_socketfile(const char* socket_file,
 }
 
 //断开数据库服务器连接
-void Connect::disconnect()
+void connect::disconnect()
 {
     //没有连接
     if (if_connected_ == false)
@@ -185,7 +185,7 @@ void Connect::disconnect()
 }
 
 //选择一个默认数据库,参数是数据库的名称
-int Connect::select_database(const char* db)
+int connect::select_database(const char* db)
 {
     int ret = ::mysql_select_db(&mysql_handle_, db);
 
@@ -199,7 +199,7 @@ int Connect::select_database(const char* db)
 }
 
 //如果连接断开，重新连接，低成本的好方法,否则什么都不做，
-int Connect::ping()
+int connect::ping()
 {
     int ret = ::mysql_ping(&mysql_handle_);
 
@@ -213,13 +213,13 @@ int Connect::ping()
 }
 
 //得到当前数据服务器的状态
-const char* Connect::get_mysql_status()
+const char* connect::get_mysql_status()
 {
     return ::mysql_stat(&mysql_handle_);
 }
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
-unsigned int Connect::escape_string(char* tostr,
+unsigned int connect::escape_string(char* tostr,
                                     const char* fromstr,
                                     unsigned int fromlen)
 {
@@ -228,7 +228,7 @@ unsigned int Connect::escape_string(char* tostr,
                                  fromlen);
 }
 
-unsigned int Connect::real_escape_string(char* tostr,
+unsigned int connect::real_escape_string(char* tostr,
                                          const char* fromstr,
                                          unsigned int fromlen)
 {
@@ -242,7 +242,7 @@ unsigned int Connect::real_escape_string(char* tostr,
 #if MYSQL_VERSION_ID > 40100
 
 //设置是否自动提交
-int Connect::set_auto_commit(bool bauto)
+int connect::set_auto_commit(bool bauto)
 {
     //my_bool其实是char
     my_bool mode = (bauto == true) ? 1 : 0;
@@ -259,7 +259,7 @@ int Connect::set_auto_commit(bool bauto)
 }
 
 //提交事务Commit Transaction
-int Connect::trans_commit()
+int connect::trans_commit()
 {
     int ret = ::mysql_commit(&mysql_handle_);
 
@@ -273,7 +273,7 @@ int Connect::trans_commit()
 }
 
 //回滚事务Rollback Transaction
-int Connect::trans_rollback()
+int connect::trans_rollback()
 {
     int ret = ::mysql_rollback(&mysql_handle_);
 

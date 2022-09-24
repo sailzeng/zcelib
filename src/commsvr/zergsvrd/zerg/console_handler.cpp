@@ -96,7 +96,7 @@
 //    }
 //
 //    //处理
-//    ZCE_LOG(RS_INFO,"[zergsvr] Process Command %s, Ret:%u.", mml_cmd.c_str(), ret);
+//    ZCE_LOG(RS_INFO,"[zergsvr] Process command %s, Ret:%u.", mml_cmd.c_str(), ret);
 //    return 0;
 //}
 //

@@ -76,7 +76,7 @@ int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In& remoteaddress)
 
         if (iter == allow_ip_set_.end())
         {
-            ZCE_LOG(RS_INFO, "[zergsvr] A NO Allowed IP|Port : [%s] Connect me.",
+            ZCE_LOG(RS_INFO, "[zergsvr] A NO Allowed IP|Port : [%s] connect me.",
                     remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }

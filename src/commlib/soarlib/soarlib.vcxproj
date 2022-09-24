@@ -236,7 +236,6 @@
     <ClInclude Include="soar\fsm\fsm_base.h" />
     <ClInclude Include="soar\fsm\fsm_mgr.h" />
     <ClInclude Include="soar\zerg\services_id.h" />
-    <ClInclude Include="soar_mmapalloc.h" />
     <ClInclude Include="soar\svrd\soar_server_ver_define.h" />
     <ClInclude Include="soar\zerg\services_info.h" />
     <ClInclude Include="soar\ogre\peer_id.h" />

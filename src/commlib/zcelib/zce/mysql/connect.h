@@ -24,13 +24,13 @@ namespace zce::mysql
 /*!
 * @brief      MYSQL的连接器
 */
-class Connect : public zce::NON_Copyable
+class connect : public zce::NON_Copyable
 {
 public:
 
     //构造函数,析构函数
-    Connect();
-    ~Connect();
+    connect();
+    ~connect();
 
     /*!
     * @brief      连接数据服务器,通过IP地址，主机名称
@@ -211,24 +211,24 @@ private:
 };
 
 //得到MYSQL的句柄
-inline MYSQL* zce::mysql::Connect::get_mysql_handle()
+inline MYSQL* zce::mysql::connect::get_mysql_handle()
 {
     return &mysql_handle_;
 }
 //检查状态是否连接
-inline bool zce::mysql::Connect::is_connected()
+inline bool zce::mysql::connect::is_connected()
 {
     return if_connected_;
 }
 
 //得到错误信息
-inline const char* zce::mysql::Connect::error_message()
+inline const char* zce::mysql::connect::error_message()
 {
     return mysql_error(&mysql_handle_);
 }
 
 //得到错误的ID
-inline unsigned int zce::mysql::Connect::error_no()
+inline unsigned int zce::mysql::connect::error_no()
 {
     return mysql_errno(&mysql_handle_);
 }

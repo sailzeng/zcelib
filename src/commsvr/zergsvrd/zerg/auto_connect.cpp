@@ -209,7 +209,7 @@ int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
     //而ACE的说明是立即返回错误,我暂时不处理这种情况,实在不行又只有根据类型写晦涩的朦胧诗了
     else
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] My God! NonBlock Socket Connect Success , ACE is a cheat.");
+        ZCE_LOG(RS_ERROR, "[zergsvr] My God! NonBlock Socket connect Success , ACE is a cheat.");
     }
 
     return 0;

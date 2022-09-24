@@ -40,7 +40,7 @@
 * 算法                      循环长度       生成数字的范围         BOOST给出的算法时间比     我的实现给出的算法时间比
 *                   x                                          （100%最快），           产生1亿用时 每s产生数量     和bsdrand比较   和（第二名） mt19937比较
 * VC++Rand                               2^16                 无                      2.304s    43402777.7    10.67%         18.57%
-* bsdrand                  2^31          (_)0 - 2^31     无                      0.216s    462962962.6   100%           198.14%
+* bsdrand                  2^31          (_)0 - 2^31          无                      0.216s    462962962.6   100%           198.14%
 * rand48                   2^48          (uint32)0 - 2^32     59%                     0.681s    146842878.1   31.71%         62.84%
 * taus88                   ~2^88         (uint32)0 - 2^32     100%                    0.4610    216919739.6   46.85%         92.84
 * mt19937                  2^19937       (uint32)0 - 2^32     81%                     0.4280    233644859.8   50.46%         100%
@@ -802,7 +802,7 @@ protected:
     uin32_random                         uin32_rand_gen_;
 };
 
-///定义了不同随机数发生器的变量产生器，如果没有多线程要求，可以直接使用他们
+///定义了不同随机数发生器的变量产生器，
 ///推荐mt19937_var_gen
 typedef   random_var_gen<random_bsdrand>      bsdrand_var_gen;
 typedef   random_var_gen<random_rand48>       rand48_var_gen;
@@ -813,6 +813,7 @@ typedef   random_var_gen<random_mt19937>      mt19937_var_gen;
 typedef   random_var_gen<random_ranlux223>    ranlux223_var_gen;
 typedef   random_var_gen<random_ranlux389>    ranlux389_var_gen;
 
+///发生器实例，如果没有多线程要求，可以直接使用他们
 typedef   zce::Singleton<bsdrand_var_gen>      bsdrand_vargen_inst;
 typedef   zce::Singleton<rand48_var_gen>       rand48_vargen_inst;
 typedef   zce::Singleton<taus88_var_gen>       taus88_vargen_inst;

@@ -8,7 +8,7 @@
 
 namespace zce::mysql
 {
-STMT_Command::STMT_Command() :
+stmt_cmd::stmt_cmd() :
     mysql_connect_(NULL),
     mysql_stmt_(NULL),
     is_bind_result_(false)
@@ -18,7 +18,7 @@ STMT_Command::STMT_Command() :
 }
 
 //指定一个connect
-STMT_Command::STMT_Command(zce::mysql::Connect* conn) :
+stmt_cmd::stmt_cmd(zce::mysql::connect* conn) :
     mysql_connect_(NULL),
     mysql_stmt_(NULL),
     is_bind_result_(false)
@@ -35,7 +35,7 @@ STMT_Command::STMT_Command(zce::mysql::Connect* conn) :
     stmt_command_.reserve(SQL_INIT_BUFSIZE);
 }
 
-STMT_Command::~STMT_Command()
+stmt_cmd::~stmt_cmd()
 {
     if (NULL != mysql_stmt_)
     {
@@ -46,7 +46,7 @@ STMT_Command::~STMT_Command()
 }
 
 //
-int STMT_Command::set_connection(zce::mysql::Connect* conn)
+int stmt_cmd::set_connection(zce::mysql::connect* conn)
 {
     //检查参数
     if (conn != NULL && conn->is_connected())
@@ -77,8 +77,8 @@ int STMT_Command::set_connection(zce::mysql::Connect* conn)
 }
 
 //准备SQL,并且分析绑定的变量
-int STMT_Command::stmt_prepare_bind(zce::mysql::STMT_Bind* bindparam,
-                                    zce::mysql::STMT_Bind* bindresult)
+int stmt_cmd::stmt_prepare_bind(zce::mysql::stmt_bind* bindparam,
+                                zce::mysql::stmt_bind* bindresult)
 {
     int tmpret = ::mysql_stmt_prepare(mysql_stmt_,
                                       stmt_command_.c_str(),
@@ -123,19 +123,19 @@ int STMT_Command::stmt_prepare_bind(zce::mysql::STMT_Bind* bindparam,
 }
 
 //设置SQL Command语句,为BIN型的SQL语句准备,同时绑定参数,结果
-int STMT_Command::set_stmt_command(const std::string& sqlcmd,
-                                   STMT_Bind* bindparam,
-                                   STMT_Bind* bindresult)
+int stmt_cmd::set_stmt_command(const std::string& sqlcmd,
+                               stmt_bind* bindparam,
+                               stmt_bind* bindresult)
 {
     stmt_command_ = sqlcmd;
     return stmt_prepare_bind(bindparam, bindresult);
 }
 
 //设置SQL Command语句,为BIN型的SQL语句准备,用于要帮定变量的SQL,结果
-int STMT_Command::set_stmt_command(const char* sqlcmd,
-                                   size_t szsql,
-                                   zce::mysql::STMT_Bind* bindparam,
-                                   zce::mysql::STMT_Bind* bindresult)
+int stmt_cmd::set_stmt_command(const char* sqlcmd,
+                               size_t szsql,
+                               zce::mysql::stmt_bind* bindparam,
+                               zce::mysql::stmt_bind* bindresult)
 {
     ZCE_ASSERT(sqlcmd != NULL);
     //
@@ -145,8 +145,8 @@ int STMT_Command::set_stmt_command(const char* sqlcmd,
 }
 
 //SQL 执行命令，这个事一个基础函数，内部调用
-int STMT_Command::execute_i(unsigned int* num_affect,
-                            unsigned int* lastid)
+int stmt_cmd::execute_i(unsigned int* num_affect,
+                        unsigned int* lastid)
 {
     int tmpret = 0;
 
@@ -184,19 +184,19 @@ int STMT_Command::execute_i(unsigned int* num_affect,
 }
 
 //执行SQL语句,不用输出结果集合的那种
-int STMT_Command::execute(unsigned int& num_affect, unsigned int& lastid)
+int stmt_cmd::exe(unsigned int& num_affect, unsigned int& lastid)
 {
     return execute_i(&num_affect, &lastid);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,
-int STMT_Command::execute(unsigned int& num_affect)
+int stmt_cmd::exe(unsigned int& num_affect)
 {
     return execute_i(&num_affect, NULL);
 }
 
 //
-int STMT_Command::fetch_row_next() const
+int stmt_cmd::fetch_row_next() const
 {
     int tmpret = ::mysql_stmt_fetch(mysql_stmt_);
     if (tmpret != 0)
@@ -208,9 +208,9 @@ int STMT_Command::fetch_row_next() const
 }
 
 //
-int  STMT_Command::fetch_column(MYSQL_BIND* bind,
-                                unsigned int column,
-                                unsigned int offset) const
+int  stmt_cmd::fetch_column(MYSQL_BIND* bind,
+                            unsigned int column,
+                            unsigned int offset) const
 {
     int tmpret = ::mysql_stmt_fetch_column(mysql_stmt_, bind, column, offset);
     if (0 != tmpret)
@@ -222,7 +222,7 @@ int  STMT_Command::fetch_column(MYSQL_BIND* bind,
 }
 
 //
-int STMT_Command::seek_result_row(unsigned int nrow) const
+int stmt_cmd::seek_result_row(unsigned int nrow) const
 {
     //检查结果集合为空,或者参数row错误
     ::mysql_stmt_data_seek(mysql_stmt_, nrow);
@@ -236,7 +236,7 @@ int STMT_Command::seek_result_row(unsigned int nrow) const
 }
 
 //
-void STMT_Command::param_2_metadata(zce::mysql::Result* tmpres) const
+void stmt_cmd::param_2_metadata(zce::mysql::result* tmpres) const
 {
     MYSQL_RES* myres = ::mysql_stmt_param_metadata(mysql_stmt_);
     tmpres->set_mysql_result(myres);
@@ -244,7 +244,7 @@ void STMT_Command::param_2_metadata(zce::mysql::Result* tmpres) const
 }
 
 //
-void STMT_Command::result_2_metadata(zce::mysql::Result* tmpres) const
+void stmt_cmd::result_2_metadata(zce::mysql::result* tmpres) const
 {
     MYSQL_RES* myres = ::mysql_stmt_result_metadata(mysql_stmt_);
     tmpres->set_mysql_result(myres);

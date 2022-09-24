@@ -73,7 +73,7 @@ public:
      * for parsing must be supplied to this constructor.
      *
      * @param argc          The number of @a argv elements to parse.
-     * @param argv          Command line tokens, such as would be passed
+     * @param argv          command line tokens, such as would be passed
      *                      to @c main().
      * @param optstring     Nul-terminated string containing the legitimate
      *                      short option characters.  A single colon ":"

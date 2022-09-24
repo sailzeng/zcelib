@@ -9,18 +9,8 @@ namespace zce::mysql
 {
 //-----------------------------------------------------------------
 
-//构造函数，和析构函数
-Execute::Execute() :
-    db_port_(MYSQL_PORT)
-{
-}
-Execute::~Execute()
-{
-    //不用处理什么，相关的成员变量的析构都进行了处理
-}
-
 //初始化服务器,使用hostname进行连接,可以不立即连接和立即连接，你自己控制。
-int Execute::init_connect(const char* host_name,
+int execute::init_connect(const char* host_name,
                           const char* user,
                           const char* pwd,
                           unsigned int port,
@@ -40,7 +30,7 @@ int Execute::init_connect(const char* host_name,
 }
 
 //
-int Execute::connect()
+int execute::connect()
 {
     int ret = 0;
 
@@ -85,7 +75,7 @@ int Execute::connect()
 }
 
 //断开链接
-void Execute::disconnect()
+void execute::disconnect()
 {
     if (db_connect_.is_connected() == true)
     {
@@ -94,7 +84,7 @@ void Execute::disconnect()
 }
 
 //用于非SELECT语句(INSERT,UPDATE)，
-int Execute::query(const char* sql,
+int execute::query(const char* sql,
                    size_t sql_len,
                    uint64_t& num_affect,
                    uint64_t& insert_id)
@@ -116,7 +106,7 @@ int Execute::query(const char* sql,
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql_len, sql);
     db_command_.set_sql_command(sql, sql_len);
 
-    ret = db_command_.execute(num_affect, insert_id);
+    ret = db_command_.query(num_affect, insert_id);
 
     //如果错误
     if (ret != 0)
@@ -132,10 +122,10 @@ int Execute::query(const char* sql,
 }
 
 //执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
-int Execute::query(const char* sql,
+int execute::query(const char* sql,
                    size_t sql_len,
                    uint64_t& num_affect,
-                   zce::mysql::Result& db_result)
+                   zce::mysql::result& db_result)
 {
     int ret = 0;
     //连接数据库
@@ -152,7 +142,7 @@ int Execute::query(const char* sql,
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
     db_command_.set_sql_command(sql, sql_len);
 
-    ret = db_command_.execute(num_affect, db_result);
+    ret = db_command_.query(num_affect, db_result);
 
     //如果错误
     if (ret != 0)
@@ -168,9 +158,9 @@ int Execute::query(const char* sql,
 }
 
 //
-int Execute::query(const char* sql,
+int execute::query(const char* sql,
                    size_t sql_len,
-                   zce::mysql::Result& db_result)
+                   zce::mysql::result& db_result)
 {
     int ret = 0;
 
@@ -188,7 +178,7 @@ int Execute::query(const char* sql,
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
     db_command_.set_sql_command(sql, sql_len);
 
-    ret = db_command_.execute(db_result);
+    ret = db_command_.query(db_result);
 
     //如果错误
     if (ret != 0)
@@ -204,7 +194,7 @@ int Execute::query(const char* sql,
 }
 
 //返回的的DB访问的错误信息
-unsigned int Execute::error_message(char* szerr, size_t buflen)
+unsigned int execute::error_message(char* szerr, size_t buflen)
 {
     snprintf(szerr, buflen, "[%d]:%s ",
              db_connect_.error_no(),
@@ -213,36 +203,37 @@ unsigned int Execute::error_message(char* szerr, size_t buflen)
 }
 
 //得到DB访问的语句
-const char* Execute::get_query_sql(void)
+const char* execute::get_query_sql(void)
 {
     return db_command_.get_sql_command();
 }
 
 //得到错误信息语句
-const char* Execute::error_message()
+const char* execute::error_message()
 {
     return db_connect_.error_message();
 }
 
 //得到错误信息ID
-unsigned int Execute::error_id()
+unsigned int execute::error_id()
 {
     return db_connect_.error_no();
 }
 
 //得到Real Escape String ,Real表示根据当前的MYSQL Connet的字符集,得到Escape String
 //Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
-unsigned int Execute::make_real_escape_string(char* tostr,
+unsigned int execute::make_real_escape_string(char* tostr,
                                               const char* fromstr,
                                               unsigned int fromlen)
 {
     return ::mysql_real_escape_string(db_connect_.get_mysql_handle(),
                                       tostr, fromstr, fromlen);
 }
+}//namesapce zce::mysql
 
-namespace execute
+namespace zce::mysql::exe
 {
-int connect(zce::mysql::Connect* db_connect,
+int connect(zce::mysql::connect* db_connect,
             const char* host_name,
             const char* user,
             const char* pwd,
@@ -274,7 +265,7 @@ int connect(zce::mysql::Connect* db_connect,
 }
 
 //!断开链接
-void disconnect(zce::mysql::Connect* db_connect)
+void disconnect(zce::mysql::connect* db_connect)
 {
     if (db_connect->is_connected() == true)
     {
@@ -283,7 +274,7 @@ void disconnect(zce::mysql::Connect* db_connect)
 }
 
 //!查询，
-int query(zce::mysql::Connect* db_connect,
+int query(zce::mysql::connect* db_connect,
           const char* sql,
           size_t sqllen,
           uint64_t* num_affect,
@@ -301,10 +292,10 @@ int query(zce::mysql::Connect* db_connect,
     }
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
-    zce::mysql::Command db_command;
+    zce::mysql::command db_command;
     db_command.set_connection(db_connect);
     db_command.set_sql_command(sql, sqllen);
-    int ret = db_command.execute(*num_affect, *insert_id);
+    int ret = db_command.query(*num_affect, *insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -320,11 +311,11 @@ int query(zce::mysql::Connect* db_connect,
 }
 
 //!
-int query(zce::mysql::Connect* db_connect,
+int query(zce::mysql::connect* db_connect,
           const char* sql,
           size_t sql_len,
           uint64_t* num_affect,
-          zce::mysql::Result* db_result)
+          zce::mysql::result* db_result)
 {
     int ret = 0;
     //连接数据库
@@ -339,10 +330,10 @@ int query(zce::mysql::Connect* db_connect,
     }
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
-    zce::mysql::Command db_command;
+    zce::mysql::command db_command;
     db_command.set_connection(db_connect);
     db_command.set_sql_command(sql, sql_len);
-    ret = db_command.execute(*num_affect, *db_result);
+    ret = db_command.query(*num_affect, *db_result);
     //如果错误
     if (ret != 0)
     {
@@ -358,10 +349,10 @@ int query(zce::mysql::Connect* db_connect,
 }
 
 //!
-int query(zce::mysql::Connect* db_connect,
+int query(zce::mysql::connect* db_connect,
           const char* sql,
           size_t sql_len,
-          zce::mysql::Result* db_result)
+          zce::mysql::result* db_result)
 {
     int ret = 0;
     //连接数据库
@@ -376,10 +367,10 @@ int query(zce::mysql::Connect* db_connect,
     }
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
-    zce::mysql::Command db_command;
+    zce::mysql::command db_command;
     db_command.set_connection(db_connect);
     db_command.set_sql_command(sql, sql_len);
-    ret = db_command.execute(*db_result);
+    ret = db_command.query(*db_result);
 
     //如果错误
     if (ret != 0)
@@ -393,8 +384,7 @@ int query(zce::mysql::Connect* db_connect,
     //成功
     return 0;
 }
-}//namesapce execute
-}//namesapce zce::mysql
+}//namesapce exe
 
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL

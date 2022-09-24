@@ -34,7 +34,6 @@
 #include "zce/pool/buffer_pool.h"
 #include "zce/logger/priority.h"
 
-
 //!日志文件的分割方法,以及对应的名称关系
 //!默认的分割方法是按照时间.分割就是按照每天一个文件,文件名称中记录时间
 //!如果按照文件SIZE,或者日志的行数分割文件,用一个ID标识文件日志文件
@@ -157,7 +156,6 @@ protected:
     */
     void open_new_logfile(const timeval& current_time) noexcept;
 
-
     void thread_work();
 public:
 
@@ -179,7 +177,6 @@ public:
     static const size_t LEN_LOG_POSTFIX = 4;
     ///日志后缀的4个字母.log，什么，你想用.tlog？BS
     static const char STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1];
-
 
 #if defined LARGE_LOG && LARGE_LOG == 1
     //!巨型日志
@@ -206,7 +203,6 @@ public:
         timeval rec_time_;
         //!
         queue_buffer* rec_buf_ = nullptr;
-
     };
 protected:
     //!
@@ -248,7 +244,6 @@ protected:
     //!日志文件的尺寸
     size_t size_log_file_ = 0;
 
-
     //!日志的文件句柄
     std::ofstream         log_file_handle_;
 
@@ -259,7 +254,7 @@ protected:
     //!输出到文件的现场
     std::thread thread_outlog_;
     //!
-    zce::queue_buffer_pool_lock buf_pool_;
+    zce::queue_buffer_pool_s buf_pool_;
     //!
     zce::msgring_condi<LOG_RECORD>  msg_queue_;
 };

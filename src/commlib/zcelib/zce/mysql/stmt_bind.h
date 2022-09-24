@@ -33,17 +33,17 @@ namespace zce::mysql
 * @note  STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
 *        外部的保存生命周期，请慎重处理。
 */
-class STMT_Bind
+class stmt_bind
 {
 public:
 
     /*!
-    * @brief      仅仅是为了适配 STMT_Bind << 的操作符号
+    * @brief      仅仅是为了适配 stmt_bind << 的操作符号
     *             绑定2进制参数数据，用于 mysql_stmt_bind_param
     */
     class BinData_Param
     {
-        friend class STMT_Bind;
+        friend class stmt_bind;
 
     public:
 
@@ -75,12 +75,12 @@ public:
     };
 
     /*!
-    * @brief      仅仅是为了适配 STMT_Bind << 的操作符号
+    * @brief      仅仅是为了适配 stmt_bind << 的操作符号
     *             绑定2进制结果数据，用于 mysql_stmt_bind_result
     */
     class BinData_Result
     {
-        friend class STMT_Bind;
+        friend class stmt_bind;
 
     public:
 
@@ -112,12 +112,12 @@ public:
     };
 
     /*!
-    @brief      仅仅是为了适配 STMT_Bind << 的操作符号
+    @brief      仅仅是为了适配 stmt_bind << 的操作符号
 
     */
     class TimeData
     {
-        friend class STMT_Bind;
+        friend class stmt_bind;
     public:
         //
         TimeData(enum_field_types timetype, MYSQL_TIME* pstmttime) :
@@ -143,13 +143,13 @@ public:
     };
 
     /*!
-    * @brief      仅仅是为了适配 STMT_Bind << 的操作符号
+    * @brief      仅仅是为了适配 stmt_bind << 的操作符号
     *             绑定一个空参数
     * @note
     */
     class NULL_Param
     {
-        friend class STMT_Bind;
+        friend class stmt_bind;
 
     public:
         NULL_Param(my_bool* is_null) :
@@ -166,7 +166,7 @@ public:
 protected:
 
     //定义出来不实现,让你无法用,有很多地方有我分配的指针,不能给你浅度复制
-    STMT_Bind& operator=(const STMT_Bind& others) = delete;
+    stmt_bind& operator=(const stmt_bind& others) = delete;
 
 public:
 
@@ -174,9 +174,9 @@ public:
     * @brief      构造函数
     * @param      numbind  要绑定变量,结果的个数
     */
-    STMT_Bind(size_t numbind);
+    stmt_bind(size_t numbind);
     //
-    ~STMT_Bind();
+    ~stmt_bind();
 
     /*!
     * @brief      绑定一个参数
@@ -238,16 +238,16 @@ public:
 
     ///为了使用几个类型的适配器
     ///绑定二进制数据，的适配器
-    void bind(size_t bind_col, STMT_Bind::BinData_Param& val);
+    void bind(size_t bind_col, stmt_bind::BinData_Param& val);
     ///绑定二进制结果的适配器
-    void bind(size_t bind_col, STMT_Bind::BinData_Result& val);
+    void bind(size_t bind_col, stmt_bind::BinData_Result& val);
     ///绑定时间的适配器
-    void bind(size_t bind_col, STMT_Bind::TimeData& val);
+    void bind(size_t bind_col, stmt_bind::TimeData& val);
     ///绑定空的适配器
-    void bind(size_t bind_col, STMT_Bind::NULL_Param& val);
+    void bind(size_t bind_col, stmt_bind::NULL_Param& val);
 
     template <typename bind_type>
-    STMT_Bind& operator << (bind_type& val)
+    stmt_bind& operator << (bind_type& val)
     {
         bind(current_bind_, val);
         ++current_bind_;

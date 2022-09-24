@@ -108,8 +108,8 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
     if (init_svcid.services_type_ < SVC_UDP_SERVER_BEGIN)
     {
         //设置Bind地址
-        TCP_Accept_Handler* ptr_acceptor = new TCP_Accept_Handler(init_svcid,
-                                                                  svc_info.ip_address_);
+        Accept_Handler* ptr_acceptor = new Accept_Handler(init_svcid,
+                                                          svc_info.ip_address_);
         //采用同步的方式创建LISTER PEER
         ret = ptr_acceptor->create_listen();
 

@@ -188,7 +188,7 @@ int FSM_Manager::process_frame(soar::Zerg_Frame* zerg_frame,
         create_fsm = true;
         //统计技术器
         ++gen_ksm_counter_;
-        ZCE_LOG(RS_DEBUG, "Create Trascation ,Command:%u Transaction ID:%u .",
+        ZCE_LOG(RS_DEBUG, "Create Trascation ,command:%u Transaction ID:%u .",
                 zerg_frame->command_, id);
     }
     else

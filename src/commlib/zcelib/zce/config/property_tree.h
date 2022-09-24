@@ -61,7 +61,7 @@ public:
     /*!
     * @brief      根据路径得到一个CHILD 子树节点的迭代器
     * @return     int == 0 表示成功，
-    * @param      path_str   访问的路径
+    * @param      path_str   访问的路径. 比如A1.B2.C3.D4，每个点标示一层
     * @param      child_iter 返回的迭代器，注意内部在没有找到的情况下，没有将其置为end，用
     *                        return 的返回值判断是否成功，不要用这个参数。
     */
@@ -74,7 +74,7 @@ public:
     /*!
     * @brief      取得叶子节点的迭代器
     * @return     int
-    * @param      path_str 访问的路径
+    * @param      path_str 访问的路径. 比如A1.B2.C3.D4，每个点标示层
     * @param      key_str  访问val的key
     * @param      str_ptr  得到val的指针
     */
@@ -107,16 +107,13 @@ public:
     child_iterator child_end();
     const_child_iterator child_cend() const;
 
-    int path_get_leaf(const std::string& path_str,
-                      const std::string& key_str,
-                      std::string& val) const;
-
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
     * @tparam     val_type 被特化成 zce::Sockaddr_In，Sockaddr_In6，zce::Time_Value
     *             int32_t ,int64_t,std::string, 等。
     * @return     int      是否正常的读取倒了配置
-    * @param      path_str 读取的路径
+    * @param      path_str 读取的路径，比如A1.B2.C3.D4，每个点标示一层
+    * @param      key_str  参考上面函数
     * @param      val      读取返回的值
     */
     template<typename val_type>
@@ -124,12 +121,14 @@ public:
                       const std::string& key_str,
                       val_type& val) const
     {
-        std::string value_data;
-        int ret = path_get_leaf(path_str, key_str, value_data);
+        PropertyTree::const_leaf_iterator leaf_iter;
+        int ret = path_get_leafiter(path_str, key_str, leaf_iter);
         if (0 != ret)
         {
             return ret;
         }
+        std::string value_data;
+        value_data = leaf_iter->second;
         if (value_data.empty())
         {
             ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",

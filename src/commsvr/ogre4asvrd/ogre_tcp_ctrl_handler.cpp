@@ -194,7 +194,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
     //我几乎没有见过register_handler失败,
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "Register Connect handler fail! ret =%  errno=%u|%s \n",
+        ZCE_LOG(RS_ERROR, "Register connect handler fail! ret =%  errno=%u|%s \n",
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));

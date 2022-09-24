@@ -6,9 +6,8 @@
 
 namespace zce::mysql
 {
-
 //构造函数
-STMT_Bind::STMT_Bind(size_t numbind) :
+stmt_bind::stmt_bind(size_t numbind) :
     num_bind_(numbind),
     current_bind_(0),
     stmt_bind_(NULL)
@@ -18,7 +17,7 @@ STMT_Bind::STMT_Bind(size_t numbind) :
 }
 
 //析构函数
-STMT_Bind::~STMT_Bind()
+stmt_bind::~stmt_bind()
 {
     if (stmt_bind_)
     {
@@ -27,14 +26,14 @@ STMT_Bind::~STMT_Bind()
 }
 
 //重新设置
-void STMT_Bind::reset()
+void stmt_bind::reset()
 {
     memset(stmt_bind_, 0, sizeof(MYSQL_BIND) * num_bind_);
     current_bind_ = 0;
 }
 
 //绑定一个参数
-int STMT_Bind::bind_one_param(size_t paramno,
+int stmt_bind::bind_one_param(size_t paramno,
                               ::enum_field_types paramtype,
                               my_bool* is_null,
                               void* paramdata,
@@ -55,7 +54,7 @@ int STMT_Bind::bind_one_param(size_t paramno,
     return 0;
 }
 
-int STMT_Bind::bind_one_result(size_t result_no,
+int stmt_bind::bind_one_result(size_t result_no,
                                ::enum_field_types paramtype,
                                void* paramdata,
                                unsigned long* szparam)
@@ -76,7 +75,7 @@ int STMT_Bind::bind_one_result(size_t result_no,
 }
 
 //绑定一个char
-void STMT_Bind::bind(size_t bind_col, char& val)
+void stmt_bind::bind(size_t bind_col, char& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -86,7 +85,7 @@ void STMT_Bind::bind(size_t bind_col, char& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, short& val)
+void stmt_bind::bind(size_t bind_col, short& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -96,7 +95,7 @@ void STMT_Bind::bind(size_t bind_col, short& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, int& val)
+void stmt_bind::bind(size_t bind_col, int& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -104,7 +103,7 @@ void STMT_Bind::bind(size_t bind_col, int& val)
     return;
 }
 //
-void STMT_Bind::bind(size_t bind_col, long& val)
+void stmt_bind::bind(size_t bind_col, long& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -112,7 +111,7 @@ void STMT_Bind::bind(size_t bind_col, long& val)
     return;
 }
 //
-void STMT_Bind::bind(size_t bind_col, long long& val)
+void stmt_bind::bind(size_t bind_col, long long& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -121,7 +120,7 @@ void STMT_Bind::bind(size_t bind_col, long long& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, unsigned char& val)
+void stmt_bind::bind(size_t bind_col, unsigned char& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -133,7 +132,7 @@ void STMT_Bind::bind(size_t bind_col, unsigned char& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, unsigned short& val)
+void stmt_bind::bind(size_t bind_col, unsigned short& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -144,7 +143,7 @@ void STMT_Bind::bind(size_t bind_col, unsigned short& val)
     return;
 }
 //
-void STMT_Bind::bind(size_t bind_col, unsigned int& val)
+void stmt_bind::bind(size_t bind_col, unsigned int& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -155,7 +154,7 @@ void STMT_Bind::bind(size_t bind_col, unsigned int& val)
     return;
 }
 //
-void STMT_Bind::bind(size_t bind_col, unsigned long& val)
+void stmt_bind::bind(size_t bind_col, unsigned long& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[bind_col].buffer = (void*)(&val);
@@ -166,7 +165,7 @@ void STMT_Bind::bind(size_t bind_col, unsigned long& val)
     return;
 }
 //
-void STMT_Bind::bind(size_t bind_col, unsigned long long& val)
+void stmt_bind::bind(size_t bind_col, unsigned long long& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[bind_col].buffer = reinterpret_cast<void*>(&val);
@@ -177,7 +176,7 @@ void STMT_Bind::bind(size_t bind_col, unsigned long long& val)
     return;
 }
 //
-void STMT_Bind::bind(size_t bind_col, float& val)
+void stmt_bind::bind(size_t bind_col, float& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_FLOAT;
     stmt_bind_[bind_col].buffer = reinterpret_cast<void*>(&val);
@@ -186,7 +185,7 @@ void STMT_Bind::bind(size_t bind_col, float& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, double& val)
+void stmt_bind::bind(size_t bind_col, double& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_DOUBLE;
     stmt_bind_[bind_col].buffer = reinterpret_cast<void*>(&val);
@@ -195,7 +194,7 @@ void STMT_Bind::bind(size_t bind_col, double& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, STMT_Bind::BinData_Param& bin_data)
+void stmt_bind::bind(size_t bind_col, stmt_bind::BinData_Param& bin_data)
 {
     stmt_bind_[bind_col].buffer_type = bin_data.stmt_data_type_;
     stmt_bind_[bind_col].buffer = bin_data.stmt_pdata_;
@@ -208,7 +207,7 @@ void STMT_Bind::bind(size_t bind_col, STMT_Bind::BinData_Param& bin_data)
 }
 
 //绑定二进制结果的适配器
-void STMT_Bind::bind(size_t bind_col, STMT_Bind::BinData_Result& val)
+void stmt_bind::bind(size_t bind_col, stmt_bind::BinData_Result& val)
 {
     stmt_bind_[bind_col].buffer_type = val.stmt_data_type_;
     stmt_bind_[bind_col].buffer = val.stmt_pdata_;
@@ -221,7 +220,7 @@ void STMT_Bind::bind(size_t bind_col, STMT_Bind::BinData_Result& val)
 }
 
 //
-void STMT_Bind::bind(size_t bind_col, STMT_Bind::TimeData& val)
+void stmt_bind::bind(size_t bind_col, stmt_bind::TimeData& val)
 {
     stmt_bind_[bind_col].buffer_type = val.stmt_timetype_;
     stmt_bind_[bind_col].buffer = reinterpret_cast<void*>(val.stmt_ptime_);
@@ -233,14 +232,13 @@ void STMT_Bind::bind(size_t bind_col, STMT_Bind::TimeData& val)
 }
 
 //绑定一个空参数
-void STMT_Bind::bind(size_t bind_col, STMT_Bind::NULL_Param& val)
+void stmt_bind::bind(size_t bind_col, stmt_bind::NULL_Param& val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_NULL;
     stmt_bind_[bind_col].is_null = val.is_null_;
 
     return;
 }
-
 }
 
 #endif //MYSQL_VERSION_ID >= 40100

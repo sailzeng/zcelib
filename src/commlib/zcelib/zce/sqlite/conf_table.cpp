@@ -362,7 +362,7 @@ int AII_Config_Table::create_table(unsigned int table_id)
     sql_create_table(table_id);
 
     int ret = 0;
-    ret = sqlite_handler_->execute(sql_string_);
+    ret = sqlite_handler_->exe(sql_string_);
     if (ret != 0)
     {
         return ret;

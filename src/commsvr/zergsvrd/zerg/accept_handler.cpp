@@ -4,8 +4,8 @@
 #include "zerg/ip_restrict.h"
 
 //TCP Accept 处理的EventHandler,
-TCP_Accept_Handler::TCP_Accept_Handler(const soar::SERVICES_ID& svcid,
-                                       const zce::Sockaddr_In& addr) :
+Accept_Handler::Accept_Handler(const soar::SERVICES_ID& svcid,
+                               const zce::Sockaddr_In& addr) :
     zce::Event_Handler(zce::ZCE_Reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
@@ -14,12 +14,12 @@ TCP_Accept_Handler::TCP_Accept_Handler(const soar::SERVICES_ID& svcid,
 }
 
 //自己清理的类型，统一关闭在handle_close,这个地方不用关闭
-TCP_Accept_Handler::~TCP_Accept_Handler()
+Accept_Handler::~Accept_Handler()
 {
 }
 
 //创建监听端口
-int TCP_Accept_Handler::create_listen()
+int Accept_Handler::create_listen()
 {
     const size_t IP_ADDR_LEN = 31;
     char str_ip_addr[IP_ADDR_LEN + 1];
@@ -84,7 +84,7 @@ int TCP_Accept_Handler::create_listen()
 }
 
 //事件触发处理，表示有一个accept 的数据
-int TCP_Accept_Handler::handle_input(/*handle*/)
+int Accept_Handler::handle_input(/*handle*/)
 {
     zce::Socket_Stream  sockstream;
     zce::Sockaddr_In       remote_address;
@@ -143,13 +143,13 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
 }
 
 //返回句柄ID
-ZCE_HANDLE TCP_Accept_Handler::get_handle(void) const
+ZCE_HANDLE Accept_Handler::get_handle(void) const
 {
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
 //退出处理
-int TCP_Accept_Handler::handle_close()
+int Accept_Handler::handle_close()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)
