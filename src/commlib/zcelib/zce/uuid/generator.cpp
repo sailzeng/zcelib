@@ -226,8 +226,6 @@ const char* UUID128::to_string(char* buffer, size_t buf_len, size_t& use_buf) co
 Class           : UUID128_Generator
 ************************************************************************************************************/
 
-//实例指针
-uuid128_gen* uuid128_gen::instance_ = NULL;
 
 //构造函数
 uuid128_gen::uuid128_gen() :

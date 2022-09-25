@@ -10,12 +10,12 @@
 */
 namespace zce
 {
-class SHM_Posix : public zce::non_copyable
+class shm_posix : public zce::non_copyable
 {
 public:
     //构造函数
-    SHM_Posix();
-    ~SHM_Posix();
+    shm_posix();
+    ~shm_posix();
 
 public:
     //打开文件，进行映射

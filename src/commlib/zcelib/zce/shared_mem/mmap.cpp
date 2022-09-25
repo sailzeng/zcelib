@@ -10,14 +10,14 @@
 namespace zce
 {
 //构造函数
-SHM_Mmap::SHM_Mmap() :
+shm_mmap::shm_mmap() :
     mmap_addr_(NULL),
     mmap_handle_(ZCE_INVALID_HANDLE),
     shm_size_(0)
 {
 }
 
-SHM_Mmap::~SHM_Mmap()
+shm_mmap::~shm_mmap()
 {
     if (mmap_addr_)
     {
@@ -26,7 +26,7 @@ SHM_Mmap::~SHM_Mmap()
 }
 
 //打开文件，进行映射
-int SHM_Mmap::open(const char* file_name,
+int shm_mmap::open(const char* file_name,
                    std::size_t shm_size,
                    int file_open_mode,
                    int file_perms_mode,
@@ -120,7 +120,7 @@ int SHM_Mmap::open(const char* file_name,
 }
 
 //打开文件，进行映射, 简单
-int SHM_Mmap::open(const char* file_name,
+int shm_mmap::open(const char* file_name,
                    std::size_t shm_size,
                    bool if_restore,
                    bool read_only,
@@ -180,7 +180,7 @@ int SHM_Mmap::open(const char* file_name,
 }
 
 //关闭文件
-int SHM_Mmap::close()
+int shm_mmap::close()
 {
     //断言保证不出现没有open就调用close的情况
     ZCE_ASSERT(mmap_addr_ != NULL);
@@ -203,13 +203,13 @@ int SHM_Mmap::close()
 }
 
 //删除映射的文件，当然正在映射的时候不能删除
-int SHM_Mmap::remove()
+int shm_mmap::remove()
 {
     return zce::unlink(mmap_file_name_.c_str());
 }
 
 //同步文件
-int SHM_Mmap::flush()
+int shm_mmap::flush()
 {
     return zce::msync(mmap_addr_, shm_size_, MS_SYNC);
 }

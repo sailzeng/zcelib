@@ -144,6 +144,12 @@ int stmt_cmd::set_stmt_command(const char* sqlcmd,
     return stmt_prepare_bind(bindparam, bindresult);
 }
 
+//得到SQL Command语句
+void stmt_cmd::get_stmt_command(std::string& sqlcmd) const
+{
+    sqlcmd = stmt_command_;
+}
+
 //SQL 执行命令，这个事一个基础函数，内部调用
 int stmt_cmd::execute_i(unsigned int* num_affect,
                         unsigned int* lastid)

@@ -64,6 +64,25 @@ void Host_Atom::clear()
     ary_addr6_ = nullptr;
 }
 
+void Socket_Atom::clear()
+{
+    AIO_Atom::clear();
+    //!参数
+    result_ = -1;
+    handle_ = ZCE_INVALID_SOCKET;
+    addr_ = nullptr;
+    addr_len_ = 0;
+    snd_buf_ = nullptr;
+    rcv_buf_ = nullptr;
+    len_ = 0;
+    timeout_tv_ = nullptr;
+    result_count_ = 0;
+    flags_ = 0;
+    from_ = nullptr;
+    from_len_ = nullptr;
+    accept_hdl_ = ZCE_INVALID_SOCKET;
+}
+
 //====================================================
 
 //!异步打开某个文件，完成后回调函数call_back

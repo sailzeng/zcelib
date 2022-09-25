@@ -1266,7 +1266,7 @@ protected:
     //
     HASH_TABLE_MY_DATA* hash_my_data_;
 
-    zce::SHM_Mmap   mmap_file_;
+    zce::shm_mmap   mmap_file_;
 
 protected:
     //

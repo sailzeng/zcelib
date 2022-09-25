@@ -21,12 +21,12 @@
 
 namespace zce
 {
-class SHM_Mmap : public zce::non_copyable
+class shm_mmap : public zce::non_copyable
 {
 public:
     //构造函数
-    SHM_Mmap();
-    ~SHM_Mmap();
+    shm_mmap();
+    ~shm_mmap();
 
 public:
     //打开文件，进行映射

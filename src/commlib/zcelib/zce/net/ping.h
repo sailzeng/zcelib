@@ -23,12 +23,12 @@
 
 namespace zce
 {
-class Ping
+class ping
 {
 public:
 
-    Ping() = default;
-    ~Ping() = default;
+    ping() = default;
+    ~ping() = default;
 
     int initialize(::sockaddr *ping_addr,
                    socklen_t addr_len);
@@ -46,10 +46,10 @@ public:
                   uint8_t *ttl,
                   zce::time_value* timeout_tv);
 
-    int ping(size_t test_num);
+    int ping_test(size_t test_num);
 
     //计算check sum
-    static uint16_t calculate_checksum(char* buffer, size_t bytes);
+    static uint16_t checksum(char* buffer, size_t bytes);
 
 protected:
     //内部初始化

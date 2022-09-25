@@ -71,10 +71,6 @@ public:
                          stmt_bind* bindparam,
                          stmt_bind* bindresult);
 
-    //得到SQL Command语句,TXT型
-    const char* get_stmt_command() const;
-    //得到SQL Command语句,为BIN型语句
-    void get_stmt_command(char*, size_t&) const;
     //得到SQL Command语句
     void get_stmt_command(std::string&) const;
 

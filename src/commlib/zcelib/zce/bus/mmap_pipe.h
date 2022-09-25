@@ -235,7 +235,7 @@ protected:
     bus_pipe* bus_pipe_pointer_[MAX_PIPE];
 
     ///MMAP内存文件，
-    zce::SHM_Mmap      mmap_file_;
+    zce::shm_mmap      mmap_file_;
 };
 
 //初始化

@@ -52,7 +52,7 @@ struct _ICMP_ECHO
 
 #pragma pack ()
 
-int Ping::initialize(::sockaddr* ping_addr,
+int ping::initialize(::sockaddr* ping_addr,
                      socklen_t addr_len)
 {
     addr_len_ = addr_len;
@@ -79,7 +79,7 @@ int Ping::initialize(::sockaddr* ping_addr,
     return 0;
 }
 
-int Ping::initialize(int svr_family,
+int ping::initialize(int svr_family,
                      const char* ping_svr)
 {
     int ret = 0;
@@ -116,7 +116,7 @@ int Ping::initialize(int svr_family,
     return 0;
 }
 
-int Ping::initialize()
+int ping::initialize()
 {
     int ret = 0;
     int proto = IPPROTO_ICMP;
@@ -157,12 +157,12 @@ int Ping::initialize()
     return 0;
 }
 
-ZCE_SOCKET Ping::get_handle()
+ZCE_SOCKET ping::get_handle()
 {
     return ping_socket_;
 }
 
-uint16_t Ping::calculate_checksum(char* buffer, size_t bytes)
+uint16_t ping::checksum(char* buffer, size_t bytes)
 {
     uint32_t checksum = 0;
     char* end = buffer + bytes;
@@ -190,7 +190,7 @@ uint16_t Ping::calculate_checksum(char* buffer, size_t bytes)
     return (~checksum) & 0xffff;
 }
 
-int Ping::send_echo(uint32_t ident,
+int ping::send_echo(uint32_t ident,
                     uint32_t seq)
 {
     // allocate memory for icmp packet
@@ -212,7 +212,7 @@ int Ping::send_echo(uint32_t ident,
         icmp->sending_ts_ = htonll(zce::clock_ms());
         // calculate and fill checksum
         icmp->check_sum_ = htons(
-            calculate_checksum((char*)icmp, sizeof(_ICMP_ECHO)));
+            checksum((char*)icmp, sizeof(_ICMP_ECHO)));
     }
     else if (addr_family_ == AF_INET6)
     {
@@ -232,7 +232,7 @@ int Ping::send_echo(uint32_t ident,
         icmp->sending_ts_ = htonll(zce::clock_ms());
 
         icmp->check_sum_ = htons(
-            calculate_checksum((char*)v6_pseudo, sizeof(_ICMPV6_PSEUDO) + sizeof(_ICMP_ECHO)));
+            checksum((char*)v6_pseudo, sizeof(_ICMPV6_PSEUDO) + sizeof(_ICMP_ECHO)));
     }
     else
     {
@@ -253,7 +253,7 @@ int Ping::send_echo(uint32_t ident,
     return 0;
 }
 
-int Ping::recv_echo(uint32_t* ident,
+int ping::recv_echo(uint32_t* ident,
                     uint32_t* seq,
                     uint64_t* take_msec,
                     uint8_t* ttl,
@@ -315,7 +315,7 @@ int Ping::recv_echo(uint32_t* ident,
     return 0;
 }
 
-int Ping::ping(size_t test_num)
+int ping::ping_test(size_t test_num)
 {
     int ret = 0;
     uint32_t send_ident = getpid(), recv_ident = 0;

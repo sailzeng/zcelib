@@ -9,12 +9,12 @@ namespace zce
 *             没有映射文件
 * note
 */
-class SHM_SystemV : public zce::non_copyable
+class shm_systemv : public zce::non_copyable
 {
 public:
     //构造函数
-    SHM_SystemV();
-    ~SHM_SystemV();
+    shm_systemv();
+    ~shm_systemv();
 
 public:
     //打开文件，进行映射
