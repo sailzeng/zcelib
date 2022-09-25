@@ -7,14 +7,6 @@ namespace zce
 /************************************************************************************************************
 Class           : UUID64
 ************************************************************************************************************/
-UUID64::UUID64() :
-    u_uint64_(0)
-{
-}
-
-UUID64::~UUID64()
-{
-}
 
 // < 运算符
 bool UUID64::operator < (const UUID64& others) const
@@ -67,20 +59,20 @@ Class           : UUID64_Generator
 ************************************************************************************************************/
 
 //实例指针
-UUID64_Generator* UUID64_Generator::instance_ = NULL;
+uuid64_gen* uuid64_gen::instance_ = NULL;
 
 //构造函数
-UUID64_Generator::UUID64_Generator() :
+uuid64_gen::uuid64_gen() :
     generator_type_(UUID_GENERATOR::INVALID)
 {
 }
-UUID64_Generator::~UUID64_Generator()
+uuid64_gen::~uuid64_gen()
 {
 }
 
 //随机数的种子，注意如果是是在一个分布式系统中找种子，
 //时间未必特别合理，也许用IP地址计算得到一个种子更好一些
-void UUID64_Generator::random_seed(uint32_t seed)
+void uuid64_gen::random_seed(uint32_t seed)
 {
     generator_type_ = UUID_GENERATOR::RANDOM;
     mt_19937_random_.srand(seed);
@@ -88,7 +80,7 @@ void UUID64_Generator::random_seed(uint32_t seed)
 }
 
 //产生一个UUID64
-UUID64 UUID64_Generator::random_gen()
+UUID64 uuid64_gen::random_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::RANDOM == generator_type_);
 
@@ -102,7 +94,7 @@ UUID64 UUID64_Generator::random_gen()
 }
 
 //以时间为基数的初始化，
-void UUID64_Generator::time_radix(uint16_t identity, uint32_t radix)
+void uuid64_gen::time_radix(uint16_t identity, uint32_t radix)
 {
     generator_type_ = UUID_GENERATOR::TIME;
 
@@ -111,7 +103,7 @@ void UUID64_Generator::time_radix(uint16_t identity, uint32_t radix)
 }
 
 //以时间为基数产生UUID64
-UUID64 UUID64_Generator::timeradix_gen()
+UUID64 uuid64_gen::timeradix_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::TIME == generator_type_);
 
@@ -235,20 +227,20 @@ Class           : UUID128_Generator
 ************************************************************************************************************/
 
 //实例指针
-UUID128_Generator* UUID128_Generator::instance_ = NULL;
+uuid128_gen* uuid128_gen::instance_ = NULL;
 
 //构造函数
-UUID128_Generator::UUID128_Generator() :
+uuid128_gen::uuid128_gen() :
     generator_type_(UUID_GENERATOR::INVALID)
 {
 }
-UUID128_Generator::~UUID128_Generator()
+uuid128_gen::~uuid128_gen()
 {
 }
 
 //随机数的种子，注意如果是是在一个分布式系统中找种子，
 //时间未必特别合理，也许用IP地址计算得到一个种子更好一些
-void UUID128_Generator::random_seed(uint32_t seed)
+void uuid128_gen::random_seed(uint32_t seed)
 {
     generator_type_ = UUID_GENERATOR::RANDOM;
     mt_19937_random_.srand(seed);
@@ -256,7 +248,7 @@ void UUID128_Generator::random_seed(uint32_t seed)
 }
 
 //产生一个UUID64
-UUID128 UUID128_Generator::random_gen()
+UUID128 uuid128_gen::random_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::RANDOM == generator_type_);
 
@@ -272,7 +264,7 @@ UUID128 UUID128_Generator::random_gen()
 }
 
 //以时间为基数的初始化，
-void UUID128_Generator::time_radix(uint32_t identity, uint32_t radix)
+void uuid128_gen::time_radix(uint32_t identity, uint32_t radix)
 {
     generator_type_ = UUID_GENERATOR::TIME;
 
@@ -281,7 +273,7 @@ void UUID128_Generator::time_radix(uint32_t identity, uint32_t radix)
 }
 
 //以时间为基数产生UUID64
-UUID128 UUID128_Generator::timeradix_gen()
+UUID128 uuid128_gen::timeradix_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::TIME == generator_type_);
 

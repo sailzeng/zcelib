@@ -64,7 +64,7 @@ namespace soar
 *             可以从其得到当前的时钟
 * @note
 */
-class Server_Timer : public zce::Timer_Handler
+class Server_Timer : public zce::timer_handler
 {
     friend class App_BusPipe;
 public:
@@ -95,7 +95,7 @@ protected:
     * @return     virtual int
     * @param      queue
     */
-    virtual int initialize(zce::Timer_Queue* queue);
+    virtual int initialize(zce::timer_queue* queue);
 
     /// 定时处理监控数据
     virtual int timer_timeout(const zce::time_value& now_time,

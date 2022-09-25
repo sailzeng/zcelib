@@ -86,7 +86,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
         return ret;
     }
     //初始化SOCKET等
-    ret = zce::Server_Base::socket_init();
+    ret = zce::server_base::socket_init();
     if (ret != 0)
     {
         return ret;
@@ -218,11 +218,11 @@ int App_BusPipe::app_start(int argc, const char* argv[])
     }
 
     //使用WHEEL型的定时器队列
-    zce::Timer_Queue::instance(new zce::Timer_Wheel(
+    zce::timer_queue::instance(new zce::timer_wheel(
         config_base_->max_timer_nuamber_));
 
     //注册定时器
-    timer_base_->initialize(zce::Timer_Queue::instance());
+    timer_base_->initialize(zce::timer_queue::instance());
 
     //ZCE_Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
@@ -267,8 +267,8 @@ int App_BusPipe::app_start(int argc, const char* argv[])
 int App_BusPipe::app_exit()
 {
     //可能要增加多线程的等待
-    zce::Thread_Wait_Manager::instance()->wait_all();
-    zce::Thread_Wait_Manager::clean_instance();
+    zce::thread_wait_manager::instance()->wait_all();
+    zce::thread_wait_manager::clean_instance();
 
     soar::Stat_Monitor::clean_instance();
 
@@ -282,23 +282,23 @@ int App_BusPipe::app_exit()
     zce::ZCE_Reactor::clean_instance();
 
     //
-    if (zce::Timer_Queue::instance())
+    if (zce::timer_queue::instance())
     {
-        zce::Timer_Queue::instance()->close();
+        zce::timer_queue::instance()->close();
     }
-    zce::Timer_Queue::clean_instance();
+    zce::timer_queue::clean_instance();
 
     //
-    if (zce::Timer_Queue::instance())
+    if (zce::timer_queue::instance())
     {
-        zce::Timer_Queue::instance()->close();
+        zce::timer_queue::instance()->close();
     }
     soar::Stat_Monitor::instance()->
         add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
 
     //单子实例清空
     zce::ZCE_Reactor::clean_instance();
-    zce::Timer_Queue::clean_instance();
+    zce::timer_queue::clean_instance();
     soar::Stat_Monitor::clean_instance();
 
     ZCE_LOG(RS_INFO, "[framework] %s exit_instance Succ.Have Fun.!!!",

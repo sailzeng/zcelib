@@ -24,7 +24,7 @@ namespace zce
 /*!
 * @brief      文件锁，对于整个文件进行操作
 */
-class File_Lock : public zce::NON_Copyable
+class File_Lock : public zce::non_copyable
 {
 public:
 

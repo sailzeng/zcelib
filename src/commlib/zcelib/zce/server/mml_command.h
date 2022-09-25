@@ -22,10 +22,10 @@ namespace zce
 * @brief      MML 控制台命令
 *             用于一些文本交互场景，比如GM命令等
 */
-class MML_Command
+class mml_cmd
 {
     //忽视大小写
-    struct LessofCaseString
+    struct lessofcasestr
     {
     public:
         bool operator()(const std::string& src, const std::string& dst) const
@@ -35,9 +35,9 @@ class MML_Command
     };
 
     ///命令的选项
-    typedef std::set <std::string, LessofCaseString>               MMLCMD_OPTION;
+    typedef std::set < std::string, lessofcasestr > MMLCMD_OPTION;
     ///命令的参数
-    typedef std::map <std::string, std::string, LessofCaseString > MMLCMD_PARAMETER;
+    typedef std::map <std::string, std::string, lessofcasestr > MMLCMD_PARAMETER;
 
 public:
 
@@ -62,12 +62,12 @@ public:
     * @param      mml_string MML命令的字符串
     * @param      pattern    MML命令格式
     */
-    MML_Command(const char* mml_string,
-                MML_Command::MML_STRING_PATTERN pattern);
+    mml_cmd(const char* mml_string,
+            mml_cmd::MML_STRING_PATTERN pattern);
     ///默认构造函数
-    MML_Command();
+    mml_cmd();
     ///析构函数
-    ~MML_Command();
+    ~mml_cmd();
 
 protected:
 
@@ -86,7 +86,7 @@ public:
     * @param[in]  pattern    命令格式
     */
     int parse_mml_cnd_string(const char* mml_string,
-                             MML_Command::MML_STRING_PATTERN pattern);
+                             mml_cmd::MML_STRING_PATTERN pattern);
 
     /*!
     * @brief      取得（分析）MML的语句

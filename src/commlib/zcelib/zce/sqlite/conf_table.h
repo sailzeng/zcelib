@@ -35,8 +35,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 
 #pragma once
 
-#include "zce/sqlite/sqlite_handler.h"
-#include "zce/sqlite/sqlite_stmt.h"
+#include "zce/sqlite/handler.h"
+#include "zce/sqlite/stmt.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -100,16 +100,16 @@ public:
 typedef std::vector <AII_BINARY_DATA>   ARRARY_OF_AI_IIJIMA_BINARY;
 
 /******************************************************************************************
-AII_Config_Table 一个很通用的从DB中间得到通用配置信息的方法
+config_table 一个很通用的从DB中间得到通用配置信息的方法
 ******************************************************************************************/
 
 //一个很通用的从DB中间得到通用配置信息的结构
-class AII_Config_Table
+class config_table
 {
 public:
 
-    AII_Config_Table();
-    ~AII_Config_Table();
+    config_table();
+    ~config_table();
 
 protected:
 
@@ -146,8 +146,6 @@ protected:
     void sql_select_array(unsigned int table_id,
                           unsigned int startno,
                           unsigned int numquery);
-
-    //!
 
     /*!
     * @brief      base16的算法，
@@ -226,7 +224,7 @@ public:
     //! SQL语句
     char* sql_string_ = NULL;
     //!
-    zce::SQLite_Handler* sqlite_handler_;
+    zce::sqlite::sqlite_hdl* sqlite_handler_;
 };
 } //namespace zce
 

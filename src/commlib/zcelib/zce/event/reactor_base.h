@@ -24,7 +24,7 @@ namespace zce
 * @brief      反应器的基类
 *
 */
-class ZCE_Reactor :public zce::NON_Copyable
+class ZCE_Reactor :public zce::non_copyable
 {
 protected:
 
@@ -84,7 +84,8 @@ public:
     * @param[in]  event_handler 注册的句柄
     * @param[in]  event_mask    句柄要处理的MASK
     */
-    virtual int register_handler(zce::Event_Handler* event_handler, int event_mask);
+    virtual int register_handler(zce::Event_Handler* event_handler,
+                                 int event_mask);
 
     /*!
     * @brief      从反应器注销一个zce::Event_Handler，同时取消他所有的mask
@@ -93,7 +94,8 @@ public:
     * @param[in]  event_handler     注销的句柄
     * @param[in]  call_handle_close 注销后，是否自动调用句柄的handle_close函数
     */
-    virtual int remove_handler(zce::Event_Handler* event_handler, bool call_handle_close);
+    virtual int remove_handler(zce::Event_Handler* event_handler,
+                               bool call_handle_close);
 
     /*!
     * @brief      取消某些mask标志，
@@ -101,7 +103,8 @@ public:
     * @param[in]  event_handler 处理的句柄
     * @param[in]  cancel_mask   取消的事件mask标志
     */
-    virtual int cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask) = 0;
+    virtual int cancel_wakeup(zce::Event_Handler* event_handler,
+                              int cancel_mask) = 0;
 
     /*!
     * @brief      打开某些mask标志，
@@ -109,7 +112,8 @@ public:
     * @param[in]  event_handler 处理的句柄
     * @param[in]  event_mask    设置的事件mask标志
     */
-    virtual int schedule_wakeup(zce::Event_Handler* event_handler, int event_mask) = 0;
+    virtual int schedule_wakeup(zce::Event_Handler* event_handler,
+                                int event_mask) = 0;
 
     /*!
     * @brief      触发事件,纯虚函数
@@ -117,7 +121,8 @@ public:
     * @param[in,out]  time_out  超时时间
     * @param[out] size_event    返回触发的事件句柄数量
     */
-    virtual int handle_events(zce::time_value* time_out, size_t* size_event) = 0;
+    virtual int handle_events(zce::time_value* time_out,
+                              size_t* size_event) = 0;
 
 protected:
 
@@ -134,7 +139,8 @@ protected:
     * @param[in]  socket_handle 查询的ZCE_HANDLE句柄
     * @param[out] event_handler 查询得到的句柄对应的zce::Event_Handler指针
     */
-    inline int find_event_handler(ZCE_HANDLE handle, zce::Event_Handler*& event_handler);
+    inline int find_event_handler(ZCE_HANDLE handle,
+                                  zce::Event_Handler*& event_handler);
 
 public:
 

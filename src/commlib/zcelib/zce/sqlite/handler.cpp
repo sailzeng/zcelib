@@ -1,32 +1,32 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/sqlite/sqlite_handler.h"
+#include "zce/sqlite/handler.h"
+#include "zce/sqlite/result.h"
 
 //对于SQLITE的最低版本限制
 #if SQLITE_VERSION_NUMBER >= 3005000
 
-namespace zce
+namespace zce::sqlite
 {
-//=========================================================================================
 
 /******************************************************************************************
 SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
 ******************************************************************************************/
-SQLite_Handler::SQLite_Handler() :
+sqlite_hdl::sqlite_hdl() :
     sqlite3_handler_(NULL)
 {
 }
 
-SQLite_Handler::~SQLite_Handler()
+sqlite_hdl::~sqlite_hdl()
 {
     close_database();
 }
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
 //int == 0表示成功，否则失败
-int SQLite_Handler::open_database(const char* db_file,
-                                  bool read_only,
-                                  bool create_db)
+int sqlite_hdl::open_database(const char* db_file,
+                              bool read_only,
+                              bool create_db)
 {
     int flags = SQLITE_OPEN_READWRITE;
     if (create_db)
@@ -58,7 +58,7 @@ int SQLite_Handler::open_database(const char* db_file,
 }
 
 //关闭数据库。
-void SQLite_Handler::close_database()
+void sqlite_hdl::close_database()
 {
     if (sqlite3_handler_)
     {
@@ -68,37 +68,37 @@ void SQLite_Handler::close_database()
 }
 
 //错误语句Str
-const char* SQLite_Handler::error_message()
+const char* sqlite_hdl::error_message()
 {
     return ::sqlite3_errmsg(sqlite3_handler_);
 }
 
 //DB返回的错误ID
-int SQLite_Handler::error_code()
+int sqlite_hdl::error_code()
 {
     return ::sqlite3_errcode(sqlite3_handler_);
 }
 
 //开始一个事务
-int SQLite_Handler::begin_transaction()
+int sqlite_hdl::begin_transaction()
 {
     return exe("BEGIN TRANSACTION;");
 }
 
 //提交一个事务
-int SQLite_Handler::commit_transction()
+int sqlite_hdl::commit_transction()
 {
     return exe("COMMIT TRANSACTION;");
 }
 
 //将同步选项关闭，可以适当的提高insert的速度，但是为了安全起见，建议不要使用
-int SQLite_Handler::turn_off_synch()
+int sqlite_hdl::turn_off_synch()
 {
     return exe("PRAGMA synchronous=OFF;");
 }
 
 //!执行DDL等不需要结果的SQL
-int SQLite_Handler::exe(const char* sql_string)
+int sqlite_hdl::exe(const char* sql_string)
 {
     int ret = 0;
     char* err_msg = NULL;
@@ -123,8 +123,8 @@ int SQLite_Handler::exe(const char* sql_string)
 }
 
 //执行SQL 查询，取得结果
-int SQLite_Handler::get_table(const char* sql_string,
-                              SQLite_Result* result)
+int sqlite_hdl::get_table(const char* sql_string,
+                          result* result)
 {
     int ret = SQLITE_OK;
     char* err_msg = NULL;
@@ -144,29 +144,6 @@ int SQLite_Handler::get_table(const char* sql_string,
     return 0;
 }
 
-//=========================================================================================
-
-SQLite_Result::SQLite_Result()
-{
-}
-
-SQLite_Result::~SQLite_Result()
-{
-    free_result();
-}
-
-//释放结果集合
-void SQLite_Result::free_result()
-{
-    if (result_)
-    {
-        ::sqlite3_free_table(result_);
-        result_ = nullptr;
-    }
-
-    column_ = 0;
-    row_ = 0;
-}
 }
 
 #endif //#if SQLITE_VERSION_NUMBER >= 3005000

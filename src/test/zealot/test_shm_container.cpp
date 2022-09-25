@@ -1256,7 +1256,7 @@ struct EXTRACT_INT_MY_DATA
 //};
 
 //
-class Lux_Data_Manager : public  zce::NON_Copyable
+class Lux_Data_Manager : public  zce::non_copyable
 {
 protected:
     //
@@ -1531,7 +1531,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     std::cout << "Hash safe table expect use ratio : " << double(hash_safe_p->size()) / req_node_number << std::endl;
 
     //
-    zce::Progress_Timer progress_timer;
+    zce::progress_timer progress_timer;
     progress_timer.restart();
 
     //
@@ -1610,7 +1610,7 @@ typedef zce::shm_hash_rehash<int, int> SMEM_HASH_SAFE_INT;
 int test_hash_safe(int /*argc*/, char* /*argv*/[])
 {
     //计时器，不是定时器呀
-    zce::HR_Progress_Timer auto_timer;
+    zce::hr_progress_timer auto_timer;
 
     SMEM_HASH_SAFE_INT* abc = NULL;
 

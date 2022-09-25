@@ -21,7 +21,7 @@ FSM_Manager::~FSM_Manager()
 {
 }
 
-int FSM_Manager::initialize(zce::Timer_Queue* timer_queue,
+int FSM_Manager::initialize(zce::timer_queue* timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
                             const soar::SERVICES_INFO& selfsvr,

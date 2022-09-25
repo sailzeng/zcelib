@@ -16,18 +16,18 @@
 */
 #pragma once
 
-#include "zce/sqlite/sqlite_handler.h"
+#include "zce/sqlite/handler.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 
-namespace zce
+namespace zce::sqlite
 {
 /*!
 @brief      SQlite STMT的句柄
             用于SQL的处理等，STMT是个好东东，就是理解上麻烦一点。
 */
-class SQLite_STMT
+class stmt
 {
 public:
 
@@ -80,11 +80,11 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    SQLite_STMT(SQLite_Handler* sqlite3_handler);
+    stmt(sqlite_hdl* sqlite3_handler);
     /*!
     * @brief      析构函数
     */
-    ~SQLite_STMT();
+    ~stmt();
 
 public:
 
@@ -185,7 +185,7 @@ public:
 
     //!导出结果,列号自动++
     template <class value_type>
-    SQLite_STMT& operator >> (value_type& val)
+    stmt& operator >> (value_type& val)
     {
         column<value_type&>(current_col_, val);
         ++current_col_;
@@ -194,7 +194,7 @@ public:
 
     //!bind绑定参数,列号自动++
     template <class bind_type>
-    SQLite_STMT& operator << (bind_type val)
+    stmt& operator << (bind_type val)
     {
         bind<bind_type>(current_bind_, val);
         ++current_bind_;
@@ -202,13 +202,13 @@ public:
     }
 
     //这两个类型的<<函数使用的是引用，所以重载一下，
-    SQLite_STMT& operator << (const SQLite_STMT::BLOB_bind& val);
-    SQLite_STMT& operator << (const std::string& val);
+    stmt& operator << (const stmt::BLOB_bind& val);
+    stmt& operator << (const std::string& val);
 
 protected:
 
     //!SQLite的DB句柄
-    SQLite_Handler* sqlite_handler_;
+    sqlite_hdl* sqlite_handler_;
 
     //!SQLite原声的STMT的句柄
     sqlite3_stmt* prepared_statement_;

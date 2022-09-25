@@ -657,7 +657,7 @@ int handle_ready(ZCE_SOCKET handle,
         FD_SET(handle, &handle_set_exeception);
         p_set_exception = &handle_set_exeception;
     }
-    else if (HANDLE_READY::accept_peer == ready_todo)
+    else if (HANDLE_READY::server_peer == ready_todo)
     {
         //accept事件是利用读取事件
         FD_SET(handle, &handle_set_read);
@@ -744,7 +744,7 @@ int handle_ready(ZCE_SOCKET handle,
     {
         ep_event.events |= EPOLLERR;
     }
-    else if (HANDLE_READY::accept_peer == ready_todo)
+    else if (HANDLE_READY::server_peer == ready_todo)
     {
         //accept事件是利用读取事件
         ep_event.events |= EPOLLIN;
@@ -928,7 +928,7 @@ ZCE_SOCKET accept_timeout(ZCE_SOCKET handle,
     int ret = 0;
     ret = zce::handle_ready(handle,
                             &timeout_tv,
-                            zce::HANDLE_READY::accept_peer);
+                            zce::HANDLE_READY::server_peer);
     const int HANDLE_READY_ONE = 1;
     if (ret != HANDLE_READY_ONE)
     {

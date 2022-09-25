@@ -29,7 +29,7 @@ namespace zce::mysql
 * @brief      MYSQL的命令对象，用于处理SQL语句的执行，获得结果集
 *
 */
-class command : public zce::NON_Copyable
+class command : public zce::non_copyable
 {
 public:
     ///命令对象的构造函数

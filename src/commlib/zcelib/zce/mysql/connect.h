@@ -24,7 +24,7 @@ namespace zce::mysql
 /*!
 * @brief      MYSQL的连接器
 */
-class connect : public zce::NON_Copyable
+class connect : public zce::non_copyable
 {
 public:
 

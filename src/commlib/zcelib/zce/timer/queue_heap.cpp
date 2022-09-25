@@ -13,12 +13,12 @@ namespace zce
 #define ZCE_TIMER_HEAP_RCHILD(x)  ((x) + (x) + 2)
 
 //
-Timer_Heap::Timer_Heap(size_t num_timer_node,
+timer_heap::timer_heap(size_t num_timer_node,
                        unsigned int timer_precision_mesc,
                        TRIGGER_MODE trigger_mode,
                        bool dynamic_expand_node)
 {
-    int ret = Timer_Heap::initialize(num_timer_node,
+    int ret = timer_heap::initialize(num_timer_node,
                                      timer_precision_mesc,
                                      trigger_mode,
                                      dynamic_expand_node);
@@ -31,23 +31,23 @@ Timer_Heap::Timer_Heap(size_t num_timer_node,
 }
 
 //构造函数
-Timer_Heap::Timer_Heap() :
+timer_heap::timer_heap() :
     size_heap_(0)
 {
 }
 
-Timer_Heap::~Timer_Heap()
+timer_heap::~timer_heap()
 {
 }
 
-int Timer_Heap::initialize(size_t num_timer_node,
+int timer_heap::initialize(size_t num_timer_node,
                            unsigned int timer_precision_mesc,
                            TRIGGER_MODE trigger_mode,
                            bool dynamic_expand_node)
 {
     //在基类进行初始化
     int ret = 0;
-    ret = zce::Timer_Queue::initialize(num_timer_node,
+    ret = zce::timer_queue::initialize(num_timer_node,
                                        timer_precision_mesc,
                                        trigger_mode,
                                        dynamic_expand_node);
@@ -64,11 +64,11 @@ int Timer_Heap::initialize(size_t num_timer_node,
 }
 
 //扩张相关十字链表的NODE的数量，也调用底层的extend_node函数
-int Timer_Heap::extend_node(size_t num_timer_node,
+int timer_heap::extend_node(size_t num_timer_node,
                             size_t& old_num_node)
 {
     int ret = 0;
-    ret = zce::Timer_Queue::extend_node(num_timer_node, old_num_node);
+    ret = zce::timer_queue::extend_node(num_timer_node, old_num_node);
 
     if (ret != 0)
     {
@@ -95,7 +95,7 @@ int Timer_Heap::extend_node(size_t num_timer_node,
 }
 
 //分发定时器
-size_t Timer_Heap::dispatch_timer(const zce::time_value& now_time,
+size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
                                   uint64_t now_trigger_msec)
 {
     int ret = 0;
@@ -145,7 +145,7 @@ size_t Timer_Heap::dispatch_timer(const zce::time_value& now_time,
 }
 
 //设置定时器
-int Timer_Heap::schedule_timer(zce::Timer_Handler* timer_hdl,
+int timer_heap::schedule_timer(zce::timer_handler* timer_hdl,
                                const void* action,
                                const zce::time_value& delay_time,
                                const zce::time_value& interval_time)
@@ -180,7 +180,7 @@ int Timer_Heap::schedule_timer(zce::Timer_Handler* timer_hdl,
 }
 
 //取消定时器
-int Timer_Heap::cancel_timer(int timer_id)
+int timer_heap::cancel_timer(int timer_id)
 {
     //
     int ret = 0;
@@ -194,7 +194,7 @@ int Timer_Heap::cancel_timer(int timer_id)
     }
 
     //回收TIME NODE
-    ret = zce::Timer_Queue::cancel_timer(timer_id);
+    ret = zce::timer_queue::cancel_timer(timer_id);
 
     if (ret != 0)
     {
@@ -204,7 +204,7 @@ int Timer_Heap::cancel_timer(int timer_id)
     return 0;
 }
 
-int Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
+int timer_heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
 {
     bool contiue_trigger = false;
 
@@ -241,7 +241,7 @@ int Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
 }
 
 //向上寻找合适的位置
-bool Timer_Heap::reheap_up(size_t  heap_id)
+bool timer_heap::reheap_up(size_t  heap_id)
 {
     bool already_up = false;
 
@@ -288,7 +288,7 @@ bool Timer_Heap::reheap_up(size_t  heap_id)
 }
 
 //向下寻找合适的位置
-bool Timer_Heap::reheap_down(size_t heap_id)
+bool timer_heap::reheap_down(size_t heap_id)
 {
     //是否进行了下降操作
     bool already_down = false;
@@ -306,7 +306,8 @@ bool Timer_Heap::reheap_down(size_t heap_id)
     {
         //如果左子节点大于右子节点，那么，向右边进发
         if (((child_id + 1) < size_heap_) &&
-            (time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id + 1]].next_trigger_point_))
+            (time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ >
+            time_node_ary_[timer_node_heap_[child_id + 1]].next_trigger_point_))
         {
             ++child_id;
         }
@@ -314,7 +315,8 @@ bool Timer_Heap::reheap_down(size_t heap_id)
         //dump();
 
         //父节点大于子节点，
-        if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_)
+        if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ >
+            time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_)
         {
             already_down = true;
 
@@ -343,7 +345,7 @@ bool Timer_Heap::reheap_down(size_t heap_id)
     return already_down;
 }
 
-int Timer_Heap::get_frist_nodeid(int& timer_node_id)
+int timer_heap::get_frist_nodeid(int& timer_node_id)
 {
     //先附一个无效值
     timer_node_id = INVALID_TIMER_ID;
@@ -358,7 +360,7 @@ int Timer_Heap::get_frist_nodeid(int& timer_node_id)
 };
 
 //增加一个Timer Node
-int Timer_Heap::add_nodeid(int add_node_id)
+int timer_heap::add_nodeid(int add_node_id)
 {
     //放在堆的最后一个，
     timer_node_heap_[size_heap_] = add_node_id;
@@ -371,7 +373,7 @@ int Timer_Heap::add_nodeid(int add_node_id)
     return 0;
 }
 
-int Timer_Heap::remove_nodeid(int timer_node_id)
+int timer_heap::remove_nodeid(int timer_node_id)
 {
     assert(size_heap_ > 0);
 
@@ -413,7 +415,7 @@ int Timer_Heap::remove_nodeid(int timer_node_id)
 }
 
 //dump数据
-void Timer_Heap::dump()
+void timer_heap::dump()
 {
     std::cout << "timer_node_heap_:";
 

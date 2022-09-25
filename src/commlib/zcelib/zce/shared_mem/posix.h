@@ -10,7 +10,7 @@
 */
 namespace zce
 {
-class SHM_Posix : public zce::NON_Copyable
+class SHM_Posix : public zce::non_copyable
 {
 public:
     //构造函数

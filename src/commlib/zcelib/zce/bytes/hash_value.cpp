@@ -6,8 +6,11 @@
 //================================================================================================
 //MD5的算法
 
+namespace zce
+{
+
 //初始化MD5的context，内容
-void ZCE_Hash_MD5::initialize(context* ctx)
+void hash_md5::initialize(context* ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
@@ -51,8 +54,8 @@ void ZCE_Hash_MD5::initialize(context* ctx)
     }
 
 //将64个字节，16个uint32_t的数组进行摘要（杂凑）处理，处理的数据自己序是小头数据
-void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
-                                 const uint32_t block[PROCESS_BLOCK_SIZE / 4])
+void hash_md5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
+                             const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
     uint32_t a, b, c, d;
     const uint32_t* x = NULL;
@@ -151,7 +154,7 @@ void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
 //SHA1的算法
 
 //SHA1算法的上下文的初始化
-void ZCE_Hash_SHA1::initialize(context* ctx)
+void hash_sha1::initialize(context* ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
@@ -164,8 +167,8 @@ void ZCE_Hash_SHA1::initialize(context* ctx)
 }
 
 //内部函数，对一个64bit内存块进行杂凑处理，
-void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
-                                  const uint32_t block[PROCESS_BLOCK_SIZE / 4])
+void hash_sha1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
+                              const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
     size_t        t;
     uint32_t      wblock[80];
@@ -249,21 +252,21 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 #define F0(x,y,z) ((x & y) | (z & (x | y)))
 #define CAST_F1(x,y,z) (z ^ (x & (y ^ z)))
 
-#define SHA2_R(t)                                    \
-    (                                               \
-                                                    wblock[t] = SHA2_S1(wblock[t -  2]) + wblock[t -  7] +          \
-                                                                SHA2_S0(wblock[t - 15]) + wblock[t - 16]            \
-    )
+#define SHA2_R(t)                                                            \
+                  (                                                          \
+                      wblock[t] = SHA2_S1(wblock[t -  2]) + wblock[t -  7] + \
+                      SHA2_S0(wblock[t - 15]) + wblock[t - 16]               \
+                  )
 
-#define SHA2_P(a,b,c,d,e,f,g,h,x,K)                  \
-    {                                               \
-        temp1 = h + SHA2_S3(e) + CAST_F1(e,f,g) + K + x;      \
-        temp2 = SHA2_S2(a) + F0(a,b,c);                  \
-        d += temp1; h = temp1 + temp2;              \
+#define SHA2_P(a,b,c,d,e,f,g,h,x,K)                       \
+    {                                                     \
+        temp1 = h + SHA2_S3(e) + CAST_F1(e,f,g) + K + x;  \
+        temp2 = SHA2_S2(a) + F0(a,b,c);                   \
+        d += temp1; h = temp1 + temp2;                    \
     }
 
 //SHA256算法的上下文的初始化
-void ZCE_Hash_SHA256::initialize(context* ctx)
+void hash_sha256::initialize(context* ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
@@ -279,8 +282,8 @@ void ZCE_Hash_SHA256::initialize(context* ctx)
 }
 
 //对一个64bit内存块进行杂凑处理，
-void ZCE_Hash_SHA256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
-                                    const uint32_t block[PROCESS_BLOCK_SIZE / 4])
+void hash_sha256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
+                                const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
     uint32_t  wblock[64];
     uint32_t a, b, c, d, e, f, g, h, temp1, temp2;
@@ -410,12 +413,14 @@ static const uint32_t ZCE_CRC32_TABLE[256] =
     0xb3667a2e,0xc4614ab8,0x5d681b02,0x2a6f2b94,0xb40bbe37,0xc30c8ea1,0x5a05df1b,0x2d02ef8d,
 };
 
-void ZCE_Hash_CRC32::initialize(context* ctx)
+void hash_crc32::initialize(context* ctx)
 {
     *ctx = 0;
 }
 
-void ZCE_Hash_CRC32::process(context* ctx, const char* buf, size_t buf_size)
+void hash_crc32::process(context* ctx,
+                         const char* buf,
+                         size_t buf_size)
 {
     uint32_t crc = *ctx;
     while (buf_size--)
@@ -425,10 +430,10 @@ void ZCE_Hash_CRC32::process(context* ctx, const char* buf, size_t buf_size)
     *ctx = crc;
 }
 
-void ZCE_Hash_CRC32::finalize(context* ctx,
-                              const char* buf,
-                              size_t buf_size,
-                              char result[HASH_RESULT_SIZE])
+void hash_crc32::finalize(context* ctx,
+                          const char* buf,
+                          size_t buf_size,
+                          char result[HASH_RESULT_SIZE])
 {
     uint32_t crc = *ctx;
     while (buf_size--)
@@ -437,6 +442,8 @@ void ZCE_Hash_CRC32::finalize(context* ctx,
     }
     *ctx = crc;
     *((uint32_t*)result) = *(ctx);
+}
+
 }
 
 //CRC32的函数，
@@ -612,3 +619,4 @@ size_t zce::hash_djb(const char* str, size_t str_len)
 
     return hash;
 }
+

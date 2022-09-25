@@ -199,7 +199,7 @@ struct ZCE_STATUS_HEAD
 *
 * @note       本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
 */
-class Server_Status : public zce::NON_Copyable
+class server_status : public zce::non_copyable
 {
 protected:
 
@@ -218,9 +218,9 @@ public:
 public:
 
     ///构造函数,也给你单独使用的机会，所以不用protected
-    Server_Status();
+    server_status();
     ///析构函数
-    virtual ~Server_Status();
+    virtual ~server_status();
 
 protected:
 
@@ -379,9 +379,9 @@ public:
 public:
 
     //得到单子实例
-    static Server_Status* instance();
+    static server_status* instance();
     //单子实例赋值
-    static void instance(Server_Status*);
+    static void instance(server_status*);
     //清理单子实例
     static void clean_instance();
 
@@ -436,6 +436,6 @@ protected:
 protected:
 
     //单子实例
-    static Server_Status* instance_;
+    static server_status* instance_;
 };
 }

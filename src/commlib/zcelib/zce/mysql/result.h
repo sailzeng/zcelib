@@ -41,7 +41,7 @@
 */
 namespace zce::mysql
 {
-class result : zce::NON_Copyable
+class result : zce::non_copyable
 {
 public:
 

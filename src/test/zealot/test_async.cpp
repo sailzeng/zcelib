@@ -140,7 +140,7 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     const unsigned int CMD_2 = 10002;
     const unsigned int CMD_3 = 10003;
 
-    zce::Timer_Queue* time_queue = new zce::Timer_Wheel();
+    zce::timer_queue* time_queue = new zce::timer_wheel();
     zce::Async_FSMMgr* mgr = new zce::Async_FSMMgr();
     mgr->initialize(time_queue, 100, 200);
     mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));

@@ -65,7 +65,7 @@ unsigned int  TCP_Svc_Handler::handler_id_builder_ = 0;
 //构造函数
 TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
     zce::Event_Handler(zce::ZCE_Reactor::instance()),
-    zce::Timer_Handler(zce::Timer_Queue::instance()),
+    zce::timer_handler(zce::timer_queue::instance()),
     handler_mode_(hdl_mode),
     my_svc_id_(0, 0),
     peer_svr_id_(0, 0),

@@ -9,7 +9,7 @@ namespace zce
 *             没有映射文件
 * note
 */
-class SHM_SystemV : public zce::NON_Copyable
+class SHM_SystemV : public zce::non_copyable
 {
 public:
     //构造函数

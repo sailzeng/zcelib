@@ -551,7 +551,7 @@ int test_lua_script7(int, char*[])
     const uint32_t TEST_SEED = 120825;
     zce::random_mt11213b  mt11231b_gen(TEST_SEED);
 
-    zce::Progress_Timer timer;
+    zce::progress_timer timer;
     timer.restart();
     for (size_t i = 0; i < LUA_TEST_COUNT; ++i)
     {
@@ -642,7 +642,7 @@ int test_lua_script8(int, char*[])
     const uint32_t TEST_SEED = 120825;
     zce::random_mt11213b  mt11231b_gen(TEST_SEED);
 
-    zce::Progress_Timer timer;
+    zce::progress_timer timer;
 
     //使用指针对应数据，速度比完全用Lua 栈交互快，但这个测试，数据没有跟换过，
     //一直使用obj_x，obj_y，obj_result

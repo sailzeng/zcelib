@@ -9,12 +9,12 @@
 
 namespace zce
 {
-Timer_Queue* Timer_Queue::instance_ = NULL;
+timer_queue* timer_queue::instance_ = NULL;
 /******************************************************************************************
-ZCE_Timer_Queue ，定时器的基类
+timer_queue ，定时器的基类
 ******************************************************************************************/
 //构造函数
-Timer_Queue::Timer_Queue(size_t num_timer_node,
+timer_queue::timer_queue(size_t num_timer_node,
                          unsigned int timer_precision_mesc,
                          TRIGGER_MODE trigger_mode,
                          bool dynamic_expand_node) :
@@ -29,18 +29,18 @@ Timer_Queue::Timer_Queue(size_t num_timer_node,
     ZCE_UNUSED_ARG(ret);
 }
 
-Timer_Queue::Timer_Queue()
+timer_queue::timer_queue()
 {
 }
 
 //析构函数
-Timer_Queue::~Timer_Queue()
+timer_queue::~timer_queue()
 {
     //使用vector的好处就是自己不用管理内存了
 }
 
 //初始化
-int Timer_Queue::initialize(size_t num_timer_node,
+int timer_queue::initialize(size_t num_timer_node,
                             unsigned int timer_precision_mesc,
                             TRIGGER_MODE trigger_mode,
                             bool dynamic_expand_node)
@@ -85,7 +85,7 @@ int Timer_Queue::initialize(size_t num_timer_node,
 }
 
 //关闭
-int Timer_Queue::close()
+int timer_queue::close()
 {
     //将所有定时器的TIME ID处理
     for (size_t i = 0; i < num_timer_node_; ++i)
@@ -94,7 +94,7 @@ int Timer_Queue::close()
         if (time_node_ary_[i].timer_handle_)
         {
             //为什么要赋值再使用呢，我担心timer_close会被你调用来清理
-            zce::Timer_Handler* time_hdl = time_node_ary_[i].timer_handle_;
+            zce::timer_handler* time_hdl = time_node_ary_[i].timer_handle_;
             time_hdl->timer_close();
         }
     }
@@ -103,7 +103,7 @@ int Timer_Queue::close()
 }
 
 //扩张的NODE的数量，
-int Timer_Queue::extend_node(size_t num_timer_node,
+int timer_queue::extend_node(size_t num_timer_node,
                              size_t& old_num_node)
 {
     //总不能比原来还小吧
@@ -148,13 +148,13 @@ int Timer_Queue::extend_node(size_t num_timer_node,
 }
 
 //取消定时器，
-int Timer_Queue::cancel_timer(int timer_id)
+int timer_queue::cancel_timer(int timer_id)
 {
     return free_timernode(timer_id);
 }
 
 //取消定时器，超级超级，超级慢的函数，平均时间复杂度O(N),N是队列的长度
-int Timer_Queue::cancel_timer(const zce::Timer_Handler* timer_hdl)
+int timer_queue::cancel_timer(const zce::timer_handler* timer_hdl)
 {
     assert(timer_hdl);
 
@@ -186,7 +186,7 @@ int Timer_Queue::cancel_timer(const zce::Timer_Handler* timer_hdl)
 }
 
 //分配Timer Node
-int Timer_Queue::alloc_timernode(zce::Timer_Handler* timer_hdl,
+int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
                                  const void* action,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time,
@@ -277,7 +277,7 @@ int Timer_Queue::alloc_timernode(zce::Timer_Handler* timer_hdl,
 }
 
 //计算下一个触发点，
-void Timer_Queue::calc_next_trigger(int time_node_id,
+void timer_queue::calc_next_trigger(int time_node_id,
                                     uint64_t now_trigger_msec,
                                     bool& continue_trigger)
 {
@@ -304,7 +304,7 @@ void Timer_Queue::calc_next_trigger(int time_node_id,
 }
 
 //释放Timer Node
-int Timer_Queue::free_timernode(int time_node_id)
+int timer_queue::free_timernode(int time_node_id)
 {
     //考虑了一下还是用断言了，避免你写错代码祸国殃民
     ZCE_ASSERT(time_node_ary_[time_node_id].timer_handle_ != NULL &&
@@ -333,7 +333,7 @@ int Timer_Queue::free_timernode(int time_node_id)
 }
 
 //得到最快将在多少时间后触发
-int Timer_Queue::get_first_timeout(zce::time_value* first_timeout)
+int timer_queue::get_first_timeout(zce::time_value* first_timeout)
 {
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
@@ -377,7 +377,7 @@ int Timer_Queue::get_first_timeout(zce::time_value* first_timeout)
     return 0;
 }
 
-size_t Timer_Queue::expire()
+size_t timer_queue::expire()
 {
     zce::time_value now_time(zce::gettimeofday());
 
@@ -404,13 +404,13 @@ size_t Timer_Queue::expire()
 }
 
 //得到唯一的单子实例
-Timer_Queue* Timer_Queue::instance()
+timer_queue* timer_queue::instance()
 {
     return instance_;
 }
 
 //赋值唯一的单子实例
-void Timer_Queue::instance(Timer_Queue* pinstatnce)
+void timer_queue::instance(timer_queue* pinstatnce)
 {
     clean_instance();
     instance_ = pinstatnce;
@@ -418,7 +418,7 @@ void Timer_Queue::instance(Timer_Queue* pinstatnce)
 }
 
 //清除单子实例
-void Timer_Queue::clean_instance()
+void timer_queue::clean_instance()
 {
     if (instance_)
     {

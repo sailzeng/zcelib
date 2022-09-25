@@ -20,20 +20,20 @@ namespace zce
 /*!
 * @brief      不能复制的通过声明但不实现，拷贝构造函数和赋值函数，达到无法复制的目的
 */
-class NON_Copyable
+class non_copyable
 {
 protected:
     ///构造函数和析构函数，保护，保证可以继承
-    NON_Copyable() = default;
+    non_copyable() = default;
 
-    ~NON_Copyable() = default;
+    ~non_copyable() = default;
 
     // emphasize the following members are private
 private:
 
     ///拷贝构造函数，声明但不实现
-    NON_Copyable(const zce::NON_Copyable&) = delete;
+    non_copyable(const zce::non_copyable&) = delete;
     ///赋值函数，声明但不实现
-    const NON_Copyable& operator=(const zce::NON_Copyable&) = delete;
+    const non_copyable& operator=(const zce::non_copyable&) = delete;
 };
 }

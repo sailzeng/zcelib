@@ -14,7 +14,7 @@ namespace soar
 *
 * @note
 */
-class App_BusPipe : public zce::Server_Base
+class App_BusPipe : public zce::server_base
 {
 protected:
 

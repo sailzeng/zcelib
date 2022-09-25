@@ -21,7 +21,7 @@
 
 namespace zce
 {
-class  Get_Option : public zce::NON_Copyable
+class  Get_Option : public zce::non_copyable
 {
 public:
     /// Mutually exclusive ordering values.

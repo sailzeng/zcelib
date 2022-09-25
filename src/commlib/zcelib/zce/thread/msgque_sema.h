@@ -307,7 +307,7 @@ public:
 */
 template < typename T,
     typename C >
-class MsgQueue_Sema : public zce::NON_Copyable
+class MsgQueue_Sema : public zce::non_copyable
 {
 public:
 

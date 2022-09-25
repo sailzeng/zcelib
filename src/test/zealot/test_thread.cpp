@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-int test_nonr_thread_mutex(int, char* [])
+int test_nonr_thread_mutex(int, char*[])
 {
     zce::Thread_NONR_Mutex  abc;
     abc.lock();
@@ -19,7 +19,7 @@ zce::msglist_sema <int >  message_queue_(100);
 
 zce::Thread_Light_Mutex  io_mutex;
 
-class Task_Producer : public zce::Thread_Task
+class Task_Producer : public zce::thread_task
 {
 public:
     Task_Producer()
@@ -46,7 +46,7 @@ protected:
     size_t number_prc_;
 };
 
-class Task_Consumer : public zce::Thread_Task
+class Task_Consumer : public zce::thread_task
 {
 public:
     Task_Consumer()

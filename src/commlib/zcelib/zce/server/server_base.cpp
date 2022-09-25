@@ -14,10 +14,10 @@ class Server_Base
 *********************************************************************************/
 namespace zce
 {
-Server_Base* Server_Base::base_instance_ = NULL;
+server_base* server_base::base_instance_ = NULL;
 
 // 构造函数,私有,使用单子类的实例,
-Server_Base::Server_Base()
+server_base::server_base()
 {
     memset(&last_process_perf_, 0, sizeof(last_process_perf_));
     memset(&now_process_perf_, 0, sizeof(now_process_perf_));
@@ -25,7 +25,7 @@ Server_Base::Server_Base()
     memset(&now_system_perf_, 0, sizeof(now_system_perf_));
 }
 
-Server_Base::~Server_Base()
+server_base::~server_base()
 {
     // 关闭文件
     if (pid_handle_ != ZCE_INVALID_HANDLE)
@@ -36,7 +36,7 @@ Server_Base::~Server_Base()
 }
 
 // 初始化
-int Server_Base::socket_init()
+int server_base::socket_init()
 {
     int ret = 0;
     ret = zce::socket_init();
@@ -48,7 +48,7 @@ int Server_Base::socket_init()
 }
 
 //打印输出PID File
-int Server_Base::out_pid_file(const char* pragramname)
+int server_base::out_pid_file(const char* pragramname)
 {
     int ret = 0;
 
@@ -112,7 +112,7 @@ int Server_Base::out_pid_file(const char* pragramname)
 
 // 监测这个进程的系统状况,每N分钟运行一次就OK了
 // 看门狗得到进程的状态
-int Server_Base::watch_dog_status(bool first_record)
+int server_base::watch_dog_status(bool first_record)
 {
     int ret = 0;
 
@@ -299,7 +299,7 @@ int Server_Base::watch_dog_status(bool first_record)
     return 0;
 }
 
-int Server_Base::process_signal(void)
+int server_base::process_signal(void)
 {
     //忽视部分信号,这样简单
     signal(SIGHUP, SIG_IGN);
@@ -323,7 +323,7 @@ int Server_Base::process_signal(void)
     return 0;
 }
 
-int Server_Base::daemon_init()
+int server_base::daemon_init()
 {
     //Daemon 精灵进程,但是我不清理目录路径,
 
@@ -357,7 +357,7 @@ int Server_Base::daemon_init()
 }
 
 //通过启动参数0，得到app_base_name_，app_run_name_
-int Server_Base::create_app_name(const char* argv_0)
+int server_base::create_app_name(const char* argv_0)
 {
     app_run_name_ = argv_0;
     // 取得base name
@@ -410,7 +410,7 @@ int Server_Base::create_app_name(const char* argv_0)
 }
 
 //windows下设置服务信息
-void Server_Base::set_service_info(const char* svc_name,
+void server_base::set_service_info(const char* svc_name,
                                    const char* svc_desc)
 {
     if (svc_name != NULL)
@@ -424,25 +424,25 @@ void Server_Base::set_service_info(const char* svc_name,
 }
 
 //得到运行信息，可能包括路径信息
-const char* Server_Base::get_app_runname()
+const char* server_base::get_app_runname()
 {
     return app_run_name_.c_str();
 }
 
 //得到程序进程名称，，去掉了路径，WINDOWS下去掉了后缀
-const char* Server_Base::get_app_basename()
+const char* server_base::get_app_basename()
 {
     return app_base_name_.c_str();
 }
 
 //设置进程是否运行的标志
-void Server_Base::set_run_sign(bool app_run)
+void server_base::set_run_sign(bool app_run)
 {
     app_run_ = app_run;
 }
 
 //设置reload标志
-void Server_Base::set_reload_sign(bool app_reload)
+void server_base::set_reload_sign(bool app_reload)
 {
     app_reload_ = app_reload;
 }
@@ -450,7 +450,7 @@ void Server_Base::set_reload_sign(bool app_reload)
 //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
 
-BOOL Server_Base::exit_signal(DWORD)
+BOOL server_base::exit_signal(DWORD)
 {
     base_instance_->set_run_sign(false);
     return TRUE;
@@ -478,7 +478,7 @@ void Server_Base::reload_cfg_signal(int)
 #if defined ZCE_OS_WINDOWS
 
 //运行服务
-int Server_Base::win_services_run()
+int server_base::win_services_run()
 {
     char service_name[PATH_MAX + 1];
     service_name[PATH_MAX] = '\0';
@@ -507,7 +507,7 @@ int Server_Base::win_services_run()
 }
 
 //安装服务
-int Server_Base::win_services_install()
+int server_base::win_services_install()
 {
     if (win_services_isinstalled())
     {
@@ -575,7 +575,7 @@ int Server_Base::win_services_install()
 }
 
 //卸载服务
-int Server_Base::win_services_uninstall()
+int server_base::win_services_uninstall()
 {
     if (!win_services_isinstalled())
     {
@@ -623,7 +623,7 @@ int Server_Base::win_services_uninstall()
 }
 
 //检查服务是否安装
-bool Server_Base::win_services_isinstalled()
+bool server_base::win_services_isinstalled()
 {
     bool b_result = false;
 
@@ -648,7 +648,7 @@ bool Server_Base::win_services_isinstalled()
 }
 
 //服务运行函数
-void WINAPI Server_Base::win_service_main()
+void WINAPI server_base::win_service_main()
 {
     //WIN服务用的状态
     static SERVICE_STATUS_HANDLE handle_service_status = NULL;
@@ -693,34 +693,34 @@ void WINAPI Server_Base::win_service_main()
 }
 
 //服务控制台所需要的控制函数
-void WINAPI Server_Base::win_services_ctrl(DWORD op_code)
+void WINAPI server_base::win_services_ctrl(DWORD op_code)
 {
     switch (op_code)
     {
-        case SERVICE_CONTROL_STOP:
-            //
-            base_instance_->app_run_ = false;
-            break;
+    case SERVICE_CONTROL_STOP:
+        //
+        base_instance_->app_run_ = false;
+        break;
 
-        case SERVICE_CONTROL_PAUSE:
-            break;
+    case SERVICE_CONTROL_PAUSE:
+        break;
 
-        case SERVICE_CONTROL_CONTINUE:
-            break;
+    case SERVICE_CONTROL_CONTINUE:
+        break;
 
-        case SERVICE_CONTROL_INTERROGATE:
-            break;
+    case SERVICE_CONTROL_INTERROGATE:
+        break;
 
-        case SERVICE_CONTROL_SHUTDOWN:
-            break;
+    case SERVICE_CONTROL_SHUTDOWN:
+        break;
 
-        default:
-            base_instance_->log_event("Bad service request");
-            break;
+    default:
+        base_instance_->log_event("Bad service request");
+        break;
     }
 }
 
-int Server_Base::log_event(const char* format_str, ...)
+int server_base::log_event(const char* format_str, ...)
 {
     const size_t BUFFER_LEN = 512;
     char out_msg[BUFFER_LEN];

@@ -68,8 +68,7 @@
 * 一笑看风云过
 */
 
-#ifndef ZCE_LIB_SERVER_TOOLKIT_H_
-#define ZCE_LIB_SERVER_TOOLKIT_H_
+#pragma once
 
 #include "zce/os_adapt/process.h"
 #include "zce/os_adapt/sysinfo.h"
@@ -79,14 +78,14 @@
 namespace zce
 {
 /*********************************************************************************
-class ZCE_Server_Toolkit
+class Server_Base
 *********************************************************************************/
-class Server_Base : public zce::NON_Copyable
+class server_base : public zce::non_copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,
-    Server_Base();
-    ~Server_Base();
+    server_base();
+    ~server_base();
 
 public:
 
@@ -189,7 +188,7 @@ protected:
 protected:
 
     //单子实例
-    static zce::Server_Base* base_instance_;
+    static zce::server_base* base_instance_;
 
 protected:
 
@@ -256,4 +255,4 @@ public:
 };
 }
 
-#endif //_ZCE_LIB_SERVER_TOOLKIT_H_
+

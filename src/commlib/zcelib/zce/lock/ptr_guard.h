@@ -23,7 +23,7 @@ namespace zce
 *             只要是从zce::Lock_Base继承的家伙，应该都可以使用这个，
 *             ZCE_LockPtr_Guard是利用多态特性实现的，而不是模版特性
 */
-class Lock_Ptr_Guard : public zce::NON_Copyable
+class Lock_Ptr_Guard : public zce::non_copyable
 {
 public:
 

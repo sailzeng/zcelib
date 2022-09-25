@@ -12,7 +12,7 @@ class soar::Svrd_BusPipe;
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
 class Ogre_TCP_Svc_Handler : public  zce::Event_Handler,
-    public zce::Timer_Handler
+    public zce::timer_handler
 {
 public:
 

@@ -32,8 +32,8 @@ zce::STATUS_ITEM_WITHNAME  SERVER_STATUS_2[] =
 
 int test_server_status(int, char*[])
 {
-    zce::Server_Status::instance()->initialize(ZEALOT_FILE_NAME, 3, SERVER_STATUS_1, true);
-    zce::Server_Status::instance()->add_status_item(3, SERVER_STATUS_1);
-    zce::Server_Status::instance()->add_status_item(3, SERVER_STATUS_2);
+    zce::server_status::instance()->initialize(ZEALOT_FILE_NAME, 3, SERVER_STATUS_1, true);
+    zce::server_status::instance()->add_status_item(3, SERVER_STATUS_1);
+    zce::server_status::instance()->add_status_item(3, SERVER_STATUS_2);
     return 0;
 }

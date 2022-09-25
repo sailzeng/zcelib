@@ -121,13 +121,13 @@ int AII_BINARY_DATA::protobuf_decode(unsigned int* index_1,
 /*****************************************************************************************************************
 struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信息的方法
 *****************************************************************************************************************/
-AII_Config_Table::AII_Config_Table()
+config_table::config_table()
 {
     sql_string_ = new char[MAX_SQLSTRING_LEN];
-    sqlite_handler_ = new zce::SQLite_Handler();
+    sqlite_handler_ = new zce::sqlite::sqlite_hdl();
 }
 
-AII_Config_Table::~AII_Config_Table()
+config_table::~config_table()
 {
     if (sql_string_)
     {
@@ -144,9 +144,9 @@ AII_Config_Table::~AII_Config_Table()
 }
 
 //打开一个通用的数据库
-int AII_Config_Table::open_dbfile(const char* db_file,
-                                  bool read_only,
-                                  bool create_db)
+int config_table::open_dbfile(const char* db_file,
+                              bool read_only,
+                              bool create_db)
 {
     int ret = sqlite_handler_->open_database(db_file, read_only, create_db);
     if (ret != 0)
@@ -156,13 +156,13 @@ int AII_Config_Table::open_dbfile(const char* db_file,
     return 0;
 }
 
-void AII_Config_Table::close_dbfile()
+void config_table::close_dbfile()
 {
     sqlite_handler_->close_database();
 }
 
 //创建TABLE SQL语句
-void AII_Config_Table::sql_create_table(unsigned  int table_id)
+void config_table::sql_create_table(unsigned  int table_id)
 {
     //构造后面的SQL
     char* ptmppoint = sql_string_;
@@ -185,7 +185,7 @@ void AII_Config_Table::sql_create_table(unsigned  int table_id)
 }
 
 //改写的SQL
-void AII_Config_Table::sql_replace_bind(unsigned int table_id)
+void config_table::sql_replace_bind(unsigned int table_id)
 {
     //构造后面的SQL
     char* ptmppoint = sql_string_;
@@ -203,12 +203,12 @@ void AII_Config_Table::sql_replace_bind(unsigned int table_id)
 
 //!改写的SQL,文本格式，用x
 //!此函数保留主要是用于文件比较，产生更新SQL，因为是更新SQL，所以全部用的x
-void AII_Config_Table::sql_replace_one(unsigned int table_id,
-                                       unsigned int index_1,
-                                       unsigned int index_2,
-                                       size_t blob_len,
-                                       const char* blob_data,
-                                       unsigned int last_mod_time)
+void config_table::sql_replace_one(unsigned int table_id,
+                                   unsigned int index_1,
+                                   unsigned int index_2,
+                                   size_t blob_len,
+                                   const char* blob_data,
+                                   unsigned int last_mod_time)
 {
     //构造后面的SQL
     char* ptmppoint = sql_string_;
@@ -240,10 +240,10 @@ void AII_Config_Table::sql_replace_one(unsigned int table_id,
 }
 
 //BASE16的编码
-int AII_Config_Table::base16_encode(const char* in,
-                                    size_t in_len,
-                                    char* out,
-                                    size_t* out_len)
+int config_table::base16_encode(const char* in,
+                                size_t in_len,
+                                char* out,
+                                size_t* out_len)
 {
     //
     static const char BASE16_ENC_MAP[] = "0123456789abcdef";
@@ -273,9 +273,9 @@ int AII_Config_Table::base16_encode(const char* in,
 }
 
 //得到选择一个确定数据的SQL
-void AII_Config_Table::sql_select_one(unsigned int table_id,
-                                      unsigned int index_1,
-                                      unsigned int index_2)
+void config_table::sql_select_one(unsigned int table_id,
+                                  unsigned int index_1,
+                                  unsigned int index_2)
 {
     char* ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
@@ -291,9 +291,9 @@ void AII_Config_Table::sql_select_one(unsigned int table_id,
 }
 
 //得到删除数据的SQL
-void AII_Config_Table::sql_delete_one(unsigned int table_id,
-                                      unsigned int index_1,
-                                      unsigned int index_2)
+void config_table::sql_delete_one(unsigned int table_id,
+                                  unsigned int index_1,
+                                  unsigned int index_2)
 {
     char* ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
@@ -309,9 +309,9 @@ void AII_Config_Table::sql_delete_one(unsigned int table_id,
     buflen -= len;
 }
 //
-void AII_Config_Table::sql_counter(unsigned int table_id,
-                                   unsigned int startno,
-                                   unsigned int numquery)
+void config_table::sql_counter(unsigned int table_id,
+                               unsigned int startno,
+                               unsigned int numquery)
 {
     //构造SQL
     char* ptmppoint = sql_string_;
@@ -332,9 +332,9 @@ void AII_Config_Table::sql_counter(unsigned int table_id,
 }
 
 //
-void AII_Config_Table::sql_select_array(unsigned int table_id,
-                                        unsigned int startno,
-                                        unsigned int numquery)
+void config_table::sql_select_array(unsigned int table_id,
+                                    unsigned int startno,
+                                    unsigned int numquery)
 {
     char* ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
@@ -356,7 +356,7 @@ void AII_Config_Table::sql_select_array(unsigned int table_id,
 }
 
 //!创建数据表
-int AII_Config_Table::create_table(unsigned int table_id)
+int config_table::create_table(unsigned int table_id)
 {
     //建表和建立索引
     sql_create_table(table_id);
@@ -372,12 +372,12 @@ int AII_Config_Table::create_table(unsigned int table_id)
 }
 
 //更新一条记录，
-int AII_Config_Table::replace_one(unsigned int table_id,
-                                  const AII_BINARY_DATA* conf_data)
+int config_table::replace_one(unsigned int table_id,
+                              const AII_BINARY_DATA* conf_data)
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    SQLite_STMT stmt_handler(sqlite_handler_);
+    zce::sqlite::stmt stmt_handler(sqlite_handler_);
     int ret = 0;
 
     ret = stmt_handler.prepare(sql_string_);
@@ -386,8 +386,8 @@ int AII_Config_Table::replace_one(unsigned int table_id,
         return ret;
     }
 
-    SQLite_STMT::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
-                                       conf_data->ai_data_length_);
+    zce::sqlite::stmt::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
+                                             conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
     stmt_handler << binary_data;
@@ -403,12 +403,12 @@ int AII_Config_Table::replace_one(unsigned int table_id,
     return 0;
 }
 
-int AII_Config_Table::replace_array(unsigned int table_id,
-                                    const ARRARY_OF_AI_IIJIMA_BINARY* ary_ai_iijma)
+int config_table::replace_array(unsigned int table_id,
+                                const ARRARY_OF_AI_IIJIMA_BINARY* ary_ai_iijma)
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    SQLite_STMT stmt_handler(sqlite_handler_);
+    zce::sqlite::stmt stmt_handler(sqlite_handler_);
     int ret = 0;
 
     ret = sqlite_handler_->begin_transaction();
@@ -427,8 +427,8 @@ int AII_Config_Table::replace_array(unsigned int table_id,
             return ret;
         }
 
-        SQLite_STMT::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                           (*ary_ai_iijma)[i].ai_data_length_);
+        zce::sqlite::stmt::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                                 (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
@@ -452,13 +452,13 @@ int AII_Config_Table::replace_array(unsigned int table_id,
 }
 
 //
-int AII_Config_Table::select_one(unsigned int table_id,
-                                 AII_BINARY_DATA* conf_data)
+int config_table::select_one(unsigned int table_id,
+                             AII_BINARY_DATA* conf_data)
 {
     sql_select_one(table_id,
                    conf_data->index_1_,
                    conf_data->index_2_);
-    SQLite_STMT stmt_handler(sqlite_handler_);
+    zce::sqlite::stmt stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -477,8 +477,8 @@ int AII_Config_Table::select_one(unsigned int table_id,
         return -1;
     }
 
-    SQLite_STMT::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
-                                         &(conf_data->ai_data_length_));
+    zce::sqlite::stmt::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
+                                               &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -486,13 +486,13 @@ int AII_Config_Table::select_one(unsigned int table_id,
 }
 
 //删除一条记录
-int AII_Config_Table::delete_one(unsigned int table_id,
-                                 unsigned int index_1,
-                                 unsigned int index_2)
+int config_table::delete_one(unsigned int table_id,
+                             unsigned int index_1,
+                             unsigned int index_2)
 {
     //构造后面的SQL
     sql_delete_one(table_id, index_1, index_2);
-    SQLite_STMT stmt_handler(sqlite_handler_);
+    zce::sqlite::stmt stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -509,13 +509,13 @@ int AII_Config_Table::delete_one(unsigned int table_id,
 }
 
 //
-int AII_Config_Table::counter(unsigned int table_id,
-                              unsigned int startno,
-                              unsigned int numquery,
-                              unsigned int* rec_count)
+int config_table::counter(unsigned int table_id,
+                          unsigned int startno,
+                          unsigned int numquery,
+                          unsigned int* rec_count)
 {
     sql_counter(table_id, startno, numquery);
-    SQLite_STMT stmt_handler(sqlite_handler_);
+    zce::sqlite::stmt stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -540,10 +540,10 @@ int AII_Config_Table::counter(unsigned int table_id,
 }
 
 //查询所有的队列
-int AII_Config_Table::select_array(unsigned int table_id,
-                                   unsigned int startno,
-                                   unsigned int numquery,
-                                   ARRARY_OF_AI_IIJIMA_BINARY* ary_ai_iijma)
+int config_table::select_array(unsigned int table_id,
+                               unsigned int startno,
+                               unsigned int numquery,
+                               ARRARY_OF_AI_IIJIMA_BINARY* ary_ai_iijma)
 {
     int ret = 0;
 
@@ -563,7 +563,7 @@ int AII_Config_Table::select_array(unsigned int table_id,
     ary_ai_iijma->resize(num_counter);
 
     sql_select_array(table_id, startno, numquery);
-    SQLite_STMT stmt_handler(sqlite_handler_);
+    zce::sqlite::stmt stmt_handler(sqlite_handler_);
 
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -588,8 +588,8 @@ int AII_Config_Table::select_array(unsigned int table_id,
             return -1;
         }
 
-        SQLite_STMT::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                             &((*ary_ai_iijma)[i].ai_data_length_));
+        zce::sqlite::stmt::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                                   &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
@@ -607,10 +607,10 @@ int AII_Config_Table::select_array(unsigned int table_id,
 }
 
 //对比两个数据表格，找出差异，然后找出差异的SQL
-int AII_Config_Table::compare_table(const char* old_db,
-                                    const char* new_db,
-                                    unsigned int table_id,
-                                    std::string* update_sql)
+int config_table::compare_table(const char* old_db,
+                                const char* new_db,
+                                unsigned int table_id,
+                                std::string* update_sql)
 {
     int ret = 0;
 

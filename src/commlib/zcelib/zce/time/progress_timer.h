@@ -46,14 +46,14 @@ namespace zce
 * @note       精度问题，由于std::clock的实现，其实真正的进度可能在10多ms（15-16）。所以如
 *             果直接拿这个测量某个函数的（一次）耗时，不会准确，误差非常大。
 */
-class Progress_Timer
+class progress_timer
 {
 public:
 
     ///构造函数
-    Progress_Timer();
+    progress_timer();
     ///析构函数
-    ~Progress_Timer();
+    ~progress_timer();
 
     ///从新开始计时
     void restart();
@@ -99,14 +99,14 @@ protected:
 *             频机制，所以还是慎重为好） 第三，QueryPerformanceCounter比较耗时，远远不如
 *             RDTSC。甚至和GetTickCount都有几十倍的差距。
 */
-class HR_Progress_Timer
+class hr_progress_timer
 {
 public:
 
     ///构造函数
-    HR_Progress_Timer();
+    hr_progress_timer();
     ///析构函数
-    ~HR_Progress_Timer();
+    ~hr_progress_timer();
 
     ///从新开始计时
     void restart();
@@ -167,14 +167,14 @@ protected:
 *             但如果说到对性能不要有影响，而且尽量只是作为测量参考，这个计时器也是不错的选
 *             择。
 */
-class TSC_Progress_Timer
+class tsc_progress_timer
 {
 public:
 
     ///构造函数
-    TSC_Progress_Timer();
+    tsc_progress_timer();
     ///析构函数
-    ~TSC_Progress_Timer();
+    ~tsc_progress_timer();
 
     ///从新开始计时
     void restart();
@@ -209,14 +209,14 @@ protected:
 * @brief      利用CPP 11的std::chrono::high_resolution_clock高精度计时器做的计时器，
 *
 */
-class Chrono_HR_Timer
+class chrono_hr_timer
 {
 public:
 
     ///构造函数
-    Chrono_HR_Timer();
+    chrono_hr_timer();
     ///析构函数
-    ~Chrono_HR_Timer() = default;
+    ~chrono_hr_timer() = default;
 
     ///从新开始计时
     void restart();
@@ -248,7 +248,7 @@ protected:
 *             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
 */
 template<typename PROGRESS_TIMER>
-class Auto_Progress_Timer : public zce::NON_Copyable
+class Auto_Progress_Timer : public zce::non_copyable
 {
 public:
     ///构造函数，同时开始计时

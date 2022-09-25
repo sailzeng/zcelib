@@ -6,7 +6,7 @@
 namespace zce
 {
 //构造函数
-Timer_Wheel::Timer_Wheel(size_t num_timer_node,
+timer_wheel::timer_wheel(size_t num_timer_node,
                          unsigned int timer_length_mesc,
                          unsigned int timer_precision_mesc,
                          TRIGGER_MODE trigger_mode,
@@ -30,7 +30,7 @@ Timer_Wheel::Timer_Wheel(size_t num_timer_node,
 }
 
 //构造函数
-Timer_Wheel::Timer_Wheel() :
+timer_wheel::timer_wheel() :
     timer_length_mesc_(0),
     num_wheel_point_(0),
     proc_wheel_start_(0)
@@ -38,11 +38,11 @@ Timer_Wheel::Timer_Wheel() :
 }
 
 //析构函数
-Timer_Wheel::~Timer_Wheel()
+timer_wheel::~timer_wheel()
 {
 }
 
-int Timer_Wheel::initialize(size_t num_timer_node,
+int timer_wheel::initialize(size_t num_timer_node,
                             unsigned int timer_length_mesc,
                             unsigned int timer_precision_mesc,
                             TRIGGER_MODE trigger_mode,
@@ -59,7 +59,7 @@ int Timer_Wheel::initialize(size_t num_timer_node,
     //记录最大能接受的毫秒数量
     timer_length_mesc_ = timer_length_mesc;
 
-    ret = zce::Timer_Queue::initialize(num_timer_node,
+    ret = zce::timer_queue::initialize(num_timer_node,
                                        timer_precision_mesc,
                                        trigger_mode,
                                        dynamic_expand_node);
@@ -85,11 +85,11 @@ int Timer_Wheel::initialize(size_t num_timer_node,
 }
 
 //扩张相关十字链表的NODE的数量，也调用底层的extend_node函数
-int Timer_Wheel::extend_node(size_t num_timer_node,
+int timer_wheel::extend_node(size_t num_timer_node,
                              size_t& old_num_node)
 {
     int ret = 0;
-    ret = zce::Timer_Queue::extend_node(num_timer_node, old_num_node);
+    ret = zce::timer_queue::extend_node(num_timer_node, old_num_node);
 
     if (ret != 0)
     {
@@ -112,7 +112,7 @@ int Timer_Wheel::extend_node(size_t num_timer_node,
 }
 
 //将Queue和TimerNode绑定
-void Timer_Wheel::bind_wheel_listnode(int time_node_id)
+void timer_wheel::bind_wheel_listnode(int time_node_id)
 {
     //前进了多少时间点
     size_t front_num = static_cast<size_t>
@@ -144,7 +144,7 @@ void Timer_Wheel::bind_wheel_listnode(int time_node_id)
 }
 
 //将Queue和TimerNode解除绑定
-void Timer_Wheel::unbind_wheel_listnode(int time_node_id)
+void timer_wheel::unbind_wheel_listnode(int time_node_id)
 {
     int wheel_point_id = wheel_node_list_[time_node_id].wheel_point_id_;
 
@@ -179,7 +179,7 @@ void Timer_Wheel::unbind_wheel_listnode(int time_node_id)
 }
 
 //设置定时器
-int Timer_Wheel::schedule_timer(zce::Timer_Handler* timer_hdl,
+int timer_wheel::schedule_timer(zce::timer_handler* timer_hdl,
                                 const void* action,
                                 const zce::time_value& delay_time,
                                 const zce::time_value& interval_time)
@@ -211,7 +211,7 @@ int Timer_Wheel::schedule_timer(zce::Timer_Handler* timer_hdl,
 }
 
 //取消定时器
-int Timer_Wheel::cancel_timer(int timer_id)
+int timer_wheel::cancel_timer(int timer_id)
 {
     //
     int ret = 0;
@@ -220,7 +220,7 @@ int Timer_Wheel::cancel_timer(int timer_id)
     unbind_wheel_listnode(timer_id);
 
     //回收这个TIMER NODE
-    ret = zce::Timer_Queue::cancel_timer(timer_id);
+    ret = zce::timer_queue::cancel_timer(timer_id);
 
     if (ret != 0)
     {
@@ -232,7 +232,7 @@ int Timer_Wheel::cancel_timer(int timer_id)
 }
 
 //在触发一次后，要对定时器进行重新计算
-int Timer_Wheel::reschedule_timer(int timer_id,
+int timer_wheel::reschedule_timer(int timer_id,
                                   uint64_t now_trigger_msec)
 {
     bool contiue_trigger = false;
@@ -259,7 +259,7 @@ int Timer_Wheel::reschedule_timer(int timer_id,
 }
 
 //取得第一个元素，也就是，最小的时间,Timer_Wheel如果里面的的NODE很少，可能有点慢,
-int Timer_Wheel::get_frist_nodeid(int& first_node_id)
+int timer_wheel::get_frist_nodeid(int& first_node_id)
 {
     first_node_id = INVALID_TIMER_ID;
 
@@ -294,7 +294,7 @@ int Timer_Wheel::get_frist_nodeid(int& first_node_id)
 }
 
 //分发定时器，返回分发的数量
-size_t Timer_Wheel::dispatch_timer(const zce::time_value& now_time,
+size_t timer_wheel::dispatch_timer(const zce::time_value& now_time,
                                    uint64_t now_trigger_msec)
 {
     //分派了多少个定时器计数

@@ -6,7 +6,7 @@
 
 namespace zce
 {
-Server_Status* Server_Status::instance_ = NULL;
+server_status* server_status::instance_ = NULL;
 
 /******************************************************************************************
 class ZCE_STATUS_ITEM_ID
@@ -70,7 +70,7 @@ Server_Status
 ******************************************************************************************/
 
 //构造函数,也给你单独使用的机会，所以不用protected
-Server_Status::Server_Status() :
+server_status::server_status() :
     stat_lock_(NULL),
     stat_file_head_(NULL),
     status_stat_sandy_(NULL),
@@ -81,7 +81,7 @@ Server_Status::Server_Status() :
 }
 
 //
-Server_Status::~Server_Status()
+server_status::~server_status()
 {
     //清理掉各种指针
     if (stat_lock_)
@@ -106,7 +106,7 @@ Server_Status::~Server_Status()
 //初始化的方法,通用的底层，
 //Param1: char* statfilename MMAP影射的状态文件名称
 //Param2: bool restore_mmap 是否用于恢复MMAP，如果是恢复，文件必须是存在的,
-int Server_Status::initialize(const char* stat_filename,
+int server_status::initialize(const char* stat_filename,
                               bool restore_mmap,
                               bool multi_thread)
 {
@@ -169,7 +169,7 @@ int Server_Status::initialize(const char* stat_filename,
 }
 
 //增加一些监控项目，有时候框架会有一部分监控项目，各自项目有有一些监控项目
-void Server_Status::add_status_item(size_t num_add_stat_item,
+void server_status::add_status_item(size_t num_add_stat_item,
                                     const STATUS_ITEM_WITHNAME item_ary[])
 {
     // 扩大数组的空间, 多扩大几个空间也没有关系
@@ -183,7 +183,7 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
         if (iter == conf_stat_map_.end())
         {
             conf_stat_map_.insert(STATUS_WITHNAME_MAP::value_type(item_ary[i].statics_item_.item_id_.statics_id_,
-                                                                  item_ary[i]));
+                                  item_ary[i]));
         }
         else
         {
@@ -197,7 +197,7 @@ void Server_Status::add_status_item(size_t num_add_stat_item,
     }
 }
 
-bool Server_Status::is_exist_stat_id(unsigned int stat_id,
+bool server_status::is_exist_stat_id(unsigned int stat_id,
                                      STATUS_ITEM_WITHNAME* status_item_withname) const
 {
     //能写auto正好
@@ -211,7 +211,7 @@ bool Server_Status::is_exist_stat_id(unsigned int stat_id,
 }
 
 //修改是否需要多线程保护
-void Server_Status::multi_thread_guard(bool multi_thread)
+void server_status::multi_thread_guard(bool multi_thread)
 {
     //如果旧有的锁仍然存在，先删除
     if (stat_lock_)
@@ -235,7 +235,7 @@ void Server_Status::multi_thread_guard(bool multi_thread)
 
 //在sandy数据区里面，找数据项目
 //这个函数里面不要加锁（在上层加），因为这个函数是一个公用函数，可能会……
-int Server_Status::find_insert_idx(uint32_t statics_id,
+int server_status::find_insert_idx(uint32_t statics_id,
                                    uint32_t classify_id,
                                    uint32_t subclassing_id,
                                    size_t* sandy_idx)
@@ -285,7 +285,7 @@ int Server_Status::find_insert_idx(uint32_t statics_id,
 }
 
 //根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
-int Server_Status::initialize(const char* stat_filename, bool multi_thread)
+int server_status::initialize(const char* stat_filename, bool multi_thread)
 {
     ZCE_ASSERT(stat_filename != NULL);
 
@@ -306,7 +306,7 @@ int Server_Status::initialize(const char* stat_filename, bool multi_thread)
 //Param2: size_t num_stat_ary     状态计数器的个数,
 //Param3: ZCE_STATUS_ITEM item_ary[] 状态技术器的
 //Param4: multi_thread 多线程环境
-int Server_Status::initialize(const char* stat_filename,
+int server_status::initialize(const char* stat_filename,
                               size_t num_stat_item,
                               const STATUS_ITEM_WITHNAME item_ary[],
                               bool multi_thread)
@@ -338,7 +338,7 @@ int Server_Status::initialize(const char* stat_filename,
 }
 
 //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
-int Server_Status::add_number(uint32_t statics_id,
+int server_status::add_number(uint32_t statics_id,
                               uint32_t classify_id,
                               uint32_t subclassing_id,
                               int64_t incre_value)
@@ -368,7 +368,7 @@ int Server_Status::add_number(uint32_t statics_id,
 }
 
 //绝对值修改监控统计项目，
-int Server_Status::set_counter(uint32_t statics_id,
+int server_status::set_counter(uint32_t statics_id,
                                uint32_t classify_id,
                                uint32_t subclassing_id,
                                uint64_t set_value)
@@ -398,7 +398,7 @@ int Server_Status::set_counter(uint32_t statics_id,
 }
 
 //根据统计ID和分类ID作为key，得到统计数值
-uint64_t Server_Status::get_counter(uint32_t statics_id,
+uint64_t server_status::get_counter(uint32_t statics_id,
                                     uint32_t classify_id,
                                     uint32_t subclassing_id)
 {
@@ -418,21 +418,21 @@ uint64_t Server_Status::get_counter(uint32_t statics_id,
 }
 
 //取得计数器的个数
-size_t Server_Status::num_of_counter()
+size_t server_status::num_of_counter()
 {
     //不会改变的数值，不加锁
     return status_stat_sandy_->size();
 }
 
 //获取copy_time
-uint64_t Server_Status::get_copy_time()
+uint64_t server_status::get_copy_time()
 {
     return stat_file_head_->copy_time_;
 }
 
 //清理过期的数据，在你的定时器触发时调用（当然前面最好应该上报），用于将一些数据清0，
 //理论上每5分钟调用一次就OK
-void Server_Status::check_overtime(time_t now_time)
+void server_status::check_overtime(time_t now_time)
 {
     ZCE_ASSERT(initialized_);
 
@@ -493,7 +493,7 @@ void Server_Status::check_overtime(time_t now_time)
 
 //由于将内部数据全部取出，用于你外部打包之类
 //由于是一个较少调用的函数，我降低了他的性能，保证记录使用的内存空间更小
-void Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_copy)
+void server_status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_copy)
 {
     zce::Lock_Ptr_Guard guard(stat_lock_);
 
@@ -529,7 +529,7 @@ void Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_c
 }
 
 //备份计数器信息
-void Server_Status::copy_stat_counter()
+void server_status::copy_stat_counter()
 {
     //将备份数据数据去赋值
     size_t num_of_counter = status_stat_sandy_->size();
@@ -544,7 +544,7 @@ void Server_Status::copy_stat_counter()
 }
 
 //Dump所有的数据
-void Server_Status::dump_status_info(std::ostringstream& strstream, bool dump_copy)
+void server_status::dump_status_info(std::ostringstream& strstream, bool dump_copy)
 {
     size_t num_of_counter = 0;
     strstream << "Statistics Number:" << static_cast<unsigned int>(num_of_counter) << std::endl;
@@ -595,7 +595,7 @@ void Server_Status::dump_status_info(std::ostringstream& strstream, bool dump_co
 }
 
 //Dump所有的数据
-void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_copy)
+void server_status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_copy)
 {
     size_t num_of_counter = 0;
     ZCE_STATUS_ITEM* stat_process_iter = NULL;
@@ -651,30 +651,30 @@ void Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_c
 }
 
 //得到文件的头部信息
-void Server_Status::get_stat_head(ZCE_STATUS_HEAD* stat_head)
+void server_status::get_stat_head(ZCE_STATUS_HEAD* stat_head)
 {
     *stat_head = *stat_file_head_;
 }
 
 //记录监控的上报时间
-void Server_Status::report_monitor_time(uint64_t report_time)
+void server_status::report_monitor_time(uint64_t report_time)
 {
     stat_file_head_->report_monitor_time_ = report_time;
 }
 
 //得到唯一的单子实例
-Server_Status* Server_Status::instance()
+server_status* server_status::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new Server_Status();
+        instance_ = new server_status();
     }
 
     return instance_;
 }
 
 //赋值唯一的单子实例
-void Server_Status::instance(Server_Status* pinstatnce)
+void server_status::instance(server_status* pinstatnce)
 {
     clean_instance();
     instance_ = pinstatnce;
@@ -682,7 +682,7 @@ void Server_Status::instance(Server_Status* pinstatnce)
 }
 
 //清除单子实例
-void Server_Status::clean_instance()
+void server_status::clean_instance()
 {
     if (instance_)
     {

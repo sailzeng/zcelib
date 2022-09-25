@@ -42,7 +42,7 @@ namespace zce
 * @tparam     T   希望使用singleton模式的数据结构
 */
 template <typename T>
-class Singleton
+class singleton
 {
 public:
     ///实例函数
@@ -54,9 +54,9 @@ public:
 
 private:
     /// ctor is hidden
-    Singleton();
+    singleton();
     /// copy ctor is hidden
-    Singleton(Singleton const&);
+    singleton(singleton const&);
 };
 
 //========================================================================================================
@@ -72,7 +72,7 @@ private:
 * @tparam     T    希望使用singleton模式的数据结构
 */
 template <typename T>
-class Boost_Singleton
+class boost_singleton
 {
 private:
 
@@ -104,7 +104,7 @@ public:
     }
 };
 //因为create_object_是类的静态变量，必须有一个通用的声明
-template <typename T>  typename zce::Boost_Singleton<T>::object_creator zce::Boost_Singleton<T>::create_object_;
+template <typename T>  typename zce::boost_singleton<T>::object_creator zce::boost_singleton<T>::create_object_;
 
 //========================================================================================================
 }

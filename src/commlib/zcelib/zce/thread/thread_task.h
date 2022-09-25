@@ -27,14 +27,14 @@ namespace zce
 *
 * @note       对象不可拷贝复制，
 */
-class Thread_Task : public zce::NON_Copyable
+class thread_task : public zce::non_copyable
 {
 public:
 
     ///构造函数
-    Thread_Task();
+    thread_task();
     ///析构函数
-    virtual ~Thread_Task();
+    virtual ~thread_task();
 
 public:
 

@@ -6,7 +6,7 @@ namespace soar
 {
 //原来是使用模版策略锁，后来发现模版容易将问题扩大化，
 //改成多态策略
-class Stat_Monitor : public zce::Server_Status
+class Stat_Monitor : public zce::server_status
 {
 public:
     //gunner里面有接收多个cgi统计上报的需求

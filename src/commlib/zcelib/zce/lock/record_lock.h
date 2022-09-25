@@ -24,7 +24,7 @@ namespace zce
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
 *
 */
-class Record_Lock : public zce::NON_Copyable
+class Record_Lock : public zce::non_copyable
 {
 public:
 

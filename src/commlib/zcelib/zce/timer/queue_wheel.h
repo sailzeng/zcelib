@@ -40,7 +40,7 @@ namespace zce
 *             内部也指向有WHEEL
 *             设置定时器，取消定时器，分发定时器的消耗级别都是O(1)
 */
-class Timer_Wheel : public zce::Timer_Queue
+class timer_wheel : public zce::timer_queue
 {
 protected:
 
@@ -50,9 +50,9 @@ protected:
     {
         ///构造函数
         ZCE_WHEEL_TIMER_NODE() :
-            list_prev_(zce::Timer_Queue::INVALID_TIMER_ID),
-            list_next_(zce::Timer_Queue::INVALID_TIMER_ID),
-            wheel_point_id_(zce::Timer_Queue::INVALID_TIMER_ID)
+            list_prev_(zce::timer_queue::INVALID_TIMER_ID),
+            list_next_(zce::timer_queue::INVALID_TIMER_ID),
+            wheel_point_id_(zce::timer_queue::INVALID_TIMER_ID)
         {
         }
         ///析构函数
@@ -93,16 +93,16 @@ public:
     * @param[in]  trigger_mode          触发模式是用墙上时钟还是CPU TICK，参考 @ref ZCE_Timer_Queue::TRIGGER_MODE
     * @param[in]  dynamic_expand_node   如果初始化的NODE节点数量不够，是否自动扩展
     */
-    Timer_Wheel(size_t num_timer_node,
+    timer_wheel(size_t num_timer_node,
                 unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
                 unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                 TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                 bool dynamic_expand_node = true);
     ///构造函数
-    Timer_Wheel();
+    timer_wheel();
 
     ///析构函数
-    virtual ~Timer_Wheel();
+    virtual ~timer_wheel();
 public:
 
     /*!
@@ -129,7 +129,7 @@ public:
     * @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
     *                           如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(zce::Timer_Handler* timer_hdl,
+    virtual int schedule_timer(zce::timer_handler* timer_hdl,
                                const void* action,
                                const zce::time_value& delay_time,
                                const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) override;

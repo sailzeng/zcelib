@@ -129,6 +129,9 @@
 #include "zce/bytes/bytes_common.h"
 #include "zce/os_adapt/file.h"
 
+namespace zce
+{
+
 //=====================================================================================================
 
 /*!
@@ -141,7 +144,7 @@
 * @tparam     HASH_STRATEGY  算法的策略类
 */
 template <size_t result_size, bool little_endian, typename HASH_STRATEGY>
-class ZCE_HashFun_Block64
+class hashfun_block64
 {
 public:
 
@@ -328,7 +331,7 @@ public:
 //=====================================================================================================
 //MD5的处理策略类，主要是实现算法，不用直接使用，
 //本来是希望用protected和friends 友元避免外部能感知这些函数的，但友元对对模版的支持还不够，我只能public了
-class ZCE_Hash_MD5 : public ZCE_HashFun_Block64<16, true, ZCE_Hash_MD5>
+class hash_md5 : public zce::hashfun_block64<16, true, hash_md5>
 {
 public:
 
@@ -340,7 +343,7 @@ public:
 
 //=====================================================================================================
 //SHA1的处理策略类
-class ZCE_Hash_SHA1 : public ZCE_HashFun_Block64<20, false, ZCE_Hash_SHA1>
+class hash_sha1 : public zce::hashfun_block64<20, false, hash_sha1>
 {
 public:
 
@@ -353,7 +356,7 @@ public:
 //=====================================================================================================
 
 //SHA256，SHA2的算法策略
-class ZCE_Hash_SHA256 : public ZCE_HashFun_Block64<32, false, ZCE_Hash_SHA256>
+class hash_sha256 : public zce::hashfun_block64<32, false, hash_sha256>
 {
 public:
 
@@ -366,7 +369,7 @@ public:
 //=====================================================================================================
 
 ///CRC32 主要是为了方便计算文件CRC32等实现的，其实如果只是计算内存CRC值，下面有一个函数实现简单
-class ZCE_Hash_CRC32
+class hash_crc32
 {
 public:
     //结果数据长度
@@ -376,7 +379,9 @@ public:
 
     typedef uint32_t context;
 
-    static void process(context* ctx, const char* buf, size_t buf_size);
+    static void process(context* ctx,
+                        const char* buf,
+                        size_t buf_size);
 
     static void finalize(context* ctx,
                          const char* buf,
@@ -388,14 +393,13 @@ public:
 
 //=====================================================================================================
 
-namespace zce
-{
+
 //=====================================================================================================
 //传统的HASH算法函数，
 
 /*!
 * @brief      计算一个内存数据的HASH值，我讨厌重复自己，于是就有了这个模版，和这种实现方式
-* @tparam     HASH_STRATEGY 模版参数，对于一个数据求HASH的算法，策略，ZCE_Hash_SHA1，ZCE_Hash_MD5等
+* @tparam     HASH_STRATEGY 模版参数，对于一个数据求HASH的算法，策略，zce::hash_sha1，zce::hash_md5等
 * @return     char * 返回得到的结果
 * @param[in]  buf    处理的BUFFER
 * @param[in]  buf_size   BUFFER的长度
@@ -478,9 +482,9 @@ int hash_file(const char* file_name,
 */
 inline char* md5(const char* buf,
                  size_t buf_size,
-                 char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
+                 char result[zce::hash_md5::HASH_RESULT_SIZE])
 {
-    return zce::hash_fun<ZCE_Hash_MD5>(buf, buf_size, result);
+    return zce::hash_fun<zce::hash_md5>(buf, buf_size, result);
 }
 
 /*!
@@ -491,9 +495,9 @@ inline char* md5(const char* buf,
 * @param      result      返回的结果
 */
 inline int md5_file(const char* file_name,
-                    char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
+                    char result[zce::hash_md5::HASH_RESULT_SIZE])
 {
-    return zce::hash_file<ZCE_Hash_MD5, 10240>(file_name, result);
+    return zce::hash_file<zce::hash_md5, 10240>(file_name, result);
 }
 
 /*!
@@ -505,9 +509,9 @@ inline int md5_file(const char* file_name,
 */
 inline char* sha1(const char* buf,
                   size_t buf_size,
-                  char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
+                  char result[zce::hash_sha1::HASH_RESULT_SIZE])
 {
-    return zce::hash_fun<ZCE_Hash_SHA1>(buf, buf_size, result);
+    return zce::hash_fun<zce::hash_sha1>(buf, buf_size, result);
 }
 
 /*!
@@ -518,9 +522,9 @@ inline char* sha1(const char* buf,
 * @param[out] result      返回的结果
 */
 inline int sha1_file(const char* file_name,
-                     char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
+                     char result[zce::hash_sha1::HASH_RESULT_SIZE])
 {
-    return zce::hash_file<ZCE_Hash_SHA1, 10240>(file_name, result);
+    return zce::hash_file<zce::hash_sha1, 10240>(file_name, result);
 }
 
 /*!
@@ -532,9 +536,9 @@ inline int sha1_file(const char* file_name,
 */
 inline char* sha256(const char* buf,
                     size_t buf_size,
-                    char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
+                    char result[zce::hash_sha256::HASH_RESULT_SIZE])
 {
-    return zce::hash_fun<ZCE_Hash_SHA256>(buf, buf_size, result);
+    return zce::hash_fun<zce::hash_sha256>(buf, buf_size, result);
 }
 
 /*!
@@ -545,9 +549,9 @@ inline char* sha256(const char* buf,
 * @param[out] result      返回的结果
 */
 inline int sha256_file(const char* file_name,
-                       char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
+                       char result[zce::hash_sha256::HASH_RESULT_SIZE])
 {
-    return zce::hash_file<ZCE_Hash_SHA256, 10240>(file_name, result);
+    return zce::hash_file<zce::hash_sha256, 10240>(file_name, result);
 }
 
 /*!
@@ -582,7 +586,7 @@ inline uint32_t crc32(const char* buf,
 inline  int crc32_file(const char* file_name,
                        uint32_t* result)
 {
-    return zce::hash_file<ZCE_Hash_CRC32, 10240>(file_name, (char*)result);
+    return zce::hash_file<hash_crc32, 10240>(file_name, (char*)result);
 }
 
 uint16_t crc16(uint16_t crcinit,

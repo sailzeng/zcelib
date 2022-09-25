@@ -494,7 +494,7 @@ Get_Option::operator () (void)
     }
 
     if (((this->argv_[this->optind][0] == '-')
-         && (this->argv_[this->optind][1] == '-')) || this->long_only_)
+        && (this->argv_[this->optind][1] == '-')) || this->long_only_)
     {
         return this->long_option_i();
     }
@@ -527,7 +527,7 @@ Get_Option::long_option(const char* name,
 
         if ((s = const_cast<char*> (
             ::strchr(this->optstring_.c_str(),
-                     short_option))) != 0)
+            short_option))) != 0)
         {
             // Short option exists, so verify the argument options
             if (s[1] == ':')
@@ -662,7 +662,7 @@ Get_Option::permute(void)
     // Skip over args untill we find the next option.
     while (this->optind < this->argc_
            && (this->argv_[this->optind][0] != '-'
-               || this->argv_[this->optind][1] == '\0'))
+           || this->argv_[this->optind][1] == '\0'))
     {
         this->optind++;
     }
@@ -672,7 +672,7 @@ Get_Option::permute(void)
 
     if (this->optind != this->argc_
         && ::strcmp(this->argv_[this->optind],
-                    ("--")) == 0)
+        ("--")) == 0)
     {
         // We found the marker for the end of the options.
         ++this->optind;

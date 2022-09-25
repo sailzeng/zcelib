@@ -292,10 +292,10 @@
     <ClCompile Include="zce\logger\log_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\sqlite\sqlite_handler.cpp">
+    <ClCompile Include="zce\sqlite\handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\sqlite\sqlite_stmt.cpp">
+    <ClCompile Include="zce\sqlite\stmt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\string\from_string.cpp">
@@ -344,6 +344,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\rudp\server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\sqlite\result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -720,10 +723,10 @@
     <ClInclude Include="zce\util\algorithm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\sqlite\sqlite_handler.h">
+    <ClInclude Include="zce\sqlite\handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\sqlite\sqlite_stmt.h">
+    <ClInclude Include="zce\sqlite\stmt.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\from_string.h">
@@ -799,6 +802,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\rudp\server.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\sqlite\result.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -406,7 +406,7 @@ enum class HANDLE_READY
     CONNECTED = (1 << 4),
 
     ///ACCPET 事件，也是放在读的SET
-    accept_peer = (1 << 5),
+    server_peer = (1 << 5),
 
     /// iNotify通知事件，文件系统的改变通知
     INOTIFY = (1 << 9),

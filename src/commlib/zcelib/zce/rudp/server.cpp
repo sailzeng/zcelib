@@ -5,7 +5,7 @@
 namespace zce::rudp
 {
 //服务器端CORE打开一个PEER
-int accept_peer::open(server_core *server_core,
+int server_peer::open(server_core *server_core,
                       uint32_t session_id,
                       uint32_t sequence_num,
                       ZCE_SOCKET peer_socket,
@@ -59,13 +59,13 @@ int accept_peer::open(server_core *server_core,
     return 0;
 }
 
-void accept_peer::close()
+void server_peer::close()
 {
     peer::close();
     return;
 }
 
-void accept_peer::reset()
+void server_peer::reset()
 {
     peer::close();
     return;
@@ -78,8 +78,8 @@ int server_core::open(const sockaddr *core_addr,
                       size_t max_num_of_peer,
                       size_t peer_send_list_num,
                       size_t peer_recv_list_num,
-                      std::function<ssize_t(accept_peer *)> *callbak_recv,
-                      std::function<int(accept_peer *)> *callbak_accept)
+                      std::function<ssize_t(server_peer *)> *callbak_recv,
+                      std::function<int(server_peer *)> *callbak_accept)
 {
     int ret = 0;
     socklen_t socket_len = sizeof(core_addr_);
@@ -163,7 +163,7 @@ int server_core::batch_receive(size_t *recv_peer_num,
     once_sendback_ack_num_ = 0;
     for (size_t k = 0; k < ONCE_PROCESS_RECEIVE; ++k)
     {
-        zce::rudp::accept_peer *recv_peer = nullptr;
+        zce::rudp::server_peer *recv_peer = nullptr;
         zce::sockaddr_any remote_ip;
         socklen_t sz_addr = sizeof(zce::sockaddr_any);
         ssize_t ssz_recv = zce::recvfrom(core_socket_,
@@ -312,7 +312,7 @@ int server_core::batch_receive(size_t *recv_peer_num,
                 //不直接保存指针，而保存session id，因为在循环过程，可能部分PEER都退出了，指针会时效
                 continue;
             }
-            zce::rudp::accept_peer *rc_peer = iter->second;
+            zce::rudp::server_peer *rc_peer = iter->second;
             if (rc_peer->need_callback_recv_)
             {
                 callbak_recv_(rc_peer);
@@ -328,7 +328,7 @@ int server_core::batch_receive(size_t *recv_peer_num,
         {
             continue;
         }
-        zce::rudp::accept_peer *ack_peer = iter->second;
+        zce::rudp::server_peer *ack_peer = iter->second;
         if (ack_peer->need_sendback_ack_)
         {
             ack_peer->send_ack();
@@ -364,7 +364,7 @@ int server_core::receive_timeout(zce::time_value* timeout_tv,
 }
 
 int server_core::accept(const zce::sockaddr_any *remote_ip,
-                        zce::rudp::accept_peer *& new_peer)
+                        zce::rudp::server_peer *& new_peer)
 {
     int ret = 0;
     const size_t buf_size = 64;
@@ -377,7 +377,7 @@ int server_core::accept(const zce::sockaddr_any *remote_ip,
         auto iter_peer = peer_map_.find(session_id);
         if (iter_peer != peer_map_.end())
         {
-            accept_peer * old_peer = iter_peer->second;
+            server_peer * old_peer = iter_peer->second;
             old_peer->close();
         }
         else
@@ -390,7 +390,7 @@ int server_core::accept(const zce::sockaddr_any *remote_ip,
             peer_addr_set_.erase(iter_addr);
         }
     }
-    new_peer = new accept_peer();
+    new_peer = new server_peer();
     //得到非0的session id或者序列id
     uint32_t session_id = 0, serial_id = 0;
     do
@@ -426,7 +426,7 @@ int server_core::accept(const zce::sockaddr_any *remote_ip,
 }
 
 //删除对应的PEER
-void server_core::close_peer(accept_peer * del_peer)
+void server_core::close_peer(server_peer * del_peer)
 {
     uint32_t session_id = del_peer->session_id_;
     auto iter = peer_map_.find(session_id);

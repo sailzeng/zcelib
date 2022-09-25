@@ -125,7 +125,7 @@ int test_scandir(int /*argc*/, char /*argv*/*[])
     return 0;
 }
 
-struct Zealot_SVC : public zce::Server_Base
+struct Zealot_SVC : public zce::server_base
 {
 };
 
@@ -155,7 +155,7 @@ void test_findwith_container(size_t container_len)
         int_hash[(int)i] = (int)i;
     }
 
-    zce::HR_Progress_Timer test_timer;
+    zce::hr_progress_timer test_timer;
 
     test_timer.restart();
     for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -239,7 +239,7 @@ int test_container_performance(int  /*argc*/, char* /*argv*/[])
 
 int test_progress_timer(int  /*argc*/, char* /*argv*/[])
 {
-    zce::Chrono_HR_Timer hr_timer;
+    zce::chrono_hr_timer hr_timer;
     zce::time_value sleep_len(2, 5000);
 
     hr_timer.restart();

@@ -6,20 +6,20 @@
 namespace zce
 {
 //单子实例
-Thread_Wait_Manager* Thread_Wait_Manager::instance_ = NULL;
+thread_wait_manager* thread_wait_manager::instance_ = NULL;
 
 //构造函数等
-Thread_Wait_Manager::Thread_Wait_Manager()
+thread_wait_manager::thread_wait_manager()
 {
 }
 
 //
-Thread_Wait_Manager::~Thread_Wait_Manager()
+thread_wait_manager::~thread_wait_manager()
 {
 }
 
 //如果需要管理处理，要自己登记，
-void Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id,
+void thread_wait_manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id,
                                              int wait_group_id)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_id, wait_group_id);
@@ -28,7 +28,7 @@ void Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id,
 }
 
 //登记一个要进行等待处理等待线程
-void Thread_Wait_Manager::record_wait_thread(const zce::Thread_Task* wait_thr_task)
+void thread_wait_manager::record_wait_thread(const zce::thread_task* wait_thr_task)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_task->thread_id(),
                                  wait_thr_task->group_id());
@@ -36,7 +36,7 @@ void Thread_Wait_Manager::record_wait_thread(const zce::Thread_Task* wait_thr_ta
 }
 
 //等所有的线程退出
-void Thread_Wait_Manager::wait_all()
+void thread_wait_manager::wait_all()
 {
     //注意下面每次都是干begin
     while (wait_thread_list_.size() > 0)
@@ -50,7 +50,7 @@ void Thread_Wait_Manager::wait_all()
 }
 
 //等待一个GROUP的线程退出
-void Thread_Wait_Manager::wait_group(int group_id)
+void thread_wait_manager::wait_group(int group_id)
 {
     //注意下面每次都是干begin
     MANAGE_WAIT_THREAD_LIST::iterator iter_temp = wait_thread_list_.begin();
@@ -75,18 +75,18 @@ void Thread_Wait_Manager::wait_group(int group_id)
 }
 
 //得到唯一的单子实例
-Thread_Wait_Manager* Thread_Wait_Manager::instance()
+thread_wait_manager* thread_wait_manager::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new Thread_Wait_Manager();
+        instance_ = new thread_wait_manager();
     }
 
     return instance_;
 }
 
 //清除单子实例
-void Thread_Wait_Manager::clean_instance()
+void thread_wait_manager::clean_instance()
 {
     if (instance_)
     {

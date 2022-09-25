@@ -27,7 +27,7 @@ namespace zce::mysql
 @brief      读取MYSQL数据库的类,用于操作MySQL DB的访问
             这个类里面包装了connect,command,你可以通过zce::mysql::Result获得结果
 */
-class execute : zce::NON_Copyable
+class execute : zce::non_copyable
 {
 public:
 

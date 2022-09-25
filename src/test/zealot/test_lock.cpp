@@ -9,7 +9,7 @@ int g_daomei_foo = 0;
 
 size_t TEST_NUMBER = 10000000;
 
-class Task_Read : public zce::Thread_Task
+class Task_Read : public zce::thread_task
 {
 public:
 
@@ -33,7 +33,7 @@ protected:
     size_t number_prc_ = 0;
 };
 
-class Task_Write : public zce::Thread_Task
+class Task_Write : public zce::thread_task
 {
 public:
     Task_Write()
@@ -58,7 +58,7 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
     //InitializeSRWLock(&srw_lock);
 
     //计时器，不是定时器呀
-    zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
+    zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
 
     Task_Read a1;
     Task_Read a2;
@@ -86,7 +86,7 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
 
 zce::Thread_RW_Mutex rw_lock;
 
-class Task_Read_1 : public zce::Thread_Task
+class Task_Read_1 : public zce::thread_task
 {
 public:
 
@@ -110,7 +110,7 @@ protected:
     size_t number_prc_ = 0;
 };
 
-class Task_Write_1 : public zce::Thread_Task
+class Task_Write_1 : public zce::thread_task
 {
 public:
     Task_Write_1()
@@ -135,7 +135,7 @@ int test_rw_lock2(int /*argc*/, char* /*argv*/[])
     //InitializeSRWLock(&srw_lock);
 
     //计时器，不是定时器呀
-    zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
+    zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
 
     Task_Read_1 a1;
     Task_Read_1 a2;

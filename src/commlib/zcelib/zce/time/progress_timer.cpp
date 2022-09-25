@@ -8,21 +8,21 @@
 namespace zce
 {
 /************************************************************************************************************
-Class           : Progress_Timer 用于记录一个事件用时的计时器
+Class           : progress_timer 用于记录一个事件用时的计时器
 ************************************************************************************************************/
-Progress_Timer::Progress_Timer() :
+progress_timer::progress_timer() :
     start_time_(0),
     end_time_(0),
     addup_time_(0)
 {
 }
 
-Progress_Timer::~Progress_Timer()
+progress_timer::~progress_timer()
 {
 }
 
 //从新开始计时
-void Progress_Timer::restart()
+void progress_timer::restart()
 {
     end_time_ = 0;
     addup_time_ = 0;
@@ -30,13 +30,13 @@ void Progress_Timer::restart()
 }
 
 //结束计时
-void Progress_Timer::end()
+void progress_timer::end()
 {
     end_time_ = std::clock();
 }
 
 //累计计时开始
-void Progress_Timer::addup_start()
+void progress_timer::addup_start()
 {
     if (end_time_ > start_time_)
     {
@@ -51,7 +51,7 @@ void Progress_Timer::addup_start()
 }
 
 //计算消耗的时间
-double Progress_Timer::elapsed_sec() const
+double progress_timer::elapsed_sec() const
 {
     //暂时去掉这个断言，在WINDOWS平台，即使你使用正确，也可能出现这个断言,在类的说明写清楚了，自己阅读
     //ZCE_ASSERT(end_time_ > start_time_);
@@ -69,15 +69,15 @@ double Progress_Timer::elapsed_sec() const
 }
 
 //返回最小的计时精度单位（s），各个平台不太一致，
-double Progress_Timer::precision()
+double progress_timer::precision()
 {
     return double(1) / double(CLOCKS_PER_SEC);
 }
 
 /************************************************************************************************************
-Class           : ZCE_HR_Progress_Timer 高性能计时器
+Class           : zce::hr_progress_timer 高性能计时器
 ************************************************************************************************************/
-HR_Progress_Timer::HR_Progress_Timer()
+hr_progress_timer::hr_progress_timer()
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -103,12 +103,12 @@ HR_Progress_Timer::HR_Progress_Timer()
 #endif
 }
 
-HR_Progress_Timer::~HR_Progress_Timer()
+hr_progress_timer::~hr_progress_timer()
 {
 }
 
 //从新开始计时
-void HR_Progress_Timer::restart()
+void hr_progress_timer::restart()
 {
 #if defined ZCE_OS_WINDOWS
     //如果更讲究一点你可以用GetProcessAffinityMask替换ONLY_YOU_PROCESSOR
@@ -136,7 +136,7 @@ void HR_Progress_Timer::restart()
 }
 
 //累计计时开始,用于多次计时的过程，
-void HR_Progress_Timer::addup_start()
+void hr_progress_timer::addup_start()
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -168,7 +168,7 @@ void HR_Progress_Timer::addup_start()
 }
 
 //结束计时
-void HR_Progress_Timer::end()
+void hr_progress_timer::end()
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -185,12 +185,12 @@ void HR_Progress_Timer::end()
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
-}
+    }
 #endif
 }
 
 //计算消耗的时间(us)
-double HR_Progress_Timer::elapsed_usec() const
+double hr_progress_timer::elapsed_usec() const
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -208,7 +208,7 @@ double HR_Progress_Timer::elapsed_usec() const
 }
 
 //得到计时器的精度（us微秒-6）
-double HR_Progress_Timer::precision_usec()
+double hr_progress_timer::precision_usec()
 {
 #if defined ZCE_OS_WINDOWS
     return (double)(zce::SEC_PER_USEC) / ((uint64_t)(frequency_.QuadPart));
@@ -218,12 +218,12 @@ double HR_Progress_Timer::precision_usec()
 }
 
 /************************************************************************************************************
-Class           : ZCE_TSC_Progress_Timer TSC计时器，
+Class           : zce::tsc_progress_timer TSC计时器，
 ************************************************************************************************************/
-uint64_t TSC_Progress_Timer::cpu_hz_ = 0;
+uint64_t tsc_progress_timer::cpu_hz_ = 0;
 
 //构造函数
-TSC_Progress_Timer::TSC_Progress_Timer() :
+tsc_progress_timer::tsc_progress_timer() :
     start_time_(0),
     end_time_(0),
     addup_time_(0)
@@ -231,12 +231,12 @@ TSC_Progress_Timer::TSC_Progress_Timer() :
 }
 
 //析构函数
-TSC_Progress_Timer::~TSC_Progress_Timer()
+tsc_progress_timer::~tsc_progress_timer()
 {
 }
 
 ///从新开始计时
-void TSC_Progress_Timer::restart()
+void tsc_progress_timer::restart()
 {
     end_time_ = 0;
     addup_time_ = 0;
@@ -244,13 +244,13 @@ void TSC_Progress_Timer::restart()
 }
 
 //结束计时
-void TSC_Progress_Timer::end()
+void tsc_progress_timer::end()
 {
     end_time_ = zce::rdtsc();
 }
 
 ///累计计时开始,用于多次计时的过程，
-void TSC_Progress_Timer::addup_start()
+void tsc_progress_timer::addup_start()
 {
     if (end_time_ > start_time_)
     {
@@ -263,7 +263,7 @@ void TSC_Progress_Timer::addup_start()
 }
 
 //计算消耗的TICK（CPU周期）数量，注意这个值，只能在自己的机器上做对比才有意义，
-uint64_t TSC_Progress_Timer::elapsed_tick() const
+uint64_t tsc_progress_timer::elapsed_tick() const
 {
     if (end_time_ > start_time_)
     {
@@ -273,7 +273,7 @@ uint64_t TSC_Progress_Timer::elapsed_tick() const
 }
 
 //计算消耗的时间(us),注意这个数值不会太准确
-double TSC_Progress_Timer::elapsed_usec() const
+double tsc_progress_timer::elapsed_usec() const
 {
     const uint64_t DEFAULT_CPU_HZ = 1024 * 1024 * 1024;
     int ret = 0;
@@ -298,25 +298,25 @@ double TSC_Progress_Timer::elapsed_usec() const
 }
 
 /************************************************************************************************************
-Class           : Chrono_HR_Timer C++ 11 chrono的高精度计时器
+Class           : zce::chrono_hr_timer C++ 11 chrono的高精度计时器
 ************************************************************************************************************/
-Chrono_HR_Timer::Chrono_HR_Timer() :
+chrono_hr_timer::chrono_hr_timer() :
     addup_time_(std::chrono::high_resolution_clock::duration::zero())
 {
 }
 //从新开始计时
-void Chrono_HR_Timer::restart()
+void chrono_hr_timer::restart()
 {
     start_time_ = std::chrono::high_resolution_clock::now();
     addup_time_ = std::chrono::high_resolution_clock::duration::zero();
 }
 //结束计时
-void Chrono_HR_Timer::end()
+void chrono_hr_timer::end()
 {
     end_time_ = std::chrono::high_resolution_clock::now();
 }
 //累计计时开始,用于多次计时的过程，之前要先调用restart
-void Chrono_HR_Timer::addup_start()
+void chrono_hr_timer::addup_start()
 {
     if (end_time_ > start_time_)
     {
@@ -327,7 +327,7 @@ void Chrono_HR_Timer::addup_start()
 }
 
 //计算消耗的时间(us,微妙 -6)
-double Chrono_HR_Timer::elapsed_usec() const
+double chrono_hr_timer::elapsed_usec() const
 {
     const double NSEC_PER_USEC = 1000.0;
     if (end_time_ > start_time_)
@@ -342,7 +342,7 @@ double Chrono_HR_Timer::elapsed_usec() const
 }
 
 //精度
-double Chrono_HR_Timer::precision_usec()
+double chrono_hr_timer::precision_usec()
 {
     const double USEC_PER_SEC = 1000000.0;
     return double(std::chrono::high_resolution_clock::time_point::duration::period::num * USEC_PER_SEC) /

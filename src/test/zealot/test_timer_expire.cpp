@@ -4,7 +4,7 @@ static const size_t TEST_TIMER_NUMBER = 10;
 
 int TEST_TIMER_ACT[10] = { 1,2,3,4,5,6,7,8,9,10 };
 
-class Test_Timer_Handler : public zce::Timer_Handler
+class Test_Timer_Handler : public zce::timer_handler
 {
 public:
     virtual int timer_timeout(const zce::time_value& now_timenow_time,
@@ -13,12 +13,12 @@ public:
         char time_str[128];
         int timer_action = *(int*)act;
         std::cout << now_timenow_time.timestamp(time_str, 128) << " " << "Timer action =" << timer_action << std::endl;
-        zce::Timer_Queue::instance()->cancel_timer(this);
+        zce::timer_queue::instance()->cancel_timer(this);
 
         zce::time_value delay_time(1, 0);
         zce::time_value interval_time(0, 0);
 
-        int time_id = zce::Timer_Queue::instance()->schedule_timer(this,
+        int time_id = zce::timer_queue::instance()->schedule_timer(this,
                                                                    &TEST_TIMER_ACT[timer_action - 1],
                                                                    delay_time,
                                                                    interval_time);
@@ -30,7 +30,7 @@ public:
 
 int test_timer_expire(int /*argc*/, char* /*argv*/[])
 {
-    zce::Timer_Queue::instance(new zce::Timer_Wheel(1024));
+    zce::timer_queue::instance(new zce::timer_wheel(1024));
 
     Test_Timer_Handler test_timer[10];
     int timer_id[10];
@@ -39,7 +39,7 @@ int test_timer_expire(int /*argc*/, char* /*argv*/[])
     for (size_t i = 0; i < TEST_TIMER_NUMBER; ++i)
     {
         delay_time.sec(i);
-        timer_id[i] = zce::Timer_Queue::instance()->schedule_timer(&test_timer[i],
+        timer_id[i] = zce::timer_queue::instance()->schedule_timer(&test_timer[i],
                                                                    &TEST_TIMER_ACT[i],
                                                                    delay_time,
                                                                    interval_time);
@@ -47,7 +47,7 @@ int test_timer_expire(int /*argc*/, char* /*argv*/[])
 
     for (size_t j = 0; j < 100000; j++)
     {
-        zce::Timer_Queue::instance()->expire();
+        zce::timer_queue::instance()->expire();
         zce::usleep(100000);
     }
     ZCE_UNUSED_ARG(timer_id);
@@ -57,7 +57,7 @@ int test_timer_expire(int /*argc*/, char* /*argv*/[])
 //用于测试某些特殊情况的代码。
 int test_timer_expire2(int /*argc*/, char* /*argv*/[])
 {
-    zce::Timer_Queue::instance(new zce::Timer_Wheel(1024));
+    zce::timer_queue::instance(new zce::timer_wheel(1024));
 
     Test_Timer_Handler test_timer[10];
     int timer_id[10];
@@ -66,7 +66,7 @@ int test_timer_expire2(int /*argc*/, char* /*argv*/[])
     for (size_t i = 0; i < TEST_TIMER_NUMBER; ++i)
     {
         delay_time.sec(i);
-        timer_id[i] = zce::Timer_Queue::instance()->schedule_timer(&test_timer[i],
+        timer_id[i] = zce::timer_queue::instance()->schedule_timer(&test_timer[i],
                                                                    &TEST_TIMER_ACT[i],
                                                                    delay_time,
                                                                    interval_time);
@@ -76,7 +76,7 @@ int test_timer_expire2(int /*argc*/, char* /*argv*/[])
     for (size_t j = 0; j < 100000; j++)
     {
         zce::sleep(60);
-        zce::Timer_Queue::instance()->expire();
+        zce::timer_queue::instance()->expire();
     }
     ZCE_UNUSED_ARG(timer_id);
     return 0;

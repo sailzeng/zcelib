@@ -30,7 +30,7 @@ int SvrdApp_FSM::app_start(int argc, const char* argv[])
 
     //事务管理器的初始化, 自动机不使用notify
     soar::FSM_Manager* p_trans_mgr_ = new soar::FSM_Manager();
-    p_trans_mgr_->initialize(zce::Timer_Queue::instance(),
+    p_trans_mgr_->initialize(zce::timer_queue::instance(),
                              svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_info_,
@@ -75,7 +75,7 @@ int SvrdApp_FSM::app_run()
 
     zce::time_value select_interval(0, 0);
 
-    zce::Timer_Queue* time_queue = zce::Timer_Queue::instance();
+    zce::timer_queue* time_queue = zce::timer_queue::instance();
     zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance();
 
     for (; app_run_;)

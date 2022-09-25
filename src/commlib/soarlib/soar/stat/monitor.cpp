@@ -46,7 +46,7 @@ int Stat_Monitor::initialize(const char* app_base_name,
     // 将stat_mmap_filename_转换为大写
     zce::strupr(stat_mmap_filename_);
 
-    int ret = zce::Server_Status::initialize(stat_mmap_filename_,
+    int ret = zce::server_status::initialize(stat_mmap_filename_,
                                              num_stat_item,
                                              item_ary,
                                              mutli_thread);

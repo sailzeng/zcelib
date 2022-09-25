@@ -8,14 +8,14 @@
 namespace zce::rudp
 {
 class server_core;
-class accept_peer :public zce::rudp::peer
+class server_peer :public zce::rudp::peer
 {
     //有些函数只能core调用
     friend class server_core;
 public:
-    accept_peer() = default;
-    accept_peer(const accept_peer&) = default;
-    accept_peer& operator = (const accept_peer & other) = default;
+    server_peer() = default;
+    server_peer(const server_peer&) = default;
+    server_peer& operator = (const server_peer & other) = default;
 
 protected:
 
@@ -75,9 +75,10 @@ public:
              size_t max_num_of_peer,
              size_t peer_send_wnd_size,
              size_t peer_recv_wnd_size,
-             std::function<ssize_t(accept_peer *)> *callbak_recv = nullptr,
-             std::function<int(accept_peer *)> *callbak_accept = nullptr);
-
+             std::function<ssize_t(server_peer *)> *callbak_recv = nullptr,
+             std::function<int(server_peer *)> *callbak_accept = nullptr);
+    
+    ///关闭
     void close();
 
     /**
@@ -111,16 +112,16 @@ public:
     }
 
     //删除对应的PEER
-    void close_peer(accept_peer *del_peer);
+    void close_peer(server_peer *del_peer);
 
 protected:
 
     //accept创建一个PEER
     int accept(const zce::sockaddr_any *remote_ip,
-               zce::rudp::accept_peer *& new_peer);
+               zce::rudp::server_peer *& new_peer);
 
 protected:
-    //
+    //! 
     const size_t ONCE_PROCESS_RECEIVE = 256;
 protected:
 
@@ -145,7 +146,7 @@ protected:
     //session id对应的PEER map
     ///note:unordered_map 有一个不太理想的地方，就是遍历慢，特别是负载低时遍历慢。
     std::unordered_map<uint32_t,
-        zce::rudp::accept_peer*>  peer_map_;
+        zce::rudp::server_peer*>  peer_map_;
 
     //地址对应的session id的map
     std::unordered_map<zce::sockaddr_any, uint32_t, sockaddr_ip_hash> peer_addr_set_;
@@ -165,11 +166,11 @@ protected:
     bool is_callbak_recv_ = false;
     //! 发现接收数据时，接收回调函数，在函数里面调用outer_recv提取数据
     //! 第一个参数是接收数据的ACCEPT *
-    std::function<ssize_t(zce::rudp::accept_peer *)> callbak_recv_;
+    std::function<ssize_t(zce::rudp::server_peer *)> callbak_recv_;
 
     //!是否调用accept 的回调函数
     bool is_callbak_accept_ = false;
     //!发生accept的时候，进行回调的函数
-    std::function<int(zce::rudp::accept_peer *)> callbak_accept_;
+    std::function<int(zce::rudp::server_peer *)> callbak_accept_;
 };
 }

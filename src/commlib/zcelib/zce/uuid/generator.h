@@ -87,9 +87,9 @@ class UUID64
 {
 public:
     ///构造函数
-    UUID64();
+    UUID64() = default;
     ///析构函数
-    ~UUID64();
+    ~UUID64() = default;
 
     /// < 运算符重载
     bool operator < (const UUID64& others) const;
@@ -108,9 +108,9 @@ public:
     union
     {
         ///单个64字节的表示方法
-        uint64_t          u_uint64_;
+        uint64_t      u_uint64_ = 0;
         ///2个32字节的表示方法
-        uint32_t          u_2uint32_[2];
+        uint32_t      u_2uint32_[2];
         ///16bit+48Bit的表示方法
         UUID64_16_48  u_16_48_;
     };
@@ -124,7 +124,7 @@ public:
 #pragma pack(pop)
 
 /************************************************************************************************************
-Class           : UUID64_Generator
+Class           : uuid64_gen
 ************************************************************************************************************/
 
 /*!
@@ -137,19 +137,19 @@ Class           : UUID64_Generator
 *                 是什么服务器产生的数据
 *
 */
-class UUID64_Generator
+class uuid64_gen
 {
 public:
 
     /*!
     * @brief      构造函数
     */
-    UUID64_Generator();
+    uuid64_gen();
 
     /*!
     * @brief      析构函数
     */
-    ~UUID64_Generator();
+    ~uuid64_gen();
 
 public:
 
@@ -182,33 +182,25 @@ public:
 protected:
 
     ///发生器实例指针
-    static UUID64_Generator* instance_;
+    static uuid64_gen* instance_;
 
-protected:
-
-    /*!
-    * @brief      单子函数
-    * @return     UUID64_Generator* 返回的实例指针
-    */
-    static UUID64_Generator* instance();
-    /*!
-    * @brief      清理实例指针
-    */
-    static void clean_instance();
 
 protected:
 
     ///发生器使用什么发生方式
-    UUID_GENERATOR            generator_type_;
+    UUID_GENERATOR        generator_type_;
 
     ///随机发生器1
-    zce::random_mt19937       mt_19937_random_;
+    zce::random_mt19937   mt_19937_random_;
     ///随机发生器2
-    zce::random_mt11213b      mt_11213b_random_;
+    zce::random_mt11213b  mt_11213b_random_;
 
     ///随机数的种子
     UUID64                time_radix_seed_;
 };
+
+//! @brief 实例
+typedef zce::singleton<uuid64_gen> uuid64_gen_inst;
 
 /************************************************************************************************************
 Class           : UUID128
@@ -277,9 +269,9 @@ public:
     union
     {
         ///16个字节的组成
-        uint8_t                      u_16uint8_[16];
+        uint8_t                  u_16uint8_[16];
         ///4个32为字节的组成
-        uint32_t                     u_4uint32_[4];
+        uint32_t                 u_4uint32_[4];
         ///32位整数+32位整数+64位整数
         UUID128_32_32_64         u_32_32_64_;
         ///标准的UUID的标识方法
@@ -290,21 +282,21 @@ public:
 };
 
 /************************************************************************************************************
-Class           : UUID128_Generator UUID的发生器
+Class           : uuid128_gen UUID的发生器
 ************************************************************************************************************/
 
 /*!
-* @brief      UUID128_Generator UUID的发生器
+* @brief      uuid128_gen UUID的发生器
 *
 */
-class UUID128_Generator
+class uuid128_gen
 {
 public:
 
     ///构造函数
-    UUID128_Generator();
+    uuid128_gen();
     ///析构函数
-    ~UUID128_Generator();
+    ~uuid128_gen();
 
 public:
 
@@ -324,7 +316,8 @@ public:
     * @param      identity
     * @param      radix
     */
-    void time_radix(uint32_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint32_t identity, 
+                    uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -343,11 +336,11 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///
-    UUID128               time_radix_seed_;
+    UUID128                   time_radix_seed_;
 
-protected:
-
-    //发生器实例指针
-    static UUID128_Generator* instance_;
 };
+
+//! @brief 实例
+typedef zce::singleton<uuid64_gen> uuid128_gen_inst;
+
 }

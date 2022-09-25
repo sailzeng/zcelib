@@ -88,7 +88,8 @@
 #include <zce/config/file_implement.h>
 
 #include <zce/sqlite/sqlite_handler.h>
-#include <zce/sqlite/sqlite_stmt.h>
+#include <zce/sqlite/stmt.h>
+
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>
 
@@ -145,7 +146,7 @@ int test_osadapt_perf(int argc, char* argv[]);
 int test_nonr_thread_mutex(int argc, char* argv[]);
 int test_msgqueue_condi(int argc, char* argv[]);
 
-int test_host_name_fun(int, char* []);
+int test_host_name_fun(int, char*[]);
 
 int test_rw_lock1(int argc, char* argv[]);
 int test_rw_lock2(int argc, char* argv[]);

@@ -61,7 +61,7 @@ public:
                     size_t sztransmap,
                     const soar::SERVICES_INFO& selfsvr,
                     const zce::time_value& enqueue_timeout,
-                    zce::Timer_Queue* timer_queue,
+                    zce::timer_queue* timer_queue,
                     soar::Svrd_BusPipe* zerg_mmap_pipe,
                     APPFRAME_MALLOCOR* frame_mallocor);
 
