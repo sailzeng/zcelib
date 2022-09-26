@@ -7,17 +7,17 @@
 #include "zce/socket/acceptor.h"
 
 /************************************************************************************************************
-Class           : Socket_Acceptor
+Class           : acceptor
 ************************************************************************************************************/
-namespace zce
+namespace zce::skt
 {
 //构造函数
-Socket_Acceptor::Socket_Acceptor() :
-    zce::Socket_Base()
+acceptor::acceptor() :
+    zce::skt::socket_base()
 {
 }
 
-Socket_Acceptor::~Socket_Acceptor()
+acceptor::~acceptor()
 {
     //为什么在这人不关闭socket_handle_,是考虑到万一要进行复制呢
     close();
@@ -25,11 +25,11 @@ Socket_Acceptor::~Socket_Acceptor()
 
 //跟进地址参数等，打开一个Accepet的端口 (Bind,并且监听),
 //打开一个监听地址，目前只支持AF_INET,和AFINET6
-int Socket_Acceptor::open(const Sockaddr_Base* local_addr,
-                          bool reuse_addr,
-                          int protocol_family,
-                          int backlog,
-                          int protocol)
+int acceptor::open(const zce::skt::addr_base* local_addr,
+                   bool reuse_addr,
+                   int protocol_family,
+                   int backlog,
+                   int protocol)
 {
     int ret = 0;
 
@@ -40,17 +40,17 @@ int Socket_Acceptor::open(const Sockaddr_Base* local_addr,
     }
 
     //
-    ret = zce::Socket_Base::open(SOCK_STREAM,
-                                 protocol_family,
-                                 protocol,
-                                 reuse_addr);
+    ret = zce::skt::socket_base::open(SOCK_STREAM,
+                                      protocol_family,
+                                      protocol,
+                                      reuse_addr);
 
     if (ret != 0)
     {
         return ret;
     }
 
-    ret = zce::Socket_Base::bind(local_addr);
+    ret = zce::skt::socket_base::bind(local_addr);
 
     if (ret != 0)
     {
@@ -72,8 +72,8 @@ int Socket_Acceptor::open(const Sockaddr_Base* local_addr,
 }
 
 //非超时处理的accept,NONBLOCK模式下会迅速退出，阻塞模式下会一致等待
-int Socket_Acceptor::accept(Socket_Stream& new_stream,
-                            Sockaddr_Base* remote_addr) const
+int acceptor::accept(zce::skt::stream& new_stream,
+                     zce::skt::addr_base* remote_addr) const
 {
     ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
                                          remote_addr->sockaddr_ptr_,
@@ -88,9 +88,9 @@ int Socket_Acceptor::accept(Socket_Stream& new_stream,
 }
 
 //
-int Socket_Acceptor::accept(Socket_Stream& new_stream,
-                            time_value& timeout,
-                            Sockaddr_Base* remote_addr) const
+int acceptor::accept(zce::skt::stream& new_stream,
+                     time_value& timeout,
+                     zce::skt::addr_base* remote_addr) const
 {
     ZCE_SOCKET sock_handle =
         zce::accept_timeout(socket_handle_,

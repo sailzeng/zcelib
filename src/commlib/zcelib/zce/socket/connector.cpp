@@ -8,26 +8,18 @@
 #include "zce/socket/stream.h"
 #include "zce/socket/connector.h"
 
-namespace zce
+namespace zce::skt
 {
 /************************************************************************************************************
 Class           : zce::Socket_Acceptor
 ************************************************************************************************************/
 
-Socket_Connector::Socket_Connector()
-{
-}
-
-Socket_Connector::~Socket_Connector()
-{
-}
-
-int Socket_Connector::connect(zce::Socket_Stream& new_stream,
-                              const zce::Sockaddr_Base* remote_addr,
-                              zce::time_value& timeout,
-                              bool reuse_addr,
-                              int protocol,
-                              const Sockaddr_Base* local_addr)
+int connector::connect(zce::skt::stream& new_stream,
+                       const zce::skt::addr_base* remote_addr,
+                       zce::time_value& timeout,
+                       bool reuse_addr,
+                       int protocol,
+                       const zce::skt::addr_base* local_addr)
 {
     int ret = 0;
 
@@ -108,12 +100,12 @@ int Socket_Connector::connect(zce::Socket_Stream& new_stream,
 }
 
 //进行连接处理，可以进行非阻塞连接处理，
-int Socket_Connector::connect(zce::Socket_Stream& new_stream,
-                              const Sockaddr_Base* remote_addr,
-                              bool non_blocing,
-                              bool reuse_addr,
-                              int protocol,
-                              const Sockaddr_Base* local_addr)
+int connector::connect(zce::skt::stream& new_stream,
+                       const zce::skt::addr_base* remote_addr,
+                       bool non_blocing,
+                       bool reuse_addr,
+                       int protocol,
+                       const zce::skt::addr_base* local_addr)
 {
     int ret = 0;
 

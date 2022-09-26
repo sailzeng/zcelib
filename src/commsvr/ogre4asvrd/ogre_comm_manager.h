@@ -22,7 +22,7 @@ public:
     int get_all_senddata_to_write(size_t& procframe);
 
     //检查安全端口
-    int check_safe_port(zce::Sockaddr_In& inetadd);
+    int check_safe_port(zce::skt::addr_in& inetadd);
 
     //初始化通讯管理器
     int init_comm_manger();

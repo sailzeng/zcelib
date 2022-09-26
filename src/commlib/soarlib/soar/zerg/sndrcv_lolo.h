@@ -56,13 +56,13 @@ class Lolo_SendRecv_Package : public SendRecv_Msg_Base
 protected:
 
     //ZULU链接的IP地址
-    zce::Sockaddr_In          lolo_svc_ip_;
+    zce::skt::addr_in          lolo_svc_ip_;
 
     //收到数据的对端地址，99.99999的情况和上面一样
-    zce::Sockaddr_In          lolo_recvdata_ip_;
+    zce::skt::addr_in          lolo_recvdata_ip_;
 
     //使用的SOCKET包装
-    zce::Socket_DataGram      lolo_datagram_;
+    zce::socket_datagram      lolo_datagram_;
 
 public:
     //

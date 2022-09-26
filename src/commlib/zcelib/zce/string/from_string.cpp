@@ -99,17 +99,17 @@ bool from_str(const char* str)
 
 //
 template<>
-zce::Sockaddr_In from_str(const char* str)
+zce::skt::addr_in from_str(const char* str)
 {
-    zce::Sockaddr_In val;
+    zce::skt::addr_in val;
     val.set(str);
     return val;
 }
 
 template<>
-zce::Sockaddr_In6 from_str(const char* str)
+zce::skt::addr_in6 from_str(const char* str)
 {
-    zce::Sockaddr_In6 val;
+    zce::skt::addr_in6 val;
     val.set(str);
     return val;
 }

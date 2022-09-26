@@ -87,9 +87,9 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 
-#include <zce/sqlite/handler.h>
-#include <zce/sqlite/stmt.h>
-#include <zce/sqlite/result.h>
+#include <zce/sqlite/sqlite_hdl.h>
+#include <zce/sqlite/sqlite_stmt.h>
+#include <zce/sqlite/sqlite_result.h>
 
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>

@@ -121,9 +121,9 @@ protected:
     char              *recv_packet_ = nullptr;
 
     //!DNS 服务器地址
-    zce::Sockaddr_Any   dns_server_addr_;
+    zce::skt::addr_any   dns_server_addr_;
 
     //!UDP socket
-    zce::Socket_DataGram    dns_socket_;
+    zce::skt::datagram    dns_socket_;
 };
 }

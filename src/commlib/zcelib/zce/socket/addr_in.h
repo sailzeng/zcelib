@@ -2,36 +2,36 @@
 
 #include "zce/socket/addr_base.h"
 
-namespace zce
+namespace zce::skt
 {
 /*!
 * @brief      IPv4的物理结构
 *
 * @note
 */
-class Sockaddr_In : public Sockaddr_Base
+class addr_in : public zce::skt::addr_base
 {
 public:
 
     ///默认构造函数
-    Sockaddr_In(void);
+    addr_in(void);
 
-    ///根据sockaddr_in构造，
-    Sockaddr_In(const sockaddr_in* addr);
+    ///根据addr_in构造，
+    addr_in(const addr_in* addr);
 
     ///根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号初始化构造
-    Sockaddr_In(const char* ip_addr_str,
-                uint16_t port_number);
+    addr_in(const char* ip_addr_str,
+            uint16_t port_number);
 
     ///根据地址(整数)，端口号初始化构造
-    Sockaddr_In(uint32_t ip_addr,
-                uint16_t port_number);
+    addr_in(uint32_t ip_addr,
+            uint16_t port_number);
 
     ///拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
-    explicit Sockaddr_In(const Sockaddr_In& others);
+    addr_in(const addr_in& others);
 
     ///析构函数
-    virtual ~Sockaddr_In();
+    virtual ~addr_in();
 
 public:
 
@@ -89,19 +89,19 @@ public:
     //内外地址判断在基类
 
     //比较两个地址是否相等
-    bool operator == (const Sockaddr_In& others) const;
+    bool operator == (const addr_in& others) const;
     //比较两个地址是否不想等
-    bool operator != (const Sockaddr_In& others) const;
+    bool operator != (const addr_in& others) const;
 
     //检查IP地址是否相等,忽视端口
-    bool is_ip_equal(const Sockaddr_In& others) const;
+    bool is_ip_equal(const addr_in& others) const;
 
-    ///各种操作符号转换函数，方便各种使用，让Sockaddr_In的行为和sockaddr_in基本一致
-    ///返回sockaddr_in
+    ///各种操作符号转换函数，方便各种使用，让addr_in的行为和addr_in基本一致
+    ///返回addr_in
     operator sockaddr_in () const;
-    ///返回内部const sockaddr_in的指针，（不可以被修改）
+    ///返回内部const addr_in的指针，（不可以被修改）
     operator const sockaddr_in* () const;
-    ///返回内部sockaddr_in的指针，（可以被修改）
+    ///返回内部addr_in的指针，（可以被修改）
     operator sockaddr_in* ();
 
 protected:
@@ -111,18 +111,18 @@ protected:
 };
 
 //取得IP地址，本地序列
-inline uint32_t Sockaddr_In::get_ip_address(void) const
+inline uint32_t addr_in::get_ip_address(void) const
 {
     return ntohl(in4_addr_.sin_addr.s_addr);
 }
 
 //设置端口好，
-inline void Sockaddr_In::set_port(uint16_t port_number)
+inline void addr_in::set_port(uint16_t port_number)
 {
     in4_addr_.sin_port = ntohs(port_number);
 }
 //取得端口号
-inline uint16_t Sockaddr_In::get_port(void) const
+inline uint16_t addr_in::get_port(void) const
 {
     return ntohs(in4_addr_.sin_port);
 }

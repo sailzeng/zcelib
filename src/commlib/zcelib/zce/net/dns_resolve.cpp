@@ -170,7 +170,7 @@ int DNS_Resolve::answer(uint16_t *tid,
                         zce::time_value* timeout_tv)
 {
     size_t len = DNS_PACKET_MAX_LEN;
-    Sockaddr_Any recv_addr;
+    zce::skt::addr_any recv_addr;
     ssize_t rcv_len = 0;
     int ret = 0;
     if (timeout_tv)

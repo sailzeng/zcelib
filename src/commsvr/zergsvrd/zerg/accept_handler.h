@@ -17,7 +17,7 @@ public:
     * @param      addr   相应的IP地址
     */
     Accept_Handler(const soar::SERVICES_ID& svcid,
-                   const zce::Sockaddr_In& addr);
+                   const zce::skt::addr_in& addr);
 
 protected:
     ///监听端口
@@ -49,7 +49,7 @@ protected:
     soar::SERVICES_ID         my_svc_info_;
 
     ///邦定的地址
-    zce::Sockaddr_In          accept_bind_addr_;
+    zce::skt::addr_in          accept_bind_addr_;
 
     ///IP限制管理器
     zerg::IPRestrict_Mgr* ip_restrict_;

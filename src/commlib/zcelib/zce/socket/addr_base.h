@@ -6,19 +6,19 @@
 //因为在有一天改写原来代码时，突然觉得为什么为什么彻底OO一点点？
 //整体参考ACE_INET_Addr ACE INET Addr实现的，当然也有非常大的变化，ACE没有直接使用sockaddr，不知道为啥
 
-namespace zce
+namespace zce::skt
 {
 //Socket地址的基类。
-class Sockaddr_Base
+class addr_base
 {
 public:
 
     //构造函数，
-    Sockaddr_Base(sockaddr* sockaddr_ptr = NULL, int sa_size = -1);
+    addr_base(sockaddr* sockaddr_ptr = NULL, int sa_size = -1);
     //析构函数,内部有virtual函数
-    virtual ~Sockaddr_Base(void);
+    virtual ~addr_base(void);
 
-    //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用Sockaddr_Base
+    //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用addr_base
     virtual void set_sockaddr(sockaddr* sockaddr_ptr, socklen_t sockaddr_size) = 0;
 
     //通过域名得到IP地址
@@ -43,9 +43,9 @@ public:
     inline int get_family(void) const;
 
     // 检查地址是否相等
-    bool operator == (const Sockaddr_Base& others) const;
+    bool operator == (const addr_base& others) const;
     // 检查地址是否不相等
-    bool operator != (const Sockaddr_Base& others) const;
+    bool operator != (const addr_base& others) const;
 
     //转换成字符串,同时输出字符串的长度
     inline const char* to_string(char* buffer,
@@ -53,7 +53,11 @@ public:
                                  size_t& use_buf,
                                  bool out_port_info = true) const
     {
-        return zce::sockaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len, use_buf, out_port_info);
+        return zce::sockaddr_ntop_ex(sockaddr_ptr_,
+                                     buffer,
+                                     buf_len,
+                                     use_buf,
+                                     out_port_info);
     }
 
     ///检查地址是否是一个内网地址
@@ -72,19 +76,19 @@ public:
 };
 
 //!取得地址的长度
-inline socklen_t Sockaddr_Base::get_size(void) const
+inline socklen_t addr_base::get_size(void) const
 {
     return sockaddr_size_;
 }
 
 //取得地址信息
-inline sockaddr* Sockaddr_Base::get_addr(void) const
+inline sockaddr* addr_base::get_addr(void) const
 {
     return sockaddr_ptr_;
 }
 
 //!取得地址的family
-int Sockaddr_Base::get_family(void) const
+int addr_base::get_family(void) const
 {
     return sockaddr_ptr_->sa_family;
 }

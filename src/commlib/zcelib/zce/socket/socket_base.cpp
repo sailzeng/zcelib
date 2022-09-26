@@ -5,39 +5,39 @@
 #include "zce/logger/logging.h"
 #include "zce/socket/socket_base.h"
 
-namespace zce
+namespace zce::skt
 {
 //构造函数
-Socket_Base::Socket_Base() :
+socket_base::socket_base() :
     socket_handle_(ZCE_INVALID_SOCKET)
 {
 }
 
-Socket_Base::Socket_Base(const ZCE_SOCKET& socket_handle) :
+socket_base::socket_base(const ZCE_SOCKET& socket_handle) :
     socket_handle_(socket_handle)
 {
 }
 
 //析构函数，会调用close，
-Socket_Base::~Socket_Base()
+socket_base::~socket_base()
 {
     close();
 }
 
 //
-void Socket_Base::set_handle(const ZCE_SOCKET& socket_handle)
+void socket_base::set_handle(const ZCE_SOCKET& socket_handle)
 {
     socket_handle_ = socket_handle;
 }
 
 //
-ZCE_SOCKET Socket_Base::get_handle() const
+ZCE_SOCKET socket_base::get_handle() const
 {
     return socket_handle_;
 }
 
 //Open SOCK句柄，不BIND本地地址的方式
-int Socket_Base::open(int type,
+int socket_base::open(int type,
                       int family,
                       int protocol,
                       bool reuse_addr)
@@ -53,8 +53,8 @@ int Socket_Base::open(int type,
 }
 
 //Open SOCK句柄，BIND地址的方式
-int Socket_Base::open(int type,
-                      const Sockaddr_Base* local_addr,
+int socket_base::open(int type,
+                      const zce::skt::addr_base* local_addr,
                       int protocol,
                       bool reuse_addr)
 {
@@ -69,7 +69,7 @@ int Socket_Base::open(int type,
 }
 
 //关闭之
-int Socket_Base::close()
+int socket_base::close()
 {
     int ret = close_socket(socket_handle_);
 
@@ -82,12 +82,12 @@ int Socket_Base::close()
 }
 
 //释放对句柄的管理，
-void Socket_Base::release_noclose()
+void socket_base::release_noclose()
 {
     socket_handle_ = ZCE_INVALID_SOCKET;
 }
 
-int Socket_Base::bind(const Sockaddr_Base* add_name) const
+int socket_base::bind(const zce::skt::addr_base* add_name) const
 {
     return zce::bind(socket_handle_,
                      add_name->sockaddr_ptr_,
@@ -95,19 +95,19 @@ int Socket_Base::bind(const Sockaddr_Base* add_name) const
 }
 
 //打开某些选项，WIN32目前只支持O_NONBLOCK
-int Socket_Base::sock_enable(int value) const
+int socket_base::sock_enable(int value) const
 {
     return zce::sock_enable(socket_handle_, value);
 }
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
-int Socket_Base::sock_disable(int value) const
+int socket_base::sock_disable(int value) const
 {
     return zce::sock_disable(socket_handle_, value);
 }
 
 //获取Socket的选项
-int Socket_Base::getsockopt(int level,
+int socket_base::getsockopt(int level,
                             int optname,
                             void* optval,
                             socklen_t* optlen)  const
@@ -116,7 +116,7 @@ int Socket_Base::getsockopt(int level,
 }
 
 //设置Socket的选项
-int Socket_Base::setsockopt(int level,
+int socket_base::setsockopt(int level,
                             int optname,
                             const void* optval,
                             int optlen) const
@@ -129,7 +129,7 @@ int Socket_Base::setsockopt(int level,
 }
 
 //取得对端的地址信息
-int Socket_Base::getpeername(Sockaddr_Base* addr)  const
+int socket_base::getpeername(zce::skt::addr_base* addr)  const
 {
     return zce::getpeername(socket_handle_,
                             addr->sockaddr_ptr_,
@@ -137,7 +137,7 @@ int Socket_Base::getpeername(Sockaddr_Base* addr)  const
 }
 
 //取得本地的地址信息
-int Socket_Base::getsockname(Sockaddr_Base* addr)  const
+int socket_base::getsockname(zce::skt::addr_base* addr)  const
 {
     return zce::getsockname(socket_handle_,
                             addr->sockaddr_ptr_,
@@ -145,7 +145,7 @@ int Socket_Base::getsockname(Sockaddr_Base* addr)  const
 }
 
 //connect某个地址
-int Socket_Base::connect(const Sockaddr_Base* addr) const
+int socket_base::connect(const zce::skt::addr_base* addr) const
 {
     return zce::connect(socket_handle_,
                         addr->sockaddr_ptr_,
@@ -153,7 +153,7 @@ int Socket_Base::connect(const Sockaddr_Base* addr) const
 }
 
 //接收数据，根据阻塞状态决定行为
-ssize_t Socket_Base::recv(void* buf,
+ssize_t socket_base::recv(void* buf,
                           size_t len,
                           int flags) const
 {
@@ -164,7 +164,7 @@ ssize_t Socket_Base::recv(void* buf,
 }
 
 //发送数据，根据阻塞状态决定行为
-ssize_t Socket_Base::send(const void* buf,
+ssize_t socket_base::send(const void* buf,
                           size_t len,
                           int flags) const
 {

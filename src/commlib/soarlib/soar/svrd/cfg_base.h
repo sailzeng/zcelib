@@ -136,7 +136,7 @@ public:
     ///是否使用配置服务器，如果false，则使用本地配置
     bool is_use_cfgsvr_ = false;
     ///配置服务器信息
-    zce::Sockaddr_In master_cfgsvr_ip_;
+    zce::skt::addr_in master_cfgsvr_ip_;
 
     ///最大的定时器个数
     size_t max_timer_nuamber_ = 1024;

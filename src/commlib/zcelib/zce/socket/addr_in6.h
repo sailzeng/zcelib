@@ -2,33 +2,33 @@
 
 #include "zce/socket/addr_base.h"
 
-namespace zce
+namespace zce::skt
 {
 //IPV6是一个
 
 //IPv6的物理结构
-class Sockaddr_In6 : public Sockaddr_Base
+class addr_in6 : public zce::skt::addr_base
 {
 public:
 
     //默认构造函数
-    Sockaddr_In6(void);
+    addr_in6(void);
 
     //根据sockaddr_in构造，
-    Sockaddr_In6(const sockaddr_in6* addr);
+    addr_in6(const ::sockaddr_in6* addr);
 
     //根据端口号，和IP地址字符串构造,ipv6_addr_str应该有<40个字节的长度
-    Sockaddr_In6(const char* ipv6_addr_str,
-                 uint16_t port_number);
+    addr_in6(const char* ipv6_addr_str,
+             uint16_t port_number);
 
     //根据端口号，和IP地址信息构造
-    Sockaddr_In6(uint16_t port_number,
-                 const char ipv6_addr_val[16]);
+    addr_in6(uint16_t port_number,
+             const char ipv6_addr_val[16]);
 
     //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
-    Sockaddr_In6(const Sockaddr_In6& others);
+    addr_in6(const addr_in6& others);
 
-    virtual ~Sockaddr_In6();
+    virtual ~addr_in6();
 
 public:
     //设置地址信息
@@ -75,26 +75,26 @@ public:
     const char* get_ip_address(char* ipv6_addr_val) const;
 
     //比较两个地址是否相等
-    bool operator == (const Sockaddr_In6& others) const;
+    bool operator == (const addr_in6& others) const;
     //比较两个地址是否不想等
-    bool operator != (const Sockaddr_In6& others) const;
+    bool operator != (const addr_in6& others) const;
 
     //检查IP地址是否相等,忽视端口
-    bool is_ip_equal(const Sockaddr_In6& others) const;
+    bool is_ip_equal(const addr_in6& others) const;
 
     //这个IPV6的地址是否是IPV4的地址映射的
     bool is_v4mapped() const;
     //从一个IPV4的地址得到对应映射的IPV6的地址，
-    int map_from_inaddr(const zce::Sockaddr_In& from);
+    int map_from_inaddr(const zce::skt::addr_in& from);
     //如果这个IPV6的地址是IPV4映射过来的，将其还原为IPV4的地址
-    int mapped_to_inaddr(zce::Sockaddr_In& to) const;
+    int mapped_to_inaddr(zce::skt::addr_in& to) const;
 
-    //各种操作符号转换函数，方便各种使用，让Sockaddr_In6的行为和sockaddr_in6基本一致
-    //返回sockaddr_in6
+    //各种操作符号转换函数，方便各种使用，让addr_in6的行为和addr_in6基本一致
+    //返回addr_in6
     operator sockaddr_in6 () const;
-    //返回内部const sockaddr_in6的指针，（不可以被修改）
+    //返回内部const addr_in6的指针，（不可以被修改）
     operator const sockaddr_in6* () const;
-    //返回内部 sockaddr_in6的指针，（可以被修改）
+    //返回内部 addr_in6的指针，（可以被修改）
     operator sockaddr_in6* ();
 
 protected:
@@ -104,19 +104,19 @@ protected:
 };
 
 //取得IP地址，你要保证ipv6_addr_val的长度有16个字节
-inline const char* Sockaddr_In6::get_ip_address(char* ipv6_addr_val) const
+inline const char* addr_in6::get_ip_address(char* ipv6_addr_val) const
 {
     memcpy(ipv6_addr_val, &(in6_addr_.sin6_addr), sizeof(in6_addr));
     return ipv6_addr_val;
 }
 
 //设置端口好，
-inline void Sockaddr_In6::set_port(uint16_t port_number)
+inline void addr_in6::set_port(uint16_t port_number)
 {
     in6_addr_.sin6_port = ntohs(port_number);
 }
 //取得端口号
-inline uint16_t Sockaddr_In6::get_port(void) const
+inline uint16_t addr_in6::get_port(void) const
 {
     return ntohs(in6_addr_.sin6_port);
 }

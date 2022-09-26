@@ -25,7 +25,7 @@ public:
     * @note
     */
     int find_svcinfo(const soar::SERVICES_ID& svc_id,
-                     zce::Sockaddr_In& ip_address,
+                     zce::skt::addr_in& ip_address,
                      unsigned int& idc_no,
                      unsigned int& business_id) const;
 

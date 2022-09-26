@@ -74,7 +74,7 @@ Ogre_TCP_Svc_Handler::~Ogre_TCP_Svc_Handler()
 }
 
 //初始化函数,用于Accept的端口的处理Event Handle构造.
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockstream,
+void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::socket_stream& sockstream,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
@@ -167,8 +167,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockst
 }
 
 //初始化函数,用于Connect出去的PEER 对应Event Handle构造.
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream& sockstream,
-                                                const zce::Sockaddr_In& socketaddr,
+void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::socket_stream& sockstream,
+                                                const zce::skt::addr_in& socketaddr,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
@@ -1141,7 +1141,7 @@ void Ogre_TCP_Svc_Handler::get_maxpeer_num(size_t& maxaccept, size_t& maxconnect
 }
 
 //得到Handle对应PEER的端口
-const zce::Sockaddr_In& Ogre_TCP_Svc_Handler::get_peer()
+const zce::skt::addr_in& Ogre_TCP_Svc_Handler::get_peer()
 {
     return remote_address_;
 }

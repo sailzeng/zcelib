@@ -34,7 +34,7 @@ int IPRestrict_Mgr::get_config(const Zerg_Config* config)
     //读取运行连接的服务器IP地址
     for (unsigned int i = 0; i < v.size(); ++i)
     {
-        zce::Sockaddr_In     inetadd;
+        zce::skt::addr_in     inetadd;
         //0是一个默认端口
         ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
@@ -52,7 +52,7 @@ int IPRestrict_Mgr::get_config(const Zerg_Config* config)
 
     for (unsigned int i = 0; i < v.size(); ++i)
     {
-        zce::Sockaddr_In     inetadd;
+        zce::skt::addr_in     inetadd;
         ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
         {
@@ -64,7 +64,7 @@ int IPRestrict_Mgr::get_config(const Zerg_Config* config)
     return 0;
 }
 
-int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In& remoteaddress)
+int IPRestrict_Mgr::check_iprestrict(const zce::skt::addr_in& remoteaddress)
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];

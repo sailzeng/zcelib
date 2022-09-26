@@ -148,7 +148,7 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
 }
 
 //检查一个端口是否安全
-int Comm_Manager::check_safeport(const zce::Sockaddr_In& inetadd)
+int Comm_Manager::check_safeport(const zce::skt::addr_in& inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;

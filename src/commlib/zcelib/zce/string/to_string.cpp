@@ -202,11 +202,11 @@ void to_string(std::string& stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///输出zce::Sockaddr_In的字符串
+///输出zce::skt::addr_in的字符串
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const zce::Sockaddr_In& out_data)
+            const zce::skt::addr_in& out_data)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -220,7 +220,7 @@ void to_str(char* buffer,
 }
 
 void to_string(std::string& stdstr,
-               const zce::Sockaddr_In& out_data)
+               const zce::skt::addr_in& out_data)
 {
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
@@ -236,7 +236,7 @@ void to_string(std::string& stdstr,
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const Sockaddr_In6& out_data)
+            const zce::skt::addr_in6& out_data)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -250,7 +250,7 @@ void to_str(char* buffer,
 }
 
 void to_string(std::string& stdstr,
-               const Sockaddr_In6& out_data)
+               const zce::skt::addr_in6& out_data)
 {
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
@@ -325,63 +325,18 @@ void to_string(std::string& stdstr,
 }
 
 //=======================================================================================================
-
+namespace aidout
+{
 //DOUBLE格式化输出辅助
-Double_Out_Helper::Double_Out_Helper(double out_data,
-                                     size_t width,
-                                     size_t precision,
-                                     int flags) :
+o_double::o_double(double out_data,
+                   size_t width,
+                   size_t precision,
+                   int flags) :
     out_data_(out_data),
     width_(width),
     precision_(precision),
     flags_(flags)
 {
 }
-
-Double_Out_Helper::~Double_Out_Helper()
-{
-}
-
-//String格式化输出辅助类
-String_Out_Helper::String_Out_Helper(const char* out_str_ptr,
-                                     size_t out_str_len,
-                                     size_t width,
-                                     size_t precision,
-                                     int flags) :
-    out_str_ptr_(out_str_ptr),
-    out_str_len_(out_str_len),
-    width_(width),
-    precision_(precision),
-    flags_(flags)
-{
-}
-
-//
-String_Out_Helper::String_Out_Helper(const std::string& out_str,
-                                     size_t width,
-                                     size_t precision,
-                                     int flags) :
-    out_str_ptr_(out_str.c_str()),
-    out_str_len_(out_str.length()),
-    width_(width),
-    precision_(precision),
-    flags_(flags)
-{
-}
-
-String_Out_Helper::String_Out_Helper(const char* out_str_ptr,
-                                     size_t width,
-                                     size_t precision,
-                                     int flags) :
-    out_str_ptr_(out_str_ptr),
-    out_str_len_(strlen(out_str_ptr)),
-    width_(width),
-    precision_(precision),
-    flags_(flags)
-{
-}
-
-String_Out_Helper::~String_Out_Helper()
-{
-}
-}
+}//namespace outer
+}//namespace zce

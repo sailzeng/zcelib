@@ -149,7 +149,7 @@ int Auto_Connector::connect_server_bysvcid(const soar::SERVICES_ID& reconnect_sv
 
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
 int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
-                                       const zce::Sockaddr_In& inetaddr,
+                                       const zce::skt::addr_in& inetaddr,
                                        TCP_Svc_Handler*& svc_handle)
 {
     int ret = 0;
@@ -168,7 +168,7 @@ int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
             inetaddr.to_string(ip_addr_str, IP_ADDR_LEN, use_len)
     );
 
-    zce::Socket_Stream sockstream;
+    zce::socket_stream sockstream;
     sockstream.open();
 
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;

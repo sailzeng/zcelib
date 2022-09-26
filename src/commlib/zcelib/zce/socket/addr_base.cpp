@@ -3,21 +3,21 @@
 #include "zce/socket/addr_in.h"
 #include "zce/socket/addr_in6.h"
 
-namespace zce
+namespace zce::skt
 {
-Sockaddr_Base::Sockaddr_Base(sockaddr* sockaddr_ptr, int sa_size) :
+addr_base::addr_base(sockaddr* sockaddr_ptr, int sa_size) :
     sockaddr_ptr_(sockaddr_ptr),
     sockaddr_size_(sa_size)
 {
 }
 
 //，和析构函数
-Sockaddr_Base::~Sockaddr_Base()
+addr_base::~addr_base()
 {
 }
 
 // 检查地址是否相等
-bool Sockaddr_Base::operator == (const Sockaddr_Base& others_sockaddr) const
+bool addr_base::operator == (const addr_base& others_sockaddr) const
 {
     if (sockaddr_ptr_ == others_sockaddr.sockaddr_ptr_ &&
         sockaddr_size_ == others_sockaddr.sockaddr_size_)
@@ -28,19 +28,19 @@ bool Sockaddr_Base::operator == (const Sockaddr_Base& others_sockaddr) const
 }
 
 // 检查地址是否不相等
-bool Sockaddr_Base::operator != (const Sockaddr_Base& others_sockaddr) const
+bool addr_base::operator != (const addr_base& others_sockaddr) const
 {
     return !(*this == others_sockaddr);
 }
 
 //检查地址是否是一个内网地址
-bool Sockaddr_Base::is_internal()
+bool addr_base::is_internal()
 {
     return zce::is_internal(sockaddr_ptr_);
 }
 
 //检查地址是否是一个外网地址，其实我就简单认为不是外网地址就是内网地址
-bool Sockaddr_Base::is_internet()
+bool addr_base::is_internet()
 {
     return !(zce::is_internal(sockaddr_ptr_));
 }

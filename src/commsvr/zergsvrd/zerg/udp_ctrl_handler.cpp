@@ -18,7 +18,7 @@ bool           UDP_Svc_Handler::if_proxy_ = false;
 
 //
 UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
-                                 const zce::Sockaddr_In& addr,
+                                 const zce::skt::addr_in& addr,
                                  bool sessionkey_verify) :
     zce::Event_Handler(zce::ZCE_Reactor::instance()),
     udp_bind_addr_(addr),
@@ -147,7 +147,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
 
-    zce::Sockaddr_In     remote_addr;
+    zce::skt::addr_in     remote_addr;
 
     soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*> (dgram_databuf_->buffer_data_);
 
@@ -243,8 +243,8 @@ int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame* send_frame)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //这里service_id_和services_type_保存的是对方的ip和port，而不是真正的type和id
-    zce::Sockaddr_In remote_addr(send_frame->recv_service_.services_id_,
-                                 send_frame->recv_service_.services_type_);
+    zce::skt::addr_in remote_addr(send_frame->recv_service_.services_id_,
+                                  send_frame->recv_service_.services_type_);
     size_t send_len = send_frame->length_;
 
     //

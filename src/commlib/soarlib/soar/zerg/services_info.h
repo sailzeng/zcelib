@@ -43,7 +43,7 @@ public:
     uint16_t     idc_no_ = 0;
 
     ///服务IP,服务端口
-    zce::Sockaddr_In  ip_address_;
+    zce::skt::addr_in  ip_address_;
 };
 
 //得到KEY的HASH函数

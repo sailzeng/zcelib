@@ -269,7 +269,7 @@ std::string stdstr_data = "You love me.";
 int test_out_buffer(int /*argc*/, char* /*argv*/[])
 {
     const std::string def("You love me.");
-    zce::String_Out_Helper abc(def);
+    zce::outer::string_o abc(def);
 
     zce::progress_timer progress_timer;
     progress_timer.restart();
@@ -345,8 +345,8 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                          bool_data,
                          zce::Double_Out_Helper(double_data, 16, 3),
-                         zce::String_Out_Helper(cstr_data, 30),
-                         zce::String_Out_Helper(stdstr_data.c_str(), stdstr_data.length())
+                         zce::outer::o_string(cstr_data, 30),
+                         zce::outer::o_string(stdstr_data.c_str(), stdstr_data.length())
         );
     }
     progress_timer.end();
@@ -360,8 +360,8 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                          bool_data,
                          zce::Double_Out_Helper(double_data, 16, 3),
-                         zce::String_Out_Helper(cstr_data, 30),
-                         zce::String_Out_Helper(stdstr_data.c_str(), 28)
+                         zce::outer::o_string(cstr_data, 30),
+                         zce::outer::o_string(stdstr_data.c_str(), 28)
         );
     }
     progress_timer.end();

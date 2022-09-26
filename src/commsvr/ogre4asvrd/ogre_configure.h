@@ -17,7 +17,7 @@ public:
 public:
 
     ///PEER 的地址
-    zce::Sockaddr_In       peer_socketin_;
+    zce::skt::addr_in       peer_socketin_;
     ///
     std::string          module_file_;
 };
@@ -152,7 +152,7 @@ public:
     ///服务器支持的UDP PEER的数量，
     size_t udp_peer_num_ = 0;
     ///服务器支持UDP PEER
-    zce::Sockaddr_In udp_peer_ary_[MAX_UDP_PEERID_NUM];
+    zce::skt::addr_in udp_peer_ary_[MAX_UDP_PEERID_NUM];
 };
 
 //===================================================================================

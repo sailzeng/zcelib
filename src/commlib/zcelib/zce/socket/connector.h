@@ -20,19 +20,19 @@
 #include "zce/time/time_value.h"
 #include "zce/socket/addr_base.h"
 
-namespace zce
+namespace zce::skt
 {
 /*!
-* @brief      connect的工厂，成功连接后产生,用于产生zce::Socket_Stream
+* @brief      connect的工厂，成功连接后产生,用于产生zce::skt::stream
 *
 * @note
 */
-class Socket_Connector
+class connector
 {
 public:
     //构造函数和析构函数
-    Socket_Connector(void);
-    ~Socket_Connector(void);
+    connector(void) = default;
+    ~connector(void) = default;
 
     /*!
     * @brief      带超时的连接
@@ -44,12 +44,12 @@ public:
     * @param      protocol    协议，用于RAW Socket，基本没用
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
-    int connect(zce::Socket_Stream& new_stream,
-                const zce::Sockaddr_Base* remote_addr,
+    int connect(zce::skt::stream& new_stream,
+                const zce::skt::addr_base* remote_addr,
                 zce::time_value& timeout,
                 bool reuse_addr = false,
                 int protocol = 0,
-                const Sockaddr_Base* local_addr = NULL);
+                const zce::skt::addr_base* local_addr = NULL);
 
     /*!
     * @brief      阻塞或者非阻塞的连接
@@ -61,12 +61,12 @@ public:
     * @param      protocol    协议，用于RAW Socket，基本没用
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
-    int connect(zce::Socket_Stream& new_stream,
-                const zce::Sockaddr_Base* remote_addr,
+    int connect(zce::skt::stream& new_stream,
+                const zce::skt::addr_base* remote_addr,
                 bool k,
                 bool reuse_addr = false,
                 int protocol = 0,
-                const Sockaddr_Base* local_addr = NULL);
+                const zce::skt::addr_base* local_addr = NULL);
 };
 }
 

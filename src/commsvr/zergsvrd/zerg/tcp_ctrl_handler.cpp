@@ -97,8 +97,8 @@ TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
 
 //用于Accept的端口的处理Event Handle初始化处理.
 void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                                          const zce::Socket_Stream& sockstream,
-                                          const zce::Sockaddr_In& socketaddr)
+                                          const zce::socket_stream& sockstream,
+                                          const zce::skt::addr_in& socketaddr)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
     my_svc_id_ = my_svcinfo;
@@ -225,8 +225,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
 //主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
 void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                                           const soar::SERVICES_ID& peer_svrinfo,
-                                          const zce::Socket_Stream& sockstream,
-                                          const zce::Sockaddr_In& socketaddr)
+                                          const zce::socket_stream& sockstream,
+                                          const zce::skt::addr_in& socketaddr)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
     my_svc_id_ = my_svcinfo;
@@ -861,7 +861,7 @@ int TCP_Svc_Handler::process_connect_register()
     reactor()->schedule_wakeup(this, zce::Event_Handler::READ_MASK);
 
     //打印信息
-    zce::Sockaddr_In      peeraddr;
+    zce::skt::addr_in      peeraddr;
     socket_peer_.getpeername(&peeraddr);
     ZCE_LOG(RS_INFO, "[zergsvr] connect services[%u|%u] peer socket IP|Port :[%s] Success.",
             peer_svr_id_.services_type_,
@@ -1727,7 +1727,7 @@ void TCP_Svc_Handler::get_max_peer_num(size_t& maxaccept, size_t& maxconnect)
 }
 
 //得到Handle对应PEER的IP地址#端口信息
-const zce::Sockaddr_In& TCP_Svc_Handler::get_peer()
+const zce::skt::addr_in& TCP_Svc_Handler::get_peer()
 {
     return peer_address_;
 }
@@ -1805,7 +1805,7 @@ int TCP_Svc_Handler::find_services_peer(const soar::SERVICES_ID& svc_id,
     return 0;
 }
 
-const zce::Sockaddr_In& TCP_Svc_Handler::get_peer_sockaddr() const
+const zce::skt::addr_in& TCP_Svc_Handler::get_peer_sockaddr() const
 {
     return peer_address_;
 }

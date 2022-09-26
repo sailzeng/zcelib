@@ -2,7 +2,7 @@
 
 int test_sqlite_handle(int /*argc*/, char* /*argv */[])
 {
-    zce::sqlite::sqlite_hdl hdl;
+    zce::sqlite_hdl hdl;
     int ret = 0;
     ret = hdl.open_database("E:\\134.db", false, true);
     if (ret != 0)
@@ -18,7 +18,7 @@ int test_sqlite_handle(int /*argc*/, char* /*argv */[])
     ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(2,'bbb',22,'bbb.bbb',20000.00)");
     ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(3,'ccc',22,'ccc.ccc',31000.03)");
     ret = hdl.exe("REPLACE INTO foo(id,name,age,address,salary) VALUES(4,'ddd',25,'ddd.ddd',34000.563)");
-    zce::sqlite::result result;
+    zce::sqlite_result result;
     ret = hdl.get_table("SELECT id,name,age,address,salary FROM foo", &result);
     if (ret != 0)
     {
@@ -47,7 +47,7 @@ int test_sqlite_handle(int /*argc*/, char* /*argv */[])
 
 int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
 {
-    zce::sqlite::sqlite_hdl hdl;
+    zce::sqlite_hdl hdl;
     int ret = 0;
     ret = hdl.open_database("E:\\134.db", false, true);
     if (ret != 0)
@@ -59,7 +59,7 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
     {
         return -1;
     }
-    zce::sqlite::stmt stmt(&hdl);
+    zce::sqlite_stmt stmt(&hdl);
     ret = stmt.prepare("REPLACE INTO ofo(id,name,age,address,salary) VALUES(?,?,?,?,?)");
     if (ret != 0)
     {

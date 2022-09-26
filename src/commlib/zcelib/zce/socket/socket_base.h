@@ -4,24 +4,24 @@
 #include "zce/socket/addr_base.h"
 #include "zce/time/time_value.h"
 
-namespace zce
+namespace zce::skt
 {
 //SOCKET的基类
-class Socket_Base
+class socket_base
 {
-    //Socket_Base不会提供给外部用，所以不准用
+    //socket_base不会提供给外部用，所以不准用
 protected:
 
     /*!
     * @brief      构造函数
     */
-    Socket_Base();
+    socket_base();
 
     /*!
     * @brief      拷贝构造函数
     * @param      socket_hanle
     */
-    explicit Socket_Base(const ZCE_SOCKET& socket_hanle);
+    explicit socket_base(const ZCE_SOCKET& socket_hanle);
 
     /*!
     * @brief      析构函数，会调用close，
@@ -30,7 +30,7 @@ protected:
     *             了，但我觉得良好的参数设计应该更好，而让普罗大众知道这个析构没
     *             有释放资源，这个反而更难。
     */
-    ~Socket_Base();
+    ~socket_base();
 
 public:
 
@@ -47,7 +47,7 @@ public:
 
     //Open SOCK句柄，BIND本地地址的方式
     int open(int type,
-             const Sockaddr_Base* local_addr,
+             const zce::skt::addr_base* local_addr,
              int protocol = 0,
              bool reuse_addr = false);
 
@@ -66,7 +66,7 @@ public:
     * @return     int
     * @param      add_name
     */
-    int bind(const Sockaddr_Base* add_name) const;
+    int bind(const zce::skt::addr_base* add_name) const;
 
     ///打开某些选项，WIN32目前只支持O_NONBLOCK
     int sock_enable(int value) const;
@@ -87,17 +87,17 @@ public:
                    int optlen) const;
 
     //取得对端的地址信息
-    int getpeername(Sockaddr_Base* addr)  const;
+    int getpeername(zce::skt::addr_base* addr)  const;
 
     //取得本地的地址信息
-    int getsockname(Sockaddr_Base* addr)  const;
+    int getsockname(zce::skt::addr_base* addr)  const;
 
     //需要说明的是，UDP也可以用connect函数（UDP的connect并不发起握手,只是记录通信地址），
     //然后可以直接调用send or recv，而不明确要通信的地址
     //所以将connect，send，recv 3个函数放到了base里面，大家都可以使用
 
     //connect某个地址
-    int connect(const Sockaddr_Base* addr) const;
+    int connect(const zce::skt::addr_base* addr) const;
 
     //接受数据，根据阻塞状态决定行为
     ssize_t recv(void* buf,

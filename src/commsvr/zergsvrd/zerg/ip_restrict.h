@@ -23,7 +23,7 @@ public:
     ///从配置文件中得到相关的配置
     int get_config(const Zerg_Config* config);
     ///检查IP限制
-    int check_iprestrict(const zce::Sockaddr_In& remoteaddress);
+    int check_iprestrict(const zce::skt::addr_in& remoteaddress);
 
 public:
 

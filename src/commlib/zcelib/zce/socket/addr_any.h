@@ -2,21 +2,21 @@
 
 #include "zce/socket/addr_base.h"
 
-namespace zce
+namespace zce::skt
 {
 //Socket地址的通用类，用于有时候，你要用第一个地址类型同时适配in，in6的时候。
-class Sockaddr_Any : public zce::Sockaddr_Base
+class addr_any : public zce::skt::addr_base
 {
 public:
 
     //构造函数，默认初始化为in的地址，使用是要记得改变
-    Sockaddr_Any();
+    addr_any();
     //构造函数，根据family确定初始化的类型
-    Sockaddr_Any(int family);
+    addr_any(int family);
     //析构函数,内部有virtual函数
-    virtual ~Sockaddr_Any(void);
+    virtual ~addr_any(void);
 
-    //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用Sockaddr_Any
+    //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用addr_any
     virtual void set_sockaddr(sockaddr* sockaddr_ptr,
                               socklen_t sockaddr_size) override;
 
@@ -42,9 +42,9 @@ public:
     void set_family(int family);
 
     //! 检查地址是否相等
-    bool operator == (const Sockaddr_Any& others) const;
+    bool operator == (const addr_any& others) const;
     //! 检查地址是否不相等
-    bool operator != (const Sockaddr_Any& others) const;
+    bool operator != (const addr_any& others) const;
 
 public:
 

@@ -161,8 +161,8 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
         //    break;
         //}
         zce::foo_string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
-                               zce::Int_Out_Helper(k + 1, 3),
-                               zce::Int_HexOut_Helper(stackframe.AddrPC.Offset, 16),
+                               zce::aidout::o_int(k + 1, 3),
+                               zce::aidout::o_hexint(stackframe.AddrPC.Offset, 16),
                                load_symbol ? symbol->Name : "<no symbol>",
                                load_line ? source_info.FileName : "<no source file info>",
                                load_line ? source_info.LineNumber : 0);

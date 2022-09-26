@@ -31,10 +31,10 @@ protected:
     bool                   zulu_connected_;
 
     //ZULU链接的IP地址
-    zce::Sockaddr_In        zulu_svc_ip_;
+    zce::skt::addr_in        zulu_svc_ip_;
 
     //使用的SOCKET包装
-    zce::Socket_Stream      zulu_stream_;
+    zce::socket_stream      zulu_stream_;
 
 public:
 
@@ -67,7 +67,7 @@ public:
     void close();
 
     //取得本地的地址信息
-    int getsockname(zce::Sockaddr_Base* addr)  const;
+    int getsockname(zce::sockaddr_base* addr)  const;
 
     /*!
     * @brief      发送数据

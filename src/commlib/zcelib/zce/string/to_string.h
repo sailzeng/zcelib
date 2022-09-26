@@ -26,10 +26,14 @@
 namespace zce
 {
 class time_value;
-class Sockaddr_In;
-class Sockaddr_In6;
 class UUID64;
 class UUID128;
+
+namespace skt
+{
+class addr_in;
+class addr_in6;
+}
 
 //标准数据类型的输出，用默认的格式------------------------------------------------------------------------
 
@@ -566,23 +570,23 @@ inline void to_str(char* buffer,
 inline void to_string(std::string& stdstr,
                       const zce::time_value& out_data);
 
-///输出zce::Sockaddr_In的字符串
+///输出zce::skt::addr_in的字符串
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const zce::Sockaddr_In& out_data);
+                   const zce::skt::addr_in& out_data);
 
 void to_string(std::string& stdstr,
-               const zce::Sockaddr_In& out_data);
+               const zce::skt::addr_in& out_data);
 
 ///辅助输出Sockaddr_In6的字符串
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const Sockaddr_In6& out_data);
+            const zce::skt::addr_in6& out_data);
 
 void to_string(std::string& stdstr,
-               const Sockaddr_In6& out_data);
+               const zce::skt::addr_in6& out_data);
 
 ///辅助输出ZCE_UUID64的字符串
 void to_str(char* buffer,
@@ -605,18 +609,20 @@ void to_string(std::string& stdstr,
 //特殊的格式输出方式
 
 ///INT格式化输出辅助类，可以帮助进行一些格式化输出
-class Int_Out_Helper
+namespace aidout
+{
+class o_int
 {
 public:
     //辅助类的构造函数，跟进有符号和没有符号的整数类型进行了区分处理
     //is_unsigned 不光对整数生效，对浮点也有作用
     template <typename int_type, typename std::enable_if<(std::is_integral<int_type>::value&&
                                                           std::is_unsigned<int_type>::value), int >::type = 0>
-    Int_Out_Helper(int_type out_data,
-                   size_t width = 0,
-                   int flags = 0,
-                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
-                   size_t precision = 0) :
+    o_int(int_type out_data,
+          size_t width = 0,
+          int flags = 0,
+          BASE_NUMBER base = BASE_NUMBER::DECIMAL,
+          size_t precision = 0) :
         out_data_(out_data),
         width_(width),
         precision_(precision),
@@ -628,11 +634,11 @@ public:
 
     template <typename int_type, typename std::enable_if<std::is_integral<int_type>::value,
         typename std::enable_if<std::is_signed<int_type>::value, int>::type>::type = 0>
-    Int_Out_Helper(int_type out_data,
-                   size_t width = 0,
-                   int flags = 0,
-                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
-                   size_t precision = 0) :
+    o_int(int_type out_data,
+          size_t width = 0,
+          int flags = 0,
+          BASE_NUMBER base = BASE_NUMBER::DECIMAL,
+          size_t precision = 0) :
         out_data_(out_data),
         width_(width),
         precision_(precision),
@@ -641,7 +647,7 @@ public:
     {
     }
 
-    ~Int_Out_Helper() = default;
+    ~o_int() = default;
 
 public:
 
@@ -657,25 +663,26 @@ public:
     int                flags_;
 };
 
-class  Int_HexOut_Helper : public Int_Out_Helper
+class  o_hexint : public o_int
 {
 public:
     template <typename int_type>
-    Int_HexOut_Helper(int_type out_data,
-                      size_t width = 0,
-                      int flags = zce::FMT_PREFIX | zce::FMT_UP,
-                      size_t precision = 0) :
-        Int_Out_Helper(out_data, width, flags, BASE_NUMBER::HEXADECIMAL, precision)
+    o_hexint(int_type out_data,
+             size_t width = 0,
+             int flags = zce::FMT_PREFIX | zce::FMT_UP,
+             size_t precision = 0) :
+        zce::aidout::o_int(out_data, width, flags, BASE_NUMBER::HEXADECIMAL, precision)
     {
         flags_ |= zce::FMT_UNSIGNED;
     }
 };
+}
 
 //INT格式化输出辅助
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const Int_Out_Helper& out_data)
+                   const zce::aidout::o_int& out_data)
 {
     zce::fmt_int64(buffer,
                    max_len,
@@ -688,7 +695,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const Int_Out_Helper& out_data)
+                      const zce::aidout::o_int& out_data)
 {
     zce::fmt_int64(stdstr,
                    out_data.out_data_,
@@ -698,15 +705,17 @@ inline void to_string(std::string& stdstr,
                    out_data.flags_);
 }
 
+namespace aidout
+{
 ///DOUBLE格式化输出辅助类,帮助做一些格式化操作，
-class Double_Out_Helper
+class o_double
 {
 public:
-    explicit Double_Out_Helper(double out_data,
-                               size_t width = -1,
-                               size_t precision = size_t(-1),
-                               int flags = 0);
-    ~Double_Out_Helper();
+    explicit o_double(double out_data,
+                      size_t width = -1,
+                      size_t precision = size_t(-1),
+                      int flags = 0);
+    ~o_double() = default;
 
 public:
     //要输出的浮点
@@ -718,10 +727,11 @@ public:
     //输出标志
     int                flags_;
 };
+}
 
 ///帮助浮点以小数方式输出，名字有点误解，但double和float都可以，
 #ifndef ZCE_DOUBLE_DECIMAL_OUT
-#define ZCE_DOUBLE_DECIMAL_OUT(x)   zce::Double_Out_Helper((x),\
+#define ZCE_DOUBLE_DECIMAL_OUT(x)   zce::aidout::o_double((x),\
                                                            0,\
                                                            size_t(-1),\
                                                            0)
@@ -729,7 +739,7 @@ public:
 
 ///帮助浮点以指数方式输出
 #ifndef ZCE_DOUBLE_EXPONENT_OUT
-#define ZCE_DOUBLE_EXPONENT_OUT(x)  zce::Double_Out_Helper((x),\
+#define ZCE_DOUBLE_EXPONENT_OUT(x)  zce::aidout::o_double((x),\
                                                            0,\
                                                            size_t(-1),\
                                                            zce::FMT_UP|zce::FMT_EXPONENT)
@@ -739,7 +749,7 @@ public:
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const Double_Out_Helper& out_data)
+                   const zce::aidout::o_double& out_data)
 {
     zce::fmt_double(buffer,
                     max_len,
@@ -751,7 +761,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const Double_Out_Helper& out_data)
+                      const zce::aidout::o_double& out_data)
 {
     zce::fmt_double(stdstr,
                     out_data.out_data_,
@@ -760,32 +770,56 @@ inline void to_string(std::string& stdstr,
                     out_data.flags_);
 }
 
+namespace aidout
+{
 ///String格式化输出辅助类，帮助做一些格式化操作
-class String_Out_Helper
+class o_string
 {
 public:
-    //
-    explicit String_Out_Helper(const char* out_str_ptr,
-                               size_t out_str_len,
-                               size_t width,
-                               size_t precision,
-                               int flags);
-    //
-    explicit String_Out_Helper(const std::string& out_str,
-                               size_t width = size_t(-1),
-                               size_t precision = size_t(-1),
-                               int flags = 0);
-    //
-    explicit String_Out_Helper(const char* out_str_ptr,
-                               size_t width = size_t(-1),
-                               size_t precision = size_t(-1),
-                               int flags = 0);
+    //String格式化输出辅助类
+    o_string(const char* out_str_ptr,
+             size_t out_str_len,
+             size_t width,
+             size_t precision,
+             int flags) :
+        out_str_ptr_(out_str_ptr),
+        out_str_len_(out_str_len),
+        width_(width),
+        precision_(precision),
+        flags_(flags)
+    {
+    }
 
-    ~String_Out_Helper();
+    //
+    o_string(const std::string& out_str,
+             size_t width,
+             size_t precision,
+             int flags) :
+        out_str_ptr_(out_str.c_str()),
+        out_str_len_(out_str.length()),
+        width_(width),
+        precision_(precision),
+        flags_(flags)
+    {
+    }
+
+    o_string(const char* out_str_ptr,
+             size_t width,
+             size_t precision,
+             int flags) :
+        out_str_ptr_(out_str_ptr),
+        out_str_len_(strlen(out_str_ptr)),
+        width_(width),
+        precision_(precision),
+        flags_(flags)
+    {
+    }
+
+    ~o_string() = default;
 
 public:
     ///字符串
-    const char* out_str_ptr_;
+    const char*        out_str_ptr_;
     ///字符串的长度
     size_t             out_str_len_;
     ///输出的宽度
@@ -795,12 +829,13 @@ public:
     ///输出标志
     int                flags_;
 };
+}
 
 ///const char *字符串输出辅助函数
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   const String_Out_Helper& out_data)
+                   const zce::aidout::o_string& out_data)
 {
     zce::fmt_str(buffer,
                  max_len,
@@ -814,7 +849,7 @@ inline void to_str(char* buffer,
 }
 
 inline void to_string(std::string& stdstr,
-                      const String_Out_Helper& out_data)
+                      const zce::aidout::o_string& out_data)
 {
     zce::fmt_str(stdstr,
                  out_data.out_str_ptr_,

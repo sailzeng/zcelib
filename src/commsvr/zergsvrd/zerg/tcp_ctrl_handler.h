@@ -65,8 +65,8 @@ public:
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                             const zce::Socket_Stream& sockstream,
-                             const zce::Sockaddr_In& socketaddr);
+                             const zce::socket_stream& sockstream,
+                             const zce::skt::addr_in& socketaddr);
 
     /*!
     * @brief      主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
@@ -79,8 +79,8 @@ public:
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                              const soar::SERVICES_ID& svrinfo,
-                             const zce::Socket_Stream& sockstream,
-                             const zce::Sockaddr_In& socketaddr);
+                             const zce::socket_stream& sockstream,
+                             const zce::skt::addr_in& socketaddr);
 
     //ZEN的一组要求自己继承的函数.
     //zce::Event_Handler必须重载的函数，取得SOCKET句柄
@@ -111,7 +111,7 @@ public:
     virtual int timer_timeout(const zce::time_value& time, const void* arg);
 
     ///得到Handle对应PEER的端口
-    const zce::Sockaddr_In& get_peer();
+    const zce::skt::addr_in& get_peer();
 
     //得到每个PEER状态信息
     void dump_status_info(zce::LOG_PRIORITY out_lvl);
@@ -131,7 +131,7 @@ public:
     unsigned int get_handle_id();
 
     ///得到对端的IP地址信息
-    const zce::Sockaddr_In& get_peer_sockaddr() const;
+    const zce::skt::addr_in& get_peer_sockaddr() const;
 
     ///取得tptoid_table_id_
     size_t get_tptoid_table_id();
@@ -345,10 +345,10 @@ protected:
     size_t                    send_bytes_;
 
     //ZCE Socket Stream,
-    zce::Socket_Stream        socket_peer_;
+    zce::socket_stream        socket_peer_;
 
     //PEER连接的IP地址信息
-    zce::Sockaddr_In          peer_address_;
+    zce::skt::addr_in          peer_address_;
 
     //是否处于活动状态
     PEER_STATUS               peer_status_;

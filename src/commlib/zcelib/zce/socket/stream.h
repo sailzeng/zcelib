@@ -4,16 +4,16 @@
 #include "zce/socket/addr_base.h"
 #include "zce/socket/socket_base.h"
 
-namespace zce
+namespace zce::skt
 {
-class Socket_Stream : public zce::Socket_Base
+class stream : public zce::skt::socket_base
 {
 public:
 
     //构造函数
-    Socket_Stream();
-    explicit Socket_Stream(const ZCE_SOCKET& socket_hanle);
-    ~Socket_Stream();
+    stream();
+    explicit stream(const ZCE_SOCKET& socket_hanle);
+    ~stream();
 
 public:
 
@@ -24,7 +24,7 @@ public:
 
     //Open SOCK句柄，BIND本地地址的方式,一般情况下不用这样使用，除非……
     //protocol_family 参数可以是AF_INET,或者AF_INET6等
-    int open(const Sockaddr_Base* local_addr,
+    int open(const zce::skt::addr_base* local_addr,
              int protocol = 0,
              bool reuse_addr = false);
 

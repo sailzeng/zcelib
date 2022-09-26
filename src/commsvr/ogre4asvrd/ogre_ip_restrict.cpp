@@ -32,7 +32,7 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config* config)
     //读取运行连接的服务器IP地址
     for (unsigned int i = 0; i < v.size(); ++i)
     {
-        zce::Sockaddr_In     inetadd;
+        zce::skt::addr_in     inetadd;
         //0是一个默认端口
         ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
@@ -50,7 +50,7 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config* config)
 
     for (unsigned int i = 0; i < v.size(); ++i)
     {
-        zce::Sockaddr_In     inetadd;
+        zce::skt::addr_in     inetadd;
         ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
         {
@@ -63,7 +63,7 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config* config)
 }
 
 //
-int Ogre_IPRestrict_Mgr::check_ip_restrict(const zce::Sockaddr_In& remoteaddress)
+int Ogre_IPRestrict_Mgr::check_ip_restrict(const zce::skt::addr_in& remoteaddress)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
