@@ -80,12 +80,12 @@ namespace zce
 {
 //================================================================================================
 
-DNS_Resolve::DNS_Resolve()
+dns_resolve::dns_resolve()
 {
     send_packet_ = new char[DNS_PACKET_MAX_LEN];
     recv_packet_ = new char[DNS_PACKET_MAX_LEN];
 }
-DNS_Resolve::~DNS_Resolve()
+dns_resolve::~dns_resolve()
 {
     if (send_packet_)
     {
@@ -99,7 +99,7 @@ DNS_Resolve::~DNS_Resolve()
     }
 }
 
-int DNS_Resolve::initialize(sockaddr *dns_svr_addr,
+int dns_resolve::initialize(sockaddr *dns_svr_addr,
                             socklen_t addr_len)
 {
     int ret = 0;
@@ -112,7 +112,7 @@ int DNS_Resolve::initialize(sockaddr *dns_svr_addr,
     return 0;
 }
 
-int DNS_Resolve::initialize(int dns_svr_family,
+int dns_resolve::initialize(int dns_svr_family,
                             const char *dns_svr,
                             uint16_t dns_svr_port)
 {
@@ -132,17 +132,17 @@ int DNS_Resolve::initialize(int dns_svr_family,
     return 0;
 }
 
-ZCE_SOCKET DNS_Resolve::get_handle()
+ZCE_SOCKET dns_resolve::get_handle()
 {
     return dns_socket_.get_handle();
 }
 
-int DNS_Resolve::query(const char *query_name,
+int dns_resolve::query(const char *query_name,
                        uint16_t query_type,
                        uint16_t *tid)
 {
     size_t len = DNS_PACKET_MAX_LEN;
-    int ret = DNS_Resolve::pack_request(send_packet_,
+    int ret = dns_resolve::pack_request(send_packet_,
                                         &len,
                                         query_name,
                                         query_type,
@@ -163,7 +163,7 @@ int DNS_Resolve::query(const char *query_name,
     return 0;
 }
 
-int DNS_Resolve::answer(uint16_t *tid,
+int dns_resolve::answer(uint16_t *tid,
                         int family,
                         struct sockaddr addrs[],
                         size_t *addrs_num,
@@ -209,7 +209,7 @@ int DNS_Resolve::answer(uint16_t *tid,
     return 0;
 }
 
-int DNS_Resolve::pack_request(char *buf,
+int dns_resolve::pack_request(char *buf,
                               size_t *size,
                               const char *query_name,
                               uint16_t query_type,
@@ -220,7 +220,7 @@ int DNS_Resolve::pack_request(char *buf,
     size_t max_size = *size;
     size_t name_len = ::strlen(query_name);
     //名字长度必须小于255
-    if (name_len > DNS_Resolve::MAX_NAME_LEN)
+    if (name_len > dns_resolve::MAX_NAME_LEN)
     {
         return -1;
     }
@@ -295,7 +295,7 @@ int DNS_Resolve::pack_request(char *buf,
     return 0;
 }
 
-int DNS_Resolve::parse_response(char *buf,
+int dns_resolve::parse_response(char *buf,
                                 size_t size,
                                 uint16_t *tid,
                                 int family,

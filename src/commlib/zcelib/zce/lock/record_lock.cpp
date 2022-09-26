@@ -7,21 +7,21 @@
 namespace zce
 {
 //构造函数
-Record_Lock::Record_Lock(ZCE_HANDLE file_handle)
+record_lock::record_lock(ZCE_HANDLE file_handle)
 {
     open(file_handle);
 }
 
-Record_Lock::Record_Lock()
+record_lock::record_lock()
 {
 }
-Record_Lock::~Record_Lock()
+record_lock::~record_lock()
 {
     close();
 }
 
 //!打开一个文件,同时初始化关联的lock对象
-int Record_Lock::open(const char* file_name,
+int record_lock::open(const char* file_name,
                       int open_mode,
                       mode_t perms)
 {
@@ -44,19 +44,19 @@ int Record_Lock::open(const char* file_name,
 }
 
 //!用一个文件Handle初始化,外部传入的ZCE_HANDLE，我不会关闭，文件
-int Record_Lock::open(ZCE_HANDLE file_handle)
+int record_lock::open(ZCE_HANDLE file_handle)
 {
     return zce::file_lock_init(&record_lock_, file_handle);
 }
 
 //!得到锁文件的句柄
-ZCE_HANDLE Record_Lock::get_file_handle()
+ZCE_HANDLE record_lock::get_file_handle()
 {
     return record_lock_.handle_;
 }
 
 //!关闭之，如果是Record_Lock内部自己打开的文件（不是文件句柄参数），关闭时会关闭文件
-void Record_Lock::close()
+void record_lock::close()
 {
     if (open_by_self_)
     {
@@ -66,7 +66,7 @@ void Record_Lock::close()
 }
 
 //!文件记录读写锁
-int Record_Lock::flock_rdlock(int  whence,
+int record_lock::flock_rdlock(int  whence,
                               ssize_t start,
                               ssize_t len)
 {
@@ -77,7 +77,7 @@ int Record_Lock::flock_rdlock(int  whence,
 }
 
 //!尝试对文件记录进行加读取锁
-int Record_Lock::flock_tryrdlock(int  whence,
+int record_lock::flock_tryrdlock(int  whence,
                                  ssize_t start,
                                  ssize_t len)
 {
@@ -88,7 +88,7 @@ int Record_Lock::flock_tryrdlock(int  whence,
 }
 
 //!对文件记录直接上锁
-int Record_Lock::flock_wrlock(int  whence,
+int record_lock::flock_wrlock(int  whence,
                               ssize_t start,
                               ssize_t len)
 {
@@ -99,7 +99,7 @@ int Record_Lock::flock_wrlock(int  whence,
 }
 
 //!尝试对文件记录进行加写取锁
-int Record_Lock::flock_trywrlock(int  whence,
+int record_lock::flock_trywrlock(int  whence,
                                  ssize_t start,
                                  ssize_t len)
 {
@@ -110,7 +110,7 @@ int Record_Lock::flock_trywrlock(int  whence,
 }
 
 //!解锁
-int Record_Lock::flock_unlock(int  whence,
+int record_lock::flock_unlock(int  whence,
                               ssize_t start,
                               ssize_t len)
 {

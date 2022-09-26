@@ -24,7 +24,7 @@ namespace zce
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
 *
 */
-class Record_Lock : public zce::non_copyable
+class record_lock : public zce::non_copyable
 {
 public:
 
@@ -32,12 +32,12 @@ public:
     * @brief      构造函数
     * @param      file_handle 文件句柄
     */
-    Record_Lock(ZCE_HANDLE file_handle);
+    record_lock(ZCE_HANDLE file_handle);
 
     /// 构造函数
-    Record_Lock();
+    record_lock();
     /// 析构函数
-    ~Record_Lock();
+    ~record_lock();
 
 public:
 

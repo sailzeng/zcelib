@@ -249,13 +249,13 @@ protected:
 
     //!时间日志文件列表，
     std::list<std::string> time_logfile_list_;
-    //!
+    //!日志输出线程是否处于运行状态
     bool out_thread_run_ = true;
     //!输出到文件的现场
     std::thread thread_outlog_;
-    //!
+    //!日志记录缓存的池子，
     zce::queue_buffer_pool_s buf_pool_;
-    //!
+    //!日志记录的消息队列
     zce::msgring_condi<LOG_RECORD>  msg_queue_;
 };
 }

@@ -22,12 +22,12 @@
 namespace zce
 {
 //! DNS解析
-class DNS_Resolve
+class dns_resolve
 {
 public:
 
-    DNS_Resolve();
-    ~DNS_Resolve();
+    dns_resolve();
+    ~dns_resolve();
 
     /**
      * @brief 初始化DNS服务器的地址信息
@@ -116,14 +116,14 @@ protected:
 
 protected:
     //!发送缓冲区
-    char              *send_packet_ = nullptr;
+    char               *send_packet_ = nullptr;
     //!接收缓冲区
-    char              *recv_packet_ = nullptr;
+    char               *recv_packet_ = nullptr;
 
     //!DNS 服务器地址
-    zce::skt::addr_any   dns_server_addr_;
+    zce::skt::addr_any  dns_server_addr_;
 
     //!UDP socket
-    zce::skt::datagram    dns_socket_;
+    zce::skt::datagram  dns_socket_;
 };
 }

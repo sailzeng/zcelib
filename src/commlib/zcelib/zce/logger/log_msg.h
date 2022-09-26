@@ -114,7 +114,7 @@ public:
     @param[in]  is_thread_synchro  是否进行线程同步
     @param[in]  thread_output_file 使用线程输出文件
     @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
-    @param[in]  trunc_old          是否截断原有的日志文件的信息，
+    @param[in]  trunc_old          是否删除原有的日志文件的信息，
     @param[in]  output_way         日志输出的方式，参考 @ref LOG_OUTPUT
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
@@ -141,6 +141,12 @@ public:
                     bool multithread_log = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
+    /*!
+     * @brief       初始化函数，比较全面，可以选输出方式，文件分割方式               
+     * @param[in]   output_way     输出的方式，LOG_OUTPUT的枚举值组合 @ref LOG_OUTPUT
+     * @param[in]   div_log_file   分割日志的方式，时间，大小等
+     * @return 
+    */
     int init_log(int output_way,
                  LOGFILE_DEVIDE div_log_file,
                  const char* log_file_prefix,
