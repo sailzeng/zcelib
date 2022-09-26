@@ -1,8 +1,8 @@
 #include "predefine.h"
 
 #include <zce/util/random.h>
-#include <zce/util/cycbuf_node.h>
-#include <zce/util/static_list.h>
+#include <zce/buffer/cycbuf_rings.h>
+#include <zce/container/static_list.h>
 
 //仅仅用于测试，不实现完全了
 class random_libc : public zce::t_random_base<0, 0x00007FFF>
@@ -745,7 +745,7 @@ int test_random_var_obj_speed(int /*argc*/, char* /*argv*/[])
 
 int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
 {
-    zce::cycbuf_node_u32 a1;
+    zce::cycbuf_rings_u32 a1;
 
     const size_t NODE_MAX_LEN = 1024;
     const size_t CYCBUF_LEN = 4 * 1024;
@@ -756,10 +756,10 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
 
     for (size_t i = 0;; ++i)
     {
-        size_t node_len = random.uniform_uint32(zce::cycbuf_node_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
-        auto ptr1 = zce::cycbuf_node_u32::node::new_node(node_len);
+        size_t node_len = random.uniform_uint32(zce::cycbuf_rings_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
+        auto ptr1 = zce::cycbuf_rings_u32::node::new_node(node_len);
         bool ok = a1.push_end(ptr1);
-        zce::cycbuf_node_u32::node::delete_node(ptr1);
+        zce::cycbuf_rings_u32::node::delete_node(ptr1);
         if (ok)
         {
             ZPP_LOG(RS_DEBUG, "push_end success,no={} node len ={} ring free={}", i, node_len, a1.free());
@@ -771,7 +771,7 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
         }
     }
 
-    auto ptr2 = zce::cycbuf_node_u32::node::new_node(NODE_MAX_LEN);
+    auto ptr2 = zce::cycbuf_rings_u32::node::new_node(NODE_MAX_LEN);
     for (size_t i = 0;; ++i)
     {
         bool ok = a1.pop_front(ptr2);
@@ -787,16 +787,16 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
         }
     }
 
-    auto ptr_2 = zce::cycbuf_node_u32::node::new_node(NODE_MAX_LEN);
+    auto ptr_2 = zce::cycbuf_rings_u32::node::new_node(NODE_MAX_LEN);
     for (size_t i = 0; i < 1024 * 128; ++i)
     {
-        size_t node_len = random.uniform_uint32(zce::cycbuf_node_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
+        size_t node_len = random.uniform_uint32(zce::cycbuf_rings_u32::MIN_SIZE_DEQUE_CHUNK_NODE, NODE_MAX_LEN);
         size_t push_num = random.uniform_uint32(2, 6);
         for (size_t j = 0; j < push_num; ++j)
         {
-            auto ptr_1 = zce::cycbuf_node_u32::node::new_node(node_len);
+            auto ptr_1 = zce::cycbuf_rings_u32::node::new_node(node_len);
             bool ok = a1.push_end(ptr_1);
-            zce::cycbuf_node_u32::node::delete_node(ptr_1);
+            zce::cycbuf_rings_u32::node::delete_node(ptr_1);
             ZPP_LOG(RS_DEBUG, "push_end {},no={}{} ring free ={}", ok, i, j, a1.free());
         }
 

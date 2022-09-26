@@ -94,7 +94,9 @@
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>
 
-#include <zce/util/buffer.h>
+#include <zce/buffer/cycle_buffer.h>
+#include <zce/buffer/queue_buffer.h>
+
 #include <zce/pool/object_pool.h>
 #include <zce/pool/buffer_pool.h>
 #include <zce/pool/multiobjs_pool.h>

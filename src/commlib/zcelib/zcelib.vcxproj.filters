@@ -301,9 +301,6 @@
     <ClCompile Include="zce\string\from_string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\util\buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\async\lua_thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -347,6 +344,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\sqlite\result.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\buffer\cycle_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\buffer\queue_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -481,9 +484,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\mysql\execute.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\util\lord_rings.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\mpl.h">
@@ -732,13 +732,7 @@
     <ClInclude Include="zce\string\from_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\util\cycbuf_node.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\pool\buffer_pool.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\util\buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\pool\object_pool.h">
@@ -805,6 +799,21 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\sqlite\result.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\buffer\cycle_buffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\buffer\cycbuf_rings.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\buffer\lord_rings.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\container\static_list.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\buffer\queue_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
