@@ -58,7 +58,7 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
     //InitializeSRWLock(&srw_lock);
 
     //计时器，不是定时器呀
-    zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
+    zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
 
     Task_Read a1;
     Task_Read a2;
@@ -135,7 +135,7 @@ int test_rw_lock2(int /*argc*/, char* /*argv*/[])
     //InitializeSRWLock(&srw_lock);
 
     //计时器，不是定时器呀
-    zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
+    zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
 
     Task_Read_1 a1;
     Task_Read_1 a2;

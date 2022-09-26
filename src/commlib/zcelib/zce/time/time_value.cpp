@@ -112,15 +112,6 @@ void time_value::set(time_t sec)
     zce_time_value_.tv_usec = 0;
 }
 
-void time_value::set(const std::chrono::system_clock::time_point& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-void time_value::set(const std::chrono::steady_clock::time_point& val)
-{
-    zce_time_value_ = zce::make_timeval(val);
-}
-
 #ifdef ZCE_OS_WINDOWS
 //设置Time_Value, 用FILETIME
 void time_value::set(LPFILETIME file_time)

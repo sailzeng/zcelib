@@ -181,7 +181,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
 
     size_t abc = 0;
     {
-        zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
+        zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
 
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -195,7 +195,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
     memcpy(buffer, test_string, str_len + 1);
 
     {
-        zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
+        zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
         //uint32_t uincrc =0;
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -207,7 +207,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
     memcpy(buffer, test_string, str_len + 1);
     uincrc = 0;
     {
-        zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
+        zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
         //uint32_t uincrc =0;
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -219,7 +219,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
     printf("uincrc = %u\n", uincrc);
     memcpy(buffer, test_string, str_len + 1);
     {
-        zce::Auto_Progress_Timer<zce::hr_progress_timer> auto_timer;
+        zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
         char result[32] = { 0 };
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {

@@ -248,17 +248,17 @@ protected:
 *             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
 */
 template<typename PROGRESS_TIMER>
-class Auto_Progress_Timer : public zce::non_copyable
+class auto_progress_timer : public zce::non_copyable
 {
 public:
     ///构造函数，同时开始计时
-    Auto_Progress_Timer()
+    auto_progress_timer()
     {
         progress_timer_.restart();
     };
 
     ///析构函数把耗时打印出来
-    ~Auto_Progress_Timer()
+    ~auto_progress_timer()
     {
         progress_timer_.end();
         ZCE_LOG(RS_INFO, "This operation in function[%s] use time :%.6f microseconds(usec).",

@@ -878,20 +878,6 @@ const timeval zce::make_timeval(const ::timespec* timespec_val) noexcept
     return to_timeval;
 }
 
-//将CPP11的time_point的数据结构转换得到timeval结构
-const timeval zce::make_timeval(const std::chrono::system_clock::time_point& val) noexcept
-{
-    const std::chrono::nanoseconds tval =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
-    return zce::make_timeval(tval);
-}
-const timeval zce::make_timeval(const std::chrono::steady_clock::time_point& val) noexcept
-{
-    const std::chrono::nanoseconds tval =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
-    return zce::make_timeval(tval);
-}
-
 #if defined (ZCE_OS_WINDOWS)
 
 //转换FILETIME到timeval

@@ -358,8 +358,6 @@ const timeval make_timeval(const ::timespec* timespec_val) noexcept;
 
 /*!
 * @brief      将CPP11的duration的数据结构转换得到timeval结构
-*             ，&
-*
 * @return     const timeval 转换后的timeval结果
 * @param      val  进行转换的参数
 * @note       val 可以是 std::chrono::duration的各种变种,比如：
@@ -385,10 +383,17 @@ const timeval make_timeval(const std::chrono::duration<Rep, Period>& val)
 /*!
 * @brief      将CPP11的time_point的数据结构转换得到timeval结构
 * @return     const timeval 转换后的timeval结果
-* @param      val  进行转换的参数
+* @param      val  进行转换的参数,可以是
+*             std::chrono::system_clock::time_point
+*             std::chrono::steady_clock::time_point
 */
-const timeval make_timeval(const std::chrono::system_clock::time_point& val) noexcept;
-const timeval make_timeval(const std::chrono::steady_clock::time_point& val) noexcept;
+template<class Clock, class Duration >
+const timeval make_timeval(const std::chrono::time_point<Clock, Duration>& val)
+{
+    const std::chrono::nanoseconds tval =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
+    return zce::make_timeval(tval);
+}
 
 //WINDOWS API常用的几个参数
 #if defined (ZCE_OS_WINDOWS)
@@ -417,10 +422,19 @@ const timeval make_timeval2(const FILETIME* file_time) noexcept;
 #endif
 
 template<class Rep, class Period>
-void make_duration(const timeval& tv, std::chrono::duration<Rep, Period>& val)
+void make_duration(const timeval& tv,
+                   std::chrono::duration<Rep, Period>& val)
 {
     std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
     val = std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(usec);
+}
+
+template<class Clock, class Duration >
+void make_timepoint(const timeval& tv,
+                    const std::chrono::time_point<Clock, Duration>& val)
+{
+    std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
+    val = usec;
 }
 
 //我整体对timespec不想做太多支持，

@@ -136,8 +136,7 @@ public:
     void set_by_clock_t(clock_t time);
 
     /*!
-    * @brief      将CPP11的duration的数据结构转换得到timeval结构
-    * @return     void
+    * @brief      将CPP11的duration的数据结构转换得到time_value结构
     * @param      val  进行转换的参数
     * @note       val 可以是 std::chrono::duration的各种变种,比如：
     *             std::chrono::hours,std::chrono::minutes,std::chrono::seconds
@@ -153,8 +152,18 @@ public:
         return;
     }
 
-    void set(const std::chrono::system_clock::time_point& val);
-    void set(const std::chrono::steady_clock::time_point& val);
+    /*!
+    * @brief      将CPP11的time_point的数据结构转换得到time_value结构
+    * @return     const timeval 转换后的timeval结果
+    * @param      val  进行转换的参数,可以是
+    *             std::chrono::system_clock::time_point
+    *             std::chrono::steady_clock::time_point
+    */
+    template<class Clock, class Duration >
+    void set(const std::chrono::time_point<Clock, Duration>& val)
+    {
+        zce_time_value_ = zce::make_timeval(val);
+    }
 
     template<class Rep, class Period>
     void to(std::chrono::duration<Rep, Period>& val) const
