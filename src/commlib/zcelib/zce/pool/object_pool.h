@@ -15,7 +15,7 @@
 #pragma once
 
 #include "zce/logger/log_print.h"
-#include "zce/util/lord_rings.h"
+#include "zce/buffer/lord_rings.h"
 
 namespace zce
 {

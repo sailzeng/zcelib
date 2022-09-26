@@ -19,7 +19,7 @@
 namespace zce
 {
 template <typename INTEGRAL_T>
-class cycbuf_node
+class cycbuf_rings
 {
 public:
 
@@ -80,11 +80,11 @@ public:
 
 public:
 
-    cycbuf_node()
+    cycbuf_rings()
     {
     }
 
-    ~cycbuf_node()
+    ~cycbuf_rings()
     {
         if (cycbuf_data_)
         {
@@ -294,7 +294,7 @@ protected:
 };
 
 //node的头部标识长度的字节长度是uint16_t还是uint32_t
-typedef cycbuf_node<uint16_t> cycbuf_node_u16;
-typedef cycbuf_node<uint32_t> cycbuf_node_u32;
-typedef cycbuf_node<uint64_t> cycbuf_node_u64;
+typedef cycbuf_rings<uint16_t> cycbuf_rings_u16;
+typedef cycbuf_rings<uint32_t> cycbuf_rings_u32;
+typedef cycbuf_rings<uint64_t> cycbuf_rings_u64;
 }

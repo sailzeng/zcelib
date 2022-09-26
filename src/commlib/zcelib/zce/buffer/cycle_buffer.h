@@ -4,13 +4,15 @@
 * @version
 * @date       2021年5月
 * @brief      cycle_buffer :
-*             循环的一个buffer，里面存放数据，操作方式是fifo的。
-*             存放是使用buffer和长度
-*             取出的时候也可以根据长度参数取出对应长度的数据，
-*             queue_buffer :
-*             一个只能向尾部添加数据的BUFFER，取出数据要全部取出
+*             一个循环buffer，里面存放数据，可以多次存放，多次取出
+*             操作方式是fifo的，可以一点点放入，一点点取出，也可以
+*             一次全部出局。节省存储空间。
+*             所以内部数据有起始位置，结束位置，存放可能绕2截，数据
+*             长度根据起始位置，结束位置计算。
+*             优点是节省空间，可以一点点取出，缺点是数据只能取出后数
+*             据后使用，
 *
-* @details
+* @details    有点像滑动窗口
 *
 * @note
 *
@@ -21,7 +23,7 @@
 namespace zce
 {
 //================================================================================
-//!环形的一个buffer，里面存放数据，操作方式是fifo的
+//!环形的一个buffer，里面存放数据，操作方式是fifo的，可以多次操作存放和取出
 class cycle_buffer
 {
 public:
@@ -130,94 +132,5 @@ protected:
     size_t cycbuf_end_ = 0;
 
     char* cycbuf_data_ = nullptr;
-};
-
-//================================================================================
-//!一个只能向尾部添加数据的BUFFER
-class queue_buffer
-{
-public:
-    //!构造，析构，赋值函数，为了加速，写了右值处理的函数
-    queue_buffer() = default;
-    queue_buffer(size_t buf_size);
-    ~queue_buffer();
-    queue_buffer(const queue_buffer& others);
-    queue_buffer(queue_buffer&& others) noexcept;
-    queue_buffer& operator=(const queue_buffer& others);
-    queue_buffer& operator=(queue_buffer&& others) noexcept;
-
-    //!初始化
-    bool initialize(size_t buf_size);
-
-    //!清理
-    void clear();
-
-    static queue_buffer* new_self(size_t buf_size)
-    {
-        return new queue_buffer(buf_size);
-    }
-
-    //!容量
-    inline size_t capacity()
-    {
-        return size_of_capacity_;
-    }
-
-    //!已经使用的空间
-    inline size_t size()
-    {
-        return size_of_use_;
-    }
-
-    //!剩余的空间
-    inline size_t free()
-    {
-        return size_of_capacity_ - size_of_use_;
-    }
-
-    //!是否已经满了
-    inline bool full()
-    {
-        if (size_of_use_ >= size_of_capacity_)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    //!是否为空
-    inline bool empty()
-    {
-        if (size_of_use_ == 0)
-        {
-            return true;
-        }
-        return false;
-    };
-
-    //!填充数据data,长度为szdata
-    bool set(const char* data, size_t szdata);
-    //!从偏移offset开始，填充数据data,长度为szdata,
-    bool set(size_t offset, const char* data, size_t szdata);
-    //!读取数据
-    bool get(char* data, size_t& szdata);
-    //!继续在尾部增加数据
-    bool add(const char* data, size_t szdata);
-
-    //
-    inline char* point(size_t offset = 0)
-    {
-        return buffer_data_ + offset;
-    }
-protected:
-
-    //当前要使用的缓冲长度，当前处理的帧的长度,没有得到长度前填写0
-    size_t      size_of_capacity_ = 0;
-
-    //使用的尺寸
-    size_t      size_of_use_ = 0;
-
-    //数据缓冲区
-    char* buffer_data_ = nullptr;
 };
 }

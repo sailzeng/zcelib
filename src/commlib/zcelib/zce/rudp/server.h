@@ -1,7 +1,7 @@
 #pragma once
 
-#include "zce/util/lord_rings.h"
-#include "zce/util/buffer.h"
+#include "zce/buffer/lord_rings.h"
+#include "zce/buffer/cycle_buffer.h"
 #include "zce/pool/buffer_pool.h"
 #include "zce/rudp/peer.h"
 
@@ -77,7 +77,7 @@ public:
              size_t peer_recv_wnd_size,
              std::function<ssize_t(server_peer *)> *callbak_recv = nullptr,
              std::function<int(server_peer *)> *callbak_accept = nullptr);
-    
+
     ///关闭
     void close();
 
@@ -121,7 +121,7 @@ protected:
                zce::rudp::server_peer *& new_peer);
 
 protected:
-    //! 
+    //!
     const size_t ONCE_PROCESS_RECEIVE = 256;
 protected:
 
