@@ -517,28 +517,28 @@ inline void to_string(std::string& stdstr,
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const sockaddr_in& out_data);
+            const ::sockaddr_in& out_data);
 
 void to_string(std::string& stdstr,
-               const sockaddr_in& out_data);
+               const ::sockaddr_in& out_data);
 
 ///IPV6的socket地址
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const sockaddr_in6& out_data);
+            const ::sockaddr_in6& out_data);
 
 void to_string(std::string& stdstr,
-               const sockaddr_in6& out_data);
+               const ::sockaddr_in6& out_data);
 
 ///sockaddr *的指针类型
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const sockaddr* out_data);
+            const ::sockaddr* out_data);
 
 void to_string(std::string& stdstr,
-               const sockaddr* out_data);
+               const ::sockaddr* out_data);
 
 ///辅助IPV4的socket地址字符串
 void to_str(char* buffer,

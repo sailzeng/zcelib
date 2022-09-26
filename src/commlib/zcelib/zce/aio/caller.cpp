@@ -468,9 +468,9 @@ int host_getaddr_ary(zce::aio::worker* worker,
                      const char* hostname,
                      const char* service,
                      size_t* ary_addr_num,
-                     sockaddr_in* ary_addr,
+                     ::sockaddr_in* ary_addr,
                      size_t* ary_addr6_num,
-                     sockaddr_in6* ary_addr6,
+                     ::sockaddr_in6* ary_addr6,
                      std::function<void(AIO_Atom*)> call_back)
 {
     zce::aio::Host_Atom* aio_atom = (Host_Atom*)

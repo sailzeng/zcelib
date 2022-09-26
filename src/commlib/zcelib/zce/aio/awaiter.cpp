@@ -144,9 +144,9 @@ awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
                                  const char* hostname,
                                  const char* service,
                                  size_t* ary_addr_num,
-                                 sockaddr_in* ary_addr,
+                                 ::sockaddr_in* ary_addr,
                                  size_t* ary_addr6_num,
-                                 sockaddr_in6* ary_addr6)
+                                 ::sockaddr_in6* ary_addr6)
 {
     zce::aio::Host_Atom* aio_atom = (Host_Atom*)
         worker->alloc_handle(AIO_TYPE::HOST_GETADDRINFO_ARY);

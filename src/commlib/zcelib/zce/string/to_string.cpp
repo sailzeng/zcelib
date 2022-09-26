@@ -14,7 +14,7 @@ namespace zce
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const sockaddr_in& out_data)
+            const ::sockaddr_in& out_data)
 {
     const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
                                                 buffer,
@@ -28,7 +28,7 @@ void to_str(char* buffer,
 }
 
 void to_string(std::string& stdstr,
-               const sockaddr_in& out_data)
+               const ::sockaddr_in& out_data)
 {
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
@@ -45,7 +45,7 @@ void to_string(std::string& stdstr,
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
-            const sockaddr_in6& out_data)
+            const ::sockaddr_in6& out_data)
 {
     const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
                                                 buffer,
@@ -58,7 +58,7 @@ void to_str(char* buffer,
 }
 
 void to_string(std::string& stdstr,
-               const sockaddr_in6& out_data)
+               const ::sockaddr_in6& out_data)
 {
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';

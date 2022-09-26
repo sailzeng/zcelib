@@ -155,9 +155,9 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     const char* TEST_HOST_NAME2 = "2404:6800:4008:800::200e";
     const char* TEST_HOST_NAME3 = "www.qq.com";
 
-    sockaddr_in addr_in;
+    ::sockaddr_in addr_in;
     addr_in.sin_family = AF_INET;
-    sockaddr_in6 addr_in6;
+    ::sockaddr_in6 addr_in6;
     addr_in6.sin6_family = AF_INET6;
     char ip_str[256];
     ret = zce::getaddrinfo_to_addr(TEST_HOST_NAME1,
@@ -223,7 +223,7 @@ int test_dns_resolve([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     }
     const size_t ARRAYS_SIZE = 64;
     size_t arrays_size = ARRAYS_SIZE;
-    sockaddr_in addrs_ary[ARRAYS_SIZE];
+    ::sockaddr_in addrs_ary[ARRAYS_SIZE];
     zce::time_value tv(5);
     ret = dns.answer(&tid, AF_INET, (sockaddr*)addrs_ary, &arrays_size, &tv);
     printf("query ret=%d tid = %x arrays_size = %llu\n", ret, tid, arrays_size);

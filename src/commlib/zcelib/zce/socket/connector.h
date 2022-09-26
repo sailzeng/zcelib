@@ -14,12 +14,12 @@
 * @note
 *
 */
-#ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
-#define ZCE_LIB_SOCKET_CONNECTOR_H_
+#pragma once
 
 #include "zce/time/time_value.h"
 #include "zce/socket/addr_base.h"
 
+///skt socket的缩写，socket不能直接用于namespace
 namespace zce::skt
 {
 /*!
@@ -70,4 +70,4 @@ public:
 };
 }
 
-#endif //#ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
+

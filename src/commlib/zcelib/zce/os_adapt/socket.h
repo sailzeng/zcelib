@@ -910,9 +910,9 @@ int getaddrinfo_result_to_oneaddr(addrinfo* result,
 */
 void getaddrinfo_result_to_addrary(addrinfo* result,
                                    size_t* ary_addr_num,
-                                   sockaddr_in ary_addr[],
+                                   ::sockaddr_in ary_addr[],
                                    size_t* ary_addr6_num,
-                                   sockaddr_in6 ary_addr6[]);
+                                   ::sockaddr_in6 ary_addr6[]);
 
 /*!
 * @brief         非标准函数,得到某个域名的IPV4和IPV6的地址数组，使用起来比较容

@@ -5,12 +5,13 @@ namespace zce::skt
 {
 //默认初始化位IPV4的地址
 addr_any::addr_any() :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_), sizeof(sockaddr_in))
+    zce::skt::addr_base(reinterpret_cast<::sockaddr*>(&in4_addr_), 
+                        sizeof(::sockaddr_in))
 {
     //把最长的清0
     ::memset(&in6_addr_, 0, sizeof(in6_addr_));
     in4_addr_.sin_family = AF_INET;
-    sockaddr_size_ = sizeof(sockaddr_in);
+    sockaddr_size_ = sizeof(::sockaddr_in);
 }
 
 //构造函数，根据family确定初始化的类型
@@ -20,15 +21,15 @@ addr_any::addr_any(int family)
     ::memset(&in6_addr_, 0, sizeof(in6_addr_));
     if (AF_INET == family)
     {
-        sockaddr_size_ = sizeof(sockaddr_in);
+        sockaddr_size_ = sizeof(::sockaddr_in);
         in4_addr_.sin_family = AF_INET;
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
     }
     else if (AF_INET == family)
     {
-        sockaddr_size_ = sizeof(sockaddr_in6);
+        sockaddr_size_ = sizeof(::sockaddr_in6);
         in6_addr_.sin6_family = AF_INET6;
-        sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
+        sockaddr_ptr_ = reinterpret_cast<::sockaddr*>(&in6_addr_);
     }
     else
     {
@@ -42,20 +43,20 @@ addr_any::~addr_any()
 }
 
 //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用addr_any
-void addr_any::set_sockaddr(sockaddr* addr,
+void addr_any::set_sockaddr(::sockaddr* addr,
                             socklen_t len)
 {
-    if (len == sizeof(sockaddr_in))
+    if (len == sizeof(::sockaddr_in))
     {
         in4_addr_.sin_family = AF_INET;
-        in4_addr_ = *(reinterpret_cast<sockaddr_in*>(addr));
+        in4_addr_ = *(reinterpret_cast<::sockaddr_in*>(addr));
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
         sockaddr_size_ = len;
     }
-    else if (len == sizeof(sockaddr_in6))
+    else if (len == sizeof(::sockaddr_in6))
     {
         in6_addr_.sin6_family = AF_INET6;
-        in6_addr_ = *(reinterpret_cast<sockaddr_in6*>(addr));
+        in6_addr_ = *(reinterpret_cast<::sockaddr_in6*>(addr));
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
         sockaddr_size_ = len;
     }
@@ -72,13 +73,13 @@ void addr_any::set_family(int family)
     {
         in4_addr_.sin_family = AF_INET;
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
-        sockaddr_size_ = sizeof(sockaddr_in);
+        sockaddr_size_ = sizeof(::sockaddr_in);
     }
     else if (family == AF_INET6)
     {
         in6_addr_.sin6_family = AF_INET6;
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
-        sockaddr_size_ = sizeof(sockaddr_in6);
+        sockaddr_size_ = sizeof(::sockaddr_in6);
     }
     else
     {
@@ -97,7 +98,7 @@ int addr_any::getaddrinfo(const char* node_name,
         ret = zce::getaddrinfo_to_addr(node_name,
                                        nullptr,
                                        sockaddr_ptr_,
-                                       sizeof(sockaddr_in));
+                                       sizeof(::sockaddr_in));
         if (ret != 0)
         {
             return ret;
@@ -112,7 +113,7 @@ int addr_any::getaddrinfo(const char* node_name,
         ret = zce::getaddrinfo_to_addr(node_name,
                                        nullptr,
                                        sockaddr_ptr_,
-                                       sizeof(sockaddr_in6));
+                                       sizeof(::sockaddr_in6));
         if (ret != 0)
         {
             return ret;
@@ -136,11 +137,11 @@ int addr_any::getaddrinfo(int family,
     if (family == AF_INET)
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
-        sockaddr_size_ = sizeof(sockaddr_in);
+        sockaddr_size_ = sizeof(::sockaddr_in);
         ret = zce::getaddrinfo_to_addr(node_name,
                                        nullptr,
                                        sockaddr_ptr_,
-                                       sizeof(sockaddr_in));
+                                       sizeof(::sockaddr_in));
         in4_addr_.sin_family = AF_INET;
         in4_addr_.sin_port = ntohs(port_number);
         if (ret != 0)
@@ -152,11 +153,11 @@ int addr_any::getaddrinfo(int family,
     else if (family == AF_INET6)
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
-        sockaddr_size_ = sizeof(sockaddr_in6);
+        sockaddr_size_ = sizeof(::sockaddr_in6);
         ret = zce::getaddrinfo_to_addr(node_name,
                                        nullptr,
                                        sockaddr_ptr_,
-                                       sizeof(sockaddr_in6));
+                                       sizeof(::sockaddr_in6));
         if (ret != 0)
         {
             return ret;
@@ -179,7 +180,7 @@ int addr_any::getnameinfo(char* host_name,
     if (sockaddr_ptr_->sa_family == AF_INET)
     {
         return zce::getnameinfo(sockaddr_ptr_,
-                                sizeof(sockaddr_in),
+                                sizeof(::sockaddr_in),
                                 host_name,
                                 name_len,
                                 NULL,
@@ -189,7 +190,7 @@ int addr_any::getnameinfo(char* host_name,
     else if (sockaddr_ptr_->sa_family == AF_INET6)
     {
         return zce::getnameinfo(sockaddr_ptr_,
-                                sizeof(sockaddr_in6),
+                                sizeof(::sockaddr_in6),
                                 host_name,
                                 name_len,
                                 NULL,

@@ -17,7 +17,7 @@ public:
     addr_in(void);
 
     ///根据addr_in构造，
-    addr_in(const addr_in* addr);
+    addr_in(const sockaddr_in* addr);
 
     ///根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号初始化构造
     addr_in(const char* ip_addr_str,
@@ -31,7 +31,7 @@ public:
     addr_in(const addr_in& others);
 
     ///析构函数
-    virtual ~addr_in();
+    virtual ~addr_in() = default;
 
 public:
 

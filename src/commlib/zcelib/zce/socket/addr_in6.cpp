@@ -24,37 +24,46 @@ addr_in6::addr_in6(const ::sockaddr_in6* addr) :
 //根据地址名字，端口号初始化构造
 addr_in6::addr_in6(const char ip_addr_str[],
                    uint16_t port_number) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(sockaddr_in))
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(sockaddr_in6))
 {
     int ret = zce::set_sockaddr_in6(&in6_addr_, ip_addr_str, port_number);
-
     if (ret != 0)
     {
+        ZCE_ASSERT(false);
     }
 }
 
 //根据端口号，和IP地址信息构造
 addr_in6::addr_in6(uint16_t port_number,
                    const char ipv6_addr_val[16]) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(sockaddr_in))
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(::sockaddr_in6))
 {
     int ret = zce::set_sockaddr_in6(&in6_addr_, port_number, ipv6_addr_val);
-
     if (ret != 0)
     {
+        ZCE_ASSERT(false);
+    }
+}
+
+//根据地址字符串，端口
+addr_in6::addr_in6(const char* ipv6_addr_str,
+                   uint16_t port_number) :
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(::sockaddr_in6))
+{
+    int ret = zce::set_sockaddr_in6(&in6_addr_, ipv6_addr_str, port_number);
+    if (ret != 0)
+    {
+        ZCE_ASSERT(false);
     }
 }
 
 //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
 addr_in6::addr_in6(const addr_in6& others) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(sockaddr_in6))
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(::sockaddr_in6))
 {
     in6_addr_ = others.in6_addr_;
 }
 
-addr_in6::~addr_in6()
-{
-}
 
 //设置地址信息
 void addr_in6::set_sockaddr(sockaddr* addr, socklen_t len)
@@ -68,7 +77,6 @@ int addr_in6::set(const char ip_addr_str[],
                   uint16_t port_number)
 {
     int ret = zce::set_sockaddr_in6(&in6_addr_, ip_addr_str, port_number);
-
     if (ret != 0)
     {
         return ret;

@@ -5,9 +5,10 @@
 #include "zce/os_adapt/time.h"
 #include "zce/socket/stream.h"
 
+///skt socket的缩写
 namespace zce::skt
 {
-/// Acceptor的工厂，用于产生Socket_Stream
+/// acceptor的工厂，用于产生zce::skt::stream
 class acceptor : public zce::skt::socket_base
 {
 public:

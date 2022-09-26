@@ -28,7 +28,7 @@ public:
     //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
     addr_in6(const addr_in6& others);
 
-    virtual ~addr_in6();
+    virtual ~addr_in6() = default;
 
 public:
     //设置地址信息

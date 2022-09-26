@@ -200,9 +200,9 @@ struct Host_Atom :public AIO_Atom
     const char* hostname_ = nullptr;
     const char* service_ = nullptr;
     size_t* ary_addr_num_ = nullptr;
-    sockaddr_in* ary_addr_ = nullptr;
+    ::sockaddr_in* ary_addr_ = nullptr;
     size_t* ary_addr6_num_ = nullptr;
-    sockaddr_in6* ary_addr6_ = nullptr;
+    ::sockaddr_in6* ary_addr6_ = nullptr;
     //
     sockaddr* addr_ = nullptr;
     socklen_t addr_len_ = 0;
