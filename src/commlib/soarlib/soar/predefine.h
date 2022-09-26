@@ -71,7 +71,7 @@
 #include <zce/server/server_base.h>
 #include <zce/shm_container/hash_table.h>
 #include <zce/util/non_copyable.h>
-#include <zce/buffer/lord_rings.h>
+#include <zce/container/lord_rings.h>
 #include <zce/os_adapt/string.h>
 #include <zce/os_adapt/thread.h>
 #include <zce/os_adapt/socket.h>

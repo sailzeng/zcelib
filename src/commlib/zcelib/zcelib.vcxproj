@@ -381,7 +381,7 @@
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\buffer\cycle_buffer.h" />
     <ClInclude Include="zce\buffer\cycbuf_rings.h" />
-    <ClInclude Include="zce\buffer\lord_rings.h" />
+    <ClInclude Include="zce\container\lord_rings.h" />
     <ClInclude Include="zce\util\mpl.h" />
     <ClInclude Include="zce\util\non_copyable.h" />
     <ClInclude Include="zce\util\random.h" />

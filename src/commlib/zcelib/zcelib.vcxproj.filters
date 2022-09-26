@@ -807,7 +807,7 @@
     <ClInclude Include="zce\buffer\cycbuf_rings.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\buffer\lord_rings.h">
+    <ClInclude Include="zce\container\lord_rings.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\container\static_list.h">

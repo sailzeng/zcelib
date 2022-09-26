@@ -19,7 +19,7 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/lock/thread_mutex.h"
-#include "zce/buffer/lord_rings.h"
+#include "zce/container/lord_rings.h"
 #include "zce/lock/thread_condi.h"
 #include "zce/comm/common.h"
 
