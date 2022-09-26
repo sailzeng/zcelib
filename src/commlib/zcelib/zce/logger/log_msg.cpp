@@ -81,6 +81,36 @@ int log_msg::init_size_log(const char* log_file_prefix,
                                 reserve_file_num);
 }
 
+int log_msg::init_log(int output_way,
+                      LOGFILE_DEVIDE div_log_file,
+                      const char* log_file_prefix,
+                      bool multithread_log,
+                      bool thread_output_file,
+                      bool auto_new_line,
+                      bool trunc_old,
+                      size_t max_size_log_file,
+                      size_t reserve_file_num,
+                      int head_record) noexcept
+{
+    output_way_ = output_way;
+    head_record_ = head_record;
+    auto_new_line_ = auto_new_line;
+    multithread_log_ = multithread_log;
+    permit_outlevel_ = RS_DEBUG;
+    if (output_way_ & static_cast<int>(LOG_OUTPUT::LOGFILE))
+    {
+        return log_file_.initialize(output_way,
+                                    div_log_file,
+                                    log_file_prefix,
+                                    trunc_old,
+                                    thread_output_file,
+                                    max_size_log_file,
+                                    reserve_file_num);
+    }
+    return 0;
+    
+}
+
 //初始化函数，用于标准输出
 int log_msg::init_stdout(bool use_err_out,
                          bool multithread_log,

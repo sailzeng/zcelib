@@ -768,9 +768,6 @@
     <ClInclude Include="zce\version.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\comm\common.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\aio\worker.h">
       <Filter>Source Files</Filter>
     </ClInclude>

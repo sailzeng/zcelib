@@ -336,6 +336,7 @@ int App_BusPipe::init_log()
                                              true,
                                              false,
                                              true,
+                                             false,
                                              config_base_->log_config_.max_log_file_size_,
                                              config_base_->log_config_.reserve_file_num_,
                                              ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));

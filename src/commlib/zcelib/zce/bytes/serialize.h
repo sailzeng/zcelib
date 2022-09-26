@@ -8,42 +8,42 @@
 
 namespace zce::serialize
 {
-class Encode;
+class encode;
 
 //辅助处理保存数据的一些类
 template<typename val_type >
-class En_Class_Help
+class en_class_help
 {
 public:
-    void write_help(Encode* ssave, const val_type& val);
+    void write_help(encode* ssave, const val_type& val);
 };
 
 template<>
-class En_Class_Help<std::string>
+class en_class_help<std::string>
 {
 public:
-    void write_help(Encode* ssave, const std::string& val);
+    void write_help(encode* ssave, const std::string& val);
 };
 
 template<typename vector_type >
-class En_Class_Help<std::vector<vector_type> >
+class en_class_help<std::vector<vector_type> >
 {
 public:
-    void write_help(Encode* ssave, const std::vector<vector_type>& val);
+    void write_help(encode* ssave, const std::vector<vector_type>& val);
 };
 
 template<typename list_type >
-class En_Class_Help<std::list<list_type> >
+class en_class_help<std::list<list_type> >
 {
 public:
-    void write_help(Encode* ssave, const std::list<list_type>& val);
+    void write_help(encode* ssave, const std::list<list_type>& val);
 };
 
 template<typename key_type, typename data_type >
-class En_Class_Help<std::map<key_type, data_type> >
+class en_class_help<std::map<key_type, data_type> >
 {
 public:
-    void write_help(Encode* ssave, const std::map<key_type, data_type>& val);
+    void write_help(encode* ssave, const std::map<key_type, data_type>& val);
 };
 
 /*!
@@ -52,14 +52,13 @@ public:
 * @note       没有考虑对齐等问题，
 *             BTW：对于写入，我们不在溢出保护上做过多努力，那是你负责的事情
 */
-class Encode
+class encode
 {
 public:
 
     ///构造函数
-    Encode(char* write_buf, size_t buf_len);
-
-    ~Encode();
+    encode(char* write_buf, size_t buf_len);
+    ~encode() = default;
 
 public:
 
@@ -181,14 +180,14 @@ public:
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value >::type write(const val_type& val)
     {
-        En_Class_Help<val_type> ssave;
+        en_class_help<val_type> ssave;
         ssave.write_help(this, val);
         return;
     }
 
     ///使用& 操作符号写入数据，
     template<typename val_type>
-    Encode& operator &(const val_type& val)
+    encode& operator &(const val_type& val)
     {
         this->write(val);
         return *this;
@@ -214,7 +213,7 @@ protected:
 
 //用保存class辅助处理的 base templates 实现
 template<typename val_type>
-void En_Class_Help<val_type>::write_help(Encode* ssave,
+void en_class_help<val_type>::write_help(encode* ssave,
                                          const val_type& val)
 {
     val.serialize(ssave);
@@ -222,9 +221,10 @@ void En_Class_Help<val_type>::write_help(Encode* ssave,
 
 //用于保存vector 辅助处理的特化
 template<typename vector_type>
-void En_Class_Help<std::vector<vector_type> >::write_help(Encode* ssave,
+void en_class_help<std::vector<vector_type> >::write_help(encode* ssave,
                                                           const std::vector<vector_type>& val)
 {
+    //长度用unsigned int保存
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
@@ -236,7 +236,7 @@ void En_Class_Help<std::vector<vector_type> >::write_help(Encode* ssave,
 }
 
 template<typename list_type>
-void En_Class_Help<std::list<list_type> >::write_help(Encode* ssave,
+void en_class_help<std::list<list_type> >::write_help(encode* ssave,
                                                       const std::list<list_type>& val)
 {
     size_t v_size = val.size();
@@ -251,7 +251,7 @@ void En_Class_Help<std::list<list_type> >::write_help(Encode* ssave,
 }
 
 template<typename key_type, typename data_type >
-void En_Class_Help<std::map<key_type, data_type> >::write_help(Encode* ssave,
+void en_class_help<std::map<key_type, data_type> >::write_help(encode* ssave,
                                                                const std::map<key_type, data_type>& val)
 {
     size_t v_size = val.size();
@@ -268,41 +268,41 @@ void En_Class_Help<std::map<key_type, data_type> >::write_help(Encode* ssave,
 
 //===========================================================================================================
 
-class Decode;
+class decode;
 //辅助处理读取数据的一些类
 template<typename val_type >
-class De_Class_Help
+class de_class_help
 {
 public:
-    void read_help(Decode* sload, val_type& val);
+    void read_help(decode* sload, val_type& val);
 };
 
 template<>
-class De_Class_Help<std::string>
+class de_class_help<std::string>
 {
 public:
-    void read_help(Decode* sload, std::string& val);
+    void read_help(decode* sload, std::string& val);
 };
 
 template<typename vector_type >
-class De_Class_Help<std::vector<vector_type> >
+class de_class_help<std::vector<vector_type> >
 {
 public:
-    void read_help(Decode* sload, std::vector<vector_type>& val);
+    void read_help(decode* sload, std::vector<vector_type>& val);
 };
 
 template<typename list_type >
-class De_Class_Help<std::list<list_type> >
+class de_class_help<std::list<list_type> >
 {
 public:
-    void read_help(Decode* sload, std::list<list_type>& val);
+    void read_help(decode* sload, std::list<list_type>& val);
 };
 
 template<typename key_type, typename data_type >
-class De_Class_Help<std::map<key_type, data_type> >
+class de_class_help<std::map<key_type, data_type> >
 {
 public:
-    void read_help(Decode* sload, std::map<key_type, data_type>& val);
+    void read_help(decode* sload, std::map<key_type, data_type>& val);
 };
 
 /*!
@@ -310,9 +310,9 @@ public:
 *
 * @note       读取对于边界有有一些安全处理，避免输入数据就有问题的情况
 */
-class Decode
+class decode
 {
-    friend class De_Class_Help<std::string>;
+    friend class de_class_help<std::string>;
 public:
 
     /*!
@@ -320,10 +320,10 @@ public:
     * @param      read_buf 输入的数据，不会对数据进行改动
     * @param      buf_len  数据的长度
     */
-    Decode(const char* read_buf, size_t buf_len);
+    decode(const char* read_buf, size_t buf_len);
 
     ///析构函数
-    ~Decode();
+    ~decode() = default;
 
 public:
     ///返回当前类是否正常，BTW：我们不在溢出保护上做努力，那是你负责的事情
@@ -402,7 +402,7 @@ public:
     void read_array(array_type ary, size_t ary_count, size_t& load_count)
     {
         //读取数组长度
-        unsigned int ui_load_count;
+        unsigned int ui_load_count = 0;
         this->read_arithmetic(ui_load_count);
         load_count = ui_load_count;
         //
@@ -455,16 +455,24 @@ public:
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value>::type read(val_type& val)
     {
-        De_Class_Help<val_type> sload;
+        de_class_help<val_type> sload;
         sload.read_help(this, val);
         return;
     }
 
     ///使用&操作符号写入数据，
     template<typename val_type>
-    Decode& operator &(val_type& val)
+    decode& operator &(val_type& val)
     {
         this->read(val);
+        return *this;
+    }
+
+    template<typename val_type>
+    decode& ptr(val_type* p,size_t ary_sz)
+    {
+        size_t load_sz;
+        this->read_array(p, ary_sz, &load_sz);
         return *this;
     }
 
@@ -486,14 +494,14 @@ protected:
 
 //辅助类，save_help 函数
 template<typename val_type>
-void De_Class_Help<val_type>::read_help(Decode* sload,
+void de_class_help<val_type>::read_help(decode* sload,
                                         val_type& val)
 {
     val.serialize(sload);
 }
 
 template<typename vector_type>
-void De_Class_Help<std::vector<vector_type> >::read_help(Decode* sload,
+void de_class_help<std::vector<vector_type> >::read_help(decode* sload,
                                                          std::vector<vector_type>& val)
 {
     unsigned int v_size = 0;
@@ -513,7 +521,7 @@ void De_Class_Help<std::vector<vector_type> >::read_help(Decode* sload,
 }
 
 template<typename list_type>
-void De_Class_Help<std::list<list_type> >::read_help(Decode* sload,
+void de_class_help<std::list<list_type> >::read_help(decode* sload,
                                                      std::list<list_type>& val)
 {
     size_t v_size = val.size();
@@ -533,7 +541,7 @@ void De_Class_Help<std::list<list_type> >::read_help(Decode* sload,
 }
 
 template<typename key_type, typename data_type >
-void De_Class_Help<std::map<key_type, data_type> >::read_help(Decode* sload,
+void de_class_help<std::map<key_type, data_type> >::read_help(decode* sload,
                                                               std::map<key_type, data_type>& val)
 {
     size_t v_size = val.size();

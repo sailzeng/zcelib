@@ -45,18 +45,6 @@ addr_in6::addr_in6(uint16_t port_number,
     }
 }
 
-//根据地址字符串，端口
-addr_in6::addr_in6(const char* ipv6_addr_str,
-                   uint16_t port_number) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(::sockaddr_in6))
-{
-    int ret = zce::set_sockaddr_in6(&in6_addr_, ipv6_addr_str, port_number);
-    if (ret != 0)
-    {
-        ZCE_ASSERT(false);
-    }
-}
-
 //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
 addr_in6::addr_in6(const addr_in6& others) :
     zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in6_addr_), sizeof(::sockaddr_in6))

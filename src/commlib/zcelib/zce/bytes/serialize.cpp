@@ -6,7 +6,7 @@
 namespace zce::serialize
 {
 ///构造函数
-Encode::Encode(char* write_buf, size_t buf_len) :
+encode::encode(char* write_buf, size_t buf_len) :
     is_good_(true),
     write_buf_(write_buf),
     buf_len_(buf_len),
@@ -15,11 +15,8 @@ Encode::Encode(char* write_buf, size_t buf_len) :
 {
 }
 
-Encode::~Encode()
-{
-}
 
-void Encode::write_arithmetic(const char& val)
+void encode::write_arithmetic(const char& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -33,7 +30,7 @@ void Encode::write_arithmetic(const char& val)
     return;
 }
 
-void Encode::write_arithmetic(const unsigned char& val)
+void encode::write_arithmetic(const unsigned char& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -46,7 +43,7 @@ void Encode::write_arithmetic(const unsigned char& val)
     return;
 }
 
-void Encode::write_arithmetic(const short& val)
+void encode::write_arithmetic(const short& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -59,7 +56,7 @@ void Encode::write_arithmetic(const short& val)
     return;
 }
 
-void Encode::write_arithmetic(const unsigned short& val)
+void encode::write_arithmetic(const unsigned short& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -72,7 +69,7 @@ void Encode::write_arithmetic(const unsigned short& val)
     return;
 }
 
-void Encode::write_arithmetic(const int& val)
+void encode::write_arithmetic(const int& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -84,7 +81,7 @@ void Encode::write_arithmetic(const int& val)
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
-void Encode::write_arithmetic(const unsigned int& val)
+void encode::write_arithmetic(const unsigned int& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -96,7 +93,7 @@ void Encode::write_arithmetic(const unsigned int& val)
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
-void Encode::write_arithmetic(const float& val)
+void encode::write_arithmetic(const float& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -109,7 +106,7 @@ void Encode::write_arithmetic(const float& val)
 
     return;
 }
-void Encode::write_arithmetic(const double& val)
+void encode::write_arithmetic(const double& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -122,7 +119,7 @@ void Encode::write_arithmetic(const double& val)
     return;
 }
 
-void Encode::write_arithmetic(const int64_t& val)
+void encode::write_arithmetic(const int64_t& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int64_t);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -135,7 +132,7 @@ void Encode::write_arithmetic(const int64_t& val)
     return;
 }
 
-void Encode::write_arithmetic(const uint64_t& val)
+void encode::write_arithmetic(const uint64_t& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -148,13 +145,13 @@ void Encode::write_arithmetic(const uint64_t& val)
     return;
 }
 
-void Encode::write_arithmetic(const bool& val)
+void encode::write_arithmetic(const bool& val)
 {
     return this->write_arithmetic(val ? (char)1 : (char)0);
 }
 
 //
-void En_Class_Help<std::string>::write_help(Encode* ssave,
+void en_class_help<std::string>::write_help(encode* ssave,
                                             const std::string& val)
 {
     ssave->write_array(val.c_str(), val.length());
@@ -163,7 +160,7 @@ void En_Class_Help<std::string>::write_help(Encode* ssave,
 //========================================================================================
 
 //构造函数
-Decode::Decode(const char* read_buf, size_t buf_len) :
+decode::decode(const char* read_buf, size_t buf_len) :
     is_good_(true),
     read_buf_(read_buf),
     buf_len_(buf_len),
@@ -172,11 +169,7 @@ Decode::Decode(const char* read_buf, size_t buf_len) :
 {
 }
 
-Decode::~Decode()
-{
-}
-
-void Decode::read_arithmetic(bool& val)
+void decode::read_arithmetic(bool& val)
 {
     char bool_data = 0;
     read_arithmetic(bool_data);
@@ -184,7 +177,7 @@ void Decode::read_arithmetic(bool& val)
     return;
 }
 
-void Decode::read_arithmetic(char& val)
+void decode::read_arithmetic(char& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -197,7 +190,7 @@ void Decode::read_arithmetic(char& val)
     return;
 }
 
-void Decode::read_arithmetic(unsigned char& val)
+void decode::read_arithmetic(unsigned char& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -210,7 +203,7 @@ void Decode::read_arithmetic(unsigned char& val)
     return;
 }
 
-void Decode::read_arithmetic(short& val)
+void decode::read_arithmetic(short& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -223,7 +216,7 @@ void Decode::read_arithmetic(short& val)
     return;
 }
 
-void Decode::read_arithmetic(int& val)
+void decode::read_arithmetic(int& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -236,7 +229,7 @@ void Decode::read_arithmetic(int& val)
     return;
 }
 
-void Decode::read_arithmetic(unsigned short& val)
+void decode::read_arithmetic(unsigned short& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -249,7 +242,7 @@ void Decode::read_arithmetic(unsigned short& val)
     return;
 }
 
-void Decode::read_arithmetic(unsigned int& val)
+void decode::read_arithmetic(unsigned int& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -262,7 +255,7 @@ void Decode::read_arithmetic(unsigned int& val)
     return;
 }
 
-void Decode::read_arithmetic(int64_t& val)
+void decode::read_arithmetic(int64_t& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int64_t);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -274,7 +267,7 @@ void Decode::read_arithmetic(int64_t& val)
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
-void Decode::read_arithmetic(uint64_t& val)
+void decode::read_arithmetic(uint64_t& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -287,7 +280,7 @@ void Decode::read_arithmetic(uint64_t& val)
     return;
 }
 
-void Decode::read_arithmetic(float& val)
+void decode::read_arithmetic(float& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -300,7 +293,7 @@ void Decode::read_arithmetic(float& val)
     return;
 }
 
-void Decode::read_arithmetic(double& val)
+void decode::read_arithmetic(double& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -313,7 +306,7 @@ void Decode::read_arithmetic(double& val)
     return;
 }
 
-void De_Class_Help<std::string>::read_help(Decode* sload,
+void de_class_help<std::string>::read_help(decode* sload,
                                            std::string& val)
 {
     unsigned int v_size = 0;

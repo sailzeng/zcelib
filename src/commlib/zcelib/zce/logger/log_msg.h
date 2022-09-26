@@ -147,9 +147,10 @@ public:
                  bool multithread_log,
                  bool thread_output_file,
                  bool auto_new_line,
+                 bool trunc_old,
                  size_t max_size_log_file,
                  size_t reserve_file_num,
-                 int head_record) noexcept;
+                 int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
