@@ -34,7 +34,7 @@ protected:
     zce::skt::addr_in        zulu_svc_ip_;
 
     //使用的SOCKET包装
-    zce::socket_stream      zulu_stream_;
+    zce::skt::stream      zulu_stream_;
 
 public:
 
@@ -67,7 +67,7 @@ public:
     void close();
 
     //取得本地的地址信息
-    int getsockname(zce::sockaddr_base* addr)  const;
+    int getsockname(zce::skt::addr_base* addr)  const;
 
     /*!
     * @brief      发送数据

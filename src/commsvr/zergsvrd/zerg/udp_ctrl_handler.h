@@ -18,7 +18,7 @@ protected:
 public:
     //
     UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
-                    const zce::Sockaddr_In& addr,
+                    const zce::skt::addr_in& addr,
                     bool sessionkey_verify = true);
 protected:
     ~UDP_Svc_Handler();
@@ -79,15 +79,15 @@ protected:
 protected:
 
     ///数据包UDP发送的Socket
-    zce::Socket_DataGram      dgram_peer_;
+    zce::skt::datagram        dgram_peer_;
 
     ///邦定的地址
-    zce::Sockaddr_In          udp_bind_addr_;
+    zce::skt::addr_in         udp_bind_addr_;
 
     ///
-    soar::SERVICES_ID              my_svc_info_;
+    soar::SERVICES_ID         my_svc_info_;
     ///是否进行SESSION校验
-    bool                     sessionkey_verify_;
+    bool                      sessionkey_verify_;
     ///数据缓冲区，UDP只有一个
     zerg::Buffer* dgram_databuf_;
     ///IP限制管理器

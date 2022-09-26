@@ -54,7 +54,7 @@ protected:
         EQUAL_OF_PEER_MODULE > SET_OF_TCP_PEER_MODULE;
 
     ///连接器
-    zce::Socket_Connector ogre_connector_;
+    zce::skt::connector ogre_connector_;
 
     ///
     size_t auto_connect_num_ = 0;

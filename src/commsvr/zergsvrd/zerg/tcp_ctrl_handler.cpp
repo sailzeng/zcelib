@@ -97,7 +97,7 @@ TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
 
 //用于Accept的端口的处理Event Handle初始化处理.
 void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                                          const zce::socket_stream& sockstream,
+                                          const zce::skt::stream& sockstream,
                                           const zce::skt::addr_in& socketaddr)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
@@ -225,7 +225,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
 //主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
 void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                                           const soar::SERVICES_ID& peer_svrinfo,
-                                          const zce::socket_stream& sockstream,
+                                          const zce::skt::stream& sockstream,
                                           const zce::skt::addr_in& socketaddr)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;

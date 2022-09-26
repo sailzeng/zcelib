@@ -52,7 +52,7 @@ int Zulu_SendRecv_Msg::connect_zulu_server(zce::time_value* time_wait)
     //GCS服务器的链接问题。
     if (false == zulu_connected_)
     {
-        zce::socket_connector tmp_connector;
+        zce::skt::connector tmp_connector;
         //自己定义超时时间10s,如果不能链接认为失败，毕竟都是内网,
         // 默认超时是10s, 如果指定了time_wait则使用time_wait
         // 否则用默认的值
@@ -301,7 +301,7 @@ int Zulu_SendRecv_Msg::receive_svc_msg(unsigned int& recv_cmd,
 }
 
 //取得本地的地址信息
-int Zulu_SendRecv_Msg::getsockname(zce::sockaddr_base* addr)  const
+int Zulu_SendRecv_Msg::getsockname(zce::skt::addr_base* addr)  const
 {
     return zulu_stream_.getsockname(addr);
 }

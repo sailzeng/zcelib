@@ -109,7 +109,7 @@ public:
 
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
-    * @tparam     val_type 被特化成 zce::Sockaddr_In，Sockaddr_In6，zce::time_value
+    * @tparam     val_type 被特化成 zce::skt::addr_in，zce::skt::addr_in6，zce::time_value
     *             int32_t ,int64_t,std::string, 等。
     * @return     int      是否正常的读取倒了配置
     * @param      path_str 读取的路径，比如A1.B2.C3.D4，每个点标示一层

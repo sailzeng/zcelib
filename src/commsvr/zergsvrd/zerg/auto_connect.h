@@ -64,7 +64,7 @@ protected:
     * @param      svc_handle , 如果已经有相应的连接，在这个地方返回对用的Handle
     */
     int connect_one_server(const soar::SERVICES_ID& svc_id,
-                           const zce::Sockaddr_In& inet_addr,
+                           const zce::skt::addr_in& inet_addr,
                            TCP_Svc_Handler*& svc_handle);
 
 protected:
@@ -78,7 +78,7 @@ protected:
 protected:
 
     //连接器
-    zce::Socket_Connector zerg_connector_;
+    zce::skt::connector zerg_connector_;
 
     //配置实例指针
     const Zerg_Config* zerg_svr_cfg_ = NULL;

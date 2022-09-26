@@ -54,7 +54,7 @@ public:
     * @param      sockstream
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const zce::socket_stream& sockstream,
+    void init_tcp_svc_handler(const zce::skt::stream& sockstream,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     /*!
@@ -63,7 +63,7 @@ public:
     * @param      socketaddr
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const zce::socket_stream& sockstream,
+    void init_tcp_svc_handler(const zce::skt::stream& sockstream,
                               const zce::skt::addr_in& socketaddr,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
@@ -211,7 +211,7 @@ protected:
     size_t                        send_bytes_;
 
     ///ACE Socket Stream,
-    zce::socket_stream             socket_peer_;
+    zce::skt::stream             socket_peer_;
 
     ///PEER连接的远端IP地址信息,有他不过是为了加快速度.
     zce::skt::addr_in               remote_address_;

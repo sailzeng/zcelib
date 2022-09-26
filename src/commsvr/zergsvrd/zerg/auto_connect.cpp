@@ -168,7 +168,7 @@ int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
             inetaddr.to_string(ip_addr_str, IP_ADDR_LEN, use_len)
     );
 
-    zce::socket_stream sockstream;
+    zce::skt::stream sockstream;
     sockstream.open();
 
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;

@@ -65,7 +65,7 @@ public:
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                             const zce::socket_stream& sockstream,
+                             const zce::skt::stream& sockstream,
                              const zce::skt::addr_in& socketaddr);
 
     /*!
@@ -79,7 +79,7 @@ public:
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                              const soar::SERVICES_ID& svrinfo,
-                             const zce::socket_stream& sockstream,
+                             const zce::skt::stream& sockstream,
                              const zce::skt::addr_in& socketaddr);
 
     //ZEN的一组要求自己继承的函数.
@@ -345,7 +345,7 @@ protected:
     size_t                    send_bytes_;
 
     //ZCE Socket Stream,
-    zce::socket_stream        socket_peer_;
+    zce::skt::stream        socket_peer_;
 
     //PEER连接的IP地址信息
     zce::skt::addr_in          peer_address_;

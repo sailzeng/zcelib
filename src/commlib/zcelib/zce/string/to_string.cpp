@@ -232,7 +232,7 @@ void to_string(std::string& stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///辅助输出Sockaddr_In6的字符串
+///辅助输出zce::skt::addr_in6的字符串
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,

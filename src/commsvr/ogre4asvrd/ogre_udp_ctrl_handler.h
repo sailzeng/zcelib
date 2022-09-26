@@ -41,15 +41,15 @@ protected:
 protected:
 
     //
-    zce::Socket_DataGram        dgram_peer_;
+    zce::skt::datagram     dgram_peer_;
 
     //邦定的地址
-    zce::skt::addr_in            udp_bind_addr_;
+    zce::skt::addr_in      udp_bind_addr_;
     //Socket_Peer_Info
     OGRE_PEER_ID           peer_svc_info_;
 
     //
-    Ogre4a_App_Frame* dgram_databuf_;
+    Ogre4a_App_Frame*      dgram_databuf_;
 
     //IP限制管理器
     Ogre_IPRestrict_Mgr* ip_restrict_;

@@ -95,7 +95,7 @@ int test_fmt_splice(int /*argc*/, char* /*argv*/[])
     std::string str_data = "I love hongkong.";
     zce::foo_strnsplice(buffer, BUFFER_LEN, use_len,
                         ' ',
-                        zce::Double_Out_Helper(double_data, 16, 3),
+                        zce::aidout::o_double(double_data, 16, 3),
                         "ABC",
                         "efghi",
                         str_data);
@@ -269,7 +269,7 @@ std::string stdstr_data = "You love me.";
 int test_out_buffer(int /*argc*/, char* /*argv*/[])
 {
     const std::string def("You love me.");
-    zce::outer::string_o abc(def);
+    zce::aidout::o_string abc(def);
 
     zce::progress_timer progress_timer;
     progress_timer.restart();
@@ -342,11 +342,11 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
         zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
+                         zce::aidout::o_int(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                          bool_data,
-                         zce::Double_Out_Helper(double_data, 16, 3),
-                         zce::outer::o_string(cstr_data, 30),
-                         zce::outer::o_string(stdstr_data.c_str(), stdstr_data.length())
+                         zce::aidout::o_double(double_data, 16, 3),
+                         zce::aidout::o_string(cstr_data, 30),
+                         zce::aidout::o_string(stdstr_data.c_str(), stdstr_data.length())
         );
     }
     progress_timer.end();
@@ -357,11 +357,11 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
         zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
+                         zce::aidout::o_int(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                          bool_data,
-                         zce::Double_Out_Helper(double_data, 16, 3),
-                         zce::outer::o_string(cstr_data, 30),
-                         zce::outer::o_string(stdstr_data.c_str(), 28)
+                         zce::aidout::o_double(double_data, 16, 3),
+                         zce::aidout::o_string(cstr_data, 30),
+                         zce::aidout::o_string(stdstr_data.c_str(), 28)
         );
     }
     progress_timer.end();

@@ -43,14 +43,14 @@ public:
 protected:
 
     ///ACCPET PEER
-    zce::Socket_Acceptor      peer_acceptor_;
+    zce::skt::acceptor      peer_acceptor_;
 
     ///自己的 SVC INFO
-    soar::SERVICES_ID         my_svc_info_;
+    soar::SERVICES_ID       my_svc_info_;
 
     ///邦定的地址
-    zce::skt::addr_in          accept_bind_addr_;
+    zce::skt::addr_in       accept_bind_addr_;
 
     ///IP限制管理器
-    zerg::IPRestrict_Mgr* ip_restrict_;
+    zerg::IPRestrict_Mgr*   ip_restrict_;
 };

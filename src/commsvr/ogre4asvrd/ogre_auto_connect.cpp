@@ -132,7 +132,7 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO& peer_mod
     zce::skt::addr_in inetaddr(peer_module.peer_id_.peer_ip_address_,
                                peer_module.peer_id_.peer_port_);
 
-    zce::socket_stream tcpscoket;
+    zce::skt::stream tcpscoket;
     tcpscoket.sock_enable(O_NONBLOCK);
 
     ZCE_LOG(RS_INFO, "Try NONBLOCK connect server IP|Port :[%s] .\n",

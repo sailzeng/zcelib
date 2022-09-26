@@ -36,7 +36,7 @@ public:
 protected:
 
     //ACCPET PEER
-    zce::Socket_Acceptor    peer_acceptor_;
+    zce::skt::acceptor    peer_acceptor_;
 
     TCP_PEER_MODULE_INFO   peer_module_info_;
 

@@ -86,7 +86,7 @@ int Accept_Handler::create_listen()
 //事件触发处理，表示有一个accept 的数据
 int Accept_Handler::handle_input(/*handle*/)
 {
-    zce::socket_stream  sockstream;
+    zce::skt::stream  sockstream;
     zce::skt::addr_in       remote_address;
     int ret = peer_acceptor_.accept(sockstream, &remote_address);
 

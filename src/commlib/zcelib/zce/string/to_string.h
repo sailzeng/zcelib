@@ -579,7 +579,7 @@ inline void to_str(char* buffer,
 void to_string(std::string& stdstr,
                const zce::skt::addr_in& out_data);
 
-///辅助输出Sockaddr_In6的字符串
+///辅助输出zce::skt::addr_in6的字符串
 void to_str(char* buffer,
             size_t max_len,
             size_t& use_len,
@@ -792,9 +792,9 @@ public:
 
     //
     o_string(const std::string& out_str,
-             size_t width,
-             size_t precision,
-             int flags) :
+             size_t width = size_t(-1),
+             size_t precision = size_t(-1),
+             int flags = 0) :
         out_str_ptr_(out_str.c_str()),
         out_str_len_(out_str.length()),
         width_(width),
@@ -804,9 +804,9 @@ public:
     }
 
     o_string(const char* out_str_ptr,
-             size_t width,
-             size_t precision,
-             int flags) :
+             size_t width = size_t(-1),
+             size_t precision = size_t(-1),
+             int flags = 0) :
         out_str_ptr_(out_str_ptr),
         out_str_len_(strlen(out_str_ptr)),
         width_(width),

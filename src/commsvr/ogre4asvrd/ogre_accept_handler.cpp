@@ -103,7 +103,7 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
 
-    zce::socket_stream  sockstream;
+    zce::skt::stream  sockstream;
     zce::skt::addr_in   remoteaddress;
     int ret = 0;
     ret = peer_acceptor_.accept(sockstream, &remoteaddress);
