@@ -100,7 +100,7 @@ public:
 protected:
 
     //IPV6的地址
-    sockaddr_in6           in6_addr_;
+    ::sockaddr_in6         in6_addr_;
 };
 
 //取得IP地址，你要保证ipv6_addr_val的长度有16个字节

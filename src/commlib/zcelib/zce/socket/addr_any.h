@@ -51,9 +51,9 @@ public:
     union
     {
         //sockaddr_in 16个字节
-        sockaddr_in  in4_addr_;
+        ::sockaddr_in  in4_addr_;
         //sockaddr_in6 28个字节
-        sockaddr_in6 in6_addr_;
+        ::sockaddr_in6 in6_addr_;
     };
 };
 }

@@ -107,7 +107,7 @@ public:
 protected:
 
     ///IPV4的地址
-    sockaddr_in           in4_addr_;
+    ::sockaddr_in           in4_addr_;
 };
 
 //取得IP地址，本地序列
