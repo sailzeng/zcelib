@@ -24,7 +24,7 @@
 #include "zce/lock/thread_mutex.h"
 #include "zce/lock/synch_traits.h"
 #include "zce/lock/thread_semaphore.h"
-#include "zce/comm/common.h"
+#include "zce/thread/msgque_waitmodel.h"
 
 namespace zce
 {

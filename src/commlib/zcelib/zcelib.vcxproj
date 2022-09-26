@@ -378,6 +378,7 @@
     <ClInclude Include="zce\socket\addr_any.h" />
     <ClInclude Include="zce\sqlite\sqlite_result.h" />
     <ClInclude Include="zce\string\from_string.h" />
+    <ClInclude Include="zce\thread\msgque_waitmodel.h" />
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\buffer\cycle_buffer.h" />
     <ClInclude Include="zce\buffer\cycbuf_rings.h" />

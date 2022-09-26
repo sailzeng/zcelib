@@ -816,6 +816,9 @@
     <ClInclude Include="zce\buffer\queue_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\thread\msgque_waitmodel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

@@ -63,7 +63,7 @@ public:
     */
     int connect(zce::skt::stream& new_stream,
                 const zce::skt::addr_base* remote_addr,
-                bool k,
+                bool non_blocing,
                 bool reuse_addr = false,
                 int protocol = 0,
                 const zce::skt::addr_base* local_addr = NULL);
