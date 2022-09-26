@@ -124,7 +124,7 @@ struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信�
 config_table::config_table()
 {
     sql_string_ = new char[MAX_SQLSTRING_LEN];
-    sqlite_handler_ = new zce::sqlite::sqlite_hdl();
+    sqlite_handler_ = new zce::sqlite_hdl();
 }
 
 config_table::~config_table()
@@ -377,7 +377,7 @@ int config_table::replace_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite::stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_handler_);
     int ret = 0;
 
     ret = stmt_handler.prepare(sql_string_);
@@ -386,8 +386,8 @@ int config_table::replace_one(unsigned int table_id,
         return ret;
     }
 
-    zce::sqlite::stmt::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
-                                             conf_data->ai_data_length_);
+    zce::sqlite_stmt::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
+                                            conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
     stmt_handler << binary_data;
@@ -408,7 +408,7 @@ int config_table::replace_array(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite::stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_handler_);
     int ret = 0;
 
     ret = sqlite_handler_->begin_transaction();
@@ -427,8 +427,8 @@ int config_table::replace_array(unsigned int table_id,
             return ret;
         }
 
-        zce::sqlite::stmt::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                                 (*ary_ai_iijma)[i].ai_data_length_);
+        zce::sqlite_stmt::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                                (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
@@ -458,7 +458,7 @@ int config_table::select_one(unsigned int table_id,
     sql_select_one(table_id,
                    conf_data->index_1_,
                    conf_data->index_2_);
-    zce::sqlite::stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -477,8 +477,8 @@ int config_table::select_one(unsigned int table_id,
         return -1;
     }
 
-    zce::sqlite::stmt::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
-                                               &(conf_data->ai_data_length_));
+    zce::sqlite_stmt::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
+                                              &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -492,7 +492,7 @@ int config_table::delete_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_delete_one(table_id, index_1, index_2);
-    zce::sqlite::stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -515,7 +515,7 @@ int config_table::counter(unsigned int table_id,
                           unsigned int* rec_count)
 {
     sql_counter(table_id, startno, numquery);
-    zce::sqlite::stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -563,7 +563,7 @@ int config_table::select_array(unsigned int table_id,
     ary_ai_iijma->resize(num_counter);
 
     sql_select_array(table_id, startno, numquery);
-    zce::sqlite::stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_handler_);
 
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -588,8 +588,8 @@ int config_table::select_array(unsigned int table_id,
             return -1;
         }
 
-        zce::sqlite::stmt::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                                   &((*ary_ai_iijma)[i].ai_data_length_));
+        zce::sqlite_stmt::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                                  &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
