@@ -54,9 +54,9 @@ public:
 
 private:
     /// ctor is hidden
-    singleton();
+    singleton() = delete;
     /// copy ctor is hidden
-    singleton(singleton const&);
+    singleton(singleton const&) = delete;
 };
 
 //========================================================================================================
@@ -72,7 +72,7 @@ private:
 * @tparam     T    希望使用singleton模式的数据结构
 */
 template <typename T>
-class boost_singleton
+class b_singleton
 {
 private:
 
@@ -104,7 +104,38 @@ public:
     }
 };
 //因为create_object_是类的静态变量，必须有一个通用的声明
-template <typename T>  typename zce::boost_singleton<T>::object_creator zce::boost_singleton<T>::create_object_;
+template <typename T>  typename zce::b_singleton<T>::object_creator \
+zce::b_singleton<T>::create_object_;
+
+//========================================================================================================
+//古典的singleton
+template <typename T>
+class c_singleton
+{
+public:
+    typedef T ST;
+    ///实例函数
+    inline static T* instance()
+    {
+        return instance_;
+    }
+    ///实例函数
+    static void set(T* instance)
+    {
+        instance_ = instance;
+        return;
+    }
+    static void clear()
+    {
+        delete instance_;
+        instance_ = nullptr;
+    }
+private:
+    static T* instance_;
+};
+
+template <typename T>  zce::c_singleton<T>::ST * \
+zce::c_singleton<T>::instance_ = nullptr;
 
 //========================================================================================================
 }

@@ -811,6 +811,22 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
+class RunTest
+{
+public:
+    RunTest() = default;
+    int run()
+    {
+        return 100;
+    }
+};
+int test_singleton(int /*argc*/, char* /*argv*/[])
+{
+    zce::c_singleton<RunTest>::set(new RunTest());
+    zce::c_singleton<RunTest>::instance()->run();
+    return 0;
+}
+
 int test_static_list(int /*argc*/, char* /*argv*/[])
 {
     zce::static_list<int> abc;

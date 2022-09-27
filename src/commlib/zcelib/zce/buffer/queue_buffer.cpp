@@ -98,22 +98,11 @@ void queue_buffer::clear()
 #endif
 }
 
-//填充数据
-bool queue_buffer::set(const char* data, const size_t szdata)
-{
-    if (szdata > size_of_capacity_)
-    {
-        return false;
-    }
-    ::memcpy(buffer_data_, data, szdata);
-    size_of_use_ = szdata;
-    return true;
-}
-
 //从偏移offset开始，填充数据data,长度为szdata,
-bool queue_buffer::set(const size_t offset,
-                       const char* data,
-                       const size_t szdata)
+bool queue_buffer::set(
+    const char* data,
+    const size_t szdata,
+    const size_t offset)
 {
     if (szdata + offset > size_of_capacity_)
     {
@@ -125,14 +114,41 @@ bool queue_buffer::set(const size_t offset,
 }
 
 //读取数据
-bool queue_buffer::get(char* data, size_t& szdata)
+bool queue_buffer::get(char* data,
+                       size_t& szdata,
+                       bool whole,
+                       bool clear_get)
 {
+    //如果空间不够，而且要求完整
     if (szdata < size_of_use_)
     {
-        return false;
+        if (whole)
+        {
+            return false;
+        }
+        else
+        {
+            //不用完整取出，取出一部分
+            ::memcpy(data, buffer_data_, szdata);
+            if (clear_get)
+            {
+                ::memmove(buffer_data_,
+                          buffer_data_ + szdata,
+                          size_of_use_ - szdata);
+                size_of_use_ = size_of_use_ - szdata;
+            }
+        }
     }
-    ::memcpy(data, buffer_data_, szdata);
-    szdata = size_of_use_;
+    else
+    {
+        ::memcpy(data, buffer_data_, size_of_use_);
+        szdata = size_of_use_;
+        if (clear_get)
+        {
+            clear();
+        }
+    }
+
     return true;
 }
 
@@ -144,7 +160,7 @@ bool queue_buffer::add(const char* data, const size_t szdata)
         return false;
     }
     ::memcpy(buffer_data_ + size_of_use_, data, szdata);
-    size_of_use_ = szdata;
+    size_of_use_ += szdata;
     return true;
 }
 }

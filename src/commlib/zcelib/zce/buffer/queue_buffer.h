@@ -35,9 +35,6 @@ public:
     //!初始化
     bool initialize(size_t buf_size);
 
-    //!清理
-    void clear();
-
     static queue_buffer* new_self(size_t buf_size)
     {
         return new queue_buffer(buf_size);
@@ -81,16 +78,33 @@ public:
         return false;
     };
 
-    //!填充数据data,长度为szdata
-    bool set(const char* data, size_t szdata);
-    //!从偏移offset开始，填充数据data,长度为szdata,
-    bool set(size_t offset, const char* data, size_t szdata);
-    //!读取数据
-    bool get(char* data, size_t& szdata);
+    /**
+     * @brief             填充数据，从偏移offset开始，填充数据data,长度为szdata,
+     * @param data        填充的数据
+     * @param szdata      填充数据长度
+     * @param offset      偏移长度，从这个位置开始填充
+     * @return            返回true标识填充成功
+    */
+    bool set(const char* data, size_t szdata, size_t offset = 0);
     //!继续在尾部增加数据
     bool add(const char* data, size_t szdata);
 
-    //
+    /**
+     * @brief             尝试读取所有数据
+     * @param data        读取的数据
+     * @param szdata      szdata作为输入参数表述data长度，作为输出参数表述读取长度
+     * @param whole       是否要求完整取出
+     * @param clear_get   读取后，是否清理数据
+     * @return            读取成功返回true，如果长度不够（且要求完成取出），返回false
+    */
+    bool get(char* data,
+             size_t& szdata,
+             bool whole = true,
+             bool clear_get = true);
+    //!清理
+    void clear();
+
+    //!直接使用数据
     inline char* point(size_t offset = 0)
     {
         return buffer_data_ + offset;
