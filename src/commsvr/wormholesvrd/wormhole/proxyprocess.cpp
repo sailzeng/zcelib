@@ -98,7 +98,7 @@ int Interface_WH_Proxy::init_proxy_instance()
 {
     // int ret =0;
     // 初始化MMAP内存的PIPE
-    zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::svrd_buspipe::instance();
 
     return 0;
 }

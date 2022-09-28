@@ -45,12 +45,12 @@ struct SVCID_CONFIG
 *
 * @note
 */
-class Server_Config_FSM : public Server_Config_Base
+class svrd_cfg_fsm : public svrd_cfg_base
 {
 protected:
     //构造函数
-    Server_Config_FSM();
-    virtual ~Server_Config_FSM();
+    svrd_cfg_fsm();
+    virtual ~svrd_cfg_fsm();
 
 public:
 

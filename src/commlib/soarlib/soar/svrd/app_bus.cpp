@@ -26,9 +26,9 @@
 
 namespace soar
 {
-App_BusPipe* App_BusPipe::instance_ = NULL;
+app_buspipe* app_buspipe::instance_ = NULL;
 
-App_BusPipe::App_BusPipe() :
+app_buspipe::app_buspipe() :
     self_svc_info_(),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
@@ -39,7 +39,7 @@ App_BusPipe::App_BusPipe() :
     app_author_ = "FXL Platform Server Dev Team.";
 }
 
-App_BusPipe::~App_BusPipe()
+app_buspipe::~app_buspipe()
 {
     if (timer_base_)
     {
@@ -55,7 +55,7 @@ App_BusPipe::~App_BusPipe()
 }
 
 //初始化，放入一些基类的指针，
-int App_BusPipe::initialize(Server_Config_Base* config_base,
+int app_buspipe::initialize(svrd_cfg_base* config_base,
                             soar::Server_Timer* timer_base)
 {
     config_base_ = config_base;
@@ -64,18 +64,18 @@ int App_BusPipe::initialize(Server_Config_Base* config_base,
 }
 
 //获取配置的指针
-Server_Config_Base* App_BusPipe::config_instance()
+svrd_cfg_base* app_buspipe::config_instance()
 {
     return config_base_;
 }
 
 //启动过程的处理
-int App_BusPipe::app_start(int argc, const char* argv[])
+int app_buspipe::app_start(int argc, const char* argv[])
 {
     int ret = 0;
     ::srand(static_cast<unsigned int>(time(NULL)));
 
-    //App_BusPipe 只可能启动一个实例，所以在这个地方初始化了static指针
+    //app_buspipe 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
 
     //得到APP的名字，去掉路径，后缀的名字
@@ -237,7 +237,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
 #endif
 
     //初始化内存管道
-    ret = soar::Svrd_BusPipe::instance()->
+    ret = soar::svrd_buspipe::instance()->
         initialize(self_svc_info_,
                    config_base_->pipe_cfg_.recv_pipe_len_,
                    config_base_->pipe_cfg_.send_pipe_len_,
@@ -246,11 +246,11 @@ int App_BusPipe::app_start(int argc, const char* argv[])
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_INFO, "[framework] soar::Svrd_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
+        ZCE_LOG(RS_INFO, "[framework] soar::svrd_buspipe::instance()->init_by_cfg fail,ret = %d.", ret);
         return ret;
     }
 
-    zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::svrd_buspipe::instance();
 
     soar::stat_monitor::instance()->
         add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
@@ -258,13 +258,13 @@ int App_BusPipe::app_start(int argc, const char* argv[])
     ZCE_LOG(RS_INFO, "[framework] MMAP Pipe init success,gogogo."
             "The more you have,the more you want. ");
 
-    ZCE_LOG(RS_INFO, "[framework] App_BusPipe::init_instance Success.");
+    ZCE_LOG(RS_INFO, "[framework] app_buspipe::init_instance Success.");
 
     return 0;
 }
 
 //退出的工作
-int App_BusPipe::app_exit()
+int app_buspipe::app_exit()
 {
     //可能要增加多线程的等待
     zce::thread_wait_manager::instance()->wait_all();
@@ -272,7 +272,7 @@ int App_BusPipe::app_exit()
 
     soar::stat_monitor::clear_inst();
 
-    soar::Svrd_BusPipe::clear_inst();
+    soar::svrd_buspipe::clear_inst();
 
     //释放所有资源,会关闭所有的handle吗,zce::ZCE_Reactor 会，ACE的ZCE_Reactor看实现
     if (zce::ZCE_Reactor::instance())
@@ -309,19 +309,19 @@ int App_BusPipe::app_exit()
 }
 
 //设置日志的优先级
-void App_BusPipe::set_log_priority(zce::LOG_PRIORITY log_prio)
+void app_buspipe::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
     zce::log_msg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
-zce::LOG_PRIORITY App_BusPipe::get_log_priority()
+zce::LOG_PRIORITY app_buspipe::get_log_priority()
 {
     return zce::log_msg::instance()->get_log_priority();
 }
 
 //日志初始化
-int App_BusPipe::init_log()
+int app_buspipe::init_log()
 {
     int ret = 0;
 
@@ -352,25 +352,25 @@ int App_BusPipe::init_log()
 }
 
 //重新加载配置
-int App_BusPipe::reload_config()
+int app_buspipe::reload_config()
 {
     return 0;
 }
 
 //注册实例指针
-void App_BusPipe::set_instance(App_BusPipe* inst)
+void app_buspipe::set_instance(app_buspipe* inst)
 {
     instance_ = inst;
 }
 
 //得到实例指针
-App_BusPipe* App_BusPipe::instance()
+app_buspipe* app_buspipe::instance()
 {
     return instance_;
 }
 
 //清理实例指针
-void App_BusPipe::clear_inst()
+void app_buspipe::clear_inst()
 {
     if (instance_)
     {

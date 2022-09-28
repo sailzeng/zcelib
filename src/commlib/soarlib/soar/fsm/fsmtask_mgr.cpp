@@ -53,7 +53,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
                                 const soar::SERVICES_INFO& selfsvr,
                                 const zce::time_value& enqueue_timeout,
                                 zce::timer_queue* timer_queue,
-                                soar::Svrd_BusPipe* zerg_mmap_pipe,
+                                soar::svrd_buspipe* zerg_mmap_pipe,
                                 APPFRAME_MALLOCOR* frame_mallocor)
 {
     //根据最大的FRAME长度调整Manager内部的数据
@@ -73,7 +73,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
 }
 
 //激活N个线程，
-int FSMTask_Manger::active_notify_task(FSMTask_TaskBase* clone_task,
+int FSMTask_Manger::active_notify_task(fsmtask_taskbase* clone_task,
                                        size_t task_num,
                                        size_t task_stack_size)
 {
@@ -84,7 +84,7 @@ int FSMTask_Manger::active_notify_task(FSMTask_TaskBase* clone_task,
     task_number_ = task_num;
     clone_task_ = clone_task;
 
-    task_list_ = new FSMTask_TaskBase * [task_number_];
+    task_list_ = new fsmtask_taskbase * [task_number_];
 
     //初始化
     for (size_t i = 0; i < task_number_; ++i)

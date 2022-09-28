@@ -6,7 +6,7 @@
 namespace soar
 {
 //
-FSMTask_TaskBase::FSMTask_TaskBase() :
+fsmtask_taskbase::fsmtask_taskbase() :
     trans_notify_mgr_(NULL),
     once_max_get_sendqueue_(DEFAULT_ONCE_MAX_GET_SENDQUEUE),
     task_run_(false),
@@ -17,7 +17,7 @@ FSMTask_TaskBase::FSMTask_TaskBase() :
 }
 
 //
-FSMTask_TaskBase::~FSMTask_TaskBase()
+fsmtask_taskbase::~fsmtask_taskbase()
 {
     if (task_frame_buf_)
     {
@@ -27,7 +27,7 @@ FSMTask_TaskBase::~FSMTask_TaskBase()
 }
 
 //
-int FSMTask_TaskBase::initialize(FSMTask_Manger* trans_notify_mgr,
+int fsmtask_taskbase::initialize(FSMTask_Manger* trans_notify_mgr,
                                  size_t once_max_get_sendqueue,
                                  soar::SERVICES_ID mgr_svc_id,
                                  soar::SERVICES_ID thread_svc_id)
@@ -52,12 +52,12 @@ int FSMTask_TaskBase::initialize(FSMTask_Manger* trans_notify_mgr,
 };
 
 //
-void FSMTask_TaskBase::stop_task_run()
+void fsmtask_taskbase::stop_task_run()
 {
     task_run_ = false;
 }
 
-int FSMTask_TaskBase::svc(void)
+int fsmtask_taskbase::svc(void)
 {
     ZCE_LOG(RS_INFO, "[framework] Task stop start run. thread id = %u", zce::pthread_self());
 
@@ -127,18 +127,18 @@ int FSMTask_TaskBase::svc(void)
 }
 
 //
-int FSMTask_TaskBase::task_initialize()
+int fsmtask_taskbase::task_initialize()
 {
     return 0;
 }
 
 //
-int FSMTask_TaskBase::task_finish()
+int fsmtask_taskbase::task_finish()
 {
     return 0;
 }
 
-int FSMTask_TaskBase::task_moonlighting(size_t& send_frame_num)
+int fsmtask_taskbase::task_moonlighting(size_t& send_frame_num)
 {
     send_frame_num = 0;
     return 0;

@@ -7,7 +7,7 @@
 *
 * @note
 */
-class Wormhole_Proxy_App : public soar::SvrdApp_Plain
+class Wormhole_Proxy_App : public soar::svrdapp_plain
 {
 public:
     // 自己的单子偷偷藏着，

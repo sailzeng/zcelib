@@ -45,8 +45,8 @@ SEND PIPE<=================================
 
 namespace soar
 {
-class Svrd_BusPipe;
-class FSM_Base;
+class svrd_buspipe;
+class fsm_base;
 class zerg_frame;
 
 /******************************************************************************************
@@ -55,7 +55,7 @@ class Transaction_Manager
 class  FSM_Manager : public zce::Async_FSMMgr
 {
     //声明友元
-    friend class FSM_Base;
+    friend class fsm_base;
 
 protected:
     struct  ONLYONE_LOCK
@@ -121,7 +121,7 @@ public:
                    size_t  reg_fsm_num,
                    size_t running_fsm_num,
                    const soar::SERVICES_INFO& selfsvr,
-                   soar::Svrd_BusPipe* zerg_mmap_pipe,
+                   soar::svrd_buspipe* zerg_mmap_pipe,
                    size_t max_frame_len = soar::zerg_frame::MAX_LEN_OF_FRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
@@ -145,7 +145,7 @@ public:
     * @note
     */
     int register_fsmobj(uint32_t create_cmd,
-                        FSM_Base* fsm_base,
+                        fsm_base* fsm_base,
                         bool usr_only_one);
 
     /*!
@@ -270,7 +270,7 @@ protected:
     soar::SERVICES_INFO self_svc_info_;
 
     //共享内存的管道
-    soar::Svrd_BusPipe* zerg_mmap_pipe_ = nullptr;
+    soar::svrd_buspipe* zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
     const zce::time_value* statistics_clock_ = nullptr;

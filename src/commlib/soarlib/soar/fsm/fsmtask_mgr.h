@@ -24,13 +24,13 @@
 
 namespace soar
 {
-class FSMTask_TaskBase;
+class fsmtask_taskbase;
 class FSMTask_Manger : public FSM_Manager
 {
 protected:
 
-    //zce::MsgQueue_Deque底层实现用的Deque
-    typedef zce::MsgRings_Sema<soar::zerg_frame*>  APPFRAME_MESSAGE_QUEUE;
+    //zce::msgrings_sema底层实现用的Deque
+    typedef zce::msgrings_sema<soar::zerg_frame*>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
     typedef ZergFrame_Mallocor<typename zce::MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
@@ -62,7 +62,7 @@ public:
                     const soar::SERVICES_INFO& selfsvr,
                     const zce::time_value& enqueue_timeout,
                     zce::timer_queue* timer_queue,
-                    soar::Svrd_BusPipe* zerg_mmap_pipe,
+                    soar::svrd_buspipe* zerg_mmap_pipe,
                     APPFRAME_MALLOCOR* frame_mallocor);
 
     //处理从接收队列取出的FRAME
@@ -76,7 +76,7 @@ public:
     * @param      task_stack_size 线程堆栈的大小
     * @note
     */
-    int active_notify_task(FSMTask_TaskBase* clone_task,
+    int active_notify_task(fsmtask_taskbase* clone_task,
                            size_t task_num,
                            size_t task_stack_size = 1024 * 1024);
     //停下NOTIFY TASK
@@ -237,9 +237,9 @@ protected:
     //TASK的数量
     size_t  task_number_ = 0;
     //进行克隆的TASK 原件
-    FSMTask_TaskBase* clone_task_ = nullptr;
+    fsmtask_taskbase* clone_task_ = nullptr;
     //
-    FSMTask_TaskBase** task_list_ = nullptr;
+    fsmtask_taskbase** task_list_ = nullptr;
 
     // push数据进队列时，如果队列满了的最多等待时间
     zce::time_value     enqueue_timeout_;

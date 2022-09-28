@@ -27,9 +27,9 @@
 namespace soar
 {
 class zerg_frame;
-class Svrd_BusPipe;
+class svrd_buspipe;
 
-class  FSM_Base : public zce::Async_FSM
+class  fsm_base : public zce::Async_FSM
 {
     friend class FSM_Manager;
 
@@ -49,12 +49,12 @@ protected:
 
 public:
     //构造函数
-    FSM_Base(FSM_Manager* pmngr,
+    fsm_base(FSM_Manager* pmngr,
              uint32_t create_cmd,
              bool trans_locker = false);
 protected:
     //私有的构造函数,你必须使用NEW得到
-    virtual ~FSM_Base();
+    virtual ~fsm_base();
 
 public:
 
@@ -249,7 +249,7 @@ protected:
 
 //请求发送消息的Service,
 template <class T>
-int FSM_Base::request_peer(uint32_t cmd,
+int fsm_base::request_peer(uint32_t cmd,
                            const soar::SERVICES_ID& rcv_svc,
                            const T& info,
                            uint32_t option)
@@ -268,7 +268,7 @@ int FSM_Base::request_peer(uint32_t cmd,
 
 //请求发送消息的Service,
 template <class T>
-int FSM_Base::request_peer(uint32_t cmd,
+int fsm_base::request_peer(uint32_t cmd,
                            uint32_t user_id,
                            uint32_t backfill_fsm_id,
                            const soar::SERVICES_ID& rcv_svc,
@@ -289,7 +289,7 @@ int FSM_Base::request_peer(uint32_t cmd,
 
 //向某个Service发送数据,同时使用UIN
 template< class T>
-int FSM_Base::request_peer(uint32_t cmd,
+int fsm_base::request_peer(uint32_t cmd,
                            uint32_t user_id,
                            const soar::SERVICES_ID& rcv_svc,
                            const T& info,
@@ -310,7 +310,7 @@ int FSM_Base::request_peer(uint32_t cmd,
 //--------------------------------------------------------------------------------------------------------------------------
 //请求发送数据到代理服务器,用请求的USER ID发送
 template< class T>
-int FSM_Base::request_proxy(uint32_t cmd,
+int fsm_base::request_proxy(uint32_t cmd,
                             const soar::SERVICES_ID& proxy_svc,
                             uint16_t rcv_type,
                             const T& info,
@@ -330,7 +330,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
 
 //请求发送数据到代理服务器,用参数指定USER ID发送
 template< class T>
-int FSM_Base::request_proxy(uint32_t cmd,
+int fsm_base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
                             const soar::SERVICES_ID& proxy_svc,
                             uint16_t rcv_type,
@@ -352,7 +352,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
 //请求发送数据到代理服务器,,使用请求的USER ID,RCV SERVICESID(比如用代理中转到指定服务器),
 //注意RECV SVC 和PROXY SVC参数的顺序,主要事务和
 template< class T>
-int FSM_Base::request_proxy(uint32_t cmd,
+int fsm_base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
                             const soar::SERVICES_ID& proxy_svc,
                             const soar::SERVICES_ID& recvsvc,
@@ -373,7 +373,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
 //请求发送数据到代理服务器,使用请求的USER ID,,RCV SERVICESID(比如用代理中转到指定服务器),回填的事务ID
 //注意RECV SVC 和PROXY SVC参数的顺序
 template< class T>
-int FSM_Base::request_proxy(uint32_t cmd,
+int fsm_base::request_proxy(uint32_t cmd,
                             uint32_t user_id,
                             uint32_t backfill_fsm_id,
                             const soar::SERVICES_ID& recvsvc,
@@ -395,7 +395,7 @@ int FSM_Base::request_proxy(uint32_t cmd,
 //--------------------------------------------------------------------------------------------------------------------------
 //回送信息,应答一个请求,只能是除了接受命令的时候才可以调用这个函数,否则....
 template< class T>
-int FSM_Base::response_sendback(uint32_t cmd,
+int fsm_base::response_sendback(uint32_t cmd,
                                 const T& info,
                                 uint32_t option)
 {
@@ -421,7 +421,7 @@ int FSM_Base::response_sendback(uint32_t cmd,
 //比如发送邮件，FRAME中的主人是收件人,但是返回命令应该是发件人
 //为啥要用2作为函数名称而不重载呢，你可以考虑一下,我不作答
 template< class T>
-int FSM_Base::response_sendback2(uint32_t cmd,
+int fsm_base::response_sendback2(uint32_t cmd,
                                  uint32_t user_id,
                                  const T& info,
                                  uint32_t option)
@@ -447,7 +447,7 @@ int FSM_Base::response_sendback2(uint32_t cmd,
 //--------------------------------------------------------------------------------------------------------------------------
 //最完整的填写发送消息函数，
 template< class T>
-int FSM_Base::sendmsg_to_service(uint32_t cmd,
+int fsm_base::sendmsg_to_service(uint32_t cmd,
                                  uint32_t user_id,
                                  uint32_t fsm_id,
                                  uint32_t backfill_fsm_id,

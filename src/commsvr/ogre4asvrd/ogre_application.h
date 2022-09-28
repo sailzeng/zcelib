@@ -4,7 +4,7 @@
 /****************************************************************************************************
 class  Ogre_Service_App
 ****************************************************************************************************/
-class Ogre_Service_App : public soar::App_BusPipe
+class Ogre_Service_App : public soar::app_buspipe
 {
 public:
 

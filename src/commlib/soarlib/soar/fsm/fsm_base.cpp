@@ -10,7 +10,7 @@
 namespace soar
 {
 //构造函数
-FSM_Base::FSM_Base(FSM_Manager* pmngr,
+fsm_base::fsm_base(FSM_Manager* pmngr,
                    uint32_t create_cmd,
                    bool trans_locker) :
     zce::Async_FSM(pmngr, create_cmd),
@@ -20,12 +20,12 @@ FSM_Base::FSM_Base(FSM_Manager* pmngr,
 }
 
 //析构函数
-FSM_Base::~FSM_Base()
+fsm_base::~fsm_base()
 {
 }
 
 //事务内存重置
-void FSM_Base::on_init()
+void fsm_base::on_init()
 {
     trans_create_ = true;
     req_zerg_head_.clear();
@@ -40,7 +40,7 @@ void FSM_Base::on_init()
 }
 
 //根据Frame初始化得到对方发送的信息
-void FSM_Base::create_init(const soar::zerg_frame* proc_frame)
+void fsm_base::create_init(const soar::zerg_frame* proc_frame)
 {
     proc_frame->get_head(req_zerg_head_);
 
@@ -55,7 +55,7 @@ void FSM_Base::create_init(const soar::zerg_frame* proc_frame)
     return;
 }
 
-void FSM_Base::on_run(bool& continued)
+void fsm_base::on_run(bool& continued)
 {
     const soar::zerg_frame* recv_frame = nullptr;
     trans_manager_->get_process_frame(recv_frame);
@@ -120,7 +120,7 @@ void FSM_Base::on_run(bool& continued)
     }
 }
 
-void FSM_Base::on_timeout(const zce::time_value& now_time,
+void fsm_base::on_timeout(const zce::time_value& now_time,
                           bool& continue_run)
 {
     ZCE_LOG(trace_log_pri_, "%s::trans_timeout start,transaction id:[%u],trans stage:[%u],",
@@ -166,7 +166,7 @@ void FSM_Base::on_timeout(const zce::time_value& now_time,
 }
 
 //检查接受到的FRAME的数据和命令
-int FSM_Base::check_receive_frame(const soar::zerg_frame* recv_frame,
+int fsm_base::check_receive_frame(const soar::zerg_frame* recv_frame,
                                   uint32_t wait_cmd)
 {
     //
@@ -188,7 +188,7 @@ int FSM_Base::check_receive_frame(const soar::zerg_frame* recv_frame,
 }
 
 //检测包头和包体的user_id以及发送的service_id是否一致,
-int FSM_Base::check_req_userid(uint32_t user_id) const
+int fsm_base::check_req_userid(uint32_t user_id) const
 {
     if (user_id != req_zerg_head_.user_id_)
     {
@@ -204,7 +204,7 @@ int FSM_Base::check_req_userid(uint32_t user_id) const
 }
 
 //关闭请求的的Service的连接
-int FSM_Base::close_request_service() const
+int fsm_base::close_request_service() const
 {
     ZCE_LOG(RS_INFO,
             "[framework] close_request_service() at req_command_=%u,fsm_stage_=%d,req_zerg_head_.user_id_=%u.",
@@ -220,20 +220,20 @@ int FSM_Base::close_request_service() const
 }
 
 //对当前用户的，当前事务命令字进行加锁
-int FSM_Base::lock_cmd_userid()
+int fsm_base::lock_cmd_userid()
 {
     return trans_manager_->lock_only_one(req_zerg_head_.command_,
                                          req_zerg_head_.user_id_);
 }
 //对当前用户的，当前事务命令字进行解锁
-void FSM_Base::unlock_cmd_userid()
+void fsm_base::unlock_cmd_userid()
 {
     return trans_manager_->unlock_only_one(req_zerg_head_.command_,
                                            req_zerg_head_.user_id_);
 }
 
 //!DUMP输出事务的所有信息
-void FSM_Base::dump(zce::LOG_PRIORITY log_priority,
+void fsm_base::dump(zce::LOG_PRIORITY log_priority,
                     const char* outstr) const
 {
     ZCE_LOG(log_priority, "%s.FSM ID =%u user id =%u cmd =%u stage=%u timeid=%u"

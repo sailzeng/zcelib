@@ -132,7 +132,7 @@ int Zerg_Config::read_cfgfile()
 {
     //
     int ret = 0;
-    ret = Server_Config_Base::read_cfgfile();
+    ret = svrd_cfg_base::read_cfgfile();
     if (ret != 0)
     {
         return ret;
@@ -406,7 +406,7 @@ int Zerg_Config::get_svcidtable_cfg(const zce::propertytree* conf_tree)
 //Dump配置的数据信息
 void Zerg_Config::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
-    Server_Config_Base::dump_cfg_info(out_lvl);
+    svrd_cfg_base::dump_cfg_info(out_lvl);
 
     ZCE_LOG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
 

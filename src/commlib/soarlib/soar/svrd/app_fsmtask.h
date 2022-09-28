@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
-#define SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
+#pragma once
 
 #include "soar/svrd/app_bus.h"
 
@@ -14,15 +13,15 @@
         } \
     }
 
-class soar::FSMTask_TaskBase;
+class soar::fsmtask_taskbase;
 
-class Comm_SvrdApp_FSMTask : public soar::App_BusPipe
+class svrdapp_fsmtask : public soar::app_buspipe
 {
 protected:
 
     //使用事务处理的Application
-    Comm_SvrdApp_FSMTask();
-    virtual ~Comm_SvrdApp_FSMTask();
+    svrdapp_fsmtask();
+    virtual ~svrdapp_fsmtask();
 
 public:
 
@@ -45,9 +44,7 @@ protected:
     //clone_task，麻烦你new一个给我
     //task_num 不要用太多的线程，合理就OK，除非有大量的阻塞
     //task_stack_size 如果线程数量较多，切记控制堆栈大小
-    virtual int register_notify_task(soar::FSMTask_TaskBase*& clone_task,
+    virtual int register_notify_task(soar::fsmtask_taskbase*& clone_task,
                                      size_t& task_num,
                                      size_t& task_stack_size) = 0;
 };
-
-#endif //#ifndef SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_

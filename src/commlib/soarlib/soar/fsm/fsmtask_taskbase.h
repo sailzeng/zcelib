@@ -7,14 +7,14 @@ class soar::zerg_frame;
 
 namespace soar
 {
-class FSMTask_TaskBase : public zce::thread_task
+class fsmtask_taskbase : public zce::thread_task
 {
     //给一个友缘
     friend class FSMTask_Manger;
 
 public:
-    FSMTask_TaskBase();
-    virtual ~FSMTask_TaskBase();
+    fsmtask_taskbase();
+    virtual ~fsmtask_taskbase();
 public:
 
     //初始化
@@ -29,7 +29,7 @@ public:
 public:
 
     //克隆自己，用于工厂创建自己
-    virtual FSMTask_TaskBase* task_clone() const = 0;
+    virtual fsmtask_taskbase* task_clone() const = 0;
 
 protected:
 

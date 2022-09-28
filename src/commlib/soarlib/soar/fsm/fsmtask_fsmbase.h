@@ -3,7 +3,7 @@
 
 namespace soar
 {
-class FSMTask_FSMBase : public FSM_Base
+class FSMTask_FSMBase : public fsm_base
 {
 public:
 
@@ -11,7 +11,7 @@ public:
     //必须如此。
     //这儿是一个典型的设计两难，如果使用向下朔型DOWNCAST，无意是丑陋的。
     FSMTask_FSMBase(FSM_Manager* trans_notify_mgr, unsigned int create_cmd)
-        : FSM_Base(trans_notify_mgr, create_cmd)
+        : fsm_base(trans_notify_mgr, create_cmd)
         , trans_notify_mgr_(NULL)
     {
         //必须要求trans_notify_mgr至少是trans_notify_mgr的子类，

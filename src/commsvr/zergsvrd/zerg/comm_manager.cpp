@@ -20,7 +20,7 @@ Comm_Manager::Comm_Manager() :
     zerg_config_(NULL)
 
 {
-    zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::svrd_buspipe::instance();
     zbuffer_storage_ = zerg::Buffer_Storage::instance();
     server_status_ = soar::stat_monitor::instance();
     count_start_time_ = static_cast<unsigned int>(zerg::App_Timer::gettimeofday().sec());

@@ -104,7 +104,7 @@ int Ogre_Server_Config::read_cfgfile()
 {
     //
     int ret = 0;
-    ret = Server_Config_Base::read_cfgfile();
+    ret = svrd_cfg_base::read_cfgfile();
     if (ret != 0)
     {
         return ret;

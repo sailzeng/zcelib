@@ -738,7 +738,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(ogre4a_frame* inner_frame)
     {
         ////原来一直考虑使用错误管道进行重新发送等处理，现在想想，实在多余，算了
         //// 如果错误管道不为空
-        //if( soar::Svrd_BusPipe::instance()->IsExistZergPipe(soar::Svrd_BusPipe::ERROR_PIPE_ID)
+        //if( soar::svrd_buspipe::instance()->IsExistZergPipe(soar::svrd_buspipe::ERROR_PIPE_ID)
         //       == true)
         //{
         //}
@@ -757,7 +757,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(ogre4a_frame* inner_frame)
         inner_frame->ogre_frame_option_ |= ogre4a_frame::OGREDESC_SEND_ERROR;
 
         //日志在函数中有输出,这儿略.
-        ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
+        ret = soar::svrd_buspipe::instance()->push_back_recvbus(
             reinterpret_cast<soar::zerg_frame *>(inner_frame));
 
         if (ret != 0)
@@ -1074,7 +1074,7 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 //
 int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
-    int ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
+    int ret = soar::svrd_buspipe::instance()->push_back_recvbus(
         reinterpret_cast<soar::zerg_frame*>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,

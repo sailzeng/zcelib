@@ -112,7 +112,7 @@ void Server_Timer::report_status()
 {
     // 上报进程存活状态
     stat_monitor_->add_one(COMM_STAT_APP_ALIVE, 0, 0);
-    soar::App_BusPipe* svrd_app = soar::App_BusPipe::instance();
+    soar::app_buspipe* svrd_app = soar::app_buspipe::instance();
 
     {
         // 获取服务器状态信息

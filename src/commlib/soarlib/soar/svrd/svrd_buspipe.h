@@ -11,13 +11,13 @@ class soar::zerg_frame;
 
 namespace soar
 {
-class Svrd_BusPipe : protected zce::twoway_buspipe
+class svrd_buspipe : protected zce::twoway_buspipe
 {
 public:
     //构造函数,
-    Svrd_BusPipe();
+    svrd_buspipe();
     //析购函数
-    ~Svrd_BusPipe();
+    ~svrd_buspipe();
 
 public:
 
@@ -69,15 +69,15 @@ public:
 
     //为了SingleTon类准备
     //实例的赋值
-    static void instance(Svrd_BusPipe*);
+    static void instance(svrd_buspipe*);
     //实例的获得
-    static Svrd_BusPipe* instance();
+    static svrd_buspipe* instance();
     //清除实例
     static void clear_inst();
 
 protected:
     //instance函数使用的东西
-    static Svrd_BusPipe* zerg_bus_instance_;
+    static svrd_buspipe* zerg_bus_instance_;
 
 protected:
 

@@ -55,7 +55,7 @@
 #pragma once
 
 class soar::stat_monitor;
-class Server_Config_Base;
+class svrd_cfg_base;
 
 namespace soar
 {
@@ -66,7 +66,7 @@ namespace soar
 */
 class Server_Timer : public zce::timer_handler
 {
-    friend class App_BusPipe;
+    friend class app_buspipe;
 public:
 
     ///构造函数,因为框架的设计构造的时候不初始化timer queue，

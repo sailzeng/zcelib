@@ -5,7 +5,7 @@
 #include "soar/svrd/svrd_buspipe.h"
 #include "soar/svrd/timer_base.h"
 
-class Server_Config_Base;
+class svrd_cfg_base;
 
 namespace soar
 {
@@ -14,14 +14,14 @@ namespace soar
 *
 * @note
 */
-class App_BusPipe : public zce::server_base
+class app_buspipe : public zce::server_base
 {
 protected:
 
     ///构造函数和析构函数
-    App_BusPipe();
+    app_buspipe();
     ///析构函数
-    virtual ~App_BusPipe();
+    virtual ~app_buspipe();
 
 public:
 
@@ -40,14 +40,14 @@ public:
     * @param      config_base 配置类指针，注意new了放进来
     * @param      timer_base  定时器触发句柄的指针，注意new了放进来
     */
-    int initialize(Server_Config_Base* config_base,
+    int initialize(svrd_cfg_base* config_base,
                    soar::Server_Timer* timer_base);
 
     /*!
     * @brief      返回APP的配置类指针
-    * @return     Server_Config_Base*配置类的指针
+    * @return     svrd_cfg_base*配置类的指针
     */
-    Server_Config_Base* config_instance();
+    svrd_cfg_base* config_instance();
 
 public:
 
@@ -71,10 +71,10 @@ protected:
 public:
 
     ///注册实例指针
-    static void set_instance(App_BusPipe* inst);
+    static void set_instance(app_buspipe* inst);
 
     ///得到实例指针
-    static App_BusPipe* instance();
+    static app_buspipe* instance();
 
     ///清理实例实例指针
     static void clear_inst();
@@ -82,7 +82,7 @@ public:
 protected:
 
     //实例指针
-    static App_BusPipe* instance_;
+    static app_buspipe* instance_;
 
 protected:
 
@@ -95,12 +95,12 @@ protected:
     size_t               max_msg_num_;
 
     ///与zerg的管道
-    soar::Svrd_BusPipe* zerg_mmap_pipe_;
+    soar::svrd_buspipe* zerg_mmap_pipe_;
 
     ///框架定时器处理类
     soar::Server_Timer* timer_base_;
 
     ///配置的处理的基类
-    Server_Config_Base* config_base_;
+    svrd_cfg_base* config_base_;
 };
 };

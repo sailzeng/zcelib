@@ -65,12 +65,12 @@ public:
 *
 * @note
 */
-class Server_Config_Base
+class svrd_cfg_base
 {
 public:
     //构造函数
-    Server_Config_Base();
-    virtual ~Server_Config_Base();
+    svrd_cfg_base();
+    virtual ~svrd_cfg_base();
 
 public:
 

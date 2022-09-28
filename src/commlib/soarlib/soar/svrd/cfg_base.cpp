@@ -5,7 +5,7 @@
 #include "soar/svrd/app_bus.h"
 #include "soar/svrd/cfg_base.h"
 
-Server_Config_Base::Server_Config_Base() :
+svrd_cfg_base::svrd_cfg_base() :
     instance_id_(1)
 {
     //默认定时器的事数量
@@ -26,11 +26,11 @@ Server_Config_Base::Server_Config_Base() :
     log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
 }
 
-Server_Config_Base::~Server_Config_Base()
+svrd_cfg_base::~svrd_cfg_base()
 {
 }
 
-int Server_Config_Base::read_start_arg(int argc, const char* argv[])
+int svrd_cfg_base::read_start_arg(int argc, const char* argv[])
 {
     // 指明RETURN_IN_ORDER 不调整顺序
     zce::get_option get_opt(argc, (char**)argv,
@@ -141,13 +141,13 @@ int Server_Config_Base::read_start_arg(int argc, const char* argv[])
     }
 
     log_file_prefix_ = app_run_dir_ + "/log/";
-    log_file_prefix_ += soar::App_BusPipe::instance()->get_app_basename();
+    log_file_prefix_ += soar::app_buspipe::instance()->get_app_basename();
 
     return 0;
 }
 
 //
-int Server_Config_Base::usage(const char* program_name)
+int svrd_cfg_base::usage(const char* program_name)
 {
     std::cout << "usage: " << program_name << std::endl;
     std::cout << "   -z [zergling cfg path]" << std::endl;
@@ -167,13 +167,13 @@ int Server_Config_Base::usage(const char* program_name)
 }
 
 //读取配置文件，主要是框架的配置，包括日志，定时器等
-int Server_Config_Base::read_cfgfile()
+int svrd_cfg_base::read_cfgfile()
 {
     int ret = 0;
 
     // 未指定app的配置文件，则使用默认的
     app_cfg_file_ = app_run_dir_ + "/cfg/";
-    app_cfg_file_ += soar::App_BusPipe::instance()->get_app_basename();
+    app_cfg_file_ += soar::app_buspipe::instance()->get_app_basename();
     app_cfg_file_ += ".cfg";
 
     // 未指定svcid配置文件
@@ -200,10 +200,10 @@ int Server_Config_Base::read_cfgfile()
     return 0;
 }
 
-void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
+void svrd_cfg_base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Application base name %s svc id:%hu.%hu",
-            soar::App_BusPipe::instance()->get_app_basename(),
+            soar::app_buspipe::instance()->get_app_basename(),
             self_svc_info_.svc_id_.services_type_,
             self_svc_info_.svc_id_.services_id_);
     ZCE_LOG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());
@@ -218,7 +218,7 @@ void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 }
 
 //从配置中读取self_svc_id_的
-int Server_Config_Base::get_common_cfg(const zce::propertytree* conf_tree)
+int svrd_cfg_base::get_common_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -260,7 +260,7 @@ int Server_Config_Base::get_common_cfg(const zce::propertytree* conf_tree)
 }
 
 //从配置中读取日志的配置
-int Server_Config_Base::get_log_cfg(const zce::propertytree* conf_tree)
+int svrd_cfg_base::get_log_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;

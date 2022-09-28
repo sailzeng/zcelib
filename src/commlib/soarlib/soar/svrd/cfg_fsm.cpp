@@ -5,20 +5,20 @@
 #include "soar/svrd/app_bus.h"
 #include "soar/svrd/cfg_fsm.h"
 
-Server_Config_FSM::Server_Config_FSM()
+svrd_cfg_fsm::svrd_cfg_fsm()
 {
 }
 
-Server_Config_FSM::~Server_Config_FSM()
+svrd_cfg_fsm::~svrd_cfg_fsm()
 {
 }
 
-int Server_Config_FSM::read_cfgfile()
+int svrd_cfg_fsm::read_cfgfile()
 {
     // 加载zerg 配置
     int ret = 0;
 
-    ret = Server_Config_Base::read_cfgfile();
+    ret = svrd_cfg_base::read_cfgfile();
     if (ret != 0)
     {
         return ret;

@@ -25,7 +25,7 @@ int FSM_Manager::initialize(zce::timer_queue* timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
                             const soar::SERVICES_INFO& selfsvr,
-                            soar::Svrd_BusPipe* zerg_mmap_pipe,
+                            soar::svrd_buspipe* zerg_mmap_pipe,
                             size_t max_frame_len,
                             bool init_inner_queue,
                             bool init_lock_pool)
@@ -109,7 +109,7 @@ void FSM_Manager::terminate()
 }
 
 int FSM_Manager::register_fsmobj(uint32_t create_cmd,
-                                 FSM_Base* fsm_base,
+                                 fsm_base* fsm_base,
                                  bool usr_only_one)
 {
     int ret = 0;

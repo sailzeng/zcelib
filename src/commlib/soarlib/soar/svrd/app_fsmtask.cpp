@@ -7,21 +7,21 @@
 #include "soar/fsm/fsmtask_fsmbase.h"
 #include "soar/svrd/app_fsmtask.h"
 
-Comm_SvrdApp_FSMTask::Comm_SvrdApp_FSMTask() :
-    soar::App_BusPipe()
+svrdapp_fsmtask::svrdapp_fsmtask() :
+    soar::app_buspipe()
 {
 };
 
-Comm_SvrdApp_FSMTask::~Comm_SvrdApp_FSMTask()
+svrdapp_fsmtask::~svrdapp_fsmtask()
 {
 };
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
+int svrdapp_fsmtask::app_start(int argc, const char* argv[])
 {
     int ret = 0;
 
-    ret = soar::App_BusPipe::app_start(argc, argv);
+    ret = soar::app_buspipe::app_start(argc, argv);
     if (0 != ret)
     {
         return ret;
@@ -29,7 +29,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
 
     THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
 
-    Server_Config_FSM* svd_config = dynamic_cast<Server_Config_FSM*>(config_base_);
+    svrd_cfg_fsm* svd_config = dynamic_cast<svrd_cfg_fsm*>(config_base_);
     soar::FSMTask_Manger* trans_mgr = new soar::FSMTask_Manger();
     soar::FSM_Manager::instance(trans_mgr);
     zce::time_value enqueue_timeout;
@@ -42,7 +42,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
         self_svc_info_,
         enqueue_timeout,
         zce::timer_queue::instance(),
-        soar::Svrd_BusPipe::instance(),
+        soar::svrd_buspipe::instance(),
         THREADMUTEX_APPFRAME_MALLOCOR::instance());
 
     ret = register_notifytrans_cmd();
@@ -52,7 +52,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
         return ret;
     }
 
-    soar::FSMTask_TaskBase* clone_task = NULL;
+    soar::fsmtask_taskbase* clone_task = NULL;
     size_t task_num = 0;
     size_t task_stack_size = 0;
 
@@ -80,7 +80,7 @@ int Comm_SvrdApp_FSMTask::app_start(int argc, const char* argv[])
 }
 
 //运行处理,
-int Comm_SvrdApp_FSMTask::app_run()
+int svrdapp_fsmtask::app_run()
 {
     // fix me add log
     ZCE_LOG(RS_INFO, "======================================================================================================");
@@ -157,7 +157,7 @@ int Comm_SvrdApp_FSMTask::app_run()
 }
 
 //退出处理
-int Comm_SvrdApp_FSMTask::app_exit()
+int svrdapp_fsmtask::app_exit()
 {
     //通知所有的线程退出
     soar::FSMTask_Manger* notify_trans_mgr =
@@ -167,7 +167,7 @@ int Comm_SvrdApp_FSMTask::app_exit()
     int ret = 0;
     soar::FSM_Manager::clear_inst();
 
-    ret = soar::App_BusPipe::app_exit();
+    ret = soar::app_buspipe::app_exit();
 
     if (0 != ret)
     {

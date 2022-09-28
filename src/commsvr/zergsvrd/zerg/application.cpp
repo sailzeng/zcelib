@@ -29,7 +29,7 @@ int Zerg_App::app_start(int argc, const char* argv[])
 {
     int ret = 0;
 
-    ret = soar::App_BusPipe::app_start(argc, argv);
+    ret = soar::app_buspipe::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -121,7 +121,7 @@ int Zerg_App::app_exit()
     zerg::IPRestrict_Mgr::clear_inst();
 
     //最后调用基类的退出函数
-    soar::App_BusPipe::app_exit();
+    soar::app_buspipe::app_exit();
 
     return 0;
 }

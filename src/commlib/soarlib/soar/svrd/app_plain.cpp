@@ -6,15 +6,15 @@
 
 namespace soar
 {
-SvrdApp_Plain::SvrdApp_Plain() :
-    App_BusPipe(),
+svrdapp_plain::svrdapp_plain() :
+    app_buspipe(),
     nonctrl_recv_buffer_(NULL)
 {
     nonctrl_recv_buffer_ = soar::zerg_frame::new_frame(
         soar::zerg_frame::MAX_LEN_OF_FRAME);
 }
 
-SvrdApp_Plain::~SvrdApp_Plain()
+svrdapp_plain::~svrdapp_plain()
 {
     //释放资源
     if (nonctrl_recv_buffer_)
@@ -25,7 +25,7 @@ SvrdApp_Plain::~SvrdApp_Plain()
 }
 
 //运行函数
-int SvrdApp_Plain::app_run()
+int svrdapp_plain::app_run()
 {
     ZCE_LOG(RS_INFO, "======================================================================================================");
     ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
@@ -107,7 +107,7 @@ int SvrdApp_Plain::app_run()
 }
 
 //从管道中收取一组数据进行处理
-int SvrdApp_Plain::popfront_recvpipe(size_t max_prc, size_t& proc_frame)
+int svrdapp_plain::popfront_recvpipe(size_t max_prc, size_t& proc_frame)
 {
     int ret = 0;
 

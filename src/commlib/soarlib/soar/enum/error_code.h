@@ -1,4 +1,4 @@
-/******************************************************************************************
+/**
 Copyright           : 2000-2004, Fullsail Technology Shenzhen, Company Limited.
 FileName            : comm_error_code.h
 Author              : Sail(ZENGXING,//Author name here

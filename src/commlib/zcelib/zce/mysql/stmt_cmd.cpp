@@ -215,9 +215,9 @@ int stmt_cmd::fetch_row_next() const
 }
 
 //
-int  stmt_cmd::fetch_column(MYSQL_BIND* bind,
-                            unsigned int column,
-                            unsigned int offset) const
+int stmt_cmd::fetch_column(MYSQL_BIND* bind,
+                           unsigned int column,
+                           unsigned int offset) const
 {
     int tmpret = ::mysql_stmt_fetch_column(mysql_stmt_, bind, column, offset);
     if (0 != tmpret)

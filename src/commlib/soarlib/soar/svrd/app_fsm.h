@@ -1,21 +1,19 @@
-#ifndef SOARING_LIB_SVRD_APP_TRNAS_H_
-#define SOARING_LIB_SVRD_APP_TRNAS_H_
+#pragma once
 
 #include "soar/svrd/app_bus.h"
-
 
 /*!
 * @brief      状态机的APP
 *
 * @note
 */
-class SvrdApp_FSM : public soar::App_BusPipe
+class svrd_fsm : public soar::app_buspipe
 {
 protected:
 
     //使用事务处理的Application
-    SvrdApp_FSM();
-    virtual ~SvrdApp_FSM();
+    svrd_fsm();
+    virtual ~svrd_fsm();
 
 public:
 
@@ -32,5 +30,3 @@ protected:
 
     virtual int register_trans_cmd() = 0;
 };
-
-#endif //#ifndef SOARING_LIB_SVRD_APP_TRNAS_H_
