@@ -6,10 +6,9 @@
 #include "zce/os_adapt/string.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/file.h"
-#include "zce/thread/msgque_condi.h"
-#include "zce/pool/buffer_pool.h"
 #include "zce/logger/log_file.h"
-
+#include "zce/pool/buffer_pool.h"
+#include "zce/thread/msgque_condi.h"
 namespace zce
 {
 const char log_file::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
@@ -463,7 +462,7 @@ void log_file::fileout_log_info(const timeval& now_time,
         if (!ret)
         {
             ZPRINT(RS_ALERT, "msg_queue_.enqueue fail .queue len :%u.",
-                   msg_queue_.size());
+                   msg_queue_->size());
             return;
         }
     }

@@ -29,7 +29,7 @@ Thread_Condition::~Thread_Condition(void)
     const int ret = zce::pthread_cond_destroy(&lock_);
     if (0 != ret)
     {
-        ZPRINT(RS_ERROR, "zce::pthread_cond_destroy ret =%u", ret);
+        ZCE_LOG(RS_ERROR, "zce::pthread_cond_destroy ret =%u", ret);
         return;
     }
 }
@@ -81,7 +81,7 @@ void Thread_Condition::notify_one(void) noexcept
     auto ret = zce::pthread_cond_signal(&lock_);
     if (0 != ret)
     {
-        ZPRINT(RS_ERROR, "zce::pthread_cond_signal ret = %u", ret);
+        ZCE_LOG(RS_ERROR, "zce::pthread_cond_signal ret = %u", ret);
         return;
     }
 }
@@ -93,7 +93,7 @@ void Thread_Condition::notify_all(void) noexcept
     auto ret = zce::pthread_cond_broadcast(&lock_);
     if (0 != ret)
     {
-        ZPRINT(RS_ERROR, "zce::pthread_cond_broadcast = %u", ret);
+        ZCE_LOG(RS_ERROR, "zce::pthread_cond_broadcast = %u", ret);
         return;
     }
 }
@@ -118,7 +118,7 @@ Thread_Recursive_Condition::~Thread_Recursive_Condition(void)
     const int ret = zce::pthread_cond_destroy(&lock_);
     if (0 != ret)
     {
-        ZPRINT(RS_ERROR, "zce::pthread_cond_destroy ret =%u", ret);
+        ZCE_LOG(RS_ERROR, "zce::pthread_cond_destroy ret =%u", ret);
         return;
     }
 }

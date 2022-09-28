@@ -138,9 +138,13 @@
     <ClCompile Include="zce\async\fsm.cpp" />
     <ClCompile Include="zce\async\lua_thread.cpp" />
     <ClCompile Include="zce\buffer\queue_buffer.cpp" />
-    <ClCompile Include="zce\logger\log_file.cpp" />
+    <ClCompile Include="zce\logger\log_file.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="zce\logger\log_msg.cpp" />
-    <ClCompile Include="zce\logger\log_print.cpp" />
+    <ClCompile Include="zce\logger\log_print.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
