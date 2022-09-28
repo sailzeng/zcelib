@@ -9,7 +9,7 @@ Svrd_BusPipe* Svrd_BusPipe::zerg_bus_instance_ = NULL;
 char Svrd_BusPipe::send_buffer_[soar::zerg_frame::MAX_LEN_OF_FRAME];
 
 Svrd_BusPipe::Svrd_BusPipe() :
-    TwoWay_BusPipe()
+    twoway_buspipe()
 {
 }
 
@@ -31,7 +31,7 @@ int Svrd_BusPipe::initialize(soar::SERVICES_INFO& svr_info,
     char bus_mmap_name[MAX_PATH + 1];
     get_mmapfile_name(bus_mmap_name, MAX_PATH);
 
-    return TwoWay_BusPipe::initialize(bus_mmap_name,
+    return twoway_buspipe::initialize(bus_mmap_name,
                                       size_recv_pipe,
                                       size_send_pipe,
                                       max_frame_len,

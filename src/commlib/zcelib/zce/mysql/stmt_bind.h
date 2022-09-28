@@ -23,8 +23,6 @@
 
 //这些函数都是4.1.2后的版本功能
 
-#include "zce/logger/logging.h"
-
 namespace zce::mysql
 {
 /*!
@@ -58,8 +56,8 @@ public:
             stmt_pdata_(pdata),
             stmt_data_length_(data_len)
         {
-            ZCE_ASSERT(MYSQL_TYPE_BLOB == stmt_data_type_
-                       || MYSQL_TYPE_STRING == stmt_data_type_);
+            assert(MYSQL_TYPE_BLOB == stmt_data_type_
+                   || MYSQL_TYPE_STRING == stmt_data_type_);
         };
         //
         ~BinData_Param()
@@ -95,8 +93,8 @@ public:
             stmt_pdata_(pdata),
             stmt_data_length_(data_len)
         {
-            ZCE_ASSERT(MYSQL_TYPE_BLOB == stmt_data_type_
-                       || MYSQL_TYPE_STRING == stmt_data_type_);
+            assert(MYSQL_TYPE_BLOB == stmt_data_type_
+                   || MYSQL_TYPE_STRING == stmt_data_type_);
         };
         //
         ~BinData_Result()
@@ -124,10 +122,10 @@ public:
             stmt_timetype_(timetype),
             stmt_ptime_(pstmttime)
         {
-            ZCE_ASSERT(stmt_timetype_ == MYSQL_TYPE_TIMESTAMP ||
-                       stmt_timetype_ == MYSQL_TYPE_DATE ||
-                       stmt_timetype_ == MYSQL_TYPE_DATETIME ||
-                       stmt_timetype_ == MYSQL_TYPE_TIMESTAMP
+            assert(stmt_timetype_ == MYSQL_TYPE_TIMESTAMP ||
+                   stmt_timetype_ == MYSQL_TYPE_DATE ||
+                   stmt_timetype_ == MYSQL_TYPE_DATETIME ||
+                   stmt_timetype_ == MYSQL_TYPE_TIMESTAMP
             );
         };
         //

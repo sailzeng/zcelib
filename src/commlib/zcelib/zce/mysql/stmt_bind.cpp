@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/mysql/stmt_bind.h"
 
 //这些函数都是4.1.2后的版本功能

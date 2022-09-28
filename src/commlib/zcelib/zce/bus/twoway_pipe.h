@@ -46,7 +46,7 @@ class shm_kfifo;
 namespace zce
 {
 //双行道
-class TwoWay_BusPipe : public MMAP_BusPipe<2>
+class twoway_buspipe : public mmap_buspipe<2>
 {
 public:
 
@@ -65,14 +65,14 @@ protected:
 
 protected:
     //instance函数使用的东西
-    static TwoWay_BusPipe* two_way_instance_;
+    static twoway_buspipe* two_way_instance_;
 
 public:
 
     //构造函数,
-    TwoWay_BusPipe();
+    twoway_buspipe();
     //析购函数
-    ~TwoWay_BusPipe();
+    ~twoway_buspipe();
 
 public:
 
@@ -86,9 +86,9 @@ public:
 public:
 
     //实例的赋值
-    static void instance(TwoWay_BusPipe*);
+    static void instance(twoway_buspipe*);
     //实例的获得
-    static TwoWay_BusPipe* instance();
+    static twoway_buspipe* instance();
     //清除实例
     static void clear_inst();
 };

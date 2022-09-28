@@ -14,7 +14,6 @@
 #pragma once
 
 #include "zce/util/non_copyable.h"
-#include "zce/logger/logging.h"
 
 class zce::Event_Handler;
 

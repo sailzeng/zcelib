@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/mysql/stmt_cmd.h"
 #include "zce/mysql/stmt_bind.h"
 #include "zce/mysql/result.h"

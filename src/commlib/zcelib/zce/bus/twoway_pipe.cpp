@@ -8,24 +8,24 @@
 
 namespace zce
 {
-TwoWay_BusPipe* TwoWay_BusPipe::two_way_instance_ = NULL;
+twoway_buspipe* twoway_buspipe::two_way_instance_ = NULL;
 
-const char  TwoWay_BusPipe::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
+const char  twoway_buspipe::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
 {
     "RECV_PIPE",
     "SEND_PIPE",
 };
 
 //构造函数
-TwoWay_BusPipe::TwoWay_BusPipe()
+twoway_buspipe::twoway_buspipe()
 {
 }
 
-TwoWay_BusPipe::~TwoWay_BusPipe()
+twoway_buspipe::~twoway_buspipe()
 {
 }
 
-int TwoWay_BusPipe::initialize(const char* bus_mmap_name,
+int twoway_buspipe::initialize(const char* bus_mmap_name,
                                size_t size_recv_pipe,
                                size_t size_send_pipe,
                                size_t max_frame_len,
@@ -36,7 +36,7 @@ int TwoWay_BusPipe::initialize(const char* bus_mmap_name,
     size_of_pipe[RECV_PIPE_ID] = size_recv_pipe;
     size_of_pipe[SEND_PIPE_ID] = size_send_pipe;
 
-    ret = MMAP_BusPipe::initialize(bus_mmap_name,
+    ret = mmap_buspipe::initialize(bus_mmap_name,
                                    NUM_OF_PIPE,
                                    size_of_pipe,
                                    max_frame_len,
@@ -51,18 +51,18 @@ int TwoWay_BusPipe::initialize(const char* bus_mmap_name,
 }
 
 //得到唯一的单子实例
-TwoWay_BusPipe* TwoWay_BusPipe::instance()
+twoway_buspipe* twoway_buspipe::instance()
 {
     if (two_way_instance_ == NULL)
     {
-        two_way_instance_ = new TwoWay_BusPipe();
+        two_way_instance_ = new twoway_buspipe();
     }
 
     return two_way_instance_;
 }
 
 //赋值唯一的单子实例
-void TwoWay_BusPipe::instance(TwoWay_BusPipe* pinstatnce)
+void twoway_buspipe::instance(twoway_buspipe* pinstatnce)
 {
     clear_inst();
     two_way_instance_ = pinstatnce;
@@ -70,7 +70,7 @@ void TwoWay_BusPipe::instance(TwoWay_BusPipe* pinstatnce)
 }
 
 //清除单子实例
-void TwoWay_BusPipe::clear_inst()
+void twoway_buspipe::clear_inst()
 {
     if (two_way_instance_)
     {

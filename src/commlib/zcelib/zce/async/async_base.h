@@ -21,7 +21,7 @@
 #include "zce/container/lord_rings.h"
 #include "zce/os_adapt/coroutine.h"
 #include "zce/timer/timer_handler.h"
-#include "zce/logger/logging.h"
+#include "zce/logger/log_comm.h"
 #include "zce/timer/queue_base.h"
 
 namespace zce

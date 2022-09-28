@@ -523,7 +523,7 @@ int array_meta_get(lua_State* state)
                 index,
                 typeid(array_type).name(),
                 static_cast<uint32_t>(ptr->ary_size_));
-        ZCE_ASSERT(false);
+        assert(false);
         ::lua_pushnil(state);
     }
     else
@@ -552,7 +552,7 @@ int array_meta_set(lua_State* state)
                 index,
                 typeid(array_type).name(),
                 static_cast<uint32_t>(ptr->ary_size_));
-        ZCE_ASSERT(false);
+        assert(false);
     }
     else
     {
@@ -610,7 +610,7 @@ int array_meta_set(lua_State* state)
 template < bool last_yield,
     typename ret_type,
     typename ...args_type >
-    class g_func_ret
+class g_func_ret
 {
 public:
 
@@ -679,7 +679,7 @@ private:
 ///全局没有返回值的函数封装，详细信息见g_func_ret
 template < bool last_yield,
     typename... args_type >
-    class g_func_void
+class g_func_void
 {
 public:
     static int invoke(lua_State* state)

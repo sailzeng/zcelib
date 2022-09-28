@@ -1,7 +1,6 @@
 #pragma once
 
 #include "zce/bytes/bytes_common.h"
-#include "zce/logger/logging.h"
 
 //===========================================================================================================
 //流编码处理的类，写入流的处理类
@@ -133,7 +132,7 @@ public:
     {
         //其实用下面注释的这个代码会更酷一点，但不知道为啥有告警，放弃，
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
-        ZCE_ASSERT(count < 0xFFFFFFFFll);
+        assert(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
         for (size_t i = 0; i < count && is_good_; ++i)
         {
@@ -145,7 +144,7 @@ public:
     ///特化，对字符串进行加速
     void write_array(const char* ary, size_t count)
     {
-        ZCE_ASSERT(count < 0xFFFFFFFFll);
+        assert(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
         if (is_good_)
         {
@@ -162,7 +161,7 @@ public:
     ///字符串特化
     void write_array(const unsigned char* ary, size_t count)
     {
-        ZCE_ASSERT(count < 0xFFFFFFFFll);
+        assert(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
         if (is_good_)
         {
@@ -226,7 +225,7 @@ void en_class_help<std::vector<vector_type> >::write_help(encode* ssave,
 {
     //长度用unsigned int保存
     size_t v_size = val.size();
-    ZCE_ASSERT(v_size < 0xFFFFFFFFll);
+    assert(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i)
     {
@@ -240,7 +239,7 @@ void en_class_help<std::list<list_type> >::write_help(encode* ssave,
                                                       const std::list<list_type>& val)
 {
     size_t v_size = val.size();
-    ZCE_ASSERT(v_size < 0xFFFFFFFFll);
+    assert(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
     typename std::list<list_type>::const_iterator iter = val.begin();
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
@@ -255,7 +254,7 @@ void en_class_help<std::map<key_type, data_type> >::write_help(encode* ssave,
                                                                const std::map<key_type, data_type>& val)
 {
     size_t v_size = val.size();
-    ZCE_ASSERT(v_size < 0xFFFFFFFFll);
+    assert(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
     typename std::map<key_type, data_type>::const_iterator iter = val.begin();
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
@@ -469,7 +468,7 @@ public:
     }
 
     template<typename val_type>
-    decode& ptr(val_type* p,size_t ary_sz)
+    decode& ptr(val_type* p, size_t ary_sz)
     {
         size_t load_sz;
         this->read_array(p, ary_sz, &load_sz);
