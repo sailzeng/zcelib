@@ -10,14 +10,6 @@ namespace soar
 {
 stat_monitor* stat_monitor::instance_ = NULL;
 
-stat_monitor::stat_monitor()
-{
-}
-
-stat_monitor::~stat_monitor()
-{
-}
-
 stat_monitor* stat_monitor::instance()
 {
     if (instance_ == NULL)

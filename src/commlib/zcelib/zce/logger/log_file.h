@@ -28,8 +28,6 @@
 
 #pragma once
 
-#include "zce/thread/msgque_condi.h"
-#include "zce/pool/buffer_pool.h"
 #include "zce/logger/log_comm.h"
 
 //!日志文件的分割方法,以及对应的名称关系
@@ -81,6 +79,19 @@ enum class LOGFILE_DEVIDE
 */
 namespace zce
 {
+class queue_buffer;
+class queue_buffer_pool_s;
+
+struct LOG_RECORD
+{
+    //!
+    timeval rec_time_;
+    //!
+    queue_buffer* rec_buf_ = nullptr;
+};
+
+template<typename T> class msgring_condi;
+
 class log_file
 {
 protected:
@@ -199,13 +210,6 @@ public:
     //!
     static const size_t  MAX_LEN_MSG_QUEUE = 4096;
 
-    struct LOG_RECORD
-    {
-        //!
-        timeval rec_time_;
-        //!
-        queue_buffer* rec_buf_ = nullptr;
-    };
 protected:
     //!
     bool vaild_ = false;
@@ -256,8 +260,9 @@ protected:
     //!输出到文件的现场
     std::thread thread_outlog_;
     //!日志记录缓存的池子，
-    zce::queue_buffer_pool_s buf_pool_;
+    zce::queue_buffer_pool_s *buf_pool_ = nullptr;
+
     //!日志记录的消息队列
-    zce::msgring_condi<LOG_RECORD>  msg_queue_;
+    zce::msgring_condi<LOG_RECORD> *msg_queue_ = nullptr;
 };
 }

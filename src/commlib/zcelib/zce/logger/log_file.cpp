@@ -6,6 +6,8 @@
 #include "zce/os_adapt/string.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/file.h"
+#include "zce/thread/msgque_condi.h"
+#include "zce/pool/buffer_pool.h"
 #include "zce/logger/log_file.h"
 
 namespace zce
@@ -22,13 +24,14 @@ const size_t  log_file::BUCKET_SIZE_ARY[SIZE_OF_BUCKET_ARY] =
 };
 
 //构造函数
-log_file::log_file() :
-    msg_queue_(MAX_LEN_MSG_QUEUE)
+log_file::log_file()
 {
     //预先分配空间
     log_file_name_.reserve(PATH_MAX + 32);
     log_file_dir_.reserve(PATH_MAX + 32);
     log_file_prefix_.reserve(PATH_MAX + 32);
+    buf_pool_ = new zce::queue_buffer_pool_s();
+    msg_queue_ = new zce::msgring_condi<LOG_RECORD>(MAX_LEN_MSG_QUEUE);
 }
 
 //
@@ -36,6 +39,10 @@ log_file::~log_file()
 {
     //注销
     terminate();
+    delete buf_pool_;
+    buf_pool_ = nullptr;
+    delete msg_queue_;
+    msg_queue_ = nullptr;
 }
 
 //初始化函数,参数最齐全的一个
@@ -110,11 +117,11 @@ int log_file::initialize(int output_way,
         if (thread_outfile_)
         {
             out_thread_run_ = true;
-            buf_pool_.initialize(SIZE_OF_BUCKET_ARY,
-                                 BUCKET_SIZE_ARY,
-                                 &zce::queue_buffer::new_self,
-                                 POOL_INIT,
-                                 POOL_ONCE_EXTEND);
+            buf_pool_->initialize(SIZE_OF_BUCKET_ARY,
+                                  BUCKET_SIZE_ARY,
+                                  &zce::queue_buffer::new_self,
+                                  POOL_INIT,
+                                  POOL_ONCE_EXTEND);
             thread_outlog_ = std::thread(&log_file::thread_work,
                                          this);
         }
@@ -438,7 +445,7 @@ void log_file::fileout_log_info(const timeval& now_time,
     {
         //buf_pool_.alloc_buffer(sz_use_len);
         zce::queue_buffer* buf = nullptr;
-        bool ret = buf_pool_.alloc_buffer(sz_use_len, buf);
+        bool ret = buf_pool_->alloc_buffer(sz_use_len, buf);
         if (!ret)
         {
             ZPRINT(RS_ALERT, "alloc_buffer fail .alloc len :%u.",
@@ -452,7 +459,7 @@ void log_file::fileout_log_info(const timeval& now_time,
         std::chrono::milliseconds wait_time = 10ms;
         logbuf.rec_buf_ = buf;
         logbuf.rec_time_ = now_time;
-        ret = msg_queue_.enqueue_wait(logbuf, wait_time);
+        ret = msg_queue_->enqueue_wait(logbuf, wait_time);
         if (!ret)
         {
             ZPRINT(RS_ALERT, "msg_queue_.enqueue fail .queue len :%u.",
@@ -489,8 +496,8 @@ void log_file::thread_work()
         LOG_RECORD logbuf;
         using namespace std::chrono_literals;
         std::chrono::milliseconds wait_time = 10ms;
-        get_rec = msg_queue_.dequeue_wait(logbuf,
-                                          wait_time);
+        get_rec = msg_queue_->dequeue_wait(logbuf,
+                                           wait_time);
         if (get_rec)
         {
             //得到新的文件名字

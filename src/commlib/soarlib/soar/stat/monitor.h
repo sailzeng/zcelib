@@ -11,9 +11,8 @@ class stat_monitor : public zce::server_status
 public:
     //gunner里面有接收多个cgi统计上报的需求
     //单件无法支持
-    stat_monitor();
-
-    ~stat_monitor();
+    stat_monitor() = default;
+    ~stat_monitor() = default;
 
     /*!
     * @brief      初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀

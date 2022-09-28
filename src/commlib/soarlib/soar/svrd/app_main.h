@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_SVRD_APP_MAIN_H_
-#define SOARING_LIB_SVRD_APP_MAIN_H_
+#pragma once
 
 //本来用宏实现了，但是写完了，稍微想改几行，就发现剧烈痛苦。还是用模版把。
 
@@ -77,5 +76,3 @@ int svrd_main(int argc, const char* argv[])
     return 0;
 }
 };
-
-#endif //#ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_
