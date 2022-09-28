@@ -125,10 +125,13 @@
     <None Include="zce\version.h.in" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="zce\aio\caller.cpp" />
+    <ClCompile Include="zce\aio\caller.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="zce\aio\awaiter.cpp" />
     <ClCompile Include="zce\aio\worker.cpp">
-      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
     </ClCompile>
     <ClCompile Include="zce\async\async_base.cpp" />
     <ClCompile Include="zce\async\coroutine.cpp" />
@@ -261,7 +264,7 @@
     <ClInclude Include="zce\logger\log_file.h" />
     <ClInclude Include="zce\logger\log_msg.h" />
     <ClInclude Include="zce\logger\log_print.h" />
-    <ClInclude Include="zce\logger\priority.h" />
+    <ClInclude Include="zce\logger\log_comm.h" />
     <ClInclude Include="zce\net\dns_resolve.h" />
     <ClInclude Include="zce\net\ping.h" />
     <ClInclude Include="zce\net\sock5_client.h" />

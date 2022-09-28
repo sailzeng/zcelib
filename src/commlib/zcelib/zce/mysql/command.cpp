@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/mysql/command.h"
 
 //如果你要用MYSQL的库
@@ -38,7 +39,7 @@ command::~command()
 }
 
 //为Command设置相关的连接对象，而且是必须已经成功连接上数据的
-int command::set_connection(zce::mysql::connect* conn)
+int command::set_connect(zce::mysql::connect* conn)
 {
     if (conn != NULL && conn->is_connected())
     {
@@ -195,6 +196,72 @@ int command::query(zce::mysql::result& sql_result)
     return query(NULL, NULL, &sql_result, false);
 }
 
+//得到connect 的句柄
+zce::mysql::connect* command::get_connect()
+{
+    return mysql_connect_;
+}
+
+//得到错误信息
+const char* command::error_message()
+{
+    return mysql_connect_->error_message();
+}
+
+//得到错误的ID
+unsigned int command::error_no()
+{
+    return mysql_connect_->error_no();
+}
+
+//SQL预计的赋值，
+int command::set_sql_command(const char* sqlcmd, size_t szsql)
+{
+    //如果错误,返回
+    if (sqlcmd == NULL)
+    {
+        ZCE_ASSERT(false);
+        return -1;
+    }
+
+    //
+    mysql_command_.assign(sqlcmd, szsql);
+    return 0;
+}
+
+//为TXT,BIN二进制的SQL命令提供的赋值方式 ,
+int command::set_sql_command(const std::string& sqlcmd)
+{
+    mysql_command_ = sqlcmd;
+    return 0;
+}
+
+//
+command& command::operator =(const char* sqlcmd)
+{
+    set_sql_command(sqlcmd);
+    return *this;
+}
+//
+command& command::operator =(const std::string& sqlcmd)
+{
+    set_sql_command(sqlcmd);
+    return *this;
+}
+
+//
+command& command::operator +=(const char* sqlcmd)
+{
+    mysql_command_.append(sqlcmd);
+    return *this;
+}
+
+command& command::operator +=(const std::string& sqlcmd)
+{
+    mysql_command_.append(sqlcmd);
+    return *this;
+}
+
 #if MYSQL_VERSION_ID > 40100
 
 //用于 multiple-statement executions 中得到多个
@@ -234,6 +301,24 @@ int command::fetch_next_multi_result(zce::mysql::result& sqlresult, bool bstore)
 
     //成功
     return 0;
+}
+
+//得到错误信息
+int command::set_auto_commit(bool bauto)
+{
+    return mysql_connect_->set_auto_commit(bauto);
+}
+
+//得到错误信息
+int command::trans_commit()
+{
+    return mysql_connect_->trans_commit();
+}
+
+//得到错误信息
+int command::trans_rollback()
+{
+    return mysql_connect_->trans_rollback();
 }
 
 #endif //MYSQL_VERSION_ID > 40100

@@ -1,8 +1,11 @@
 #pragma once
 
 #include "zce/os_adapt/common.h"
+#include "zce/logger/log_comm.h"
 #include "zce/os_adapt/socket.h"
 #include "zce/container/static_list.h"
+#include "zce/container/lord_rings.h"
+#include "zce/buffer/cycle_buffer.h"
 #include "zce/rudp/base.h"
 
 namespace zce::rudp
@@ -192,7 +195,7 @@ protected:
     void send_ack();
 
     //!DUMP信息
-    void dump_info(const char *some_thing, LOG_PRIORITY log_priority);
+    void dump_info(const char *some_thing, zce::LOG_PRIORITY log_priority);
 
 protected:
 

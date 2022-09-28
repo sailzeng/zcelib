@@ -20,7 +20,6 @@
 */
 #pragma once
 
-#include "zce/logger/logging.h"
 #include "zce/pool/multiobjs_pool.h"
 #include "zce/thread/msgque_condi.h"
 #include "zce/aio/caller.h"

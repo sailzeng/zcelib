@@ -714,7 +714,7 @@
     <ClInclude Include="zce\logger\log_msg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\logger\priority.h">
+    <ClInclude Include="zce\logger\log_comm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\logger\log_file.h">

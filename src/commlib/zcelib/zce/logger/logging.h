@@ -40,7 +40,7 @@
 #endif
 #ifndef ZCE_LOG
 #define ZCE_LOG               ZNO_LOG
-#endif 
+#endif
 #ifndef ZPP_LOG
 #define ZPP_LOG               ZNO_LOG
 #endif
@@ -72,12 +72,12 @@
 #define ZCE_ASSERT_ALL_EX(expr,str) assert(expr)
 #endif
 
-#endif
+#endif //#if defined ZCE_NO_LOG  && ZCE_NO_LOG == 1
 
 //定义日志输出,则实用内部的函数作为输出定义，如果关闭日志，只printf输出日志内容
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
-#include "zce/logger/priority.h"
+#include "zce/logger/log_comm.h"
 #include "zce/logger/log_file.h"
 #include "zce/logger/log_msg.h"
 
@@ -97,11 +97,10 @@
 //日志输出宏，ZCE_LOG为C格式输出，ZPP_LOG是C++ {}格式
 #ifndef ZCE_LOG
 #define ZCE_LOG               zce::log_msg::write_logmsg
-#endif 
+#endif
 #ifndef ZPP_LOG
 #define ZPP_LOG               zce::log_msg::write_logplus
 #endif
-
 #ifndef ZLOG_TRACE
 #define ZLOG_TRACE(...)       zce::log_msg::write_logmsg(RS_TRACE,__VA_ARGS__)
 #endif
@@ -172,9 +171,10 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL_EX
 
-#endif 
+#endif //#if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
+
 //如果没有定义使用ZCE内部的日志输出，使用printf作为输出方法，
-#if defined ZCE_USE_LOG_PRINT  && ZCE_USE_LOG_PRINT == 1 
+#if defined ZCE_USE_LOG_PRINT  && ZCE_USE_LOG_PRINT == 1
 
 #include "zce/logger/log_print.h"
 
@@ -189,7 +189,7 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #endif
 #ifndef ZCE_LOG
 #define ZCE_LOG               zce::log_printf::write_logmsg
-#endif 
+#endif
 #ifndef ZPP_LOG
 #define ZPP_LOG               #error "[Error]log printno ZPP_LOG."
 #endif

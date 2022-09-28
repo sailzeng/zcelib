@@ -46,7 +46,7 @@ stmt_cmd::~stmt_cmd()
 }
 
 //
-int stmt_cmd::set_connection(zce::mysql::connect* conn)
+int stmt_cmd::set_connect(zce::mysql::connect* conn)
 {
     //检查参数
     if (conn != NULL && conn->is_connected())

@@ -47,10 +47,10 @@ public:
     * @return     int
     * @param      zce::mysql::connect* 设置的链接
     */
-    int set_connection(zce::mysql::connect*);
+    int set_connect(zce::mysql::connect*);
 
     //!得到此Command的zce::mysql::Connect对象
-    inline zce::mysql::connect* get_connection();
+    inline zce::mysql::connect* get_connect();
 
     inline MYSQL_STMT* get_stmt_handle();
 
@@ -147,7 +147,7 @@ protected:
 };
 
 //得到connect 的句柄
-inline zce::mysql::connect* stmt_cmd::get_connection()
+inline zce::mysql::connect* stmt_cmd::get_connect()
 {
     return mysql_connect_;
 }

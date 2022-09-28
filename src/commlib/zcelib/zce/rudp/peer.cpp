@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/rudp/peer.h"
 
 //=================================================================================================

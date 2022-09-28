@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/aio/worker.h"
 #include "zce/aio/caller.h"
 

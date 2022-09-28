@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zce/logger/priority.h"
+#include "zce/logger/log_comm.h"
 
 namespace zce
 {
@@ -10,6 +10,9 @@ class log_printf
 public:
     log_printf() = default;
     ~log_printf();
+
+    log_printf(const log_printf &) = delete;
+    log_printf& operator=(const log_printf&) = delete;
 
     //输出va_list的参数信息
     void vwrite_logmsg(const char* str_format,

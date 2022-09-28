@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/os_adapt/socket.h"
 #include "zce/socket/addr_base.h"
 #include "zce/socket/addr_in.h"
@@ -51,7 +52,6 @@ addr_in6::addr_in6(const addr_in6& others) :
 {
     in6_addr_ = others.in6_addr_;
 }
-
 
 //设置地址信息
 void addr_in6::set_sockaddr(sockaddr* addr, socklen_t len)

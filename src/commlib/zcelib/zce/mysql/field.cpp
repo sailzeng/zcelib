@@ -7,6 +7,29 @@
 
 namespace zce::mysql
 {
+field::field(const char* fdata,
+             unsigned int flength,
+             enum_field_types ftype) :
+    field_data_(fdata),
+    field_length_(flength),
+    field_type_(ftype)
+{
+}
+
+field::field(const field& others)
+{
+    field_length_ = others.field_length_;
+    field_type_ = others.field_type_;
+    field_data_ = others.field_data_;
+}
+field& field::operator=(const field& others)
+{
+    field_length_ = others.field_length_;
+    field_type_ = others.field_type_;
+    field_data_ = others.field_data_;
+    return *this;
+}
+
 //High Speed 得到String
 void field::get_string(std::string& tmpstr) const
 {

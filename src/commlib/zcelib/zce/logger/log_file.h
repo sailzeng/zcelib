@@ -28,11 +28,9 @@
 
 #pragma once
 
-#include "zce/util/non_copyable.h"
-#include "zce/lock/thread_mutex.h"
 #include "zce/thread/msgque_condi.h"
 #include "zce/pool/buffer_pool.h"
-#include "zce/logger/priority.h"
+#include "zce/logger/log_comm.h"
 
 //!日志文件的分割方法,以及对应的名称关系
 //!默认的分割方法是按照时间.分割就是按照每天一个文件,文件名称中记录时间
@@ -97,6 +95,10 @@ public:
     log_file();
     ///析构函数
     virtual ~log_file();
+
+    ///
+    log_file(const log_file &) = delete;
+    log_file& operator=(const log_file&) = delete;
 
     /*!
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,

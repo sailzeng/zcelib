@@ -40,38 +40,6 @@
 #include "zce/string/extend.h"
 #include "zce/logger/log_file.h"
 
-///默认记录的数据,在每条日志的头部
-enum class LOG_HEAD
-{
-    ///什么都不纪录
-    NONE = 0,
-    ///纪录当前的时间
-    CURRENTTIME = (0x1 << 0),
-    ///纪录日志的级别信息
-    LOGLEVEL = (0x1 << 1),
-    ///纪录进程ID
-    PROCESS_ID = (0x1 << 2),
-    ///纪录线程ID
-    THREAD_ID = (0x1 << 3),
-};
-
-///选择输出的方式
-enum class LOG_OUTPUT
-{
-    ///不向任何地方输出
-    NONE = 0,
-    ///同步不向其他地方输出,默认
-    LOGFILE = (0x1 << 0),
-    ///同步向标准输出输出.如果你的程序是CGI程序,慎用
-    STDOUT = (0x1 << 1),
-    ///同步向标准错误输出.
-    ERROUT = (0x1 << 2),
-    ///向共享内存文件里面输出
-    MMAP_FILE = (0x1 << 3),
-    ///同步向WINDOWS的调试窗口输出,仅仅在WIN32环境起作用
-    WINDBG = (0x1 << 4)
-};
-
 namespace zce
 {
 class log_msg
@@ -81,6 +49,9 @@ public:
     ///构造函数
     log_msg();
     virtual ~log_msg();
+
+    log_msg(const log_msg &) = delete;
+    log_msg& operator=(const log_msg&) = delete;
 
     /*!
     * @brief      初始化函数,用于时间分割日志的构造
@@ -142,10 +113,10 @@ public:
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
 
     /*!
-     * @brief       初始化函数，比较全面，可以选输出方式，文件分割方式               
+     * @brief       初始化函数，比较全面，可以选输出方式，文件分割方式
      * @param[in]   output_way     输出的方式，LOG_OUTPUT的枚举值组合 @ref LOG_OUTPUT
      * @param[in]   div_log_file   分割日志的方式，时间，大小等
-     * @return 
+     * @return
     */
     int init_log(int output_way,
                  LOGFILE_DEVIDE div_log_file,

@@ -14,7 +14,7 @@
 */
 #pragma once
 
-#include "zce/logger/logging.h"
+#include "zce/logger/log_print.h"
 #include "zce/container/lord_rings.h"
 
 namespace zce
@@ -76,22 +76,22 @@ public:
         if (obj_pool_.full() == 0)
         {
             //
-            ZCE_LOG(RS_INFO, "[zce] (type:%s):,free :%u,capacity :%u,size:%u.Ok.",
-                    typeid(T).name(),
-                    obj_pool_.free(),
-                    obj_pool_.capacity(),
-                    obj_pool_.size());
+            ZPRINT(RS_INFO, "[zce] (type:%s):,free :%u,capacity :%u,size:%u.Ok.",
+                   typeid(T).name(),
+                   obj_pool_.free(),
+                   obj_pool_.capacity(),
+                   obj_pool_.size());
         }
         //如果他在内存
         else
         {
             //
-            ZCE_LOG(RS_ERROR, "[zce] (type:%s):,free :%u,capacity :%u,size:%u."
-                    "Have memory leak.Please check your code.",
-                    typeid(T).name(),
-                    obj_pool_.free(),
-                    obj_pool_.capacity(),
-                    obj_pool_.size());
+            ZPRINT(RS_ERROR, "[zce] (type:%s):,free :%u,capacity :%u,size:%u."
+                   "Have memory leak.Please check your code.",
+                   typeid(T).name(),
+                   obj_pool_.free(),
+                   obj_pool_.capacity(),
+                   obj_pool_.size());
         }
         size_t sz = obj_pool_.size();
         for (size_t i = 0; i < sz; i++)
@@ -160,7 +160,7 @@ protected:
     //!扩展
     bool extend(size_t extend_size)
     {
-        ZCE_LOG(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "
+        ZPRINT(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "
                "capacity[%u], extend[%u] , old capacity[%u] .",
                typeid(this).name(),
                obj_pool_.size(),

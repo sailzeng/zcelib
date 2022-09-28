@@ -24,13 +24,17 @@ namespace zce::mysql
 /*!
 * @brief      MYSQL的连接器
 */
-class connect : public zce::non_copyable
+class connect
 {
 public:
 
     //构造函数,析构函数
     connect();
     ~connect();
+
+    //避免拷贝
+    connect(const connect &) = delete;
+    connect& operator=(const connect&) = delete;
 
     /*!
     * @brief      连接数据服务器,通过IP地址，主机名称

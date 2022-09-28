@@ -27,7 +27,7 @@ namespace zce::mysql
 @brief      读取MYSQL数据库的类,用于操作MySQL DB的访问
             这个类里面包装了connect,command,你可以通过zce::mysql::Result获得结果
 */
-class execute : zce::non_copyable
+class execute
 {
 public:
 
@@ -35,6 +35,10 @@ public:
     execute() = default;
     ///析构函数
     ~execute() = default;
+
+    //避免拷贝
+    execute(const execute &) = delete;
+    execute& operator=(const execute&) = delete;
 
     /*!
     * @brief      初始化服务器,使用hostname进行连接,可以不立即连接和立即连接，你自己控制。
@@ -129,7 +133,7 @@ protected:
     std::string       db_password_;
 
     ///MYSQL数据库连接对象
-    zce::mysql::connect db_connect_;
+    ::zce::mysql::connect db_connect_;
 
     ///MYSQL命令执行对象
     zce::mysql::command db_command_;

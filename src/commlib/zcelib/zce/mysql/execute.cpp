@@ -68,7 +68,7 @@ int execute::connect()
         }
 
         //
-        db_command_.set_connection(&db_connect_);
+        db_command_.set_connect(&db_connect_);
     }
 
     return  0;
@@ -293,7 +293,7 @@ int query(zce::mysql::connect* db_connect,
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
     zce::mysql::command db_command;
-    db_command.set_connection(db_connect);
+    db_command.set_connect(db_connect);
     db_command.set_sql_command(sql, sqllen);
     int ret = db_command.query(*num_affect, *insert_id);
     //如果错误
@@ -331,7 +331,7 @@ int query(zce::mysql::connect* db_connect,
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
     zce::mysql::command db_command;
-    db_command.set_connection(db_connect);
+    db_command.set_connect(db_connect);
     db_command.set_sql_command(sql, sql_len);
     ret = db_command.query(*num_affect, *db_result);
     //如果错误
@@ -368,7 +368,7 @@ int query(zce::mysql::connect* db_connect,
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
     zce::mysql::command db_command;
-    db_command.set_connection(db_connect);
+    db_command.set_connect(db_connect);
     db_command.set_sql_command(sql, sql_len);
     ret = db_command.query(*db_result);
 

@@ -28,19 +28,14 @@ namespace zce::mysql
 class field
 {
 public:
-    //构造函数
+    //构造函数,析构函数
     field() = default;
-
-    //构造函数
-    field(const char* fdata, unsigned int flength, enum_field_types ftype) :
-        field_data_(fdata),
-        field_length_(flength),
-        field_type_(ftype)
-    {
-    };
-
-    ///析构函数
+    field(const char* fdata,
+          unsigned int flength,
+          enum_field_types ftype);
     ~field() = default;
+    field(const field& others);
+    field& operator=(const field& others);
 
     /*!
     * @brief      设置字段数据

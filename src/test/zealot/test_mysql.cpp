@@ -55,7 +55,7 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
             return RETURN_DB_ERROR;
         }
         //
-        g_db_command.set_connection(&g_db_connect);
+        g_db_command.set_connect(&g_db_connect);
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
@@ -96,7 +96,7 @@ int benchmark_db_query(const char* sql,
             return RETURN_DB_ERROR;
         }
         //
-        g_db_command.set_connection(&g_db_connect);
+        g_db_command.set_connect(&g_db_connect);
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
@@ -135,7 +135,7 @@ int benchmark_db_query(const char* sql,
             return RETURN_DB_ERROR;
         }
         //
-        g_db_command.set_connection(&g_db_connect);
+        g_db_command.set_connect(&g_db_connect);
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else

@@ -25,7 +25,7 @@ namespace zce
 *             Process_Semaphore,Thread_NONR_Mutex,等
 */
 template <typename zce_lock>
-class Lock_Guard : public zce::non_copyable
+class Lock_Guard : public ::zce::non_copyable
 {
 public:
 
@@ -236,5 +236,4 @@ protected:
     ///用来GUARD保护的锁
     zce_sema* lock_;
 };
-
 }

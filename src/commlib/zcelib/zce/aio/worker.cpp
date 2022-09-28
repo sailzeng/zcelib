@@ -1,5 +1,5 @@
 #include "zce/predefine.h"
-
+#include "zce/logger/logging.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/dirent.h"
 #include "zce/os_adapt/socket.h"

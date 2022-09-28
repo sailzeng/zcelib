@@ -21,7 +21,7 @@
 #ifndef ZCE_LIB_OS_ADAPT_STRING_H_
 #define ZCE_LIB_OS_ADAPT_STRING_H_
 
-#include "zce/logger/logging.h"
+#include "zce/logger/log_comm.h"
 
 namespace zce
 {
@@ -113,7 +113,7 @@ struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
 template <typename char_type>
 char_type* strtrimleft(char_type* str)
 {
-    ZCE_ASSERT(str);
+    assert(str);
 
     char_type* lstr = str;
     for (; *lstr != '\0'; lstr++)
@@ -144,7 +144,7 @@ char_type* strtrimleft(char_type* str)
 template <typename char_type>
 char* strtrimright(char_type* str)
 {
-    ZCE_ASSERT(str);
+    assert(str);
     char_type* lstr = str + yun_char_traits<char_type>::length(str) - 1;
 
     for (; lstr >= str; lstr--)
@@ -226,9 +226,9 @@ int stdstr_casecmp(std::basic_string<char_type, char_traits_type, allocator_typ>
     {
         return std::equal(a.begin(), a.end(), b.begin(),
                           [](char a, char b)
-                          {
-                              return tolower(a) == tolower(b);
-                          });
+        {
+            return tolower(a) == tolower(b);
+        });
     }
 }
 

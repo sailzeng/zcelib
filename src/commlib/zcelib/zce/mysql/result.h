@@ -32,7 +32,6 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/string.h"
-#include "zce/logger/logging.h"
 #include "zce/mysql/field.h"
 
 /*!
@@ -41,7 +40,7 @@
 */
 namespace zce::mysql
 {
-class result : zce::non_copyable
+class result
 {
 public:
 
@@ -51,12 +50,14 @@ public:
     };
 
 public:
-    ///构造函数
+    ///构造函数,析构函数
     result();
-    ///构造函数
     result(MYSQL_RES* sqlresult);
-    ///析构函数
     ~result();
+
+    //避免拷贝
+    result(const result &) = delete;
+    result& operator=(const result&) = delete;
 
     ///结果集合是否为空
     inline bool is_null();
@@ -266,142 +267,6 @@ private:
     MYSQL_FIELD* mysql_fields_;
 };
 
-//Description     : 查询结果集合是否为空
-inline bool result::is_null()
-{
-    if (mysql_result_)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//根据列名得到列ID,从0开始排序
-//循环比较,效率比较低
-inline int result::field_index(const char* fname, size_t& field_id) const
-{
-    //循环比较所有的列名,效率比较低下
-    for (unsigned int i = 0; i < num_result_field_; ++i)
-    {
-        //MYSQL列名字是不区分大小写的
-        if (!strcasecmp(fname, mysql_fields_[i].name))
-        {
-            field_id = i;
-            return 0;
-        }
-    }
-    return -1;
-}
-
-//根据列Field ID 返回表定义列域名,列域名字,可能为空
-//计算得到的列的列名字也可能是空,
-inline char* result::field_name(size_t fieldid) const
-{
-    //检查结果集合为空,或者参数nfield错误
-    if (mysql_result_ == NULL || fieldid >= num_result_field_)
-    {
-        return NULL;
-    }
-
-    //直接得到列域的名字
-    return mysql_fields_[fieldid].name;
-}
-
-//返回结果集的行数目,num_result_row_ 结果在execute函数中也可以得到
-inline unsigned int result::num_of_rows() const
-{
-    return num_result_row_;
-}
-
-//返回结果集的列数目
-inline unsigned int result::num_of_fields() const
-{
-    return num_result_field_;
-}
-
-//根据字段列ID,得到字段值
-const char* result::field_data(size_t fieldid) const
-{
-    if (current_row_ == NULL || fieldid >= num_result_field_)
-    {
-        return NULL;
-    }
-
-    return current_row_[fieldid];
-}
-
-//根据字段列ID,得到字段值的指针，长度你自己保证
-inline int result::field_data(size_t fieldid, char* pfdata) const
-{
-    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
-    if (current_row_ == NULL || fieldid >= num_result_field_ || pfdata == NULL)
-    {
-        ZCE_ASSERT(false);
-        return -1;
-    }
-
-    memcpy(pfdata, current_row_[fieldid], fields_length_[fieldid]);
-    return 0;
-}
-
-//根据字段顺序ID,得到字段表结构定义的类型
-inline int result::field_type(size_t fieldid, enum_field_types& ftype) const
-{
-    //检查结果集合为空,或者参数nfield错误
-    if (current_row_ == NULL || fieldid >= num_result_field_)
-    {
-        ZCE_ASSERT(false);
-        return -1;
-    }
-
-    ftype = mysql_fields_[fieldid].type;
-    return 0;
-}
-
-//根据Field ID 得到此列值的实际长度
-inline int result::field_length(size_t fieldid, unsigned int& flength) const
-{
-    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
-    if (current_row_ == NULL && fieldid >= num_result_field_)
-    {
-        ZCE_ASSERT(false);
-        return -1;
-    }
-
-    flength = fields_length_[fieldid];
-    return 0;
-}
-
-inline unsigned int result::get_cur_field_length()
-{
-    return static_cast<unsigned int>(fields_length_[current_field_]);
-}
-
-//根据字段的序列值得到字段值
-inline int result::get_field(size_t fieldid, zce::mysql::field& ffield) const
-{
-    //进行安全检查，如果错误返回
-    if (current_row_ == NULL || fieldid >= num_result_field_)
-    {
-        ZCE_ASSERT(false);
-        return -1;
-    }
-
-    ffield.set_field(current_row_[fieldid], fields_length_[fieldid], mysql_fields_[fieldid].type);
-    return 0;
-}
-
-//根据列序号ID得到字段FIELD，
-//[]操作符号函数不检查检查列ID,自己保证参数
-inline zce::mysql::field result::operator[](size_t fieldid) const
-{
-    zce::mysql::field ffield(current_row_[fieldid],
-                             fields_length_[fieldid],
-                             mysql_fields_[fieldid].type);
-    return ffield;
-}
-}
-
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
+}
