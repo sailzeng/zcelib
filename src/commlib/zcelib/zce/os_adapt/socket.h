@@ -17,15 +17,17 @@
 
 #pragma once
 
-#include "zce/logger/logging.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/error.h"
 
-class zce::time_value;
+
+
 
 namespace zce
 {
+class time_value;
+
 //==============================================================================
 
 //! sockaddr_any用于通用的存放sockaddr_in or sockaddr_in6的地址，

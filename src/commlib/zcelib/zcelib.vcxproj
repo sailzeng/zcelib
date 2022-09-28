@@ -127,7 +127,9 @@
   <ItemGroup>
     <ClCompile Include="zce\aio\caller.cpp" />
     <ClCompile Include="zce\aio\awaiter.cpp" />
-    <ClCompile Include="zce\aio\worker.cpp" />
+    <ClCompile Include="zce\aio\worker.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="zce\async\async_base.cpp" />
     <ClCompile Include="zce\async\coroutine.cpp" />
     <ClCompile Include="zce\async\fsm.cpp" />
