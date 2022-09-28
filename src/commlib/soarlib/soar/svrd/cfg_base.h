@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_SERVER_CONFIG_BASE_H_
-#define SOARING_LIB_SERVER_CONFIG_BASE_H_
+#pragma once
 
 #include "soar/zerg/services_info.h"
 
@@ -41,9 +40,10 @@ public:
     zce::LOG_PRIORITY log_level_ = RS_DEBUG;
 
     ///日志输出方式: @ref LOG_OUTPUT ,多种输出方式可以组合
-    uint32_t log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT);
+    int log_output_;
 
-    // 日志分割方式:101按大小 201按小时 205按天
+    // 日志分割方式:101按大小 201按小时 205按天    uint32_t log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT);
+
     LOGFILE_DEVIDE log_div_type_ = LOGFILE_DEVIDE::BY_TIME_DAY;
 
     // 日志文件保留个数，多出的日志文件将会被删除
@@ -158,5 +158,3 @@ public:
     ///svcid的配置文件
     std::string svc_table_file_;
 };
-
-#endif //SOARING_LIB_SERVER_CONFIG_BASE_H_

@@ -54,12 +54,10 @@ public:
     inline bool empty()
     {
         std::lock_guard<std::mutex> guard(queue_lock_);
-
         if (queue_cur_size_ == 0)
         {
             return true;
         }
-
         return false;
     }
 
@@ -92,7 +90,15 @@ public:
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-
+    bool enqueue_wait(const T& value_data,
+                      const zce::time_value& wait_time)
+    {
+        std::chrono::microseconds wait_mircosec;
+        wait_time.to(wait_mircosec);
+        return enqueue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_mircosec);
+    }
     //试着放入新的数据进入队列，如果没有成功，立即返回
     bool try_enqueue(const T& value_data)
     {
@@ -111,7 +117,15 @@ public:
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-
+    bool dequeue_wait(T& value_data,
+                      const zce::time_value& wait_time)
+    {
+        std::chrono::microseconds wait_mircosec;
+        wait_time.to(wait_mircosec);
+        return dequeue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_mircosec);
+    }
     //取出一个数据，一直等待
     bool dequeue(T& value_data)
     {

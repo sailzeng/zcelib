@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_SERVER_CONFIG_TRANS_H_
-#define SOARING_LIB_SERVER_CONFIG_TRANS_H_
+#pragma once
 
 #include "soar/zerg/services_info.h"
 #include "soar/svrd/cfg_base.h"
@@ -70,5 +69,3 @@ public:
     ///
     zce::propertytree framework_ptree_;
 };
-
-#endif //SOARING_LIB_SERVER_CONFIG_TRANS_H_

@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_ZERG_MMAP_PIPE_H_
-#define SOARING_LIB_ZERG_MMAP_PIPE_H_
+#pragma once
 
 #include "soar/zerg/frame_zerg.h"
 #include "soar/enum/error_code.h"
@@ -90,5 +89,3 @@ protected:
     soar::stat_monitor* monitor_ = nullptr;
 };
 }
-
-#endif //SOARING_LIB_ZERG_MMAP_PIPE_H_

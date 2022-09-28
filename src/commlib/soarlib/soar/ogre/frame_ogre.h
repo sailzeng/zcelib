@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
-#define SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
+#pragma once
 
 #include "soar/ogre/peer_id.h"
 
@@ -163,5 +162,3 @@ typedef int (*FP_JudgeRecv_WholeFrame)(const char* recv_buf,
                                        unsigned int max_buf_len,
                                        bool& if_whole,
                                        unsigned int& frame_len);
-
-#endif //#ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_

@@ -330,16 +330,17 @@ int app_buspipe::init_log()
     zce::log_msg::instance()->terminate();
 
     // 初始化日志
-    ret = zce::log_msg::instance()->init_log(config_base_->log_config_.log_output_,
-                                             config_base_->log_config_.log_div_type_,
-                                             config_base_->log_file_prefix_.c_str(),
-                                             true,
-                                             false,
-                                             true,
-                                             false,
-                                             config_base_->log_config_.max_log_file_size_,
-                                             config_base_->log_config_.reserve_file_num_,
-                                             ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME, LOG_HEAD::LOGLEVEL));
+    ret = zce::log_msg::instance()->
+        init_log(config_base_->log_config_.log_output_,
+                 config_base_->log_config_.log_div_type_,
+                 config_base_->log_file_prefix_.c_str(),
+                 true,
+                 false,
+                 true,
+                 false,
+                 config_base_->log_config_.max_log_file_size_,
+                 config_base_->log_config_.reserve_file_num_,
+                 ZCE_U32_OR_2(zce::LOG_HEAD::CURRENTTIME, zce::LOG_HEAD::LOGLEVEL));
     if (0 != ret)
     {
         ZCE_LOG(RS_ERROR, "zce::Log_Msg::instance()->initialize ret fail.");

@@ -1,5 +1,4 @@
-#ifndef SOARING_LIB_SERVICES_PEER_H_
-#define SOARING_LIB_SERVICES_PEER_H_
+#pragma once
 
 #pragma pack (1)
 /****************************************************************************************************
@@ -51,5 +50,3 @@ public:
         return (size_t(peer_info.peer_port_) << 16) + peer_info.peer_ip_address_;
     }
 };
-
-#endif //#ifndef SOARING_LIB_SERVICES_PEER_H_

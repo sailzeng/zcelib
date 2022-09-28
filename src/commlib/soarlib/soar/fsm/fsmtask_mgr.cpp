@@ -222,7 +222,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_f
 
     //不能直接放入enqueue_timeout_，这个值会改变
     zce::time_value tv = enqueue_timeout_;
-    ret = send_msg_queue_->enqueue(tmp_frame, tv);
+    ret = send_msg_queue_->enqueue_wait(tmp_frame, tv);
     auto monitor = soar::stat_monitor::instance();
     //返回值小于0表示失败
     if (ret < 0)

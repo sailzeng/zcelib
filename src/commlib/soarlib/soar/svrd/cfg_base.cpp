@@ -20,7 +20,8 @@ svrd_cfg_base::svrd_cfg_base() :
 
     log_config_.log_level_ = RS_DEBUG;
     log_config_.log_div_type_ = LOGFILE_DEVIDE::BY_TIME_DAY;
-    log_config_.log_output_ = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT);
+    log_config_.log_output_ = ZCE_U32_OR_2(zce::LOG_OUTPUT::LOGFILE, 
+                                           zce::LOG_OUTPUT::ERROUT);
 
     log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
     log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;

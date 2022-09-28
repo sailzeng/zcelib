@@ -88,7 +88,15 @@ public:
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-
+    bool enqueue_wait(const T& value_data,
+                      const zce::time_value& wait_time)
+    {
+        std::chrono::microseconds wait_mircosec;
+        wait_time.to(wait_mircosec);
+        return enqueue_i(value_data,
+                         MQW_WAIT_TIMEOUT,
+                         wait_mircosec);
+    }
     //尝试放入，立即返回
     bool try_enqueue(const T& value_data)
     {

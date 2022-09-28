@@ -205,7 +205,7 @@ public:
         int ret = 0;
         soar::zerg_frame* tmp_frame = NULL;
         frame_mallocor_->clone_appframe(post_frame, tmp_frame);
-        ret = recv_msg_queue_->enqueue(tmp_frame, *tv);
+        ret = recv_msg_queue_->enqueue_wait(tmp_frame, *tv);
 
         //返回值小于0表示失败
         if (ret < 0)
