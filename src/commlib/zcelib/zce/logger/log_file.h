@@ -89,7 +89,7 @@ struct LOG_RECORD
     //!
     queue_buffer* rec_buf_ = nullptr;
 };
-
+//目标的前置声明，真尼玛麻烦。
 template<typename T> class msgring_condi;
 
 class log_file
