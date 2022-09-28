@@ -68,7 +68,7 @@ public:
     //单子函数
     static thread_wait_manager* instance();
     //清理单子的函数
-    static void clean_instance();
+    static void clear_inst();
 };
 }
 #endif //#ifndef ZCE_LIB_THREAD_WAIT_MANAGER_H_

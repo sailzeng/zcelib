@@ -47,11 +47,11 @@ int FSM_Manager::initialize(zce::timer_queue* timer_queue,
     self_svc_info_ = selfsvr;
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
-    trans_send_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
+    trans_send_buffer_ = soar::zerg_frame::new_frame(max_frame_len + 32);
     trans_send_buffer_->init_head((uint32_t)max_frame_len, CMD_INVALID_CMD);
-    trans_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
+    trans_recv_buffer_ = soar::zerg_frame::new_frame(max_frame_len + 32);
     trans_recv_buffer_->init_head((uint32_t)max_frame_len, CMD_INVALID_CMD);
-    fake_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
+    fake_recv_buffer_ = soar::zerg_frame::new_frame(max_frame_len + 32);
     fake_recv_buffer_->init_head((uint32_t)max_frame_len, CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
@@ -89,17 +89,17 @@ void FSM_Manager::terminate()
     }
     if (trans_send_buffer_)
     {
-        soar::Zerg_Frame::delete_frame(trans_send_buffer_);
+        soar::zerg_frame::delete_frame(trans_send_buffer_);
         trans_send_buffer_ = NULL;
     }
     if (trans_recv_buffer_)
     {
-        soar::Zerg_Frame::delete_frame(trans_recv_buffer_);
+        soar::zerg_frame::delete_frame(trans_recv_buffer_);
         trans_recv_buffer_ = NULL;
     }
     if (fake_recv_buffer_)
     {
-        soar::Zerg_Frame::delete_frame(fake_recv_buffer_);
+        soar::zerg_frame::delete_frame(fake_recv_buffer_);
         fake_recv_buffer_ = NULL;
     }
 
@@ -132,7 +132,7 @@ int FSM_Manager::process_pipe_frame(size_t& proc_frame,
     int ret = 0;
     create_num = 0;
 
-    soar::Zerg_Frame* tmp_frame = reinterpret_cast<soar::Zerg_Frame*>(trans_recv_buffer_);
+    soar::zerg_frame* tmp_frame = reinterpret_cast<soar::zerg_frame*>(trans_recv_buffer_);
 
     for (proc_frame = 0; zerg_mmap_pipe_->is_empty_recvbus() == false
          && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
@@ -165,14 +165,14 @@ int FSM_Manager::process_pipe_frame(size_t& proc_frame,
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_frame(soar::Zerg_Frame* zerg_frame,
+int FSM_Manager::process_frame(soar::zerg_frame* zerg_frame,
                                bool& create_fsm)
 {
     create_fsm = false;
     int ret = 0;
     process_frame_ = zerg_frame;
     //如果是跟踪命令，打印出来
-    if (zerg_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (zerg_frame->frame_option_.option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
     {
         DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]",
                              zerg_frame);
@@ -207,7 +207,7 @@ int FSM_Manager::process_frame(soar::Zerg_Frame* zerg_frame,
 }
 
 //直接发送一个buffer to services。
-int FSM_Manager::sendfame_to_pipe(const soar::Zerg_Frame* send_frame)
+int FSM_Manager::sendfame_to_pipe(const soar::zerg_frame* send_frame)
 {
     return zerg_mmap_pipe_->push_back_sendbus(send_frame);
 }
@@ -218,13 +218,13 @@ void FSM_Manager::enable_trans_statistics(const zce::time_value* stat_clock)
     statistics_clock_ = stat_clock;
 }
 
-int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
+int FSM_Manager::sendbuf_to_pipe(const soar::zerg_head& zerg_head,
                                  const char* buf,
                                  size_t buf_len)
 {
-    soar::Zerg_Frame* send_frame = trans_send_buffer_;
-    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_FRAME);
-    ::memcpy(send_frame, &zerg_head, soar::Zerg_Frame::LEN_OF_HEAD);
+    soar::zerg_frame* send_frame = trans_send_buffer_;
+    send_frame->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME);
+    ::memcpy(send_frame, &zerg_head, soar::zerg_frame::LEN_OF_HEAD);
     if (buf_len)
     {
         ::memcpy(send_frame->frame_appdata_,
@@ -236,10 +236,10 @@ int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
     return 0;
 }
 
-int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame* post_frame)
+int FSM_Manager::postmsg_to_queue(soar::zerg_frame* post_frame)
 {
     int ret = 0;
-    soar::Zerg_Frame* tmp_frame = NULL;
+    soar::zerg_frame* tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     inner_frame_mallocor_->clone_appframe(post_frame, tmp_frame);
@@ -254,7 +254,7 @@ int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame* post_frame)
                 "Send queue message_count:%u message_bytes:%u. ",
                 ret,
                 message_queue_->size(),
-                message_queue_->size() * sizeof(soar::Zerg_Frame*));
+                message_queue_->size() * sizeof(soar::zerg_frame*));
         //出错了以后还回去
         inner_frame_mallocor_->free_appframe(tmp_frame);
 
@@ -264,7 +264,7 @@ int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame* post_frame)
     return 0;
 }
 
-int FSM_Manager::get_process_frame(const soar::Zerg_Frame*& zerg_frame)
+int FSM_Manager::get_process_frame(const soar::zerg_frame*& zerg_frame)
 {
     zerg_frame = process_frame_;
     return 0;
@@ -280,7 +280,7 @@ int FSM_Manager::process_queue_frame(size_t& proc_frame,
     //处理队列
     for (proc_frame = 0; message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-        soar::Zerg_Frame* tmp_frame = NULL;
+        soar::zerg_frame* tmp_frame = NULL;
         //
         ret = message_queue_->dequeue(tmp_frame);
 
@@ -318,12 +318,12 @@ int FSM_Manager::process_queue_frame(size_t& proc_frame,
 }
 
 // recv_svr填的是自己，就假装收到一个包，如其名fake
-int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame* fake_recv)
+int FSM_Manager::fake_receive_frame(const soar::zerg_frame* fake_recv)
 {
     int ret = 0;
 
-    soar::Zerg_Frame* tmp_frame =
-        reinterpret_cast<soar::Zerg_Frame*>(fake_recv_buffer_);
+    soar::zerg_frame* tmp_frame =
+        reinterpret_cast<soar::zerg_frame*>(fake_recv_buffer_);
     size_t buff_size = fake_recv->length_;
     memcpy(tmp_frame->frame_appdata_, fake_recv, buff_size);
 
@@ -384,13 +384,13 @@ bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
 //实例赋值
 void FSM_Manager::instance(FSM_Manager* pinstatnce)
 {
-    clean_instance();
+    clear_inst();
     instance_ = pinstatnce;
     return;
 }
 
 //清除实例
-void FSM_Manager::clean_instance()
+void FSM_Manager::clear_inst()
 {
     if (instance_)
     {

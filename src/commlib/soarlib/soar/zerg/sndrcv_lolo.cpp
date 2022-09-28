@@ -4,18 +4,18 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/zerg/sndrcv_lolo.h"
 
-Lolo_SendRecv_Package::Lolo_SendRecv_Package()
+lolo_sendrecv::lolo_sendrecv()
 {
     lolo_datagram_.open();
 }
 
-Lolo_SendRecv_Package::~Lolo_SendRecv_Package()
+lolo_sendrecv::~lolo_sendrecv()
 {
     lolo_datagram_.close();
 }
 
 //设置相应的SVC INFO,
-int Lolo_SendRecv_Package::set_lolo_svcinfo(const char* svc_ip,
+int lolo_sendrecv::set_lolo_svcinfo(const char* svc_ip,
                                             unsigned short svc_port,
                                             const soar::SERVICES_ID& recv_service,
                                             const soar::SERVICES_ID& send_service,

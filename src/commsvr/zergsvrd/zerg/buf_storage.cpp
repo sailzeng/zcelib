@@ -148,15 +148,15 @@ void Buffer_Storage::extend_bufferlist(size_t szlist)
 
 void Buffer_Storage::monitor()
 {
-    soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
+    soar::stat_monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
                                                 0,
                                                 0,
                                                 size_of_bufferalloc_);
-    soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_FREE,
+    soar::stat_monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_FREE,
                                                 0,
                                                 0,
                                                 buffer_deque_.free());
-    soar::Stat_Monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
+    soar::stat_monitor::instance()->set_counter(ZERG_BUFFER_STORAGE_NUMBER,
                                                 0,
                                                 0,
                                                 buffer_deque_.size());
@@ -174,7 +174,7 @@ Buffer_Storage* Buffer_Storage::instance()
 }
 
 //清除单子实例
-void Buffer_Storage::clean_instance()
+void Buffer_Storage::clear_inst()
 {
     if (instance_)
     {

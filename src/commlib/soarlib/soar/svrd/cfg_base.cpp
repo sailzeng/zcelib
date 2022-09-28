@@ -33,9 +33,9 @@ Server_Config_Base::~Server_Config_Base()
 int Server_Config_Base::read_start_arg(int argc, const char* argv[])
 {
     // 指明RETURN_IN_ORDER 不调整顺序
-    zce::Get_Option get_opt(argc, (char**)argv,
+    zce::get_option get_opt(argc, (char**)argv,
                             "umvndhpi:t:r:a:", 1, 0,
-                            zce::Get_Option::RETURN_IN_ORDER);
+                            zce::get_option::RETURN_IN_ORDER);
     int c = 0;
     while ((c = get_opt()) != EOF)
     {

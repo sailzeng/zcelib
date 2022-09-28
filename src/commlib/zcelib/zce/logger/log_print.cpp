@@ -93,7 +93,7 @@ zce::log_printf* zce::log_printf::instance()
     return instance_;
 }
 
-void zce::log_printf::clean_instance()
+void zce::log_printf::clear_inst()
 {
     if (instance_)
     {

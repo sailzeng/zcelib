@@ -131,7 +131,7 @@ int Echo_Proxy_Process::get_proxy_config(const zce::propertytree* conf_tree)
     return 0;
 }
 
-int Echo_Proxy_Process::process_proxy(soar::Zerg_Frame* proc_frame)
+int Echo_Proxy_Process::process_proxy(soar::zerg_frame* proc_frame)
 {
     ZCE_LOG_DEBUG(RS_DEBUG, "Receive a echo frame to process,"
                   "send svr:[%u|%u], "
@@ -198,7 +198,7 @@ int Transmit_Proxy::get_proxy_config(const zce::propertytree* conf_tree)
     return 0;
 }
 
-int Transmit_Proxy::process_proxy(soar::Zerg_Frame* proc_frame)
+int Transmit_Proxy::process_proxy(soar::zerg_frame* proc_frame)
 {
     ZCE_LOG_DEBUG(RS_DEBUG, "Receive a transmit frame to process,"
                   "send svr:[%u|%u], "
@@ -318,7 +318,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const zce::propertytree* conf_tree)
 }
 
 //
-int Broadcast_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
+int Broadcast_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 {
     int ret = 0;
 
@@ -438,7 +438,7 @@ int Modulo_ProxyProcess::get_proxy_config(const zce::propertytree* conf_tree)
 }
 
 //
-int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
+int Modulo_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 {
     int ret = 0;
 
@@ -597,7 +597,7 @@ int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
 //}
 //
 ////要处理的帧
-//int DBModalProxyProcess::process_proxy(soar::Zerg_Frame *proc_frame)
+//int DBModalProxyProcess::process_proxy(soar::zerg_frame *proc_frame)
 //{
 //    ZCE_LOG(RS_DEBUG,"Receive a dbmode frame to process,"
 //               "send svr:[%u|%u], "
@@ -641,7 +641,7 @@ int Modulo_ProxyProcess::process_proxy(soar::Zerg_Frame* proc_frame)
 //
 //            proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_ERROR);
 //
-//            soar::Stat_Monitor::instance()->add_one(WORMHOLE_TRANS_PKG_ERROR);
+//            soar::stat_monitor::instance()->add_one(WORMHOLE_TRANS_PKG_ERROR);
 //
 //            return SOAR_RET::ERROR_APPFRAME_ERROR;
 //        }

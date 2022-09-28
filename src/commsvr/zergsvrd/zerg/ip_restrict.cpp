@@ -111,7 +111,7 @@ IPRestrict_Mgr* IPRestrict_Mgr::instance()
 }
 
 //清理实例
-void IPRestrict_Mgr::clean_instance()
+void IPRestrict_Mgr::clear_inst()
 {
     if (instance_)
     {

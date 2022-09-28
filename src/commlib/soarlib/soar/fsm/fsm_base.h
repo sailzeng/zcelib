@@ -26,7 +26,7 @@
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
 namespace soar
 {
-class Zerg_Frame;
+class zerg_frame;
 class Svrd_BusPipe;
 
 class  FSM_Base : public zce::Async_FSM
@@ -67,7 +67,7 @@ public:
     * @param      recv_frame
     * @param      continue_run
     */
-    virtual void trans_run(const soar::Zerg_Frame* recv_frame,
+    virtual void trans_run(const soar::zerg_frame* recv_frame,
                            bool& continue_run) = 0;
 
     /*!
@@ -95,7 +95,7 @@ protected:
     * @brief      根据Frame初始化得到对方发送的信息
     * @param      recv_frame 初始化接收的FRAME数据,
     */
-    void create_init(const soar::Zerg_Frame* recv_frame);
+    void create_init(const soar::zerg_frame* recv_frame);
 
     //lock其实不是真正的锁，目的是保证在同一时刻，只处理一个用户的一个请求。
     //对当前用户的，当前事务命令字进行加锁
@@ -111,7 +111,7 @@ protected:
     ///用于检查请求的IP地址是否是内部IP地址
     int check_request_internal() const;
     ///检查接受到的FRAME的数据和命令
-    int check_receive_frame(const soar::Zerg_Frame* recv_frame,
+    int check_receive_frame(const soar::zerg_frame* recv_frame,
                             uint32_t wait_cmd);
 
     //!DUMP所有的事物的信息
@@ -227,11 +227,11 @@ protected:
     bool                    trans_create_ = true;
 
     //!
-    soar::Zerg_Frame* recv_frame_ = nullptr;
+    soar::zerg_frame* recv_frame_ = nullptr;
     //!
 
     //! 请求的状态机的头部
-    soar::Zerg_Head         req_zerg_head_;
+    soar::zerg_head         req_zerg_head_;
 
     //!事务超时的定时器ID
     int                     trans_timeout_id_ = -1;
@@ -400,9 +400,9 @@ int FSM_Base::response_sendback(uint32_t cmd,
                                 uint32_t option)
 {
     //加入UDP返回的代码部分
-    if (req_zerg_head_.u32_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
+    if (req_zerg_head_.u32_option_ & soar::zerg_frame::DESC_UDP_FRAME)
     {
-        option |= soar::Zerg_Frame::DESC_UDP_FRAME;
+        option |= soar::zerg_frame::DESC_UDP_FRAME;
     }
 
     //
@@ -427,9 +427,9 @@ int FSM_Base::response_sendback2(uint32_t cmd,
                                  uint32_t option)
 {
     //加入UDP返回的代码部分
-    if (req_zerg_head_.u32_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
+    if (req_zerg_head_.u32_option_ & soar::zerg_frame::DESC_UDP_FRAME)
     {
-        option |= soar::Zerg_Frame::DESC_UDP_FRAME;
+        option |= soar::zerg_frame::DESC_UDP_FRAME;
     }
 
     //
@@ -458,9 +458,9 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                  uint32_t option)
 {
     //如果请求的命令要求要监控，后面的处理进行监控
-    if (req_zerg_head_.u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (req_zerg_head_.u32_option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
     {
-        option |= soar::Zerg_Frame::DESC_TRACK_MONITOR;
+        option |= soar::zerg_frame::DESC_TRACK_MONITOR;
     }
     //条用管理器的发送函数
     return trans_manager_->sendmsg_to_service(cmd,

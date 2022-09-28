@@ -70,9 +70,9 @@ int svrd_main(int argc, const char* argv[])
             typeid(*application_class::instance()).name());
 
     //
-    application_class::clean_instance();
+    application_class::clear_inst();
     //关闭日志
-    zce::log_msg::clean_instance();
+    zce::log_msg::clear_inst();
 
     return 0;
 }

@@ -32,7 +32,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
 
     for (size_t i = 0; i < sz_of_buffer; ++i)
     {
-        Ogre4a_App_Frame::delete_ogre(frame_buffer_ary_[i]);
+        ogre4a_frame::delete_ogre(frame_buffer_ary_[i]);
         frame_buffer_ary_[i] = NULL;
     }
 
@@ -40,7 +40,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
     size_buffer_alloc_ = 0;
 }
 
-Ogre4a_App_Frame* Ogre_Buffer_Storage::allocate_byte_buffer()
+ogre4a_frame* Ogre_Buffer_Storage::allocate_byte_buffer()
 {
     //缓冲区使用完了,扩展
     if (true == frame_buffer_ary_.empty())
@@ -48,14 +48,14 @@ Ogre4a_App_Frame* Ogre_Buffer_Storage::allocate_byte_buffer()
         extend_buffer_list();
     }
 
-    Ogre4a_App_Frame* tmppr = frame_buffer_ary_[0];
+    ogre4a_frame* tmppr = frame_buffer_ary_[0];
     frame_buffer_ary_[0] = NULL;
     frame_buffer_ary_.pop_front();
     return tmppr;
 }
 
 //
-void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame* ptrbuf)
+void Ogre_Buffer_Storage::free_byte_buffer(ogre4a_frame* ptrbuf)
 {
     ptrbuf->reset_framehead();
     frame_buffer_ary_.push_back(ptrbuf);
@@ -68,8 +68,8 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     ZCE_LOG(RS_INFO, "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
             szlist,
             size_buffer_alloc_,
-            szlist * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
-            size_buffer_alloc_ * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
+            szlist * (ogre4a_frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
+            size_buffer_alloc_ * (ogre4a_frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
     );
 
     //重新扩展一下空间
@@ -78,7 +78,7 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     //将新的NEW数据装载进去
     for (size_t i = 0; i < szlist; ++i)
     {
-        Ogre4a_App_Frame* tmppr = Ogre4a_App_Frame::new_ogre(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN);
+        ogre4a_frame* tmppr = ogre4a_frame::new_ogre(ogre4a_frame::MAX_OF_OGRE_FRAME_LEN);
         tmppr->reset_framehead();
         frame_buffer_ary_.push_back(tmppr);
     }
@@ -91,7 +91,7 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 //实例的赋值
 void Ogre_Buffer_Storage::instance(Ogre_Buffer_Storage* instance)
 {
-    clean_instance();
+    clear_inst();
     instance_ = instance;
 }
 //实例的获得
@@ -99,14 +99,14 @@ Ogre_Buffer_Storage* Ogre_Buffer_Storage::instance()
 {
     if (NULL == instance_)
     {
-        clean_instance();
+        clear_inst();
         instance_ = new Ogre_Buffer_Storage();
     }
 
     return instance_;
 }
 //清除实例
-void Ogre_Buffer_Storage::clean_instance()
+void Ogre_Buffer_Storage::clear_inst()
 {
     if (instance_)
     {

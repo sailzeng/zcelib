@@ -56,7 +56,7 @@ public:
 #endif
 };
 
-class Zerg_Head
+class zerg_head
 {
 public:
     //帧的描述,在frame_option_字段使用
@@ -114,7 +114,7 @@ public:
     //清理
     inline void clear()
     {
-        length_ = sizeof(Zerg_Head);
+        length_ = sizeof(zerg_head);
         u32_option_ = OPTION_V1_TCP;
         command_ = CMD_INVALID_CMD;
         user_id_ = 0;
@@ -157,7 +157,7 @@ public:
 public:
 
     ///整个通讯包长度,留足空间,包括帧头的长度.
-    uint32_t               length_ = sizeof(Zerg_Head);
+    uint32_t               length_ = sizeof(zerg_head);
 
     union
     {
@@ -205,14 +205,14 @@ public:
 * @brief      Zerg服务器间传递消息的通用帧头
 *
 */
-class  Zerg_Frame : public Zerg_Head
+class  zerg_frame : public zerg_head
 {
 protected:
     //构造函数，复制函数，禁止大家都可以用的.
-    Zerg_Frame() = delete;
-    Zerg_Frame& operator = (const Zerg_Frame& other) = delete;
+    zerg_frame() = delete;
+    zerg_frame& operator = (const zerg_frame& other) = delete;
     //析构函数
-    ~Zerg_Frame() = delete;
+    ~zerg_frame() = delete;
     //Assign =运算符号
 public:
 
@@ -225,17 +225,17 @@ public:
     //交换Rcv ,Snd SvrInfo
     void exchange_rcvsnd_svcid();
     //交换Rcv ,Snd SvrInfo,prochandle
-    void exchange_rcvsnd_svcid(Zerg_Frame& exframe);
+    void exchange_rcvsnd_svcid(zerg_frame& exframe);
     //回填返回包头
-    void fillback_appframe_head(Zerg_Frame& exframe);
+    void fillback_appframe_head(zerg_frame& exframe);
 
     //给dst_frame克隆一个自己
-    void clone(Zerg_Frame* dst_frame) const;
+    void clone(zerg_frame* dst_frame) const;
     //给dst_frame复制一个头部数据
-    void clone_head(Zerg_Frame* dst_frame) const;
+    void clone_head(zerg_frame* dst_frame) const;
 
     //取得一个头部信息
-    void get_head(Zerg_Head& frame_head) const;
+    void get_head(zerg_head& frame_head) const;
 
     //取得帧的长度
     inline size_t get_frame_len() const;
@@ -273,9 +273,9 @@ public:
     //不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
     ///创建一个Frame
-    static Zerg_Frame* new_frame(std::size_t lenframe);
+    static zerg_frame* new_frame(std::size_t lenframe);
     ///销毁一个frame
-    static void delete_frame(Zerg_Frame* frame);
+    static void delete_frame(zerg_frame* frame);
 
     /*!
     * @brief      输出ZERG FRAME的头部信息
@@ -286,20 +286,20 @@ public:
     */
     static void dump_frame_head(zce::LOG_PRIORITY log_priority,
                                 const char* outer_str,
-                                const Zerg_Frame* frame);
+                                const zerg_frame* frame);
     ///输出APPFRAME的所有信息
     static void dump_frame_all(zce::LOG_PRIORITY log_priority,
                                const char* outer_str,
-                               const Zerg_Frame* proc_frame);
+                               const zerg_frame* proc_frame);
 
     //很耗时的操作，注意使用频度
-#define DUMP_ZERG_FRAME_HEAD(x,y,z)    soar::Zerg_Frame::dump_frame_head(x,y,z)
-#define DUMP_ZERG_FRAME_ALL(x,y,z)     soar::Zerg_Frame::dump_frame_all(x,y,z)
+#define DUMP_ZERG_FRAME_HEAD(x,y,z)    soar::zerg_frame::dump_frame_head(x,y,z)
+#define DUMP_ZERG_FRAME_ALL(x,y,z)     soar::zerg_frame::dump_frame_all(x,y,z)
 
 //非DEBUG版本会优化掉的宏
 #if defined _DEBUG || defined DEBUG
-#define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)     soar::Zerg_Frame::dump_frame_head(x,y,z)
-#define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)      soar::Zerg_Frame::dump_frame_all(x,y,z)
+#define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)     soar::zerg_frame::dump_frame_head(x,y,z)
+#define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)      soar::zerg_frame::dump_frame_all(x,y,z)
 #else
 #define DEBUG_DUMP_ZERG_FRAME_HEAD(x,y,z)
 #define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)
@@ -326,24 +326,23 @@ public:
 #pragma pack ()
 
 //得到帧的总长度
-inline size_t Zerg_Frame::get_frame_len() const
+inline size_t zerg_frame::get_frame_len() const
 {
     return length_;
 }
 //得到帧头总长度
-inline  size_t Zerg_Frame::get_frame_datalen() const
+inline  size_t zerg_frame::get_frame_datalen() const
 {
     return length_ - LEN_OF_HEAD;
 }
 
 //是否事通信服务器处理的命理
-inline bool Zerg_Frame::is_zerg_processcmd()
+inline bool zerg_frame::is_zerg_processcmd()
 {
     if (command_ >= ZERG_COMMAND_BEGIN && command_ <= ZERG_COMMAND_END)
     {
         return true;
     }
-
     return false;
 }
 }

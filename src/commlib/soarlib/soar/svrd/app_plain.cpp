@@ -10,8 +10,8 @@ SvrdApp_Plain::SvrdApp_Plain() :
     App_BusPipe(),
     nonctrl_recv_buffer_(NULL)
 {
-    nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(
-        soar::Zerg_Frame::MAX_LEN_OF_FRAME);
+    nonctrl_recv_buffer_ = soar::zerg_frame::new_frame(
+        soar::zerg_frame::MAX_LEN_OF_FRAME);
 }
 
 SvrdApp_Plain::~SvrdApp_Plain()
@@ -19,7 +19,7 @@ SvrdApp_Plain::~SvrdApp_Plain()
     //释放资源
     if (nonctrl_recv_buffer_)
     {
-        soar::Zerg_Frame::delete_frame(nonctrl_recv_buffer_);
+        soar::zerg_frame::delete_frame(nonctrl_recv_buffer_);
         nonctrl_recv_buffer_ = NULL;
     }
 }

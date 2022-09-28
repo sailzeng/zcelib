@@ -277,7 +277,7 @@ int test_sql_main(int argc, char* argv[])
     int table_id = 0;
     bool bexecute = false;
 
-    zce::Get_Option get_opt(argc, argv, "dicsn:r:p:t:");
+    zce::get_option get_opt(argc, argv, "dicsn:r:p:t:");
     int c;
     //Process the scanned options with the help of the overloaded ()
     //operator.

@@ -383,7 +383,7 @@ public:
     //单子实例赋值
     static void instance(server_status*);
     //清理单子实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
 

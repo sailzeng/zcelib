@@ -7,7 +7,7 @@ class Ogre_Buffer_Storage BUFFER存储的
 class Ogre_Buffer_Storage
 {
     //
-    typedef zce::lord_rings <Ogre4a_App_Frame*> SAIL_FRAME_BUFFER_POOL;
+    typedef zce::lord_rings <ogre4a_frame*> SAIL_FRAME_BUFFER_POOL;
 
 protected:
 
@@ -27,9 +27,9 @@ public:
     void uninit_buffer_list();
 
     //分配一个Buffer到List中
-    Ogre4a_App_Frame* allocate_byte_buffer();
+    ogre4a_frame* allocate_byte_buffer();
     //释放一个Buffer到List中
-    void free_byte_buffer(Ogre4a_App_Frame* ptrbuf);
+    void free_byte_buffer(ogre4a_frame* ptrbuf);
 
     //扩展BufferList
     void extend_buffer_list(size_t szlist = EXTEND_NUM_OF_LIST);
@@ -42,7 +42,7 @@ public:
     //实例的获得
     static Ogre_Buffer_Storage* instance();
     //清除实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
 

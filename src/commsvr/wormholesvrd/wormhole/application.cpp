@@ -103,7 +103,7 @@ int Wormhole_Proxy_App::reload_config()
     return 0;
 }
 
-int Wormhole_Proxy_App::process_recv_frame(soar::Zerg_Frame* recv_frame)
+int Wormhole_Proxy_App::process_recv_frame(soar::zerg_frame* recv_frame)
 {
     return interface_proxy_->process_proxy(recv_frame);
 }

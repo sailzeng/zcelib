@@ -127,7 +127,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     recvret = dgram_peer_.recvfrom(dgram_databuf_->frame_data_,
-                                   Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN,
+                                   ogre4a_frame::MAX_OF_OGRE_DATA_LEN,
                                    0,
                                    &remote_addr);
 
@@ -173,10 +173,10 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote
 
     dgram_databuf_->snd_peer_info_.set(remote_addr);
     dgram_databuf_->rcv_peer_info_ = this->peer_svc_info_;
-    dgram_databuf_->ogre_frame_len_ = static_cast<unsigned int>(Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
+    dgram_databuf_->ogre_frame_len_ = static_cast<unsigned int>(ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
     //避免发生其他人填写的情况
     dgram_databuf_->ogre_frame_option_ = 0;
-    dgram_databuf_->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_PEER_UDP;
+    dgram_databuf_->ogre_frame_option_ |= ogre4a_frame::OGREDESC_PEER_UDP;
 
     szrevc = recvret;
 
@@ -186,7 +186,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote
 int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
     int ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
-        reinterpret_cast<soar::Zerg_Frame*>(dgram_databuf_));
+        reinterpret_cast<soar::zerg_frame*>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 
@@ -200,7 +200,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 }
 
 //发送UDP数据。
-int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
+int Ogre_UDPSvc_Hdl::send_alldata_to_udp(ogre4a_frame* send_frame)
 {
     ssize_t szsend = -1;
 
@@ -219,7 +219,7 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame* send_frame)
         if (ary_upd_peer_[i]->peer_svc_info_ == send_frame->snd_peer_info_)
         {
             szsend = ary_upd_peer_[i]->dgram_peer_.sendto(send_frame->frame_data_,
-                                                          send_frame->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
+                                                          send_frame->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD,
                                                           0,
                                                           &remote_addr);
             break;

@@ -208,13 +208,13 @@ ZCE_Reactor* ZCE_Reactor::instance()
 //赋值唯一的单子实例
 void ZCE_Reactor::instance(ZCE_Reactor* pinstatnce)
 {
-    clean_instance();
+    clear_inst();
     instance_ = pinstatnce;
     return;
 }
 
 //清除单子实例
-void ZCE_Reactor::clean_instance()
+void ZCE_Reactor::clear_inst()
 {
     if (instance_)
     {

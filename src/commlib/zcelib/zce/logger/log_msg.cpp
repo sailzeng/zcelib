@@ -538,13 +538,13 @@ log_msg* log_msg::instance()
 //赋值唯一的单子实例
 void log_msg::instance(log_msg* instatnce)
 {
-    clean_instance();
+    clear_inst();
     log_instance_ = instatnce;
     return;
 }
 
 //清除单子实例
-void log_msg::clean_instance()
+void log_msg::clear_inst()
 {
     if (log_instance_)
     {

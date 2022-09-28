@@ -6,14 +6,14 @@ namespace soar
 {
 //原来是使用模版策略锁，后来发现模版容易将问题扩大化，
 //改成多态策略
-class Stat_Monitor : public zce::server_status
+class stat_monitor : public zce::server_status
 {
 public:
     //gunner里面有接收多个cgi统计上报的需求
     //单件无法支持
-    Stat_Monitor();
+    stat_monitor();
 
-    ~Stat_Monitor();
+    ~stat_monitor();
 
     /*!
     * @brief      初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
@@ -53,9 +53,9 @@ protected:
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
 public:
     //
-    static Stat_Monitor* instance();
+    static stat_monitor* instance();
     //
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
     // 监控mmap文件名最大长度
@@ -67,6 +67,6 @@ protected:
 
 protected:
     //单子实例
-    static Stat_Monitor* instance_;
+    static stat_monitor* instance_;
 };
 }

@@ -1369,7 +1369,7 @@ public:
         return instance_;
     }
     //
-    static void clean_instance()
+    static void clear_inst()
     {
         if (instance_)
         {
@@ -1462,7 +1462,7 @@ int test_lux_data_manager(int argc, char* /*argv*/[])
     ret = Lux_Data_Manager::instance()->erase(my_data);
     std::cout << "3.erase mydata 3 ret =" << ret << std::endl;
 
-    Lux_Data_Manager::instance()->clean_instance();
+    Lux_Data_Manager::instance()->clear_inst();
 
     //
     zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY, "C:\\123");

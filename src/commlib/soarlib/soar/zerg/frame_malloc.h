@@ -39,20 +39,20 @@ public:
     * @note
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
-                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME);
+                    size_t max_frame_len = soar::zerg_frame::MAX_LEN_OF_FRAME);
 
     /*!
     * @brief      根据要求的的FRAME尺寸大小，分配一个FRAME
-    * @return     soar::Zerg_Frame*
+    * @return     soar::zerg_frame*
     * @param      frame_len
     */
-    soar::Zerg_Frame* alloc_appframe(size_t frame_len);
+    soar::zerg_frame* alloc_appframe(size_t frame_len);
 
     /*!
     * @brief      释放一个APPFRAME到池子
     * @param      proc_frame 处理的frame
     */
-    void free_appframe(soar::Zerg_Frame* proc_frame);
+    void free_appframe(soar::zerg_frame* proc_frame);
 
     /*!
     * @brief      复制一个APPFRAME
@@ -60,7 +60,8 @@ public:
     * @param      cloned_frame  被克隆的FRAME
     * @note
     */
-    void clone_appframe(const soar::Zerg_Frame* model_freame, soar::Zerg_Frame*& cloned_frame);
+    void clone_appframe(const soar::zerg_frame* model_freame, 
+                        soar::zerg_frame*& cloned_frame);
 
     /*!
     * @brief      返回最大可以分配的FRAME的长度
@@ -92,7 +93,7 @@ public:
     //得到SINGLETON的实例
     static ZergFrame_Mallocor* instance();
     //清理SINGLETON的实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
     //桶队列的个数
@@ -105,7 +106,7 @@ protected:
     static const size_t NUM_OF_ALLOW_LIST_IDLE_FRAME = 1024;
 
     //
-    typedef zce::lord_rings <soar::Zerg_Frame*>     LIST_OF_APPFRAME;
+    typedef zce::lord_rings <soar::zerg_frame*>     LIST_OF_APPFRAME;
     //
     typedef std::vector< LIST_OF_APPFRAME > APPFRAME_MEMORY_POOL;
 
@@ -134,7 +135,7 @@ void ZergFrame_Mallocor<zce_lock>::initialize(size_t init_num,
 {
     ZCE_ASSERT(max_frame_len > 2048 && init_num > 8);
 
-    ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::AppFrame_Mallocor_Mgr init num=%u,max_frame_len=%u.",
+    ZCE_LOG(RS_INFO, "[framework] ZergFrame_Mallocor::initialize init num=%u,max_frame_len=%u.",
             init_num,
             max_frame_len);
 
@@ -212,7 +213,8 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
         else
         {
             //
-            ZCE_LOG(RS_ERROR, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
+            ZCE_LOG(RS_ERROR, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,"
+                    "list node:%u.Have memory leak.Please check your code.",
                     i,
                     size_appframe_[i],
                     frame_pool_[i].free(),
@@ -225,16 +227,16 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
 
         for (size_t j = 0; j < frame_pool_len; ++j)
         {
-            soar::Zerg_Frame* proc_frame = NULL;
+            soar::zerg_frame* proc_frame = NULL;
             frame_pool_[i].pop_front(proc_frame);
-            soar::Zerg_Frame::delete_frame(proc_frame);
+            soar::zerg_frame::delete_frame(proc_frame);
         }
     }
 }
 
 //根据需要长度，从池子分配一个APPFRAME
 template <typename zce_lock >
-soar::Zerg_Frame* ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
+soar::zerg_frame* ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
 {
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
     size_t hk = get_roundup(frame_len);
@@ -246,7 +248,7 @@ soar::Zerg_Frame* ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
     }
 
     //
-    soar::Zerg_Frame* new_frame = NULL;
+    soar::zerg_frame* new_frame = NULL;
     frame_pool_[hk].pop_front(new_frame);
     new_frame->init_head(static_cast<unsigned int>(frame_len));
 
@@ -256,8 +258,8 @@ soar::Zerg_Frame* ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::Zerg_Frame* model_freame,
-                                                  soar::Zerg_Frame*& cloned_frame)
+void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::zerg_frame* model_freame,
+                                                  soar::zerg_frame*& cloned_frame)
 {
     //
     size_t frame_len = model_freame->length_;
@@ -267,7 +269,7 @@ void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::Zerg_Frame* model_
 
 //释放一个APPFRAME到池子
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::free_appframe(soar::Zerg_Frame* proc_frame)
+void ZergFrame_Mallocor<zce_lock>::free_appframe(soar::zerg_frame* proc_frame)
 {
     ZCE_ASSERT(proc_frame);
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
@@ -290,7 +292,7 @@ void ZergFrame_Mallocor<zce_lock>::adjust_pool_capacity()
 
             for (size_t j = 0; j < free_sz; ++j)
             {
-                soar::Zerg_Frame* new_frame = NULL;
+                soar::zerg_frame* new_frame = NULL;
                 frame_pool_[i].pop_front(new_frame);
                 delete new_frame;
             }
@@ -307,7 +309,7 @@ void ZergFrame_Mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t e
 
     for (size_t j = 0; j < extend_num; ++j)
     {
-        soar::Zerg_Frame* proc_frame = soar::Zerg_Frame::new_frame(size_appframe_[list_no] + 1);
+        soar::zerg_frame* proc_frame = soar::zerg_frame::new_frame(size_appframe_[list_no] + 1);
         frame_pool_[list_no].push_back(proc_frame);
     }
 }
@@ -326,7 +328,7 @@ ZergFrame_Mallocor<zce_lock>* ZergFrame_Mallocor<zce_lock>::instance()
 
 //清理SINGLETON的实例
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::clean_instance()
+void ZergFrame_Mallocor<zce_lock>::clear_inst()
 {
     if (instance_)
     {

@@ -52,6 +52,7 @@ int test_rudp(int argc, char* argv[])
                                                 true,
                                                 false,
                                                 true,
+                                                false,
                                                 (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
                                                 (int)(LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
@@ -65,6 +66,7 @@ int test_rudp(int argc, char* argv[])
                                                 true,
                                                 false,
                                                 true,
+                                                false,
                                                 (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
                                                 (int)(LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);

@@ -21,39 +21,105 @@
 #include "zce/config.h"
 #include "zce/os_adapt/error.h"
 
-//定义日志输出,则实用内部的函数作为输出定义，如果关闭日志，只printf输出日志内容
-#if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
-
-#include "zce/logger/log_file.h"
-#include "zce/logger/log_msg.h"
-
-//打开输出
-#define ZLOG_ENABLE           zce::log_msg::instance()->enable_output(true)
-//关闭输出
-#define ZLOG_DISABLE          zce::log_msg::instance()->enable_output(false)
-//输出MASK级别,小于这个级别的日志信息不予输出
-#define ZLOG_SET_OUTLEVEL     zce::log_msg::instance()->set_log_priority
-
-//当年还用过一套为GCC2.9定义的双括号的红，土死了，后来不打算兼容那么多版本，我懒
-
-//使用调试级别输出日志
-#define ZCE_LOG               zce::log_msg::write_logmsg
-
-#define ZPP_LOG               zce::log_msg::write_logplus
-
 #if defined ZCE_OS_WINDOWS
 #define ZNO_LOG             __noop
 #else
 #define ZNO_LOG(...)        (void(0))
 #endif
 
-#define ZLOG_TRACE(...)       zce::log_msg::write_logmsg(RS_TRACE,__VA_ARGS__)
-#define ZLOG_DEBUG(...)       zce::log_msg::write_logmsg(RS_DEBUG,__VA_ARGS__)
-#define ZLOG_INFO(...)        zce::log_msg::write_logmsg(RS_INFO,__VA_ARGS__)
-#define ZLOG_ERROR(...)       zce::log_msg::write_logmsg(RS_ERROR,__VA_ARGS__)
-#define ZLOG_ALERT(...)       zce::log_msg::write_logmsg(RS_ALERT,__VA_ARGS__)
-#define ZLOG_FATAL(...)       zce::log_msg::write_logmsg(RS_FATAL,__VA_ARGS__)
+#if defined ZCE_NO_LOG  && ZCE_NO_LOG == 1
 
+#ifndef ZLOG_ENABLE
+#define ZLOG_ENABLE           ZNO_LOG
+#endif
+#ifndef ZLOG_DISABLE
+#define ZLOG_DISABLE          ZNO_LOG
+#endif
+#ifndef ZLOG_SET_OUTLEVEL
+#define ZLOG_SET_OUTLEVEL(x)  ZNO_LOG
+#endif
+#ifndef ZCE_LOG
+#define ZCE_LOG               ZNO_LOG
+#endif 
+#ifndef ZPP_LOG
+#define ZPP_LOG               ZNO_LOG
+#endif
+
+#ifndef ZLOG_TRACE
+#define ZLOG_TRACE(...)       ZNO_LOG
+#endif
+#ifndef ZLOG_DEBUG
+#define ZLOG_DEBUG(...)       ZNO_LOG
+#endif
+#ifndef ZLOG_INFO
+#define ZLOG_INFO(...)        ZNO_LOG
+#endif
+#ifndef ZLOG_ERROR
+#define ZLOG_ERROR(...)       ZNO_LOG
+#endif
+#ifndef ZLOG_ALERT
+#define ZLOG_ALERT(...)       ZNO_LOG
+#endif
+#ifndef ZLOG_FATAL
+#define ZLOG_FATAL(...)       ZNO_LOG
+#endif
+
+#ifndef ZCE_ASSERT_ALL
+#define ZCE_ASSERT_ALL(expr) assert(expr)
+#endif
+
+#ifndef ZCE_ASSERT_ALL_EX
+#define ZCE_ASSERT_ALL_EX(expr,str) assert(expr)
+#endif
+
+#endif
+
+//定义日志输出,则实用内部的函数作为输出定义，如果关闭日志，只printf输出日志内容
+#if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
+
+#include "zce/logger/priority.h"
+#include "zce/logger/log_file.h"
+#include "zce/logger/log_msg.h"
+
+//打开输出 和 关闭输出
+#ifndef ZLOG_ENABLE
+#define ZLOG_ENABLE           zce::log_msg::instance()->enable_output(true)
+#endif
+#ifndef ZLOG_DISABLE
+#define ZLOG_DISABLE          zce::log_msg::instance()->enable_output(false)
+#endif
+//输出MASK级别,小于这个级别的日志信息不予输出
+#ifndef ZLOG_SET_OUTLEVEL
+#define ZLOG_SET_OUTLEVEL(x)  zce::log_msg::instance()->set_log_priority(x)
+#endif
+//当年还用过一套为GCC2.9定义的双括号的红，土死了，后来不打算兼容那么多版本，我懒
+
+//日志输出宏，ZCE_LOG为C格式输出，ZPP_LOG是C++ {}格式
+#ifndef ZCE_LOG
+#define ZCE_LOG               zce::log_msg::write_logmsg
+#endif 
+#ifndef ZPP_LOG
+#define ZPP_LOG               zce::log_msg::write_logplus
+#endif
+
+#ifndef ZLOG_TRACE
+#define ZLOG_TRACE(...)       zce::log_msg::write_logmsg(RS_TRACE,__VA_ARGS__)
+#endif
+#ifndef ZLOG_DEBUG
+#define ZLOG_DEBUG(...)       zce::log_msg::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#endif
+#ifndef ZLOG_INFO
+#define ZLOG_INFO(...)        zce::log_msg::write_logmsg(RS_INFO,__VA_ARGS__)
+#endif
+#ifndef ZLOG_ERROR
+#define ZLOG_ERROR(...)       zce::log_msg::write_logmsg(RS_ERROR,__VA_ARGS__)
+#endif
+#ifndef ZLOG_ALERT
+#define ZLOG_ALERT(...)       zce::log_msg::write_logmsg(RS_ALERT,__VA_ARGS__)
+#endif
+#ifndef ZLOG_FATAL
+#define ZLOG_FATAL(...)       zce::log_msg::write_logmsg(RS_FATAL,__VA_ARGS__)
+#endif
 //----------------------------------------------------------------------------------
 //无论，DEBUG版本，REALSE版本也起作用的一些断言，这些宏在所有版本都起作用，用于一些在运行时期也要判断的东东
 //ALL，任何时候，
@@ -106,22 +172,46 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL_EX
 
+#endif 
 //如果没有定义使用ZCE内部的日志输出，使用printf作为输出方法，
-#else
+#if defined ZCE_USE_LOG_PRINT  && ZCE_USE_LOG_PRINT == 1 
 
 #include "zce/logger/log_print.h"
 
+#ifndef ZLOG_ENABLE
 #define ZLOG_ENABLE           zce::log_printf::instance()->enable_output(true)
+#endif
+#ifndef ZLOG_DISABLE
 #define ZLOG_DISABLE          zce::log_printf::instance()->enable_output(false)
-#define ZLOG_SET_OUTLEVEL     zce::log_printf::instance()->set_log_priority
+#endif
+#ifndef ZLOG_SET_OUTLEVEL
+#define ZLOG_SET_OUTLEVEL(x)  zce::log_printf::instance()->set_log_priority(x)
+#endif
+#ifndef ZCE_LOG
 #define ZCE_LOG               zce::log_printf::write_logmsg
+#endif 
+#ifndef ZPP_LOG
+#define ZPP_LOG               #error "[Error]log printno ZPP_LOG."
+#endif
 
+#ifndef ZLOG_TRACE
 #define ZLOG_TRACE(...)       zce::log_printf::write_logmsg(RS_TRACE,__VA_ARGS__)
+#endif
+#ifndef ZLOG_DEBUG
 #define ZLOG_DEBUG(...)       zce::log_printf::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#endif
+#ifndef ZLOG_INFO
 #define ZLOG_INFO(...)        zce::log_printf::write_logmsg(RS_INFO,__VA_ARGS__)
+#endif
+#ifndef ZLOG_ERROR
 #define ZLOG_ERROR(...)       zce::log_printf::write_logmsg(RS_ERROR,__VA_ARGS__)
+#endif
+#ifndef ZLOG_ALERT
 #define ZLOG_ALERT(...)       zce::log_printf::write_logmsg(RS_ALERT,__VA_ARGS__)
+#endif
+#ifndef ZLOG_FATAL
 #define ZLOG_FATAL(...)       zce::log_printf::write_logmsg(RS_FATAL,__VA_ARGS__)
+#endif
 
 #ifndef ZCE_ASSERT_ALL
 #define ZCE_ASSERT_ALL(expr) assert(expr)
@@ -131,7 +221,7 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #define ZCE_ASSERT_ALL_EX(expr,str) assert(expr)
 #endif
 
-#endif //#if !defined ZCE_USE_LOGMSG
+#endif
 
 //==========================================================================================================
 //断言的宏的定义

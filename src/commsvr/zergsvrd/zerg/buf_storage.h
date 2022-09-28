@@ -57,7 +57,7 @@ public:
 
 public:
     //
-    static const unsigned int CAPACITY_OF_BUFFER = soar::Zerg_Frame::MAX_LEN_OF_FRAME + 16;
+    static const unsigned int CAPACITY_OF_BUFFER = soar::zerg_frame::MAX_LEN_OF_FRAME + 16;
 
 public:
 
@@ -111,7 +111,7 @@ public:
     //单子实例函数
     static Buffer_Storage* instance();
     //清理单子实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
     //单子实例指针

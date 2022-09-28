@@ -206,7 +206,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
 
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
-    ret = soar::Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
+    ret = soar::stat_monitor::instance()->initialize(app_base_name_.c_str(),
                                                      self_svc_info_,
                                                      COMM_STAT_FRATURE_NUM,
                                                      COMM_STAT_ITEM_WITH_NAME,
@@ -241,7 +241,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
         initialize(self_svc_info_,
                    config_base_->pipe_cfg_.recv_pipe_len_,
                    config_base_->pipe_cfg_.send_pipe_len_,
-                   soar::Zerg_Frame::MAX_LEN_OF_FRAME,
+                   soar::zerg_frame::MAX_LEN_OF_FRAME,
                    config_base_->pipe_cfg_.if_restore_pipe_);
 
     if (0 != ret)
@@ -252,7 +252,7 @@ int App_BusPipe::app_start(int argc, const char* argv[])
 
     zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
 
-    soar::Stat_Monitor::instance()->
+    soar::stat_monitor::instance()->
         add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
 
     ZCE_LOG(RS_INFO, "[framework] MMAP Pipe init success,gogogo."
@@ -268,38 +268,38 @@ int App_BusPipe::app_exit()
 {
     //可能要增加多线程的等待
     zce::thread_wait_manager::instance()->wait_all();
-    zce::thread_wait_manager::clean_instance();
+    zce::thread_wait_manager::clear_inst();
 
-    soar::Stat_Monitor::clean_instance();
+    soar::stat_monitor::clear_inst();
 
-    soar::Svrd_BusPipe::clean_instance();
+    soar::Svrd_BusPipe::clear_inst();
 
     //释放所有资源,会关闭所有的handle吗,zce::ZCE_Reactor 会，ACE的ZCE_Reactor看实现
     if (zce::ZCE_Reactor::instance())
     {
         zce::ZCE_Reactor::instance()->close();
     }
-    zce::ZCE_Reactor::clean_instance();
+    zce::ZCE_Reactor::clear_inst();
 
     //
     if (zce::timer_queue::instance())
     {
         zce::timer_queue::instance()->close();
     }
-    zce::timer_queue::clean_instance();
+    zce::timer_queue::clear_inst();
 
     //
     if (zce::timer_queue::instance())
     {
         zce::timer_queue::instance()->close();
     }
-    soar::Stat_Monitor::instance()->
+    soar::stat_monitor::instance()->
         add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
 
     //单子实例清空
-    zce::ZCE_Reactor::clean_instance();
-    zce::timer_queue::clean_instance();
-    soar::Stat_Monitor::clean_instance();
+    zce::ZCE_Reactor::clear_inst();
+    zce::timer_queue::clear_inst();
+    soar::stat_monitor::clear_inst();
 
     ZCE_LOG(RS_INFO, "[framework] %s exit_instance Succ.Have Fun.!!!",
             app_run_name_.c_str());
@@ -370,7 +370,7 @@ App_BusPipe* App_BusPipe::instance()
 }
 
 //清理实例指针
-void App_BusPipe::clean_instance()
+void App_BusPipe::clear_inst()
 {
     if (instance_)
     {

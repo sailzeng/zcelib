@@ -676,13 +676,13 @@ server_status* server_status::instance()
 //赋值唯一的单子实例
 void server_status::instance(server_status* pinstatnce)
 {
-    clean_instance();
+    clear_inst();
     instance_ = pinstatnce;
     return;
 }
 
 //清除单子实例
-void server_status::clean_instance()
+void server_status::clear_inst()
 {
     if (instance_)
     {

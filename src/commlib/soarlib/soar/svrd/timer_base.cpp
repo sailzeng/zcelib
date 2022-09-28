@@ -30,7 +30,7 @@ Server_Timer::~Server_Timer()
 //初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
 int Server_Timer::initialize(zce::timer_queue* queue)
 {
-    stat_monitor_ = soar::Stat_Monitor::instance();
+    stat_monitor_ = soar::stat_monitor::instance();
 
     timer_queue(queue);
 

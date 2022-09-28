@@ -4,11 +4,11 @@
 #include "soar/ogre/peer_id.h"
 
 /******************************************************************************************
-struct  Ogre4a_App_Frame OGRE 服务器的内部命令帧头
+struct  ogre4a_frame OGRE 服务器的内部命令帧头
 ******************************************************************************************/
 #pragma pack (1)
 
-class Ogre4a_App_Frame
+class ogre4a_frame
 {
 public:
 
@@ -38,10 +38,10 @@ public:
 public:
 
     //
-    Ogre4a_App_Frame();
+    ogre4a_frame();
 protected:
     //
-    ~Ogre4a_App_Frame();
+    ~ogre4a_frame();
 
 public:
     //重置FRAME DATA的数据
@@ -57,7 +57,7 @@ public:
     //交换自己Rcv ,Snd Peer Info
     void exchange_rcvsnd_peerInfo();
     //和其他人交换Rcv ,Snd Peer Info,
-    void exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame* exframe);
+    void exchange_rcvsnd_peerInfo(const ogre4a_frame* exframe);
 
     //DUMP OGRE FRAME的头部信息
     void dump_ogre_framehead(const char* outstr,
@@ -68,9 +68,9 @@ public:
     //不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
     ///创建一个Frame
-    static Ogre4a_App_Frame* new_ogre(std::size_t lenframe);
+    static ogre4a_frame* new_ogre(std::size_t lenframe);
     ///销毁一个frame
-    static void delete_ogre(Ogre4a_App_Frame* frame) noexcept;
+    static void delete_ogre(ogre4a_frame* frame) noexcept;
 
 public:
 
@@ -78,7 +78,7 @@ public:
     static void set_max_framedata_len(unsigned int  max_framedata);
 
     //DUMP OGRE FRAME的头部信息
-    static void dump_ogre_framehead(const Ogre4a_App_Frame* proc_frame,
+    static void dump_ogre_framehead(const ogre4a_frame* proc_frame,
                                     const char* outstr,
                                     zce::LOG_PRIORITY log_priority);
 
@@ -121,7 +121,7 @@ public:
 //---------------------------------------------------------------------------------------------
 //打印输出头部信息的控制宏
 #if defined _DEBUG || defined DEBUG
-#define DEBUGDUMP_OGRE_HEAD(x,y,z)      Ogre4a_App_Frame::dump_ogre_framehead(x,y,z);
+#define DEBUGDUMP_OGRE_HEAD(x,y,z)      ogre4a_frame::dump_ogre_framehead(x,y,z);
 #else
 #define DEBUGDUMP_OGRE_HEAD(x,y,z)
 #endif
@@ -130,7 +130,7 @@ public:
 //内联函数
 
 //重置FRAME DATA的数据
-inline void Ogre4a_App_Frame::reset_framehead()
+inline void ogre4a_frame::reset_framehead()
 {
     ogre_frame_len_ = LEN_OF_OGRE_FRAME_HEAD;
     ogre_frame_option_ = 0;
@@ -138,14 +138,14 @@ inline void Ogre4a_App_Frame::reset_framehead()
 }
 
 //填充数据
-inline void Ogre4a_App_Frame::fill_write_data(const unsigned int size_data, const char* src_data)
+inline void ogre4a_frame::fill_write_data(const unsigned int size_data, const char* src_data)
 {
     memcpy(frame_data_ + ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD, src_data, size_data);
     ogre_frame_len_ += size_data;
 }
 
 //读取数据
-inline void Ogre4a_App_Frame::get_data(unsigned int& size_data, char* dest_data) const
+inline void ogre4a_frame::get_data(unsigned int& size_data, char* dest_data) const
 {
     size_data = ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD;
     memcpy(dest_data, frame_data_ + LEN_OF_OGRE_FRAME_HEAD, size_data);

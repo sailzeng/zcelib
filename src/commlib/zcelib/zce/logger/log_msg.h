@@ -317,7 +317,7 @@ public:
     //实例的获得
     static log_msg* instance();
     //清除实例
-    static void clean_instance();
+    static void clear_inst();
 
     //利用单子对象，Aseert调试
     static void debug_assert(const char* file_name,

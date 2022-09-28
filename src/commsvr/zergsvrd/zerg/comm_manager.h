@@ -73,7 +73,7 @@ public:
     int popall_sendpipe_write(size_t want_send_frame, size_t& proc_frame_num);
 
     //
-    void pushback_recvpipe(soar::Zerg_Frame* recv_frame);
+    void pushback_recvpipe(soar::zerg_frame* recv_frame);
 
     //检查发包频率
     void check_freamcount(time_t now);
@@ -86,7 +86,7 @@ public:
     //单子实例函数
     static Comm_Manager* instance();
     //清理单子实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
 
@@ -120,7 +120,7 @@ protected:
     ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
     zerg::Buffer_Storage* zbuffer_storage_;
     ///统计，使用单子类的指针，保留它仅仅为了加速
-    soar::Stat_Monitor* server_status_;
+    soar::stat_monitor* server_status_;
 
     ///计数起始时间
     time_t count_start_time_;

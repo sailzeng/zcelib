@@ -30,7 +30,7 @@ public:
     ///单子实例函数
     static IPRestrict_Mgr* instance();
     ///清理单子实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
     ///单子实例

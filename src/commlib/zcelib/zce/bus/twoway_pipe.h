@@ -90,6 +90,6 @@ public:
     //实例的获得
     static TwoWay_BusPipe* instance();
     //清除实例
-    static void clean_instance();
+    static void clear_inst();
 };
 }

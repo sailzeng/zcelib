@@ -6,7 +6,7 @@ namespace soar
 {
 Svrd_BusPipe* Svrd_BusPipe::zerg_bus_instance_ = NULL;
 
-char Svrd_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_FRAME];
+char Svrd_BusPipe::send_buffer_[soar::zerg_frame::MAX_LEN_OF_FRAME];
 
 Svrd_BusPipe::Svrd_BusPipe() :
     TwoWay_BusPipe()
@@ -24,7 +24,7 @@ int Svrd_BusPipe::initialize(soar::SERVICES_INFO& svr_info,
                              size_t max_frame_len,
                              bool if_restore)
 {
-    monitor_ = soar::Stat_Monitor::instance();
+    monitor_ = soar::stat_monitor::instance();
 
     zerg_svr_info_ = svr_info;
 
@@ -58,7 +58,7 @@ Svrd_BusPipe* Svrd_BusPipe::instance()
 }
 
 //从RECV管道读取帧，
-int Svrd_BusPipe::pop_front_recvbus(soar::Zerg_Frame* proc_frame)
+int Svrd_BusPipe::pop_front_recvbus(soar::zerg_frame* proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID,
                             reinterpret_cast<zce::bus_node*>(proc_frame));
@@ -74,7 +74,7 @@ int Svrd_BusPipe::pop_front_recvbus(soar::Zerg_Frame* proc_frame)
                              0,
                              proc_frame->length_);
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-        if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+        if (proc_frame->frame_option_.option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
         {
             DUMP_ZERG_FRAME_HEAD(RS_ERROR, "[TRACK MONITOR][pop recv]", proc_frame);
         }
@@ -84,7 +84,7 @@ int Svrd_BusPipe::pop_front_recvbus(soar::Zerg_Frame* proc_frame)
 }
 
 //从RECV管道读取帧，
-int Svrd_BusPipe::pop_front_sendbus(soar::Zerg_Frame* proc_frame)
+int Svrd_BusPipe::pop_front_sendbus(soar::zerg_frame* proc_frame)
 {
     int ret = pop_front_bus(SEND_PIPE_ID,
                             reinterpret_cast<zce::bus_node*>(proc_frame));
@@ -100,7 +100,7 @@ int Svrd_BusPipe::pop_front_sendbus(soar::Zerg_Frame* proc_frame)
                              0,
                              proc_frame->length_);
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-        if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+        if (proc_frame->frame_option_.option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
         {
             DUMP_ZERG_FRAME_HEAD(RS_ERROR, "[TRACK MONITOR][send pop]", proc_frame);
         }
@@ -110,12 +110,12 @@ int Svrd_BusPipe::pop_front_sendbus(soar::Zerg_Frame* proc_frame)
 }
 
 //向SEND管道写入帧，
-int Svrd_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
+int Svrd_BusPipe::push_back_sendbus(const soar::zerg_frame* proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO SEND PIPE FRAME:", proc_frame);
 
-    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_FRAME ||
-        proc_frame->length_ < soar::Zerg_Frame::LEN_OF_HEAD)
+    if (proc_frame->length_ > soar::zerg_frame::MAX_LEN_OF_FRAME ||
+        proc_frame->length_ < soar::zerg_frame::LEN_OF_HEAD)
     {
         ZCE_LOG(RS_ERROR, "[framework][send bus] Frame Len is error ,"
                 "frame length :%u ,Please check your code.",
@@ -124,7 +124,7 @@ int Svrd_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
     }
 
     //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (proc_frame->frame_option_.option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
     {
         DUMP_ZERG_FRAME_HEAD(RS_ERROR, "[TRACK MONITOR][Send]", proc_frame);
     }
@@ -155,12 +155,12 @@ int Svrd_BusPipe::push_back_sendbus(const soar::Zerg_Frame* proc_frame)
 }
 
 //向RECV管道写入帧，
-int Svrd_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
+int Svrd_BusPipe::push_back_recvbus(const soar::zerg_frame* proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO RECV PIPE FRAME:", proc_frame);
 
-    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_FRAME ||
-        proc_frame->length_ < soar::Zerg_Frame::LEN_OF_HEAD)
+    if (proc_frame->length_ > soar::zerg_frame::MAX_LEN_OF_FRAME ||
+        proc_frame->length_ < soar::zerg_frame::LEN_OF_HEAD)
     {
         ZCE_LOG(RS_ERROR, "[framework][recv bus] Frame Len is error ,"
                 "frame length :%u ,Please check your code.",
@@ -169,7 +169,7 @@ int Svrd_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
     }
 
     //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (proc_frame->frame_option_.option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
     {
         DUMP_ZERG_FRAME_HEAD(RS_ERROR, "[TRACK MONITOR][Recv]", proc_frame);
     }
@@ -202,13 +202,13 @@ int Svrd_BusPipe::push_back_recvbus(const soar::Zerg_Frame* proc_frame)
 //赋值唯一的单子实例
 void Svrd_BusPipe::instance(Svrd_BusPipe* pinstatnce)
 {
-    clean_instance();
+    clear_inst();
     zerg_bus_instance_ = pinstatnce;
     return;
 }
 
 //清除单子实例
-void Svrd_BusPipe::clean_instance()
+void Svrd_BusPipe::clear_inst()
 {
     if (zerg_bus_instance_)
     {

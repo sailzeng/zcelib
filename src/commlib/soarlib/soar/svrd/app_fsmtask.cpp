@@ -165,7 +165,7 @@ int Comm_SvrdApp_FSMTask::app_exit()
     notify_trans_mgr->stop_notify_task();
 
     int ret = 0;
-    soar::FSM_Manager::clean_instance();
+    soar::FSM_Manager::clear_inst();
 
     ret = soar::App_BusPipe::app_exit();
 

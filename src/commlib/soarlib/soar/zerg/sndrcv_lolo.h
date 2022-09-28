@@ -49,9 +49,9 @@
 #include "soar/zerg/sndrcv_base.h"
 
 /******************************************************************************************
-class Lolo_SendRecv_Package
+class lolo_sendrecv
 ******************************************************************************************/
-class Lolo_SendRecv_Package : public SendRecv_Msg_Base
+class lolo_sendrecv : public sendrecv_msg_base
 {
 protected:
 
@@ -66,8 +66,8 @@ protected:
 
 public:
     //
-    Lolo_SendRecv_Package();
-    virtual ~Lolo_SendRecv_Package();
+    lolo_sendrecv();
+    virtual ~lolo_sendrecv();
 
     //设置相应的SVC INFO,
     int set_lolo_svcinfo(const char* svc_ip,
@@ -75,7 +75,7 @@ public:
                          const soar::SERVICES_ID& recv_service,
                          const soar::SERVICES_ID& send_service,
                          const soar::SERVICES_ID& proxy_service,
-                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME,
+                         size_t frame_len = soar::zerg_frame::MAX_LEN_OF_FRAME,
                          bool is_check_conn_info = false);
 
     //发送数据
@@ -107,7 +107,7 @@ public:
 
 //收数据
 template<class T2>
-int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
+int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
                                            T2& msg,
                                            zce::time_value* time_wait)
 {
@@ -143,7 +143,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
         //如果错误是信号导致的重入
         int last_error = zce::last_error();
 
-        ZCE_LOG(RS_ERROR, "[framework] RECV soar::Zerg_Frame head error or time out. Ret:%d, error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework] RECV soar::zerg_frame head error or time out. Ret:%d, error[%u|%s].",
                 socket_ret,
                 last_error,
                 strerror(last_error));
@@ -154,11 +154,11 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
     //保存接收到的事务ID
     recv_trans_id_ = msg_recv_frame_->fsm_id_;
     //数据包的长度
-    data_len = msg_recv_frame_->length_ - soar::Zerg_Frame::LEN_OF_HEAD;
+    data_len = msg_recv_frame_->length_ - soar::zerg_frame::LEN_OF_HEAD;
 
     if (data_len < 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework] UDP Receive soar::Zerg_Frame head len error ,frame len:%d,error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework] UDP Receive soar::zerg_frame head len error ,frame len:%d,error[%u|%s].",
                 msg_recv_frame_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -189,7 +189,7 @@ int Lolo_SendRecv_Package::receive_svc_msg(uint32_t cmd,
 
 //发送数据
 template< class T1>
-int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
+int lolo_sendrecv::send_svc_msg(uint32_t user_id,
                                         uint32_t cmd,
                                         const T1& info,
                                         uint32_t backfill_fsm_id,
@@ -219,7 +219,7 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
     //填写GAME ID
     msg_send_frame_->business_id_ = business_id;
 
-    ret = msg_send_frame_->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+    ret = msg_send_frame_->appdata_encode(soar::zerg_frame::MAX_LEN_OF_DATA,
                                           info);
 
     if (ret != 0)
@@ -240,7 +240,7 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
     //ZCE_LOG(RS_DEBUG,"[framework] SEND %u BYTES  Frame To Svr Succ. ",ret);
     if (socket_ret <= 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework]UDP Send soar::Zerg_Frame head len error ,frame len:%d,error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework]UDP Send soar::zerg_frame head len error ,frame len:%d,error[%u|%s].",
                 msg_recv_frame_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -252,7 +252,7 @@ int Lolo_SendRecv_Package::send_svc_msg(uint32_t user_id,
 
 //发送和接收数据，一起一锅搞掂的方式
 template< class T1, class T2>
-int Lolo_SendRecv_Package::send_recv_msg(unsigned int snd_cmd,
+int lolo_sendrecv::send_recv_msg(unsigned int snd_cmd,
                                          uint32_t user_id,
                                          const T1& send_info,
                                          zce::time_value* time_wait,

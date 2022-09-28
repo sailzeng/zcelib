@@ -7,7 +7,7 @@
 #include "soar/stat/define.h"
 #include "soar/svrd/cfg_fsm.h"
 
-class soar::Zerg_Frame;
+class soar::zerg_frame;
 
 namespace soar
 {
@@ -33,16 +33,16 @@ public:
 
     //-----------------------------------------------------------------
     //从RECV管道读取帧
-    int pop_front_recvbus(soar::Zerg_Frame* proc_frame);
+    int pop_front_recvbus(soar::zerg_frame* proc_frame);
 
     //从SEND管道读取帧
-    int pop_front_sendbus(soar::Zerg_Frame* proc_frame);
+    int pop_front_sendbus(soar::zerg_frame* proc_frame);
 
     //向SEND管道写入帧
-    int push_back_sendbus(const soar::Zerg_Frame* proc_frame);
+    int push_back_sendbus(const soar::zerg_frame* proc_frame);
 
     //向RECV管道写入帧
-    int push_back_recvbus(const soar::Zerg_Frame* proc_frame);
+    int push_back_recvbus(const soar::zerg_frame* proc_frame);
 
     //发送bus是否是空的
     inline bool is_empty_sendbus()
@@ -73,7 +73,7 @@ public:
     //实例的获得
     static Svrd_BusPipe* instance();
     //清除实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
     //instance函数使用的东西
@@ -84,10 +84,10 @@ protected:
     ///这个服务器的配置信息.
     soar::SERVICES_INFO  zerg_svr_info_;
     ///发送的缓冲区
-    static char          send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_FRAME];
+    static char          send_buffer_[soar::zerg_frame::MAX_LEN_OF_FRAME];
 
     ///监控对象
-    soar::Stat_Monitor* monitor_ = nullptr;
+    soar::stat_monitor* monitor_ = nullptr;
 };
 }
 

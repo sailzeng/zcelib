@@ -412,13 +412,13 @@ timer_queue* timer_queue::instance()
 //赋值唯一的单子实例
 void timer_queue::instance(timer_queue* pinstatnce)
 {
-    clean_instance();
+    clear_inst();
     instance_ = pinstatnce;
     return;
 }
 
 //清除单子实例
-void timer_queue::clean_instance()
+void timer_queue::clear_inst()
 {
     if (instance_)
     {

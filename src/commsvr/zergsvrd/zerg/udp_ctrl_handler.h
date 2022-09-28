@@ -7,7 +7,7 @@
 #include "zerg/comm_manager.h"
 
 //forward declaration
-class soar::Zerg_Frame;
+class soar::zerg_frame;
 class Zerg_Config;
 
 class UDP_Svc_Handler : public zce::Event_Handler
@@ -42,14 +42,14 @@ protected:
     int read_data_from_udp(size_t& szrevc);
 
     //发送UDP的数据
-    int write_data_to_udp(soar::Zerg_Frame* send_frame);
+    int write_data_to_udp(soar::zerg_frame* send_frame);
 
 public:
     //初始化静态参数
     static int init_all_static_data();
 
     //
-    static int send_all_to_udp(soar::Zerg_Frame* send_frame);
+    static int send_all_to_udp(soar::zerg_frame* send_frame);
 
     ///读取配置
     static int get_config(const Zerg_Config* config);
@@ -68,7 +68,7 @@ protected:
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
     ///统计，使用单子类的指针
-    static soar::Stat_Monitor* server_status_;
+    static soar::stat_monitor* server_status_;
 
     ///通讯管理器,保存是为了加快速度
     static zerg::Comm_Manager* zerg_comm_mgr_;

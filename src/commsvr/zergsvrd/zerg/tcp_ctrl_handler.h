@@ -166,7 +166,7 @@ protected:
     int write_all_data_to_peer();
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(soar::Zerg_Frame* proc_frame);
+    int  preprocess_recvframe(soar::zerg_frame* proc_frame);
 
     //处理发送的REGISTER数据,连接后发送第一个数据
     int  process_connect_register();
@@ -265,7 +265,7 @@ protected:
     static zerg::Buffer_Storage* zbuffer_storage_;
 
     ///统计，使用单子类的指针
-    static soar::Stat_Monitor* server_status_;
+    static soar::stat_monitor* server_status_;
 
     ///最大能够Accept的PEER数量,
     static size_t max_accept_svr_;

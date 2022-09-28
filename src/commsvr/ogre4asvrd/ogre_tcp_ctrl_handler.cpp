@@ -266,8 +266,8 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
         bool if_recv_whole = false;
         //调用模块代码
         ret = fp_judge_whole_frame_(rcv_buffer_->frame_data_,
-                                    rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
-                                    static_cast<unsigned int>(Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN),
+                                    rcv_buffer_->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD,
+                                    static_cast<unsigned int>(ogre4a_frame::MAX_OF_OGRE_DATA_LEN),
                                     if_recv_whole,
                                     size_frame);
 
@@ -285,7 +285,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
             //将数据放入接收的管道,不检测错误,因为错误会记录日志,而且有错误，也无法处理
             ZCE_LOG_DEBUG(RS_DEBUG, "Read a whole data [%s] recv buffer len:%u, Frame len:%u.\n",
                           remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
-                          rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
+                          rcv_buffer_->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD,
                           size_frame);
 
             //记录接受了多少次数据
@@ -495,16 +495,16 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
         rcv_buffer_->rcv_peer_info_.set(local_address_);
         //
         rcv_buffer_->ogre_frame_option_ = 0;
-        rcv_buffer_->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_PEER_TCP;
+        rcv_buffer_->ogre_frame_option_ |= ogre4a_frame::OGREDESC_PEER_TCP;
     }
 
     //
-    size_t data_len = rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD;
+    size_t data_len = rcv_buffer_->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD;
 
-    if (data_len < Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN)
+    if (data_len < ogre4a_frame::MAX_OF_OGRE_DATA_LEN)
     {
         recvret = socket_peer_.recv(rcv_buffer_->frame_data_ + data_len,
-                                    Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN - rcv_buffer_->ogre_frame_len_,
+                                    ogre4a_frame::MAX_OF_OGRE_FRAME_LEN - rcv_buffer_->ogre_frame_len_,
                                     0);
     }
     //在最大的包内都没有接受完整数据
@@ -581,10 +581,10 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     //#endif //#if defined DEBUG || defined _DEBUG
 
     //前面有检查,不会越界
-    Ogre4a_App_Frame* sndbuffer = snd_buffer_deque_[0];
+    ogre4a_frame* sndbuffer = snd_buffer_deque_[0];
 
     ssize_t sendret = socket_peer_.send(sndbuffer->frame_data_ + send_bytes_,
-                                        (sndbuffer->ogre_frame_len_ - send_bytes_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
+                                        (sndbuffer->ogre_frame_len_ - send_bytes_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD));
 
     if (sendret < 0)
     {
@@ -613,7 +613,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     send_bytes_ += static_cast<size_t>(szsend);
 
     //如果接受的数据
-    if (sndbuffer->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD == send_bytes_)
+    if (sndbuffer->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD == send_bytes_)
     {
         if_full = true;
         ZCE_LOG_DEBUG(RS_DEBUG, "Send a whole frame To  IP|Port :%s FrameLen:%u.\n",
@@ -727,14 +727,14 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
 }
 
 //处理发送错误.
-int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
+int Ogre_TCP_Svc_Handler::process_senderror(ogre4a_frame* inner_frame)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //如果命令帧明确表示要进行错误重试,
-    if (inner_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_SEND_FAIL_RECORD)
+    if (inner_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_SEND_FAIL_RECORD)
     {
         ////原来一直考虑使用错误管道进行重新发送等处理，现在想想，实在多余，算了
         //// 如果错误管道不为空
@@ -751,14 +751,14 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame* inner_frame)
         );
     }
     //如果发送命令明确要通知后面的服务,和RETRY互斥
-    else if (inner_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_SNDPRC_NOTIFY_APP)
+    else if (inner_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_SNDPRC_NOTIFY_APP)
     {
         //标示这个帧是发送错误,回交给后面的应用,
-        inner_frame->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_SEND_ERROR;
+        inner_frame->ogre_frame_option_ |= ogre4a_frame::OGREDESC_SEND_ERROR;
 
         //日志在函数中有输出,这儿略.
         ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
-            reinterpret_cast<soar::Zerg_Frame *>(inner_frame));
+            reinterpret_cast<soar::zerg_frame *>(inner_frame));
 
         if (ret != 0)
         {
@@ -899,7 +899,7 @@ Ogre_TCP_Svc_Handler* Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
 }
 
 //要得到数据的ZByteBuffer,要求分配好,
-int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame* ogre_frame)
+int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
 {
     int ret = 0;
 
@@ -940,7 +940,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame* ogre_frame)
     }
 
     //如果是通知关闭端口
-    if (ogre_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_CLOSE_PEER)
+    if (ogre_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_CLOSE_PEER)
     {
         ZCE_LOG(RS_INFO, "Recvice DESC_CLOSE_PEER,Svchanle will close, svrinfo [IP|Port:%s|%u ].\n",
                 zce::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
@@ -961,7 +961,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame* ogre_frame)
 
 //将发送数据放入发送队列中
 //如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
-int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame* ogre_frame)
+int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(ogre4a_frame* ogre_frame)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
@@ -978,9 +978,9 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame* ogre_frame)
     }
 
     //如果发送完成,并且后台业务要求关闭端口,注意必须转换网络序
-    if (ogre_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_SNDPRC_CLOSE_PEER)
+    if (ogre_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_SNDPRC_CLOSE_PEER)
     {
-        ZCE_LOG(RS_INFO, "This Peer handle[%u] IP|Port :[%s] complete ,will close when all frame send complete ,because send frame has option Ogre4a_App_Frame::OGREDESC_SNDPRC_CLOSE_PEER.\n",
+        ZCE_LOG(RS_INFO, "This Peer handle[%u] IP|Port :[%s] complete ,will close when all frame send complete ,because send frame has option ogre4a_frame::OGREDESC_SNDPRC_CLOSE_PEER.\n",
                 socket_peer_.get_handle(),
                 remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
         if_force_close_ = true;
@@ -1041,16 +1041,16 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
     }
 
     //如果倒数第2个桶有能力放下倒数第1个桶的FRAME数据，则进行合并操作。
-    if ((Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN - snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_) > \
-        (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD))
+    if ((ogre4a_frame::MAX_OF_OGRE_FRAME_LEN - snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_) > \
+        (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD))
     {
         //将倒数第1个节点的数据放入倒数第2个节点中间。所以实际的Cache能力是非常强的，
         //空间利用率也很高。越发佩服我自己了。
-        memcpy((snd_buffer_deque_[sz_deque - 2]->frame_data_ + snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD),
+        memcpy((snd_buffer_deque_[sz_deque - 2]->frame_data_ + snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD),
                snd_buffer_deque_[sz_deque - 1]->frame_data_,
-               (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
+               (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD));
 
-        snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ += (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD);
+        snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ += (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD);
 
         //将倒数第一个施放掉
         Ogre_Buffer_Storage::instance()->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
@@ -1061,11 +1061,11 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
     ////下面的代码用于合并的测试，平常会注释掉
     //else
     //{
-    //    ZCE_DEBUGEX((RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN=%u,"
+    //    ZCE_DEBUGEX((RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,ogre4a_frame::MAX_OF_OGRE_FRAME_LEN=%u,"
     //        "snd_buffer_deque_[sz_deque-2]->ogre_frame_len_=%u,"
     //        "snd_buffer_deque_[sz_deque-1]->ogre_frame_len_=%u\n",
     //        sz_deque,
-    //        Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN,
+    //        ogre4a_frame::MAX_OF_OGRE_FRAME_LEN,
     //        snd_buffer_deque_[sz_deque-2]->ogre_frame_len_,
     //        snd_buffer_deque_[sz_deque-1]->ogre_frame_len_));
     //}
@@ -1075,19 +1075,19 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
     int ret = soar::Svrd_BusPipe::instance()->push_back_recvbus(
-        reinterpret_cast<soar::Zerg_Frame*>(rcv_buffer_));
+        reinterpret_cast<soar::zerg_frame*>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,
-    if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD)
+    if (rcv_buffer_->ogre_frame_len_ > sz_data + ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD)
     {
         memmove(rcv_buffer_->frame_data_,
                 rcv_buffer_->frame_data_ + sz_data,
-                rcv_buffer_->ogre_frame_len_ - sz_data - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD);
+                rcv_buffer_->ogre_frame_len_ - sz_data - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD);
 
         //改变buffer长度
         rcv_buffer_->ogre_frame_len_ = rcv_buffer_->ogre_frame_len_ - sz_data;
     }
-    else if (rcv_buffer_->ogre_frame_len_ == sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD)
+    else if (rcv_buffer_->ogre_frame_len_ == sz_data + ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD)
     {
         //无论处理正确与否,都释放缓冲区的空间
         Ogre_Buffer_Storage::instance()->free_byte_buffer(rcv_buffer_);

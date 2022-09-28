@@ -21,9 +21,9 @@
 #include "soar/zerg/sndrcv_base.h"
 
 /******************************************************************************************
-class Zulu_SendRecv_Msg
+class zulu_sendrecv
 ******************************************************************************************/
-class Zulu_SendRecv_Msg : public SendRecv_Msg_Base
+class zulu_sendrecv : public sendrecv_msg_base
 {
 protected:
 
@@ -39,8 +39,8 @@ protected:
 public:
 
     //构造函数和析构函数
-    Zulu_SendRecv_Msg();
-    ~Zulu_SendRecv_Msg();
+    zulu_sendrecv();
+    ~zulu_sendrecv();
 
 protected:
 
@@ -58,7 +58,7 @@ public:
                          const soar::SERVICES_ID& recv_service,
                          const soar::SERVICES_ID& send_service,
                          const soar::SERVICES_ID& proxy_service,
-                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_FRAME);
+                         size_t frame_len = soar::zerg_frame::MAX_LEN_OF_FRAME);
 
     //链接服务器,time_wait不能用const是有原因的，因为部分select的zce::Time_Value是返回剩余时间的
     int connect_zulu_server(zce::time_value* time_wait);
@@ -125,7 +125,7 @@ public:
 
 //阻塞的接收一个APPFRAME数据
 template<class T2>
-int Zulu_SendRecv_Msg::receive_svc_msg(uint32_t cmd,
+int zulu_sendrecv::receive_svc_msg(uint32_t cmd,
                                        T2& info,
                                        bool error_continue,
                                        zce::time_value* time_wait)
@@ -161,7 +161,7 @@ int Zulu_SendRecv_Msg::receive_svc_msg(uint32_t cmd,
         else
         {
             //如果还有data的数据，进行解码
-            if (msg_recv_frame_->length_ > soar::Zerg_Frame::LEN_OF_HEAD)
+            if (msg_recv_frame_->length_ > soar::zerg_frame::LEN_OF_HEAD)
             {
                 ret = msg_recv_frame_->appdata_decode(info);
                 if (ret != 0)
@@ -188,7 +188,7 @@ int Zulu_SendRecv_Msg::receive_svc_msg(uint32_t cmd,
 
 //发送一个数据包
 template< class T1>
-int Zulu_SendRecv_Msg::send_svc_msg(uint32_t user_id,
+int zulu_sendrecv::send_svc_msg(uint32_t user_id,
                                     uint32_t cmd,
                                     const T1& info,
                                     zce::time_value* time_wait,
@@ -213,7 +213,7 @@ int Zulu_SendRecv_Msg::send_svc_msg(uint32_t user_id,
     msg_send_frame_->user_id_ = user_id;
     msg_send_frame_->business_id_ = business_id;
     //编码
-    ret = msg_send_frame_->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA, info);
+    ret = msg_send_frame_->appdata_encode(soar::zerg_frame::MAX_LEN_OF_DATA, info);
 
     if (ret != 0)
     {
@@ -234,7 +234,7 @@ int Zulu_SendRecv_Msg::send_svc_msg(uint32_t user_id,
 
 //发送一个数据包，并且接收一个数据包
 template< class T1, class T2>
-int Zulu_SendRecv_Msg::send_recv_msg(unsigned int snd_cmd,
+int zulu_sendrecv::send_recv_msg(unsigned int snd_cmd,
                                      uint32_t user_id,
                                      const T1& send_info,
                                      zce::time_value* time_wait,

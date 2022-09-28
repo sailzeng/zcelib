@@ -3,14 +3,14 @@
 #include "soar/ogre/frame_ogre.h"
 
 /******************************************************************************************
-struct  Ogre4a_App_Frame OGRE 服务器的内部命令帧头
+struct  ogre4a_frame OGRE 服务器的内部命令帧头
 ******************************************************************************************/
 //最大的DATA数据区长度,可以配置
-size_t Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN = 64 * 1024;
+size_t ogre4a_frame::MAX_OF_OGRE_DATA_LEN = 64 * 1024;
 //最大的FRAME的长度,为MAX_OF_OGRE_DATA_LEN ＋ LEN_OF_OGRE_FRAME_HEAD
-size_t Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN = Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD;
+size_t ogre4a_frame::MAX_OF_OGRE_FRAME_LEN = ogre4a_frame::MAX_OF_OGRE_DATA_LEN + ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD;
 
-Ogre4a_App_Frame::Ogre4a_App_Frame() :
+ogre4a_frame::ogre4a_frame() :
     ogre_frame_len_(LEN_OF_OGRE_FRAME_HEAD),
     snd_peer_info_(0, 0),
     ogre_frame_option_(0),
@@ -18,17 +18,17 @@ Ogre4a_App_Frame::Ogre4a_App_Frame() :
 {
 }
 //
-Ogre4a_App_Frame::~Ogre4a_App_Frame()
+ogre4a_frame::~ogre4a_frame()
 {
 }
 
-Ogre4a_App_Frame* Ogre4a_App_Frame::new_ogre(size_t lenframe)
+ogre4a_frame* ogre4a_frame::new_ogre(size_t lenframe)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
-    if (lenframe < sizeof(Ogre4a_App_Frame))
+    if (lenframe < sizeof(ogre4a_frame))
     {
         ZCE_ASSERT(false);
-        lenframe = sizeof(Ogre4a_App_Frame);
+        lenframe = sizeof(ogre4a_frame);
     }
 
     void* ptr = ::new unsigned char[lenframe];
@@ -38,18 +38,18 @@ Ogre4a_App_Frame* Ogre4a_App_Frame::new_ogre(size_t lenframe)
     memset(ptr, 0, lenframe);
 #endif //DEBUG
 
-    //reinterpret_cast<soar::Zerg_Frame*>(ptr)->m_Length = static_cast<unsigned int>(lenframe);
-    return static_cast<Ogre4a_App_Frame*>(ptr);
+    //reinterpret_cast<soar::zerg_frame*>(ptr)->m_Length = static_cast<unsigned int>(lenframe);
+    return static_cast<ogre4a_frame*>(ptr);
 }
 
-void Ogre4a_App_Frame::delete_ogre(Ogre4a_App_Frame* ptrframe) noexcept
+void ogre4a_frame::delete_ogre(ogre4a_frame* ptrframe) noexcept
 {
     char* ptr = reinterpret_cast<char*>(ptrframe);
     delete[]ptr;
 }
 
 //增加数据
-int Ogre4a_App_Frame::add_data(unsigned int add_size, char* add_data)
+int ogre4a_frame::add_data(unsigned int add_size, char* add_data)
 {
     if (ogre_frame_len_ + add_size > MAX_OF_OGRE_DATA_LEN)
     {
@@ -64,7 +64,7 @@ int Ogre4a_App_Frame::add_data(unsigned int add_size, char* add_data)
 }
 
 //配置最大的DATA数据区长度,
-void Ogre4a_App_Frame::set_max_framedata_len(unsigned int  max_framedata)
+void ogre4a_frame::set_max_framedata_len(unsigned int  max_framedata)
 {
     MAX_OF_OGRE_DATA_LEN = max_framedata;
     //最大的FRAME的长度,为MAX_OF_OGRE_DATA_LEN ＋ LEN_OF_OGRE_FRAME_HEAD
@@ -72,7 +72,7 @@ void Ogre4a_App_Frame::set_max_framedata_len(unsigned int  max_framedata)
 }
 
 //交换自己Rcv ,Snd Peer Info
-void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
+void ogre4a_frame::exchange_rcvsnd_peerInfo()
 {
     OGRE_PEER_ID sock_peer = snd_peer_info_;
     snd_peer_info_ = rcv_peer_info_;
@@ -80,7 +80,7 @@ void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
 }
 
 //和其他人交换Rcv ,Snd Peer Info,
-void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame* exframe)
+void ogre4a_frame::exchange_rcvsnd_peerInfo(const ogre4a_frame* exframe)
 {
     ogre_frame_option_ = exframe->ogre_frame_option_;
     rcv_peer_info_ = exframe->snd_peer_info_;
@@ -88,7 +88,7 @@ void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame* exframe)
 }
 
 //输出APPFRAME的全部部信息
-void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame* proc_frame,
+void ogre4a_frame::dump_ogre_framehead(const ogre4a_frame* proc_frame,
                                            const char* outstr,
                                            zce::LOG_PRIORITY log_priority)
 {
@@ -108,7 +108,7 @@ void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame* proc_frame,
 }
 
 //输出APPFRAME的全部部信息
-void Ogre4a_App_Frame::dump_ogre_framehead(const char* outstr,
+void ogre4a_frame::dump_ogre_framehead(const char* outstr,
                                            zce::LOG_PRIORITY log_priority) const
 {
     this->dump_ogre_framehead(this, outstr, log_priority);

@@ -12,8 +12,8 @@ FSMTask_TaskBase::FSMTask_TaskBase() :
     task_run_(false),
     task_frame_buf_(NULL)
 {
-    task_frame_buf_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_FRAME + 16);
-    task_frame_buf_->init_head(soar::Zerg_Frame::MAX_LEN_OF_FRAME);
+    task_frame_buf_ = soar::zerg_frame::new_frame(soar::zerg_frame::MAX_LEN_OF_FRAME + 16);
+    task_frame_buf_->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME);
 }
 
 //
@@ -21,7 +21,7 @@ FSMTask_TaskBase::~FSMTask_TaskBase()
 {
     if (task_frame_buf_)
     {
-        soar::Zerg_Frame::delete_frame(task_frame_buf_);
+        soar::zerg_frame::delete_frame(task_frame_buf_);
         task_frame_buf_ = NULL;
     }
 }
@@ -73,7 +73,7 @@ int FSMTask_TaskBase::svc(void)
 
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
-            soar::Zerg_Frame* tmp_frame = NULL;
+            soar::zerg_frame* tmp_frame = NULL;
 
             //忙的时候只测试，不阻塞等待
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)

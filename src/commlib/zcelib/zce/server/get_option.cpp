@@ -76,11 +76,11 @@
 namespace zce
 {
 /************************************************************************************************************
-Class           : Get_Option::ZCE_GETOPT_LONG_OPTION
+Class           : get_option::GETOPT_LONG_OPTION
 ************************************************************************************************************/
-Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
+get_option::GETOPT_LONG_OPTION::GETOPT_LONG_OPTION(
     const char* name,
-    Get_Option::OPTION_ARG_MODE has_arg,
+    get_option::OPTION_ARG_MODE has_arg,
     int val)
     : name_(name),
     has_arg_(has_arg),
@@ -88,27 +88,27 @@ Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(
 {
 }
 
-Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION(void) :
-    has_arg_(Get_Option::OPTION_ARG_MODE::NO_ARG),
+get_option::GETOPT_LONG_OPTION::GETOPT_LONG_OPTION(void) :
+    has_arg_(get_option::OPTION_ARG_MODE::NO_ARG),
     val_(0)
 {
 }
 
-Get_Option::ZCE_GETOPT_LONG_OPTION::~ZCE_GETOPT_LONG_OPTION(void)
+get_option::GETOPT_LONG_OPTION::~GETOPT_LONG_OPTION(void)
 {
 }
 
 /************************************************************************************************************
-Class           : Get_Option
+Class           : get_option
 ************************************************************************************************************/
-Get_Option::Get_Option(int argc,
+get_option::get_option(int argc,
                        char** argv,
                        const char* optstring,
                        int skip,
                        int report_errors,
                        int ordering,
-                       int long_only)
-    : argc_(argc),
+                       int long_only) :
+    argc_(argc),
     argv_(argv),
     optind(skip),
     opterr(report_errors),
@@ -169,12 +169,11 @@ Get_Option::Get_Option(int argc,
     }
 }
 
-Get_Option::~Get_Option(void)
+get_option::~get_option(void)
 {
 }
 
-int
-Get_Option::nextchar_i(void)
+int get_option::nextchar_i(void)
 {
     if (this->ordering_ == PERMUTE_ARGS)
         if (this->permute() == EOF)
@@ -193,7 +192,6 @@ Get_Option::nextchar_i(void)
              || this->nextchar_[1] == '\0')
     {
         // We didn't get an option.
-
         if (this->ordering_ == REQUIRE_ORDER
             || this->ordering_ == PERMUTE_ARGS)
             // If we permuted or require the options to be in order, we're done.
@@ -225,8 +223,7 @@ Get_Option::nextchar_i(void)
     return 0;
 }
 
-int
-Get_Option::long_option_i(void)
+int get_option::long_option_i(void)
 {
     char* s = this->nextchar_;
     int hits = 0;
@@ -248,11 +245,10 @@ Get_Option::long_option_i(void)
     size_t size = this->long_opts_.size();
     u_int option_index = 0;
 
-    ZCE_GETOPT_LONG_OPTION* pfound = 0;
-
+    GETOPT_LONG_OPTION* pfound = 0;
     for (option_index = 0; option_index < size; option_index++)
     {
-        ZCE_GETOPT_LONG_OPTION p = this->long_opts_[option_index];
+        GETOPT_LONG_OPTION p = this->long_opts_[option_index];
 
         if (!::strncmp(p.name_.c_str(), this->nextchar_, len))
         {
@@ -368,12 +364,10 @@ Get_Option::long_option_i(void)
         this->optind++;
         return '?';
     }
-
     return this->short_option_i();
 }
 
-int
-Get_Option::short_option_i(void)
+int get_option::short_option_i(void)
 {
     /* Look at and handle the next option-character.  */
     char opt = *this->nextchar_++;
@@ -413,7 +407,6 @@ Get_Option::short_option_i(void)
     }
 
     this->optopt_ = oli[0];      // Remember the option that matched
-
     if (oli[1] == ':')
     {
         if (oli[2] == ':')
@@ -459,16 +452,13 @@ Get_Option::short_option_i(void)
             {
                 this->optarg = this->argv_[this->optind++];
             }
-
             this->nextchar_ = 0;
         }
     }
-
     return opt;
 }
 
-int
-Get_Option::operator () (void)
+int get_option::operator () (void)
 {
     // First of all, make sure we reinitialize any pointers..
     this->optarg = 0;
@@ -498,19 +488,16 @@ Get_Option::operator () (void)
     {
         return this->long_option_i();
     }
-
     return this->short_option_i();
 }
 
-int
-Get_Option::long_option(const char* name,
+int get_option::long_option(const char* name,
                         OPTION_ARG_MODE has_arg)
 {
     return this->long_option(name, 0, has_arg);
 }
 
-int
-Get_Option::long_option(const char* name,
+int get_option::long_option(const char* name,
                         int short_option,
                         OPTION_ARG_MODE has_arg)
 {
@@ -556,7 +543,6 @@ Get_Option::long_option(const char* name,
                                 short_option,
                                 name);
                     }
-
                     return -1;
                 }
             }
@@ -569,7 +555,6 @@ Get_Option::long_option(const char* name,
                             short_option,
                             name);
                 }
-
                 return -1;
             }
         }
@@ -577,7 +562,6 @@ Get_Option::long_option(const char* name,
         {
             // Didn't find short option, so add it...
             this->optstring_ += (char)short_option;
-
             if (has_arg == OPTION_ARG_MODE::ARG_REQUIRED)
             {
                 this->optstring_ += ":";
@@ -589,26 +573,22 @@ Get_Option::long_option(const char* name,
         }
     }
 
-    ZCE_GETOPT_LONG_OPTION option(name, has_arg, short_option);
-
+    GETOPT_LONG_OPTION option(name, has_arg, short_option);
     this->long_opts_.push_back(option);
 
     return 0;
 }
 
-const char*
-Get_Option::long_option(void) const
+const char* get_option::long_option(void) const
 {
     if (this->long_option_)
     {
         return this->long_option_->name_.c_str();
     }
-
     return 0;
 }
 
-void
-Get_Option::permute_args(void)
+void get_option::permute_args(void)
 {
     u_long cyclelen, i, j, ncycle, nnonopts, nopts;
     u_long opt_end = this->optind;
@@ -647,8 +627,7 @@ Get_Option::permute_args(void)
     }
 }
 
-int
-Get_Option::permute(void)
+int get_option::permute(void)
 {
     //
     if (this->nonopt_start_ != this->nonopt_end_

@@ -66,7 +66,7 @@ int Ogre_Service_App::app_exit()
 {
     //
     Ogre_Comm_Manger::instance()->uninit_comm_manger();
-    Ogre_Comm_Manger::clean_instance();
+    Ogre_Comm_Manger::clear_inst();
 
     Ogre_Buffer_Storage::instance()->uninit_buffer_list();
 

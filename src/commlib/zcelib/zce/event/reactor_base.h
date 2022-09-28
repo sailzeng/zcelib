@@ -150,7 +150,7 @@ public:
     */
     static ZCE_Reactor* instance();
     ///清理单子函数
-    static void clean_instance();
+    static void clear_inst();
     ///设置单子的函数
     static void instance(ZCE_Reactor* pinstatnce);
 

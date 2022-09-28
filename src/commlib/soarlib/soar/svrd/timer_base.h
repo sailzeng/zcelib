@@ -54,7 +54,7 @@
 
 #pragma once
 
-class soar::Stat_Monitor;
+class soar::stat_monitor;
 class Server_Config_Base;
 
 namespace soar
@@ -141,7 +141,7 @@ protected:
     time_t last_check_ = 0;
 
     // 监控的实例
-    soar::Stat_Monitor* stat_monitor_ = NULL;
+    soar::stat_monitor* stat_monitor_ = NULL;
 
     ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
     size_t zan_timer_num_ = 0;

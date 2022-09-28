@@ -9,7 +9,7 @@
 //
 UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
 //
-soar::Stat_Monitor* UDP_Svc_Handler::server_status_ = NULL;
+soar::stat_monitor* UDP_Svc_Handler::server_status_ = NULL;
 //通信管理器
 zerg::Comm_Manager* UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
 
@@ -113,7 +113,7 @@ int UDP_Svc_Handler::handle_input()
         //如果出来成功
         if (szrevc > 0)
         {
-            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<soar::Zerg_Frame*>(dgram_databuf_->buffer_data_));
+            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<soar::zerg_frame*>(dgram_databuf_->buffer_data_));
         }
     }
 
@@ -149,10 +149,10 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
 
     zce::skt::addr_in     remote_addr;
 
-    soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*> (dgram_databuf_->buffer_data_);
+    soar::zerg_frame* proc_frame = reinterpret_cast<soar::zerg_frame*> (dgram_databuf_->buffer_data_);
 
     recvret = dgram_peer_.recvfrom(dgram_databuf_->buffer_data_,
-                                   soar::Zerg_Frame::MAX_LEN_OF_DATA,
+                                   soar::zerg_frame::MAX_LEN_OF_DATA,
                                    0,
                                    &remote_addr);
 
@@ -223,7 +223,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
 
     //避免发生其他人填写的情况
     //proc_frame->clear_inner_option();
-    proc_frame->frame_option_.protocol_ = soar::Zerg_Frame::DESC_UDP_FRAME;
+    proc_frame->frame_option_.protocol_ = soar::zerg_frame::DESC_UDP_FRAME;
 
     size_revc = recvret;
 
@@ -236,7 +236,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
 }
 
 //
-int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame* send_frame)
+int UDP_Svc_Handler::write_data_to_udp(soar::zerg_frame* send_frame)
 {
     ssize_t szsend = 0;
     const size_t IP_ADDR_LEN = 32;
@@ -278,7 +278,7 @@ int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame* send_frame)
     return 0;
 }
 
-int UDP_Svc_Handler::send_all_to_udp(soar::Zerg_Frame* send_frame)
+int UDP_Svc_Handler::send_all_to_udp(soar::zerg_frame* send_frame)
 {
     //找到原来的那个UDP端口，使用原来的端口发送，
     //这样可以保证防火墙的穿透问题
@@ -304,7 +304,7 @@ int UDP_Svc_Handler::send_all_to_udp(soar::Zerg_Frame* send_frame)
 int UDP_Svc_Handler::init_all_static_data()
 {
     //服务器的统计操作实例
-    server_status_ = soar::Stat_Monitor::instance();
+    server_status_ = soar::stat_monitor::instance();
 
     //通信管理器
     zerg_comm_mgr_ = zerg::Comm_Manager::instance();

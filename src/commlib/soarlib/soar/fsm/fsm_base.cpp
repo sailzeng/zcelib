@@ -40,16 +40,16 @@ void FSM_Base::on_init()
 }
 
 //根据Frame初始化得到对方发送的信息
-void FSM_Base::create_init(const soar::Zerg_Frame* proc_frame)
+void FSM_Base::create_init(const soar::zerg_frame* proc_frame)
 {
     proc_frame->get_head(req_zerg_head_);
 
     //如果有监控选项，提高日志级别，保证部分日志得到输出
-    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (proc_frame->frame_option_.option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
     {
         trace_log_pri_ = RS_INFO;
     }
-    soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_START_SUCC,
+    soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_START_SUCC,
                                             req_zerg_head_.command_,
                                             0);
     return;
@@ -57,7 +57,7 @@ void FSM_Base::create_init(const soar::Zerg_Frame* proc_frame)
 
 void FSM_Base::on_run(bool& continued)
 {
-    const soar::Zerg_Frame* recv_frame = nullptr;
+    const soar::zerg_frame* recv_frame = nullptr;
     trans_manager_->get_process_frame(recv_frame);
     //如果是第一次创建事物的时候，
     if (trans_create_)
@@ -103,17 +103,17 @@ void FSM_Base::on_run(bool& continued)
         if (running_errno_ == 0)
         {
             // 成功退出，修改监控数据
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
+            soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
                                                     req_zerg_head_.command_,
                                                     0);
         }
         else
         {
             // 失败退出，修改监控数据
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
+            soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
                                                     req_zerg_head_.command_,
                                                     running_errno_);
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL_BY_SVCTYPE,
+            soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL_BY_SVCTYPE,
                                                     req_zerg_head_.send_service_.services_type_,
                                                     running_errno_);
         }
@@ -139,7 +139,7 @@ void FSM_Base::on_timeout(const zce::time_value& now_time,
             continue_run ? "TRUE" : "FALSE",
             running_errno_);
 
-    soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_PROC_TIMEOUT,
+    soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_PROC_TIMEOUT,
                                             req_zerg_head_.command_,
                                             0);
 
@@ -148,17 +148,17 @@ void FSM_Base::on_timeout(const zce::time_value& now_time,
         if (running_errno_ == 0)
         {
             // 成功退出，修改监控数据
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
+            soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
                                                     req_zerg_head_.command_,
                                                     0);
         }
         else
         {
             // 失败退出，修改监控数据
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
+            soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
                                                     req_zerg_head_.command_,
                                                     running_errno_);
-            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL_BY_SVCTYPE,
+            soar::stat_monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL_BY_SVCTYPE,
                                                     req_zerg_head_.send_service_.services_type_,
                                                     running_errno_);
         }
@@ -166,7 +166,7 @@ void FSM_Base::on_timeout(const zce::time_value& now_time,
 }
 
 //检查接受到的FRAME的数据和命令
-int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
+int FSM_Base::check_receive_frame(const soar::zerg_frame* recv_frame,
                                   uint32_t wait_cmd)
 {
     //
@@ -211,7 +211,7 @@ int FSM_Base::close_request_service() const
             req_zerg_head_.command_,
             get_stage(),
             req_zerg_head_.user_id_);
-    soar::Zerg_Head cmd_head;
+    soar::zerg_head cmd_head;
     cmd_head.command_ = INNER_RSP_CLOSE_SOCKET;
     cmd_head.recv_service_ = req_zerg_head_.send_service_;
     cmd_head.proxy_service_ = req_zerg_head_.proxy_service_;

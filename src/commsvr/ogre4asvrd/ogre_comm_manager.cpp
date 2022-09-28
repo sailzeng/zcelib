@@ -54,7 +54,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config* config)
     int ret = 0;
 
     //设置处理的帧的最大长度
-    Ogre4a_App_Frame::set_max_framedata_len(config->ogre_cfg_data_.max_data_len_);
+    ogre4a_frame::set_max_framedata_len(config->ogre_cfg_data_.max_data_len_);
 
     //IP限制,
     ret = Ogre_IPRestrict_Mgr::instance()->get_config(config);
@@ -85,11 +85,11 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
          soar::Svrd_BusPipe::instance()->is_empty_sendbus() == false &&
          procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
-        Ogre4a_App_Frame* send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
+        ogre4a_frame* send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
 
         //
         ret = soar::Svrd_BusPipe::instance()->pop_front_sendbus(
-            reinterpret_cast<soar::Zerg_Frame *>(send_frame));
+            reinterpret_cast<soar::zerg_frame *>(send_frame));
 
         if (ret != 0)
         {
@@ -99,7 +99,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         }
 
         //如果FRAME的长度
-        if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
+        if (send_frame->ogre_frame_len_ > ogre4a_frame::MAX_OF_OGRE_FRAME_LEN)
         {
             ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
                     send_frame->ogre_frame_len_);
@@ -109,7 +109,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         }
 
         //如果是TCP
-        if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_TCP)
+        if (send_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_PEER_TCP)
         {
             ret = Ogre_TCP_Svc_Handler::process_send_data(send_frame);
 
@@ -122,7 +122,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         }
 
         //如果是UDP
-        else if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_UDP)
+        else if (send_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_PEER_UDP)
         {
             //不检查错误
             Ogre_UDPSvc_Hdl::send_alldata_to_udp(send_frame);
@@ -187,7 +187,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
     //
     Ogre_TCP_Svc_Handler::unInit_all_static_data();
     //
-    Ogre_IPRestrict_Mgr::clean_instance();
+    Ogre_IPRestrict_Mgr::clear_inst();
 
     return 0;
 }
@@ -204,7 +204,7 @@ Ogre_Comm_Manger* Ogre_Comm_Manger::instance()
 }
 
 //清理单子的实例
-void Ogre_Comm_Manger::clean_instance()
+void Ogre_Comm_Manger::clear_inst()
 {
     if (instance_)
     {

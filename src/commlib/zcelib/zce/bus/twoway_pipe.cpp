@@ -64,13 +64,13 @@ TwoWay_BusPipe* TwoWay_BusPipe::instance()
 //赋值唯一的单子实例
 void TwoWay_BusPipe::instance(TwoWay_BusPipe* pinstatnce)
 {
-    clean_instance();
+    clear_inst();
     two_way_instance_ = pinstatnce;
     return;
 }
 
 //清除单子实例
-void TwoWay_BusPipe::clean_instance()
+void TwoWay_BusPipe::clear_inst()
 {
     if (two_way_instance_)
     {

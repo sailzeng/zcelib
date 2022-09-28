@@ -21,7 +21,7 @@
 
 namespace zce
 {
-class  Get_Option : public zce::non_copyable
+class  get_option : public zce::non_copyable
 {
 public:
     /// Mutually exclusive ordering values.
@@ -151,7 +151,7 @@ public:
      */
 
 public:
-    Get_Option(int argc,
+    get_option(int argc,
                char** argv,
                const char* optstring = (""),
                int skip_args = 1,
@@ -160,7 +160,7 @@ public:
                int long_only = 0);
 
     /// Default dtor.
-    ~Get_Option(void);
+    ~get_option(void);
 
     /**
      * Scan elements of @a argv (whose length is @a argc) for short option
@@ -327,29 +327,29 @@ public:
 
 private:
     /**
-     * @class ZCE_GETOPT_LONG_OPTION  This class is for internal use
-     * in the Get_Option class, and is inaccessible to users.
+     * @class GETOPT_LONG_OPTION  This class is for internal use
+     * in the get_option class, and is inaccessible to users.
      */
-    class ZCE_GETOPT_LONG_OPTION
+    class GETOPT_LONG_OPTION
     {
     public:
-        ZCE_GETOPT_LONG_OPTION();
+        GETOPT_LONG_OPTION();
 
         /// ctor
-        ZCE_GETOPT_LONG_OPTION(const char* name,
-                               Get_Option::OPTION_ARG_MODE has_arg,
+        GETOPT_LONG_OPTION(const char* name,
+                               get_option::OPTION_ARG_MODE has_arg,
                                int val = 0);
 
         /// Dtor.
-        ~ZCE_GETOPT_LONG_OPTION(void);
+        ~GETOPT_LONG_OPTION(void);
 
-        bool operator < (const ZCE_GETOPT_LONG_OPTION& rhs);
+        bool operator < (const GETOPT_LONG_OPTION& rhs);
 
         /// Long option name.
         std::string    name_;
 
         /// Contains value for <OPTION_ARG_MODE>.
-        Get_Option::OPTION_ARG_MODE has_arg_;
+        get_option::OPTION_ARG_MODE has_arg_;
 
         /// Contains a valid short option character or zero if it doesn't
         /// have a corresponding short option.  It can also contain a
@@ -418,9 +418,9 @@ private:
     int nonopt_end_;
 
     /// Points to the long_option found on last call to <operator()>.
-    ZCE_GETOPT_LONG_OPTION* long_option_;
+    GETOPT_LONG_OPTION* long_option_;
 
     /// Array of long options.
-    std::vector<ZCE_GETOPT_LONG_OPTION> long_opts_;
+    std::vector<GETOPT_LONG_OPTION> long_opts_;
 };
 }

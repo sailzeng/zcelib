@@ -3,7 +3,7 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
-class soar::Zerg_Frame;
+class soar::zerg_frame;
 
 namespace soar
 {
@@ -42,21 +42,21 @@ protected:
     virtual int task_moonlighting(size_t& send_frame_num);
 
     //任务根据FRAME的处理
-    virtual int taskprocess_appframe(const soar::Zerg_Frame* app_frame) = 0;
+    virtual int taskprocess_appframe(const soar::zerg_frame* app_frame) = 0;
 
 protected:
 
     //将数据放入管理器，
     template <class T>
-    int pushbak_mgr_recvqueue(const soar::Zerg_Frame* recv_frame,
+    int pushbak_mgr_recvqueue(const soar::zerg_frame* recv_frame,
                               uint32_t cmd,
                               const T& info,
                               uint32_t option
     )
     {
-        soar::Zerg_Frame* rsp_msg =
-            reinterpret_cast<soar::Zerg_Frame*>(task_frame_buf_);
-        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
+        soar::zerg_frame* rsp_msg =
+            reinterpret_cast<soar::zerg_frame*>(task_frame_buf_);
+        rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME,
                            option,
                            cmd);
         rsp_msg->user_id_ = recv_frame->user_id_;
@@ -70,7 +70,7 @@ protected:
         rsp_msg->backfill_fsm_id_ = recv_frame->fsm_id_;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+        int ret = rsp_msg->appdata_encode(soar::zerg_frame::MAX_LEN_OF_DATA,
                                           info);
 
         if (ret != 0)
@@ -109,8 +109,8 @@ protected:
                               uint32_t option = 0
     )
     {
-        soar::Zerg_Frame* rsp_msg = reinterpret_cast<soar::Zerg_Frame*>(task_frame_buf_);
-        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+        soar::zerg_frame* rsp_msg = reinterpret_cast<soar::zerg_frame*>(task_frame_buf_);
+        rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
         rsp_msg->user_id_ = user_id;
 
@@ -124,7 +124,7 @@ protected:
         rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_DATA,
+        int ret = rsp_msg->appdata_encode(soar::zerg_frame::MAX_LEN_OF_DATA,
                                           info);
 
         if (ret != 0)
@@ -184,6 +184,6 @@ protected:
     bool                task_run_;
 
     //QQPET APPFRAME
-    soar::Zerg_Frame* task_frame_buf_;
+    soar::zerg_frame* task_frame_buf_;
 };
 }

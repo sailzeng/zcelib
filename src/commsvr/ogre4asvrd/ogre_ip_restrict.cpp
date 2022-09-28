@@ -110,7 +110,7 @@ Ogre_IPRestrict_Mgr* Ogre_IPRestrict_Mgr::instance()
 }
 
 //清理实例
-void Ogre_IPRestrict_Mgr::clean_instance()
+void Ogre_IPRestrict_Mgr::clear_inst()
 {
     if (instance_)
     {

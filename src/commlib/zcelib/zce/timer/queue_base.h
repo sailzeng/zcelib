@@ -260,7 +260,7 @@ public:
     //
     static void instance(timer_queue* pinstatnce);
     //
-    static void clean_instance();
+    static void clear_inst();
 
     //数据成员
 protected:

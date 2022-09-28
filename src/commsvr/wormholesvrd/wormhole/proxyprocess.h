@@ -45,7 +45,7 @@ public:
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
 
     ///代理的处理,返回生产的帧的个数
-    virtual int process_proxy(soar::Zerg_Frame* proc_frame) = 0;
+    virtual int process_proxy(soar::zerg_frame* proc_frame) = 0;
 
 protected:
 
@@ -98,7 +98,7 @@ public:
 
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
     // 进行代理的处理
-    virtual int process_proxy(soar::Zerg_Frame* proc_frame);
+    virtual int process_proxy(soar::zerg_frame* proc_frame);
 };
 
 //====================================================================================
@@ -118,7 +118,7 @@ public:
     ///处理配置文件
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
     //
-    virtual int process_proxy(soar::Zerg_Frame* proc_frame);
+    virtual int process_proxy(soar::zerg_frame* proc_frame);
 };
 
 //====================================================================================
@@ -137,7 +137,7 @@ public:
     ///处理配置文件
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
     ///
-    virtual int process_proxy(soar::Zerg_Frame* proc_frame);
+    virtual int process_proxy(soar::zerg_frame* proc_frame);
 
 protected:
     //
@@ -174,7 +174,7 @@ public:
     ///处理配置文件
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
     ///
-    virtual int process_proxy(soar::Zerg_Frame* proc_frame);
+    virtual int process_proxy(soar::zerg_frame* proc_frame);
 
 protected:
     //
@@ -236,7 +236,7 @@ protected:
 //    //
 //    virtual int get_proxy_config(const zce::propertytree *conf_tree);
 //    //
-//    virtual int process_proxy(soar::Zerg_Frame *proc_frame);
+//    virtual int process_proxy(soar::zerg_frame *proc_frame);
 //};
 //
 //
@@ -304,7 +304,7 @@ protected:
 //    //
 //    virtual int get_proxy_config(const zce::propertytree *conf_tree);
 //    //
-//    virtual int process_proxy(soar::Zerg_Frame *proc_frame);
+//    virtual int process_proxy(soar::zerg_frame *proc_frame);
 //
 //private:
 //    //

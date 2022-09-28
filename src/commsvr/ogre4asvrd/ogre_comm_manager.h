@@ -3,7 +3,7 @@
 
 class Ogre_TCPAccept_Hdl;
 class Ogre_UDPSvc_Hdl;
-class Ogre4a_App_Frame;
+class ogre4a_frame;
 class Ogre_Connect_Server;
 class Ogre_Server_Config;
 
@@ -33,7 +33,7 @@ public:
     //得到单子的实例
     static Ogre_Comm_Manger* instance();
     //清理单子的实例
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
 

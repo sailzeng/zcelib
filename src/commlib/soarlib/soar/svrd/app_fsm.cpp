@@ -129,7 +129,7 @@ int SvrdApp_FSM::app_run()
 int SvrdApp_FSM::app_exit()
 {
     int ret = 0;
-    soar::FSM_Manager::clean_instance();
+    soar::FSM_Manager::clear_inst();
 
     ret = soar::App_BusPipe::app_exit();
 

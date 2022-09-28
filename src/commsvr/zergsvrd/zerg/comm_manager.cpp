@@ -22,7 +22,7 @@ Comm_Manager::Comm_Manager() :
 {
     zerg_mmap_pipe_ = soar::Svrd_BusPipe::instance();
     zbuffer_storage_ = zerg::Buffer_Storage::instance();
-    server_status_ = soar::Stat_Monitor::instance();
+    server_status_ = soar::stat_monitor::instance();
     count_start_time_ = static_cast<unsigned int>(zerg::App_Timer::gettimeofday().sec());
 
     memset(monitor_cmd_, 0, sizeof(monitor_cmd_));
@@ -193,7 +193,7 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
            && num_send_frame < want_send_frame)
     {
         zerg::Buffer* tmpbuf = zbuffer_storage_->allocate_buffer();
-        soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(tmpbuf->buffer_data_);
+        soar::zerg_frame* proc_frame = reinterpret_cast<soar::zerg_frame*>(tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
         zerg_mmap_pipe_->pop_front_sendbus(proc_frame);
@@ -201,7 +201,7 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
         tmpbuf->size_of_buffer_ = proc_frame->length_;
 
         //如果是要跟踪的命令
-        if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+        if (proc_frame->u32_option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
         {
             DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][SEND]opt", proc_frame);
         }
@@ -217,7 +217,7 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
         }
 
         //发送UDP的数据
-        if (proc_frame->frame_option_.protocol_ == soar::Zerg_Frame::DESC_UDP_FRAME)
+        if (proc_frame->frame_option_.protocol_ == soar::zerg_frame::DESC_UDP_FRAME)
         {
             //发送错误日志在send_all_to_udp函数内部处理，这儿不增加重复记录
             UDP_Svc_Handler::send_all_to_udp(proc_frame);
@@ -286,7 +286,7 @@ Comm_Manager* Comm_Manager::instance()
 }
 
 //清理实例
-void Comm_Manager::clean_instance()
+void Comm_Manager::clear_inst()
 {
     if (instance_)
     {
@@ -300,13 +300,13 @@ int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
 
-    soar::Zerg_Frame* proc_frame = reinterpret_cast<soar::Zerg_Frame*>(tmpbuf->buffer_data_);
+    soar::zerg_frame* proc_frame = reinterpret_cast<soar::zerg_frame*>(tmpbuf->buffer_data_);
 
     //如果失败归还缓存，如果成功的情况下，会放入发送队列，放入发送队列的归还和这个不一样
     if (ret != 0)
     {
         //记录下来处理
-        if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD)
+        if (proc_frame->u32_option_ & soar::zerg_frame::DESC_SEND_FAIL_RECORD)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                     proc_frame->length_,
@@ -342,7 +342,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
 }
 
 //
-void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame* recv_frame)
+void Comm_Manager::pushback_recvpipe(soar::zerg_frame* recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -351,7 +351,7 @@ void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame* recv_frame)
     }
 
     //为了提高效率，先检查标志位，
-    if (recv_frame->u32_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
+    if (recv_frame->u32_option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
     {
         DUMP_ZERG_FRAME_HEAD(RS_INFO, "[TRACK MONITOR][RECV]opt", recv_frame);
     }

@@ -128,7 +128,7 @@
 //
 //    //DUMP信息
 //    Zerg_Config::instance()->dump_status_info(tmp_ostrstm);
-//    soar::Stat_Monitor::instance()->dump_status_info(tmp_ostrstm);
+//    soar::stat_monitor::instance()->dump_status_info(tmp_ostrstm);
 //    TCP_Svc_Handler::dump_status_staticinfo(tmp_ostrstm);
 //
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "%s", tmp_ostrstm.str().c_str());

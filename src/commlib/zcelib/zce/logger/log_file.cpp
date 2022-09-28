@@ -1,7 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/dirent.h"
-
 #include "zce/os_adapt/process.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/string.h"

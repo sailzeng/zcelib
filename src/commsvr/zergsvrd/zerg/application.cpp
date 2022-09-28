@@ -61,10 +61,10 @@ int Zerg_App::app_start(int argc, const char* argv[])
     }
 
     //给统计模块添加自己的统计信息
-    soar::Stat_Monitor::instance()->add_status_item(ZERG_MONITOR_NUMBER,
+    soar::stat_monitor::instance()->add_status_item(ZERG_MONITOR_NUMBER,
                                                     ZERG_MONITOR_ITEMS);
     //如果是多线程增加这步
-    //soar::Stat_Monitor::instance()->multi_thread_guard(false);
+    //soar::stat_monitor::instance()->multi_thread_guard(false);
 
     size_t max_accept = 0, max_connect = 0, max_peer = 0;
     TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
@@ -115,10 +115,10 @@ int Zerg_App::app_exit()
     TCP_Svc_Handler::uninit_all_staticdata();
 
     //清理管理器的实例
-    zerg::Comm_Manager::clean_instance();
+    zerg::Comm_Manager::clear_inst();
 
     //清理单子
-    zerg::IPRestrict_Mgr::clean_instance();
+    zerg::IPRestrict_Mgr::clear_inst();
 
     //最后调用基类的退出函数
     soar::App_BusPipe::app_exit();

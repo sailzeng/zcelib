@@ -77,7 +77,7 @@ public:
     static App_BusPipe* instance();
 
     ///清理实例实例指针
-    static void clean_instance();
+    static void clear_inst();
 
 protected:
 

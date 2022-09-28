@@ -4,7 +4,7 @@
 #include "ogre_tcppeer_id_set.h"
 #include "ogre_auto_connect.h"
 
-class Ogre4a_App_Frame;
+class ogre4a_frame;
 class mmap_dequechunk;
 class soar::Svrd_BusPipe;
 
@@ -97,7 +97,7 @@ protected:
     int  process_connect_register();
 
     //处理发送错误
-    int process_senderror(Ogre4a_App_Frame* tmpbuf);
+    int process_senderror(ogre4a_frame* tmpbuf);
 
     //得到一个PEER的状态
     PEER_STATUS  get_peer_status();
@@ -106,7 +106,7 @@ protected:
     int push_frame_to_recvpipe(unsigned int sz_data);
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(Ogre4a_App_Frame* ogre_frame);
+    int put_frame_to_sendlist(ogre4a_frame* ogre_frame);
 
     //合并发送的帧数据
     void unite_frame_sendlist();
@@ -129,7 +129,7 @@ public:
     static void get_maxpeer_num(size_t& maxaccept, size_t& maxconnect);
 
     //将数据从端口发送数据
-    static int process_send_data(Ogre4a_App_Frame* tmpbuf);
+    static int process_send_data(ogre4a_frame* tmpbuf);
 
     /*!
     * @brief
@@ -198,10 +198,10 @@ protected:
     OGRE_HANDLER_MODE             handler_mode_;
 
     ///接收数据的缓冲
-    Ogre4a_App_Frame* rcv_buffer_;
+    ogre4a_frame* rcv_buffer_;
 
     ///发送的数据可能要排队
-    zce::lord_rings<Ogre4a_App_Frame*>  \
+    zce::lord_rings<ogre4a_frame*>  \
         snd_buffer_deque_;
 
     ///这个PEER接受数据

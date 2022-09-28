@@ -4,38 +4,38 @@
 #include "soar/stat/define.h"
 
 /******************************************************************************************
-class Stat_Monitor 单线程版本的实例
+class stat_monitor 单线程版本的实例
 ******************************************************************************************/
 namespace soar
 {
-Stat_Monitor* Stat_Monitor::instance_ = NULL;
+stat_monitor* stat_monitor::instance_ = NULL;
 
-Stat_Monitor::Stat_Monitor()
+stat_monitor::stat_monitor()
 {
 }
 
-Stat_Monitor::~Stat_Monitor()
+stat_monitor::~stat_monitor()
 {
 }
 
-Stat_Monitor* Stat_Monitor::instance()
+stat_monitor* stat_monitor::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new Stat_Monitor();
+        instance_ = new stat_monitor();
     }
 
     return instance_;
 }
 
-void Stat_Monitor::clean_instance()
+void stat_monitor::clear_inst()
 {
     delete instance_;
     instance_ = NULL;
 }
 
 //初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
-int Stat_Monitor::initialize(const char* app_base_name,
+int stat_monitor::initialize(const char* app_base_name,
                              const soar::SERVICES_INFO& service_info,
                              size_t num_stat_item,
                              const zce::STATUS_ITEM_WITHNAME item_ary[],
@@ -55,7 +55,7 @@ int Stat_Monitor::initialize(const char* app_base_name,
 }
 
 //生产stat文件名称
-void Stat_Monitor::create_stat_fname(const char* app_base_name,
+void stat_monitor::create_stat_fname(const char* app_base_name,
                                      const soar::SERVICES_INFO& service_info)
 {
     snprintf(stat_mmap_filename_,
@@ -70,7 +70,7 @@ void Stat_Monitor::create_stat_fname(const char* app_base_name,
 }
 
 //从文件名称中得到相应的信息
-int Stat_Monitor::get_info_from_fname(const char* stat_file_name,
+int stat_monitor::get_info_from_fname(const char* stat_file_name,
                                       unsigned int* business_id,
                                       soar::SERVICES_ID* svc_id,
                                       char* app_base_name)

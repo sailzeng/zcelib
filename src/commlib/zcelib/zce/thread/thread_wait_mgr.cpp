@@ -86,7 +86,7 @@ thread_wait_manager* thread_wait_manager::instance()
 }
 
 //清除单子实例
-void thread_wait_manager::clean_instance()
+void thread_wait_manager::clear_inst()
 {
     if (instance_)
     {

@@ -30,7 +30,7 @@ public:
     //!
     static log_printf* instance();
     //!
-    void clean_instance();
+    void clear_inst();
 
 protected:
     //!实例指针

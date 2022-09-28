@@ -29,7 +29,7 @@ public:
 public:
 
     //发送UDP数据给
-    static int send_alldata_to_udp(Ogre4a_App_Frame* send_frame);
+    static int send_alldata_to_udp(ogre4a_frame* send_frame);
 
 protected:
 
@@ -49,7 +49,7 @@ protected:
     OGRE_PEER_ID           peer_svc_info_;
 
     //
-    Ogre4a_App_Frame*      dgram_databuf_;
+    ogre4a_frame*      dgram_databuf_;
 
     //IP限制管理器
     Ogre_IPRestrict_Mgr* ip_restrict_;
