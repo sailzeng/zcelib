@@ -5,8 +5,8 @@
 * @version
 * @date
 * @brief
-* @details    ¶ÔÏó³Ø×ÓµÄÀ©Õ¹£¬Ôö¼ÓÁËÒ»Ğ©ÈÕÖ¾¼ÇÂ¼¹¦ÄÜ£¬
-*             object_poolÓĞÒ»¸öÈ±µã£¬Ëû±»ÈÕÖ¾ÀàÊ¹ÓÃ£¬±ØĞë±£³Ö¼ò½é
+* @details    å¯¹è±¡æ± å­çš„æ‰©å±•ï¼Œå¢åŠ äº†ä¸€äº›æ—¥å¿—è®°å½•åŠŸèƒ½ï¼Œ
+*             object_poolæœ‰ä¸€ä¸ªç¼ºç‚¹ï¼Œä»–è¢«æ—¥å¿—ç±»ä½¿ç”¨ï¼Œå¿…é¡»ä¿æŒç®€ä»‹
 *
 *
 * @note
@@ -18,14 +18,16 @@
 #include "zce/logger/logging.h"
 #include "zce/pool/object_pool.h"
 
+namespace zce
+{
 template<typename LOCK, typename T>
-class object_pool_ex : public zce::object_pool<LOCK, T>
+class object_pool_ex
 {
 public:
-    //!¶ÔÏó³Ø×Ó¶ÔÏó
+    //!å¯¹è±¡æ± å­å¯¹è±¡
     typedef zce::object_pool<LOCK, T> object_pool;
 
-    //!¹¹Ôìº¯Êı£¬Îö¹¹º¯Êı£¬¸³Öµº¯Êı
+    //!æ„é€ å‡½æ•°ï¼Œææ„å‡½æ•°ï¼Œèµ‹å€¼å‡½æ•°
     object_pool_ex() = default;
     ~object_pool_ex() = default;
 
@@ -33,13 +35,13 @@ public:
                     size_t extend_size,
                     std::function <T* () >* new_fun = nullptr)
     {
-        bool ret = object_pool::initialize(init_pool_size,
-                                           extend_size,
-                                           new_fun);
+        bool ret = obj_pool_.initialize(init_pool_size,
+                                        extend_size,
+                                        new_fun);
         dump(RS_INFO);
         if (!ret)
         {
-            ZCE_LOG(RS_INFO, "");
+            ZCE_LOG(RS_INFO, "obj_pool_.initialize fail.");
         }
         return ret;
     }
@@ -47,7 +49,7 @@ public:
     void terminate()
     {
         bool leak_mem;
-        object_pool::terminate(&leak_mem);
+        obj_pool_.terminate(&leak_mem);
         if (leak_mem)
         {
             dump(RS_INFO);
@@ -57,26 +59,29 @@ public:
     T* alloc_object()
     {
         bool extend_pool;
-        T * obj = object_pool::alloc_object(&extend_pool);
+        T * obj = obj_pool_.alloc_object(&extend_pool);
         if (extend_pool)
         {
             dump(RS_INFO);
         }
         if (!obj)
         {
-            ZCE_LOG(RS_INFO, "");
+            ZCE_LOG(RS_INFO, " type[%s] alloc_object fail.",
+                    typeid(T).name());
         }
         return obj;
     }
 
-    //! dumpĞÅÏ¢
+    //! dumpä¿¡æ¯
     void dump(zce::LOG_PRIORITY log_priority)
     {
         ZCE_LOG(log_priority,
-                "object_pool_ex [%s]  capacity[%u] size [%u] free[%u]",
+                "object_pool_ex [%s]  capacity[%u] size [%u]",
                 typeid(T).name(),
-                capacity(),
-                size(),
-                free());
+                obj_pool_.capacity(),
+                obj_pool_.size());
     }
+
+    zce::object_pool<LOCK, T> obj_pool_;
 };
+}

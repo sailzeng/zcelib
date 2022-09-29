@@ -254,5 +254,3 @@ public:
     ZCE_SYSTEM_PERFORMANCE now_system_perf_;
 };
 }
-
-

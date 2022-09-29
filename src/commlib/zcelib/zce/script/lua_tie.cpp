@@ -655,8 +655,6 @@ static int selfsub_int64(lua_State* state)
     return 0;
 }
 
-
-
 //=======================================================================================================
 //为uint64_t 准备的metatable
 static int tostring_uint64(lua_State* state)
@@ -778,7 +776,7 @@ static int selfsub_uint64(lua_State* state)
 static int tostring_stdstring(lua_State* state)
 {
     lua_pushstring(state, ((std::string*)
-                           (((zce::luatie::lua_udat_base*)lua_touserdata(state, 1))->obj_ptr_))->c_str());
+                   (((zce::luatie::lua_udat_base*)lua_touserdata(state, 1))->obj_ptr_))->c_str());
     return 1;
 }
 
@@ -821,7 +819,7 @@ static int add_stdstring(lua_State* state)
     if (lua_isuserdata(state, 2))
     {
         ptr_b = (std::string*)(((zce::luatie::lua_udat_base*)
-                                lua_touserdata(state, 2))->obj_ptr_);
+                               lua_touserdata(state, 2))->obj_ptr_);
     }
     else if (lua_isstring(state, 2))
     {
@@ -858,7 +856,6 @@ static int constructor_stdstring(lua_State* state)
 
 namespace zce
 {
-
 #if LUA_VERSION_NUM < 503
 
 void Lua_Base::reg_int64()
@@ -972,7 +969,7 @@ void Lua_Base::reg_uint64()
 
     lua_setglobal(lua_state_, uint64_name);
 }
-#endif 
+#endif
 
 //注册std::string
 void Lua_Base::reg_stdstring()

@@ -69,5 +69,3 @@ public:
                 const zce::skt::addr_base* local_addr = NULL);
 };
 }
-
-

@@ -248,7 +248,7 @@ protected:
 *             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
 */
 template<typename PROGRESS_TIMER>
-class auto_progress_timer 
+class auto_progress_timer
 {
 public:
     ///构造函数，同时开始计时

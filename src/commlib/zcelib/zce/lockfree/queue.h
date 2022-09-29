@@ -144,7 +144,7 @@ protected:
 *           write_counter_用于记录一些特殊的写入次数，避免ABA问题
 *           但是无奈的是，这个结构如果在64bit的结构下，大部分情况不是lockfree的。
 *           对超过64bit的结构用atomic is_lock_free测试，都不是lock free。
-*           
+*
 */
 template <typename N>
 class safe_point

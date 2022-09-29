@@ -184,7 +184,6 @@ protected:
     ///发生器实例指针
     static uuid64_gen* instance_;
 
-
 protected:
 
     ///发生器使用什么发生方式
@@ -316,7 +315,7 @@ public:
     * @param      identity
     * @param      radix
     */
-    void time_radix(uint32_t identity, 
+    void time_radix(uint32_t identity,
                     uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
@@ -337,10 +336,8 @@ protected:
 
     ///
     UUID128                   time_radix_seed_;
-
 };
 
 //! @brief 实例
 typedef zce::singleton<uuid64_gen> uuid128_gen_inst;
-
 }

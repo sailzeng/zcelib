@@ -337,8 +337,8 @@ private:
 
         /// ctor
         GETOPT_LONG_OPTION(const char* name,
-                               get_option::OPTION_ARG_MODE has_arg,
-                               int val = 0);
+                           get_option::OPTION_ARG_MODE has_arg,
+                           int val = 0);
 
         /// Dtor.
         ~GETOPT_LONG_OPTION(void);

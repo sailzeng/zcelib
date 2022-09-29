@@ -126,5 +126,4 @@ protected:
     //!对象池子堆
     std::tuple<object_pool<LOCK, T>... > pools_;
 };
-
 }

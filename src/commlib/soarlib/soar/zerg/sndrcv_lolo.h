@@ -108,8 +108,8 @@ public:
 //收数据
 template<class T2>
 int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
-                                           T2& msg,
-                                           zce::time_value* time_wait)
+                                   T2& msg,
+                                   zce::time_value* time_wait)
 {
     int ret = 0;
     ssize_t socket_ret = 0;
@@ -190,10 +190,10 @@ int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
 //发送数据
 template< class T1>
 int lolo_sendrecv::send_svc_msg(uint32_t user_id,
-                                        uint32_t cmd,
-                                        const T1& info,
-                                        uint32_t backfill_fsm_id,
-                                        uint16_t business_id)
+                                uint32_t cmd,
+                                const T1& info,
+                                uint32_t backfill_fsm_id,
+                                uint16_t business_id)
 {
     int ret = 0;
     msg_send_frame_->command_ = cmd;
@@ -253,14 +253,14 @@ int lolo_sendrecv::send_svc_msg(uint32_t user_id,
 //发送和接收数据，一起一锅搞掂的方式
 template< class T1, class T2>
 int lolo_sendrecv::send_recv_msg(unsigned int snd_cmd,
-                                         uint32_t user_id,
-                                         const T1& send_info,
-                                         zce::time_value* time_wait,
-                                         bool if_recv,
-                                         unsigned int rcv_cmd,
-                                         T2& recv_info,
-                                         uint32_t backfill_fsm_id,
-                                         uint16_t business_id)
+                                 uint32_t user_id,
+                                 const T1& send_info,
+                                 zce::time_value* time_wait,
+                                 bool if_recv,
+                                 unsigned int rcv_cmd,
+                                 T2& recv_info,
+                                 uint32_t backfill_fsm_id,
+                                 uint16_t business_id)
 {
     int ret = 0;
 

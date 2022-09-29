@@ -54,20 +54,20 @@ public:
     * @brief      得到此Command的zce::mysql::Connect对象
     * @return     zce::mysql::connect*
     */
-    inline zce::mysql::connect* get_connect();
+    zce::mysql::connect* get_connect();
 
     /*!
     * @brief      设置SQL Command语句,为BIN型的SQL语句准备
     * @param      sqlcmd SQL语句
     * @param      szsql  SQL语句长度
     */
-    inline int set_sql_command(const char* sqlcmd, size_t szsql);
+    int set_sql_command(const char* sqlcmd, size_t szsql);
 
     /*!
     * @brief      设置SQL Command语句,TXT,BIN语句都可以
     * @param      sqlcmd SQL语句
     */
-    inline int set_sql_command(const std::string& sqlcmd);
+    int set_sql_command(const std::string& sqlcmd);
 
     /*!
     * @brief      设置SQL Command语句,动态参数版本

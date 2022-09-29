@@ -17,6 +17,4 @@
 #ifndef ZCE_LIB_NET_HTTP_CLIENT_H_
 #define ZCE_LIB_NET_HTTP_CLIENT_H_
 
-
-
 #endif //_ZCE_LIB_NET_HTTP_CLIENT_H_

@@ -16,12 +16,12 @@ lolo_sendrecv::~lolo_sendrecv()
 
 //设置相应的SVC INFO,
 int lolo_sendrecv::set_lolo_svcinfo(const char* svc_ip,
-                                            unsigned short svc_port,
-                                            const soar::SERVICES_ID& recv_service,
-                                            const soar::SERVICES_ID& send_service,
-                                            const soar::SERVICES_ID& proxy_service,
-                                            size_t frame_len,
-                                            bool is_check_conn_info)
+                                    unsigned short svc_port,
+                                    const soar::SERVICES_ID& recv_service,
+                                    const soar::SERVICES_ID& send_service,
+                                    const soar::SERVICES_ID& proxy_service,
+                                    size_t frame_len,
+                                    bool is_check_conn_info)
 {
     int ret = 0;
 

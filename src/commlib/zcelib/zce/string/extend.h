@@ -56,8 +56,6 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR = '%';
 
 // 下面代码推荐使用的是 str_nprintf string_format，如果使用，你未来应该很容易切换的std::format
 
-
-
 inline static void _foo_c11_outstring(std::string& foo_string,
                                       const char*& foo_fmt_spec)
 {
@@ -365,5 +363,4 @@ char* foo_strnsplice(char* foo_buffer,
     //返回
     return foo_buffer;
 }
-
 };

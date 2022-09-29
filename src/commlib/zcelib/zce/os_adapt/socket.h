@@ -364,9 +364,9 @@ ssize_t sendn(ZCE_SOCKET handle,
 * @param[in]  out_fds  就是select的返回fd_set参数
 * @param[out] ready_fd 如果已经ready了，ready_fd返回ready的句柄
 */
-inline bool is_ready_fds(int no_fds,
-                         const fd_set* out_fds,
-                         ZCE_SOCKET* ready_fd);
+bool is_ready_fds(int no_fds,
+                  const fd_set* out_fds,
+                  ZCE_SOCKET* ready_fd);
 
 /*!
 * @brief      跨平台的select函数，在函数功能上尽量想LINUX下靠齐，
@@ -1000,9 +1000,9 @@ inline int gethostname(char* name,
 * @param[in]  ipv4_addr_str  地址信息字符串
 * @param[in]  ipv4_port      端口，本地序
 */
-inline int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
-                           const char* ipv4_addr_str,
-                           uint16_t ipv4_port);
+int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
+                    const char* ipv4_addr_str,
+                    uint16_t ipv4_port);
 
 /*!
 * @brief      设置一个IPV4的地址，如果字符串里面有端口信息，也会同时设置端口
@@ -1010,8 +1010,8 @@ inline int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 * @param      sock_addr_ipv4 被设置的IPV4地址
 * @param      ipv4_addr_str  地址字符串,如果里面有字符'#'，会认为有端口号，
 */
-inline int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
-                           const char* ipv4_addr_str);
+int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
+                    const char* ipv4_addr_str);
 
 /*!
 * @brief      设置一个IPV4的地址
@@ -1021,9 +1021,9 @@ inline int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 * @param[in]  ipv4_port      端口号，本地序
 * @note
 */
-inline int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
-                           uint32_t ipv4_addr_val,
-                           uint16_t ipv4_port);
+int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
+                    uint32_t ipv4_addr_val,
+                    uint16_t ipv4_port);
 
 /*!
 * @brief      设置一个IPV6的地址,
@@ -1032,9 +1032,9 @@ inline int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 * @param[in]  ipv6_addr_str  IPV6地址信息字符串，这种格式"0:0:0:0:0:0:0:0"
 * @param[in]  ipv6_port      端口号，本地序
 */
-inline int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
-                            const char* ipv6_addr_str,
-                            uint16_t ipv6_port);
+int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
+                     const char* ipv6_addr_str,
+                     uint16_t ipv6_port);
 
 /*!
 * @brief      设置一个IPV4的地址，如果字符串里面有端口信息，也会同时设置端口
@@ -1042,8 +1042,8 @@ inline int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 * @param      sock_addr_ipv6 被设置的IPV6地址
 * @param      ipv6_addr_str  地址字符串,如果里面有字符'#'，会认为有端口号，
 */
-inline int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
-                            const char* ipv6_addr_str);
+int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
+                     const char* ipv6_addr_str);
 
 /*!
 * @brief      设置一个IPV6的地址,和上一个函数的区别主要在参数顺序上，注意
@@ -1052,9 +1052,9 @@ inline int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 * @param[in]  ipv6_port      端口号，本地序
 * @param[in]  ipv6_addr_val  16个字节的地址信息
 */
-inline int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
-                            uint16_t ipv6_port,
-                            const char ipv6_addr_val[16]);
+int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
+                     uint16_t ipv6_port,
+                     const char ipv6_addr_val[16]);
 
 //下面一些是针对IPV4的函数
 

@@ -37,11 +37,11 @@
 
 #ifndef ZCE_MAJOR_VER
 #define ZCE_MAJOR_VER "2"
-#endif 
+#endif
 
 #ifndef ZCE_MINOR_VER
 #define ZCE_MINOR_VER "0"
-#endif 
+#endif
 
 // build num 由CI编译自动修改，手动修改无用
 #ifndef ZCE_BUILD_VER
@@ -67,7 +67,6 @@
 #define _ZCE_LIB_VERSTR_JOIN(major,minor,build,revision)  major"."minor"."build"."revision
 #endif
 
-
 #ifndef ZCE_JION_VER_STRING
 #define ZCE_JION_VER_STRING  _ZCE_LIB_VERSTR_JOIN(ZCE_MAJOR_VER,ZCE_MINOR_VER,ZCE_BUILD_VER,ZCE_REVISION)
 #endif
@@ -90,6 +89,3 @@
 "Author :sail and her firends.\n" \
 "Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
 #endif
-
-
-

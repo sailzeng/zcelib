@@ -8,7 +8,7 @@ namespace zce::skt
 {
 //默认构造函数
 addr_in::addr_in(void) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_), 
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_),
                         sizeof(::sockaddr_in))
 {
     ::memset(&in4_addr_, 0, sizeof(in4_addr_));
@@ -17,7 +17,7 @@ addr_in::addr_in(void) :
 
 //根据addr_in构造，
 addr_in::addr_in(const sockaddr_in* addr) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_), 
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_),
                         sizeof(::sockaddr_in))
 {
     in4_addr_ = *addr;
@@ -26,7 +26,7 @@ addr_in::addr_in(const sockaddr_in* addr) :
 //根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号初始化构造
 addr_in::addr_in(const char* ip_addr_str,
                  uint16_t port_number) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_), 
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_),
                         sizeof(::sockaddr_in))
 {
     int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr_str, port_number);
@@ -39,7 +39,7 @@ addr_in::addr_in(const char* ip_addr_str,
 //根据地址(整数)，端口号初始化构造
 addr_in::addr_in(uint32_t ip_addr,
                  uint16_t port_number) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_), 
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_),
                         sizeof(::sockaddr_in))
 {
     int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr, port_number);
@@ -51,13 +51,11 @@ addr_in::addr_in(uint32_t ip_addr,
 
 //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
 addr_in::addr_in(const addr_in& others) :
-    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_), 
+    zce::skt::addr_base(reinterpret_cast<sockaddr*>(&in4_addr_),
                         sizeof(::sockaddr_in))
 {
     in4_addr_ = others.in4_addr_;
 }
-
-
 
 //设置地址信息
 void addr_in::set_sockaddr(sockaddr* addr, socklen_t len)

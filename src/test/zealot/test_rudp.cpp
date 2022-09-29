@@ -53,8 +53,8 @@ int test_rudp(int argc, char* argv[])
                                                 false,
                                                 true,
                                                 false,
-                                                (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                                                (int)(LOG_HEAD::LOGLEVEL));
+                                                (int)zce::LOG_OUTPUT::LOGFILE | (int)zce::LOG_OUTPUT::ERROUT,
+                                                (int)(zce::LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
         return test_rudp_core(argc, argv);
     }
@@ -67,8 +67,8 @@ int test_rudp(int argc, char* argv[])
                                                 false,
                                                 true,
                                                 false,
-                                                (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT,
-                                                (int)(LOG_HEAD::LOGLEVEL));
+                                                (int)zce::LOG_OUTPUT::LOGFILE | (int)zce::LOG_OUTPUT::ERROUT,
+                                                (int)(zce::LOG_HEAD::LOGLEVEL));
         ZCE_TRACE_FILELINE(RS_DEBUG);
         test_rudp_client(argc, argv);
     }

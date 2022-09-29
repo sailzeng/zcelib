@@ -1509,11 +1509,11 @@ public:
             T,
             _extract_key,
             _compare_key  > *> (
-                avl_tree < std::pair < K,
-                T >,
-                K,
-                _extract_key,
-                _compare_key >::initialize(numnode, pmmap, if_restore));
+            avl_tree < std::pair < K,
+            T >,
+            K,
+            _extract_key,
+            _compare_key >::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
     T& operator[](const K& key)

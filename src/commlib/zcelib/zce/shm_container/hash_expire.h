@@ -128,7 +128,7 @@ public:
             _equal_key   equal_key;
 
             if (false == equal_key(get_key(*(lruht_instance_->value_base_ + oldseq)),
-                                   get_key(*(lruht_instance_->value_base_ + serial_))))
+                get_key(*(lruht_instance_->value_base_ + serial_))))
             {
                 serial_ = zce::SHM_CNTR_INVALID_POINT;
             }
@@ -1201,7 +1201,7 @@ public:
     {
         return reinterpret_cast<self*>(
             shm_hashtable_expire<T, T, _hash_fun, smem_identity<T>, _equal_key, _washout_fun>::initialize(
-                numnode, pmmap, if_restore));
+            numnode, pmmap, if_restore));
     }
 };
 
@@ -1241,7 +1241,7 @@ public:
     {
         return reinterpret_cast<self*>(
             shm_hashtable_expire< std::pair <K, T>, K, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
-                numnode, pmmap, if_restore));
+            numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
     T& operator[](const K& key)

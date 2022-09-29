@@ -108,7 +108,6 @@ int log_msg::init_log(int output_way,
                                     reserve_file_num);
     }
     return 0;
-    
 }
 
 //初始化函数，用于标准输出

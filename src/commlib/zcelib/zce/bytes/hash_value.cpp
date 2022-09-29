@@ -8,7 +8,6 @@
 
 namespace zce
 {
-
 //初始化MD5的context，内容
 void hash_md5::initialize(context* ctx)
 {
@@ -443,7 +442,6 @@ void hash_crc32::finalize(context* ctx,
     *ctx = crc;
     *((uint32_t*)result) = *(ctx);
 }
-
 }
 
 //CRC32的函数，
@@ -619,4 +617,3 @@ size_t zce::hash_djb(const char* str, size_t str_len)
 
     return hash;
 }
-

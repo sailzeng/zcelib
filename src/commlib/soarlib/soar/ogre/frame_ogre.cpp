@@ -89,8 +89,8 @@ void ogre4a_frame::exchange_rcvsnd_peerInfo(const ogre4a_frame* exframe)
 
 //输出APPFRAME的全部部信息
 void ogre4a_frame::dump_ogre_framehead(const ogre4a_frame* proc_frame,
-                                           const char* outstr,
-                                           zce::LOG_PRIORITY log_priority)
+                                       const char* outstr,
+                                       zce::LOG_PRIORITY log_priority)
 {
     ZCE_LOG(log_priority, "[framework] [OGRE_FRAME_MONITOR]location:%s ,frame_len:%u,send_ip:%u,send_port:%u,rcv_ip:%u,rcv_port:%u,",
             outstr,
@@ -109,7 +109,7 @@ void ogre4a_frame::dump_ogre_framehead(const ogre4a_frame* proc_frame,
 
 //输出APPFRAME的全部部信息
 void ogre4a_frame::dump_ogre_framehead(const char* outstr,
-                                           zce::LOG_PRIORITY log_priority) const
+                                       zce::LOG_PRIORITY log_priority) const
 {
     this->dump_ogre_framehead(this, outstr, log_priority);
 }

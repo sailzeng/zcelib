@@ -215,7 +215,6 @@ std::pair<int, std::shared_ptr<char>> read_file(const char* filename,
                                                 size_t* file_len,
                                                 size_t offset = 0);
 
-
 int write_file(const char* filename,
                const char* buff,
                size_t buf_len,
@@ -244,11 +243,8 @@ protected:
     ZCE_HANDLE handle_;
 };
 
-
 //! 这样使用 zce::AUTO_FILE fd(::fopen("xxx"));
 using AUTO_FILE = std::unique_ptr<FILE, decltype(::fclose)*>;
 
 using AUTO_STDFILE = std::unique_ptr<std::FILE, decltype(std::fclose)*>;
 };
-
-

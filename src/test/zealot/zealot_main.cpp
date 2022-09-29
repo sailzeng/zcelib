@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
                                             false,
                                             true,
                                             false,
-                                            ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE, LOG_OUTPUT::ERROUT),
-                                            static_cast<int>(LOG_HEAD::LOGLEVEL));
+                                            ZCE_U32_OR_2(zce::LOG_OUTPUT::LOGFILE, zce::LOG_OUTPUT::ERROUT),
+                                            static_cast<int>(zce::LOG_HEAD::LOGLEVEL));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
     for (size_t i = 0; i < 100; ++i)

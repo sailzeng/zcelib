@@ -141,7 +141,7 @@ public:
             //这个用无效值对象，对所有元素进行赋值，为什么使用placement new，因为更加上流一点
             //如果不是一个无效值
             if (false == equal_key(get_key(*(ht_rehash_instance_->value_base_ + old_serial)),
-                                   get_key(ht_rehash_instance_->invalid_data_)))
+                get_key(ht_rehash_instance_->invalid_data_)))
             {
                 serial_ = old_serial;
                 break;

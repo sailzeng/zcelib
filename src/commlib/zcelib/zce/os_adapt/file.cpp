@@ -35,8 +35,6 @@ ssize_t zce::read(ZCE_HANDLE file_handle,
 #endif
 }
 
-
-
 //写文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
 //Windows下尽量向POSIX 靠拢了
 ssize_t zce::write(ZCE_HANDLE file_handle,
@@ -228,8 +226,6 @@ int zce::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
     return ::ftruncate(file_handle, static_cast<off_t>(offset));
 #endif
 }
-
-
 
 //根据文件名称，判断文件的尺寸,如果文件不存在，打不开等，返回-1
 int zce::filelen(const char* filename, size_t* file_size)

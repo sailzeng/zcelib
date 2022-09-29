@@ -126,9 +126,9 @@ public:
 //阻塞的接收一个APPFRAME数据
 template<class T2>
 int zulu_sendrecv::receive_svc_msg(uint32_t cmd,
-                                       T2& info,
-                                       bool error_continue,
-                                       zce::time_value* time_wait)
+                                   T2& info,
+                                   bool error_continue,
+                                   zce::time_value* time_wait)
 {
     int ret = 0;
 
@@ -189,11 +189,11 @@ int zulu_sendrecv::receive_svc_msg(uint32_t cmd,
 //发送一个数据包
 template< class T1>
 int zulu_sendrecv::send_svc_msg(uint32_t user_id,
-                                    uint32_t cmd,
-                                    const T1& info,
-                                    zce::time_value* time_wait,
-                                    uint32_t backfill_fsm_id,
-                                    uint16_t business_id)
+                                uint32_t cmd,
+                                const T1& info,
+                                zce::time_value* time_wait,
+                                uint32_t backfill_fsm_id,
+                                uint16_t business_id)
 {
     int ret = 0;
 
@@ -235,14 +235,14 @@ int zulu_sendrecv::send_svc_msg(uint32_t user_id,
 //发送一个数据包，并且接收一个数据包
 template< class T1, class T2>
 int zulu_sendrecv::send_recv_msg(unsigned int snd_cmd,
-                                     uint32_t user_id,
-                                     const T1& send_info,
-                                     zce::time_value* time_wait,
-                                     unsigned int rcv_cmd,
-                                     T2& recv_info,
-                                     bool error_continue,
-                                     uint32_t backfill_fsm_id,
-                                     uint16_t business_id)
+                                 uint32_t user_id,
+                                 const T1& send_info,
+                                 zce::time_value* time_wait,
+                                 unsigned int rcv_cmd,
+                                 T2& recv_info,
+                                 bool error_continue,
+                                 uint32_t backfill_fsm_id,
+                                 uint16_t business_id)
 {
     int ret = 0;
 

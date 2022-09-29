@@ -15,7 +15,6 @@ encode::encode(char* write_buf, size_t buf_len) :
 {
 }
 
-
 void encode::write_arithmetic(const char& val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);

@@ -2324,80 +2324,80 @@ public:
         size_t p = 0;
         switch (key_size)
         {
-            case 16:
-                while (true)
+        case 16:
+            while (true)
+            {
+                temp = rk[3];
+                rk[4] = rk[0] ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
+                    AES_RCON[p];
+                rk[5] = rk[1] ^ rk[4];
+                rk[6] = rk[2] ^ rk[5];
+                rk[7] = rk[3] ^ rk[6];
+                if (++p == 10)
                 {
-                    temp = rk[3];
-                    rk[4] = rk[0] ^
-                        (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
-                        (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
-                        (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
-                        (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                        AES_RCON[p];
-                    rk[5] = rk[1] ^ rk[4];
-                    rk[6] = rk[2] ^ rk[5];
-                    rk[7] = rk[3] ^ rk[6];
-                    if (++p == 10)
-                    {
-                        break;
-                    }
-                    rk += 4;
+                    break;
                 }
-                break;
+                rk += 4;
+            }
+            break;
 
-            case 24:
-                while (true)    // for (;;) here triggers a bug in VC60 SP4 w/ Pro Pack
+        case 24:
+            while (true)    // for (;;) here triggers a bug in VC60 SP4 w/ Pro Pack
+            {
+                temp = rk[5];
+                rk[6] = rk[0] ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
+                    AES_RCON[p];
+                rk[7] = rk[1] ^ rk[6];
+                rk[8] = rk[2] ^ rk[7];
+                rk[9] = rk[3] ^ rk[8];
+                if (++p == 8)
                 {
-                    temp = rk[5];
-                    rk[6] = rk[0] ^
-                        (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
-                        (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
-                        (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
-                        (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                        AES_RCON[p];
-                    rk[7] = rk[1] ^ rk[6];
-                    rk[8] = rk[2] ^ rk[7];
-                    rk[9] = rk[3] ^ rk[8];
-                    if (++p == 8)
-                    {
-                        break;
-                    }
-                    rk[10] = rk[4] ^ rk[9];
-                    rk[11] = rk[5] ^ rk[10];
-                    rk += 6;
+                    break;
                 }
-                break;
+                rk[10] = rk[4] ^ rk[9];
+                rk[11] = rk[5] ^ rk[10];
+                rk += 6;
+            }
+            break;
 
-            case 32:
-                while (true)
+        case 32:
+            while (true)
+            {
+                temp = rk[7];
+                rk[8] = rk[0] ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
+                    AES_RCON[p];
+                rk[9] = rk[1] ^ rk[8];
+                rk[10] = rk[2] ^ rk[9];
+                rk[11] = rk[3] ^ rk[10];
+                if (++p == 7)
                 {
-                    temp = rk[7];
-                    rk[8] = rk[0] ^
-                        (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
-                        (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
-                        (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
-                        (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                        AES_RCON[p];
-                    rk[9] = rk[1] ^ rk[8];
-                    rk[10] = rk[2] ^ rk[9];
-                    rk[11] = rk[3] ^ rk[10];
-                    if (++p == 7)
-                    {
-                        break;
-                    }
-                    temp = rk[11];
-                    rk[12] = rk[4] ^
-                        (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0xff000000) ^
-                        (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0x00ff0000) ^
-                        (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x0000ff00) ^
-                        (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x000000ff);
-                    rk[13] = rk[5] ^ rk[12];
-                    rk[14] = rk[6] ^ rk[13];
-                    rk[15] = rk[7] ^ rk[14];
-
-                    rk += 8;
+                    break;
                 }
-                break;
+                temp = rk[11];
+                rk[12] = rk[4] ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x000000ff);
+                rk[13] = rk[5] ^ rk[12];
+                rk[14] = rk[6] ^ rk[13];
+                rk[15] = rk[7] ^ rk[14];
+
+                rk += 8;
+            }
+            break;
         }
 
         //如果是解密

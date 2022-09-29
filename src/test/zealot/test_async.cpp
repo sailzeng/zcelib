@@ -17,7 +17,6 @@ public:
     FSM_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
         Async_FSM(async_mgr, create_cmd)
     {
-
     }
 
 protected:
@@ -84,7 +83,6 @@ public:
     FSM_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
         Async_FSM(async_mgr, create_cmd)
     {
-
     }
 protected:
     virtual ~FSM_2()

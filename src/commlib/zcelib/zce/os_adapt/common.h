@@ -121,7 +121,6 @@ struct pthread_spinlock_t
     std::atomic_flag flag_ = ATOMIC_FLAG_INIT;
 };
 
-
 struct pthread_condattr_t
 {
     // 外部锁定类型，如果需要timeout,增加这个 PTHREAD_MUTEX_TIMEOUT，否则会使用临界区
@@ -162,7 +161,6 @@ struct pthread_cond_t
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     CONDITION_VARIABLE   cv_object_;
 #endif
-
 };
 
 //读写锁的代码来自UNP V2

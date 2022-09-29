@@ -100,6 +100,7 @@
 #include <zce/pool/object_pool.h>
 #include <zce/pool/buffer_pool.h>
 #include <zce/pool/multiobjs_pool.h>
+#include <zce/pool/object_pool_ex.h>
 
 #include <zce/aio/caller.h>
 #include <zce/aio/worker.h>

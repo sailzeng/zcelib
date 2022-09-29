@@ -37,41 +37,41 @@ void zce::fcntl_lock_adjust_params(zce::file_lock_t* lock,
 
     switch (whence)
     {
-        case SEEK_SET:
-            break;
-
-        case SEEK_CUR:
-        {
-            LARGE_INTEGER offset;
-            LARGE_INTEGER distance;
-            distance.QuadPart = 0;
-
-            if (!::SetFilePointerEx(lock->handle_,
-                distance,
-                &offset,
-                FILE_CURRENT))
-            {
-                errno = zce::last_error();
-                return;
-            }
-
-            start += static_cast<ssize_t> (offset.QuadPart);
-        }
+    case SEEK_SET:
         break;
 
-        case SEEK_END:
+    case SEEK_CUR:
+    {
+        LARGE_INTEGER offset;
+        LARGE_INTEGER distance;
+        distance.QuadPart = 0;
+
+        if (!::SetFilePointerEx(lock->handle_,
+            distance,
+            &offset,
+            FILE_CURRENT))
         {
-            size_t file_size = 0;
-            ret = zce::filesize(lock->handle_, &file_size);
-
-            if (ret != 0)
-            {
-                return;
-            }
-
-            start += file_size;
+            errno = zce::last_error();
+            return;
         }
-        break;
+
+        start += static_cast<ssize_t> (offset.QuadPart);
+    }
+    break;
+
+    case SEEK_END:
+    {
+        size_t file_size = 0;
+        ret = zce::filesize(lock->handle_, &file_size);
+
+        if (ret != 0)
+        {
+            return;
+        }
+
+        start += file_size;
+    }
+    break;
     }
 
     LARGE_INTEGER large_start;

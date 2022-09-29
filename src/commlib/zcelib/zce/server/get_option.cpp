@@ -492,14 +492,14 @@ int get_option::operator () (void)
 }
 
 int get_option::long_option(const char* name,
-                        OPTION_ARG_MODE has_arg)
+                            OPTION_ARG_MODE has_arg)
 {
     return this->long_option(name, 0, has_arg);
 }
 
 int get_option::long_option(const char* name,
-                        int short_option,
-                        OPTION_ARG_MODE has_arg)
+                            int short_option,
+                            OPTION_ARG_MODE has_arg)
 {
     // We only allow valid alpha-numeric characters as short options.
     // If short_options is not a valid alpha-numeric, we can still return it

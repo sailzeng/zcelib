@@ -56,7 +56,7 @@ int zce::pthread_spin_trylock(pthread_spinlock_t* lock) noexcept
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_trylock(lock);
 #endif
-    }
+}
 
 //SPIN 锁的解锁
 int zce::pthread_spin_unlock(pthread_spinlock_t* lock) noexcept
