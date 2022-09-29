@@ -33,18 +33,18 @@ namespace zce
 @brief      线程的读写锁
 
 */
-class Thread_RW_Mutex : public zce::Lock_Base
+class thread_rw_mutex : public zce::lock_base
 {
 public:
     //!读锁的GUARD
-    typedef zce::Shared_Guard<Thread_RW_Mutex>  LOCK_SHARED_GUARD;
+    typedef zce::Shared_Guard<thread_rw_mutex>  LOCK_SHARED_GUARD;
     //!写锁的GUARD
-    typedef zce::Unique_Guard<Thread_RW_Mutex> LOCK_UNIQUE_GUARD;
+    typedef zce::Unique_Guard<thread_rw_mutex> LOCK_UNIQUE_GUARD;
 
 public:
     //!构造函数
-    Thread_RW_Mutex();
-    virtual ~Thread_RW_Mutex();
+    thread_rw_mutex();
+    virtual ~thread_rw_mutex();
 
 public:
     //!读取锁
@@ -85,18 +85,18 @@ protected:
             主要是为了适配Windows SVR 2008以后的读写锁实现，
             如果环境允许，推荐使用这个，速度比模拟的估计快很多，
 */
-class Thread_Win_RW_Mutex : public zce::Lock_Base
+class thread_win_rw_mutex : public zce::lock_base
 {
 public:
     //!读锁的GUARD
-    typedef zce::Shared_Guard<Thread_Win_RW_Mutex>  LOCK_SHARED_GUARD;
+    typedef zce::Shared_Guard<thread_win_rw_mutex>  LOCK_SHARED_GUARD;
     //!写锁的GUARD
-    typedef zce::Unique_Guard<Thread_Win_RW_Mutex> LOCK_UNIQUE_GUARD;
+    typedef zce::Unique_Guard<thread_win_rw_mutex> LOCK_UNIQUE_GUARD;
 
 public:
     //构造函数
-    Thread_Win_RW_Mutex();
-    virtual ~Thread_Win_RW_Mutex();
+    thread_win_rw_mutex();
+    virtual ~thread_win_rw_mutex();
 
 public:
     //!读取锁

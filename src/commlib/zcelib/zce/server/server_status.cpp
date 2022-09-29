@@ -225,11 +225,11 @@ void server_status::multi_thread_guard(bool multi_thread)
     //利用多态决定锁的行为
     if (multi_thread)
     {
-        stat_lock_ = new Thread_Light_Mutex();
+        stat_lock_ = new thread_light_mutex();
     }
     else
     {
-        stat_lock_ = new zce::Null_Lock();
+        stat_lock_ = new zce::null_lock();
     }
 }
 
@@ -353,7 +353,7 @@ int server_status::add_number(uint32_t statics_id,
     int ret = 0;
     size_t sandy_idx = static_cast<size_t>(-1);
 
-    zce::Lock_Ptr_Guard guard(stat_lock_);
+    zce::lock_ptr_guard guard(stat_lock_);
 
     ret = find_insert_idx(statics_id, classify_id, subclassing_id, &sandy_idx);
 
@@ -383,7 +383,7 @@ int server_status::set_counter(uint32_t statics_id,
     int ret = 0;
     size_t sandy_idx = static_cast<size_t>(-1);
 
-    zce::Lock_Ptr_Guard guard(stat_lock_);
+    zce::lock_ptr_guard guard(stat_lock_);
 
     ret = find_insert_idx(statics_id, classify_id, subclassing_id, &sandy_idx);
 
@@ -407,7 +407,7 @@ uint64_t server_status::get_counter(uint32_t statics_id,
 
     if (iter_tmp != statid_to_index_.end())
     {
-        zce::Lock_Ptr_Guard guard(stat_lock_);
+        zce::lock_ptr_guard guard(stat_lock_);
         size_t index = iter_tmp->second;
         return (status_stat_sandy_->begin() + index)->counter_;
     }
@@ -473,7 +473,7 @@ void server_status::check_overtime(time_t now_time)
     copy_stat_counter();
 
     //清理过期的统计数据
-    zce::Lock_Ptr_Guard guard(stat_lock_);
+    zce::lock_ptr_guard guard(stat_lock_);
 
     for (size_t i = 0; i < num_of_counter; ++i)
     {
@@ -495,7 +495,7 @@ void server_status::check_overtime(time_t now_time)
 //由于是一个较少调用的函数，我降低了他的性能，保证记录使用的内存空间更小
 void server_status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_copy)
 {
-    zce::Lock_Ptr_Guard guard(stat_lock_);
+    zce::lock_ptr_guard guard(stat_lock_);
 
     //两个数据区大小应该一样
     size_t num_of_counter = status_stat_sandy_->size();
@@ -567,7 +567,7 @@ void server_status::dump_status_info(std::ostringstream& strstream, bool dump_co
     char statics_item_name[STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN + 1];
     statics_item_name[STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN] = '\0';
 
-    zce::Lock_Ptr_Guard guard(stat_lock_);
+    zce::lock_ptr_guard guard(stat_lock_);
 
     for (size_t i = 0; i < num_of_counter; ++i)
     {
@@ -620,7 +620,7 @@ void server_status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_c
     ZCE_LOG(RS_INFO, "index.<statics id,classify id> name                            :number");
 
     STATUS_ITEM_WITHNAME tmp_check;
-    zce::Lock_Ptr_Guard guard(stat_lock_);
+    zce::lock_ptr_guard guard(stat_lock_);
 
     for (size_t i = 0; i < num_of_counter; ++i)
     {

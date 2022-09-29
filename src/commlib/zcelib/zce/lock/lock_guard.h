@@ -22,22 +22,22 @@ namespace zce
 * @brief      锁GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
 * @tparam     ZCE_LOCK 锁的类型，可以是Null_Mutex，Process_Mutex，
 *             Thread_Light_Mutex，Thread_Recursive_Mutex
-*             Process_Semaphore,Thread_NONR_Mutex,等
+*             process_semaphore,thread_nonr_mutex,等
 */
 template <typename zce_lock>
-class Lock_Guard : public ::zce::non_copyable
+class lock_guard : public ::zce::non_copyable
 {
 public:
 
     ///构造，得到锁，进行锁定
-    Lock_Guard(zce_lock& lock) :
+    lock_guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock();
     }
 
     //构造，得到锁，根据要求决定是否进行锁定操作
-    Lock_Guard(zce_lock& lock, bool block) :
+    lock_guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -47,7 +47,7 @@ public:
     }
 
     ///析构，同时对锁进行释放操作
-    ~Lock_Guard(void)
+    ~lock_guard(void)
     {
         lock_->unlock();
     };
@@ -78,7 +78,7 @@ protected:
 
 /*!
 * @brief      读写锁的共享锁（读取）锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock Thread_RW_Mutex
+* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_lock>
 class Shared_Guard : public zce::non_copyable
@@ -132,7 +132,7 @@ protected:
 
 /*!
 * @brief      读写锁中的写锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock Thread_RW_Mutex
+* @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_lock>
 class Unique_Guard : public zce::non_copyable
@@ -186,21 +186,21 @@ protected:
 
 /*!
 * @brief      读写锁的共享锁（读取）锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock Thread_RW_Mutex
+* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_sema>
-class Semaphore_Guard : public zce::non_copyable
+class semaphore_guard : public zce::non_copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    Semaphore_Guard(zce_sema& lock) :
+    semaphore_guard(zce_sema& lock) :
         lock_(&lock)
     {
         lock_->acquire();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    Semaphore_Guard(zce_sema& lock, bool block) :
+    semaphore_guard(zce_sema& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -210,7 +210,7 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~Semaphore_Guard()
+    ~semaphore_guard()
     {
         lock_->release();
     }

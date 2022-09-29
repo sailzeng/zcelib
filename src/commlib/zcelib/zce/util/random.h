@@ -822,5 +822,3 @@ typedef   zce::singleton<mt19937_var_gen>      mt19937_vargen_inst;
 typedef   zce::singleton<ranlux223_var_gen>    ranlux223_vargen_inst;
 typedef   zce::singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
 };//namespace zce
-
-

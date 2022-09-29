@@ -19,12 +19,12 @@ namespace zce
 *             LINUX下用有名信号灯，
 *             WINDOWS下用带名称的信号灯，
 */
-class Process_Semaphore : public zce::Semaphore_Base
+class process_semaphore : public zce::semaphore_base
 {
 public:
 
     ///线程锁的GUARD
-    typedef zce::Semaphore_Guard<Process_Semaphore> LOCK_GUARD;
+    typedef zce::semaphore_guard<process_semaphore> LOCK_GUARD;
 
 public:
 
@@ -33,9 +33,9 @@ public:
     * @param      init_value  信号灯初始化的值
     * @param      sem_name    信号灯的名称
     */
-    Process_Semaphore(unsigned int init_value,
+    process_semaphore(unsigned int init_value,
                       const char* sem_name);
-    virtual ~Process_Semaphore(void);
+    virtual ~process_semaphore(void);
 
     ///锁定
     void acquire() noexcept override;

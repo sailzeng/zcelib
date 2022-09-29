@@ -192,6 +192,12 @@ public:
         return *this;
     }
 
+    template<typename val_type>
+    encode& ptr(val_type* p, size_t ary_sz)
+    {
+        this->write_array(p, ary_sz);
+        return *this;
+    }
 protected:
 
     ///状态是否正确，如果写入位置超出缓冲区的结尾，会置为false
@@ -397,11 +403,19 @@ public:
         size_t load_count;
         return read_array(val, ary_count, load_count);
     }
+
+    /**
+     * @brief 从BUF种读取array_type类型的队列数据
+     * @tparam array_type 队列类型
+     * @param ary 队列
+     * @param ary_count 读取的类型
+     * @param load_count
+    */
     template<typename array_type >
     void read_array(array_type ary, size_t ary_count, size_t& load_count)
     {
         //读取数组长度
-        unsigned int ui_load_count = 0;
+        uint32_t ui_load_count = 0;
         this->read_arithmetic(ui_load_count);
         load_count = ui_load_count;
         //
@@ -419,7 +433,7 @@ public:
     ///特化，对字符串进行加速
     void read_array(char* ary, size_t ary_count, size_t& load_count)
     {
-        unsigned int ui_load_count;
+        uint32_t ui_load_count;
         this->read_arithmetic(ui_load_count);
         load_count = ui_load_count;
 
@@ -436,7 +450,7 @@ public:
     ///特化
     void read_array(unsigned char* ary, size_t ary_count, size_t& load_count)
     {
-        unsigned int ui_load_count;
+        uint32_t ui_load_count;
         this->read_arithmetic(ui_load_count);
         load_count = ui_load_count;
 
@@ -470,7 +484,7 @@ public:
     template<typename val_type>
     decode& ptr(val_type* p, size_t ary_sz)
     {
-        size_t load_sz;
+        size_t load_sz = 0;
         this->read_array(p, ary_sz, &load_sz);
         return *this;
     }

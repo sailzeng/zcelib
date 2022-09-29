@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-zce::Thread_RW_Mutex light_rw;
+zce::thread_rw_mutex light_rw;
 
 int g_daomei_foo = 0;
 
@@ -84,7 +84,7 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-zce::Thread_RW_Mutex rw_lock;
+zce::thread_rw_mutex rw_lock;
 
 class Task_Read_1 : public zce::thread_task
 {

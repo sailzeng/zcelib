@@ -22,18 +22,18 @@ namespace zce
 *             在LINUX下，还是用pthread_mutex实现的，但是用共享内存存放，名字用于共享
 *             内存名字
 */
-class Process_Mutex : public zce::Lock_Base
+class process_mutex : public zce::lock_base
 {
 public:
 
     //进程锁的GUARD
-    typedef zce::Lock_Guard<Process_Mutex> LOCK_GUARD;
+    typedef zce::lock_guard<process_mutex> LOCK_GUARD;
 
 public:
     ///构造函数
-    Process_Mutex(const char* mutex_name, bool recursive = true);
+    process_mutex(const char* mutex_name, bool recursive = true);
     ///析构函数
-    virtual ~Process_Mutex(void);
+    virtual ~process_mutex(void);
 
     ///锁定
     void lock() noexcept override;

@@ -18,18 +18,18 @@ namespace zce
 /*!
 @brief      线程的信号灯封装，使用的是无名的信号灯，
 */
-class Thread_Semaphore : public zce::Semaphore_Base
+class thread_semaphore : public zce::semaphore_base
 {
 public:
     //线程锁的GUARD
-    typedef zce::Lock_Guard<Thread_Semaphore> LOCK_GUARD;
+    typedef zce::lock_guard<thread_semaphore> LOCK_GUARD;
 
 public:
 
     //构造函数,默认创建匿名信号灯，线程下一般用匿名信号灯就足够了,sem_name一般用NULL就足够了
     //匿名信号灯==无名信号灯
-    Thread_Semaphore(unsigned int init_value);
-    virtual ~Thread_Semaphore(void);
+    thread_semaphore(unsigned int init_value);
+    virtual ~thread_semaphore(void);
 
     //锁定
     void acquire() noexcept override;

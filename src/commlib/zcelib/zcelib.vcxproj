@@ -272,6 +272,7 @@
     <ClInclude Include="zce\net\dns_resolve.h" />
     <ClInclude Include="zce\net\ping.h" />
     <ClInclude Include="zce\net\sock5_client.h" />
+    <ClInclude Include="zce\pool\object_pool_ex.h" />
     <ClInclude Include="zce\pool\multiobjs_pool.h" />
     <ClInclude Include="zce\pool\object_pool.h" />
     <ClInclude Include="zce\pool\buffer_pool.h" />

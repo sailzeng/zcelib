@@ -9,7 +9,7 @@
 namespace zce
 {
 //构造函数,
-Process_Semaphore::Process_Semaphore(unsigned int init_value,
+process_semaphore::process_semaphore(unsigned int init_value,
                                      const char* sem_name) :
     lock_(NULL)
 {
@@ -35,7 +35,7 @@ Process_Semaphore::Process_Semaphore(unsigned int init_value,
     }
 }
 
-Process_Semaphore::~Process_Semaphore()
+process_semaphore::~process_semaphore()
 {
     //没有初始化过
     if (!lock_)
@@ -62,7 +62,7 @@ Process_Semaphore::~Process_Semaphore()
 }
 
 //锁定
-void Process_Semaphore::acquire() noexcept
+void process_semaphore::acquire() noexcept
 {
     //信号灯锁定
     auto ret = zce::sem_wait(lock_);
@@ -74,7 +74,7 @@ void Process_Semaphore::acquire() noexcept
 }
 
 //尝试锁定
-bool Process_Semaphore::try_acquire() noexcept
+bool process_semaphore::try_acquire() noexcept
 {
     //信号灯锁定
     auto ret = zce::sem_trywait(lock_);
@@ -87,7 +87,7 @@ bool Process_Semaphore::try_acquire() noexcept
 }
 
 //解锁,
-void Process_Semaphore::release() noexcept
+void process_semaphore::release() noexcept
 {
     auto ret = zce::sem_post(lock_);
     if (0 != ret)
@@ -98,7 +98,7 @@ void Process_Semaphore::release() noexcept
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool Process_Semaphore::try_acquire_until(const zce::time_value& abs_time) noexcept
+bool process_semaphore::try_acquire_until(const zce::time_value& abs_time) noexcept
 {
     auto ret = 0;
     ret = zce::sem_timedwait(lock_, abs_time);
@@ -117,7 +117,7 @@ bool Process_Semaphore::try_acquire_until(const zce::time_value& abs_time) noexc
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool Process_Semaphore::try_acquire_for(const zce::time_value& relative_time) noexcept
+bool process_semaphore::try_acquire_for(const zce::time_value& relative_time) noexcept
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);

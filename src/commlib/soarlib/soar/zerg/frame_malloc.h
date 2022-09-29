@@ -60,7 +60,7 @@ public:
     * @param      cloned_frame  被克隆的FRAME
     * @note
     */
-    void clone_appframe(const soar::zerg_frame* model_freame, 
+    void clone_appframe(const soar::zerg_frame* model_freame,
                         soar::zerg_frame*& cloned_frame);
 
     /*!
@@ -338,7 +338,7 @@ void ZergFrame_Mallocor<zce_lock>::clear_inst()
 }
 
 //
-typedef ZergFrame_Mallocor<zce::Null_Lock> NULLMUTEX_APPFRAME_MALLOCOR;
-typedef ZergFrame_Mallocor<zce::Thread_Light_Mutex> THREADMUTEX_APPFRAME_MALLOCOR;
+typedef ZergFrame_Mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
+typedef ZergFrame_Mallocor<zce::thread_light_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

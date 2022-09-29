@@ -2,7 +2,7 @@
 
 int test_nonr_thread_mutex(int, char*[])
 {
-    zce::Thread_NONR_Mutex  abc;
+    zce::thread_nonr_mutex  abc;
     abc.lock();
     int last_error = zce::last_error();
     abc.lock();
@@ -17,7 +17,7 @@ int test_nonr_thread_mutex(int, char*[])
 zce::msglist_sema <int >  message_queue_(100);
 //ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 
-zce::Thread_Light_Mutex  io_mutex;
+zce::thread_light_mutex  io_mutex;
 
 class Task_Producer : public zce::thread_task
 {
@@ -34,7 +34,7 @@ public:
             message_queue_.enqueue(data);
 
             {
-                zce::Lock_Guard<zce::Thread_Light_Mutex>  lock(io_mutex);
+                zce::lock_guard<zce::thread_light_mutex>  lock(io_mutex);
                 std::cout << "queue size:" << message_queue_.size() << " input data " << i << std::endl;
             }
         }
@@ -64,7 +64,7 @@ public:
             message_queue_.dequeue(x);
 
             {
-                zce::Lock_Guard<zce::Thread_Light_Mutex> lock(io_mutex);
+                zce::lock_guard<zce::thread_light_mutex> lock(io_mutex);
                 std::cout << "queue size:" << message_queue_.size() << " output data " << x << std::endl;
             }
         }
@@ -104,7 +104,7 @@ int test_msgqueue_condi(int /*argc*/, char* /*argv*/[])
 //        message_queue_.enqueue(i);
 //
 //        {
-//            Lock_Guard<ZCE_Thread_Mutex>  lock(io_mutex);
+//            lock_guard<ZCE_Thread_Mutex>  lock(io_mutex);
 //            std::cout<<"queue size:"<< message_queue_.size() <<" input data "<<i<<std::endl;
 //        }
 //    }
@@ -120,7 +120,7 @@ int test_msgqueue_condi(int /*argc*/, char* /*argv*/[])
 //        message_queue_.dequeue(x);
 //
 //        {
-//            Lock_Guard<ZCE_Thread_Mutex> lock(io_mutex);
+//            lock_guard<ZCE_Thread_Mutex> lock(io_mutex);
 //            std::cout<<"queue size:"<< message_queue_.size() <<" output data "<<x<<std::endl;
 //        }
 //    }

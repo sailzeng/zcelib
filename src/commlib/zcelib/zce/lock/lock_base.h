@@ -31,17 +31,17 @@
 */
 namespace zce
 {
-class Lock_Base
+class lock_base
 {
 protected:
     ///构造函数和析构函数，允许析构，不允许构造的写法
-    Lock_Base() = default;
+    lock_base() = default;
 public:
     ///析构函数
-    virtual ~Lock_Base(void) = default;
+    virtual ~lock_base(void) = default;
 
     ///允许Lock_Ptr_Guard使用一些函数
-    friend class Lock_Ptr_Guard;
+    friend class lock_ptr_guard;
 
     //为了避免其他人的使用，特此将这些函数隐藏起来
 private:
@@ -100,14 +100,14 @@ private:
 *             扩展应该都是从这个基类扩展
 *
 */
-class Semaphore_Base
+class semaphore_base
 {
 protected:
     ///构造函数,protected，允许析构，不允许构造的写法
-    Semaphore_Base() = default;
+    semaphore_base() = default;
 public:
     ///析构函数，
-    virtual ~Semaphore_Base() = default;
+    virtual ~semaphore_base() = default;
 
     virtual void acquire() noexcept
     {
@@ -150,17 +150,17 @@ public:
 private:
 
     ///等待,
-    virtual void wait(zce::Lock_Base* /*external_mutex*/) noexcept
+    virtual void wait(zce::lock_base* /*external_mutex*/) noexcept
     {
     }
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(zce::Lock_Base* /*external_mutex*/,
+    virtual bool wait_until(zce::lock_base* /*external_mutex*/,
                             const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(zce::Lock_Base* /*external_mutex*/,
+    virtual bool wait_for(zce::lock_base* /*external_mutex*/,
                           const zce::time_value& /*relative_time*/) noexcept
     {
         return false;

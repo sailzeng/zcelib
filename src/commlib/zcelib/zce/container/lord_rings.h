@@ -281,18 +281,16 @@ public:
     }
 
     ///重新分配一个空间,
-    bool resize(size_t new_max_size)
+    bool resize(size_t new_size)
     {
-        assert(new_max_size > 0);
-
-        size_t deque_size = size();
-
-        //如果原来的尺寸大于新的尺寸，无法扩展
-        if (deque_size > new_max_size || new_max_size <= 0)
+        assert(new_size > 0);
+        if (new_size <= 0)
         {
             return false;
         }
-        size_t new_capacity = new_max_size + 1;
+        size_t deque_size = size();
+
+        size_t new_capacity = new_size + 1;
         T *new_value_ptr = (T *)::malloc(sizeof(T) * new_capacity);
         if (new_value_ptr == nullptr)
         {
@@ -303,11 +301,22 @@ public:
         if (vptr_ptr_ != nullptr)
         {
             //拷贝到新的数据区,下面这个
-            for (size_t i = 0; i < deque_size && i < new_max_size; ++i)
+            size_t i = 0;
+            for (; i < deque_size && i < new_size; ++i)
             {
                 new_value_ptr[i] = vptr_ptr_[(lordring_start_ + i) % lordring_capacity_];
                 vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~T();
             }
+            //如果其实是缩小
+            if (new_size < deque_size)
+            {
+                size_t destruction_size = deque_size - new_size;
+                for (; i < destruction_size; ++i)
+                {
+                    vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~T();
+                }
+            }
+
             //释放原有的数据空间
             ::free(vptr_ptr_);
             vptr_ptr_ = nullptr;

@@ -339,7 +339,7 @@ public:
     //QUEUE是否为NULL
     inline bool empty()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        thread_light_mutex::LOCK_GUARD guard(queue_lock_);
 
         if (queue_cur_size_ == 0)
         {
@@ -352,7 +352,7 @@ public:
     //QUEUE是否为满
     inline bool full()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        thread_light_mutex::LOCK_GUARD guard(queue_lock_);
         if (queue_cur_size_ == queue_max_size_)
         {
             return true;
@@ -418,7 +418,7 @@ public:
     //清理消息队列
     void clear()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        thread_light_mutex::LOCK_GUARD guard(queue_lock_);
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
@@ -426,7 +426,7 @@ public:
     //返回消息对象的尺寸
     size_t size()
     {
-        Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+        thread_light_mutex::LOCK_GUARD guard(queue_lock_);
         return queue_cur_size_;
     }
 
@@ -465,7 +465,7 @@ protected:
 
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+            thread_light_mutex::LOCK_GUARD guard(queue_lock_);
             message_queue_.push_back(value_data);
             ++queue_cur_size_;
         }
@@ -508,7 +508,7 @@ protected:
         }
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
+            thread_light_mutex::LOCK_GUARD guard(queue_lock_);
             //
             value_data = *message_queue_.begin();
             message_queue_.pop_front();
@@ -528,13 +528,13 @@ protected:
     size_t                           queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    zce::Thread_Light_Mutex          queue_lock_;
+    zce::thread_light_mutex          queue_lock_;
 
     //信号灯，满的信号灯
-    zce::Thread_Semaphore            sem_full_;
+    zce::thread_semaphore            sem_full_;
 
     //信号灯，空的信号灯，当数据
-    zce::Thread_Semaphore            sem_empty_;
+    zce::thread_semaphore            sem_empty_;
 
     //容器类型，可以是list,dequeue,
     C                                message_queue_;

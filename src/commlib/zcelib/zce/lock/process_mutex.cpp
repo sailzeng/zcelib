@@ -15,7 +15,7 @@ namespace zce
 //（如果是WIN下的非递归锁，是个信号灯的名称）
 //WINDOWS的核心对象的名称被用于标识一个核心对象（互斥量，信号灯），而LINUX下的pthread_xxx同步对象，如果对象在共享内存里面，
 //那么就是进程间同步对象，当然还要注意属性PTHREAD_PROCESS_SHARED的设置
-Process_Mutex::Process_Mutex(const char* mutex_name, bool recursive) :
+process_mutex::process_mutex(const char* mutex_name, bool recursive) :
     lock_(NULL)
 {
     ZCE_ASSERT(mutex_name);
@@ -53,7 +53,7 @@ Process_Mutex::Process_Mutex(const char* mutex_name, bool recursive) :
 }
 
 //析构函数，
-Process_Mutex::~Process_Mutex(void)
+process_mutex::~process_mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(lock_);
@@ -80,7 +80,7 @@ Process_Mutex::~Process_Mutex(void)
 }
 
 //锁定
-void Process_Mutex::lock() noexcept
+void process_mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(lock_);
@@ -93,7 +93,7 @@ void Process_Mutex::lock() noexcept
 }
 
 //尝试锁定
-bool Process_Mutex::try_lock() noexcept
+bool process_mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(lock_);
@@ -107,7 +107,7 @@ bool Process_Mutex::try_lock() noexcept
 }
 
 //解锁,
-void Process_Mutex::unlock() noexcept
+void process_mutex::unlock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(lock_);
@@ -120,7 +120,7 @@ void Process_Mutex::unlock() noexcept
 }
 
 //绝对时间
-bool Process_Mutex::try_lock_until(const zce::time_value& abs_time) noexcept
+bool process_mutex::try_lock_until(const zce::time_value& abs_time) noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_timedlock(lock_, abs_time);
@@ -135,7 +135,7 @@ bool Process_Mutex::try_lock_until(const zce::time_value& abs_time) noexcept
 }
 
 //相对时间
-bool Process_Mutex::try_lock_for(const zce::time_value& relative_time) noexcept
+bool process_mutex::try_lock_for(const zce::time_value& relative_time) noexcept
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);
@@ -143,7 +143,7 @@ bool Process_Mutex::try_lock_for(const zce::time_value& relative_time) noexcept
 }
 
 //取出内部的锁的指针
-pthread_mutex_t* Process_Mutex::get_lock()
+pthread_mutex_t* process_mutex::get_lock()
 {
     return lock_;
 }

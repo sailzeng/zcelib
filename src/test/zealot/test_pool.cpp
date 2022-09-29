@@ -1,7 +1,5 @@
 #include "predefine.h"
 
-
-
 int test_pool(int /*argc*/, char* /*argv*/[])
 {
     zce::queue_buffer_pool pool;
@@ -90,18 +88,15 @@ if (!ret)
 
 pool.free_buffer(buf);
 
-
 return 0;
 }
 */
 class CA
 {
-
 };
 
 class CB
 {
-
 };
 
 class CC
@@ -114,7 +109,7 @@ class CC
 
 int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
 {
-    zce::multiobjs_pool<zce::Null_Lock, CA, CB, CC, int, double> m_o_1;
+    zce::multiobjs_pool<zce::null_lock, CA, CB, CC, int, double> m_o_1;
     m_o_1.initialize<0>(10, 10);
     m_o_1.initialize<1>(10, 10);
     m_o_1.initialize<2>(10, 10);

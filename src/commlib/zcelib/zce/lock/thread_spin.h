@@ -32,11 +32,11 @@ namespace zce
 *             Windows下是用临界区+SPIN实现的，所以嘛，同时注意临界区是可递归的
 *             LINUX下用的就是SPIN 锁
 */
-class Thread_Spin_Mutex : public zce::Lock_Base
+class Thread_Spin_Mutex : public zce::lock_base
 {
 public:
     ///线程锁的GUARD
-    typedef zce::Lock_Guard<zce::Thread_Spin_Mutex> LOCK_GUARD;
+    typedef zce::lock_guard<zce::Thread_Spin_Mutex> LOCK_GUARD;
 
 public:
 

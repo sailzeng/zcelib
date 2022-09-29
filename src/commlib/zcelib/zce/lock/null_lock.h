@@ -31,19 +31,19 @@ class time_value;
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
 */
-class Null_Lock : public zce::Lock_Base
+class null_lock : public zce::lock_base
 {
 public:
     //NULL锁的GUARD
-    typedef Lock_Guard<zce::Null_Lock>      LOCK_GUARD;
-    typedef Shared_Guard<zce::Null_Lock>    LOCK_SHARED_GUARD;
-    typedef Unique_Guard<zce::Null_Lock>    LOCK_UNIQUE_GUARD;
+    typedef lock_guard<zce::null_lock>      LOCK_GUARD;
+    typedef Shared_Guard<zce::null_lock>    LOCK_SHARED_GUARD;
+    typedef Unique_Guard<zce::null_lock>    LOCK_UNIQUE_GUARD;
 
 public:
     ///构造函数
-    Null_Lock() = default;
+    null_lock() = default;
     ///析构函数
-    virtual ~Null_Lock(void) = default;
+    virtual ~null_lock(void) = default;
 
 public:
     ///锁定
@@ -99,13 +99,13 @@ public:
 };
 
 //!为了C++标准定义一个
-typedef Null_Lock null_lock;
+typedef null_lock null_lock;
 
 //=====================================================================
-class Null_Semaphore : public Semaphore_Base
+class Null_Semaphore : public semaphore_base
 {
     ///信号灯的GUARD
-    typedef zce::Semaphore_Guard<Null_Semaphore> LOCK_GUARD;
+    typedef zce::semaphore_guard<Null_Semaphore> LOCK_GUARD;
 
 public:
 
@@ -153,17 +153,17 @@ public:
 private:
 
     //!等待
-    void wait(zce::Lock_Base* /*external_mutex*/) noexcept override
+    void wait(zce::lock_base* /*external_mutex*/) noexcept override
     {
     }
     //!绝对时间超时的的等待，超时后解锁
-    bool wait_until(zce::Lock_Base* /*external_mutex*/,
+    bool wait_until(zce::lock_base* /*external_mutex*/,
                     const zce::time_value& /*abs_time*/) noexcept override
     {
         return true;
     }
     //!相对时间的超时锁定等待，超时后，解锁
-    bool wait_for(zce::Lock_Base* /*external_mutex*/,
+    bool wait_for(zce::lock_base* /*external_mutex*/,
                   const zce::time_value& /*relative_time*/) noexcept override
     {
         return true;

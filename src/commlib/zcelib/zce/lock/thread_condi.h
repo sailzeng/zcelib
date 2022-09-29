@@ -21,25 +21,25 @@ namespace zce
 {
 //线程的条件变量类,为了方便用了模版类，但请你直接用两个typedef
 //!使用线程MUTEX
-class Thread_Condition : public zce::Condition_Base
+class thread_condition : public zce::Condition_Base
 {
 public:
 
     //!构造函数
-    Thread_Condition();
+    thread_condition();
 
     //!析构函数
-    virtual ~Thread_Condition(void);
+    virtual ~thread_condition(void);
 
     //!等待
-    virtual void wait(Thread_Light_Mutex* external_mutex) noexcept;
+    virtual void wait(thread_light_mutex* external_mutex) noexcept;
 
     //!绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(Thread_Light_Mutex* external_mutex,
+    virtual bool wait_until(thread_light_mutex* external_mutex,
                             const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(Thread_Light_Mutex* external_mutex,
+    virtual bool wait_for(thread_light_mutex* external_mutex,
                           const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.
@@ -65,14 +65,14 @@ public:
     virtual ~Thread_Recursive_Condition(void);
 
     //!等待
-    virtual void wait(Thread_Recursive_Mutex* external_mutex) noexcept;
+    virtual void wait(thread_recursive_mutex* external_mutex) noexcept;
 
     //!绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(Thread_Recursive_Mutex* external_mutex,
+    virtual bool wait_until(thread_recursive_mutex* external_mutex,
                             const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(Thread_Recursive_Mutex* external_mutex,
+    virtual bool wait_for(thread_recursive_mutex* external_mutex,
                           const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.

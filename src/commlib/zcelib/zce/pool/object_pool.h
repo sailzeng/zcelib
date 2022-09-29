@@ -4,9 +4,10 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date
-* @brief
-* @details
-*
+* @brief      对象池子，用于对象分配，通过alloc得到对象的指针
+*             free归还对象给池子，
+* @details    对象池内部没有日志。因为对象池要给日志类使用，
+*             如果有日志，会形成交叉引用。
 *
 *
 * @note
@@ -49,49 +50,38 @@ public:
                     std::function <T* () >* new_fun = nullptr)
     {
         std::lock_guard<LOCK> lock(lock_);
+        init_pool_size_ = init_pool_size;
         extend_size_ = extend_size;
         if (new_fun)
         {
             new_fun_ = new std::function <T* () >(*new_fun);
         }
-        bool ret = obj_pool_.initialize(init_pool_size);
-        if (ret != true)
-        {
-            return false;
-        }
-        ret = extend(init_pool_size);
+        bool ret = extend(init_pool_size_);
         if (!ret)
         {
             return false;
         }
-        pool_capacity_ = init_pool_size;
         return true;
     }
 
     //!最后的销毁处理
-    void terminate()
+    void terminate(bool *leak_mem = nullptr)
     {
         std::lock_guard<LOCK> lock(lock_);
-        //如果内存全部归还
-        if (obj_pool_.full() == 0)
+        //如果内存没有全部归还
+        if (!obj_pool_.full() == 0)
         {
-            //
-            ZPRINT(RS_INFO, "[zce] (type:%s):,free :%u,capacity :%u,size:%u.Ok.",
-                   typeid(T).name(),
-                   obj_pool_.free(),
-                   obj_pool_.capacity(),
-                   obj_pool_.size());
+            if (leak_mem)
+            {
+                *leak_mem = true;
+            }
         }
-        //如果他在内存
         else
         {
-            //
-            ZPRINT(RS_ERROR, "[zce] (type:%s):,free :%u,capacity :%u,size:%u."
-                   "Have memory leak.Please check your code.",
-                   typeid(T).name(),
-                   obj_pool_.free(),
-                   obj_pool_.capacity(),
-                   obj_pool_.size());
+            if (leak_mem)
+            {
+                *leak_mem = false;
+            }
         }
         size_t sz = obj_pool_.size();
         for (size_t i = 0; i < sz; i++)
@@ -103,24 +93,26 @@ public:
     }
 
     //!分配一个对象
-    T* alloc_object()
+    T* alloc_object(bool *extend_pool = nullptr)
     {
         std::lock_guard<LOCK> lock(lock_);
         auto ret = false;
         T* ptr = nullptr;
+        if (extend_pool)
+        {
+            *extend_pool = false;
+        }
         if (obj_pool_.size() == 0)
         {
-            ret = obj_pool_.resize(pool_capacity_ + extend_size_);
-            if (!ret)
-            {
-                return nullptr;
-            }
             ret = extend(extend_size_);
             if (!ret)
             {
                 return nullptr;
             }
-            pool_capacity_ = pool_capacity_ + extend_size_;
+            if (extend_pool)
+            {
+                *extend_pool = true;
+            }
         }
         obj_pool_.pop_front(ptr);
         return ptr;
@@ -155,18 +147,28 @@ public:
         return obj_pool_.full();
     }
 
-protected:
-
-    //!扩展
+    //!扩展池子的容量
     bool extend(size_t extend_size)
     {
-        ZPRINT(RS_INFO, "[ZCELIB] object_pool<T> [%s] pool size[%u], "
-               "capacity[%u], extend[%u] , old capacity[%u] .",
-               typeid(this).name(),
-               obj_pool_.size(),
-               obj_pool_.capacity(),
-               extend_size,
-               pool_capacity_);
+        bool ret = false;
+        size_t pool_capacity = capacity();
+        if (pool_capacity == 0)
+        {
+            ret = obj_pool_.initialize(extend_size);
+            if (ret != true)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            ret = obj_pool_.resize(pool_capacity + extend_size);
+            if (!ret)
+            {
+                return false;
+            }
+        }
+
         //
         for (size_t i = 0; i < extend_size; ++i)
         {
@@ -189,10 +191,12 @@ protected:
         return true;
     }
 
+    //也许未来可以加个收缩
+
 protected:
 
-    //! 池子容量
-    size_t pool_capacity_ = 0;
+    //! 池子初始化大小
+    size_t init_pool_size_ = 0;
     //! 扩展的尺寸
     size_t extend_size_ = 0;
 

@@ -23,19 +23,19 @@ namespace zce
 *             只要是从zce::Lock_Base继承的家伙，应该都可以使用这个，
 *             ZCE_LockPtr_Guard是利用多态特性实现的，而不是模版特性
 */
-class Lock_Ptr_Guard : public zce::non_copyable
+class lock_ptr_guard : public zce::non_copyable
 {
 public:
 
     //构造，得到锁，进行锁定
-    Lock_Ptr_Guard(zce::Lock_Base* lock_ptr) :
+    lock_ptr_guard(zce::lock_base* lock_ptr) :
         lock_ptr_(lock_ptr)
     {
         lock_ptr_->lock();
     }
 
     ///构造，得到锁，根据要求决定是否进行锁定操作
-    Lock_Ptr_Guard(zce::Lock_Base* lock_ptr, bool block) :
+    lock_ptr_guard(zce::lock_base* lock_ptr, bool block) :
         lock_ptr_(lock_ptr)
     {
         if (block)
@@ -45,7 +45,7 @@ public:
     }
 
     ///析构，同时对锁进行释放操作
-    ~Lock_Ptr_Guard(void)
+    ~lock_ptr_guard(void)
     {
         lock_ptr_->unlock();
     };
@@ -71,6 +71,6 @@ public:
 protected:
 
     ///用来GUARD保护的锁,利用C++特性实现锁差异
-    zce::Lock_Base* lock_ptr_;
+    zce::lock_base* lock_ptr_;
 };
 }

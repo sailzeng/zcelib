@@ -14,10 +14,10 @@
 namespace zce
 {
 /************************************************************************************************************
-Class           : Thread_RW_Mutex
+Class           : thread_rw_mutex
 ************************************************************************************************************/
 //构造函数
-Thread_RW_Mutex::Thread_RW_Mutex()
+thread_rw_mutex::thread_rw_mutex()
 {
     //pthread_rwlockattr_t属性的初始化
     int ret = 0;
@@ -31,7 +31,7 @@ Thread_RW_Mutex::Thread_RW_Mutex()
     }
 }
 
-Thread_RW_Mutex::~Thread_RW_Mutex()
+thread_rw_mutex::~thread_rw_mutex()
 {
     int ret = 0;
     ret = zce::pthread_rwlock_destroy(&rw_lock_);
@@ -44,7 +44,7 @@ Thread_RW_Mutex::~Thread_RW_Mutex()
 }
 
 //读取锁
-void Thread_RW_Mutex::lock_shared() noexcept
+void thread_rw_mutex::lock_shared() noexcept
 {
     int ret = 0;
     ret = zce::pthread_rwlock_rdlock(&rw_lock_);
@@ -57,7 +57,7 @@ void Thread_RW_Mutex::lock_shared() noexcept
 }
 
 //尝试读取锁
-bool Thread_RW_Mutex::try_lock_shared() noexcept
+bool thread_rw_mutex::try_lock_shared() noexcept
 {
     int ret = 0;
     ret = zce::pthread_rwlock_trywrlock(&rw_lock_);
@@ -71,7 +71,7 @@ bool Thread_RW_Mutex::try_lock_shared() noexcept
 }
 
 //绝对时间
-bool Thread_RW_Mutex::try_lock_shared_until(const zce::time_value& abs_time) noexcept
+bool thread_rw_mutex::try_lock_shared_until(const zce::time_value& abs_time) noexcept
 {
     int ret = 0;
 
@@ -87,7 +87,7 @@ bool Thread_RW_Mutex::try_lock_shared_until(const zce::time_value& abs_time) noe
     return true;
 }
 //相对时间
-bool Thread_RW_Mutex::try_lock_shared_for(const zce::time_value& relative_time) noexcept
+bool thread_rw_mutex::try_lock_shared_for(const zce::time_value& relative_time) noexcept
 {
     zce::time_value abs_time(zce::gettimeofday());
     abs_time += relative_time;
@@ -95,7 +95,7 @@ bool Thread_RW_Mutex::try_lock_shared_for(const zce::time_value& relative_time) 
 }
 
 //解读锁
-void Thread_RW_Mutex::unlock_shared() noexcept
+void thread_rw_mutex::unlock_shared() noexcept
 {
     //解锁
     int ret = 0;
@@ -109,7 +109,7 @@ void Thread_RW_Mutex::unlock_shared() noexcept
 }
 
 //写锁定
-void Thread_RW_Mutex::lock() noexcept
+void thread_rw_mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_rwlock_wrlock(&rw_lock_);
@@ -122,7 +122,7 @@ void Thread_RW_Mutex::lock() noexcept
 }
 
 //尝试读取锁
-bool Thread_RW_Mutex::try_lock() noexcept
+bool thread_rw_mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_rwlock_trywrlock(&rw_lock_);
@@ -136,7 +136,7 @@ bool Thread_RW_Mutex::try_lock() noexcept
 }
 
 //写锁定超时，绝对时间
-bool Thread_RW_Mutex::try_lock_until(const zce::time_value& abs_time) noexcept
+bool thread_rw_mutex::try_lock_until(const zce::time_value& abs_time) noexcept
 {
     int ret = 0;
 
@@ -152,7 +152,7 @@ bool Thread_RW_Mutex::try_lock_until(const zce::time_value& abs_time) noexcept
 }
 
 //写锁定超时，相对时间
-bool Thread_RW_Mutex::try_lock_for(const zce::time_value& relative_time) noexcept
+bool thread_rw_mutex::try_lock_for(const zce::time_value& relative_time) noexcept
 {
     zce::time_value abs_time(zce::gettimeofday());
     abs_time += relative_time;
@@ -160,7 +160,7 @@ bool Thread_RW_Mutex::try_lock_for(const zce::time_value& relative_time) noexcep
 }
 
 //解写锁
-void Thread_RW_Mutex::unlock() noexcept
+void thread_rw_mutex::unlock() noexcept
 {
     //解锁
     int ret = 0;
@@ -174,13 +174,13 @@ void Thread_RW_Mutex::unlock() noexcept
 }
 
 //取出内部的锁的指针
-pthread_rwlock_t* Thread_RW_Mutex::get_lock()
+pthread_rwlock_t* thread_rw_mutex::get_lock()
 {
     return &rw_lock_;
 }
 
 /************************************************************************************************************
-Class           : Thread_Win_RW_Mutex 轻量级的读写锁，不提供超时等函数
+Class           : thread_win_rw_mutex 轻量级的读写锁，不提供超时等函数
 ************************************************************************************************************/
 
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
@@ -188,24 +188,24 @@ Class           : Thread_Win_RW_Mutex 轻量级的读写锁，不提供超时等
 //如果用WIN自带的读写锁
 
 //构造函数
-Thread_Win_RW_Mutex::Thread_Win_RW_Mutex()
+thread_win_rw_mutex::thread_win_rw_mutex()
 {
     ::InitializeSRWLock(&(this->rwlock_slim_));
 }
 
-Thread_Win_RW_Mutex::~Thread_Win_RW_Mutex()
+thread_win_rw_mutex::~thread_win_rw_mutex()
 {
 }
 
 //读取锁
-void Thread_Win_RW_Mutex::lock_shared() noexcept
+void thread_win_rw_mutex::lock_shared() noexcept
 {
     ::AcquireSRWLockShared(&(this->rwlock_slim_));
     return;
 }
 
 //尝试读取锁
-bool Thread_Win_RW_Mutex::try_lock_shared() noexcept
+bool thread_win_rw_mutex::try_lock_shared() noexcept
 {
     //如果用WIN自带的读写锁
     BOOL bret = ::TryAcquireSRWLockShared(&(this->rwlock_slim_));
@@ -218,20 +218,20 @@ bool Thread_Win_RW_Mutex::try_lock_shared() noexcept
 }
 
 //解锁,如果是读写锁也只需要这一个函数
-void Thread_Win_RW_Mutex::unlock_shared() noexcept
+void thread_win_rw_mutex::unlock_shared() noexcept
 {
     ::ReleaseSRWLockShared(&(this->rwlock_slim_));
 }
 
 //写锁定
-void Thread_Win_RW_Mutex::lock() noexcept
+void thread_win_rw_mutex::lock() noexcept
 {
     ::AcquireSRWLockExclusive(&(this->rwlock_slim_));
     return;
 }
 
 //尝试读取锁
-bool Thread_Win_RW_Mutex::try_lock() noexcept
+bool thread_win_rw_mutex::try_lock() noexcept
 {
     //如果用WIN自带的读写锁
     BOOL bret = ::TryAcquireSRWLockExclusive(&(this->rwlock_slim_));
@@ -246,7 +246,7 @@ bool Thread_Win_RW_Mutex::try_lock() noexcept
 //这肯定是VS2019的一个BUG。理论上不应该有这个告警
 #pragma warning (disable:26110)
 
-void Thread_Win_RW_Mutex::unlock() noexcept
+void thread_win_rw_mutex::unlock() noexcept
 {
     ::ReleaseSRWLockExclusive(&(this->rwlock_slim_));
 }
@@ -254,7 +254,7 @@ void Thread_Win_RW_Mutex::unlock() noexcept
 #pragma warning (default:26110)
 
 //取出内部的锁的指针
-SRWLOCK* Thread_Win_RW_Mutex::get_lock()
+SRWLOCK* thread_win_rw_mutex::get_lock()
 {
     return &rwlock_slim_;
 }

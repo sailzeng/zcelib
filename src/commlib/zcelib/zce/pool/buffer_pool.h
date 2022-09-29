@@ -123,11 +123,7 @@ public:
     {
         for (size_t i = 0; i < bucket_number_; i++)
         {
-            ZCE_LOG(log_priority, "Buffer Pool [%d] bucket bufsize [%u] capacity[%u] size[%u]",
-                    i,
-                    bucket_bufsize_[i],
-                    pools_[i].capacity(),
-                    pools_[i].size());
+            pools_[i].dump(log_priority);
         }
     }
 

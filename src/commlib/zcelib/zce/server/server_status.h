@@ -403,7 +403,7 @@ protected:
 protected:
 
     //多态的锁,
-    zce::Lock_Base* stat_lock_;
+    zce::lock_base* stat_lock_;
 
     //MMAP内存影射的数据文件
     zce::shm_posix        stat_file_;
