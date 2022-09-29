@@ -37,6 +37,7 @@
 
 #pragma once
 
+#include "zce/os_adapt/time.h"
 #include "zce/string/extend.h"
 #include "zce/logger/log_file.h"
 
@@ -239,7 +240,7 @@ public:
         }
 
         //得到当前时间
-        timeval now_time_val(gettimeofday());
+        timeval now_time_val(zce::gettimeofday());
 
         //我要保留一个位置放'\0',还为\n考虑留一个空间,注意thread_local
         static thread_local char \
