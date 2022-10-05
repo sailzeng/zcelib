@@ -9,7 +9,7 @@ std::vector<Ogre_UDPSvc_Hdl*> Ogre_UDPSvc_Hdl::ary_upd_peer_;
 
 //构造函数
 Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::skt::addr_in& upd_addr, zce::reactor* reactor) :
-    zce::Event_Handler(reactor),
+    zce::event_handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port()),
     dgram_databuf_(NULL),
@@ -50,11 +50,11 @@ int Ogre_UDPSvc_Hdl::init_udp_peer()
     ret = dgram_peer_.open(&udp_bind_addr_);
     if (ret != 0)
     {
-        handle_close();
+        event_close();
         return -1;
     }
 
-    ret = reactor()->register_handler(this, zce::Event_Handler::READ_MASK);
+    ret = reactor()->register_handler(this, zce::event_handler::READ_MASK);
 
     if (ret != 0)
     {
@@ -70,7 +70,7 @@ ZCE_HANDLE Ogre_UDPSvc_Hdl::get_handle(void) const
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
+int Ogre_UDPSvc_Hdl::read_event(ZCE_HANDLE)
 {
     size_t szrevc = 0;
     int ret = 0;
@@ -102,7 +102,7 @@ int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
 }
 
 //
-int Ogre_UDPSvc_Hdl::handle_close()
+int Ogre_UDPSvc_Hdl::event_close()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)

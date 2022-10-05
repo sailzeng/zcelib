@@ -10,7 +10,7 @@
 class soar::zerg_frame;
 class Zerg_Config;
 
-class UDP_Svc_Handler : public zce::Event_Handler
+class UDP_Svc_Handler : public zce::event_handler
 {
 protected:
 
@@ -27,9 +27,9 @@ public:
     //取得句柄
     virtual ZCE_HANDLE get_handle(void) const;
     //
-    virtual int handle_input();
+    virtual int read_event();
     //
-    virtual int handle_close();
+    virtual int event_close();
 
 public:
 

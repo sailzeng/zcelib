@@ -188,11 +188,30 @@ awaiter_socket co_st_connect(zce::aio::worker* worker,
                              zce::time_value* timeout_tv)
 {
     zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
-        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT);
+        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_ADDR);
     aio_atom->handle_ = handle;
     aio_atom->addr_ = addr;
     aio_atom->addr_len_ = addr_len;
     aio_atom->timeout_tv_ = timeout_tv;
+    return awaiter_socket(worker, aio_atom);
+}
+
+awaiter_socket co_st_connect(zce::aio::worker* worker,
+                             ZCE_SOCKET handle,
+                             const char* host_name,
+                             uint16_t host_port,
+                             sockaddr* host_addr,
+                             socklen_t addr_len,
+                             zce::time_value& timeout_tv)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_HOST);
+    aio_atom->handle_ = handle;
+    aio_atom->host_name_ = host_name;
+    aio_atom->host_port_ = host_port;
+    aio_atom->host_addr_ = host_addr;
+    aio_atom->addr_len_ = addr_len;
+    aio_atom->timeout_tv_ = &timeout_tv;
     return awaiter_socket(worker, aio_atom);
 }
 
@@ -269,4 +288,6 @@ awaiter_socket co_st_recvfrom(zce::aio::worker* worker,
     aio_atom->flags_ = flags;
     return awaiter_socket(worker, aio_atom);
 }
+
+//============================================================================
 }

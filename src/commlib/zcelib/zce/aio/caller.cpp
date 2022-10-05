@@ -82,6 +82,9 @@ void SOCKET_ATOM::clear()
     from_ = nullptr;
     from_len_ = nullptr;
     accept_hdl_ = ZCE_INVALID_SOCKET;
+    host_name_ = nullptr;
+    host_port_ = 0;
+    host_addr_ = nullptr;
 }
 
 //====================================================
@@ -524,11 +527,37 @@ int st_connect(zce::aio::worker* worker,
                std::function<void(AIO_ATOM*)> call_back)
 {
     zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
-        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT);
+        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_ADDR);
     aio_atom->handle_ = handle;
     aio_atom->addr_ = addr;
     aio_atom->addr_len_ = addr_len;
     aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->call_back_ = call_back;
+    auto succ_req = worker->request(aio_atom);
+    if (!succ_req)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+int st_connect(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               const char* host_name,
+               uint16_t host_port,
+               sockaddr* host_addr,
+               socklen_t addr_len,
+               zce::time_value& timeout_tv,
+               std::function<void(AIO_ATOM*)> call_back)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_HOST);
+    aio_atom->handle_ = handle;
+    aio_atom->host_name_ = host_name;
+    aio_atom->host_port_ = host_port;
+    aio_atom->host_addr_ = host_addr;
+    aio_atom->addr_len_ = addr_len;
+    aio_atom->timeout_tv_ = &timeout_tv;
     aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);
     if (!succ_req)

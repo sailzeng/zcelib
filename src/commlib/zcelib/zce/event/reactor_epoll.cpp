@@ -84,7 +84,7 @@ int epoll_reactor::initialize(size_t max_event_number,
 }
 
 //注册一个zce::Event_Handler到反应器
-int epoll_reactor::register_handler(zce::Event_Handler* event_handler, int event_mask)
+int epoll_reactor::register_handler(zce::event_handler* event_handler, int event_mask)
 {
     int ret = 0;
     //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
@@ -123,7 +123,8 @@ int epoll_reactor::register_handler(zce::Event_Handler* event_handler, int event
 }
 
 //从反应器注销一个zce::Event_Handler，同事取消他所有的mask
-int epoll_reactor::remove_handler(zce::Event_Handler* event_handler, bool call_handle_close)
+int epoll_reactor::remove_handler(zce::event_handler* event_handler, 
+                                  bool call_event_close)
 {
     int ret = 0;
 
@@ -148,11 +149,12 @@ int epoll_reactor::remove_handler(zce::Event_Handler* event_handler, bool call_h
     //取消掉所有的事件，前面已经删除了，避免里面重复调用
     event_handler->set_mask(0);
 
-    ret = zce::reactor::remove_handler(event_handler, call_handle_close);
-
+    ret = zce::reactor::remove_handler(event_handler, 
+                                       call_event_close);
     if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] zce::reactor::remove_handler fail. please check you code .ret =%u", ret);
+        ZCE_LOG(RS_ERROR, "[zcelib] zce::reactor::remove_handler fail. "
+                "please check you code .ret =%u", ret);
         return -1;
     }
 
@@ -160,7 +162,8 @@ int epoll_reactor::remove_handler(zce::Event_Handler* event_handler, bool call_h
 }
 
 //取消某些mask标志，，
-int epoll_reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask)
+int epoll_reactor::cancel_wakeup(zce::event_handler* event_handler, 
+                                 int cancel_mask)
 {
     int ret = 0;
 
@@ -198,7 +201,8 @@ int epoll_reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_m
 }
 
 //打开某些mask标志，
-int epoll_reactor::schedule_wakeup(zce::Event_Handler* event_handler, int event_mask)
+int epoll_reactor::schedule_wakeup(zce::event_handler* event_handler, 
+                                   int event_mask)
 {
     int ret = 0;
     ret = zce::reactor::schedule_wakeup(event_handler, event_mask);
@@ -275,7 +279,7 @@ int epoll_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
 void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
 {
     int ret = 0;
-    zce::Event_Handler* event_hdl = NULL;
+    zce::event_handler* event_hdl = NULL;
     bool event_in_happen = false, event_out_happen = false;
 
     ret = find_event_handler(ep_event->data.fd, event_hdl);
@@ -292,7 +296,7 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
     //【注意】所有的reactor 都要保证各种触发的顺序，必须保证，否则就有不兼容的问题，正确的顺序应该是读,写,异常处理
 
     //修正connect发生连接错误，内部希望停止处理，但epoll会返回3个事件的修正,
-    //先说明一下这个问题，当内部处理的事件发生错误后，上层可能就会删除掉对应的zce::Event_Handler，但底层可能还有事件要触发。
+    //先说明一下这个问题，当内部处理的事件发生错误后，上层可能就会删除掉对应的zce::event_handler，但底层可能还有事件要触发。
     //由于该代码的时候面临抉择，我必须写一段说明，我在改这段代码的时候有几种种方式,
     //1.整体写成do { break} while()的方式，每个IO事件都作为触发方式，这个好处是简单，但对于epoll,如果是水平触发，那么你可能丢失事件
     //2.继续使用return -1作为一个判断，ACE就是这样的，原来曾经觉得ACE这个设计有点冗余，但自己设计看来，还是有好处的，
@@ -300,28 +304,42 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
     //最后我采用了兼容2，3的方法，2是为了和ACE兼容，3是为了保证就是你TMD天翻地覆，我也能应付,
 
     //代码有点怪，部分目的是加快速度,避免每个调用都要检查，
-
-    //READ和CONNECT事件都调用handle_input
+    int register_mask = event_hdl->get_mask();
+    //READ和CONNECT事件都调用read_event
     if (ep_event->events & EPOLLIN)
     {
         event_in_happen = true;
-        hdl_ret = event_hdl->handle_input();
-
-        //返回-1表示 handle_xxxxx希望调用handle_close退出
+        if (register_mask & zce::event_handler::CONNECT_MASK)
+        {
+            hdl_ret = event_hdl->connect_event(false);
+        }
+        else if (register_mask & zce::event_handler::ACCEPT_MASK)
+        {
+            hdl_ret = event_hdl->accept_event();
+        }
+        else if (register_mask & zce::event_handler::INOTIFY_MASK)
+        {
+            hdl_ret = event_hdl->inotify_event();
+        }
+        else
+        {
+            hdl_ret = event_hdl->read_event();
+        }
+        //返回-1表示 handle_xxxxx希望调用event_close退出
         if (hdl_ret == -1)
         {
-            event_hdl->handle_close();
+            event_hdl->event_close();
         }
     }
 
-    //READ和ACCEPT事件都调用handle_input
+    //READ和ACCEPT事件都调用read_event
     if (ep_event->events & EPOLLOUT)
     {
         //如果写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
         if (event_in_happen)
         {
-            ret = find_event_handler(ep_event->data.fd, event_hdl);
-
+            ret = find_event_handler(ep_event->data.fd,
+                                     event_hdl);
             //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
             if (0 != ret)
             {
@@ -330,12 +348,19 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
         }
 
         event_out_happen = true;
-        hdl_ret = event_hdl->handle_output();
+        if (register_mask & zce::event_handler::CONNECT_MASK)
+        {
+            hdl_ret = event_hdl->connect_event(true);
+        }
+        else
+        {
+            hdl_ret = event_hdl->write_event();
+        }
 
-        //返回-1表示 handle_xxxxx希望调用handle_close退出
+        //返回-1表示 handle_xxxxx希望调用event_close退出
         if (hdl_ret == -1)
         {
-            event_hdl->handle_close();
+            event_hdl->event_close();
         }
     }
 
@@ -345,8 +370,8 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
         //如果读取或者写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
         if (event_out_happen || event_in_happen)
         {
-            ret = find_event_handler(ep_event->data.fd, event_hdl);
-
+            ret = find_event_handler(ep_event->data.fd,
+                                     event_hdl);
             //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
             if (0 != ret)
             {
@@ -354,12 +379,11 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
             }
         }
 
-        hdl_ret = event_hdl->handle_exception();
-
-        //返回-1表示 handle_xxxxx希望调用handle_close退出
+        hdl_ret = event_hdl->exception_event();
+        //返回-1表示 handle_xxxxx希望调用event_close退出
         if (hdl_ret == -1)
         {
-            event_hdl->handle_close();
+            event_hdl->event_close();
         }
     }
 }

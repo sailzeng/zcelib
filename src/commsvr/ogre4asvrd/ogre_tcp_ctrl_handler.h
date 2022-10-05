@@ -11,7 +11,7 @@ class soar::svrd_buspipe;
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
-class Ogre_TCP_Svc_Handler : public  zce::Event_Handler,
+class Ogre_TCP_Svc_Handler : public  zce::event_handler,
     public zce::timer_handler
 {
 public:
@@ -70,13 +70,13 @@ public:
     //ZEN的一组要求自己继承的函数.
     virtual ZCE_HANDLE get_handle(void) const;
     //
-    virtual int handle_input(ZCE_HANDLE);
+    virtual int read_event(ZCE_HANDLE);
     //
-    virtual int handle_output(ZCE_HANDLE);
+    virtual int write_event(ZCE_HANDLE);
     //
     virtual int timer_timeout(const zce::time_value& time, const void* arg);
     //
-    virtual int handle_close();
+    virtual int event_close();
 
     //得到Handle对应PEER的IP地址
     const zce::skt::addr_in& get_peer();

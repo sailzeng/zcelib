@@ -43,7 +43,7 @@ Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_cnthdl_;
 
 //构造函数
 Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode) :
-    zce::Event_Handler(zce::reactor::instance()),
+    zce::event_handler(zce::reactor::instance()),
     handler_mode_(hdl_mode),
     rcv_buffer_(NULL),
     recieve_bytes_(0),
@@ -109,7 +109,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
     if (num_accept_peer_ < max_accept_svr_)
     {
         //注册读写事件
-        ret = reactor()->register_handler(this, zce::Event_Handler::READ_MASK | zce::Event_Handler::WRITE_MASK);
+        ret = reactor()->register_handler(this, zce::event_handler::READ_MASK | zce::event_handler::WRITE_MASK);
 
         //
         if (ret != 0)
@@ -118,11 +118,11 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
                     ret,
                     zce::last_error(),
                     strerror(zce::last_error()));
-            handle_close();
+            event_close();
             return;
         }
 
-        reactor()->cancel_wakeup(this, zce::Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
     }
     //要测试检查一下,
     else
@@ -130,7 +130,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
         ZCE_LOG(RS_ERROR, "Great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u \n",
                 num_accept_peer_,
                 max_accept_svr_);
-        handle_close();
+        event_close();
         return;
     }
 
@@ -159,7 +159,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        handle_close();
+        event_close();
         return;
     }
 
@@ -189,7 +189,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
     socket_peer_.getsockname(&local_address_);
 
     //注册到
-    ret = reactor()->register_handler(this, zce::Event_Handler::CONNECT_MASK);
+    ret = reactor()->register_handler(this, zce::event_handler::CONNECT_MASK);
 
     //我几乎没有见过register_handler失败,
     if (ret != 0)
@@ -198,7 +198,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
-        handle_close();
+        event_close();
         return;
     }
 
@@ -209,7 +209,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        handle_close();
+        event_close();
         return;
     }
 
@@ -309,7 +309,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
 }
 
 //写事件触发,链接成功的事件触发处理函数
-int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
+int Ogre_TCP_Svc_Handler::write_event(ZCE_HANDLE)
 {
     //如果NON BLOCK Connect成功,也会调用handle_output
     if (PEER_STATUS_NOACTIVE == peer_status_)
@@ -325,7 +325,7 @@ int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
     //出现错误,
     if (ret != 0)
     {
-        //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,handle_input将被调用,这儿不重复处理
+        //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,read_event将被调用,这儿不重复处理
         //如果是中断等错误,程序可以继续的.
         return -1;
     }
@@ -356,8 +356,8 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const vo
                     remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                     receive_times_);
             //原来是在这个地方reutrn -1,现在发现return -1是一个很消耗的事情,(定时器的取消会使用指针的方式,会遍历所有的数据)
-            //所以在这儿直接调用handle_close
-            handle_close();
+            //所以在这儿直接调用event_close
+            event_close();
             return 0;
         }
     }
@@ -369,7 +369,7 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const vo
 }
 
 //PEER Event Handler关闭的处理
-int Ogre_TCP_Svc_Handler::handle_close()
+int Ogre_TCP_Svc_Handler::event_close()
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -383,7 +383,7 @@ int Ogre_TCP_Svc_Handler::handle_close()
         timeout_time_id_ = -1;
     }
 
-    //取消所有的MASK,最后阶段,避免调用handle_close,只调用一次
+    //取消所有的MASK,最后阶段,避免调用event_close,只调用一次
     reactor()->remove_handler(this, false);
 
     //关闭端口,
@@ -455,17 +455,17 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
     peer_status_ = PEER_STATUS_ACTIVE;
 
     //再折腾了我至少3天以后，终于发现了EPOLL反复触发写事件的原因是没有取消CONNECT_MASK
-    reactor()->cancel_wakeup(this, zce::Event_Handler::CONNECT_MASK);
+    reactor()->cancel_wakeup(this, zce::event_handler::CONNECT_MASK);
 
     //如果有数据要发送
     if (snd_buffer_deque_.empty() != true)
     {
-        reactor()->schedule_wakeup(this, zce::Event_Handler::WRITE_MASK | zce::Event_Handler::READ_MASK);
+        reactor()->schedule_wakeup(this, zce::event_handler::WRITE_MASK | zce::event_handler::READ_MASK);
     }
     //只读取
     else
     {
-        reactor()->schedule_wakeup(this, zce::Event_Handler::READ_MASK);
+        reactor()->schedule_wakeup(this, zce::event_handler::READ_MASK);
     }
 
     //打印信息
@@ -572,9 +572,9 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
     //如果没有数据要发送, 到这儿应该是有问题
     if (snd_buffer_deque_.empty() == true)
     {
-        ZCE_LOG(RS_ERROR, "Write error,[%s] goto handle_output|write_data_to_peer ,but not data to send. Please check you code.\n",
+        ZCE_LOG(RS_ERROR, "Write error,[%s] goto write_event|write_data_to_peer ,but not data to send. Please check you code.\n",
                 remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        reactor()->cancel_wakeup(this, zce::Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
         return 0;
     }
 
@@ -598,7 +598,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
                 last_error,
                 strerror(last_error));
 
-        //EINVAL:遇到中断,等待重入的判断是if (zce::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
+        //EINVAL:遇到中断,等待重入的判断是if (zce::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有read_event反射
         //EWOULDBLOCK:我只使用EWOULDBLOCK 但是要注意EAGAIN zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
         if (EWOULDBLOCK != last_error && EINVAL != last_error)
         {
@@ -672,10 +672,10 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
     if (snd_buffer_deque_.size() == 0)
     {
         //如果有写标志，取消之
-        if (handle_mask & zce::Event_Handler::WRITE_MASK)
+        if (handle_mask & zce::event_handler::WRITE_MASK)
         {
             //取消可写的MASK值,
-            ret = reactor()->cancel_wakeup(this, zce::Event_Handler::WRITE_MASK);
+            ret = reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
 
             //return -1表示错误，正确返回的是old mask值
             if (-1 == ret)
@@ -915,7 +915,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
     //如果是要重新进行连接的服务器主动主动连接,
     if (ret != 0)
     {
-        //为什么不把一个Ogre_TCP_Svc_Handler作为返回,因为在发起Connect过程中,也可能handle_close.
+        //为什么不把一个Ogre_TCP_Svc_Handler作为返回,因为在发起Connect过程中,也可能event_close.
         ret = zerg_auto_connect_.connect_server_by_peerid(svrinfo);
 
         //这个地方是一个Double Check,如果发起连接成功
@@ -946,7 +946,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
                 zce::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
                 svrinfo.peer_port_);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
-        svchanle->handle_close();
+        svchanle->event_close();
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -1014,7 +1014,7 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(ogre4a_frame* ogre_frame)
         if (ret != 0)
         {
             //这儿已经进行了调整，坚决关闭之，对于中断错误在上层已经转化了错误
-            handle_close();
+            event_close();
 
             //发送数据已经放入队列，返回OK
             return 0;

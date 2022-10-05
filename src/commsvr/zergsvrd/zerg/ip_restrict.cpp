@@ -13,7 +13,7 @@ class  IPRestrict_Mgr 处理通讯中间的IP限制问题
 IPRestrict_Mgr::IPRestrict_Mgr()
 {
 }
-//自己清理的类型，统一关闭在handle_close,这个地方不用关闭
+//自己清理的类型，统一关闭在event_close,这个地方不用关闭
 IPRestrict_Mgr::~IPRestrict_Mgr()
 {
 }

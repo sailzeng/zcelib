@@ -879,7 +879,7 @@ int connect_timeout(ZCE_SOCKET handle,
 
 int connect_timeout(ZCE_SOCKET handle,
                     const char* host_name,
-                    uint16_t port,
+                    uint16_t host_port,
                     sockaddr* host_addr,
                     socklen_t addr_len,
                     zce::time_value& timeout_tv)
@@ -903,19 +903,18 @@ int connect_timeout(ZCE_SOCKET handle,
         if (sizeof(sockaddr_in) == addr_len)
         {
             sockaddr_in* addr4 = reinterpret_cast<sockaddr_in*>(host_addr);
-            addr4->sin_port = htons(port);
+            addr4->sin_port = htons(host_port);
         }
         else if (sizeof(sockaddr_in6) == addr_len)
         {
             sockaddr_in6* addr6 = reinterpret_cast<sockaddr_in6*>(host_addr);
-            addr6->sin6_port = htons(port);
+            addr6->sin6_port = htons(host_port);
         }
         else
         {
             ZCE_ASSERT(false);
         }
     }
-
     return zce::connect_timeout(handle,
                                 host_addr,
                                 addr_len,

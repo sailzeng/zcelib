@@ -527,7 +527,7 @@ int connect_timeout(ZCE_SOCKET handle,
 * @return     int 0成功，非0表示失败，以及错误ID
 * @param      handle      操作的句柄
 * @param      hostname    可以是域名，也可以是数值地址格式，会优先尝试用数值地址格式解析
-* @param      port        端口号
+* @param      host_port   端口号
 * @param      host_addr   输入输出参数，如果不输入hostname，可以作为直连地址，如果输入了hostname，返回解析的地址
 * @param      addr_len    地址长度
 * @param      timeout_tv  超时时间
@@ -535,7 +535,7 @@ int connect_timeout(ZCE_SOCKET handle,
 */
 int connect_timeout(ZCE_SOCKET handle,
                     const char* host_name,
-                    uint16_t port,
+                    uint16_t host_port,
                     sockaddr* host_addr,
                     socklen_t addr_len,
                     zce::time_value& timeout_tv);

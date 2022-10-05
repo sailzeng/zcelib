@@ -35,6 +35,14 @@ class select_reactor : public zce::reactor
 {
 public:
 
+    //
+    enum class SELECT_EVENT
+    {
+        SE_READ,
+        SE_WRITE,
+        SE_EXCEPTION,
+    };
+
     /*!
     * @brief    构造函数
     */
@@ -66,7 +74,8 @@ public:
     * @param      event_handler  操作的句柄
     * @param      cancel_mask    要取消的MASK值
     */
-    virtual int cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask) override;
+    virtual int cancel_wakeup(zce::event_handler* event_handler,
+                              int cancel_mask) override;
 
     /*!
     * @brief      打开某些mask标志，
@@ -74,7 +83,8 @@ public:
     * @param      event_handler  操作的句柄
     * @param      event_mask     要增加的MASK值
     */
-    virtual int schedule_wakeup(zce::Event_Handler* event_handler, int event_mask) override;
+    virtual int schedule_wakeup(zce::event_handler* event_handler,
+                                int event_mask) override;
 
     /*!
     * @brief      事件触发
@@ -82,7 +92,8 @@ public:
     * @param      time_out      超时时长
     * @param      size_event    触发的句柄数量
     */
-    virtual int handle_events(zce::time_value* time_out, size_t* size_event) override;
+    virtual int handle_events(zce::time_value* time_out,
+                              size_t* size_event) override;
 
 protected:
 
@@ -92,7 +103,7 @@ protected:
     * @param      proc_mask  要处理的MASK值，内部会按照，读，写，异常的顺序进行处理，
     */
     void process_ready(const fd_set* out_fds,
-                       zce::Event_Handler::EVENT_MASK proc_mask);
+                       SELECT_EVENT proc_event);
 
 protected:
 

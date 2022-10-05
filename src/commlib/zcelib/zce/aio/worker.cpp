@@ -143,7 +143,8 @@ void worker::process_request()
 }
 
 //!处理应答
-void worker::process_response(size_t& num_rsp, zce::time_value* wait_time)
+void worker::process_response(size_t& num_rsp,
+                              zce::time_value* wait_time)
 {
     num_rsp = 0;
     bool go = false;
@@ -357,10 +358,19 @@ void worker::process_socket(zce::aio::SOCKET_ATOM* atom)
     ssize_t len = 0;
     switch (atom->aio_type_)
     {
-    case SOCKET_CONNECT:
+    case SOCKET_CONNECT_ADDR:
         atom->result_ = zce::connect_timeout(
             atom->handle_,
             atom->addr_,
+            atom->addr_len_,
+            *atom->timeout_tv_);
+        break;
+    case SOCKET_CONNECT_HOST:
+        atom->result_ = zce::connect_timeout(
+            atom->handle_,
+            atom->host_name_,
+            atom->host_port_,
+            atom->host_addr_,
             atom->addr_len_,
             *atom->timeout_tv_);
         break;

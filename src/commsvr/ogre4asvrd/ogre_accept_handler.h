@@ -10,7 +10,7 @@ class Ogre_IPRestrict_Mgr;
 *
 * @note
 */
-class Ogre_TCPAccept_Hdl : public zce::Event_Handler
+class Ogre_TCPAccept_Hdl : public zce::event_handler
 {
 public:
 
@@ -25,10 +25,10 @@ public:
     int create_listenpeer();
 
     //处理有端口
-    virtual int handle_input(ZCE_HANDLE);
+    virtual int read_event(ZCE_HANDLE);
 
     //关闭处理
-    virtual int handle_close();
+    virtual int event_close();
 
     //得到Acceptor的句柄
     ZCE_HANDLE get_handle(void) const;

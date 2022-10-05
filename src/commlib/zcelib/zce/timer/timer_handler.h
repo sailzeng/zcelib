@@ -55,7 +55,7 @@ public:
     //
     void timer_queue(zce::timer_queue* set_timer_queue);
 
-    //考虑的半天，我觉得对于Timer的处理还是不用考虑实现一个handle_close了。
-    //handle_close
+    //考虑的半天，我觉得对于Timer的处理还是不用考虑实现一个event_close了。
+    //event_close
 };
 }

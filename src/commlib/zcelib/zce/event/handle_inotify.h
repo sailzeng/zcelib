@@ -78,7 +78,7 @@ namespace zce
             作为反应器，被调用
             在Windows 下，要用zce::WFMO_Reactor，
 */
-class Event_INotify :public zce::Event_Handler
+class event_inotify :public zce::event_handler
 {
 public:
 
@@ -86,11 +86,11 @@ public:
     @brief      构造函数，同时设置香港的反应器指针
     @param      reactor 句柄相关的反应器指针
     */
-    Event_INotify(void);
+    event_inotify(void);
     /*!
     @brief      析构函数
     */
-    virtual ~Event_INotify();
+    virtual ~event_inotify();
 
 public:
 
@@ -109,7 +109,7 @@ public:
 
     /*!
     @brief      取回对应的ZCE_SOCKET 句柄
-    @return     int Event_INotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
+    @return     int event_inotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
     */
     virtual ZCE_HANDLE get_handle(void) const
     {
@@ -143,15 +143,15 @@ public:
     /*!
     @brief      读取事件触发调用函数，用于读取数据，当有时间发生时，这个函数被回调，
                 函数内部分析具体发生的事件，
-    @return     int 返回0表示句柄处理正常，return -1后，反应器会主动handle_close，帮助结束句柄
+    @return     int 返回0表示句柄处理正常，return -1后，反应器会主动read_event，帮助结束句柄
     */
-    virtual int handle_input();
+    virtual int inotify_event();
 
     /*!
     @brief
     @return     int
     */
-    virtual int handle_close();
+    virtual int event_close();
 
     ///需要你继承使用的虚函数，你关注什么事件，就重载什么函数
 protected:

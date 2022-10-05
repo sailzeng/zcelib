@@ -20,7 +20,7 @@ bool           UDP_Svc_Handler::if_proxy_ = false;
 UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
                                  const zce::skt::addr_in& addr,
                                  bool sessionkey_verify) :
-    zce::Event_Handler(zce::reactor::instance()),
+    zce::event_handler(zce::reactor::instance()),
     udp_bind_addr_(addr),
     my_svc_info_(my_svcinfo),
     sessionkey_verify_(sessionkey_verify),
@@ -54,7 +54,7 @@ int UDP_Svc_Handler::init_udp_services()
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
                 udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        handle_close();
+        event_close();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
@@ -67,13 +67,13 @@ int UDP_Svc_Handler::init_udp_services()
     dgram_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void*>(&opval), opvallen);
     dgram_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void*>(&opval), opvallen);
 
-    ret = reactor()->register_handler(this, zce::Event_Handler::READ_MASK);
+    ret = reactor()->register_handler(this, zce::event_handler::READ_MASK);
 
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
                 udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        handle_close();
+        event_close();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
@@ -88,7 +88,7 @@ ZCE_HANDLE UDP_Svc_Handler::get_handle(void) const
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int UDP_Svc_Handler::handle_input()
+int UDP_Svc_Handler::read_event()
 {
     //多次读取UDP的数据，保证UDP的响应也比较及时。
     for (size_t i = 0; i < ONCE_MAX_READ_UDP_NUMBER; ++i)
@@ -121,13 +121,13 @@ int UDP_Svc_Handler::handle_input()
 }
 
 //
-int UDP_Svc_Handler::handle_close()
+int UDP_Svc_Handler::event_close()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
     {
         //内部会进行remove_handler
-        zce::Event_Handler::handle_close();
+        zce::event_handler::event_close();
         dgram_peer_.close();
     }
 

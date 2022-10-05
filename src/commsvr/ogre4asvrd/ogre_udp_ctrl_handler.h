@@ -4,7 +4,7 @@
 //forward declaration
 class Ogre_IPRestrict_Mgr;
 
-class Ogre_UDPSvc_Hdl : public zce::Event_Handler
+class Ogre_UDPSvc_Hdl : public zce::event_handler
 {
 protected:
     //
@@ -18,9 +18,9 @@ public:
     //取得句柄
     virtual ZCE_HANDLE get_handle(void) const;
     //
-    virtual int handle_input(ZCE_HANDLE);
+    virtual int read_event(ZCE_HANDLE);
     //
-    virtual int handle_close();
+    virtual int event_close();
 
 public:
     //初始化UPD端口

@@ -69,10 +69,15 @@ size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PEER_ID& peer_info
 
     size_t szdel = peer_info_set_.erase(peer_info);
 
-    //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了handle_close.
+    //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了event_close.
     if (szdel <= 0)
     {
-        ZCE_LOG(RS_ERROR, "Can't PeerInfoSetToTCPHdlMap::del_services_peerinfo Size peer_info_set_ %u: szdel:%u peer_info:%u|%u .\n", peer_info_set_.size(), szdel, peer_info.peer_ip_address_, peer_info.peer_port_);
+        ZCE_LOG(RS_ERROR, "Can't PeerInfoSetToTCPHdlMap::del_services_peerinfo size "
+                "peer_info_set_ %u: szdel:%u peer_info:%u|%u .\n",
+                peer_info_set_.size(),
+                szdel,
+                peer_info.peer_ip_address_,
+                peer_info.peer_port_);
     }
 
     //ZCE_ASSERT(szdel >0 );
@@ -83,20 +88,22 @@ void PeerID_To_TCPHdl_Map::clear_and_close()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
-    ZCE_LOG(RS_INFO, "Has %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
+    ZCE_LOG(RS_INFO, "Has %u peer want to close. Please wait. ACE that is accursed.\n",
+            peer_info_set_.size());
 
     //这个函数可能是绝对的慢
     while (peer_info_set_.size() > 0)
     {
         if (peer_info_set_.size() % SHOWINFO_NUMBER == 0)
         {
-            ZCE_LOG(RS_INFO, "Now remain %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
+            ZCE_LOG(RS_INFO, "Now remain %u peer want to close. Please wait. ACE that is accursed.\n",
+                    peer_info_set_.size());
         }
 
         MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();
         Ogre_TCP_Svc_Handler* svrhandle = (*(iter)).second;
 
-        //Ogre_TCP_Svc_Handler::handle_close调用了del_services_peerinfo
-        svrhandle->handle_close();
+        //Ogre_TCP_Svc_Handler::event_close调用了del_services_peerinfo
+        svrhandle->event_close();
     }
 }

@@ -15,7 +15,7 @@
 
 #include "zce/util/non_copyable.h"
 
-class zce::Event_Handler;
+class zce::event_handler;
 
 namespace zce
 {
@@ -29,7 +29,7 @@ protected:
 
     ///使用hansh map保存句柄到zce::Event_Handler的MAP ，力求最高的性能
     typedef std::unordered_map<ZCE_HANDLE,
-        zce::Event_Handler* >  MAP_OF_HANDLER_TO_EVENT;
+        zce::event_handler* >  MAP_OF_HANDLER_TO_EVENT;
 
 protected:
 
@@ -83,7 +83,7 @@ public:
     * @param[in]  event_handler 注册的句柄
     * @param[in]  event_mask    句柄要处理的MASK
     */
-    virtual int register_handler(zce::Event_Handler* event_handler,
+    virtual int register_handler(zce::event_handler* event_handler,
                                  int event_mask);
 
     /*!
@@ -91,10 +91,10 @@ public:
     *             cancel_wakeup，是从
     * @return     int               0表示成功，否则失败
     * @param[in]  event_handler     注销的句柄
-    * @param[in]  call_handle_close 注销后，是否自动调用句柄的handle_close函数
+    * @param[in]  call_event_close  注销后，是否自动调用句柄的event_close函数
     */
-    virtual int remove_handler(zce::Event_Handler* event_handler,
-                               bool call_handle_close);
+    virtual int remove_handler(zce::event_handler* event_handler,
+                               bool call_event_close);
 
     /*!
     * @brief      取消某些mask标志，
@@ -102,7 +102,7 @@ public:
     * @param[in]  event_handler 处理的句柄
     * @param[in]  cancel_mask   取消的事件mask标志
     */
-    virtual int cancel_wakeup(zce::Event_Handler* event_handler,
+    virtual int cancel_wakeup(zce::event_handler* event_handler,
                               int cancel_mask) = 0;
 
     /*!
@@ -111,7 +111,7 @@ public:
     * @param[in]  event_handler 处理的句柄
     * @param[in]  event_mask    设置的事件mask标志
     */
-    virtual int schedule_wakeup(zce::Event_Handler* event_handler,
+    virtual int schedule_wakeup(zce::event_handler* event_handler,
                                 int event_mask) = 0;
 
     /*!
@@ -128,9 +128,9 @@ protected:
     /*!
     * @brief      查询一个event handler是否注册了，如果存在返回0
     * @return     int           返回值,0标识查询到了，-1标识没有查询到
-    * @param[in]  event_handler 确认是否存在的zce::Event_Handler 句柄
+    * @param[in]  event_handler 确认是否存在的zce::event_handler 句柄
     */
-    inline int exist_event_handler(zce::Event_Handler* event_handler);
+    inline int exist_event_handler(zce::event_handler* event_handler);
 
     /*!
     * @brief      通过句柄查询event handler，如果存在返回0
@@ -139,7 +139,7 @@ protected:
     * @param[out] event_handler 查询得到的句柄对应的zce::Event_Handler指针
     */
     inline int find_event_handler(ZCE_HANDLE handle,
-                                  zce::Event_Handler*& event_handler);
+                                  zce::event_handler*& event_handler);
 
 public:
 
@@ -155,7 +155,7 @@ public:
 
 protected:
 
-    ///存放ZCE_SOCKET对应zce::Event_Handler *的MAP,方便事件触发的时候，调用zce::Event_Handler *的函数
+    ///存放ZCE_SOCKET对应zce::event_handler *的MAP,方便事件触发的时候，调用zce::event_handler *的函数
     MAP_OF_HANDLER_TO_EVENT    handler_map_;
 
     ///最大的处理句柄大小，用于一些容器的resize

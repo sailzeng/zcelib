@@ -9,8 +9,8 @@
 namespace zce
 {
 //构造函数和析构函数
-Event_INotify::Event_INotify() :
-    zce::Event_Handler(),
+event_inotify::event_inotify() :
+    zce::event_handler(),
 
     read_buffer_(NULL)
 {
@@ -28,7 +28,7 @@ Event_INotify::Event_INotify() :
 #endif
 }
 
-Event_INotify::~Event_INotify()
+event_inotify::~event_inotify()
 {
     if (read_buffer_)
     {
@@ -38,7 +38,7 @@ Event_INotify::~Event_INotify()
 }
 
 //打开监控句柄等，绑定reactor等
-int Event_INotify::open(zce::reactor* reactor_base)
+int event_inotify::open(zce::reactor* reactor_base)
 {
 #if defined (ZCE_OS_LINUX)
     int ret = 0;
@@ -71,7 +71,7 @@ int Event_INotify::open(zce::reactor* reactor_base)
 }
 
 //关闭监控句柄等，解除绑定reactor等
-int Event_INotify::close()
+int event_inotify::close()
 {
 #if defined (ZCE_OS_LINUX)
 
@@ -104,7 +104,7 @@ int Event_INotify::close()
 }
 
 //添加监控
-int Event_INotify::add_watch(const char* pathname,
+int event_inotify::add_watch(const char* pathname,
                              uint32_t mask,
                              ZCE_HANDLE* watch_handle,
                              bool watch_sub_dir)
@@ -148,7 +148,8 @@ int Event_INotify::add_watch(const char* pathname,
         //下面这段代码屏蔽的原因是，而LInux下，如果inotify_add_watch 同一个目录，handle是一样的。
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
-        ZCE_LOG(RS_ERROR, "[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
+        ZCE_LOG(RS_ERROR, "[%s] insert code node to map fail. code error or map already "
+                "haved one equal HANDLE[%u].",
                 __ZCE_FUNC__,
                 hdl_dir);
         return -1;
@@ -164,7 +165,8 @@ int Event_INotify::add_watch(const char* pathname,
     //已经监控了一个目录，Windows的一个Event_INotify不能同时监控两个目录
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib][%s]add_watch fail handle[%lu]. Windows one Event_INotify only watch one dir.",
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]add_watch fail handle[%lu]. Windows one "
+                "event_inotify only watch one dir.",
                 __ZCE_FUNC__,
                 watch_handle_);
         return -1;
@@ -240,7 +242,7 @@ int Event_INotify::add_watch(const char* pathname,
 #endif
 }
 
-int Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
+int event_inotify::rm_watch(ZCE_HANDLE watch_handle)
 {
 #if defined (ZCE_OS_LINUX)
     //先用句柄查询
@@ -276,11 +278,11 @@ int Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 }
 
 //读取事件触发调用函数
-int Event_INotify::handle_input()
+int event_inotify::inotify_event()
 {
 #if defined (ZCE_OS_LINUX)
 
-    ZCE_LOG(RS_DEBUG, "Event_INotify::handle_input");
+    ZCE_LOG(RS_DEBUG, "event_inotify::read_event");
 
     int detect_ret = 0;
     size_t watch_event_num = 0;
@@ -527,10 +529,10 @@ int Event_INotify::handle_input()
         //返回-1，关闭之
         if (detect_ret == -1)
         {
-            handle_close();
+            event_close();
         }
 
-        //为什么要这样做，因为上面的处理过程，可能有人已经调用了rm_watch，或者handle_close，
+        //为什么要这样做，因为上面的处理过程，可能有人已经调用了rm_watch，或者event_close，
         if (watch_handle_ == ZCE_INVALID_HANDLE)
         {
             return 0;
@@ -570,7 +572,7 @@ int Event_INotify::handle_input()
 }
 
 //关闭监控句柄
-int Event_INotify::handle_close()
+int event_inotify::event_close()
 {
     return close();
 }

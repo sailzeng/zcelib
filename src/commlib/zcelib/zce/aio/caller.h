@@ -100,7 +100,8 @@ enum AIO_TYPE
     HOST_END = 399,
     //
     SOCKET_BEGIN = 400,
-    SOCKET_CONNECT,
+    SOCKET_CONNECT_ADDR,
+    SOCKET_CONNECT_HOST,
     SOCKET_SEND,
     SOCKET_RECV,
     SOCKET_ACCEPT,
@@ -377,6 +378,9 @@ struct SOCKET_ATOM :public AIO_ATOM
     int flags_ = 0;
     sockaddr* from_ = nullptr;
     socklen_t* from_len_ = nullptr;
+    const char* host_name_ = nullptr;
+    uint16_t host_port_ = 0;
+    sockaddr* host_addr_ = nullptr;
     ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
 };
 
@@ -387,6 +391,15 @@ int st_connect(zce::aio::worker* worker,
                const sockaddr* addr,
                socklen_t addr_len,
                zce::time_value* timeout_tv,
+               std::function<void(AIO_ATOM*)> call_back);
+
+int st_connect(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               const char* host_name,
+               uint16_t port,
+               sockaddr* host_addr,
+               socklen_t addr_len,
+               zce::time_value& timeout_tv,
                std::function<void(AIO_ATOM*)> call_back);
 
 //! 等待若干时间进行accept，直至超时

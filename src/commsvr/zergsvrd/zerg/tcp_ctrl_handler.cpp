@@ -64,7 +64,7 @@ unsigned int  TCP_Svc_Handler::handler_id_builder_ = 0;
 
 //构造函数
 TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
-    zce::Event_Handler(zce::reactor::instance()),
+    zce::event_handler(zce::reactor::instance()),
     zce::timer_handler(zce::timer_queue::instance()),
     handler_mode_(hdl_mode),
     my_svc_id_(0, 0),
@@ -166,7 +166,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                     zce::last_error(),
                     strerror(zce::last_error()));
 
-            handle_close();
+            event_close();
             return;
         }
 
@@ -183,7 +183,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                 peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                 num_accept_peer_,
                 max_accept_svr_);
-        handle_close();
+        event_close();
         return;
     }
 
@@ -260,7 +260,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     snd_buffer_deque_.initialize(connect_send_deque_size_);
 
     //注册到
-    ret = reactor()->register_handler(this, zce::Event_Handler::CONNECT_MASK);
+    ret = reactor()->register_handler(this, zce::event_handler::CONNECT_MASK);
 
     //我几乎没有见过register_handler失败,
     if (ret != 0)
@@ -272,7 +272,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
-        handle_close();
+        event_close();
         return;
     }
 
@@ -282,7 +282,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        handle_close();
+        event_close();
         return;
     }
 
@@ -489,9 +489,9 @@ int TCP_Svc_Handler::handle_input()
 }
 
 //读取,断连的事件触发处理函数
-int TCP_Svc_Handler::handle_output()
+int TCP_Svc_Handler::read_event()
 {
-    //如果NON BLOCK Connect成功,也会调用handle_output
+    //如果NON BLOCK Connect成功,也会调用write_event
     if (PEER_STATUS_NOACTIVE == peer_status_)
     {
         //处理连接后的事宜
@@ -505,7 +505,6 @@ int TCP_Svc_Handler::handle_output()
 
     if (0 != ret)
     {
-        //
         //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,handle_input将被调用,这儿不重复处理
         //如果是中断等错误,程序可以继续的.
         //后来为啥又改成了return -1,加快处理?忘记忘记了。应该写注释呀。
@@ -546,8 +545,8 @@ int TCP_Svc_Handler::timer_timeout(const zce::time_value& now_time, const void* 
                         now_time.sec() - start_live_time_,
                         receive_times_);
 
-                //在这儿直接调用handle_close
-                handle_close();
+                //在这儿直接调用event_close
+                event_close();
                 return 0;
             }
         }
@@ -586,9 +585,9 @@ int TCP_Svc_Handler::timer_timeout(const zce::time_value& now_time, const void* 
 }
 
 //PEER Event Handler关闭的处理
-int TCP_Svc_Handler::handle_close()
+int TCP_Svc_Handler::event_close()
 {
-    ZCE_LOG(RS_DEBUG, "[zergsvr] TCP_Svc_Handler::handle_close : %u.%u.",
+    ZCE_LOG(RS_DEBUG, "[zergsvr] TCP_Svc_Handler::event_close : %u.%u.",
             peer_svr_id_.services_type_, peer_svr_id_.services_id_);
 
     //不要使用cancel_timer(this),其繁琐,而且慢,好要new,而且有一个不知名的死机
@@ -602,9 +601,9 @@ int TCP_Svc_Handler::handle_close()
         timeout_time_id_ = -1;
     }
 
-    //取消MASK,最后阶段,避免调用handle_close,
+    //取消MASK,最后阶段,避免调用event_close,
     //内部会进行remove_handler
-    zce::Event_Handler::handle_close();
+    zce::event_handler::event_close();
 
     //关闭端口,
     socket_peer_.close();
@@ -779,7 +778,7 @@ int TCP_Svc_Handler::preprocess_recvframe(soar::zerg_frame* proc_frame)
                                           soar::zerg_frame::DESC_SNDPRC_CLOSE_PEER);
 
             //不直接关闭了，而是先把命令发送完成了，再关闭
-            //old_hdl->handle_close(ACE_INVALID_HANDLE, 0);
+            //old_hdl->event_close(ACE_INVALID_HANDLE, 0);
         }
 
         //最后调整自己PEER的状态
@@ -855,10 +854,10 @@ int TCP_Svc_Handler::process_connect_register()
     send_simple_zerg_cmd(ZERG_CONNECT_REGISTER_REQ, peer_svr_id_);
 
     //再折腾了我至少3天以后，终于发现了EPOLL反复触发写事件的原因是没有取消CONNECT_MASK
-    reactor()->cancel_wakeup(this, zce::Event_Handler::CONNECT_MASK);
+    reactor()->cancel_wakeup(this, zce::event_handler::CONNECT_MASK);
 
     //注册读取的MASK
-    reactor()->schedule_wakeup(this, zce::Event_Handler::READ_MASK);
+    reactor()->schedule_wakeup(this, zce::event_handler::READ_MASK);
 
     //打印信息
     zce::skt::addr_in      peeraddr;
@@ -1043,10 +1042,10 @@ int TCP_Svc_Handler::write_all_data_to_peer()
     if (snd_buffer_deque_.size() == 0)
     {
         //
-        if (handle_mask & zce::Event_Handler::WRITE_MASK)
+        if (handle_mask & zce::event_handler::WRITE_MASK)
         {
             //取消可写的MASK值,
-            ret = reactor()->cancel_wakeup(this, zce::Event_Handler::WRITE_MASK);
+            ret = reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
 
             //return -1表示错误，正确返回的是old mask值
             if (-1 == ret)
@@ -1073,9 +1072,9 @@ int TCP_Svc_Handler::write_all_data_to_peer()
     else
     {
         //没有WRITE MASK，准备增加写标志
-        if (!(handle_mask & zce::Event_Handler::WRITE_MASK))
+        if (!(handle_mask & zce::event_handler::WRITE_MASK))
         {
-            ret = reactor()->schedule_wakeup(this, zce::Event_Handler::WRITE_MASK);
+            ret = reactor()->schedule_wakeup(this, zce::event_handler::WRITE_MASK);
 
             //schedule_wakeup 返回return -1表示错误，再次BS ACE一次，正确返回的是old mask值
             if (-1 == ret)
@@ -1103,10 +1102,11 @@ int TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& bfull)
     //#if defined DEBUG || defined _DEBUG
     if (snd_buffer_deque_.empty() == true)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] Goto handle_output|write_data_to_peer ,but not data to send. Please check,buffer deque size=%u.",
+        ZCE_LOG(RS_ERROR, "[zergsvr] Goto write_event|write_data_to_peer ,but not data to send. "
+                "Please check,buffer deque size=%u.",
                 snd_buffer_deque_.size());
         ZCE_BACKTRACE_STACK(RS_ERROR);
-        reactor()->cancel_wakeup(this, zce::Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
         ZCE_ASSERT(false);
         return 0;
     }
@@ -1120,7 +1120,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& bfull)
 
     if (sendret <= 0)
     {
-        //遇到中断,等待重入的判断是if (zce::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
+        //遇到中断,等待重入的判断是if (zce::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有read_event反射
         //我只使用EWOULDBLOCK 但是要注意EAGAIN zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
         if (zce::last_error() != EWOULDBLOCK)
         {
@@ -1496,7 +1496,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(zerg::Buffer* tmpbuf)
         //回收帧
         process_send_error(tmpbuf, false);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
-        handle_close();
+        event_close();
 
         //返回一个错误，让上层回收
         return SOAR_RET::ERR_ZERG_SOCKET_CLOSE;
@@ -1543,7 +1543,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(zerg::Buffer* tmpbuf)
     }
 
     //------------------------------------------------------------------
-    //这儿开始，数据已经放入发送队列，回收可以再handle_close自己回收了.
+    //这儿开始，数据已经放入发送队列，回收可以再event_close自己回收了.
 
     if (peer_status_ != PEER_STATUS_NOACTIVE)
     {
@@ -1552,9 +1552,9 @@ int TCP_Svc_Handler::put_frame_to_sendlist(zerg::Buffer* tmpbuf)
         //出现错误,
         if (ret != 0)
         {
-            //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,handle_input将被调用,这儿不重复处理
+            //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,read_event将被调用,这儿不重复处理
             //如果是中断等错误,程序可以继续的.
-            handle_close();
+            event_close();
 
             //发送数据已经放入队列，返回OK
             return 0;
@@ -1785,7 +1785,7 @@ int TCP_Svc_Handler::close_services_peer(const soar::SERVICES_ID& svr_info)
         return ret;
     }
 
-    svchanle->handle_close();
+    svchanle->event_close();
     return 0;
 }
 

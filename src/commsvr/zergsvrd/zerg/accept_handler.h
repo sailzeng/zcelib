@@ -7,7 +7,7 @@
 *
 * @note
 */
-class Accept_Handler : public zce::Event_Handler
+class Accept_Handler : public zce::event_handler
 {
 public:
 
@@ -32,10 +32,10 @@ public:
     * @brief      事件触发的毁掉处理，表示有一个accept 的数据
     * @return     int
     */
-    virtual int handle_input();
+    virtual int read_event();
 
     ///关闭处理
-    virtual int handle_close();
+    virtual int event_close();
 
     ///得到Acceptor的句柄
     virtual ZCE_HANDLE get_handle(void) const;

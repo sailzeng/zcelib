@@ -6,14 +6,14 @@
 //TCP Accept 处理的EventHandler,
 Accept_Handler::Accept_Handler(const soar::SERVICES_ID& svcid,
                                const zce::skt::addr_in& addr) :
-    zce::Event_Handler(zce::reactor::instance()),
+    zce::event_handler(zce::reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
     ip_restrict_(zerg::IPRestrict_Mgr::instance())
 {
 }
 
-//自己清理的类型，统一关闭在handle_close,这个地方不用关闭
+//自己清理的类型，统一关闭在event_close,这个地方不用关闭
 Accept_Handler::~Accept_Handler()
 {
 }
@@ -78,13 +78,13 @@ int Accept_Handler::create_listen()
 #endif
 
     //
-    reactor()->register_handler(this, zce::Event_Handler::ACCEPT_MASK);
+    reactor()->register_handler(this, zce::event_handler::ACCEPT_MASK);
 
     return 0;
 }
 
 //事件触发处理，表示有一个accept 的数据
-int Accept_Handler::handle_input(/*handle*/)
+int Accept_Handler::read_event(/*handle*/)
 {
     zce::skt::stream  sockstream;
     zce::skt::addr_in       remote_address;
@@ -149,7 +149,7 @@ ZCE_HANDLE Accept_Handler::get_handle(void) const
 }
 
 //退出处理
-int Accept_Handler::handle_close()
+int Accept_Handler::event_close()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)

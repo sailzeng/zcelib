@@ -33,13 +33,13 @@ Comm_Manager::~Comm_Manager()
     //先关闭ACCEPET
     for (size_t i = 0; i < zerg_acceptor_.size(); ++i)
     {
-        zerg_acceptor_[i]->handle_close();
+        zerg_acceptor_[i]->event_close();
     }
 
     //先关闭UDP
     for (size_t i = 0; i < zerg_updsvc_.size(); ++i)
     {
-        zerg_updsvc_[i]->handle_close();
+        zerg_updsvc_[i]->event_close();
     }
 }
 

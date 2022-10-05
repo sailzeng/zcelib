@@ -59,17 +59,17 @@ public:
     * @param[in]  event_handler   注册的句柄
     * @param[in]  event_mask      注册后同时设置的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     */
-    virtual int register_handler(zce::Event_Handler* event_handler,
+    virtual int register_handler(zce::event_handler* event_handler,
                                  int event_mask) override;
 
     /*!
     * @brief      从反应器注销一个zce::Event_Handler，同时取消他所有的mask
     * @return     int               0表示成功，否则失败
     * @param[in]  event_handler     注销的句柄
-    * @param[in]  call_handle_close 注销后，是否自动调用句柄的handle_close函数
+    * @param[in]  call_event_close  注销后，是否自动调用句柄的handle_close函数
     * */
-    virtual int remove_handler(zce::Event_Handler* event_handler,
-                               bool call_handle_close) override;
+    virtual int remove_handler(zce::event_handler* event_handler,
+                               bool call_event_close) override;
 
     /*!
     * @brief      取消某些mask标志，
@@ -77,7 +77,7 @@ public:
     * @param[in]  event_handler 操作的句柄
     * @param[in]  cancel_mask   要取消的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     * */
-    virtual int cancel_wakeup(zce::Event_Handler* event_handler,
+    virtual int cancel_wakeup(zce::event_handler* event_handler,
                               int cancel_mask) override;
 
     /*!
@@ -86,7 +86,7 @@ public:
     * @param[in]  event_handler   操作的句柄
     * @param[in]  event_mask      要打开的标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     * */
-    virtual int schedule_wakeup(zce::Event_Handler* event_handler, int event_mask) override;
+    virtual int schedule_wakeup(zce::event_handler* event_handler, int event_mask) override;
 
     /*!
     * @brief      进行IO触发操作
@@ -104,7 +104,7 @@ public:
     * @param      socket_event  SOCKET EVENT，用于给WaitForMultipleObjects使用
     * @param      event_mask    希望设置的EVENT_MASK
     */
-    static int wfmo_socket_event(zce::Event_Handler* event_handler,
+    static int wfmo_socket_event(zce::event_handler* event_handler,
                                  WSAEVENT socket_event,
                                  int event_mask);
 

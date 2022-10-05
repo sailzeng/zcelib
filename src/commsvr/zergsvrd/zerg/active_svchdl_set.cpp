@@ -283,7 +283,7 @@ int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID& svc_id)
 {
     MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.find(svc_id);
 
-    //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了handle_close.
+    //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了event_close.
     if (iter == svr_info_set_.end())
     {
         ZCE_LOG(RS_INFO, "[zergsvr][%s] Can't  svr_info_set_ size:%u: svc_id:%u.%u .",
@@ -383,7 +383,7 @@ void Active_SvcHandle_Set::clear_and_closeall()
         MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.begin();
         TCP_Svc_Handler* svrhandle = (*(iter)).second;
 
-        //TCP_Svc_Handler::handle_close调用了del_services_peerInfo
-        svrhandle->handle_close();
+        //TCP_Svc_Handler::event_close调用了del_services_peerInfo
+        svrhandle->event_close();
     }
 }

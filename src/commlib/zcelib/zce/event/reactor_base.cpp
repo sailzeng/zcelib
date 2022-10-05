@@ -56,10 +56,10 @@ int reactor::close()
     for (; iter_temp != handler_map_.end();)
     {
         //关闭之
-        zce::Event_Handler* event_handler = (iter_temp->second);
+        zce::event_handler* event_handler = (iter_temp->second);
 
-        //先handle_close,
-        event_handler->handle_close();
+        //先event_close,
+        event_handler->event_close();
 
         //让迭代器继续从最开始干起
         iter_temp = handler_map_.begin();
@@ -71,8 +71,8 @@ int reactor::close()
 }
 
 //注册一个zce::Event_Handler到反应器
-int reactor::register_handler(zce::Event_Handler* event_handler,
-                                  int event_mask)
+int reactor::register_handler(zce::event_handler* event_handler,
+                              int event_mask)
 {
     int ret = 0;
 
@@ -83,7 +83,7 @@ int reactor::register_handler(zce::Event_Handler* event_handler,
     }
 
     ZCE_HANDLE socket_hd = event_handler->get_handle();
-    zce::Event_Handler* tmp_handler = NULL;
+    zce::event_handler* tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
     ret = find_event_handler(socket_hd, tmp_handler);
@@ -109,15 +109,15 @@ int reactor::register_handler(zce::Event_Handler* event_handler,
 
 //从反应器注销一个zce::Event_Handler，同事取消他所有的mask
 //event_mask其实只判断里面的DONT_CALL
-int reactor::remove_handler(zce::Event_Handler* event_handler,
-                                bool call_handle_close)
+int reactor::remove_handler(zce::event_handler* event_handler,
+                            bool call_event_close)
 {
     int ret = 0;
 
     ZCE_HANDLE ev_hd = event_handler->get_handle();
-    zce::Event_Handler* tmp_handler = NULL;
+    zce::event_handler* tmp_handler = NULL;
 
-    //remove_handler可能会出现两次调用的情况，我推荐你直接调用handle_close
+    //remove_handler可能会出现两次调用的情况，我推荐你直接调用event_close
     ret = find_event_handler(ev_hd, tmp_handler);
     if (ret != 0)
     {
@@ -143,31 +143,31 @@ int reactor::remove_handler(zce::Event_Handler* event_handler,
     handler_map_.erase(event_handler->get_handle());
 
     //
-    if (call_handle_close)
+    if (call_event_close)
     {
-        //调用handle_close
-        event_handler->handle_close();
+        //调用event_close
+        event_handler->event_close();
     }
 
     return 0;
 }
 
 //
-int reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask)
+int reactor::cancel_wakeup(zce::event_handler* event_handler, int cancel_mask)
 {
     event_handler->disable_mask(cancel_mask);
     return 0;
 }
 
 //
-int reactor::schedule_wakeup(zce::Event_Handler* event_handler, int event_mask)
+int reactor::schedule_wakeup(zce::event_handler* event_handler, int event_mask)
 {
     event_handler->enable_mask(event_mask);
     return 0;
 }
 
 //查询一个event handler是否注册了，如果存在返回0
-int reactor::exist_event_handler(zce::Event_Handler* event_handler)
+int reactor::exist_event_handler(zce::event_handler* event_handler)
 {
     ZCE_HANDLE socket_hd = event_handler->get_handle();
 
@@ -183,7 +183,7 @@ int reactor::exist_event_handler(zce::Event_Handler* event_handler)
 
 //通过句柄查询event handler，如果存在返回0
 int reactor::find_event_handler(ZCE_HANDLE handle,
-                                    zce::Event_Handler*& event_handler)
+                                zce::event_handler*& event_handler)
 {
     auto iter_temp = handler_map_.find(handle);
 

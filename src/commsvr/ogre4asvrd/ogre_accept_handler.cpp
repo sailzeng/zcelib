@@ -9,14 +9,14 @@ class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler,
 ****************************************************************************************************/
 Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO& config_info,
                                        zce::reactor* reactor) :
-    zce::Event_Handler(reactor),
+    zce::event_handler(reactor),
     ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {
     peer_module_info_.peer_info_ = config_info;
     ZCE_ASSERT(peer_module_info_.fp_judge_whole_frame_);
 }
 
-//自己清理的类型，统一关闭在handle_close,这个地方不用关闭
+//自己清理的类型，统一关闭在event_close,这个地方不用关闭
 Ogre_TCPAccept_Hdl::~Ogre_TCPAccept_Hdl()
 {
     peer_module_info_.close_module();
@@ -91,13 +91,13 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 #endif
 
     //
-    reactor()->register_handler(this, zce::Event_Handler::ACCEPT_MASK);
+    reactor()->register_handler(this, zce::event_handler::ACCEPT_MASK);
 
     return 0;
 }
 
 //
-int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
+int Ogre_TCPAccept_Hdl::read_event(ZCE_HANDLE /*handle*/)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -161,7 +161,7 @@ ZCE_HANDLE Ogre_TCPAccept_Hdl::get_handle(void) const
 }
 
 //
-int Ogre_TCPAccept_Hdl::handle_close()
+int Ogre_TCPAccept_Hdl::event_close()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)

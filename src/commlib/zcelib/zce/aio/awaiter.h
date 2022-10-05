@@ -112,7 +112,7 @@ awaiter_fs co_write_file(zce::aio::worker* worker,
                          size_t nbufs,
                          ssize_t offset = 0);
 
-//==============================================================
+//========================================================================================
 //!协程co_await 链接数据
 awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
                                zce::mysql::connect* db_connect,
@@ -141,7 +141,7 @@ awaiter_mysql co_mysql_query(zce::aio::worker* worker,
                              uint64_t* num_affect,
                              zce::mysql::result* db_result);
 
-//==============================================================
+//========================================================================================
 //! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
 awaiter_dir co_dir_scandir(zce::aio::worker* worker,
                            const char* dirname,
@@ -156,7 +156,7 @@ awaiter_dir co_dir_mkdir(zce::aio::worker* worker,
 awaiter_dir co_dir_rmdir(zce::aio::worker* worker,
                          const char* dirname);
 
-//==============================================================
+//========================================================================================
 //!协程co_await getaddrinfo_ary
 awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
                                  const char* hostname,
@@ -173,14 +173,23 @@ awaiter_host co_host_getaddr_one(zce::aio::worker* worker,
                                  sockaddr* addr,
                                  socklen_t addr_len);
 
-//==============================================================
+//========================================================================================
 
-//! 等待若干时间进行connect，直至超时
+//! 等待若干时间进行connect，使用地址参数,直至超时
 awaiter_socket co_st_connect(zce::aio::worker* worker,
                              ZCE_SOCKET handle,
                              const sockaddr* addr,
                              socklen_t addr_len,
                              zce::time_value* timeout_tv);
+
+//! 等待若干时间进行connect，使用hostname参数,直至超时
+awaiter_socket co_st_connect(zce::aio::worker* worker,
+                             ZCE_SOCKET handle,
+                             const char* host_name,
+                             uint16_t host_port,
+                             sockaddr* host_addr,
+                             socklen_t addr_len,
+                             zce::time_value& timeout_tv);
 
 //! 等待若干时间进行accept，直至超时
 awaiter_socket co_st_accept(zce::aio::worker* worker,
@@ -214,4 +223,6 @@ awaiter_socket co_st_recvfrom(zce::aio::worker* worker,
                               socklen_t* from_len,
                               zce::time_value* timeout_tv,
                               int flags = 0);
+
+//========================================================================================
 }

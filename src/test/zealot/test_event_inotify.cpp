@@ -13,7 +13,7 @@
 #pragma warning ( disable : 4702)
 #endif
 
-class My_INotify_Event : public zce::Event_INotify
+class My_INotify_Event : public zce::event_inotify
 {
 public:
     My_INotify_Event()

@@ -9,7 +9,7 @@
 /****************************************************************************************************
 class  TCP_Svc_Handler
 ****************************************************************************************************/
-class TCP_Svc_Handler : public zce::Event_Handler,
+class TCP_Svc_Handler : public zce::event_handler,
     public zce::timer_handler
 {
 public:
@@ -90,17 +90,17 @@ public:
     * @brief      读事件触发 ，异步链接失败触发
     * @return     int 返回0，继续
     */
-    virtual int handle_input();
+    virtual int read_event();
 
     ///写事件触发
     /*!
     * @brief      读事件触发 ，异步链接成功触发
     * @return     int 返回0，继续
     */
-    virtual int handle_output();
+    virtual int write_event();
 
     ///关闭事件触发
-    virtual int handle_close();
+    virtual int event_close();
 
     /*!
     * @brief      超时事件触发
