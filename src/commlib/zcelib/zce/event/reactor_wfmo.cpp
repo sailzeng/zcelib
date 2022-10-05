@@ -37,7 +37,7 @@ int WFMO_Reactor::initialize()
         watch_socket_ary_[i] = ZCE_INVALID_SOCKET;
     }
 
-    return zce::ZCE_Reactor::initialize(MAXIMUM_WAIT_OBJECTS);
+    return zce::reactor::initialize(MAXIMUM_WAIT_OBJECTS);
 }
 
 //注册一个句柄，以及他关心的事件
@@ -46,7 +46,7 @@ int WFMO_Reactor::register_handler(zce::Event_Handler* event_handler,
 {
     int ret = 0;
     //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
-    ret = zce::ZCE_Reactor::register_handler(event_handler, 0);
+    ret = zce::reactor::register_handler(event_handler, 0);
     if (0 != ret)
     {
         return -1;
@@ -73,7 +73,7 @@ int WFMO_Reactor::register_handler(zce::Event_Handler* event_handler,
         if (0 != ret)
         {
             //出错，回滚
-            zce::ZCE_Reactor::remove_handler(event_handler, false);
+            zce::reactor::remove_handler(event_handler, false);
             return ret;
         }
 
@@ -121,7 +121,7 @@ int WFMO_Reactor::remove_handler(zce::Event_Handler* event_handler,
         }
     }
 
-    return zce::ZCE_Reactor::remove_handler(event_handler, call_handle_close);
+    return zce::reactor::remove_handler(event_handler, call_handle_close);
 }
 
 //对一个（已经注册的）句柄，设置他关心的事件
@@ -146,7 +146,7 @@ int WFMO_Reactor::schedule_wakeup(zce::Event_Handler* event_handler,
         }
     }
 
-    return zce::ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
+    return zce::reactor::schedule_wakeup(event_handler, event_mask);
 }
 
 //对一个（已经注册的）句柄，取消他关心的事件
@@ -175,7 +175,7 @@ int WFMO_Reactor::cancel_wakeup(zce::Event_Handler* event_handler,
         }
     }
 
-    return zce::ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
+    return zce::reactor::cancel_wakeup(event_handler, cancel_mask);
 }
 
 //Windows 下 对Socket 根据EVENT_MASK设置其对应的网络事件，并且绑定到事件上

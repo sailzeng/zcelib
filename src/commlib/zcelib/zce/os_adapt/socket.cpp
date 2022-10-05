@@ -630,7 +630,8 @@ int sock_disable(ZCE_SOCKET handle, int flags)
 #pragma warning(disable : 6262)
 #endif
 
-//检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
+//检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，
+//如果成功，一般触发返回值都是1
 int handle_ready(ZCE_SOCKET handle,
                  zce::time_value* timeout_tv,
                  HANDLE_READY ready_todo)
@@ -658,7 +659,7 @@ int handle_ready(ZCE_SOCKET handle,
         FD_SET(handle, &handle_set_exeception);
         p_set_exception = &handle_set_exeception;
     }
-    else if (HANDLE_READY::server_peer == ready_todo)
+    else if (HANDLE_READY::ACCPET == ready_todo)
     {
         //accept事件是利用读取事件
         FD_SET(handle, &handle_set_read);
@@ -921,30 +922,31 @@ int connect_timeout(ZCE_SOCKET handle,
                                 timeout_tv);
 }
 
-ZCE_SOCKET accept_timeout(ZCE_SOCKET handle,
-                          sockaddr* addr,
-                          socklen_t* addr_len,
-                          zce::time_value& timeout_tv)
+int accept_timeout(ZCE_SOCKET handle,
+                   ZCE_SOCKET *apt_hdl,
+                   sockaddr* from,
+                   socklen_t* from_len,
+                   zce::time_value& timeout_tv)
 {
     int ret = 0;
     ret = zce::handle_ready(handle,
                             &timeout_tv,
-                            zce::HANDLE_READY::server_peer);
+                            zce::HANDLE_READY::ACCPET);
     const int HANDLE_READY_ONE = 1;
     if (ret != HANDLE_READY_ONE)
     {
-        return ZCE_INVALID_SOCKET;
+        return ret;
     }
 
     //
-    ZCE_SOCKET sock_handle = zce::accept(handle,
-                                         addr,
-                                         addr_len);
-    if (sock_handle == ZCE_INVALID_SOCKET)
+    *apt_hdl = zce::accept(handle,
+                           from,
+                           from_len);
+    if (*apt_hdl == ZCE_INVALID_SOCKET)
     {
-        return ZCE_INVALID_SOCKET;
+        return -1;
     }
-    return sock_handle;
+    return 0;
 }
 
 ssize_t recvn_timeout(ZCE_SOCKET handle,
@@ -982,7 +984,6 @@ ssize_t recvn_timeout(ZCE_SOCKET handle,
                                 HANDLE_READY::READ);
 
         const int HANDLE_READY_ONE = 1;
-
         if (ret != HANDLE_READY_ONE)
         {
             //
@@ -1204,7 +1205,6 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        size_t len,
                        const sockaddr* to,
                        socklen_t to_len,
-                       zce::time_value& /*timeout_tv*/,
                        int flags)
 {
     return zce::sendto(handle,
@@ -1296,7 +1296,11 @@ ssize_t sendn_timeout2(ZCE_SOCKET handle,
 #if defined  ZCE_OS_WINDOWS
 
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
-    ret = zce::setsockopt(handle, SOL_SOCKET, SO_SNDTIMEO, (const void*)(&msec_timeout), sizeof(DWORD));
+    ret = zce::setsockopt(handle,
+                          SOL_SOCKET,
+                          SO_SNDTIMEO,
+                          (const void*)(&msec_timeout),
+                          sizeof(DWORD));
 
 #elif defined  ZCE_OS_LINUX
     timeval sockopt_tv = timeout_tv;
@@ -1390,7 +1394,6 @@ ssize_t sendto_timeout2(ZCE_SOCKET handle,
                         size_t len,
                         const sockaddr* addr,
                         socklen_t addr_len,
-                        zce::time_value& /*timeout_tv*/,
                         int flags)
 {
     return zce::sendto(handle,

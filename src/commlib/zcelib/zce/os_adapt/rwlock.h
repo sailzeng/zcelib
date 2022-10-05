@@ -61,9 +61,10 @@ int pthread_rwlock_destroy(pthread_rwlock_t* rwlock);
 * @brief      读写锁的对象的的初始化，非标准，但建议，使用
 * @return     int               返回0标识成功，
 * @param      rwlock            读写锁对象
-* @param      use_win_slim      是否使用WIN2008以后拥有的Slim RWlock，注意Slim RWlock没有超时处理，
-*                               当然前提你的系统必现支持，
-* @param      priority_to_write 写入优先还是读取优先，（只对Windows的模拟有用，完全是为了自己好玩,不会快什么，MS一个类似测试）
+* @param      use_win_slim      是否使用WIN2008以后拥有的Slim RWlock，注意
+*                               Slim RWlock没有超时处理，当然前提你的系统必现支持，
+* @param      priority_to_write 写入优先还是读取优先，（只对Windows的模拟有用，
+*                               完全是为了自己好玩,不会快什么，MS一个类似测试）
 */
 int pthread_rwlock_initex(pthread_rwlock_t* rwlock,
                           bool  priority_to_write = true);

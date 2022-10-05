@@ -156,7 +156,7 @@ int Zerg_App::app_run()
     ZCE_LOG(RS_INFO, "[zergsvr] Zerg_App::run_instance start.");
 
     //microsecond
-    zce::ZCE_Reactor* preactor = zce::ZCE_Reactor::instance();
+    zce::reactor* preactor = zce::reactor::instance();
     zce::timer_queue* p_timer_queue = zce::timer_queue::instance();
 
     zce::time_value run_interval(0, IDLE_REACTOR_WAIT_USEC);

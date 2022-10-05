@@ -16,7 +16,7 @@ public:
 
     //构造函数
     Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO& config_info,
-                       zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance());
+                       zce::reactor* reactor = zce::reactor::instance());
 protected:
     ~Ogre_TCPAccept_Hdl();
 public:

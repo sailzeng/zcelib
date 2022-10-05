@@ -23,7 +23,7 @@ namespace zce
 * @brief      反应器的基类
 *
 */
-class ZCE_Reactor :public zce::non_copyable
+class reactor :public zce::non_copyable
 {
 protected:
 
@@ -36,16 +36,16 @@ protected:
     /*!
     * @brief      构造函数
     */
-    ZCE_Reactor();
+    reactor();
     /*!
     * @brief      构造函数
     * @param[in]  max_event_number 最大的容量，
     */
-    ZCE_Reactor(size_t max_event_number);
+    reactor(size_t max_event_number);
     /*!
     * @brief      析构函数，virtual的喔
     */
-    virtual ~ZCE_Reactor();
+    virtual ~reactor();
 
 public:
 
@@ -145,13 +145,13 @@ public:
 
     /*!
     * @brief      获取单子函数
-    * @return     ZCE_Reactor* 反应器的指针
+    * @return     reactor* 反应器的指针
     */
-    static ZCE_Reactor* instance();
+    static reactor* instance();
     ///清理单子函数
     static void clear_inst();
     ///设置单子的函数
-    static void instance(ZCE_Reactor* pinstatnce);
+    static void instance(reactor* pinstatnce);
 
 protected:
 
@@ -164,6 +164,6 @@ protected:
 protected:
 
     ///单子实例指针
-    static ZCE_Reactor* instance_;
+    static reactor* instance_;
 };
 }

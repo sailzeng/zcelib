@@ -8,7 +8,7 @@
 namespace zce
 {
 //
-Select_Reactor::Select_Reactor() :
+select_reactor::select_reactor() :
     read_fd_set_{ 0 },
     write_fd_set_{ 0 },
     exception_fd_set_{ 0 }
@@ -16,7 +16,7 @@ Select_Reactor::Select_Reactor() :
     initialize(FD_SETSIZE);
 }
 
-Select_Reactor::Select_Reactor(size_t max_event_number) :
+select_reactor::select_reactor(size_t max_event_number) :
     read_fd_set_{ 0 },
     write_fd_set_{ 0 },
     exception_fd_set_{ 0 }
@@ -24,23 +24,23 @@ Select_Reactor::Select_Reactor(size_t max_event_number) :
     initialize(max_event_number);
 }
 
-Select_Reactor::~Select_Reactor()
+select_reactor::~select_reactor()
 {
 }
 
 //初始化
-int Select_Reactor::initialize(size_t max_event_number)
+int select_reactor::initialize(size_t max_event_number)
 {
     //清0
     FD_ZERO(&read_fd_set_);
     FD_ZERO(&write_fd_set_);
     FD_ZERO(&exception_fd_set_);
 
-    return zce::ZCE_Reactor::initialize(max_event_number);
+    return zce::reactor::initialize(max_event_number);
 }
 
 //打开某些mask标志，
-int Select_Reactor::schedule_wakeup(zce::Event_Handler* event_handler, int event_mask)
+int select_reactor::schedule_wakeup(zce::Event_Handler* event_handler, int event_mask)
 {
     int ret = 0;
 
@@ -97,11 +97,11 @@ int Select_Reactor::schedule_wakeup(zce::Event_Handler* event_handler, int event
 
 #endif
 
-    return zce::ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
+    return zce::reactor::schedule_wakeup(event_handler, event_mask);
 }
 
 //取消某些mask标志，，
-int Select_Reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask)
+int select_reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_mask)
 {
     int ret = 0;
 
@@ -144,7 +144,7 @@ int Select_Reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_
         FD_CLR(socket_hd, &exception_fd_set_);
     }
 
-    ret = zce::ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
+    ret = zce::reactor::cancel_wakeup(event_handler, cancel_mask);
 
     if (0 != ret)
     {
@@ -195,7 +195,7 @@ int Select_Reactor::cancel_wakeup(zce::Event_Handler* event_handler, int cancel_
 }
 
 //事件触发
-int Select_Reactor::handle_events(zce::time_value* max_wait_time,
+int select_reactor::handle_events(zce::time_value* max_wait_time,
                                   size_t* size_event)
 {
     //
@@ -241,7 +241,7 @@ int Select_Reactor::handle_events(zce::time_value* max_wait_time,
 }
 
 //处理ready的FD，调用相应的虚函数
-void Select_Reactor::process_ready(const fd_set* out_fds,
+void select_reactor::process_ready(const fd_set* out_fds,
                                    zce::Event_Handler::EVENT_MASK proc_mask)
 {
     int ret = 0, hdl_ret = 0;

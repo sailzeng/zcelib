@@ -100,7 +100,7 @@ int Ogre_Service_App::app_run()
     {
         //每次都在这儿初始化zce::Time_Value不好,其要调整.
         interval.usec(INTERVAL_MACRO_SECOND);
-        zce::ZCE_Reactor::instance()->handle_events(&interval, &numevent);
+        zce::reactor::instance()->handle_events(&interval, &numevent);
 
         //取得发送数据数据
         Ogre_Comm_Manger::instance()->get_all_senddata_to_write(procframe);

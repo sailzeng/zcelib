@@ -12,7 +12,7 @@ Event_Handler::Event_Handler() :
     event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
 {
 }
-Event_Handler::Event_Handler(zce::ZCE_Reactor* reactor) :
+Event_Handler::Event_Handler(zce::reactor* reactor) :
     zce_reactor_(reactor),
     event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
 {
@@ -46,13 +46,13 @@ int Event_Handler::handle_close()
     return 0;
 }
 
-void Event_Handler::reactor(zce::ZCE_Reactor* reactor)
+void Event_Handler::reactor(zce::reactor* reactor)
 {
     zce_reactor_ = reactor;
 }
 
 /// Get the event demultiplexors.
-zce::ZCE_Reactor* Event_Handler::reactor(void) const
+zce::reactor* Event_Handler::reactor(void) const
 {
     return zce_reactor_;
 }

@@ -7,7 +7,7 @@
 //class Zerg_Console_Handler : public MML_Console_Handler
 //{
 //public:
-//    explicit Zerg_Console_Handler(zce::ZCE_Reactor *reactor_inst);
+//    explicit Zerg_Console_Handler(zce::reactor *reactor_inst);
 //
 //protected:
 //    virtual ~Zerg_Console_Handler();

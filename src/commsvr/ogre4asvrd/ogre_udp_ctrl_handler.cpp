@@ -8,7 +8,7 @@
 std::vector<Ogre_UDPSvc_Hdl*> Ogre_UDPSvc_Hdl::ary_upd_peer_;
 
 //构造函数
-Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::skt::addr_in& upd_addr, zce::ZCE_Reactor* reactor) :
+Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::skt::addr_in& upd_addr, zce::reactor* reactor) :
     zce::Event_Handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port()),

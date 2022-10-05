@@ -79,7 +79,8 @@ int socket_init(int version_high = 2,
                 int version_low = 2);
 
 /*!
-* @brief      程序退出，DLL卸载时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
+* @brief      程序退出，DLL卸载时，关闭SOCKET（WinSock）的使用，
+*             Finalize WinSock after last use (e.g., when a DLL is unloaded).
 * @return     int 0成功，-1失败
 */
 int socket_terminate(void);
@@ -87,7 +88,8 @@ int socket_terminate(void);
 /*!
 * @brief      创建一个SOCKET对象
 * @return     ZCE_SOCKET 返回SOCKET句柄
-* @param[in]  family   (地址)协议族，为AF_INET，AF_INET6，AF_UNSPEC等,协议族，按道理是和地址族一一对应的，所以PF_XXX,约等于AF_XXX
+* @param[in]  family   (地址)协议族，为AF_INET，AF_INET6，AF_UNSPEC等,协议族，
+*                      按道理是和地址族一一对应的，所以PF_XXX,约等于AF_XXX
 * @param[in]  type     是SOCK_DGRAM或者SOCK_STREAM，SOCK_RAW
 * @param[in]  protocol 协议类型，主要在原生SOCKET中使用，比如ICMP等，一般填写为0
 */
@@ -405,7 +407,7 @@ enum class HANDLE_READY
     CONNECTED = (1 << 4),
 
     ///ACCPET 事件，也是放在读的SET
-    server_peer = (1 << 5),
+    ACCPET = (1 << 5),
 
     /// iNotify通知事件，文件系统的改变通知
     INOTIFY = (1 << 9),
@@ -490,16 +492,14 @@ inline ssize_t recvfrom(ZCE_SOCKET handle,
 * @param[in]  len        发送数据的buffer的长度
 * @param[in]  addr       目标的地址
 * @param[in]  addr_len   目标的地址的长度
-* @param[in]  timeout_tv 此参数没有意义
 * @param[in]  flags      接收操作的flag 参考@ref send
-* @note
+* @note       没有timeout_tv参数，此参数没有意义
 */
 inline ssize_t sendto(ZCE_SOCKET handle,
                       const void* buf,
                       size_t len,
                       const sockaddr* addr,
                       int addr_len,
-                      zce::time_value* timeout_tv = NULL,
                       int flags = 0);
 
 //==================================================================================================
@@ -541,10 +541,11 @@ int connect_timeout(ZCE_SOCKET handle,
                     zce::time_value& timeout_tv);
 
 //!详见accept函数，timeout_tv为等待超时时间
-ZCE_SOCKET accept_timeout(ZCE_SOCKET handle,
-                          sockaddr* from,
-                          socklen_t* from_len,
-                          zce::time_value& timeout_tv);
+int accept_timeout(ZCE_SOCKET handle,
+                   ZCE_SOCKET *apt_hdl,
+                   sockaddr* from,
+                   socklen_t* from_len,
+                   zce::time_value& timeout_tv);
 
 /*!
 * @brief      TCP接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n
@@ -594,7 +595,6 @@ ssize_t sendto_timeout(ZCE_SOCKET handle,
                        size_t len,
                        const sockaddr* to_addr,
                        socklen_t to_len,
-                       zce::time_value& /*timeout_tv*/,
                        int flags = 0);
 
 //=================================================================================================
@@ -647,7 +647,6 @@ ssize_t sendto_timeout2(ZCE_SOCKET handle,
                         size_t len,
                         const sockaddr* addr,
                         socklen_t addr_len,
-                        zce::time_value& /*timeout_tv*/,
                         int flags = 0);
 
 //--------------------------------------------------------------------------------------------
@@ -1498,12 +1497,10 @@ inline ssize_t zce::recv(ZCE_SOCKET handle, void* buf, size_t len, int flags)
 
     //统一错误成EWOULDBLOCK
 # if (EAGAIN != EWOULDBLOCK)
-
     if (zce_result == -1 && errno == EAGAIN)
     {
         errno = EWOULDBLOCK;
     }
-
 # endif //# if (EAGAIN != EWOULDBLOCK)
 
     return zce_result;
@@ -1535,10 +1532,9 @@ inline ssize_t zce::send(ZCE_SOCKET handle,
 
     ssize_t const zce_result = ::send(handle, buf, len, flags);
 
-    //统一错误成EWOULDBLOCK,ACE曾经说过，在某些时候这个语句会失效，但是就我所知，在LINUX平台，EAGAIN == EWOULDBLOCK
-    //这段代码仅仅作为一种防御
+    //统一错误成EWOULDBLOCK,ACE曾经说过，在某些时候这个语句会失效，但是就我所知，在LINUX平台，
+    //EAGAIN == EWOULDBLOCK这段代码仅仅作为一种防御
 # if (EAGAIN != EWOULDBLOCK)
-
     if (zce_result == -1 && errno == EAGAIN)
     {
         errno = EWOULDBLOCK;
@@ -1572,7 +1568,8 @@ inline ssize_t zce::recvfrom(ZCE_SOCKET handle,
     {
         errno = ::WSAGetLastError();
         //MSG_PEEK的解释
-        //Peek at the incoming data. The data is copied into the buffer, but is not removed from the input queue. This flag is valid only for non-overlapped sockets.
+        //Peek at the incoming data. The data is copied into the buffer, but is not removed
+        //from the input queue. This flag is valid only for non-overlapped sockets.
 
         //也就是锁如果有这个标志flags，发现消息过长的错误，返回消息接受缓冲长度给调用者
         if (errno == WSAEMSGSIZE && (flags & MSG_PEEK))
@@ -1728,28 +1725,14 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
                            size_t len,
                            const sockaddr* to,
                            int to_len,
-                           zce::time_value* timeout_tv,
                            int flags)
 {
-    if (timeout_tv)
-    {
-        return zce::sendto_timeout(handle,
-                                   buf,
-                                   len,
-                                   to,
-                                   to_len,
-                                   *timeout_tv,
-                                   flags);
-    }
-    else
-    {
-        return zce::sendto(handle,
-                           buf,
-                           len,
-                           flags,
-                           to,
-                           to_len);
-    }
+    return zce::sendto(handle,
+                       buf,
+                       len,
+                       flags,
+                       to,
+                       to_len);
 }
 
 //返回端口号

@@ -43,7 +43,7 @@ Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_cnthdl_;
 
 //构造函数
 Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode) :
-    zce::Event_Handler(zce::ZCE_Reactor::instance()),
+    zce::Event_Handler(zce::reactor::instance()),
     handler_mode_(hdl_mode),
     rcv_buffer_(NULL),
     recieve_bytes_(0),

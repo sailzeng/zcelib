@@ -8,8 +8,8 @@
 * @brief      一个用于在Linux，Windows，Inotify的事件句柄基类，监控目录下的文件变化的封装，
 *             可以监听多个目录的反映，用于监控文件系统的变化。
 *             这个类的目的是和ZCE_Reactor类兼容，而且更加自然
-*             Linux 可以使用EPOLL ZCE_Reactor，Select ZCE_Reactor
-*             Windows 下只能使用WFMO ZCE_Reactor
+*             Linux 可以使用EPOLL ZCE_Reactor，Select reactor
+*             Windows 下只能使用WFMO reactor
 *
 * @details    Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
 *             由于Windows和LINUX在监控文件变化上差别实在有点大。
@@ -99,7 +99,7 @@ public:
     @param      reactor_base 句柄相关的反应器指针,
     @return     返回0表示成功，否则失败
     */
-    int open(zce::ZCE_Reactor* reactor_base);
+    int open(zce::reactor* reactor_base);
 
     /*!
     @brief      关闭监控句柄等，取消绑定reactor等

@@ -38,7 +38,7 @@ Event_INotify::~Event_INotify()
 }
 
 //打开监控句柄等，绑定reactor等
-int Event_INotify::open(zce::ZCE_Reactor* reactor_base)
+int Event_INotify::open(zce::reactor* reactor_base)
 {
 #if defined (ZCE_OS_LINUX)
     int ret = 0;

@@ -83,7 +83,6 @@ ssize_t datagram::recvfrom_timeout(void* buf,
 ssize_t datagram::sendto_timeout(const void* buf,
                                  size_t len,
                                  const zce::skt::addr_base* to_addr,
-                                 zce::time_value& timeout_tv,
                                  int flags)  const
 {
     return zce::sendto_timeout(socket_handle_,
@@ -91,7 +90,6 @@ ssize_t datagram::sendto_timeout(const void* buf,
                                len,
                                to_addr->sockaddr_ptr_,
                                to_addr->sockaddr_size_,
-                               timeout_tv,
                                flags);
 }
 }

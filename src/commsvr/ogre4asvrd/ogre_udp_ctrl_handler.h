@@ -10,7 +10,7 @@ protected:
     //
 public:
     Ogre_UDPSvc_Hdl(const zce::skt::addr_in& upd_addr,
-                    zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance());
+                    zce::reactor* reactor = zce::reactor::instance());
 protected:
     ~Ogre_UDPSvc_Hdl();
 

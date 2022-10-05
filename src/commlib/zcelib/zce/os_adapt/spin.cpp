@@ -14,6 +14,7 @@ int zce::pthread_spin_init(pthread_spinlock_t* lock,
     {
         assert(false);
     }
+
     return 0;
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_init(lock, pshared);

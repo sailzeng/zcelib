@@ -20,7 +20,7 @@ namespace zce
 * @brief      EPOLL 的IO反应器，IO多路复用模型
 *
 */
-class  Epoll_Reactor : public zce::ZCE_Reactor
+class  epoll_reactor : public zce::reactor
 {
 protected:
 
@@ -32,7 +32,7 @@ public:
     /*!
     * @brief      构造函数
     */
-    Epoll_Reactor();
+    epoll_reactor();
 
     /*!
     * @brief      构造函数,相当于把初始化也干了，
@@ -40,13 +40,13 @@ public:
     * @param[in]  edge_triggered   是否进行边缘触发方式
     * @param[in]  once_max_event   一次最大处理的最大事件数量
     */
-    Epoll_Reactor(size_t max_event_number,
+    epoll_reactor(size_t max_event_number,
                   bool edge_triggered = false,
                   int once_max_event = DEFAULT_ONCE_TRIGGER_MAX_EVENT);
     /*!
     * @brief      析构函数
     */
-    virtual ~Epoll_Reactor();
+    virtual ~epoll_reactor();
 
 public:
 
@@ -133,7 +133,7 @@ protected:
 };
 
 //将mask转换为epoll_event结构
-inline void Epoll_Reactor::make_epoll_event(struct epoll_event* ep_event,
+inline void epoll_reactor::make_epoll_event(struct epoll_event* ep_event,
                                             zce::Event_Handler* event_handler) const
 {
     ep_event->events = 0;

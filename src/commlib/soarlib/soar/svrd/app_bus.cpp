@@ -229,11 +229,11 @@ int app_buspipe::app_start(int argc, const char* argv[])
     //根据所需的IO句柄数量初始化
     size_t max_reactor_hdl = config_base_->max_reactor_hdl_num_;
 #ifdef ZCE_OS_WINDOWS
-    zce::ZCE_Reactor::instance(new zce::Select_Reactor(max_reactor_hdl));
-    ZCE_LOG(RS_DEBUG, "[framework] zce::ZCE_Reactor and zce::Select_Reactor u.");
+    zce::reactor::instance(new zce::select_reactor(max_reactor_hdl));
+    ZCE_LOG(RS_DEBUG, "[framework] zce::reactor and zce::select_reactor u.");
 #else
-    zce::ZCE_Reactor::instance(new zce::Epoll_Reactor(max_reactor_hdl));
-    ZCE_LOG(RS_DEBUG, "[framework] zce::ZCE_Reactor and zce::Epoll_Reactor initialized.");
+    zce::reactor::instance(new zce::epoll_reactor(max_reactor_hdl));
+    ZCE_LOG(RS_DEBUG, "[framework] zce::reactor and zce::epoll_reactor initialized.");
 #endif
 
     //初始化内存管道
@@ -274,12 +274,12 @@ int app_buspipe::app_exit()
 
     soar::svrd_buspipe::clear_inst();
 
-    //释放所有资源,会关闭所有的handle吗,zce::ZCE_Reactor 会，ACE的ZCE_Reactor看实现
-    if (zce::ZCE_Reactor::instance())
+    //释放所有资源,会关闭所有的handle吗,zce::reactor 会，ACE的ZCE_Reactor看实现
+    if (zce::reactor::instance())
     {
-        zce::ZCE_Reactor::instance()->close();
+        zce::reactor::instance()->close();
     }
-    zce::ZCE_Reactor::clear_inst();
+    zce::reactor::clear_inst();
 
     //
     if (zce::timer_queue::instance())
@@ -297,7 +297,7 @@ int app_buspipe::app_exit()
         add_one(COMM_STAT_APP_RESTART_TIMES, 0, 0);
 
     //单子实例清空
-    zce::ZCE_Reactor::clear_inst();
+    zce::reactor::clear_inst();
     zce::timer_queue::clear_inst();
     soar::stat_monitor::clear_inst();
 

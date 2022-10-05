@@ -51,7 +51,6 @@ public:
     inline ssize_t sendto(const void* buf,
                           size_t len,
                           const zce::skt::addr_base* addr,
-                          zce::time_value*   /*timeout_tv*/,
                           int flags = 0) const;
 
     //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用SO_RCVTIMEO实现
@@ -66,7 +65,6 @@ public:
     ssize_t sendto_timeout(const void* buf,
                            size_t len,
                            const zce::skt::addr_base* addr,
-                           zce::time_value&   /*timeout_tv*/,
                            int flags = 0) const;
 };
 
@@ -120,7 +118,6 @@ inline ssize_t datagram::recvfrom(void* buf,
 inline ssize_t datagram::sendto(const void* buf,
                                 size_t len,
                                 const zce::skt::addr_base* to_addr,
-                                zce::time_value* timeout_tv,
                                 int flags)  const
 {
     return zce::sendto(socket_handle_,
@@ -128,7 +125,6 @@ inline ssize_t datagram::sendto(const void* buf,
                        len,
                        to_addr->sockaddr_ptr_,
                        to_addr->sockaddr_size_,
-                       timeout_tv,
                        flags);
 }
 }

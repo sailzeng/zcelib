@@ -31,25 +31,25 @@ namespace zce
 * @brief      SELECT 的IO反应器，IO多路复用模型
 *
 */
-class Select_Reactor : public zce::ZCE_Reactor
+class select_reactor : public zce::reactor
 {
 public:
 
     /*!
     * @brief    构造函数
     */
-    Select_Reactor();
+    select_reactor();
 
     /*!
     * @brief      构造函数和析构函数
     * @param      max_event_number 最大的句柄数量，用于初始化一些容器的大小，加快处理
     */
-    Select_Reactor(size_t max_event_number);
+    select_reactor(size_t max_event_number);
 
     /*!
     * @brief      和析构函数 virtual的喔。
     */
-    virtual ~Select_Reactor();
+    virtual ~select_reactor();
 
 public:
 

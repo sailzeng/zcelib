@@ -92,12 +92,13 @@ int acceptor::accept(zce::skt::stream& new_stream,
                      time_value& timeout,
                      zce::skt::addr_base* remote_addr) const
 {
-    ZCE_SOCKET sock_handle =
-        zce::accept_timeout(socket_handle_,
-                            remote_addr->sockaddr_ptr_,
-                            &remote_addr->sockaddr_size_,
-                            timeout);
-    if (sock_handle == ZCE_INVALID_SOCKET)
+    ZCE_SOCKET  sock_handle = ZCE_INVALID_SOCKET;
+    int ret = zce::accept_timeout(socket_handle_,
+                                  &sock_handle,
+                                  remote_addr->sockaddr_ptr_,
+                                  &remote_addr->sockaddr_size_,
+                                  timeout);
+    if (ret != 0)
     {
         return -1;
     }

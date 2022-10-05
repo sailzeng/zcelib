@@ -12,7 +12,7 @@ awaiter_fs co_read_file(zce::aio::worker* worker,
                         size_t nbufs,
                         ssize_t offset)
 {
-    zce::aio::FS_Atom* aio_atom = (FS_Atom*)
+    zce::aio::FS_ATOM* aio_atom = (FS_ATOM*)
         worker->alloc_handle(AIO_TYPE::FS_READFILE);
     aio_atom->path_ = path;
     aio_atom->read_bufs_ = read_bufs;
@@ -28,7 +28,7 @@ awaiter_fs co_write_file(zce::aio::worker* worker,
                          size_t nbufs,
                          ssize_t offset)
 {
-    zce::aio::FS_Atom* aio_atom = (FS_Atom*)
+    zce::aio::FS_ATOM* aio_atom = (FS_ATOM*)
         worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
     aio_atom->path_ = path;
     aio_atom->write_bufs_ = write_bufs;
@@ -38,12 +38,13 @@ awaiter_fs co_write_file(zce::aio::worker* worker,
     return awaiter_fs(worker, aio_atom);
 }
 
+//============================================================================
 //! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
 awaiter_dir co_dir_scandir(zce::aio::worker* worker,
                            const char* dirname,
                            struct dirent*** namelist)
 {
-    zce::aio::Dir_Atom* aio_atom = (Dir_Atom*)
+    zce::aio::DIR_ATOM* aio_atom = (DIR_ATOM*)
         worker->alloc_handle(AIO_TYPE::DIR_SCANDIR);
     aio_atom->dirname_ = dirname;
     aio_atom->namelist_ = namelist;
@@ -56,7 +57,7 @@ awaiter_dir co_dir_mkdir(zce::aio::worker* worker,
                          const char* dirname,
                          int mode)
 {
-    zce::aio::Dir_Atom* aio_atom = (Dir_Atom*)
+    zce::aio::DIR_ATOM* aio_atom = (DIR_ATOM*)
         worker->alloc_handle(AIO_TYPE::DIR_SCANDIR);
     aio_atom->dirname_ = dirname;
     aio_atom->mode_ = mode;
@@ -67,12 +68,13 @@ awaiter_dir co_dir_mkdir(zce::aio::worker* worker,
 awaiter_dir co_dir_rmdir(zce::aio::worker* worker,
                          const char* dirname)
 {
-    zce::aio::Dir_Atom* aio_atom = (Dir_Atom*)
+    zce::aio::DIR_ATOM* aio_atom = (DIR_ATOM*)
         worker->alloc_handle(AIO_TYPE::DIR_SCANDIR);
     aio_atom->dirname_ = dirname;
     return awaiter_dir(worker, aio_atom);
 }
 
+//============================================================================
 //!链接数据
 awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
                                zce::mysql::connect* db_connect,
@@ -81,7 +83,7 @@ awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
                                const char* pwd,
                                unsigned int port)
 {
-    zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
+    zce::aio::MYSQL_ATOM* aio_atom = (MYSQL_ATOM*)
         worker->alloc_handle(AIO_TYPE::MYSQL_CONNECT);
     aio_atom->db_connect_ = db_connect;
     aio_atom->host_name_ = host_name;
@@ -96,7 +98,7 @@ awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
 awaiter_mysql co_mysql_disconnect(zce::aio::worker* worker,
                                   zce::mysql::connect* db_connect)
 {
-    zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
+    zce::aio::MYSQL_ATOM* aio_atom = (MYSQL_ATOM*)
         worker->alloc_handle(AIO_TYPE::MYSQL_DISCONNECT);
     aio_atom->db_connect_ = db_connect;
     return awaiter_mysql(worker, aio_atom);
@@ -110,7 +112,7 @@ awaiter_mysql co_mysql_query(zce::aio::worker* worker,
                              uint64_t* num_affect,
                              uint64_t* insert_id)
 {
-    zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
+    zce::aio::MYSQL_ATOM* aio_atom = (MYSQL_ATOM*)
         worker->alloc_handle(AIO_TYPE::MYSQL_QUERY_NOSELECT);
     aio_atom->db_connect_ = db_connect;
     aio_atom->sql_ = sql;
@@ -129,7 +131,7 @@ awaiter_mysql co_mysql_query(zce::aio::worker* worker,
                              uint64_t* num_affect,
                              zce::mysql::result* db_result)
 {
-    zce::aio::MySQL_Atom* aio_atom = (MySQL_Atom*)
+    zce::aio::MYSQL_ATOM* aio_atom = (MYSQL_ATOM*)
         worker->alloc_handle(AIO_TYPE::MYSQL_QUERY_SELECT);
     aio_atom->db_connect_ = db_connect;
     aio_atom->sql_ = sql;
@@ -140,6 +142,8 @@ awaiter_mysql co_mysql_query(zce::aio::worker* worker,
     return awaiter_mysql(worker, aio_atom);
 }
 
+//============================================================================
+
 awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
                                  const char* hostname,
                                  const char* service,
@@ -148,7 +152,7 @@ awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
                                  size_t* ary_addr6_num,
                                  ::sockaddr_in6* ary_addr6)
 {
-    zce::aio::Host_Atom* aio_atom = (Host_Atom*)
+    zce::aio::HOST_ATOM* aio_atom = (HOST_ATOM*)
         worker->alloc_handle(AIO_TYPE::HOST_GETADDRINFO_ARY);
     aio_atom->hostname_ = hostname;
     aio_atom->service_ = service;
@@ -166,12 +170,103 @@ awaiter_host co_host_getaddr_one(zce::aio::worker* worker,
                                  sockaddr* addr,
                                  socklen_t addr_len)
 {
-    zce::aio::Host_Atom* aio_atom = (Host_Atom*)
+    zce::aio::HOST_ATOM* aio_atom = (HOST_ATOM*)
         worker->alloc_handle(AIO_TYPE::HOST_GETADDRINFO_ONE);
     aio_atom->hostname_ = hostname;
     aio_atom->service_ = service;
     aio_atom->addr_ = addr;
     aio_atom->addr_len_ = addr_len;
     return awaiter_host(worker, aio_atom);
+}
+
+//============================================================================
+//! 等待若干时间进行connect，直至超时
+awaiter_socket co_st_connect(zce::aio::worker* worker,
+                             ZCE_SOCKET handle,
+                             const sockaddr* addr,
+                             socklen_t addr_len,
+                             zce::time_value* timeout_tv)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT);
+    aio_atom->handle_ = handle;
+    aio_atom->addr_ = addr;
+    aio_atom->addr_len_ = addr_len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    return awaiter_socket(worker, aio_atom);
+}
+
+//! 等待若干时间进行accept，直至超时
+awaiter_socket co_st_accept(zce::aio::worker* worker,
+                            ZCE_SOCKET handle,
+                            sockaddr* from,
+                            socklen_t* from_len,
+                            zce::time_value* timeout_tv)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_ACCEPT);
+    aio_atom->handle_ = handle;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    return awaiter_socket(worker, aio_atom);
+}
+
+//! 等待若干时间进行recv，直至超时
+awaiter_socket co_st_recv(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          void* buf,
+                          size_t len,
+                          zce::time_value* timeout_tv,
+                          int flags)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_RECV);
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = buf;
+    aio_atom->len_ = len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->flags_ = flags;
+    return awaiter_socket(worker, aio_atom);
+}
+
+//!等待若干时间进行send，直至超时
+awaiter_socket co_st_send(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          const void* buf,
+                          size_t len,
+                          zce::time_value* timeout_tv,
+                          int flags)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_SEND);
+    aio_atom->handle_ = handle;
+    aio_atom->snd_buf_ = buf;
+    aio_atom->len_ = len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->flags_ = flags;
+    return awaiter_socket(worker, aio_atom);
+}
+
+//!等待若干时间进行recv数据，直至超时
+awaiter_socket co_st_recvfrom(zce::aio::worker* worker,
+                              ZCE_SOCKET handle,
+                              void* buf,
+                              size_t len,
+                              sockaddr* from,
+                              socklen_t* from_len,
+                              zce::time_value* timeout_tv,
+                              int flags)
+{
+    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+        worker->alloc_handle(AIO_TYPE::SOCKET_RECVFROM);
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = buf;
+    aio_atom->len_ = len;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->flags_ = flags;
+    return awaiter_socket(worker, aio_atom);
 }
 }

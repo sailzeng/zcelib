@@ -16,7 +16,7 @@
 
 namespace zce
 {
-class ZCE_Reactor;
+class reactor;
 
 /*!
 * @brief      IO反应器所使用的事件句柄，当IO事件触发后，相应的函数
@@ -56,7 +56,7 @@ public:
     * @brief      构造函数，同时设置香港的反应器指针
     * @param      reactor 句柄相关的反应器指针
     */
-    Event_Handler(zce::ZCE_Reactor* reactor);
+    Event_Handler(zce::reactor* reactor);
     /*!
     * @brief      析构函数
     */
@@ -125,13 +125,13 @@ public:
     * @brief      设置反应器
     * @param      reactor
     */
-    virtual void reactor(zce::ZCE_Reactor* reactor);
+    virtual void reactor(zce::reactor* reactor);
 
     /*!
     * @brief      取得自己所属的反应器
-    * @return     zce::ZCE_Reactor*
+    * @return     zce::reactor*
     */
-    virtual zce::ZCE_Reactor* reactor(void) const;
+    virtual zce::reactor* reactor(void) const;
 
     //超时处理，最后考虑再三，没有在反应器里面集成定时器的处理
     //virtual int timer_timeout (const zce::time_value &tv, const void *arg = 0);
@@ -139,7 +139,7 @@ public:
 protected:
 
     ///反应器
-    zce::ZCE_Reactor* zce_reactor_;
+    zce::reactor* zce_reactor_;
 
     ///这个句柄对应要处理的事件MASK
     int                event_mask_;

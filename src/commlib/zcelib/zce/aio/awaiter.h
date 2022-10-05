@@ -73,7 +73,7 @@ struct awaiter
         return return_atom_;
     }
     //!回调函数，AIO操作完成后恢复时调用
-    void resume(AIO_Atom* return_hdl)
+    void resume(AIO_ATOM* return_hdl)
     {
         RA* fs_hdl = (RA*)return_hdl;
         return_atom_ = *fs_hdl;
@@ -91,11 +91,11 @@ struct awaiter
     std::coroutine_handle<> awaiting_;
 };
 
-typedef zce::aio::awaiter<zce::aio::FS_Atom> awaiter_fs;
-typedef zce::aio::awaiter<zce::aio::Dir_Atom> awaiter_dir;
-typedef zce::aio::awaiter<zce::aio::MySQL_Atom> awaiter_mysql;
-typedef zce::aio::awaiter<zce::aio::Host_Atom> awaiter_host;
-
+typedef zce::aio::awaiter<zce::aio::FS_ATOM> awaiter_fs;
+typedef zce::aio::awaiter<zce::aio::DIR_ATOM> awaiter_dir;
+typedef zce::aio::awaiter<zce::aio::MYSQL_ATOM> awaiter_mysql;
+typedef zce::aio::awaiter<zce::aio::HOST_ATOM> awaiter_host;
+typedef zce::aio::awaiter<zce::aio::SOCKET_ATOM> awaiter_socket;
 //========================================================================================
 //AIO 协程的co_await 函数
 
@@ -112,6 +112,7 @@ awaiter_fs co_write_file(zce::aio::worker* worker,
                          size_t nbufs,
                          ssize_t offset = 0);
 
+//==============================================================
 //!协程co_await 链接数据
 awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
                                zce::mysql::connect* db_connect,
@@ -132,6 +133,15 @@ awaiter_mysql co_mysql_query(zce::aio::worker* worker,
                              uint64_t* num_affect,
                              uint64_t* insert_id);
 
+//!协程co_await 查询，SELECT语句
+awaiter_mysql co_mysql_query(zce::aio::worker* worker,
+                             zce::mysql::connect* db_connect,
+                             const char* sql,
+                             size_t sql_len,
+                             uint64_t* num_affect,
+                             zce::mysql::result* db_result);
+
+//==============================================================
 //! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
 awaiter_dir co_dir_scandir(zce::aio::worker* worker,
                            const char* dirname,
@@ -146,14 +156,7 @@ awaiter_dir co_dir_mkdir(zce::aio::worker* worker,
 awaiter_dir co_dir_rmdir(zce::aio::worker* worker,
                          const char* dirname);
 
-//!协程co_await 查询，SELECT语句
-awaiter_mysql co_mysql_query(zce::aio::worker* worker,
-                             zce::mysql::connect* db_connect,
-                             const char* sql,
-                             size_t sql_len,
-                             uint64_t* num_affect,
-                             zce::mysql::result* db_result);
-
+//==============================================================
 //!协程co_await getaddrinfo_ary
 awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
                                  const char* hostname,
@@ -169,4 +172,46 @@ awaiter_host co_host_getaddr_one(zce::aio::worker* worker,
                                  const char* service,
                                  sockaddr* addr,
                                  socklen_t addr_len);
+
+//==============================================================
+
+//! 等待若干时间进行connect，直至超时
+awaiter_socket co_st_connect(zce::aio::worker* worker,
+                             ZCE_SOCKET handle,
+                             const sockaddr* addr,
+                             socklen_t addr_len,
+                             zce::time_value* timeout_tv);
+
+//! 等待若干时间进行accept，直至超时
+awaiter_socket co_st_accept(zce::aio::worker* worker,
+                            ZCE_SOCKET handle,
+                            sockaddr* addr,
+                            socklen_t* addr_len,
+                            zce::time_value* timeout_tv);
+
+//! 等待若干时间进行recv，直至超时
+awaiter_socket co_st_recv(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          void* buf,
+                          size_t len,
+                          zce::time_value* timeout_tv,
+                          int flags = 0);
+
+//!等待若干时间进行send，直至超时
+awaiter_socket co_st_send(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          const void* buf,
+                          size_t len,
+                          zce::time_value* timeout_tv,
+                          int flags = 0);
+
+//!等待若干时间进行recv数据，直至超时
+awaiter_socket co_st_recvfrom(zce::aio::worker* worker,
+                              ZCE_SOCKET handle,
+                              void* buf,
+                              size_t len,
+                              sockaddr* from,
+                              socklen_t* from_len,
+                              zce::time_value* timeout_tv,
+                              int flags = 0);
 }

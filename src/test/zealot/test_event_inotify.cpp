@@ -96,7 +96,7 @@ int test_inotify_reactor(int /*argc*/, char* /*argv*/[])
     zce::WFMO_Reactor* reactor_ptr = new zce::WFMO_Reactor();
     ret = reactor_ptr->initialize();
 #else
-    zce::Select_Reactor* reactor_ptr = new zce::Select_Reactor();
+    zce::select_reactor* reactor_ptr = new zce::select_reactor();
     ret = reactor_ptr->initialize(1024);
 
 #endif
@@ -107,9 +107,9 @@ int test_inotify_reactor(int /*argc*/, char* /*argv*/[])
         delete reactor_ptr;
         return ret;
     }
-    zce::ZCE_Reactor::instance(reactor_ptr);
+    zce::reactor::instance(reactor_ptr);
 
-    ret = inotify_event->open(zce::ZCE_Reactor::instance());
+    ret = inotify_event->open(zce::reactor::instance());
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "Open fial? ret =%d", ret);
@@ -146,7 +146,7 @@ int test_inotify_reactor(int /*argc*/, char* /*argv*/[])
     //Windows下，可以用一个新的event handle监控目录，
     //当然Windows有一个功能，使用监控子目录的功能
     My_INotify_Event* inotify_event2 = new My_INotify_Event();
-    ret = inotify_event2->open(zce::ZCE_Reactor::instance());
+    ret = inotify_event2->open(zce::reactor::instance());
     ret = inotify_event2->add_watch(TEST_PATH_2,
                                     IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
                                     &watch_handle);
@@ -162,7 +162,7 @@ int test_inotify_reactor(int /*argc*/, char* /*argv*/[])
     {
         zce::time_value time_out(60, 0);
         size_t num_event;
-        ret = zce::ZCE_Reactor::instance()->handle_events(&time_out, &num_event);
+        ret = zce::reactor::instance()->handle_events(&time_out, &num_event);
         //ZCE_LOG(RS_INFO,"handle_events? ret =[%d] number of event[%u]",ret,num_event);
         std::cout << "handle_events ret =" << ret << " number of event=" << num_event << std::endl;
     }

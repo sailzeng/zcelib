@@ -8,7 +8,7 @@
 class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler,
 ****************************************************************************************************/
 Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO& config_info,
-                                       zce::ZCE_Reactor* reactor) :
+                                       zce::reactor* reactor) :
     zce::Event_Handler(reactor),
     ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {

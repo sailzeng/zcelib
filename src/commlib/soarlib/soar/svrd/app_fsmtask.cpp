@@ -106,7 +106,7 @@ int svrdapp_fsmtask::app_run()
     zce::time_value select_interval(0, 0);
 
     zce::timer_queue* time_queue = zce::timer_queue::instance();
-    zce::ZCE_Reactor* reactor = zce::ZCE_Reactor::instance();
+    zce::reactor* reactor = zce::reactor::instance();
 
     for (; app_run_;)
     {

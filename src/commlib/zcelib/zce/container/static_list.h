@@ -202,7 +202,8 @@ public:
             return false;
         }
         index_base_ = reinterpret_cast<static_list_index*>(mem_base_);
-        data_base_ = reinterpret_cast<T*>(mem_base_ + sizeof(static_list_index) * (num_node + TWO_USE));
+        data_base_ = reinterpret_cast<T*>(mem_base_ +
+                                          sizeof(static_list_index) * (num_node + TWO_USE));
         free_node_ = &index_base_[num_node];
         use_node_ = &index_base_[num_node + 1];
         clear();

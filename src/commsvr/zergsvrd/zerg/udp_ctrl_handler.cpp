@@ -20,7 +20,7 @@ bool           UDP_Svc_Handler::if_proxy_ = false;
 UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
                                  const zce::skt::addr_in& addr,
                                  bool sessionkey_verify) :
-    zce::Event_Handler(zce::ZCE_Reactor::instance()),
+    zce::Event_Handler(zce::reactor::instance()),
     udp_bind_addr_(addr),
     my_svc_info_(my_svcinfo),
     sessionkey_verify_(sessionkey_verify),

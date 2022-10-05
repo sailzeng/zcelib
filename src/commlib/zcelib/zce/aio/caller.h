@@ -110,7 +110,7 @@ enum AIO_TYPE
 };
 
 //! AIO异步操作的原子
-struct AIO_Atom
+struct AIO_ATOM
 {
     virtual void clear() = 0;
 
@@ -119,11 +119,12 @@ struct AIO_Atom
     //!
     uint32_t id_;
     //!
-    std::function<void(AIO_Atom*)> call_back_;
+    std::function<void(AIO_ATOM*)> call_back_;
 };
 
+//====================================================
 //! FS文件操作的原子
-struct FS_Atom :public AIO_Atom
+struct FS_ATOM :public AIO_ATOM
 {
     //!清理
     virtual void clear();
@@ -156,8 +157,85 @@ public:
     struct stat* file_stat_ = nullptr;
 };
 
+//!异步打开某个文件，完成后回调函数call_back
+int fs_open(zce::aio::worker* worker,
+            const char* path,
+            int flags,
+            int mode,
+            std::function<void(AIO_ATOM*)> call_back);
+
+//!异步关闭某个文件，完成后回调函数call_back
+int fs_close(zce::aio::worker* worker,
+             ZCE_HANDLE handle,
+             std::function<void(AIO_ATOM*)> call_back);
+
+//!移动文件的读写位置,
+int fs_lseek(zce::aio::worker* worker,
+             ZCE_HANDLE handle,
+             off_t offset,
+             int whence,
+             std::function<void(AIO_ATOM*)> call_back);
+
+//!异步读取文件内容
+int fs_read(zce::aio::worker* worker,
+            ZCE_HANDLE handle,
+            char* read_bufs,
+            size_t nbufs,
+            std::function<void(AIO_ATOM*)> call_back,
+            ssize_t offset = 0,
+            int whence = SEEK_CUR);
+
+//!异步写入文件内容
+int fs_write(zce::aio::worker* worker,
+             ZCE_HANDLE handle,
+             const char* write_bufs,
+             size_t nbufs,
+             std::function<void(AIO_ATOM*)> call_back,
+             ssize_t offset = 0,
+             int whence = SEEK_CUR);
+
+//!异步截断文件
+int fs_ftruncate(zce::aio::worker* worker,
+                 ZCE_HANDLE handle,
+                 size_t offset,
+                 std::function<void(AIO_ATOM*)> call_back);
+
+//!异步打开文件，读取文件内容，然后关闭
+int fs_read_file(zce::aio::worker* worker,
+                 const char* path,
+                 char* read_bufs,
+                 size_t nbufs,
+                 std::function<void(AIO_ATOM*)> call_back,
+                 ssize_t offset = 0);
+
+//!异步打开文件，写入文件内容，然后关闭
+int fs_write_file(zce::aio::worker* worker,
+                  const char* path,
+                  const char* write_bufs,
+                  size_t nbufs,
+                  std::function<void(AIO_ATOM*)> call_back,
+                  ssize_t offset = 0);
+
+//!异步删除文件
+int fs_unlink(zce::aio::worker* worker,
+              const char* path,
+              std::function<void(AIO_ATOM*)> call_back);
+
+//!异步改名
+int fs_rename(zce::aio::worker* worker,
+              const char* path,
+              const char* new_path,
+              std::function<void(AIO_ATOM*)> call_back);
+
+//!异步获取stat
+int fs_stat(zce::aio::worker* worker,
+            const char* path,
+            struct stat* file_stat,
+            std::function<void(AIO_ATOM*)> call_back);
+
+//==============================================================
 //! 目录操作的原子
-struct Dir_Atom :public AIO_Atom
+struct DIR_ATOM :public AIO_ATOM
 {
     //!清理
     virtual void clear();
@@ -171,8 +249,26 @@ struct Dir_Atom :public AIO_Atom
     struct dirent*** namelist_ = nullptr;
 };
 
+//! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
+int dir_scandir(zce::aio::worker* worker,
+                const char* dirname,
+                struct dirent*** namelist,
+                std::function<void(AIO_ATOM*)> call_back);
+
+//!异步建立dir
+int dir_mkdir(zce::aio::worker* worker,
+              const char* dirname,
+              int mode,
+              std::function<void(AIO_ATOM*)> call_back);
+
+//!异步删除dir
+int dir_rmdir(zce::aio::worker* worker,
+              const char* dirname,
+              std::function<void(AIO_ATOM*)> call_back);
+
+//==============================================================
 //! 数据库操作原子
-struct MySQL_Atom :public AIO_Atom
+struct MYSQL_ATOM :public AIO_ATOM
 {
     //!
     virtual void clear() override;
@@ -190,8 +286,41 @@ struct MySQL_Atom :public AIO_Atom
     zce::mysql::result* db_result_ = nullptr;
 };
 
+//!链接数据
+int mysql_connect(zce::aio::worker* worker,
+                  zce::mysql::connect* db_connect,
+                  const char* host_name,
+                  const char* user,
+                  const char* pwd,
+                  unsigned int port, //默认填写MYSQL_PORT
+                  std::function<void(AIO_ATOM*)> call_back);
+
+//!断开数据库链接
+int mysql_disconnect(zce::aio::worker* worker,
+                     zce::mysql::connect* db_connect,
+                     std::function<void(AIO_ATOM*)> call_back);
+
+//!查询，非SELECT语句
+int mysql_query(zce::aio::worker* worker,
+                zce::mysql::connect* db_connect,
+                const char* sql,
+                size_t sql_len,
+                uint64_t* num_affect,
+                uint64_t* insert_id,
+                std::function<void(AIO_ATOM*)> call_back);
+
+//!查询，SELECT语句
+int mysql_query(zce::aio::worker* worker,
+                zce::mysql::connect* db_connect,
+                const char* sql,
+                size_t sql_len,
+                uint64_t* num_affect,
+                zce::mysql::result* db_result,
+                std::function<void(AIO_ATOM*)> call_back);
+
+//==============================================================
 //!
-struct Host_Atom :public AIO_Atom
+struct HOST_ATOM :public AIO_ATOM
 {
     //!清理
     virtual void clear();
@@ -208,8 +337,29 @@ struct Host_Atom :public AIO_Atom
     socklen_t addr_len_ = 0;
 };
 
-//!
-struct Socket_Atom :public AIO_Atom
+//!host 函数，用于获取地址，AIO_Atom 可以转化为Host_Atom使用
+
+//!获得host对应的多个地址信息，包括IPV4，IPV6，类似getaddrinfo_ary，
+int host_getaddr_ary(zce::aio::worker* worker,
+                     const char* hostname,
+                     const char* service,
+                     size_t* ary_addr_num,
+                     sockaddr_in* ary_addr,
+                     size_t* ary_addr6_num,
+                     sockaddr_in6* ary_addr6,
+                     std::function<void(AIO_ATOM*)> call_back);
+
+//!获得host对应的一个地址信息，类似getaddrinfo_one
+int host_getaddr_one(zce::aio::worker* worker,
+                     const char* hostname,
+                     const char* service,
+                     sockaddr* addr,
+                     socklen_t addr_len,
+                     std::function<void(AIO_ATOM*)> call_back);
+
+//==============================================================
+//! Socket atom
+struct SOCKET_ATOM :public AIO_ATOM
 {
     //!清理
     virtual void clear();
@@ -230,197 +380,51 @@ struct Socket_Atom :public AIO_Atom
     ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
 };
 
-//====================================================
+//! ST = socket timeout
+//! 等待若干时间进行connect，直至超时
+int st_connect(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               const sockaddr* addr,
+               socklen_t addr_len,
+               zce::time_value* timeout_tv,
+               std::function<void(AIO_ATOM*)> call_back);
 
-//!异步打开某个文件，完成后回调函数call_back
-int fs_open(zce::aio::worker* worker,
-            const char* path,
-            int flags,
-            int mode,
-            std::function<void(AIO_Atom*)> call_back);
+//! 等待若干时间进行accept，直至超时
+int st_accept(zce::aio::worker* worker,
+              ZCE_SOCKET handle,
+              sockaddr* addr,
+              socklen_t* addr_len,
+              zce::time_value* timeout_tv,
+              std::function<void(AIO_ATOM*)> call_back);
 
-//!异步关闭某个文件，完成后回调函数call_back
-int fs_close(zce::aio::worker* worker,
-             ZCE_HANDLE handle,
-             std::function<void(AIO_Atom*)> call_back);
+//! 等待若干时间进行recv，直至超时
+int st_recv(zce::aio::worker* worker,
+            ZCE_SOCKET handle,
+            void* buf,
+            size_t len,
+            zce::time_value* timeout_tv,
+            std::function<void(AIO_ATOM*)> call_back,
+            int flags = 0);
 
-//!移动文件的读写位置,
-int fs_lseek(zce::aio::worker* worker,
-             ZCE_HANDLE handle,
-             off_t offset,
-             int whence,
-             std::function<void(AIO_Atom*)> call_back);
+//!等待若干时间进行send，直至超时
+int st_send(zce::aio::worker* worker,
+            ZCE_SOCKET handle,
+            const void* buf,
+            size_t len,
+            zce::time_value* timeout_tv,
+            std::function<void(AIO_ATOM*)> call_back,
+            int flags = 0);
 
-//!异步读取文件内容
-int fs_read(zce::aio::worker* worker,
-            ZCE_HANDLE handle,
-            char* read_bufs,
-            size_t nbufs,
-            std::function<void(AIO_Atom*)> call_back,
-            ssize_t offset = 0,
-            int whence = SEEK_CUR);
-
-//!异步写入文件内容
-int fs_write(zce::aio::worker* worker,
-             ZCE_HANDLE handle,
-             const char* write_bufs,
-             size_t nbufs,
-             std::function<void(AIO_Atom*)> call_back,
-             ssize_t offset = 0,
-             int whence = SEEK_CUR);
-
-//!异步截断文件
-int fs_ftruncate(zce::aio::worker* worker,
-                 ZCE_HANDLE handle,
-                 size_t offset,
-                 std::function<void(AIO_Atom*)> call_back);
-
-//!异步打开文件，读取文件内容，然后关闭
-int fs_read_file(zce::aio::worker* worker,
-                 const char* path,
-                 char* read_bufs,
-                 size_t nbufs,
-                 std::function<void(AIO_Atom*)> call_back,
-                 ssize_t offset = 0);
-
-//!异步打开文件，写入文件内容，然后关闭
-int fs_write_file(zce::aio::worker* worker,
-                  const char* path,
-                  const char* write_bufs,
-                  size_t nbufs,
-                  std::function<void(AIO_Atom*)> call_back,
-                  ssize_t offset = 0);
-
-//!异步删除文件
-int fs_unlink(zce::aio::worker* worker,
-              const char* path,
-              std::function<void(AIO_Atom*)> call_back);
-
-//!异步改名
-int fs_rename(zce::aio::worker* worker,
-              const char* path,
-              const char* new_path,
-              std::function<void(AIO_Atom*)> call_back);
-
-//!异步获取stat
-int fs_stat(zce::aio::worker* worker,
-            const char* path,
-            struct stat* file_stat,
-            std::function<void(AIO_Atom*)> call_back);
-
-//! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
-int dir_scandir(zce::aio::worker* worker,
-                const char* dirname,
-                struct dirent*** namelist,
-                std::function<void(AIO_Atom*)> call_back);
-
-//!异步建立dir
-int dir_mkdir(zce::aio::worker* worker,
-              const char* dirname,
-              int mode,
-              std::function<void(AIO_Atom*)> call_back);
-
-//!异步删除dir
-int dir_rmdir(zce::aio::worker* worker,
-              const char* dirname,
-              std::function<void(AIO_Atom*)> call_back);
-
-//!链接数据
-int mysql_connect(zce::aio::worker* worker,
-                  zce::mysql::connect* db_connect,
-                  const char* host_name,
-                  const char* user,
-                  const char* pwd,
-                  unsigned int port, //默认填写MYSQL_PORT
-                  std::function<void(AIO_Atom*)> call_back);
-
-//!断开数据库链接
-int mysql_disconnect(zce::aio::worker* worker,
-                     zce::mysql::connect* db_connect,
-                     std::function<void(AIO_Atom*)> call_back);
-
-//!查询，非SELECT语句
-int mysql_query(zce::aio::worker* worker,
-                zce::mysql::connect* db_connect,
-                const char* sql,
-                size_t sql_len,
-                uint64_t* num_affect,
-                uint64_t* insert_id,
-                std::function<void(AIO_Atom*)> call_back);
-
-//!查询，SELECT语句
-int mysql_query(zce::aio::worker* worker,
-                zce::mysql::connect* db_connect,
-                const char* sql,
-                size_t sql_len,
-                uint64_t* num_affect,
-                zce::mysql::result* db_result,
-                std::function<void(AIO_Atom*)> call_back);
-
-//!host 函数，用于获取地址，AIO_Atom 可以转化为Host_Atom使用
-
-//!获得host对应的多个地址信息，包括IPV4，IPV6，类似getaddrinfo_ary，
-int host_getaddr_ary(zce::aio::worker* worker,
-                     const char* hostname,
-                     const char* service,
-                     size_t* ary_addr_num,
-                     sockaddr_in* ary_addr,
-                     size_t* ary_addr6_num,
-                     sockaddr_in6* ary_addr6,
-                     std::function<void(AIO_Atom*)> call_back);
-
-//!获得host对应的一个地址信息，类似getaddrinfo_one
-int host_getaddr_one(zce::aio::worker* worker,
-                     const char* hostname,
-                     const char* service,
-                     sockaddr* addr,
-                     socklen_t addr_len,
-                     std::function<void(AIO_Atom*)> call_back);
-
-//!等待若干时间进行connect，直至超时
-int socket_connect(zce::aio::worker* worker,
-                   ZCE_SOCKET handle,
-                   const sockaddr* addr,
-                   socklen_t addr_len,
-                   zce::time_value* timeout_tv,
-                   std::function<void(AIO_Atom*)> call_back);
-
-//!等待若干时间进行accept，直至超时
-int socket_accept(zce::aio::worker* worker,
-                  ZCE_SOCKET handle,
-                  sockaddr* addr,
-                  socklen_t* addr_len,
-                  zce::time_value* timeout_tv,
-                  std::function<void(AIO_Atom*)> call_back);
-
-//!等待若干时间进行recv，直至超时
-int socket_recv(zce::aio::worker* worker,
+//!等待若干时间进行recv数据，直至超时
+int st_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
+                sockaddr* from,
+                socklen_t* from_len,
                 zce::time_value* timeout_tv,
-                std::function<void(AIO_Atom*)> call_back,
+                std::function<void(AIO_ATOM*)> call_back,
                 int flags = 0);
-
-//!等待若干时间进行send，直至超时
-int socket_send(zce::aio::worker* worker,
-                ZCE_SOCKET handle,
-                const void* buf,
-                size_t len,
-                zce::time_value* timeout_tv,
-                std::function<void(AIO_Atom*)> call_back,
-                int flags = 0);
-
-//!等待若干时间进行recv数据，直至超时
-int socket_recvfrom(zce::aio::worker* worker,
-                    ZCE_SOCKET handle,
-                    void* buf,
-                    size_t len,
-                    sockaddr* from,
-                    socklen_t* from_len,
-                    zce::time_value* timeout_tv,
-                    std::function<void(AIO_Atom*)> call_back,
-                    int flags = 0);
 
 //!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
 //!

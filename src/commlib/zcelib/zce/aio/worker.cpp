@@ -22,13 +22,13 @@ int worker::initialize(size_t work_thread_num,
                                           this);
     }
 
-    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_Atom*>(work_queue_len);
-    response_queue_ = new zce::msgring_condi<zce::aio::AIO_Atom*>(work_queue_len);
-    aio_obj_pool_.initialize<zce::aio::FS_Atom>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::Dir_Atom>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::MySQL_Atom>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::Host_Atom>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::Socket_Atom>(16, 16);
+    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_ATOM*>(work_queue_len);
+    response_queue_ = new zce::msgring_condi<zce::aio::AIO_ATOM*>(work_queue_len);
+    aio_obj_pool_.initialize<zce::aio::FS_ATOM>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::DIR_ATOM>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(16, 16);
     return 0;
 }
 
@@ -45,33 +45,33 @@ void worker::terminate()
     delete[] work_thread_;
 }
 
-AIO_Atom* worker::alloc_handle(AIO_TYPE aio_type)
+AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
 {
-    AIO_Atom* handle = nullptr;
+    AIO_ATOM* handle = nullptr;
     if (aio_type > AIO_TYPE::FS_BEGIN &&
         aio_type < AIO_TYPE::FS_END)
     {
-        handle = aio_obj_pool_.alloc_object<FS_Atom>();
+        handle = aio_obj_pool_.alloc_object<FS_ATOM>();
     }
     else if (aio_type > AIO_TYPE::DIR_BEGIN &&
              aio_type < AIO_TYPE::DIR_END)
     {
-        handle = aio_obj_pool_.alloc_object<Dir_Atom>();
+        handle = aio_obj_pool_.alloc_object<DIR_ATOM>();
     }
     else if (aio_type > AIO_TYPE::MYSQL_BEGIN &&
              aio_type < AIO_TYPE::MYSQL_END)
     {
-        handle = aio_obj_pool_.alloc_object<MySQL_Atom>();
+        handle = aio_obj_pool_.alloc_object<MYSQL_ATOM>();
     }
     else if (aio_type > AIO_TYPE::HOST_BEGIN &&
              aio_type < AIO_TYPE::HOST_END)
     {
-        handle = aio_obj_pool_.alloc_object<Host_Atom>();
+        handle = aio_obj_pool_.alloc_object<HOST_ATOM>();
     }
     else if (aio_type > AIO_TYPE::SOCKET_BEGIN &&
              aio_type < AIO_TYPE::SOCKET_END)
     {
-        handle = aio_obj_pool_.alloc_object<Socket_Atom>();
+        handle = aio_obj_pool_.alloc_object<SOCKET_ATOM>();
     }
     else
     {
@@ -82,40 +82,40 @@ AIO_Atom* worker::alloc_handle(AIO_TYPE aio_type)
     return handle;
 }
 
-void worker::free_handle(zce::aio::AIO_Atom* base)
+void worker::free_handle(zce::aio::AIO_ATOM* base)
 {
     base->clear();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {
-        aio_obj_pool_.free_object<FS_Atom>(static_cast<FS_Atom*>(base));
+        aio_obj_pool_.free_object<FS_ATOM>(static_cast<FS_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::DIR_BEGIN &&
              base->aio_type_ < AIO_TYPE::DIR_END)
     {
-        aio_obj_pool_.free_object<Dir_Atom>(static_cast<Dir_Atom*>(base));
+        aio_obj_pool_.free_object<DIR_ATOM>(static_cast<DIR_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
              base->aio_type_ < AIO_TYPE::MYSQL_END)
     {
-        aio_obj_pool_.free_object<MySQL_Atom>(static_cast<MySQL_Atom*>(base));
+        aio_obj_pool_.free_object<MYSQL_ATOM>(static_cast<MYSQL_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::HOST_BEGIN &&
              base->aio_type_ < AIO_TYPE::HOST_END)
     {
-        aio_obj_pool_.free_object<Host_Atom>(static_cast<Host_Atom*>(base));
+        aio_obj_pool_.free_object<HOST_ATOM>(static_cast<HOST_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
              base->aio_type_ < AIO_TYPE::SOCKET_END)
     {
-        aio_obj_pool_.free_object<Socket_Atom>(static_cast<Socket_Atom*>(base));
+        aio_obj_pool_.free_object<SOCKET_ATOM>(static_cast<SOCKET_ATOM*>(base));
     }
     else
     {
     }
 }
 
-bool worker::request(AIO_Atom* base)
+bool worker::request(AIO_ATOM* base)
 {
     return requst_queue_->try_enqueue(base);
 }
@@ -127,7 +127,7 @@ void worker::process_request()
     bool go = false;
     do
     {
-        AIO_Atom* base = nullptr;
+        AIO_ATOM* base = nullptr;
         zce::time_value tv(0, 2000);
         go = requst_queue_->dequeue_wait(base, tv);
         if (go)
@@ -149,7 +149,7 @@ void worker::process_response(size_t& num_rsp, zce::time_value* wait_time)
     bool go = false;
     do
     {
-        AIO_Atom* base = nullptr;
+        AIO_ATOM* base = nullptr;
         if (wait_time)
         {
             go = response_queue_->dequeue_wait(base, *wait_time);
@@ -168,32 +168,32 @@ void worker::process_response(size_t& num_rsp, zce::time_value* wait_time)
 }
 
 //!
-void worker::process_aio(zce::aio::AIO_Atom* base)
+void worker::process_aio(zce::aio::AIO_ATOM* base)
 {
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {
-        process_fs(static_cast<zce::aio::FS_Atom*>(base));
+        process_fs(static_cast<zce::aio::FS_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::DIR_BEGIN &&
              base->aio_type_ < AIO_TYPE::DIR_END)
     {
-        process_dir(static_cast<zce::aio::Dir_Atom*>(base));
+        process_dir(static_cast<zce::aio::DIR_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
              base->aio_type_ < AIO_TYPE::MYSQL_END)
     {
-        process_mysql(static_cast<zce::aio::MySQL_Atom*>(base));
+        process_mysql(static_cast<zce::aio::MYSQL_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::HOST_BEGIN &&
              base->aio_type_ < AIO_TYPE::HOST_END)
     {
-        process_host(static_cast<zce::aio::Host_Atom*>(base));
+        process_host(static_cast<zce::aio::HOST_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
              base->aio_type_ < AIO_TYPE::SOCKET_END)
     {
-        process_socket(static_cast<zce::aio::Socket_Atom*>(base));
+        process_socket(static_cast<zce::aio::SOCKET_ATOM*>(base));
     }
     else
     {
@@ -202,7 +202,7 @@ void worker::process_aio(zce::aio::AIO_Atom* base)
     response_queue_->enqueue(base);
 }
 //!在线程中处理文件
-void worker::process_fs(zce::aio::FS_Atom* atom)
+void worker::process_fs(zce::aio::FS_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
@@ -264,7 +264,7 @@ void worker::process_fs(zce::aio::FS_Atom* atom)
 }
 
 //!
-void worker::process_dir(zce::aio::Dir_Atom* atom)
+void worker::process_dir(zce::aio::DIR_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
@@ -287,7 +287,7 @@ void worker::process_dir(zce::aio::Dir_Atom* atom)
 }
 
 //在线程处理MySQL操作请求
-void worker::process_mysql(zce::aio::MySQL_Atom* atom)
+void worker::process_mysql(zce::aio::MYSQL_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
@@ -326,7 +326,7 @@ void worker::process_mysql(zce::aio::MySQL_Atom* atom)
 }
 
 //在线程中处理Gat Host Addr请求
-void worker::process_host(zce::aio::Host_Atom* atom)
+void worker::process_host(zce::aio::HOST_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
@@ -352,7 +352,7 @@ void worker::process_host(zce::aio::Host_Atom* atom)
 }
 
 //在线程中处理Socket请求
-void worker::process_socket(zce::aio::Socket_Atom* atom)
+void worker::process_socket(zce::aio::SOCKET_ATOM* atom)
 {
     ssize_t len = 0;
     switch (atom->aio_type_)
@@ -365,8 +365,9 @@ void worker::process_socket(zce::aio::Socket_Atom* atom)
             *atom->timeout_tv_);
         break;
     case SOCKET_ACCEPT:
-        atom->accept_hdl_ = zce::accept_timeout(
+        atom->result_ = zce::accept_timeout(
             atom->handle_,
+            &atom->accept_hdl_,
             atom->from_,
             atom->from_len_,
             *atom->timeout_tv_);
