@@ -1,16 +1,16 @@
 #include "zerg/predefine.h"
-#include "zerg/tcp_ctrl_handler.h"
-#include "zerg/udp_ctrl_handler.h"
-#include "zerg/accept_handler.h"
+#include "zerg/svc_tcp.h"
+#include "zerg/svc_udp.h"
+#include "zerg/svc_accept.h"
 #include "zerg/app_timer.h"
 #include "zerg/comm_manager.h"
 
 namespace zerg
 {
 //实例
-Comm_Manager* Comm_Manager::instance_ = NULL;
+comm_manager* comm_manager::instance_ = NULL;
 
-Comm_Manager::Comm_Manager() :
+comm_manager::comm_manager() :
     error_try_num_(3),
     monitor_size_(0),
     zerg_mmap_pipe_(NULL),
@@ -21,30 +21,30 @@ Comm_Manager::Comm_Manager() :
 
 {
     zerg_mmap_pipe_ = soar::svrd_buspipe::instance();
-    zbuffer_storage_ = zerg::Buffer_Storage::instance();
+    zbuffer_storage_ = zce::queue_buffer_pool_inst::instance();
     server_status_ = soar::stat_monitor::instance();
-    count_start_time_ = static_cast<unsigned int>(zerg::App_Timer::gettimeofday().sec());
+    count_start_time_ = static_cast<unsigned int>(zerg::app_timer::gettimeofday().sec());
 
     memset(monitor_cmd_, 0, sizeof(monitor_cmd_));
 }
 
-Comm_Manager::~Comm_Manager()
+comm_manager::~comm_manager()
 {
     //先关闭ACCEPET
     for (size_t i = 0; i < zerg_acceptor_.size(); ++i)
     {
-        zerg_acceptor_[i]->event_close();
+        zerg_acceptor_[i]->close_event();
     }
 
     //先关闭UDP
     for (size_t i = 0; i < zerg_updsvc_.size(); ++i)
     {
-        zerg_updsvc_[i]->event_close();
+        zerg_updsvc_[i]->close_event();
     }
 }
 
 //初始化
-int Comm_Manager::get_config(const Zerg_Config* config)
+int comm_manager::get_config(const zerg_config* config)
 {
     zerg_config_ = config;
 
@@ -58,7 +58,7 @@ int Comm_Manager::get_config(const Zerg_Config* config)
     //错误发送数据尝试发送次数
     monitor_size_ = config->zerg_cfg_data_.monitor_cmd_count_;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Comm_Manager::get_config monitor_size_ = %u", monitor_size_);
+    ZCE_LOG(RS_INFO, "[zergsvr] comm_manager::get_config monitor_size_ = %u", monitor_size_);
 
     //读取监控的命令，监控的命令数量必须很少，最好等于==0，比较耗时。你可以对单机进行监控。
     //但是最好不要对所有的机器进行监控，
@@ -70,7 +70,7 @@ int Comm_Manager::get_config(const Zerg_Config* config)
     return 0;
 }
 
-int Comm_Manager::init_allpeer()
+int comm_manager::init_allpeer()
 {
     int ret = 0;
     //初始化所有的监听端口
@@ -86,7 +86,7 @@ int Comm_Manager::init_allpeer()
 }
 
 //
-int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
+int comm_manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
 {
     int ret = 0;
 
@@ -108,8 +108,8 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
     if (init_svcid.services_type_ < SVC_UDP_SERVER_BEGIN)
     {
         //设置Bind地址
-        Accept_Handler* ptr_acceptor = new Accept_Handler(init_svcid,
-                                                          svc_info.ip_address_);
+        svc_accept* ptr_acceptor = new svc_accept(init_svcid,
+                                                  svc_info.ip_address_);
         //采用同步的方式创建LISTER PEER
         ret = ptr_acceptor->create_listen();
 
@@ -129,8 +129,8 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
     else
     {
         //
-        UDP_Svc_Handler* tmp_udphdl = new UDP_Svc_Handler(init_svcid,
-                                                          svc_info.ip_address_);
+        svc_udp* tmp_udphdl = new svc_udp(init_svcid,
+                                          svc_info.ip_address_);
 
         //初始化UDP的端口
         ret = tmp_udphdl->init_udp_services();
@@ -148,7 +148,7 @@ int Comm_Manager::init_socketpeer(const soar::SERVICES_ID& init_svcid)
 }
 
 //检查一个端口是否安全
-int Comm_Manager::check_safeport(const zce::skt::addr_in& inetadd)
+int comm_manager::check_safeport(const zce::skt::addr_in& inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -184,7 +184,7 @@ int Comm_Manager::check_safeport(const zce::skt::addr_in& inetadd)
 }
 
 //取得发送数据进行发送
-int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& num_send_frame)
+int comm_manager::popall_sendpipe_write(const size_t want_send_frame, size_t& num_send_frame)
 {
     num_send_frame = 0;
     int ret = 0;
@@ -192,13 +192,19 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
     while (zerg_mmap_pipe_->is_empty_sendbus() == false
            && num_send_frame < want_send_frame)
     {
-        zerg::Buffer* tmpbuf = zbuffer_storage_->allocate_buffer();
+        zce::queue_buffer* tmpbuf = nullptr;
+        bool succ = zbuffer_storage_->alloc_buffer(soar::zerg_frame::MAX_LEN_OF_FRAME, tmpbuf);
+        if (!succ)
+        {
+            return -1;
+        }
+
         soar::zerg_frame* proc_frame = reinterpret_cast<soar::zerg_frame*>(tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
         zerg_mmap_pipe_->pop_front_sendbus(proc_frame);
 
-        tmpbuf->size_of_buffer_ = proc_frame->length_;
+        tmpbuf->end_point_ = proc_frame->length_;
 
         //如果是要跟踪的命令
         if (proc_frame->u32_option_ & soar::zerg_frame::DESC_TRACK_MONITOR)
@@ -220,9 +226,9 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
         if (proc_frame->frame_option_.protocol_ == soar::zerg_frame::DESC_UDP_FRAME)
         {
             //发送错误日志在send_all_to_udp函数内部处理，这儿不增加重复记录
-            UDP_Svc_Handler::send_all_to_udp(proc_frame);
+            zerg::svc_udp::send_all_to_udp(proc_frame);
             //UDP的包归还缓存
-            zbuffer_storage_->free_byte_buffer(tmpbuf);
+            zbuffer_storage_->free_buffer(tmpbuf);
         }
         else
         {
@@ -241,11 +247,11 @@ int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t& nu
 }
 
 //检查发包频率
-void Comm_Manager::check_freamcount(time_t now)
+void comm_manager::check_freamcount(time_t now)
 {
     if (now <= count_start_time_)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] Comm_Manager::check_freamcount time err.now:%u, count_start_time_:%u",
+        ZCE_LOG(RS_ERROR, "[zergsvr] comm_manager::check_freamcount time err.now:%u, count_start_time_:%u",
                 now,
                 count_start_time_);
         return;
@@ -256,14 +262,14 @@ void Comm_Manager::check_freamcount(time_t now)
 
     if (frame_per_sec > SEND_FRAME_ALERT_VALUE)
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr] Comm_Manager::check_freamcount ALERT frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
+        ZCE_LOG(RS_ALERT, "[zergsvr] comm_manager::check_freamcount ALERT frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
                 frame_per_sec,
                 send_frame_count_,
                 interval);
     }
     else
     {
-        ZCE_LOG(RS_INFO, "[zergsvr] Comm_Manager::check_freamcount frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
+        ZCE_LOG(RS_INFO, "[zergsvr] comm_manager::check_freamcount frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
                 frame_per_sec,
                 send_frame_count_,
                 interval);
@@ -274,19 +280,19 @@ void Comm_Manager::check_freamcount(time_t now)
 }
 
 //单子实例函数
-Comm_Manager* Comm_Manager::instance()
+comm_manager* comm_manager::instance()
 {
     //如果没有初始化
     if (instance_ == NULL)
     {
-        instance_ = new Comm_Manager();
+        instance_ = new comm_manager();
     }
 
     return instance_;
 }
 
 //清理实例
-void Comm_Manager::clear_inst()
+void comm_manager::clear_inst()
 {
     if (instance_)
     {
@@ -295,10 +301,10 @@ void Comm_Manager::clear_inst()
     }
 }
 
-int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
+int comm_manager::send_single_buf(zce::queue_buffer* tmpbuf)
 {
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
-    int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
+    int ret = svc_tcp::process_send_data(tmpbuf);
 
     soar::zerg_frame* proc_frame = reinterpret_cast<soar::zerg_frame*>(tmpbuf->buffer_data_);
 
@@ -334,7 +340,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
                                     proc_frame->business_id_, proc_frame->recv_service_.services_type_);
         }
         //
-        zbuffer_storage_->free_byte_buffer(tmpbuf);
+        zbuffer_storage_->free_buffer(tmpbuf);
         return ret;
     }
 
@@ -342,7 +348,7 @@ int Comm_Manager::send_single_buf(zerg::Buffer* tmpbuf)
 }
 
 //
-void Comm_Manager::pushback_recvpipe(soar::zerg_frame* recv_frame)
+void comm_manager::pushback_recvpipe(soar::zerg_frame* recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())

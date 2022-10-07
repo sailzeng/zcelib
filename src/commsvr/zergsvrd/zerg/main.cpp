@@ -6,7 +6,7 @@
 int main(int argc, const char* argv[])
 {
     //利用模板开始启动
-    return soar::svrd_main < Zerg_App,
-        Zerg_Config,
-        zerg::App_Timer >(argc, argv);
+    return soar::svrd_main < zerg::zerg_app,
+        zerg::zerg_config,
+        zerg::app_timer >(argc, argv);
 }

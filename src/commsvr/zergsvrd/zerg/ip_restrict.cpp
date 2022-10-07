@@ -13,13 +13,13 @@ class  IPRestrict_Mgr 处理通讯中间的IP限制问题
 IPRestrict_Mgr::IPRestrict_Mgr()
 {
 }
-//自己清理的类型，统一关闭在event_close,这个地方不用关闭
+//自己清理的类型，统一关闭在close_event,这个地方不用关闭
 IPRestrict_Mgr::~IPRestrict_Mgr()
 {
 }
 
 //从配置文件中得到相关的配置
-int IPRestrict_Mgr::get_config(const Zerg_Config* config)
+int IPRestrict_Mgr::get_config(const zerg_config* config)
 {
     int ret = 0;
     //unsigned int tmp_uint= 0;

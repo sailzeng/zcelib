@@ -18,9 +18,7 @@ Thread_Spin_Mutex::Thread_Spin_Mutex() noexcept
 {
     int ret = 0;
 
-    ret = zce::pthread_spin_initex(&lock_,
-                                   false,
-                                   NULL);
+    ret = zce::pthread_spin_init(&lock_, 0);
 
     if (0 != ret)
     {

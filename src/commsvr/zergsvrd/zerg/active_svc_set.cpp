@@ -1,22 +1,19 @@
 #include "zerg/predefine.h"
-#include "zerg/tcp_ctrl_handler.h"
-#include "zerg/active_svchdl_set.h"
+#include "zerg/svc_tcp.h"
+#include "zerg/active_svc_set.h"
 
-/****************************************************************************************************
-class  Service_Info_Set ,
-，
-
-****************************************************************************************************/
-Active_SvcHandle_Set::Active_SvcHandle_Set()
+namespace zerg
+{
+active_svc_set::active_svc_set()
 {
 }
 
-Active_SvcHandle_Set::~Active_SvcHandle_Set()
+active_svc_set::~active_svc_set()
 {
     //ZCE_LOG(RS_INFO,"[zergsvr] Service_Info_Set::~Service_Info_Set.");
 }
 
-void Active_SvcHandle_Set::initialize(size_t sz_peer)
+void active_svc_set::initialize(size_t sz_peer)
 {
     max_peer_size_ = sz_peer;
     svr_info_set_.rehash(sz_peer);
@@ -25,8 +22,8 @@ void Active_SvcHandle_Set::initialize(size_t sz_peer)
 }
 
 //根据SERVICEINFO查询PEER信息
-int Active_SvcHandle_Set::find_handle_by_svcid(const soar::SERVICES_ID& svc_id,
-                                               TCP_Svc_Handler*& svc_handle)
+int active_svc_set::find_handle_by_svcid(const soar::SERVICES_ID& svc_id,
+                                         svc_tcp*& svc_handle)
 {
     MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.find(svc_id);
 
@@ -44,9 +41,9 @@ int Active_SvcHandle_Set::find_handle_by_svcid(const soar::SERVICES_ID& svc_id,
 
 //以负载均衡的方式，根据services type查询一个的SVC，按照数组顺序轮询的返回，
 //这样查询保证发送的数据尽量负载均衡
-int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
-                                                uint32_t& find_services_id,
-                                                TCP_Svc_Handler*& svc_handle)
+int active_svc_set::find_lbseqhdl_by_type(uint16_t services_type,
+                                          uint32_t& find_services_id,
+                                          svc_tcp*& svc_handle)
 {
     //看type类型的MAP里面是否有这种类型的数据了
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
@@ -84,7 +81,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
         svc_handle = (*(iter)).second;
 
         //会尽量选择一个激活状态的发送
-        if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
+        if (svc_tcp::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
         {
             break;
         }
@@ -92,10 +89,10 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
     return 0;
 }
 
-int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
-                                                   uint32_t lb_factor,
-                                                   uint32_t& find_services_id,
-                                                   TCP_Svc_Handler*& svc_handle)
+int active_svc_set::find_lbfactorhdl_by_type(uint16_t services_type,
+                                             uint32_t lb_factor,
+                                             uint32_t& find_services_id,
+                                             svc_tcp*& svc_handle)
 {
     //看type类型的MAP里面是否有这种类型的数据了
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
@@ -132,7 +129,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         svc_handle = (*(iter)).second;
 
         //会尽量选择一个激活状态的发送
-        if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
+        if (svc_tcp::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
         {
             break;
         }
@@ -142,14 +139,14 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
 
 //以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
 //主备的顺序按照Auto 那儿的配置顺序来处理。可以不是2个
-int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
-                                             uint32_t& find_services_id,
-                                             TCP_Svc_Handler*& svc_handle)
+int active_svc_set::find_mshdl_by_type(uint16_t services_type,
+                                       uint32_t& find_services_id,
+                                       svc_tcp*& svc_handle)
 {
     int ret = 0;
     std::vector<uint32_t>* ms_svcid_ary = NULL;
-    ret = TCP_Svc_Handler::find_conf_ms_svcid_ary(services_type,
-                                                  ms_svcid_ary);
+    ret = svc_tcp::find_conf_ms_svcid_ary(services_type,
+                                          ms_svcid_ary);
     if (ret != 0)
     {
         return ret;
@@ -171,7 +168,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
         svc_handle = (*(iter)).second;
 
         //会尽量选择一个激活状态的发送
-        if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
+        if (svc_tcp::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
         {
             break;
         }
@@ -180,7 +177,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
 }
 
 //查询类型对应的所有active的SVC ID数组，用于广播等
-int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t>*& id_ary)
+int active_svc_set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t>*& id_ary)
 {
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(services_type);
@@ -197,15 +194,15 @@ int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vecto
 }
 
 //增加设置配置信息
-int Active_SvcHandle_Set::add_services_peerinfo(const soar::SERVICES_ID& svc_id,
-                                                TCP_Svc_Handler* new_svchdl)
+int active_svc_set::add_services_peerinfo(const soar::SERVICES_ID& svc_id,
+                                          svc_tcp* new_svchdl)
 {
     MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.find(svc_id);
 
     //已经有相关的记录了
     if (iter != svr_info_set_.end())
     {
-        TCP_Svc_Handler* old_svchdl = (*iter).second;
+        svc_tcp* old_svchdl = (*iter).second;
 
         //一个很有意思的问题导致了代码必须这样写。如果你能直接知道为什么，可以直接找Scottxu要求请客
         const size_t TMP_ADDR_LEN = 31;
@@ -246,9 +243,9 @@ int Active_SvcHandle_Set::add_services_peerinfo(const soar::SERVICES_ID& svc_id,
 }
 
 //更新设置配置信息
-int Active_SvcHandle_Set::replace_services_peerInfo(const soar::SERVICES_ID& svc_id,
-                                                    TCP_Svc_Handler* new_svchdl,
-                                                    TCP_Svc_Handler*& old_svchdl)
+int active_svc_set::replace_services_peerInfo(const soar::SERVICES_ID& svc_id,
+                                              svc_tcp* new_svchdl,
+                                              svc_tcp*& old_svchdl)
 {
     old_svchdl = NULL;
     MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.find(svc_id);
@@ -279,11 +276,11 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const soar::SERVICES_ID& svc
 }
 
 //根据soar::SERVICES_ID,删除PEER信息,
-int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID& svc_id)
+int active_svc_set::del_services_peerInfo(const soar::SERVICES_ID& svc_id)
 {
     MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.find(svc_id);
 
-    //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了event_close.
+    //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了close_event.
     if (iter == svr_info_set_.end())
     {
         ZCE_LOG(RS_INFO, "[zergsvr][%s] Can't  svr_info_set_ size:%u: svc_id:%u.%u .",
@@ -295,7 +292,7 @@ int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID& svc_id)
     }
     svr_info_set_.erase(iter);
 
-    TCP_Svc_Handler* svrhandle = (*(iter)).second;
+    svc_tcp* svrhandle = (*(iter)).second;
 
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(svc_id.services_type_);
@@ -333,20 +330,20 @@ int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID& svc_id)
                 move_svc_id.services_id_);
         return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
     }
-    TCP_Svc_Handler* move_hdl = (*(iter)).second;
+    svc_tcp* move_hdl = (*(iter)).second;
     move_hdl->set_tptoid_table_id(del_id);
 
     return 0;
 }
 
 //
-size_t Active_SvcHandle_Set::get_services_peersize()
+size_t active_svc_set::get_services_peersize()
 {
     return svr_info_set_.size();
 }
 
 //
-void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
+void active_svc_set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
 {
     //
     MAP_OF_SVCID_TO_HDL::iterator iter_tmp = svr_info_set_.begin();
@@ -356,7 +353,7 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
     for (size_t i = 0; iter_tmp != iter_end; ++iter_tmp, ++i)
     {
         soar::SERVICES_ID svr_info = (*(iter_tmp)).first;
-        TCP_Svc_Handler* svrhandle = (*(iter_tmp)).second;
+        svc_tcp* svrhandle = (*(iter_tmp)).second;
         svrhandle->dump_status_info(out_lvl);
     }
 
@@ -364,7 +361,7 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
 }
 
 //关闭所有的PEER
-void Active_SvcHandle_Set::clear_and_closeall()
+void active_svc_set::clear_and_closeall()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
@@ -381,9 +378,10 @@ void Active_SvcHandle_Set::clear_and_closeall()
         }
 
         MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.begin();
-        TCP_Svc_Handler* svrhandle = (*(iter)).second;
+        svc_tcp* svrhandle = (*(iter)).second;
 
-        //TCP_Svc_Handler::event_close调用了del_services_peerInfo
-        svrhandle->event_close();
+        //svc_tcp::close_event调用了del_services_peerInfo
+        svrhandle->close_event();
     }
+}
 }

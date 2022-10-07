@@ -334,10 +334,10 @@ void select_reactor::process_ready(const fd_set* out_fds,
             ZCE_ASSERT(false);
         }
 
-        //返回-1表示 handle_xxxxx希望调用event_close退出
+        //返回-1表示 handle_xxxxx希望调用close_event退出
         if (hdl_ret == -1)
         {
-            event_hdl->event_close();
+            event_hdl->close_event();
         }
     }
 }

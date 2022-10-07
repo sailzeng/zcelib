@@ -25,10 +25,10 @@ public:
     int create_listenpeer();
 
     //处理有端口
-    virtual int read_event(ZCE_HANDLE);
+    virtual int accept_event(ZCE_HANDLE);
 
     //关闭处理
-    virtual int event_close();
+    virtual int close_event();
 
     //得到Acceptor的句柄
     ZCE_HANDLE get_handle(void) const;

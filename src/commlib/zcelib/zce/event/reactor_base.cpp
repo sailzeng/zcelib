@@ -58,8 +58,8 @@ int reactor::close()
         //关闭之
         zce::event_handler* event_handler = (iter_temp->second);
 
-        //先event_close,
-        event_handler->event_close();
+        //先close_event,
+        event_handler->close_event();
 
         //让迭代器继续从最开始干起
         iter_temp = handler_map_.begin();
@@ -110,7 +110,7 @@ int reactor::register_handler(zce::event_handler* event_handler,
 //从反应器注销一个zce::Event_Handler，同事取消他所有的mask
 //event_mask其实只判断里面的DONT_CALL
 int reactor::remove_handler(zce::event_handler* event_handler,
-                            bool call_event_close)
+                            bool call_close_event)
 {
     int ret = 0;
 
@@ -143,10 +143,10 @@ int reactor::remove_handler(zce::event_handler* event_handler,
     handler_map_.erase(event_handler->get_handle());
 
     //
-    if (call_event_close)
+    if (call_close_event)
     {
         //调用event_close
-        event_handler->event_close();
+        event_handler->close_event();
     }
 
     return 0;

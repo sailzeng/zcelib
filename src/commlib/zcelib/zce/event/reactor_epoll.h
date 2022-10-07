@@ -77,7 +77,7 @@ public:
     * @param[in]  event_handler     注销的句柄
     * @param[in]  call_event_close  注销后，是否自动调用句柄的handle_close函数
     * */
-    virtual int remove_handler(zce::event_handler* event_handler, bool call_event_close) override;
+    virtual int remove_handler(zce::event_handler* event_handler, bool call_close_event) override;
 
     /*!
     * @brief      取消某些mask标志，，

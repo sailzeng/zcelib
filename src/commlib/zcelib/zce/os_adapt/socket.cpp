@@ -175,15 +175,42 @@ int socket_init(int version_high, int version_low)
 #endif
 }
 
+//关闭Socket的支持
+int socket_terminate(void)
+{
+#if defined (ZCE_OS_WINDOWS)
+
+    if (::WSACleanup() != 0)
+    {
+        errno = ::WSAGetLastError();
+
+        ::fprintf(stderr,
+                  "zce::socket_fini; WSACleanup failed, "
+                  "WSAGetLastError returned %d\n",
+                  errno);
+    }
+
+#endif
+    return 0;
+}
+
 //打开socket 句柄，简化处理的函数，非标准，通常用于客户端本地端口
 int open_socket(ZCE_SOCKET* handle,
                 int type,
                 int family,
+                bool nonblock,
                 int protocol,
                 bool reuse_addr)
 {
     int ret = 0;
 
+#if defined (ZCE_OS_LINUX)
+    //Linux下使用非阻塞，直接使用SOCK_NONBLOCK
+    if (nonblock)
+    {
+        type |= SOCK_NONBLOCK;
+    }
+#endif
     *handle = socket(family, type, protocol);
     if (ZCE_INVALID_SOCKET == *handle)
     {
@@ -214,6 +241,21 @@ int open_socket(ZCE_SOCKET* handle,
             return -1;
         }
     }
+#if defined (ZCE_OS_WINDOWS)
+    //Windows下使用非阻塞
+    if (nonblock)
+    {
+        u_long ul_nonblock = 1;
+        ret = ::ioctlsocket(*handle, FIONBIO, &ul_nonblock);
+
+        //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
+        if (SOCKET_ERROR == ret)
+        {
+            errno = ::WSAGetLastError();
+            return ret;
+        }
+    }
+#endif
     return 0;
 }
 
@@ -222,6 +264,7 @@ int zce::open_socket(ZCE_SOCKET* handle,
                      int type,
                      const sockaddr* local_addr,
                      socklen_t addr_len,
+                     bool nonblock,
                      int protocol,
                      bool reuse_addr)
 {
@@ -232,6 +275,7 @@ int zce::open_socket(ZCE_SOCKET* handle,
     ret = zce::open_socket(handle,
                            type,
                            family,
+                           nonblock,
                            protocol,
                            reuse_addr);
 
@@ -246,25 +290,6 @@ int zce::open_socket(ZCE_SOCKET* handle,
         }
     }
 
-    return 0;
-}
-
-//关闭Socket的支持
-int socket_terminate(void)
-{
-#if defined (ZCE_OS_WINDOWS)
-
-    if (::WSACleanup() != 0)
-    {
-        errno = ::WSAGetLastError();
-
-        ::fprintf(stderr,
-                  "zce::socket_fini; WSACleanup failed, "
-                  "WSAGetLastError returned %d\n",
-                  errno);
-    }
-
-#endif
     return 0;
 }
 

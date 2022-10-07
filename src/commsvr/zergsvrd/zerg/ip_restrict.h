@@ -1,6 +1,6 @@
 #pragma once
 
-class Zerg_Config;
+class zerg_config;
 
 namespace zerg
 {
@@ -21,7 +21,7 @@ protected:
 public:
 
     ///从配置文件中得到相关的配置
-    int get_config(const Zerg_Config* config);
+    int get_config(const zerg_config* config);
     ///检查IP限制
     int check_iprestrict(const zce::skt::addr_in& remoteaddress);
 

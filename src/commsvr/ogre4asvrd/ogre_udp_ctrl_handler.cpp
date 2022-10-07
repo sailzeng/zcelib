@@ -50,7 +50,7 @@ int Ogre_UDPSvc_Hdl::init_udp_peer()
     ret = dgram_peer_.open(&udp_bind_addr_);
     if (ret != 0)
     {
-        event_close();
+        close_event();
         return -1;
     }
 
@@ -102,7 +102,7 @@ int Ogre_UDPSvc_Hdl::read_event(ZCE_HANDLE)
 }
 
 //
-int Ogre_UDPSvc_Hdl::event_close()
+int Ogre_UDPSvc_Hdl::close_event()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)

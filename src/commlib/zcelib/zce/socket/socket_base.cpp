@@ -39,6 +39,7 @@ ZCE_SOCKET socket_base::get_handle() const
 //Open SOCK句柄，不BIND本地地址的方式
 int socket_base::open(int type,
                       int family,
+                      bool nonblock,
                       int protocol,
                       bool reuse_addr)
 {
@@ -47,6 +48,7 @@ int socket_base::open(int type,
     int ret = zce::open_socket(&socket_handle_,
                                type,
                                family,
+                               nonblock,
                                protocol,
                                reuse_addr);
     return ret;
@@ -55,6 +57,7 @@ int socket_base::open(int type,
 //Open SOCK句柄，BIND地址的方式
 int socket_base::open(int type,
                       const zce::skt::addr_base* local_addr,
+                      bool nonblock,
                       int protocol,
                       bool reuse_addr)
 {
@@ -63,6 +66,7 @@ int socket_base::open(int type,
                                type,
                                local_addr->get_addr(),
                                local_addr->get_size(),
+                               nonblock,
                                protocol,
                                reuse_addr);
     return ret;

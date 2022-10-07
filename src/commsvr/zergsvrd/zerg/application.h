@@ -2,17 +2,14 @@
 
 #include "zerg/comm_manager.h"
 
-/*!
-* @brief
-*
-* @note
-*/
-class Zerg_App : public soar::app_buspipe
+namespace zerg
+{
+class zerg_app : public soar::app_buspipe
 {
 public:
     //我又要偷偷藏着
-    Zerg_App();
-    virtual ~Zerg_App();
+    zerg_app();
+    virtual ~zerg_app();
 
 public:
 
@@ -28,8 +25,9 @@ public:
 public:
 
     ///通信管理器
-    zerg::Comm_Manager* zerg_comm_mgr_;
+    zerg::comm_manager* zerg_comm_mgr_;
 
     ///OP KEY文件的时间戳
     time_t             conf_timestamp_;
 };
+} // namespace zerg

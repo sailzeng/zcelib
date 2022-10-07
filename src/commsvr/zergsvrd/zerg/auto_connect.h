@@ -1,23 +1,23 @@
 #pragma once
 
-class Zerg_Config;
-class TCP_Svc_Handler;
-
 namespace zerg
 {
-class Auto_Connector
+class zerg_config;
+class svc_tcp;
+
+class auto_connector
 {
 public:
 
     //构造函数
-    Auto_Connector();
-    ~Auto_Connector();
+    auto_connector();
+    ~auto_connector();
 
     ///读取配置
-    int get_config(const Zerg_Config* config);
+    int get_config(const zerg::zerg_config* config);
 
     // 重新加载主动连接配置
-    int reload_cfg(const Zerg_Config* config);
+    int reload_cfg(const zerg::zerg_config* config);
 
     /*!
     * @brief      链接所有的服务器,如果已经有链接，就跳过,
@@ -33,7 +33,7 @@ public:
     * @brief      根据SVC ID,检查是否是主动连接的服务.,
     * @return     int
     * @param      reconnect_svcid 要进行重连的主路由信息
-    * @note       为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能event_close.
+    * @note       为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能close_event.
     */
     int connect_server_bysvcid(const soar::SERVICES_ID& reconnect_svcid);
 
@@ -65,12 +65,14 @@ protected:
     */
     int connect_one_server(const soar::SERVICES_ID& svc_id,
                            const zce::skt::addr_in& inet_addr,
-                           TCP_Svc_Handler*& svc_handle);
+                           svc_tcp*& svc_handle);
 
 protected:
 
     //
-    typedef std::unordered_set<soar::SERVICES_INFO, soar::HASH_OF_SVCINFO, soar::EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
+    typedef std::unordered_set<soar::SERVICES_INFO,
+        soar::HASH_OF_SVCINFO,
+        soar::EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
     typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
@@ -81,7 +83,7 @@ protected:
     zce::skt::connector zerg_connector_;
 
     //配置实例指针
-    const Zerg_Config* zerg_svr_cfg_ = NULL;
+    const zerg_config* zerg_svr_cfg_ = NULL;
 
     ///主动链接的
     size_t size_of_autoconnect_ = 0;

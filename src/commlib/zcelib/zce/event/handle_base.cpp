@@ -22,13 +22,13 @@ event_handler::~event_handler()
 {
 }
 
-//
+//读事件
 int event_handler::read_event()
 {
     return 0;
 }
 
-//
+//写事件
 int event_handler::write_event()
 {
     return 0;
@@ -58,7 +58,7 @@ int event_handler::inotify_event()
 }
 
 //
-int event_handler::event_close()
+int event_handler::close_event()
 {
     //移除自己，但是不判断返回，因为如果代码考虑的不细致，可能出现两次remove_handler
     reactor()->remove_handler(this, false);

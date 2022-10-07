@@ -2,12 +2,14 @@
 
 #include "zerg/ip_restrict.h"
 
+namespace zerg
+{
 /*!
 * @brief      TCP Accept 处理的EventHandler,
 *
 * @note
 */
-class Accept_Handler : public zce::event_handler
+class svc_accept : public zce::event_handler
 {
 public:
 
@@ -16,12 +18,12 @@ public:
     * @param      svcid  相应的svc id
     * @param      addr   相应的IP地址
     */
-    Accept_Handler(const soar::SERVICES_ID& svcid,
-                   const zce::skt::addr_in& addr);
+    svc_accept(const soar::SERVICES_ID& svcid,
+               const zce::skt::addr_in& addr);
 
 protected:
     ///监听端口
-    ~Accept_Handler();
+    ~svc_accept();
 
 public:
 
@@ -32,10 +34,10 @@ public:
     * @brief      事件触发的毁掉处理，表示有一个accept 的数据
     * @return     int
     */
-    virtual int read_event();
+    virtual int accept_event();
 
     ///关闭处理
-    virtual int event_close();
+    virtual int close_event();
 
     ///得到Acceptor的句柄
     virtual ZCE_HANDLE get_handle(void) const;
@@ -54,3 +56,4 @@ protected:
     ///IP限制管理器
     zerg::IPRestrict_Mgr*   ip_restrict_;
 };
+}

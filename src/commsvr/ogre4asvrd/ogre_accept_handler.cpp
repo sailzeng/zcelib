@@ -97,7 +97,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 }
 
 //
-int Ogre_TCPAccept_Hdl::read_event(ZCE_HANDLE /*handle*/)
+int Ogre_TCPAccept_Hdl::accept_event(ZCE_HANDLE /*handle*/)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -161,7 +161,7 @@ ZCE_HANDLE Ogre_TCPAccept_Hdl::get_handle(void) const
 }
 
 //
-int Ogre_TCPAccept_Hdl::event_close()
+int Ogre_TCPAccept_Hdl::close_event()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)

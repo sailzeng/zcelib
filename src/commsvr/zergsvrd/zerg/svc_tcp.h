@@ -1,15 +1,12 @@
-#ifndef ZERG_TCP_CONTROL_SERVICE_H_
-#define ZERG_TCP_CONTROL_SERVICE_H_
+#pragma once
 
-#include "zerg/buf_storage.h"
 #include "zerg/auto_connect.h"
-#include "zerg/active_svchdl_set.h"
+#include "zerg/active_svc_set.h"
 #include "zerg/comm_manager.h"
 
-/****************************************************************************************************
-class  TCP_Svc_Handler
-****************************************************************************************************/
-class TCP_Svc_Handler : public zce::event_handler,
+namespace zerg
+{
+class svc_tcp : public zce::event_handler,
     public zce::timer_handler
 {
 public:
@@ -41,7 +38,7 @@ public:
 protected:
 
     ///句柄的池子，避免每次都new处理
-    typedef zce::lord_rings<TCP_Svc_Handler*> POOL_OF_TCP_HANDLER;
+    typedef zce::lord_rings<svc_tcp*> POOL_OF_TCP_HANDLER;
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
@@ -50,9 +47,9 @@ protected:
     * @brief      构造函数
     * @param      hdl_mode 模式，参考@enum HANDLER_MODE,根据模式的不同内部发送队列大小不一致
     */
-    TCP_Svc_Handler(HANDLER_MODE hdl_mode);
+    svc_tcp(HANDLER_MODE hdl_mode);
     ///析构函数
-    virtual ~TCP_Svc_Handler();
+    virtual ~svc_tcp();
 
 public:
 
@@ -86,21 +83,17 @@ public:
     //zce::Event_Handler必须重载的函数，取得SOCKET句柄
     virtual ZCE_HANDLE get_handle(void) const;
 
-    /*!
-    * @brief      读事件触发 ，异步链接失败触发
-    * @return     int 返回0，继续
-    */
-    virtual int read_event();
+    ///读事件触发 ，
+    virtual int read_event() override;
 
-    ///写事件触发
-    /*!
-    * @brief      读事件触发 ，异步链接成功触发
-    * @return     int 返回0，继续
-    */
-    virtual int write_event();
+    ///读事件触发 ，
+    virtual int write_event() override;
 
-    ///关闭事件触发
-    virtual int event_close();
+    ///异步链接成功触发,异步链接失败触发
+    virtual int connect_event(bool success) override;
+
+    ///关闭事件触发,
+    virtual int close_event();
 
     /*!
     * @brief      超时事件触发
@@ -148,7 +141,8 @@ protected:
     int read_data_from_peer(size_t& szrevc);
 
     //检查收到的数据是否含有一个完整的数据包.
-    int check_recv_full_frame(bool& bfull, unsigned int& whole_frame_len);
+    int check_recv_full_frame(bool& bfull,
+                              uint32_t& whole_frame_len);
 
     /*!
     * @brief      将数据写入PEER
@@ -179,7 +173,7 @@ protected:
     int push_frame_to_comm_mgr();
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(zerg::Buffer* tmpbuf);
+    int put_frame_to_sendlist(zce::queue_buffer* tmpbuf);
 
     /*!
     * @brief      合并发送队列
@@ -188,14 +182,14 @@ protected:
     void unite_frame_sendlist();
 
     //处理发送错误
-    int process_send_error(zerg::Buffer* tmpbuf, bool frame_encode);
+    int process_send_error(zce::queue_buffer* tmpbuf, bool frame_encode);
 
 public:
     //初始化静态参数
     static int init_all_static_data();
 
     ///读取配置文件
-    static int get_config(const Zerg_Config* config);
+    static int get_config(const zerg_config* config);
 
     //注销静态参数
     static int uninit_all_staticdata();
@@ -207,18 +201,18 @@ public:
     static int close_services_peer(const soar::SERVICES_ID& svr_info);
 
     //根据有的SVR ID，查询相应的HDL
-    static int find_services_peer(const soar::SERVICES_ID& svc_id, TCP_Svc_Handler*& svchanle);
+    static int find_services_peer(const soar::SERVICES_ID& svc_id, svc_tcp*& svchanle);
 
     ///链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
     static void reconnect_allserver();
 
     /*!
     * @brief      从池子里面得到一个Handler给大家使用
-    * @return     TCP_Svc_Handler* 返回的分配的句柄
+    * @return     svc_tcp* 返回的分配的句柄
     * @param      handler_mode     所需的句柄的模式，是accept 还是connect的
     & @note       Connect的端口应该永远不发生取不到Hanler的事情
     */
-    static TCP_Svc_Handler* alloce_hdl_from_pool(HANDLER_MODE handler_mode);
+    static svc_tcp* alloce_hdl_from_pool(HANDLER_MODE handler_mode);
 
     ///Dump所有的STATIC变量的信息
     static void dump_status_staticinfo(zce::LOG_PRIORITY out_lvl);
@@ -227,10 +221,10 @@ public:
     static void dump_svcpeer_info(zce::LOG_PRIORITY out_lvl);
 
     ///处理发送一个数据
-    static int process_send_data(zerg::Buffer* tmpbuf);
+    static int process_send_data(zce::queue_buffer* tmpbuf);
 
     ///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
-    ///请参考 @ref Auto_Connector
+    ///请参考 @ref auto_connector
     static int find_conf_ms_svcid_ary(uint16_t services_type,
                                       std::vector<uint32_t>*& ms_svcid_ary);
 protected:
@@ -259,10 +253,10 @@ protected:
 protected:
 
     ///通讯管理器,保存是为了加快速度
-    static  zerg::Comm_Manager* zerg_comm_mgr_;
+    static  zerg::comm_manager* zerg_comm_mgr_;
 
     ///存储缓存,全局唯一,保存是为了加快速度
-    static zerg::Buffer_Storage* zbuffer_storage_;
+    static zce::queue_buffer_pool* zbuffer_storage_;
 
     ///统计，使用单子类的指针
     static soar::stat_monitor* server_status_;
@@ -287,10 +281,10 @@ protected:
     static unsigned int receive_timeout_;
 
     ///要自动链接的服务器
-    static zerg::Auto_Connector zerg_auto_connect_;
+    static zerg::auto_connector zerg_auto_connect_;
 
     ///SVRINFO对应的PEER的HASHMAP
-    static Active_SvcHandle_Set svr_peer_info_set_;
+    static active_svc_set svr_peer_info_set_;
 
     ///已经Accept的PEER数量
     static size_t num_accept_peer_;
@@ -323,7 +317,7 @@ protected:
     soar::SERVICES_ID                peer_svr_id_;
 
     ///接收数据的缓冲
-    zerg::Buffer* rcv_buffer_;
+    zce::queue_buffer* rcv_buffer_;
 
     ///发送队列的大小，如果一个端口接受数据比较缓慢，则可能会先放入发送队列，等端口变为可写才能发送过去，
     ///那么发送队列就要负担缓冲这种危机的任务，发送总缓冲长度实际等于 = 发送队列的长度*每个队列成员BUFFER的大小(64K)，
@@ -331,7 +325,7 @@ protected:
     ///如果是内网，请求数量有限，那么设置成128, 256也是可以接受的，但其实际意义有待观察
 
     ///发送的数据可能要排队
-    zce::lord_rings<zerg::Buffer*>  snd_buffer_deque_;
+    zce::lord_rings<zce::queue_buffer*>  snd_buffer_deque_;
 
     ///下面这4个字段其实是记录一个时间段内的接受和发送的数据总数
     ///接收的次数计数器
@@ -368,5 +362,4 @@ protected:
     ///type_to_idtable_中数组下标ID
     size_t                    tptoid_table_id_;
 };
-
-#endif //_ZERG_TCP_CONTROL_SERVICE_H_
+}//namespace zerg

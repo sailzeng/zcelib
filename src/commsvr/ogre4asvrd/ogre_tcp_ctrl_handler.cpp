@@ -118,7 +118,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
                     ret,
                     zce::last_error(),
                     strerror(zce::last_error()));
-            event_close();
+            close_event();
             return;
         }
 
@@ -130,7 +130,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
         ZCE_LOG(RS_ERROR, "Great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u \n",
                 num_accept_peer_,
                 max_accept_svr_);
-        event_close();
+        close_event();
         return;
     }
 
@@ -159,7 +159,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        event_close();
+        close_event();
         return;
     }
 
@@ -198,7 +198,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
-        event_close();
+        close_event();
         return;
     }
 
@@ -209,7 +209,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        event_close();
+        close_event();
         return;
     }
 
@@ -239,7 +239,7 @@ ZCE_HANDLE Ogre_TCP_Svc_Handler::get_handle(void) const
 }
 
 //读取,断连的事件触发处理函数
-int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
+int Ogre_TCP_Svc_Handler::read_event(ZCE_HANDLE)
 {
     //读取数据
     size_t szrecv;
@@ -357,7 +357,7 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const vo
                     receive_times_);
             //原来是在这个地方reutrn -1,现在发现return -1是一个很消耗的事情,(定时器的取消会使用指针的方式,会遍历所有的数据)
             //所以在这儿直接调用event_close
-            event_close();
+            close_event();
             return 0;
         }
     }
@@ -369,7 +369,7 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const vo
 }
 
 //PEER Event Handler关闭的处理
-int Ogre_TCP_Svc_Handler::event_close()
+int Ogre_TCP_Svc_Handler::close_event()
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -946,7 +946,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
                 zce::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
                 svrinfo.peer_port_);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
-        svchanle->event_close();
+        svchanle->close_event();
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -1014,7 +1014,7 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(ogre4a_frame* ogre_frame)
         if (ret != 0)
         {
             //这儿已经进行了调整，坚决关闭之，对于中断错误在上层已经转化了错误
-            event_close();
+            close_event();
 
             //发送数据已经放入队列，返回OK
             return 0;

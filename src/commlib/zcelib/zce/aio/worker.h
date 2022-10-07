@@ -24,6 +24,11 @@
 #include "zce/thread/msgque_condi.h"
 #include "zce/aio/caller.h"
 
+namespace zce
+{
+class reactor;
+}
+
 namespace zce::aio
 {
 //!
@@ -36,7 +41,8 @@ public:
 
     //!初始化
     int initialize(size_t work_thread_num,
-                   size_t work_queue_len);
+                   size_t work_queue_len,
+                   zce::reactor *reactor);
 
     //!销毁
     void terminate();
@@ -82,6 +88,8 @@ protected:
     std::thread** work_thread_ = nullptr;
     //! 线程是否继续干活
     bool worker_running_ = true;
+
+    zce::reactor *reactor_ = nullptr;
 
     //! 请求，应答队列，用于Caller 和Worker 线程交互
     zce::msgring_condi<zce::aio::AIO_ATOM*>* requst_queue_ = nullptr;

@@ -41,13 +41,15 @@ public:
 
     //Open SOCK句柄，不BIND本地地址的方式
     int open(int type,
-             int family = AF_INET,
+             int family,
+             bool nonblock = false,
              int protocol = 0,
              bool reuse_addr = true);
 
     //Open SOCK句柄，BIND本地地址的方式
     int open(int type,
              const zce::skt::addr_base* local_addr,
+             bool nonblock = false,
              int protocol = 0,
              bool reuse_addr = false);
 

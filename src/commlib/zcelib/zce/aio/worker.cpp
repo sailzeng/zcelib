@@ -11,7 +11,8 @@ namespace zce::aio
 {
 //!
 int worker::initialize(size_t work_thread_num,
-                       size_t work_queue_len)
+                       size_t work_queue_len,
+                       zce::reactor *reactor)
 {
     worker_running_ = true;
     work_thread_num_ = work_thread_num;
@@ -29,6 +30,7 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(16, 16);
     aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(16, 16);
     aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(16, 16);
+    reactor_ = reactor;
     return 0;
 }
 

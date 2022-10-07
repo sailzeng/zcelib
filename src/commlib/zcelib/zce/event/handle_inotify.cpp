@@ -529,10 +529,10 @@ int event_inotify::inotify_event()
         //返回-1，关闭之
         if (detect_ret == -1)
         {
-            event_close();
+            close_event();
         }
 
-        //为什么要这样做，因为上面的处理过程，可能有人已经调用了rm_watch，或者event_close，
+        //为什么要这样做，因为上面的处理过程，可能有人已经调用了rm_watch，或者close_event，
         if (watch_handle_ == ZCE_INVALID_HANDLE)
         {
             return 0;
@@ -572,7 +572,7 @@ int event_inotify::inotify_event()
 }
 
 //关闭监控句柄
-int event_inotify::event_close()
+int event_inotify::close_event()
 {
     return close();
 }

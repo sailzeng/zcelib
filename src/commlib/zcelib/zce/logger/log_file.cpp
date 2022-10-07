@@ -452,7 +452,7 @@ void log_file::fileout_log_info(const timeval& now_time,
             return;
         }
         buf->clear();
-        buf->add(log_tmp_buffer, sz_use_len);
+        buf->push_back(log_tmp_buffer, sz_use_len);
         LOG_RECORD logbuf;
         using namespace std::chrono_literals;
         std::chrono::milliseconds wait_time = 10ms;
@@ -505,7 +505,7 @@ void log_file::thread_work()
             //如果文件状态OK
             if (log_file_handle_)
             {
-                log_file_handle_.write(logbuf.rec_buf_->point(),
+                log_file_handle_.write(logbuf.rec_buf_->data_point(),
                                        static_cast<std::streamsize>(sz_use_len));
 
                 //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，

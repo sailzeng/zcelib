@@ -33,11 +33,11 @@ public:
     queue_buffer& operator=(queue_buffer&& others) noexcept;
 
     //!初始化
-    bool initialize(size_t buf_size);
+    bool initialize(size_t capacity_size);
 
-    static queue_buffer* new_self(size_t buf_size)
+    static queue_buffer* new_self(size_t capacity_size)
     {
-        return new queue_buffer(buf_size);
+        return new queue_buffer(capacity_size);
     }
 
     //!容量
@@ -49,19 +49,19 @@ public:
     //!已经使用的空间
     inline size_t size()
     {
-        return size_of_use_;
+        return end_point_;
     }
 
     //!剩余的空间
     inline size_t free()
     {
-        return size_of_capacity_ - size_of_use_;
+        return size_of_capacity_ - end_point_;
     }
 
     //!是否已经满了
     inline bool full()
     {
-        if (size_of_use_ >= size_of_capacity_)
+        if (end_point_ >= size_of_capacity_)
         {
             return true;
         }
@@ -71,53 +71,101 @@ public:
     //!是否为空
     inline bool empty()
     {
-        if (size_of_use_ == 0)
+        if (end_point_ == 0)
         {
             return true;
         }
         return false;
     };
 
-    /**
-     * @brief             填充数据，从偏移offset开始，填充数据data,长度为szdata,
-     * @param data        填充的数据
-     * @param szdata      填充数据长度
-     * @param offset      偏移长度，从这个位置开始填充
-     * @return            返回true标识填充成功
-    */
-    bool set(const char* data, size_t szdata, size_t offset = 0);
+    inline size_t start_point()
+    {
+        return start_point_;
+    }
+    inline size_t end_point()
+    {
+        return end_point_;
+    }
+    //将start_point归零，特殊地方使用
+    inline void clear_start_point()
+    {
+        start_point_ = 0;
+    }
+
+    //数据长度
+    inline size_t data_size()
+    {
+        return end_point_ - start_point_;
+    }
+
     //!继续在尾部增加数据
-    bool add(const char* data, size_t szdata);
+    bool push_back(const char* data,
+                   size_t szdata);
+
+    //!仅仅移动尾部指针，（你可以先用data_point拷贝进去数据，再改变end_point）
+    bool push_back(size_t szdata);
+
+    /*!
+     * @brief 从头部取出数据数据，
+     * @param[out]    data 取出的数据
+     * @param[in,out] szdata 数据长度，输入时表示data长度，返回时标示取出长度
+     * @param[in]     squeeze_front  是否
+    */
+    void pop_front(char* data,
+                   size_t& szdata,
+                   bool squeeze_front = false);
+
+    void pop_front(size_t& szdata,
+                   bool squeeze_front = false);
+
+    /// 挤出空间，如果start_point_>0,将数据前移，让start_point_归零
+    void squeeze_front();
 
     /**
-     * @brief             尝试读取所有数据
-     * @param data        读取的数据
-     * @param szdata      szdata作为输入参数表述data长度，作为输出参数表述读取长度
-     * @param whole       是否要求完整取出
-     * @param clear_get   读取后，是否清理数据
-     * @return            读取成功返回true，如果长度不够（且要求完成取出），返回false
+     * @brief             从start_point_+ offset偏移开始，填充数据data,长度为szdata,
+     * @param[out]    data   填充的数据
+     * @param[in,out] szdata 填充数据长度
+     * @param[in] offset     偏移长度，从这个位置开始填充
+     * @return               返回true标识填充成功
+    */
+    bool set(const char* data,
+             size_t szdata,
+             size_t offset = 0);
+
+    /**
+     * @brief         尝试读取所有数据
+     * @param[out]    data   读取的数据
+     * @param[in,out] szdata 作为输入参数表述data长度，作为输出参数表述读取长度
+     * @param[in]     whole  是否要求完整取出
+     * @return bool   读取成功返回true，如果长度不够（且要求完成取出），返回false
     */
     bool get(char* data,
              size_t& szdata,
-             bool whole = true,
-             bool clear_get = true);
+             size_t offset = 0,
+             bool whole = true) const;
+
     //!清理
     void clear();
 
     //!直接使用数据
-    inline char* point(size_t offset = 0)
+    inline char* data_point(size_t offset = 0)
     {
-        return buffer_data_ + offset;
+        return buffer_data_ + start_point_ + offset;
     }
-protected:
 
-    //当前要使用的缓冲长度，当前处理的帧的长度,没有得到长度前填写0
-    size_t      size_of_capacity_ = 0;
+    //给你直接使用的能力
+public:
 
-    //使用的尺寸
-    size_t      size_of_use_ = 0;
+    ///当前要使用的缓冲长度，
+    size_t  size_of_capacity_ = 0;
 
-    //数据缓冲区
+    ///数据开始的位置
+    size_t  start_point_ = 0;
+
+    ///数据结束的位置
+    size_t  end_point_ = 0;
+
+    ///数据缓冲区
     char* buffer_data_ = nullptr;
 };
 }

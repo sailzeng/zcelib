@@ -1,5 +1,4 @@
-#ifndef ZERG_SERVER_CONFIG_H_
-#define ZERG_SERVER_CONFIG_H_
+#pragma once
 
 //===================================================================================
 
@@ -129,17 +128,19 @@ public:
 
 //===================================================================================
 
+namespace zerg
+{
 /*!
 * @brief      小虫的配置处理类
 *
 * @note
 */
-class Zerg_Config : public svrd_cfg_base
+class zerg_config : public svrd_cfg_base
 {
 public:
     //
-    Zerg_Config();
-    virtual ~Zerg_Config();
+    zerg_config();
+    virtual ~zerg_config();
 
     //
 public:
@@ -172,5 +173,4 @@ public:
     ///服务的配置集合标
     SERVICES_INFO_TABLE  services_info_table_;
 };
-
-#endif //_ZERG_SERVER_CONFIG_H_
+} //namespace zerg

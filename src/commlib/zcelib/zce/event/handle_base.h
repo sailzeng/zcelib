@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "zce/os_adapt/common.h"
+
 namespace zce
 {
 class reactor;
@@ -38,10 +40,9 @@ public:
         WRITE_MASK = (1 << 2),
         ///SOCKET异常事件，触发后调用exception_event
         EXCEPT_MASK = (1 << 3),
-        ///SOCKET异步CONNECT成功后，调用write_event，异步CONNECT失败后，
-        ///会调用read_event，(多系统差异会统一)
+        ///SOCKET异步CONNECT成功后，调用connect_event，异步CONNECT失败后，
         CONNECT_MASK = (1 << 4),
-        ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用handle_input，
+        ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用accept_event
         ACCEPT_MASK = (1 << 5),
 
         ///iNotify通知事件，文件系统的改变通知,调用read_event，
@@ -68,7 +69,7 @@ public:
     * @brief  取回对应的ZCE_HANDLE 句柄
     * @return ZCE_HANDLE event_handler 对应的ZCE_HANDLE 句柄
     */
-    virtual ZCE_HANDLE get_handle(void) const = 0;
+    virtual ZCE_HANDLE get_handle() const = 0;
 
     /*!
     * @brief  读取事件触发调用函数，用于读取数据。
@@ -106,7 +107,7 @@ public:
     /*!
     * @brief      句柄关闭处理函数，基类函数调用了remove
     */
-    virtual int event_close();
+    virtual int close_event();
 
     /*!
     * @brief      取得当前的标志位

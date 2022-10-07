@@ -5,8 +5,7 @@
 ///
 /// @brief      小虫监控项定义
 ///
-#ifndef ZERG_STAT_DEFINE_H_
-#define ZERG_STAT_DEFINE_H_
+#pragma once
 
 //监控的FEATURE_ID
 enum ZERG_MONITOR_FEATURE_ID
@@ -115,5 +114,3 @@ static const zce::STATUS_ITEM_WITHNAME ZERG_MONITOR_ITEMS[] =
 
 // 上报数据项个数
 static const unsigned int ZERG_MONITOR_NUMBER = ZCE_ARRAY_SIZE(ZERG_MONITOR_ITEMS);
-
-#endif // ZERG_STAT_DEFINE_H_

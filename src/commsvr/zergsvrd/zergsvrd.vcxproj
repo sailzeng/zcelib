@@ -73,7 +73,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -98,15 +98,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="zerg\accept_handler.cpp" />
+    <ClCompile Include="zerg\svc_accept.cpp" />
     <ClCompile Include="zerg\application.cpp" />
     <ClCompile Include="zerg\app_timer.cpp" />
     <ClCompile Include="zerg\auto_connect.cpp" />
-    <ClCompile Include="zerg\buf_storage.cpp" />
     <ClCompile Include="zerg\comm_manager.cpp" />
     <ClCompile Include="zerg\configure.cpp" />
     <ClCompile Include="zerg\console_handler.cpp" />
@@ -118,25 +117,24 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">zerg/predefine.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">zerg/predefine.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="zerg\active_svchdl_set.cpp" />
-    <ClCompile Include="zerg\tcp_ctrl_handler.cpp" />
-    <ClCompile Include="zerg\udp_ctrl_handler.cpp" />
+    <ClCompile Include="zerg\active_svc_set.cpp" />
+    <ClCompile Include="zerg\svc_tcp.cpp" />
+    <ClCompile Include="zerg\svc_udp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="zerg\accept_handler.h" />
+    <ClInclude Include="zerg\svc_accept.h" />
     <ClInclude Include="zerg\application.h" />
     <ClInclude Include="zerg\app_timer.h" />
     <ClInclude Include="zerg\auto_connect.h" />
-    <ClInclude Include="zerg\buf_storage.h" />
     <ClInclude Include="zerg\comm_manager.h" />
     <ClInclude Include="zerg\configure.h" />
     <ClInclude Include="zerg\console_handler.h" />
     <ClInclude Include="zerg\ip_restrict.h" />
     <ClInclude Include="zerg\predefine.h" />
-    <ClInclude Include="zerg\active_svchdl_set.h" />
+    <ClInclude Include="zerg\active_svc_set.h" />
     <ClInclude Include="zerg\stat_define.h" />
-    <ClInclude Include="zerg\tcp_ctrl_handler.h" />
-    <ClInclude Include="zerg\udp_ctrl_handler.h" />
+    <ClInclude Include="zerg\svc_tcp.h" />
+    <ClInclude Include="zerg\svc_udp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

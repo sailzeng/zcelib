@@ -103,7 +103,7 @@ void PeerID_To_TCPHdl_Map::clear_and_close()
         MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();
         Ogre_TCP_Svc_Handler* svrhandle = (*(iter)).second;
 
-        //Ogre_TCP_Svc_Handler::event_close调用了del_services_peerinfo
-        svrhandle->event_close();
+        //Ogre_TCP_Svc_Handler::close_event调用了del_services_peerinfo
+        svrhandle->close_event();
     }
 }

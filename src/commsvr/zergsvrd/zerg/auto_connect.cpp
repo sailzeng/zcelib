@@ -1,21 +1,21 @@
 #include "zerg/predefine.h"
 #include "zerg/auto_connect.h"
 #include "zerg/application.h"
-#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/svc_tcp.h"
 #include "zerg/configure.h"
 
 namespace zerg
 {
-Auto_Connector::Auto_Connector()
+auto_connector::auto_connector()
 {
 }
 //
-Auto_Connector::~Auto_Connector()
+auto_connector::~auto_connector()
 {
 }
 
 //取得配置信息
-int Auto_Connector::get_config(const Zerg_Config* config)
+int auto_connector::get_config(const zerg::zerg_config* config)
 {
     int ret = 0;
 
@@ -87,7 +87,7 @@ int Auto_Connector::get_config(const Zerg_Config* config)
 }
 
 //链接所有的服务器,如果已经有链接，就跳过,
-void Auto_Connector::reconnect_allserver(size_t& szvalid, size_t& szsucc, size_t& szfail)
+void auto_connector::reconnect_allserver(size_t& szvalid, size_t& szsucc, size_t& szfail)
 {
     int ret = 0;
     szvalid = szsucc = szfail = 0;
@@ -97,7 +97,7 @@ void Auto_Connector::reconnect_allserver(size_t& szvalid, size_t& szsucc, size_t
     auto iter_tmp = autocnt_svcinfo_set_.begin();
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
-        TCP_Svc_Handler* svc_handle = NULL;
+        svc_tcp* svc_handle = NULL;
         //进行连接,
         ret = connect_one_server(iter_tmp->svc_id_, iter_tmp->ip_address_, svc_handle);
         if (0 != ret)
@@ -106,7 +106,7 @@ void Auto_Connector::reconnect_allserver(size_t& szvalid, size_t& szsucc, size_t
             {
                 ++szvalid;
                 //如果是激活状态才进行心跳包发送
-                if (svc_handle->get_peer_status() == TCP_Svc_Handler::PEER_STATUS_ACTIVE)
+                if (svc_handle->get_peer_status() == svc_tcp::PEER_STATUS_ACTIVE)
                 {
                     svc_handle->send_zergheatbeat_reg();
                 }
@@ -130,7 +130,7 @@ void Auto_Connector::reconnect_allserver(size_t& szvalid, size_t& szsucc, size_t
 }
 
 //根据SVC ID,检查是否是主动连接的服务.,
-int Auto_Connector::connect_server_bysvcid(const soar::SERVICES_ID& reconnect_svcid)
+int auto_connector::connect_server_bysvcid(const soar::SERVICES_ID& reconnect_svcid)
 {
     //如果在SET里面找不到
     soar::SERVICES_INFO svc_info;
@@ -143,18 +143,18 @@ int Auto_Connector::connect_server_bysvcid(const soar::SERVICES_ID& reconnect_sv
         return SOAR_RET::ERR_ZERG_ISNOT_CONNECT_SERVICES;
     }
 
-    TCP_Svc_Handler* svc_handle = NULL;
+    svc_tcp* svc_handle = NULL;
     return connect_one_server(reconnect_svcid, iter->ip_address_, svc_handle);
 }
 
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
+int auto_connector::connect_one_server(const soar::SERVICES_ID& svc_id,
                                        const zce::skt::addr_in& inetaddr,
-                                       TCP_Svc_Handler*& svc_handle)
+                                       svc_tcp*& svc_handle)
 {
     int ret = 0;
     //如果已经有相应的链接了，跳过
-    ret = TCP_Svc_Handler::find_services_peer(svc_id, svc_handle);
+    ret = svc_tcp::find_services_peer(svc_id, svc_handle);
     if (ret == 0)
     {
         return SOAR_RET::ERR_ZERG_SVCID_ALREADY_CONNECTED;
@@ -193,8 +193,8 @@ int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
         }
 
         //HANDLER_MODE_CONNECT模式理论不会失败
-        TCP_Svc_Handler* p_handler = TCP_Svc_Handler::alloce_hdl_from_pool(
-            TCP_Svc_Handler::HANDLER_MODE_CONNECT);
+        svc_tcp* p_handler = svc_tcp::alloce_hdl_from_pool(
+            svc_tcp::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
         p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_info_.svc_id_,
@@ -216,7 +216,7 @@ int Auto_Connector::connect_one_server(const soar::SERVICES_ID& svc_id,
 }
 
 //根据services_type查询对应的配置主备服务器列表数组 MS（主备）
-int Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
+int auto_connector::find_conf_ms_svcid_ary(uint16_t services_type,
                                            std::vector<uint32_t>*& ms_svcid_ary)
 {
     auto map_iter = type_to_idary_map_.find(services_type);
@@ -229,7 +229,7 @@ int Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
 }
 
 //检查这个SVC ID是否是主动链接的服务器
-bool Auto_Connector::is_auto_connect_svcid(const soar::SERVICES_ID& svc_id)
+bool auto_connector::is_auto_connect_svcid(const soar::SERVICES_ID& svc_id)
 {
     //如果在SET里面找不到
     soar::SERVICES_INFO svc_info;

@@ -304,7 +304,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 ret = event_hdl->read_event();
                 if (ret == -1)
                 {
-                    event_hdl->event_close();
+                    event_hdl->close_event();
                 }
             }
         }
@@ -316,7 +316,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 ret = event_hdl->read_event();
                 if (ret == -1)
                 {
-                    event_hdl->event_close();
+                    event_hdl->close_event();
                 }
             }
         }
@@ -328,7 +328,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 ret = event_hdl->write_event();
                 if (ret == -1)
                 {
-                    event_hdl->event_close();
+                    event_hdl->close_event();
                 }
             }
         }
@@ -340,7 +340,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 ret = event_hdl->exception_event();
                 if (ret == -1)
                 {
-                    event_hdl->event_close();
+                    event_hdl->close_event();
                 }
             }
         }
@@ -352,15 +352,15 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 //统一，异步CONNECT如果失败，调用read_event,成功调用write_event
                 if (socket_event.iErrorCode[FD_CONNECT_BIT])
                 {
-                    ret = event_hdl->read_event();
+                    ret = event_hdl->connect_event(false);
                 }
                 else
                 {
-                    ret = event_hdl->write_event();
+                    ret = event_hdl->connect_event(true);
                 }
                 if (ret == -1)
                 {
-                    event_hdl->event_close();
+                    event_hdl->close_event();
                 }
             }
         }
@@ -371,7 +371,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
         ret = event_hdl->read_event();
         if (ret == -1)
         {
-            event_hdl->event_close();
+            event_hdl->close_event();
         }
     }
     return 0;

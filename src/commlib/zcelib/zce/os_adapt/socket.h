@@ -102,6 +102,7 @@ inline ZCE_SOCKET socket(int family,
 * @return     int == 0表示成功
 * @param[out] handle      返回的socket 句柄
 * @param[in]  type        SOCK_DGRAM,SOCK_STREAM
+* @param[in]  nonblock    是否阻塞
 * @param[in]  family      AF_INET ,AF_INET6
 * @param[in]  reuse_addr  是否重用地址
 * @note       family      protocol参数参考socket函数
@@ -109,6 +110,7 @@ inline ZCE_SOCKET socket(int family,
 int open_socket(ZCE_SOCKET* handle,
                 int type,
                 int family,
+                bool nonblock = false,
                 int protocol = 0,
                 bool reuse_addr = true);
 
@@ -123,6 +125,7 @@ int open_socket(ZCE_SOCKET* handle,
                 int type,
                 const sockaddr* local_addr,
                 socklen_t addr_len,
+                bool nonblock = false,
                 int protocol = 0,
                 bool reuse_addr = true);
 

@@ -40,6 +40,8 @@
 #include <zce/socket/connector.h>
 #include <zce/socket/stream.h>
 #include <zce/server/mml_command.h>
+#include <zce/buffer/queue_buffer.h>
+#include <zce/pool/buffer_pool.h>
 
 #include <soar/predefine.h>
 #include <soar/enum/error_code.h>
@@ -56,7 +58,8 @@
 //there is no source code available for the current location 解决方案
 //
 //1.首先试最常规的方法：Clean and then rebuild solution，但是没有解决
-//2.进入Tools>Options,选择Debugging>General 却掉 Enable address-level debugging 选项，在去掉 Require source files to exactly match the original version.
+//2.进入Tools>Options,选择Debugging>General 却掉 Enable address-level debugging 选项，
+// 在去掉 Require source files to exactly match the original version.
 //Okay，解决问题。
 
 //好几个地方都用这个常量，统一设置，以后好改

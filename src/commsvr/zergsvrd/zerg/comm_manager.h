@@ -9,30 +9,28 @@
 //脑子太笨的结果，其实很简单
 //如果一个SVCID对应多个端口，你不区分标识开，那么其他连接者知道连接的SVCID到底是那个端口吗？
 
-class Accept_Handler;
-class UDP_Svc_Handler;
-
-#include "zerg/buf_storage.h"
-
 namespace zerg
 {
+class svc_accept;
+class svc_udp;
+
 /*!
 * @brief      通信管理器，
 *
 * note
 */
-class Comm_Manager
+class comm_manager
 {
     //
-    typedef std::vector<Accept_Handler*> TCPACCEPT_HANDLER_LIST;
+    typedef std::vector<zerg::svc_accept*> TCPACCEPT_HANDLER_LIST;
     //
-    typedef std::vector<UDP_Svc_Handler*> UDPSVC_HANDLER_LIST;
+    typedef std::vector<zerg::svc_udp*> UDPSVC_HANDLER_LIST;
 
 protected:
 
     //构造函数和析构函数
-    Comm_Manager();
-    ~Comm_Manager();
+    comm_manager();
+    ~comm_manager();
 
 public:
 
@@ -41,7 +39,7 @@ public:
     * @return     int
     * @param      config
     */
-    int get_config(const Zerg_Config* config);
+    int get_config(const zerg_config* config);
 
     /*!
     * @brief      初始化所有的监听，UDP端口，
@@ -79,12 +77,12 @@ public:
     void check_freamcount(time_t now);
 
     //
-    int send_single_buf(zerg::Buffer* tmpbuf);
+    int send_single_buf(zce::queue_buffer* tmpbuf);
 
 public:
 
     //单子实例函数
-    static Comm_Manager* instance();
+    static comm_manager* instance();
     //清理单子实例
     static void clear_inst();
 
@@ -98,7 +96,7 @@ protected:
 
 protected:
     //单子实例
-    static Comm_Manager* instance_;
+    static comm_manager* instance_;
 
 protected:
 
@@ -117,8 +115,10 @@ protected:
 
     ///内存管道类的实例对象，保留它仅仅为了加速
     soar::svrd_buspipe* zerg_mmap_pipe_;
+
     ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
-    zerg::Buffer_Storage* zbuffer_storage_;
+    zce::queue_buffer_pool* zbuffer_storage_;
+
     ///统计，使用单子类的指针，保留它仅仅为了加速
     soar::stat_monitor* server_status_;
 
@@ -128,6 +128,6 @@ protected:
     unsigned int send_frame_count_;
 
     ///配置实例指针
-    const Zerg_Config* zerg_config_;
+    const zerg_config* zerg_config_;
 };
 }

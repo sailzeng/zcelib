@@ -127,9 +127,9 @@
 //    std::ostringstream tmp_ostrstm;
 //
 //    //DUMP信息
-//    Zerg_Config::instance()->dump_status_info(tmp_ostrstm);
+//    zerg_config::instance()->dump_status_info(tmp_ostrstm);
 //    soar::stat_monitor::instance()->dump_status_info(tmp_ostrstm);
-//    TCP_Svc_Handler::dump_status_staticinfo(tmp_ostrstm);
+//    svc_tcp::dump_status_staticinfo(tmp_ostrstm);
 //
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "%s", tmp_ostrstm.str().c_str());
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Have fun my brother.Author: Pet2 Team .");
@@ -190,7 +190,7 @@
 //    }
 //
 //    std::ostringstream ostr_stream;
-//    TCP_Svc_Handler::dump_svcpeer_info(ostr_stream, startno, numquery);
+//    svc_tcp::dump_svcpeer_info(ostr_stream, startno, numquery);
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "%s", ostr_stream.str().c_str());
 //
 //    str_len = tmp_size;
@@ -201,7 +201,7 @@
 ////停止运行
 //int Zerg_Console_Handler::cmd_close_services(char *ret_string, size_t &str_len)
 //{
-//    Zerg_App::instance()->set_run_sign(false);
+//    zerg_app::instance()->set_run_sign(false);
 //
 //    size_t tmp_size = snprintf(ret_string, str_len, "Console close services. Server exit at immediately,Please wait.");
 //    str_len = tmp_size;
@@ -239,7 +239,7 @@
 //    svr_info.services_id_ = atoi(tmpstr.c_str());
 //
 //    ZCE_LOG(RS_INFO,"[zergsvr] Console To close One Services:%u|%u", svr_info.services_id_, svr_info.services_type_);
-//    ret = TCP_Svc_Handler::close_connect_services_peer(svr_info);
+//    ret = svc_tcp::close_connect_services_peer(svr_info);
 //
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console To close One Services: %u|%u %s.", svr_info.services_type_, svr_info.services_id_,
 //                         (ret == 0) ? "Success" : "Fail" );
@@ -274,9 +274,9 @@
 //    }
 //
 //    zce::LOG_PRIORITY new_log_priority =  zce_LogTrace_Basic::log_priorities(tmpstr.c_str());
-//    zce::LOG_PRIORITY old_log_priority = Zerg_App::instance()->get_log_priority();
+//    zce::LOG_PRIORITY old_log_priority = zerg_app::instance()->get_log_priority();
 //    //修改APPL的日志级别
-//    Zerg_App::instance()->set_log_priority(new_log_priority);
+//    zerg_app::instance()->set_log_priority(new_log_priority);
 //
 //    size_t tmp_size = 0;
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console modify log priority.Old log priority %u, New log priority %u .", old_log_priority, new_log_priority);

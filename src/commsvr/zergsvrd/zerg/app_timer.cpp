@@ -1,5 +1,5 @@
 #include "zerg/predefine.h"
-#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/svc_tcp.h"
 #include "zerg/comm_manager.h"
 #include "zerg/application.h"
 #include "zerg/app_timer.h"
@@ -7,18 +7,18 @@
 namespace zerg
 {
 /****************************************************************************************************
-class  App_Timer
+class  app_timer
 ****************************************************************************************************/
 
 ///ZERG服务器定时器ID,
-const int App_Timer::ZERG_TIMER_ID[] =
+const int app_timer::ZERG_TIMER_ID[] =
 {
     0x101,
     0x102,
 };
 
 //
-App_Timer::App_Timer() :
+app_timer::app_timer() :
     Server_Timer()
 {
     //主动重现链接的间隔时间
@@ -34,12 +34,12 @@ App_Timer::App_Timer() :
     add_app_timer(monitor_internal, &ZERG_TIMER_ID[1]);
 }
 
-App_Timer::~App_Timer()
+app_timer::~app_timer()
 {
 }
 
 //
-int App_Timer::timer_timeout(const zce::time_value& time_now,
+int app_timer::timer_timeout(const zce::time_value& time_now,
                              const void* act)
 {
     //等到当前的时间
@@ -49,11 +49,11 @@ int App_Timer::timer_timeout(const zce::time_value& time_now,
     const int zerg_timeid = *(static_cast<const int*>(act));
     if (ZERG_TIMER_ID[0] == zerg_timeid)
     {
-        TCP_Svc_Handler::reconnect_allserver();
+        svc_tcp::reconnect_allserver();
     }
     else if (ZERG_TIMER_ID[1] == zerg_timeid)
     {
-        Buffer_Storage::instance()->monitor();
+        //Buffer_Storage::instance()->monitor();
     }
     return 0;
 }

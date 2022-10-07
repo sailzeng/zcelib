@@ -1,27 +1,27 @@
-#ifndef ZERG_UDP_CONTROL_SERVICE_H_
-#define ZERG_UDP_CONTROL_SERVICE_H_
+#pragma once
 
 #include "zerg/ip_restrict.h"
-#include "zerg/buf_storage.h"
 #include "zerg/configure.h"
 #include "zerg/comm_manager.h"
 
 //forward declaration
 class soar::zerg_frame;
-class Zerg_Config;
+class zerg_config;
 
-class UDP_Svc_Handler : public zce::event_handler
+namespace zerg
+{
+class svc_udp : public zce::event_handler
 {
 protected:
 
     //避免在堆中间分配,所以析构函数不要
 public:
     //
-    UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
-                    const zce::skt::addr_in& addr,
-                    bool sessionkey_verify = true);
+    svc_udp(const soar::SERVICES_ID& my_svcinfo,
+            const zce::skt::addr_in& addr,
+            bool sessionkey_verify = true);
 protected:
-    ~UDP_Svc_Handler();
+    ~svc_udp();
 
 public:
     //取得句柄
@@ -29,7 +29,7 @@ public:
     //
     virtual int read_event();
     //
-    virtual int event_close();
+    virtual int close_event();
 
 public:
 
@@ -52,7 +52,7 @@ public:
     static int send_all_to_udp(soar::zerg_frame* send_frame);
 
     ///读取配置
-    static int get_config(const Zerg_Config* config);
+    static int get_config(const zerg_config* config);
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
 protected:
 
     ///
-    typedef std::vector< UDP_Svc_Handler*>  ARY_OF_UDPSVC_HANDLER;
+    typedef std::vector< svc_udp*>  ARY_OF_UDPSVC_HANDLER;
 
     ///UPD的数组，可以有多个UDP
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
@@ -71,7 +71,7 @@ protected:
     static soar::stat_monitor* server_status_;
 
     ///通讯管理器,保存是为了加快速度
-    static zerg::Comm_Manager* zerg_comm_mgr_;
+    static zerg::comm_manager* zerg_comm_mgr_;
 
     ///是否是代理服务器
     static bool                     if_proxy_;
@@ -89,9 +89,8 @@ protected:
     ///是否进行SESSION校验
     bool                      sessionkey_verify_;
     ///数据缓冲区，UDP只有一个
-    zerg::Buffer* dgram_databuf_;
+    zce::queue_buffer* dgram_databuf_;
     ///IP限制管理器
     zerg::IPRestrict_Mgr* ip_restrict_;
 };
-
-#endif //#ifndef _ZERG_UDP_CONTROL_SERVICE_H_
+}

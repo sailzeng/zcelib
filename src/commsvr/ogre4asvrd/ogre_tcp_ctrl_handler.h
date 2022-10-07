@@ -76,7 +76,7 @@ public:
     //
     virtual int timer_timeout(const zce::time_value& time, const void* arg);
     //
-    virtual int event_close();
+    virtual int close_event();
 
     //得到Handle对应PEER的IP地址
     const zce::skt::addr_in& get_peer();

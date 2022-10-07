@@ -1,25 +1,26 @@
 #include "zerg/predefine.h"
-#include "zerg/buf_storage.h"
 #include "zerg/application.h"
 #include "zerg/ip_restrict.h"
 #include "zerg/comm_manager.h"
 #include "zerg/stat_define.h"
-#include "zerg/udp_ctrl_handler.h"
+#include "zerg/svc_udp.h"
 
+namespace zerg
+{
 //
-UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
+svc_udp::ARY_OF_UDPSVC_HANDLER svc_udp::ary_udpsvc_handler_;
 //
-soar::stat_monitor* UDP_Svc_Handler::server_status_ = NULL;
+soar::stat_monitor* svc_udp::server_status_ = NULL;
 //通信管理器
-zerg::Comm_Manager* UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
+zerg::comm_manager* svc_udp::zerg_comm_mgr_ = NULL;
 
 //自己是否是代理
-bool           UDP_Svc_Handler::if_proxy_ = false;
+bool           svc_udp::if_proxy_ = false;
 
 //
-UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
-                                 const zce::skt::addr_in& addr,
-                                 bool sessionkey_verify) :
+svc_udp::svc_udp(const soar::SERVICES_ID& my_svcinfo,
+                 const zce::skt::addr_in& addr,
+                 bool sessionkey_verify) :
     zce::event_handler(zce::reactor::instance()),
     udp_bind_addr_(addr),
     my_svc_info_(my_svcinfo),
@@ -32,29 +33,35 @@ UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID& my_svcinfo,
 }
 
 //这就要求UDP_Svc_Handler比InstOfZBufferStorage先释放
-UDP_Svc_Handler::~UDP_Svc_Handler()
+svc_udp::~svc_udp()
 {
     if (dgram_databuf_ != NULL)
     {
-        zerg::Buffer_Storage::instance()->free_byte_buffer(dgram_databuf_);
+        zce::queue_buffer_pool_inst::instance()->free_buffer(dgram_databuf_);
     }
 }
 
-int UDP_Svc_Handler::init_udp_services()
+int svc_udp::init_udp_services()
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    dgram_databuf_ = zerg::Buffer_Storage::instance()->allocate_buffer();
-
     int ret = 0;
+    bool succ = zce::queue_buffer_pool_inst::instance()->alloc_buffer(
+        soar::zerg_frame::MAX_LEN_OF_FRAME,
+        dgram_databuf_);
+    if (succ)
+    {
+        return -1;
+    }
+
     ret = dgram_peer_.open(&udp_bind_addr_);
 
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
                 udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        event_close();
+        close_event();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
@@ -73,7 +80,7 @@ int UDP_Svc_Handler::init_udp_services()
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
                 udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        event_close();
+        close_event();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
@@ -83,12 +90,12 @@ int UDP_Svc_Handler::init_udp_services()
 }
 
 //取得句柄
-ZCE_HANDLE UDP_Svc_Handler::get_handle(void) const
+ZCE_HANDLE svc_udp::get_handle(void) const
 {
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int UDP_Svc_Handler::read_event()
+int svc_udp::read_event()
 {
     //多次读取UDP的数据，保证UDP的响应也比较及时。
     for (size_t i = 0; i < ONCE_MAX_READ_UDP_NUMBER; ++i)
@@ -121,13 +128,13 @@ int UDP_Svc_Handler::read_event()
 }
 
 //
-int UDP_Svc_Handler::event_close()
+int svc_udp::close_event()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
     {
         //内部会进行remove_handler
-        zce::event_handler::event_close();
+        zce::event_handler::close_event();
         dgram_peer_.close();
     }
 
@@ -138,7 +145,7 @@ int UDP_Svc_Handler::event_close()
 }
 
 //
-int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
+int svc_udp::read_data_from_udp(size_t& size_revc)
 {
     int ret = 0;
     size_revc = 0;
@@ -236,7 +243,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t& size_revc)
 }
 
 //
-int UDP_Svc_Handler::write_data_to_udp(soar::zerg_frame* send_frame)
+int svc_udp::write_data_to_udp(soar::zerg_frame* send_frame)
 {
     ssize_t szsend = 0;
     const size_t IP_ADDR_LEN = 32;
@@ -278,7 +285,7 @@ int UDP_Svc_Handler::write_data_to_udp(soar::zerg_frame* send_frame)
     return 0;
 }
 
-int UDP_Svc_Handler::send_all_to_udp(soar::zerg_frame* send_frame)
+int svc_udp::send_all_to_udp(soar::zerg_frame* send_frame)
 {
     //找到原来的那个UDP端口，使用原来的端口发送，
     //这样可以保证防火墙的穿透问题
@@ -301,19 +308,20 @@ int UDP_Svc_Handler::send_all_to_udp(soar::zerg_frame* send_frame)
 }
 
 //初始化静态参数
-int UDP_Svc_Handler::init_all_static_data()
+int svc_udp::init_all_static_data()
 {
     //服务器的统计操作实例
     server_status_ = soar::stat_monitor::instance();
 
     //通信管理器
-    zerg_comm_mgr_ = zerg::Comm_Manager::instance();
+    zerg_comm_mgr_ = zerg::comm_manager::instance();
 
     return 0;
 }
 
-int UDP_Svc_Handler::get_config(const Zerg_Config* config)
+int svc_udp::get_config(const zerg_config* config)
 {
     if_proxy_ = config->zerg_cfg_data_.is_proxy_;
     return 0;
+}
 }

@@ -3,7 +3,7 @@
 * @filename   zce/net/dns_resolve.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       nim1z
+* @date       2022.08
 * @brief
 * @details
 *
@@ -44,6 +44,8 @@
 */
 
 #pragma once
+
+#include "zce/event/handle_base.h"
 #include "zce/os_adapt/common.h"
 
 namespace zce
@@ -123,7 +125,7 @@ struct AIO_ATOM
     std::function<void(AIO_ATOM*)> call_back_;
 };
 
-//====================================================
+//=========================================================================
 //! FS文件操作的原子
 struct FS_ATOM :public AIO_ATOM
 {
@@ -234,7 +236,7 @@ int fs_stat(zce::aio::worker* worker,
             struct stat* file_stat,
             std::function<void(AIO_ATOM*)> call_back);
 
-//==============================================================
+//=========================================================================
 //! 目录操作的原子
 struct DIR_ATOM :public AIO_ATOM
 {
@@ -267,7 +269,7 @@ int dir_rmdir(zce::aio::worker* worker,
               const char* dirname,
               std::function<void(AIO_ATOM*)> call_back);
 
-//==============================================================
+//=========================================================================
 //! 数据库操作原子
 struct MYSQL_ATOM :public AIO_ATOM
 {
@@ -319,7 +321,7 @@ int mysql_query(zce::aio::worker* worker,
                 zce::mysql::result* db_result,
                 std::function<void(AIO_ATOM*)> call_back);
 
-//==============================================================
+//=========================================================================
 //!
 struct HOST_ATOM :public AIO_ATOM
 {
@@ -358,7 +360,7 @@ int host_getaddr_one(zce::aio::worker* worker,
                      socklen_t addr_len,
                      std::function<void(AIO_ATOM*)> call_back);
 
-//==============================================================
+//=========================================================================
 //! Socket atom
 struct SOCKET_ATOM :public AIO_ATOM
 {
@@ -366,6 +368,7 @@ struct SOCKET_ATOM :public AIO_ATOM
     virtual void clear();
     //!参数
     int result_ = -1;
+    size_t result_count_ = 0;
     //
     ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
     const sockaddr* addr_ = nullptr;
@@ -374,7 +377,7 @@ struct SOCKET_ATOM :public AIO_ATOM
     void* rcv_buf_ = nullptr;
     size_t len_ = 0;
     zce::time_value* timeout_tv_ = nullptr;
-    size_t result_count_ = 0;
+
     int flags_ = 0;
     sockaddr* from_ = nullptr;
     socklen_t* from_len_ = nullptr;
@@ -440,6 +443,86 @@ int st_recvfrom(zce::aio::worker* worker,
                 int flags = 0);
 
 //!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
+
+//=========================================================================
 //!
-//!
+struct AIO_EVENT :public zce::event_handler
+{
+    //读取事件触发调用函数
+    virtual int read_event();
+
+    //写入事件触发调用函数，用于写入事件
+    virtual int write_event();
+
+    //发生了链接的事件
+    virtual int connect_event(bool success);
+
+    //发生了accept的事件是调用
+    virtual int accept_event();
+
+    //!清理
+    virtual void clear();
+    //!参数
+    int result_ = -1;
+    size_t result_count_ = 0;
+    //
+    ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
+    const sockaddr* addr_ = nullptr;
+    socklen_t addr_len_ = 0;
+    const void* snd_buf_ = nullptr;
+    void* rcv_buf_ = nullptr;
+    size_t len_ = 0;
+    zce::time_value* timeout_tv_ = nullptr;
+
+    int flags_ = 0;
+    sockaddr* from_ = nullptr;
+    socklen_t* from_len_ = nullptr;
+    const char* host_name_ = nullptr;
+    uint16_t host_port_ = 0;
+    sockaddr* host_addr_ = nullptr;
+    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
+
+    virtual ZCE_HANDLE get_handle() const
+    {
+        return (ZCE_HANDLE)handle_;
+    }
+};
+
+//! ER = event reactor
+//! 等待若干时间进行connect，直至超时
+int er_connect(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               const sockaddr* addr,
+               socklen_t addr_len,
+               std::function<void(AIO_EVENT*)> call_back);
+
+//! 等待若干时间进行accept，直至超时
+int er_accept(zce::aio::worker* worker,
+              ZCE_SOCKET handle,
+              sockaddr* addr,
+              socklen_t* addr_len,
+              std::function<void(AIO_EVENT*)> call_back);
+
+//! 等待若干时间进行recv，直至超时
+int er_recv(zce::aio::worker* worker,
+            ZCE_SOCKET handle,
+            void* buf,
+            size_t len,
+            std::function<void(AIO_EVENT*)> call_back);
+
+//!等待若干时间进行send，直至超时
+int er_send(zce::aio::worker* worker,
+            ZCE_SOCKET handle,
+            const void* buf,
+            size_t len,
+            std::function<void(AIO_EVENT*)> call_back);
+
+//!等待若干时间进行recv数据，直至超时
+int er_recvfrom(zce::aio::worker* worker,
+                ZCE_SOCKET handle,
+                void* buf,
+                size_t len,
+                sockaddr* from,
+                socklen_t* from_len,
+                std::function<void(AIO_EVENT*)> call_back);
 }//namespace zce::aio

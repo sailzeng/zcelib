@@ -1,11 +1,13 @@
 #include "zerg/predefine.h"
-#include "zerg/accept_handler.h"
-#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/svc_accept.h"
+#include "zerg/svc_tcp.h"
 #include "zerg/ip_restrict.h"
 
+namespace zerg
+{
 //TCP Accept 处理的EventHandler,
-Accept_Handler::Accept_Handler(const soar::SERVICES_ID& svcid,
-                               const zce::skt::addr_in& addr) :
+svc_accept::svc_accept(const soar::SERVICES_ID& svcid,
+                       const zce::skt::addr_in& addr) :
     zce::event_handler(zce::reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
@@ -13,13 +15,13 @@ Accept_Handler::Accept_Handler(const soar::SERVICES_ID& svcid,
 {
 }
 
-//自己清理的类型，统一关闭在event_close,这个地方不用关闭
-Accept_Handler::~Accept_Handler()
+//自己清理的类型，统一关闭在close_event,这个地方不用关闭
+svc_accept::~svc_accept()
 {
 }
 
 //创建监听端口
-int Accept_Handler::create_listen()
+int svc_accept::create_listen()
 {
     const size_t IP_ADDR_LEN = 31;
     char str_ip_addr[IP_ADDR_LEN + 1];
@@ -51,16 +53,35 @@ int Accept_Handler::create_listen()
             accept_bind_addr_.get_port());
 
     //被Accept的端口会继承这些选项
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void*>(&rcvbuflen), &opvallen);
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void*>(&sndbuflen), &opvallen);
-    ZCE_LOG(RS_INFO, "[zergsvr] Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,
+                              SO_RCVBUF,
+                              reinterpret_cast<void*>(&rcvbuflen),
+                              &opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,
+                              SO_SNDBUF,
+                              reinterpret_cast<void*>(&sndbuflen),
+                              &opvallen);
+    ZCE_LOG(RS_INFO, "[zergsvr] Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.",
+            rcvbuflen,
+            sndbuflen);
 
     //设置一个SND,RCV BUFFER,
-    peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void*>(&opval), opvallen);
-    peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void*>(&opval), opvallen);
-
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void*>(&rcvbuflen), &opvallen);
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void*>(&sndbuflen), &opvallen);
+    peer_acceptor_.setsockopt(SOL_SOCKET,
+                              SO_RCVBUF,
+                              reinterpret_cast<const void*>(&opval),
+                              opvallen);
+    peer_acceptor_.setsockopt(SOL_SOCKET,
+                              SO_SNDBUF,
+                              reinterpret_cast<const void*>(&opval),
+                              opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,
+                              SO_RCVBUF,
+                              reinterpret_cast<void*>(&rcvbuflen),
+                              &opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,
+                              SO_SNDBUF,
+                              reinterpret_cast<void*>(&sndbuflen),
+                              &opvallen);
     ZCE_LOG(RS_INFO, "[zergsvr] Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 
 #ifndef ZCE_OS_WINDOWS
@@ -84,7 +105,7 @@ int Accept_Handler::create_listen()
 }
 
 //事件触发处理，表示有一个accept 的数据
-int Accept_Handler::read_event(/*handle*/)
+int svc_accept::accept_event()
 {
     zce::skt::stream  sockstream;
     zce::skt::addr_in       remote_address;
@@ -98,7 +119,8 @@ int Accept_Handler::read_event(/*handle*/)
         char str_local_addr[IP_ADDR_LEN + 1], str_remote_addr[IP_ADDR_LEN + 1];
         size_t use_len = 0;
         int accept_error = zce::last_error();
-        ZCE_LOG(RS_ERROR, "[zergsvr] Local peer[%s] Accept remote [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%d|%s ",
+        ZCE_LOG(RS_ERROR, "[zergsvr] Local peer[%s] Accept remote [%s] handler fail!"
+                " peer_acceptor_.accept ret =%d  errno=%d|%s ",
                 accept_bind_addr_.to_string(str_local_addr, IP_ADDR_LEN, use_len),
                 remote_address.to_string(str_remote_addr, IP_ADDR_LEN, use_len),
                 ret,
@@ -126,7 +148,7 @@ int Accept_Handler::read_event(/*handle*/)
         return 0;
     }
 
-    TCP_Svc_Handler* phandler = TCP_Svc_Handler::alloce_hdl_from_pool(TCP_Svc_Handler::HANDLER_MODE_ACCEPTED);
+    svc_tcp* phandler = svc_tcp::alloce_hdl_from_pool(svc_tcp::HANDLER_MODE_ACCEPTED);
 
     if (phandler != NULL)
     {
@@ -143,13 +165,13 @@ int Accept_Handler::read_event(/*handle*/)
 }
 
 //返回句柄ID
-ZCE_HANDLE Accept_Handler::get_handle(void) const
+ZCE_HANDLE svc_accept::get_handle(void) const
 {
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
 //退出处理
-int Accept_Handler::event_close()
+int svc_accept::close_event()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)
@@ -163,3 +185,4 @@ int Accept_Handler::event_close()
 
     return 0;
 }
+}//namespace zerg

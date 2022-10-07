@@ -1,7 +1,8 @@
-#ifndef ZERG_TCP_SERVICES_INFO_SET_H_
-#define ZERG_TCP_SERVICES_INFO_SET_H_
+#pragma once
 
-class TCP_Svc_Handler;
+namespace zerg
+{
+class svc_tcp;
 
 /*!
 * @brief      SVC ID SET
@@ -9,13 +10,13 @@ class TCP_Svc_Handler;
 * @note       反思一下,是否应该做这个封装，我也很矛盾，如果在TCP_Svc_Handler直接使用STL的封装数据，
 *             那么我们的封装后再聚和的方式不是那么的好。在TCP_Svc_Handler还要再次封装。。。。
 */
-class Active_SvcHandle_Set
+class active_svc_set
 {
 public:
     ///构造函数,
-    Active_SvcHandle_Set();
+    active_svc_set();
     ///析构函数
-    ~Active_SvcHandle_Set();
+    ~active_svc_set();
 
     //初始化
     void initialize(size_t sz_peer);
@@ -27,7 +28,7 @@ public:
     * @param[out] svc_handle 返回的对应的handle
     */
     int find_handle_by_svcid(const soar::SERVICES_ID& svc_id,
-                             TCP_Svc_Handler*& svc_handle);
+                             svc_tcp*& svc_handle);
 
     /*!
     * @brief      以负载均衡的方式，根据services type查询一个的SVC，按照序列数组顺序轮询的返回，
@@ -40,7 +41,7 @@ public:
     */
     int find_lbseqhdl_by_type(uint16_t services_type,
                               uint32_t& services_id,
-                              TCP_Svc_Handler*& svc_handle);
+                              svc_tcp*& svc_handle);
 
     /*!
     * @brief
@@ -53,7 +54,7 @@ public:
     int find_lbfactorhdl_by_type(uint16_t services_type,
                                  uint32_t lb_factor,
                                  uint32_t& services_id,
-                                 TCP_Svc_Handler*& svc_handle);
+                                 svc_tcp*& svc_handle);
 
     /*!
     * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
@@ -68,7 +69,7 @@ public:
     */
     int find_mshdl_by_type(uint16_t services_type,
                            uint32_t& find_services_id,
-                           TCP_Svc_Handler*& svc_handle);
+                           svc_tcp*& svc_handle);
 
     /*!
     * @brief      查询类型对应的所有active的SVC ID数组，用于广播等
@@ -86,7 +87,7 @@ public:
     * @param      new_svchdl  新增加的服务器的句柄
     */
     int add_services_peerinfo(const soar::SERVICES_ID& svc_id,
-                              TCP_Svc_Handler* new_svchdl);
+                              svc_tcp* new_svchdl);
 
     /*!
     * @brief
@@ -97,8 +98,8 @@ public:
     * @note       返回的old_svchdl,可以用于清理
     */
     int replace_services_peerInfo(const soar::SERVICES_ID& svc_id,
-                                  TCP_Svc_Handler* new_svchdl,
-                                  TCP_Svc_Handler*& old_svchdl);
+                                  svc_tcp* new_svchdl,
+                                  svc_tcp*& old_svchdl);
 
     /*!
     * @brief      根据soar::SERVICES_ID,删除PEER信息,
@@ -129,7 +130,7 @@ protected:
 
     ///
     typedef std::unordered_map<soar::SERVICES_ID,
-        TCP_Svc_Handler*, soar::HASH_OF_SVCID> MAP_OF_SVCID_TO_HDL;
+        svc_tcp*, soar::HASH_OF_SVCID> MAP_OF_SVCID_TO_HDL;
 
     ///用于根据TYPE选择一个任意服务器，或者根据TYPE广播给所有这个类型的服务器
     typedef std::unordered_map<uint16_t,
@@ -143,5 +144,4 @@ protected:
     ///
     MAP_OF_TYPE_TO_IDTABLE type_to_idtable_;
 };
-
-#endif //_ZERG_TCP_SERVICES_INFO_SET_H_
+} //namespace zerg

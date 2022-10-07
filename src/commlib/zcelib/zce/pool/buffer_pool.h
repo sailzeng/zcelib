@@ -4,6 +4,7 @@
 #include "zce/buffer/queue_buffer.h"
 #include "zce/pool/object_pool.h"
 #include "zce/lock/null_lock.h"
+#include "zce/util/singleton.h"
 
 namespace zce
 {
@@ -157,4 +158,9 @@ typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;
 typedef buffer_pool<zce::null_lock, queue_buffer> queue_buffer_pool;
 typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_s;
 typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_s;
+
+typedef zce::singleton<cycle_buffer_pool> cycle_buffer_pool_inst;
+typedef zce::singleton<queue_buffer_pool> queue_buffer_pool_inst;
+typedef zce::singleton<cycle_buffer_pool_s> cycle_buffer_pool_s_inst;
+typedef zce::singleton<queue_buffer_pool_s> queue_buffer_pool_s_inst;
 }

@@ -7,14 +7,14 @@ namespace zerg
 *
 * @note
 */
-class  App_Timer : public  soar::Server_Timer
+class  app_timer : public  soar::Server_Timer
 {
 public:
     //
-    App_Timer();
+    app_timer();
 protected:
     //自己管理自己的清理
-    ~App_Timer();
+    ~app_timer();
 
     ///定时器触发
     virtual int timer_timeout(const zce::time_value& time, const void* arg);

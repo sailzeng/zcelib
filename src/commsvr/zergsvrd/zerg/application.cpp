@@ -1,31 +1,29 @@
 #include "zerg/predefine.h"
 #include "zerg/application.h"
 #include "zerg/console_handler.h"
-#include "zerg/udp_ctrl_handler.h"
-#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/svc_udp.h"
+#include "zerg/svc_tcp.h"
 #include "zerg/ip_restrict.h"
 #include "zerg/configure.h"
 #include "zerg/stat_define.h"
 
-/****************************************************************************************************
-class  Zerg_App
-****************************************************************************************************/
-
+namespace zerg
+{
 //单子的static实例
 
 //我又要偷偷藏着
-Zerg_App::Zerg_App() :
+zerg_app::zerg_app() :
     zerg_comm_mgr_(NULL),
     conf_timestamp_(0)
 {
 }
 
-Zerg_App::~Zerg_App()
+zerg_app::~zerg_app()
 {
 }
 
 //根据启动参数启动
-int Zerg_App::app_start(int argc, const char* argv[])
+int zerg_app::app_start(int argc, const char* argv[])
 {
     int ret = 0;
 
@@ -34,7 +32,7 @@ int Zerg_App::app_start(int argc, const char* argv[])
     {
         return ret;
     }
-    Zerg_Config* config = reinterpret_cast<Zerg_Config*>(config_base_);
+    zerg_config* config = reinterpret_cast<zerg_config*>(config_base_);
     ret = zerg::IPRestrict_Mgr::instance()->get_config(config);
     if (0 != ret)
     {
@@ -42,19 +40,19 @@ int Zerg_App::app_start(int argc, const char* argv[])
     }
 
     //通信管理器读取配置文件
-    ret = zerg::Comm_Manager::instance()->get_config(config);
+    ret = zerg::comm_manager::instance()->get_config(config);
     if (0 != ret)
     {
         return ret;
     }
 
-    ret = TCP_Svc_Handler::get_config(config);
+    ret = svc_tcp::get_config(config);
     if (0 != ret)
     {
         return ret;
     }
 
-    ret = UDP_Svc_Handler::get_config(config);
+    ret = zerg::svc_udp::get_config(config);
     if (0 != ret)
     {
         return ret;
@@ -67,14 +65,19 @@ int Zerg_App::app_start(int argc, const char* argv[])
     //soar::stat_monitor::instance()->multi_thread_guard(false);
 
     size_t max_accept = 0, max_connect = 0, max_peer = 0;
-    TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
+    svc_tcp::get_max_peer_num(max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
 
     //设置发送接收缓冲的数量
-    zerg::Buffer_Storage::instance()->init_buflist_by_hdlnum(max_peer);
+    size_t frame_max_len[1] = { soar::zerg_frame::MAX_LEN_OF_FRAME };
+    zce::queue_buffer_pool_inst::instance()->initialize(1,
+                                                        frame_max_len,
+                                                        zce::queue_buffer::new_self,
+                                                        max_peer / 2,
+                                                        128);
 
     //通信管理器初始化
-    zerg_comm_mgr_ = zerg::Comm_Manager::instance();
+    zerg_comm_mgr_ = zerg::comm_manager::instance();
 
     //
     ZCE_LOG(RS_INFO, "[zergsvr] ReloadDynamicConfig Succ.Ooooo!"
@@ -82,13 +85,13 @@ int Zerg_App::app_start(int argc, const char* argv[])
 
     //-----------------------------------------------------------------------------------------------
     //初始化静态数据
-    ret = TCP_Svc_Handler::init_all_static_data();
+    ret = svc_tcp::init_all_static_data();
 
     if (ret != 0)
     {
         return ret;
     }
-    ret = UDP_Svc_Handler::init_all_static_data();
+    ret = svc_udp::init_all_static_data();
     if (ret != 0)
     {
         return ret;
@@ -107,15 +110,15 @@ int Zerg_App::app_start(int argc, const char* argv[])
     return 0;
 }
 
-int Zerg_App::app_exit()
+int zerg_app::app_exit()
 {
     ZCE_LOG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
 
     //释放所有的静态资源，关闭所有的句柄
-    TCP_Svc_Handler::uninit_all_staticdata();
+    svc_tcp::uninit_all_staticdata();
 
     //清理管理器的实例
-    zerg::Comm_Manager::clear_inst();
+    zerg::comm_manager::clear_inst();
 
     //清理单子
     zerg::IPRestrict_Mgr::clear_inst();
@@ -127,7 +130,7 @@ int Zerg_App::app_exit()
 }
 
 //运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。最重要的函数,但是也最简单,
-int Zerg_App::app_run()
+int zerg_app::app_run()
 {
     //
     const size_t NORMAL_MAX_ONCE_SEND_FRAME = 4096;
@@ -153,7 +156,7 @@ int Zerg_App::app_run()
 
     size_t num_io_event = 0, num_send_frame = 0, want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_App::run_instance start.");
+    ZCE_LOG(RS_INFO, "[zergsvr] zerg_app::run_instance start.");
 
     //microsecond
     zce::reactor* preactor = zce::reactor::instance();
@@ -218,7 +221,8 @@ int Zerg_App::app_run()
         }
     }
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_App::run_instance end.");
+    ZCE_LOG(RS_INFO, "[zergsvr] zerg_app::run_instance end.");
 
     return 0;
+}
 }

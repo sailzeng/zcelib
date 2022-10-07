@@ -2,8 +2,8 @@
 #include "zerg/configure.h"
 #include "zerg/ip_restrict.h"
 #include "zerg/comm_manager.h"
-#include "zerg/udp_ctrl_handler.h"
-#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/svc_udp.h"
+#include "zerg/svc_tcp.h"
 
 //===================================================================================================
 
@@ -95,18 +95,20 @@ void SERVICES_INFO_TABLE::clear()
 }
 
 //===================================================================================================
-//Zerg_Config
+//zerg_config
 //===================================================================================================
-Zerg_Config::Zerg_Config()
+namespace zerg
+{
+zerg_config::zerg_config()
 {
 }
 
-Zerg_Config::~Zerg_Config()
+zerg_config::~zerg_config()
 {
 }
 
 //根据SVCINFO得到IP地址信息
-int Zerg_Config::get_svcinfo_by_svcid(const soar::SERVICES_ID& svc_id,
+int zerg_config::get_svcinfo_by_svcid(const soar::SERVICES_ID& svc_id,
                                       soar::SERVICES_INFO& svc_info) const
 {
     const size_t IP_ADDR_LEN = 32;
@@ -128,7 +130,7 @@ int Zerg_Config::get_svcinfo_by_svcid(const soar::SERVICES_ID& svc_id,
     return ret;
 }
 
-int Zerg_Config::read_cfgfile()
+int zerg_config::read_cfgfile()
 {
     //
     int ret = 0;
@@ -181,7 +183,7 @@ int Zerg_Config::read_cfgfile()
 }
 
 //从配置中读取ZERG的配置
-int Zerg_Config::get_zerg_cfg(const zce::propertytree* conf_tree)
+int zerg_config::get_zerg_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -362,7 +364,7 @@ int Zerg_Config::get_zerg_cfg(const zce::propertytree* conf_tree)
 }
 
 //得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
-int Zerg_Config::get_svcidtable_cfg(const zce::propertytree* conf_tree)
+int zerg_config::get_svcidtable_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -404,7 +406,7 @@ int Zerg_Config::get_svcidtable_cfg(const zce::propertytree* conf_tree)
 }
 
 //Dump配置的数据信息
-void Zerg_Config::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
+void zerg_config::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
     svrd_cfg_base::dump_cfg_info(out_lvl);
 
@@ -420,3 +422,4 @@ void Zerg_Config::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
         );
     }
 }
+} //namespace zerg
