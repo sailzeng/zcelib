@@ -26,9 +26,6 @@
     <ClCompile Include="zerg\configure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg\console_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zerg\ip_restrict.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -65,9 +62,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg\configure.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg\console_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg\ip_restrict.h">

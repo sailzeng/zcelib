@@ -108,6 +108,7 @@
 #include <zce/event/reactor_epoll.h>
 #include <zce/thread/thread_task.h>
 #include <zce/thread/thread_wait_mgr.h>
+#include <zce/server/mml_command.h>
 #include <zce/server/get_option.h>
 #include <zce/server/server_status.h>
 #include <zce/bus/twoway_pipe.h>

@@ -57,17 +57,10 @@ public:
 
 public:
 
-    /*!
-    * @brief      构造函数
-    * @param      mml_string MML命令的字符串
-    * @param      pattern    MML命令格式
-    */
-    mml_cmd(const char* mml_string,
-            mml_cmd::MML_STRING_PATTERN pattern);
     ///默认构造函数
-    mml_cmd();
+    mml_cmd() = default;
     ///析构函数
-    ~mml_cmd();
+    ~mml_cmd() = default;
 
 protected:
 

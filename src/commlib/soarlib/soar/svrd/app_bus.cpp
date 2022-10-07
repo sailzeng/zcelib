@@ -274,7 +274,7 @@ int app_buspipe::app_exit()
 
     soar::svrd_buspipe::clear_inst();
 
-    //释放所有资源,会关闭所有的handle吗,zce::reactor 会，ACE的ZCE_Reactor看实现
+    //释放所有资源,会关闭所有的handle吗,zce::reactor 会，
     if (zce::reactor::instance())
     {
         zce::reactor::instance()->close();

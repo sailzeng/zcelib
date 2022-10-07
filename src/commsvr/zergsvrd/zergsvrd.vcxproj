@@ -108,7 +108,6 @@
     <ClCompile Include="zerg\auto_connect.cpp" />
     <ClCompile Include="zerg\comm_manager.cpp" />
     <ClCompile Include="zerg\configure.cpp" />
-    <ClCompile Include="zerg\console_handler.cpp" />
     <ClCompile Include="zerg\ip_restrict.cpp" />
     <ClCompile Include="zerg\main.cpp" />
     <ClCompile Include="zerg\predefine.cpp">
@@ -128,7 +127,6 @@
     <ClInclude Include="zerg\auto_connect.h" />
     <ClInclude Include="zerg\comm_manager.h" />
     <ClInclude Include="zerg\configure.h" />
-    <ClInclude Include="zerg\console_handler.h" />
     <ClInclude Include="zerg\ip_restrict.h" />
     <ClInclude Include="zerg\predefine.h" />
     <ClInclude Include="zerg\active_svc_set.h" />

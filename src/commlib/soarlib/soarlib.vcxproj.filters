@@ -91,6 +91,9 @@
     <ClCompile Include="soar\ogre\frame_ogre.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="soar\svrd\svc_console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="soar\zerg\frame_malloc.h">
@@ -181,6 +184,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar\ogre\frame_ogre.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar\svrd\svc_console.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

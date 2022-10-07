@@ -7,21 +7,6 @@ namespace zce
 /****************************************************************************************************
 class MML_Console_Command 控制台命令,多用于GM命令
 ****************************************************************************************************/
-//构造函数
-mml_cmd::mml_cmd(const char* mml_string,
-                 mml_cmd::MML_STRING_PATTERN pattern)
-{
-    mml_string_ = mml_string;
-    mml_command_.reserve(32);
-    parse_mml_cnd_string(mml_string, pattern);
-}
-//
-mml_cmd::mml_cmd()
-{
-}
-mml_cmd::~mml_cmd()
-{
-}
 
 //取得MML的语句
 int mml_cmd::get_mml_string(std::string& mml_string) const
@@ -101,6 +86,7 @@ const char* mml_cmd::get_cmd_parameter(const std::string& para_key)  const
 int mml_cmd::parse_mml_cnd_string(const char* mml_string,
                                   mml_cmd::MML_STRING_PATTERN pattern)
 {
+    mml_command_.reserve(32);
     switch (pattern)
     {
     case mml_cmd::MML_STRING_PATTERN::PATTERN_1:

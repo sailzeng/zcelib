@@ -1,118 +1,92 @@
-#include "zerg/predefine.h"
-//#include "zerg/console_handler.h"
-//#include "zerg/application.h"
-//#include "zerg/configure.h"
+#include "soar/predefine.h"
+#include "soar/svrd/svc_console.h"
+
 //
-//Zerg_Console_Handler::Zerg_Console_Handler(zce::reactor *reactor_inst):
-//    MML_Console_Handler(reactor_inst)
-//{
-//}
+namespace soar
+{
+svc_console::svc_console(zce::reactor *reactor_inst) :
+    zce::event_handler(reactor_inst)
+{
+}
+
+svc_console::~svc_console()
+{
+}
+
+int svc_console::process_mml_command()
+{
+    int ret = 0;
+    std::string mml_cmd;
+    ret_string_.clear();
+
+    ret = mml_process_.get_mml_command(mml_cmd);
+
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    //查询服务器状态
+    if (strcasecmp(mml_cmd.c_str(), "QUERY_STATS") == 0)
+    {
+        ret = cmd_get_zergstats();
+
+        if (ret != 0)
+        {
+            return ret;
+        }
+    }
+    else if (strcasecmp(mml_cmd.c_str(), "QUERY_PEER") == 0)
+    {
+        ret = cmd_get_peer_stats();
+
+        if (ret != 0)
+        {
+            return ret;
+        }
+    }
+    //关闭端口
+    else if (strcasecmp(mml_cmd.c_str(), "CLOSE_PEER") == 0)
+    {
+        ret = cmd_close_socketpeer();
+
+        if (ret != 0)
+        {
+            return ret;
+        }
+    }
+
+    //修改日志的输出级别
+    else if (strcasecmp(mml_cmd.c_str(), "MODIFY_LOG") == 0)
+    {
+        ret = cmd_modify_logpriority();
+
+        if (ret != 0)
+        {
+            return ret;
+        }
+    }
+    //关闭服务器
+    else if (strcasecmp(mml_cmd.c_str(), "CLOSE_SERVICE") == 0)
+    {
+        ret = cmd_close_services();
+
+        if (ret != 0)
+        {
+            return ret;
+        }
+    }
+    //To Do:来,添加你自己喜欢的监控
+    else
+    {
+        ZCE_LOG(RS_ERROR, "[zergsvr] Can't Process this command :%s.", mml_cmd.c_str());
+    }
+
+    //处理
+    ZCE_LOG(RS_INFO, "[zergsvr] Process command %s, Ret:%u.", mml_cmd.c_str(), ret);
+    return 0;
+}
 //
-//Zerg_Console_Handler::~Zerg_Console_Handler()
-//{
-//}
-//
-///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006年10月16日
-//Function        : Zerg_Console_Handler::process_mml_command
-//Return          : int
-//Parameter List  :
-//  Param1: char* ret_string 返回的数据
-//  Param2: size_t& str_len  输入输出参数,输入表示buf的长度,输出表示输出的数据长度
-//Description     :
-//Calls           :
-//Called By       :
-//Other           : str_len必须被改变，切记.
-//Modify Record   :
-//******************************************************************************************/
-//int Zerg_Console_Handler::process_mml_command(char *ret_string, size_t &str_len)
-//{
-//    int ret = 0;
-//
-//    std::string mml_cmd;
-//    ret = console_command_.GetMMLCommand(mml_cmd);
-//
-//    if (ret != 0)
-//    {
-//        return ret;
-//    }
-//
-//    //查询服务器状态
-//    if ( strcasecmp(mml_cmd.c_str(), "QUERY_STATS") == 0 )
-//    {
-//        ret = cmd_get_zergstats(ret_string, str_len);
-//
-//        if (ret != 0)
-//        {
-//            return ret;
-//        }
-//    }
-//    else if ( strcasecmp(mml_cmd.c_str(), "QUERY_PEER") == 0 )
-//    {
-//        ret = cmd_get_peer_stats(ret_string, str_len);
-//
-//        if (ret != 0)
-//        {
-//            return ret;
-//        }
-//    }
-//    //关闭端口
-//    else if (strcasecmp(mml_cmd.c_str(), "CLOSE_PEER") == 0)
-//    {
-//        ret = cmd_close_socketpeer(ret_string, str_len);
-//
-//        if (ret != 0)
-//        {
-//            return ret;
-//        }
-//    }
-//
-//    //修改日志的输出级别
-//    else if (strcasecmp(mml_cmd.c_str(), "MODIFY_LOG") == 0)
-//    {
-//        ret = cmd_modify_logpriority(ret_string, str_len);
-//
-//        if (ret != 0)
-//        {
-//            return ret;
-//        }
-//    }
-//    //关闭服务器
-//    else if (strcasecmp(mml_cmd.c_str(), "CLOSE_SERVICE") == 0)
-//    {
-//        ret = cmd_close_services(ret_string, str_len);
-//
-//        if (ret != 0)
-//        {
-//            return ret;
-//        }
-//    }
-//
-//    //To Do:来,添加你自己喜欢的监控
-//    else
-//    {
-//        ZCE_LOG(RS_ERROR,"[zergsvr] Can't Process this command :%s.", mml_cmd.c_str());
-//        str_len = 0;
-//    }
-//
-//    //处理
-//    ZCE_LOG(RS_INFO,"[zergsvr] Process command %s, Ret:%u.", mml_cmd.c_str(), ret);
-//    return 0;
-//}
-//
-///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006年10月17日
-//Function        : Zerg_Console_Handler::cmd_get_zergstats
-//Return          : int
-//Parameter List  :
-//  Param1: char* ret_string
-//  Param2: size_t& str_len
-//Description     : 得到ZERG服务器的状态
-//Calls           :
-//Called By       :
-//Other           : 一般耗时间
-//Modify Record   :
-//******************************************************************************************/
 //int Zerg_Console_Handler::cmd_get_zergstats(char *ret_string, size_t &str_len)
 //{
 //    size_t tmp_size = 0;
@@ -139,19 +113,7 @@
 //    return 0;
 //}
 //
-///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006年10月17日
-//Function        : Zerg_Console_Handler::cmd_get_peer_stats
-//Return          : int
-//Parameter List  :
-//  Param1: char* ret_string
-//  Param2: size_t& str_len
-//Description     : 查询联接的Peer状态,不一定能全部返回,而且比较耗时
-//Calls           :
-//Called By       :
-//Other           : 实际命令QUERY PEER:STARTNO=?,NUMQUERY=?;
-//Modify Record   :
-//******************************************************************************************/
+
 //int Zerg_Console_Handler::cmd_get_peer_stats(char *ret_string, size_t &str_len)
 //{
 //    int ret = 0;
@@ -249,19 +211,7 @@
 //    return 0;
 //}
 //
-///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006年10月17日
-//Function        : Zerg_Console_Handler::cmd_modify_logpriority
-//Return          : int
-//Parameter List  :
-//  Param1: char* ret_string
-//  Param2: size_t& str_len
-//Description     :
-//Calls           :
-//Called By       :
-//Other           : MODIFY LOG:PRIORITY=?;  PRIORITY为日志的优先级别,
-//Modify Record   :
-//******************************************************************************************/
+
 //int Zerg_Console_Handler::cmd_modify_logpriority(char *ret_string, size_t &str_len)
 //{
 //    int ret = 0;
@@ -286,3 +236,4 @@
 //    return 0;
 //}
 //
+}
