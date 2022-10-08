@@ -20,7 +20,8 @@ void tcppeer_set::init_services_peerinfo(size_t szpeer)
 }
 
 //根据SERVICEINFO查询PEER信息
-int tcppeer_set::find_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*& svrhandle)
+int tcppeer_set::find_services_peerinfo(const soar::OGRE_PEER_ID& svrinfo,
+                                        svc_tcp*& svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(svrinfo);
 
@@ -40,7 +41,7 @@ int tcppeer_set::find_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*& s
 }
 
 //设置PEER信息
-int tcppeer_set::add_services_peerinfo(const OGRE_PEER_ID& peer_info, svc_tcp* svrhandle)
+int tcppeer_set::add_services_peerinfo(const soar::OGRE_PEER_ID& peer_info, svc_tcp* svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
@@ -62,7 +63,7 @@ int tcppeer_set::add_services_peerinfo(const OGRE_PEER_ID& peer_info, svc_tcp* s
 }
 
 //根据Socket_Peer_Info,删除PEER信息,
-size_t tcppeer_set::del_services_peerinfo(const OGRE_PEER_ID& peer_info)
+size_t tcppeer_set::del_services_peerinfo(const soar::OGRE_PEER_ID& peer_info)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 

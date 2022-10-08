@@ -1,9 +1,10 @@
 #pragma once
 
 #pragma pack (1)
-/****************************************************************************************************
-class  OGRE_PEER_ID 　SOCKET PEER信息,适应IPV4的代码。
-****************************************************************************************************/
+
+namespace soar
+{
+//服务信息,为了同时表示IP+端口的模式采用了UNION方式
 class OGRE_PEER_ID
 {
 public:
@@ -50,3 +51,4 @@ public:
         return (size_t(peer_info.peer_port_) << 16) + peer_info.peer_ip_address_;
     }
 };
+}//namespace soar

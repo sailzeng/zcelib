@@ -1,12 +1,10 @@
 #pragma once
 
 #include "soar/ogre/peer_id.h"
-
-/******************************************************************************************
-struct  ogre4a_frame OGRE 服务器的内部命令帧头
-******************************************************************************************/
+namespace soar
+{
 #pragma pack (1)
-
+//OGRE 服务器的内部命令帧头
 class ogre4a_frame
 {
 public:
@@ -120,7 +118,7 @@ public:
 //---------------------------------------------------------------------------------------------
 //打印输出头部信息的控制宏
 #if defined _DEBUG || defined DEBUG
-#define DEBUGDUMP_OGRE_HEAD(x,y,z)      ogre4a_frame::dump_ogre_framehead(x,y,z);
+#define DEBUGDUMP_OGRE_HEAD(x,y,z)      soar::ogre4a_frame::dump_ogre_framehead(x,y,z);
 #else
 #define DEBUGDUMP_OGRE_HEAD(x,y,z)
 #endif
@@ -148,6 +146,7 @@ inline void ogre4a_frame::get_data(unsigned int& size_data, char* dest_data) con
 {
     size_data = ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD;
     memcpy(dest_data, frame_data_ + LEN_OF_OGRE_FRAME_HEAD, size_data);
+}
 }
 
 /******************************************************************************************

@@ -3,10 +3,13 @@
 #include "ogre/tcppeer_id_set.h"
 #include "ogre/auto_connect.h"
 
-class ogre4a_frame;
 class mmap_dequechunk;
-class soar::svrd_buspipe;
 
+namespace soar
+{
+class svrd_buspipe;
+class ogre4a_frame;
+}
 namespace ogre
 {
 class svc_tcp : public  zce::event_handler,
@@ -95,7 +98,7 @@ protected:
     int  process_connect_register();
 
     //处理发送错误
-    int process_senderror(ogre4a_frame* tmpbuf);
+    int process_senderror(soar::ogre4a_frame* tmpbuf);
 
     //得到一个PEER的状态
     PEER_STATUS  get_peer_status();
@@ -104,7 +107,7 @@ protected:
     int push_frame_to_recvpipe(unsigned int sz_data);
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(ogre4a_frame* ogre_frame);
+    int put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame);
 
     //合并发送的帧数据
     void unite_frame_sendlist();
@@ -127,7 +130,7 @@ public:
     static void get_maxpeer_num(size_t& maxaccept, size_t& maxconnect);
 
     //将数据从端口发送数据
-    static int process_send_data(ogre4a_frame* tmpbuf);
+    static int process_send_data(soar::ogre4a_frame* tmpbuf);
 
     /*!
     * @brief
@@ -135,7 +138,7 @@ public:
     * @param      peer_id  查询的PEER ID
     * @param      svchanle 返回查询到的句柄
     */
-    static int find_services_peer(const OGRE_PEER_ID& peer_id,
+    static int find_services_peer(const soar::OGRE_PEER_ID& peer_id,
                                   svc_tcp*& svchanle);
 
     ///对没有链接的的服务器进行重连
@@ -196,10 +199,10 @@ protected:
     OGRE_HANDLER_MODE             handler_mode_;
 
     ///接收数据的缓冲
-    ogre4a_frame* rcv_buffer_;
+    soar::ogre4a_frame* rcv_buffer_;
 
     ///发送的数据可能要排队
-    zce::lord_rings<ogre4a_frame*>  \
+    zce::lord_rings<soar::ogre4a_frame*>  \
         snd_buffer_deque_;
 
     ///这个PEER接受数据

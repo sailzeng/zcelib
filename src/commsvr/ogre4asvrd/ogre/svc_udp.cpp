@@ -129,7 +129,7 @@ int svc_udp::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote_addr)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     recvret = dgram_peer_.recvfrom(dgram_databuf_->frame_data_,
-                                   ogre4a_frame::MAX_OF_OGRE_DATA_LEN,
+                                   soar::ogre4a_frame::MAX_OF_OGRE_DATA_LEN,
                                    0,
                                    &remote_addr);
 
@@ -175,10 +175,10 @@ int svc_udp::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote_addr)
 
     dgram_databuf_->snd_peer_info_.set(remote_addr);
     dgram_databuf_->rcv_peer_info_ = this->peer_svc_info_;
-    dgram_databuf_->ogre_frame_len_ = static_cast<unsigned int>(ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
+    dgram_databuf_->ogre_frame_len_ = static_cast<unsigned int>(soar::ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
     //避免发生其他人填写的情况
     dgram_databuf_->ogre_frame_option_ = 0;
-    dgram_databuf_->ogre_frame_option_ |= ogre4a_frame::OGREDESC_PEER_UDP;
+    dgram_databuf_->ogre_frame_option_ |= soar::ogre4a_frame::OGREDESC_PEER_UDP;
 
     szrevc = recvret;
 
@@ -202,7 +202,7 @@ int svc_udp::pushdata_to_recvpipe()
 }
 
 //发送UDP数据。
-int svc_udp::send_alldata_to_udp(ogre4a_frame* send_frame)
+int svc_udp::send_alldata_to_udp(soar::ogre4a_frame* send_frame)
 {
     ssize_t szsend = -1;
 
@@ -221,7 +221,7 @@ int svc_udp::send_alldata_to_udp(ogre4a_frame* send_frame)
         if (ary_upd_peer_[i]->peer_svc_info_ == send_frame->snd_peer_info_)
         {
             szsend = ary_upd_peer_[i]->dgram_peer_.sendto(send_frame->frame_data_,
-                                                          send_frame->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD,
+                                                          send_frame->ogre_frame_len_ - soar::ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD,
                                                           0,
                                                           &remote_addr);
             break;

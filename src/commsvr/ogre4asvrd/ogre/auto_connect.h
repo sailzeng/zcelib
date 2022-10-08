@@ -33,7 +33,7 @@ public:
     * @return     int  == 0表示成功
     * @param      peer_id 要链接服务器的PEER ID
     */
-    int connect_server_by_peerid(const OGRE_PEER_ID& peer_id);
+    int connect_server_by_peerid(const soar::OGRE_PEER_ID& peer_id);
 
 protected:
     /*!

@@ -16,19 +16,21 @@ public:
     void init_services_peerinfo(size_t szpeer);
 
     ///查询配置信息
-    int find_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*&);
+    int find_services_peerinfo(const soar::OGRE_PEER_ID& svrinfo,
+                               svc_tcp*&);
     ///设置配置信息
-    int add_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*);
+    int add_services_peerinfo(const soar::OGRE_PEER_ID& svrinfo,
+                              svc_tcp*);
     ///删除配置信息
-    size_t del_services_peerinfo(const OGRE_PEER_ID& svrinfo);
+    size_t del_services_peerinfo(const soar::OGRE_PEER_ID& svrinfo);
     //
     void clear_and_close();
 
 protected:
     //
-    typedef std::unordered_map < OGRE_PEER_ID,
+    typedef std::unordered_map < soar::OGRE_PEER_ID,
         svc_tcp*,
-        HASH_OF_OGREPEERID > MAP_OF_SOCKETPEER_ID;
+        soar::HASH_OF_OGREPEERID > MAP_OF_SOCKETPEER_ID;
     //
     MAP_OF_SOCKETPEER_ID  peer_info_set_;
 };

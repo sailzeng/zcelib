@@ -33,7 +33,7 @@ void buffer_storage::uninit_buffer_list()
 
     for (size_t i = 0; i < sz_of_buffer; ++i)
     {
-        ogre4a_frame::delete_ogre(frame_buffer_ary_[i]);
+        soar::ogre4a_frame::delete_ogre(frame_buffer_ary_[i]);
         frame_buffer_ary_[i] = NULL;
     }
 
@@ -41,7 +41,7 @@ void buffer_storage::uninit_buffer_list()
     size_buffer_alloc_ = 0;
 }
 
-ogre4a_frame* buffer_storage::allocate_byte_buffer()
+soar::ogre4a_frame* buffer_storage::allocate_byte_buffer()
 {
     //缓冲区使用完了,扩展
     if (true == frame_buffer_ary_.empty())
@@ -49,14 +49,14 @@ ogre4a_frame* buffer_storage::allocate_byte_buffer()
         extend_buffer_list();
     }
 
-    ogre4a_frame* tmppr = frame_buffer_ary_[0];
+    soar::ogre4a_frame* tmppr = frame_buffer_ary_[0];
     frame_buffer_ary_[0] = NULL;
     frame_buffer_ary_.pop_front();
     return tmppr;
 }
 
 //
-void buffer_storage::free_byte_buffer(ogre4a_frame* ptrbuf)
+void buffer_storage::free_byte_buffer(soar::ogre4a_frame* ptrbuf)
 {
     ptrbuf->reset_framehead();
     frame_buffer_ary_.push_back(ptrbuf);
@@ -69,8 +69,8 @@ void buffer_storage::extend_buffer_list(size_t szlist)
     ZCE_LOG(RS_INFO, "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
             szlist,
             size_buffer_alloc_,
-            szlist * (ogre4a_frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
-            size_buffer_alloc_ * (ogre4a_frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
+            szlist * (soar::ogre4a_frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
+            size_buffer_alloc_ * (soar::ogre4a_frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
     );
 
     //重新扩展一下空间
@@ -79,7 +79,7 @@ void buffer_storage::extend_buffer_list(size_t szlist)
     //将新的NEW数据装载进去
     for (size_t i = 0; i < szlist; ++i)
     {
-        ogre4a_frame* tmppr = ogre4a_frame::new_ogre(ogre4a_frame::MAX_OF_OGRE_FRAME_LEN);
+        soar::ogre4a_frame* tmppr = soar::ogre4a_frame::new_ogre(soar::ogre4a_frame::MAX_OF_OGRE_FRAME_LEN);
         tmppr->reset_framehead();
         frame_buffer_ary_.push_back(tmppr);
     }

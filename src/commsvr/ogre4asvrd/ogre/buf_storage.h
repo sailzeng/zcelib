@@ -5,7 +5,7 @@ namespace ogre
 class buffer_storage
 {
     //
-    typedef zce::lord_rings <ogre4a_frame*> SAIL_FRAME_BUFFER_POOL;
+    typedef zce::lord_rings <soar::ogre4a_frame*> SAIL_FRAME_BUFFER_POOL;
 
 protected:
 
@@ -25,9 +25,9 @@ public:
     void uninit_buffer_list();
 
     //分配一个Buffer到List中
-    ogre4a_frame* allocate_byte_buffer();
+    soar::ogre4a_frame* allocate_byte_buffer();
     //释放一个Buffer到List中
-    void free_byte_buffer(ogre4a_frame* ptrbuf);
+    void free_byte_buffer(soar::ogre4a_frame* ptrbuf);
 
     //扩展BufferList
     void extend_buffer_list(size_t szlist = EXTEND_NUM_OF_LIST);

@@ -30,7 +30,7 @@ public:
 public:
 
     //发送UDP数据给
-    static int send_alldata_to_udp(ogre4a_frame* send_frame);
+    static int send_alldata_to_udp(soar::ogre4a_frame* send_frame);
 
 protected:
 
@@ -47,10 +47,10 @@ protected:
     //邦定的地址
     zce::skt::addr_in      udp_bind_addr_;
     //Socket_Peer_Info
-    OGRE_PEER_ID           peer_svc_info_;
+    soar::OGRE_PEER_ID           peer_svc_info_;
 
     //
-    ogre4a_frame*      dgram_databuf_;
+    soar::ogre4a_frame*      dgram_databuf_;
 
     //IP限制管理器
     ip_restrict* ip_restrict_;

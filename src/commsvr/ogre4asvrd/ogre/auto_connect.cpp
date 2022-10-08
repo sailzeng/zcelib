@@ -98,7 +98,7 @@ int auto_connect::connect_all_server(size_t& num_vaild, size_t& num_succ, size_t
     return 0;
 }
 
-int auto_connect::connect_server_by_peerid(const OGRE_PEER_ID& socket_peer)
+int auto_connect::connect_server_by_peerid(const soar::OGRE_PEER_ID& socket_peer)
 {
     TCP_PEER_MODULE_INFO peer_module;
     peer_module.peer_id_ = socket_peer;

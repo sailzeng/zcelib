@@ -55,7 +55,8 @@ int comm_manager::get_config(const configure* config)
     int ret = 0;
 
     //设置处理的帧的最大长度
-    ogre4a_frame::set_max_framedata_len(config->ogre_cfg_data_.max_data_len_);
+    soar::ogre4a_frame::set_max_framedata_len(
+        config->ogre_cfg_data_.max_data_len_);
 
     //IP限制,
     ret = ip_restrict::instance()->get_config(config);
@@ -86,7 +87,8 @@ int comm_manager::get_all_senddata_to_write(size_t& procframe)
          soar::svrd_buspipe::instance()->is_empty_sendbus() == false &&
          procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
-        ogre4a_frame* send_frame = buffer_storage::instance()->allocate_byte_buffer();
+        soar::ogre4a_frame* send_frame =
+            buffer_storage::instance()->allocate_byte_buffer();
 
         //
         ret = soar::svrd_buspipe::instance()->pop_front_sendbus(
@@ -100,7 +102,7 @@ int comm_manager::get_all_senddata_to_write(size_t& procframe)
         }
 
         //如果FRAME的长度
-        if (send_frame->ogre_frame_len_ > ogre4a_frame::MAX_OF_OGRE_FRAME_LEN)
+        if (send_frame->ogre_frame_len_ > soar::ogre4a_frame::MAX_OF_OGRE_FRAME_LEN)
         {
             ZCE_LOG(RS_ALERT, "comm_manager::get_all_senddata_to_write len %u\n",
                     send_frame->ogre_frame_len_);
@@ -110,7 +112,7 @@ int comm_manager::get_all_senddata_to_write(size_t& procframe)
         }
 
         //如果是TCP
-        if (send_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_PEER_TCP)
+        if (send_frame->ogre_frame_option_ & soar::ogre4a_frame::OGREDESC_PEER_TCP)
         {
             ret = svc_tcp::process_send_data(send_frame);
 
@@ -123,7 +125,7 @@ int comm_manager::get_all_senddata_to_write(size_t& procframe)
         }
 
         //如果是UDP
-        else if (send_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_PEER_UDP)
+        else if (send_frame->ogre_frame_option_ & soar::ogre4a_frame::OGREDESC_PEER_UDP)
         {
             //不检查错误
             svc_udp::send_alldata_to_udp(send_frame);

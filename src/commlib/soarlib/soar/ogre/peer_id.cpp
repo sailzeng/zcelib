@@ -1,10 +1,8 @@
 #include "soar/predefine.h"
 #include "soar/ogre/peer_id.h"
 
-/****************************************************************************************************
-class  Socket_Peer_Info 　服务信息,为了同时表示IP+端口的模式采用了UNION方式
-****************************************************************************************************/
-
+namespace soar
+{
 OGRE_PEER_ID::OGRE_PEER_ID(unsigned int peer_ip_address, unsigned short peer_port) :
     peer_ip_address_(peer_ip_address),
     peer_port_(peer_port)
@@ -59,4 +57,5 @@ bool OGRE_PEER_ID::operator <(const OGRE_PEER_ID& others) const
     }
 
     return false;
+}
 }

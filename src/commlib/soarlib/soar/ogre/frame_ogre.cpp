@@ -2,9 +2,8 @@
 #include "soar/enum/error_code.h"
 #include "soar/ogre/frame_ogre.h"
 
-/******************************************************************************************
-struct  ogre4a_frame OGRE 服务器的内部命令帧头
-******************************************************************************************/
+namespace soar
+{
 //最大的DATA数据区长度,可以配置
 size_t ogre4a_frame::MAX_OF_OGRE_DATA_LEN = 64 * 1024;
 //最大的FRAME的长度,为MAX_OF_OGRE_DATA_LEN ＋ LEN_OF_OGRE_FRAME_HEAD
@@ -112,4 +111,5 @@ void ogre4a_frame::dump_ogre_framehead(const char* outstr,
                                        zce::LOG_PRIORITY log_priority) const
 {
     this->dump_ogre_framehead(this, outstr, log_priority);
+}
 }
