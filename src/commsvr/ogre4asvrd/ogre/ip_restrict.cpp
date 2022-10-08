@@ -1,6 +1,6 @@
-#include "ogre_predefine.h"
-#include "ogre_configure.h"
-#include "ogre_ip_restrict.h"
+#include "ogre/predefine.h"
+#include "ogre/configure.h"
+#include "ogre/ip_restrict.h"
 
 //单子实例
 Ogre_IPRestrict_Mgr* Ogre_IPRestrict_Mgr::instance_ = NULL;

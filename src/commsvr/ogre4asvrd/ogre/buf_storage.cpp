@@ -1,6 +1,6 @@
-#include "ogre_predefine.h"
-#include "ogre_buf_storage.h"
-#include "ogre_configure.h"
+#include "ogre/predefine.h"
+#include "ogre/buf_storage.h"
+#include "ogre/configure.h"
 
 //instance函数使用的东西
 Ogre_Buffer_Storage* Ogre_Buffer_Storage::instance_ = NULL;

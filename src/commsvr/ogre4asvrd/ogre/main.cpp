@@ -1,7 +1,7 @@
-#include "ogre_predefine.h"
-#include "ogre_application.h"
-#include "ogre_app_timer.h"
-#include "ogre_configure.h"
+#include "ogre/predefine.h"
+#include "ogre/application.h"
+#include "ogre/app_timer.h"
+#include "ogre/configure.h"
 
 int main(int argc, const char* argv[])
 {

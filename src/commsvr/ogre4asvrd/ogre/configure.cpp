@@ -1,7 +1,7 @@
-#include "ogre_predefine.h"
-#include "ogre_configure.h"
-#include "ogre_tcp_ctrl_handler.h"
-#include "ogre_comm_manager.h"
+#include "ogre/predefine.h"
+#include "ogre/configure.h"
+#include "ogre/svc_tcp.h"
+#include "ogre/comm_manager.h"
 
 //======================================================================================
 

@@ -1,8 +1,8 @@
-#include "ogre_predefine.h"
-#include "ogre_buf_storage.h"
-#include "ogre_configure.h"
-#include "ogre_ip_restrict.h"
-#include "ogre_udp_ctrl_handler.h"
+#include "ogre/predefine.h"
+#include "ogre/buf_storage.h"
+#include "ogre/configure.h"
+#include "ogre/ip_restrict.h"
+#include "ogre/svc_udp.h"
 
 //所有UPD端口的句柄
 std::vector<Ogre_UDPSvc_Hdl*> Ogre_UDPSvc_Hdl::ary_upd_peer_;

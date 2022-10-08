@@ -1,7 +1,7 @@
-#include "ogre_predefine.h"
-#include "ogre_auto_connect.h"
-#include "ogre_application.h"
-#include "ogre_tcp_ctrl_handler.h"
+#include "ogre/predefine.h"
+#include "ogre/auto_connect.h"
+#include "ogre/application.h"
+#include "ogre/svc_tcp.h"
 
 //
 Ogre_Connect_Server::Ogre_Connect_Server()

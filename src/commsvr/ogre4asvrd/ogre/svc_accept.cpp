@@ -1,8 +1,8 @@
-#include "ogre_predefine.h"
-#include "ogre_tcp_ctrl_handler.h"
-#include "ogre_configure.h"
-#include "ogre_ip_restrict.h"
-#include "ogre_accept_handler.h"
+#include "ogre/predefine.h"
+#include "ogre/svc_tcp.h"
+#include "ogre/configure.h"
+#include "ogre/ip_restrict.h"
+#include "ogre/svc_accept.h"
 
 /****************************************************************************************************
 class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler,

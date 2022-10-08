@@ -1,7 +1,7 @@
 #ifndef OGRE_TCP_ACCEPT_HANDLER_H_
 #define OGRE_TCP_ACCEPT_HANDLER_H_
 
-#include "ogre_configure.h"
+#include "ogre/configure.h"
 
 class Ogre_IPRestrict_Mgr;
 

@@ -1,7 +1,7 @@
-#include "ogre_predefine.h"
-#include "ogre_app_timer.h"
-#include "ogre_tcp_ctrl_handler.h"
-#include "ogre_application.h"
+#include "ogre/predefine.h"
+#include "ogre/app_timer.h"
+#include "ogre/svc_tcp.h"
+#include "ogre/application.h"
 
 /****************************************************************************************************
 class  Ogre_App_Timer_Handler

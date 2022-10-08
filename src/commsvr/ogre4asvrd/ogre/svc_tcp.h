@@ -1,8 +1,8 @@
 #ifndef OGRE_TCP_CONTROL_SERVICE_H_
 #define OGRE_TCP_CONTROL_SERVICE_H_
 
-#include "ogre_tcppeer_id_set.h"
-#include "ogre_auto_connect.h"
+#include "ogre/tcppeer_id_set.h"
+#include "ogre/auto_connect.h"
 
 class ogre4a_frame;
 class mmap_dequechunk;

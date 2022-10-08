@@ -1,12 +1,12 @@
-#include "ogre_predefine.h"
-#include "ogre_comm_manager.h"
+#include "ogre/predefine.h"
+#include "ogre/comm_manager.h"
 
-#include "ogre_udp_ctrl_handler.h"
-#include "ogre_accept_handler.h"
-#include "ogre_tcp_ctrl_handler.h"
-#include "ogre_buf_storage.h"
-#include "ogre_configure.h"
-#include "ogre_ip_restrict.h"
+#include "ogre/svc_udp.h"
+#include "ogre/svc_accept.h"
+#include "ogre/svc_tcp.h"
+#include "ogre/buf_storage.h"
+#include "ogre/configure.h"
+#include "ogre/ip_restrict.h"
 
 Ogre_Comm_Manger* Ogre_Comm_Manger::instance_ = NULL;
 

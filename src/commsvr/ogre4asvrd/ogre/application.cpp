@@ -1,11 +1,11 @@
-#include "ogre_predefine.h"
-#include "ogre_app_timer.h"
-#include "ogre_buf_storage.h"
-#include "ogre_configure.h"
-#include "ogre_comm_manager.h"
-#include "ogre_tcp_ctrl_handler.h"
-#include "ogre_ip_restrict.h"
-#include "ogre_application.h"
+#include "ogre/predefine.h"
+#include "ogre/app_timer.h"
+#include "ogre/buf_storage.h"
+#include "ogre/configure.h"
+#include "ogre/comm_manager.h"
+#include "ogre/svc_tcp.h"
+#include "ogre/ip_restrict.h"
+#include "ogre/application.h"
 
 /****************************************************************************************************
 class  Ogre_Service_App

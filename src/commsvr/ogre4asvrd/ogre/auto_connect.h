@@ -3,7 +3,7 @@
 #ifndef OGRE_SERVER_AUTO_CONNECT_H_
 #define OGRE_SERVER_AUTO_CONNECT_H_
 
-#include "ogre_configure.h"
+#include "ogre/configure.h"
 
 class Ogre_TCP_Svc_Handler;
 

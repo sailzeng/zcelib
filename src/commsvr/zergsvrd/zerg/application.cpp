@@ -1,6 +1,5 @@
 #include "zerg/predefine.h"
 #include "zerg/application.h"
-#include "zerg/console_handler.h"
 #include "zerg/svc_udp.h"
 #include "zerg/svc_tcp.h"
 #include "zerg/ip_restrict.h"

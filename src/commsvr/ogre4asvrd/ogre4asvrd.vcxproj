@@ -11,36 +11,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ogre_accept_handler.cpp" />
-    <ClCompile Include="ogre_application.cpp" />
-    <ClCompile Include="ogre_app_timer.cpp" />
-    <ClCompile Include="ogre_auto_connect.cpp" />
-    <ClCompile Include="ogre_buf_storage.cpp" />
-    <ClCompile Include="ogre_comm_manager.cpp" />
-    <ClCompile Include="ogre_configure.cpp" />
-    <ClCompile Include="ogre_ip_restrict.cpp" />
-    <ClCompile Include="ogre_main.cpp" />
-    <ClCompile Include="ogre_predefine.cpp">
+    <ClCompile Include="ogre\svc_accept.cpp" />
+    <ClCompile Include="ogre\application.cpp" />
+    <ClCompile Include="ogre\app_timer.cpp" />
+    <ClCompile Include="ogre\auto_connect.cpp" />
+    <ClCompile Include="ogre\buf_storage.cpp" />
+    <ClCompile Include="ogre\comm_manager.cpp" />
+    <ClCompile Include="ogre\configure.cpp" />
+    <ClCompile Include="ogre\ip_restrict.cpp" />
+    <ClCompile Include="ogre\main.cpp" />
+    <ClCompile Include="ogre\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ogre/predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ogre/predefine.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ogre_tcppeer_id_set.cpp" />
-    <ClCompile Include="ogre_tcp_ctrl_handler.cpp" />
-    <ClCompile Include="ogre_udp_ctrl_handler.cpp" />
+    <ClCompile Include="ogre\tcppeer_id_set.cpp" />
+    <ClCompile Include="ogre\svc_tcp.cpp" />
+    <ClCompile Include="ogre\svc_udp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ogre_accept_handler.h" />
-    <ClInclude Include="ogre_application.h" />
-    <ClInclude Include="ogre_app_timer.h" />
-    <ClInclude Include="ogre_auto_connect.h" />
-    <ClInclude Include="ogre_buf_storage.h" />
-    <ClInclude Include="ogre_comm_manager.h" />
-    <ClInclude Include="ogre_configure.h" />
-    <ClInclude Include="ogre_ip_restrict.h" />
-    <ClInclude Include="ogre_predefine.h" />
-    <ClInclude Include="ogre_tcppeer_id_set.h" />
-    <ClInclude Include="ogre_tcp_ctrl_handler.h" />
-    <ClInclude Include="ogre_udp_ctrl_handler.h" />
+    <ClInclude Include="ogre\svc_accept.h" />
+    <ClInclude Include="ogre\application.h" />
+    <ClInclude Include="ogre\app_timer.h" />
+    <ClInclude Include="ogre\auto_connect.h" />
+    <ClInclude Include="ogre\buf_storage.h" />
+    <ClInclude Include="ogre\comm_manager.h" />
+    <ClInclude Include="ogre\configure.h" />
+    <ClInclude Include="ogre\ip_restrict.h" />
+    <ClInclude Include="ogre\predefine.h" />
+    <ClInclude Include="ogre\tcppeer_id_set.h" />
+    <ClInclude Include="ogre\svc_tcp.h" />
+    <ClInclude Include="ogre\svc_udp.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\commlib\soarlib\soarlib.vcxproj">
@@ -103,9 +105,9 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;.</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>ogre/predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <BrowseInformation>true</BrowseInformation>
@@ -127,9 +129,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;.</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>ogre/predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

@@ -1,11 +1,11 @@
-#include "ogre_predefine.h"
-#include "ogre_tcppeer_id_set.h"
-#include "ogre_app_timer.h"
-#include "ogre_configure.h"
-#include "ogre_buf_storage.h"
-#include "ogre_auto_connect.h"
+#include "ogre/predefine.h"
+#include "ogre/tcppeer_id_set.h"
+#include "ogre/app_timer.h"
+#include "ogre/configure.h"
+#include "ogre/buf_storage.h"
+#include "ogre/auto_connect.h"
 
-#include "ogre_tcp_ctrl_handler.h"
+#include "ogre/svc_tcp.h"
 
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler

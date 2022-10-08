@@ -134,6 +134,14 @@
     <ClInclude Include="zerg\svc_tcp.h" />
     <ClInclude Include="zerg\svc_udp.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\commlib\soarlib\soarlib.vcxproj">
+      <Project>{c1a3c107-5c21-4549-91a1-4df51a2a3aa7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\commlib\zcelib\zcelib.vcxproj">
+      <Project>{c2d23fe7-03ed-4516-9603-604ba4617fdb}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
