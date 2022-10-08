@@ -21,7 +21,8 @@ int svc_console::process_mml_command()
     std::string mml_cmd;
     rsp_string_.clear();
 
-    ret = mml_process_.parse_mml(mml_cmd);
+    ret = mml_process_.parse_mml(req_string_.c_str(),
+                                 zce::mml_cmd::MML_PATTERN::PATTERN_1);
 
     ret = mml_process_.get_command(mml_cmd);
 

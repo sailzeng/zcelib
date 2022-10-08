@@ -738,7 +738,4 @@ int er_connect(zce::aio::worker* worker,
 
     return 0;
 }
-
-
-
 }

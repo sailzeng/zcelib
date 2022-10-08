@@ -18,13 +18,13 @@ protected:
 public:
 
     //增加调用register_func_cmd
-    virtual int app_start(int argc, const char* argv[]);
+    int app_start(int argc, const char* argv[]) override;
 
     //运行处理,
-    virtual int app_run();
+    int app_run() override;
 
     //退出处理
-    virtual int app_exit();
+    int app_exit() override;
 
 protected:
 

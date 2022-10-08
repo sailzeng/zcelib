@@ -42,7 +42,7 @@ class mml_cmd
 public:
 
     ///MML语句的格式，
-    enum class MML_STRING_PATTERN
+    enum class MML_PATTERN
     {
         ///第一种，对应函数parse_mml_str_1
         ///CMD_1 A = 1 B = 2 C = " i love c++!" D
@@ -79,7 +79,7 @@ public:
     * @param[in]  pattern    命令格式
     */
     int parse_mml(const char* mml_string,
-                  mml_cmd::MML_STRING_PATTERN pattern);
+                  mml_cmd::MML_PATTERN pattern);
 
     /*!
     * @brief      取得（分析）MML的语句

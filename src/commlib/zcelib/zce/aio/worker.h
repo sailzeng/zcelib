@@ -65,7 +65,6 @@ protected:
 
     //!在线程中处理AIO操作，会根据type分解工作到下面这些函数
     void process_aio(zce::aio::AIO_ATOM* base);
-
     //! 在线程中处理文件操作
     void process_fs(zce::aio::FS_ATOM* base);
     //! 在线程中处理目录操作
@@ -77,7 +76,6 @@ protected:
     //! 在线程中处理Socket请求
     void process_socket(zce::aio::SOCKET_ATOM* base);
 
-    
 protected:
 
     //! Caller的ID生成器

@@ -85,15 +85,15 @@ const char* mml_cmd::get_parameter(const std::string& para_key)  const
 
 //MML语句分析
 int mml_cmd::parse_mml(const char* mml_string,
-                       mml_cmd::MML_STRING_PATTERN pattern)
+                       mml_cmd::MML_PATTERN pattern)
 {
     mml_command_.reserve(32);
     switch (pattern)
     {
-    case mml_cmd::MML_STRING_PATTERN::PATTERN_1:
+    case mml_cmd::MML_PATTERN::PATTERN_1:
         parse_mml_str_1(mml_string);
         break;
-    case mml_cmd::MML_STRING_PATTERN::PATTERN_2:
+    case mml_cmd::MML_PATTERN::PATTERN_2:
         parse_mml_str_2(mml_string);
         break;
     default:
