@@ -14,7 +14,7 @@ private:
     };
 public:
 
-    FSM_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+    FSM_1(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
         async_fsm(async_mgr, create_cmd)
     {
     }
@@ -25,9 +25,9 @@ protected:
     }
 
 public:
-    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
+    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object*>(new FSM_1(async_mgr, create_cmd));
+        return dynamic_cast<zce::async_object*>(new FSM_1(async_mgr, create_cmd));
     }
 
     virtual void on_run(bool first_run, bool& continue_run)
@@ -80,7 +80,7 @@ private:
     };
 
 public:
-    FSM_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
+    FSM_2(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
         async_fsm(async_mgr, create_cmd)
     {
     }
@@ -89,9 +89,9 @@ protected:
     {
     }
 public:
-    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
+    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object*>(new FSM_2(async_mgr, create_cmd));
+        return dynamic_cast<zce::async_object*>(new FSM_2(async_mgr, create_cmd));
     }
 
     virtual void on_run(bool first_run, bool& continue_run)
@@ -169,17 +169,17 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-//class Coroutine_1 : public zce::Async_Coroutine
+//class Coroutine_1 : public zce::async_coroutine
 //{
 //public:
-//    Coroutine_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
-//        zce::Async_Coroutine(async_mgr, create_cmd)
+//    Coroutine_1(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
+//        zce::async_coroutine(async_mgr, create_cmd)
 //    {
 //    }
 //
-//    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
+//    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
 //    {
-//        return dynamic_cast<zce::Async_Object*>(new Coroutine_1(async_mgr, create_cmd));
+//        return dynamic_cast<zce::async_object*>(new Coroutine_1(async_mgr, create_cmd));
 //    }
 //
 //    ///协程运行,你要重载的函数
@@ -195,17 +195,17 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
 //    }
 //};
 //
-//class Coroutine_2 : public zce::Async_Coroutine
+//class Coroutine_2 : public zce::async_coroutine
 //{
 //public:
-//    Coroutine_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
-//        zce::Async_Coroutine(async_mgr, create_cmd)
+//    Coroutine_2(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
+//        zce::async_coroutine(async_mgr, create_cmd)
 //    {
 //    }
 //
-//    zce::Async_Object* clone(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd)
+//    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
 //    {
-//        return dynamic_cast<zce::Async_Object*>(new Coroutine_2(async_mgr, create_cmd));
+//        return dynamic_cast<zce::async_object*>(new Coroutine_2(async_mgr, create_cmd));
 //    }
 //
 //    virtual void coroutine_run()
@@ -229,7 +229,7 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
 //    //const unsigned int CMD_3 = 10003;
 //
 //    zce::Timer_Queue* time_queue = new zce::Timer_Wheel();
-//    zce::Async_CoroutineMgr* mgr = new zce::Async_CoroutineMgr();
+//    zce::async_coroutine_mgr* mgr = new zce::async_coroutine_mgr();
 //    mgr->initialize(time_queue, 100, 2000);
 //    mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));
 //    mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));

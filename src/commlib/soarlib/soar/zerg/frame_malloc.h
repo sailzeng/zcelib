@@ -21,14 +21,14 @@
 #include "soar/zerg/frame_zerg.h"
 
 template <typename zce_lock >
-class ZergFrame_Mallocor
+class zergframe_mallocor
 {
 public:
 
     //构造函数
-    ZergFrame_Mallocor();
+    zergframe_mallocor();
     //析构函数
-    ~ZergFrame_Mallocor();
+    ~zergframe_mallocor();
 
 public:
 
@@ -91,7 +91,7 @@ protected:
 public:
 
     //得到SINGLETON的实例
-    static ZergFrame_Mallocor* instance();
+    static zergframe_mallocor* instance();
     //清理SINGLETON的实例
     static void clear_inst();
 
@@ -125,17 +125,17 @@ protected:
 protected:
 
     //单子实例
-    static ZergFrame_Mallocor* instance_;
+    static zergframe_mallocor* instance_;
 };
 
 //初始化
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::initialize(size_t init_num,
+void zergframe_mallocor<zce_lock>::initialize(size_t init_num,
                                               size_t max_frame_len)
 {
     ZCE_ASSERT(max_frame_len > 2048 && init_num > 8);
 
-    ZCE_LOG(RS_INFO, "[framework] ZergFrame_Mallocor::initialize init num=%u,max_frame_len=%u.",
+    ZCE_LOG(RS_INFO, "[framework] zergframe_mallocor::initialize init num=%u,max_frame_len=%u.",
             init_num,
             max_frame_len);
 
@@ -158,14 +158,14 @@ void ZergFrame_Mallocor<zce_lock>::initialize(size_t init_num,
 
 //最大可以分配的FRAME的长度
 template <typename zce_lock >
-size_t ZergFrame_Mallocor<zce_lock>::get_max_framelen()
+size_t zergframe_mallocor<zce_lock>::get_max_framelen()
 {
     return size_appframe_[NUM_OF_FRAMELIST - 1];
 }
 
 //根据要求的的FRAME尺寸大小，分配一个FRAME
 template <typename zce_lock >
-inline size_t ZergFrame_Mallocor<zce_lock>::get_roundup(size_t sz_frame)
+inline size_t zergframe_mallocor<zce_lock>::get_roundup(size_t sz_frame)
 {
     //也许循环找还快
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
@@ -183,14 +183,14 @@ inline size_t ZergFrame_Mallocor<zce_lock>::get_roundup(size_t sz_frame)
 
 //构造函数
 template <typename zce_lock >
-ZergFrame_Mallocor<zce_lock>::ZergFrame_Mallocor()
+zergframe_mallocor<zce_lock>::zergframe_mallocor()
 {
     memset(size_appframe_, 0, sizeof(size_appframe_));
 }
 
 //析构函数
 template <typename zce_lock >
-ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
+zergframe_mallocor<zce_lock>::~zergframe_mallocor()
 {
     //
     ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
@@ -236,7 +236,7 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
 
 //根据需要长度，从池子分配一个APPFRAME
 template <typename zce_lock >
-soar::zerg_frame* ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
+soar::zerg_frame* zergframe_mallocor<zce_lock>::alloc_appframe(size_t frame_len)
 {
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
     size_t hk = get_roundup(frame_len);
@@ -258,7 +258,7 @@ soar::zerg_frame* ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::zerg_frame* model_freame,
+void zergframe_mallocor<zce_lock>::clone_appframe(const soar::zerg_frame* model_freame,
                                                   soar::zerg_frame*& cloned_frame)
 {
     //
@@ -269,7 +269,7 @@ void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::zerg_frame* model_
 
 //释放一个APPFRAME到池子
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::free_appframe(soar::zerg_frame* proc_frame)
+void zergframe_mallocor<zce_lock>::free_appframe(soar::zerg_frame* proc_frame)
 {
     ZCE_ASSERT(proc_frame);
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
@@ -279,7 +279,7 @@ void ZergFrame_Mallocor<zce_lock>::free_appframe(soar::zerg_frame* proc_frame)
 
 //调整池子的容量
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::adjust_pool_capacity()
+void zergframe_mallocor<zce_lock>::adjust_pool_capacity()
 {
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
 
@@ -302,7 +302,7 @@ void ZergFrame_Mallocor<zce_lock>::adjust_pool_capacity()
 
 //扩展LIST的容量
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t extend_num)
+void zergframe_mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t extend_num)
 {
     size_t old_capacity = frame_pool_[list_no].capacity();
     frame_pool_[list_no].resize(old_capacity + extend_num);
@@ -316,11 +316,11 @@ void ZergFrame_Mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t e
 
 //得到SINGLETON的实例
 template <typename zce_lock >
-ZergFrame_Mallocor<zce_lock>* ZergFrame_Mallocor<zce_lock>::instance()
+zergframe_mallocor<zce_lock>* zergframe_mallocor<zce_lock>::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new ZergFrame_Mallocor();
+        instance_ = new zergframe_mallocor();
     }
 
     return instance_;
@@ -328,7 +328,7 @@ ZergFrame_Mallocor<zce_lock>* ZergFrame_Mallocor<zce_lock>::instance()
 
 //清理SINGLETON的实例
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::clear_inst()
+void zergframe_mallocor<zce_lock>::clear_inst()
 {
     if (instance_)
     {
@@ -338,7 +338,7 @@ void ZergFrame_Mallocor<zce_lock>::clear_inst()
 }
 
 //
-typedef ZergFrame_Mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
-typedef ZergFrame_Mallocor<zce::thread_light_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
+typedef zergframe_mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
+typedef zergframe_mallocor<zce::thread_light_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

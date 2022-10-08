@@ -26,21 +26,21 @@
 
 namespace zce
 {
-class Async_Obj_Mgr;
+class async_obj_mgr;
 
 /*!
 * @brief      异步对象的基类
 *
 */
-class Async_Object
+class async_object
 {
-    friend class Async_Obj_Mgr;
+    friend class async_obj_mgr;
 
 public:
-    Async_Object(Async_Obj_Mgr* async_mgr,
+    async_object(async_obj_mgr* async_mgr,
                  uint32_t create_cmd);
 protected:
-    virtual ~Async_Object();
+    virtual ~async_object();
 
 public:
 
@@ -59,15 +59,15 @@ public:
 
     /*!
     * @brief      克隆自己
-    * @return     zce::Async_Object*
+    * @return     zce::async_object*
     * @param      async_mgr
     */
-    virtual Async_Object* clone(Async_Obj_Mgr* async_mgr,
+    virtual async_object* clone(async_obj_mgr* async_mgr,
                                 uint32_t reg_cmd) = 0;
 
 #ifndef ZCE_CLONE_ASYNC_OBJ
-#define ZCE_CLONE_ASYNC_OBJ(async_sub_class)  zce::Async_Object* \
-    clone(zce::Async_Obj_Mgr* async_mgr,uint32_t reg_cmd) \
+#define ZCE_CLONE_ASYNC_OBJ(async_sub_class)  zce::async_object* \
+    clone(zce::async_obj_mgr* async_mgr,uint32_t reg_cmd) \
     {return new async_sub_class(async_mgr,reg_cmd);}
 #endif
 
@@ -128,7 +128,7 @@ protected:
     uint32_t asyncobj_id_ = 0;
 
     ///管理者
-    Async_Obj_Mgr* async_mgr_ = NULL;
+    async_obj_mgr* async_mgr_ = NULL;
 
     ///对应激活的处理的命令
     uint32_t  create_cmd_ = 0;
@@ -151,12 +151,12 @@ class timer_queue;
 * @brief      异步对象的管理器基类
 *
 */
-class Async_Obj_Mgr : public zce::timer_handler
+class async_obj_mgr : public zce::timer_handler
 {
 protected:
 
     ///异步对象池子，
-    typedef zce::lord_rings<Async_Object*>  ASYNC_OBJECT_POOL;
+    typedef zce::lord_rings<async_object*>  ASYNC_OBJECT_POOL;
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {
@@ -187,13 +187,13 @@ protected:
     //异步对象记录池子（包括异步对象和记录信息）
     typedef std::unordered_map<uint32_t, ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
     //运行中的异步对象数量
-    typedef std::unordered_map<uint32_t, zce::Async_Object* > RUNNING_ASYNOBJ_MAP;
+    typedef std::unordered_map<uint32_t, zce::async_object* > RUNNING_ASYNOBJ_MAP;
 
 public:
 
     ///异步对象管理器的构造函数
-    Async_Obj_Mgr();
-    virtual ~Async_Obj_Mgr();
+    async_obj_mgr();
+    virtual ~async_obj_mgr();
 
     /*!
     * @brief      初始化，控制各种池子，容器的大小
@@ -220,7 +220,7 @@ public:
     * @param      init_clone_num
     */
     int register_asyncobj(uint32_t create_cmd,
-                          zce::Async_Object* async_base);
+                          zce::async_object* async_base);
 
     /*!
     * @brief      判断某个命令是否是注册（创建）异步对象命令
@@ -265,14 +265,14 @@ protected:
     */
     int allocate_from_pool(uint32_t cmd,
                            ASYNC_OBJECT_RECORD*& async_rec,
-                           zce::Async_Object*& alloc_aysnc);
+                           zce::async_object*& alloc_aysnc);
 
     /*!
     * @brief      释放一个异步对象到池子里面
     * @return     int
     * @param      free_async
     */
-    int free_to_pool(zce::Async_Object* free_async);
+    int free_to_pool(zce::async_object* free_async);
 
     /*!
     * @brief      通过ID，寻找一个正在运行的异步对象
@@ -280,7 +280,7 @@ protected:
     * @param[in]  id   运行的异步对象的标识ID
     * @param[out] running_aysnc 查询到的异步对象
     */
-    int find_running_asyncobj(uint32_t id, zce::Async_Object*& running_aysnc);
+    int find_running_asyncobj(uint32_t id, zce::async_object*& running_aysnc);
 
     /*!
     * @brief      定时器触发的处理函数

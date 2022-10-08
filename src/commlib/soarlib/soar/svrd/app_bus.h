@@ -41,7 +41,7 @@ public:
     * @param      timer_base  定时器触发句柄的指针，注意new了放进来
     */
     int initialize(svrd_cfg_base* config_base,
-                   soar::Server_Timer* timer_base);
+                   soar::server_timer* timer_base);
 
     /*!
     * @brief      返回APP的配置类指针
@@ -98,7 +98,7 @@ protected:
     soar::svrd_buspipe* zerg_mmap_pipe_;
 
     ///框架定时器处理类
-    soar::Server_Timer* timer_base_;
+    soar::server_timer* timer_base_;
 
     ///配置的处理的基类
     svrd_cfg_base* config_base_;

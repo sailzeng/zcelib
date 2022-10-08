@@ -30,7 +30,7 @@ int svrdapp_fsmtask::app_start(int argc, const char* argv[])
     THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
 
     svrd_cfg_fsm* svd_config = dynamic_cast<svrd_cfg_fsm*>(config_base_);
-    soar::FSMTask_Manger* trans_mgr = new soar::FSMTask_Manger();
+    soar::fsmtask_manger* trans_mgr = new soar::fsmtask_manger();
     soar::fsm_manager::instance(trans_mgr);
     zce::time_value enqueue_timeout;
     enqueue_timeout.sec(svd_config->framework_config_.task_info_.enqueue_timeout_sec_);
@@ -102,7 +102,7 @@ int svrdapp_fsmtask::app_run()
     size_t prcframe_queue = 0, gentrans_queue = 0, num_timer_expire = 0, num_io_event = 0;
     size_t idle = 0;
 
-    soar::FSMTask_Manger* notify_trans_mgr = static_cast<soar::FSMTask_Manger*>(soar::fsm_manager::instance());
+    soar::fsmtask_manger* notify_trans_mgr = static_cast<soar::fsmtask_manger*>(soar::fsm_manager::instance());
     zce::time_value select_interval(0, 0);
 
     zce::timer_queue* time_queue = zce::timer_queue::instance();
@@ -160,8 +160,8 @@ int svrdapp_fsmtask::app_run()
 int svrdapp_fsmtask::app_exit()
 {
     //通知所有的线程退出
-    soar::FSMTask_Manger* notify_trans_mgr =
-        static_cast<soar::FSMTask_Manger*>(soar::fsm_manager::instance());
+    soar::fsmtask_manger* notify_trans_mgr =
+        static_cast<soar::fsmtask_manger*>(soar::fsm_manager::instance());
     notify_trans_mgr->stop_notify_task();
 
     int ret = 0;

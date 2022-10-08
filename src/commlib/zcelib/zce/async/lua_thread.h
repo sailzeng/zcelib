@@ -10,22 +10,22 @@ namespace zce
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class Async_LuaThead : public zce::Async_Object
+class async_luathead : public zce::async_object
 {
-    friend class Async_LuaTheadMgr;
+    friend class async_luathead_mgr;
 
 public:
     /*!
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_LuaThead(zce::Async_Obj_Mgr* async_mgr,
+    async_luathead(zce::async_obj_mgr* async_mgr,
                    uint32_t reg_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~Async_LuaThead();
+    ~async_luathead();
 
 public:
 
@@ -73,13 +73,13 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class Async_LuaTheadMgr : public zce::Async_Obj_Mgr
+class async_luathead_mgr : public zce::async_obj_mgr
 {
 public:
 
     //
-    Async_LuaTheadMgr();
-    virtual ~Async_LuaTheadMgr();
+    async_luathead_mgr();
+    virtual ~async_luathead_mgr();
 
     inline zce::Lua_Tie* mgr_lua_tie()
     {

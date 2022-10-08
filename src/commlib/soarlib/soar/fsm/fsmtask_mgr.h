@@ -25,14 +25,14 @@
 namespace soar
 {
 class fsmtask_taskbase;
-class FSMTask_Manger : public fsm_manager
+class fsmtask_manger : public fsm_manager
 {
 protected:
 
     //zce::msgrings_sema底层实现用的Deque
     typedef zce::msgrings_sema<soar::zerg_frame*>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
-    typedef ZergFrame_Mallocor<typename zce::MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
+    typedef zergframe_mallocor<typename zce::MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
     //FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，这个数量级别已经不少了
     static const size_t FRAME_QUEUE_WATER_MARK = 102400;
@@ -40,9 +40,9 @@ protected:
 public:
 
     // 构造函数
-    FSMTask_Manger();
+    fsmtask_manger();
     //析构函数
-    virtual ~FSMTask_Manger();
+    virtual ~fsmtask_manger();
 
 public:
 

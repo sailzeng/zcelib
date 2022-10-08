@@ -4,9 +4,9 @@
 
 #define REGISTER_NOTIFYTRANS_CMD(fsmtask_fsm_class, cmd_word ) \
     { \
-        int __ret_register_ = FSMTask_Manger::instance()->register_trans_cmd(cmd_word, \
+        int __ret_register_ = fsmtask_manger::instance()->register_trans_cmd(cmd_word, \
                                                                              new fsmtask_fsm_class(zce::timer_queue::instance(),\
-                                                                             FSMTask_Manger::instance())); \
+                                                                             fsmtask_manger::instance())); \
         if (__ret_register_ !=  0) \
         { \
             return __ret_register_; \

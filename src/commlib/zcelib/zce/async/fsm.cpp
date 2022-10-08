@@ -7,8 +7,9 @@ namespace zce
 {
 //=====================================================================================
 //状态机的异步对象
-async_fsm::async_fsm(zce::Async_Obj_Mgr* async_mgr, uint32_t create_cmd) :
-    Async_Object(async_mgr, create_cmd),
+async_fsm::async_fsm(zce::async_obj_mgr* async_mgr,
+                     uint32_t create_cmd) :
+    async_object(async_mgr, create_cmd),
     fsm_stage_(0)
 {
 }
@@ -90,7 +91,7 @@ int async_fsm::get_stage() const
 
 //状态机主控管理类
 async_fsmmgr::async_fsmmgr() :
-    zce::Async_Obj_Mgr()
+    zce::async_obj_mgr()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;

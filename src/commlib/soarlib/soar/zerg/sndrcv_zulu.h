@@ -15,23 +15,21 @@
 *
 */
 
-#ifndef SOARING_LIB_SNDRCV_TCP_ZULU_H_
-#define SOARING_LIB_SNDRCV_TCP_ZULU_H_
+#pragma once
 
 #include "soar/zerg/sndrcv_base.h"
 
-/******************************************************************************************
-class zulu_sendrecv
-******************************************************************************************/
+namespace soar
+{
 class zulu_sendrecv : public sendrecv_msg_base
 {
 protected:
 
     //ZULU 是否链接
-    bool                   zulu_connected_;
+    bool                  zulu_connected_;
 
     //ZULU链接的IP地址
-    zce::skt::addr_in        zulu_svc_ip_;
+    zce::skt::addr_in     zulu_svc_ip_;
 
     //使用的SOCKET包装
     zce::skt::stream      zulu_stream_;
@@ -271,5 +269,4 @@ int zulu_sendrecv::send_recv_msg(unsigned int snd_cmd,
 
     return 0;
 }
-
-#endif //SOARING_LIB_SNDRCV_TCP_ZULU_H_
+}

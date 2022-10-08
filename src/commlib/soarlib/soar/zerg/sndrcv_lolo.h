@@ -42,15 +42,12 @@
 *             噢~你的村庄也有个叮当
 *             噢~你的村庄也没有悲伤
 */
-
-#ifndef COMM_SNDRCV_UDP_NET_LOLO_H_
-#define COMM_SNDRCV_UDP_NET_LOLO_H_
+#pragma once
 
 #include "soar/zerg/sndrcv_base.h"
 
-/******************************************************************************************
-class lolo_sendrecv
-******************************************************************************************/
+namespace soar
+{
 class lolo_sendrecv : public sendrecv_msg_base
 {
 protected:
@@ -72,10 +69,10 @@ public:
     //设置相应的SVC INFO,
     int set_lolo_svcinfo(const char* svc_ip,
                          unsigned short svc_port,
-                         const soar::SERVICES_ID& recv_service,
-                         const soar::SERVICES_ID& send_service,
-                         const soar::SERVICES_ID& proxy_service,
-                         size_t frame_len = soar::zerg_frame::MAX_LEN_OF_FRAME,
+                         const SERVICES_ID& recv_service,
+                         const SERVICES_ID& send_service,
+                         const SERVICES_ID& proxy_service,
+                         size_t frame_len = zerg_frame::MAX_LEN_OF_FRAME,
                          bool is_check_conn_info = false);
 
     //发送数据
@@ -154,7 +151,7 @@ int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
     //保存接收到的事务ID
     recv_trans_id_ = msg_recv_frame_->fsm_id_;
     //数据包的长度
-    data_len = msg_recv_frame_->length_ - soar::zerg_frame::LEN_OF_HEAD;
+    data_len = msg_recv_frame_->length_ - ::soar::zerg_frame::LEN_OF_HEAD;
 
     if (data_len < 0)
     {
@@ -219,7 +216,7 @@ int lolo_sendrecv::send_svc_msg(uint32_t user_id,
     //填写GAME ID
     msg_send_frame_->business_id_ = business_id;
 
-    ret = msg_send_frame_->appdata_encode(soar::zerg_frame::MAX_LEN_OF_DATA,
+    ret = msg_send_frame_->appdata_encode(zerg_frame::MAX_LEN_OF_DATA,
                                           info);
 
     if (ret != 0)
@@ -291,5 +288,4 @@ int lolo_sendrecv::send_recv_msg(unsigned int snd_cmd,
     }
     return 0;
 }
-
-#endif //COMM_SNDRCV_UDP_NET_LO_LO_H_
+} //namespace soar

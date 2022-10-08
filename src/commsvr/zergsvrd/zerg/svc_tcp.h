@@ -304,20 +304,20 @@ protected:
     static size_t connect_send_deque_size_;
 
     ///Handle ID生成器，这个东东主要用于需要服务器主动分配SERVICES ID的地方
-    static unsigned int         handler_id_builder_;
+    static unsigned int        handler_id_builder_;
 
 protected:
     ///服务模式
     HANDLER_MODE               handler_mode_;
 
     ///自己的服务的标示
-    soar::SERVICES_ID                my_svc_id_;
+    soar::SERVICES_ID          my_svc_id_;
 
     ///PEER的ServiceInfo
-    soar::SERVICES_ID                peer_svr_id_;
+    soar::SERVICES_ID          peer_svr_id_;
 
     ///接收数据的缓冲
-    zce::queue_buffer* rcv_buffer_;
+    zce::queue_buffer*         rcv_buffer_;
 
     ///发送队列的大小，如果一个端口接受数据比较缓慢，则可能会先放入发送队列，等端口变为可写才能发送过去，
     ///那么发送队列就要负担缓冲这种危机的任务，发送总缓冲长度实际等于 = 发送队列的长度*每个队列成员BUFFER的大小(64K)，
@@ -339,10 +339,10 @@ protected:
     size_t                    send_bytes_;
 
     //ZCE Socket Stream,
-    zce::skt::stream        socket_peer_;
+    zce::skt::stream          socket_peer_;
 
     //PEER连接的IP地址信息
-    zce::skt::addr_in          peer_address_;
+    zce::skt::addr_in         peer_address_;
 
     //是否处于活动状态
     PEER_STATUS               peer_status_;

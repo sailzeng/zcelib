@@ -1,5 +1,4 @@
-#ifndef OGRE_SERVER_APPLICATION_H_
-#define OGRE_SERVER_APPLICATION_H_
+#pragma once
 
 namespace ogre
 {
@@ -23,5 +22,3 @@ public:
     virtual int app_run();
 };
 }
-
-#endif //OGRE_SERVER_APPLICATION_H_

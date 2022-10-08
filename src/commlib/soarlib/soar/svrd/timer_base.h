@@ -54,25 +54,24 @@
 
 #pragma once
 
-class soar::stat_monitor;
-class svrd_cfg_base;
-
 namespace soar
 {
+class stat_monitor;
+class svrd_cfg_base;
 /*!
 * @brief      服务器框架的定时器处理类
 *             可以从其得到当前的时钟
 * @note
 */
-class Server_Timer : public zce::timer_handler
+class server_timer : public zce::timer_handler
 {
     friend class app_buspipe;
 public:
 
     ///构造函数,因为框架的设计构造的时候不初始化timer queue，
-    Server_Timer();
+    server_timer();
     ///析构函数
-    ~Server_Timer();
+    ~server_timer();
 
     ///取得当前的时间，用于对时间精度要求不高的场合
     static zce::time_value gettimeofday()

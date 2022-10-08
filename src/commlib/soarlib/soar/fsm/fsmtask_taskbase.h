@@ -3,14 +3,14 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
-class soar::zerg_frame;
-
 namespace soar
 {
+class zerg_frame;
+
 class fsmtask_taskbase : public zce::thread_task
 {
     //给一个友缘
-    friend class FSMTask_Manger;
+    friend class fsmtask_manger;
 
 public:
     fsmtask_taskbase();
@@ -18,7 +18,7 @@ public:
 public:
 
     //初始化
-    int initialize(FSMTask_Manger* trans_notify_mgr,
+    int initialize(fsmtask_manger* trans_notify_mgr,
                    size_t once_max_get_sendqueue = DEFAULT_ONCE_MAX_GET_SENDQUEUE,
                    soar::SERVICES_ID mgr_svc_id = soar::SERVICES_ID(0, 0),
                    soar::SERVICES_ID thread_svc_id = soar::SERVICES_ID(0, 0)
@@ -83,8 +83,8 @@ protected:
         //还是设个超时比较好，1s的时间对于服务器而言，很漫长了
         //这个地方不用try的原因是如果这儿要进行错误处理，很麻烦，
         zce::time_value wait_sec(1, 0);
-        ret = trans_notify_mgr_->enqueue_recvqueue(rsp_msg,
-                                                   &wait_sec);
+        ret = fsmtask_mgr_->enqueue_recvqueue(rsp_msg,
+                                              &wait_sec);
 
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if (ret != 0)
@@ -138,8 +138,8 @@ protected:
         //这个地方不用try的原因是如果这儿要进行错误处理，很麻烦，
         zce::time_value wait_sec(1, 0);
 
-        ret = trans_notify_mgr_->enqueue_recvqueue(rsp_msg,
-                                                   &wait_sec);
+        ret = fsmtask_mgr_->enqueue_recvqueue(rsp_msg,
+                                              &wait_sec);
 
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if (ret != 0)
@@ -169,7 +169,7 @@ protected:
 protected:
 
     //Trans 管理器
-    FSMTask_Manger* trans_notify_mgr_;
+    fsmtask_manger* fsmtask_mgr_;
 
     //一次最大从MGR发送队列中取出的frame数量，
     size_t              once_max_get_sendqueue_;

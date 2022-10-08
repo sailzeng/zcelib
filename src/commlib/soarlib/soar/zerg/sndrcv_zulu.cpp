@@ -5,9 +5,8 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/zerg/sndrcv_zulu.h"
 
-/******************************************************************************************
-class Zulu_SendRecv_Package
-******************************************************************************************/
+namespace soar
+{
 zulu_sendrecv::zulu_sendrecv() :
     zulu_connected_(false),
     zulu_stream_()
@@ -305,3 +304,4 @@ int zulu_sendrecv::getsockname(zce::skt::addr_base* addr)  const
 {
     return zulu_stream_.getsockname(addr);
 }
+}// namespace soar

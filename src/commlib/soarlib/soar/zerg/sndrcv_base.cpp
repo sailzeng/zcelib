@@ -3,15 +3,9 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/zerg/sndrcv_base.h"
 
-/******************************************************************************************
-class sendrecv_msg_base
-******************************************************************************************/
-sendrecv_msg_base::sendrecv_msg_base() :
-    test_frame_len_(0),
-    trans_id_builder_(0),
-    msg_send_frame_(NULL),
-    msg_recv_frame_(NULL),
-    recv_trans_id_(0)
+namespace soar
+{
+sendrecv_msg_base::sendrecv_msg_base()
 {
 }
 
@@ -76,4 +70,5 @@ soar::zerg_frame* sendrecv_msg_base::get_send_appframe()
 soar::zerg_frame* sendrecv_msg_base::get_recv_appframe()
 {
     return msg_recv_frame_;
+}
 }

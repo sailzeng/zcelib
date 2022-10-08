@@ -30,7 +30,7 @@ app_timer::~app_timer()
 int app_timer::timer_timeout(const zce::time_value& time_now, const void* arg)
 {
     //等到当前的时间
-    Server_Timer::timer_timeout(time_now, arg);
+    server_timer::timer_timeout(time_now, arg);
 
     const int timeid = *(static_cast<const int*>(arg));
 

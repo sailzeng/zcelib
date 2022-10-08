@@ -74,7 +74,7 @@ protected:
     static zerg::comm_manager* zerg_comm_mgr_;
 
     ///是否是代理服务器
-    static bool                     if_proxy_;
+    static bool if_proxy_;
 
 protected:
 

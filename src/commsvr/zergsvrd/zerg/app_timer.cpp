@@ -19,7 +19,7 @@ const int app_timer::ZERG_TIMER_ID[] =
 
 //
 app_timer::app_timer() :
-    Server_Timer()
+    server_timer()
 {
     //主动重现链接的间隔时间
     const time_t AUTOCONNECT_RETRY_SEC = 5;
@@ -43,7 +43,7 @@ int app_timer::timer_timeout(const zce::time_value& time_now,
                              const void* act)
 {
     //等到当前的时间
-    Server_Timer::timer_timeout(time_now, act);
+    server_timer::timer_timeout(time_now, act);
 
     //心跳数据
     const int zerg_timeid = *(static_cast<const int*>(act));

@@ -6,12 +6,12 @@
 namespace soar
 {
 // 构造函数
-FSMTask_Manger::FSMTask_Manger()
+fsmtask_manger::fsmtask_manger()
 {
 }
 
 //析构函数
-FSMTask_Manger::~FSMTask_Manger()
+fsmtask_manger::~fsmtask_manger()
 {
     //删除MSG QUEUE
     if (send_msg_queue_)
@@ -48,7 +48,7 @@ FSMTask_Manger::~FSMTask_Manger()
 }
 
 //初始化
-void FSMTask_Manger::initialize(size_t  szregtrans,
+void fsmtask_manger::initialize(size_t  szregtrans,
                                 size_t sztransmap,
                                 const soar::SERVICES_INFO& selfsvr,
                                 const zce::time_value& enqueue_timeout,
@@ -73,7 +73,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
 }
 
 //激活N个线程，
-int FSMTask_Manger::active_notify_task(fsmtask_taskbase* clone_task,
+int fsmtask_manger::active_notify_task(fsmtask_taskbase* clone_task,
                                        size_t task_num,
                                        size_t task_stack_size)
 {
@@ -125,7 +125,7 @@ int FSMTask_Manger::active_notify_task(fsmtask_taskbase* clone_task,
 }
 
 //通知所有的线程停止运行
-int FSMTask_Manger::stop_notify_task()
+int fsmtask_manger::stop_notify_task()
 {
     //通知所有的线程停止运行
     for (size_t i = 0; i < task_number_; ++i)
@@ -150,7 +150,7 @@ int FSMTask_Manger::stop_notify_task()
 }
 
 //处理从接收队列取出的FRAME
-int FSMTask_Manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_trans)
+int fsmtask_manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_trans)
 {
     int ret = 0;
     create_trans = 0;
@@ -204,7 +204,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_t
 }
 
 //向发送队列放入frame
-int FSMTask_Manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_frame)
+int fsmtask_manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_frame)
 {
     int ret = 0;
     soar::zerg_frame* tmp_frame = NULL;
@@ -248,7 +248,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_f
 }
 
 ////从recv的消息队列中去一个数据出来，进行超时等待
-//int FSMTask_Manger::dequeue_recvqueue(soar::zerg_frame *&get_frame,zce::time_value &tv)
+//int fsmtask_manger::dequeue_recvqueue(soar::zerg_frame *&get_frame,zce::time_value &tv)
 //{
 //    int ret = recv_msg_queue_->dequeue(get_frame,tv);
 //    auto monitor = soar::stat_monitor::instance();
@@ -270,7 +270,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_f
 //}
 
 ////从recv的消息队列中去一个数据出来，不进行超时等待
-//int FSMTask_Manger::trydequeue_recvqueue(soar::zerg_frame *&get_frame)
+//int fsmtask_manger::trydequeue_recvqueue(soar::zerg_frame *&get_frame)
 //{
 //    int ret = recv_msg_queue_->try_dequeue(get_frame);
 //    //返回值小于0表示失败
@@ -291,7 +291,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_f
 //}
 //
 ////从send的消息队列中去一个数据出来，进行超时等待
-//int FSMTask_Manger::dequeue_sendqueue(soar::zerg_frame *&get_frame,zce::time_value &tv)
+//int fsmtask_manger::dequeue_sendqueue(soar::zerg_frame *&get_frame,zce::time_value &tv)
 //{
 //    int ret = 0;
 //    ret = send_msg_queue_->dequeue(get_frame,tv);
@@ -309,7 +309,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_f
 //}
 //
 ////从send的消息队列中去一个数据出来，不进行超时等待
-//int FSMTask_Manger::trydequeue_sendqueue(soar::zerg_frame *&get_frame)
+//int fsmtask_manger::trydequeue_sendqueue(soar::zerg_frame *&get_frame)
 //{
 //    int ret = 0;
 //    ret = send_msg_queue_->try_dequeue(get_frame);

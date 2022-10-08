@@ -2,7 +2,7 @@
 
 namespace ogre
 {
-class  app_timer : public soar::Server_Timer
+class  app_timer : public soar::server_timer
 {
 public:
     //
@@ -17,4 +17,4 @@ public:
     //定时器ID,避免New传递,回收
     static const  int      OGRE_APP_TIME_ID[];
 };
-} // namespace ogre
+} //namespace ogre

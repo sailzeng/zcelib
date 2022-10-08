@@ -1,4 +1,5 @@
 #pragma once
+
 namespace ogre
 {
 class svc_tcp;

@@ -1,5 +1,3 @@
-//Jovi(HuangHao),Sail(ZENGXING)
-
 #pragma once
 
 #include "ogre/configure.h"

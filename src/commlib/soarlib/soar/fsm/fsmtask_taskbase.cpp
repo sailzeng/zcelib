@@ -7,7 +7,7 @@ namespace soar
 {
 //
 fsmtask_taskbase::fsmtask_taskbase() :
-    trans_notify_mgr_(NULL),
+    fsmtask_mgr_(NULL),
     once_max_get_sendqueue_(DEFAULT_ONCE_MAX_GET_SENDQUEUE),
     task_run_(false),
     task_frame_buf_(NULL)
@@ -27,13 +27,13 @@ fsmtask_taskbase::~fsmtask_taskbase()
 }
 
 //
-int fsmtask_taskbase::initialize(FSMTask_Manger* trans_notify_mgr,
+int fsmtask_taskbase::initialize(fsmtask_manger* trans_notify_mgr,
                                  size_t once_max_get_sendqueue,
                                  soar::SERVICES_ID mgr_svc_id,
                                  soar::SERVICES_ID thread_svc_id)
 {
     int ret = 0;
-    trans_notify_mgr_ = trans_notify_mgr;
+    fsmtask_mgr_ = trans_notify_mgr;
 
     once_max_get_sendqueue_ = once_max_get_sendqueue;
 
@@ -74,17 +74,16 @@ int fsmtask_taskbase::svc(void)
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
             soar::zerg_frame* tmp_frame = NULL;
-
             //忙的时候只测试，不阻塞等待
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)
             {
-                ret = trans_notify_mgr_->trydequeue_sendqueue(tmp_frame);
+                ret = fsmtask_mgr_->trydequeue_sendqueue(tmp_frame);
             }
             //不忙的时候，可以让他等待在队列上
             else
             {
                 zce::time_value tv(0, 1000000);
-                ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame, tv);
+                ret = fsmtask_mgr_->dequeue_sendqueue(tmp_frame, tv);
             }
 
             if (ret != 0)
@@ -98,7 +97,7 @@ int fsmtask_taskbase::svc(void)
 
             ret = taskprocess_appframe(tmp_frame);
             //回收FRAME
-            trans_notify_mgr_->free_appframe(tmp_frame);
+            fsmtask_mgr_->free_appframe(tmp_frame);
 
             if (ret != 0)
             {

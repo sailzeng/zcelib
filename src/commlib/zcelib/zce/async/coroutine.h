@@ -97,9 +97,9 @@ struct coro_ret
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class Async_Coroutine : public zce::Async_Object
+class async_coroutine : public zce::async_object
 {
-    friend class Async_CoroutineMgr;
+    friend class async_coroutine_mgr;
 
     //
     enum class COROUTINE_STATE
@@ -119,13 +119,13 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_Coroutine(zce::Async_Obj_Mgr* async_mgr,
+    async_coroutine(zce::async_obj_mgr* async_mgr,
                     uint32_t reg_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~Async_Coroutine();
+    ~async_coroutine();
 
 public:
 
@@ -181,12 +181,12 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class Async_CoroutineMgr : public zce::Async_Obj_Mgr
+class async_coroutine_mgr : public zce::async_obj_mgr
 {
 public:
     //
-    Async_CoroutineMgr();
-    virtual ~Async_CoroutineMgr();
+    async_coroutine_mgr();
+    virtual ~async_coroutine_mgr();
 
 protected:
 

@@ -1,5 +1,4 @@
-#ifndef OGRE_SERVER_CONFIG_H_
-#define OGRE_SERVER_CONFIG_H_
+#pragma once
 
 //======================================================================================
 
@@ -185,5 +184,3 @@ public:
     OGRE_CONFIG_DATA        ogre_cfg_data_;
 };
 } // namespace ogre
-
-#endif //OGRE_SERVER_CONFIG_H_

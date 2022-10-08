@@ -8,10 +8,10 @@
 namespace zce
 {
 //TIME ID
-const int Async_Object::ASYNCOBJ_ACTION_ID[] = { 10001,20001 };
+const int async_object::ASYNCOBJ_ACTION_ID[] = { 10001,20001 };
 
 //构造函数
-Async_Object::Async_Object(Async_Obj_Mgr* async_mgr,
+async_object::async_object(async_obj_mgr* async_mgr,
                            uint32_t create_cmd) :
     async_mgr_(async_mgr),
     create_cmd_(create_cmd)
@@ -19,24 +19,24 @@ Async_Object::Async_Object(Async_Obj_Mgr* async_mgr,
 }
 
 //析构函数
-Async_Object::~Async_Object()
+async_object::~async_object()
 {
 }
 
 //初始化函数，在构造函数后调用，
-int Async_Object::initialize()
+int async_object::initialize()
 {
     return 0;
 }
 
 //结束销毁函数，在析构前的调用
-void Async_Object::terminate()
+void async_object::terminate()
 {
     return;
 }
 
 //设置超时定时器
-int Async_Object::set_timeout(const zce::time_value& time_out)
+int async_object::set_timeout(const zce::time_value& time_out)
 {
     timer_queue* timer_queue = async_mgr_->timer_queue();
     zce::time_value delay_time(time_out);
@@ -53,7 +53,7 @@ int Async_Object::set_timeout(const zce::time_value& time_out)
 }
 
 //取消超时的定时器
-void Async_Object::cancel_timeout()
+void async_object::cancel_timeout()
 {
     if (timer_queue::INVALID_TIMER_ID != timeout_id_)
     {
@@ -64,13 +64,13 @@ void Async_Object::cancel_timeout()
 }
 
 //目前基类做的结束操作就是清理定时器
-void Async_Object::on_end()
+void async_object::on_end()
 {
     cancel_timeout();
 }
 
 //记录处理过程发生的错误
-void Async_Object::set_errorno(int error_no)
+void async_object::set_errorno(int error_no)
 {
     running_errno_ = error_no;
 }
@@ -80,17 +80,17 @@ void Async_Object::set_errorno(int error_no)
 
 //内部结构
 
-Async_Obj_Mgr::Async_Obj_Mgr() :
+async_obj_mgr::async_obj_mgr() :
     timer_handler()
 {
 }
 
-Async_Obj_Mgr::~Async_Obj_Mgr()
+async_obj_mgr::~async_obj_mgr()
 {
 }
 
 //初始化，
-int Async_Obj_Mgr::initialize(zce::timer_queue* tq,
+int async_obj_mgr::initialize(zce::timer_queue* tq,
                               size_t crtn_type_num,
                               size_t running_number)
 {
@@ -103,13 +103,13 @@ int Async_Obj_Mgr::initialize(zce::timer_queue* tq,
 }
 
 //
-void Async_Obj_Mgr::terminate()
+void async_obj_mgr::terminate()
 {
     RUNNING_ASYNOBJ_MAP::iterator run_iter = running_aysncobj_.begin();
     RUNNING_ASYNOBJ_MAP::iterator run_end = running_aysncobj_.end();
     for (; run_iter != run_end; ++run_iter)
     {
-        Async_Object* async_obj = run_iter->second;
+        async_object* async_obj = run_iter->second;
 
         //统计强制退出的数量
         ASYNC_RECORD_POOL::iterator iter_temp = regaysnc_pool_.find(async_obj->create_cmd_);
@@ -153,7 +153,7 @@ void Async_Obj_Mgr::terminate()
         size_t pool_reg_trans_len = pool_reg.aysncobj_pool_.size();
         for (size_t i = 0; i < pool_reg_trans_len; ++i)
         {
-            Async_Object* corout_base = NULL;
+            async_object* corout_base = NULL;
             pool_reg.aysncobj_pool_.pop_front(corout_base);
             corout_base->terminate();
             delete corout_base;
@@ -164,14 +164,14 @@ void Async_Obj_Mgr::terminate()
 }
 
 //注册一类异步对象，其用reg_cmd对应，
-int Async_Obj_Mgr::register_asyncobj(uint32_t create_cmd,
-                                     Async_Object* async_base)
+int async_obj_mgr::register_asyncobj(uint32_t create_cmd,
+                                     async_object* async_base)
 {
     //这两个值必须是重新设置过的
     ZCE_ASSERT(pool_init_size_ > 0 && pool_extend_size_ > 0);
 
     //
-    if (Async_Obj_Mgr::INVALID_COMMAND == create_cmd)
+    if (async_obj_mgr::INVALID_COMMAND == create_cmd)
     {
         ZCE_LOG(RS_ERROR, "[ZCELIB] Register command[%u] error.",
                 create_cmd);
@@ -195,7 +195,7 @@ int Async_Obj_Mgr::register_asyncobj(uint32_t create_cmd,
     ref_rec.aysncobj_pool_.push_back(async_base);
     for (size_t i = 0; i < pool_init_size_; i++)
     {
-        Async_Object* crtn = async_base->clone(this, create_cmd);
+        async_object* crtn = async_base->clone(this, create_cmd);
         crtn->initialize();
         ref_rec.aysncobj_pool_.push_back(crtn);
     }
@@ -203,7 +203,7 @@ int Async_Obj_Mgr::register_asyncobj(uint32_t create_cmd,
 }
 
 //判断某个命令是否是注册（创建）异步对象命令
-bool Async_Obj_Mgr::is_register_cmd(uint32_t cmd)
+bool async_obj_mgr::is_register_cmd(uint32_t cmd)
 {
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(cmd);
     if (mapiter == regaysnc_pool_.end())
@@ -214,9 +214,9 @@ bool Async_Obj_Mgr::is_register_cmd(uint32_t cmd)
 }
 
 //从池子里面分配一个
-int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
+int async_obj_mgr::allocate_from_pool(uint32_t create_cmd,
                                       ASYNC_OBJECT_RECORD*& async_rec,
-                                      Async_Object*& crt_async)
+                                      async_object*& crt_async)
 {
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(create_cmd);
     if (mapiter == regaysnc_pool_.end())
@@ -233,7 +233,7 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
     {
         ZCE_LOG(RS_INFO, "[ZCELIB] Before extend pool.");
         //取一个模型
-        Async_Object* model_trans = NULL;
+        async_object* model_trans = NULL;
         reg_async.aysncobj_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_async.aysncobj_pool_.capacity();
@@ -249,7 +249,7 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
         //用模型克隆N-1个Trans
         for (size_t i = 0; i < pool_extend_size_; ++i)
         {
-            Async_Object* cloned_base = model_trans->clone(this, create_cmd);
+            async_object* cloned_base = model_trans->clone(this, create_cmd);
             reg_async.aysncobj_pool_.push_back(cloned_base);
         }
 
@@ -271,7 +271,7 @@ int Async_Obj_Mgr::allocate_from_pool(uint32_t create_cmd,
 }
 
 ///归还给池子里面，释放一个异步对象到池子里面
-int Async_Obj_Mgr::free_to_pool(Async_Object* free_crtn)
+int async_obj_mgr::free_to_pool(async_object* free_crtn)
 {
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(free_crtn->create_cmd_);
     if (mapiter == regaysnc_pool_.end())
@@ -291,12 +291,12 @@ int Async_Obj_Mgr::free_to_pool(Async_Object* free_crtn)
 }
 
 //创建异步对象
-int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
+int async_obj_mgr::create_asyncobj(uint32_t cmd,
                                    uint32_t& id,
                                    bool& continued)
 {
     int ret = 0;
-    Async_Object* crt_async = NULL;
+    async_object* crt_async = NULL;
     ASYNC_OBJECT_RECORD* async_rec = NULL;
     continued = false;
     //从池子里面找一个异步对象
@@ -345,8 +345,8 @@ int Async_Obj_Mgr::create_asyncobj(uint32_t cmd,
 }
 
 //通过ID，寻找一个正在运行的异步对象
-int Async_Obj_Mgr::find_running_asyncobj(uint32_t id,
-                                         Async_Object*& running_aysnc)
+int async_obj_mgr::find_running_asyncobj(uint32_t id,
+                                         async_object*& running_aysnc)
 {
     running_aysnc = NULL;
     auto iter = running_aysncobj_.find(id);
@@ -361,11 +361,11 @@ int Async_Obj_Mgr::find_running_asyncobj(uint32_t id,
 }
 
 //激活某个已经运行的异步对象
-int Async_Obj_Mgr::active_asyncobj(uint32_t id,
+int async_obj_mgr::active_asyncobj(uint32_t id,
                                    bool& running)
 {
     int ret = 0;
-    Async_Object* async_obj = NULL;
+    async_object* async_obj = NULL;
     running = false;
     ret = find_running_asyncobj(id, async_obj);
     if (ret != 0)
@@ -408,10 +408,10 @@ int Async_Obj_Mgr::active_asyncobj(uint32_t id,
 }
 
 //超时处理
-int Async_Obj_Mgr::timer_timeout(const zce::time_value& now_time,
+int async_obj_mgr::timer_timeout(const zce::time_value& now_time,
                                  const void* act)
 {
-    Async_Object* async_obj = (Async_Object*)(act);
+    async_object* async_obj = (async_object*)(act);
     //增加记录统计数据
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(async_obj->create_cmd_);
     if (mapiter == regaysnc_pool_.end())
@@ -444,7 +444,7 @@ int Async_Obj_Mgr::timer_timeout(const zce::time_value& now_time,
 }
 
 //去的当前的负载情况
-void Async_Obj_Mgr::load_foctor(size_t& load_cur, size_t& load_max)
+void async_obj_mgr::load_foctor(size_t& load_cur, size_t& load_max)
 {
     load_cur = running_aysncobj_.size();
     if (max_load_async_ < load_cur)
@@ -455,7 +455,7 @@ void Async_Obj_Mgr::load_foctor(size_t& load_cur, size_t& load_max)
 }
 
 //打印管理器的基本信息，运行状态
-void Async_Obj_Mgr::dump_info(zce::LOG_PRIORITY log_priority) const
+void async_obj_mgr::dump_info(zce::LOG_PRIORITY log_priority) const
 {
     //
     ZCE_LOG(log_priority, "Register create cmd size[%lu].active running async object size[%lu].",

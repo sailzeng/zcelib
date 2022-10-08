@@ -1,5 +1,4 @@
-#ifndef OGRE_TCP_ACCEPT_HANDLER_H_
-#define OGRE_TCP_ACCEPT_HANDLER_H_
+#pragma once
 
 #include "ogre/configure.h"
 
@@ -46,5 +45,3 @@ protected:
     ip_restrict* ip_restrict_;
 };
 }//namespace ogre
-
-#endif //OGRE_TCP_ACCEPT_HANDLER_H_

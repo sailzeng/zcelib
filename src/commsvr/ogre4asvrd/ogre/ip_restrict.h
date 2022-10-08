@@ -1,5 +1,4 @@
-#ifndef OGRE4A_IP_RESTRICT_H_
-#define OGRE4A_IP_RESTRICT_H_
+#pragma once
 
 namespace ogre
 {
@@ -38,4 +37,3 @@ protected:
     static ip_restrict* instance_;
 };
 }
-#endif //OGRE4A_IP_RESTRICT_H_

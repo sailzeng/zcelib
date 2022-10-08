@@ -1,6 +1,9 @@
 #pragma once
 
+namespace soar
+{
 class ogre4a_frame;
+}
 
 namespace ogre
 {

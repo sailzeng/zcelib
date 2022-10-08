@@ -7,21 +7,21 @@ namespace zce
 {
 //========================================================================================
 
-Async_LuaThead::Async_LuaThead(zce::Async_Obj_Mgr* async_mgr,
+async_luathead::async_luathead(zce::async_obj_mgr* async_mgr,
                                uint32_t reg_cmd) :
-    zce::Async_Object(async_mgr, reg_cmd)
+    zce::async_object(async_mgr, reg_cmd)
 {
 }
 
-Async_LuaThead::~Async_LuaThead()
+async_luathead::~async_luathead()
 {
 }
 
 //初始化协程的对象
-int Async_LuaThead::initialize()
+int async_luathead::initialize()
 {
-    zce::Async_Object::initialize();
-    auto luathread_mgr = static_cast <Async_LuaTheadMgr*>(async_mgr_);
+    zce::async_object::initialize();
+    auto luathread_mgr = static_cast <async_luathead_mgr*>(async_mgr_);
     mgr_lua_tie_ = luathread_mgr->mgr_lua_tie();
     mgr_lua_tie_->new_thread(&lua_thread_);
 
@@ -30,15 +30,15 @@ int Async_LuaThead::initialize()
 }
 
 //清理协程对象
-void Async_LuaThead::terminate()
+void async_luathead::terminate()
 {
-    zce::Async_Object::terminate();
+    zce::async_object::terminate();
     mgr_lua_tie_->del_thread(&lua_thread_);
     return;
 }
 
 //调用协程
-void Async_LuaThead::on_run(bool first_run, bool& continue_run)
+void async_luathead::on_run(bool first_run, bool& continue_run)
 {
     continue_run = true;
     if (first_run)
@@ -69,7 +69,7 @@ void Async_LuaThead::on_run(bool first_run, bool& continue_run)
 }
 
 //调用协程
-void Async_LuaThead::on_timeout(const zce::time_value& /*now_time*/,
+void async_luathead::on_timeout(const zce::time_value& /*now_time*/,
                                 bool& running)
 {
     running = false;
@@ -94,14 +94,14 @@ void Async_LuaThead::on_timeout(const zce::time_value& /*now_time*/,
 //=====================================================================================
 
 //携程主控管理类
-Async_LuaTheadMgr::Async_LuaTheadMgr() :
-    zce::Async_Obj_Mgr()
+async_luathead_mgr::async_luathead_mgr() :
+    zce::async_obj_mgr()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;
 }
 
-Async_LuaTheadMgr::~Async_LuaTheadMgr()
+async_luathead_mgr::~async_luathead_mgr()
 {
 }
 }

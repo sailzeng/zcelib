@@ -56,7 +56,7 @@ app_buspipe::~app_buspipe()
 
 //初始化，放入一些基类的指针，
 int app_buspipe::initialize(svrd_cfg_base* config_base,
-                            soar::Server_Timer* timer_base)
+                            soar::server_timer* timer_base)
 {
     config_base_ = config_base;
     timer_base_ = timer_base;
