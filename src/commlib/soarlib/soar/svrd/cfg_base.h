@@ -65,6 +65,8 @@ public:
 *
 * @note
 */
+namespace soar
+{
 class svrd_cfg_base
 {
 public:
@@ -158,3 +160,4 @@ public:
     ///svcid的配置文件
     std::string svc_table_file_;
 };
+} //namespace soar

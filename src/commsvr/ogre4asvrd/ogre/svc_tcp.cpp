@@ -7,42 +7,41 @@
 
 #include "ogre/svc_tcp.h"
 
-/****************************************************************************************************
-class  Ogre_TCP_Svc_Handler
-****************************************************************************************************/
+namespace ogre
+{
 //CONNECT后等待数据的超时时间
-unsigned int   Ogre_TCP_Svc_Handler::accept_timeout_ = 3;
+unsigned int   svc_tcp::accept_timeout_ = 3;
 //接受数据的超时时间
-unsigned int   Ogre_TCP_Svc_Handler::receive_timeout_ = 5;
+unsigned int   svc_tcp::receive_timeout_ = 5;
 
 //TIME ID
-const int      Ogre_TCP_Svc_Handler::TCPCTRL_TIME_ID[] = { 1,2 };
+const int      svc_tcp::TCPCTRL_TIME_ID[] = { 1,2 };
 
-unsigned int   Ogre_TCP_Svc_Handler::error_try_num_ = 3;
-
-//
-PeerID_To_TCPHdl_Map Ogre_TCP_Svc_Handler::svr_peer_hdl_set_;
-
-Ogre_Connect_Server Ogre_TCP_Svc_Handler::zerg_auto_connect_;
+unsigned int   svc_tcp::error_try_num_ = 3;
 
 //
-size_t         Ogre_TCP_Svc_Handler::num_accept_peer_ = 0;
+tcppeer_set svc_tcp::svr_peer_hdl_set_;
+
+auto_connect svc_tcp::zerg_auto_connect_;
+
 //
-size_t         Ogre_TCP_Svc_Handler::num_connect_peer_ = 0;
+size_t         svc_tcp::num_accept_peer_ = 0;
+//
+size_t         svc_tcp::num_connect_peer_ = 0;
 
 //最大可以接受的接受数量
-size_t         Ogre_TCP_Svc_Handler::max_accept_svr_ = 0;
+size_t         svc_tcp::max_accept_svr_ = 0;
 //最大可以接受的连接数量
-size_t         Ogre_TCP_Svc_Handler::max_connect_svr_ = 0;
+size_t         svc_tcp::max_connect_svr_ = 0;
 
 //ACCEPT SVC handler的池子
-Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_acpthdl_;
+svc_tcp::POOL_OF_TCP_HANDLER svc_tcp::pool_of_acpthdl_;
 
 //CONNECT svc handler的池子
-Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_cnthdl_;
+svc_tcp::POOL_OF_TCP_HANDLER svc_tcp::pool_of_cnthdl_;
 
 //构造函数
-Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode) :
+svc_tcp::svc_tcp(svc_tcp::OGRE_HANDLER_MODE hdl_mode) :
     zce::event_handler(zce::reactor::instance()),
     handler_mode_(hdl_mode),
     rcv_buffer_(NULL),
@@ -69,13 +68,13 @@ Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MO
 }
 
 //析构函数
-Ogre_TCP_Svc_Handler::~Ogre_TCP_Svc_Handler()
+svc_tcp::~svc_tcp()
 {
 }
 
 //初始化函数,用于Accept的端口的处理Event Handle构造.
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstream,
-                                                FP_JudgeRecv_WholeFrame fp_judge_whole)
+void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
+                                   FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
     rcv_buffer_ = NULL;
@@ -167,9 +166,9 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
 }
 
 //初始化函数,用于Connect出去的PEER 对应Event Handle构造.
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstream,
-                                                const zce::skt::addr_in& socketaddr,
-                                                FP_JudgeRecv_WholeFrame fp_judge_whole)
+void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
+                                   const zce::skt::addr_in& socketaddr,
+                                   FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
     rcv_buffer_ = NULL;
@@ -233,13 +232,13 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::skt::stream& sockstre
 }
 
 //取得句柄
-ZCE_HANDLE Ogre_TCP_Svc_Handler::get_handle(void) const
+ZCE_HANDLE svc_tcp::get_handle(void) const
 {
     return (ZCE_HANDLE)socket_peer_.get_handle();
 }
 
 //读取,断连的事件触发处理函数
-int Ogre_TCP_Svc_Handler::read_event(ZCE_HANDLE)
+int svc_tcp::read_event(ZCE_HANDLE)
 {
     //读取数据
     size_t szrecv;
@@ -309,7 +308,7 @@ int Ogre_TCP_Svc_Handler::read_event(ZCE_HANDLE)
 }
 
 //写事件触发,链接成功的事件触发处理函数
-int Ogre_TCP_Svc_Handler::write_event(ZCE_HANDLE)
+int svc_tcp::write_event(ZCE_HANDLE)
 {
     //如果NON BLOCK Connect成功,也会调用handle_output
     if (PEER_STATUS_NOACTIVE == peer_status_)
@@ -334,7 +333,7 @@ int Ogre_TCP_Svc_Handler::write_event(ZCE_HANDLE)
 }
 
 //定时触发
-int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const void* arg)
+int svc_tcp::timer_timeout(const zce::time_value&/*time*/, const void* arg)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -369,7 +368,7 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const zce::time_value&/*time*/, const vo
 }
 
 //PEER Event Handler关闭的处理
-int Ogre_TCP_Svc_Handler::close_event()
+int svc_tcp::close_event()
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -392,7 +391,7 @@ int Ogre_TCP_Svc_Handler::close_event()
     //释放接收数据缓冲区
     if (rcv_buffer_)
     {
-        Ogre_Buffer_Storage::instance()->free_byte_buffer(rcv_buffer_);
+        buffer_storage::instance()->free_byte_buffer(rcv_buffer_);
         rcv_buffer_ = NULL;
     }
 
@@ -444,13 +443,13 @@ int Ogre_TCP_Svc_Handler::close_event()
 }
 
 //返回端口的状态,
-Ogre_TCP_Svc_Handler::PEER_STATUS  Ogre_TCP_Svc_Handler::get_peer_status()
+svc_tcp::PEER_STATUS  svc_tcp::get_peer_status()
 {
     return peer_status_;
 }
 
 //处理注册发送
-int Ogre_TCP_Svc_Handler::process_connect_register()
+int svc_tcp::process_connect_register()
 {
     peer_status_ = PEER_STATUS_ACTIVE;
 
@@ -479,7 +478,7 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
 }
 
 //从PEER读取数据
-int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
+int svc_tcp::read_data_from_peer(size_t& szrevc)
 {
     szrevc = 0;
     const size_t IP_ADDR_LEN = 31;
@@ -490,7 +489,7 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
     //申请分配一个内存
     if (rcv_buffer_ == NULL)
     {
-        rcv_buffer_ = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
+        rcv_buffer_ = buffer_storage::instance()->allocate_byte_buffer();
         rcv_buffer_->snd_peer_info_.set(remote_address_);
         rcv_buffer_->rcv_peer_info_.set(local_address_);
         //
@@ -560,7 +559,7 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t& szrevc)
 }
 
 //向PEER写数据
-int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
+int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
 {
     if_full = false;
     szsend = 0;
@@ -626,7 +625,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t& szsend, bool& if_full)
 }
 
 //给力的发送所有要发送的数据，尽自己最大的努力
-int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
+int svc_tcp::write_all_aata_to_peer()
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
@@ -649,7 +648,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
         //如果数据报已经完整发送
         if (true == bfull)
         {
-            Ogre_Buffer_Storage::instance()->free_byte_buffer(snd_buffer_deque_[0]);
+            buffer_storage::instance()->free_byte_buffer(snd_buffer_deque_[0]);
             snd_buffer_deque_.pop_front();
         }
         //如果没有全部发送出去，等待下一次写时间的触发
@@ -727,7 +726,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
 }
 
 //处理发送错误.
-int Ogre_TCP_Svc_Handler::process_senderror(ogre4a_frame* inner_frame)
+int svc_tcp::process_senderror(ogre4a_frame* inner_frame)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
@@ -767,13 +766,13 @@ int Ogre_TCP_Svc_Handler::process_senderror(ogre4a_frame* inner_frame)
     }
 
     //归还到POOL中间。
-    Ogre_Buffer_Storage::instance()->free_byte_buffer(inner_frame);
+    buffer_storage::instance()->free_byte_buffer(inner_frame);
 
     return 0;
 }
 
 //
-int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config* config)
+int svc_tcp::get_config(const configure* config)
 {
     int ret = 0;
 
@@ -797,7 +796,7 @@ int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config* config)
 
 //根据配置参数初始化静态数据
 //一些参数从配置类读取,避免后面的操作还要访问配置类
-int Ogre_TCP_Svc_Handler::init_all_static_data()
+int svc_tcp::init_all_static_data()
 {
     int ret = 0;
 
@@ -807,34 +806,34 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
     ZCE_LOG(RS_INFO, "MaxAcceptSvr:%u MaxConnectSvr:%u.\n", max_accept_svr_, max_connect_svr_);
 
     //为CONNECT的HDL预先分配内存，成为一个池子
-    ZCE_LOG(RS_INFO, "Connet Hanlder:size of Ogre_TCP_Svc_Handler [%u],one connect handler have deqeue length [%u],number of connect handler [%u]."
+    ZCE_LOG(RS_INFO, "Connet Hanlder:size of svc_tcp [%u],one connect handler have deqeue length [%u],number of connect handler [%u]."
             "About need  memory [%u] bytes.\n",
-            sizeof(Ogre_TCP_Svc_Handler),
+            sizeof(svc_tcp),
             MAX_OF_CONNECT_PEER_SEND_DEQUE,
             max_connect_svr_,
-            (max_connect_svr_ * (sizeof(Ogre_TCP_Svc_Handler) + MAX_OF_CONNECT_PEER_SEND_DEQUE * sizeof(size_t)))
+            (max_connect_svr_ * (sizeof(svc_tcp) + MAX_OF_CONNECT_PEER_SEND_DEQUE * sizeof(size_t)))
     );
     pool_of_cnthdl_.initialize(max_connect_svr_);
 
     for (size_t i = 0; i < max_connect_svr_; ++i)
     {
-        Ogre_TCP_Svc_Handler* p_handler = new Ogre_TCP_Svc_Handler(HANDLER_MODE_CONNECT);
+        svc_tcp* p_handler = new svc_tcp(HANDLER_MODE_CONNECT);
         pool_of_cnthdl_.push_back(p_handler);
     }
 
     //为ACCEPT的HDL预先分配内存，成为一个池子
-    ZCE_LOG(RS_INFO, "Accept Hanlder:size of Ogre_TCP_Svc_Handler [%u],one accept handler have deqeue length [%u],number of accept handler [%u]."
+    ZCE_LOG(RS_INFO, "Accept Hanlder:size of svc_tcp [%u],one accept handler have deqeue length [%u],number of accept handler [%u]."
             "About need  memory [%u] bytes.\n",
-            sizeof(Ogre_TCP_Svc_Handler),
+            sizeof(svc_tcp),
             MAX_OF_ACCEPT_PEER_SEND_DEQUE,
             max_accept_svr_,
-            (max_accept_svr_ * (sizeof(Ogre_TCP_Svc_Handler) + MAX_OF_ACCEPT_PEER_SEND_DEQUE * sizeof(size_t)))
+            (max_accept_svr_ * (sizeof(svc_tcp) + MAX_OF_ACCEPT_PEER_SEND_DEQUE * sizeof(size_t)))
     );
     pool_of_acpthdl_.initialize(max_accept_svr_);
 
     for (size_t i = 0; i < max_accept_svr_; ++i)
     {
-        Ogre_TCP_Svc_Handler* p_handler = new Ogre_TCP_Svc_Handler(HANDLER_MODE_ACCEPTED);
+        svc_tcp* p_handler = new svc_tcp(HANDLER_MODE_ACCEPTED);
         pool_of_acpthdl_.push_back(p_handler);
     }
 
@@ -855,7 +854,7 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
 }
 
 //
-int Ogre_TCP_Svc_Handler::unInit_all_static_data()
+int svc_tcp::unInit_all_static_data()
 {
     //
     svr_peer_hdl_set_.clear_and_close();
@@ -864,7 +863,7 @@ int Ogre_TCP_Svc_Handler::unInit_all_static_data()
 
 //从池子里面得到一个Handler给大家使用
 //Connect的端口应该永远不发生取不到Hanler的事情
-Ogre_TCP_Svc_Handler* Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
+svc_tcp* svc_tcp::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
 {
     //
     if (handler_mode == HANDLER_MODE_ACCEPTED)
@@ -878,7 +877,7 @@ Ogre_TCP_Svc_Handler* Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
             return NULL;
         }
 
-        Ogre_TCP_Svc_Handler* p_handler = NULL;
+        svc_tcp* p_handler = NULL;
         pool_of_acpthdl_.pop_front(p_handler);
         return p_handler;
     }
@@ -886,7 +885,7 @@ Ogre_TCP_Svc_Handler* Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
     else if (HANDLER_MODE_CONNECT == handler_mode)
     {
         ZCE_ASSERT(pool_of_cnthdl_.size() > 0);
-        Ogre_TCP_Svc_Handler* p_handler = NULL;
+        svc_tcp* p_handler = NULL;
         pool_of_cnthdl_.pop_front(p_handler);
         return p_handler;
     }
@@ -899,7 +898,7 @@ Ogre_TCP_Svc_Handler* Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
 }
 
 //要得到数据的ZByteBuffer,要求分配好,
-int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
+int svc_tcp::process_send_data(ogre4a_frame* ogre_frame)
 {
     int ret = 0;
 
@@ -909,13 +908,13 @@ int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
 
     OGRE_PEER_ID svrinfo = ogre_frame->rcv_peer_info_;
 
-    Ogre_TCP_Svc_Handler* svchanle = NULL;
+    svc_tcp* svchanle = NULL;
     ret = svr_peer_hdl_set_.find_services_peerinfo(svrinfo, svchanle);
 
     //如果是要重新进行连接的服务器主动主动连接,
     if (ret != 0)
     {
-        //为什么不把一个Ogre_TCP_Svc_Handler作为返回,因为在发起Connect过程中,也可能event_close.
+        //为什么不把一个svc_tcp作为返回,因为在发起Connect过程中,也可能event_close.
         ret = zerg_auto_connect_.connect_server_by_peerid(svrinfo);
 
         //这个地方是一个Double Check,如果发起连接成功
@@ -961,7 +960,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(ogre4a_frame* ogre_frame)
 
 //将发送数据放入发送队列中
 //如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
-int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(ogre4a_frame* ogre_frame)
+int svc_tcp::put_frame_to_sendlist(ogre4a_frame* ogre_frame)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
@@ -1030,7 +1029,7 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(ogre4a_frame* ogre_frame)
 
 //合并发送队列
 //如果有2个以上的的发送队列，则可以考虑合并处理
-void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
+void svc_tcp::unite_frame_sendlist()
 {
     //如果有2个以上的的发送队列，则可以考虑合并处理
     size_t sz_deque = snd_buffer_deque_.size();
@@ -1053,7 +1052,7 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
         snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ += (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD);
 
         //将倒数第一个施放掉
-        Ogre_Buffer_Storage::instance()->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
+        buffer_storage::instance()->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
         snd_buffer_deque_[sz_deque - 1] = NULL;
         snd_buffer_deque_.pop_back();
     }
@@ -1072,7 +1071,7 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 }
 
 //
-int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
+int svc_tcp::push_frame_to_recvpipe(unsigned int sz_data)
 {
     int ret = soar::svrd_buspipe::instance()->push_back_recvbus(
         reinterpret_cast<soar::zerg_frame*>(rcv_buffer_));
@@ -1090,7 +1089,7 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
     else if (rcv_buffer_->ogre_frame_len_ == sz_data + ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD)
     {
         //无论处理正确与否,都释放缓冲区的空间
-        Ogre_Buffer_Storage::instance()->free_byte_buffer(rcv_buffer_);
+        buffer_storage::instance()->free_byte_buffer(rcv_buffer_);
         rcv_buffer_ = NULL;
     }
     //代码错误
@@ -1111,8 +1110,8 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 }
 
 //根据有的SVR INFO，查询相应的HDL
-int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID& peer_id,
-                                             Ogre_TCP_Svc_Handler*& svchanle)
+int svc_tcp::find_services_peer(const OGRE_PEER_ID& peer_id,
+                                svc_tcp*& svchanle)
 {
     int ret = 0;
     ret = svr_peer_hdl_set_.find_services_peerinfo(peer_id, svchanle);
@@ -1127,21 +1126,22 @@ int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID& peer_id,
 }
 
 //对没有链接的的服务器进行重连
-int Ogre_TCP_Svc_Handler::connect_all_server()
+int svc_tcp::connect_all_server()
 {
     size_t num_vaild = 0, num_succ = 0, num_fail = 0;
     return zerg_auto_connect_.connect_all_server(num_vaild, num_succ, num_fail);
 }
 
 //
-void Ogre_TCP_Svc_Handler::get_maxpeer_num(size_t& maxaccept, size_t& maxconnect)
+void svc_tcp::get_maxpeer_num(size_t& maxaccept, size_t& maxconnect)
 {
     maxaccept = max_accept_svr_;
     maxconnect = max_connect_svr_;
 }
 
 //得到Handle对应PEER的端口
-const zce::skt::addr_in& Ogre_TCP_Svc_Handler::get_peer()
+const zce::skt::addr_in& svc_tcp::get_peer()
 {
     return remote_address_;
 }
+}//namespace ogre

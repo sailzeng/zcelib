@@ -7,20 +7,21 @@
 #include "ogre/buf_storage.h"
 #include "ogre/configure.h"
 #include "ogre/ip_restrict.h"
+namespace ogre
+{
+comm_manager* comm_manager::instance_ = NULL;
 
-Ogre_Comm_Manger* Ogre_Comm_Manger::instance_ = NULL;
-
-Ogre_Comm_Manger::Ogre_Comm_Manger() :
+comm_manager::comm_manager() :
     ogre_config_(NULL)
 {
 }
 
-Ogre_Comm_Manger::~Ogre_Comm_Manger()
+comm_manager::~comm_manager()
 {
 }
 
 //检查一个端口是否安全.然后根据配置进行处理
-int Ogre_Comm_Manger::check_safe_port(zce::skt::addr_in& inetadd)
+int comm_manager::check_safe_port(zce::skt::addr_in& inetadd)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -49,7 +50,7 @@ int Ogre_Comm_Manger::check_safe_port(zce::skt::addr_in& inetadd)
 }
 
 //得到配置
-int Ogre_Comm_Manger::get_config(const Ogre_Server_Config* config)
+int comm_manager::get_config(const configure* config)
 {
     int ret = 0;
 
@@ -57,7 +58,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config* config)
     ogre4a_frame::set_max_framedata_len(config->ogre_cfg_data_.max_data_len_);
 
     //IP限制,
-    ret = Ogre_IPRestrict_Mgr::instance()->get_config(config);
+    ret = ip_restrict::instance()->get_config(config);
 
     if (0 != ret)
     {
@@ -65,7 +66,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config* config)
     }
 
     //TCP 读取配置
-    ret = Ogre_TCP_Svc_Handler::get_config(config);
+    ret = svc_tcp::get_config(config);
     if (ret != 0)
     {
         return ret;
@@ -76,7 +77,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config* config)
 
 //将所有的队列中的数据发送，从SEND管道找到所有的数据去发送,
 //想了想，还是加了一个最多发送的帧的限额
-int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
+int comm_manager::get_all_senddata_to_write(size_t& procframe)
 {
     int ret = 0;
 
@@ -85,7 +86,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
          soar::svrd_buspipe::instance()->is_empty_sendbus() == false &&
          procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
-        ogre4a_frame* send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
+        ogre4a_frame* send_frame = buffer_storage::instance()->allocate_byte_buffer();
 
         //
         ret = soar::svrd_buspipe::instance()->pop_front_sendbus(
@@ -94,16 +95,16 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         if (ret != 0)
         {
             //归还缓存
-            Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
+            buffer_storage::instance()->free_byte_buffer(send_frame);
             continue;
         }
 
         //如果FRAME的长度
         if (send_frame->ogre_frame_len_ > ogre4a_frame::MAX_OF_OGRE_FRAME_LEN)
         {
-            ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
+            ZCE_LOG(RS_ALERT, "comm_manager::get_all_senddata_to_write len %u\n",
                     send_frame->ogre_frame_len_);
-            DEBUGDUMP_OGRE_HEAD(send_frame, "Ogre_Comm_Manger::get_all_senddata_to_write", RS_ALERT);
+            DEBUGDUMP_OGRE_HEAD(send_frame, "comm_manager::get_all_senddata_to_write", RS_ALERT);
             ZCE_ASSERT(false);
             return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
         }
@@ -111,12 +112,12 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         //如果是TCP
         if (send_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_PEER_TCP)
         {
-            ret = Ogre_TCP_Svc_Handler::process_send_data(send_frame);
+            ret = svc_tcp::process_send_data(send_frame);
 
             if (ret != 0)
             {
                 //归还缓存
-                Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
+                buffer_storage::instance()->free_byte_buffer(send_frame);
                 continue;
             }
         }
@@ -125,14 +126,14 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
         else if (send_frame->ogre_frame_option_ & ogre4a_frame::OGREDESC_PEER_UDP)
         {
             //不检查错误
-            Ogre_UDPSvc_Hdl::send_alldata_to_udp(send_frame);
-            Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
+            svc_udp::send_alldata_to_udp(send_frame);
+            buffer_storage::instance()->free_byte_buffer(send_frame);
         }
         //你都不填写，我如何发送？
         else
         {
             ZCE_LOG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
-            Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
+            buffer_storage::instance()->free_byte_buffer(send_frame);
         }
     }
 
@@ -140,7 +141,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t& procframe)
 }
 
 //初始化通讯管理器
-int Ogre_Comm_Manger::init_comm_manger()
+int comm_manager::init_comm_manger()
 {
     int ret = 0;
 
@@ -148,7 +149,7 @@ int Ogre_Comm_Manger::init_comm_manger()
 
     for (unsigned int i = 0; i < ogre_config_->ogre_cfg_data_.accept_peer_num_; ++i)
     {
-        Ogre_TCPAccept_Hdl* accpet_hd = new Ogre_TCPAccept_Hdl(
+        svc_accept* accpet_hd = new svc_accept(
             ogre_config_->ogre_cfg_data_.accept_peer_ary_[i]);
 
         ret = accpet_hd->create_listenpeer();
@@ -160,7 +161,7 @@ int Ogre_Comm_Manger::init_comm_manger()
 
     for (unsigned int i = 0; i <= ogre_config_->ogre_cfg_data_.udp_peer_num_; ++i)
     {
-        Ogre_UDPSvc_Hdl* udp_hd = new Ogre_UDPSvc_Hdl(
+        svc_udp* udp_hd = new svc_udp(
             ogre_config_->ogre_cfg_data_.udp_peer_ary_[i]);
 
         ret = udp_hd->init_udp_peer();
@@ -171,7 +172,7 @@ int Ogre_Comm_Manger::init_comm_manger()
     }
 
     //初始化静态数据
-    ret = Ogre_TCP_Svc_Handler::init_all_static_data();
+    ret = svc_tcp::init_all_static_data();
 
     if (ret != 0)
     {
@@ -182,33 +183,34 @@ int Ogre_Comm_Manger::init_comm_manger()
 }
 
 //注销通讯管理器
-int Ogre_Comm_Manger::uninit_comm_manger()
+int comm_manager::uninit_comm_manger()
 {
     //
-    Ogre_TCP_Svc_Handler::unInit_all_static_data();
+    svc_tcp::unInit_all_static_data();
     //
-    Ogre_IPRestrict_Mgr::clear_inst();
+    ip_restrict::clear_inst();
 
     return 0;
 }
 
 //得到单子的实例
-Ogre_Comm_Manger* Ogre_Comm_Manger::instance()
+comm_manager* comm_manager::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new Ogre_Comm_Manger();
+        instance_ = new comm_manager();
     }
 
     return instance_;
 }
 
 //清理单子的实例
-void Ogre_Comm_Manger::clear_inst()
+void comm_manager::clear_inst()
 {
     if (instance_)
     {
         delete instance_;
         instance_ = NULL;
     }
+}
 }

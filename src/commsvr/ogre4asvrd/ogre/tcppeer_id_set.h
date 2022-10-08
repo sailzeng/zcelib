@@ -1,24 +1,24 @@
-#ifndef OGRE_SOCKETPEER_ID_SET_H_
-#define OGRE_SOCKETPEER_ID_SET_H_
-
-class Ogre_TCP_Svc_Handler;
+#pragma once
+namespace ogre
+{
+class svc_tcp;
 /****************************************************************************************************
-class  PeerID_To_TCPHdl_Map
+class  tcppeer_set
 ****************************************************************************************************/
-class PeerID_To_TCPHdl_Map
+class tcppeer_set
 {
 public:
     ///构造函数,
-    PeerID_To_TCPHdl_Map();
-    ~PeerID_To_TCPHdl_Map();
+    tcppeer_set();
+    ~tcppeer_set();
 
     //初始化
     void init_services_peerinfo(size_t szpeer);
 
     ///查询配置信息
-    int find_services_peerinfo(const OGRE_PEER_ID& svrinfo, Ogre_TCP_Svc_Handler*&);
+    int find_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*&);
     ///设置配置信息
-    int add_services_peerinfo(const OGRE_PEER_ID& svrinfo, Ogre_TCP_Svc_Handler*);
+    int add_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*);
     ///删除配置信息
     size_t del_services_peerinfo(const OGRE_PEER_ID& svrinfo);
     //
@@ -27,10 +27,9 @@ public:
 protected:
     //
     typedef std::unordered_map < OGRE_PEER_ID,
-        Ogre_TCP_Svc_Handler*,
+        svc_tcp*,
         HASH_OF_OGREPEERID > MAP_OF_SOCKETPEER_ID;
     //
     MAP_OF_SOCKETPEER_ID  peer_info_set_;
 };
-
-#endif //OGRE_SOCKETPEER_ID_SET_H_
+}

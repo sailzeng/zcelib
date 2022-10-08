@@ -2,13 +2,14 @@
 #include "ogre/auto_connect.h"
 #include "ogre/application.h"
 #include "ogre/svc_tcp.h"
-
+namespace ogre
+{
 //
-Ogre_Connect_Server::Ogre_Connect_Server()
+auto_connect::auto_connect()
 {
 }
 //
-Ogre_Connect_Server::~Ogre_Connect_Server()
+auto_connect::~auto_connect()
 {
     SET_OF_TCP_PEER_MODULE::iterator iter_tmp = autocnt_module_set_.begin();
     SET_OF_TCP_PEER_MODULE::iterator iter_end = autocnt_module_set_.end();
@@ -21,7 +22,7 @@ Ogre_Connect_Server::~Ogre_Connect_Server()
 }
 
 //取得配置
-int Ogre_Connect_Server::get_config(const Ogre_Server_Config* config)
+int auto_connect::get_config(const configure* config)
 {
     int ret = 0;
     auto_connect_num_ = config->ogre_cfg_data_.auto_connect_num_;
@@ -59,7 +60,7 @@ int Ogre_Connect_Server::get_config(const Ogre_Server_Config* config)
 
 //链接所有的服务器
 //要链接的服务器总数,成功开始连接的服务器个数,
-int Ogre_Connect_Server::connect_all_server(size_t& num_vaild, size_t& num_succ, size_t& num_fail)
+int auto_connect::connect_all_server(size_t& num_vaild, size_t& num_succ, size_t& num_fail)
 {
     int ret = 0;
 
@@ -97,7 +98,7 @@ int Ogre_Connect_Server::connect_all_server(size_t& num_vaild, size_t& num_succ,
     return 0;
 }
 
-int Ogre_Connect_Server::connect_server_by_peerid(const OGRE_PEER_ID& socket_peer)
+int auto_connect::connect_server_by_peerid(const OGRE_PEER_ID& socket_peer)
 {
     TCP_PEER_MODULE_INFO peer_module;
     peer_module.peer_id_ = socket_peer;
@@ -115,15 +116,15 @@ int Ogre_Connect_Server::connect_server_by_peerid(const OGRE_PEER_ID& socket_pee
     return connect_one_server(*find_ret);
 }
 
-int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO& peer_module)
+int auto_connect::connect_one_server(const TCP_PEER_MODULE_INFO& peer_module)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //如果已经连接上了，不进行连接
-    Ogre_TCP_Svc_Handler* tcp_hdl = NULL;
-    ret = Ogre_TCP_Svc_Handler::find_services_peer(peer_module.peer_id_, tcp_hdl);
+    svc_tcp* tcp_hdl = NULL;
+    ret = svc_tcp::find_services_peer(peer_module.peer_id_, tcp_hdl);
     if (ret == 0)
     {
         return SOAR_RET::ERR_OGRE_ALREADY_CONNECTED;
@@ -152,8 +153,8 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO& peer_mod
         }
 
         //从池子中取得HDL，初始化之，CONNECThdl的数量不可能小于0
-        Ogre_TCP_Svc_Handler* connect_hdl = Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(
-            Ogre_TCP_Svc_Handler::HANDLER_MODE_CONNECT);
+        svc_tcp* connect_hdl = svc_tcp::alloc_svchandler_from_pool(
+            svc_tcp::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(connect_hdl);
         connect_hdl->init_tcp_svc_handler(tcpscoket, inetaddr, peer_module.fp_judge_whole_frame_);
     }
@@ -166,4 +167,5 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO& peer_mod
     }
 
     return 0;
+}
 }

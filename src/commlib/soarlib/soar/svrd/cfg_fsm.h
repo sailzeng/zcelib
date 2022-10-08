@@ -44,7 +44,7 @@ struct SVCID_CONFIG
 *
 * @note
 */
-class svrd_cfg_fsm : public svrd_cfg_base
+class svrd_cfg_fsm : public soar::svrd_cfg_base
 {
 protected:
     //构造函数

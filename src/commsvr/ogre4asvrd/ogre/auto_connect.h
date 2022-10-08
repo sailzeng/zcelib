@@ -1,27 +1,23 @@
 //Jovi(HuangHao),Sail(ZENGXING)
 
-#ifndef OGRE_SERVER_AUTO_CONNECT_H_
-#define OGRE_SERVER_AUTO_CONNECT_H_
+#pragma once
 
 #include "ogre/configure.h"
 
-class Ogre_TCP_Svc_Handler;
+namespace ogre
+{
+class svc_tcp;
 
-/*!
-* @brief      主动链接其他服务器的管理类
-*
-* @note
-*/
-class Ogre_Connect_Server
+class auto_connect
 {
 public:
 
     //构造函数
-    Ogre_Connect_Server();
-    ~Ogre_Connect_Server();
+    auto_connect();
+    ~auto_connect();
 
     ///读取配置
-    int get_config(const Ogre_Server_Config* config);
+    int get_config(const configure* config);
 
     /*!
     * @brief      对所有的服务器进行重新链接
@@ -61,5 +57,4 @@ protected:
     ///要主动链接的PEER的SET，用SET是查询方便
     SET_OF_TCP_PEER_MODULE     autocnt_module_set_;
 };
-
-#endif //OGRE_SERVER_AUTO_CONNECT_H_
+}// namespace ogre

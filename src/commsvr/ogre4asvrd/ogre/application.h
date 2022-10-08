@@ -1,16 +1,15 @@
 #ifndef OGRE_SERVER_APPLICATION_H_
 #define OGRE_SERVER_APPLICATION_H_
 
-/****************************************************************************************************
-class  Ogre_Service_App
-****************************************************************************************************/
-class Ogre_Service_App : public soar::app_buspipe
+namespace ogre
+{
+class application : public soar::app_buspipe
 {
 public:
 
     //我又要偷偷藏着
-    Ogre_Service_App();
-    virtual ~Ogre_Service_App();
+    application();
+    virtual ~application();
 
 public:
 
@@ -23,5 +22,6 @@ public:
     ///运行,运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。
     virtual int app_run();
 };
+}
 
 #endif //OGRE_SERVER_APPLICATION_H_

@@ -135,7 +135,7 @@ namespace zerg
 *
 * @note
 */
-class zerg_config : public svrd_cfg_base
+class zerg_config : public soar::svrd_cfg_base
 {
 public:
     //

@@ -5,6 +5,8 @@
 #include "soar/svrd/app_bus.h"
 #include "soar/svrd/cfg_base.h"
 
+namespace soar
+{
 svrd_cfg_base::svrd_cfg_base() :
     instance_id_(1)
 {
@@ -300,4 +302,5 @@ int svrd_cfg_base::get_log_cfg(const zce::propertytree* conf_tree)
     }
 
     return 0;
+}
 }

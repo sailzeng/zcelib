@@ -1,10 +1,8 @@
-#ifndef OGRE_BUFFER_STORAGE_H_
-#define OGRE_BUFFER_STORAGE_H_
+#pragma once
 
-/****************************************************************************************************
-class Ogre_Buffer_Storage BUFFER存储的
-****************************************************************************************************/
-class Ogre_Buffer_Storage
+namespace ogre
+{
+class buffer_storage
 {
     //
     typedef zce::lord_rings <ogre4a_frame*> SAIL_FRAME_BUFFER_POOL;
@@ -12,14 +10,14 @@ class Ogre_Buffer_Storage
 protected:
 
     //只声明不实现,避免错误
-    Ogre_Buffer_Storage(const Ogre_Buffer_Storage&);
+    buffer_storage(const buffer_storage&);
     //只声明不实现,避免错误
-    Ogre_Buffer_Storage& operator =(const Ogre_Buffer_Storage&);
+    buffer_storage& operator =(const buffer_storage&);
 
 public:
     //构造函数和析构函数
-    Ogre_Buffer_Storage();
-    ~Ogre_Buffer_Storage();
+    buffer_storage();
+    ~buffer_storage();
 
     //初始化
     void init_buffer_list(size_t szlist);
@@ -38,9 +36,9 @@ public:
 
     //为了SingleTon类准备
     //实例的赋值
-    static void instance(Ogre_Buffer_Storage*);
+    static void instance(buffer_storage*);
     //实例的获得
-    static Ogre_Buffer_Storage* instance();
+    static buffer_storage* instance();
     //清除实例
     static void clear_inst();
 
@@ -60,7 +58,6 @@ protected:
 protected:
 
     //instance函数使用的东西
-    static Ogre_Buffer_Storage* instance_;
+    static buffer_storage* instance_;
 };
-
-#endif //OGRE_BUFFER_STORAGE_H_
+}//namespace ogre

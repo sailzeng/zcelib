@@ -4,32 +4,34 @@
 #include "ogre/ip_restrict.h"
 #include "ogre/svc_udp.h"
 
+namespace ogre
+{
 //所有UPD端口的句柄
-std::vector<Ogre_UDPSvc_Hdl*> Ogre_UDPSvc_Hdl::ary_upd_peer_;
+std::vector<svc_udp*> svc_udp::ary_upd_peer_;
 
 //构造函数
-Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::skt::addr_in& upd_addr, zce::reactor* reactor) :
+svc_udp::svc_udp(const zce::skt::addr_in& upd_addr, zce::reactor* reactor) :
     zce::event_handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port()),
     dgram_databuf_(NULL),
-    ip_restrict_(Ogre_IPRestrict_Mgr::instance())
+    ip_restrict_(ip_restrict::instance())
 {
     //保存到PEER数组
     ary_upd_peer_.push_back(this);
 }
 
 //析构函数
-Ogre_UDPSvc_Hdl::~Ogre_UDPSvc_Hdl()
+svc_udp::~svc_udp()
 {
     if (dgram_databuf_ != NULL)
     {
-        Ogre_Buffer_Storage::instance()->free_byte_buffer(dgram_databuf_);
+        buffer_storage::instance()->free_byte_buffer(dgram_databuf_);
     }
 
     //删除掉保存的PEER数组
-    std::vector<Ogre_UDPSvc_Hdl*>::iterator iter_tmp = ary_upd_peer_.begin();
-    std::vector<Ogre_UDPSvc_Hdl*>::iterator iter_end = ary_upd_peer_.begin();
+    std::vector<svc_udp*>::iterator iter_tmp = ary_upd_peer_.begin();
+    std::vector<svc_udp*>::iterator iter_end = ary_upd_peer_.begin();
 
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
@@ -42,9 +44,9 @@ Ogre_UDPSvc_Hdl::~Ogre_UDPSvc_Hdl()
 }
 
 //初始化一个UDP PEER
-int Ogre_UDPSvc_Hdl::init_udp_peer()
+int svc_udp::init_udp_peer()
 {
-    dgram_databuf_ = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
+    dgram_databuf_ = buffer_storage::instance()->allocate_byte_buffer();
 
     int ret = 0;
     ret = dgram_peer_.open(&udp_bind_addr_);
@@ -65,12 +67,12 @@ int Ogre_UDPSvc_Hdl::init_udp_peer()
 }
 
 //取得句柄
-ZCE_HANDLE Ogre_UDPSvc_Hdl::get_handle(void) const
+ZCE_HANDLE svc_udp::get_handle(void) const
 {
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int Ogre_UDPSvc_Hdl::read_event(ZCE_HANDLE)
+int svc_udp::read_event(ZCE_HANDLE)
 {
     size_t szrevc = 0;
     int ret = 0;
@@ -102,7 +104,7 @@ int Ogre_UDPSvc_Hdl::read_event(ZCE_HANDLE)
 }
 
 //
-int Ogre_UDPSvc_Hdl::close_event()
+int svc_udp::close_event()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
@@ -118,7 +120,7 @@ int Ogre_UDPSvc_Hdl::close_event()
 }
 
 //读取UDP数据
-int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote_addr)
+int svc_udp::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote_addr)
 {
     int ret = 0;
     szrevc = 0;
@@ -183,7 +185,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote
     return 0;
 }
 
-int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
+int svc_udp::pushdata_to_recvpipe()
 {
     int ret = soar::svrd_buspipe::instance()->push_back_recvbus(
         reinterpret_cast<soar::zerg_frame*>(dgram_databuf_));
@@ -200,7 +202,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 }
 
 //发送UDP数据。
-int Ogre_UDPSvc_Hdl::send_alldata_to_udp(ogre4a_frame* send_frame)
+int svc_udp::send_alldata_to_udp(ogre4a_frame* send_frame)
 {
     ssize_t szsend = -1;
 
@@ -251,3 +253,4 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(ogre4a_frame* send_frame)
                   szsend);
     return 0;
 }
+}//namespace ogre

@@ -1,29 +1,28 @@
 #ifndef OGRE4A_IP_RESTRICT_H_
 #define OGRE4A_IP_RESTRICT_H_
 
-/****************************************************************************************************
-class  Ogre4aIPRestrictMgr
-****************************************************************************************************/
-class Ogre_IPRestrict_Mgr
+namespace ogre
+{
+class ip_restrict
 {
     typedef std::unordered_set<unsigned int> SET_OF_IPADDRESS;
 
 protected:
 
-    Ogre_IPRestrict_Mgr();
-    ~Ogre_IPRestrict_Mgr();
+    ip_restrict();
+    ~ip_restrict();
 
 public:
 
     ///从配置文件中得到相关的配置
-    int get_config(const Ogre_Server_Config* config);
+    int get_config(const configure* config);
     //检查IP限制
     int check_ip_restrict(const zce::skt::addr_in& remoteaddress);
 
 public:
 
     //单子实例函数
-    static Ogre_IPRestrict_Mgr* instance();
+    static ip_restrict* instance();
     //清理单子实例
     static void clear_inst();
 
@@ -36,7 +35,7 @@ protected:
 
 protected:
     //单子实例
-    static Ogre_IPRestrict_Mgr* instance_;
+    static ip_restrict* instance_;
 };
-
+}
 #endif //OGRE4A_IP_RESTRICT_H_

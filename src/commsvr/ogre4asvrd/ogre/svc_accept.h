@@ -3,22 +3,24 @@
 
 #include "ogre/configure.h"
 
-class Ogre_IPRestrict_Mgr;
+namespace ogre
+{
+class ip_restrict;
 
 /*!
 * @brief      TCP Accept 处理的EventHandler
 *
 * @note
 */
-class Ogre_TCPAccept_Hdl : public zce::event_handler
+class svc_accept : public zce::event_handler
 {
 public:
 
     //构造函数
-    Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO& config_info,
-                       zce::reactor* reactor = zce::reactor::instance());
+    svc_accept(const TCP_PEER_CONFIG_INFO& config_info,
+               zce::reactor* reactor = zce::reactor::instance());
 protected:
-    ~Ogre_TCPAccept_Hdl();
+    ~svc_accept();
 public:
 
     //创建监听的端口
@@ -41,7 +43,8 @@ protected:
     TCP_PEER_MODULE_INFO   peer_module_info_;
 
     //IP限制管理器
-    Ogre_IPRestrict_Mgr* ip_restrict_;
+    ip_restrict* ip_restrict_;
 };
+}//namespace ogre
 
 #endif //OGRE_TCP_ACCEPT_HANDLER_H_

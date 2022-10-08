@@ -2,22 +2,24 @@
 #include "ogre/configure.h"
 #include "ogre/ip_restrict.h"
 
+namespace ogre
+{
 //单子实例
-Ogre_IPRestrict_Mgr* Ogre_IPRestrict_Mgr::instance_ = NULL;
+ip_restrict* ip_restrict::instance_ = NULL;
 
 /****************************************************************************************************
 class  OgreIPRestrict 处理通讯中间的IP限制问题
 ****************************************************************************************************/
-Ogre_IPRestrict_Mgr::Ogre_IPRestrict_Mgr()
+ip_restrict::ip_restrict()
 {
 }
 //自己清理的类型，统一关闭在event_close,这个地方不用关闭
-Ogre_IPRestrict_Mgr::~Ogre_IPRestrict_Mgr()
+ip_restrict::~ip_restrict()
 {
 }
 
 //从配置文件中得到相关的配置
-int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config* config)
+int ip_restrict::get_config(const configure* config)
 {
     int ret = 0;
     //unsigned int tmp_uint= 0;
@@ -63,7 +65,7 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config* config)
 }
 
 //
-int Ogre_IPRestrict_Mgr::check_ip_restrict(const zce::skt::addr_in& remoteaddress)
+int ip_restrict::check_ip_restrict(const zce::skt::addr_in& remoteaddress)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -98,19 +100,19 @@ int Ogre_IPRestrict_Mgr::check_ip_restrict(const zce::skt::addr_in& remoteaddres
 }
 
 //单子实例函数
-Ogre_IPRestrict_Mgr* Ogre_IPRestrict_Mgr::instance()
+ip_restrict* ip_restrict::instance()
 {
     //如果没有初始化
     if (instance_ == NULL)
     {
-        instance_ = new Ogre_IPRestrict_Mgr();
+        instance_ = new ip_restrict();
     }
 
     return instance_;
 }
 
 //清理实例
-void Ogre_IPRestrict_Mgr::clear_inst()
+void ip_restrict::clear_inst()
 {
     if (instance_)
     {
@@ -118,3 +120,4 @@ void Ogre_IPRestrict_Mgr::clear_inst()
         instance_ = NULL;
     }
 }
+} //namespace ogre

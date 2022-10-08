@@ -4,26 +4,25 @@
 #include "ogre/ip_restrict.h"
 #include "ogre/svc_accept.h"
 
-/****************************************************************************************************
-class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler,
-****************************************************************************************************/
-Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO& config_info,
-                                       zce::reactor* reactor) :
+namespace ogre
+{
+svc_accept::svc_accept(const TCP_PEER_CONFIG_INFO& config_info,
+                       zce::reactor* reactor) :
     zce::event_handler(reactor),
-    ip_restrict_(Ogre_IPRestrict_Mgr::instance())
+    ip_restrict_(ip_restrict::instance())
 {
     peer_module_info_.peer_info_ = config_info;
     ZCE_ASSERT(peer_module_info_.fp_judge_whole_frame_);
 }
 
 //自己清理的类型，统一关闭在event_close,这个地方不用关闭
-Ogre_TCPAccept_Hdl::~Ogre_TCPAccept_Hdl()
+svc_accept::~svc_accept()
 {
     peer_module_info_.close_module();
 }
 
 //
-int Ogre_TCPAccept_Hdl::create_listenpeer()
+int svc_accept::create_listenpeer()
 {
     int ret = 0;
 
@@ -97,7 +96,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 }
 
 //
-int Ogre_TCPAccept_Hdl::accept_event(ZCE_HANDLE /*handle*/)
+int svc_accept::accept_event(ZCE_HANDLE /*handle*/)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -141,7 +140,7 @@ int Ogre_TCPAccept_Hdl::accept_event(ZCE_HANDLE /*handle*/)
         return ret;
     }
 
-    Ogre_TCP_Svc_Handler* phandler = Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(Ogre_TCP_Svc_Handler::HANDLER_MODE_ACCEPTED);
+    svc_tcp* phandler = svc_tcp::alloc_svchandler_from_pool(svc_tcp::HANDLER_MODE_ACCEPTED);
 
     if (phandler != NULL)
     {
@@ -155,13 +154,13 @@ int Ogre_TCPAccept_Hdl::accept_event(ZCE_HANDLE /*handle*/)
     return 0;
 }
 //
-ZCE_HANDLE Ogre_TCPAccept_Hdl::get_handle(void) const
+ZCE_HANDLE svc_accept::get_handle(void) const
 {
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
 //
-int Ogre_TCPAccept_Hdl::close_event()
+int svc_accept::close_event()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)
@@ -174,4 +173,5 @@ int Ogre_TCPAccept_Hdl::close_event()
     delete this;
 
     return 0;
+}
 }

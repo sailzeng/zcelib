@@ -1,31 +1,32 @@
 #include "ogre/predefine.h"
 #include "ogre/buf_storage.h"
 #include "ogre/configure.h"
-
+namespace ogre
+{
 //instance函数使用的东西
-Ogre_Buffer_Storage* Ogre_Buffer_Storage::instance_ = NULL;
+buffer_storage* buffer_storage::instance_ = NULL;
 
 /****************************************************************************************************
-class Ogre_Buffer_Storage
+class buffer_storage
 ****************************************************************************************************/
-Ogre_Buffer_Storage::Ogre_Buffer_Storage() :
+buffer_storage::buffer_storage() :
     size_buffer_alloc_(0)
 {
     //extend_buffer_list(szlist);
 }
 //
-Ogre_Buffer_Storage::~Ogre_Buffer_Storage()
+buffer_storage::~buffer_storage()
 {
 }
 
 //
-void Ogre_Buffer_Storage::init_buffer_list(size_t szlist)
+void buffer_storage::init_buffer_list(size_t szlist)
 {
     extend_buffer_list(szlist);
 }
 
 //
-void Ogre_Buffer_Storage::uninit_buffer_list()
+void buffer_storage::uninit_buffer_list()
 {
     //少使用函数，懒得注意效率
     size_t sz_of_buffer = frame_buffer_ary_.size();
@@ -40,7 +41,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
     size_buffer_alloc_ = 0;
 }
 
-ogre4a_frame* Ogre_Buffer_Storage::allocate_byte_buffer()
+ogre4a_frame* buffer_storage::allocate_byte_buffer()
 {
     //缓冲区使用完了,扩展
     if (true == frame_buffer_ary_.empty())
@@ -55,14 +56,14 @@ ogre4a_frame* Ogre_Buffer_Storage::allocate_byte_buffer()
 }
 
 //
-void Ogre_Buffer_Storage::free_byte_buffer(ogre4a_frame* ptrbuf)
+void buffer_storage::free_byte_buffer(ogre4a_frame* ptrbuf)
 {
     ptrbuf->reset_framehead();
     frame_buffer_ary_.push_back(ptrbuf);
 }
 
 //扩展了缓冲区数量
-void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
+void buffer_storage::extend_buffer_list(size_t szlist)
 {
     //
     ZCE_LOG(RS_INFO, "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
@@ -89,24 +90,24 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 
 //为了SingleTon类准备
 //实例的赋值
-void Ogre_Buffer_Storage::instance(Ogre_Buffer_Storage* instance)
+void buffer_storage::instance(buffer_storage* instance)
 {
     clear_inst();
     instance_ = instance;
 }
 //实例的获得
-Ogre_Buffer_Storage* Ogre_Buffer_Storage::instance()
+buffer_storage* buffer_storage::instance()
 {
     if (NULL == instance_)
     {
         clear_inst();
-        instance_ = new Ogre_Buffer_Storage();
+        instance_ = new buffer_storage();
     }
 
     return instance_;
 }
 //清除实例
-void Ogre_Buffer_Storage::clear_inst()
+void buffer_storage::clear_inst()
 {
     if (instance_)
     {
@@ -114,3 +115,4 @@ void Ogre_Buffer_Storage::clear_inst()
         instance_ = NULL;
     }
 }
+} //namespace ogre

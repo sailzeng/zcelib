@@ -7,21 +7,19 @@
 #include "ogre/ip_restrict.h"
 #include "ogre/application.h"
 
-/****************************************************************************************************
-class  Ogre_Service_App
-****************************************************************************************************/
-
+namespace ogre
+{
 //我又要偷偷藏着
-Ogre_Service_App::Ogre_Service_App()
+application::application()
 {
 }
 
-Ogre_Service_App::~Ogre_Service_App()
+application::~application()
 {
 }
 
 //
-int Ogre_Service_App::app_start(int argc, const char* argv[])
+int application::app_start(int argc, const char* argv[])
 {
     int ret = 0;
     ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
@@ -33,10 +31,10 @@ int Ogre_Service_App::app_start(int argc, const char* argv[])
         return ret;
     }
 
-    Ogre_Server_Config* config = reinterpret_cast<Ogre_Server_Config*>(config_base_);
+    configure* config = reinterpret_cast<configure*>(config_base_);
 
     size_t max_accept = 0, max_connect = 0, max_peer = 0;
-    Ogre_TCP_Svc_Handler::get_maxpeer_num(max_accept, max_connect);
+    svc_tcp::get_maxpeer_num(max_accept, max_connect);
     ZCE_LOG(RS_INFO, "Ogre max accept number :%u,max connect number:%u.\n",
             max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
@@ -47,13 +45,13 @@ int Ogre_Service_App::app_start(int argc, const char* argv[])
 
     //先必须初始化Buffer Storage,设置为最大连接数的1/5,最少512个
     size_t size_list = (max_peer / 32 < 512) ? 512 : max_peer / 32;
-    Ogre_Buffer_Storage::instance()->init_buffer_list(size_list);
+    buffer_storage::instance()->init_buffer_list(size_list);
 
-    //Ogre_Comm_Manger 初始化
-    ret = Ogre_Comm_Manger::instance()->get_config(config);
+    //comm_manager 初始化
+    ret = comm_manager::instance()->get_config(config);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "Ogre_Comm_Manger::instance()->init_comm_manger() fail !\n");
+        ZCE_LOG(RS_ERROR, "comm_manager::instance()->init_comm_manger() fail !\n");
         return SOAR_RET::ERR_OGRE_INIT_COMM_MANAGER;
     }
 
@@ -62,13 +60,13 @@ int Ogre_Service_App::app_start(int argc, const char* argv[])
 }
 
 //处理退出的清理工作
-int Ogre_Service_App::app_exit()
+int application::app_exit()
 {
     //
-    Ogre_Comm_Manger::instance()->uninit_comm_manger();
-    Ogre_Comm_Manger::clear_inst();
+    comm_manager::instance()->uninit_comm_manger();
+    comm_manager::clear_inst();
 
-    Ogre_Buffer_Storage::instance()->uninit_buffer_list();
+    buffer_storage::instance()->uninit_buffer_list();
 
     //基类的退出
     app_exit();
@@ -81,7 +79,7 @@ int Ogre_Service_App::app_exit()
 
 //运行函数,不到万不得已,不会退出.
 //最重要的函数, 但是也最简单
-int Ogre_Service_App::app_run()
+int application::app_run()
 {
     //空闲N次后,SLEEP的时间间隔
     const unsigned int  IDLE_SLEEP_INTERVAL = 512;
@@ -89,7 +87,7 @@ int Ogre_Service_App::app_run()
     size_t numevent = 0;
     unsigned int idle = 0;
     size_t procframe = 0;
-    ZCE_LOG(RS_INFO, "Ogre_Service_App::Run Start.\n");
+    ZCE_LOG(RS_INFO, "application::Run Start.\n");
     //microsecond
     const int INTERVAL_MACRO_SECOND = 10000;
 
@@ -103,7 +101,7 @@ int Ogre_Service_App::app_run()
         zce::reactor::instance()->handle_events(&interval, &numevent);
 
         //取得发送数据数据
-        Ogre_Comm_Manger::instance()->get_all_senddata_to_write(procframe);
+        comm_manager::instance()->get_all_senddata_to_write(procframe);
         //没有处理任何事件
 
         //如果有事件处理了就继续
@@ -126,3 +124,4 @@ int Ogre_Service_App::app_run()
 
     return 0;
 }
+}// namespace ogre

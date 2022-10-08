@@ -156,13 +156,14 @@ public:
 };
 
 //===================================================================================
-
-class Ogre_Server_Config : public svrd_cfg_base
+namespace ogre
+{
+class configure : public soar::svrd_cfg_base
 {
 public:
 
-    Ogre_Server_Config();
-    virtual ~Ogre_Server_Config();
+    configure() = default;
+    virtual ~configure() = default;
 
 public:
 
@@ -183,5 +184,6 @@ public:
     ///ZERG的配置数据
     OGRE_CONFIG_DATA        ogre_cfg_data_;
 };
+} // namespace ogre
 
 #endif //OGRE_SERVER_CONFIG_H_

@@ -91,16 +91,9 @@ int TCP_PEER_MODULE_INFO::close_module()
 
 //======================================================================================
 
-//
-Ogre_Server_Config::Ogre_Server_Config()
+namespace ogre
 {
-}
-
-Ogre_Server_Config::~Ogre_Server_Config()
-{
-}
-
-int Ogre_Server_Config::read_cfgfile()
+int configure::read_cfgfile()
 {
     //
     int ret = 0;
@@ -142,7 +135,7 @@ int Ogre_Server_Config::read_cfgfile()
 }
 
 ///从配置中读取OGRE的配置
-int Ogre_Server_Config::get_ogre_cfg(const zce::propertytree* conf_tree)
+int configure::get_ogre_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -292,3 +285,4 @@ int Ogre_Server_Config::get_ogre_cfg(const zce::propertytree* conf_tree)
 
     return 0;
 }
+} //namespace ogre

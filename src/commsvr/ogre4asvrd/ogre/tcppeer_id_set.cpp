@@ -4,24 +4,23 @@
 #include "ogre/svc_tcp.h"
 #include "ogre/tcppeer_id_set.h"
 
-/****************************************************************************************************
-class  PeerInfoSetToTCPHdlMap
-****************************************************************************************************/
-PeerID_To_TCPHdl_Map::PeerID_To_TCPHdl_Map()
+namespace ogre
+{
+tcppeer_set::tcppeer_set()
 {
 }
 
-PeerID_To_TCPHdl_Map::~PeerID_To_TCPHdl_Map()
+tcppeer_set::~tcppeer_set()
 {
 }
 
-void PeerID_To_TCPHdl_Map::init_services_peerinfo(size_t szpeer)
+void tcppeer_set::init_services_peerinfo(size_t szpeer)
 {
     peer_info_set_.rehash(szpeer);
 }
 
 //根据SERVICEINFO查询PEER信息
-int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PEER_ID& svrinfo, Ogre_TCP_Svc_Handler*& svrhandle)
+int tcppeer_set::find_services_peerinfo(const OGRE_PEER_ID& svrinfo, svc_tcp*& svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(svrinfo);
 
@@ -41,7 +40,7 @@ int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PEER_ID& svrinfo, Og
 }
 
 //设置PEER信息
-int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID& peer_info, Ogre_TCP_Svc_Handler* svrhandle)
+int tcppeer_set::add_services_peerinfo(const OGRE_PEER_ID& peer_info, svc_tcp* svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
@@ -63,7 +62,7 @@ int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID& peer_info, O
 }
 
 //根据Socket_Peer_Info,删除PEER信息,
-size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PEER_ID& peer_info)
+size_t tcppeer_set::del_services_peerinfo(const OGRE_PEER_ID& peer_info)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
@@ -84,7 +83,7 @@ size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PEER_ID& peer_info
     return szdel;
 }
 
-void PeerID_To_TCPHdl_Map::clear_and_close()
+void tcppeer_set::clear_and_close()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
@@ -101,9 +100,10 @@ void PeerID_To_TCPHdl_Map::clear_and_close()
         }
 
         MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();
-        Ogre_TCP_Svc_Handler* svrhandle = (*(iter)).second;
+        svc_tcp* svrhandle = (*(iter)).second;
 
-        //Ogre_TCP_Svc_Handler::close_event调用了del_services_peerinfo
+        //svc_tcp::close_event调用了del_services_peerinfo
         svrhandle->close_event();
     }
+}
 }

@@ -1,5 +1,4 @@
-#ifndef OGRE_TCP_CONTROL_SERVICE_H_
-#define OGRE_TCP_CONTROL_SERVICE_H_
+#pragma once
 
 #include "ogre/tcppeer_id_set.h"
 #include "ogre/auto_connect.h"
@@ -8,10 +7,9 @@ class ogre4a_frame;
 class mmap_dequechunk;
 class soar::svrd_buspipe;
 
-/****************************************************************************************************
-class  Ogre_TCP_Svc_Handler
-****************************************************************************************************/
-class Ogre_TCP_Svc_Handler : public  zce::event_handler,
+namespace ogre
+{
+class svc_tcp : public  zce::event_handler,
     public zce::timer_handler
 {
 public:
@@ -41,10 +39,10 @@ protected:
 public:
 
     //构造函数
-    explicit Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode);
-    //为了让你无法在堆以外使用Ogre_TCP_Svc_Handler
+    explicit svc_tcp(svc_tcp::OGRE_HANDLER_MODE hdl_mode);
+    //为了让你无法在堆以外使用svc_tcp
 protected:
-    virtual ~Ogre_TCP_Svc_Handler();
+    virtual ~svc_tcp();
 
 public:
 
@@ -114,7 +112,7 @@ protected:
 public:
 
     ///读取配置文件
-    static int get_config(const Ogre_Server_Config* config);
+    static int get_config(const configure* config);
 
     ///初始化静态参数
     static int init_all_static_data();
@@ -123,7 +121,7 @@ public:
     static int unInit_all_static_data();
 
     //从池子分配一个Handler
-    static Ogre_TCP_Svc_Handler* alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode);
+    static svc_tcp* alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode);
 
     //取得配置的最大PEER数量
     static void get_maxpeer_num(size_t& maxaccept, size_t& maxconnect);
@@ -138,7 +136,7 @@ public:
     * @param      svchanle 返回查询到的句柄
     */
     static int find_services_peer(const OGRE_PEER_ID& peer_id,
-                                  Ogre_TCP_Svc_Handler*& svchanle);
+                                  svc_tcp*& svchanle);
 
     ///对没有链接的的服务器进行重连
     static int connect_all_server();
@@ -146,7 +144,7 @@ public:
 protected:
 
     ///
-    typedef zce::lord_rings<Ogre_TCP_Svc_Handler*> POOL_OF_TCP_HANDLER;
+    typedef zce::lord_rings<svc_tcp*> POOL_OF_TCP_HANDLER;
 
     ///定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
     static const  int      TCPCTRL_TIME_ID[];
@@ -176,10 +174,10 @@ protected:
     static unsigned int           error_try_num_;
 
     ///SVRINFO对应的PEER的HASHMAP
-    static PeerID_To_TCPHdl_Map   svr_peer_hdl_set_;
+    static tcppeer_set   svr_peer_hdl_set_;
 
     ///要自动链接的服务器的管理类
-    static Ogre_Connect_Server    zerg_auto_connect_;
+    static auto_connect    zerg_auto_connect_;
 
     ///已经Accept的PEER数量
     static size_t                 num_accept_peer_;
@@ -234,5 +232,4 @@ protected:
     ///判断接收到的数据是否是完整的处理函数指针
     FP_JudgeRecv_WholeFrame       fp_judge_whole_frame_;
 };
-
-#endif //OGRE_TCP_CONTROL_SERVICE_H_
+}

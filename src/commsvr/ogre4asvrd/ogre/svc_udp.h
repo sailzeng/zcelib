@@ -1,18 +1,19 @@
-#ifndef OGRE_UDP_CONTROL_SERVICE_H_
-#define OGRE_UDP_CONTROL_SERVICE_H_
+#pragma once
 
+namespace ogre
+{
 //forward declaration
-class Ogre_IPRestrict_Mgr;
+class ip_restrict;
 
-class Ogre_UDPSvc_Hdl : public zce::event_handler
+class svc_udp : public zce::event_handler
 {
 protected:
     //
 public:
-    Ogre_UDPSvc_Hdl(const zce::skt::addr_in& upd_addr,
-                    zce::reactor* reactor = zce::reactor::instance());
+    svc_udp(const zce::skt::addr_in& upd_addr,
+            zce::reactor* reactor = zce::reactor::instance());
 protected:
-    ~Ogre_UDPSvc_Hdl();
+    ~svc_udp();
 
 public:
     //取得句柄
@@ -52,11 +53,10 @@ protected:
     ogre4a_frame*      dgram_databuf_;
 
     //IP限制管理器
-    Ogre_IPRestrict_Mgr* ip_restrict_;
+    ip_restrict* ip_restrict_;
 
 protected:
     //
-    static  std::vector<Ogre_UDPSvc_Hdl*> ary_upd_peer_;
+    static  std::vector<svc_udp*> ary_upd_peer_;
 };
-
-#endif //#ifndef OGRE_UDP_CONTROL_SERVICE_H_
+} //namespace ogre
