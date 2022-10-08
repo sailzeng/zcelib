@@ -29,9 +29,9 @@ namespace soar
 class zerg_frame;
 class svrd_buspipe;
 
-class  fsm_base : public zce::Async_FSM
+class  fsm_base : public zce::async_fsm
 {
-    friend class FSM_Manager;
+    friend class fsm_manager;
 
 protected:
 
@@ -49,7 +49,7 @@ protected:
 
 public:
     //构造函数
-    fsm_base(FSM_Manager* pmngr,
+    fsm_base(fsm_manager* pmngr,
              uint32_t create_cmd,
              bool trans_locker = false);
 protected:
@@ -218,7 +218,7 @@ public:
 protected:
 
     //!事件管理器
-    FSM_Manager* trans_manager_ = nullptr;
+    fsm_manager*            trans_manager_ = nullptr;
 
     //!是否加事务锁
     bool                    trans_locker_ = false;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ogre/tcppeer_id_set.h"
+#include "ogre/tcppeer_set.h"
 #include "ogre/auto_connect.h"
 
 class mmap_dequechunk;

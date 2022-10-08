@@ -26,7 +26,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ogre/predefine.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ogre/predefine.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ogre\tcppeer_id_set.cpp" />
+    <ClCompile Include="ogre\tcppeer_set.cpp" />
     <ClCompile Include="ogre\svc_tcp.cpp" />
     <ClCompile Include="ogre\svc_udp.cpp" />
   </ItemGroup>
@@ -40,7 +40,7 @@
     <ClInclude Include="ogre\configure.h" />
     <ClInclude Include="ogre\ip_restrict.h" />
     <ClInclude Include="ogre\predefine.h" />
-    <ClInclude Include="ogre\tcppeer_id_set.h" />
+    <ClInclude Include="ogre\tcppeer_set.h" />
     <ClInclude Include="ogre\svc_tcp.h" />
     <ClInclude Include="ogre\svc_udp.h" />
   </ItemGroup>

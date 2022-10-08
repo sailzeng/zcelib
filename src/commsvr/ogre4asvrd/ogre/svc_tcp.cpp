@@ -1,10 +1,9 @@
 #include "ogre/predefine.h"
-#include "ogre/tcppeer_id_set.h"
+#include "ogre/tcppeer_set.h"
 #include "ogre/app_timer.h"
 #include "ogre/configure.h"
 #include "ogre/buf_storage.h"
 #include "ogre/auto_connect.h"
-
 #include "ogre/svc_tcp.h"
 
 namespace ogre

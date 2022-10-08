@@ -10,18 +10,18 @@ namespace soar
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-FSM_Manager* FSM_Manager::instance_ = NULL;
+fsm_manager* fsm_manager::instance_ = NULL;
 
-FSM_Manager::FSM_Manager()
+fsm_manager::fsm_manager()
 {
 }
 
 //事务管理器的析构函数
-FSM_Manager::~FSM_Manager()
+fsm_manager::~fsm_manager()
 {
 }
 
-int FSM_Manager::initialize(zce::timer_queue* timer_queue,
+int fsm_manager::initialize(zce::timer_queue* timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
                             const soar::SERVICES_INFO& selfsvr,
@@ -36,7 +36,7 @@ int FSM_Manager::initialize(zce::timer_queue* timer_queue,
     ZCE_ASSERT(zerg_mmap_pipe != NULL);
 
     int ret = 0;
-    ret = Async_FSMMgr::initialize(timer_queue,
+    ret = async_fsmmgr::initialize(timer_queue,
                                    reg_fsm_num,
                                    running_fsm_num);
     if (ret != 0)
@@ -73,7 +73,7 @@ int FSM_Manager::initialize(zce::timer_queue* timer_queue,
 }
 
 //
-void FSM_Manager::terminate()
+void fsm_manager::terminate()
 {
     //销毁内存分配器
     if (inner_frame_mallocor_)
@@ -103,12 +103,12 @@ void FSM_Manager::terminate()
         fake_recv_buffer_ = NULL;
     }
 
-    Async_FSMMgr::terminate();
+    async_fsmmgr::terminate();
 
     ZCE_TRACE_FILELINE(RS_INFO);
 }
 
-int FSM_Manager::register_fsmobj(uint32_t create_cmd,
+int fsm_manager::register_fsmobj(uint32_t create_cmd,
                                  fsm_base* fsm_base,
                                  bool usr_only_one)
 {
@@ -126,7 +126,7 @@ int FSM_Manager::register_fsmobj(uint32_t create_cmd,
 }
 
 //
-int FSM_Manager::process_pipe_frame(size_t& proc_frame,
+int fsm_manager::process_pipe_frame(size_t& proc_frame,
                                     size_t& create_num)
 {
     int ret = 0;
@@ -165,7 +165,7 @@ int FSM_Manager::process_pipe_frame(size_t& proc_frame,
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_frame(soar::zerg_frame* zerg_frame,
+int fsm_manager::process_frame(soar::zerg_frame* zerg_frame,
                                bool& create_fsm)
 {
     create_fsm = false;
@@ -207,18 +207,18 @@ int FSM_Manager::process_frame(soar::zerg_frame* zerg_frame,
 }
 
 //直接发送一个buffer to services。
-int FSM_Manager::sendfame_to_pipe(const soar::zerg_frame* send_frame)
+int fsm_manager::sendfame_to_pipe(const soar::zerg_frame* send_frame)
 {
     return zerg_mmap_pipe_->push_back_sendbus(send_frame);
 }
 
 //打开性能统计
-void FSM_Manager::enable_trans_statistics(const zce::time_value* stat_clock)
+void fsm_manager::enable_trans_statistics(const zce::time_value* stat_clock)
 {
     statistics_clock_ = stat_clock;
 }
 
-int FSM_Manager::sendbuf_to_pipe(const soar::zerg_head& zerg_head,
+int fsm_manager::sendbuf_to_pipe(const soar::zerg_head& zerg_head,
                                  const char* buf,
                                  size_t buf_len)
 {
@@ -236,7 +236,7 @@ int FSM_Manager::sendbuf_to_pipe(const soar::zerg_head& zerg_head,
     return 0;
 }
 
-int FSM_Manager::postmsg_to_queue(soar::zerg_frame* post_frame)
+int fsm_manager::postmsg_to_queue(soar::zerg_frame* post_frame)
 {
     int ret = 0;
     soar::zerg_frame* tmp_frame = NULL;
@@ -264,14 +264,14 @@ int FSM_Manager::postmsg_to_queue(soar::zerg_frame* post_frame)
     return 0;
 }
 
-int FSM_Manager::get_process_frame(const soar::zerg_frame*& zerg_frame)
+int fsm_manager::get_process_frame(const soar::zerg_frame*& zerg_frame)
 {
     zerg_frame = process_frame_;
     return 0;
 }
 
 //处理从接收队列取出的FRAME
-int FSM_Manager::process_queue_frame(size_t& proc_frame,
+int fsm_manager::process_queue_frame(size_t& proc_frame,
                                      size_t& create_trans)
 {
     int ret = 0;
@@ -318,7 +318,7 @@ int FSM_Manager::process_queue_frame(size_t& proc_frame,
 }
 
 // recv_svr填的是自己，就假装收到一个包，如其名fake
-int FSM_Manager::fake_receive_frame(const soar::zerg_frame* fake_recv)
+int fsm_manager::fake_receive_frame(const soar::zerg_frame* fake_recv)
 {
     int ret = 0;
 
@@ -337,17 +337,17 @@ int FSM_Manager::fake_receive_frame(const soar::zerg_frame* fake_recv)
 }
 
 //得到实例
-FSM_Manager* FSM_Manager::instance()
+fsm_manager* fsm_manager::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new FSM_Manager();
+        instance_ = new fsm_manager();
     }
     return instance_;
 }
 
 //对某一个用户的一个命令的事务进行加锁
-int FSM_Manager::lock_only_one(uint32_t cmd,
+int fsm_manager::lock_only_one(uint32_t cmd,
                                uint32_t lock_id)
 {
     ONLYONE_LOCK lock_rec = { cmd,lock_id };
@@ -367,7 +367,7 @@ int FSM_Manager::lock_only_one(uint32_t cmd,
 }
 
 //对某一个用户的一个命令的事务进行加锁
-void FSM_Manager::unlock_only_one(uint32_t cmd,
+void fsm_manager::unlock_only_one(uint32_t cmd,
                                   uint32_t lock_id)
 {
     ONLYONE_LOCK lock_rec = { cmd,lock_id };
@@ -375,14 +375,14 @@ void FSM_Manager::unlock_only_one(uint32_t cmd,
     return;
 }
 
-bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
+bool fsm_manager::is_onlyone_cmd(uint32_t cmd)
 {
     auto iter = onlyone_fms_cmd_set_.find(cmd);
     return (iter != onlyone_fms_cmd_set_.end());
 }
 
 //实例赋值
-void FSM_Manager::instance(FSM_Manager* pinstatnce)
+void fsm_manager::instance(fsm_manager* pinstatnce)
 {
     clear_inst();
     instance_ = pinstatnce;
@@ -390,7 +390,7 @@ void FSM_Manager::instance(FSM_Manager* pinstatnce)
 }
 
 //清除实例
-void FSM_Manager::clear_inst()
+void fsm_manager::clear_inst()
 {
     if (instance_)
     {

@@ -10,7 +10,7 @@ public:
     //这而要求传递的Transaction_Manager *是子类NotifyTrans_Manger的，
     //必须如此。
     //这儿是一个典型的设计两难，如果使用向下朔型DOWNCAST，无意是丑陋的。
-    FSMTask_FSMBase(FSM_Manager* trans_notify_mgr, unsigned int create_cmd)
+    FSMTask_FSMBase(fsm_manager* trans_notify_mgr, unsigned int create_cmd)
         : fsm_base(trans_notify_mgr, create_cmd)
         , trans_notify_mgr_(NULL)
     {

@@ -29,13 +29,13 @@ int svrd_fsm::app_start(int argc, const char* argv[])
     svrd_cfg_fsm* svd_config = dynamic_cast<svrd_cfg_fsm*>(config_base_);
 
     //事务管理器的初始化, 自动机不使用notify
-    soar::FSM_Manager* p_trans_mgr_ = new soar::FSM_Manager();
+    soar::fsm_manager* p_trans_mgr_ = new soar::fsm_manager();
     p_trans_mgr_->initialize(zce::timer_queue::instance(),
                              svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_info_,
                              soar::svrd_buspipe::instance());
-    soar::FSM_Manager::instance(p_trans_mgr_);
+    soar::fsm_manager::instance(p_trans_mgr_);
 
     ret = register_trans_cmd();
 
@@ -66,7 +66,7 @@ int svrd_fsm::app_run()
     const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
-    soar::FSM_Manager* trans_mgr = soar::FSM_Manager::instance();
+    soar::fsm_manager* trans_mgr = soar::fsm_manager::instance();
 
     size_t size_io_event = 0, num_timer_expire = 0;
 
@@ -129,7 +129,7 @@ int svrd_fsm::app_run()
 int svrd_fsm::app_exit()
 {
     int ret = 0;
-    soar::FSM_Manager::clear_inst();
+    soar::fsm_manager::clear_inst();
 
     ret = soar::app_buspipe::app_exit();
 

@@ -47,7 +47,7 @@
     <ClCompile Include="ogre\svc_udp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre\tcppeer_id_set.cpp">
+    <ClCompile Include="ogre\tcppeer_set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -85,7 +85,7 @@
     <ClInclude Include="ogre\svc_udp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre\tcppeer_id_set.h">
+    <ClInclude Include="ogre\tcppeer_set.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,10 +10,10 @@
 namespace soar
 {
 //构造函数
-fsm_base::fsm_base(FSM_Manager* pmngr,
+fsm_base::fsm_base(fsm_manager* pmngr,
                    uint32_t create_cmd,
                    bool trans_locker) :
-    zce::Async_FSM(pmngr, create_cmd),
+    zce::async_fsm(pmngr, create_cmd),
     trans_manager_(pmngr),
     trans_locker_(trans_locker)
 {

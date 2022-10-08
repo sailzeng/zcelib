@@ -52,7 +52,7 @@ class zerg_frame;
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-class  FSM_Manager : public zce::Async_FSMMgr
+class  fsm_manager : public zce::async_fsmmgr
 {
     //声明友元
     friend class fsm_base;
@@ -97,8 +97,8 @@ protected:
 public:
 
     //管理器的构造函数
-    FSM_Manager();
-    virtual ~FSM_Manager();
+    fsm_manager();
+    virtual ~fsm_manager();
 
     //----------------------------------------------------------------------------------------------------------
 
@@ -243,9 +243,9 @@ protected:
 public:
     //为了SingleTon类准备
     //实例赋值
-    static void instance(FSM_Manager*);
+    static void instance(fsm_manager*);
     //获得实例
-    static FSM_Manager* instance();
+    static fsm_manager* instance();
     //清除实例
     static void clear_inst();
 
@@ -302,23 +302,23 @@ protected:
 
 protected:
     //!SingleTon的指针
-    static FSM_Manager* instance_;
+    static fsm_manager* instance_;
 };
 
 //
-inline const soar::SERVICES_INFO* FSM_Manager::self_svc_info()
+inline const soar::SERVICES_INFO* fsm_manager::self_svc_info()
 {
     return &self_svc_info_;
 }
 
-inline const soar::SERVICES_ID* FSM_Manager::self_svc_id()
+inline const soar::SERVICES_ID* fsm_manager::self_svc_id()
 {
     return &(self_svc_info_.svc_id_);
 }
 
 //假装收到一个消息，进行处理,参数有点多，建议你使用的时候再进行一次封装
 template< class T>
-int FSM_Manager::fake_receive_frame(uint32_t cmd,
+int fsm_manager::fake_receive_frame(uint32_t cmd,
                                     uint32_t user_id,
                                     uint32_t fsm_id,
                                     uint32_t backfill_fsm_id,
@@ -360,7 +360,7 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
 
 //管理器发送一个命令给一个服务器,内部函数
 template< class T>
-int FSM_Manager::sendmsg_to_service(uint32_t cmd,
+int fsm_manager::sendmsg_to_service(uint32_t cmd,
                                     uint32_t user_id,
                                     uint32_t fsm_id,
                                     uint32_t backfill_fsm_id,
@@ -393,7 +393,7 @@ int FSM_Manager::sendmsg_to_service(uint32_t cmd,
 
 //Post一个FRAME数据到消息队列，可以伪造一些消息，但是我不知道提供出来是否是好事
 template< class T>
-int FSM_Manager::post_msg_to_queue(uint32_t cmd,
+int fsm_manager::post_msg_to_queue(uint32_t cmd,
                                    uint32_t user_id,
                                    uint32_t fsm_id,
                                    uint32_t backfill_fsm_id,

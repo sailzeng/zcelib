@@ -27,22 +27,22 @@ namespace zce
 /*!
 * @brief      状态机对象
 */
-class Async_FSM : public Async_Object
+class async_fsm : public Async_Object
 {
-    friend class Async_FSMMgr;
+    friend class async_fsmmgr;
 
 public:
     /*!
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_FSM(zce::Async_Obj_Mgr* async_mgr,
+    async_fsm(zce::Async_Obj_Mgr* async_mgr,
               uint32_t create_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~Async_FSM();
+    ~async_fsm();
 
     /*!
     * @brief      状态机运行处理，继承zce::Async_Object的函数，此函数仅仅用于作为例子进行参考，
@@ -82,13 +82,13 @@ protected:
 * @brief      状态机主控管理类
 *
 */
-class Async_FSMMgr : public zce::Async_Obj_Mgr
+class async_fsmmgr : public zce::Async_Obj_Mgr
 {
 public:
 
     //
-    Async_FSMMgr();
-    virtual ~Async_FSMMgr();
+    async_fsmmgr();
+    virtual ~async_fsmmgr();
 
 protected:
 

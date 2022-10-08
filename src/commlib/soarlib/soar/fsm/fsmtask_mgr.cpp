@@ -58,7 +58,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
 {
     //根据最大的FRAME长度调整Manager内部的数据
     size_t max_frame_len = frame_mallocor->get_max_framelen();
-    FSM_Manager::initialize(timer_queue,
+    fsm_manager::initialize(timer_queue,
                             szregtrans,
                             sztransmap,
                             selfsvr,

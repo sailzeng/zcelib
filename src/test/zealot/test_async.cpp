@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-class FSM_1 : public zce::Async_FSM
+class FSM_1 : public zce::async_fsm
 {
 private:
     enum
@@ -15,7 +15,7 @@ private:
 public:
 
     FSM_1(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
-        Async_FSM(async_mgr, create_cmd)
+        async_fsm(async_mgr, create_cmd)
     {
     }
 
@@ -66,7 +66,7 @@ public:
     }
 };
 
-class FSM_2 : public zce::Async_FSM
+class FSM_2 : public zce::async_fsm
 {
 private:
     enum
@@ -81,7 +81,7 @@ private:
 
 public:
     FSM_2(zce::Async_Obj_Mgr* async_mgr, unsigned int create_cmd) :
-        Async_FSM(async_mgr, create_cmd)
+        async_fsm(async_mgr, create_cmd)
     {
     }
 protected:
@@ -139,7 +139,7 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     const unsigned int CMD_3 = 10003;
 
     zce::timer_queue* time_queue = new zce::timer_wheel();
-    zce::Async_FSMMgr* mgr = new zce::Async_FSMMgr();
+    zce::async_fsmmgr* mgr = new zce::async_fsmmgr();
     mgr->initialize(time_queue, 100, 200);
     mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
     mgr->register_asyncobj(CMD_2, new FSM_2(mgr, CMD_2));

@@ -7,18 +7,18 @@ namespace zce
 {
 //=====================================================================================
 //状态机的异步对象
-Async_FSM::Async_FSM(zce::Async_Obj_Mgr* async_mgr, uint32_t create_cmd) :
+async_fsm::async_fsm(zce::Async_Obj_Mgr* async_mgr, uint32_t create_cmd) :
     Async_Object(async_mgr, create_cmd),
     fsm_stage_(0)
 {
 }
 
-Async_FSM::~Async_FSM()
+async_fsm::~async_fsm()
 {
 }
 
 //状态机运行的代码，这只是一个参考示例
-void Async_FSM::on_run(bool first_run, bool& running)
+void async_fsm::on_run(bool first_run, bool& running)
 {
     enum
     {
@@ -63,7 +63,7 @@ void Async_FSM::on_run(bool first_run, bool& running)
 }
 
 //超时处理
-void Async_FSM::on_timeout(const zce::time_value& now_time,
+void async_fsm::on_timeout(const zce::time_value& now_time,
                            bool& continue_run)
 {
     char time_string[64 + 1];
@@ -75,13 +75,13 @@ void Async_FSM::on_timeout(const zce::time_value& now_time,
 }
 
 //设置的状态机阶段
-void Async_FSM::set_stage(int stage)
+void async_fsm::set_stage(int stage)
 {
     fsm_stage_ = stage;
 }
 
 //取得的状态机阶段
-int Async_FSM::get_stage() const
+int async_fsm::get_stage() const
 {
     return fsm_stage_;
 }
@@ -89,14 +89,14 @@ int Async_FSM::get_stage() const
 //=====================================================================================
 
 //状态机主控管理类
-Async_FSMMgr::Async_FSMMgr() :
+async_fsmmgr::async_fsmmgr() :
     zce::Async_Obj_Mgr()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;
 }
 
-Async_FSMMgr::~Async_FSMMgr()
+async_fsmmgr::~async_fsmmgr()
 {
 }
 } //namespace zce
