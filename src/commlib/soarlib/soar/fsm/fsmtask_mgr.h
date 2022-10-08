@@ -83,13 +83,15 @@ public:
     int stop_notify_task();
 
     //从recv的消息队列中去一个数据出来，进行超时等待
-    int dequeue_recvqueue(soar::zerg_frame*& get_frame, zce::time_value& tv);
+    int dequeue_recvqueue(soar::zerg_frame*& get_frame,
+                          zce::time_value& tv);
 
     //从recv的消息队列中去一个数据出来，不进行超时等待
     int trydequeue_recvqueue(soar::zerg_frame*& get_frame);
 
     //从send的消息队列中去一个数据出来，进行超时等待
-    int dequeue_sendqueue(soar::zerg_frame*& get_frame, zce::time_value& tv);
+    int dequeue_sendqueue(soar::zerg_frame*& get_frame,
+                          zce::time_value& tv);
 
     //从send的消息队列中去一个数据出来，不进行超时等待
     int trydequeue_sendqueue(soar::zerg_frame*& get_frame);

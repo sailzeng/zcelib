@@ -7,6 +7,8 @@ namespace soar
 svc_console::svc_console(zce::reactor *reactor_inst) :
     zce::event_handler(reactor_inst)
 {
+    req_string_.reserve(4 * 1024);
+    rsp_string_.reserve(64 * 1024);
 }
 
 svc_console::~svc_console()
@@ -17,9 +19,11 @@ int svc_console::process_mml_command()
 {
     int ret = 0;
     std::string mml_cmd;
-    ret_string_.clear();
+    rsp_string_.clear();
 
-    ret = mml_process_.get_mml_command(mml_cmd);
+    ret = mml_process_.parse_mml(mml_cmd);
+
+    ret = mml_process_.get_command(mml_cmd);
 
     if (ret != 0)
     {

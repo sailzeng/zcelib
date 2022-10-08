@@ -36,9 +36,10 @@ protected:
     int cmd_modify_logpriority();
 
 protected:
-
     ///
-    std::string  ret_string_;
+    std::string  req_string_;
+    ///
+    std::string  rsp_string_;
     ///
     zce::mml_cmd mml_process_;
 };
