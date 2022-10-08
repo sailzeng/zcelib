@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/os_adapt/socket.h"
 #include "zce/aio/worker.h"
 #include "zce/aio/caller.h"
 
@@ -518,6 +519,7 @@ int host_getaddr_one(zce::aio::worker* worker,
     return 0;
 }
 
+//=======================================================================
 //!超时链接数据
 int st_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
@@ -666,4 +668,77 @@ int st_recvfrom(zce::aio::worker* worker,
     }
     return 0;
 }
+
+//=======================================================================
+
+//读取事件触发调用函数
+int EVENT_ATOM::read_event()
+{
+    return 0;
+}
+
+//写入事件触发调用函数，用于写入事件
+int EVENT_ATOM::write_event()
+{
+    return 0;
+}
+
+//发生了链接的事件
+int EVENT_ATOM::connect_event(bool /*success*/)
+{
+    return 0;
+}
+
+//发生了accept的事件是调用
+int EVENT_ATOM::accept_event()
+{
+}
+
+//!清理
+void EVENT_ATOM::clear()
+{
+    result_ = -1;
+    result_count_ = 0;
+    //
+    handle_ = ZCE_INVALID_SOCKET;
+    addr_ = nullptr;
+    addr_len_ = 0;
+    snd_buf_ = nullptr;
+    rcv_buf_ = nullptr;
+    len_ = 0;
+
+    flags_ = 0;
+    from_ = nullptr;
+    from_len_ = nullptr;
+    host_name_ = nullptr;
+    host_port_ = 0;
+    host_addr_ = nullptr;
+    accept_hdl_ = ZCE_INVALID_SOCKET;
+}
+
+ZCE_HANDLE EVENT_ATOM::get_handle() const
+{
+    return (ZCE_HANDLE)handle_;
+}
+
+int er_connect(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               const sockaddr* addr,
+               socklen_t addr_len,
+               std::function<void(EVENT_ATOM*)> call_back)
+{
+    int ret = 0;
+    ret = zce::connect(handle, addr, addr_len);
+    if (ret == 0)
+    {
+        return 0;
+    }
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_CONNECT);
+
+    return 0;
+}
+
+
+
 }

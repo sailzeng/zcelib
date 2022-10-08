@@ -165,7 +165,7 @@ int dns_resolve::query(const char *query_name,
 
 int dns_resolve::answer(uint16_t *tid,
                         int family,
-                        struct sockaddr addrs[],
+                        struct sockaddr *addrs,
                         size_t *addrs_num,
                         zce::time_value* timeout_tv)
 {

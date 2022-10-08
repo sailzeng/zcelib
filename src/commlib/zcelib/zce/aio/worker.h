@@ -77,6 +77,7 @@ protected:
     //! 在线程中处理Socket请求
     void process_socket(zce::aio::SOCKET_ATOM* base);
 
+    
 protected:
 
     //! Caller的ID生成器
@@ -101,6 +102,7 @@ protected:
         zce::aio::DIR_ATOM,
         zce::aio::MYSQL_ATOM,
         zce::aio::HOST_ATOM,
-        zce::aio::SOCKET_ATOM> aio_obj_pool_;
+        zce::aio::SOCKET_ATOM,
+        zce::aio::EVENT_ATOM> aio_obj_pool_;
 };
 }

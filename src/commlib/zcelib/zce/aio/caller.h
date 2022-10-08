@@ -51,6 +51,7 @@
 namespace zce
 {
 class time_value;
+class reactor;
 }
 //前向声明
 namespace zce::mysql
@@ -110,6 +111,11 @@ enum AIO_TYPE
     SOCKET_RECVFROM,
     SOCKET_SENDTO,  //sendto是非阻塞函数，直接调用也行
     SOCKET_END = 399,
+
+    //事件处理模块
+    EVENT_BEGIN = 10000,
+    EVENT_CONNECT = 10001,
+    EVENT_END = 10099,
 };
 
 //! AIO异步操作的原子
@@ -130,7 +136,7 @@ struct AIO_ATOM
 struct FS_ATOM :public AIO_ATOM
 {
     //!清理
-    virtual void clear();
+    void clear() override;
 public:
     //!结果
     int result_ = -1;
@@ -274,7 +280,7 @@ int dir_rmdir(zce::aio::worker* worker,
 struct MYSQL_ATOM :public AIO_ATOM
 {
     //!
-    virtual void clear() override;
+    void clear() override;
     //!
     int result_ = -1;
     zce::mysql::connect* db_connect_ = nullptr;
@@ -326,7 +332,7 @@ int mysql_query(zce::aio::worker* worker,
 struct HOST_ATOM :public AIO_ATOM
 {
     //!清理
-    virtual void clear();
+    void clear() override;
     //!参数
     int result_ = -1;
     const char* hostname_ = nullptr;
@@ -365,7 +371,7 @@ int host_getaddr_one(zce::aio::worker* worker,
 struct SOCKET_ATOM :public AIO_ATOM
 {
     //!清理
-    virtual void clear();
+    void clear() override;
     //!参数
     int result_ = -1;
     size_t result_count_ = 0;
@@ -446,22 +452,25 @@ int st_recvfrom(zce::aio::worker* worker,
 
 //=========================================================================
 //!
-struct AIO_EVENT :public zce::event_handler
+struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
 {
     //读取事件触发调用函数
-    virtual int read_event();
+    int read_event() override;
 
     //写入事件触发调用函数，用于写入事件
-    virtual int write_event();
+    int write_event() override;;
 
     //发生了链接的事件
-    virtual int connect_event(bool success);
+    int connect_event(bool success) override;;
 
     //发生了accept的事件是调用
-    virtual int accept_event();
+    int accept_event() override;;
 
     //!清理
     virtual void clear();
+
+    ZCE_HANDLE get_handle() const override;
+
     //!参数
     int result_ = -1;
     size_t result_count_ = 0;
@@ -481,12 +490,10 @@ struct AIO_EVENT :public zce::event_handler
     uint16_t host_port_ = 0;
     sockaddr* host_addr_ = nullptr;
     ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
-
-    virtual ZCE_HANDLE get_handle() const
-    {
-        return (ZCE_HANDLE)handle_;
-    }
 };
+
+//! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
+//! 使用open_socket函数的时候，注意参数
 
 //! ER = event reactor
 //! 等待若干时间进行connect，直至超时
@@ -494,28 +501,28 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
-               std::function<void(AIO_EVENT*)> call_back);
+               std::function<void(EVENT_ATOM*)> call_back);
 
 //! 等待若干时间进行accept，直至超时
 int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
               sockaddr* addr,
               socklen_t* addr_len,
-              std::function<void(AIO_EVENT*)> call_back);
+              std::function<void(EVENT_ATOM*)> call_back);
 
 //! 等待若干时间进行recv，直至超时
 int er_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* buf,
             size_t len,
-            std::function<void(AIO_EVENT*)> call_back);
+            std::function<void(EVENT_ATOM*)> call_back);
 
 //!等待若干时间进行send，直至超时
 int er_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* buf,
             size_t len,
-            std::function<void(AIO_EVENT*)> call_back);
+            std::function<void(EVENT_ATOM*)> call_back);
 
 //!等待若干时间进行recv数据，直至超时
 int er_recvfrom(zce::aio::worker* worker,
@@ -524,5 +531,6 @@ int er_recvfrom(zce::aio::worker* worker,
                 size_t len,
                 sockaddr* from,
                 socklen_t* from_len,
-                std::function<void(AIO_EVENT*)> call_back);
+                std::function<void(EVENT_ATOM*)> call_back);
+
 }//namespace zce::aio

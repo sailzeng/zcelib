@@ -30,6 +30,7 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(16, 16);
     aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(16, 16);
     aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(16, 16);
     reactor_ = reactor;
     return 0;
 }
@@ -74,6 +75,11 @@ AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
              aio_type < AIO_TYPE::SOCKET_END)
     {
         handle = aio_obj_pool_.alloc_object<SOCKET_ATOM>();
+    }
+    else if (aio_type > AIO_TYPE::EVENT_BEGIN &&
+             aio_type < AIO_TYPE::EVENT_END)
+    {
+        handle = aio_obj_pool_.alloc_object<EVENT_ATOM>();
     }
     else
     {
@@ -163,6 +169,7 @@ void worker::process_response(size_t& num_rsp,
         }
         if (go)
         {
+            //调用回调函数
             base->call_back_(base);
             free_handle(base);
             ++num_rsp;
