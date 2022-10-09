@@ -25,12 +25,12 @@ int worker::initialize(size_t work_thread_num,
 
     requst_queue_ = new zce::msgring_condi<zce::aio::AIO_ATOM*>(work_queue_len);
     response_queue_ = new zce::msgring_condi<zce::aio::AIO_ATOM*>(work_queue_len);
-    aio_obj_pool_.initialize<zce::aio::FS_ATOM>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::DIR_ATOM>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(16, 16);
-    aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(16, 16);
+    aio_obj_pool_.initialize<zce::aio::FS_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::DIR_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(128, 256);
     reactor_ = reactor;
     return 0;
 }
@@ -117,6 +117,11 @@ void worker::free_handle(zce::aio::AIO_ATOM* base)
              base->aio_type_ < AIO_TYPE::SOCKET_END)
     {
         aio_obj_pool_.free_object<SOCKET_ATOM>(static_cast<SOCKET_ATOM*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::EVENT_BEGIN &&
+             base->aio_type_ < AIO_TYPE::EVENT_END)
+    {
+        aio_obj_pool_.free_object<EVENT_ATOM>(static_cast<EVENT_ATOM*>(base));
     }
     else
     {
@@ -386,11 +391,11 @@ void worker::process_socket(zce::aio::SOCKET_ATOM* atom)
     case SOCKET_ACCEPT:
         atom->result_ = zce::accept_timeout(
             atom->handle_,
-            &atom->accept_hdl_,
+            atom->accept_hdl_,
             atom->from_,
             atom->from_len_,
             *atom->timeout_tv_);
-        if (atom->accept_hdl_ == ZCE_INVALID_SOCKET)
+        if (*(atom->accept_hdl_) == ZCE_INVALID_SOCKET)
         {
             atom->result_ = -1;
         }

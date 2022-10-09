@@ -392,7 +392,7 @@ struct SOCKET_ATOM :public AIO_ATOM
     const char* host_name_ = nullptr;
     uint16_t host_port_ = 0;
     sockaddr* host_addr_ = nullptr;
-    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
+    ZCE_SOCKET *accept_hdl_ = nullptr;
 };
 
 //! ST = socket timeout
@@ -416,6 +416,7 @@ int st_connect(zce::aio::worker* worker,
 //! 等待若干时间进行accept，直至超时
 int st_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
+              ZCE_SOCKET *accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
               zce::time_value* timeout_tv,
@@ -463,18 +464,21 @@ struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
     int read_event() override;
 
     //写入事件触发调用函数，用于写入事件
-    int write_event() override;;
+    int write_event() override;
 
     //发生了链接的事件
-    int connect_event(bool success) override;;
+    int connect_event(bool success) override;
 
     //发生了accept的事件是调用
-    int accept_event() override;;
+    int accept_event() override;
 
     //!清理
     virtual void clear();
 
     ZCE_HANDLE get_handle() const override;
+
+    ///
+    int event_close();
 
     //!参数
     size_t *result_len_ = nullptr;
@@ -493,7 +497,7 @@ struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
     const char* host_name_ = nullptr;
     uint16_t host_port_ = 0;
     sockaddr* host_addr_ = nullptr;
-    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
+    ZCE_SOCKET *accept_hdl_ = nullptr;
 };
 
 //! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
