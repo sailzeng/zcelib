@@ -114,7 +114,11 @@ enum AIO_TYPE
 
     //事件处理模块
     EVENT_BEGIN = 10000,
-    EVENT_CONNECT = 10001,
+    EVENT_CONNECT,
+    EVENT_SEND,
+    EVENT_RECV,
+    EVENT_ACCEPT,
+    EVENT_RECVFROM,
     EVENT_END = 10099,
 };
 
@@ -129,6 +133,8 @@ struct AIO_ATOM
     uint32_t id_;
     //!
     std::function<void(AIO_ATOM*)> call_back_;
+    //!结果
+    int result_ = -1;
 };
 
 //=========================================================================
@@ -138,8 +144,7 @@ struct FS_ATOM :public AIO_ATOM
     //!清理
     void clear() override;
 public:
-    //!结果
-    int result_ = -1;
+
     //路径，注意，这儿保存的是指针，在返回前对应的数据要能使用
     const char* path_ = nullptr;
     //!打开文件标志
@@ -248,8 +253,7 @@ struct DIR_ATOM :public AIO_ATOM
 {
     //!清理
     virtual void clear();
-    //!结果
-    int result_ = -1;
+
     //! 打开,处理的目录
     const char* dirname_ = nullptr;
     //!打开文件模式
@@ -281,8 +285,7 @@ struct MYSQL_ATOM :public AIO_ATOM
 {
     //!
     void clear() override;
-    //!
-    int result_ = -1;
+
     zce::mysql::connect* db_connect_ = nullptr;
     const char* host_name_ = nullptr;
     const char* user_ = nullptr;
@@ -334,7 +337,6 @@ struct HOST_ATOM :public AIO_ATOM
     //!清理
     void clear() override;
     //!参数
-    int result_ = -1;
     const char* hostname_ = nullptr;
     const char* service_ = nullptr;
     size_t* ary_addr_num_ = nullptr;
@@ -373,7 +375,6 @@ struct SOCKET_ATOM :public AIO_ATOM
     //!清理
     void clear() override;
     //!参数
-    int result_ = -1;
     size_t result_count_ = 0;
     //
     ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
@@ -414,8 +415,8 @@ int st_connect(zce::aio::worker* worker,
 //! 等待若干时间进行accept，直至超时
 int st_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
-              sockaddr* addr,
-              socklen_t* addr_len,
+              sockaddr* from,
+              socklen_t* from_len,
               zce::time_value* timeout_tv,
               std::function<void(AIO_ATOM*)> call_back);
 
@@ -451,6 +452,27 @@ int st_recvfrom(zce::aio::worker* worker,
 //!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
 
 //=========================================================================
+struct EVENT_PARA
+{
+    //!参数
+    size_t result_count_ = 0;
+    //
+    ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
+    const sockaddr* addr_ = nullptr;
+    socklen_t addr_len_ = 0;
+    const void* snd_buf_ = nullptr;
+    void* rcv_buf_ = nullptr;
+    size_t len_ = 0;
+    zce::time_value* timeout_tv_ = nullptr;
+
+    int flags_ = 0;
+    sockaddr* from_ = nullptr;
+    socklen_t* from_len_ = nullptr;
+    const char* host_name_ = nullptr;
+    uint16_t host_port_ = 0;
+    sockaddr* host_addr_ = nullptr;
+    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
+};
 //!
 struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
 {
@@ -471,25 +493,7 @@ struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
 
     ZCE_HANDLE get_handle() const override;
 
-    //!参数
-    int result_ = -1;
-    size_t result_count_ = 0;
-    //
-    ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
-    const sockaddr* addr_ = nullptr;
-    socklen_t addr_len_ = 0;
-    const void* snd_buf_ = nullptr;
-    void* rcv_buf_ = nullptr;
-    size_t len_ = 0;
-    zce::time_value* timeout_tv_ = nullptr;
-
-    int flags_ = 0;
-    sockaddr* from_ = nullptr;
-    socklen_t* from_len_ = nullptr;
-    const char* host_name_ = nullptr;
-    uint16_t host_port_ = 0;
-    sockaddr* host_addr_ = nullptr;
-    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
+    EVENT_PARA para_;
 };
 
 //! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
@@ -501,14 +505,15 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
-               std::function<void(EVENT_ATOM*)> call_back);
+               std::function<void(AIO_ATOM*)> call_back);
 
 //! 等待若干时间进行accept，直至超时
 int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
-              sockaddr* addr,
-              socklen_t* addr_len,
-              std::function<void(EVENT_ATOM*)> call_back);
+              ZCE_SOCKET *accept_hdl,
+              sockaddr* from,
+              socklen_t* from_len,
+              std::function<void(AIO_ATOM*)> call_back);
 
 //! 等待若干时间进行recv，直至超时
 int er_recv(zce::aio::worker* worker,

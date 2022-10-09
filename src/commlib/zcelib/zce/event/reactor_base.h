@@ -15,10 +15,10 @@
 
 #include "zce/util/non_copyable.h"
 
-class zce::event_handler;
-
 namespace zce
 {
+class event_handler;
+
 /*!
 * @brief      反应器的基类
 *

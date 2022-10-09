@@ -86,7 +86,8 @@ int epoll_reactor::initialize(size_t max_event_number,
 }
 
 //注册一个zce::Event_Handler到反应器
-int epoll_reactor::register_handler(zce::event_handler* event_handler, int event_mask)
+int epoll_reactor::register_handler(zce::event_handler* event_handler,
+                                    int event_mask)
 {
     int ret = 0;
     //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦

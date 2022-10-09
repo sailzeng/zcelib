@@ -68,15 +68,14 @@ struct awaiter
         awaiting_ = awaiting;
     }
     //!回复后的操作。恢复后返回结果
-    RA await_resume()
+    int await_resume()
     {
-        return return_atom_;
+        return ret_result_;
     }
     //!回调函数，AIO操作完成后恢复时调用
     void resume(AIO_ATOM* return_hdl)
     {
-        RA* fs_hdl = (RA*)return_hdl;
-        return_atom_ = *fs_hdl;
+        ret_result_ = return_hdl->result_;
         awaiting_.resume();
         return;
     }
@@ -86,7 +85,7 @@ struct awaiter
     //!请求的文件操作句柄
     RA* request_atom_ = nullptr;
     //!完成后返回的句柄
-    RA return_atom_;
+    int ret_result_ = -1;
     //!协程的句柄（调用者）
     std::coroutine_handle<> awaiting_;
 };
@@ -225,4 +224,57 @@ awaiter_socket co_st_recvfrom(zce::aio::worker* worker,
                               int flags = 0);
 
 //========================================================================================
+
+struct awaiter_event
+{
+    awaiter_event(zce::aio::worker* worker,
+                  EVENT_ATOM* request_atom,
+                  bool await) :
+        worker_(worker),
+        request_atom_(request_atom),
+        await_(await)
+    {
+    }
+    ~awaiter_event() = default;
+
+    //请求进行AIO操作，如果请求成功.return false挂起协程
+    bool await_ready()
+    {
+        //绑定回调函数
+        request_atom_->call_back_ = std::bind(&awaiter_event::resume,
+                                              this,
+                                              std::placeholders::_1);
+        //将一个文件操作句柄放入请求队列
+        //bool succ_req = worker_->request(request_atom_);
+        return await_;
+    }
+    //挂起操作
+    void await_suspend(std::coroutine_handle<> awaiting)
+    {
+        awaiting_ = awaiting;
+    }
+    //!回复后的操作。恢复后返回结果
+    int await_resume()
+    {
+        return ret_result_;
+    }
+    //!回调函数，AIO操作完成后恢复时调用
+    void resume(AIO_ATOM* return_hdl)
+    {
+        ret_result_ = return_hdl->result_;
+        awaiting_.resume();
+        return;
+    }
+
+    //!工作者，具有请求，应答管道，处理IO多线程的管理者
+    zce::aio::worker* worker_ = nullptr;
+    //!
+    EVENT_ATOM* request_atom_ = nullptr;
+    //!
+    int ret_result_;
+    //!请求的文件操作句柄
+    bool await_ = false;
+    //!协程的句柄（调用者）
+    std::coroutine_handle<> awaiting_;
+};
 }

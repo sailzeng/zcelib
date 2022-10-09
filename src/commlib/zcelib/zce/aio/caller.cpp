@@ -1,6 +1,8 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/socket.h"
+#include "zce/event/handle_base.h"
+#include "zce/event/reactor_base.h"
 #include "zce/aio/worker.h"
 #include "zce/aio/caller.h"
 
@@ -10,12 +12,14 @@ void AIO_ATOM::clear()
 {
     aio_type_ = AIO_INVALID;
     id_ = 0;
+    std::function<void(AIO_ATOM*)> tmp;
+    call_back_.swap(tmp);
+    result_ = -1;
 }
 
 void FS_ATOM::clear()
 {
     AIO_ATOM::clear();
-    result_ = -1;
     path_ = nullptr;
     flags_ = 0;
     mode_ = 0;
@@ -33,7 +37,7 @@ void FS_ATOM::clear()
 void DIR_ATOM::clear()
 {
     AIO_ATOM::clear();
-    result_ = -1;
+
     dirname_ = nullptr;
     namelist_ = nullptr;
     mode_ = 0;
@@ -692,12 +696,12 @@ int EVENT_ATOM::connect_event(bool /*success*/)
 //发生了accept的事件是调用
 int EVENT_ATOM::accept_event()
 {
+    return 0;
 }
 
 //!清理
 void EVENT_ATOM::clear()
 {
-    result_ = -1;
     result_count_ = 0;
     //
     handle_ = ZCE_INVALID_SOCKET;
@@ -725,7 +729,7 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
-               std::function<void(EVENT_ATOM*)> call_back)
+               std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     ret = zce::connect(handle, addr, addr_len);
@@ -733,9 +737,63 @@ int er_connect(zce::aio::worker* worker,
     {
         return 0;
     }
+    else
+    {
+        if (zce::last_error() != EWOULDBLOCK)
+        {
+            return -1;
+        }
+    }
+
     zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
         worker->alloc_handle(AIO_TYPE::EVENT_CONNECT);
+    aio_atom->reactor(worker->event_reactor());
+    ret = worker->event_reactor()->register_handler(
+        aio_atom,
+        event_handler::CONNECT_MASK);
+    if (ret != 0)
+    {
+        return 0;
+    }
+    aio_atom->handle_ = handle;
+    aio_atom->call_back_ = call_back;
+    return 0;
+}
 
+int er_accept(zce::aio::worker* worker,
+              ZCE_SOCKET handle,
+              ZCE_SOCKET *accept_hdl,
+              sockaddr* from,
+              socklen_t* from_len,
+              std::function<void(AIO_ATOM*)> call_back)
+{
+    int ret = 0;
+    *accept_hdl = zce::accept(handle, addr, addr_len);
+    if (*accept_hdl != ZCE_INVALID_SOCKET)
+    {
+        return 0;
+    }
+    else
+    {
+        if (zce::last_error() != EWOULDBLOCK)
+        {
+            return -1;
+        }
+    }
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_ACCEPT);
+    aio_atom->reactor(worker->event_reactor());
+    ret = worker->event_reactor()->register_handler(
+        aio_atom,
+        event_handler::ACCEPT_MASK);
+    if (ret != 0)
+    {
+        return 0;
+    }
+    aio_atom->handle_ = handle;
+    aio_atom->call_back_ = call_back;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
     return 0;
 }
 }

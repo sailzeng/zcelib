@@ -55,6 +55,9 @@ public:
     //!在请求队列放入一个请求
     bool request(zce::aio::AIO_ATOM* base);
 
+    //
+    zce::reactor *event_reactor();
+
 protected:
     //! 处理请求
     void process_request();
