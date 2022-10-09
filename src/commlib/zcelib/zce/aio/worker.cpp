@@ -410,12 +410,12 @@ void worker::process_socket(zce::aio::SOCKET_ATOM* atom)
         if (len > 0)
         {
             atom->result_ = 0;
-            atom->result_count_ = len;
+            *(atom->result_len_) = len;
         }
         else
         {
             atom->result_ = -1;
-            atom->result_count_ = 0;
+            *(atom->result_len_) = 0;
         }
         break;
     case SOCKET_SEND:
@@ -428,12 +428,12 @@ void worker::process_socket(zce::aio::SOCKET_ATOM* atom)
         if (len > 0)
         {
             atom->result_ = 0;
-            atom->result_count_ = len;
+            *(atom->result_len_) = len;
         }
         else
         {
             atom->result_ = -1;
-            atom->result_count_ = 0;
+            *(atom->result_len_) = 0;
         }
         break;
     case SOCKET_RECVFROM:
@@ -448,12 +448,12 @@ void worker::process_socket(zce::aio::SOCKET_ATOM* atom)
         if (len > 0)
         {
             atom->result_ = 0;
-            atom->result_count_ = len;
+            *(atom->result_len_) = len;
         }
         else
         {
             atom->result_ = -1;
-            atom->result_count_ = 0;
+            *(atom->result_len_) = 0;
         }
         break;
     default:

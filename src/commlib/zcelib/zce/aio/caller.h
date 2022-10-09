@@ -375,7 +375,7 @@ struct SOCKET_ATOM :public AIO_ATOM
     //!清理
     void clear() override;
     //!参数
-    size_t result_count_ = 0;
+
     //
     ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
     const sockaddr* addr_ = nullptr;
@@ -383,6 +383,7 @@ struct SOCKET_ATOM :public AIO_ATOM
     const void* snd_buf_ = nullptr;
     void* rcv_buf_ = nullptr;
     size_t len_ = 0;
+    size_t *result_len_ = nullptr;
     zce::time_value* timeout_tv_ = nullptr;
 
     int flags_ = 0;
@@ -425,6 +426,7 @@ int st_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* buf,
             size_t len,
+            size_t *result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags = 0);
@@ -434,6 +436,7 @@ int st_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* buf,
             size_t len,
+            size_t *result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags = 0);
@@ -443,6 +446,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
+                size_t *result_len,
                 sockaddr* from,
                 socklen_t* from_len,
                 zce::time_value* timeout_tv,
@@ -452,27 +456,6 @@ int st_recvfrom(zce::aio::worker* worker,
 //!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
 
 //=========================================================================
-struct EVENT_PARA
-{
-    //!参数
-    size_t result_count_ = 0;
-    //
-    ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
-    const sockaddr* addr_ = nullptr;
-    socklen_t addr_len_ = 0;
-    const void* snd_buf_ = nullptr;
-    void* rcv_buf_ = nullptr;
-    size_t len_ = 0;
-    zce::time_value* timeout_tv_ = nullptr;
-
-    int flags_ = 0;
-    sockaddr* from_ = nullptr;
-    socklen_t* from_len_ = nullptr;
-    const char* host_name_ = nullptr;
-    uint16_t host_port_ = 0;
-    sockaddr* host_addr_ = nullptr;
-    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
-};
 //!
 struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
 {
@@ -493,14 +476,32 @@ struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
 
     ZCE_HANDLE get_handle() const override;
 
-    EVENT_PARA para_;
+    //!参数
+    size_t *result_len_ = nullptr;
+    //
+    ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
+    const sockaddr* addr_ = nullptr;
+    socklen_t addr_len_ = 0;
+    const void* snd_buf_ = nullptr;
+    void* rcv_buf_ = nullptr;
+    size_t len_ = 0;
+    zce::time_value* timeout_tv_ = nullptr;
+
+    int flags_ = 0;
+    sockaddr* from_ = nullptr;
+    socklen_t* from_len_ = nullptr;
+    const char* host_name_ = nullptr;
+    uint16_t host_port_ = 0;
+    sockaddr* host_addr_ = nullptr;
+    ZCE_SOCKET accept_hdl_ = ZCE_INVALID_SOCKET;
 };
 
 //! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
 //! 使用open_socket函数的时候，注意参数
 
 //! ER = event reactor
-//! 等待若干时间进行connect，直至超时
+//! 等待若干时间进行connect，先进行一次尝试，立即返回，如果是不成功
+//! 而且是EWOULDBLOCK，进行reactor反映，等有结果调用call_back
 int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
@@ -515,25 +516,28 @@ int er_accept(zce::aio::worker* worker,
               socklen_t* from_len,
               std::function<void(AIO_ATOM*)> call_back);
 
-//! 等待若干时间进行recv，直至超时
+//! 等待若干时间进行recv，
 int er_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
-            void* buf,
+            void* rcv_buf,
             size_t len,
+            size_t *result_len,
             std::function<void(EVENT_ATOM*)> call_back);
 
-//!等待若干时间进行send，直至超时
+//!等待若干时间进行send，
 int er_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
-            const void* buf,
+            const void* snd_buf,
             size_t len,
+            size_t *result_len,
             std::function<void(EVENT_ATOM*)> call_back);
 
-//!等待若干时间进行recv数据，直至超时
+//!等待若干时间进行recv数据，
 int er_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
-                void* buf,
+                void* rcv_buf,
                 size_t len,
+                size_t *result_len,
                 sockaddr* from,
                 socklen_t* from_len,
                 std::function<void(EVENT_ATOM*)> call_back);

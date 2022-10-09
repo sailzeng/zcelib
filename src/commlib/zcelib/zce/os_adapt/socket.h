@@ -1477,7 +1477,10 @@ inline int zce::shutdown(ZCE_SOCKET handle, int how)
 //接收数据
 //参数flags通用性非常差，LINUX，和WINDOWS下几乎不通用，LINUX下有一个比较有用的参数MSG_DONTWAIT，但是WINDOWS下不提供。
 //阻塞错误请使用EWOULDBLOCK
-inline ssize_t zce::recv(ZCE_SOCKET handle, void* buf, size_t len, int flags)
+inline ssize_t zce::recv(ZCE_SOCKET handle,
+                         void* buf,
+                         size_t len,
+                         int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
     int zce_result = ::recv(handle,

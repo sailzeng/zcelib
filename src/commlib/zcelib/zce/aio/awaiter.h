@@ -28,27 +28,27 @@
 
 namespace zce::aio
 {
+struct AIO_ATOM;
 //========================================================================================
 //
 //AIO FS文件处理相关的awaiter等待体
-template <typename RA>
-struct awaiter
+struct awaiter_aio
 {
-    typedef awaiter<RA> self;
-
-    awaiter(zce::aio::worker* worker,
-            RA* request_atom) :
+    awaiter_aio(zce::aio::worker* worker,
+                AIO_ATOM* request_atom,
+                bool suspend = true) :
         worker_(worker),
-        request_atom_(request_atom)
+        request_atom_(request_atom),
+        suspend_(suspend)
     {
     }
-    ~awaiter() = default;
+    ~awaiter_aio() = default;
 
     //请求进行AIO操作，如果请求成功.return false挂起协程
     bool await_ready()
     {
         //绑定回调函数
-        request_atom_->call_back_ = std::bind(&self::resume,
+        request_atom_->call_back_ = std::bind(&awaiter_aio::resume,
                                               this,
                                               std::placeholders::_1);
         //将一个文件操作句柄放入请求队列
@@ -83,198 +83,142 @@ struct awaiter
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::worker* worker_ = nullptr;
     //!请求的文件操作句柄
-    RA* request_atom_ = nullptr;
+    AIO_ATOM* request_atom_ = nullptr;
+    //!
+    bool suspend_ = false;
     //!完成后返回的句柄
     int ret_result_ = -1;
     //!协程的句柄（调用者）
     std::coroutine_handle<> awaiting_;
 };
 
-typedef zce::aio::awaiter<zce::aio::FS_ATOM> awaiter_fs;
-typedef zce::aio::awaiter<zce::aio::DIR_ATOM> awaiter_dir;
-typedef zce::aio::awaiter<zce::aio::MYSQL_ATOM> awaiter_mysql;
-typedef zce::aio::awaiter<zce::aio::HOST_ATOM> awaiter_host;
-typedef zce::aio::awaiter<zce::aio::SOCKET_ATOM> awaiter_socket;
 //========================================================================================
 //AIO 协程的co_await 函数
 
 //!协程co_await AIO读取文件
-awaiter_fs co_read_file(zce::aio::worker* worker,
-                        const char* path,
-                        char* read_bufs,
-                        size_t nbufs,
-                        ssize_t offset = 0);
-//!协程co_await AIO写入文件
-awaiter_fs co_write_file(zce::aio::worker* worker,
+awaiter_aio co_read_file(zce::aio::worker* worker,
                          const char* path,
-                         const char* write_bufs,
+                         char* read_bufs,
                          size_t nbufs,
                          ssize_t offset = 0);
+//!协程co_await AIO写入文件
+awaiter_aio co_write_file(zce::aio::worker* worker,
+                          const char* path,
+                          const char* write_bufs,
+                          size_t nbufs,
+                          ssize_t offset = 0);
 
 //========================================================================================
 //!协程co_await 链接数据
-awaiter_mysql co_mysql_connect(zce::aio::worker* worker,
-                               zce::mysql::connect* db_connect,
-                               const char* host_name,
-                               const char* user,
-                               const char* pwd,
-                               unsigned int port);
+awaiter_aio co_mysql_connect(zce::aio::worker* worker,
+                             zce::mysql::connect* db_connect,
+                             const char* host_name,
+                             const char* user,
+                             const char* pwd,
+                             unsigned int port);
 
 //!协程co_await 断开数据库链接
-awaiter_mysql co_mysql_disconnect(zce::aio::worker* worker,
-                                  zce::mysql::connect* db_connect);
+awaiter_aio co_mysql_disconnect(zce::aio::worker* worker,
+                                zce::mysql::connect* db_connect);
 
 //!协程co_await 查询，非SELECT语句
-awaiter_mysql co_mysql_query(zce::aio::worker* worker,
-                             zce::mysql::connect* db_connect,
-                             const char* sql,
-                             size_t sql_len,
-                             uint64_t* num_affect,
-                             uint64_t* insert_id);
+awaiter_aio co_mysql_query(zce::aio::worker* worker,
+                           zce::mysql::connect* db_connect,
+                           const char* sql,
+                           size_t sql_len,
+                           uint64_t* num_affect,
+                           uint64_t* insert_id);
 
 //!协程co_await 查询，SELECT语句
-awaiter_mysql co_mysql_query(zce::aio::worker* worker,
-                             zce::mysql::connect* db_connect,
-                             const char* sql,
-                             size_t sql_len,
-                             uint64_t* num_affect,
-                             zce::mysql::result* db_result);
+awaiter_aio co_mysql_query(zce::aio::worker* worker,
+                           zce::mysql::connect* db_connect,
+                           const char* sql,
+                           size_t sql_len,
+                           uint64_t* num_affect,
+                           zce::mysql::result* db_result);
 
 //========================================================================================
 //! 异步scandir,参数参考scandir，namelist可以用free_scandir_list要释放
-awaiter_dir co_dir_scandir(zce::aio::worker* worker,
+awaiter_aio co_dir_scandir(zce::aio::worker* worker,
                            const char* dirname,
                            struct dirent*** namelist);
 
 //!异步建立dir
-awaiter_dir co_dir_mkdir(zce::aio::worker* worker,
+awaiter_aio co_dir_mkdir(zce::aio::worker* worker,
                          const char* dirname,
                          int mode);
 
 //!异步删除dir
-awaiter_dir co_dir_rmdir(zce::aio::worker* worker,
+awaiter_aio co_dir_rmdir(zce::aio::worker* worker,
                          const char* dirname);
 
 //========================================================================================
 //!协程co_await getaddrinfo_ary
-awaiter_host co_host_getaddr_ary(zce::aio::worker* worker,
-                                 const char* hostname,
-                                 const char* service,
-                                 size_t* ary_addr_num,
-                                 sockaddr_in* ary_addr,
-                                 size_t* ary_addr6_num,
-                                 sockaddr_in6* ary_addr6);
+awaiter_aio co_host_getaddr_ary(zce::aio::worker* worker,
+                                const char* hostname,
+                                const char* service,
+                                size_t* ary_addr_num,
+                                sockaddr_in* ary_addr,
+                                size_t* ary_addr6_num,
+                                sockaddr_in6* ary_addr6);
 
 //!协程co_await ，类似getaddrinfo_one
-awaiter_host co_host_getaddr_one(zce::aio::worker* worker,
-                                 const char* hostname,
-                                 const char* service,
-                                 sockaddr* addr,
-                                 socklen_t addr_len);
+awaiter_aio co_host_getaddr_one(zce::aio::worker* worker,
+                                const char* hostname,
+                                const char* service,
+                                sockaddr* addr,
+                                socklen_t addr_len);
 
 //========================================================================================
 
 //! 等待若干时间进行connect，使用地址参数,直至超时
-awaiter_socket co_st_connect(zce::aio::worker* worker,
-                             ZCE_SOCKET handle,
-                             const sockaddr* addr,
-                             socklen_t addr_len,
-                             zce::time_value* timeout_tv);
+awaiter_aio co_st_connect(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          const sockaddr* addr,
+                          socklen_t addr_len,
+                          zce::time_value* timeout_tv);
 
 //! 等待若干时间进行connect，使用hostname参数,直至超时
-awaiter_socket co_st_connect(zce::aio::worker* worker,
-                             ZCE_SOCKET handle,
-                             const char* host_name,
-                             uint16_t host_port,
-                             sockaddr* host_addr,
-                             socklen_t addr_len,
-                             zce::time_value& timeout_tv);
+awaiter_aio co_st_connect(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          const char* host_name,
+                          uint16_t host_port,
+                          sockaddr* host_addr,
+                          socklen_t addr_len,
+                          zce::time_value& timeout_tv);
 
 //! 等待若干时间进行accept，直至超时
-awaiter_socket co_st_accept(zce::aio::worker* worker,
-                            ZCE_SOCKET handle,
-                            sockaddr* addr,
-                            socklen_t* addr_len,
-                            zce::time_value* timeout_tv);
+awaiter_aio co_st_accept(zce::aio::worker* worker,
+                         ZCE_SOCKET handle,
+                         sockaddr* addr,
+                         socklen_t* addr_len,
+                         zce::time_value* timeout_tv);
 
 //! 等待若干时间进行recv，直至超时
-awaiter_socket co_st_recv(zce::aio::worker* worker,
-                          ZCE_SOCKET handle,
-                          void* buf,
-                          size_t len,
-                          zce::time_value* timeout_tv,
-                          int flags = 0);
+awaiter_aio co_st_recv(zce::aio::worker* worker,
+                       ZCE_SOCKET handle,
+                       void* buf,
+                       size_t len,
+                       zce::time_value* timeout_tv,
+                       int flags = 0);
 
 //!等待若干时间进行send，直至超时
-awaiter_socket co_st_send(zce::aio::worker* worker,
-                          ZCE_SOCKET handle,
-                          const void* buf,
-                          size_t len,
-                          zce::time_value* timeout_tv,
-                          int flags = 0);
+awaiter_aio co_st_send(zce::aio::worker* worker,
+                       ZCE_SOCKET handle,
+                       const void* buf,
+                       size_t len,
+                       zce::time_value* timeout_tv,
+                       int flags = 0);
 
 //!等待若干时间进行recv数据，直至超时
-awaiter_socket co_st_recvfrom(zce::aio::worker* worker,
-                              ZCE_SOCKET handle,
-                              void* buf,
-                              size_t len,
-                              sockaddr* from,
-                              socklen_t* from_len,
-                              zce::time_value* timeout_tv,
-                              int flags = 0);
+awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
+                           ZCE_SOCKET handle,
+                           void* buf,
+                           size_t len,
+                           sockaddr* from,
+                           socklen_t* from_len,
+                           zce::time_value* timeout_tv,
+                           int flags = 0);
 
 //========================================================================================
-
-struct awaiter_event
-{
-    awaiter_event(zce::aio::worker* worker,
-                  EVENT_ATOM* request_atom,
-                  bool await) :
-        worker_(worker),
-        request_atom_(request_atom),
-        await_(await)
-    {
-    }
-    ~awaiter_event() = default;
-
-    //请求进行AIO操作，如果请求成功.return false挂起协程
-    bool await_ready()
-    {
-        //绑定回调函数
-        request_atom_->call_back_ = std::bind(&awaiter_event::resume,
-                                              this,
-                                              std::placeholders::_1);
-        //将一个文件操作句柄放入请求队列
-        //bool succ_req = worker_->request(request_atom_);
-        return await_;
-    }
-    //挂起操作
-    void await_suspend(std::coroutine_handle<> awaiting)
-    {
-        awaiting_ = awaiting;
-    }
-    //!回复后的操作。恢复后返回结果
-    int await_resume()
-    {
-        return ret_result_;
-    }
-    //!回调函数，AIO操作完成后恢复时调用
-    void resume(AIO_ATOM* return_hdl)
-    {
-        ret_result_ = return_hdl->result_;
-        awaiting_.resume();
-        return;
-    }
-
-    //!工作者，具有请求，应答管道，处理IO多线程的管理者
-    zce::aio::worker* worker_ = nullptr;
-    //!
-    EVENT_ATOM* request_atom_ = nullptr;
-    //!
-    int ret_result_;
-    //!请求的文件操作句柄
-    bool await_ = false;
-    //!协程的句柄（调用者）
-    std::coroutine_handle<> awaiting_;
-};
 }

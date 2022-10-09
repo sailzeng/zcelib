@@ -82,7 +82,7 @@ void SOCKET_ATOM::clear()
     rcv_buf_ = nullptr;
     len_ = 0;
     timeout_tv_ = nullptr;
-    result_count_ = 0;
+    result_len_ = nullptr;
     flags_ = 0;
     from_ = nullptr;
     from_len_ = nullptr;
@@ -600,6 +600,7 @@ int st_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* buf,
             size_t len,
+            size_t *result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags)
@@ -609,6 +610,7 @@ int st_recv(zce::aio::worker* worker,
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
     aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
     aio_atom->flags_ = flags;
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = call_back;
@@ -625,6 +627,7 @@ int st_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* buf,
             size_t len,
+            size_t *result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags)
@@ -634,6 +637,7 @@ int st_send(zce::aio::worker* worker,
     aio_atom->handle_ = handle;
     aio_atom->snd_buf_ = buf;
     aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
     aio_atom->flags_ = flags;
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = call_back;
@@ -649,6 +653,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
+                size_t *result_len,
                 sockaddr* from,
                 socklen_t* from_len,
                 zce::time_value* timeout_tv,
@@ -660,6 +665,7 @@ int st_recvfrom(zce::aio::worker* worker,
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
     aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
     aio_atom->flags_ = flags;
     aio_atom->from_ = from;
     aio_atom->from_len_ = from_len;
@@ -702,7 +708,7 @@ int EVENT_ATOM::accept_event()
 //!清理
 void EVENT_ATOM::clear()
 {
-    result_count_ = 0;
+    result_len_ = nullptr;
     //
     handle_ = ZCE_INVALID_SOCKET;
     addr_ = nullptr;
@@ -732,6 +738,7 @@ int er_connect(zce::aio::worker* worker,
                std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
+    //使用非阻塞的方式搞一次
     ret = zce::connect(handle, addr, addr_len);
     if (ret == 0)
     {
@@ -768,7 +775,8 @@ int er_accept(zce::aio::worker* worker,
               std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
-    *accept_hdl = zce::accept(handle, addr, addr_len);
+    //使用非阻塞的方式搞一次
+    *accept_hdl = zce::accept(handle, from, from_len);
     if (*accept_hdl != ZCE_INVALID_SOCKET)
     {
         return 0;
@@ -792,6 +800,132 @@ int er_accept(zce::aio::worker* worker,
     }
     aio_atom->handle_ = handle;
     aio_atom->call_back_ = call_back;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
+    return 0;
+}
+
+int er_recv(zce::aio::worker* worker,
+            ZCE_SOCKET handle,
+            void* rcv_buf,
+            size_t len,
+            size_t *result_len,
+            std::function<void(EVENT_ATOM*)> call_back)
+{
+    int ret = 0;
+    //使用非阻塞的方式搞一次
+    ssize_t sz_rcv = zce::recv(handle, rcv_buf, len);
+    if (sz_rcv > 0)
+    {
+        *result_len = sz_rcv;
+        return 0;
+    }
+    else
+    {
+        if (zce::last_error() != EWOULDBLOCK)
+        {
+            return -1;
+        }
+    }
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_RECV);
+    aio_atom->reactor(worker->event_reactor());
+    ret = worker->event_reactor()->register_handler(
+        aio_atom,
+        event_handler::READ_MASK);
+    if (ret != 0)
+    {
+        return 0;
+    }
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = rcv_buf;
+    aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
+    return 0;
+}
+
+int er_send(zce::aio::worker* worker,
+            ZCE_SOCKET handle,
+            const void* snd_buf,
+            size_t len,
+            size_t *result_len,
+            std::function<void(EVENT_ATOM*)> call_back)
+{
+    int ret = 0;
+    //使用非阻塞的方式搞一次
+    ssize_t sz_rcv = zce::send(handle, snd_buf, len);
+    if (sz_rcv > 0)
+    {
+        *result_len = sz_rcv;
+        return 0;
+    }
+    else
+    {
+        if (zce::last_error() != EWOULDBLOCK)
+        {
+            return -1;
+        }
+    }
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_SEND);
+    aio_atom->reactor(worker->event_reactor());
+    ret = worker->event_reactor()->register_handler(
+        aio_atom,
+        event_handler::WRITE_MASK);
+    if (ret != 0)
+    {
+        return 0;
+    }
+    aio_atom->handle_ = handle;
+    aio_atom->snd_buf_ = snd_buf;
+    aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
+    return 0;
+}
+
+int er_recvfrom(zce::aio::worker* worker,
+                ZCE_SOCKET handle,
+                void* rcv_buf,
+                size_t len,
+                size_t *result_len,
+                sockaddr* from,
+                socklen_t* from_len,
+                std::function<void(EVENT_ATOM*)> call_back)
+{
+    int ret = 0;
+    //使用非阻塞的方式搞一次
+    ssize_t sz_rcv = zce::recvfrom(handle,
+                                   rcv_buf,
+                                   len,
+                                   0,
+                                   from,
+                                   from_len);
+    if (sz_rcv > 0)
+    {
+        *result_len = sz_rcv;
+        return 0;
+    }
+    else
+    {
+        if (zce::last_error() != EWOULDBLOCK)
+        {
+            return -1;
+        }
+    }
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_RECV);
+    aio_atom->reactor(worker->event_reactor());
+    ret = worker->event_reactor()->register_handler(
+        aio_atom,
+        event_handler::READ_MASK);
+    if (ret != 0)
+    {
+        return 0;
+    }
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = rcv_buf;
+    aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
     aio_atom->from_ = from;
     aio_atom->from_len_ = from_len;
     return 0;
