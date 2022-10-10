@@ -158,7 +158,7 @@ inline void epoll_reactor::make_epoll_event(struct epoll_event* ep_event,
         ep_event->events |= EPOLLOUT;
     }
 
-    if (event_mask & zce::EXCEPT_MASK)
+    if (event_mask & zce::EXCEPTION_MASK)
     {
         ep_event->events |= EPOLLERR;
     }

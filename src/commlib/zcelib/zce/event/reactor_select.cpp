@@ -60,16 +60,16 @@ int select_reactor::schedule_wakeup(zce::event_handler* event_handler, int event
     //因为这些标志可以一起注册，所以下面的判断是并列的，但是我这儿统一化的处理序列是读，写，异常
 
     //注意connect的失败，会触发读写事件，需要注意,我记得好像自己都错过两次了。
-    if ((event_mask & zce::event_handler::READ_MASK)
-        || (event_mask & zce::event_handler::ACCEPT_MASK)
-        || (event_mask & zce::event_handler::CONNECT_MASK)
-        || (event_mask & zce::event_handler::INOTIFY_MASK))
+    if ((event_mask & zce::READ_MASK)
+        || (event_mask & zce::ACCEPT_MASK)
+        || (event_mask & zce::CONNECT_MASK)
+        || (event_mask & zce::INOTIFY_MASK))
     {
         FD_SET(socket_hd, &read_fd_set_);
     }
 
-    if ((event_mask & zce::event_handler::WRITE_MASK)
-        || (event_mask & zce::event_handler::CONNECT_MASK))
+    if ((event_mask & zce::WRITE_MASK)
+        || (event_mask & zce::CONNECT_MASK))
     {
         FD_SET(socket_hd, &write_fd_set_);
     }
@@ -77,10 +77,10 @@ int select_reactor::schedule_wakeup(zce::event_handler* event_handler, int event
     //在WINDOWS下，如果是非阻塞连接，如果连接失败返回的是事件是超时
 #if defined (ZCE_OS_WINDOWS)
 
-    if ((event_mask & zce::event_handler::EXCEPT_MASK)
-        || (event_mask & zce::event_handler::CONNECT_MASK))
+    if ((event_mask & zce::EXCEPTION_MASK)
+        || (event_mask & zce::CONNECT_MASK))
 #elif defined (ZCE_OS_LINUX)
-    if ((event_mask & zce::Event_Handler::EXCEPT_MASK))
+    if ((event_mask & zce::Event_Handler::EXCEPTION_MASK))
 #endif
     {
         FD_SET(socket_hd, &exception_fd_set_);
@@ -119,26 +119,26 @@ int select_reactor::cancel_wakeup(zce::event_handler* event_handler, int cancel_
     }
 
     //因为这些标志可以一起注册，所以下面的判断是并列的
-    if ((cancel_mask & zce::event_handler::READ_MASK)
-        || (cancel_mask & zce::event_handler::ACCEPT_MASK)
-        || (cancel_mask & zce::event_handler::CONNECT_MASK)
-        || (cancel_mask & zce::event_handler::INOTIFY_MASK))
+    if ((cancel_mask & zce::READ_MASK)
+        || (cancel_mask & zce::ACCEPT_MASK)
+        || (cancel_mask & zce::CONNECT_MASK)
+        || (cancel_mask & zce::INOTIFY_MASK))
     {
         FD_CLR(socket_hd, &read_fd_set_);
     }
 
-    if ((cancel_mask & zce::event_handler::WRITE_MASK)
-        || (cancel_mask & zce::event_handler::CONNECT_MASK))
+    if ((cancel_mask & zce::WRITE_MASK)
+        || (cancel_mask & zce::CONNECT_MASK))
     {
         FD_CLR(socket_hd, &write_fd_set_);
     }
 
 #if defined (ZCE_OS_WINDOWS)
 
-    if ((cancel_mask & zce::event_handler::EXCEPT_MASK)
-        || (cancel_mask & zce::event_handler::CONNECT_MASK))
+    if ((cancel_mask & zce::EXCEPTION_MASK)
+        || (cancel_mask & zce::CONNECT_MASK))
 #elif defined (ZCE_OS_LINUX)
-    if (cancel_mask & zce::Event_Handler::EXCEPT_MASK)
+    if (cancel_mask & zce::Event_Handler::EXCEPTION_MASK)
 #endif
     {
         FD_CLR(socket_hd, &exception_fd_set_);
@@ -280,15 +280,15 @@ void select_reactor::process_ready(const fd_set* out_fds,
         //READ和ACCEPT事件都调用read_event，ACCEPT_MASK,INOTIFY_MASK,不写的原因是，这个函数是我内部调用的，我只用了3个参数
         if (proc_event == SELECT_EVENT::SE_READ)
         {
-            if (register_mask & zce::event_handler::CONNECT_MASK)
+            if (register_mask & zce::CONNECT_MASK)
             {
                 hdl_ret = event_hdl->connect_event(false);
             }
-            else if (register_mask & zce::event_handler::ACCEPT_MASK)
+            else if (register_mask & zce::ACCEPT_MASK)
             {
                 hdl_ret = event_hdl->accept_event();
             }
-            else if (register_mask & zce::event_handler::INOTIFY_MASK)
+            else if (register_mask & zce::INOTIFY_MASK)
             {
                 hdl_ret = event_hdl->inotify_event();
             }
@@ -300,7 +300,7 @@ void select_reactor::process_ready(const fd_set* out_fds,
         //WRITE和CONNECT事件都调用write_event,CONNECT_MASK,不写的原因是，这个函数是我内部调用的，我只用了3个参数
         else if (proc_event == SELECT_EVENT::SE_WRITE)
         {
-            if (register_mask & zce::event_handler::CONNECT_MASK)
+            if (register_mask & zce::CONNECT_MASK)
             {
                 hdl_ret = event_hdl->connect_event(true);
             }
@@ -315,7 +315,7 @@ void select_reactor::process_ready(const fd_set* out_fds,
 #if defined ZCE_OS_WINDOWS
             //如果是非阻塞连接，连接失败后会触发异常事件，为了和LINUX环境统一，我们触发handle_input
 
-            if (register_mask & zce::event_handler::CONNECT_MASK)
+            if (register_mask & zce::CONNECT_MASK)
             {
                 hdl_ret = event_hdl->connect_event(false);
             }

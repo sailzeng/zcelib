@@ -54,11 +54,11 @@ int WFMO_Reactor::register_handler(zce::event_handler* event_handler,
     size_t watch_size = handler_map_.size();
 
     //如果是SOCKET网络部分
-    if ((event_mask & zce::event_handler::READ_MASK)
-        || (event_mask & zce::event_handler::ACCEPT_MASK)
-        || (event_mask & zce::event_handler::CONNECT_MASK)
-        || (event_mask & zce::event_handler::EXCEPT_MASK)
-        || (event_mask & zce::event_handler::WRITE_MASK))
+    if ((event_mask & zce::READ_MASK)
+        || (event_mask & zce::ACCEPT_MASK)
+        || (event_mask & zce::CONNECT_MASK)
+        || (event_mask & zce::EXCEPTION_MASK)
+        || (event_mask & zce::WRITE_MASK))
     {
         WSAEVENT socket_event = ::WSACreateEvent();
         if (socket_event == WSA_INVALID_EVENT)
@@ -83,7 +83,7 @@ int WFMO_Reactor::register_handler(zce::event_handler* event_handler,
     }
 
     //如果是INOTIFY 的事件，直接注册句柄进去
-    if ((event_mask & zce::event_handler::INOTIFY_MASK))
+    if ((event_mask & zce::INOTIFY_MASK))
     {
         watch_handle_ary_[watch_size - 1] = event_handler->get_handle();
     }
@@ -186,23 +186,23 @@ int WFMO_Reactor::wfmo_socket_event(zce::event_handler* event_handler,
     int ret = 0;
 
     long wmfo_net_event = 0;
-    if (event_mask & zce::event_handler::READ_MASK)
+    if (event_mask & zce::READ_MASK)
     {
         wmfo_net_event |= FD_READ | FD_CLOSE;
     }
-    if (event_mask & zce::event_handler::WRITE_MASK)
+    if (event_mask & zce::WRITE_MASK)
     {
         wmfo_net_event |= FD_WRITE;
     }
-    if (event_mask & zce::event_handler::CONNECT_MASK)
+    if (event_mask & zce::CONNECT_MASK)
     {
         wmfo_net_event |= FD_CONNECT;
     }
-    if (event_mask & zce::event_handler::ACCEPT_MASK)
+    if (event_mask & zce::ACCEPT_MASK)
     {
         wmfo_net_event |= FD_ACCEPT;
     }
-    if (event_mask & zce::event_handler::EXCEPT_MASK)
+    if (event_mask & zce::EXCEPTION_MASK)
     {
         wmfo_net_event |= FD_OOB;
     }
@@ -280,11 +280,11 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
 
     int event_mask = event_hdl->get_mask();
 
-    if ((event_mask & zce::event_handler::READ_MASK)
-        || (event_mask & zce::event_handler::ACCEPT_MASK)
-        || (event_mask & zce::event_handler::CONNECT_MASK)
-        || (event_mask & zce::event_handler::EXCEPT_MASK)
-        || (event_mask & zce::event_handler::WRITE_MASK))
+    if ((event_mask & zce::READ_MASK)
+        || (event_mask & zce::ACCEPT_MASK)
+        || (event_mask & zce::CONNECT_MASK)
+        || (event_mask & zce::EXCEPTION_MASK)
+        || (event_mask & zce::WRITE_MASK))
     {
         WSANETWORKEVENTS socket_event;
         ::WSAEnumNetworkEvents((SOCKET)watch_socket_ary_[activate_id],
@@ -366,7 +366,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
         }
     }
 
-    if (event_mask & zce::event_handler::INOTIFY_MASK)
+    if (event_mask & zce::INOTIFY_MASK)
     {
         ret = event_hdl->read_event();
         if (ret == -1)

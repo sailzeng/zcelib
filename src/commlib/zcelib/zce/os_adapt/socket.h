@@ -394,28 +394,6 @@ inline int select(
     zce::time_value* timeout_tv
 );
 
-///用于handle_ready函数,handle_multi_ready函数
-enum class HANDLE_READY
-{
-    ///读事件
-    READ = (1 << 1),
-
-    ///写事件
-    WRITE = (1 << 2),
-
-    ///异常
-    EXCEPTION = (1 << 3),
-
-    ///连接成功，我为连接成功做了多少努力，你看不见
-    CONNECTED = (1 << 4),
-
-    ///ACCPET 事件，也是放在读的SET
-    ACCPET = (1 << 5),
-
-    /// iNotify通知事件，文件系统的改变通知
-    INOTIFY = (1 << 9),
-};
-
 /*!
 * @brief         非标准函数，(在一个时间段内)看handle准备好用于干嘛没有，内部用select触发，用于某些对单个端口的单个事件处理，
 * @return        int          返回值和select 一致，如果成功返回值是触发事件个数，如果事件触发一般触发返回值都是1
@@ -427,7 +405,7 @@ enum class HANDLE_READY
 */
 int handle_ready(ZCE_SOCKET handle,
                  zce::time_value* timeout_tv,
-                 HANDLE_READY ready_todo);
+                 EVENT_MASK ready_todo);
 
 //--------------------------------------------------------------------------------------------
 //带有超时处理的一组函数，根据timeout_tv确定是否进行超时处理

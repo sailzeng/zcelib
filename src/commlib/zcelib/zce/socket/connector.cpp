@@ -78,7 +78,7 @@ int connector::connect(zce::skt::stream& new_stream,
     //进行超时处理
     ret = zce::handle_ready(new_stream.get_handle(),
                             &timeout,
-                            zce::HANDLE_READY::CONNECTED);
+                            zce::CONNECT_MASK);
 
     const int HANDLE_READY_ONE = 1;
 

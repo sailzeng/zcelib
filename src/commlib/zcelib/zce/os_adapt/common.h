@@ -840,7 +840,7 @@ enum EVENT_MASK
     ///SOCKET写事件，当句柄变为可写是，write_event
     WRITE_MASK = (1 << 2),
     ///SOCKET异常事件，触发后调用exception_event
-    EXCEPT_MASK = (1 << 3),
+    EXCEPTION_MASK = (1 << 3),
     ///SOCKET异步CONNECT成功后，调用connect_event，异步CONNECT失败后，
     CONNECT_MASK = (1 << 4),
     ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用accept_event

@@ -214,7 +214,7 @@ int client::receive_timeout(zce::time_value* timeout_tv,
     //进行超时处理
     ret = zce::handle_ready(peer_socket_,
                             timeout_tv,
-                            zce::HANDLE_READY::READ);
+                            zce::READ_MASK);
 
     const int HANDLE_READY_ONE = 1;
     if (ret != HANDLE_READY_ONE)
