@@ -8,7 +8,8 @@ namespace zce
 * @brief      MINI反应器
 *
 */
-typedef std::function <int(ZCE_HANDLE socket, EVENT_MASK event)> event_callback_t;
+typedef std::function <int(ZCE_HANDLE socket,
+    EVENT_MASK event)> event_callback_t;
 
 class reactor_mini
 {
@@ -133,6 +134,10 @@ public:
     static void instance(reactor_mini* inst);
 
 protected:
+    ///单子实例指针
+    static reactor_mini* instance_;
+
+protected:
 
     ///存放ZCE_SOCKET对应zce::event_handler *的MAP,方便事件触发的时候，调用zce::event_handler *的函数
     EVENT_CALL_SET    event_set_;
@@ -140,9 +145,27 @@ protected:
     ///最大的处理句柄大小，用于一些容器的resize
     size_t            max_event_number_;
 
-protected:
+    //! Windows 下用select 进行事件处理
+#if defined (ZCE_OS_WINDOWS)
+    ///最大文件句柄+1的数值,倒霉的SELECT，非要搞呀。
+    int          max_fd_plus_one_ = 0;
 
-    ///单子实例指针
-    static reactor_mini* instance_;
+    ///保存使用的Read FD SET
+    fd_set       read_fd_set_;
+    ///保存使用的Write FD SET
+    fd_set       write_fd_set_;
+    ///保存使用的Exception FD SET
+    fd_set       exception_fd_set_;
+
+    ///每次做作为SELECT 函数的参数
+    ///
+    fd_set       para_read_fd_set_;
+    ///
+    fd_set       para_write_fd_set_;
+    ///
+    fd_set       para_exception_fd_set_;
+#elif defined (ZCE_OS_LINUX)
+
+#endif
 };
 }

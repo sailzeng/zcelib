@@ -80,7 +80,7 @@ int select_reactor::schedule_wakeup(zce::event_handler* event_handler, int event
     if ((event_mask & zce::EXCEPTION_MASK)
         || (event_mask & zce::CONNECT_MASK))
 #elif defined (ZCE_OS_LINUX)
-    if ((event_mask & zce::Event_Handler::EXCEPTION_MASK))
+    if ((event_mask & zce::EXCEPTION_MASK))
 #endif
     {
         FD_SET(socket_hd, &exception_fd_set_);

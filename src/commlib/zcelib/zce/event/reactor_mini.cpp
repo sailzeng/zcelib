@@ -71,6 +71,7 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
                                  EVENT_MASK event_todo,
                                  event_callback_t call_back)
 {
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
     //如果已经大于最大数量，返回错误
     if (event_set_.size() >= max_event_number_)
     {
@@ -92,6 +93,32 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
 
     //不检测了，失败了就是命不好
     event_set_.insert(ec);
+
+#if defined (ZCE_OS_WINDOWS)
+    //注意connect的失败，会触发读写事件，需要注意,我记得好像自己都错过两次了。
+    if ((event_todo == zce::READ_MASK)
+        || (event_todo == zce::ACCEPT_MASK)
+        || (event_todo == zce::CONNECT_MASK)
+        || (event_todo == zce::INOTIFY_MASK))
+    {
+        FD_SET(socket_hd, &read_fd_set_);
+    }
+
+    if ((event_todo == zce::WRITE_MASK)
+        || (event_todo == zce::CONNECT_MASK))
+    {
+        FD_SET(socket_hd, &write_fd_set_);
+    }
+
+    //在WINDOWS下，如果是非阻塞连接，如果连接失败返回的是事件是超时
+    if ((event_todo == zce::EXCEPTION_MASK)
+        || (event_todo == zce::CONNECT_MASK))
+    {
+        FD_SET(socket_hd, &exception_fd_set_);
+    }
+#elif defined (ZCE_OS_LINUX)
+
+#endif
     return 0;
 }
 
@@ -115,7 +142,30 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
 
     //不检测了，失败了就是命不好
     event_set_.erase(ec);
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
+#if defined (ZCE_OS_WINDOWS)
+    //因为这些标志可以一起注册，所以下面的判断是并列的
+    if ((event_todo == zce::READ_MASK)
+        || (event_todo == zce::ACCEPT_MASK)
+        || (event_todo == zce::CONNECT_MASK)
+        || (event_todo == zce::INOTIFY_MASK))
+    {
+        FD_CLR(socket_hd, &read_fd_set_);
+    }
 
+    if ((event_todo & zce::WRITE_MASK)
+        || (event_todo & zce::CONNECT_MASK))
+    {
+        FD_CLR(socket_hd, &write_fd_set_);
+    }
+    if ((event_todo & zce::EXCEPTION_MASK)
+        || (event_todo & zce::CONNECT_MASK))
+    {
+        FD_CLR(socket_hd, &exception_fd_set_);
+    }
+#elif defined (ZCE_OS_LINUX)
+
+#endif
     return 0;
 }
 
@@ -133,6 +183,18 @@ bool reactor_mini::find_event(ZCE_HANDLE handle,
     }
 
     return true;
+}
+
+//
+int reactor_mini::handle_events(zce::time_value* time_out,
+                                size_t* size_event)
+{
+#if defined (ZCE_OS_WINDOWS)
+
+#elif defined (ZCE_OS_LINUX)
+
+#endif
+    return 0;
 }
 
 //得到唯一的单子实例
