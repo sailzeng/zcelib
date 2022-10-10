@@ -8,8 +8,8 @@ namespace zce
 * @brief      MINI反应器
 *
 */
-typedef std::function <int(ZCE_HANDLE socket,
-    EVENT_MASK event)> event_callback_t;
+typedef std::function <int(ZCE_HANDLE socket, EVENT_MASK event,
+    bool connect_succ)> event_callback_t;
 
 class reactor_mini
 {
@@ -25,10 +25,8 @@ protected:
             call_back_(call_back)
         {
         }
-        EVENT_CALL(ZCE_HANDLE handle,
-                   EVENT_MASK event_todo) :
-            handle_(handle),
-            event_todo_(event_todo)
+        explicit EVENT_CALL(ZCE_HANDLE handle) :
+            handle_(handle)
         {
         }
         ~EVENT_CALL() = default;
@@ -44,7 +42,7 @@ protected:
     {
         size_t operator()(const EVENT_CALL &obj) const
         {
-            return (size_t)(obj.handle_) + obj.event_todo_;
+            return (size_t)(obj.handle_);
         }
     };
 
@@ -52,8 +50,7 @@ protected:
     {
         bool operator()(const EVENT_CALL &obj1, const EVENT_CALL &obj2) const
         {
-            if (obj1.handle_ == obj2.handle_ &&
-                obj1.event_todo_ == obj2.event_todo_)
+            if (obj1.handle_ == obj2.handle_)
             {
                 return true;
             }
@@ -64,9 +61,9 @@ protected:
         }
     };
 
-    typedef std::unordered_set<EVENT_CALL,
+    typedef std::unordered_multiset<EVENT_CALL,
         hash_event_call,
-        equal_to_event_call> EVENT_CALL_SET;
+        equal_to_event_call> event_call_set_t;
 
 protected:
 
@@ -104,6 +101,16 @@ public:
     //
     virtual int close();
 
+    /*!
+     * @brief
+     * @param handle
+     * @param event_todo
+     * @return
+    */
+    bool find_event(ZCE_HANDLE handle,
+                    EVENT_MASK event_todo,
+                    event_call_set_t::iterator &find_iter) const;
+
     //
     int register_event(ZCE_HANDLE handle,
                        EVENT_MASK event_todo,
@@ -114,12 +121,18 @@ public:
                      EVENT_MASK event_todo);
 
     //
-    bool find_event(ZCE_HANDLE handle,
-                    EVENT_MASK event_todo);
-
-    //
     int handle_events(zce::time_value* time_out,
                       size_t* size_event);
+
+protected:
+
+#if defined (ZCE_OS_WINDOWS)
+    //! @brief      处理ready的FD，调用相应的虚函数
+    //! @param      out_fds    句柄的fd set
+    //! @param      proc_mask  要处理的MASK值，内部会按照，读，写，异常的顺序进行处理，
+    void process_ready(const fd_set* out_fds,
+                       SELECT_EVENT proc_event);
+#endif
 
 public:
 
@@ -140,7 +153,7 @@ protected:
 protected:
 
     ///存放ZCE_SOCKET对应zce::event_handler *的MAP,方便事件触发的时候，调用zce::event_handler *的函数
-    EVENT_CALL_SET    event_set_;
+    event_call_set_t    event_set_;
 
     ///最大的处理句柄大小，用于一些容器的resize
     size_t            max_event_number_;

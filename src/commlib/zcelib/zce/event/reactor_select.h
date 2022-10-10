@@ -35,14 +35,6 @@ class select_reactor : public zce::reactor
 {
 public:
 
-    //
-    enum class SELECT_EVENT
-    {
-        SE_READ,
-        SE_WRITE,
-        SE_EXCEPTION,
-    };
-
     /*!
     * @brief    构造函数
     */

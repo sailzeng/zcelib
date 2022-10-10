@@ -849,4 +849,12 @@ enum EVENT_MASK
     ///iNotify通知事件，文件系统的改变通知,调用read_event，
     INOTIFY_MASK = (1 << 9),
 };
+
+//SLECT函数处理的3个事件
+enum class SELECT_EVENT
+{
+    SE_READ,
+    SE_WRITE,
+    SE_EXCEPTION,
+};
 }

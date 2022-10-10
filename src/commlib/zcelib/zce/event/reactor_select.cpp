@@ -206,7 +206,6 @@ int select_reactor::handle_events(zce::time_value* max_wait_time,
     para_write_fd_set_ = write_fd_set_;
     para_exception_fd_set_ = exception_fd_set_;
 
-    //
     int const nfds = zce::select(max_fd_plus_one_,
                                  &para_read_fd_set_,
                                  &para_write_fd_set_,
@@ -313,8 +312,8 @@ void select_reactor::process_ready(const fd_set* out_fds,
         else if (proc_event == SELECT_EVENT::SE_EXCEPTION)
         {
 #if defined ZCE_OS_WINDOWS
-            //如果是非阻塞连接，连接失败后会触发异常事件，为了和LINUX环境统一，我们触发handle_input
-
+            //如果是非阻塞连接，连接失败后会触发异常事件，
+            //（曾经，曾经为了和LINUX环境统一，我们触发read_event)
             if (register_mask & zce::CONNECT_MASK)
             {
                 hdl_ret = event_hdl->connect_event(false);
@@ -328,7 +327,6 @@ void select_reactor::process_ready(const fd_set* out_fds,
             hdl_ret = event_hdl->exception_event();
 #endif
         }
-
         else
         {
             ZCE_ASSERT(false);
