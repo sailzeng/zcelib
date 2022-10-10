@@ -686,7 +686,7 @@ int st_recvfrom(zce::aio::worker* worker,
 //读取事件触发调用函数
 int EVENT_ATOM::read_event()
 {
-    int ret = 0;
+    //int ret = 0;
     //使用非阻塞的方式搞一次
     ssize_t sz_rcv = zce::recv(handle_,
                                rcv_buf_,
@@ -792,7 +792,7 @@ int er_connect(zce::aio::worker* worker,
     aio_atom->reactor(worker->event_reactor());
     ret = worker->event_reactor()->register_handler(
         aio_atom,
-        event_handler::CONNECT_MASK);
+        EVENT_MASK::CONNECT_MASK);
     if (ret != 0)
     {
         return 0;
@@ -831,7 +831,7 @@ int er_accept(zce::aio::worker* worker,
     aio_atom->reactor(worker->event_reactor());
     ret = worker->event_reactor()->register_handler(
         aio_atom,
-        event_handler::ACCEPT_MASK);
+        EVENT_MASK::ACCEPT_MASK);
     if (ret != 0)
     {
         return 0;
@@ -870,7 +870,7 @@ int er_recv(zce::aio::worker* worker,
     aio_atom->reactor(worker->event_reactor());
     ret = worker->event_reactor()->register_handler(
         aio_atom,
-        event_handler::READ_MASK);
+        zce::READ_MASK);
     if (ret != 0)
     {
         return 0;
@@ -909,7 +909,7 @@ int er_send(zce::aio::worker* worker,
     aio_atom->reactor(worker->event_reactor());
     ret = worker->event_reactor()->register_handler(
         aio_atom,
-        event_handler::WRITE_MASK);
+        zce::WRITE_MASK);
     if (ret != 0)
     {
         return 0;
@@ -957,7 +957,7 @@ int er_recvfrom(zce::aio::worker* worker,
     aio_atom->reactor(worker->event_reactor());
     ret = worker->event_reactor()->register_handler(
         aio_atom,
-        event_handler::READ_MASK);
+        zce::READ_MASK);
     if (ret != 0)
     {
         return 0;

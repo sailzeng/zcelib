@@ -105,5 +105,8 @@ protected:
         zce::aio::HOST_ATOM,
         zce::aio::SOCKET_ATOM,
         zce::aio::EVENT_ATOM> aio_obj_pool_;
+
+    std::unordered_set<EVENT_ATOM *, hash_event_atom, equal_to_event_atom>
+        aio_event_set_;
 };
 }

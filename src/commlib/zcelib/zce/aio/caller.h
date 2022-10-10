@@ -500,6 +500,30 @@ struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
     ZCE_SOCKET *accept_hdl_ = nullptr;
 };
 
+struct hash_event_atom
+{
+    size_t operator()(EVENT_ATOM *obj)
+    {
+        return (size_t)(obj->handle_) + obj->aio_type_;
+    }
+};
+
+struct equal_to_event_atom
+{
+    bool operator()(EVENT_ATOM *obj1, EVENT_ATOM *obj2)
+    {
+        if (obj1->handle_ == obj2->handle_ &&
+            obj1->aio_type_ == obj2->aio_type_)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+};
+
 //! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
 //! 使用open_socket函数的时候，注意参数
 

@@ -316,15 +316,15 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
     if (ep_event->events & EPOLLIN)
     {
         event_in_happen = true;
-        if (register_mask & zce::event_handler::CONNECT_MASK)
+        if (register_mask & zce::CONNECT_MASK)
         {
             hdl_ret = event_hdl->connect_event(false);
         }
-        else if (register_mask & zce::event_handler::ACCEPT_MASK)
+        else if (register_mask & zce::ACCEPT_MASK)
         {
             hdl_ret = event_hdl->accept_event();
         }
-        else if (register_mask & zce::event_handler::INOTIFY_MASK)
+        else if (register_mask & zce::INOTIFY_MASK)
         {
             hdl_ret = event_hdl->inotify_event();
         }
@@ -355,7 +355,7 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
         }
 
         event_out_happen = true;
-        if (register_mask & zce::event_handler::CONNECT_MASK)
+        if (register_mask & zce::CONNECT_MASK)
         {
             hdl_ret = event_hdl->connect_event(true);
         }

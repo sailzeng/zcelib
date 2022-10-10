@@ -148,33 +148,33 @@ inline void epoll_reactor::make_epoll_event(struct epoll_event* ep_event,
 #endif
 
     int event_mask = event_handler->get_mask();
-    if (event_mask & zce::event_handler::READ_MASK)
+    if (event_mask & zce::READ_MASK)
     {
         ep_event->events |= EPOLLIN;
     }
 
-    if (event_mask & zce::event_handler::WRITE_MASK)
+    if (event_mask & zce::WRITE_MASK)
     {
         ep_event->events |= EPOLLOUT;
     }
 
-    if (event_mask & zce::event_handler::EXCEPT_MASK)
+    if (event_mask & zce::EXCEPT_MASK)
     {
         ep_event->events |= EPOLLERR;
     }
     //Connect有成功和失败两种情况
-    if ((event_mask & zce::event_handler::CONNECT_MASK))
+    if ((event_mask & zce::CONNECT_MASK))
     {
         ep_event->events |= EPOLLOUT;
         ep_event->events |= EPOLLIN;
     }
 
-    if ((event_mask & zce::event_handler::ACCEPT_MASK))
+    if ((event_mask & zce::ACCEPT_MASK))
     {
         ep_event->events |= EPOLLIN;
     }
 
-    if (event_mask & zce::event_handler::INOTIFY_MASK)
+    if (event_mask & zce::INOTIFY_MASK)
     {
         ep_event->events |= EPOLLIN;
     }
