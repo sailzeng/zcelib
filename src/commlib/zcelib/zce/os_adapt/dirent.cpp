@@ -570,8 +570,8 @@ int zce::mkdir(const char* pathname, mode_t mode)
 //递归的建立目录，非标准函数，如果想一次建立多层目录，用这个函数
 int zce::mkdir_recurse(const char* pathname, mode_t mode)
 {
-    char process_dir[PATH_MAX + 1];
-    memset(process_dir, 0, sizeof(process_dir));
+    char thread_dir[PATH_MAX + 1];
+    memset(thread_dir, 0, sizeof(thread_dir));
 
     size_t path_len = strlen(pathname);
 
@@ -590,8 +590,8 @@ int zce::mkdir_recurse(const char* pathname, mode_t mode)
             }
 #endif
 
-            ::strncpy(process_dir, pathname, i + 1);
-            ret = zce::mkdir(process_dir, mode);
+            ::strncpy(thread_dir, pathname, i + 1);
+            ret = zce::mkdir(thread_dir, mode);
 
             //如果目录已经存在，不进行处理
             if (ret != 0 && errno != EEXIST)

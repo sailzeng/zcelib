@@ -287,7 +287,9 @@ void reactor_mini::process_ready(const fd_set* out_fds,
                     {
                         connect_succ = false;
                     }
-                    iter_temp->call_back_(handle, event_todo, connect_succ);
+                    iter_temp->call_back_(handle,
+                                          event_todo,
+                                          connect_succ);
                 }
             }
             //WRITE和CONNECT事件都调用write_event,CONNECT_MASK,不写的原因是，这个函数是我内部调用的，我只用了3个参数
@@ -296,7 +298,9 @@ void reactor_mini::process_ready(const fd_set* out_fds,
                 if (event_todo == zce::CONNECT_MASK ||
                     event_todo == zce::WRITE_MASK)
                 {
-                    iter_temp->call_back_(handle, event_todo, connect_succ);
+                    iter_temp->call_back_(handle,
+                                          event_todo,
+                                          connect_succ);
                 }
             }
             //异常事件，其实我也不知道，什么算异常
@@ -311,7 +315,9 @@ void reactor_mini::process_ready(const fd_set* out_fds,
                     {
                         connect_succ = false;
                     }
-                    iter_temp->call_back_(handle, event_todo, connect_succ);
+                    iter_temp->call_back_(handle,
+                                          event_todo,
+                                          connect_succ);
                 }
             }
             else

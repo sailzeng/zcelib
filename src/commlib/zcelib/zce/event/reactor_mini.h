@@ -103,9 +103,10 @@ public:
 
     /*!
      * @brief
-     * @param handle
-     * @param event_todo
-     * @return
+     * @param handle      查询的句柄
+     * @param event_todo  相应对应的事件，迭代器
+     * @param find_iter   查询到的迭代器
+     * @return bool       返回是否查询到了，true表示成功，false
     */
     bool find_event(ZCE_HANDLE handle,
                     EVENT_MASK event_todo,

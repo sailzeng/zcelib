@@ -80,7 +80,7 @@ public:
     * @param      num_affect  返回的影响记录条数
     * @param      lastid      返回的LASTID
     */
-    int exe(unsigned int& num_affect, unsigned int& lastid);
+    int query(unsigned int& num_affect, unsigned int& lastid);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,
@@ -88,7 +88,7 @@ public:
     * @return     int
     * @param      num_affect 返回的影响记录条数
     */
-    int exe(unsigned int& num_affect);
+    int query(unsigned int& num_affect);
 
     //从结果结合取出数据
     int fetch_row_next() const;
@@ -99,9 +99,9 @@ public:
     int  fetch_column(MYSQL_BIND* bind, unsigned int column, unsigned int offset) const;
 
     //返回结果集的行数目
-    inline unsigned int get_num_of_result_rows() const;
+    inline unsigned int result_rows_num() const;
     //返回结果集的列数目
-    inline unsigned int get_num_of_result_fields() const;
+    inline unsigned int result_fields_num() const;
 
     //将参数转化为MetaData,MySQL的结果集合
     void param_2_metadata(zce::mysql::result*) const;
@@ -125,7 +125,7 @@ protected:
     int stmt_prepare_bind(stmt_bind* bindparam,
                           stmt_bind* bindresult);
     //!SQL 执行命令，这个事一个基础函数，内部调用
-    int execute_i(unsigned int* num_affect, unsigned int* lastid);
+    int query_i(unsigned int* num_affect, unsigned int* lastid);
 
 protected:
     //!命令缓冲buf的大小
@@ -171,13 +171,13 @@ inline unsigned int stmt_cmd::error_no() const
 }
 
 //返回结果集的行数目
-inline unsigned int stmt_cmd::get_num_of_result_rows() const
+inline unsigned int stmt_cmd::result_rows_num() const
 {
     return static_cast <unsigned int>(mysql_stmt_num_rows(mysql_stmt_));
 }
 
 //返回结果集的列数目
-inline unsigned int stmt_cmd::get_num_of_result_fields() const
+inline unsigned int stmt_cmd::result_fields_num() const
 {
     return static_cast <unsigned int>(mysql_stmt_field_count(mysql_stmt_));
 }

@@ -152,8 +152,8 @@ void stmt_cmd::get_stmt_command(std::string& sqlcmd) const
 }
 
 //SQL 执行命令，这个事一个基础函数，内部调用
-int stmt_cmd::execute_i(unsigned int* num_affect,
-                        unsigned int* lastid)
+int stmt_cmd::query_i(unsigned int* num_affect,
+                      unsigned int* lastid)
 {
     int tmpret = 0;
 
@@ -191,15 +191,15 @@ int stmt_cmd::execute_i(unsigned int* num_affect,
 }
 
 //执行SQL语句,不用输出结果集合的那种
-int stmt_cmd::exe(unsigned int& num_affect, unsigned int& lastid)
+int stmt_cmd::query(unsigned int& num_affect, unsigned int& lastid)
 {
-    return execute_i(&num_affect, &lastid);
+    return query_i(&num_affect, &lastid);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,
-int stmt_cmd::exe(unsigned int& num_affect)
+int stmt_cmd::query(unsigned int& num_affect)
 {
-    return execute_i(&num_affect, NULL);
+    return query_i(&num_affect, NULL);
 }
 
 //

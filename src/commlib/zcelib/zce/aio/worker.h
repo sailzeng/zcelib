@@ -67,17 +67,17 @@ protected:
                           zce::time_value* wait_time);
 
     //!在线程中处理AIO操作，会根据type分解工作到下面这些函数
-    void process_aio(zce::aio::AIO_ATOM* base);
+    void thread_aio(zce::aio::AIO_ATOM* base);
     //! 在线程中处理文件操作
-    void process_fs(zce::aio::FS_ATOM* base);
+    void thread_fs(zce::aio::FS_ATOM* base);
     //! 在线程中处理目录操作
-    void process_dir(zce::aio::DIR_ATOM* hdl);
+    void thread_dir(zce::aio::DIR_ATOM* hdl);
     //! 在线程中处理MySQL操作请求
-    void process_mysql(zce::aio::MYSQL_ATOM* base);
+    void thread_mysql(zce::aio::MYSQL_ATOM* base);
     //! 在线程中处理Gat Host Addr请求
-    void process_host(zce::aio::HOST_ATOM* base);
+    void thread_host(zce::aio::HOST_ATOM* base);
     //! 在线程中处理Socket请求
-    void process_socket(zce::aio::SOCKET_ATOM* base);
+    void thread_socket(zce::aio::SOCKET_ATOM* base);
 
 protected:
 
