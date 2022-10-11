@@ -68,18 +68,11 @@ protected:
 protected:
 
     /*!
-    * @brief      构造函数
+    * @brief
     */
-    reactor_mini();
-    /*!
-    * @brief      构造函数
-    * @param[in]  max_event_number 最大的容量，
-    */
-    reactor_mini(size_t max_event_number);
-    /*!
-    * @brief      析构函数，virtual的喔
-    */
-    virtual ~reactor_mini();
+    //构造函数
+    reactor_mini() = default;
+    virtual ~reactor_mini() = default;
 
 public:
 
@@ -95,22 +88,26 @@ public:
     */
     size_t max_size();
 
-    //
-    int initialize(size_t max_event_number);
+    ///初始化
+    int initialize(size_t max_event_number,
+                   size_t once_max_events_,
+                   bool after_trigger_close);
 
     //
     virtual int close();
 
     /*!
      * @brief
-     * @param handle      查询的句柄
-     * @param event_todo  相应对应的事件，迭代器
-     * @param find_iter   查询到的迭代器
-     * @return bool       返回是否查询到了，true表示成功，false
+     * @param handle        查询的句柄
+     * @param event_todo    相应对应的事件，迭代器
+     * @param find_iter     查询到的迭代器
+     * @param hdl_event_num 此句柄的相互关联的事件数量
+     * @return bool         返回是否查询到了，true表示成功，false
     */
     bool find_event(ZCE_HANDLE handle,
                     EVENT_MASK event_todo,
-                    event_call_set_t::iterator &find_iter) const;
+                    event_call_set_t::iterator &find_iter,
+                    size_t &hdl_event_num) const;
 
     //
     int register_event(ZCE_HANDLE handle,
@@ -133,6 +130,18 @@ protected:
     //! @param      proc_mask  要处理的MASK值，内部会按照，读，写，异常的顺序进行处理，
     void process_ready(const fd_set* out_fds,
                        SELECT_EVENT proc_event);
+
+#elif defined (ZCE_OS_LINUX)
+
+    void make_epoll_event(struct epoll_event* ep_event,
+                          SELECT_EVENT proc_event,
+                          EVENT_MASK event_todo) const;
+
+    /*!
+    * @brief      处理已经触发的句柄，调用相应的虚函数，进行触发，让你处理
+    * @param[in]  ep_event  epoll 返回的句柄集合
+    */
+    void process_ready_event(struct epoll_event* ep_event);
 #endif
 
 public:
@@ -154,10 +163,16 @@ protected:
 protected:
 
     ///存放ZCE_SOCKET对应zce::event_handler *的MAP,方便事件触发的时候，调用zce::event_handler *的函数
-    event_call_set_t    event_set_;
+    event_call_set_t  event_set_;
 
     ///最大的处理句柄大小，用于一些容器的resize
-    size_t            max_event_number_;
+    size_t            max_event_number_ = 1024;
+
+    ///一次触发最大处理的句柄数量
+    size_t            once_max_events_;
+
+    ///
+    bool              after_trigger_close_ = true;
 
     //! Windows 下用select 进行事件处理
 #if defined (ZCE_OS_WINDOWS)
@@ -172,13 +187,20 @@ protected:
     fd_set       exception_fd_set_;
 
     ///每次做作为SELECT 函数的参数
-    ///
     fd_set       para_read_fd_set_;
-    ///
     fd_set       para_write_fd_set_;
-    ///
     fd_set       para_exception_fd_set_;
+
 #elif defined (ZCE_OS_LINUX)
+
+        ///EPOLL自己的文件句柄，最后要关闭之
+    int          epoll_fd_;
+
+    ///是否使用边界触发，边界触发在代码编写中需要更加啊小心一些
+    bool         edge_triggered_;
+
+    ///一次触发最大处理的epoll_event数组
+    epoll_event* once_events_ary_;
 
 #endif
 };

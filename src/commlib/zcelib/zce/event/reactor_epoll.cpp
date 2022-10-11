@@ -33,13 +33,6 @@ epoll_reactor::epoll_reactor(size_t max_event_number,
 
 epoll_reactor::~epoll_reactor()
 {
-    ::close(epoll_fd_);
-
-    //释放内存
-    if (once_events_ary_)
-    {
-        delete[] once_events_ary_;
-    }
 }
 
 //初始化
@@ -79,9 +72,21 @@ int epoll_reactor::initialize(size_t max_event_number,
     }
 
     once_max_events_ = once_max_events;
-
     once_events_ary_ = new epoll_event[once_max_events_];
 
+    return 0;
+}
+
+int epoll_reactor::close()
+{
+    reactor::close();
+    ::close(epoll_fd_);
+
+    //释放内存
+    if (once_events_ary_)
+    {
+        delete[] once_events_ary_;
+    }
     return 0;
 }
 
@@ -172,9 +177,7 @@ int epoll_reactor::cancel_wakeup(zce::event_handler* event_handler,
                                  int cancel_mask)
 {
     int ret = 0;
-
     ret = zce::reactor::cancel_wakeup(event_handler, cancel_mask);
-
     //其实zce::reactor::cancel_wakeup不可能失败,
     if (0 != ret)
     {
@@ -182,7 +185,6 @@ int epoll_reactor::cancel_wakeup(zce::event_handler* event_handler,
     }
 
     struct epoll_event ep_event;
-
     make_epoll_event(&ep_event, event_handler);
 
 #if defined (ZCE_OS_LINUX)

@@ -40,7 +40,8 @@ int select_reactor::initialize(size_t max_event_number)
 }
 
 //打开某些mask标志，
-int select_reactor::schedule_wakeup(zce::event_handler* event_handler, int event_mask)
+int select_reactor::schedule_wakeup(zce::event_handler* event_handler,
+                                    int event_mask)
 {
     int ret = 0;
 
@@ -224,13 +225,10 @@ int select_reactor::handle_events(zce::time_value* max_wait_time,
     }
 
     //严格遵守调用顺序，读取，写，异常处理3个步骤完成，
-
     //处理读事件
     process_ready(&para_read_fd_set_, SELECT_EVENT::SE_READ);
-
     //处理写事件
     process_ready(&para_write_fd_set_, SELECT_EVENT::SE_WRITE);
-
     //处理异常事件
     process_ready(&para_exception_fd_set_, SELECT_EVENT::SE_EXCEPTION);
 
@@ -259,7 +257,6 @@ void select_reactor::process_ready(const fd_set* out_fds,
     {
         ZCE_SOCKET socket_handle;
         bool hd_ready = zce::is_ready_fds(i, out_fds, &socket_handle);
-
         if (!hd_ready)
         {
             continue;
@@ -330,13 +327,13 @@ void select_reactor::process_ready(const fd_set* out_fds,
         else
         {
             ZCE_ASSERT(false);
-        }
+    }
 
         //返回-1表示 handle_xxxxx希望调用close_event退出
         if (hdl_ret == -1)
         {
             event_hdl->close_event();
         }
-    }
+}
 }
 }

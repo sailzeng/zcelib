@@ -62,6 +62,9 @@ public:
                    bool edge_triggered = false,
                    int once_max_event = DEFAULT_ONCE_TRIGGER_MAX_EVENT);
 
+    //!关闭
+    virtual int close();
+
     /*!
     * @brief      注册一个zce::Event_Handler到反应器,EPOLL是明确的注册操作的，所以需要重载这个函数
     * @return     int             返回0表示成功，其他表示失败
@@ -77,7 +80,8 @@ public:
     * @param[in]  event_handler     注销的句柄
     * @param[in]  call_event_close  注销后，是否自动调用句柄的handle_close函数
     * */
-    virtual int remove_handler(zce::event_handler* event_handler, bool call_close_event) override;
+    virtual int remove_handler(zce::event_handler* event_handler,
+                               bool call_close_event) override;
 
     /*!
     * @brief      取消某些mask标志，，
