@@ -290,4 +290,21 @@ awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
 }
 
 //============================================================================
+
+int co_er_connect(zce::aio::worker* worker,
+                  ZCE_SOCKET handle,
+                  const sockaddr* addr,
+                  socklen_t addr_len)
+{
+    return 0;
+}
+
+int co_er_accept(zce::aio::worker* worker,
+                 ZCE_SOCKET handle,
+                 ZCE_SOCKET *accept_hdl,
+                 sockaddr* from,
+                 socklen_t* from_len)
+{
+    return 0;
+}
 }

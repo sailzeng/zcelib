@@ -803,13 +803,16 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
+               bool *alread_do,
                std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
+    *alread_do = false;
     //使用非阻塞的方式搞一次
     ret = zce::connect(handle, addr, addr_len);
     if (ret == 0)
     {
+        *alread_do = true;
         return 0;
     }
     else
@@ -844,13 +847,16 @@ int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET *accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
+              bool *alread_do,
               std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
+    *alread_do = false;
     //使用非阻塞的方式搞一次
     *accept_hdl = zce::accept(handle, from, from_len);
     if (*accept_hdl != ZCE_INVALID_SOCKET)
     {
+        *alread_do = true;
         return 0;
     }
     else
@@ -887,13 +893,16 @@ int er_recv(zce::aio::worker* worker,
             void* rcv_buf,
             size_t len,
             size_t *result_len,
+            bool *alread_do,
             std::function<void(EVENT_ATOM*)> call_back)
 {
     int ret = 0;
+    *alread_do = false;
     //使用非阻塞的方式搞一次
     ssize_t sz_rcv = zce::recv(handle, rcv_buf, len);
     if (sz_rcv > 0)
     {
+        *alread_do = true;
         *result_len = sz_rcv;
         return 0;
     }
@@ -930,13 +939,16 @@ int er_send(zce::aio::worker* worker,
             const void* snd_buf,
             size_t len,
             size_t *result_len,
+            bool *alread_do,
             std::function<void(EVENT_ATOM*)> call_back)
 {
     int ret = 0;
+    *alread_do = false;
     //使用非阻塞的方式搞一次
     ssize_t sz_rcv = zce::send(handle, snd_buf, len);
     if (sz_rcv > 0)
     {
+        *alread_do = true;
         *result_len = sz_rcv;
         return 0;
     }
@@ -975,9 +987,11 @@ int er_recvfrom(zce::aio::worker* worker,
                 size_t *result_len,
                 sockaddr* from,
                 socklen_t* from_len,
+                bool *alread_do,
                 std::function<void(EVENT_ATOM*)> call_back)
 {
     int ret = 0;
+    *alread_do = false;
     //使用非阻塞的方式搞一次
     ssize_t sz_rcv = zce::recvfrom(handle,
                                    rcv_buf,
@@ -987,6 +1001,7 @@ int er_recvfrom(zce::aio::worker* worker,
                                    from_len);
     if (sz_rcv > 0)
     {
+        *alread_do = true;
         *result_len = sz_rcv;
         return 0;
     }

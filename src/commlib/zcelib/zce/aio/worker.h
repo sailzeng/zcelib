@@ -82,7 +82,7 @@ protected:
     //! 在线程中处理Gat Host Addr请求
     void thread_host(zce::aio::HOST_ATOM* base);
     //! 在线程中处理Socket请求
-    void thread_socket(zce::aio::SOCKET_ATOM* base);
+    void thread_socket_timeout(zce::aio::SOCKET_ATOM* base);
 
 protected:
 

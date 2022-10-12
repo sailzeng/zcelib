@@ -221,4 +221,39 @@ awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
                            int flags = 0);
 
 //========================================================================================
+//!
+int co_er_connect(zce::aio::worker* worker,
+                  ZCE_SOCKET handle,
+                  const sockaddr* addr,
+                  socklen_t addr_len);
+
+//! 等待若干时间进行accept，直至超时
+int co_er_accept(zce::aio::worker* worker,
+                 ZCE_SOCKET handle,
+                 ZCE_SOCKET *accept_hdl,
+                 sockaddr* from,
+                 socklen_t* from_len);
+
+//! 等待若干时间进行recv，
+int co_er_recv(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               void* rcv_buf,
+               size_t len,
+               size_t *result_len);
+
+//!等待若干时间进行send，
+int co_er_send(zce::aio::worker* worker,
+               ZCE_SOCKET handle,
+               const void* snd_buf,
+               size_t len,
+               size_t *result_len);
+
+//!等待若干时间进行recv数据，
+int co_er_recvfrom(zce::aio::worker* worker,
+                   ZCE_SOCKET handle,
+                   void* rcv_buf,
+                   size_t len,
+                   size_t *result_len,
+                   sockaddr* from,
+                   socklen_t* from_len);
 }

@@ -522,6 +522,7 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
+               bool *alread_do,
                std::function<void(AIO_ATOM*)> call_back);
 
 //! 等待若干时间进行accept，直至超时
@@ -530,6 +531,7 @@ int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET *accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
+              bool *alread_do,
               std::function<void(AIO_ATOM*)> call_back);
 
 //! 等待若干时间进行recv，
@@ -546,6 +548,7 @@ int er_send(zce::aio::worker* worker,
             const void* snd_buf,
             size_t len,
             size_t *result_len,
+            bool *alread_do,
             std::function<void(EVENT_ATOM*)> call_back);
 
 //!等待若干时间进行recv数据，
@@ -556,5 +559,6 @@ int er_recvfrom(zce::aio::worker* worker,
                 size_t *result_len,
                 sockaddr* from,
                 socklen_t* from_len,
+                bool *alread_do,
                 std::function<void(EVENT_ATOM*)> call_back);
 }//namespace zce::aio

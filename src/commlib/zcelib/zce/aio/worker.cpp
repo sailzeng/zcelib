@@ -217,7 +217,7 @@ void worker::thread_aio(zce::aio::AIO_ATOM* base)
     else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
              base->aio_type_ < AIO_TYPE::SOCKET_END)
     {
-        thread_socket(static_cast<zce::aio::SOCKET_ATOM*>(base));
+        thread_socket_timeout(static_cast<zce::aio::SOCKET_ATOM*>(base));
     }
     else
     {
@@ -376,7 +376,7 @@ void worker::thread_host(zce::aio::HOST_ATOM* atom)
 }
 
 //在线程中处理Socket请求
-void worker::thread_socket(zce::aio::SOCKET_ATOM* atom)
+void worker::thread_socket_timeout(zce::aio::SOCKET_ATOM* atom)
 {
     ssize_t len = 0;
     switch (atom->aio_type_)
