@@ -78,7 +78,7 @@ int reactor_mini::close()
 
 //注册一个zce::Event_Handler到反应器
 int reactor_mini::register_event(ZCE_HANDLE handle,
-                                 EVENT_MASK event_todo,
+                                 RECTOR_EVENT event_todo,
                                  event_callback_t call_back)
 {
     ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
@@ -159,7 +159,7 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
 //从反应器注销一个zce::Event_Handler，同事取消他所有的mask
 //event_mask其实只判断里面的DONT_CALL
 int reactor_mini::remove_event(ZCE_HANDLE handle,
-                               EVENT_MASK event_todo)
+                               RECTOR_EVENT event_todo)
 {
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用event_close
     event_call_set_t::iterator find_iter;
@@ -228,7 +228,7 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
 
 //通过句柄查询event handler，如果存在返回0
 bool reactor_mini::find_event(ZCE_HANDLE handle,
-                              EVENT_MASK event_todo,
+                              RECTOR_EVENT event_todo,
                               event_call_set_t::iterator &find_iter,
                               size_t &hdl_event_num) const
 {
@@ -364,7 +364,7 @@ void reactor_mini::process_ready(const fd_set* out_fds,
             return;
         }
         //因为使用的是mutliset，还必须继续找找看看。
-        EVENT_MASK event_todo = NULL_MASK;
+        RECTOR_EVENT event_todo = NULL_MASK;
         bool if_trigger = false;
         for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {
@@ -439,7 +439,7 @@ void reactor_mini::process_ready(const fd_set* out_fds,
 //将mask转换为epoll_event结构
 void reactor_mini::make_epoll_event(struct epoll_event* ep_event,
                                     ZCE_HANDLE handle,
-                                    EVENT_MASK event_todo) const
+                                    RECTOR_EVENT event_todo) const
 {
     ep_event->events = 0;
     ep_event->data.fd = handle;
@@ -487,7 +487,7 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
         {
             return;
         }
-        EVENT_MASK event_todo = NULL_MASK;
+        RECTOR_EVENT event_todo = NULL_MASK;
         bool if_trigger = false;
         for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {
@@ -521,7 +521,7 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
         {
             return;
         }
-        EVENT_MASK event_todo = NULL_MASK;
+        RECTOR_EVENT event_todo = NULL_MASK;
         bool if_trigger = false;
         for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {
@@ -550,7 +550,7 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
         {
             return;
         }
-        EVENT_MASK event_todo = NULL_MASK;
+        RECTOR_EVENT event_todo = NULL_MASK;
         bool if_trigger = false;
         for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {

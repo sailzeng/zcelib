@@ -8,7 +8,7 @@ namespace zce
 * @brief      MINI反应器
 *
 */
-typedef std::function <int(ZCE_HANDLE socket, EVENT_MASK event,
+typedef std::function <int(ZCE_HANDLE socket, RECTOR_EVENT event,
     bool connect_succ)> event_callback_t;
 
 class reactor_mini
@@ -18,7 +18,7 @@ protected:
     struct EVENT_CALL
     {
         EVENT_CALL(ZCE_HANDLE handle,
-                   EVENT_MASK event_todo,
+                   RECTOR_EVENT event_todo,
                    event_callback_t call_back) :
             handle_(handle),
             event_todo_(event_todo),
@@ -33,7 +33,7 @@ protected:
         //
         ZCE_HANDLE handle_ = ZCE_INVALID_HANDLE;
         //
-        EVENT_MASK event_todo_ = NULL_MASK;
+        RECTOR_EVENT event_todo_ = NULL_MASK;
         //回调函数
         event_callback_t call_back_;
     };
@@ -103,7 +103,7 @@ public:
      * @return bool         返回是否查询到了，true表示成功，false
     */
     bool find_event(ZCE_HANDLE handle,
-                    EVENT_MASK event_todo,
+                    RECTOR_EVENT event_todo,
                     event_call_set_t::iterator &find_iter,
                     size_t &hdl_event_num) const;
 
@@ -115,12 +115,12 @@ public:
      * @return int        return 0表示注册成功，
     */
     int register_event(ZCE_HANDLE handle,
-                       EVENT_MASK event_todo,
+                       RECTOR_EVENT event_todo,
                        event_callback_t call_back);
 
     //
     int remove_event(ZCE_HANDLE handle,
-                     EVENT_MASK event_todo);
+                     RECTOR_EVENT event_todo);
 
     //
     int handle_events(zce::time_value* time_out,
@@ -139,7 +139,7 @@ protected:
 
     void make_epoll_event(struct epoll_event* ep_event,
                           SELECT_EVENT proc_event,
-                          EVENT_MASK event_todo) const;
+                          RECTOR_EVENT event_todo) const;
 
     void process_ready_event(struct epoll_event* ep_event);
 #endif

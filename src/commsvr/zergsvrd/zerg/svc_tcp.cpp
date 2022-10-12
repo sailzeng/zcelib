@@ -154,7 +154,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
 
         //注册读写事件
         ret = reactor()->register_handler(this,
-                                          EVENT_MASK::READ_MASK | EVENT_MASK::WRITE_MASK);
+                                          RECTOR_EVENT::READ_MASK | RECTOR_EVENT::WRITE_MASK);
 
         //
         if (ret != 0)
@@ -169,7 +169,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
             return;
         }
 
-        reactor()->cancel_wakeup(this, EVENT_MASK::WRITE_MASK);
+        reactor()->cancel_wakeup(this, RECTOR_EVENT::WRITE_MASK);
 
         //统计
         server_status_->set_counter(ZERG_ACCEPT_PEER_NUMBER, 0, 0, static_cast<int>(num_accept_peer_));

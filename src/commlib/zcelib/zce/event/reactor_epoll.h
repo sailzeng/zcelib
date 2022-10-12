@@ -69,7 +69,7 @@ public:
     * @brief      注册一个zce::Event_Handler到反应器,EPOLL是明确的注册操作的，所以需要重载这个函数
     * @return     int             返回0表示成功，其他表示失败
     * @param[in]  event_handler   注册的句柄
-    * @param[in]  event_mask      注册后同时设置的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
+    * @param[in]  event_mask      注册后同时设置的MASK标志，请参考@ref RECTOR_EVENT ,可以多个值|使用。
     */
     virtual int register_handler(zce::event_handler* event_handler,
                                  int event_mask) override;
@@ -87,7 +87,7 @@ public:
     * @brief      取消某些mask标志，，
     * @return     int           返回0表示成功，其他表示失败
     * @param[in]  event_handler 操作的句柄
-    * @param[in]  cancel_mask   要取消的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
+    * @param[in]  cancel_mask   要取消的MASK标志，请参考@ref RECTOR_EVENT ,可以多个值|使用。
     * */
     virtual int cancel_wakeup(zce::event_handler* event_handler,
                               int cancel_mask) override;
@@ -96,7 +96,7 @@ public:
     * @brief      打开某些mask标志，
     * @return     int             返回0表示成功，其他表示失败
     * @param[in]  event_handler   操作的句柄
-    * @param[in]  event_mask      要打开的标志，请参考@ref EVENT_MASK ,可以多个值|使用。
+    * @param[in]  event_mask      要打开的标志，请参考@ref RECTOR_EVENT ,可以多个值|使用。
     * */
     virtual int schedule_wakeup(zce::event_handler* event_handler,
                                 int event_mask) override;

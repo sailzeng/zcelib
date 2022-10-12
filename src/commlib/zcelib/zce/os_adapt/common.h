@@ -831,7 +831,7 @@ typedef void* ZCE_SHLIB_HANDLE;
 namespace zce
 {
 ///IO触发事件, 这儿不要改造成enum class
-enum EVENT_MASK
+enum RECTOR_EVENT
 {
     NULL_MASK = 0,
 

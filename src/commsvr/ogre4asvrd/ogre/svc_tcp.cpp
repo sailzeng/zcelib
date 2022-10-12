@@ -704,9 +704,9 @@ int svc_tcp::write_all_aata_to_peer()
     else
     {
         //没有WRITE MASK，准备增加写标志
-        if (!(handle_mask & EVENT_MASK::WRITE_MASK))
+        if (!(handle_mask & RECTOR_EVENT::WRITE_MASK))
         {
-            ret = reactor()->schedule_wakeup(this, EVENT_MASK::WRITE_MASK);
+            ret = reactor()->schedule_wakeup(this, RECTOR_EVENT::WRITE_MASK);
 
             //schedule_wakeup 返回return -1表示错误，再次BS ACE一次，正确返回的是old mask值
             if (-1 == ret)

@@ -9,12 +9,12 @@ namespace zce
 //构造函数和析构函数
 event_handler::event_handler() :
     zce_reactor_(NULL),
-    event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
+    event_mask_(static_cast<int>(RECTOR_EVENT::NULL_MASK))
 {
 }
 event_handler::event_handler(zce::reactor* reactor) :
     zce_reactor_(reactor),
-    event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
+    event_mask_(static_cast<int>(RECTOR_EVENT::NULL_MASK))
 {
 }
 

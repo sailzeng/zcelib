@@ -57,7 +57,7 @@ int event_inotify::open(zce::reactor* reactor_base)
         return -1;
     }
 
-    ret = reactor_base->register_handler(this, static_cast<int>(EVENT_MASK::INOTIFY_MASK));
+    ret = reactor_base->register_handler(this, static_cast<int>(RECTOR_EVENT::INOTIFY_MASK));
     if (ret != 0)
     {
         ::close(inotify_handle_);
@@ -229,7 +229,7 @@ int event_inotify::add_watch(const char* pathname,
 
         return -1;
     }
-    ret = reactor()->register_handler(this, static_cast<int>(EVENT_MASK::INOTIFY_MASK));
+    ret = reactor()->register_handler(this, static_cast<int>(RECTOR_EVENT::INOTIFY_MASK));
     if (ret != 0)
     {
         ::CloseHandle(watch_handle_);

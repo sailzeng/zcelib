@@ -465,7 +465,7 @@ struct EVENT_ATOM :public AIO_ATOM
 
     ///
     int event_do(ZCE_HANDLE socket,
-                 EVENT_MASK event,
+                 RECTOR_EVENT event,
                  bool connect_succ);
 
     //!参数

@@ -57,7 +57,7 @@ public:
     bool request(zce::aio::AIO_ATOM* base);
 
     int reg_event(ZCE_HANDLE handle,
-                  EVENT_MASK event_todo,
+                  RECTOR_EVENT event_todo,
                   event_callback_t call_back);
 
     //

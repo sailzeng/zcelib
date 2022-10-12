@@ -405,7 +405,7 @@ inline int select(
 */
 int handle_ready(ZCE_SOCKET handle,
                  zce::time_value* timeout_tv,
-                 EVENT_MASK ready_todo);
+                 RECTOR_EVENT ready_todo);
 
 //--------------------------------------------------------------------------------------------
 //带有超时处理的一组函数，根据timeout_tv确定是否进行超时处理

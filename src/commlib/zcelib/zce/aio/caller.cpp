@@ -684,26 +684,59 @@ int st_recvfrom(zce::aio::worker* worker,
 //=======================================================================
 
 int EVENT_ATOM::event_do(ZCE_HANDLE socket,
-                         EVENT_MASK event,
+                         RECTOR_EVENT event,
                          bool connect_succ)
 {
     assert((ZCE_HANDLE)handle_ == socket);
-    if (event == EVENT_MASK::READ_MASK)
+    if (event == RECTOR_EVENT::READ_MASK)
+    {
+        ssize_t sz_rcv = 0;
+        if (EVENT_RECV == aio_type_)
+        {
+            sz_rcv = zce::recv(handle_,
+                               rcv_buf_,
+                               len_);
+        }
+        else if (EVENT_RECVFROM == aio_type_)
+        {
+            sz_rcv = zce::recvfrom(handle_,
+                                   rcv_buf_,
+                                   len_,
+                                   0,
+                                   from_,
+                                   from_len_);
+        }
+
+        if (sz_rcv >= 0)
+        {
+            result_ = 0;
+            *result_len_ = sz_rcv;
+        }
+        else
+        {
+            result_ = -1;
+            *result_len_ = 0;
+        }
+        call_back_(this);
+    }
+    else if (event == RECTOR_EVENT::WRITE_MASK)
     {
         ssize_t sz_rcv = zce::recv(handle_,
                                    rcv_buf_,
                                    len_);
-        if (sz_rcv > 0)
+        if (sz_rcv >= 0)
         {
+            result_ = 0;
             *result_len_ = sz_rcv;
-            return 0;
+        }
+        else
+        {
+            result_ = -1;
+            *result_len_ = 0;
         }
         call_back_(this);
     }
-    else if (event == EVENT_MASK::WRITE_MASK)
-    {
-    }
-    else if (event == EVENT_MASK::CONNECT_MASK)
+    else if (event == RECTOR_EVENT::CONNECT_MASK)
     {
         if (connect_succ)
         {
@@ -715,22 +748,28 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
         }
         call_back_(this);
     }
-    else if (event == EVENT_MASK::ACCEPT_MASK)
+    else if (event == RECTOR_EVENT::ACCEPT_MASK)
     {
         *accept_hdl_ = zce::accept(handle_,
                                    from_,
                                    from_len_);
         if (*accept_hdl_ != ZCE_INVALID_SOCKET)
         {
-            return 0;
+            result_ = 0;
+        }
+        else
+        {
+            result_ = -1;
         }
         call_back_(this);
     }
-    else if (event == EVENT_MASK::EXCEPTION_MASK)
+    else if (event == RECTOR_EVENT::EXCEPTION_MASK)
     {
+        //暂时没哟
     }
-    else if (event == EVENT_MASK::INOTIFY_MASK)
+    else if (event == RECTOR_EVENT::INOTIFY_MASK)
     {
+        //暂时没哟
     }
     else
     {
@@ -787,7 +826,7 @@ int er_connect(zce::aio::worker* worker,
     aio_atom->call_back_ = call_back;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
-        EVENT_MASK::CONNECT_MASK,
+        RECTOR_EVENT::CONNECT_MASK,
         std::bind(&EVENT_ATOM::event_do,
         aio_atom,
         std::placeholders::_1,
@@ -830,7 +869,7 @@ int er_accept(zce::aio::worker* worker,
     aio_atom->from_len_ = from_len;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
-        EVENT_MASK::ACCEPT_MASK,
+        RECTOR_EVENT::ACCEPT_MASK,
         std::bind(&EVENT_ATOM::event_do,
         aio_atom,
         std::placeholders::_1,
@@ -873,7 +912,7 @@ int er_recv(zce::aio::worker* worker,
     aio_atom->result_len_ = result_len;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
-        EVENT_MASK::READ_MASK,
+        RECTOR_EVENT::READ_MASK,
         std::bind(&EVENT_ATOM::event_do,
         aio_atom,
         std::placeholders::_1,
@@ -916,7 +955,7 @@ int er_send(zce::aio::worker* worker,
     aio_atom->result_len_ = result_len;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
-        EVENT_MASK::WRITE_MASK,
+        RECTOR_EVENT::WRITE_MASK,
         std::bind(&EVENT_ATOM::event_do,
         aio_atom,
         std::placeholders::_1,
@@ -959,7 +998,7 @@ int er_recvfrom(zce::aio::worker* worker,
         }
     }
     zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
-        worker->alloc_handle(AIO_TYPE::EVENT_RECV);
+        worker->alloc_handle(AIO_TYPE::EVENT_RECVFROM);
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = rcv_buf;
     aio_atom->len_ = len;
@@ -968,7 +1007,7 @@ int er_recvfrom(zce::aio::worker* worker,
     aio_atom->from_len_ = from_len;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
-        EVENT_MASK::READ_MASK,
+        RECTOR_EVENT::READ_MASK,
         std::bind(&EVENT_ATOM::event_do,
         aio_atom,
         std::placeholders::_1,

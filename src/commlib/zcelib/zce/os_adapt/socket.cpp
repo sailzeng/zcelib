@@ -659,7 +659,7 @@ int sock_disable(ZCE_SOCKET handle, int flags)
 //如果成功，一般触发返回值都是1
 int handle_ready(ZCE_SOCKET handle,
                  zce::time_value* timeout_tv,
-                 zce::EVENT_MASK ready_todo)
+                 zce::RECTOR_EVENT ready_todo)
 {
 #if defined ZCE_OS_WINDOWS || (defined ZCE_OS_LINUX && !defined HANDLEREADY_USE_EPOLL)
 
