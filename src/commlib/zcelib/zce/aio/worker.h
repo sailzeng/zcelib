@@ -22,11 +22,12 @@
 
 #include "zce/pool/multiobjs_pool.h"
 #include "zce/thread/msgque_condi.h"
+#include "zce/event/reactor_mini.h"
 #include "zce/aio/caller.h"
 
 namespace zce
 {
-class reactor;
+class reactor_mini;
 }
 
 namespace zce::aio
@@ -42,7 +43,7 @@ public:
     //!初始化
     int initialize(size_t work_thread_num,
                    size_t work_queue_len,
-                   zce::reactor *reactor);
+                   size_t max_event_num);
 
     //!销毁
     void terminate();
@@ -54,6 +55,10 @@ public:
 
     //!在请求队列放入一个请求
     bool request(zce::aio::AIO_ATOM* base);
+
+    int reg_event(ZCE_HANDLE handle,
+                  EVENT_MASK event_todo,
+                  event_callback_t call_back);
 
     //
     zce::reactor *event_reactor();
@@ -91,7 +96,7 @@ protected:
     //! 线程是否继续干活
     bool worker_running_ = true;
 
-    zce::reactor *reactor_ = nullptr;
+    zce::reactor_mini *reactor_ = nullptr;
 
     //! 请求，应答队列，用于Caller 和Worker 线程交互
     zce::msgring_condi<zce::aio::AIO_ATOM*>* requst_queue_ = nullptr;

@@ -458,27 +458,15 @@ int st_recvfrom(zce::aio::worker* worker,
 
 //=========================================================================
 //!
-struct EVENT_ATOM :public zce::event_handler, AIO_ATOM
+struct EVENT_ATOM :public AIO_ATOM
 {
-    //读取事件触发调用函数
-    int read_event() override;
-
-    //写入事件触发调用函数，用于写入事件
-    int write_event() override;
-
-    //发生了链接的事件
-    int connect_event(bool success) override;
-
-    //发生了accept的事件是调用
-    int accept_event() override;
-
     //!清理
     virtual void clear();
 
-    ZCE_HANDLE get_handle() const override;
-
     ///
-    int event_close();
+    int event_do(ZCE_HANDLE socket,
+                 EVENT_MASK event,
+                 bool connect_succ);
 
     //!参数
     size_t *result_len_ = nullptr;

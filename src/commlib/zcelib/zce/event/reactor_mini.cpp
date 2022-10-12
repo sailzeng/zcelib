@@ -24,11 +24,11 @@ size_t reactor_mini::max_size()
 //
 int reactor_mini::initialize(size_t max_event_number,
                              size_t once_max_events,
-                             bool after_trigger_close)
+                             bool trigger_auto_close)
 {
     max_event_number_ = max_event_number;
     once_max_events_ = once_max_events;
-    after_trigger_close_ = after_trigger_close;
+    trigger_auto_close_ = trigger_auto_close;
     event_set_.rehash(max_event_number_ + 16);
     //这个只有LINUX下才有
 #if defined (ZCE_OS_LINUX)
@@ -428,7 +428,7 @@ void reactor_mini::process_ready(const fd_set* out_fds,
                 ZCE_ASSERT(false);
             }
         }
-        if (if_trigger && after_trigger_close_)
+        if (if_trigger && trigger_auto_close_)
         {
             remove_event(handle, event_todo);
         }
@@ -476,117 +476,97 @@ void reactor_mini::make_epoll_event(struct epoll_event* ep_event,
 void reactor_mini::process_ready_event(struct epoll_event* ep_event)
 {
     int ret = 0;
-    bool event_in_happen = false, event_out_happen = false;
-
     ZCE_HANDLE handle = (ZCE_HANDLE)ep_event->data.fd;
     EVENT_CALL ec((ZCE_HANDLE)handle);
-    auto iter_temp = event_set_.find(ec);
-
-    //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
-    if (iter_temp == event_set_.end())
-    {
-        //???
-        return;
-    }
-    //因为使用的是mutliset，还必须继续找找看看。
-    for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
-    {
-    }
-
-    //根据不同的事件进行调动，触发
-    int hdl_ret = 0;
-
-    //【注意】所有的reactor 都要保证各种触发的顺序，必须保证，否则就有不兼容的问题，正确的顺序应该是读,写,异常处理
-
-    //修正connect发生连接错误，内部希望停止处理，但epoll会返回3个事件的修正,
-    //先说明一下这个问题，当内部处理的事件发生错误后，上层可能就会删除掉对应的zce::event_handler，但底层可能还有事件要触发。
-    //由于该代码的时候面临抉择，我必须写一段说明，我在改这段代码的时候有几种种方式,
-    //1.整体写成do { break} while()的方式，每个IO事件都作为触发方式，这个好处是简单，但对于epoll,如果是水平触发，那么你可能丢失事件
-    //2.继续使用return -1作为一个判断，ACE就是这样的，原来曾经觉得ACE这个设计有点冗余，但自己设计看来，还是有好处的，
-    //3.每次调用后，都检查一下event_hdl是否还存在，
-    //最后我采用了兼容2，3的方法，2是为了和ACE兼容，3是为了保证就是你TMD天翻地覆，我也能应付,
-
-    //代码有点怪，部分目的是加快速度,避免每个调用都要检查，
-    int register_mask = event_hdl->get_mask();
-    //READ和CONNECT事件都调用read_event
+    bool connect_succ = false;
+    //READ和ACCEPT事件都调用read_event
     if (ep_event->events & EPOLLIN)
     {
-        event_in_happen = true;
-        if (register_mask & zce::CONNECT_MASK)
+        auto iter_temp = event_set_.find(ec);
+        if (iter_temp == event_set_.end())
         {
-            hdl_ret = event_hdl->connect_event(false);
+            return;
         }
-        else if (register_mask & zce::ACCEPT_MASK)
+        EVENT_MASK event_todo = NULL_MASK;
+        bool if_trigger = false;
+        for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {
-            hdl_ret = event_hdl->accept_event();
+            event_todo = iter_temp->event_todo_;
+            if (event_todo == zce::CONNECT_MASK ||
+                event_todo == zce::ACCEPT_MASK ||
+                event_todo == zce::INOTIFY_MASK ||
+                event_todo == zce::READ_MASK)
+            {
+                if (event_todo == zce::CONNECT_MASK)
+                {
+                    connect_succ = false;
+                }
+                iter_temp->call_back_(handle,
+                                      event_todo,
+                                      connect_succ);
+                if_trigger = true;
+                break;
+            }
         }
-        else if (register_mask & zce::INOTIFY_MASK)
+        if (if_trigger && trigger_auto_close_)
         {
-            hdl_ret = event_hdl->inotify_event();
-        }
-        else
-        {
-            hdl_ret = event_hdl->read_event();
-        }
-        //返回-1表示 handle_xxxxx希望调用event_close退出
-        if (hdl_ret == -1)
-        {
-            event_hdl->close_event();
+            remove_event(handle, event_todo);
         }
     }
 
-    //READ和ACCEPT事件都调用read_event
     if (ep_event->events & EPOLLOUT)
     {
-        //如果写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
-        if (event_in_happen)
+        auto iter_temp = event_set_.find(ec);
+        if (iter_temp == event_set_.end())
         {
-            ret = find_event_handler(ep_event->data.fd,
-                                     event_hdl);
-            //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
-            if (0 != ret)
+            return;
+        }
+        EVENT_MASK event_todo = NULL_MASK;
+        bool if_trigger = false;
+        for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
+        {
+            event_todo = iter_temp->event_todo_;
+            if (event_todo == zce::CONNECT_MASK ||
+                event_todo == zce::WRITE_MASK)
             {
-                return;
+                iter_temp->call_back_(handle,
+                                      event_todo,
+                                      connect_succ);
+                if_trigger = true;
+                break;
             }
         }
-
-        event_out_happen = true;
-        if (register_mask & zce::CONNECT_MASK)
+        if (if_trigger && trigger_auto_close_)
         {
-            hdl_ret = event_hdl->connect_event(true);
-        }
-        else
-        {
-            hdl_ret = event_hdl->write_event();
-        }
-
-        //返回-1表示 handle_xxxxx希望调用event_close退出
-        if (hdl_ret == -1)
-        {
-            event_hdl->close_event();
+            remove_event(handle, event_todo);
         }
     }
 
     //异常事件，其实我也不知道，什么算异常
     if (ep_event->events & EPOLLERR)
     {
-        //如果读取或者写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
-        if (event_out_happen || event_in_happen)
+        auto iter_temp = event_set_.find(ec);
+        if (iter_temp == event_set_.end())
         {
-            ret = find_event_handler(ep_event->data.fd,
-                                     event_hdl);
-            //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
-            if (0 != ret)
+            return;
+        }
+        EVENT_MASK event_todo = NULL_MASK;
+        bool if_trigger = false;
+        for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
+        {
+            event_todo = iter_temp->event_todo_;
+            if (event_todo == zce::EXCEPTION)
             {
-                return;
+                iter_temp->call_back_(handle,
+                                      event_todo,
+                                      connect_succ);
+                if_trigger = true;
+                break;
             }
         }
-
-        hdl_ret = event_hdl->exception_event();
-        //返回-1表示 handle_xxxxx希望调用event_close退出
-        if (hdl_ret == -1)
+        if (if_trigger && trigger_auto_close_)
         {
-            event_hdl->close_event();
+            remove_event(handle, event_todo);
         }
     }
 }

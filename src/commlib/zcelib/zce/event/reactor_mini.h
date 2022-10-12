@@ -65,7 +65,7 @@ protected:
         hash_event_call,
         equal_to_event_call> event_call_set_t;
 
-protected:
+public:
 
     /*!
     * @brief
@@ -73,8 +73,6 @@ protected:
     //构造函数
     reactor_mini() = default;
     virtual ~reactor_mini() = default;
-
-public:
 
     /*!
     * @brief      当前反应器容器的句柄数量
@@ -97,7 +95,7 @@ public:
     virtual int close();
 
     /*!
-     * @brief
+     * @brief 查询是否有注册的某个句柄，event
      * @param handle        查询的句柄
      * @param event_todo    相应对应的事件，迭代器
      * @param find_iter     查询到的迭代器
@@ -109,7 +107,13 @@ public:
                     event_call_set_t::iterator &find_iter,
                     size_t &hdl_event_num) const;
 
-    //
+    /*!
+     * @brief 注册某个句柄，事件，如果触发了调用回调函数call_back
+     * @param handle      注册句柄
+     * @param event_todo  相应对应的事件
+     * @param call_back   回调函数
+     * @return int        return 0表示注册成功，
+    */
     int register_event(ZCE_HANDLE handle,
                        EVENT_MASK event_todo,
                        event_callback_t call_back);
@@ -137,10 +141,6 @@ protected:
                           SELECT_EVENT proc_event,
                           EVENT_MASK event_todo) const;
 
-    /*!
-    * @brief      处理已经触发的句柄，调用相应的虚函数，进行触发，让你处理
-    * @param[in]  ep_event  epoll 返回的句柄集合
-    */
     void process_ready_event(struct epoll_event* ep_event);
 #endif
 
@@ -172,7 +172,7 @@ protected:
     size_t            once_max_events_;
 
     ///
-    bool              after_trigger_close_ = true;
+    bool              trigger_auto_close_ = true;
 
     //! Windows 下用select 进行事件处理
 #if defined (ZCE_OS_WINDOWS)

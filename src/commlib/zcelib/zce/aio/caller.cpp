@@ -683,58 +683,59 @@ int st_recvfrom(zce::aio::worker* worker,
 
 //=======================================================================
 
-//读取事件触发调用函数
-int EVENT_ATOM::read_event()
+int EVENT_ATOM::event_do(ZCE_HANDLE socket,
+                         EVENT_MASK event,
+                         bool connect_succ)
 {
-    //int ret = 0;
-    //使用非阻塞的方式搞一次
-    ssize_t sz_rcv = zce::recv(handle_,
-                               rcv_buf_,
-                               len_);
-    if (sz_rcv > 0)
+    assert((ZCE_HANDLE)handle_ == socket);
+    if (event == EVENT_MASK::READ_MASK)
     {
-        *result_len_ = sz_rcv;
-        return 0;
+        ssize_t sz_rcv = zce::recv(handle_,
+                                   rcv_buf_,
+                                   len_);
+        if (sz_rcv > 0)
+        {
+            *result_len_ = sz_rcv;
+            return 0;
+        }
+        call_back_(this);
     }
-    call_back_(this);
-    return 0;
-}
-
-//写入事件触发调用函数，用于写入事件
-int EVENT_ATOM::write_event()
-{
-    call_back_(this);
-    reactor()->remove_handler(this, false);
-    return 0;
-}
-
-//发生了链接的事件
-int EVENT_ATOM::connect_event(bool success)
-{
-    if (success)
+    else if (event == EVENT_MASK::WRITE_MASK)
     {
-        result_ = 0;
+    }
+    else if (event == EVENT_MASK::CONNECT_MASK)
+    {
+        if (connect_succ)
+        {
+            result_ = 0;
+        }
+        else
+        {
+            result_ = -1;
+        }
+        call_back_(this);
+    }
+    else if (event == EVENT_MASK::ACCEPT_MASK)
+    {
+        *accept_hdl_ = zce::accept(handle_,
+                                   from_,
+                                   from_len_);
+        if (*accept_hdl_ != ZCE_INVALID_SOCKET)
+        {
+            return 0;
+        }
+        call_back_(this);
+    }
+    else if (event == EVENT_MASK::EXCEPTION_MASK)
+    {
+    }
+    else if (event == EVENT_MASK::INOTIFY_MASK)
+    {
     }
     else
     {
-        result_ = -1;
+        assert(false);
     }
-    call_back_(this);
-    reactor()->remove_handler(this, false);
-    return 0;
-}
-
-//发生了accept的事件是调用
-int EVENT_ATOM::accept_event()
-{
-    *accept_hdl_ = zce::accept(handle_,
-                               from_,
-                               from_len_);
-    if (*accept_hdl_ != ZCE_INVALID_SOCKET)
-    {
-        return 0;
-    }
-    call_back_(this);
     return 0;
 }
 
@@ -757,11 +758,6 @@ void EVENT_ATOM::clear()
     host_port_ = 0;
     host_addr_ = nullptr;
     accept_hdl_ = nullptr;
-}
-
-ZCE_HANDLE EVENT_ATOM::get_handle() const
-{
-    return (ZCE_HANDLE)handle_;
 }
 
 int er_connect(zce::aio::worker* worker,
@@ -789,10 +785,14 @@ int er_connect(zce::aio::worker* worker,
         worker->alloc_handle(AIO_TYPE::EVENT_CONNECT);
     aio_atom->handle_ = handle;
     aio_atom->call_back_ = call_back;
-    aio_atom->reactor(worker->event_reactor());
-    ret = worker->event_reactor()->register_handler(
+    ret = worker->reg_event(
+        (ZCE_HANDLE)handle,
+        EVENT_MASK::CONNECT_MASK,
+        std::bind(&EVENT_ATOM::event_do,
         aio_atom,
-        EVENT_MASK::CONNECT_MASK);
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3));
     if (ret != 0)
     {
         return 0;
@@ -828,10 +828,14 @@ int er_accept(zce::aio::worker* worker,
     aio_atom->accept_hdl_ = accept_hdl;
     aio_atom->from_ = from;
     aio_atom->from_len_ = from_len;
-    aio_atom->reactor(worker->event_reactor());
-    ret = worker->event_reactor()->register_handler(
+    ret = worker->reg_event(
+        (ZCE_HANDLE)handle,
+        EVENT_MASK::ACCEPT_MASK,
+        std::bind(&EVENT_ATOM::event_do,
         aio_atom,
-        EVENT_MASK::ACCEPT_MASK);
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3));
     if (ret != 0)
     {
         return 0;
@@ -867,10 +871,14 @@ int er_recv(zce::aio::worker* worker,
     aio_atom->rcv_buf_ = rcv_buf;
     aio_atom->len_ = len;
     aio_atom->result_len_ = result_len;
-    aio_atom->reactor(worker->event_reactor());
-    ret = worker->event_reactor()->register_handler(
+    ret = worker->reg_event(
+        (ZCE_HANDLE)handle,
+        EVENT_MASK::READ_MASK,
+        std::bind(&EVENT_ATOM::event_do,
         aio_atom,
-        zce::READ_MASK);
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3));
     if (ret != 0)
     {
         return 0;
@@ -906,10 +914,14 @@ int er_send(zce::aio::worker* worker,
     aio_atom->snd_buf_ = snd_buf;
     aio_atom->len_ = len;
     aio_atom->result_len_ = result_len;
-    aio_atom->reactor(worker->event_reactor());
-    ret = worker->event_reactor()->register_handler(
+    ret = worker->reg_event(
+        (ZCE_HANDLE)handle,
+        EVENT_MASK::WRITE_MASK,
+        std::bind(&EVENT_ATOM::event_do,
         aio_atom,
-        zce::WRITE_MASK);
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3));
     if (ret != 0)
     {
         return 0;
@@ -954,10 +966,14 @@ int er_recvfrom(zce::aio::worker* worker,
     aio_atom->result_len_ = result_len;
     aio_atom->from_ = from;
     aio_atom->from_len_ = from_len;
-    aio_atom->reactor(worker->event_reactor());
-    ret = worker->event_reactor()->register_handler(
+    ret = worker->reg_event(
+        (ZCE_HANDLE)handle,
+        EVENT_MASK::READ_MASK,
+        std::bind(&EVENT_ATOM::event_do,
         aio_atom,
-        zce::READ_MASK);
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3));
     if (ret != 0)
     {
         return 0;

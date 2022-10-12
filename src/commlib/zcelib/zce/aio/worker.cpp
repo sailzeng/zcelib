@@ -5,6 +5,7 @@
 #include "zce/os_adapt/socket.h"
 #include "zce/os_adapt/time.h"
 #include "zce/mysql/execute.h"
+
 #include "zce/aio/worker.h"
 
 namespace zce::aio
@@ -12,7 +13,7 @@ namespace zce::aio
 //!
 int worker::initialize(size_t work_thread_num,
                        size_t work_queue_len,
-                       zce::reactor *reactor)
+                       size_t max_event_num)
 {
     worker_running_ = true;
     work_thread_num_ = work_thread_num;
@@ -31,7 +32,8 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(128, 256);
-    reactor_ = reactor;
+    reactor_ = new reactor_mini();
+    reactor_->initialize(max_event_num, 1024, true);
     return 0;
 }
 
@@ -46,6 +48,13 @@ void worker::terminate()
         delete work_thread_[i];
     }
     delete[] work_thread_;
+    work_thread_ = nullptr;
+    if (reactor_)
+    {
+        reactor_->close();
+        delete reactor_;
+        reactor_ = nullptr;
+    }
 }
 
 AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
