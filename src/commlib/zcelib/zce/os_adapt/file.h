@@ -97,7 +97,7 @@ off_t lseek(ZCE_HANDLE file_handle,
 int read(ZCE_HANDLE file_handle,
          void* buf,
          size_t buf_count,
-         size_t &read_count,
+         size_t *read_count,
          off_t offset,
          int whence = SEEK_CUR) noexcept;
 
@@ -106,7 +106,7 @@ int read(ZCE_HANDLE file_handle,
 int write(ZCE_HANDLE file_handle,
           const void* buf,
           size_t buf_count,
-          size_t &write_count,
+          size_t *write_count,
           off_t offset,
           int whence = SEEK_CUR) noexcept;
 

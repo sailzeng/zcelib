@@ -168,8 +168,8 @@ public:
     //!读取，写入的buf，buf的长度，结果的长度
     char* read_bufs_ = nullptr;
     const char* write_bufs_ = nullptr;
-    size_t bufs_count_ = 0;
-    size_t result_count_ = 0;
+    size_t bufs_len_ = 0;
+    size_t *result_len_ = 0;
 
     //!改名的路径
     const char* new_path_ = nullptr;
@@ -201,6 +201,7 @@ int fs_read(zce::aio::worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
+            size_t *result_len,
             std::function<void(AIO_ATOM*)> call_back,
             ssize_t offset = 0,
             int whence = SEEK_CUR);
@@ -210,6 +211,7 @@ int fs_write(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
+             size_t *result_len,
              std::function<void(AIO_ATOM*)> call_back,
              ssize_t offset = 0,
              int whence = SEEK_CUR);

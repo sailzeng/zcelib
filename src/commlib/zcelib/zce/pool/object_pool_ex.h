@@ -72,6 +72,13 @@ public:
         return obj;
     }
 
+    //归还一个对象
+    void free_object(T* ptr)
+    {
+        obj_pool_.free_object(ptr);
+        return;
+    }
+
     //! dump信息
     void dump(zce::LOG_PRIORITY log_priority)
     {

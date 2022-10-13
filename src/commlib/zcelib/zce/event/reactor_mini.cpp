@@ -260,12 +260,12 @@ bool reactor_mini::find_event(ZCE_HANDLE handle,
 }
 
 //
-int reactor_mini::handle_events(zce::time_value* time_out,
-                                size_t* size_event)
+int reactor_mini::tiggers_events(zce::time_value* time_out,
+                                 size_t& size_event)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    *size_event = 0;
+    size_event = 0;
     //保留句柄，因为select函数是输入输出参数，所以必须保留了，费时的麻烦呀
     para_read_fd_set_ = read_fd_set_;
     para_write_fd_set_ = write_fd_set_;
@@ -294,7 +294,8 @@ int reactor_mini::handle_events(zce::time_value* time_out,
     process_ready(&para_write_fd_set_, SELECT_EVENT::SE_WRITE);
     //处理异常事件
     process_ready(&para_exception_fd_set_, SELECT_EVENT::SE_EXCEPTION);
-    *size_event = nfds;
+    size_event = nfds;
+    return 0;
 #elif defined (ZCE_OS_LINUX)
     //默认一直阻塞
     int msec_timeout = -1;
@@ -330,7 +331,6 @@ int reactor_mini::handle_events(zce::time_value* time_out,
 
     return 0;
 #endif
-    return 0;
 }
 
 #if defined ZCE_OS_WINDOWS

@@ -124,15 +124,16 @@ awaiter_aio co_read_file(zce::aio::worker* worker,
                          const char* path,
                          char* read_bufs,
                          size_t nbufs,
+                         size_t *result_len,
                          ssize_t offset)
 {
     zce::aio::FS_ATOM* aio_atom = (FS_ATOM*)
         worker->alloc_handle(AIO_TYPE::FS_READFILE);
     aio_atom->path_ = path;
     aio_atom->read_bufs_ = read_bufs;
-    aio_atom->bufs_count_ = nbufs;
+    aio_atom->bufs_len_ = nbufs;
     aio_atom->offset_ = offset;
-
+    aio_atom->result_len_ = result_len;
     return awaiter_aio(worker, aio_atom);
 }
 
@@ -140,15 +141,16 @@ awaiter_aio co_write_file(zce::aio::worker* worker,
                           const char* path,
                           const char* write_bufs,
                           size_t nbufs,
+                          size_t *result_len,
                           ssize_t offset)
 {
     zce::aio::FS_ATOM* aio_atom = (FS_ATOM*)
         worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
     aio_atom->path_ = path;
     aio_atom->write_bufs_ = write_bufs;
-    aio_atom->bufs_count_ = nbufs;
+    aio_atom->bufs_len_ = nbufs;
     aio_atom->offset_ = offset;
-
+    aio_atom->result_len_ = result_len;
     return awaiter_aio(worker, aio_atom);
 }
 

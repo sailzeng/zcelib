@@ -45,7 +45,7 @@ class CI
 
 int test_pool5(int /*argc*/, char* /*argv*/[])
 {
-    zce::object_pool_log<std::mutex, CI> pool;
+    zce::object_pool_ex<std::mutex, CI> pool;
     pool.initialize(16,
                     16);
     CI* a = pool.alloc_object();

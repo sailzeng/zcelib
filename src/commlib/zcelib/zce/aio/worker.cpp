@@ -165,17 +165,20 @@ void worker::process_request()
 }
 
 //!处理应答
-void worker::process_response(size_t& num_rsp,
-                              zce::time_value* wait_time)
+void worker::process_response(zce::time_value* wait_time,
+                              size_t& num_rsp,
+                              size_t& num_event)
 {
     num_rsp = 0;
     bool go = false;
     do
     {
+        reactor_->tiggers_events(wait_time, num_event);
         AIO_ATOM* base = nullptr;
         if (wait_time)
         {
-            go = response_queue_->dequeue_wait(base, *wait_time);
+            go = response_queue_->dequeue_wait(base,
+                                               *wait_time);
         }
         else
         {
@@ -248,33 +251,34 @@ void worker::thread_fs(zce::aio::FS_ATOM* atom)
         break;
 
     case FS_READ:
+
         atom->result_ = zce::read(atom->handle_,
                                   atom->read_bufs_,
-                                  atom->bufs_count_,
-                                  atom->result_count_,
+                                  atom->bufs_len_,
+                                  atom->result_len_,
                                   (off_t)atom->offset_,
                                   atom->whence_);
         break;
     case FS_WRITE:
         atom->result_ = zce::write(atom->handle_,
                                    atom->write_bufs_,
-                                   atom->bufs_count_,
-                                   atom->result_count_,
+                                   atom->bufs_len_,
+                                   atom->result_len_,
                                    (off_t)atom->offset_,
                                    atom->whence_);
         break;
     case FS_READFILE:
         atom->result_ = zce::read_file(atom->path_,
                                        atom->read_bufs_,
-                                       atom->bufs_count_,
-                                       &atom->result_count_,
+                                       atom->bufs_len_,
+                                       atom->result_len_,
                                        (off_t)atom->offset_);
         break;
     case FS_WRITEFILE:
         atom->result_ = zce::write_file(atom->path_,
                                         atom->write_bufs_,
-                                        atom->bufs_count_,
-                                        &atom->result_count_,
+                                        atom->bufs_len_,
+                                        atom->result_len_,
                                         (off_t)atom->offset_);
         break;
     case FS_STAT:
@@ -473,5 +477,14 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
     default:
         break;
     }
+}
+
+int worker::reg_event(ZCE_HANDLE handle,
+                      RECTOR_EVENT event_todo,
+                      event_callback_t call_back)
+{
+    return reactor_->register_event(handle,
+                                    event_todo,
+                                    call_back);
 }
 }

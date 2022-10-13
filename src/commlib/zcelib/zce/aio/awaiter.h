@@ -90,12 +90,14 @@ awaiter_aio co_read_file(zce::aio::worker* worker,
                          const char* path,
                          char* read_bufs,
                          size_t nbufs,
+                         size_t *result_len,
                          ssize_t offset = 0);
 //!协程co_await AIO写入文件
 awaiter_aio co_write_file(zce::aio::worker* worker,
                           const char* path,
                           const char* write_bufs,
                           size_t nbufs,
+                          size_t *result_len,
                           ssize_t offset = 0);
 
 //========================================================================================

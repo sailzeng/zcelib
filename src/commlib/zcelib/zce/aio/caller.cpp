@@ -28,8 +28,8 @@ void FS_ATOM::clear()
     whence_ = SEEK_CUR;
     read_bufs_ = nullptr;
     write_bufs_ = nullptr;
-    bufs_count_ = 0;
-    result_count_ = 0;
+    bufs_len_ = 0;
+    result_len_ = 0;
     new_path_ = nullptr;
     file_stat_ = nullptr;
 }
@@ -158,6 +158,7 @@ int fs_read(zce::aio::worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
+            size_t *result_len,
             std::function<void(AIO_ATOM*)> call_back,
             ssize_t offset,
             int whence)
@@ -166,7 +167,8 @@ int fs_read(zce::aio::worker* worker,
         worker->alloc_handle(AIO_TYPE::FS_READ);
     aio_atom->handle_ = handle;
     aio_atom->read_bufs_ = read_bufs;
-    aio_atom->bufs_count_ = nbufs;
+    aio_atom->bufs_len_ = nbufs;
+    aio_atom->result_len_ = result_len;
     aio_atom->offset_ = offset;
     aio_atom->whence_ = whence;
     aio_atom->call_back_ = call_back;
@@ -183,6 +185,7 @@ int fs_write(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
+             size_t *result_len,
              std::function<void(AIO_ATOM*)> call_back,
              ssize_t offset,
              int whence)
@@ -191,7 +194,8 @@ int fs_write(zce::aio::worker* worker,
         worker->alloc_handle(AIO_TYPE::FS_WRITE);
     aio_atom->handle_ = handle;
     aio_atom->write_bufs_ = write_bufs;
-    aio_atom->bufs_count_ = nbufs;
+    aio_atom->bufs_len_ = nbufs;
+    aio_atom->result_len_ = result_len;
     aio_atom->offset_ = offset;
     aio_atom->whence_ = whence;
     aio_atom->call_back_ = call_back;
@@ -234,7 +238,7 @@ int fs_read_file(zce::aio::worker* worker,
         worker->alloc_handle(AIO_TYPE::FS_READFILE);
     aio_atom->path_ = path;
     aio_atom->read_bufs_ = read_bufs;
-    aio_atom->bufs_count_ = nbufs;
+    aio_atom->bufs_len_ = nbufs;
     aio_atom->offset_ = offset;
     aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);
@@ -257,7 +261,7 @@ int fs_write_file(zce::aio::worker* worker,
         worker->alloc_handle(AIO_TYPE::FS_WRITEFILE);
     aio_atom->path_ = path;
     aio_atom->write_bufs_ = write_bufs;
-    aio_atom->bufs_count_ = nbufs;
+    aio_atom->bufs_len_ = nbufs;
     aio_atom->offset_ = offset;
     aio_atom->call_back_ = call_back;
     auto succ_req = worker->request(aio_atom);

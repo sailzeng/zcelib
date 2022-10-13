@@ -5,18 +5,18 @@ ZCE_HANDLE file_handle = ZCE_INVALID_HANDLE;
 void on_writefile(zce::aio::AIO_ATOM* ahdl)
 {
     auto fhdl = (zce::aio::FS_ATOM*)(ahdl);
-    std::cout << "on_writefile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_count_ << std::endl;
+    std::cout << "on_writefile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_len_ << std::endl;
 }
 
 void on_readfile(zce::aio::AIO_ATOM* ahdl)
 {
     auto fhdl = (zce::aio::FS_ATOM*)(ahdl);
-    std::cout << "on_readfile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_count_ << std::endl;
-    if (fhdl->result_ == 0 && fhdl->result_count_ > 0)
+    std::cout << "on_readfile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_len_ << std::endl;
+    if (fhdl->result_ == 0 && *fhdl->result_len_ > 0)
     {
-        if (fhdl->result_count_ < 1024)
+        if (*fhdl->result_len_ < 1024)
         {
-            fhdl->read_bufs_[fhdl->result_count_] = '\0';
+            fhdl->read_bufs_[*fhdl->result_len_] = '\0';
         }
         std::cout << "context:" << std::endl;
         std::cout << fhdl->read_bufs_ << std::endl;
@@ -27,7 +27,7 @@ int test_aio1(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
     zce::aio::worker aio_worker;
-    ret = aio_worker.initialize(5, 2048);
+    ret = aio_worker.initialize(5, 2048, 2048);
     if (ret)
     {
         return ret;
@@ -54,12 +54,12 @@ int test_aio1(int /*argc*/, char* /*argv*/[])
     size_t count = 0;
     do
     {
-        size_t num = 0;
+        size_t num_event = 0, num_rsp = 0;
         zce::time_value tv(1, 0);
-        aio_worker.process_response(num, &tv);
-        if (num > 0)
+        aio_worker.process_response(&tv, num_event, num_rsp);
+        if (num_rsp > 0)
         {
-            count += num;
+            count += num_rsp;
         }
     } while (count < 2);
     aio_worker.terminate();
@@ -158,28 +158,32 @@ coro_ret<int> coroutine_aio(zce::aio::worker* worker)
 {
     char read_buf[1024];
     std::cout << "Coroutine co_await co_read_file" << std::endl;
+    size_t read_size = 0;
     auto r_ret = co_await zce::aio::co_read_file(worker,
                                                  "E:/TEST001/aio_test_002.txt",
                                                  read_buf,
-                                                 1024);
+                                                 1024,
+                                                 &read_size);
 
-    std::cout << "co_read_file,reuslt:" << r_ret.result_ << " count:" << r_ret.result_count_ << std::endl;
-    if (r_ret.result_ == 0 && r_ret.result_count_ > 0)
+    std::cout << "co_read_file,reuslt:" << r_ret << " count:" << read_size << std::endl;
+    if (r_ret == 0 && read_size > 0)
     {
-        if (r_ret.result_count_ < 1024)
+        if (read_size < 1024)
         {
-            r_ret.read_bufs_[r_ret.result_count_] = '\0';
+            read_buf[read_size] = '\0';
         }
         std::cout << "context:" << std::endl;
-        std::cout << r_ret.read_bufs_ << std::endl;
+        std::cout << read_size << std::endl;
     }
 
+    size_t write_size = 0;
     std::cout << "Coroutine co_await co_write_file" << std::endl;
     auto w_ret = co_await zce::aio::co_write_file(worker,
                                                   "E:/TEST001/aio_test_001.txt",
                                                   "01234567890123456789",
-                                                  20);
-    std::cout << "co_write_file,reuslt:" << w_ret.result_ << " count:" << w_ret.result_count_ << std::endl;
+                                                  20,
+                                                  &write_size);
+    std::cout << "co_write_file,reuslt:" << w_ret << " count:" << write_size << std::endl;
 
     co_return 0;
 }
@@ -188,7 +192,7 @@ int test_aio3(int /*argc*/, char* /*argv*/[])
 {
     int ret = 0;
     zce::aio::worker aio_worker;
-    ret = aio_worker.initialize(5, 2048);
+    ret = aio_worker.initialize(5, 2048, 2048);
     if (ret)
     {
         return 101;
@@ -204,12 +208,12 @@ int test_aio3(int /*argc*/, char* /*argv*/[])
     size_t count = 0;
     do
     {
-        size_t num = 0;
+        size_t num_rsp = 0, num_event = 0;
         zce::time_value tv(1, 0);
-        aio_worker.process_response(num, &tv);
-        if (num > 0)
+        aio_worker.process_response(&tv, num_rsp, num_event);
+        if (num_rsp > 0)
         {
-            count += num;
+            count += num_rsp;
         }
         std::cout << "coroutine done ?:" <<
             (c_r.done() ? "true" : "false") << std::endl;

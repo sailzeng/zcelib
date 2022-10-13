@@ -53,20 +53,22 @@ public:
     //! 释放一个AIO_Atom，根据AIO_TYPE归还到不同的池子里面。
     void free_handle(zce::aio::AIO_ATOM* base);
 
-    //!在请求队列放入一个请求
+    //! 在请求队列放入一个请求
     bool request(zce::aio::AIO_ATOM* base);
 
+    //! 注册事件
     int reg_event(ZCE_HANDLE handle,
                   RECTOR_EVENT event_todo,
                   event_callback_t call_back);
 
+    //! 处理应答
+    void process_response(zce::time_value* wait_time,
+                          size_t& num_rsp,
+                          size_t& num_event);
+
 protected:
     //! 处理请求
     void process_request();
-
-    //! 处理应答
-    void process_response(size_t& num_rsp,
-                          zce::time_value* wait_time);
 
     //! 在线程中处理AIO操作，会根据type分解工作到下面这些函数
     void thread_aio(zce::aio::AIO_ATOM* base);

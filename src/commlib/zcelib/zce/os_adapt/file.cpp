@@ -124,7 +124,7 @@ off_t zce::lseek(ZCE_HANDLE file_handle,
 int zce::read(ZCE_HANDLE file_handle,
               void* buf,
               size_t buf_count,
-              size_t& read_count,
+              size_t* read_count,
               off_t offset,
               int whence) noexcept
 {
@@ -136,7 +136,7 @@ int zce::read(ZCE_HANDLE file_handle,
             return -1;
         }
     }
-    read_count = 0;
+    *read_count = 0;
     auto result = read(file_handle,
                        buf,
                        buf_count);
@@ -144,7 +144,7 @@ int zce::read(ZCE_HANDLE file_handle,
     {
         return -1;
     }
-    read_count = buf_count;
+    *read_count = buf_count;
     return 0;
 }
 
@@ -152,10 +152,11 @@ int zce::read(ZCE_HANDLE file_handle,
 int zce::write(ZCE_HANDLE file_handle,
                const void* buf,
                size_t buf_count,
-               size_t& write_count,
+               size_t* write_count,
                off_t offset,
                int whence) noexcept
 {
+    *write_count = 0;
     if (whence != SEEK_CUR || offset != 0)
     {
         off_t off = zce::lseek(file_handle, offset, whence);
@@ -164,7 +165,6 @@ int zce::write(ZCE_HANDLE file_handle,
             return -1;
         }
     }
-    write_count = 0;
     auto result = zce::write(file_handle,
                              buf,
                              buf_count);
@@ -172,7 +172,7 @@ int zce::write(ZCE_HANDLE file_handle,
     {
         return -1;
     }
-    write_count = buf_count;
+    *write_count = buf_count;
     return 0;
 }
 

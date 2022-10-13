@@ -123,8 +123,8 @@ public:
                      RECTOR_EVENT event_todo);
 
     //
-    int handle_events(zce::time_value* time_out,
-                      size_t* size_event);
+    int tiggers_events(zce::time_value* time_out,
+                       size_t& size_event);
 
 protected:
 
