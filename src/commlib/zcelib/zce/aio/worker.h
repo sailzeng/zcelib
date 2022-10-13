@@ -60,9 +60,6 @@ public:
                   RECTOR_EVENT event_todo,
                   event_callback_t call_back);
 
-    //
-    zce::reactor *event_reactor();
-
 protected:
     //! 处理请求
     void process_request();
@@ -71,7 +68,7 @@ protected:
     void process_response(size_t& num_rsp,
                           zce::time_value* wait_time);
 
-    //!在线程中处理AIO操作，会根据type分解工作到下面这些函数
+    //! 在线程中处理AIO操作，会根据type分解工作到下面这些函数
     void thread_aio(zce::aio::AIO_ATOM* base);
     //! 在线程中处理文件操作
     void thread_fs(zce::aio::FS_ATOM* base);
@@ -82,7 +79,7 @@ protected:
     //! 在线程中处理Gat Host Addr请求
     void thread_host(zce::aio::HOST_ATOM* base);
     //! 在线程中处理Socket请求
-    void thread_socket_timeout(zce::aio::SOCKET_ATOM* base);
+    void thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* base);
 
 protected:
 
@@ -108,7 +105,7 @@ protected:
         zce::aio::DIR_ATOM,
         zce::aio::MYSQL_ATOM,
         zce::aio::HOST_ATOM,
-        zce::aio::SOCKET_ATOM,
+        zce::aio::SOCKET_TIMEOUT_ATOM,
         zce::aio::EVENT_ATOM> aio_obj_pool_;
 
     std::unordered_set<EVENT_ATOM *, hash_event_atom, equal_to_event_atom>

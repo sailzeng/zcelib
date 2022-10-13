@@ -3,6 +3,120 @@
 
 namespace zce::aio
 {
+bool awaiter_aio::await_ready()
+{
+    if (request_atom_->aio_type_ >= AIO_THREAD_BEGIN &&
+        request_atom_->aio_type_ <= AIO_THREAD_END)
+    {
+        return aio_thread_await_ready();
+    }
+    else if (request_atom_->aio_type_ >= AIO_EVENT_BEGIN &&
+             request_atom_->aio_type_ <= AIO_EVENT_END)
+    {
+        return event_await_ready();
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//请求进行多线程的AIO操作，如果请求成功.return false挂起协程
+bool awaiter_aio::aio_thread_await_ready()
+{
+    //绑定回调函数
+    request_atom_->call_back_ = std::bind(&awaiter_aio::resume,
+                                          this,
+                                          std::placeholders::_1);
+    //将一个文件操作句柄放入请求队列
+    bool succ_req = worker_->request(request_atom_);
+    if (succ_req)
+    {
+        return false;
+    }
+    else
+    {
+        ret_result_ = -1;
+        request_atom_->result_ = -1;
+        return true;
+    }
+}
+
+//请求进行事件的AIO操作
+bool awaiter_aio::event_await_ready()
+{
+    request_atom_->call_back_ = std::bind(&awaiter_aio::resume,
+                                          this,
+                                          std::placeholders::_1);
+    auto ev_atom = (zce::aio::EVENT_ATOM *)request_atom_;
+    int ret = 0;
+    bool alread_do = false;
+    if (ev_atom->aio_type_ == AIO_TYPE::EVENT_CONNECT)
+    {
+        ret = er_connect(worker_,
+                         ev_atom->handle_,
+                         ev_atom->addr_,
+                         ev_atom->addr_len_,
+                         &alread_do,
+                         ev_atom->call_back_);
+    }
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_ACCEPT)
+    {
+        ret = er_accept(worker_,
+                        ev_atom->handle_,
+                        ev_atom->accept_hdl_,
+                        ev_atom->from_,
+                        ev_atom->from_len_,
+                        &alread_do,
+                        ev_atom->call_back_);
+    }
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_RECV)
+    {
+        ret = er_recv(worker_,
+                      ev_atom->handle_,
+                      ev_atom->rcv_buf_,
+                      ev_atom->len_,
+                      ev_atom->result_len_,
+                      &alread_do,
+                      ev_atom->call_back_);
+    }
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_SEND)
+    {
+        ret = er_send(worker_,
+                      ev_atom->handle_,
+                      ev_atom->snd_buf_,
+                      ev_atom->len_,
+                      ev_atom->result_len_,
+                      &alread_do,
+                      ev_atom->call_back_);
+    }
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_RECVFROM)
+    {
+        ret = er_recvfrom(worker_,
+                          ev_atom->handle_,
+                          ev_atom->rcv_buf_,
+                          ev_atom->len_,
+                          ev_atom->result_len_,
+                          ev_atom->from_,
+                          ev_atom->from_len_,
+                          &alread_do,
+                          ev_atom->call_back_);
+    }
+
+    if (ret != 0 || (ret == 0 && alread_do == true))
+    {
+        ret_result_ = -1;
+        request_atom_->result_ = -1;
+        //返回true其实是表示已经完成，不挂起
+        return true;
+    }
+    else
+    {
+        //没有完成，挂起
+        return false;
+    }
+}
+
 //============================================================================
 
 //AIO 协程的co_await 函数
@@ -187,7 +301,7 @@ awaiter_aio co_st_connect(zce::aio::worker* worker,
                           socklen_t addr_len,
                           zce::time_value* timeout_tv)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_ADDR);
     aio_atom->handle_ = handle;
     aio_atom->addr_ = addr;
@@ -204,7 +318,7 @@ awaiter_aio co_st_connect(zce::aio::worker* worker,
                           socklen_t addr_len,
                           zce::time_value& timeout_tv)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_HOST);
     aio_atom->handle_ = handle;
     aio_atom->host_name_ = host_name;
@@ -218,13 +332,15 @@ awaiter_aio co_st_connect(zce::aio::worker* worker,
 //! 等待若干时间进行accept，直至超时
 awaiter_aio co_st_accept(zce::aio::worker* worker,
                          ZCE_SOCKET handle,
+                         ZCE_SOCKET *accept_hdl,
                          sockaddr* from,
                          socklen_t* from_len,
                          zce::time_value* timeout_tv)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_ACCEPT);
     aio_atom->handle_ = handle;
+    aio_atom->accept_hdl_ = accept_hdl;
     aio_atom->from_ = from;
     aio_atom->from_len_ = from_len;
     aio_atom->timeout_tv_ = timeout_tv;
@@ -239,7 +355,7 @@ awaiter_aio co_st_recv(zce::aio::worker* worker,
                        zce::time_value* timeout_tv,
                        int flags)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_RECV);
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
@@ -257,7 +373,7 @@ awaiter_aio co_st_send(zce::aio::worker* worker,
                        zce::time_value* timeout_tv,
                        int flags)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_SEND);
     aio_atom->handle_ = handle;
     aio_atom->snd_buf_ = buf;
@@ -277,7 +393,7 @@ awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
                            zce::time_value* timeout_tv,
                            int flags)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_RECVFROM);
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
@@ -291,20 +407,83 @@ awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
 
 //============================================================================
 
-int co_er_connect(zce::aio::worker* worker,
-                  ZCE_SOCKET handle,
-                  const sockaddr* addr,
-                  socklen_t addr_len)
+awaiter_aio co_er_connect(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          const sockaddr* addr,
+                          socklen_t addr_len)
 {
-    return 0;
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_CONNECT);
+    aio_atom->handle_ = handle;
+    aio_atom->addr_ = addr;
+    aio_atom->addr_len_ = addr_len;
+    return awaiter_aio(worker, aio_atom);
 }
 
-int co_er_accept(zce::aio::worker* worker,
-                 ZCE_SOCKET handle,
-                 ZCE_SOCKET *accept_hdl,
-                 sockaddr* from,
-                 socklen_t* from_len)
+awaiter_aio co_er_accept(zce::aio::worker* worker,
+                         ZCE_SOCKET handle,
+                         ZCE_SOCKET *accept_hdl,
+                         sockaddr* from,
+                         socklen_t* from_len)
 {
-    return 0;
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_ACCEPT);
+    aio_atom->handle_ = handle;
+    aio_atom->accept_hdl_ = accept_hdl;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//! 异步进行recv，
+awaiter_aio co_er_recv(zce::aio::worker* worker,
+                       ZCE_SOCKET handle,
+                       void* rcv_buf,
+                       size_t len,
+                       size_t *result_len)
+{
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_RECV);
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = rcv_buf;
+    aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//! 异步进行send，
+awaiter_aio co_er_send(zce::aio::worker* worker,
+                       ZCE_SOCKET handle,
+                       const void* snd_buf,
+                       size_t len,
+                       size_t *result_len)
+{
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_SEND);
+    aio_atom->handle_ = handle;
+    aio_atom->snd_buf_ = snd_buf;
+    aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//! 异步进行recv数据，
+awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
+                           ZCE_SOCKET handle,
+                           void* rcv_buf,
+                           size_t len,
+                           size_t *result_len,
+                           sockaddr* from,
+                           socklen_t* from_len)
+{
+    zce::aio::EVENT_ATOM* aio_atom = (EVENT_ATOM*)
+        worker->alloc_handle(AIO_TYPE::EVENT_RECVFROM);
+    aio_atom->handle_ = handle;
+    aio_atom->rcv_buf_ = rcv_buf;
+    aio_atom->len_ = len;
+    aio_atom->result_len_ = result_len;
+    aio_atom->from_ = from;
+    aio_atom->from_len_ = from_len;
+    return awaiter_aio(worker, aio_atom);
 }
 }

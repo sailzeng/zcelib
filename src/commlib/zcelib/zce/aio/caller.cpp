@@ -70,7 +70,7 @@ void HOST_ATOM::clear()
     ary_addr6_ = nullptr;
 }
 
-void SOCKET_ATOM::clear()
+void SOCKET_TIMEOUT_ATOM::clear()
 {
     AIO_ATOM::clear();
     //!参数
@@ -532,7 +532,7 @@ int st_connect(zce::aio::worker* worker,
                zce::time_value* timeout_tv,
                std::function<void(AIO_ATOM*)> call_back)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_ADDR);
     aio_atom->handle_ = handle;
     aio_atom->addr_ = addr;
@@ -556,7 +556,7 @@ int st_connect(zce::aio::worker* worker,
                zce::time_value& timeout_tv,
                std::function<void(AIO_ATOM*)> call_back)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_CONNECT_HOST);
     aio_atom->handle_ = handle;
     aio_atom->host_name_ = host_name;
@@ -581,7 +581,7 @@ int st_accept(zce::aio::worker* worker,
               zce::time_value* timeout_tv,
               std::function<void(AIO_ATOM*)> call_back)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_ACCEPT);
     aio_atom->handle_ = handle;
     aio_atom->accept_hdl_ = accept_hdl;
@@ -607,7 +607,7 @@ int st_recv(zce::aio::worker* worker,
             std::function<void(AIO_ATOM*)> call_back,
             int flags)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_RECV);
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
@@ -634,7 +634,7 @@ int st_send(zce::aio::worker* worker,
             std::function<void(AIO_ATOM*)> call_back,
             int flags)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_SEND);
     aio_atom->handle_ = handle;
     aio_atom->snd_buf_ = buf;
@@ -662,7 +662,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 std::function<void(AIO_ATOM*)> call_back,
                 int flags)
 {
-    zce::aio::SOCKET_ATOM* aio_atom = (SOCKET_ATOM*)
+    zce::aio::SOCKET_TIMEOUT_ATOM* aio_atom = (SOCKET_TIMEOUT_ATOM*)
         worker->alloc_handle(AIO_TYPE::SOCKET_SEND);
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
@@ -798,6 +798,8 @@ void EVENT_ATOM::clear()
     host_addr_ = nullptr;
     accept_hdl_ = nullptr;
 }
+
+//事件模式的函数如下N个
 
 int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,

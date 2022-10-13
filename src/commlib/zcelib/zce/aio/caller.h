@@ -70,6 +70,7 @@ enum AIO_TYPE
 {
     AIO_INVALID = 0,
     //文件处理
+    AIO_THREAD_BEGIN = 1,
     FS_BEGIN = 1,
     FS_OPEN,
     FS_CLOSE,
@@ -112,14 +113,19 @@ enum AIO_TYPE
     SOCKET_SENDTO,  //sendto是非阻塞函数，直接调用也行
     SOCKET_END = 399,
 
+    AIO_THREAD_END = 9999,
+
+    AIO_EVENT_BEGIN = 10001,
     //事件处理模块
-    EVENT_BEGIN = 10000,
-    EVENT_CONNECT,
+    EVENT_BEGIN = 10001,
+    EVENT_CONNECT = 10001,
     EVENT_SEND,
     EVENT_RECV,
     EVENT_ACCEPT,
     EVENT_RECVFROM,
     EVENT_END = 10099,
+
+    AIO_EVENT_END = 19999,
 };
 
 //! AIO异步操作的原子
@@ -370,7 +376,7 @@ int host_getaddr_one(zce::aio::worker* worker,
 
 //=========================================================================
 //! Socket atom
-struct SOCKET_ATOM :public AIO_ATOM
+struct SOCKET_TIMEOUT_ATOM :public AIO_ATOM
 {
     //!清理
     void clear() override;
@@ -516,7 +522,7 @@ struct equal_to_event_atom
 //! 使用open_socket函数的时候，注意参数
 
 //! ER = event reactor
-//! 等待若干时间进行connect，先进行一次尝试，立即返回，如果是不成功
+//! 事件模式等待间进行connect，先进行一次尝试，立即返回，如果是不成功
 //! 而且是EWOULDBLOCK，进行reactor反映，等有结果调用call_back
 int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
@@ -525,7 +531,7 @@ int er_connect(zce::aio::worker* worker,
                bool *alread_do,
                std::function<void(AIO_ATOM*)> call_back);
 
-//! 等待若干时间进行accept，直至超时
+//! 事件模式等待间进行accept，直至超时
 int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
               ZCE_SOCKET *accept_hdl,
@@ -534,15 +540,16 @@ int er_accept(zce::aio::worker* worker,
               bool *alread_do,
               std::function<void(AIO_ATOM*)> call_back);
 
-//! 等待若干时间进行recv，
+//! 事件模式等待间进行进行recv，
 int er_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* rcv_buf,
             size_t len,
             size_t *result_len,
+            bool *alread_do,
             std::function<void(EVENT_ATOM*)> call_back);
 
-//!等待若干时间进行send，
+//! 事件模式等待进行进行send，
 int er_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* snd_buf,
@@ -551,7 +558,7 @@ int er_send(zce::aio::worker* worker,
             bool *alread_do,
             std::function<void(EVENT_ATOM*)> call_back);
 
-//!等待若干时间进行recv数据，
+//!事件模式等待进行recv数据，
 int er_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* rcv_buf,

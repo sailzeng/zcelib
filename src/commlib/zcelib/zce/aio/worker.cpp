@@ -30,7 +30,7 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::DIR_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(128, 256);
-    aio_obj_pool_.initialize<zce::aio::SOCKET_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::SOCKET_TIMEOUT_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(128, 256);
     reactor_ = new reactor_mini();
     reactor_->initialize(max_event_num, 1024, true);
@@ -83,7 +83,7 @@ AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
     else if (aio_type > AIO_TYPE::SOCKET_BEGIN &&
              aio_type < AIO_TYPE::SOCKET_END)
     {
-        handle = aio_obj_pool_.alloc_object<SOCKET_ATOM>();
+        handle = aio_obj_pool_.alloc_object<SOCKET_TIMEOUT_ATOM>();
     }
     else if (aio_type > AIO_TYPE::EVENT_BEGIN &&
              aio_type < AIO_TYPE::EVENT_END)
@@ -125,7 +125,7 @@ void worker::free_handle(zce::aio::AIO_ATOM* base)
     else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
              base->aio_type_ < AIO_TYPE::SOCKET_END)
     {
-        aio_obj_pool_.free_object<SOCKET_ATOM>(static_cast<SOCKET_ATOM*>(base));
+        aio_obj_pool_.free_object<SOCKET_TIMEOUT_ATOM>(static_cast<SOCKET_TIMEOUT_ATOM*>(base));
     }
     else if (base->aio_type_ > AIO_TYPE::EVENT_BEGIN &&
              base->aio_type_ < AIO_TYPE::EVENT_END)
@@ -217,7 +217,7 @@ void worker::thread_aio(zce::aio::AIO_ATOM* base)
     else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
              base->aio_type_ < AIO_TYPE::SOCKET_END)
     {
-        thread_socket_timeout(static_cast<zce::aio::SOCKET_ATOM*>(base));
+        thread_socket_timeout(static_cast<zce::aio::SOCKET_TIMEOUT_ATOM*>(base));
     }
     else
     {
@@ -376,7 +376,7 @@ void worker::thread_host(zce::aio::HOST_ATOM* atom)
 }
 
 //在线程中处理Socket请求
-void worker::thread_socket_timeout(zce::aio::SOCKET_ATOM* atom)
+void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
 {
     ssize_t len = 0;
     switch (atom->aio_type_)

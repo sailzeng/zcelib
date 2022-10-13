@@ -35,33 +35,16 @@ struct AIO_ATOM;
 struct awaiter_aio
 {
     awaiter_aio(zce::aio::worker* worker,
-                AIO_ATOM* request_atom,
-                bool suspend = true) :
+                AIO_ATOM* request_atom) :
         worker_(worker),
-        request_atom_(request_atom),
-        suspend_(suspend)
+        request_atom_(request_atom)
     {
     }
     ~awaiter_aio() = default;
 
     //请求进行AIO操作，如果请求成功.return false挂起协程
-    bool await_ready()
-    {
-        //绑定回调函数
-        request_atom_->call_back_ = std::bind(&awaiter_aio::resume,
-                                              this,
-                                              std::placeholders::_1);
-        //将一个文件操作句柄放入请求队列
-        bool succ_req = worker_->request(request_atom_);
-        if (succ_req)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
+    bool await_ready();
+
     //挂起操作
     void await_suspend(std::coroutine_handle<> awaiting)
     {
@@ -80,12 +63,19 @@ struct awaiter_aio
         return;
     }
 
+protected:
+    //请求进行多线程的AIO操作
+    bool aio_thread_await_ready();
+    //请求进行事件的AIO操作
+    bool event_await_ready();
+
+protected:
+
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::worker* worker_ = nullptr;
     //!请求的文件操作句柄
     AIO_ATOM* request_atom_ = nullptr;
-    //!
-    bool suspend_ = false;
+
     //!完成后返回的句柄
     int ret_result_ = -1;
     //!协程的句柄（调用者）
@@ -190,6 +180,7 @@ awaiter_aio co_st_connect(zce::aio::worker* worker,
 //! 等待若干时间进行accept，直至超时
 awaiter_aio co_st_accept(zce::aio::worker* worker,
                          ZCE_SOCKET handle,
+                         ZCE_SOCKET *accept_hdl,
                          sockaddr* addr,
                          socklen_t* addr_len,
                          zce::time_value* timeout_tv);
@@ -221,39 +212,39 @@ awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
                            int flags = 0);
 
 //========================================================================================
-//!
-int co_er_connect(zce::aio::worker* worker,
-                  ZCE_SOCKET handle,
-                  const sockaddr* addr,
-                  socklen_t addr_len);
+//! 异步进行CONNECT
+awaiter_aio co_er_connect(zce::aio::worker* worker,
+                          ZCE_SOCKET handle,
+                          const sockaddr* addr,
+                          socklen_t addr_len);
 
-//! 等待若干时间进行accept，直至超时
-int co_er_accept(zce::aio::worker* worker,
-                 ZCE_SOCKET handle,
-                 ZCE_SOCKET *accept_hdl,
-                 sockaddr* from,
-                 socklen_t* from_len);
+//! 异步进行accept，直至超时
+awaiter_aio co_er_accept(zce::aio::worker* worker,
+                         ZCE_SOCKET handle,
+                         ZCE_SOCKET *accept_hdl,
+                         sockaddr* from,
+                         socklen_t* from_len);
 
-//! 等待若干时间进行recv，
-int co_er_recv(zce::aio::worker* worker,
-               ZCE_SOCKET handle,
-               void* rcv_buf,
-               size_t len,
-               size_t *result_len);
+//! 异步进行recv，
+awaiter_aio co_er_recv(zce::aio::worker* worker,
+                       ZCE_SOCKET handle,
+                       void* rcv_buf,
+                       size_t len,
+                       size_t *result_len);
 
-//!等待若干时间进行send，
-int co_er_send(zce::aio::worker* worker,
-               ZCE_SOCKET handle,
-               const void* snd_buf,
-               size_t len,
-               size_t *result_len);
+//! 异步进行send，
+awaiter_aio co_er_send(zce::aio::worker* worker,
+                       ZCE_SOCKET handle,
+                       const void* snd_buf,
+                       size_t len,
+                       size_t *result_len);
 
-//!等待若干时间进行recv数据，
-int co_er_recvfrom(zce::aio::worker* worker,
-                   ZCE_SOCKET handle,
-                   void* rcv_buf,
-                   size_t len,
-                   size_t *result_len,
-                   sockaddr* from,
-                   socklen_t* from_len);
+//!异步进行recv数据，
+awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
+                           ZCE_SOCKET handle,
+                           void* rcv_buf,
+                           size_t len,
+                           size_t *result_len,
+                           sockaddr* from,
+                           socklen_t* from_len);
 }
