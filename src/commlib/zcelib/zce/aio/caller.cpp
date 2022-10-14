@@ -900,7 +900,7 @@ int er_recv(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             bool *alread_do,
-            std::function<void(EVENT_ATOM*)> call_back)
+            std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
@@ -925,6 +925,7 @@ int er_recv(zce::aio::worker* worker,
     aio_atom->rcv_buf_ = rcv_buf;
     aio_atom->len_ = len;
     aio_atom->result_len_ = result_len;
+    aio_atom->call_back_ = call_back;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::READ_MASK,
@@ -946,7 +947,7 @@ int er_send(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             bool *alread_do,
-            std::function<void(EVENT_ATOM*)> call_back)
+            std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
@@ -971,6 +972,7 @@ int er_send(zce::aio::worker* worker,
     aio_atom->snd_buf_ = snd_buf;
     aio_atom->len_ = len;
     aio_atom->result_len_ = result_len;
+    aio_atom->call_back_ = call_back;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::WRITE_MASK,
@@ -994,7 +996,7 @@ int er_recvfrom(zce::aio::worker* worker,
                 sockaddr* from,
                 socklen_t* from_len,
                 bool *alread_do,
-                std::function<void(EVENT_ATOM*)> call_back)
+                std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
@@ -1026,6 +1028,7 @@ int er_recvfrom(zce::aio::worker* worker,
     aio_atom->result_len_ = result_len;
     aio_atom->from_ = from;
     aio_atom->from_len_ = from_len;
+    aio_atom->call_back_ = call_back;
     ret = worker->reg_event(
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::READ_MASK,

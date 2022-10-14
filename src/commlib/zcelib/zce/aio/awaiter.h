@@ -214,27 +214,27 @@ awaiter_aio co_st_recvfrom(zce::aio::worker* worker,
                            int flags = 0);
 
 //========================================================================================
-//! 异步进行CONNECT
+//!异步进行CONNECT
 awaiter_aio co_er_connect(zce::aio::worker* worker,
                           ZCE_SOCKET handle,
                           const sockaddr* addr,
                           socklen_t addr_len);
 
-//! 异步进行accept，直至超时
+//!异步进行accept，直至超时
 awaiter_aio co_er_accept(zce::aio::worker* worker,
                          ZCE_SOCKET handle,
                          ZCE_SOCKET *accept_hdl,
                          sockaddr* from,
                          socklen_t* from_len);
 
-//! 异步进行recv，
+//!异步进行recv，
 awaiter_aio co_er_recv(zce::aio::worker* worker,
                        ZCE_SOCKET handle,
                        void* rcv_buf,
                        size_t len,
                        size_t *result_len);
 
-//! 异步进行send，
+//!异步进行send，
 awaiter_aio co_er_send(zce::aio::worker* worker,
                        ZCE_SOCKET handle,
                        const void* snd_buf,

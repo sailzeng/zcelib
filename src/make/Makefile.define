@@ -140,7 +140,7 @@ endif
 
 #编译选项
 CFLAGS += $(WARNFLAGS) -MMD 
-CCFLAGS += $(WARNFLAGS) -std=c++17 -MMD
+CCFLAGS += $(WARNFLAGS) -std=c++20 -MMD -fcoroutines
 
 #注意这个地方,-MMD是这样一个选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
 
@@ -156,7 +156,7 @@ LDFLAGS  += -m64
 endif
 
 #ARFLAGS好像外部有定义，诡异
-ARFLAGS   = rsuv
+ARFLAGS   = rsv
 
 
 #-pipe用于加快编译速度，如果pipes被设置1打开-pipe,
@@ -349,7 +349,7 @@ LIB_DEV_INNER := $(LIB_ZCELIB) $(LIB_SOARLIB)
 #--------------------------------------------------------------------------------------------------------------------
 #如果你有特殊的需求，你可以在你的Makefile里面定义INCLDIRS 和 LIBARYS
 
-INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
+INCLDIRS ?= -I. $(INC_DEV_INNER) $(INC_DEV_OUTER)
 LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
 

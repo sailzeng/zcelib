@@ -43,9 +43,10 @@
 
 
 #--------------------------------------------------------------------------------------------------------------------
+SRC_DIRS := $(shell find . -maxdepth 3 -type d)
 #得到C,CPP文件的，这儿的.c文件我也会用g++编译
-C_FLIE   = $(wildcard ./*.c ) 
-CPP_FILE = $(wildcard ./*.cpp )
+C_FILE = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+CPP_FILE = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
 SRC_FILE = $(C_FLIE) $(CPP_FILE)
 
 #通过.c,.cpp文件名称得到.O文件名称
@@ -193,12 +194,15 @@ mkdir:
 	if (test ! -d $(PARENT_PATH_LIB)/x86);   then $(MKDIR) $(PARENT_PATH_LIB)/x86 ; fi ;
 	if (test ! -d $(PARENT_PATH_LIB)/x64);   then $(MKDIR) $(PARENT_PATH_LIB)/x64 ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)) ; then $(MKDIR) $(PARENT_PATH_OBJ) ; fi ;
-	if (test ! -d $(PARENT_PATH_OBJ)/x86_debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/x86_debug/$(PRGNAME) ; fi ;
-	if (test ! -d $(PARENT_PATH_OBJ)/x86_release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x86_release/$(PRGNAME) ; fi ;
-	if (test ! -d $(PARENT_PATH_OBJ)/x86_neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x86_neutral/$(PRGNAME) ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME) ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME) ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME) ; fi ;
+	for src_dir in $(SRC_DIRS); \
+	do \
+	$(MKDIR)  $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME)/$$src_dir;\
+	$(MKDIR)  $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME)/$$src_dir;\
+	$(MKDIR)  $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME)/$$src_dir;\
+	done
 ifneq ($(PCH_FILE),) 
 	if (test ! -d $(PCH_DIR)) ; then $(MKDIR) $(PCH_DIR) ; fi ;
 endif    

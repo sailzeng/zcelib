@@ -475,7 +475,7 @@ protected:
         }
 
         //通知所有等待的人
-        cond_dequeue_.broadcast();
+        cond_dequeue_.notify_all();
 
         return true;
     }
@@ -524,7 +524,7 @@ protected:
         }
 
         //通知所有等待的人
-        cond_enqueue_.broadcast();
+        cond_enqueue_.notify_all();
 
         return true;
     }
@@ -593,9 +593,9 @@ class MsgRings_Condi : public MsgQueue_Condi<T, zce::lord_rings<T> >
 {
 public:
     explicit MsgRings_Condi(size_t queue_max_size) :
-        MsgRings_Condi<T, zce::lord_rings<T> >(queue_max_size)
+        MsgQueue_Condi<T, zce::lord_rings<T> >(queue_max_size)
     {
-        MsgRings_Condi<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
+        MsgQueue_Condi<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
     }
 
     ~MsgRings_Condi() = default;

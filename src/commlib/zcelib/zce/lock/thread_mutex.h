@@ -19,10 +19,9 @@
 #include "zce/lock/lock_guard.h"
 #include "zce/time/time_value.h"
 
-class zce::time_value;
-
 namespace zce
 {
+class time_value;
 /*!
 * @brief      轻量级的线程互斥锁，一般情况下推荐使用，轻主要体现在Windows平台下用临界区
 *             Windows下是用临界区实现的，所以嘛，同时注意临界区是可递归的

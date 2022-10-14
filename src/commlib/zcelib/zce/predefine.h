@@ -465,9 +465,9 @@ typedef __int64             int64_t;
 #if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
 extern "C"
 {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 };
 #endif
 

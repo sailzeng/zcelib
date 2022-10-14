@@ -152,7 +152,7 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #else
 #define ZCE_ASSERT_ALL(expr) \
     (void) ((!!(expr)) || \
-            (zce::Log_Msg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
+            (zce::log_msg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
             (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL
@@ -166,7 +166,7 @@ extern "C"  void __assert_fail(__const char* __assertion, __const char* __file,
 #else
 #define ZCE_ASSERT_ALL_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (zce::Log_Msg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
+            (zce::log_msg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
             (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif  //#ifndef ZCE_ASSERT_ALL_EX

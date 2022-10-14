@@ -56,7 +56,7 @@ public:
     }
     //!分配一个对象
     template<typename O>
-    typename O* alloc_object()
+    O* alloc_object()
     {
         return std::get<zce::object_pool<LOCK, O> >(pools_).alloc_object();
     }

@@ -225,9 +225,9 @@ int stdstr_casecmp(std::basic_string<char_type, char_traits_type, allocator_typ>
     else
     {
         return std::equal(a.begin(), a.end(), b.begin(),
-                          [](char a, char b)
+                          [](char x, char y)
         {
-            return tolower(a) == tolower(b);
+            return tolower(x) == tolower(y);
         });
     }
 }

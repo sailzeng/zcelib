@@ -66,7 +66,7 @@ namespace zce
 * @param      dir_name 目录名称
 * @note       可以认为操作数序是opendir，readdir（readdir_r），closedir，参考closedir，readdir
 */
-struct DIR* opendir(const char* dirname);
+DIR* opendir(const char* dirname);
 
 /*!
 * @brief      关闭打开的目录（的句柄），
@@ -74,7 +74,7 @@ struct DIR* opendir(const char* dirname);
 * @param      dir_handle DIR的句柄,在读取目录完毕后，必须要关闭，
 * @note       可以认为操作数序是opendir，readdir，closedir
 */
-int closedir(struct DIR* dir_handle);
+int closedir(DIR* dir_handle);
 
 /*!
 * @brief      读取一个目录项，并且返回，

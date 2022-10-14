@@ -329,7 +329,7 @@ public:
 #if defined DEBUG || defined _DEBUG
     static const int DEFUALT_LOG_OUTPUT = ((int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT);
 #else
-    static const int DEFUALT_LOG_OUTPUT = ((int)LOG_OUTPUT::LOGFILE;
+    static const int DEFUALT_LOG_OUTPUT = (int)LOG_OUTPUT::LOGFILE;
 #endif
 
 protected:
