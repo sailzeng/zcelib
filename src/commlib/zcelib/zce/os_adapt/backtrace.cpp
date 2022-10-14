@@ -30,7 +30,7 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
     for (int j = 0; j < sz_of_stack; j++)
     {
         zce::foo_string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
-                               zce::Int_Out_Helper(j + 1, 3),
+                               zce::aidout::o_int(j + 1, 3),
                                backtrace_stack_ptr[j],
                                symbols_strings ? symbols_strings[j] : "<no symbol>");
         str_ary.push_back(line_data);

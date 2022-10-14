@@ -45,7 +45,6 @@ public:
     */
     bool initialize(size_t bucket_num,
                     const size_t bucket_size_ary[],
-                    std::function <B* (size_t) > new_f,
                     size_t init_node_size,
                     size_t extend_node_size)
     {

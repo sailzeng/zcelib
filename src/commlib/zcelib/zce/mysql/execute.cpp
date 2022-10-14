@@ -283,7 +283,7 @@ int query(zce::mysql::connect* db_connect,
     //连接数据库
     if (db_connect->is_connected() == false)
     {
-        -1;
+        return -1;
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
@@ -321,7 +321,7 @@ int query(zce::mysql::connect* db_connect,
     //连接数据库
     if (db_connect->is_connected() == false)
     {
-        -1;
+        return -1;
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
@@ -358,7 +358,7 @@ int query(zce::mysql::connect* db_connect,
     //连接数据库
     if (db_connect->is_connected() == false)
     {
-        -1;
+        return -1;
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else

@@ -21,19 +21,8 @@ int server_peer::open(server_core *server_core,
     session_id_ = session_id;
     my_seq_num_counter_ = sequence_num;
     peer_socket_ = peer_socket;
-    if (remote_addr->sa_family == AF_INET)
-    {
-        ::memcpy(&remote_addr_, remote_addr, sizeof(sockaddr_in));
-    }
-    else if (remote_addr->sa_family == AF_INET6)
-    {
-        ::memcpy(&remote_addr_, remote_addr, sizeof(sockaddr_in6));
-    }
-    else
-    {
-        assert(false);
-        return -1;
-    }
+    remote_addr_ = remote_addr;
+
     //使用CORE的buffer
     send_buffer_ = send_buffer;
     bret = send_rec_list_.initialize(send_wnd_size / 256 + 8);
@@ -187,7 +176,7 @@ int server_core::batch_receive(size_t *recv_peer_num,
         else
         {
             //收到的数据长度不可能大于以太网的MSS
-            if (ssz_recv > MAX_FRAME_LEN || ssz_recv < MIN_FRAME_LEN)
+            if ((size_t)ssz_recv > MAX_FRAME_LEN || (size_t)ssz_recv < MIN_FRAME_LEN)
             {
                 ZCE_LOG(RS_ERROR, "[RUDP][core] batch_receive ssz_recv [%u] error. "
                         "MIN_FRAME_LEN <= ssz_recv <=MAX_FRAME_LEN",

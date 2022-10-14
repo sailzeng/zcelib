@@ -7,7 +7,7 @@
 //为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
 
 //打开一个目录，用于读取
-struct DIR* zce::opendir(const char* dir_name)
+DIR* zce::opendir(const char* dir_name)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -47,7 +47,7 @@ struct DIR* zce::opendir(const char* dir_name)
 }
 
 //关闭已经打开的目录
-int zce::closedir(struct DIR* dir_handle)
+int zce::closedir(DIR* dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -74,7 +74,7 @@ int zce::closedir(struct DIR* dir_handle)
 }
 
 //
-struct dirent* zce::readdir(struct DIR* dir_handle)
+dirent* zce::readdir(DIR* dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -143,9 +143,9 @@ struct dirent* zce::readdir(struct DIR* dir_handle)
 }
 
 //read dir 可以重入版本，
-int zce::readdir_r(struct DIR* dir_handle,
-                   struct dirent* entry,
-                   struct dirent** result)
+int zce::readdir_r(DIR* dir_handle,
+                   dirent* entry,
+                   dirent** result)
 {
 #if defined (ZCE_OS_WINDOWS)
 

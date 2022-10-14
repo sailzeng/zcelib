@@ -78,7 +78,6 @@ int zce::steady_clock(timeval* tv)
 #elif defined (ZCE_OS_LINUX)
     //倒霉的发现LINUX很多版本都没有支持这个gethrtime函数，我靠，，，，，
     struct timespec sp;
-    timeval up_time;
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &sp);
 
     if (ret == 0)

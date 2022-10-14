@@ -16,7 +16,7 @@ public:
     server_peer() = default;
     server_peer(const server_peer&) = default;
     server_peer& operator = (const server_peer & other) = default;
-
+    virtual ~server_peer() = default;
 protected:
 
     /**

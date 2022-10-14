@@ -54,16 +54,16 @@ public:
     @param      instance LIST的实例
     @note
     */
-    static_list_iter<T>(size_t seq, static_list<T>* instance) :
+    static_list_iter(size_t seq, static_list<T>* instance) :
         serial_(seq),
         list_instance_(instance)
     {
     }
 
     ///构造函数
-    static_list_iter<T>() = default;
+    static_list_iter() = default;
     ///析构函数
-    ~static_list_iter<T>() = default;
+    ~static_list_iter() = default;
 
     ///初始化，
     void initialize(size_t seq, static_list<T>* instance)

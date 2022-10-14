@@ -117,11 +117,12 @@ int zce::pthread_cond_initex(pthread_cond_t* cond,
 }
 
 //条件变量对象的销毁
-int zce::pthread_cond_destroy(pthread_cond_t* /*cond*/)
+int zce::pthread_cond_destroy(pthread_cond_t* cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     //WINDOWS的条件变量没有释放的需求
+    ZCE_UNUSED_ARG(cond);
     return 0;
 
 #elif defined (ZCE_OS_LINUX)

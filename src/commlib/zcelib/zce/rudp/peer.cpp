@@ -73,13 +73,14 @@ int peer::send(const char* buf,
 
     const size_t buf_size = 64;
     char remote_str[buf_size];
+    zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size);
     ZNO_LOG(RS_DEBUG,
             "[RUDP] send start. model[%d] session[%u] remote [%s] mtu[%d] frame_max_len[%u] "
             "peer_windows_size_[%u] send windows [%u|%u] send record [%u|%u]"
             "send wnd[%u|%u] send rec [%u]  recv wnd[%u|%u|%u] ",
             model_,
             session_id_,
-            zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
+            remote_str,
             mtu_type_,
             frame_max_len,
             peer_windows_size_,
@@ -749,6 +750,7 @@ int peer::send_frame_to(int flag,
 
     const size_t buf_size = 64;
     char remote_str[buf_size];
+    zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size);
     ZNO_LOG(RS_DEBUG,
             "[RUDP]send_frame_to start. model[%u] session[%u] first send[%u] remote [%s] "
             "send frame len[%u] flag[%u] sn[%u] ack[%u] wnd[%u] send seq[%u|%u][%u]"
@@ -756,7 +758,7 @@ int peer::send_frame_to(int flag,
             model_,
             session_id_,
             first_send,
-            zce::get_host_addr_port((sockaddr *)&remote_addr_, remote_str, buf_size),
+            remote_str,
             frame->u32_1_.len_,
             frame->u32_1_.flag_,
             frame->sequence_num_,
@@ -1043,6 +1045,10 @@ void peer::adjust_cwnd(CWND_EVENT event)
         {
             congestion_window_ = 4;
         }
+        break;
+    case CWND_EVENT::INVALID:
+    default:
+        ZCE_ASSERT(false);
         break;
     }
     congestion_window_ = congestion_window_ <= MAX_CWND_SIZE ? congestion_window_ : MAX_CWND_SIZE;

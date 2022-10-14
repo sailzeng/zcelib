@@ -1,4 +1,5 @@
 ﻿#include "zce/predefine.h"
+#include "zce/bytes/bytes_common.h"
 #include "zce/time/time_value.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/socket.h"
@@ -210,7 +211,7 @@ int ping::send_echo(uint32_t ident,
         // fill magic_ string
         strncpy(icmp->magic_, MAGIC, MAGIC_LEN);
         // fill sending timestamp
-        icmp->sending_ts_ = htonll(zce::clock_ms());
+        icmp->sending_ts_ = ZCE_HTONLL(zce::clock_ms());
         // calculate and fill checksum
         icmp->check_sum_ = htons(
             checksum((char*)icmp, sizeof(_ICMP_ECHO)));
@@ -230,7 +231,7 @@ int ping::send_echo(uint32_t ident,
         // fill magic_ string
         strncpy(icmp->magic_, MAGIC, MAGIC_LEN);
         // fill sending timestamp
-        icmp->sending_ts_ = htonll(zce::clock_ms());
+        icmp->sending_ts_ = ZCE_HTONLL(zce::clock_ms());
 
         icmp->check_sum_ = htons(
             checksum((char*)v6_pseudo, sizeof(_ICMPV6_PSEUDO) + sizeof(_ICMP_ECHO)));
@@ -311,7 +312,7 @@ int ping::recv_echo(uint32_t* ident,
 
     *ident = ntohl(icmp->ident_);
     *seq = ntohl(icmp->seq_);
-    uint64_t sending_ts = ntohll(icmp->sending_ts_);
+    uint64_t sending_ts = ZCE_NTOHLL(icmp->sending_ts_);
     *take_msec = zce::clock_ms() - sending_ts;
     return 0;
 }
@@ -361,7 +362,7 @@ int ping::ping_test(size_t test_num)
             }
             char addr_buf[64];
             fprintf(stdout,
-                    "%04u. %s Rely size=%zu,time=%llums,TTL=%u.\n",
+                    "%04u. %s Rely size=%zu,time=%" PRIu64 "ms, TTL=%u.\n",
                     send_seq,
                     zce::sockaddr_ntop((sockaddr*)&ping_addr_, addr_buf, 63),
                     sizeof(_ICMP_ECHO),

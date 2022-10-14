@@ -118,7 +118,6 @@ int log_file::initialize(int output_way,
             out_thread_run_ = true;
             buf_pool_->initialize(SIZE_OF_BUCKET_ARY,
                                   BUCKET_SIZE_ARY,
-                                  &zce::queue_buffer::new_self,
                                   POOL_INIT,
                                   POOL_ONCE_EXTEND);
             thread_outlog_ = std::thread(&log_file::thread_work,

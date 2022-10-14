@@ -26,14 +26,14 @@ const char* mml_cmd::get_mml_string() const
 }
 
 //
-int mml_cmd::get_command(std::string& mml_cmd) const
+int mml_cmd::get_command(std::string& cmd) const
 {
     if (mml_command_.length() == 0)
     {
         return -1;
     }
 
-    mml_cmd = mml_command_;
+    cmd = mml_command_;
     return 0;
 }
 

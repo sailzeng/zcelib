@@ -409,20 +409,6 @@ int server_base::create_app_name(const char* argv_0)
     return 0;
 }
 
-//windows下设置服务信息
-void server_base::set_service_info(const char* svc_name,
-                                   const char* svc_desc)
-{
-    if (svc_name != NULL)
-    {
-        display_name_ = svc_name;
-    }
-    if (svc_desc != NULL)
-    {
-        service_desc_ = svc_desc;
-    }
-}
-
 //得到运行信息，可能包括路径信息
 const char* server_base::get_app_runname()
 {
@@ -448,7 +434,21 @@ void server_base::set_reload_sign(bool app_reload)
 }
 
 //信号处理代码，
-#ifdef ZCE_OS_WINDOWS
+#if defined ZCE_OS_WINDOWS
+
+//windows下设置服务信息
+void server_base::set_service_info(const char* svc_name,
+                                   const char* svc_desc)
+{
+    if (svc_name != NULL)
+    {
+        display_name_ = svc_name;
+    }
+    if (svc_desc != NULL)
+    {
+        service_desc_ = svc_desc;
+    }
+}
 
 BOOL server_base::exit_signal(DWORD)
 {
@@ -456,16 +456,16 @@ BOOL server_base::exit_signal(DWORD)
     return TRUE;
 }
 
-#else
+#elif defined ZCE_OS_LINUX
 
-void Server_Base::exit_signal(int)
+void server_base::exit_signal(int)
 {
     base_instance_->set_run_sign(false);
     return;
 }
 
 // USER1信号处理函数
-void Server_Base::reload_cfg_signal(int)
+void server_base::reload_cfg_signal(int)
 {
     // 信号处理函数中不能有IO等不可重入的操作，否则容易死锁
     base_instance_->set_reload_sign(true);
@@ -741,6 +741,6 @@ int server_base::log_event(const char* format_str, ...)
     }
     return 0;
 }
-}
 
 #endif //#if defined ZCE_OS_WINDOWS
+}

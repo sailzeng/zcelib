@@ -143,7 +143,7 @@ int client::batch_receive(size_t *recv_size)
         else
         {
             //收到的数据长度不可能大于以太网的MSS
-            if (ssz_recv > MAX_FRAME_LEN || ssz_recv < MIN_FRAME_LEN)
+            if ((size_t)ssz_recv > MAX_FRAME_LEN || (size_t)ssz_recv < MIN_FRAME_LEN)
             {
                 ZCE_LOG(RS_ERROR,
                         "[RUDP][CLIENT]zce::recvfrom ssz_recv [%u] session id [%u] remote[%s]",

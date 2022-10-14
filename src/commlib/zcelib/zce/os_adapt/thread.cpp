@@ -119,15 +119,13 @@ int zce::pthread_attr_setex(pthread_attr_t* attr,
     {
         return ret;
     }
-
     // 加个判断如果小于最小值，则赋为最小值
-    if (stacksize < PTHREAD_STACK_MIN)
+    if (stacksize < (size_t)PTHREAD_STACK_MIN)
     {
         stacksize = PTHREAD_STACK_MIN;
     }
 
     ret = ::pthread_attr_setstacksize(attr, stacksize);
-
     if (ret != 0)
     {
         return ret;
@@ -523,7 +521,8 @@ int zce::pthread_yield(void)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_yield();
+    //return ::pthread_yield();
+    return sched_yield();
 #endif //#if defined (ZCE_OS_LINUX)
 }
 

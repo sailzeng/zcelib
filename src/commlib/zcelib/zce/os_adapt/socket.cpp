@@ -118,7 +118,11 @@ void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
 
 void sockaddr_any::set_family(int family)
 {
+#if defined (ZCE_OS_WINDOWS)
     in_.sin_family = (ADDRESS_FAMILY)family;
+#elif defined (ZCE_OS_LINUX)
+    in_.sin_family = family;
+#endif
 }
 
 int sockaddr_any::get_family() const
@@ -260,13 +264,13 @@ int open_socket(ZCE_SOCKET* handle,
 }
 
 //打开socket 句柄，同时绑定本地地址，简化处理的函数，非标准，通常用于监听端口
-int zce::open_socket(ZCE_SOCKET* handle,
-                     int type,
-                     const sockaddr* local_addr,
-                     socklen_t addr_len,
-                     bool nonblock,
-                     int protocol,
-                     bool reuse_addr)
+int open_socket(ZCE_SOCKET* handle,
+                int type,
+                const sockaddr* local_addr,
+                socklen_t addr_len,
+                bool nonblock,
+                int protocol,
+                bool reuse_addr)
 {
     int ret = 0;
 
@@ -2158,10 +2162,10 @@ int getaddrinfo_to_addrary(const char* hostname,
     return 0;
 }
 
-int zce::getaddrinfo_to_addr(const char* nodename,
-                             const char* service,
-                             sockaddr* addr,
-                             socklen_t addr_len)
+int getaddrinfo_to_addr(const char* nodename,
+                        const char* service,
+                        sockaddr* addr,
+                        socklen_t addr_len)
 {
     int ret = 0;
     addrinfo hints, * result = NULL;
@@ -2282,14 +2286,14 @@ int inaddr_map_inaddr6(const in_addr* src, in6_addr* dst)
 }
 
 //将一个IPV4的Sock地址映射为IPV6的地址
-int zce::sockin_map_sockin6(const sockaddr_in* src, sockaddr_in6* dst)
+int sockin_map_sockin6(const sockaddr_in* src, sockaddr_in6* dst)
 {
     return zce::inaddr_map_inaddr6(&(src->sin_addr),
                                    &(dst->sin6_addr));
 }
 
 //判断一个地址是否是IPV4映射的地址
-bool zce::is_in6_addr_v4mapped(const in6_addr* in6)
+bool is_in6_addr_v4mapped(const in6_addr* in6)
 {
     //这样把映射地址和兼容地址都判断了。据说兼容地址以后会被淘汰
     if (in6->s6_addr[0] == 0
@@ -2357,7 +2361,7 @@ bool check_safeport(uint16_t check_port)
 
 //--------------------------------------------------------------------------------------------
 //SELECT函数，为了和LINUX平台对齐，返回时间为剩余时间
-int zce::select(
+int select(
     int nfds,
     fd_set* readfds,
     fd_set* writefds,
@@ -2447,9 +2451,9 @@ int zce::select(
 
 //这个函数是为了方便平台代码编写写的一个函数，会利用不同平台的fd_set实现加快速度，
 //当然这样么有任何通用性，sorry，追求性能了。
-bool zce::is_ready_fds(int no_fds,
-                       const fd_set* out_fds,
-                       ZCE_SOCKET* ready_fd)
+bool is_ready_fds(int no_fds,
+                  const fd_set* out_fds,
+                  ZCE_SOCKET* ready_fd)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -2473,9 +2477,9 @@ bool zce::is_ready_fds(int no_fds,
 }
 
 //设置一个IPV4的地址,
-int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
-                         const char* ipv4_addr_str,
-                         uint16_t ipv4_port)
+int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
+                    const char* ipv4_addr_str,
+                    uint16_t ipv4_port)
 {
     ::memset(sock_addr_ipv4, 0, sizeof(sockaddr_in));
     sock_addr_ipv4->sin_family = AF_INET;
@@ -2502,8 +2506,8 @@ int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 }
 
 //设置一个IPV4的地址,如果字符串里面有#，会认为后面有端口号，会同时提取端口号，否则端口号设置0
-int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
-                         const char* ipv4_addr_str)
+int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
+                    const char* ipv4_addr_str)
 {
     int ret = zce::set_sockaddr_in(sock_addr_ipv4, ipv4_addr_str, 0);
     if (ret != 0)
@@ -2528,9 +2532,9 @@ int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 }
 
 //设置一个IPV4的地址,错误返回NULL，正确返回设置的地址的变换
-int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
-                         uint32_t ipv4_addr_val,
-                         uint16_t ipv4_port
+int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
+                    uint32_t ipv4_addr_val,
+                    uint16_t ipv4_port
 )
 {
     ::memset(sock_addr_ipv4, 0, sizeof(sockaddr_in));
@@ -2547,9 +2551,9 @@ int zce::set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 }
 
 //设置一个IPV6的地址,
-int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
-                          const char* ipv6_addr_str,
-                          uint16_t ipv6_port)
+int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
+                     const char* ipv6_addr_str,
+                     uint16_t ipv6_port)
 {
     ::memset(sock_addr_ipv6, 0, sizeof(sockaddr_in6));
     sock_addr_ipv6->sin6_family = AF_INET6;
@@ -2571,8 +2575,8 @@ int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 }
 
 //设置一个IPV6的地址,如果有端口号信息，也会
-int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
-                          const char* ipv6_addr_str)
+int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
+                     const char* ipv6_addr_str)
 {
     int ret = set_sockaddr_in6(sock_addr_ipv6, ipv6_addr_str, 0);
     if (ret != 0)
@@ -2596,9 +2600,9 @@ int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 }
 
 //设置一个IPV6的地址,错误返回NULL，正确返回设置的地址的变换
-int zce::set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
-                          uint16_t ipv6_port,
-                          const char ipv6_addr_val[16])
+int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
+                     uint16_t ipv6_port,
+                     const char ipv6_addr_val[16])
 {
     ::memset(sock_addr_ipv6, 0, sizeof(sockaddr_in6));
     //16bytes，128bit的IPV6的地址信息

@@ -83,7 +83,7 @@ public:
     peer(const peer&) = default;
     peer& operator = (const peer & other) = default;
 protected:
-    ~peer() = default;
+    virtual ~peer() = default;
 public:
 
     //!关闭，具体行为由继承类实现

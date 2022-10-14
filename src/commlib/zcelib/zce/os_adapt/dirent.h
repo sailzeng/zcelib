@@ -98,8 +98,8 @@ struct dirent* readdir(DIR* dir_handle);
 *                    如果读取到了项目，result指向entry
 */
 int readdir_r(DIR* dir_handle,
-              struct dirent* entry,
-              struct dirent** result);
+              dirent* entry,
+              dirent** result);
 
 /*!
 * @brief      根据前缀和后缀，读取目录下面的各种文件，
@@ -128,7 +128,7 @@ int readdir_nameary(const char* dirname,
 * @note       namelist 返回的数据一定释放，而且是2次释放，可以用free_scandir_list函数释放
 */
 int scandir(const char* dirname,
-            struct dirent*** namelist,
+            dirent*** namelist,
             int (*selector)(const struct dirent*),
             int (*comparator)(const struct dirent**, const struct dirent**));
 
