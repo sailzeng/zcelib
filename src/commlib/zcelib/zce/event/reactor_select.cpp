@@ -139,7 +139,7 @@ int select_reactor::cancel_wakeup(zce::event_handler* event_handler, int cancel_
     if ((cancel_mask & zce::EXCEPTION_MASK)
         || (cancel_mask & zce::CONNECT_MASK))
 #elif defined (ZCE_OS_LINUX)
-    if (cancel_mask & zce::Event_Handler::EXCEPTION_MASK)
+    if (cancel_mask & zce::EXCEPTION_MASK)
 #endif
     {
         FD_CLR(socket_hd, &exception_fd_set_);
@@ -327,13 +327,13 @@ void select_reactor::process_ready(const fd_set* out_fds,
         else
         {
             ZCE_ASSERT(false);
-    }
+        }
 
         //返回-1表示 handle_xxxxx希望调用close_event退出
         if (hdl_ret == -1)
         {
             event_hdl->close_event();
         }
-}
+    }
 }
 }

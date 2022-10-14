@@ -225,7 +225,7 @@ propertytree::const_child_iterator propertytree::child_cend() const
 
 //增加一个新的CHILD,当然里面全部数据为NULL
 void propertytree::add_child(const std::string& key_str,
-                             propertytree*& new_child_note)
+                             propertytree*& new_child_note) noexcept
 {
     propertytree null_node;
     CHILDREN_NOTE_TYPE::iterator iter =

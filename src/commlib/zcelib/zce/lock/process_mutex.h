@@ -60,7 +60,7 @@ protected:
 
 #if defined ZCE_OS_LINUX
     //共享内存，LINUX需要共享内存
-    zce::SHM_Posix posix_sharemem_;
+    zce::shm_posix posix_sharemem_;
 #endif
 };
 }

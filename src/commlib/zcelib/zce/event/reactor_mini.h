@@ -4,13 +4,13 @@
 
 namespace zce
 {
+typedef std::function <int(ZCE_HANDLE socket, RECTOR_EVENT event,
+    bool connect_succ)> event_callback_t;
+
 /*!
 * @brief      MINI反应器
 *
 */
-typedef std::function <int(ZCE_HANDLE socket, RECTOR_EVENT event,
-    bool connect_succ)> event_callback_t;
-
 class reactor_mini
 {
 protected:
@@ -104,7 +104,7 @@ public:
     */
     bool find_event(ZCE_HANDLE handle,
                     RECTOR_EVENT event_todo,
-                    event_call_set_t::iterator &find_iter,
+                    event_call_set_t::const_iterator &find_iter,
                     size_t &hdl_event_num) const;
 
     /*!
@@ -137,11 +137,11 @@ protected:
 
 #elif defined (ZCE_OS_LINUX)
 
-    void make_epoll_event(struct epoll_event* ep_event,
-                          SELECT_EVENT proc_event,
+    void make_epoll_event(epoll_event* ep_event,
+                          ZCE_HANDLE handle,
                           RECTOR_EVENT event_todo) const;
 
-    void process_ready_event(struct epoll_event* ep_event);
+    void process_ready_event(epoll_event* ep_event);
 #endif
 
 public:

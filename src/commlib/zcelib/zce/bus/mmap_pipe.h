@@ -393,7 +393,7 @@ int mmap_buspipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
         return -1;
     }
 
-    auto pipe_head = static_cast<mmap_buspipe::BUS_PIPE_HEAD*>(mmap_file_.addr());
+    auto pipe_head = static_cast<mmap_buspipe::BUS_PIPE_HEAD<MAX_PIPE>*>(mmap_file_.addr());
     bus_head_ = *pipe_head;
 
     //初始化所有的管道

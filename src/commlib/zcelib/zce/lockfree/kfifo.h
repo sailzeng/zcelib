@@ -255,17 +255,17 @@ public:
     @return     bool
     @param      node
     */
-    bool push_end(const node* node)
+    bool push_end(const node* i)
     {
         //粗略的检查,如果长度不合格,返回不成功
-        if (node->size_of_node_ < node::MIN_SIZE_DEQUE_CHUNK_NODE ||
-            node->size_of_node_ > kfifo_head_->max_len_node_)
+        if (i->size_of_node_ < node::MIN_SIZE_DEQUE_CHUNK_NODE ||
+            i->size_of_node_ > kfifo_head_->max_len_node_)
         {
             return false;
         }
 
         //检查队列的空间是否够用
-        if (free() < node->size_of_node_)
+        if (free() < i->size_of_node_)
         {
             return false;
         }
@@ -274,19 +274,19 @@ public:
         char* pend = kfifo_data_ + kfifo_head_->deque_end_;
 
         //如果绕圈
-        if (pend + node->size_of_node_ > kfifo_data_ + kfifo_head_->size_of_cycle_)
+        if (pend + i->size_of_node_ > kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
             size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_end_;
-            size_t second = node->size_of_node_ - first;
-            memcpy(pend, reinterpret_cast<const char*>(node), first);
-            memcpy(kfifo_data_, reinterpret_cast<const char*>(node) + first, second);
+            size_t second = i->size_of_node_ - first;
+            memcpy(pend, reinterpret_cast<const char*>(i), first);
+            memcpy(kfifo_data_, reinterpret_cast<const char*>(i) + first, second);
             kfifo_head_->deque_end_ = second;
         }
         //如果可以一次拷贝完成
         else
         {
-            memcpy(pend, reinterpret_cast<const char*>(node), node->size_of_node_);
-            kfifo_head_->deque_end_ += node->size_of_node_;
+            memcpy(pend, reinterpret_cast<const char*>(i), i->size_of_node_);
+            kfifo_head_->deque_end_ += i->size_of_node_;
         }
 
         return true;
@@ -297,9 +297,9 @@ public:
     @return     bool  true表示成功取出，否则表示没有取出
     @param      node  保存pop 数据的的buffer，
     */
-    bool pop_front(node* const node)
+    bool pop_front(node* const i)
     {
-        assert(node != NULL);
+        assert(i != NULL);
 
         //检查是否为空
         if (empty() == true)
@@ -319,14 +319,14 @@ public:
         {
             size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_begin_;
             size_t second = tmplen - first;
-            memcpy(reinterpret_cast<char*>(node), pbegin, first);
-            memcpy(reinterpret_cast<char*>(node) + first, kfifo_data_, second);
+            memcpy(reinterpret_cast<char*>(i), pbegin, first);
+            memcpy(reinterpret_cast<char*>(i) + first, kfifo_data_, second);
             kfifo_head_->deque_begin_ = second;
         }
         else
         {
-            memcpy(reinterpret_cast<char*>(node), pbegin, tmplen);
-            kfifo_head_->deque_begin_ += node->size_of_node_;
+            memcpy(reinterpret_cast<char*>(i), pbegin, tmplen);
+            kfifo_head_->deque_begin_ += i->size_of_node_;
             assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_cycle_);
         }
 
@@ -340,9 +340,9 @@ public:
     @return     bool  true表示成功读取
     @param      node  保存read 数据的的buffer，
     */
-    bool read_front(node* const node)
+    bool read_front(node* const i)
     {
-        assert(node != NULL);
+        assert(i != NULL);
 
         //检查是否为空
         if (empty() == true)
@@ -359,12 +359,12 @@ public:
         {
             size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_begin_;
             size_t second = tmplen - first;
-            memcpy(reinterpret_cast<char*>(node), pbegin, first);
-            memcpy(reinterpret_cast<char*>(node) + first, kfifo_data_, second);
+            memcpy(reinterpret_cast<char*>(i), pbegin, first);
+            memcpy(reinterpret_cast<char*>(i) + first, kfifo_data_, second);
         }
         else
         {
-            memcpy(reinterpret_cast<char*>(node), pbegin, tmplen);
+            memcpy(reinterpret_cast<char*>(i), pbegin, tmplen);
         }
 
         return true;
@@ -376,9 +376,9 @@ public:
     @return     bool      true表示成功读取
     @param      new_node  获得数据的指针，这个数据你要自己释放，我概不负责了
     */
-    bool pop_front_new(node*& new_node)
+    bool pop_front_new(node*& n)
     {
-        assert(new_node == NULL);
+        assert(n == NULL);
 
         //检查是否为空
         if (empty() == true)
@@ -387,10 +387,10 @@ public:
         }
 
         size_t tmplen = get_front_len();
-        new_node = node::new_node(tmplen);
+        n = node::new_node(tmplen);
 
         //这样写会有一些重复调用，但是我觉得这个地方性能不会是问题。
-        return pop_front(new_node);
+        return pop_front(n);
     }
 
     /*!
@@ -398,9 +398,9 @@ public:
     @return     bool      true表示成功读取
     @param      new_node
     */
-    bool read_front_new(node*& new_node)
+    bool read_front_new(node*& n)
     {
-        assert(new_node == NULL);
+        assert(n == NULL);
 
         //检查是否为空
         if (empty() == true)
@@ -409,9 +409,9 @@ public:
         }
 
         size_t tmplen = get_front_len();
-        new_node = node::new_node(tmplen);
+        n = node::new_node(tmplen);
 
-        return read_front(new_node);
+        return read_front(n);
     }
 
     /*!

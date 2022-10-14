@@ -31,7 +31,7 @@ process_mutex::process_mutex(const char* mutex_name, bool recursive) :
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::SHM_Posix::open", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::shm_posix::open", ret);
         return;
     }
 

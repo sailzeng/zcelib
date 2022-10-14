@@ -81,13 +81,12 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
                                  RECTOR_EVENT event_todo,
                                  event_callback_t call_back)
 {
-    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
     //如果已经大于最大数量，返回错误
     if (event_set_.size() >= max_event_number_)
     {
         return -1;
     }
-    event_call_set_t::iterator find_iter;
+    event_call_set_t::const_iterator find_iter;
     size_t hdl_event_num = 0;
     if (find_event(handle, event_todo, find_iter, hdl_event_num))
     {
@@ -103,6 +102,7 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
     auto ins_iter = event_set_.insert(ec);
 
 #if defined (ZCE_OS_WINDOWS)
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
     //注意connect的失败，会触发读写事件，需要注意,我记得好像自己都错过两次了。
     if ((event_todo == zce::READ_MASK)
         || (event_todo == zce::ACCEPT_MASK)
@@ -126,7 +126,7 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
     }
 #elif defined (ZCE_OS_LINUX)
     struct epoll_event ep_event;
-    make_epoll_event(&ep_event, event_handler);
+    make_epoll_event(&ep_event, handle, event_todo);
 
     //EPOLL 在LINUX才有，WINDOWS也不可能模拟出来，难道让我用个SELECT模拟？
     int op = EPOLL_CTL_ADD;
@@ -162,7 +162,7 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
                                RECTOR_EVENT event_todo)
 {
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用event_close
-    event_call_set_t::iterator find_iter;
+    event_call_set_t::const_iterator find_iter;
     size_t hdl_event_num = 0;
     if (!find_event(handle, event_todo, find_iter, hdl_event_num))
     {
@@ -176,8 +176,8 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
 
     //不检测了，失败了就是命不好
     event_set_.erase(find_iter);
-    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
 #if defined (ZCE_OS_WINDOWS)
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(handle);
     //因为这些标志可以一起注册，所以下面的判断是并列的
     if ((event_todo == zce::READ_MASK)
         || (event_todo == zce::ACCEPT_MASK)
@@ -199,17 +199,17 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
     }
 #elif defined (ZCE_OS_LINUX)
     struct epoll_event ep_event;
-    make_epoll_event(&ep_event, event_handler);
+    make_epoll_event(&ep_event, handle, event_todo);
     int op = EPOLL_CTL_DEL;
     if (hdl_event_num > 1)
     {
         op = EPOLL_CTL_MOD;
     }
     //EPOLL_CTL_MOD用于修改
-    ret = ::epoll_ctl(epoll_fd_,
-                      op,
-                      handle,
-                      &ep_event);
+    int ret = ::epoll_ctl(epoll_fd_,
+                          op,
+                          handle,
+                          &ep_event);
 
     if (0 != ret)
     {
@@ -229,7 +229,7 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
 //通过句柄查询event handler，如果存在返回0
 bool reactor_mini::find_event(ZCE_HANDLE handle,
                               RECTOR_EVENT event_todo,
-                              event_call_set_t::iterator &find_iter,
+                              event_call_set_t::const_iterator &find_iter,
                               size_t &hdl_event_num) const
 {
     auto iter_end = event_set_.cend();
@@ -239,7 +239,7 @@ bool reactor_mini::find_event(ZCE_HANDLE handle,
     auto iter_temp = event_set_.find(ec);
 
     //已经有一个HANDLE了
-    if (iter_temp == event_set_.end())
+    if (iter_temp == iter_end)
     {
         return false;
     }
@@ -323,7 +323,7 @@ int reactor_mini::tiggers_events(zce::time_value* time_out,
         return event_happen;
     }
 
-    *size_event = event_happen;
+    size_event = event_happen;
     for (int i = 0; i < event_happen; ++i)
     {
         process_ready_event(once_events_ary_ + i);
@@ -437,14 +437,13 @@ void reactor_mini::process_ready(const fd_set* out_fds,
 #elif defined (ZCE_OS_LINUX)
 
 //将mask转换为epoll_event结构
-void reactor_mini::make_epoll_event(struct epoll_event* ep_event,
+void reactor_mini::make_epoll_event(epoll_event* ep_event,
                                     ZCE_HANDLE handle,
                                     RECTOR_EVENT event_todo) const
 {
     ep_event->events = 0;
     ep_event->data.fd = handle;
 
-    int event_mask = event_handler->get_mask();
     if (event_todo == zce::READ_MASK)
     {
         ep_event->events |= EPOLLIN;
@@ -475,7 +474,6 @@ void reactor_mini::make_epoll_event(struct epoll_event* ep_event,
 
 void reactor_mini::process_ready_event(struct epoll_event* ep_event)
 {
-    int ret = 0;
     ZCE_HANDLE handle = (ZCE_HANDLE)ep_event->data.fd;
     EVENT_CALL ec((ZCE_HANDLE)handle);
     bool connect_succ = false;
@@ -483,12 +481,14 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
     if (ep_event->events & EPOLLIN)
     {
         auto iter_temp = event_set_.find(ec);
-        if (iter_temp == event_set_.end())
+        auto iter_end = event_set_.end();
+        if (iter_temp == iter_end)
         {
             return;
         }
         RECTOR_EVENT event_todo = NULL_MASK;
         bool if_trigger = false;
+
         for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {
             event_todo = iter_temp->event_todo_;
@@ -517,7 +517,8 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
     if (ep_event->events & EPOLLOUT)
     {
         auto iter_temp = event_set_.find(ec);
-        if (iter_temp == event_set_.end())
+        auto iter_end = event_set_.end();
+        if (iter_temp == iter_end)
         {
             return;
         }
@@ -546,7 +547,8 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
     if (ep_event->events & EPOLLERR)
     {
         auto iter_temp = event_set_.find(ec);
-        if (iter_temp == event_set_.end())
+        auto iter_end = event_set_.end();
+        if (iter_temp == iter_end)
         {
             return;
         }
@@ -555,7 +557,7 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
         for (; iter_temp->handle_ == handle && iter_temp != iter_end; ++iter_temp)
         {
             event_todo = iter_temp->event_todo_;
-            if (event_todo == zce::EXCEPTION)
+            if (event_todo == zce::EXCEPTION_MASK)
             {
                 iter_temp->call_back_(handle,
                                       event_todo,

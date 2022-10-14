@@ -80,7 +80,7 @@ private:
     {
         object_creator()
         {
-            ZCE_Boost_Singleton<T>::instance();
+            b_singleton<T>::instance();
         }
         inline void do_nothing() const {}
     };

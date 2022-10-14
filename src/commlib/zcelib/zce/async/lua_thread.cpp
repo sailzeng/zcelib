@@ -57,7 +57,7 @@ void async_luathead::on_run(bool first_run, bool& continue_run)
         {
             continue_run = true;
         }
-        else if (state == LUA_OK)
+        else if (state == 0)
         {
             continue_run = false;
         }
@@ -81,7 +81,7 @@ void async_luathead::on_timeout(const zce::time_value& /*now_time*/,
     {
         running = true;
     }
-    else if (state == LUA_OK)
+    else if (state == 0)
     {
         running = false;
     }

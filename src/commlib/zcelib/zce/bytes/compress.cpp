@@ -481,7 +481,7 @@ int zce::zlz_format::decompress_core(const unsigned char* compressed_buf,
 
             //另外这个地方，用memcpy是不合适的，因为地址可能有交叠
             write_stop = write_pos + comp_count;
-            if (ZCE_LIKELY(ref_offset < 8))
+            if (ZCE_LIKELY(ref_offset >= 8))
             {
                 ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
             }

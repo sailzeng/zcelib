@@ -386,7 +386,7 @@ bool is_ready_fds(int no_fds,
 *             但今天刘侃反馈说LINUX下的select 的timeout_tv不是const的，看了一下，真不是，
 *             于是我面临两个选择，向谁看起的问题，最后考虑还是想LINUX看齐吧。
 */
-inline int select(
+int select(
     int nfds,
     fd_set* readfds,
     fd_set* writefds,

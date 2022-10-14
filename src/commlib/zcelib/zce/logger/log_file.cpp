@@ -107,8 +107,8 @@ int log_file::initialize(int output_way,
             std::sort(file_name_ary.begin(), file_name_ary.end());
             for (auto file_name : file_name_ary)
             {
-                std::string log_file = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + file_name;
-                time_logfile_list_.push_back(file_name);
+                std::string old_log = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + file_name;
+                time_logfile_list_.push_back(old_log);
             }
         }
         out_thread_run_ = false;

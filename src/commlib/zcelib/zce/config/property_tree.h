@@ -179,7 +179,7 @@ public:
 
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
     void add_child(const std::string& key_str,
-                   zce::propertytree*& new_child_note);
+                   zce::propertytree*& new_child_note) noexcept;
 
     ///清理
     void clear();

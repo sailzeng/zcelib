@@ -130,7 +130,7 @@ protected:
     * @return     int           返回值,0标识查询到了，-1标识没有查询到
     * @param[in]  event_handler 确认是否存在的zce::event_handler 句柄
     */
-    inline int exist_event_handler(zce::event_handler* event_handler);
+    int exist_event_handler(zce::event_handler* event_handler);
 
     /*!
     * @brief      通过句柄查询event handler，如果存在返回0
@@ -138,8 +138,8 @@ protected:
     * @param[in]  socket_handle 查询的ZCE_HANDLE句柄
     * @param[out] event_handler 查询得到的句柄对应的zce::Event_Handler指针
     */
-    inline int find_event_handler(ZCE_HANDLE handle,
-                                  zce::event_handler*& event_handler);
+    int find_event_handler(ZCE_HANDLE handle,
+                           zce::event_handler*& event_handler);
 
 public:
 

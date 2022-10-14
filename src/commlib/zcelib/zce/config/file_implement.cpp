@@ -252,12 +252,12 @@ int read_cvs(const char* file_name,
         read_file.getline(one_line.get(), read_line_len);
         std::vector<std::string> line_data;
         auto start_p = one_line.get();
-        auto end_p = std::strchr(start_p, word_delim);
+        auto end_p = ::strchr(start_p, word_delim);
         while (end_p)
         {
             line_data.push_back(std::string(start_p, end_p));
             start_p = end_p + 1;
-            end_p = std::strchr(start_p, word_delim);
+            end_p = ::strchr(start_p, word_delim);
         }
         line_data.push_back(std::string(start_p, end_p));
         data->push_back(std::move(line_data));
