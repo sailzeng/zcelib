@@ -33,6 +33,10 @@ public:
     */
     ZCE_Time_Value();
     /*!
+    * @brief      拷贝构造函数
+    */
+    ZCE_Time_Value(const ZCE_Time_Value &val);
+    /*!
     * @brief      析构函数
     */
     ~ZCE_Time_Value();
@@ -128,14 +132,12 @@ public:
     */
     void set_by_clock_t(clock_t time);
 
-
     void set(const std::chrono::hours &val);
     void set(const std::chrono::minutes &val);
     void set(const std::chrono::seconds &val);
     void set(const std::chrono::milliseconds &val);
     void set(const std::chrono::microseconds &val);
     void set(const std::chrono::nanoseconds &val);
-
 
     void set(const std::chrono::system_clock::time_point &val);
     void set(const std::chrono::steady_clock::time_point &val);
@@ -160,18 +162,18 @@ public:
     * @brief      得到Timevalue的秒部分
     * @return     time_t
     */
-    time_t sec (void) const;
+    time_t sec(void) const;
     /*!
     * @brief      设置Timevalue的秒部分
     * @param      set_sec  设置的，timeval的秒部分的数值
     */
-    void sec (time_t set_sec);
+    void sec(time_t set_sec);
 
     /*!
     * @brief      得到Timevalue的微秒部分，注意是得到微秒部分，不是总计值呀。（已经看见一个人调用错了）
     * @return     time_t ZCE_Time_Value微秒部分的数据
     */
-    time_t usec (void) const;
+    time_t usec(void) const;
     /*!
     * @brief      设置Timevalue的微秒部分
     * @param      set_usec 设置的，timeval的微秒部分的数值，注意他和total_usec的区别。
@@ -210,8 +212,6 @@ public:
     */
     void total_usec(uint64_t set_usec);
 
-
-
     /*!
     * @brief
     * @return     const char*
@@ -233,7 +233,7 @@ public:
                           size_t &use_buf,
                           bool uct_time = false,
                           zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC
-                         )  const;
+    )  const;
 
     /*!
     * @brief      根据你的格式化要求,将字符串，转换为事件
@@ -308,4 +308,3 @@ public:
 };
 
 #endif //# ZCE_LIB_TIME_VALUE_H_
-

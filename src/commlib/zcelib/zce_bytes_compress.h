@@ -69,7 +69,6 @@
 
 namespace zce
 {
-
 template < typename COMPRESS_STRATEGY >
 class ZCE_Compress
 {
@@ -296,9 +295,6 @@ protected:
     COMPRESS_STRATEGY  compress_fmt_;
 };
 
-
-
-
 //=====================================================================================================
 ///ZLZ算法是部分模拟LZ4的代码，但有一些格式变化，
 ///本来我认为我的算法应该更快一些的
@@ -310,9 +306,9 @@ public:
     ~ZLZ_Compress_Format();
 
     //压缩核心代码
-    void compress_core(const unsigned char alignas(sizeof(size_t))* original_buf,
+    void compress_core(const unsigned char * original_buf,
                        size_t original_size,
-                       unsigned char alignas(sizeof(size_t)) *compressed_buf,
+                       unsigned char *compressed_buf,
                        size_t *compressed_size);
 
     //解压核心代码
@@ -329,7 +325,7 @@ public:
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFFF7 + 1) * 3 + 64);
+        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFFF7 + 1) * 3 + 64);
         return 0;
     }
 
@@ -337,8 +333,6 @@ public:
     //这个压缩长度所能支持的最大长度，
     //因为用3个字节表示（大约）64K非压缩数据，加上头部，尾部的处理
     const static size_t LZ_MAX_ORIGINAL_SIZE = 0xFFFCFF00;
-
-
 
 protected:
 
@@ -348,9 +342,6 @@ protected:
 
 //直接的ZLZ的typedef，使用zce::ZLZ_Compress::compress ,decompress函数就可以完成功能
 typedef ZCE_Compress<zce::ZLZ_Compress_Format> ZLZ_Compress;
-
-
-
 
 //=====================================================================================================
 
@@ -381,7 +372,7 @@ public:
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFF + 1) + 64);
+        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFF + 1) + 64);
         return 0;
     }
 
@@ -399,8 +390,6 @@ protected:
 typedef ZCE_Compress<LZ4_Compress_Format> LZ4_Compress;
 
 //=====================================================================================================
-
 };//end of zce
 
 #endif
-

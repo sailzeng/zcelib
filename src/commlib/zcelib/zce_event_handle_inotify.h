@@ -71,8 +71,6 @@
 #ifndef ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 #define ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 
-
-
 #include "zce_event_handle_base.h"
 
 class ZCE_Reactor;
@@ -84,10 +82,7 @@ class ZCE_Reactor;
 */
 class ZCE_Event_INotify : public ZCE_Event_Handler
 {
-
-
 public:
-
 
     /*!
     @brief      构造函数，同时设置香港的反应器指针
@@ -114,13 +109,11 @@ public:
     */
     int close();
 
-
-
     /*!
     @brief      取回对应的ZCE_SOCKET 句柄
     @return     int ZCE_Event_INotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
     */
-    virtual ZCE_HANDLE get_handle (void) const
+    virtual ZCE_HANDLE get_handle(void) const
     {
 #if defined ZCE_OS_LINUX
         return inotify_handle_;
@@ -128,7 +121,6 @@ public:
         return watch_handle_;
 #endif
     }
-
 
     /*!
     @brief      增加一个要进行监控的文件对象
@@ -143,7 +135,6 @@ public:
                   ZCE_HANDLE *watch_handle,
                   bool watch_sub_dir = false);
 
-
     /*!
     @brief      通过文件句柄，移除一个要监控的项目，
     @return     int          返回0表示成功，返回-1表示失败
@@ -151,19 +142,18 @@ public:
     */
     int rm_watch(ZCE_HANDLE watch_handle);
 
-
     /*!
     @brief      读取事件触发调用函数，用于读取数据，当有时间发生时，这个函数被回调，
                 函数内部分析具体发生的事件，
     @return     int 返回0表示句柄处理正常，return -1后，反应器会主动handle_close，帮助结束句柄
     */
-    virtual int handle_input ();
+    virtual int handle_input();
 
     /*!
     @brief
     @return     int
     */
-    virtual int handle_close ();
+    virtual int handle_close();
 
     ///需要你继承使用的虚函数，你关注什么事件，就重载什么函数
 protected:
@@ -283,13 +273,12 @@ protected:
         return 0;
     }
 
-
 protected:
 
     ///进行文件监控的节点
     struct EVENT_INOTIFY_NODE
     {
-        EVENT_INOTIFY_NODE():
+        EVENT_INOTIFY_NODE() :
             watch_handle_(ZCE_INVALID_HANDLE),
             watch_mask_(0)
         {
@@ -302,10 +291,9 @@ protected:
         ///监控的句柄
         ZCE_HANDLE              watch_handle_;
         ///监视的文件路径
-        char                    watch_path_[MAX_PATH];
+        char                    watch_path_[MAX_PATH + 1];
         ///监控项的掩码
         uint32_t                watch_mask_;
-
     };
 
 protected:
@@ -324,13 +312,12 @@ protected:
     ///inotify_init 初始化得到的句柄
     int                inotify_handle_;
 
-
 #elif defined ZCE_OS_WINDOWS
 
     ///监控的句柄
     ZCE_HANDLE        watch_handle_;
     ///监视的文件路径
-    char              watch_path_[MAX_PATH];
+    char              watch_path_[MAX_PATH + 1];
     ///监控项的掩码
     uint32_t          watch_mask_;
     ///over lapped 使用的对象
@@ -341,9 +328,6 @@ protected:
 
     ///读取的Buffer，
     char              *read_buffer_;
-
 };
 
-
 #endif //ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
-
