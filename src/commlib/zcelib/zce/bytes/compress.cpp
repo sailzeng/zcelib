@@ -432,7 +432,7 @@ int zce::zlz_format::decompress_core(const unsigned char* compressed_buf,
         if (comp_count)
         {
             //如果表示为小于0xE,长度等于0xE + 3(如果匹配。最小长度是4)
-            if (ZCE_LIKELY(comp_count < 0xE))
+            if ((comp_count < 0xE)) [[likely]]
             {
                 comp_count += 0x3;
             }
@@ -648,7 +648,7 @@ void zce::lz4_format::compress_core(const unsigned char* original_buf,
         offset_token = (write_pos++);
 
         //
-        if (ZCE_LIKELY(nomatch_count < 0xF))
+        if (nomatch_count < 0xF) [[likely]]
         {
             *offset_token = (unsigned char)(nomatch_count);
         }
@@ -767,7 +767,7 @@ lz4_match_process:
 
         //LZ4的代码到这个地方，match_count至少是4
         match_count = read_pos - match_achor - 4;
-        if (ZCE_LIKELY(match_count < 0xF))
+        if (match_count < 0xF) [[likely]]
         {
             *offset_token |= (unsigned char)(match_count) << 4;
         }
@@ -835,7 +835,7 @@ lz4_end_process:
     match_count = 0;
 
     offset_token = (write_pos++);
-    if (ZCE_LIKELY(nomatch_count < 0xF))
+    if (nomatch_count < 0xF) [[likely]]
     {
         *offset_token = (unsigned char)(nomatch_count);
     }
@@ -937,8 +937,8 @@ int zce::lz4_format::decompress_core(const unsigned char* compressed_buf,
         //如果偏移地址错误，返回错误，注意compressed_buf 第一个字节也是非参考字节，
         //偏移的长度不可能大于写位置和头位置的差  +8 因为这种复制风格，所以要留有8字节的间距，
         //保证有这些空间可读，
-        //if ( ZCE_LIKELY( (size_t)(read_end - read_pos) < (2 + 8 + noncomp_count)
-        //                 || ((size_t)(write_end - write_pos) < ( 8 + noncomp_count + comp_count))  ) )
+        //if (((size_t)(read_end - read_pos) < (2 + 8 + noncomp_count)
+        //                 || ((size_t)(write_end - write_pos) < ( 8 + noncomp_count + comp_count))  ) ) [[likely]]
         //{
         //    return -1;
         //}
@@ -949,18 +949,18 @@ int zce::lz4_format::decompress_core(const unsigned char* compressed_buf,
 
         ref_pos = write_pos - ref_offset;
         //ref_pos必须是一个合理的值
-        if (ZCE_LIKELY(ref_offset == 0 || ref_pos < original_buf))
+        if ((ref_offset == 0 || ref_pos < original_buf)) [[likely]]
         {
             return -1;
         }
 
-        //另外这个地方，用memcpy是不合适的，因为地址可能有交叠
+            //另外这个地方，用memcpy是不合适的，因为地址可能有交叠
         write_stop = write_pos + comp_count;
-        if (ZCE_LIKELY(ref_offset >= sizeof(uint64_t)))
+        if ((ref_offset >= sizeof(uint64_t))) [[likely]]
         {
             ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
         }
-        //这儿要进行特殊处理了。
+            //这儿要进行特殊处理了。
         else
         {
             //即使长度不到8个字节，还是一次拷贝了8个字节，否则这儿的处理还是比较啰嗦的，

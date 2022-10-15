@@ -315,7 +315,7 @@ protected:
     ///监控的句柄
     ZCE_HANDLE        watch_handle_;
     ///监视的文件路径
-    char              watch_path_[MAX_PATH];
+    char              watch_path_[MAX_PATH + 1];
     ///监控项的掩码
     uint32_t          watch_mask_;
     ///over lapped 使用的对象

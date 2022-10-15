@@ -224,13 +224,13 @@ endif
 endif
 
 ifeq ($(OS_BITS),64)
-VERSIONTYPE := x64_neutral
+VERSIONTYPE := neutral
 PLATFROM := x64
 ifeq ($(debug),1)
-  VERSIONTYPE := x64_debug
+  VERSIONTYPE := debug
 endif
 ifeq ($(release),1)
-  VERSIONTYPE := x64_release
+  VERSIONTYPE := release
 endif
 endif
 
@@ -308,6 +308,15 @@ OUTFILE := $(PATH_BIN)/$(PRGNAME)
 endif
 
 #--------------------------------------------------------------------------------------------------------------------
+#如果你使用预定头文件,请定义PCH_FILE
+#对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
+ifneq ($(PCH_FILE),) 
+PCH_DIR = ./$(PCH_FILE).gch
+PCH_GCH = $(PCH_DIR)/$(notdir $(PCH_FILE)).$(VERSIONTYPE).gch
+PCH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(PCH_FILE).d
+endif
+
+#--------------------------------------------------------------------------------------------------------------------
 
 PATH_THIRDPARTY_INC  :=$(PATH_THIRDPARTY)/include
 
@@ -327,7 +336,7 @@ ifeq ($(OS_BITS),32)
 PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/x86
 endif
 ifeq ($(OS_BITS),64)
-PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/x64
+PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/
 endif
 
 LIB_DEV_OUTER=-L$(PATH_THIRDPARTY_LIB) -lmysqlclient -lz -lsqlite -llua -lprotobuf-lite
@@ -349,9 +358,12 @@ LIB_DEV_INNER := $(LIB_ZCELIB) $(LIB_SOARLIB)
 #--------------------------------------------------------------------------------------------------------------------
 #如果你有特殊的需求，你可以在你的Makefile里面定义INCLDIRS 和 LIBARYS
 
-INCLDIRS ?= -I. $(INC_DEV_INNER) $(INC_DEV_OUTER)
+INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
 LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
+ifneq ($(PCH_FILE),)
+INCLDIRS := -I$(PCH_DIR) $(INCLDIRS)
+endif
 
 CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
@@ -359,8 +371,8 @@ CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
 #-Winvalid-pch是检查pch文件是否有效的。但因为我们使用了多个gch的方案，暂时不用这个参数了。
 #主要可以帮助你定位bug
-COMPILE.c       := $(CC)  $(CFLAGS)  $(CPPFLAGS) -c
-COMPILE.cc      := $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+COMPILE.c       := $(CC)  $(CFLAGS)  $(CPPFLAGS) -c 
+COMPILE.cc      := $(CXX) $(CCFLAGS) $(CPPFLAGS) -c 
 
 PRECOMPILE.c    := $(CC)  $(CFLAGS)  $(CPPFLAGS) -x c++-header -c
 PRECOMPILE.cc   := $(CXX) $(CCFLAGS) $(CPPFLAGS) -x c++-header -c 

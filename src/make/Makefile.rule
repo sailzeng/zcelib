@@ -34,25 +34,22 @@
 #
 #--------------------------------------------------------------------------------------------------------------------
 
-
-
 #注意CPPFLAGS是有,-MMD选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
 
 .PHONY : all libbuild mkdir clean veryclean 
 
-
-
 #--------------------------------------------------------------------------------------------------------------------
 SRC_DIRS := $(shell find . -maxdepth 3 -type d)
 #得到C,CPP文件的，这儿的.c文件我也会用g++编译
-C_FILE = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+#C_FILE = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+#目前只使用CPP后缀
 CPP_FILE = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
-SRC_FILE = $(C_FLIE) $(CPP_FILE)
+SRC_FILE = $(CPP_FILE)
 
 #通过.c,.cpp文件名称得到.O文件名称
-O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(PRGNAME)/%.o, $(C_FLIE))
+#O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(PRGNAME)/%.o, $(C_FLIE))
 O_CPPFILE = $(patsubst ./%.cpp, $(PATH_OBJ)/$(PRGNAME)/%.o, $(CPP_FILE))
-O_FILE  = $(O_CFILE) $(O_CPPFILE)
+O_FILE  = $(O_CPPFILE)
 #通过.o文件，得到.d文件的名称
 DEP_FILE = $(patsubst %.o, %.d,$(O_FILE))
 #这儿是找到缺失的.d文件对应的.o的文件名称
@@ -65,16 +62,7 @@ MISS_DEP = $(patsubst %.d,%.o, $(filter-out $(wildcard $(DEP_FILE)),$(DEP_FILE))
 #PRGNAME表示你的程序名称，一般就是你的目录名称，当然希望目录名称不要重复，
 #OUTFILE,最总输出的文件名称，为啥要定义这个呢，最后删除的时候可以统一
 
-#如果你使用预定头文件,请定义PCH_FILE
-#对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
-ifneq ($(PCH_FILE),) 
-PCH_DIR = $(PCH_FILE).gch
-PCH_GCH = $(PCH_DIR)/$(PCH_FILE).$(VERSIONTYPE).gch
-PCH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(PCH_FILE).d
-endif
-
 all : $(OUTFILE) 
-
 
 #--------------------------------------------------------------------------------------------------------------------
 
@@ -188,20 +176,16 @@ endif
 
 mkdir:
 	if (test ! -d $(PARENT_PATH_BIN)) ; then $(MKDIR) $(PARENT_PATH_BIN) ; fi ;
-	if (test ! -d $(PARENT_PATH_BIN)/x86);   then $(MKDIR) $(PARENT_PATH_BIN)/x86 ; fi ;
-	if (test ! -d $(PARENT_PATH_BIN)/x64);   then $(MKDIR) $(PARENT_PATH_BIN)/x64 ; fi ;
 	if (test ! -d $(PARENT_PATH_LIB)) ; then $(MKDIR) $(PARENT_PATH_LIB) ; fi ;
-	if (test ! -d $(PARENT_PATH_LIB)/x86);   then $(MKDIR) $(PARENT_PATH_LIB)/x86 ; fi ;
-	if (test ! -d $(PARENT_PATH_LIB)/x64);   then $(MKDIR) $(PARENT_PATH_LIB)/x64 ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)) ; then $(MKDIR) $(PARENT_PATH_OBJ) ; fi ;
-	if (test ! -d $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME) ; fi ;
-	if (test ! -d $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME) ; fi ;
-	if (test ! -d $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/neutral/$(PRGNAME) ; fi ;
 	for src_dir in $(SRC_DIRS); \
 	do \
-	$(MKDIR)  $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME)/$$src_dir;\
-	$(MKDIR)  $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME)/$$src_dir;\
-	$(MKDIR)  $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME)/$$src_dir;\
+	$(MKDIR)  $(PARENT_PATH_OBJ)/debug/$(PRGNAME)/$$src_dir;\
+	$(MKDIR)  $(PARENT_PATH_OBJ)/release/$(PRGNAME)/$$src_dir;\
+	$(MKDIR)  $(PARENT_PATH_OBJ)/neutral/$(PRGNAME)/$$src_dir;\
 	done
 ifneq ($(PCH_FILE),) 
 	if (test ! -d $(PCH_DIR)) ; then $(MKDIR) $(PCH_DIR) ; fi ;

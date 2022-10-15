@@ -14,7 +14,7 @@ void* zce::mmap(void* addr,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    if (ZCE_BIT_ISNOT_SET(flags, MAP_FIXED))
+    if (flags & MAP_FIXED)
     {
         addr = 0;
     }
@@ -23,14 +23,14 @@ void* zce::mmap(void* addr,
     DWORD  nt_flags = 0;
 
     // can not map to address 0
-    if (ZCE_BIT_IS_SET(flags, MAP_FIXED) && 0 == addr)
+    if ((flags & MAP_FIXED) && 0 == addr)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
     }
 
     //匿名使用，必须文件句柄是无效值
-    if (ZCE_BIT_IS_SET(flags, MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
+    if ((flags & MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
@@ -46,7 +46,7 @@ void* zce::mmap(void* addr,
         nt_flag_protect = PAGE_READWRITE;
         nt_flags = FILE_MAP_READ;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE))
+    else if ((prot & PROT_READ) && (prot & PROT_WRITE))
     {
         nt_flag_protect = PAGE_READWRITE;
         nt_flags = FILE_MAP_WRITE;
@@ -56,12 +56,12 @@ void* zce::mmap(void* addr,
         nt_flag_protect = PAGE_EXECUTE;
         nt_flags = FILE_MAP_EXECUTE;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ))
+    else if ((prot & PROT_EXEC) && (prot & PROT_READ))
     {
         nt_flag_protect = PAGE_EXECUTE_READ;
         nt_flags = FILE_MAP_EXECUTE | FILE_MAP_READ;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE))
+    else if ((prot & PROT_EXEC) && (prot & PROT_READ) && (prot & PROT_WRITE))
     {
         nt_flag_protect = PAGE_EXECUTE_READWRITE;
         nt_flags = FILE_MAP_EXECUTE | FILE_MAP_WRITE;
@@ -73,7 +73,7 @@ void* zce::mmap(void* addr,
     }
 
     //如果是私有的，相当于所有人都是副本
-    if (ZCE_BIT_IS_SET(flags, MAP_PRIVATE))
+    if (flags & MAP_PRIVATE)
     {
         //PAGE_WRITECOPY 等价 PAGE_READONLY
         nt_flag_protect |= PAGE_WRITECOPY;
@@ -146,7 +146,7 @@ int zce::mprotect(const void* addr,
     {
         nt_flag_protect = PAGE_READONLY;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE))
+    else if ((prot & PROT_READ) && (prot & PROT_WRITE))
     {
         nt_flag_protect = PAGE_READWRITE;
     }
@@ -154,11 +154,11 @@ int zce::mprotect(const void* addr,
     {
         nt_flag_protect = PAGE_EXECUTE;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ))
+    else if ((prot & PROT_EXEC) && (prot & PROT_READ))
     {
         nt_flag_protect = PAGE_EXECUTE_READ;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE))
+    else if ((prot & PROT_EXEC) && (prot & PROT_READ) && (prot & PROT_WRITE))
     {
         nt_flag_protect = PAGE_EXECUTE_READWRITE;
     }
@@ -279,12 +279,12 @@ ZCE_HANDLE zce::shmget(key_t sysv_key,
 
     DWORD nt_flag_protect = 0;
 
-    if (ZCE_BIT_IS_SET(oflag, SHM_R))
+    if ((oflag & SHM_R))
     {
         nt_flag_protect = PAGE_READONLY;
     }
 
-    if (ZCE_BIT_IS_SET(oflag, SHM_W))
+    if ((oflag & SHM_W))
     {
         nt_flag_protect = PAGE_READWRITE;
     }
@@ -314,7 +314,7 @@ ZCE_HANDLE zce::shmget(key_t sysv_key,
     }
 
     //如果明确要求必须是创建，而且不能是已经存在的访问
-    if (ZCE_BIT_IS_SET(oflag, IPC_CREAT) && ZCE_BIT_IS_SET(oflag, IPC_EXCL))
+    if ((oflag & IPC_CREAT) && (oflag & IPC_EXCL))
     {
         if (ERROR_ALREADY_EXISTS == ::GetLastError())
         {
@@ -337,13 +337,13 @@ void* zce::shmat(ZCE_HANDLE shmid,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    if (ZCE_BIT_ISNOT_SET(shmflg, SHM_RND))
+    if (shmflg & SHM_RND)
     {
         shmaddr = 0;
     }
 
     // can not map to address 0
-    if (ZCE_BIT_IS_SET(shmflg, SHM_RND) && 0 == shmaddr)
+    if ((shmflg & SHM_RND) && 0 == shmaddr)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
@@ -351,12 +351,12 @@ void* zce::shmat(ZCE_HANDLE shmid,
 
     DWORD nt_flags = FILE_MAP_WRITE;
 
-    if (ZCE_BIT_IS_SET(shmflg, SHM_RDONLY))
+    if (shmflg & SHM_RDONLY)
     {
         nt_flags = FILE_MAP_READ;
     }
 
-    if (ZCE_BIT_IS_SET(shmflg, SHM_EXEC))
+    if (shmflg & SHM_EXEC)
     {
         nt_flags = FILE_MAP_READ | FILE_MAP_EXECUTE;
     }

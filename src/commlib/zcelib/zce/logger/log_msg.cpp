@@ -327,7 +327,7 @@ void log_msg::stringbuf_loghead(LOG_PRIORITY outlevel,
     sz_use_len = 0;
 
     //如果纪录时间
-    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::CURRENTTIME))
+    if (head_record_ & LOG_HEAD::CURRENTTIME)
     {
         //转换为语句
         timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
@@ -339,7 +339,7 @@ void log_msg::stringbuf_loghead(LOG_PRIORITY outlevel,
     }
 
     //如果记录日志级别
-    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::LOGLEVEL))
+    if (head_record_ & LOG_HEAD::LOGLEVEL)
     {
         switch (outlevel)
         {
@@ -389,14 +389,14 @@ void log_msg::stringbuf_loghead(LOG_PRIORITY outlevel,
     }
 
     //如果纪录当前的PID
-    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::PROCESS_ID))
+    if (head_record_ & LOG_HEAD::PROCESS_ID)
     {
         sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]",
                                static_cast<unsigned int>(getpid()));
         sz_buf_len -= sz_use_len;
     }
 
-    if (ZCE_U32_BIT_IS_SET(head_record_, LOG_HEAD::THREAD_ID))
+    if (head_record_ & LOG_HEAD::THREAD_ID)
     {
         sz_use_len += snprintf(log_tmp_buffer + sz_use_len,
                                sz_buf_len,

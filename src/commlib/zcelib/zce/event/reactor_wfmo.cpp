@@ -291,11 +291,11 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                                watch_handle_ary_[activate_id],
                                &socket_event);
         SOCKET socket_handle = (SOCKET)watch_socket_ary_[activate_id];
-        if (ZCE_U32_BIT_IS_SET(socket_event.lNetworkEvents, FD_ACCEPT))
+        if (socket_event.lNetworkEvents & FD_ACCEPT)
         {
             event_hdl->read_event();
         }
-        if (ZCE_U32_BIT_IS_SET(socket_event.lNetworkEvents, FD_READ))
+        if (socket_event.lNetworkEvents & FD_READ)
         {
             //因为很多事件会并列触发，而前面一个事件处理，可能会关闭event_hdl,所以必须double check
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
@@ -308,7 +308,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 }
             }
         }
-        if (ZCE_U32_BIT_IS_SET(socket_event.lNetworkEvents, FD_CLOSE))
+        if (socket_event.lNetworkEvents & FD_CLOSE)
         {
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
@@ -320,7 +320,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 }
             }
         }
-        if (ZCE_U32_BIT_IS_SET(socket_event.lNetworkEvents, FD_WRITE))
+        if (socket_event.lNetworkEvents & FD_WRITE)
         {
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
@@ -332,7 +332,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 }
             }
         }
-        if (ZCE_U32_BIT_IS_SET(socket_event.lNetworkEvents, FD_OOB))
+        if (socket_event.lNetworkEvents & FD_OOB)
         {
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
@@ -344,7 +344,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 }
             }
         }
-        if (ZCE_U32_BIT_IS_SET(socket_event.lNetworkEvents, FD_CONNECT))
+        if (socket_event.lNetworkEvents & FD_CONNECT)
         {
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)

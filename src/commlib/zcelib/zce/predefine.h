@@ -588,45 +588,6 @@ extern "C"
 #define ZCE_UNLIKELY(x)    (x)
 #endif
 
-//BIT位的一些操作定义宏
-
-//设置或者清理数值某个位置上的bit位
-//_value 没有用()保护是有理由的，请好好想想，呵呵
-#if !defined(ZCE_SET_BITS)
-#  define ZCE_SET_BITS(set_value, bits) (set_value |= (bits))
-#endif
-#if !defined(ZCE_CLR_BITS)
-#  define ZCE_CLR_BITS(clr_value, bits) (clr_value &= ~(bits))
-#endif
-
-//检查某个bit位是否设置了
-#ifndef ZCE_BIT_IS_SET
-#define ZCE_BIT_IS_SET(compare_value, bits) (((compare_value) & (bits)) != 0)
-#endif
-#ifndef ZCE_BIT_ISNOT_SET
-#define ZCE_BIT_ISNOT_SET(compare_value, bits) (((compare_value) & (bits)) == 0)
-#endif
-
-//主要用于某些enum class的处理，
-#ifndef ZCE_U32_BIT_IS_SET
-#define ZCE_U32_BIT_IS_SET(compare_value, bits) ((static_cast<uint32_t>(compare_value) & static_cast<uint32_t>(bits)) != 0)
-#endif
-#ifndef ZCE_U64_BIT_IS_SET
-#define ZCE_U64_BIT_IS_SET(compare_value, bits) ((static_cast<uint64_t>(compare_value) & static_cast<uint64_t>(bits)) != 0)
-#endif
-#ifndef ZCE_U32_OR_2
-#define ZCE_U32_OR_2(v_a,v_b) (static_cast<uint32_t>(v_a) | static_cast<uint32_t>(v_b))
-#endif
-#ifndef ZCE_U32_OR_3
-#define ZCE_U32_OR_3(v_a,v_b,v_c) (static_cast<uint32_t>(v_a) | static_cast<uint32_t>(v_b) | static_cast<uint32_t>(v_c))
-#endif
-#ifndef ZCE_U64_OR_2
-#define ZCE_U64_OR_2(v_a,v_b) (static_cast<uint64_t>(v_a) | static_cast<uint64_t>(v_b))
-#endif
-#ifndef ZCE_U64_OR_3
-#define ZCE_U64_OR_3(v_a,v_b,v_c) (static_cast<uint64_t>(v_a) | static_cast<uint64_t>(v_b) | static_cast<uint64_t>(v_c))
-#endif
-
 //!计算数组个数,注意传递的型别喔
 #ifndef ZCE_ARRAY_SIZE
 #define ZCE_ARRAY_SIZE(ary) (sizeof(ary)/sizeof((ary)[0]))

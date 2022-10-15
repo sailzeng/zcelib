@@ -20,10 +20,10 @@ enum class LOG_PRIORITY
 };
 
 ///默认记录的数据,在每条日志的头部
-enum class LOG_HEAD
+enum LOG_HEAD
 {
     ///什么都不纪录
-    NONE = 0,
+    HEAD_NONE = 0,
     ///纪录当前的时间
     CURRENTTIME = (0x1 << 0),
     ///纪录日志的级别信息
@@ -35,10 +35,10 @@ enum class LOG_HEAD
 };
 
 ///选择输出的方式
-enum class LOG_OUTPUT
+enum LOG_OUTPUT
 {
     ///不向任何地方输出
-    NONE = 0,
+    OUTPUT_NONE = 0,
     ///同步不向其他地方输出,默认
     LOGFILE = (0x1 << 0),
     ///同步向标准输出输出.如果你的程序是CGI程序,慎用

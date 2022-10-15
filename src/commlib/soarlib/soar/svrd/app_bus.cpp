@@ -340,7 +340,7 @@ int app_buspipe::init_log()
                  false,
                  config_base_->log_config_.max_log_file_size_,
                  config_base_->log_config_.reserve_file_num_,
-                 ZCE_U32_OR_2(zce::LOG_HEAD::CURRENTTIME, zce::LOG_HEAD::LOGLEVEL));
+                 (zce::LOG_HEAD::CURRENTTIME | zce::LOG_HEAD::LOGLEVEL));
     if (0 != ret)
     {
         ZCE_LOG(RS_ERROR, "zce::Log_Msg::instance()->initialize ret fail.");
