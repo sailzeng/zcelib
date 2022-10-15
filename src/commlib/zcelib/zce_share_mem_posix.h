@@ -6,18 +6,18 @@
 #include "zce_os_adapt_predefine.h"
 
 /*********************************************************************************
-class ZCE_ShareMem_Posix ·â×°POSIX¹²ÏíÄÚ´æÓ³Éä´úÂë£¬
+class ZCE_ShareMem_Posix å°è£…POSIXå…±äº«å†…å­˜æ˜ å°„ä»£ç ï¼Œ
 *********************************************************************************/
 class ZCE_ShareMem_Posix : public ZCE_NON_Copyable
 {
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_ShareMem_Posix();
     ~ZCE_ShareMem_Posix();
 
 public:
-    //´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä
+    //æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„
     int open(const char *file_name,
              std::size_t shm_size,
              int file_open_mode = O_CREAT | O_RDWR,
@@ -28,7 +28,7 @@ public:
              std::size_t offset = 0
             );
 
-    //´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä, ¼òµ¥£¬ÍÆ¼öÊ¹ÓÃÕâ¸öº¯Êı
+    //æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„, ç®€å•ï¼Œæ¨èä½¿ç”¨è¿™ä¸ªå‡½æ•°
     int open(const char *file_name,
              std::size_t shm_size,
              bool if_restore,
@@ -38,30 +38,30 @@ public:
              std::size_t  offset = 0
             );
 
-    //¹Ø±ÕÓ³Éä(ÎÄ¼ş)
+    //å…³é—­æ˜ å°„(æ–‡ä»¶)
     int close();
 
-    //É¾³ıÓ³ÉäµÄÎÄ¼ş£¬µ±È»ÕıÔÚÓ³Éä(»òÕß»¹ÓĞÈËÔÚÓ³Éä)µÄÊ±ºò²»ÄÜÉ¾³ı
+    //åˆ é™¤æ˜ å°„çš„æ–‡ä»¶ï¼Œå½“ç„¶æ­£åœ¨æ˜ å°„(æˆ–è€…è¿˜æœ‰äººåœ¨æ˜ å°„)çš„æ—¶å€™ä¸èƒ½åˆ é™¤
     int remove();
 
-    //Í¬²½ÎÄ¼ş
+    //åŒæ­¥æ–‡ä»¶
     int flush();
 
-    //·µ»ØÓ³ÉäµÄÄÚ´æµØÖ·
+    //è¿”å›æ˜ å°„çš„å†…å­˜åœ°å€
     void *addr();
 
 protected:
 
-    //Ó³ÉäÎÄ¼şµÄÃû³Æ
+    //æ˜ å°„æ–‡ä»¶çš„åç§°
     std::string         shm_name_;
 
-    //Ó³ÉäµÄÄÚ´æµØÖ·
+    //æ˜ å°„çš„å†…å­˜åœ°å€
     void               *mmap_addr_;
 
-    // Ó³ÉäµÄÎÄ¼ş¾ä±ú
+    // æ˜ å°„çš„æ–‡ä»¶å¥æŸ„
     ZCE_HANDLE          mmap_handle_;
 
-    //Ó³ÉäµÄ¹²ÏíÄÚ´æ´óĞ¡
+    //æ˜ å°„çš„å…±äº«å†…å­˜å¤§å°
     std::size_t         shm_size_;
 };
 

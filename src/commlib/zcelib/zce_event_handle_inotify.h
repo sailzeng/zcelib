@@ -3,68 +3,68 @@
 * @filename   zce_event_handle_inotify.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013��4��1��
+* @date       2013年4月1日
 *
-* @brief      һ��������Linux��Windows��Inotify���¼�������࣬���Ŀ¼�µ��ļ��仯�ķ�װ��
-*             ���Լ������Ŀ¼�ķ�ӳ�����ڼ���ļ�ϵͳ�ı仯��
-*             ������Ŀ���Ǻ�Reactor����ݣ����Ҹ�����Ȼ
-*             Linux ����ʹ��EPOLL Reactor��Select Reactor
-*             Windows ��ֻ��ʹ��WFMO Reactor
+* @brief      一个用于在Linux，Windows，Inotify的事件句柄基类，监控目录下的文件变化的封装，
+*             可以监听多个目录的反映，用于监控文件系统的变化。
+*             这个类的目的是和Reactor类兼容，而且更加自然
+*             Linux 可以使用EPOLL Reactor，Select Reactor
+*             Windows 下只能使用WFMO Reactor
 *
-* @details    Linux��ʹ�õ�INotify+SELECT���ƣ���Windows��ʹ��ReadDirectoryChangesW��OverLapped
-*             ����Windows��LINUX�ڼ���ļ��仯�ϲ��ʵ���е��
-*             Linux��ʹ�õ�INotify+SELECT���ƣ���Windows��ʹ��ReadDirectoryChangesW��OverLapped
-*             1.Windows��һ���첽��OverLapped�����ù��̣���Linux��һ��IO���ù��̣�������ȫһ�¡�
-*             2.Windows ��ֻ�ܼ���MAXIMUM_WAIT_OBJECTS��Ŀ¼����Linux û������
-*             3.Windows ֻ�ܼ���Ŀ¼�������ܼ����ļ�
-*             4.Windows ���Լ����Ŀ¼����Linux�����ԡ�
-*             5.Windows ���Լ�ص����ͺ��١���������
-*             6.Linux��ص���һ���豸�������Windows�Ƕ�ÿ��Ŀ¼�ľ�����д���
-*             Ŀǰֻ�ܿ�����һ�����ߵĲ�ν��з�װ�ˣ�������OS�����ˡ�
+* @details    Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
+*             由于Windows和LINUX在监控文件变化上差别实在有点大。
+*             Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
+*             1.Windows是一个异步（OverLapped）调用过程，而Linux是一个IO复用过程，很难完全一致。
+*             2.Windows 下只能监听MAXIMUM_WAIT_OBJECTS个目录，而Linux 没有限制
+*             3.Windows 只能监听目录，而不能监听文件
+*             4.Windows 可以监控子目录，而Linux不可以。
+*             5.Windows 可以监控的类型很少……，……
+*             6.Linux监控的是一个设备句柄，而Windows是对每个目录的句柄进行处理
+*             目前只能考虑用一个更高的层次进行封装了，不能在OS层搞掂了。
 *
-*             ����²�һ�£����˷�ָ��Windows API����ĩ���inotify��windows�·�װһ��
-*             �����õ���ReadDirectoryChangesW + FindFirstChangeNotification ,
-*             FindNextChangeNotification��һϵ�к�����
-*             1.��������Windows IO���ƣ�ʹ�÷�ʽ�ͳ���TMD�Ķ��ˡ�����㲻��ʹ��������ģʽ�����Ҫ��
-*             Overlapped������Ӵ򽻵����ð�Windows IO���������ģ����Ҳ���ˡ���
-*             FindFirstChangeNotification�ֱ����ڳ��Ǿ��+WaitForSingleObjectģʽ������������
-*             �θ㡣
-*             2.ReadDirectoryChangesW ��������صĲ���dwNotifyFilter �����ͷ��ص�Action��ȫ����
-*             ���¡����Ե���õ�Actionʱ�������ж��Ķ�����ʵ���١�����Inotify�ĵļ��ϸ�֣���ֱ��ֵһ�ᡣ
-*             FindFirstChangeNotification �����͸��Ӳ�ֵһ���ˡ���֪�����鷢���ˣ�����ȫ��֪��������
-*             ʲô��������
-*             3.Windows ���Լ�����ļ��У���������Windows API����Ψһ��ɪһ�µĶ���
-*             ��inotify�ĺ���һ�ȣ�����Windows API�������Ӧ��������¥��
-*
-*
-*             �������Select ��Epoll Reactorһ��ʹ�ã�ZCE_Event_INotify�Ǹ��õ�ѡ��
-*             Kliu���ѣ�EpollҲ�������ڴ���Inotify��ʱ�䷴Ӧ�����ش���������ʾ��л��
+*             最后吐槽一下，令人发指的Windows API，周末想把inotify在windows下封装一个
+*             可以用的是ReadDirectoryChangesW + FindFirstChangeNotification ,
+*             FindNextChangeNotification这一系列函数。
+*             1.如果配合上Windows IO机制，使用方式就超级TMD的多了。如果你不想使用阻塞的模式，你就要和
+*             Overlapped这个孩子打交道。好吧Windows IO就是这样的，这个也忍了。但
+*             FindFirstChangeNotification又被折腾成是句柄+WaitForSingleObject模式，这你让人如
+*             何搞。
+*             2.ReadDirectoryChangesW 函数，监控的参数dwNotifyFilter 参数和返回的Action完全是两
+*             回事。所以当你得到Action时，你能判定的东东其实很少。比起Inotify的的监控细分，简直不值一提。
+*             FindFirstChangeNotification 函数就更加不值一提了。你知道事情发生了，你完全不知道事情是
+*             什么…………
+*             3.Windows 可以监控子文件夹，这个大概是Windows API可以唯一得瑟一下的东东
+*             和inotify的函数一比，这组Windows API的设计者应该掩面跳楼。
 *
 *
-* @note      ԭ��ΪInotify����д��һ����Ӧ����event ���룬����Kliu��Ȱ���¿������������ǿ���
-*            ��Linux�����÷�Ӧ��ʹ�������event handle����������ʵ����WFMO ��Reactor��
-*            �Ͱ�Windows ���ֵĴ���Ҳͳһ�����ˣ�
+*             而且想和Select 和Epoll Reactor一起使用，ZCE_Event_INotify是更好的选择。
+*             Kliu提醒，Epoll也可以用于处理Inotify的时间反应器，特此修正，表示感谢。
 *
 *
-* �����Ź�������ȥ��10���꣬
-* ��Ȼ�ǵ����죬2003���4��1���°࣬�ǵ��������ӣ���ҵ������
-* �Һ�Linhai,Zhangke �ڿƼ�԰�Ĵ���й䣬Linhai����һ��
-* ���ĵ�������ڶ�������������ج�ġ���Щ�¾��������ɡ�
+* @note      原来为Inotify单独写了一个反应器和event 代码，但在Kliu的劝解下考虑再三，还是考虑
+*            在Linux下先用反应器使用了这个event handle，后面慢慢实现了WFMO 的Reactor，
+*            就把Windows 部分的代码也统一过来了，
 *
-* ���ҡ�
-* �ݳ����Ź���  ��ʣ���Ϧ
+*
+* 纪念张国荣先生去世10周年，
+* 仍然记得那天，2003年的4月1日下班，非典仍在肆掠，百业萧条，
+* 我和Linhai,Zhangke 在科技园的大冲闲逛，Linhai淘了一张
+* 哥哥的碟。结果第二天就听到了这个噩耗。有些事就是这样巧。
+*
+* 《我》
+* 演唱：张国荣  歌词：林夕
 * i am what i am
-* ����Զ������������
-* �����ǡ����ֵķ�ʽ��ֻһ��
-* �������ǡ�˭���������ߵĹ���
-* �������㡡Ϊ��ϲ�����������
-* ���÷�ī����վ�ڹ����Ľ���
-* #�Ҿ����ҡ�����ɫ��һ�����̻�
-* ��պ�����Ҫ�����ǿ����ĭ
-* ��ϲ���ҡ���Ǿޱ����һ�ֽ��
-* �¶���ɳĮ�һ��ʢ�ŵĳ�����
-* ��ô���ˡ����������п�������
-* ������˵��ʲô�ǹ���������
+* 我永远都爱这样的我
+* 快乐是　快乐的方式不只一种
+* 最荣幸是　谁都是造物者的光荣
+* 不用闪躲　为我喜欢的生活而活
+* 不用粉墨　就站在光明的角落
+* #我就是我　是颜色不一样的烟火
+* 天空海阔　要做最坚强的泡沫
+* 我喜欢我　让蔷薇开出一种结果
+* 孤独的沙漠里　一样盛放的赤裸裸
+* 多么高兴　在琉璃屋中快乐生活
+* 对世界说　什么是光明和磊落
 *
 */
 
@@ -76,42 +76,42 @@
 class ZCE_Reactor;
 
 /*!
-@brief      INotify �¼������ľ������Linux��ʹ�ã�����ʹ��ZCE_Select_Reactor��ZCE_Epoll_Reactor
-            ��Ϊ��Ӧ����������
-            ��Windows �£�Ҫ��ZCE_WFMO_Reactor��
+@brief      INotify 事件处理的句柄，在Linux下使用，可以使用ZCE_Select_Reactor，ZCE_Epoll_Reactor
+            作为反应器，被调用
+            在Windows 下，要用ZCE_WFMO_Reactor，
 */
 class ZCE_Event_INotify : public ZCE_Event_Handler
 {
 public:
 
     /*!
-    @brief      ���캯����ͬʱ������۵ķ�Ӧ��ָ��
-    @param      reactor �����صķ�Ӧ��ָ��
+    @brief      构造函数，同时设置香港的反应器指针
+    @param      reactor 句柄相关的反应器指针
     */
     ZCE_Event_INotify(void);
     /*!
-    @brief      ��������
+    @brief      析构函数
     */
     virtual ~ZCE_Event_INotify();
 
 public:
 
     /*!
-    @brief      �򿪼�ؾ���ȣ���reactor��
-    @param      reactor_base �����صķ�Ӧ��ָ��,
-    @return     ����0��ʾ�ɹ�������ʧ��
+    @brief      打开监控句柄等，绑定reactor等
+    @param      reactor_base 句柄相关的反应器指针,
+    @return     返回0表示成功，否则失败
     */
     int open(ZCE_Reactor *reactor_base);
 
     /*!
-    @brief      �رռ�ؾ���ȣ�ȡ����reactor��
-    @return     ����0��ʾ�ɹ�������ʧ��
+    @brief      关闭监控句柄等，取消绑定reactor等
+    @return     返回0表示成功，否则失败
     */
     int close();
 
     /*!
-    @brief      ȡ�ض�Ӧ��ZCE_SOCKET ���
-    @return     int ZCE_Event_INotify ��Ӧ�ľ����ע��LINUX�¾����ZCE_SOCKET����int
+    @brief      取回对应的ZCE_SOCKET 句柄
+    @return     int ZCE_Event_INotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
     */
     virtual ZCE_HANDLE get_handle(void) const
     {
@@ -123,12 +123,12 @@ public:
     }
 
     /*!
-    @brief      ����һ��Ҫ���м�ص��ļ�����
-    @return     int           ����0��ʾ�ɹ�������-1��ʾʧ��
-    @param[in]  pathname      ��ص�·��
-    @param[in]  mask          ��ص�ѡ��
-    @param[out] watch_handle  ���صļ�ض�Ӧ�ľ��
-    @param[in]  watch_sub_dir �Ƿ�����Ŀ¼���˲���ֻ��Windows�����ã�
+    @brief      增加一个要进行监控的文件对象
+    @return     int           返回0表示成功，返回-1表示失败
+    @param[in]  pathname      监控的路径
+    @param[in]  mask          监控的选项
+    @param[out] watch_handle  返回的监控对应的句柄
+    @param[in]  watch_sub_dir 是否监控子目录，此参数只在Windows下有用，
     */
     int add_watch(const char *pathname,
                   uint32_t mask,
@@ -136,16 +136,16 @@ public:
                   bool watch_sub_dir = false);
 
     /*!
-    @brief      ͨ���ļ�������Ƴ�һ��Ҫ��ص���Ŀ��
-    @return     int          ����0��ʾ�ɹ�������-1��ʾʧ��
-    @param[in]  watch_handle ���Ŀ¼���ļ����,Windwos �����������Ч
+    @brief      通过文件句柄，移除一个要监控的项目，
+    @return     int          返回0表示成功，返回-1表示失败
+    @param[in]  watch_handle 监控目录的文件句柄,Windwos 下这个参数无效
     */
     int rm_watch(ZCE_HANDLE watch_handle);
 
     /*!
-    @brief      ��ȡ�¼��������ú��������ڶ�ȡ���ݣ�����ʱ�䷢��ʱ������������ص���
-                �����ڲ��������巢�����¼���
-    @return     int ����0��ʾ�������������return -1�󣬷�Ӧ��������handle_close�������������
+    @brief      读取事件触发调用函数，用于读取数据，当有时间发生时，这个函数被回调，
+                函数内部分析具体发生的事件，
+    @return     int 返回0表示句柄处理正常，return -1后，反应器会主动handle_close，帮助结束句柄
     */
     virtual int handle_input();
 
@@ -155,17 +155,17 @@ public:
     */
     virtual int handle_close();
 
-    ///��Ҫ��̳�ʹ�õ��麯�������עʲô�¼���������ʲô����
+    ///需要你继承使用的虚函数，你关注什么事件，就重载什么函数
 protected:
 
     /*!
-    @brief      ��⵽���ļ���Ŀ¼�������Ļص��������������Ҫ����������Ϊ����̳����أ�
-                ��Ӧ����IN_CREATE�����溯���Ĳ��������ƣ���ο�inotify_create��
-    @return     int          ����0��ʾ�ɹ�������-1��ʾ
-    @param[in]  watch_handle ����ļ������ע���Ǽ�صľ�������ǲ����ļ��ľ��
-    @param[in]  watch_mask   ��ط�������Ϊ�����룬����ͨ�������ж����ļ�����Ŀ¼
-    @param[in]  watch_path   ��ص�·��
-    @param[in]  active_path  ������������Ϊ���ļ�����Ŀ¼��·��
+    @brief      监测到有文件，目录创建，的回调函数，如果你需要处理这种行为，清继承重载，
+                对应掩码IN_CREATE，下面函数的参数都类似，请参考inotify_create，
+    @return     int          返回0表示成功，返回-1表示
+    @param[in]  watch_handle 监控文件句柄，注意是监控的句柄，不是操作文件的句柄
+    @param[in]  watch_mask   监控发生的行为的掩码，可以通过掩码判断是文件还是目录
+    @param[in]  watch_path   监控的路径
+    @param[in]  active_path  发生动作，行为的文件或者目录的路径
     */
     virtual int inotify_create(ZCE_HANDLE watch_handle,
                                uint32_t watch_mask,
@@ -179,7 +179,7 @@ protected:
         return 0;
     }
 
-    ///��⵽��ɾ���ļ�����Ŀ¼,��Ӧ����IN_DELETE������˵���ο�@fun inotify_create
+    ///监测到有删除文件或者目录,对应掩码IN_DELETE，参数说明参考@fun inotify_create
     virtual int inotify_delete(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
@@ -188,7 +188,7 @@ protected:
         return 0;
     }
 
-    ///��⵽���ļ����޸�,��Ӧ����IN_MODIFY������˵���ο�@fun inotify_create
+    ///监测到有文件被修改,对应掩码IN_MODIFY，参数说明参考@fun inotify_create
     virtual int inotify_modify(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
@@ -197,7 +197,7 @@ protected:
         return 0;
     }
 
-    ///����ļ���ĳ��Ŀ¼�ƶ���ȥ��IN_MOVED_FROM,����˵���ο�@fun inotify_create
+    ///监控文件从某个目录移动出去，IN_MOVED_FROM,参数说明参考@fun inotify_create
     virtual int inotify_moved_from(ZCE_HANDLE /*watch_handle*/,
                                    uint32_t /*watch_mask*/,
                                    const char * /*watch_path*/,
@@ -206,8 +206,8 @@ protected:
         return 0;
     }
 
-    ///����ļ��ƶ���ĳ��Ŀ¼��IN_MOVED_TO,(���Լ�����ֻ���ڼ��Ŀ¼���ƶ��Żᷢ������¼�),
-    ///����˵���ο�@fun inotify_create
+    ///监控文件移动到某个目录，IN_MOVED_TO,(我自己测试只有在监控目录下移动才会发生这个事件),
+    ///参数说明参考@fun inotify_create
     virtual int inotify_moved_to(ZCE_HANDLE /*watch_handle*/,
                                  uint32_t /*watch_mask*/,
                                  const char * /*watch_path*/,
@@ -216,7 +216,7 @@ protected:
         return 0;
     }
 
-    ///�������Ŀ¼���ļ�������ʱ���ص���IN_ACCESS,����˵���ο�@fun inotify_create
+    ///发生监控目录下文件被访问时被回调，IN_ACCESS,参数说明参考@fun inotify_create
     virtual int inotify_access(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
@@ -225,7 +225,7 @@ protected:
         return 0;
     }
 
-    ///�������Ŀ¼���ļ�����ʱ���ص���IN_OPEN,����˵���ο�@fun inotify_create
+    ///发生监控目录下文件被打开时被回调，IN_OPEN,参数说明参考@fun inotify_create
     virtual int inotify_open(ZCE_HANDLE /*watch_handle*/,
                              uint32_t /*watch_mask*/,
                              const char * /*watch_path*/,
@@ -234,8 +234,8 @@ protected:
         return 0;
     }
 
-    ///�������Ŀ¼���ļ����ر��¼�ʱ���ص���IN_CLOSE_WRITE,IN_CLOSE_NOWRITE,
-    ///����˵���ο�@fun inotify_create
+    ///发生监控目录下文件被关闭事件时被回调，IN_CLOSE_WRITE,IN_CLOSE_NOWRITE,
+    ///参数说明参考@fun inotify_create
     virtual int inotify_close(ZCE_HANDLE /*watch_handle*/,
                               uint32_t /*watch_mask*/,
                               const char * /*watch_path*/,
@@ -244,9 +244,9 @@ protected:
         return 0;
     }
 
-    ///����Ŀ¼�����ļ�����Ŀ¼���Ա��޸��¼�ʱ���ص���IN_ATTRIB�� permissions, timestamps,
+    ///发生目录下有文件或者目录属性被修改事件时被回调，IN_ATTRIB， permissions, timestamps,
     ///extended attributes, link count (since Linux 2.6.25), UID, GID,
-    ///����˵���ο�@fun inotify_create
+    ///参数说明参考@fun inotify_create
     virtual int inotify_attrib(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
@@ -255,7 +255,7 @@ protected:
         return 0;
     }
 
-    ///������ص�Ŀ¼���ƶ�ʱ���ص���IN_MOVE_SELF,����˵���ο�@fun inotify_create
+    ///发生监控的目录被移动时被回调，IN_MOVE_SELF,参数说明参考@fun inotify_create
     virtual int inotify_move_slef(ZCE_HANDLE /*watch_handle*/,
                                   uint32_t /*watch_mask*/,
                                   const char * /*watch_path*/,
@@ -264,7 +264,7 @@ protected:
         return 0;
     }
 
-    ///������ص�Ŀ¼��ɾ��ʱ���ص���IN_DELETE_SELF,����˵���ο�@fun inotify_create
+    ///发生监控的目录被删除时被回调，IN_DELETE_SELF,参数说明参考@fun inotify_create
     virtual int inotify_delete_slef(ZCE_HANDLE /*watch_handle*/,
                                     uint32_t /*watch_mask*/,
                                     const char * /*watch_path*/,
@@ -275,58 +275,58 @@ protected:
 
 protected:
 
-    ///�����ļ���صĽڵ�
+    ///进行文件监控的节点
     struct EVENT_INOTIFY_NODE
     {
         EVENT_INOTIFY_NODE() :
             watch_handle_(ZCE_INVALID_HANDLE),
             watch_mask_(0)
         {
-            watch_path_[0] = '\0';
+            watch_path_[MAX_PATH] = '\0';
         }
         ~EVENT_INOTIFY_NODE()
         {
         }
 
-        ///��صľ��
+        ///监控的句柄
         ZCE_HANDLE              watch_handle_;
-        ///���ӵ��ļ�·��
+        ///监视的文件路径
         char                    watch_path_[MAX_PATH + 1];
-        ///����������
+        ///监控项的掩码
         uint32_t                watch_mask_;
     };
 
 protected:
 
-    ///BUFFER�ĳ���
+    ///BUFFER的长度
     static const size_t     READ_BUFFER_LEN = 16 * 1024 - 1;
 
 protected:
 
 #if defined ZCE_OS_LINUX
-    ///EINN��Event��Inotify Node����д
+    ///EINN是Event，Inotify Node的缩写
     typedef std::unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
-    ///��Ӧ��������Ŀ¼�ڵ���Ϣ��MAP,
+    ///反应器管理的目录节点信息的MAP,
     HDL_TO_EIN_MAP     watch_event_map_;
 
-    ///inotify_init ��ʼ���õ��ľ��
+    ///inotify_init 初始化得到的句柄
     int                inotify_handle_;
 
 #elif defined ZCE_OS_WINDOWS
 
-    ///��صľ��
+    ///监控的句柄
     ZCE_HANDLE        watch_handle_;
-    ///���ӵ��ļ�·��
+    ///监视的文件路径
     char              watch_path_[MAX_PATH + 1];
-    ///����������
+    ///监控项的掩码
     uint32_t          watch_mask_;
-    ///over lapped ʹ�õĶ���
+    ///over lapped 使用的对象
     OVERLAPPED        over_lapped_;
-    ///�Ƿ�����Ŀ¼
+    ///是否监控子目录
     BOOL              watch_sub_dir_;
 #endif
 
-    ///��ȡ��Buffer��
+    ///读取的Buffer，
     char              *read_buffer_;
 };
 

@@ -9,7 +9,7 @@ template <class _ZCE_SYNCH > class NotifyTrans_Manger;
 
 class NotifyTrans_TaskBase : public ZCE_Thread_Task
 {
-    //¸øÒ»¸öÓÑÔµ
+    //ç»™ä¸€ä¸ªå‹ç¼˜
     friend class NotifyTrans_Manger<ZCE_MT_SYNCH>;
 
 public:
@@ -17,36 +17,36 @@ public:
     virtual ~NotifyTrans_TaskBase();
 public:
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     int initialize( NotifyTrans_Manger<ZCE_MT_SYNCH> *trans_notify_mgr,
                     size_t once_max_get_sendqueue = DEFAULT_ONCE_MAX_GET_SENDQUEUE,
                     SERVICES_ID mgr_svc_id =  SERVICES_ID(0, 0),
                     SERVICES_ID thread_svc_id = SERVICES_ID(0, 0)
                   );
-    //Í£Ö¹Ïß³ÌÔËĞĞ
+    //åœæ­¢çº¿ç¨‹è¿è¡Œ
     void stop_task_run();
 
 public:
 
-    //¿ËÂ¡×Ô¼º£¬ÓÃÓÚ¹¤³§´´½¨×Ô¼º
+    //å…‹éš†è‡ªå·±ï¼Œç”¨äºå·¥å‚åˆ›å»ºè‡ªå·±
     virtual NotifyTrans_TaskBase *task_clone() const = 0;
 
 protected:
 
-    //ÈÎÎñ³õÊ¼»¯µÄÊ±ºò
+    //ä»»åŠ¡åˆå§‹åŒ–çš„æ—¶å€™
     virtual int task_initialize();
-    //ÈÎÎñ³õÊ¼»¯µÄÊ±ºò
+    //ä»»åŠ¡åˆå§‹åŒ–çš„æ—¶å€™
     virtual int task_finish();
 
-    //task×Ô¼º´¦ÀíµÄº¯Êı£¬Èç¹û
+    //taskè‡ªå·±å¤„ç†çš„å‡½æ•°ï¼Œå¦‚æœ
     virtual int task_moonlighting (size_t &send_frame_num);
 
-    //ÈÎÎñ¸ù¾İFRAMEµÄ´¦Àí
+    //ä»»åŠ¡æ ¹æ®FRAMEçš„å¤„ç†
     virtual int taskprocess_appframe(const Zerg_App_Frame *app_frame) = 0;
 
 protected:
 
-    //½«Êı¾İ·ÅÈë¹ÜÀíÆ÷£¬
+    //å°†æ•°æ®æ”¾å…¥ç®¡ç†å™¨ï¼Œ
     template <class T>
     int pushbak_mgr_recvqueue(const Zerg_App_Frame *recv_frame,
                               unsigned int cmd,
@@ -63,12 +63,12 @@ protected:
         rsp_msg->proxy_service_ = recv_frame->proxy_service_;
         rsp_msg->send_service_ = recv_frame->recv_service_;
 
-        //ÌîĞ´×Ô¼ºtransaction_id_,
+        //å¡«å†™è‡ªå·±transaction_id_,
         rsp_msg->transaction_id_ = 0;
         rsp_msg->backfill_trans_id_ = recv_frame->transaction_id_;
         rsp_msg->app_id_ = recv_frame->app_id_;
 
-        //¿½±´·¢ËÍµÄMSG Block
+        //æ‹·è´å‘é€çš„MSG Block
         int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
@@ -76,15 +76,15 @@ protected:
             return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
         }
 
-        //ÏÂÃæµÄ´úÂëÊÇÎªÁË±ÜÃâËÀËø£¬µ«ÊÇ´ÓµÀÀíÉÏ½²£¬QUEUE²»´æÔÚËÀËøµÄÌõ¼ş£¬
-        //ËùÓĞÈËdequeue,enqueue¶¼ÊÇÒ»¸öºÜ¶ÌµÄ¹ı³Ì£¬Ê¹ÓÃÍêÁËQUEUEËø¾Í»áÊÍ·Å£¬ËùÒÔ´«ÈëNULLÀíÂÛÉÏÒ²¿ÉÒÔ¡£
-        //»¹ÊÇÉè¸ö³¬Ê±±È½ÏºÃ£¬1sµÄÊ±¼ä¶ÔÓÚ·şÎñÆ÷¶øÑÔ£¬ºÜÂş³¤ÁË
-        //Õâ¸öµØ·½²»ÓÃtryµÄÔ­ÒòÊÇÈç¹ûÕâ¶ùÒª½øĞĞ´íÎó´¦Àí£¬ºÜÂé·³£¬
+        //ä¸‹é¢çš„ä»£ç æ˜¯ä¸ºäº†é¿å…æ­»é”ï¼Œä½†æ˜¯ä»é“ç†ä¸Šè®²ï¼ŒQUEUEä¸å­˜åœ¨æ­»é”çš„æ¡ä»¶ï¼Œ
+        //æ‰€æœ‰äººdequeue,enqueueéƒ½æ˜¯ä¸€ä¸ªå¾ˆçŸ­çš„è¿‡ç¨‹ï¼Œä½¿ç”¨å®Œäº†QUEUEé”å°±ä¼šé‡Šæ”¾ï¼Œæ‰€ä»¥ä¼ å…¥NULLç†è®ºä¸Šä¹Ÿå¯ä»¥ã€‚
+        //è¿˜æ˜¯è®¾ä¸ªè¶…æ—¶æ¯”è¾ƒå¥½ï¼Œ1sçš„æ—¶é—´å¯¹äºæœåŠ¡å™¨è€Œè¨€ï¼Œå¾ˆæ¼«é•¿äº†
+        //è¿™ä¸ªåœ°æ–¹ä¸ç”¨tryçš„åŸå› æ˜¯å¦‚æœè¿™å„¿è¦è¿›è¡Œé”™è¯¯å¤„ç†ï¼Œå¾ˆéº»çƒ¦ï¼Œ
         ZCE_Time_Value wait_sec(1, 0);
         ret = trans_notify_mgr_->enqueue_recvqueue(rsp_msg,
                                                    &wait_sec);
 
-        //°´ÕÕÎÒÃÇ¼ÆËãµÄÊıÖµ£¬ÀíÂÛ¿ÉÒÔÎŞÏŞµÈ´ı£¬³ı·ÇÇ°ÃæµÄ´¦ÀíÄÜÁ¦ºÜÈõ
+        //æŒ‰ç…§æˆ‘ä»¬è®¡ç®—çš„æ•°å€¼ï¼Œç†è®ºå¯ä»¥æ— é™ç­‰å¾…ï¼Œé™¤éå‰é¢çš„å¤„ç†èƒ½åŠ›å¾ˆå¼±
         if ( ret != 0 )
         {
             ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
@@ -95,7 +95,7 @@ protected:
         return 0;
     }
 
-    //½«Êı¾İ·ÅÈë¹ÜÀíÆ÷£¬
+    //å°†æ•°æ®æ”¾å…¥ç®¡ç†å™¨ï¼Œ
     template <class T>
     int pushbak_mgr_recvqueue(unsigned int cmd,
                               const T &info,
@@ -114,12 +114,12 @@ protected:
         rsp_msg->proxy_service_ = proxy_svcid;
         rsp_msg->send_service_ = thread_svc_id_;
 
-        //ÌîĞ´×Ô¼ºtransaction_id_,
+        //å¡«å†™è‡ªå·±transaction_id_,
         rsp_msg->transaction_id_ = 0;
         rsp_msg->backfill_trans_id_ = backfill_trans_id;
         rsp_msg->app_id_ = 0;
 
-        //¿½±´·¢ËÍµÄMSG Block
+        //æ‹·è´å‘é€çš„MSG Block
         int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
@@ -127,16 +127,16 @@ protected:
             return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
         }
 
-        //ÏÂÃæµÄ´úÂëÊÇÎªÁË±ÜÃâËÀËø£¬µ«ÊÇ´ÓµÀÀíÉÏ½²£¬QUEUE²»´æÔÚËÀËøµÄÌõ¼ş£¬
-        //ËùÓĞÈËdequeue,enqueue¶¼ÊÇÒ»¸öºÜ¶ÌµÄ¹ı³Ì£¬Ê¹ÓÃÍêÁËQUEUEËø¾Í»áÊÍ·Å£¬ËùÒÔ´«ÈëNULLÀíÂÛÉÏÒ²¿ÉÒÔ¡£
-        //»¹ÊÇÉè¸ö³¬Ê±±È½ÏºÃ£¬1sµÄÊ±¼ä¶ÔÓÚ·şÎñÆ÷¶øÑÔ£¬ºÜÂş³¤ÁË
-        //Õâ¸öµØ·½²»ÓÃtryµÄÔ­ÒòÊÇÈç¹ûÕâ¶ùÒª½øĞĞ´íÎó´¦Àí£¬ºÜÂé·³£¬
+        //ä¸‹é¢çš„ä»£ç æ˜¯ä¸ºäº†é¿å…æ­»é”ï¼Œä½†æ˜¯ä»é“ç†ä¸Šè®²ï¼ŒQUEUEä¸å­˜åœ¨æ­»é”çš„æ¡ä»¶ï¼Œ
+        //æ‰€æœ‰äººdequeue,enqueueéƒ½æ˜¯ä¸€ä¸ªå¾ˆçŸ­çš„è¿‡ç¨‹ï¼Œä½¿ç”¨å®Œäº†QUEUEé”å°±ä¼šé‡Šæ”¾ï¼Œæ‰€ä»¥ä¼ å…¥NULLç†è®ºä¸Šä¹Ÿå¯ä»¥ã€‚
+        //è¿˜æ˜¯è®¾ä¸ªè¶…æ—¶æ¯”è¾ƒå¥½ï¼Œ1sçš„æ—¶é—´å¯¹äºæœåŠ¡å™¨è€Œè¨€ï¼Œå¾ˆæ¼«é•¿äº†
+        //è¿™ä¸ªåœ°æ–¹ä¸ç”¨tryçš„åŸå› æ˜¯å¦‚æœè¿™å„¿è¦è¿›è¡Œé”™è¯¯å¤„ç†ï¼Œå¾ˆéº»çƒ¦ï¼Œ
         ZCE_Time_Value wait_sec(1, 0);
 
         ret = trans_notify_mgr_->enqueue_recvqueue(rsp_msg,
                                                    &wait_sec);
 
-        //°´ÕÕÎÒÃÇ¼ÆËãµÄÊıÖµ£¬ÀíÂÛ¿ÉÒÔÎŞÏŞµÈ´ı£¬³ı·ÇÇ°ÃæµÄ´¦ÀíÄÜÁ¦ºÜÈõ
+        //æŒ‰ç…§æˆ‘ä»¬è®¡ç®—çš„æ•°å€¼ï¼Œç†è®ºå¯ä»¥æ— é™ç­‰å¾…ï¼Œé™¤éå‰é¢çš„å¤„ç†èƒ½åŠ›å¾ˆå¼±
         if ( ret != 0 )
         {
             ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
@@ -153,27 +153,27 @@ protected:
 
 protected:
 
-    //Ä¬ÈÏÒ»´Î×î´ó´ÓMGR·¢ËÍ¶ÓÁĞÖĞÈ¡³öµÄframeÊıÁ¿£¬²»ÉèÖÃµÄ¹ı´óµÄÔ­ÒòÊÇÕâÊÇ¶àÏß³Ì
+    //é»˜è®¤ä¸€æ¬¡æœ€å¤§ä»MGRå‘é€é˜Ÿåˆ—ä¸­å–å‡ºçš„frameæ•°é‡ï¼Œä¸è®¾ç½®çš„è¿‡å¤§çš„åŸå› æ˜¯è¿™æ˜¯å¤šçº¿ç¨‹
     static const size_t DEFAULT_ONCE_MAX_GET_SENDQUEUE = 32;
 
-    //½øÈëĞİÏ¢×´Ì¬µÄãĞÖµ
+    //è¿›å…¥ä¼‘æ¯çŠ¶æ€çš„é˜ˆå€¼
     static const size_t DEFAULT_IDLE_PROCESS_THRESHOLD = 32;
 
 protected:
 
-    //Trans ¹ÜÀíÆ÷
+    //Trans ç®¡ç†å™¨
     NotifyTrans_Manger<ZCE_MT_SYNCH>      *trans_notify_mgr_;
 
-    //Ò»´Î×î´ó´ÓMGR·¢ËÍ¶ÓÁĞÖĞÈ¡³öµÄframeÊıÁ¿£¬
+    //ä¸€æ¬¡æœ€å¤§ä»MGRå‘é€é˜Ÿåˆ—ä¸­å–å‡ºçš„frameæ•°é‡ï¼Œ
     size_t                                 once_max_get_sendqueue_;
 
-    //Õâ¸ö
+    //è¿™ä¸ª
     SERVICES_ID                            mgr_svc_id_;
 
     //
     SERVICES_ID                            thread_svc_id_;
 
-    //TASKÊÇ·ñÔÚÔËĞĞ
+    //TASKæ˜¯å¦åœ¨è¿è¡Œ
     bool                                   task_run_;
 
     //QQPET APPFRAME

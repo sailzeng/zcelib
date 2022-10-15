@@ -3,8 +3,8 @@
 * @filename   zce_timer_queue_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2008Äê10ÔÂ6ÈÕ
-* @brief      Timer¶ÓÁĞ´¦ÀíµÄ»ùÀà
+* @date       2008å¹´10æœˆ6æ—¥
+* @brief      Timeré˜Ÿåˆ—å¤„ç†çš„åŸºç±»
 *
 * @details
 *
@@ -26,64 +26,39 @@ class ZCE_Timer_Queue_Base : public ZCE_NON_Copyable
 {
 
 public:
-    //ÎŞĞ§µÄÊ±¼äID
+    //æ— æ•ˆçš„æ—¶é—´ID
     static const int  INVALID_TIMER_ID = -1;
 
-    ///´¥·¢Ä£Ê½£¬
+    ///è§¦å‘æ¨¡å¼ï¼Œ
     enum TRIGGER_MODE
     {
 
-        ///¸ù¾İÏµÍ³Ê±ÖÓ½øĞĞ´¥·¢£¬È±µãÊÇ£¬ÔÚÏµÍ³Ê±¼ä±»µ÷ÕûµÄÇé¿öÏÂ£¬»á¶ªÊ§¶¨Ê±Æ÷
+        ///æ ¹æ®ç³»ç»Ÿæ—¶é’Ÿè¿›è¡Œè§¦å‘ï¼Œç¼ºç‚¹æ˜¯ï¼Œåœ¨ç³»ç»Ÿæ—¶é—´è¢«è°ƒæ•´çš„æƒ…å†µä¸‹ï¼Œä¼šä¸¢å¤±å®šæ—¶å™¨
         TRIGGER_MODE_SYSTEM_CLOCK = 1,
 
-        ///CPU£¬TICK£¬ºÃ´¦¾ø²»¶ªÊ§£¬»µ´¦±£´æ³¬Ê±Ê±¼ä²»ÊÇÇ½ÉÏÊ±ÖÓ£¬
+        ///CPUï¼ŒTICKï¼Œå¥½å¤„ç»ä¸ä¸¢å¤±ï¼Œåå¤„ä¿å­˜è¶…æ—¶æ—¶é—´ä¸æ˜¯å¢™ä¸Šæ—¶é’Ÿï¼Œ
         TRIGGER_MODE_CPU_TICK     = 2,
     };
 
-    //Ä¬ÈÏµÄÊ±¼ä¾«¶È
+    //é»˜è®¤çš„æ—¶é—´ç²¾åº¦
     static const unsigned int DEFAULT_TIMER_PRECISION_MSEC = 100;
 
-    //gethrtime·µ»ØµÄÔ­À´ÊÇÄÉÃë£¬ÎÒÖ»ĞèÒªºÁÃë
+    //gethrtimeè¿”å›çš„åŸæ¥æ˜¯çº³ç§’ï¼Œæˆ‘åªéœ€è¦æ¯«ç§’
     static const uint64_t MSEC_PER_NSEC = 1000000ll;
 
-    //Èç¹û×Ô¶¯À©ÕÅ£¬Ò»´ÎÀ©ÕÅµÄNODEÊıÁ¿
+    //å¦‚æœè‡ªåŠ¨æ‰©å¼ ï¼Œä¸€æ¬¡æ‰©å¼ çš„NODEæ•°é‡
     static const size_t     ONCE_EXTEND_NODE_NUMBER = 1024 * 8;
 
 protected:
     /******************************************************************************************
-    ZCE_TIMER_NODE ¶¨Ê±Æ÷µÄ½Úµã£¬ÓÃÓÚ¶¨Ê±Æ÷µÄ·´Ó¦Æ÷ÄÚ²¿±£´æ¶¨Ê±Æ÷µÄĞÅÏ¢
+    ZCE_TIMER_NODE å®šæ—¶å™¨çš„èŠ‚ç‚¹ï¼Œç”¨äºå®šæ—¶å™¨çš„ååº”å™¨å†…éƒ¨ä¿å­˜å®šæ—¶å™¨çš„ä¿¡æ¯
     ******************************************************************************************/
     struct ZCE_TIMER_NODE
     {
-    public:
-
-        ///¶¨Ê±Æ÷µÄID,²»ºÃÒâË¼£¬ÎÒ²»´òËãÖ§³Ö>22ÒÚ¸ö¶¨Ê±Æ÷£¬ÎÒµ°ÌÛ£¬
-        int                         time_id_;
-
-        ///ÒÔºóÃ¿´Î¼ä¸ôµÄ´¥·¢µÈ´ıÊ±¼ä
-        ZCE_Time_Value              interval_time_;
-
-        ///»Øµ÷µÄÊ±ºò·µ»ØµÄÖ¸Õë£¬ÎÒÖ»ÊÇ±£´æËû£¬¸øÄãÓÃµÄ¡£Äã×Ô¼º°ÑÎÕºÃ
-        const void                 *action_;
-
-        ///¶ÔÓ¦µÄÊ±¼ä¾ä±úµÄµÄÖ¸Õë
-        ZCE_Timer_Handler          *timer_handle_;
-
-        ///ÏÂÒ»´Î´¥·¢µã£¬¿ÉÄÜÊÇÒ»¸ö¾ø¶ÈÊ±¼ä£¬Ò²¿ÉÄÜÊÇÒ»¸öCPU TICKµÄ¼ÆÊı,µ«¶¼ÊÇÒ»¸ö¾ø¶ÔÖµ
-        uint64_t                    next_trigger_point_;
-
-        ///ÊÇ·ñÒÑ¾­´¥·¢¹ıÁË£¬
-        ///yunfeiyang°ïÃ¦·¢ÏÖÁËÒ»¸öbug£¬ÎªÁË½â¾öÕâ¸öbug£¬ÎÒÃÇÔö¼ÓÁËÕâ¸ö×Ö¶Î¡£³ö´í¹ı³ÌÊÇÕâÑùµÄ£¬
-        ///1. dispatch_timerÔÚµ÷ÓÃtimer_timeoutÊ±£¬Èç¹ûtimer_timeoutÖĞÉ¾³ıÁË×Ô¼ºµÄ¶¨Ê±Æ÷£¬ÓÖÔö¼ÓÁË×Ô¼ºµÄ¶¨Ê±Æ÷£¬´ËÊ±Ôö¼ÓµÄ¶¨Ê±Æ÷£¬
-        ///   time_node_idÓëµ±Ç°µÄÔÚdispatch_timerÖĞ´¦ÀíµÄtime_node_idÊÇÒ»ÑùµÄ,(ÒòÎª·ÖÅä¶ÓÁĞµÄÔ­Òò)
-        ///2. dispatchµ÷ÓÃÍêtimer_timeoutºó£¬»áreschedule_timer, reschedule_timer·¢ÏÖÕâ¸ötimerÊÇÒ»´ÎĞÔµÄ£¬É¾³ı£¬Òò´Ëtime_node_id
-        ///   ÔÚ¶¨Ê±Æ÷ÄÚ²¿ÒÑ¾­Ê§Ğ§£¬£¨µ«Íâ²¿²¢²»ÖªµÀ£©
-        ///3. ÔÚÊÂÎñ´¦ÀíÖĞ£¨Íâ²¿£©ÊÍ·ÅÊ±£¬Æä»¹»á´íÎótime_node_idÓĞĞ§£¬ËùÒÔÓÖ»áµ÷ÓÃcancel_timerº¯Êı£¬µ«´ËÊ±Õâ¸ötime_node_idÔÚ¶¨Ê±Æ÷ÄÚ
-        ///   ²¿»áÈÏÎªÒÑ¾­ÊÍ·ÅÁË£¬µ¼ÖÂ³ö´í
-        bool                        already_trigger_;
+    
 
     public:
-        //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+        //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
         ZCE_TIMER_NODE():
             time_id_(INVALID_TIMER_ID),
             interval_time_(ZCE_Time_Value::ZERO_TIME_VALUE),
@@ -107,10 +82,37 @@ protected:
             next_trigger_point_ = 0;
             already_trigger_ = false;
         }
+
+    public:
+
+        ///å®šæ—¶å™¨çš„ID,ä¸å¥½æ„æ€ï¼Œæˆ‘ä¸æ‰“ç®—æ”¯æŒ>22äº¿ä¸ªå®šæ—¶å™¨ï¼Œæˆ‘è›‹ç–¼ï¼Œ
+        int                         time_id_;
+
+        ///ä»¥åæ¯æ¬¡é—´éš”çš„è§¦å‘ç­‰å¾…æ—¶é—´
+        ZCE_Time_Value              interval_time_;
+
+        ///å›è°ƒçš„æ—¶å€™è¿”å›çš„æŒ‡é’ˆï¼Œæˆ‘åªæ˜¯ä¿å­˜ä»–ï¼Œç»™ä½ ç”¨çš„ã€‚ä½ è‡ªå·±æŠŠæ¡å¥½
+        const void* action_;
+
+        ///å¯¹åº”çš„æ—¶é—´å¥æŸ„çš„çš„æŒ‡é’ˆ
+        ZCE_Timer_Handler* timer_handle_;
+
+        ///ä¸‹ä¸€æ¬¡è§¦å‘ç‚¹ï¼Œå¯èƒ½æ˜¯ä¸€ä¸ªç»åº¦æ—¶é—´ï¼Œä¹Ÿå¯èƒ½æ˜¯ä¸€ä¸ªCPU TICKçš„è®¡æ•°,ä½†éƒ½æ˜¯ä¸€ä¸ªç»å¯¹å€¼
+        uint64_t                    next_trigger_point_;
+
+        ///æ˜¯å¦å·²ç»è§¦å‘è¿‡äº†ï¼Œ
+        ///yunfeiyangå¸®å¿™å‘ç°äº†ä¸€ä¸ªbugï¼Œä¸ºäº†è§£å†³è¿™ä¸ªbugï¼Œæˆ‘ä»¬å¢åŠ äº†è¿™ä¸ªå­—æ®µã€‚å‡ºé”™è¿‡ç¨‹æ˜¯è¿™æ ·çš„ï¼Œ
+        ///1. dispatch_timeråœ¨è°ƒç”¨timer_timeoutæ—¶ï¼Œå¦‚æœtimer_timeoutä¸­åˆ é™¤äº†è‡ªå·±çš„å®šæ—¶å™¨ï¼Œåˆå¢åŠ äº†è‡ªå·±çš„å®šæ—¶å™¨ï¼Œæ­¤æ—¶å¢åŠ çš„å®šæ—¶å™¨ï¼Œ
+        ///   time_node_idä¸å½“å‰çš„åœ¨dispatch_timerä¸­å¤„ç†çš„time_node_idæ˜¯ä¸€æ ·çš„,(å› ä¸ºåˆ†é…é˜Ÿåˆ—çš„åŸå› )
+        ///2. dispatchè°ƒç”¨å®Œtimer_timeoutåï¼Œä¼šreschedule_timer, reschedule_timerå‘ç°è¿™ä¸ªtimeræ˜¯ä¸€æ¬¡æ€§çš„ï¼Œåˆ é™¤ï¼Œå› æ­¤time_node_id
+        ///   åœ¨å®šæ—¶å™¨å†…éƒ¨å·²ç»å¤±æ•ˆï¼Œï¼ˆä½†å¤–éƒ¨å¹¶ä¸çŸ¥é“ï¼‰
+        ///3. åœ¨äº‹åŠ¡å¤„ç†ä¸­ï¼ˆå¤–éƒ¨ï¼‰é‡Šæ”¾æ—¶ï¼Œå…¶è¿˜ä¼šé”™è¯¯time_node_idæœ‰æ•ˆï¼Œæ‰€ä»¥åˆä¼šè°ƒç”¨cancel_timerå‡½æ•°ï¼Œä½†æ­¤æ—¶è¿™ä¸ªtime_node_idåœ¨å®šæ—¶å™¨å†…
+        ///   éƒ¨ä¼šè®¤ä¸ºå·²ç»é‡Šæ”¾äº†ï¼Œå¯¼è‡´å‡ºé”™
+        bool                        already_trigger_;
     };
 
 protected:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_Timer_Queue_Base(size_t num_timer_node,
                          unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                          TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
@@ -122,13 +124,13 @@ public:
 public:
 
     /*!
-    @brief      ÉèÖÃµÚÒ»¸ö¶¨Ê±Æ÷£¬½Ó¿Ú²Î¿¼ÁËACEµÄÉè¼Æ£¬Õâ¸öÉè¼ÆÆäÊµËãºÜÍêÕûÁË£¬ÄãÀ©Õ¹µÄÀà£¬±ØĞëÊµÏÖÕâ¸ö½Ó¿Ú
-    @return     int           ·µ»Ø¶¨Ê±Æ÷ID£¬>=0±êÊ¶³É¹¦£¬-1±êÊ¶Ê§°Ü
-    @param      timer_hdl     ·ÅÈëµÄ¶¨Ê±Æ÷¾ä±ú£¬´¥·¢ºó»Øµ÷µÄ¶ÔÏó
-    @param[in]  action        Ò»¸öÖ¸Õë£¬ÔÚ¶¨Ê±Æ÷´¥·¢»áÓÃ²ÎÊı»¹¸øÄã£¬
-    @param[in]  delay_time    µÚÒ»´Î´¥·¢µÄÊ±¼ä£¬ÎªÊ²Ã´ÒªÕâÑùÉè¼Æ²ÎÊı£¿Äã×Ô¼º¿¼ÂÇÒ»ÏÂ£¬ÏëÏëÈçºÎÔÚ10:00²¥·ÅµÚ6Ì×¹ã²¥Ìå²Ù
-    @param[in]  interval_time µÚÒ»´Î´¥·¢ºó£¬ºóĞø¼ä¸ô @a interval_time µÄÊ±¼ä½øĞĞÒ»´Î´¥·¢
-                              Èç¹û²ÎÊıµÈÓÚZCE_Time_Value::ZERO_TIME_VALUE£¬±êÊ¶²»ĞèÒªºóĞø´¥·¢£¬
+    @brief      è®¾ç½®ç¬¬ä¸€ä¸ªå®šæ—¶å™¨ï¼Œæ¥å£å‚è€ƒäº†ACEçš„è®¾è®¡ï¼Œè¿™ä¸ªè®¾è®¡å…¶å®ç®—å¾ˆå®Œæ•´äº†ï¼Œä½ æ‰©å±•çš„ç±»ï¼Œå¿…é¡»å®ç°è¿™ä¸ªæ¥å£
+    @return     int           è¿”å›å®šæ—¶å™¨IDï¼Œ>=0æ ‡è¯†æˆåŠŸï¼Œ-1æ ‡è¯†å¤±è´¥
+    @param      timer_hdl     æ”¾å…¥çš„å®šæ—¶å™¨å¥æŸ„ï¼Œè§¦å‘åå›è°ƒçš„å¯¹è±¡
+    @param[in]  action        ä¸€ä¸ªæŒ‡é’ˆï¼Œåœ¨å®šæ—¶å™¨è§¦å‘ä¼šç”¨å‚æ•°è¿˜ç»™ä½ ï¼Œ
+    @param[in]  delay_time    ç¬¬ä¸€æ¬¡è§¦å‘çš„æ—¶é—´ï¼Œä¸ºä»€ä¹ˆè¦è¿™æ ·è®¾è®¡å‚æ•°ï¼Ÿä½ è‡ªå·±è€ƒè™‘ä¸€ä¸‹ï¼Œæƒ³æƒ³å¦‚ä½•åœ¨10:00æ’­æ”¾ç¬¬6å¥—å¹¿æ’­ä½“æ“
+    @param[in]  interval_time ç¬¬ä¸€æ¬¡è§¦å‘åï¼Œåç»­é—´éš” @a interval_time çš„æ—¶é—´è¿›è¡Œä¸€æ¬¡è§¦å‘
+                              å¦‚æœå‚æ•°ç­‰äºZCE_Time_Value::ZERO_TIME_VALUEï¼Œæ ‡è¯†ä¸éœ€è¦åç»­è§¦å‘ï¼Œ
     */
     virtual int schedule_timer(ZCE_Timer_Handler *timer_hdl,
                                const void *action,
@@ -136,37 +138,37 @@ public:
                                const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) = 0;
 
     /*!
-    @brief      È¡Ïû¶¨Ê±Æ÷£¬Äã¼Ì³Ğºó±ØĞëÊµÏÖÕâ¸ö½Ó¿Ú
-    @return     int      0±êÊ¶³É¹¦£¬·ñÔòÊ§°Ü
-    @param[in]  timer_id ¶¨Ê±Æ÷ID
+    @brief      å–æ¶ˆå®šæ—¶å™¨ï¼Œä½ ç»§æ‰¿åå¿…é¡»å®ç°è¿™ä¸ªæ¥å£
+    @return     int      0æ ‡è¯†æˆåŠŸï¼Œå¦åˆ™å¤±è´¥
+    @param[in]  timer_id å®šæ—¶å™¨ID
     */
     virtual int cancel_timer(int timer_id) = 0;
 
 protected:
 
     /*!
-    @brief      È¡µÃµÚÒ»¸öÒª´¥·¢µÄ¶¨Ê±Æ÷NODE£¬Ò²¾ÍÊÇ£¬×î½üµÄ´¥·¢¶¨Ê±Æ÷£¬Äã¼Ì³Ğºó±ØĞëÊµÏÖÕâ¸ö½Ó¿Ú
-    @return     int   0±êÊ¶³É¹¦£¬·ñÔòÊ§°Ü
+    @brief      å–å¾—ç¬¬ä¸€ä¸ªè¦è§¦å‘çš„å®šæ—¶å™¨NODEï¼Œä¹Ÿå°±æ˜¯ï¼Œæœ€è¿‘çš„è§¦å‘å®šæ—¶å™¨ï¼Œä½ ç»§æ‰¿åå¿…é¡»å®ç°è¿™ä¸ªæ¥å£
+    @return     int   0æ ‡è¯†æˆåŠŸï¼Œå¦åˆ™å¤±è´¥
     @param[out] timer_node_id
     */
     virtual int get_frist_nodeid(int &timer_node_id) = 0;
 
     /*!
-    @brief      ·Ö·¢¶¨Ê±Æ÷
-    @return     size_t            ·µ»Ø·Ö·¢µÄ´¥·¢µÄ¶¨Ê±Æ÷µÄÊıÁ¿
-    @param      now_time          µ±Ç°µÄÊ±¼ä£¬Ç½ÉÏÊ±ÖÓ
-    @param      now_trigger_msec  µ±Ç°´¥·¢µÄµãµÄºÁÃëÊı£¬¸ù¾İ´¥·¢Ä£Ê½£¬±í´ïÒâÒå²»Ò»Ñù
-                                  ´¥·¢Ä£Ê½ÊÇ @a TRIGGER_MODE_SYSTEM_CLOCK ÄÇÃ´±íÊ¾Ç½ÉÏÊ±ÖÓµÄmescÊıÁ¿
-                                  ´¥·¢Ä£Ê½ÊÇ @a TRIGGER_MODE_CPU_TICK ÄÇÃ´±êÊ¶CPU TickµÄºÁÃëÊıÁ¿
+    @brief      åˆ†å‘å®šæ—¶å™¨
+    @return     size_t            è¿”å›åˆ†å‘çš„è§¦å‘çš„å®šæ—¶å™¨çš„æ•°é‡
+    @param      now_time          å½“å‰çš„æ—¶é—´ï¼Œå¢™ä¸Šæ—¶é’Ÿ
+    @param      now_trigger_msec  å½“å‰è§¦å‘çš„ç‚¹çš„æ¯«ç§’æ•°ï¼Œæ ¹æ®è§¦å‘æ¨¡å¼ï¼Œè¡¨è¾¾æ„ä¹‰ä¸ä¸€æ ·
+                                  è§¦å‘æ¨¡å¼æ˜¯ @a TRIGGER_MODE_SYSTEM_CLOCK é‚£ä¹ˆè¡¨ç¤ºå¢™ä¸Šæ—¶é’Ÿçš„mescæ•°é‡
+                                  è§¦å‘æ¨¡å¼æ˜¯ @a TRIGGER_MODE_CPU_TICK é‚£ä¹ˆæ ‡è¯†CPU Tickçš„æ¯«ç§’æ•°é‡
     */
     virtual size_t dispatch_timer(const ZCE_Time_Value &now_time,
                                   uint64_t now_trigger_msec) = 0;
 
     /*!
-    @brief      ÔÚ´¥·¢Ò»´Îºó£¬Òª¶Ô¶¨Ê±Æ÷½øĞĞÖØĞÂ¼ÆËã£¬ÖØÅÅ£¬Äã±ØĞëÊµÏÖµÄĞéº¯Êı
-    @return     int              0±êÊ¶³É¹¦£¬·ñÔòÊ§°Ü
-    @param      timer_id         ¶¨Ê±Æ÷ID
-    @param      now_trigger_msec µ±Ç°µÄ´¥·¢µãµÄºÁÃëÊı£¬²»Í¬Ä£Ê½ÏÂ±í´ï²»Ì«Ò»Ñù
+    @brief      åœ¨è§¦å‘ä¸€æ¬¡åï¼Œè¦å¯¹å®šæ—¶å™¨è¿›è¡Œé‡æ–°è®¡ç®—ï¼Œé‡æ’ï¼Œä½ å¿…é¡»å®ç°çš„è™šå‡½æ•°
+    @return     int              0æ ‡è¯†æˆåŠŸï¼Œå¦åˆ™å¤±è´¥
+    @param      timer_id         å®šæ—¶å™¨ID
+    @param      now_trigger_msec å½“å‰çš„è§¦å‘ç‚¹çš„æ¯«ç§’æ•°ï¼Œä¸åŒæ¨¡å¼ä¸‹è¡¨è¾¾ä¸å¤ªä¸€æ ·
     @note
     */
     virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) = 0;
@@ -174,36 +176,36 @@ protected:
     //---------------------------------------------------------------------------------------
 public:
 
-    //ÏÂÃæÕâĞ©ÒÑ¾­ÊµÏÖ£¬Äã¿ÉÒÔÖØÔØ£¬»òÕßÖ±½ÓÊ¹ÓÃ¶øÒÑ
+    //ä¸‹é¢è¿™äº›å·²ç»å®ç°ï¼Œä½ å¯ä»¥é‡è½½ï¼Œæˆ–è€…ç›´æ¥ä½¿ç”¨è€Œå·²
 
     /*!
-    @brief      ½øĞĞ³¬Ê±´¦Àí£¬ÄãĞèÒªµ÷ÓÃµÄº¯Êı£¬·Ö·¢,Ö±½Óµ÷ÓÃº¯ÊıÈ¡µÃÊ±¼äÈ»ºó½øĞĞ·Ö·¢
-    @return     size_t ·µ»Ø·Ö·¢µÄ´¥·¢µÄ¶¨Ê±Æ÷µÄÊıÁ¿
+    @brief      è¿›è¡Œè¶…æ—¶å¤„ç†ï¼Œä½ éœ€è¦è°ƒç”¨çš„å‡½æ•°ï¼Œåˆ†å‘,ç›´æ¥è°ƒç”¨å‡½æ•°å–å¾—æ—¶é—´ç„¶åè¿›è¡Œåˆ†å‘
+    @return     size_t è¿”å›åˆ†å‘çš„è§¦å‘çš„å®šæ—¶å™¨çš„æ•°é‡
     */
     virtual size_t expire();
 
     /*!
-    @brief      Ê¹ÓÃ ZCE_Timer_HandlerµÄÖ¸Õë @a timer_hdl È¡Ïû¶¨Ê±Æ÷·½Ê½£¬³¬¼¶
-                ³¬¼¶£¬³¬¼¶ÂıµÄº¯Êı£¬(µ±È»Ê¹ÓÃÆğÀ´¿ÉÄÜ±È½Ï·½±ã)£¬Äã¿ÉÒÔ¼Ì³Ğ,
-                Ò»°ãÇé¿öÏÂ£¬ÍÆ¼öÓÃtime id È¡Ïû¶¨Ê±Æ÷
-    @return     int       ·µ»Ø0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
-    @param      timer_hdl ¶¨Ê±Æ÷¾ä±úµÄÖ¸Õë
+    @brief      ä½¿ç”¨ ZCE_Timer_Handlerçš„æŒ‡é’ˆ @a timer_hdl å–æ¶ˆå®šæ—¶å™¨æ–¹å¼ï¼Œè¶…çº§
+                è¶…çº§ï¼Œè¶…çº§æ…¢çš„å‡½æ•°ï¼Œ(å½“ç„¶ä½¿ç”¨èµ·æ¥å¯èƒ½æ¯”è¾ƒæ–¹ä¾¿)ï¼Œä½ å¯ä»¥ç»§æ‰¿,
+                ä¸€èˆ¬æƒ…å†µä¸‹ï¼Œæ¨èç”¨time id å–æ¶ˆå®šæ—¶å™¨
+    @return     int       è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
+    @param      timer_hdl å®šæ—¶å™¨å¥æŸ„çš„æŒ‡é’ˆ
     */
     virtual int cancel_timer(const ZCE_Timer_Handler *timer_hdl);
 
     /*!
-    @brief      À©ÕÅÏà¹Ø¶¨Ê±Æ÷µÄNODEµÄÊıÁ¿£¬
-                ÓÉÓÚ×ÓÀà»¹ÓĞºÍNOEÏà¹ØµÄÊı¾İ½á¹¹£¬ÔÚÀ©Õ¹ÊÇÒ²ÒªÀ©Õ¹£¬ËùÒÔÊÇvisual
-    @return     int ·µ»Ø0±êÊ¶³É¹¦
-    @param[in]  num_timer_node ÒªÉèÖÃµÄ¶¨Ê±Æ÷NODEÊıÁ¿
-    @param[out] old_num_node   ·µ»ØÔ­À´µÄ¶¨Ê±Æ÷NODEÊıÁ¿
+    @brief      æ‰©å¼ ç›¸å…³å®šæ—¶å™¨çš„NODEçš„æ•°é‡ï¼Œ
+                ç”±äºå­ç±»è¿˜æœ‰å’ŒNOEç›¸å…³çš„æ•°æ®ç»“æ„ï¼Œåœ¨æ‰©å±•æ˜¯ä¹Ÿè¦æ‰©å±•ï¼Œæ‰€ä»¥æ˜¯visual
+    @return     int è¿”å›0æ ‡è¯†æˆåŠŸ
+    @param[in]  num_timer_node è¦è®¾ç½®çš„å®šæ—¶å™¨NODEæ•°é‡
+    @param[out] old_num_node   è¿”å›åŸæ¥çš„å®šæ—¶å™¨NODEæ•°é‡
     */
     virtual int extend_node(size_t num_timer_node,
                             size_t &old_num_node) = 0;
 
     /*!
-    @brief      ¹Ø±Õ¶¨Ê±Æ÷¶ÓÁĞ
-    @return     int 0±íÊ¾³É£¬·ñÔòÊ§°Ü
+    @brief      å…³é—­å®šæ—¶å™¨é˜Ÿåˆ—
+    @return     int 0è¡¨ç¤ºæˆï¼Œå¦åˆ™å¤±è´¥
     */
     virtual int close();
 
@@ -212,12 +214,12 @@ protected:
     //--------------------------------------------------------------------------------------
 
     /*!
-    @brief      ³õÊ¼»¯
-    @return     int                   ·µ»Ø0±êÊ¶³õÊ¼»¯³É¹¦Âğ£¬·ñÔòÊ§°Ü
-    @param[in]  num_timer_node        ¶¨Ê±Æ÷NODEµÄÊıÁ¿£¬³õÊ¼»¯µÄÊ±ºò»á·ÖÅäºÃ£¬
-    @param[in]  timer_precision_mesc  ¶¨Ê±Æ÷µÄ½ø¶È£¬¶àÉÙmsec£¬Èç¹ûÉèÖÃ¹ı´ó£¬ÓĞĞ©¶¨Ê±Æ÷»á³¬Ê±ºó²Å´¥·¢£¬Èç¹ûÌ«Ğ¡£¬ĞèÒª¸ü¶àµÄÂÖµÄ²ÛÎ»¿Õ¼ä£¬
-    @param[in]  trigger_mode          ´¥·¢Ä£Ê½ÊÇÓÃÇ½ÉÏÊ±ÖÓ»¹ÊÇCPU TICK£¬²Î¿¼ @ref ZCE_Timer_Queue::TRIGGER_MODE
-    @param[in]  dynamic_expand_node   Èç¹û³õÊ¼»¯µÄNODE½ÚµãÊıÁ¿²»¹»£¬ÊÇ·ñ×Ô¶¯À©Õ¹
+    @brief      åˆå§‹åŒ–
+    @return     int                   è¿”å›0æ ‡è¯†åˆå§‹åŒ–æˆåŠŸå—ï¼Œå¦åˆ™å¤±è´¥
+    @param[in]  num_timer_node        å®šæ—¶å™¨NODEçš„æ•°é‡ï¼Œåˆå§‹åŒ–çš„æ—¶å€™ä¼šåˆ†é…å¥½ï¼Œ
+    @param[in]  timer_precision_mesc  å®šæ—¶å™¨çš„è¿›åº¦ï¼Œå¤šå°‘msecï¼Œå¦‚æœè®¾ç½®è¿‡å¤§ï¼Œæœ‰äº›å®šæ—¶å™¨ä¼šè¶…æ—¶åæ‰è§¦å‘ï¼Œå¦‚æœå¤ªå°ï¼Œéœ€è¦æ›´å¤šçš„è½®çš„æ§½ä½ç©ºé—´ï¼Œ
+    @param[in]  trigger_mode          è§¦å‘æ¨¡å¼æ˜¯ç”¨å¢™ä¸Šæ—¶é’Ÿè¿˜æ˜¯CPU TICKï¼Œå‚è€ƒ @ref ZCE_Timer_Queue::TRIGGER_MODE
+    @param[in]  dynamic_expand_node   å¦‚æœåˆå§‹åŒ–çš„NODEèŠ‚ç‚¹æ•°é‡ä¸å¤Ÿï¼Œæ˜¯å¦è‡ªåŠ¨æ‰©å±•
     */
     int initialize(size_t num_timer_node,
                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
@@ -225,14 +227,14 @@ protected:
                    bool dynamic_expand_node = true);
 
     /*!
-    @brief      ·ÖÅäÒ»¸öÕ¸ĞÂµÄTimer Node
-    @return     int             ·µ»Ø0±êÊ¶·ÖÅä³É¹¦
-    @param[in]  timer_hdl       Timer HandlerµÄÖ¸Õë£¬TIMER NODEÖĞĞèÒª¼ÇÂ¼µÄ£¬
-    @param[in]  action          schedule_timerµÄ²ÎÊı£¬ÔÚ»Øµ÷timer_timeoutµÄÊ±ºò»á»ØÌî»ØÈ¥
-    @param[in]  delay_time_     µÚÒ»´Î´¥·¢µÄÊ±¼ä
-    @param[in]  interval_time_  ºóĞø³ÖĞø´¥·¢µÄ¼ä¸ôÊ±¼ä
-    @param[out] time_node_id    ·µ»ØµÄ·ÖÅäµÄID
-    @param[out] alloc_time_node ·µ»ØµÄ·ÖÅäµÄTIMER NODEµÄÖ¸Õë
+    @brief      åˆ†é…ä¸€ä¸ªå´­æ–°çš„Timer Node
+    @return     int             è¿”å›0æ ‡è¯†åˆ†é…æˆåŠŸ
+    @param[in]  timer_hdl       Timer Handlerçš„æŒ‡é’ˆï¼ŒTIMER NODEä¸­éœ€è¦è®°å½•çš„ï¼Œ
+    @param[in]  action          schedule_timerçš„å‚æ•°ï¼Œåœ¨å›è°ƒtimer_timeoutçš„æ—¶å€™ä¼šå›å¡«å›å»
+    @param[in]  delay_time_     ç¬¬ä¸€æ¬¡è§¦å‘çš„æ—¶é—´
+    @param[in]  interval_time_  åç»­æŒç»­è§¦å‘çš„é—´éš”æ—¶é—´
+    @param[out] time_node_id    è¿”å›çš„åˆ†é…çš„ID
+    @param[out] alloc_time_node è¿”å›çš„åˆ†é…çš„TIMER NODEçš„æŒ‡é’ˆ
     */
     int alloc_timernode(ZCE_Timer_Handler *timer_hdl,
                         const void *action,
@@ -242,31 +244,31 @@ protected:
                         ZCE_TIMER_NODE *&alloc_time_node);
 
     /*!
-    @brief      ¼ÆËãÏÂÒ»¸ö´¥·¢µã£¬µ±Ò»¸ö¶¨Ê±Æ÷µ½ÆÚ´¥·¢ºó£¬ĞèÒª¼ÆËãËıÏÂÒ»´ÎµÄ´¥·¢µã£¬
-    @param[in]  time_node_id     TIME ID,Èç¹û»¹ÓĞ´¥·¢£¬»áĞŞ¸Ä¶ÔÓ¦µÄTIMER NODEÏÂÒ»´Î´¥·¢Ê±¼äµã
-    @param[in]  now_trigger_msec µ±Ç°µÄ´¥·¢Ê±¼äµã£¬
-    @param[out] continue_trigger Èç¹ûÓĞ´¥·¢µã·µ»Ø0£¬Èç¹ûÃ»ÓĞ·µ»Ø
+    @brief      è®¡ç®—ä¸‹ä¸€ä¸ªè§¦å‘ç‚¹ï¼Œå½“ä¸€ä¸ªå®šæ—¶å™¨åˆ°æœŸè§¦å‘åï¼Œéœ€è¦è®¡ç®—å¥¹ä¸‹ä¸€æ¬¡çš„è§¦å‘ç‚¹ï¼Œ
+    @param[in]  time_node_id     TIME ID,å¦‚æœè¿˜æœ‰è§¦å‘ï¼Œä¼šä¿®æ”¹å¯¹åº”çš„TIMER NODEä¸‹ä¸€æ¬¡è§¦å‘æ—¶é—´ç‚¹
+    @param[in]  now_trigger_msec å½“å‰çš„è§¦å‘æ—¶é—´ç‚¹ï¼Œ
+    @param[out] continue_trigger å¦‚æœæœ‰è§¦å‘ç‚¹è¿”å›0ï¼Œå¦‚æœæ²¡æœ‰è¿”å›
     */
     void calc_next_trigger(int time_node_id,
                            uint64_t now_trigger_msec,
                            bool &continue_trigger);
 
     /*!
-    @brief      ÊÍ·ÅTimer Node
-    @return     int          0±êÊ¶³É¹¦ÊÍ·Å£¬·ñÔò±íÊ¾²ÎÊıÓĞÎÊÌâ£¬Èç¹ûÄãµÄ²ÎÊıÕıÈ·£¬¶¼»á³É¹¦ÊÍ·Å
-    @param[in]  time_node_id ·µ»ØµÄTIMER NODEÖ¸Õë
+    @brief      é‡Šæ”¾Timer Node
+    @return     int          0æ ‡è¯†æˆåŠŸé‡Šæ”¾ï¼Œå¦åˆ™è¡¨ç¤ºå‚æ•°æœ‰é—®é¢˜ï¼Œå¦‚æœä½ çš„å‚æ•°æ­£ç¡®ï¼Œéƒ½ä¼šæˆåŠŸé‡Šæ”¾
+    @param[in]  time_node_id è¿”å›çš„TIMER NODEæŒ‡é’ˆ
     */
     int free_timernode(int time_node_id);
 
     /*!
-    @brief      µÃµ½×î¿ì½«ÔÚ¶àÉÙÊ±¼äºó£¨×¢ÒâÊÇÊ±¼ä³¤¶È£©´¥·¢
-    @return     int           0±íÊ¾³É£¬·ñÔòÊ§°Ü
-    @param      first_timeout ×î¿ìµÄÊ±¼ä³¤¶È£¬£¨²»ÊÇÊ±¼äµã£©
+    @brief      å¾—åˆ°æœ€å¿«å°†åœ¨å¤šå°‘æ—¶é—´åï¼ˆæ³¨æ„æ˜¯æ—¶é—´é•¿åº¦ï¼‰è§¦å‘
+    @return     int           0è¡¨ç¤ºæˆï¼Œå¦åˆ™å¤±è´¥
+    @param      first_timeout æœ€å¿«çš„æ—¶é—´é•¿åº¦ï¼Œï¼ˆä¸æ˜¯æ—¶é—´ç‚¹ï¼‰
     */
     int get_first_timeout(ZCE_Time_Value *first_timeout);
 
 public:
-    //Õâ¸öµØ·½µÄµ¥×ÓÊ¹ÓÃ£¬ºÍÆäËûµØ·½ÂÔÓĞ²»Í¬£¬ÒªÏÈµ÷ÓÃ¸³ÖµµÄº¯Êı£¬½«×ÓÀàÖ¸Õë¸¶¸øÕâ¸öº¯Êı
+    //è¿™ä¸ªåœ°æ–¹çš„å•å­ä½¿ç”¨ï¼Œå’Œå…¶ä»–åœ°æ–¹ç•¥æœ‰ä¸åŒï¼Œè¦å…ˆè°ƒç”¨èµ‹å€¼çš„å‡½æ•°ï¼Œå°†å­ç±»æŒ‡é’ˆä»˜ç»™è¿™ä¸ªå‡½æ•°
 
     //
     static ZCE_Timer_Queue_Base *instance();
@@ -275,47 +277,47 @@ public:
     //
     static void clean_instance();
 
-    //Êı¾İ³ÉÔ±
+    //æ•°æ®æˆå‘˜
 protected:
 
-    ///TIMER NODE(Ò²¾ÍÊÇHANDLER)µÄÊıÁ¿£¬
+    ///TIMER NODE(ä¹Ÿå°±æ˜¯HANDLER)çš„æ•°é‡ï¼Œ
     size_t                      num_timer_node_ = 0;
 
-    ///Ê±¼ä¾«¶È,ÒÔºÁÃëÎªµ¥Î»£¬ÏëÒªÎ¢ÃëµÃ¶¨Ê±Æ÷£¬ÄãÔÚ×öÃÎÄØ£¬Ò²²»ÏÖÊµ
-    ///Äã¸ø³öÊ±¼ä½ø¶Èºó£¬±ØĞëÔÚÕâ¸ö¾«¶ÈÄÚµ÷ÓÃdispatch_timer º¯Êı
-    ///ÆÕÍ¨·şÎñÆ÷ÎÒ½¨ÒéÄãÓÃsµÄ¼¶±ğ£¬Ò²¾ÍÊÇ1000ms
-    ///ÒªÇó¾«¶È±È½Ï¸ßµÄ·şÎñÆ÷£¬ÎÒ½¨ÒéÄãÓÃ100ms
-    ///ÒªÇó²»¸ßµÄ·şÎñÆ÷£¬½¨ÒéÄãÓÃÈô¸ÉN s£¬NĞ¡ÓÚ10s
+    ///æ—¶é—´ç²¾åº¦,ä»¥æ¯«ç§’ä¸ºå•ä½ï¼Œæƒ³è¦å¾®ç§’å¾—å®šæ—¶å™¨ï¼Œä½ åœ¨åšæ¢¦å‘¢ï¼Œä¹Ÿä¸ç°å®
+    ///ä½ ç»™å‡ºæ—¶é—´è¿›åº¦åï¼Œå¿…é¡»åœ¨è¿™ä¸ªç²¾åº¦å†…è°ƒç”¨dispatch_timer å‡½æ•°
+    ///æ™®é€šæœåŠ¡å™¨æˆ‘å»ºè®®ä½ ç”¨sçš„çº§åˆ«ï¼Œä¹Ÿå°±æ˜¯1000ms
+    ///è¦æ±‚ç²¾åº¦æ¯”è¾ƒé«˜çš„æœåŠ¡å™¨ï¼Œæˆ‘å»ºè®®ä½ ç”¨100ms
+    ///è¦æ±‚ä¸é«˜çš„æœåŠ¡å™¨ï¼Œå»ºè®®ä½ ç”¨è‹¥å¹²N sï¼ŒNå°äº10s
     unsigned int                timer_precision_mesc_ = DEFAULT_TIMER_PRECISION_MSEC;
 
-    ///ÒÑ¾­Ê¹ÓÃµÄ½ÚµãµÄÊıÁ¿£¬Ò²¾ÍÊÇ·ÖÅäÁË¶àÉÙ¸ö¶¨Ê±Æ÷
+    ///å·²ç»ä½¿ç”¨çš„èŠ‚ç‚¹çš„æ•°é‡ï¼Œä¹Ÿå°±æ˜¯åˆ†é…äº†å¤šå°‘ä¸ªå®šæ—¶å™¨
     size_t                      num_use_node_ = 0;
 
-    ///´¥·¢Ä£Ê½
+    ///è§¦å‘æ¨¡å¼
     TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE_SYSTEM_CLOCK;
 
-    ///ÊÇ·ñÖ§³Ö¶¯Ì¬À©ÕÅNODE
+    ///æ˜¯å¦æ”¯æŒåŠ¨æ€æ‰©å¼ NODE
     bool                        dynamic_expand_node_ = true;
 
-    ///TIMER NODEµÄ¶ÓÁĞ,±¾À´ÓÃÖ¸Õë×Ô¼º¹ÜÀíµÄ£¬µ«ÊÇ¿¼ÂÇÔÙÈı£¬À©ÕÅµÄ´úÂëÎÒÒªĞ´ºÃ²»ÈçÓÃresize
-    ///ËãÁË£¬²»Òª×Ô¼ºÔìÕâÖÖÂÖ×Ó
+    ///TIMER NODEçš„é˜Ÿåˆ—,æœ¬æ¥ç”¨æŒ‡é’ˆè‡ªå·±ç®¡ç†çš„ï¼Œä½†æ˜¯è€ƒè™‘å†ä¸‰ï¼Œæ‰©å¼ çš„ä»£ç æˆ‘è¦å†™å¥½ä¸å¦‚ç”¨resize
+    ///ç®—äº†ï¼Œä¸è¦è‡ªå·±é€ è¿™ç§è½®å­
     std::vector<ZCE_TIMER_NODE> time_node_ary_;
 
-    ///¿ÕÏĞTIMER NODE¶ÓÁĞµÄÍ·ÏÂ±ê£¬µ¥ÏòÁ´±í
+    ///ç©ºé—²TIMER NODEé˜Ÿåˆ—çš„å¤´ä¸‹æ ‡ï¼Œå•å‘é“¾è¡¨
     int                         free_node_id_head_ = INVALID_TIMER_ID;
-    ///¿ÕÏĞ¶ÓÁĞµÄÏÂ±êÁĞ±íµÄÊı×é
+    ///ç©ºé—²é˜Ÿåˆ—çš„ä¸‹æ ‡åˆ—è¡¨çš„æ•°ç»„
     std::vector<int>            free_node_id_list_;
-    ///±¾À´Ïëµ°ÌÛµÄĞ´Ò»¸öÊ¹ÓÃÁĞ±í£¬ºóÀ´·¢ÏÖÈç¹ûÒªÓÃ£¬¾Í±ØĞëÓÃË«ÏòÁĞ±í£¬ÎÒµ°ÌÛ£¬ÈÄÁËÎÒ
+    ///æœ¬æ¥æƒ³è›‹ç–¼çš„å†™ä¸€ä¸ªä½¿ç”¨åˆ—è¡¨ï¼Œåæ¥å‘ç°å¦‚æœè¦ç”¨ï¼Œå°±å¿…é¡»ç”¨åŒå‘åˆ—è¡¨ï¼Œæˆ‘è›‹ç–¼ï¼Œé¥¶äº†æˆ‘
 
-    ///ÉÏÒ»´ÎµÄCPU TICKµÄ´¥·¢µã£¬
+    ///ä¸Šä¸€æ¬¡çš„CPU TICKçš„è§¦å‘ç‚¹ï¼Œ
     uint64_t                    prev_trigger_msec_ = 0;
 
-    ///¶¨Ê±Æ÷¼ÆËãµÄ²Î¿¼Ê±¼äµã£¬Ã¿´Î¶¨Ê±Æ÷´¥·¢µÄÊ±ºò¸Ä±ä
+    ///å®šæ—¶å™¨è®¡ç®—çš„å‚è€ƒæ—¶é—´ç‚¹ï¼Œæ¯æ¬¡å®šæ—¶å™¨è§¦å‘çš„æ—¶å€™æ”¹å˜
     uint64_t                    timer_refer_pointer_ = 0;
 
 protected:
 
-    ///µ¥×ÓÊµÀıÖ¸Õë
+    ///å•å­å®ä¾‹æŒ‡é’ˆ
     static ZCE_Timer_Queue_Base     *instance_;
 };
 

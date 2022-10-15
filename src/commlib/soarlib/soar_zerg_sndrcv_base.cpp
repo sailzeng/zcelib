@@ -21,7 +21,7 @@ SendRecv_Package_Base::SendRecv_Package_Base():
 
 SendRecv_Package_Base::~SendRecv_Package_Base()
 {
-    //ÇåÀíÒÑ¾­·ÖÅäµÄ»º³åÇø
+    //æ¸…ç†å·²ç»åˆ†é…çš„ç¼“å†²åŒº
     if (tibetan_send_appframe_)
     {
         Zerg_App_Frame::delete_frame(tibetan_send_appframe_);
@@ -36,14 +36,14 @@ SendRecv_Package_Base::~SendRecv_Package_Base()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê4ÔÂ25ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´4æœˆ25æ—¥
 Function        : Tibetan_SendRecv_Package::set_services_id
 Return          : void
 Parameter List  :
-  Param1: const SERVICES_ID& recv_service  ½ÓÊÕµÄ·şÎñÆ÷ID
-  Param2: const SERVICES_ID& send_service  ·¢ËÍµÄ·şÎñÆ÷ID
-  Param3: const SERVICES_ID& proxy_service PROXYµÄ·şÎñÆ÷ID
-  Param4: size_t frame_len ×¼±¸µÄFRAME³¤¶È
+  Param1: const SERVICES_ID& recv_service  æ¥æ”¶çš„æœåŠ¡å™¨ID
+  Param2: const SERVICES_ID& send_service  å‘é€çš„æœåŠ¡å™¨ID
+  Param3: const SERVICES_ID& proxy_service PROXYçš„æœåŠ¡å™¨ID
+  Param4: size_t frame_len å‡†å¤‡çš„FRAMEé•¿åº¦
 Description     :
 Calls           :
 Called By       :
@@ -61,7 +61,7 @@ void SendRecv_Package_Base::set_services_id(const SERVICES_ID &recv_service,
     tibetan_proxy_service_ = proxy_service;
     test_frame_len_ = frame_len;
 
-    //newÒ»¸öAPPFRAME,
+    //newä¸€ä¸ªAPPFRAME,
     tibetan_send_appframe_ = Zerg_App_Frame::new_frame(test_frame_len_);
     tibetan_send_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
 
@@ -70,7 +70,7 @@ void SendRecv_Package_Base::set_services_id(const SERVICES_ID &recv_service,
 
 }
 
-//È¡µÃÊÕµ½µÄÊÂÎñID
+//å–å¾—æ”¶åˆ°çš„äº‹åŠ¡ID
 void SendRecv_Package_Base::get_recv_transid(unsigned int &trans_id)
 {
     trans_id = recv_trans_id_;
@@ -87,13 +87,13 @@ unsigned int SendRecv_Package_Base::get_backfill_transid()
     return backfill_trans_id_;
 }
 
-//È¡µÃ²âÊÔµÄAPPFRAME
+//å–å¾—æµ‹è¯•çš„APPFRAME
 Zerg_App_Frame *SendRecv_Package_Base::get_send_appframe()
 {
     return tibetan_send_appframe_;
 }
 
-//È¡µÃ½ÓÊÕµÄAPPFRAME
+//å–å¾—æ¥æ”¶çš„APPFRAME
 Zerg_App_Frame *SendRecv_Package_Base::get_recv_appframe()
 {
     return tibetan_recv_appframe_;

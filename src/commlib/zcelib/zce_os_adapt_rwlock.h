@@ -3,31 +3,31 @@
 * @filename   zce_os_adapt_rwlock.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012��4��19��
-* @brief      ��д������������-��ռ������ģ�⣬��OS���䣬WIN��ʹ����������ģ�⣬
-*             д���ʼ�Ļ�������WIN SVR 2008��VISTA���Ժ��ϵͳ��ʹ�ã���Ϊ
-*             ģ��Ķ���������ʵԶ�Ȳ����ٽ�������MS�Լ�ʵ�ֵĶ�д��������ʵͦ�õģ�
-*             WIN2008�Ժ���һ���̼߳����д����MS�Լ�ʵ���ˣ�������UNLOCK����
-*             �Ƿֳ������ģ�д���⿪����ȡ���⿪��Ҳ�����ݴ�����һЩ�鷳��
-*             �������汾���Ҫʹ��ֻ��ģ���ˣ�
-*             ��WINDOWS�µ�ģ��ֻ֧���̰߳汾�������㿼�Ƕ���̣�
+* @date       2012年4月19日
+* @brief      读写锁（又名共享-独占锁）的模拟，和OS适配，WIN下使用条件变量模拟，
+*             写在最开始的话，请在WIN SVR 2008（VISTA）以后的系统上使用，因为
+*             模拟的东东性能其实远比不上临界区，而MS自己实现的读写锁性能其实挺好的，
+*             WIN2008以后，有一个线程级别读写锁被MS自己实现了，但他的UNLOCK函数
+*             是分成两个的，写锁解开，读取锁解开这也给兼容带来了一些麻烦，
+*             但其他版本如果要使用只有模拟了，
+*             在WINDOWS下的模拟只支持线程版本，不打算考虑多进程，
 *
-*             ���Լ��Ĳ��ԣ�WIN�£�ģ���RW�ٶȴ�Լ����ʵ��RW LOCK��9��������
-*             ���Ĳ��Ƽ���ģ��ģ���2��2д������������ݺ�MS�Ĳ��Խ�����ƣ�
+*             我自己的测试，WIN下，模拟的RW速度大约比真实的RW LOCK慢9倍。所以
+*             真心不推荐用模拟的，（2读2写，这个测试数据和MS的测试结果类似）
 *
-* @details    �����Ĵ����Ǵ�W.Richard stevens��UNP V2�����ϸ�д�ģ�
-*             ������˼�ķ�����Щ������Ĳο��Ļ���ACE�����ģ�
-*             Ϊ����WINDOWS�ϸ������ף������˼򻯵�EVENTģ�����������
+* @details    大量的代码是从W.Richard stevens的UNP V2代码上改写的，
+*             很有意思的发现这些，代码的参考的还是ACE的论文，
+*             为了在WINDOWS上更加明白，我用了简化的EVENT模拟的条件变量
 *
-*             ���ʹ��Windows 2008 VISTA ֮����е��Ǹ�������������һ������Ҫ�����
-*             ��ΪWindows��API��Ƶĺ�LINUX PTHREAD����Ʋ�һ����WINDOWS��API
-*             �ṩ��2���������������ڹ��������������ֱ�һ������PTHREADֵ�ṩ��һ����
-*             ������N��ѡ��
-*             1.��unlock�������棬�ѹ��������������Ľ���������һ�Σ�����Windows����
-*             ��Ϊ�ҵĶ�Σ����󣩵��ã�������ʲô�鷳��
-*             2.�ṩ�������������ķ�װ��BOOST����������˼·��
-*             3.�Լ���TLS�������������䵽���õ���ʲô����������������õĽ���������ʱ��
-*             �����еķ�ʸ��
+*             如果使用Windows 2008 VISTA 之后才有的那个条件变量，有一个问题要解决，
+*             因为Windows的API设计的和LINUX PTHREAD的设计不一样，WINDOWS的API
+*             提供了2个解锁函数，对于共享锁和排他锁分别一个，而PTHREAD值提供了一个，
+*             我面临N个选择，
+*             1.在unlock函数里面，把共享锁和排他锁的解锁都调用一次，祈祷Windows不会
+*             因为我的多次（错误）调用，而导致什么麻烦。
+*             2.提供两个解锁函数的封装，BOOST里面就是这个思路，
+*             3.自己用TLS变量存下来，其到底用的是什么操作，这样后面调用的解锁函数的时候
+*             可以有的放矢，
 *
 */
 
@@ -46,7 +46,7 @@ namespace zce
 
 
 /*!
-* @brief      ��д���Ķ���ĳ�ʼ��
+* @brief      读写锁的对象的初始化
 * @return     int
 * @param      rwlock
 * @param      attr
@@ -57,94 +57,94 @@ int pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
 
 /*!
-* @brief      ���ٶ�д���Ķ���
+* @brief      销毁读写锁的对象
 * @return     int
 * @param      rwlock
 */
 int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);
 
 /*!
-* @brief      ��д���Ķ���ĵĳ�ʼ�����Ǳ�׼�������飬ʹ��
-* @return     int               ����0��ʶ�ɹ���
-* @param      rwlock            ��д������
-* @param      use_win_slim      �Ƿ�ʹ��WIN2008�Ժ�ӵ�е�Slim RWlock��ע��Slim RWlockû�г�ʱ������
-*                               ��Ȼǰ�����ϵͳ����֧�֣�
-* @param      priority_to_write д�����Ȼ��Ƕ�ȡ���ȣ���ֻ��Windows��ģ�����ã���ȫ��Ϊ���Լ�����,�����ʲô��MSһ�����Ʋ��ԣ�
+* @brief      读写锁的对象的的初始化，非标准，但建议，使用
+* @return     int               返回0标识成功，
+* @param      rwlock            读写锁对象
+* @param      use_win_slim      是否使用WIN2008以后拥有的Slim RWlock，注意Slim RWlock没有超时处理，
+*                               当然前提你的系统必现支持，
+* @param      priority_to_write 写入优先还是读取优先，（只对Windows的模拟有用，完全是为了自己好玩,不会快什么，MS一个类似测试）
 */
 int pthread_rwlock_initex(pthread_rwlock_t *rwlock,
                           bool  priority_to_write = true);
 
 /*!
-* @brief      ��ȡ��ȡ���������ȡ�������еȴ�
-* @return     int     0�ɹ���������ֵ��ʾ����ID
-* @param      rwlock  ��д������
+* @brief      获取读取锁，如果获取不到进行等待
+* @return     int     0成功，，返回值表示错误ID
+* @param      rwlock  读写锁对象
 */
 int pthread_rwlock_rdlock(pthread_rwlock_t *rwlock);
 
 /*!
-* @brief      ���Ի�ȡ�����������ȡ�������򷵻ش��󣬲�����
-* @return     int     0�ɹ�������ʧ��
-* @param      rwlock  ��д������
+* @brief      尝试获取读锁，如果获取不到，则返回错误，不阻塞
+* @return     int     0成功，否则失败
+* @param      rwlock  读写锁对象
 * @note
 */
 int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);
 
 /*!
-* @brief      ��ȡ��ȡ���ģ�ͬʱ�ȴ�ֱ����ʱ
-* @return     int              0�ɹ�������ʧ�ܣ�����ֵ��ʾ����ID
-* @param      rwlock           ��д������
-* @param      abs_timeout_spec �ȴ���ʱ��㣨ʱ��㣩
+* @brief      获取读取锁的，同时等待直至超时
+* @return     int              0成功，否则失败，返回值表示错误ID
+* @param      rwlock           读写锁对象
+* @param      abs_timeout_spec 等待的时间点（时间点）
 * @note
 */
 int pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
                                const ::timespec *abs_timeout_spec);
 
 /*!
-* @brief      �Ǳ�׼����ȡ���ĳ�ʱ������ʱ�����������timeval��
-* @return     int              0�ɹ�������ʧ�ܣ�����ֵ��ʾ����ID
-* @param      rwlock           ��д������
-* @param      abs_timeout_val  �ȴ���ʱ��㣨ʱ��㣩
+* @brief      非标准，读取锁的超时锁定，时间参数调整成timeval，
+* @return     int              0成功，否则失败，返回值表示错误ID
+* @param      rwlock           读写锁对象
+* @param      abs_timeout_val  等待的时间点（时间点）
 */
 int pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
                                const timeval *abs_timeout_val);
 
 /*!
-* @brief      ��ȡд������ռ�����������ȡ��������һֱ�ȴ�
-* @return     int     0�ɹ�������ʧ�ܣ�����ֵ��ʾ����ID
-* @param      rwlock  ��д������
+* @brief      获取写锁（独占锁），如果获取不到，会一直等待
+* @return     int     0成功，否则失败，返回值表示错误ID
+* @param      rwlock  读写锁对象
 */
 int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock);
 
 /*!
-* @brief      ���Ի�ȡд������ռ�����������ȡ���������ش��󣬲�����
-* @return     int     0�ɹ�������ʧ�ܣ�����ֵ��ʾ����ID
-* @param      rwlock  ��д������
+* @brief      尝试获取写锁（独占锁），如果获取不到，返回错误，不阻塞
+* @return     int     0成功，否则失败，返回值表示错误ID
+* @param      rwlock  读写锁对象
 */
 int pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock);
 
 /*!
-* @brief      ��ȡд������ռ�����������ȡ��������ȴ�һ��ʱ��
-* @return     int         0�ɹ�������ʧ�ܣ�����ֵ��ʾ����ID
-* @param      rwlock           ��д������
-* @param      abs_timeout_spec ��ʱʱ��㣬����ʱ��,timespec���͵ģ��ͱ�׼һ��
+* @brief      获取写锁（独占锁），如果获取不到，会等待一段时间
+* @return     int         0成功，否则失败，返回值表示错误ID
+* @param      rwlock           读写锁对象
+* @param      abs_timeout_spec 超时时间点，绝对时间,timespec类型的，和标准一致
 */
 int pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
                                const ::timespec *abs_timeout_spec);
 
 /*!
-@param      abs_timeout_val ��ʱʱ��㣬����ʱ��,timeval���͵�,���ϣ�����ֵ��дNULL������������ܺ�����ĺ�����ͻ��
-* @brief      �Ǳ�׼��дȡ���ĳ�ʱ������ʱ�����������timeval��
-* @return     int         0�ɹ�������ʧ��
-* @param      rwlock          ��д������
-*                             ���������� timeval*time_out =NULL,�����time_out��Ϊ������
+@param      abs_timeout_val 超时时间点，绝对时间,timeval类型的,如果希望这个值填写NULL，这个函数可能和上面的函数冲突，
+* @brief      非标准，写取锁的超时锁定，时间参数调整成timeval，
+* @return     int         0成功，否则失败
+* @param      rwlock          读写锁对象
+*                             请这样操作 timeval*time_out =NULL,将这个time_out作为参数，
 */
 int pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
                                const timeval *abs_timeout_val);
 
 /*!
-* @brief      �������Զ�����д������һ������������ط���WINDOWS SVR 20008�Ժ�ʵ�ֵĶ�д��ʵ�ֲ�һ��
-* @return     int     0�ɹ�������ʧ��
-* @param      rwlock  ��д������
+* @brief      解锁，对读锁和写锁都是一个函数，这个地方和WINDOWS SVR 20008以后实现的读写锁实现不一样
+* @return     int     0成功，否则失败
+* @param      rwlock  读写锁对象
 */
 int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);
 

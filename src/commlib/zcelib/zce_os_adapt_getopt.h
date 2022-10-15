@@ -4,11 +4,11 @@
 
 #include "zce_os_adapt_predefine.h"
 
-//ÕâÒ»¶Î²»·ÅÔÚzce_os_adapt_predefine.hÀïÃæµÄÔ­ÒòÊÇÒòÎªÓÐµÄ´úÂëÒ²ÊµÏÖÁËÕâ¸öº¯Êý£¬ºÍÕâÐ©È«¾Ö±äÁ¿
-//ËùÒÔ»áÒý·¢³åÍ»£¬ËùÒÔ³ý·ÇÃ÷È·ÄãÊ¹ÓÃÕâÐ©º¯Êý£¬·ñÔò²»±©Â©ËûÃÇ
+//è¿™ä¸€æ®µä¸æ”¾åœ¨zce_os_adapt_predefine.hé‡Œé¢çš„åŽŸå› æ˜¯å› ä¸ºæœ‰çš„ä»£ç ä¹Ÿå®žçŽ°äº†è¿™ä¸ªå‡½æ•°ï¼Œå’Œè¿™äº›å…¨å±€å˜é‡
+//æ‰€ä»¥ä¼šå¼•å‘å†²çªï¼Œæ‰€ä»¥é™¤éžæ˜Žç¡®ä½ ä½¿ç”¨è¿™äº›å‡½æ•°ï¼Œå¦åˆ™ä¸æš´æ¼ä»–ä»¬
 #if defined (ZCE_OS_WINDOWS)
 
-//getopt_longº¯ÊýÊ¹ÓÃµÄÑ¡Ïî
+//getopt_longå‡½æ•°ä½¿ç”¨çš„é€‰é¡¹
 struct option
 {
     //
@@ -41,12 +41,12 @@ extern int     optreset;
 namespace zce
 {
 
-//optstring stringËµÃ÷
-//1.µ¥¸ö×Ö·û£¬±íÊ¾Ñ¡Ïî£¬
-//2.µ¥¸ö×Ö·ûºó½ÓÒ»¸öÃ°ºÅ:,±íÊ¾¸ÃÑ¡Ïîºó±ØÐë¸úÒ»¸ö²ÎÊý¡£²ÎÊý½ô¸úÔÚÑ¡Ïîºó»òÕßÒÔ¿Õ¸ñ¸ô¿ª¡£¸Ã²ÎÊýµÄÖ¸Õë¸³¸øoptarg¡£
-//3 µ¥¸ö×Ö·ûºó¸úÁ½¸öÃ°ºÅ::,±íÊ¾¸ÃÑ¡Ïîºó±ØÐë¸úÒ»¸ö²ÎÊý¡£²ÎÊý±ØÐë½ô¸úÔÚÑ¡Ïîºó²»ÄÜÒÔ¿Õ¸ñ¸ô¿ª¡£¸Ã²ÎÊýµÄÖ¸Õë¸³¸øoptarg¡£
+//optstring stringè¯´æ˜Ž
+//1.å•ä¸ªå­—ç¬¦ï¼Œè¡¨ç¤ºé€‰é¡¹ï¼Œ
+//2.å•ä¸ªå­—ç¬¦åŽæŽ¥ä¸€ä¸ªå†’å·:,è¡¨ç¤ºè¯¥é€‰é¡¹åŽå¿…é¡»è·Ÿä¸€ä¸ªå‚æ•°ã€‚å‚æ•°ç´§è·Ÿåœ¨é€‰é¡¹åŽæˆ–è€…ä»¥ç©ºæ ¼éš”å¼€ã€‚è¯¥å‚æ•°çš„æŒ‡é’ˆèµ‹ç»™optargã€‚
+//3 å•ä¸ªå­—ç¬¦åŽè·Ÿä¸¤ä¸ªå†’å·::,è¡¨ç¤ºè¯¥é€‰é¡¹åŽå¿…é¡»è·Ÿä¸€ä¸ªå‚æ•°ã€‚å‚æ•°å¿…é¡»ç´§è·Ÿåœ¨é€‰é¡¹åŽä¸èƒ½ä»¥ç©ºæ ¼éš”å¼€ã€‚è¯¥å‚æ•°çš„æŒ‡é’ˆèµ‹ç»™optargã€‚
 
-//»¹Òª×¢ÒâµÄÊÇÄ¬ÈÏÇé¿öÏÂgetopt»áÖØÐÂÅÅÁÐÃüÁîÐÐ²ÎÊýµÄË³Ðò£¬ËùÒÔµ½×îºóËùÓÐ²»°üº¬Ñ¡ÏîµÄÃüÁîÐÐ²ÎÊý¶¼ÅÅµ½×îºó¡£
+//è¿˜è¦æ³¨æ„çš„æ˜¯é»˜è®¤æƒ…å†µä¸‹getoptä¼šé‡æ–°æŽ’åˆ—å‘½ä»¤è¡Œå‚æ•°çš„é¡ºåºï¼Œæ‰€ä»¥åˆ°æœ€åŽæ‰€æœ‰ä¸åŒ…å«é€‰é¡¹çš„å‘½ä»¤è¡Œå‚æ•°éƒ½æŽ’åˆ°æœ€åŽã€‚
 
 //
 int getopt(int argc,

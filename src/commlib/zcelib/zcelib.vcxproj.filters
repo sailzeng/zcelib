@@ -410,6 +410,9 @@
     <ClInclude Include="zce_lockfree_ring.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_lockfree_stack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -710,9 +713,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_log_basic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_lockfree_stack.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

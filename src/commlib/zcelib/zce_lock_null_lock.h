@@ -3,14 +3,14 @@
 * @filename   zce_lock_null_lock.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê9ÔÂ13ÈÕ
-* @brief      ÎªÁË¼ÍÄîÎÒÓÃACEÕâÃ´¶àÄê£¬ÎÒ»¹ÊÇÇãÏòÓÃACEµÄÒ»Ğ©·½Ê½½â¾öÎÊÌâ¡£
-*             ËäÈ»ÎÒÒ²·¢ÏÖÎÒ»¹ÊÇ»áÑ§Ï°Ò»Ğ©BOOSTµÄÌØ´Ë
-*             ACEÓĞ×¨ÃÅµÄÒ»ÆªÎÄÕÂÊÇ½²Ä£°å²ßÂÔËøÄ£Ê½µÄ£¬
-*             ÎÒÒ²¶Ô±ÈÁË¹ıÄ£°å²ßÂÔËøºÍ¶àÌ¬²ßÂÔËøµÄÓÅÈ±µã£¬ÎÒ¾õµÃ¸÷ÓĞÓÅÁÓ£¬
-*             µ«Èç¹ûÏ£Íû²»¹ı¹ı¶ÈÄ£°å»¯£¬»¹ÊÇ¶àÌ¬ºÃÒ»µã¡£
+* @date       2011å¹´9æœˆ13æ—¥
+* @brief      ä¸ºäº†çºªå¿µæˆ‘ç”¨ACEè¿™ä¹ˆå¤šå¹´ï¼Œæˆ‘è¿˜æ˜¯å€¾å‘ç”¨ACEçš„ä¸€äº›æ–¹å¼è§£å†³é—®é¢˜ã€‚
+*             è™½ç„¶æˆ‘ä¹Ÿå‘ç°æˆ‘è¿˜æ˜¯ä¼šå­¦ä¹ ä¸€äº›BOOSTçš„ç‰¹æ­¤
+*             ACEæœ‰ä¸“é—¨çš„ä¸€ç¯‡æ–‡ç« æ˜¯è®²æ¨¡æ¿ç­–ç•¥é”æ¨¡å¼çš„ï¼Œ
+*             æˆ‘ä¹Ÿå¯¹æ¯”äº†è¿‡æ¨¡æ¿ç­–ç•¥é”å’Œå¤šæ€ç­–ç•¥é”çš„ä¼˜ç¼ºç‚¹ï¼Œæˆ‘è§‰å¾—å„æœ‰ä¼˜åŠ£ï¼Œ
+*             ä½†å¦‚æœå¸Œæœ›ä¸è¿‡è¿‡åº¦æ¨¡æ¿åŒ–ï¼Œè¿˜æ˜¯å¤šæ€å¥½ä¸€ç‚¹ã€‚
 *
-*             Çë²Î¿¼
+*             è¯·å‚è€ƒ
 *             http://www.cnblogs.com/fullsail/archive/2012/07/31/2616106.html
 * @details
 *
@@ -28,13 +28,13 @@
 class ZCE_Time_Value;
 
 /*!
-* @brief      ¿ÕËø£¬Ò²ÊÇÒ»ÖÖÄ£Ê½£¬ÓÃÓÚÄ³Ğ©Çé¿öÁé»îµÄÊ¹ÓÃÊÇ·ñ¼ÓËøµÄ·½Ê½,
+* @brief      ç©ºé”ï¼Œä¹Ÿæ˜¯ä¸€ç§æ¨¡å¼ï¼Œç”¨äºæŸäº›æƒ…å†µçµæ´»çš„ä½¿ç”¨æ˜¯å¦åŠ é”çš„æ–¹å¼,
 *
 */
 class ZCE_Null_Mutex : public ZCE_Lock_Base
 {
 public:
-    //NULLËøµÄGUARD
+    //NULLé”çš„GUARD
     typedef ZCE_Lock_Guard<ZCE_Null_Mutex>      LOCK_GUARD;
 
     typedef ZCE_Read_Guard<ZCE_Null_Mutex>      LOCK_READ_GUARD;
@@ -42,45 +42,45 @@ public:
     typedef ZCE_Write_Guard<ZCE_Null_Mutex>     LOCK_WRITE_GUARD;
 
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     ZCE_Null_Mutex (const char * = NULL);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~ZCE_Null_Mutex (void);
 
 public:
-    ///Ëø¶¨
+    ///é”å®š
     virtual void lock();
 
-    ///³¢ÊÔËø¶¨
+    ///å°è¯•é”å®š
     virtual bool try_lock();
 
-    ///½âËø,
+    ///è§£é”,
     virtual void unlock();
 
-    ///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø£¬·µ»ØÊÇ·ñ³¬Ê±
+    ///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”ï¼Œè¿”å›æ˜¯å¦è¶…æ—¶
     virtual bool systime_lock(const ZCE_Time_Value & /*abs_time*/);
-    ///Ïà¶ÔÊ±¼ä
+    ///ç›¸å¯¹æ—¶é—´
     virtual bool duration_lock(const ZCE_Time_Value & /*relative_time*/ );
 
-    //Ïà¶ÔÓëBOOSTµÄsharedµÄ¹²Ïí-¶ÀÕ¼ËøµÄ½Ğ·¨£¬ÎÒ»¹ÊÇÇãÏò¶ÁĞ´Ëø
+    //ç›¸å¯¹ä¸BOOSTçš„sharedçš„å…±äº«-ç‹¬å é”çš„å«æ³•ï¼Œæˆ‘è¿˜æ˜¯å€¾å‘è¯»å†™é”
 
-    ///¶ÁÈ¡Ëø
+    ///è¯»å–é”
     virtual void lock_read();
-    ///³¢ÊÔ¶ÁÈ¡Ëø
+    ///å°è¯•è¯»å–é”
     virtual bool try_lock_read();
 
-    ///¾ø¶ÔÊ±¼ä³¬Ê±µÄ¶ÁÈ¡Ëø£¬
+    ///ç»å¯¹æ—¶é—´è¶…æ—¶çš„è¯»å–é”ï¼Œ
     virtual bool timed_lock_read(const ZCE_Time_Value & /*abs_time*/);
-    ///Ïà¶ÔÊ±¼ä³¬Ê±µÄ¶ÁÈ¡Ëø£¬
+    ///ç›¸å¯¹æ—¶é—´è¶…æ—¶çš„è¯»å–é”ï¼Œ
     virtual bool duration_lock_read(const ZCE_Time_Value & /*relative_time*/);
 
-    ///Ğ´Ëø¶¨
+    ///å†™é”å®š
     virtual void lock_write();
-    ///³¢ÊÔ¶ÁÈ¡Ëø
+    ///å°è¯•è¯»å–é”
     virtual bool try_lock_write();
-    ///Ğ´Ëø¶¨³¬Ê±
+    ///å†™é”å®šè¶…æ—¶
     virtual bool timed_lock_write(const ZCE_Time_Value & /*abs_time*/);
-    //Ïà¶ÔÊ±¼ä
+    //ç›¸å¯¹æ—¶é—´
     virtual bool duration_lock_write(const ZCE_Time_Value & /*relative_time*/);
 
 protected:
@@ -89,8 +89,8 @@ protected:
 };
 
 /*!
-* @brief      ¿ÕËø£¬Ò²ÊÇÒ»ÖÖÄ£Ê½£¬ÓÃÓÚÄ³Ğ©Çé¿öÁé»îµÄÊ¹ÓÃÊÇ·ñ¼ÓËøµÄ·½Ê½,
-*             ÕûÌåµÄ½Ó¿ÚÀàËÆÓÚBOOSTµÄ½Ó¿Ú£¬±ÈÈç²»¿ØÖÆ·µ»ØÖµ£¬Ò²²Î¿¼¹ıÒ»Ğ©ACE
+* @brief      ç©ºé”ï¼Œä¹Ÿæ˜¯ä¸€ç§æ¨¡å¼ï¼Œç”¨äºæŸäº›æƒ…å†µçµæ´»çš„ä½¿ç”¨æ˜¯å¦åŠ é”çš„æ–¹å¼,
+*             æ•´ä½“çš„æ¥å£ç±»ä¼¼äºBOOSTçš„æ¥å£ï¼Œæ¯”å¦‚ä¸æ§åˆ¶è¿”å›å€¼ï¼Œä¹Ÿå‚è€ƒè¿‡ä¸€äº›ACE
 */
 class ZCE_Null_Condition : public ZCE_Condition_Base
 {
@@ -102,19 +102,19 @@ public:
 
 private:
 
-    ///µÈ´ı
+    ///ç­‰å¾…
     virtual void wait (ZCE_Null_Mutex * /*external_mutex*/ );
 
-    ///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄµÈ´ı£¬³¬Ê±ºó½âËø
+    ///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„ç­‰å¾…ï¼Œè¶…æ—¶åè§£é”
     virtual bool systime_wait(ZCE_Null_Mutex * /*external_mutex*/, const ZCE_Time_Value & /*abs_time*/);
 
-    ///Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨µÈ´ı£¬³¬Ê±ºó£¬½âËø
+    ///ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šç­‰å¾…ï¼Œè¶…æ—¶åï¼Œè§£é”
     virtual bool duration_wait(ZCE_Null_Mutex * /*external_mutex*/, const ZCE_Time_Value & /*relative_time*/);
 
-    /// ¸øÒ»¸öµÈ´ıÏß³Ì·¢ËÍĞÅºÅ Signal one waiting thread.
+    /// ç»™ä¸€ä¸ªç­‰å¾…çº¿ç¨‹å‘é€ä¿¡å· Signal one waiting thread.
     virtual void signal (void);
 
-    ///¸øËùÓĞµÄµÈ´ıÏß³Ì¹ã²¥ĞÅºÅ Signal *all* waiting threads.
+    ///ç»™æ‰€æœ‰çš„ç­‰å¾…çº¿ç¨‹å¹¿æ’­ä¿¡å· Signal *all* waiting threads.
     virtual void broadcast (void);
 
 protected:

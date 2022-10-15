@@ -1,4 +1,4 @@
-#include "stdafx.h"
+é”˜?include "stdafx.h"
 #include "illusion_excel_file.h"
 #include "illusion_coding_convert.h"
 #include "illusion_read_config.h"
@@ -7,8 +7,12 @@
 #define new DEBUG_NEW
 #endif
 
-//´¦ÀíµÄµ¥×ÓÊµÀı
+<<<<<<< HEAD
+//æ¾¶å‹­æ‚Šé•„å‹«å´Ÿç€›æ„¬ç–„æ¸š?Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
+=======
+//å¤„ç†çš„å•å­å®ä¾‹
 Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 //
 Illusion_Read_Config::Illusion_Read_Config()
@@ -47,16 +51,24 @@ bool Illusion_Read_Config::initialize(bool need_open_excel,
 {
     config_path_ = config_path;
 
-    //db3µÄÂ·¾¶Ã»ÓĞ¿ÉÒÔ´´½¨
+<<<<<<< HEAD
+    //db3é•„å‹®çŸ¾å¯°å‹¬ç—…é“¾å¤Šå½²æµ ãƒ¥å±å¯¤?    sqlitedb_pah_ = config_path_;
+=======
+    //db3çš„è·¯å¾„æ²¡æœ‰å¯ä»¥åˆ›å»º
     sqlitedb_pah_ = config_path_;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     ZCE_LIB::path_string_cat(sqlitedb_pah_, "db3");
     if (false == ZCE_LIB::is_directory(sqlitedb_pah_.c_str()))
     {
         ZCE_LIB::mkdir_recurse(sqlitedb_pah_.c_str());
     }
 
-    //logµÄÂ·¾¶Ã»ÓĞ¿ÉÒÔ´´½¨
+<<<<<<< HEAD
+    //logé•„å‹®çŸ¾å¯°å‹¬ç—…é“¾å¤Šå½²æµ ãƒ¥å±å¯¤?    outlog_dir_path_ = config_path_;
+=======
+    //logçš„è·¯å¾„æ²¡æœ‰å¯ä»¥åˆ›å»º
     outlog_dir_path_ = config_path_;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     ZCE_LIB::path_string_cat(outlog_dir_path_, "log");
     if (false == ZCE_LIB::is_directory(outlog_dir_path_.c_str()))
     {
@@ -89,7 +101,10 @@ void Illusion_Read_Config::finalize()
     return;
 }
 
-//ÇåÀíËùÓĞµÄ¶ÁÈ¡Êı¾İ
+<<<<<<< HEAD
+//å¨“å‘¯æ‚Šé•“
+=======
+//æ¸…ç†æ‰€æœ‰çš„è¯»å–æ•°æ®
 void Illusion_Read_Config::clear()
 {
     file_cfg_map_.clear();
@@ -101,7 +116,7 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
     clear();
 
     BOOL bret = ils_excel_file_.open_excelfile(open_file);
-    //ExcelÎÄ¼ş´ò¿ªÊ§°Ü
+    //Excelæ–‡ä»¶æ‰“å¼€å¤±è´¥
     if (bret != TRUE)
     {
         return -1;
@@ -109,12 +124,12 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
     //
     TRACE("Dream excecl file have sheet num[%d].\n", ils_excel_file_.sheets_count());
 
-    //±í¸ñ´íÎó
+    //è¡¨æ ¼é”™è¯¯
     if (ils_excel_file_.load_sheet(_T("TABLE_CONFIG"), FALSE) == FALSE ||
         ils_excel_file_.load_sheet(_T("ENUM_CONFIG"), FALSE) == FALSE)
     {
         //
-        ::AfxMessageBox(_T("ÄãÑ¡ÔñµÄÅäÖÃEXCEL²»ÊÇÄÜ¶ÁÈ¡µÄÅäÖÃ±í£¬ÇëÖØÏÖ¼ì²éºó´ò¿ª¡£!"));
+        ::AfxMessageBox(_T("ä½ é€‰æ‹©çš„é…ç½®EXCELä¸æ˜¯èƒ½è¯»å–çš„é…ç½®è¡¨ï¼Œè¯·é‡ç°æ£€æŸ¥åæ‰“å¼€ã€‚!"));
         return -1;
     }
 
@@ -131,7 +146,7 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
     int ret = read_table_enum(xls_data);
     if (0 != ret)
     {
-        ::AfxMessageBox(_T("ÄãÑ¡ÔñµÄÅäÖÃEXCELÎÄ¼şÖĞµÄENUM_CONFIG±í²»ÕıÈ·£¬ÇëÖØÏÖ¼ì²éºó´ò¿ª¡£!"));
+        ::AfxMessageBox(_T("ä½ é€‰æ‹©çš„é…ç½®EXCELæ–‡ä»¶ä¸­çš„ENUM_CONFIGè¡¨ä¸æ­£ç¡®ï¼Œè¯·é‡ç°æ£€æŸ¥åæ‰“å¼€ã€‚!"));
         return ret;
     }
 
@@ -139,7 +154,7 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
     ret = read_table_config(xls_data);
     if (0 != ret)
     {
-        ::AfxMessageBox(_T("ÄãÑ¡ÔñµÄÅäÖÃEXCELÎÄ¼şÖĞµÄTABLE_CONFIG±í²»ÕıÈ·£¬ÇëÖØÏÖ¼ì²éºó´ò¿ª¡£!"));
+        ::AfxMessageBox(_T("ä½ é€‰æ‹©çš„é…ç½®EXCELæ–‡ä»¶ä¸­çš„TABLE_CONFIGè¡¨ä¸æ­£ç¡®ï¼Œè¯·é‡ç°æ£€æŸ¥åæ‰“å¼€ã€‚!"));
         return ret;
     }
 
@@ -210,36 +225,36 @@ int Illusion_Read_Config::read_proto(const std::string &proto_fname)
 }
 
 
-//¶ÁÈ¡ËùÓĞµÄÃ¶¾ÙÖµ
+//è¯»å–æ‰€æœ‰çš„æšä¸¾å€¼
 int Illusion_Read_Config::read_table_enum(EXCEL_FILE_DATA &file_cfg_data)
 {
-    //Ç°Ãæ¼ì²é¹ıÁË
+    //å‰é¢æ£€æŸ¥è¿‡äº†
     BOOL bret =  ils_excel_file_.load_sheet(_T("ENUM_CONFIG"), TRUE);
     if (bret == FALSE)
     {
         return -1;
     }
 
-    //´ğÓ¦ĞĞÁĞ
+    //ç­”åº”è¡Œåˆ—
     long row_count = ils_excel_file_.row_count();
     long col_count = ils_excel_file_.column_count();
     TRACE("ENUM_CONFIG table have col_count = %u row_count =%u\n", col_count, row_count);
 
-    //×¢ÒâĞĞÁĞµÄÏÂ±ê¶¼ÊÇ´Ó1¿ªÊ¼¡£
+    //æ³¨æ„è¡Œåˆ—çš„ä¸‹æ ‡éƒ½æ˜¯ä»1å¼€å§‹ã€‚
     const long COL_ENUM_KEY = 1;
     const long COL_ENUM_VALUE = 2;
     const TCHAR ENUM_FIRST_CHAR = _T('[');
 
     size_t read_enum = 0;
-    //¶ÁÈ¡ËùÓĞµÄĞĞ
+    //è¯»å–æ‰€æœ‰çš„è¡Œ
     for (long i = 1; i <= row_count; ++i)
     {
 
         long   row_no = i;
-        //×Ö·û´®
+        //å­—ç¬¦ä¸²
         CString enum_key = ils_excel_file_.get_cell_cstring(row_no, COL_ENUM_KEY);
 
-        //Èç¹ûµÚÒ»¸ö×Ö·ûÊÇ[
+        //å¦‚æœç¬¬ä¸€ä¸ªå­—ç¬¦æ˜¯[
         if (enum_key[0] == ENUM_FIRST_CHAR )
         {
             CString enum_vlaue = ils_excel_file_.get_cell_cstring(row_no, COL_ENUM_VALUE);
@@ -253,10 +268,10 @@ int Illusion_Read_Config::read_table_enum(EXCEL_FILE_DATA &file_cfg_data)
 }
 
 
-//¶ÁÈ¡±í¸ñÅäÖÃ
+//è¯»å–è¡¨æ ¼é…ç½®
 int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 {
-    //Ç°Ãæ¼ì²é¹ıÁË
+    //å‰é¢æ£€æŸ¥è¿‡äº†
     BOOL bret = ils_excel_file_.load_sheet(_T("TABLE_CONFIG"), TRUE);
     if (bret == FALSE)
     {
@@ -267,7 +282,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
     long col_count = ils_excel_file_.column_count();
     TRACE("TABLE_CONFIG table have col_count = %u row_count =%u\n", col_count, row_count);
 
-    //×¢ÒâĞĞÁĞµÄÏÂ±ê¶¼ÊÇ´Ó1¿ªÊ¼¡£
+    //æ³¨æ„è¡Œåˆ—çš„ä¸‹æ ‡éƒ½æ˜¯ä»1å¼€å§‹ã€‚
     const long COL_TC_KEY = 1;
     const long COL_TC_VALUE = 2;
 
@@ -279,7 +294,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
         CString temp_value;
         TABLE_CONFIG tc_data;
 
-        if (tc_key == _T("±í¸ñÃû³Æ"))
+        if (tc_key == _T("è¡¨æ ¼åç§°"))
         {
 
             tc_data.excel_table_name_ = ils_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
@@ -363,7 +378,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
                 return -1;
             }
             tc_data.index2_column_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
-            //INDEX 2¿ÉÒÔÎª0
+            //INDEX 2å¯ä»¥ä¸º0
             //if (tc_data.index2_column_ <= 0)
 
             auto result = file_cfg_data.xls_table_cfg_.insert(std::make_pair(tc_data.excel_table_name_, tc_data));
@@ -382,12 +397,12 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 }
 
 
-//¶ÁÈ¡±í¸ñÊı¾İread_table_data
+//è¯»å–è¡¨æ ¼æ•°æ®read_table_data
 int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
                                              ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary)
 {
     int ret = 0;
-    //¼ì²éEXCELÎÄ¼şÖĞÊÇ·ñÓĞÕâ¸ö±í¸ñ
+    //æ£€æŸ¥EXCELæ–‡ä»¶ä¸­æ˜¯å¦æœ‰è¿™ä¸ªè¡¨æ ¼
     if (ils_excel_file_.load_sheet(tc_data.excel_table_name_, TRUE) == FALSE)
     {
         return -3;
@@ -461,7 +476,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     const google::protobuf::FieldDescriptor *field_desc = NULL;
     for (long col_no = 1; col_no <= col_count; ++col_no)
     {
-        //Èç¹ûÎª¿Õ±íÊ¾²»ĞèÒª¹Ø×¢ÕâÁĞ
+        //å¦‚æœä¸ºç©ºè¡¨ç¤ºä¸éœ€è¦å…³æ³¨è¿™åˆ—
         if (tc_data.proto_field_ary_[col_no - 1].length() == 0)
         {
             field_msg_ary.push_back(NULL);
@@ -469,7 +484,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             continue;
         }
 
-        //È¡µÃ×Ö¶ÎµÄÃèÊö
+        //å–å¾—å­—æ®µçš„æè¿°
         ret = Illusion_Protobuf_Reflect::get_fielddesc(new_msg.get(),
                                                        tc_data.proto_field_ary_[col_no - 1],
                                                        tc_data.item_msg_firstshow_[col_no - 1] == 1 ? true : false,
@@ -490,7 +505,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         field_desc_ary.push_back(field_desc);
     }
 
-    //°ÉÀ²°ÉÀ²°ÉÀ²°ÉÀ²°ÉÀ²°ÉÀ²°ÉÀ²£¬Õâ¶Î†ªàÂµÄ´úÂëÖ»ÊÇÎªÁË¸ã¸öÈÕÖ¾µÄÃû×Ö,EXCEFILENAE_TABLENAME.log
+    //å§å•¦å§å•¦å§å•¦å§å•¦å§å•¦å§å•¦å§å•¦ï¼Œè¿™æ®µå•°å—¦çš„ä»£ç åªæ˜¯ä¸ºäº†æä¸ªæ—¥å¿—çš„åå­—,EXCEFILENAE_TABLENAME.log
     std::string xlsfile_stdstring;
     Coding_Convert::instance()->default_to_mbcs(ils_excel_file_.open_filename(), xlsfile_stdstring);
     char file_basename[MAX_PATH];
@@ -514,7 +529,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     }
     std::stringstream sstr_stream;
 
-    //Ê²Ã´£¿ÎªÉ¶²»ÓÃgoogle pb µÄdebugstringÖ±½ÓÊä³ö£¿ÎªÉ¶£¬×Ô¼º¿¼ÂÇ
+    //ä»€ä¹ˆï¼Ÿä¸ºå•¥ä¸ç”¨google pb çš„debugstringç›´æ¥è¾“å‡ºï¼Ÿä¸ºå•¥ï¼Œè‡ªå·±è€ƒè™‘
     sstr_stream << "Read excel file:" << xlsfile_stdstring.c_str() << " line count" << line_count
                 << "column count " << col_count << std::endl;
     sstr_stream << "Read table:" << tablename_stdstring.c_str() << std::endl;
@@ -529,7 +544,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     CString read_data;
     std::string set_data, show_data;
 
-    //¶ÁÈ¡Ã¿Ò»ĞĞµÄÊı¾İ ,+1ÊÇÒòÎªread_data_start_Ò²Òª¶ÁÈ¡
+    //è¯»å–æ¯ä¸€è¡Œçš„æ•°æ® ,+1æ˜¯å› ä¸ºread_data_start_ä¹Ÿè¦è¯»å–
     aiiijma_ary->resize(line_count - tc_data.read_data_start_ + 1);
     for (long line_no = tc_data.read_data_start_; line_no <= line_count; ++line_no)
     {
@@ -540,39 +555,39 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
 
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
-            //Èç¹ûÎª¿Õ±íÊ¾²»ĞèÒª¹Ø×¢ÕâÁĞ
+            //å¦‚æœä¸ºç©ºè¡¨ç¤ºä¸éœ€è¦å…³æ³¨è¿™åˆ—
             if (tc_data.proto_field_ary_[col_no - 1].length() ==  0)
             {
                 continue;
             }
 
-            //¶Á³öEXCELÊı¾İ£¬×¢ÒâÕâ¸öµØ·½ÊÇ¸ù¾İMFCµÄ±àÂë¾ö¶¨CStringÊı¾İµÄ±àÂë
+            //è¯»å‡ºEXCELæ•°æ®ï¼Œæ³¨æ„è¿™ä¸ªåœ°æ–¹æ˜¯æ ¹æ®MFCçš„ç¼–ç å†³å®šCStringæ•°æ®çš„ç¼–ç 
             read_data = ils_excel_file_.get_cell_cstring(line_no, col_no);
 
-            //È¡µÃ×Ö¶ÎµÄÃèÊö
+            //å–å¾—å­—æ®µçš„æè¿°
             field_msg = field_msg_ary[ col_no - 1 ];
             field_desc = field_desc_ary[col_no - 1];
 
-            //Èç¹ûÊÇstring ÀàĞÍ£¬Google PBÖ®Ö§³ÖUTF8
+            //å¦‚æœæ˜¯string ç±»å‹ï¼ŒGoogle PBä¹‹æ”¯æŒUTF8
             if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING )
             {
                 ret = Coding_Convert::instance()->default_to_utf8(read_data, set_data);
                 //
                 ret = Coding_Convert::instance()->default_to_mbcs(read_data, show_data);
             }
-            //¶ÔÓÚBYTES£¬
+            //å¯¹äºBYTESï¼Œ
             else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
             {
                 ret = Coding_Convert::instance()->default_to_bytescoding(read_data, set_data);
                 show_data = set_data;
             }
-            //ÆäËû×Ö¶ÎÀàĞÍÍ³Ò»×ª»»ÎªUTF8µÄ±àÂë
+            //å…¶ä»–å­—æ®µç±»å‹ç»Ÿä¸€è½¬æ¢ä¸ºUTF8çš„ç¼–ç 
             else
             {
                 ret = Coding_Convert::instance()->default_to_utf8(read_data, set_data);
                 show_data = set_data;
             }
-            //¸ù¾İÃèÊö£¬ÉèÖÃ×Ö¶ÎµÄÊı¾İ
+            //æ ¹æ®æè¿°ï¼Œè®¾ç½®å­—æ®µçš„æ•°æ®
             ret = Illusion_Protobuf_Reflect::set_fielddata(field_msg, field_desc, set_data);
             if (0 != ret)
             {
@@ -588,7 +603,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
                 return ret;
             }
 
-            //¶ÁÈ¡Ë÷Òı
+            //è¯»å–ç´¢å¼•
             if (col_no == tc_data.index1_column_)
             {
                 index_1 = std::stol(set_data, 0, 10 );
@@ -602,7 +617,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
                         << std::endl;
         }
 
-        //Èç¹ûÃ»ÓĞ³õÊ¼»¯
+        //å¦‚æœæ²¡æœ‰åˆå§‹åŒ–
         if (!new_msg->IsInitialized())
         {
             ZCE_LOG(RS_ERROR, "Read line [%d] message [%s] is not IsInitialized, please check your excel or proto file.",
@@ -661,7 +676,7 @@ int Illusion_Read_Config::save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
         return ret;
     }
 
-    //¸üĞÂÊı¾İ¿â
+    //æ›´æ–°æ•°æ®åº“
     ret = sqlite_config.replace_array(table_cfg.table_id_, aiiijma_ary);
     if (ret != 0)
     {
@@ -674,7 +689,7 @@ int Illusion_Read_Config::save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
 
 
 
-///´ÓDB3ÎÄ¼şÀïÃæ¶ÁÈ¡Ä³¸öÅäÖÃ±íµÄÅäÖÃ
+///ä»DB3æ–‡ä»¶é‡Œé¢è¯»å–æŸä¸ªé…ç½®è¡¨çš„é…ç½®
 int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
                                              const std::string &conf_message_name,
                                              unsigned int table_id,
@@ -728,12 +743,12 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
 
     std::stringstream sstr_stream;
 
-    //²»ÖÆ¶¨²éÑ¯¶ÔÏó£¬²éÑ¯ËùÓĞµÄÁĞ±í
+    //ä¸åˆ¶å®šæŸ¥è¯¢å¯¹è±¡ï¼ŒæŸ¥è¯¢æ‰€æœ‰çš„åˆ—è¡¨
     if (index_1 == 0 && index_2 == 0)
     {
 
         ARRARY_OF_AI_IIJIMA_BINARY aiiijma_ary;
-        //¸üĞÂÊı¾İ¿â
+        //æ›´æ–°æ•°æ®åº“
         ret = sqlite_config.select_array(table_id, 0, 0, &aiiijma_ary);
         if (ret != 0)
         {
@@ -785,7 +800,7 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
     out_string.reserve(64 * 1024 * 1024);
     out_string = sstr_stream.str();
 
-    //´òÓ¡ÈÕÖ¾£¬ÆÁÄ»Êä³ö£¬
+    //æ‰“å°æ—¥å¿—ï¼Œå±å¹•è¾“å‡ºï¼Œ
     ZCE_LOG(RS_INFO, "\n%s", out_string.c_str());
     read_db3_log << out_string;
 
@@ -798,3 +813,4 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
 
     return 0;
 }
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

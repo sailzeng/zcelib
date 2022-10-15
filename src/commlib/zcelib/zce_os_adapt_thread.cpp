@@ -2,13 +2,13 @@
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_thread.h"
 
-//ÎªÊ²Ã´²»ÈÃÎÒÓÃACE£¬ÎÀÉúÃŞ£¡£¬ÎÀÉúÃŞ£¡£¡£¡£¡£¡ÎÀÉúÃŞÎÀÉúÃŞÎÀÉúÃŞ£¡£¡£¡£¡£¡£¡£¡£¡
+//ä¸ºä»€ä¹ˆä¸è®©æˆ‘ç”¨ACEï¼Œå«ç”Ÿæ£‰ï¼ï¼Œå«ç”Ÿæ£‰ï¼ï¼ï¼ï¼ï¼å«ç”Ÿæ£‰å«ç”Ÿæ£‰å«ç”Ÿæ£‰ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼
 
 //----------------------------------------------------------------------------------------
 //
 int zce::pthread_attr_init(pthread_attr_t *attr)
 {
-    //ÎÒÔİÊ±Ö»¹Ø×¢Õâ¼¸¸ö±äÁ¿
+    //æˆ‘æš‚æ—¶åªå…³æ³¨è¿™å‡ ä¸ªå˜é‡
 #if defined (ZCE_OS_WINDOWS)
     attr->detachstate = PTHREAD_CREATE_DETACHED;
     attr->inheritsched = PTHREAD_INHERIT_SCHED;
@@ -34,8 +34,8 @@ int zce::pthread_attr_destroy(pthread_attr_t *attr)
 #endif
 }
 
-//ÉèÖÃ£¬»òÕß»ñµÃÏß³ÌÊôĞÔ±äÁ¿ÊôĞÔ
-//Äã¿ÉÒÔÉèÖÃ£¬Ïß³ÌµÄµÄ·ÖÀë£¬JOINÊôĞÔ£¬¶ÑÕ»´óĞ¡£¬Ïß³ÌµÄµ÷¶ÈÓÅÏÈ¼¶
+//è®¾ç½®ï¼Œæˆ–è€…è·å¾—çº¿ç¨‹å±æ€§å˜é‡å±æ€§
+//ä½ å¯ä»¥è®¾ç½®ï¼Œçº¿ç¨‹çš„çš„åˆ†ç¦»ï¼ŒJOINå±æ€§ï¼Œå †æ ˆå¤§å°ï¼Œçº¿ç¨‹çš„è°ƒåº¦ä¼˜å…ˆçº§
 int zce::pthread_attr_getex(const pthread_attr_t *attr,
                             int *detachstate,
                             size_t *stacksize,
@@ -66,6 +66,8 @@ int zce::pthread_attr_getex(const pthread_attr_t *attr,
         return ret;
     }
 
+    *threadpriority  = param.sched_priority;
+    ret = ::pthread_attr_getstacksize (attr, stacksize);
     *threadpriority = param.sched_priority;
     ret = ::pthread_attr_getstacksize(attr, stacksize);
 
@@ -82,13 +84,16 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
                             int detachstate,
                             size_t stacksize,
                             int threadpriority
+                           )
 )
 {
+
 #if defined (ZCE_OS_WINDOWS)
+    assert( PTHREAD_CREATE_JOINABLE == detachstate || PTHREAD_CREATE_DETACHED == detachstate );
     assert(PTHREAD_CREATE_JOINABLE == detachstate || PTHREAD_CREATE_DETACHED == detachstate);
     attr->detachstate = detachstate;
     attr->stacksize = stacksize;
-    //ĞŞ¸Äµ÷¶È²ßÂÔ¼Ì³Ğ·½Ê½
+    //ä¿®æ”¹è°ƒåº¦ç­–ç•¥ç»§æ‰¿æ–¹å¼
     attr->inheritsched = PTHREAD_EXPLICIT_SCHED;
     attr->schedparam.sched_priority = threadpriority;
 
@@ -96,6 +101,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 
 #elif defined (ZCE_OS_LINUX)
     int ret = 0;
+    ret = ::pthread_attr_setdetachstate (attr, detachstate);
     ret = ::pthread_attr_setdetachstate(attr, detachstate);
 
     if (ret != 0)
@@ -103,7 +109,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
         return ret;
     }
 
-    //×¢ÒâÕâ¶ù£¬ÒªÏÈÉèÖÃÊÇ·ñ×ñÊØ²»´Ó·ò½ø³ÌµÃµ½µ÷¶È·½°¸
+    //æ³¨æ„è¿™å„¿ï¼Œè¦å…ˆè®¾ç½®æ˜¯å¦éµå®ˆä¸ä»å¤«è¿›ç¨‹å¾—åˆ°è°ƒåº¦æ–¹æ¡ˆ
     ret = ::pthread_attr_setinheritsched(attr, PTHREAD_EXPLICIT_SCHED);
 
     if (ret != 0)
@@ -113,6 +119,7 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 
     sched_param param;
     param.sched_priority = threadpriority;
+    ret = ::pthread_attr_setschedparam (attr, &param);
     ret = ::pthread_attr_setschedparam(attr, &param);
 
     if (ret != 0)
@@ -120,12 +127,14 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
         return ret;
     }
 
-    // ¼Ó¸öÅĞ¶ÏÈç¹ûĞ¡ÓÚ×îĞ¡Öµ£¬Ôò¸³Îª×îĞ¡Öµ
+    // åŠ ä¸ªåˆ¤æ–­å¦‚æœå°äºæœ€å°å€¼ï¼Œåˆ™èµ‹ä¸ºæœ€å°å€¼
+    if (stacksize < PTHREAD_STACK_MIN)
     if (stacksize < (size_t)PTHREAD_STACK_MIN)
     {
         stacksize = PTHREAD_STACK_MIN;
     }
 
+    ret = ::pthread_attr_setstacksize (attr, stacksize);
     ret = ::pthread_attr_setstacksize(attr, stacksize);
 
     if (ret != 0)
@@ -137,19 +146,20 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//Ïß³ÌÆô¶¯º¯ÊıµÄÊÊÅäÆ÷
+//çº¿ç¨‹å¯åŠ¨å‡½æ•°çš„é€‚é…å™¨
 class THREAD_START_FUN_ADAPT
 {
 protected:
     typedef void (*START_ROUTINE_FUN)(void *);
 
-    //Ïß³ÌÆô¶¯º¯Êı
+    //çº¿ç¨‹å¯åŠ¨å‡½æ•°
     START_ROUTINE_FUN   start_routine_;
-    //Ïß³ÌÆô¶¯²ÎÊı
+    //çº¿ç¨‹å¯åŠ¨å‚æ•°
     void               *arg_;
 
 public:
-    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    THREAD_START_FUN_ADAPT(void (*start_routine)(void *), void *arg):
     THREAD_START_FUN_ADAPT(void (*start_routine)(void *), void *arg) :
         start_routine_(start_routine),
         arg_(arg)
@@ -182,13 +192,13 @@ public:
 #endif //
 };
 
-//´´½¨Ò»¸öÒ»¸öÏß³Ì,ÎªÁË·½±ã£¬ÎÒÕâ¶ùÒ²²»Ìá¹©ÒÔ´´½¨¾Í¹ÒÆğµÄ¹¦ÄÜÁË£¬
-//×¢Òâstart_routine£¬ÎÒºÍpthread_createÓÃµÄ²»Ò»ÖÂà¸¡£
-//ÎªÊ²Ã´void (*start_routine)(void*) ²»ÊÊÓÃLINUXÏÂµÄ±ê×¼ÄØ£¬ÎÒÖÁÉÙÓÌÔ¥Á½´Î£¬ÉõÖÁ·´¸´¸Ä¸Ä´úÂë£¬
-//ACEµÄÊµÏÖ·½Ê½ÊÇ¶Ô²»Í¬Æ½Ì¨×öÁËÇø±ğ¶Ô´ı£¬ºÃ´¦ÊÇ´ó¼ÒÃ»ÓĞ·¸´íµÄ¿ÉÄÜ£¬È±µãÊÇÎŞ·¨Ğ´³öÒ»ÖÂµÄ´úÂë£¬±ØĞëÒÀ¿¿ºê
-//¶øÎÒÑ¡ÔñË­Ò²²»È¥Ç¨¾Í£¬²»Ìá¹©·µ»ØÖµ¸øÄã£¬Èç¹ûÄãĞèÒª·µ»ØÖµ£¬ÇëÓÃÏß³ÌÀàµÄ·â×°£¬¶ø²»ÊÇAPI
-//ÒòÎªWIN32ÏÂ·µ»Øunsigned int£¬LINUXÏÂ·µ»Øvoid *£¬ÎÒÒª¿¼ÂÇÆ½Ì¨¼æÈİĞÔ£¬½«Ë­×ª»»¸øË­¶¼²»ºÏÊÊ,ËùÒÔÎÒ·ÅÆú
-//ËùÒÔÍ³Ò»Ã»ÓĞ·µ»ØÖµ£¬¸øÄã³ö´íµÄ¿ÉÄÜ£¬·´¶øº¦ËÀ×Ô¼º
+//åˆ›å»ºä¸€ä¸ªä¸€ä¸ªçº¿ç¨‹,ä¸ºäº†æ–¹ä¾¿ï¼Œæˆ‘è¿™å„¿ä¹Ÿä¸æä¾›ä»¥åˆ›å»ºå°±æŒ‚èµ·çš„åŠŸèƒ½äº†ï¼Œ
+//æ³¨æ„start_routineï¼Œæˆ‘å’Œpthread_createç”¨çš„ä¸ä¸€è‡´å–”ã€‚
+//ä¸ºä»€ä¹ˆvoid (*start_routine)(void*) ä¸é€‚ç”¨LINUXä¸‹çš„æ ‡å‡†å‘¢ï¼Œæˆ‘è‡³å°‘çŠ¹è±«ä¸¤æ¬¡ï¼Œç”šè‡³åå¤æ”¹æ”¹ä»£ç ï¼Œ
+//ACEçš„å®ç°æ–¹å¼æ˜¯å¯¹ä¸åŒå¹³å°åšäº†åŒºåˆ«å¯¹å¾…ï¼Œå¥½å¤„æ˜¯å¤§å®¶æ²¡æœ‰çŠ¯é”™çš„å¯èƒ½ï¼Œç¼ºç‚¹æ˜¯æ— æ³•å†™å‡ºä¸€è‡´çš„ä»£ç ï¼Œå¿…é¡»ä¾é å®
+//è€Œæˆ‘é€‰æ‹©è°ä¹Ÿä¸å»è¿å°±ï¼Œä¸æä¾›è¿”å›å€¼ç»™ä½ ï¼Œå¦‚æœä½ éœ€è¦è¿”å›å€¼ï¼Œè¯·ç”¨çº¿ç¨‹ç±»çš„å°è£…ï¼Œè€Œä¸æ˜¯API
+//å› ä¸ºWIN32ä¸‹è¿”å›unsigned intï¼ŒLINUXä¸‹è¿”å›void *ï¼Œæˆ‘è¦è€ƒè™‘å¹³å°å…¼å®¹æ€§ï¼Œå°†è°è½¬æ¢ç»™è°éƒ½ä¸åˆé€‚,æ‰€ä»¥æˆ‘æ”¾å¼ƒ
+//æ‰€ä»¥ç»Ÿä¸€æ²¡æœ‰è¿”å›å€¼ï¼Œç»™ä½ å‡ºé”™çš„å¯èƒ½ï¼Œåè€Œå®³æ­»è‡ªå·±
 int zce::pthread_create(ZCE_THREAD_ID *threadid,
                         const pthread_attr_t *attr,
                         void (*start_routine)(void *),
@@ -196,10 +206,10 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //Õâ¸ö²ÎÊınewÁËÖ®ºó£¬ÔÚ´´½¨ÁËÏß³Ìºó²ÅÄÜdelete,
-    //ËùÒÔÕæÕıµÄÉ¾³ıµãÔÚ£¬THREAD_START_FUN_ADAPT::adapt_svc_runÕâ¸öµØ·½£¬
+    //è¿™ä¸ªå‚æ•°newäº†ä¹‹åï¼Œåœ¨åˆ›å»ºäº†çº¿ç¨‹åæ‰èƒ½delete,
+    //æ‰€ä»¥çœŸæ­£çš„åˆ é™¤ç‚¹åœ¨ï¼ŒTHREAD_START_FUN_ADAPT::adapt_svc_runè¿™ä¸ªåœ°æ–¹ï¼Œ
     THREAD_START_FUN_ADAPT *adapt_object = new THREAD_START_FUN_ADAPT(start_routine, arg);
-    //ÓÃCRTµÄÏß³Ì´´½¨º¯Êı´´½¨Ïß³Ì
+    //ç”¨CRTçš„çº¿ç¨‹åˆ›å»ºå‡½æ•°åˆ›å»ºçº¿ç¨‹
     HANDLE thread_handle = (HANDLE)::_beginthreadex(NULL,
                                                     static_cast<unsigned int>(attr->stacksize),
                                                     THREAD_START_FUN_ADAPT::adapt_svc_run,
@@ -207,24 +217,26 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
                                                     0,
                                                     threadid);
 
-    //×¢Òâ_beginthreadexµÄ·µ»ØÖµ0±íÊ¾´íÎó£¬ºÍ_beginthread²»Ò»Ñù
+    //æ³¨æ„_beginthreadexçš„è¿”å›å€¼0è¡¨ç¤ºé”™è¯¯ï¼Œå’Œ_beginthreadä¸ä¸€æ ·
     if (NULL == thread_handle)
     {
         delete adapt_object;
         return -1;
     }
 
-    //ÉèÖÃÏß³ÌÓÅÏÈ¼¶
+    //è®¾ç½®çº¿ç¨‹ä¼˜å…ˆçº§
     if (PTHREAD_EXPLICIT_SCHED == attr->inheritsched &&
+        0 != attr->schedparam.sched_priority )
         0 != attr->schedparam.sched_priority)
     {
-        //Ïß³ÌÏà¶ÔÓÅÏÈ¼¶£¨È¡Öµ¶ÔÓ¦ÈçÏÂ£©
+        //çº¿ç¨‹ç›¸å¯¹ä¼˜å…ˆçº§ï¼ˆå–å€¼å¯¹åº”å¦‚ä¸‹ï¼‰
         BOOL bret = ::SetThreadPriority(thread_handle,
                                         attr->schedparam.sched_priority);
 
+        if ( !bret )
         if (!bret)
         {
-            //ÊÇ·ñ¼ÇÂ¼Ò»ÏÂ£¬ºÇºÇ
+            //æ˜¯å¦è®°å½•ä¸€ä¸‹ï¼Œå‘µå‘µ
         }
     }
 
@@ -233,6 +245,9 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 #elif defined (ZCE_OS_LINUX)
 
     THREAD_START_FUN_ADAPT *adapt_object = new THREAD_START_FUN_ADAPT(start_routine, arg);
+    return ::pthread_create (threadid, attr,
+                             THREAD_START_FUN_ADAPT::adapt_svc_run,
+                             adapt_object);
     return ::pthread_create(threadid, attr,
                             THREAD_START_FUN_ADAPT::adapt_svc_run,
                             adapt_object);
@@ -240,14 +255,15 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//Õâ¸ö²»ÊÇPOSIXµÄ·â×°£¬µ«ÍÆ¼öÊ¹ÓÃ
-//»¹ÊÇÌá¹©Ò»¸ö¼òµ¥Ò»µãµÄ·â×°°É£¬Õâ¸ö²»ÓÃ´¦Àípthread_attr_t
+//è¿™ä¸ªä¸æ˜¯POSIXçš„å°è£…ï¼Œä½†æ¨èä½¿ç”¨
+//è¿˜æ˜¯æä¾›ä¸€ä¸ªç®€å•ä¸€ç‚¹çš„å°è£…å§ï¼Œè¿™ä¸ªä¸ç”¨å¤„ç†pthread_attr_t
 int zce::pthread_createex(void (*start_routine)(void *),
                           void *arg,
                           ZCE_THREAD_ID *threadid,
                           int detachstate,
                           size_t stacksize,
                           int threadpriority
+                         )
 )
 {
     int ret = 0;
@@ -259,11 +275,12 @@ int zce::pthread_createex(void (*start_routine)(void *),
         return ret;
     }
 
-    //ÉèÖÃÏß³Ì²ÎÊı
+    //è®¾ç½®çº¿ç¨‹å‚æ•°
     ret = zce::pthread_attr_setex(&attr,
                                   detachstate,
                                   stacksize,
                                   threadpriority
+                                 );
     );
 
     if (0 != ret)
@@ -272,7 +289,7 @@ int zce::pthread_createex(void (*start_routine)(void *),
         return ret;
     }
 
-    //´´½¨Ïß³Ì
+    //åˆ›å»ºçº¿ç¨‹
     ret = zce::pthread_create(threadid,
                               &attr,
                               start_routine,
@@ -287,7 +304,8 @@ int zce::pthread_createex(void (*start_routine)(void *),
     return 0;
 }
 
-//ÍË³ö£¬´«µİvoid£¬¸÷¸öÆ½Ì¨²»¼æÈİ£¬ËùÒÔ¸É´àÊ²Ã´¶¼²»´«µİ³öÀ´
+//é€€å‡ºï¼Œä¼ é€’voidï¼Œå„ä¸ªå¹³å°ä¸å…¼å®¹ï¼Œæ‰€ä»¥å¹²è„†ä»€ä¹ˆéƒ½ä¸ä¼ é€’å‡ºæ¥
+void zce::pthread_exit( void )
 void zce::pthread_exit(void)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -298,20 +316,22 @@ void zce::pthread_exit(void)
 
 #elif defined (ZCE_OS_LINUX)
     void *return_data = NULL;
+    return ::pthread_exit (return_data);
     return ::pthread_exit(return_data);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//µÈ´ıÄ³¸öJOINµÄÏß³Ì½áÊø,µ«²»Àí»á·µ»ØÖµ
+//ç­‰å¾…æŸä¸ªJOINçš„çº¿ç¨‹ç»“æŸ,ä½†ä¸ç†ä¼šè¿”å›å€¼
 int zce::pthread_join(ZCE_THREAD_ID threadid)
 {
     ZCE_THR_FUNC_RETURN ret_val;
+    return zce::pthread_join (threadid, &ret_val);
     return zce::pthread_join(threadid, &ret_val);
 }
 
 //==========================================================================================
-//×¢Òâ£¬WINDOWSºÍLINUXÏÂ·µ»ØÖµ²»Í¬£¬ËùÒÔÎÒ·Ç³£·Ç³£²»½¨ÒéÄãÓÃÕâ¸ö´«µİ·µ»ØÖµ£¬
-//WINDOWS ¿ÉÒÔ´«µİunsigned int £¬LINUX´«µİvoid *£¬
+//æ³¨æ„ï¼ŒWINDOWSå’ŒLINUXä¸‹è¿”å›å€¼ä¸åŒï¼Œæ‰€ä»¥æˆ‘éå¸¸éå¸¸ä¸å»ºè®®ä½ ç”¨è¿™ä¸ªä¼ é€’è¿”å›å€¼ï¼Œ
+//WINDOWS å¯ä»¥ä¼ é€’unsigned int ï¼ŒLINUXä¼ é€’void *ï¼Œ
 
 #if defined (ZCE_OS_WINDOWS)
 
@@ -320,13 +340,14 @@ class WIN_THREAD_STARTFUN_ADAPT
 protected:
     typedef unsigned int (*WIN_START_ROUTINE_FUN)(void *);
 
-    //Ïß³ÌÆô¶¯º¯Êı
+    //çº¿ç¨‹å¯åŠ¨å‡½æ•°
     WIN_START_ROUTINE_FUN start_routine_;
-    //Ïß³ÌÆô¶¯²ÎÊı
+    //çº¿ç¨‹å¯åŠ¨å‚æ•°
     void                 *arg_;
 
 public:
-    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    WIN_THREAD_STARTFUN_ADAPT(unsigned int (*start_routine)(void *), void *arg):
     WIN_THREAD_STARTFUN_ADAPT(unsigned int (*start_routine)(void *), void *arg) :
         start_routine_(start_routine),
         arg_(arg)
@@ -344,49 +365,57 @@ public:
         unsigned int return_data = my_adapt->start_routine_(my_adapt->arg_);
         return return_data;
     }
+
 };
 
 #endif //
 
-//´´½¨Ò»¸öÏß³Ì,µ÷ÓÃÏß³Ìº¯ÊıÏò¸÷¸öÆ½Ì¨¼æÈİÄ£Ê½¿¿Æë£¬ÓĞ·µ»ØÖµ
+//åˆ›å»ºä¸€ä¸ªçº¿ç¨‹,è°ƒç”¨çº¿ç¨‹å‡½æ•°å‘å„ä¸ªå¹³å°å…¼å®¹æ¨¡å¼é é½ï¼Œæœ‰è¿”å›å€¼
 int zce::pthread_create(ZCE_THREAD_ID *threadid,
                         const pthread_attr_t *attr,
+                        ZCE_THR_FUNC_RETURN (* start_routine)(void *),
                         ZCE_THR_FUNC_RETURN(*start_routine)(void *),
                         void *arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     WIN_THREAD_STARTFUN_ADAPT adapt_object(start_routine, arg);
-    //ÓÃCRTµÄÏß³Ì´´½¨º¯Êı´´½¨Ïß³Ì
+    //ç”¨CRTçš„çº¿ç¨‹åˆ›å»ºå‡½æ•°åˆ›å»ºçº¿ç¨‹
     HANDLE thread_handle = (HANDLE)::_beginthreadex(NULL,
                                                     static_cast<unsigned int>(attr->stacksize),
                                                     THREAD_START_FUN_ADAPT::adapt_svc_run,
                                                     &adapt_object,
                                                     0,
                                                     threadid);
-    //×¢Òâ_beginthreadexµÄ·µ»ØÖµ0±íÊ¾´íÎó£¬ºÍ_beginthread²»Ò»Ñù
+    //æ³¨æ„_beginthreadexçš„è¿”å›å€¼0è¡¨ç¤ºé”™è¯¯ï¼Œå’Œ_beginthreadä¸ä¸€æ ·
     if (NULL == thread_handle)
     {
         return -1;
     }
 
-    //ÉèÖÃÏß³ÌÓÅÏÈ¼¶
+    //è®¾ç½®çº¿ç¨‹ä¼˜å…ˆçº§
     if (PTHREAD_EXPLICIT_SCHED == attr->inheritsched &&
+        0 != attr->schedparam.sched_priority )
         0 != attr->schedparam.sched_priority)
     {
-        //Ïß³ÌÏà¶ÔÓÅÏÈ¼¶£¨È¡Öµ¶ÔÓ¦ÈçÏÂ£©
+        //çº¿ç¨‹ç›¸å¯¹ä¼˜å…ˆçº§ï¼ˆå–å€¼å¯¹åº”å¦‚ä¸‹ï¼‰
         BOOL bret = ::SetThreadPriority(thread_handle,
                                         attr->schedparam.sched_priority);
 
+        if ( !bret )
         if (!bret)
         {
-            //ÊÇ·ñ¼ÇÂ¼Ò»ÏÂ£¬ºÇºÇ
+            //æ˜¯å¦è®°å½•ä¸€ä¸‹ï¼Œå‘µå‘µ
         }
     }
 
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
+    return ::pthread_create (threadid,
+                             attr,
+                             start_routine,
+                             arg);
     return ::pthread_create(threadid,
                             attr,
                             start_routine,
@@ -395,26 +424,29 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//ÍË³öÒ»¸öÏß³Ì£¬¿ÉÒÔµÃµ½·µ»ØÖµ
+//é€€å‡ºä¸€ä¸ªçº¿ç¨‹ï¼Œå¯ä»¥å¾—åˆ°è¿”å›å€¼
 void zce::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
 {
 #if defined (ZCE_OS_WINDOWS)
     return _endthreadex(thr_ret);
 
 #elif defined (ZCE_OS_LINUX)
+    return ::pthread_exit (thr_ret);
     return ::pthread_exit(thr_ret);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//µÈ´ıÄ³¸öJOINµÄÏß³Ì½áÊø,²¢ÇÒµÃµ½Ïß³Ì»Øµ÷º¯ÊıµÄ·µ»ØÖµ
+//ç­‰å¾…æŸä¸ªJOINçš„çº¿ç¨‹ç»“æŸ,å¹¶ä¸”å¾—åˆ°çº¿ç¨‹å›è°ƒå‡½æ•°çš„è¿”å›å€¼
 int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
 {
+
 #if defined (ZCE_OS_WINDOWS)
 
-    //OpenThreadÊÇÒ»¸öWIN SERVER 2000ºó²ÅÓĞµÄº¯Êı VC6Ó¦¸ÃÃ»ÓĞ
+    //OpenThreadæ˜¯ä¸€ä¸ªWIN SERVER 2000åæ‰æœ‰çš„å‡½æ•° VC6åº”è¯¥æ²¡æœ‰
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
+                                            );
     );
     if (thr_handle == NULL)
     {
@@ -422,11 +454,13 @@ int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
     }
     DWORD thread_ret;
 
+    if (::WaitForSingleObject (thr_handle, INFINITE) == WAIT_OBJECT_0
+        && ::GetExitCodeThread (thr_handle, &thread_ret) != FALSE)
     if (::WaitForSingleObject(thr_handle, INFINITE) == WAIT_OBJECT_0
         && ::GetExitCodeThread(thr_handle, &thread_ret) != FALSE)
     {
         *ret_val = thread_ret;
-        //´Ë´¦²»Òª¹Ø±Õhandle£¨  ::CloseHandle (thr_handle);£©£¬ÒòÎªÎÒÃÇµ÷ÓÃµÄÊÇ_endthreadex ½áÊøµÄÏß³Ì
+        //æ­¤å¤„ä¸è¦å…³é—­handleï¼ˆ  ::CloseHandle (thr_handle);ï¼‰ï¼Œå› ä¸ºæˆ‘ä»¬è°ƒç”¨çš„æ˜¯_endthreadex ç»“æŸçš„çº¿ç¨‹
         return 0;
     }
 
@@ -434,11 +468,12 @@ int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
+    return ::pthread_join (threadid, ret_val);
     return ::pthread_join(threadid, ret_val);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//µÃµ½Ïß³ÌID
+//å¾—åˆ°çº¿ç¨‹ID
 ZCE_THREAD_ID zce::pthread_self(void)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -446,30 +481,32 @@ ZCE_THREAD_ID zce::pthread_self(void)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
+    return ::pthread_self ();
     return ::pthread_self();
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//È¡ÏûÒ»¸öÏß³Ì
-//Õâ¸öº¯Êı·ÅÔÚÕâ¶ù£¬ÍêÈ«ÊÇÎªÁËÂú×ãÎÒµÄÒ»µãµã·â×°ÒâÔ¸£¬ÒòÎªÔÚLINUXÆ½Ì¨£¬ÄãÎ´±ØÄÜÈ¡ÏûÒ»¸öÏß³Ì
-//ÔÚÍâWINDOWS£¬µ÷ÓÃTerminateThread£¬Õâ¸öº¯ÊıÒ²ÊÇ²»±»ÍÆ¼öµÄ
+//å–æ¶ˆä¸€ä¸ªçº¿ç¨‹
+//è¿™ä¸ªå‡½æ•°æ”¾åœ¨è¿™å„¿ï¼Œå®Œå…¨æ˜¯ä¸ºäº†æ»¡è¶³æˆ‘çš„ä¸€ç‚¹ç‚¹å°è£…æ„æ„¿ï¼Œå› ä¸ºåœ¨LINUXå¹³å°ï¼Œä½ æœªå¿…èƒ½å–æ¶ˆä¸€ä¸ªçº¿ç¨‹
+//åœ¨å¤–WINDOWSï¼Œè°ƒç”¨TerminateThreadï¼Œè¿™ä¸ªå‡½æ•°ä¹Ÿæ˜¯ä¸è¢«æ¨èçš„
 int zce::pthread_cancel(ZCE_THREAD_ID threadid)
 {
 #if defined (ZCE_OS_WINDOWS)
 
 #pragma warning (push)
 #pragma warning (disable:6258)
-    //OpenThreadÊÇÒ»¸öWIN SERVER 2000ºó²ÅÓĞµÄº¯Êı VC6Ó¦¸ÃÃ»ÓĞ
+    //OpenThreadæ˜¯ä¸€ä¸ªWIN SERVER 2000åæ‰æœ‰çš„å‡½æ•° VC6åº”è¯¥æ²¡æœ‰
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
+                                            );
     );
     if (thr_handle == NULL)
     {
         errno = GetLastError();
         return -1;
     }
-    //Ç¿ÖÆÍË³ö
+    //å¼ºåˆ¶é€€å‡º
     BOOL bret = ::TerminateThread(thr_handle, 0);
     if (!bret)
     {
@@ -484,34 +521,38 @@ int zce::pthread_cancel(ZCE_THREAD_ID threadid)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
+    return ::pthread_cancel (threadid);
     return ::pthread_cancel(threadid);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//¶ÔÒ»¸öÏß³Ì½øĞĞËÉ°ó
+//å¯¹ä¸€ä¸ªçº¿ç¨‹è¿›è¡Œæ¾ç»‘
 int zce::pthread_detach(ZCE_THREAD_ID threadid)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //WindowsÏß³Ì±¾À´¾ÍÊÇdetachµÄ£¬ºÇºÇ
+    //Windowsçº¿ç¨‹æœ¬æ¥å°±æ˜¯detachçš„ï¼Œå‘µå‘µ
     ZCE_UNUSED_ARG(threadid);
     return 0;
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
+    return ::pthread_detach (threadid);
     return ::pthread_detach(threadid);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//½«Ïß³ÌID×ª»»ÎªHANDLE£¬Ö»ÔÚWIN2000ÏÂÓĞÓÃ
+//å°†çº¿ç¨‹IDè½¬æ¢ä¸ºHANDLEï¼Œåªåœ¨WIN2000ä¸‹æœ‰ç”¨
 #if defined ZCE_OS_WINDOWS
 ZCE_THREAD_HANDLE pthread_id2handle(ZCE_THREAD_ID threadid)
 {
-    //OpenThreadÊÇÒ»¸öWIN SERVER 2000ºó²ÅÓĞµÄº¯Êı VC6Ó¦¸ÃÃ»ÓĞ
+    //OpenThreadæ˜¯ä¸€ä¸ªWIN SERVER 2000åæ‰æœ‰çš„å‡½æ•° VC6åº”è¯¥æ²¡æœ‰
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
+                                            );
     );
     return thr_handle;
+
 }
 #endif //
 
@@ -523,13 +564,14 @@ int zce::pthread_yield(void)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
+    return ::pthread_yield ();
     return ::sched_yield();
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
 //=================================================================================================================
 
-//destructor ²ÎÊı¶ÔÓÚWIN32Æ½Ì¨Ã»ÓĞÓÃ£¬½¨Òé²»ÓÃ¡£
+//destructor å‚æ•°å¯¹äºWIN32å¹³å°æ²¡æœ‰ç”¨ï¼Œå»ºè®®ä¸ç”¨ã€‚
 //
 int zce::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 {
@@ -537,9 +579,10 @@ int zce::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 
     ZCE_UNUSED_ARG(destructor);
 
+    *key = ::TlsAlloc ();
     *key = ::TlsAlloc();
 
-    //Èç¹û·µ»ØFALSE±êÊ¶Ê§°Ü
+    //å¦‚æœè¿”å›FALSEæ ‡è¯†å¤±è´¥
     if (TLS_OUT_OF_INDEXES == *key)
     {
         errno = GetLastError();
@@ -557,11 +600,13 @@ int zce::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 //
 int zce::pthread_key_delete(pthread_key_t key)
 {
+
 #if defined (ZCE_OS_WINDOWS)
 
+    BOOL bool_ret =  ::TlsFree (key);
     BOOL bool_ret = ::TlsFree(key);
 
-    //Èç¹û·µ»ØFALSE±êÊ¶Ê§°Ü
+    //å¦‚æœè¿”å›FALSEæ ‡è¯†å¤±è´¥
     if (!bool_ret)
     {
         errno = GetLastError();
@@ -578,11 +623,13 @@ int zce::pthread_key_delete(pthread_key_t key)
 
 int zce::pthread_setspecific(pthread_key_t key, const void *data)
 {
+
 #if defined (ZCE_OS_WINDOWS)
 
+    BOOL bool_ret =  ::TlsSetValue (key, (LPVOID)( data));
     BOOL bool_ret = ::TlsSetValue(key, (LPVOID)(data));
 
-    //Èç¹û·µ»ØFALSE±êÊ¶Ê§°Ü
+    //å¦‚æœè¿”å›FALSEæ ‡è¯†å¤±è´¥
     if (!bool_ret)
     {
         errno = GetLastError();
@@ -593,16 +640,20 @@ int zce::pthread_setspecific(pthread_key_t key, const void *data)
 
 #elif defined (ZCE_OS_LINUX)
     //
+    return ::pthread_setspecific (key, data);
     return ::pthread_setspecific(key, data);
 #endif
 }
 
+void *zce::pthread_getspecific (pthread_key_t key)
 void *zce::pthread_getspecific(pthread_key_t key)
 {
 #if defined (ZCE_OS_WINDOWS)
 
+    LPVOID  data = ::TlsGetValue (key);
     LPVOID  data = ::TlsGetValue(key);
 
+    if (data == 0 && ::GetLastError () != NO_ERROR)
     if (data == 0 && ::GetLastError() != NO_ERROR)
     {
         errno = GetLastError();
@@ -615,7 +666,11 @@ void *zce::pthread_getspecific(pthread_key_t key)
 
 #elif defined (ZCE_OS_LINUX)
     //
+    return ::pthread_getspecific (key);
     return ::pthread_getspecific(key);
 
 #endif
+
+}
+
 }

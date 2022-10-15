@@ -3,21 +3,21 @@
 * @filename   zce_os_adapt_flock.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê9ÔÂ15ÈÕ
-* @brief      ÎÄ¼ş£¨¼ÇÂ¼£©ËøµÄº¯Êı£¬ÔÚWIN32£¬ºÍLINUX Æ½Ì¨Í¨ÓÃ
-*             ÆäÊµ³ıÁËflockÕâ¸öº¯Êı£¬½Ğ¼ÇÂ¼Ëø¸üÌùÇĞÒ»µã£¬ÒòÎªÄã¿ÉÒÔÖ»¶ÔÎÄ¼şµÄÒ»²¿·Ö½øĞĞ²Ù×÷
+* @date       2011å¹´9æœˆ15æ—¥
+* @brief      æ–‡ä»¶ï¼ˆè®°å½•ï¼‰é”çš„å‡½æ•°ï¼Œåœ¨WIN32ï¼Œå’ŒLINUX å¹³å°é€šç”¨
+*             å…¶å®é™¤äº†flockè¿™ä¸ªå‡½æ•°ï¼Œå«è®°å½•é”æ›´è´´åˆ‡ä¸€ç‚¹ï¼Œå› ä¸ºä½ å¯ä»¥åªå¯¹æ–‡ä»¶çš„ä¸€éƒ¨åˆ†è¿›è¡Œæ“ä½œ
 *
-* @details    ÎÄ¼ş£¨¼ÇÂ¼£©ËøµÄÊÊÅä²ã£¬¼æÈİ2¸öÆ½Ì¨£¬²Î¿¼ACEÊµÏÖµÄ£¬Õâ¸ö¼¸ºõ¾ÍÊÇCOPY
-*             flock_xxx £¬µÄº¯Êı¶¼ÊÇ·Ç±ê×¼µÄ£¬ÊÇACE×Ô¼ºµÄÒ»²ã·â×°¡£µ«¿ÉÒÔËµ£¬ACEµÄ·â×°
-*             »¹ÊÇ±Èµ÷ÓÃÔ­ÉúAPI fcntlÊæ·ş
-*             ÁíÍâACEÃ»ÓĞÌá¹©flockº¯Êı£¬ÎÒÌá¹©ÁË£¬¶ÔÄ³¸öÎÄ¼şµÄÈ«²¿ÄÚÈİ½øĞĞ²Ù×÷ÊÇÊ¹ÓÃ
+* @details    æ–‡ä»¶ï¼ˆè®°å½•ï¼‰é”çš„é€‚é…å±‚ï¼Œå…¼å®¹2ä¸ªå¹³å°ï¼Œå‚è€ƒACEå®ç°çš„ï¼Œè¿™ä¸ªå‡ ä¹å°±æ˜¯COPY
+*             flock_xxx ï¼Œçš„å‡½æ•°éƒ½æ˜¯éæ ‡å‡†çš„ï¼Œæ˜¯ACEè‡ªå·±çš„ä¸€å±‚å°è£…ã€‚ä½†å¯ä»¥è¯´ï¼ŒACEçš„å°è£…
+*             è¿˜æ˜¯æ¯”è°ƒç”¨åŸç”ŸAPI fcntlèˆ’æœ
+*             å¦å¤–ACEæ²¡æœ‰æä¾›flockå‡½æ•°ï¼Œæˆ‘æä¾›äº†ï¼Œå¯¹æŸä¸ªæ–‡ä»¶çš„å…¨éƒ¨å†…å®¹è¿›è¡Œæ“ä½œæ˜¯ä½¿ç”¨
 *
-* @note       ¶ø¶ÔÓÚ¼ÇÂ¼Ëø£¬ÆäÆäÊµÒ²ÊÇ²Ù×÷ÏµÍ³ÖĞÓĞÈ¤µÄÒ»²¿·Ö£¬¶øÇÒÆäÊµ¸ö¸öÆ½Ì¨²î±ğ²»Ğ¡¡£
-*             LINUXÏÂ£¬¼ÇÂ¼ËøÊÇÈ°¸æĞÔµÄËø£¨Ä¬ÈÏÊÇ£©£¬
-*             WINDOWSÏÂÊÇ£¬¼ÇÂ¼ËøÊÇÇ¿ÖÆµÄ£¬
+* @note       è€Œå¯¹äºè®°å½•é”ï¼Œå…¶å…¶å®ä¹Ÿæ˜¯æ“ä½œç³»ç»Ÿä¸­æœ‰è¶£çš„ä¸€éƒ¨åˆ†ï¼Œè€Œä¸”å…¶å®ä¸ªä¸ªå¹³å°å·®åˆ«ä¸å°ã€‚
+*             LINUXä¸‹ï¼Œè®°å½•é”æ˜¯åŠå‘Šæ€§çš„é”ï¼ˆé»˜è®¤æ˜¯ï¼‰ï¼Œ
+*             WINDOWSä¸‹æ˜¯ï¼Œè®°å½•é”æ˜¯å¼ºåˆ¶çš„ï¼Œ
 *             http://www.ibm.com/developerworks/cn/linux/l-cn-filelock/index.html
 *             http://www.cnblogs.com/hustcat/archive/2009/03/10/1408208.html
-*             µ«Èç¹ûÒª¿´UNP V2¾Í»áÃ÷°×£¬ÆäÊµ×îºÃ´ó¼Ò»¹ÊÇ×ñ´ÓÏà»¥µÄÔ¼¶¨£¬Ê¹ÓÃËø¡£
+*             ä½†å¦‚æœè¦çœ‹UNP V2å°±ä¼šæ˜ç™½ï¼Œå…¶å®æœ€å¥½å¤§å®¶è¿˜æ˜¯éµä»ç›¸äº’çš„çº¦å®šï¼Œä½¿ç”¨é”ã€‚
 *
 */
 
@@ -27,7 +27,7 @@
 #include "zce_os_adapt_predefine.h"
 
 /*!
-* @brief      ÎÄ¼şËø¶ÔÏóµÄ·â×°£¬
+* @brief      æ–‡ä»¶é”å¯¹è±¡çš„å°è£…ï¼Œ
 */
 struct zce_flock_t
 {
@@ -36,15 +36,15 @@ public:
 
 # if defined (ZCE_OS_WINDOWS)
 
-    //OVERLAPPED Ö÷Òª°üÀ¨Ò»Ğ©ÎÄ¼şÆ«ÒÆĞÅÏ¢
+    //OVERLAPPED ä¸»è¦åŒ…æ‹¬ä¸€äº›æ–‡ä»¶åç§»ä¿¡æ¯
     OVERLAPPED   overlapped_ = {0};
 
 # elif defined (ZCE_OS_LINUX)
-    //ÎÄ¼şËøflock¶ÔÏó
+    //æ–‡ä»¶é”flockå¯¹è±¡
     struct flock lock_;
 # endif
 
-    ///´¦ÀíµÄÎÄ¼ş¾ä±ú Handle to the underlying file.
+    ///å¤„ç†çš„æ–‡ä»¶å¥æŸ„ Handle to the underlying file.
     ZCE_HANDLE   handle_ = ZCE_INVALID_HANDLE;
 
 };
@@ -56,16 +56,16 @@ namespace zce
 //
 
 /*!
-* @brief      µ÷Õû²ÎÊı£¬Ö÷ÒªÊÇÈÃËûÔÚWindowsÆ½Ì¨Ò²ÄÜÊ¹ÓÃ ÄÚ²¿º¯Êı,Íâ²¿²»ÒªÊ¹ÓÃ£¬
-*             Á½¸öÆ½Ì¨ÔÚ²ÎÊıµÄÊ¹ÓÃÉÏ²¢²»Ì«ÏàÍ¬£¬WINDOWSµÄAPIÃ»ÓĞ¿¼ÂÇÏà¶ÔÎ»ÖÃÕâĞ©¸ÅÄî£¬
-*             ËùÒÔ±ØĞëÔÚÊ¹ÓÃÇ°½øĞĞÒ»ÏÂµ÷Õû£¬±ÈÈç£¬¿ªÊ¼Î»ÖÃSEEK_SET,0,³¤¶È0£¬ÆäÊµÊÇËø¶¨
-*             Õû¸öÎÄ¼ş£¬µ«LockFileExÃ»ÓĞÕâÑùµÄ±íÊ¾·½·¨£¬±ØĞëµ÷Õû
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
-* @note          Æ½Ì¨µÄ²»¼æÈİ»á´øÀ´Ä³ÖÖ·çÏÕ£¬WindowsÏÂÒ»µ©ÎÄ¼ş´óĞ¡µ÷Õû£¬ËøËø¶¨µÄÇøÓò¾Í²»¶ÔÁË£¬
-*                ËùÒÔÔÚĞèÒª¼æÈİµÄ»·¾³£¬×îºÃÎÄ¼ş´óĞ¡ÊÇ²»µ÷ÕûµÄ£¬
+* @brief      è°ƒæ•´å‚æ•°ï¼Œä¸»è¦æ˜¯è®©ä»–åœ¨Windowså¹³å°ä¹Ÿèƒ½ä½¿ç”¨ å†…éƒ¨å‡½æ•°,å¤–éƒ¨ä¸è¦ä½¿ç”¨ï¼Œ
+*             ä¸¤ä¸ªå¹³å°åœ¨å‚æ•°çš„ä½¿ç”¨ä¸Šå¹¶ä¸å¤ªç›¸åŒï¼ŒWINDOWSçš„APIæ²¡æœ‰è€ƒè™‘ç›¸å¯¹ä½ç½®è¿™äº›æ¦‚å¿µï¼Œ
+*             æ‰€ä»¥å¿…é¡»åœ¨ä½¿ç”¨å‰è¿›è¡Œä¸€ä¸‹è°ƒæ•´ï¼Œæ¯”å¦‚ï¼Œå¼€å§‹ä½ç½®SEEK_SET,0,é•¿åº¦0ï¼Œå…¶å®æ˜¯é”å®š
+*             æ•´ä¸ªæ–‡ä»¶ï¼Œä½†LockFileExæ²¡æœ‰è¿™æ ·çš„è¡¨ç¤ºæ–¹æ³•ï¼Œå¿…é¡»è°ƒæ•´
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
+* @note          å¹³å°çš„ä¸å…¼å®¹ä¼šå¸¦æ¥æŸç§é£é™©ï¼ŒWindowsä¸‹ä¸€æ—¦æ–‡ä»¶å¤§å°è°ƒæ•´ï¼Œé”é”å®šçš„åŒºåŸŸå°±ä¸å¯¹äº†ï¼Œ
+*                æ‰€ä»¥åœ¨éœ€è¦å…¼å®¹çš„ç¯å¢ƒï¼Œæœ€å¥½æ–‡ä»¶å¤§å°æ˜¯ä¸è°ƒæ•´çš„ï¼Œ
 */
 void flock_adjust_params (zce_flock_t *lock,
                           int whence,
@@ -73,27 +73,27 @@ void flock_adjust_params (zce_flock_t *lock,
                           size_t &len);
 
 /*!
-* @brief      ÎÄ¼şËø³õÊ¼»¯,Ö±½ÓÓÃfd
-* @return         int        0³É¹¦£¬-1Ê§°Ü
-* @param[in,out]  lock       ÎÄ¼şËø¶ÔÏó
-* @param[in]      file_hadle ²Ù×÷µÄÎÄ¼ş¾ä±ú
+* @brief      æ–‡ä»¶é”åˆå§‹åŒ–,ç›´æ¥ç”¨fd
+* @return         int        0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out]  lock       æ–‡ä»¶é”å¯¹è±¡
+* @param[in]      file_hadle æ“ä½œçš„æ–‡ä»¶å¥æŸ„
 */
 int flock_init (zce_flock_t *lock,
                 ZCE_HANDLE file_hadle);
 
 /*!
-* @brief      Ïú»ÙÎÄ¼şËø¶ÔÏózce_flock_t£¬Ò²¿ÉÒÔÍ¬Ê±½â¿ªËø£¬¿ÉÒÔÍ¬Ê±¹Ø±ÕÎÄ¼ş
-* @param[in]  lock ÎÄ¼şËø¶ÔÏó
+* @brief      é”€æ¯æ–‡ä»¶é”å¯¹è±¡zce_flock_tï¼Œä¹Ÿå¯ä»¥åŒæ—¶è§£å¼€é”ï¼Œå¯ä»¥åŒæ—¶å…³é—­æ–‡ä»¶
+* @param[in]  lock æ–‡ä»¶é”å¯¹è±¡
 */
 void flock_destroy (zce_flock_t *lock);
 
 /*!
-* @brief   ¼ÓÎÄ¼ş¶ÁÈ¡Ëø£¬¹²ÏíËø£¬Èç¹û²»ÄÜ¼ÓÉÏËø£¬»á×èÈûµÈ´ı£¬¹²ÏíËø²»»á×èÖ¹ÆäËûÈË¶ÁÈ¡
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief   åŠ æ–‡ä»¶è¯»å–é”ï¼Œå…±äº«é”ï¼Œå¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šé˜»å¡ç­‰å¾…ï¼Œå…±äº«é”ä¸ä¼šé˜»æ­¢å…¶ä»–äººè¯»å–
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int flock_rdlock (zce_flock_t *lock,
                   int  whence = SEEK_SET,
@@ -101,12 +101,12 @@ int flock_rdlock (zce_flock_t *lock,
                   size_t len = 0);
 
 /*!
-* @brief  ³¢ÊÔ½øĞĞ¼Ó¶ÁÈ¡Ëø,Èç¹û²»ÄÜ¼ÓÉÏËø£¬»áÁ¢¼´·µ»Ø
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief  å°è¯•è¿›è¡ŒåŠ è¯»å–é”,å¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šç«‹å³è¿”å›
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int flock_tryrdlock (zce_flock_t *lock,
                      int  whence = SEEK_SET,
@@ -114,12 +114,12 @@ int flock_tryrdlock (zce_flock_t *lock,
                      size_t len = 0);
 
 /*!
-* @brief      ¶ÔÎÄ¼şÉÏĞ´Ëø£¬ÅÅËûËø£¬Èç¹û²»ÄÜ¼ÓÉÏËø£¬»á×èÈûµÈ´ı
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief      å¯¹æ–‡ä»¶ä¸Šå†™é”ï¼Œæ’ä»–é”ï¼Œå¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šé˜»å¡ç­‰å¾…
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int flock_wrlock (zce_flock_t *lock,
                   int  whence = SEEK_SET,
@@ -127,12 +127,12 @@ int flock_wrlock (zce_flock_t *lock,
                   size_t len = 0);
 
 /*!
-* @brief      ³¢ÊÔ½øĞĞ¼ÓĞ´Ëø£¨ÅÅËûËø£©,Èç¹û²»ÄÜ¼ÓÉÏËø£¬»áÁ¢¼´·µ»Ø
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief      å°è¯•è¿›è¡ŒåŠ å†™é”ï¼ˆæ’ä»–é”ï¼‰,å¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šç«‹å³è¿”å›
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int flock_trywrlock (zce_flock_t *lock,
                      int  whence = SEEK_SET,
@@ -140,12 +140,12 @@ int flock_trywrlock (zce_flock_t *lock,
                      size_t len = 0);
 
 /*!
-* @brief      ½âËø
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     ½âËø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief      è§£é”
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     è§£é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int flock_unlock (zce_flock_t *lock,
                   int  whence = SEEK_SET,

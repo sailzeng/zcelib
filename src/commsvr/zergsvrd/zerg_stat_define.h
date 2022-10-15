@@ -3,63 +3,63 @@
 ///
 /// @author     yunfeiyang
 ///
-/// @brief      Ð¡³æ¼à¿ØÏî¶¨Òå
+/// @brief      å°è™«ç›‘æŽ§é¡¹å®šä¹‰
 ///
 #ifndef ZERG_STAT_DEFINE_H_
 #define ZERG_STAT_DEFINE_H_
 
-//¼à¿ØµÄFEATURE_ID
+//ç›‘æŽ§çš„FEATURE_ID
 enum ZERG_MONITOR_FEATURE_ID
 {
     ZERG_SERVICE_STAT_BEGIN =  9000,
-    ZERG_ACCEPT_PEER_COUNTER,               //Îå·ÖÖÓÄÚÒÑ¾­AcceptµÄPEER¼ÆÊý
-    ZERG_ACCEPT_PEER_NUMBER,                //ÕýÔÚAcceptµÄPEERÊýÁ¿,¾ø¶ÔÖµ
-    ZERG_CONNECT_PEER_COUNTER,              //Îå·ÖÖÓÄÚÒÑ¾­ConnectµÄPEER¼ÆÊý
-    ZERG_CONNECT_PEER_NUMBER,               //ÕýÔÚConnectµÄPEERÊýÁ¿,¾ø¶ÔÖµ
-    ZERG_BUFFER_STORAGE_NUMBER,             //BUFFER»º³åÇøµÄCHUNK¸öÊý,¾ø¶ÔÖµ
-    ZERG_SEND_FRAME_COUNTER,                //Îå·ÖÖÓÄÚ´Ó·¢ËÍ¹ÜµÀÈ¡³ö·ÅÈë·¢ËÍ¶ÓÁÐµÄÖ¡×ÜÊý£¬
-    ZERG_RECV_FRAME_COUNTER,                //Îå·ÖÖÓÄÚ³É¹¦½ÓÊÕ·ÅÈë½ÓÊÕ¹ÜµÀµÄÖ¡×ÜÊý
-    ZERG_RECV_BYTES_COUNTER,                //Îå·ÖÖÓÄÚ³É¹¦ÊÕµ½×Ö½ÚÊý×ÜÊý,·Ç¾«È·Öµ,ÒòÎªÃ¿¸öPEER¶¼ÊÇ¸ôÒ»¶ÎÊ±¼äÍ³¼ÆÒ»´Î
-    ZERG_SEND_BYTES_COUNTER,                //Îå·ÖÖÓÄÚ³É¹¦·¢ËÍµÄ×Ö½Ú×ÜÊý,·Ç¾«È·Öµ
-    ZERG_RECV_SUCC_COUNTER,                 //Îå·ÖÖÓÄÚ½ÓÊÜ³É¹¦Ö¡×ÜÊý,,·Ç¾«È·Öµ
-    ZERG_SEND_SUCC_COUNTER,                 //Îå·ÖÖÓÄÚ·¢ËÍ³É¹¦Ö¡×ÜÊý,·Ç¾«È·Öµ
-    ZERG_RECV_FAIL_COUNTER,                 //Îå·ÖÖÓÄÚ½ÓÊÕÊ§°ÜµÄÊý¾ÝÖ¡×ÜÊý
-    ZERG_SEND_FAIL_COUNTER,                 //Îå·ÖÖÓÄÚ·¢ËÍÊý¾ÝÊ§°ÜµÄ×ÜÊý
-    ZERG_RECV_BLOCK_COUNTER,                //Îå·ÖÖÓÄÚ½ÓÊÕÊý¾Ý·¢Éú×èÈûµÄ×ÜÊý
-    ZERG_SEND_BLOCK_COUNTER,                //Îå·ÖÖÓÄÚ·¢ËÍÊý¾Ý·¢Éú×èÈûµÄ×ÜÊý
-    ZERG_UDP_RECV_COUNTER,                  //Îå·ÖÖÓÄÚÊÕµ½UDPÊý¾ÝµÄ´ÎÊý
-    ZERG_UDP_SEND_COUNTER,                  //Îå·ÖÖÓÄÚ·¢ËÍUDPÊý¾ÝµÄ´ÎÊý
-    ZERG_UDP_RECV_BYTES_COUNTER,            //Îå·ÖÖÓÄÚÊÕµ½UDPÊý¾Ý×Ö½ÚµÄ×ÜÊý
-    ZERG_UDP_SEND_BYTES_COUNTER,            //Îå·ÖÖÓÄÚÄÚ·¢ËÍUDPÊý¾Ý×Ö½ÚµÄ×ÜÊý
-    ZERG_UDP_RECV_FAIL_COUNTER,             //Îå·ÖÖÓÄÚÊÕµ½UDPÊý¾Ý´íÎó´ÎÊý
-    ZERG_UDP_SEND_FAIL_COUNTER,             //Îå·ÖÖÓÄÚ·¢ËÍUDPÊý¾Ý´íÎó´ÎÊý
-    ZERG_RECV_PIPE_FULL_COUNTER,            //Îå·ÖÖÓÄÚÄÚ½ÓÊÕÊý¾Ý¹ÜµÀÂú´íÎóµÄ¼ÆÊý,½ÓÊÕ¶ªÊ§Êý¾Ý¸öÊý
-    ZERG_RECV_PIPE_FULL_NUMBER,             //½ÓÊÕÊý¾Ý¹ÜµÀÂú´íÎóµÄÀÛ¼ÆÖµ
-    ZERG_SEND_LIST_FULL_COUNTER,            //Îå·ÖÖÓÄÚ TCPµÄ·¢ËÍ¶ÓÁÐÂúÁË£¬·¢ËÍ¶ªÊ§Êý¾Ý¸öÊý
-    ZERG_SEND_LIST_FULL_NUMBER,             //TCPµÄ·¢ËÍ¶ÓÁÐÂúÁËµÄÀÛ¼ÆÖµ
+    ZERG_ACCEPT_PEER_COUNTER,               //äº”åˆ†é’Ÿå†…å·²ç»Acceptçš„PEERè®¡æ•°
+    ZERG_ACCEPT_PEER_NUMBER,                //æ­£åœ¨Acceptçš„PEERæ•°é‡,ç»å¯¹å€¼
+    ZERG_CONNECT_PEER_COUNTER,              //äº”åˆ†é’Ÿå†…å·²ç»Connectçš„PEERè®¡æ•°
+    ZERG_CONNECT_PEER_NUMBER,               //æ­£åœ¨Connectçš„PEERæ•°é‡,ç»å¯¹å€¼
+    ZERG_BUFFER_STORAGE_NUMBER,             //BUFFERç¼“å†²åŒºçš„CHUNKä¸ªæ•°,ç»å¯¹å€¼
+    ZERG_SEND_FRAME_COUNTER,                //äº”åˆ†é’Ÿå†…ä»Žå‘é€ç®¡é“å–å‡ºæ”¾å…¥å‘é€é˜Ÿåˆ—çš„å¸§æ€»æ•°ï¼Œ
+    ZERG_RECV_FRAME_COUNTER,                //äº”åˆ†é’Ÿå†…æˆåŠŸæŽ¥æ”¶æ”¾å…¥æŽ¥æ”¶ç®¡é“çš„å¸§æ€»æ•°
+    ZERG_RECV_BYTES_COUNTER,                //äº”åˆ†é’Ÿå†…æˆåŠŸæ”¶åˆ°å­—èŠ‚æ•°æ€»æ•°,éžç²¾ç¡®å€¼,å› ä¸ºæ¯ä¸ªPEERéƒ½æ˜¯éš”ä¸€æ®µæ—¶é—´ç»Ÿè®¡ä¸€æ¬¡
+    ZERG_SEND_BYTES_COUNTER,                //äº”åˆ†é’Ÿå†…æˆåŠŸå‘é€çš„å­—èŠ‚æ€»æ•°,éžç²¾ç¡®å€¼
+    ZERG_RECV_SUCC_COUNTER,                 //äº”åˆ†é’Ÿå†…æŽ¥å—æˆåŠŸå¸§æ€»æ•°,,éžç²¾ç¡®å€¼
+    ZERG_SEND_SUCC_COUNTER,                 //äº”åˆ†é’Ÿå†…å‘é€æˆåŠŸå¸§æ€»æ•°,éžç²¾ç¡®å€¼
+    ZERG_RECV_FAIL_COUNTER,                 //äº”åˆ†é’Ÿå†…æŽ¥æ”¶å¤±è´¥çš„æ•°æ®å¸§æ€»æ•°
+    ZERG_SEND_FAIL_COUNTER,                 //äº”åˆ†é’Ÿå†…å‘é€æ•°æ®å¤±è´¥çš„æ€»æ•°
+    ZERG_RECV_BLOCK_COUNTER,                //äº”åˆ†é’Ÿå†…æŽ¥æ”¶æ•°æ®å‘ç”Ÿé˜»å¡žçš„æ€»æ•°
+    ZERG_SEND_BLOCK_COUNTER,                //äº”åˆ†é’Ÿå†…å‘é€æ•°æ®å‘ç”Ÿé˜»å¡žçš„æ€»æ•°
+    ZERG_UDP_RECV_COUNTER,                  //äº”åˆ†é’Ÿå†…æ”¶åˆ°UDPæ•°æ®çš„æ¬¡æ•°
+    ZERG_UDP_SEND_COUNTER,                  //äº”åˆ†é’Ÿå†…å‘é€UDPæ•°æ®çš„æ¬¡æ•°
+    ZERG_UDP_RECV_BYTES_COUNTER,            //äº”åˆ†é’Ÿå†…æ”¶åˆ°UDPæ•°æ®å­—èŠ‚çš„æ€»æ•°
+    ZERG_UDP_SEND_BYTES_COUNTER,            //äº”åˆ†é’Ÿå†…å†…å‘é€UDPæ•°æ®å­—èŠ‚çš„æ€»æ•°
+    ZERG_UDP_RECV_FAIL_COUNTER,             //äº”åˆ†é’Ÿå†…æ”¶åˆ°UDPæ•°æ®é”™è¯¯æ¬¡æ•°
+    ZERG_UDP_SEND_FAIL_COUNTER,             //äº”åˆ†é’Ÿå†…å‘é€UDPæ•°æ®é”™è¯¯æ¬¡æ•°
+    ZERG_RECV_PIPE_FULL_COUNTER,            //äº”åˆ†é’Ÿå†…å†…æŽ¥æ”¶æ•°æ®ç®¡é“æ»¡é”™è¯¯çš„è®¡æ•°,æŽ¥æ”¶ä¸¢å¤±æ•°æ®ä¸ªæ•°
+    ZERG_RECV_PIPE_FULL_NUMBER,             //æŽ¥æ”¶æ•°æ®ç®¡é“æ»¡é”™è¯¯çš„ç´¯è®¡å€¼
+    ZERG_SEND_LIST_FULL_COUNTER,            //äº”åˆ†é’Ÿå†… TCPçš„å‘é€é˜Ÿåˆ—æ»¡äº†ï¼Œå‘é€ä¸¢å¤±æ•°æ®ä¸ªæ•°
+    ZERG_SEND_LIST_FULL_NUMBER,             //TCPçš„å‘é€é˜Ÿåˆ—æ»¡äº†çš„ç´¯è®¡å€¼
 
-    // Çë²»ÒªÔÚÐÄÌø¼à¿ØÖÐ¼ä²å¼à¿ØÏî
-    ZERG_HEART_BEAT_RECV_TIME_GAP,          // Îå·ÖÖÓÐÄÌø°ü×ÜÊÕ·¢Ê±¼ä¼ä¸ô
-    ZERG_HEART_BEAT_RECV_COUNT,             // Îå·ÖÖÓÐÄÌø°ü×ÜÊÕ·¢´ÎÊý
-    ZERG_HEART_BEAT_LESS_FIFTY_COUNT,          // Îå·ÖÖÓÐÄÌø°ü×ÜÊÕ·¢Ê±¼ä¼ä¸ôÉÙÓÚ50ms´ÎÊý
-    ZERG_HEART_BEAT_LESS_HNDRD_COUNT,          // Îå·ÖÖÓÐÄÌø°ü×ÜÊÕ·¢Ê±¼ä¼ä¸ôÉÙÓÚ100ms´ÎÊý
-    ZERG_HEART_BEAT_LESS_FIFHNDRD_COUNT,          // Îå·ÖÖÓÐÄÌø°ü×ÜÊÕ·¢Ê±¼ä¼ä¸ôÉÙÓÚ500ms´ÎÊý
-    ZERG_HEART_BEAT_MORE_FIFHNDRD_COUNT,          // Îå·ÖÖÓÐÄÌø°ü×ÜÊÕ·¢Ê±¼ä¼ä¸ô´óÓÚµÈÓÚ500ms´ÎÊý
+    // è¯·ä¸è¦åœ¨å¿ƒè·³ç›‘æŽ§ä¸­é—´æ’ç›‘æŽ§é¡¹
+    ZERG_HEART_BEAT_RECV_TIME_GAP,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…æ€»æ”¶å‘æ—¶é—´é—´éš”
+    ZERG_HEART_BEAT_RECV_COUNT,             // äº”åˆ†é’Ÿå¿ƒè·³åŒ…æ€»æ”¶å‘æ¬¡æ•°
+    ZERG_HEART_BEAT_LESS_FIFTY_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…æ€»æ”¶å‘æ—¶é—´é—´éš”å°‘äºŽ50msæ¬¡æ•°
+    ZERG_HEART_BEAT_LESS_HNDRD_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…æ€»æ”¶å‘æ—¶é—´é—´éš”å°‘äºŽ100msæ¬¡æ•°
+    ZERG_HEART_BEAT_LESS_FIFHNDRD_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…æ€»æ”¶å‘æ—¶é—´é—´éš”å°‘äºŽ500msæ¬¡æ•°
+    ZERG_HEART_BEAT_MORE_FIFHNDRD_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…æ€»æ”¶å‘æ—¶é—´é—´éš”å¤§äºŽç­‰äºŽ500msæ¬¡æ•°
 
-    ZERG_HEART_BEAT_APP_RECV_TIME_GAP,          // Îå·ÖÖÓÐÄÌø°üAPPÊÕ·¢Ê±¼ä¼ä¸ô
-    ZERG_HEART_BEAT_APP_RECV_COUNT,             // Îå·ÖÖÓÐÄÌø°üAPPÊÕ·¢´ÎÊý
-    ZERG_HEART_BEAT_APP_LESS_FIFTY_COUNT,          // Îå·ÖÖÓÐÄÌø°üAPPÊÕ·¢Ê±¼ä¼ä¸ôÉÙÓÚ50ms´ÎÊý
-    ZERG_HEART_BEAT_APP_LESS_HNDRD_COUNT,          // Îå·ÖÖÓÐÄÌø°üAPPÊÕ·¢Ê±¼ä¼ä¸ôÉÙÓÚ100ms´ÎÊý
-    ZERG_HEART_BEAT_APP_LESS_FIFHNDRD_COUNT,          // Îå·ÖÖÓÐÄÌø°üAPPÊÕ·¢Ê±¼ä¼ä¸ôÉÙÓÚ500ms´ÎÊý
-    ZERG_HEART_BEAT_APP_MORE_FIFHNDRD_COUNT,          // Îå·ÖÖÓÐÄÌø°üAPPÊÕ·¢Ê±¼ä¼ä¸ô´óÓÚµÈÓÚ500ms´ÎÊý
-    ZERG_SEND_FRAME_COUNTER_BY_SVR_TYPE,                //Îå·ÖÖÓÄÚ´Ó·¢ËÍ¹ÜµÀÈ¡³ö·ÅÈë·¢ËÍ¶ÓÁÐµÄÖ¡×ÜÊý,·Ö·þÎñÀàÐÍ
-    ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,                //Îå·ÖÖÓÄÚ³É¹¦½ÓÊÕ·ÅÈë½ÓÊÕ¹ÜµÀµÄÖ¡×ÜÊý,·Ö·þÎñÀàÐÍ
-    ZERG_SEND_FRAME_COUNTER_BY_CMD,                     //Îå·ÖÖÓÄÚ´Ó·¢ËÍ¹ÜµÀÈ¡³ö·ÅÈë·¢ËÍ¶ÓÁÐµÄÖ¡×ÜÊý,·ÖÃüÁî×Ö
-    ZERG_RECV_FRAME_COUNTER_BY_CMD,                     //Îå·ÖÖÓÄÚ³É¹¦½ÓÊÕ·ÅÈë½ÓÊÕ¹ÜµÀµÄÖ¡×ÜÊý,·ÖÃüÁî×Ö
+    ZERG_HEART_BEAT_APP_RECV_TIME_GAP,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…APPæ”¶å‘æ—¶é—´é—´éš”
+    ZERG_HEART_BEAT_APP_RECV_COUNT,             // äº”åˆ†é’Ÿå¿ƒè·³åŒ…APPæ”¶å‘æ¬¡æ•°
+    ZERG_HEART_BEAT_APP_LESS_FIFTY_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…APPæ”¶å‘æ—¶é—´é—´éš”å°‘äºŽ50msæ¬¡æ•°
+    ZERG_HEART_BEAT_APP_LESS_HNDRD_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…APPæ”¶å‘æ—¶é—´é—´éš”å°‘äºŽ100msæ¬¡æ•°
+    ZERG_HEART_BEAT_APP_LESS_FIFHNDRD_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…APPæ”¶å‘æ—¶é—´é—´éš”å°‘äºŽ500msæ¬¡æ•°
+    ZERG_HEART_BEAT_APP_MORE_FIFHNDRD_COUNT,          // äº”åˆ†é’Ÿå¿ƒè·³åŒ…APPæ”¶å‘æ—¶é—´é—´éš”å¤§äºŽç­‰äºŽ500msæ¬¡æ•°
+    ZERG_SEND_FRAME_COUNTER_BY_SVR_TYPE,                //äº”åˆ†é’Ÿå†…ä»Žå‘é€ç®¡é“å–å‡ºæ”¾å…¥å‘é€é˜Ÿåˆ—çš„å¸§æ€»æ•°,åˆ†æœåŠ¡ç±»åž‹
+    ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,                //äº”åˆ†é’Ÿå†…æˆåŠŸæŽ¥æ”¶æ”¾å…¥æŽ¥æ”¶ç®¡é“çš„å¸§æ€»æ•°,åˆ†æœåŠ¡ç±»åž‹
+    ZERG_SEND_FRAME_COUNTER_BY_CMD,                     //äº”åˆ†é’Ÿå†…ä»Žå‘é€ç®¡é“å–å‡ºæ”¾å…¥å‘é€é˜Ÿåˆ—çš„å¸§æ€»æ•°,åˆ†å‘½ä»¤å­—
+    ZERG_RECV_FRAME_COUNTER_BY_CMD,                     //äº”åˆ†é’Ÿå†…æˆåŠŸæŽ¥æ”¶æ”¾å…¥æŽ¥æ”¶ç®¡é“çš„å¸§æ€»æ•°,åˆ†å‘½ä»¤å­—
     ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
-    ZERG_SEND_LIST_FULL_COUNTER_BY_SVR_TYPE,            // ·¢ËÍ¶ÓÁÐÂúµ¼ÖÂµ¼ÖÂ¶ª°üµÄÊýÁ¿£¬·Ö·þÎñID
+    ZERG_SEND_LIST_FULL_COUNTER_BY_SVR_TYPE,            // å‘é€é˜Ÿåˆ—æ»¡å¯¼è‡´å¯¼è‡´ä¸¢åŒ…çš„æ•°é‡ï¼Œåˆ†æœåŠ¡ID
 
-    // ºóÃæËæ±ã¼Ó
+    // åŽé¢éšä¾¿åŠ 
     ZERG_SERVICE_STAT_END,                  //
 };
 

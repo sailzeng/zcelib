@@ -9,13 +9,13 @@
 /****************************************************************************************************
 class  ZCE_Bus_MMAPPipe::ZCE_BUS_PIPE_HEAD
 ****************************************************************************************************/
-//PIPE HEADµÄ¹¹Ôìº¯Êı
+//PIPE HEADçš„æ„é€ å‡½æ•°
 ZCE_Bus_MMAPPipe::ZCE_BUS_PIPE_HEAD::ZCE_BUS_PIPE_HEAD():
     size_of_sizet_(sizeof(size_t)),
     number_of_pipe_(0)
 {
-    memset(size_of_pipe_, 0, sizeof(size_of_pipe_));
-    memset(size_of_room_, 0, sizeof(size_of_room_));
+    memset(size_of_pipe_,0,sizeof(size_of_pipe_));
+    memset(size_of_room_,0,sizeof(size_of_room_));
 }
 
 ZCE_Bus_MMAPPipe::ZCE_BUS_PIPE_HEAD::~ZCE_BUS_PIPE_HEAD()
@@ -25,12 +25,12 @@ ZCE_Bus_MMAPPipe::ZCE_BUS_PIPE_HEAD::~ZCE_BUS_PIPE_HEAD()
 /****************************************************************************************************
 class  ZCE_Bus_MMAPPipe
 ****************************************************************************************************/
-ZCE_Bus_MMAPPipe *ZCE_Bus_MMAPPipe::instance_ = NULL;
+ZCE_Bus_MMAPPipe* ZCE_Bus_MMAPPipe::instance_ = NULL;
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Bus_MMAPPipe::ZCE_Bus_MMAPPipe()
 {
-    memset(bus_pipe_pointer_, 0, sizeof(bus_pipe_pointer_));
+    memset(bus_pipe_pointer_,0,sizeof(bus_pipe_pointer_));
 }
 
 ZCE_Bus_MMAPPipe::~ZCE_Bus_MMAPPipe()
@@ -50,8 +50,8 @@ ZCE_Bus_MMAPPipe::~ZCE_Bus_MMAPPipe()
 
 }
 
-//³õÊ¼»¯
-int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
+//åˆå§‹åŒ–
+int ZCE_Bus_MMAPPipe::initialize(const char* bus_mmap_name,
                                  uint32_t number_of_pipe,
                                  size_t size_of_pipe[],
                                  size_t max_frame_len,
@@ -62,7 +62,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
 
     assert(number_of_pipe > 0);
 
-    if (number_of_pipe == 0 )
+    if (number_of_pipe == 0)
     {
         return -1;
     }
@@ -75,64 +75,64 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     }
 
 
-    //ÊÇ·ñ¶Ô¹ÜµÀ½øĞĞ¼ÓËø
+    //æ˜¯å¦å¯¹ç®¡é“è¿›è¡ŒåŠ é”
 
-    //Malloc·ÖÅäÆ÷,
+    //Mallocåˆ†é…å™¨,
 
-    //Èç¹û²»»Ö¸´,¸É´àÉ¾³ıÔ­ÓĞµÄMMAPÎÄ¼ş,±ÜÃâÊ¹ÓÃµÄÊ±ºò³öÏÖÎÊÌâ.
-    if ( if_restore == false )
+    //å¦‚æœä¸æ¢å¤,å¹²è„†åˆ é™¤åŸæœ‰çš„MMAPæ–‡ä»¶,é¿å…ä½¿ç”¨çš„æ—¶å€™å‡ºç°é—®é¢˜.
+    if (if_restore == false)
     {
         zce::unlink(bus_mmap_name);
     }
-    //Èç¹ûÃ»ÓĞÕâ¸öÎÄ¼ş,ÄÇÃ´Ö»ÄÜÖØ½¨
+    //å¦‚æœæ²¡æœ‰è¿™ä¸ªæ–‡ä»¶,é‚£ä¹ˆåªèƒ½é‡å»º
     else
     {
         zce_os_stat mmapfile_stat;
-        ret = zce::stat(bus_mmap_name, &mmapfile_stat);
-        //²»´æÔÚ£¬»Ö¸´¸öÃ«Ïß
-        if (ret != 0 )
+        ret = zce::stat(bus_mmap_name,&mmapfile_stat);
+        //ä¸å­˜åœ¨ï¼Œæ¢å¤ä¸ªæ¯›çº¿
+        if (ret != 0)
         {
             if_restore = false;
         }
     }
 
     size_t sz_malloc = 0;
-    sz_malloc += sizeof (ZCE_BUS_PIPE_HEAD);
+    sz_malloc += sizeof(ZCE_BUS_PIPE_HEAD);
 
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        size_t sz_room = zce::lockfree::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = zce::lockfree::deque_chunk::getallocsize(bus_head_.size_of_pipe_[i]);
         bus_head_.size_of_room_[i] = sz_room;
         sz_malloc += sz_room;
     }
 
 
-    //´¦Àí¹²ÏíÄÚ´æµÄ²Ù×÷·½Ê½
+    //å¤„ç†å…±äº«å†…å­˜çš„æ“ä½œæ–¹å¼
 
-    //MAPÒ»¸öÎÄ¼ş
+    //MAPä¸€ä¸ªæ–‡ä»¶
     ret = mmap_file_.open(bus_mmap_name,
                           sz_malloc,
                           if_restore);
 
-    if (0  != ret)
+    if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
+        ZCE_LOG(RS_ERROR,"[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
                 bus_mmap_name,
                 ret,
                 zce::last_error(),
-                strerror(zce::last_error()) );
+                strerror(zce::last_error()));
         return -1;
     }
 
     if (if_restore)
     {
-        ZCE_BUS_PIPE_HEAD *pipe_head = static_cast<ZCE_BUS_PIPE_HEAD *>( mmap_file_.addr() );
+        ZCE_BUS_PIPE_HEAD* pipe_head = static_cast<ZCE_BUS_PIPE_HEAD*>(mmap_file_.addr());
 
-        //¶ÔÓÚ¸÷ÖÖ³¤¶È½øĞĞ¼ì²é
+        //å¯¹äºå„ç§é•¿åº¦è¿›è¡Œæ£€æŸ¥
         if (pipe_head->size_of_sizet_ != bus_head_.size_of_sizet_
             || pipe_head->number_of_pipe_ != bus_head_.number_of_pipe_)
         {
-            ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
+            ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
                     pipe_head->size_of_sizet_,
                     pipe_head->number_of_pipe_,
                     bus_head_.size_of_sizet_,
@@ -145,7 +145,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
             if (pipe_head->size_of_pipe_[i] != bus_head_.size_of_pipe_[i]
                 || pipe_head->size_of_room_[i] != bus_head_.size_of_room_[i])
             {
-                ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD <%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
+                ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD <%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
                         i,
                         pipe_head->size_of_pipe_[i],
                         pipe_head->size_of_room_[i],
@@ -156,11 +156,11 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         }
     }
 
-    //°ÑÍ·²¿·ÅÈëÓ³ÉäÎÄ¼şµÄÍ·²¿
-    memcpy(mmap_file_.addr(), &bus_head_, sizeof(ZCE_BUS_PIPE_HEAD));
+    //æŠŠå¤´éƒ¨æ”¾å…¥æ˜ å°„æ–‡ä»¶çš„å¤´éƒ¨
+    memcpy(mmap_file_.addr(),&bus_head_,sizeof(ZCE_BUS_PIPE_HEAD));
 
-    //³õÊ¼»¯ËùÓĞµÄ¹ÜµÀ
-    ret = init_all_pipe(max_frame_len, if_restore);
+    //åˆå§‹åŒ–æ‰€æœ‰çš„ç®¡é“
+    ret = init_all_pipe(max_frame_len,if_restore);
 
     if (ret != 0)
     {
@@ -170,47 +170,47 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     return 0;
 }
 
-//³õÊ¼»¯£¬Ö»¸ù¾İÎÄ¼ş½øĞĞ³õÊ¼»¯£¬ÓÃÓÚÄ³Ğ©¹¤¾ß¶ÔMMAPÎÄ¼ş½øĞĞ´¦ÀíµÄÊ±ºò
-//size_t max_frame_len²ÎÊıÓĞµãÌÖÑá£¬µ«Èç¹û²»ÓÃÕâ¸ö²ÎÊı£¬µ×²ãºÜ¶à´úÂëÒª¸Ä£¬
-//¶øÇÒ¶ÔÓÚÒ»¸öÏîÄ¿£¬Õâ¸öÖµÓ¦¸ÃÓ¦¸ÃÊÇÒ»¸ö³£Á¿
-int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
+//åˆå§‹åŒ–ï¼Œåªæ ¹æ®æ–‡ä»¶è¿›è¡Œåˆå§‹åŒ–ï¼Œç”¨äºæŸäº›å·¥å…·å¯¹MMAPæ–‡ä»¶è¿›è¡Œå¤„ç†çš„æ—¶å€™
+//size_t max_frame_lenå‚æ•°æœ‰ç‚¹è®¨åŒï¼Œä½†å¦‚æœä¸ç”¨è¿™ä¸ªå‚æ•°ï¼Œåº•å±‚å¾ˆå¤šä»£ç è¦æ”¹ï¼Œ
+//è€Œä¸”å¯¹äºä¸€ä¸ªé¡¹ç›®ï¼Œè¿™ä¸ªå€¼åº”è¯¥åº”è¯¥æ˜¯ä¸€ä¸ªå¸¸é‡
+int ZCE_Bus_MMAPPipe::initialize(const char* bus_mmap_name,
                                  size_t max_frame_len)
 {
     int ret = 0;
 
     zce_os_stat mmapfile_stat;
-    ret = zce::stat(bus_mmap_name, &mmapfile_stat);
+    ret = zce::stat(bus_mmap_name,&mmapfile_stat);
 
-    if (ret != 0 )
+    if (ret != 0)
     {
         return -1;
     }
 
-    if ((size_t)mmapfile_stat.st_size <= sizeof(ZCE_BUS_PIPE_HEAD) )
+    if ((size_t)mmapfile_stat.st_size <= sizeof(ZCE_BUS_PIPE_HEAD))
     {
         return -1;
     }
 
-    //MAPÒ»¸öÎÄ¼ş
+    //MAPä¸€ä¸ªæ–‡ä»¶
     ret = mmap_file_.open(bus_mmap_name,
                           static_cast<size_t>(mmapfile_stat.st_size),
                           true);
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
+        ZCE_LOG(RS_ERROR,"[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
                 bus_mmap_name,
                 ret,
                 zce::last_error(),
-                strerror(zce::last_error()) );
+                strerror(zce::last_error()));
         return -1;
     }
 
-    ZCE_BUS_PIPE_HEAD *pipe_head = static_cast<ZCE_BUS_PIPE_HEAD *>( mmap_file_.addr() );
+    ZCE_BUS_PIPE_HEAD* pipe_head = static_cast<ZCE_BUS_PIPE_HEAD*>(mmap_file_.addr());
     bus_head_ = *pipe_head;
 
-    //³õÊ¼»¯ËùÓĞµÄ¹ÜµÀ
-    ret = init_all_pipe(max_frame_len, true);
+    //åˆå§‹åŒ–æ‰€æœ‰çš„ç®¡é“
+    ret = init_all_pipe(max_frame_len,true);
 
     if (ret != 0)
     {
@@ -220,53 +220,53 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     return 0;
 }
 
-//³õÊ¼»¯ËùÓĞµÄÊı¾İ¹ÜµÀ
+//åˆå§‹åŒ–æ‰€æœ‰çš„æ•°æ®ç®¡é“
 int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
                                     bool if_restore)
 {
     size_t file_offset = 0;
-    //Æ«ÒÆÒ»¸öÍ·²¿
+    //åç§»ä¸€ä¸ªå¤´éƒ¨
     file_offset = sizeof(ZCE_BUS_PIPE_HEAD);
 
-    //Ñ­»·³õÊ¼»¯Ã¿¸öPIPE
+    //å¾ªç¯åˆå§‹åŒ–æ¯ä¸ªPIPE
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        char *pt_pipe = static_cast<char *>( mmap_file_.addr() ) + file_offset ;
+        char* pt_pipe = static_cast<char*>(mmap_file_.addr()) + file_offset;
 
-        //³õÊ¼»¯ÄÚ´æ
-        bus_pipe_pointer_[i] = zce::lockfree::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
-                                                               max_frame_len,
-                                                               pt_pipe,
-                                                               if_restore
-                                                              );
+        //åˆå§‹åŒ–å†…å­˜
+        bus_pipe_pointer_[i] = zce::lockfree::deque_chunk::initialize(bus_head_.size_of_pipe_[i],
+                                                                      max_frame_len,
+                                                                      pt_pipe,
+                                                                      if_restore
+        );
 
-        //¹ÜµÀ´´½¨×Ô¼ºÒ²»á¼ì²éÊÇ·ñÄÜ»Ö¸´
+        //ç®¡é“åˆ›å»ºè‡ªå·±ä¹Ÿä¼šæ£€æŸ¥æ˜¯å¦èƒ½æ¢å¤
         if (bus_pipe_pointer_[i] == NULL)
         {
-            ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe[%u] size[%u] room[%u] fail.",
+            ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Bus_MMAPPipe::initialize pipe[%u] size[%u] room[%u] fail.",
                     i,
                     bus_head_.size_of_pipe_[i],
                     bus_head_.size_of_room_[i]);
             return -1;
         }
 
-        ZCE_ASSERT( bus_pipe_pointer_[i] != NULL );
+        ZCE_ASSERT(bus_pipe_pointer_[i] != NULL);
 
-        size_t sz_room = zce::lockfree::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = zce::lockfree::deque_chunk::getallocsize(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;
     }
 
     return 0;
 }
 
-//MMAPÒşÉäÎÄ¼şÃû³Æ
-const char *ZCE_Bus_MMAPPipe::mmap_file_name()
+//MMAPéšå°„æ–‡ä»¶åç§°
+const char* ZCE_Bus_MMAPPipe::mmap_file_name()
 {
     return mmap_file_.file_name();
 }
 
-//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
-ZCE_Bus_MMAPPipe *ZCE_Bus_MMAPPipe::instance()
+//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+ZCE_Bus_MMAPPipe* ZCE_Bus_MMAPPipe::instance()
 {
     if (instance_ == NULL)
     {
@@ -276,15 +276,15 @@ ZCE_Bus_MMAPPipe *ZCE_Bus_MMAPPipe::instance()
     return instance_;
 }
 
-//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
-void ZCE_Bus_MMAPPipe::instance(ZCE_Bus_MMAPPipe *pinstatnce)
+//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+void ZCE_Bus_MMAPPipe::instance(ZCE_Bus_MMAPPipe* pinstatnce)
 {
     clean_instance();
     instance_ = pinstatnce;
     return;
 }
 
-//Çå³ıµ¥×ÓÊµÀı
+//æ¸…é™¤å•å­å®ä¾‹
 void ZCE_Bus_MMAPPipe::clean_instance()
 {
     if (instance_)

@@ -3,12 +3,12 @@
 * @filename   zce_shm_lockfree_deque.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2005Äê12ÔÂ16ÈÕ
-* @brief      Ò»¶ÁÒ»Ð´²»¼ÓËøµÄÏûÏ¢¶ÓÁÐ£¬lock-freeµÄdeque£¬
+* @date       2005å¹´12æœˆ16æ—¥
+* @brief      ä¸€è¯»ä¸€å†™ä¸åŠ é”çš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œlock-freeçš„dequeï¼Œ
 *
 *
-* @details    ±¾À´ÔÚÀïÃæ·ÅÁËÒ»°ÑËø£¬µ«ÊÇ¿¼ÂÇ¼ÈÈ»ÊÇÊµÏÖÒ»¸öLOCKFREEµÄ¶ÓÁÐ£¬Ëø¾ÍÏÔµÃ¶àÓàÁË¡£·ÅÆúÁË¡£
-*             2019ÁË¡£Ó¦¸ÃÓÃatomic¸ÄÐ´Ò»ÏÂ¡£
+* @details    æœ¬æ¥åœ¨é‡Œé¢æ”¾äº†ä¸€æŠŠé”ï¼Œä½†æ˜¯è€ƒè™‘æ—¢ç„¶æ˜¯å®žçŽ°ä¸€ä¸ªLOCKFREEçš„é˜Ÿåˆ—ï¼Œé”å°±æ˜¾å¾—å¤šä½™äº†ã€‚æ”¾å¼ƒäº†ã€‚
+*             2019äº†ã€‚åº”è¯¥ç”¨atomicæ”¹å†™ä¸€ä¸‹ã€‚
 *
 *
 * @note
@@ -29,13 +29,13 @@ namespace zce
 
 namespace lockfree
 {
-
+#pragma pack (1)
 
 /*!
-@brief      ¿ÉÒÔ·ÅÈçdequeµÄnode½á¹¹£¬±ä³¤£¬Ç°Ãæ4¸ö×Ö½Ú±íÊ¾³¤¶È£¬
-            ÆäÊµÖ»ÐèÄãµÄÊý¾ÝÇ°Ãæ4¸ö×Ö½Ú±íÊ¾³¤¶È£¬Ç¿×ªÁËÒ²¿ÉÒÔÊ¹ÓÃ
-            µ«×¢ÒâÄãµÄ³¤¶È±íÊ¾×Ö¶ÎÒ»¶¨ÒªÊÇ¶¨³¤£¬²»ÄÜÊÇsize_t£¬long
-            ÕâÖÖÔÚ²»Í¬Æ½Ì¨³¤¶È²»Ò»ÑùµÄ¶«¶«¡£
+@brief      å¯ä»¥æ”¾å¦‚dequeçš„nodeç»“æž„ï¼Œå˜é•¿ï¼Œå‰é¢4ä¸ªå­—èŠ‚è¡¨ç¤ºé•¿åº¦ï¼Œ
+            å…¶å®žåªéœ€ä½ çš„æ•°æ®å‰é¢4ä¸ªå­—èŠ‚è¡¨ç¤ºé•¿åº¦ï¼Œå¼ºè½¬äº†ä¹Ÿå¯ä»¥ä½¿ç”¨
+            ä½†æ³¨æ„ä½ çš„é•¿åº¦è¡¨ç¤ºå­—æ®µä¸€å®šè¦æ˜¯å®šé•¿ï¼Œä¸èƒ½æ˜¯size_tï¼Œlong
+            è¿™ç§åœ¨ä¸åŒå¹³å°é•¿åº¦ä¸ä¸€æ ·çš„ä¸œä¸œã€‚
 */
 class dequechunk_node
 {
@@ -43,63 +43,63 @@ class dequechunk_node
 public:
 
     /*!
-    @brief      ÖØÔØÁËnew²Ù×÷£¬ÓÃÓÚµÃµ½Ò»¸ö±ä³¤µÃµ½¼Ü¹¹
+    @brief      é‡è½½äº†newæ“ä½œï¼Œç”¨äºŽå¾—åˆ°ä¸€ä¸ªå˜é•¿å¾—åˆ°æž¶æž„
     @return     void* operator
-    @param      size_t    newµÄÄ¬ÈÏ²ÎÊý
-    @param      nodelen   node½ÚµãµÄ³¤¶È
+    @param      size_t    newçš„é»˜è®¤å‚æ•°
+    @param      nodelen   nodeèŠ‚ç‚¹çš„é•¿åº¦
     */
-    void *operator new (size_t, size_t nodelen);
+    void* operator new (size_t,size_t nodelen);
 
-    //Ñø³ÉºÃÏ°¹ß,Ð´new,¾ÍÐ´delete.
+    //å…»æˆå¥½ä¹ æƒ¯,å†™new,å°±å†™delete.
     //void operator delete(void *ptrframe, size_t);
-    void operator delete (void *ptrframe);
+    void operator delete (void* ptrframe);
 
 public:
     ///
-    static void fillin(dequechunk_node *, size_t, char *);
+    static void fillin(dequechunk_node*,size_t,char*);
 
 public:
 
-    ///×îÐ¡µÄCHUNK NODE³¤¶È£¬4+1
+    ///æœ€å°çš„CHUNK NODEé•¿åº¦ï¼Œ4+1
     static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = 5;
-    ///Í·²¿µÄ³¤¶È£¬
-    static const size_t DEQUECHUNK_NODE_HEAD_LEN  = 4;
-    // ÔçÄê³¤¶ÈÊÇunsigned £¬Ò»´ÎÖØ¹¹ÎÒ¸Ä³ÉÁËsize_t,µ«Íü¼ÇÁËºÜ¶àµØ·½
-    // ½á¹¹ÓÃµÄÊÇ¹Ì¶¨³¤¶È£¬»áÇ¿×ªÎªdequechunk_node£¬2ÁË¡£
+    ///å¤´éƒ¨çš„é•¿åº¦ï¼Œ
+    static const size_t DEQUECHUNK_NODE_HEAD_LEN = 4;
+    // æ—©å¹´é•¿åº¦æ˜¯unsigned ï¼Œä¸€æ¬¡é‡æž„æˆ‘æ”¹æˆäº†size_t,ä½†å¿˜è®°äº†å¾ˆå¤šåœ°æ–¹
+    // ç»“æž„ç”¨çš„æ˜¯å›ºå®šé•¿åº¦ï¼Œä¼šå¼ºè½¬ä¸ºdequechunk_nodeï¼Œ2äº†ã€‚
 
-    /// Õû¸öNodeµÄ³¤¶È,°üÀ¨size_of_node_ + chunkdata,
-    /// ÕâÀïÊ¹ÓÃsize_t,longÔÚ64Î»ÏÂ»áÓÐÎÊÌâ
+    /// æ•´ä¸ªNodeçš„é•¿åº¦,åŒ…æ‹¬size_of_node_ + chunkdata,
+    /// è¿™é‡Œä½¿ç”¨size_t,longåœ¨64ä½ä¸‹ä¼šæœ‰é—®é¢˜
     uint32_t    size_of_node_;
 
 
 #if defined(ZCE_OS_WINDOWS)
 #pragma warning ( disable : 4200)
 #endif
-    /// Êý¾ÝÇøµÄÊý¾Ý£¬±ä³¤µÄÊý¾Ý
+    /// æ•°æ®åŒºçš„æ•°æ®ï¼Œå˜é•¿çš„æ•°æ®
     char            chunk_data_[];
 #if defined(ZCE_OS_WINDOWS)
 #pragma warning ( default : 4200)
 #endif
 };
 
-
+#pragma pack ()
 
 
 
 /*!
-@brief      ¶ÓÁÐµÄÍ·²¿Êý¾Ý£¬³õÊ¼»¯µÄ·ÅÔÚ¹²ÏíÄÚ´æµÄ×î¿ªÊ¼²¿·Ö£¬ÓÃÓÚ¼ÇÂ¼¶ÓÁÐ
-            µÄÒ»Ð©×´Ì¬£¬¹Ø¼üÊý¾Ý£¬ÓÃÓÚ»Ö¸´£¬ÔÚ»Ö¸´µÄÊ±ºò»á½øÐÐ±È¶Ô¼ì²é
-            ÄÚ²¿Ê¹ÓÃ½á¹¹£¬ËùÒÔÇ°Ãæ¼ÓÁË_
+@brief      é˜Ÿåˆ—çš„å¤´éƒ¨æ•°æ®ï¼Œåˆå§‹åŒ–çš„æ”¾åœ¨å…±äº«å†…å­˜çš„æœ€å¼€å§‹éƒ¨åˆ†ï¼Œç”¨äºŽè®°å½•é˜Ÿåˆ—
+            çš„ä¸€äº›çŠ¶æ€ï¼Œå…³é”®æ•°æ®ï¼Œç”¨äºŽæ¢å¤ï¼Œåœ¨æ¢å¤çš„æ—¶å€™ä¼šè¿›è¡Œæ¯”å¯¹æ£€æŸ¥
+            å†…éƒ¨ä½¿ç”¨ç»“æž„ï¼Œæ‰€ä»¥å‰é¢åŠ äº†_
 */
-class _shm_dequechunk_head
+class _dequechunk_head
 {
     //
-    friend  class shm_dequechunk;
+    friend  class deque_chunk;
 
 protected:
 
-    ///¹¹Ôìº¯Êý£¬²»¶ÔÍâÌá¹©£¬
-    _shm_dequechunk_head():
+    ///æž„é€ å‡½æ•°ï¼Œä¸å¯¹å¤–æä¾›ï¼Œ
+    _dequechunk_head():
         size_of_mmap_(0),
         size_of_deque_(0),
         max_len_node_(0),
@@ -107,222 +107,223 @@ protected:
         deque_end_(0)
     {
     }
-    ///Îö¹¹º¯Êý
-    ~_shm_dequechunk_head()
+    ///æžæž„å‡½æ•°
+    ~_dequechunk_head()
     {
     }
 
-    //Êý¾ÝÒ²²»Ìá¹©¸ø´óÖÚ·ÃÎÊ£¬shm_dequechunk³ýÍâ
+    //æ•°æ®ä¹Ÿä¸æä¾›ç»™å¤§ä¼—è®¿é—®ï¼Œshm_dequechunké™¤å¤–
 protected:
 
-    ///ÄÚ´æÇøµÄ³¤¶È
+    ///å†…å­˜åŒºçš„é•¿åº¦
     size_t               size_of_mmap_;
 
-    ///dequeµÄ³¤¶È,±ØÐë>JUDGE_FULL_Iwo1NTERVAL
+    ///dequeçš„é•¿åº¦,å¿…é¡»>JUDGE_FULL_Iwo1NTERVAL
     size_t               size_of_deque_;
 
-    ///nodeµÄ×î´ó³¤¶È
+    ///nodeçš„æœ€å¤§é•¿åº¦
     size_t               max_len_node_;
 
 
-    ///Á½¸ö¹Ø¼üÄÚ²¿Ö¸Õë,±ÜÃâ±àÒëÆ÷ÓÅ»¯
-    ///»·ÐÎ¶ÓÁÐ¿ªÊ¼µÄµØ·½£¬Õâ¸öµØ·½±ØÏÖÊÇ»úÆ÷×Ö³¤
+    ///ä¸¤ä¸ªå…³é”®å†…éƒ¨æŒ‡é’ˆ,é¿å…ç¼–è¯‘å™¨ä¼˜åŒ–
+    ///çŽ¯å½¢é˜Ÿåˆ—å¼€å§‹çš„åœ°æ–¹ï¼Œè¿™ä¸ªåœ°æ–¹å¿…çŽ°æ˜¯æœºå™¨å­—é•¿
     volatile size_t      deque_begin_;
-    ///»·ÐÐ¶ÓÁÐ½áÊøµÄµØ·½£¬Õâ¸öµØ·½±ØÏÖÊÇ»úÆ÷×Ö³¤
+    ///çŽ¯è¡Œé˜Ÿåˆ—ç»“æŸçš„åœ°æ–¹ï¼Œè¿™ä¸ªåœ°æ–¹å¿…çŽ°æ˜¯æœºå™¨å­—é•¿
     volatile size_t      deque_end_;
 };
 
 
 /*!
-@brief      Èç¹û1¸ö¶Á,1¸öÐ´²»ÓÃ¼ÓËø,ÒòÎªÓÃÁËÐ©¼¼ÇÉ,ÖÐ¼äÓÐÒ»¸ö¿ÕÏÐÇø,¶ÁÖ»Ê¹ÓÃpendÖ¸Õë,Ð´Ö»Ê¹ÓÃpstartÖ¸Õë,
-            ÅÐ¶ÏEMPTY,FULLÊ¹ÓÃ¿ìÕÕ,
-            Èç¹û·ÇÒª¶à¸ö½ø³Ì¶ÁÐ´,Òª¼ÓËø,Òª×Ô¼ºÊµÏÖËø,ÎÒÖ»Ìá¹©ÁËÒ»¸ö»ùÀà,
-            ²»ÊÇÈÝÆ÷Ä£°æ,ÊÇÒ»¸öÏÈ½ø£¬ÏÈ³öµÄ´æ·ÅÈÎÒâ´óÐ¡µÄÊý¾Ý¿ìµÄ¶ÓÁÐ
-            Èç¹û·ÇÒªÈÝÆ÷¶ÓÁÐ,ÓÃsmem_list×Ô¼º½â¾ö,ºÜÈÝÒ×
+@brief      å¦‚æžœ1ä¸ªè¯»,1ä¸ªå†™ä¸ç”¨åŠ é”,å› ä¸ºç”¨äº†äº›æŠ€å·§,ä¸­é—´æœ‰ä¸€ä¸ªç©ºé—²åŒº,è¯»åªä½¿ç”¨pendæŒ‡é’ˆ,å†™åªä½¿ç”¨pstartæŒ‡é’ˆ,
+            åˆ¤æ–­EMPTY,FULLä½¿ç”¨å¿«ç…§,
+            å¦‚æžœéžè¦å¤šä¸ªè¿›ç¨‹è¯»å†™,è¦åŠ é”,è¦è‡ªå·±å®žçŽ°é”,æˆ‘åªæä¾›äº†ä¸€ä¸ªåŸºç±»,
+            ä¸æ˜¯å®¹å™¨æ¨¡ç‰ˆ,æ˜¯ä¸€ä¸ªå…ˆè¿›ï¼Œå…ˆå‡ºçš„å­˜æ”¾ä»»æ„å¤§å°çš„æ•°æ®å¿«çš„é˜Ÿåˆ—
+            å¦‚æžœéžè¦å®¹å™¨é˜Ÿåˆ—,ç”¨smem_listè‡ªå·±è§£å†³,å¾ˆå®¹æ˜“
 */
-class shm_dequechunk : public _shm_memory_base
+class deque_chunk: public _shm_memory_base
 {
 
 
 protected:
 
-    ///Ö»¶¨Òå²»ÊµÏÖ
-    const shm_dequechunk &operator=(const shm_dequechunk & );
+    ///åªå®šä¹‰ä¸å®žçŽ°
+    const deque_chunk& operator=(const deque_chunk&);
 
     /*!
-    @brief      µÃµ½Á½¸ö¹Ø¼üÖ¸ÕëµÄ¿ìÕÕ£¬ÓÃÓÚÅÐ¶¨¶ÓÁÐÀïÃæµÄÊý¾Ý»¹ÓÐ¶àÉÙ£¬ÊÇ·ñÎªÂú»òÕß¿Õ
-                ÕâÐ©²Ù×÷¶¼ÊÇÒ»Ð©¿ìÕÕ²Ù×÷,²»¼ÓËø½øÐÐ£¬Õâ¸ö²Ù×÷»ùÓÚÒ»µã,32Î»²Ù×÷ÏµÍ³ÖÐµÄ
-                32Î»ÕûÊý²Ù×÷ÊÇÔ­×Ó²Ù×÷
-                Õâ¶ù·ÑÒ»µã¿ÚÉà½âÊÍÎªÊ²Ã´Ò»¸öÈË·ÅÈë,Ò»¸öÈË¶ÁÈ¡ÊÇ°²È«µÄ,ÒòÎªÒ»¸öÈËÍ¬Ê±Ö»
-                Ê¹ÓÃ1¸ö,¼´Ê¹´íÎóÒ²ÊÇÒ»¸ö¿ìÕÕ´íÎó
-    @param      pstart  ·µ»ØµÄÑ­»·¶ÓÁÐÆðÊ¼Î»ÖÃ
-    @param      pend    ·µ»ØµÄÑ­»·¶ÓÁÐ½áÊøÎ»ÖÃ
+    @brief      å¾—åˆ°ä¸¤ä¸ªå…³é”®æŒ‡é’ˆçš„å¿«ç…§ï¼Œç”¨äºŽåˆ¤å®šé˜Ÿåˆ—é‡Œé¢çš„æ•°æ®è¿˜æœ‰å¤šå°‘ï¼Œæ˜¯å¦ä¸ºæ»¡æˆ–è€…ç©º
+                è¿™äº›æ“ä½œéƒ½æ˜¯ä¸€äº›å¿«ç…§æ“ä½œ,ä¸åŠ é”è¿›è¡Œï¼Œè¿™ä¸ªæ“ä½œåŸºäºŽä¸€ç‚¹,32ä½æ“ä½œç³»ç»Ÿä¸­çš„
+                32ä½æ•´æ•°æ“ä½œæ˜¯åŽŸå­æ“ä½œ
+                è¿™å„¿è´¹ä¸€ç‚¹å£èˆŒè§£é‡Šä¸ºä»€ä¹ˆä¸€ä¸ªäººæ”¾å…¥,ä¸€ä¸ªäººè¯»å–æ˜¯å®‰å…¨çš„,å› ä¸ºä¸€ä¸ªäººåŒæ—¶åª
+                ä½¿ç”¨1ä¸ª,å³ä½¿é”™è¯¯ä¹Ÿæ˜¯ä¸€ä¸ªå¿«ç…§é”™è¯¯
+    @param      pstart  è¿”å›žçš„å¾ªçŽ¯é˜Ÿåˆ—èµ·å§‹ä½ç½®
+    @param      pend    è¿”å›žçš„å¾ªçŽ¯é˜Ÿåˆ—ç»“æŸä½ç½®
     */
-    void snap_getpoint(size_t &pstart, size_t &pend);
+    void snap_getpoint(size_t& pstart,size_t& pend);
 
-    ///¹¹Ôìº¯Êý£¬ÓÃprotected±£»¤£¬±ÜÃâÄãÓÃÁË
+    ///æž„é€ å‡½æ•°ï¼Œç”¨protectedä¿æŠ¤ï¼Œé¿å…ä½ ç”¨äº†
 protected:
-    shm_dequechunk();
+    deque_chunk();
 public:
-    ///Îö¹¹º¯Êý
-    ~shm_dequechunk();
+
+    ~deque_chunk();
 
 public:
 
 
     /*!
-    @brief      µÃµ½Òª·ÖÅäµÄ¿Õ¼äµÄ´óÐ¡£¬
-    @return     size_t         Êµ¼ÊËùÐèµÄ¿Õ¼ä³¤¶È£¬»á´óÓÚÄãµÄ³¤¶È£¬
-    @param      size_of_deque  ÄãËù±ØÐëµÄdeque³¤¶È,Äã°´Õâ¸ö´óÐ¡ÉêÇëÄÚ´æ
+    @brief      å¾—åˆ°è¦åˆ†é…çš„ç©ºé—´çš„å¤§å°ï¼Œ
+    @return     size_t         å®žé™…æ‰€éœ€çš„ç©ºé—´é•¿åº¦ï¼Œä¼šå¤§äºŽä½ çš„é•¿åº¦ï¼Œ
+    @param      size_of_deque  ä½ æ‰€å¿…é¡»çš„dequeé•¿åº¦,ä½ æŒ‰è¿™ä¸ªå¤§å°ç”³è¯·å†…å­˜
     */
     static size_t getallocsize(const size_t size_of_deque);
 
 
     /*!
-    @brief      ¸ù¾Ý²ÎÊý³õÊ¼»¯
-    @return     shm_dequechunk * ·µ»ØµÄ³õÊ¼»¯µÄÖ¸Õë£¬ÐèÒªÏú»Ù£¬ÄãÓÃdelete¾Í¿ÉÒÔ£¬»òÕßµ÷ÓÃ
-    @param      size_of_deque    dequeµÄ³¤¶È£¬(¾ÍÊÇ getallocsize µÄ²ÎÊý£¬²»ÊÇ·µ»ØÖµÑ½)
-    @param      max_len_node     ·ÅÈëµÄnote×î´ó³¤¶È£¬ÎÒ»á°ïÄã¼ì²éÒ»ÏÂ
-    @param      pmmap            ÄÚ´æµÄÖ¸Õë£¬¹²ÏíÄÚ´æÒ²¿ÉÒÔ£¬ÆÕÍ¨ÄÚ´æÒ²¿ÉÒÔ
-    @param      if_restore       ÊÇ·ñÊÇ½øÐÐ»Ö¸´²Ù×÷£¬Èç¹ûÊÇ£¬»á±£ÁôÔ­À´µÄÊý¾Ý£¬Èç¹û²»ÊÇ£¬»áµ÷ÓÃclearÇåÀí
+    @brief      æ ¹æ®å‚æ•°åˆå§‹åŒ–
+    @return     shm_dequechunk * è¿”å›žçš„åˆå§‹åŒ–çš„æŒ‡é’ˆï¼Œéœ€è¦é”€æ¯ï¼Œä½ ç”¨deleteå°±å¯ä»¥ï¼Œæˆ–è€…è°ƒç”¨
+    @param      size_of_deque    dequeçš„é•¿åº¦ï¼Œ(å°±æ˜¯ getallocsize çš„å‚æ•°ï¼Œä¸æ˜¯è¿”å›žå€¼å‘€)
+    @param      max_len_node     æ”¾å…¥çš„noteæœ€å¤§é•¿åº¦ï¼Œæˆ‘ä¼šå¸®ä½ æ£€æŸ¥ä¸€ä¸‹
+    @param      pmmap            å†…å­˜çš„æŒ‡é’ˆï¼Œå…±äº«å†…å­˜ä¹Ÿå¯ä»¥ï¼Œæ™®é€šå†…å­˜ä¹Ÿå¯ä»¥
+    @param      if_restore       æ˜¯å¦æ˜¯è¿›è¡Œæ¢å¤æ“ä½œï¼Œå¦‚æžœæ˜¯ï¼Œä¼šä¿ç•™åŽŸæ¥çš„æ•°æ®ï¼Œå¦‚æžœä¸æ˜¯ï¼Œä¼šè°ƒç”¨clearæ¸…ç†
     @note
     */
-    static shm_dequechunk *initialize(size_t size_of_deque,
-                                      size_t max_len_node,
-                                      char *pmmap,
-                                      bool if_restore = false
-                                     );
+    static deque_chunk* initialize(size_t size_of_deque,
+                                   size_t max_len_node,
+                                   char* pmmap,
+                                   bool if_restore = false
+    );
 
 
 
 
     /*!
-    @brief      Ïú»Ù³õÊ¼»¯ initialize µÃµ½µÄÖ¸Õë
-    @param      deque_ptr  Ïú»ÙµÄÖ¸Õë£¬
+    @brief      é”€æ¯åˆå§‹åŒ– initialize å¾—åˆ°çš„æŒ‡é’ˆ
+    @param      deque_ptr  é”€æ¯çš„æŒ‡é’ˆï¼Œ
     */
-    static void finalize(shm_dequechunk *deque_ptr);
+    static void finalize(deque_chunk* deque_ptr);
 
-    ///ÇåÀí³ÉÃ»ÓÐÊ¹ÓÃ¹ýµÄ×´Ì¬
+    ///æ¸…ç†æˆæ²¡æœ‰ä½¿ç”¨è¿‡çš„çŠ¶æ€
     void clear();
 
     /*!
-    @brief      ½«Ò»¸öNODE·ÅÈëÎ²²¿
+    @brief      å°†ä¸€ä¸ªNODEæ”¾å…¥å°¾éƒ¨
     @return     bool
     @param      node
     */
-    bool push_end(const dequechunk_node *node);
+    bool push_end(const dequechunk_node* node);
 
 
 
     /*!
-    @brief      ½«¶ÓÁÐÒ»¸öNODE´Ó¶ÓÊ×²¿È¡³ö,ÒªÇónode!=NULL,ÒÑ¾­·ÖÅäºÃÁËÊý¾ÝÇø
-    @return     bool  true±íÊ¾³É¹¦È¡³ö£¬·ñÔò±íÊ¾Ã»ÓÐÈ¡³ö
-    @param      node  ±£´æpop Êý¾ÝµÄµÄbuffer£¬
+    @brief      å°†é˜Ÿåˆ—ä¸€ä¸ªNODEä»Žé˜Ÿé¦–éƒ¨å–å‡º,è¦æ±‚node!=NULL,å·²ç»åˆ†é…å¥½äº†æ•°æ®åŒº
+    @return     bool  trueè¡¨ç¤ºæˆåŠŸå–å‡ºï¼Œå¦åˆ™è¡¨ç¤ºæ²¡æœ‰å–å‡º
+    @param      node  ä¿å­˜pop æ•°æ®çš„çš„bufferï¼Œ
     */
-    bool pop_front(dequechunk_node *const node);
+    bool pop_front(dequechunk_node* const node);
 
     /*!
-    @brief      ¶ÁÈ¡¶ÓÁÐµÄµÚÒ»¸öNODE,µ«ÊÇ²»È¡³ö,ÒªÇónode!=NULL,ÎÒÈÏÎªÄãÒÑ¾­·ÖÅäºÃÁËÊý¾ÝÇø
-    @return     bool  true±íÊ¾³É¹¦¶ÁÈ¡
-    @param      node  ±£´æread Êý¾ÝµÄµÄbuffer£¬
+    @brief      è¯»å–é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªNODE,ä½†æ˜¯ä¸å–å‡º,è¦æ±‚node!=NULL,æˆ‘è®¤ä¸ºä½ å·²ç»åˆ†é…å¥½äº†æ•°æ®åŒº
+    @return     bool  trueè¡¨ç¤ºæˆåŠŸè¯»å–
+    @param      node  ä¿å­˜read æ•°æ®çš„çš„bufferï¼Œ
     */
-    bool read_front(dequechunk_node *const node);
+    bool read_front(dequechunk_node* const node);
 
     /*!
-    @brief      ½«¶ÓÁÐÒ»¸öNODE´Ó¶ÓÊ×²¿È¡³ö,ÎÒ¸ù¾ÝnodeµÄ³¤¶È°ïÄã·ÖÅä¿Õ¼ä,
-                ÒªÇónew_node=NULL,±íÊ¾ÄãÒªº¯Êý°ïÄã·ÖÅä»º³å,
-    @return     bool      true±íÊ¾³É¹¦¶ÁÈ¡
-    @param      new_node  »ñµÃÊý¾ÝµÄÖ¸Õë£¬Õâ¸öÊý¾ÝÄãÒª×Ô¼ºÊÍ·Å£¬ÎÒ¸Å²»¸ºÔðÁË
+    @brief      å°†é˜Ÿåˆ—ä¸€ä¸ªNODEä»Žé˜Ÿé¦–éƒ¨å–å‡º,æˆ‘æ ¹æ®nodeçš„é•¿åº¦å¸®ä½ åˆ†é…ç©ºé—´,
+                è¦æ±‚new_node=NULL,è¡¨ç¤ºä½ è¦å‡½æ•°å¸®ä½ åˆ†é…ç¼“å†²,
+    @return     bool      trueè¡¨ç¤ºæˆåŠŸè¯»å–
+    @param      new_node  èŽ·å¾—æ•°æ®çš„æŒ‡é’ˆï¼Œè¿™ä¸ªæ•°æ®ä½ è¦è‡ªå·±é‡Šæ”¾ï¼Œæˆ‘æ¦‚ä¸è´Ÿè´£äº†
     */
-    bool pop_front_new(dequechunk_node *&new_node);
+    bool pop_front_new(dequechunk_node*& new_node);
 
     /*!
-    @brief      ¶ÁÈ¡¶ÓÁÐµÄµÚÒ»¸öNODE£¬ÎÒ¸ù¾ÝnodeµÄ³¤¶È°ïÄã·ÖÅä¿Õ¼ä,ÒªÇónew_node=NULL,±íÊ¾ÄãÒªº¯Êý°ïÄã·ÖÅä»º³å,
-    @return     bool      true±íÊ¾³É¹¦¶ÁÈ¡
+    @brief      è¯»å–é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªNODEï¼Œæˆ‘æ ¹æ®nodeçš„é•¿åº¦å¸®ä½ åˆ†é…ç©ºé—´,è¦æ±‚new_node=NULL,è¡¨ç¤ºä½ è¦å‡½æ•°å¸®ä½ åˆ†é…ç¼“å†²,
+    @return     bool      trueè¡¨ç¤ºæˆåŠŸè¯»å–
     @param      new_node
     */
-    bool read_front_new(dequechunk_node *&new_node);
+    bool read_front_new(dequechunk_node*& new_node);
 
     /*!
-    @brief      ¶ÁÈ¡¶ÓÁÐµÄµÚÒ»¸öNODE£¨Ö¸Õë£©µØÖ·£¬£¬Èç¹ûÊÇÕÛÐÐµÄÊý¾Ý»áÌØÊâ´¦Àí
-                ÔÚÄ³Ð©Çé¿öÏÂÉÙÓÃÒ»´ÎMemcopy£¬×·Çó¼«ÖÂÐÔÄÜµÄÊ±ºò¿¼ÂÇÊ¹ÓÃ
-    @return     bool     true±íÊ¾³É¹¦¶ÁÈ¡
-    @param      node_ptr ´æ·ÅµØÖ·µÄÖ¸Õë
+    @brief      è¯»å–é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªNODEï¼ˆæŒ‡é’ˆï¼‰åœ°å€ï¼Œï¼Œå¦‚æžœæ˜¯æŠ˜è¡Œçš„æ•°æ®ä¼šç‰¹æ®Šå¤„ç†
+                åœ¨æŸäº›æƒ…å†µä¸‹å°‘ç”¨ä¸€æ¬¡Memcopyï¼Œè¿½æ±‚æžè‡´æ€§èƒ½çš„æ—¶å€™è€ƒè™‘ä½¿ç”¨
+    @return     bool     trueè¡¨ç¤ºæˆåŠŸè¯»å–
+    @param      node_ptr å­˜æ”¾åœ°å€çš„æŒ‡é’ˆ
     */
-    bool read_front_ptr(const dequechunk_node *&node_ptr);
+    bool read_front_ptr(const dequechunk_node*& node_ptr);
 
     /*!
-    @brief      ¶ªÆú¶ÓÁÐÇ°ÃæµÄµÚÒ»¸öNODE
-    @return     bool ÊÇ·ñ¶ªÆú³É¹¦
+    @brief      ä¸¢å¼ƒé˜Ÿåˆ—å‰é¢çš„ç¬¬ä¸€ä¸ªNODE
+    @return     bool æ˜¯å¦ä¸¢å¼ƒæˆåŠŸ
     */
     bool discard_frond();
 
-    ///È¡¶ÓÁÐÍ·µÄbuffer³¤¶È,Äã±ØÐëÔÚÈ·ÈÏpipeÀïÃæÓÐÊý¾Ý²ÅÄÜµ÷ÓÃÕâ¸öº¯Êý£¬·ñÔòºó¹û×Ô¸º¡£
+    ///å–é˜Ÿåˆ—å¤´çš„bufferé•¿åº¦,ä½ å¿…é¡»åœ¨ç¡®è®¤pipeé‡Œé¢æœ‰æ•°æ®æ‰èƒ½è°ƒç”¨è¿™ä¸ªå‡½æ•°ï¼Œå¦åˆ™åŽæžœè‡ªè´Ÿã€‚
     inline size_t get_front_len();
 
-    ///µÃµ½FREE¿Õ¼äµÄ¿ìÕÕ
+    ///å¾—åˆ°FREEç©ºé—´çš„å¿«ç…§
     size_t free_size();
 
-    ///ÈÝÁ¿
+    ///å®¹é‡
     size_t capacity();
 
-    ///µÃµ½ÊÇ·ñÂúµÄ¿ìÕÕ
+    ///å¾—åˆ°æ˜¯å¦æ»¡çš„å¿«ç…§
     bool empty();
 
-    ///µÃµ½ÊÇ·ñ¿ÕµÄ¿ìÕÕ
+    ///å¾—åˆ°æ˜¯å¦ç©ºçš„å¿«ç…§
     bool full();
 
 protected:
 
-    ///ÅÐ¶ÏÊÇ·ÇÎªÂúµÄ¼ä¸ô£¬Äã¿ÉÒÔÈÏÎª»·ÐÎ¶ÓÁÐ»¹ÊÇÒ»¸öÇ°±Õºó¿ªµÄ½á¹¹
-    ///deque_begin_ = deque_end_ ±íÊ¾¶ÓÁÐÎªNULL
-    ///deque_begin_ = deque_end_ + JUDGE_FULL_INTERVAL ±íÊ¾¶ÓÁÐÂú
+    ///åˆ¤æ–­æ˜¯éžä¸ºæ»¡çš„é—´éš”ï¼Œä½ å¯ä»¥è®¤ä¸ºçŽ¯å½¢é˜Ÿåˆ—è¿˜æ˜¯ä¸€ä¸ªå‰é—­åŽå¼€çš„ç»“æž„
+    ///deque_begin_ = deque_end_ è¡¨ç¤ºé˜Ÿåˆ—ä¸ºNULL
+    ///deque_begin_ = deque_end_ + JUDGE_FULL_INTERVAL è¡¨ç¤ºé˜Ÿåˆ—æ»¡
     static const size_t   JUDGE_FULL_INTERVAL = 8;
 
 protected:
 
-    ///ÄÚ´æµÄÍ·²¿
-    _shm_dequechunk_head     *dequechunk_head_;
+    ///å†…å­˜çš„å¤´éƒ¨
+    _dequechunk_head* dequechunk_head_;
 
-    ///Êý¾ÝÇøµÄÍ·Ö¸Õë,·½±ã¼ÆËã
-    char                     *dequechunk_database_;
 
-    ///Èç¹ûÐèÒª¶ÁÈ¡nodeµÄµØÖ·£¨²»È¡³öÊý¾Ý£©£¬ÄÇÃ´ÓÐÖÖÌØÊâÇé¿ö£¬ÕÛÐÐÒª¿¼ÂÇ
-    dequechunk_node          *line_wrap_nodeptr_;
+    ///æ•°æ®åŒºçš„å¤´æŒ‡é’ˆ,æ–¹ä¾¿è®¡ç®—
+    char* dequechunk_database_;
+
+    ///å¦‚æžœéœ€è¦è¯»å–nodeçš„åœ°å€ï¼ˆä¸å–å‡ºæ•°æ®ï¼‰ï¼Œé‚£ä¹ˆæœ‰ç§ç‰¹æ®Šæƒ…å†µï¼ŒæŠ˜è¡Œè¦è€ƒè™‘
+    dequechunk_node* line_wrap_nodeptr_;
 };
 
 
 
 
-//È¡¶ÓÁÐÍ·µÄbuffer³¤¶È,Äã±ØÐëÔÚÈ·ÈÏpipeÀïÃæÓÐÊý¾Ý²ÅÄÜµ÷ÓÃÕâ¸öº¯Êý£¬·ñÔòºó¹û×Ô¸º¡£
-//ÒòÎªÕâ¸öº¯ÊýµÄÊ¹ÓÃÓï¾³´ó²¿·ÖÊÇemptyÖ®ºó£¬
-inline size_t shm_dequechunk::get_front_len()
+//å–é˜Ÿåˆ—å¤´çš„bufferé•¿åº¦,ä½ å¿…é¡»åœ¨ç¡®è®¤pipeé‡Œé¢æœ‰æ•°æ®æ‰èƒ½è°ƒç”¨è¿™ä¸ªå‡½æ•°ï¼Œå¦åˆ™åŽæžœè‡ªè´Ÿã€‚
+//å› ä¸ºè¿™ä¸ªå‡½æ•°çš„ä½¿ç”¨è¯­å¢ƒå¤§éƒ¨åˆ†æ˜¯emptyä¹‹åŽï¼Œ
+inline size_t deque_chunk::get_front_len()
 {
-    //»¹ÊÇÒªµ£ÐÄ³¤¶È½Ø¶Ï2½Ú,Í·´ó,Í·´ó,¶àÐ´ºÃ¶à´úÂë
-    char *tmp1 = dequechunk_database_ + dequechunk_head_->deque_begin_;
+    //è¿˜æ˜¯è¦æ‹…å¿ƒé•¿åº¦æˆªæ–­2èŠ‚,å¤´å¤§,å¤´å¤§,å¤šå†™å¥½å¤šä»£ç 
+    char* tmp1 = dequechunk_database_ + dequechunk_head_->deque_begin_;
     size_t tmplen = 0;
-    char *tmp2 = reinterpret_cast<char *>(&tmplen);
+    char* tmp2 = reinterpret_cast<char*>(&tmplen);
 
-    //Èç¹û¹ÜµÀµÄ³¤¶ÈÒ²ÈÆÈ¦£¬²ÉÓÃÒ°ÂùµÄ·¨×ÓµÃµ½³¤¶È
-    if ( tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_ )
+    //å¦‚æžœç®¡é“çš„é•¿åº¦ä¹Ÿç»•åœˆï¼Œé‡‡ç”¨é‡Žè›®çš„æ³•å­å¾—åˆ°é•¿åº¦
+    if (tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
-        //Ò»¸ö¸ö×Ö½Ú¶ÁÈ¡³¤¶È
-        for (size_t i = 0; i < sizeof (uint32_t); ++i)
+        //ä¸€ä¸ªä¸ªå­—èŠ‚è¯»å–é•¿åº¦
+        for (size_t i = 0; i < sizeof(uint32_t); ++i)
         {
-            if ( tmp1 >= dequechunk_database_ + dequechunk_head_->size_of_deque_ )
+            if (tmp1 >= dequechunk_database_ + dequechunk_head_->size_of_deque_)
             {
                 tmp1 = dequechunk_database_;
             }
 
             *tmp2 = *tmp1;
-            ++tmp1 ;
-            ++tmp2 ;
+            ++tmp1;
+            ++tmp2;
         }
     }
     //
     else
     {
-        tmplen = *(reinterpret_cast<unsigned int *>(tmp1));
+        tmplen = *(reinterpret_cast<unsigned int*>(tmp1));
     }
 
     return tmplen;

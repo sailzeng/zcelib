@@ -1,15 +1,15 @@
 #ifndef ZCE_LIB_BOOST_MPL_H_
 #define ZCE_LIB_BOOST_MPL_H_
 
-//½ñÌì¿´µ½Ò»¶Î£¬°×·¢ÈıÇ§ÕÉ£¬´úÂëĞ´ÍòĞĞ£¬²»Öª³ÌĞòÀï£¬ºÎ´¦»°ÆàÁ¹£¬
+//ä»Šå¤©çœ‹åˆ°ä¸€æ®µï¼Œç™½å‘ä¸‰åƒä¸ˆï¼Œä»£ç å†™ä¸‡è¡Œï¼Œä¸çŸ¥ç¨‹åºé‡Œï¼Œä½•å¤„è¯å‡„å‡‰ï¼Œ
 
 namespace zce
 {
 
 //----------------------------------------------------------------------------
 
-//Õâ¸ö·½·¨À´×Ôboost £¬
-//JiangweiSun  ÔÚÆä¸öÈËblog ÉÏ http://www.suninf.net/SFINAE-and-enable_if/ ºÜºÃµÄÎÄÕÂ
+//è¿™ä¸ªæ–¹æ³•æ¥è‡ªboost ï¼Œ
+//JiangweiSun  åœ¨å…¶ä¸ªäººblog ä¸Š http://www.suninf.net/SFINAE-and-enable_if/ å¾ˆå¥½çš„æ–‡ç« 
 
 template<typename T>
 struct has_def_typehelper
@@ -17,30 +17,30 @@ struct has_def_typehelper
     typedef void type;
 };
 
-// ¼ì²âÀàĞÍTÊÇ·ñ¾ßÓĞÄÚ²¿µÄÃûÎªtypeµÄtypedef
+// æ£€æµ‹ç±»å‹Tæ˜¯å¦å…·æœ‰å†…éƒ¨çš„åä¸ºtypeçš„typedef
 
-// ÓÃÄ¬ÈÏÄ£°å²ÎÊıÖ¸Ê¾Ä¬ÈÏÇé¿ö£¬Ä¬ÈÏ»áÍÆµ¼µ½Õâ¶ùfalse
+// ç”¨é»˜è®¤æ¨¡æ¿å‚æ•°æŒ‡ç¤ºé»˜è®¤æƒ…å†µï¼Œé»˜è®¤ä¼šæ¨å¯¼åˆ°è¿™å„¿false
 template<typename T, typename U = void>
 struct has_def_type_impl
 {
     static const bool value = false;
 };
 
-//Æ«ÌØ»¯£¬ÓÅÏÈÈ¥ÊÊÅä´ÓTİÍÈ¡ÀàĞÍ£¬ TÓĞÄÚÖÃµÄtypeÊ±Ñ¡Ôñ
+//åç‰¹åŒ–ï¼Œä¼˜å…ˆå»é€‚é…ä»Tèƒå–ç±»å‹ï¼Œ Tæœ‰å†…ç½®çš„typeæ—¶é€‰æ‹©
 template<typename T>
 struct has_def_type_impl < T, typename has_def_typehelper<typename T::type>::type >
 {
     static const bool value = true;
 };
 
-//¼ì²âÀàĞÍTÊÇ·ñ¾ßÓĞÄÚ²¿µÄÃûÎªtypeµÄtypedef
+//æ£€æµ‹ç±»å‹Tæ˜¯å¦å…·æœ‰å†…éƒ¨çš„åä¸ºtypeçš„typedef
 template<typename T>
 struct has_def_type : has_def_type_impl < T >
 {
 };
 
 //----------------------------------------------------------------------------
-//ÊÔÍ¼İÍÈ¡ÈİÆ÷µÄµü´úÆ÷ÀàĞÍ
+//è¯•å›¾èƒå–å®¹å™¨çš„è¿­ä»£å™¨ç±»å‹
 template <class container_type>
 struct container_traits
 {
@@ -48,7 +48,7 @@ struct container_traits
     typedef typename container_type::value_type   value_type;
 };
 
-//¶ÔÊı×éÈİÆ÷½øĞĞÌØ»¯
+//å¯¹æ•°ç»„å®¹å™¨è¿›è¡Œç‰¹åŒ–
 template <typename T>
 struct container_traits<T *>
 {
@@ -58,7 +58,7 @@ struct container_traits<T *>
 
 //----------------------------------------------------------------------------
 
-//std::enable_ifµÄ²¹³ä£¬TRUEÓÃÀàĞÍtype_a£¬FALSEÓÃtype_b
+//std::enable_ifçš„è¡¥å……ï¼ŒTRUEç”¨ç±»å‹type_aï¼ŒFALSEç”¨type_b
 template<bool bool_vale, typename type_a, typename type_b>
 struct if_
 {
@@ -90,13 +90,13 @@ auto g_func_invoke_impl(fun_t &f, const para_tuple &a, std::index_sequence<I...>
     return f(std::get<I>(a)...);
 }
 
-//È«¾Öº¯Êıµ÷ÓÃµ÷ÓÃtuple²ÎÊı
+//å…¨å±€å‡½æ•°è°ƒç”¨è°ƒç”¨tupleå‚æ•°
 template<typename fun_t, typename para_tuple>
 auto g_func_tuplearg_invoke(fun_t &&f, const para_tuple &a)
 {
     static constexpr auto t_count = std::tuple_size<para_tuple>::value;
-    //make_index_sequence ÊÇµÃµ½size_tµÄĞòÁĞ£¬·½±ãg_fun_invoke_implµÄÕ¹¿ªµ÷ÓÃ
-    //Õâ¸öÀ©Õ¹TMDÌ«ÉñÆæÁË£¬ÎÒ¶ÔÕâ¸öÕ¹¿ªÓï·¨Ò²±íÊ¾¾ª²ï¡£
+    //make_index_sequence æ˜¯å¾—åˆ°size_tçš„åºåˆ—ï¼Œæ–¹ä¾¿g_fun_invoke_implçš„å±•å¼€è°ƒç”¨
+    //è¿™ä¸ªæ‰©å±•TMDå¤ªç¥å¥‡äº†ï¼Œæˆ‘å¯¹è¿™ä¸ªå±•å¼€è¯­æ³•ä¹Ÿè¡¨ç¤ºæƒŠè¯§ã€‚
     return g_func_invoke_impl(std::forward <fun_t>(f),
                               a,
                               std::make_index_sequence<t_count>());
@@ -112,11 +112,11 @@ auto g_func_invoke(fun_t &&f, args_type &&...datalist)
 template<typename class_type, typename fun_t, typename para_tuple, std::size_t... I>
 auto mem_func_invoke_impl(class_type *obj, fun_t &f, const para_tuple &a, std::index_sequence<I...>)
 {
-    //×¢ÒâÕâ¶ùÒ»¶¨Òª¼Ó(),·ñÔò±àÒëÆ÷»á×¥¿ñ
+    //æ³¨æ„è¿™å„¿ä¸€å®šè¦åŠ (),å¦åˆ™ç¼–è¯‘å™¨ä¼šæŠ“ç‹‚
     return (obj->*f)(std::get<I>(a)...);
 }
 
-//³ÉÔ±º¯Êıµ÷ÓÃ·â×°
+//æˆå‘˜å‡½æ•°è°ƒç”¨å°è£…
 template<typename class_type, typename fun_t, typename para_tuple>
 auto mem_func_tuplearg_invoke(class_type *obj, fun_t &f, const para_tuple &a)
 {

@@ -3,43 +3,43 @@
 * @filename   zce_uuid_64_generator.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê2ÔÂ4ÈÕ
-* @brief      Universally Unique Identifier ËõÐ´UUID£¬Ö§³Ö2ÖÖUUID
-*             64bitµÄUUID£¬Õâ¸ö²»±ê×¼£¬Ö÷ÒªÓÃÓÚÒ»Ð©ÌØÊâÐèÒªÒ»¸ö¶ÌµÄID±êÊ¾µÄÌØÊâ»·¾³
-*             64Î»µÄÎ¨Ò»±íÊ¾£¬
-*             128ÎªµÄUUID£¬ÕæÕýµÄUUID£¬
+* @date       2013å¹´2æœˆ4æ—¥
+* @brief      Universally Unique Identifier ç¼©å†™UUIDï¼Œæ”¯æŒ2ç§UUID
+*             64bitçš„UUIDï¼Œè¿™ä¸ªä¸æ ‡å‡†ï¼Œä¸»è¦ç”¨äºŽä¸€äº›ç‰¹æ®Šéœ€è¦ä¸€ä¸ªçŸ­çš„IDæ ‡ç¤ºçš„ç‰¹æ®ŠçŽ¯å¢ƒ
+*             64ä½çš„å”¯ä¸€è¡¨ç¤ºï¼Œ
+*             128ä¸ºçš„UUIDï¼ŒçœŸæ­£çš„UUIDï¼Œ
 *
-*             Õâ¸öµØ·½Ö÷ÒªÊÇÎªÁËÌá¹©¸ø´ó¼ÒÒ»ÖÖ·½·¨£¬²úÉúÒ»¸öÎ¨Ò»±êÊ¶£¬
-*             ÔÚÓÎÏ·ÏîÄ¿×é£¬Ö÷ÒªÊÇÔÚÓÎÏ·µÀ¾ß±êÊ¶µÈ·¶Î§ÐèÒªÕâÑùµÄ¶«¶«£¬Ö÷ÒªÓÃÓÚ
-*             ¸ú×ÙÄ³¸öÎïÆ·µÄÁ÷×ª£¬£¨ÎÒ¸öÈË¶ÔµÀ¾ßÊ¹ÓÃÕâ¸ö¶«¶«×÷ÎªIDµÄÐ§¹û³Ö±£ÊØÒâ¼û£©
-*             Ð§¹û²¢²»Ã÷ÏÔ
+*             è¿™ä¸ªåœ°æ–¹ä¸»è¦æ˜¯ä¸ºäº†æä¾›ç»™å¤§å®¶ä¸€ç§æ–¹æ³•ï¼Œäº§ç”Ÿä¸€ä¸ªå”¯ä¸€æ ‡è¯†ï¼Œ
+*             åœ¨æ¸¸æˆé¡¹ç›®ç»„ï¼Œä¸»è¦æ˜¯åœ¨æ¸¸æˆé“å…·æ ‡è¯†ç­‰èŒƒå›´éœ€è¦è¿™æ ·çš„ä¸œä¸œï¼Œä¸»è¦ç”¨äºŽ
+*             è·Ÿè¸ªæŸä¸ªç‰©å“çš„æµè½¬ï¼Œï¼ˆæˆ‘ä¸ªäººå¯¹é“å…·ä½¿ç”¨è¿™ä¸ªä¸œä¸œä½œä¸ºIDçš„æ•ˆæžœæŒä¿å®ˆæ„è§ï¼‰
+*             æ•ˆæžœå¹¶ä¸æ˜Žæ˜¾
 *
-* @details    Ö§³ÖÁ½ÖÖ²úÉú·½Ê½£¬Ëæ»úÊýºÍÒÔÊ±¼äÎª»ùÊýµÄ·½Ê½
+* @details    æ”¯æŒä¸¤ç§äº§ç”Ÿæ–¹å¼ï¼Œéšæœºæ•°å’Œä»¥æ—¶é—´ä¸ºåŸºæ•°çš„æ–¹å¼
 *
 * @note
 *
-* ³öÃÅ
-* ´Ê£º¿¨·ò¿¨ Çú£ºÒüÎá
+* å‡ºé—¨
+* è¯ï¼šå¡å¤«å¡ æ›²ï¼šå°¹å¾
 *
-* ÎÒ·Ô¸À°ÑÎÒµÄÂí¶ù´ÓÂíÅïÀïÇ£³öÀ´¡£
-* ÆÍÈËÃ»ÓÐÌý¶®ÎÒµÄ»°£¬ÎÒ±ã×Ô¼º×ßµ½ÂíÅï£¬
-* ¸øÂí±¸ºÃ°°£¬ÆïÁËÉÏÈ¥¡£
-* Ô¶´¦´«À´ÁËºÅ½ÇÉù£¬ÎÒÎÊËû£¬ÕâÊÇÊ²Ã´ÒâË¼¡£
-* ËûËµ²»ÖªµÀ£¬ËûÊ²Ã´Ò²Ã»Ìýµ½£¬Ê²Ã´Ò²Ã»Ìýµ½¡£
+* æˆ‘å©å’æŠŠæˆ‘çš„é©¬å„¿ä»Žé©¬æ£šé‡Œç‰µå‡ºæ¥ã€‚
+* ä»†äººæ²¡æœ‰å¬æ‡‚æˆ‘çš„è¯ï¼Œæˆ‘ä¾¿è‡ªå·±èµ°åˆ°é©¬æ£šï¼Œ
+* ç»™é©¬å¤‡å¥½éžï¼Œéª‘äº†ä¸ŠåŽ»ã€‚
+* è¿œå¤„ä¼ æ¥äº†å·è§’å£°ï¼Œæˆ‘é—®ä»–ï¼Œè¿™æ˜¯ä»€ä¹ˆæ„æ€ã€‚
+* ä»–è¯´ä¸çŸ¥é“ï¼Œä»–ä»€ä¹ˆä¹Ÿæ²¡å¬åˆ°ï¼Œä»€ä¹ˆä¹Ÿæ²¡å¬åˆ°ã€‚
 *
-* ÔÚ´óÃÅ¿Ú£¬Ëû½Ð×¡ÎÒ£¬
-* ÎÊ£º¡°ÄúÆïÂíÉÏÄÄ¶ùÈ¥ÄØ£¬ÎÒµÄÖ÷ÈË£¿¡±
-* ¡°ÎÒ²»ÖªµÀ£¬¡±ÎÒËµ£¬¡°Ö»ÊÇÀë¿ªÕâ¶ù£¬Àë¿ªÕâ¶ù¡£
-* Àë¿ªÕâ¶ùÏòÇ°×ß£¬ÏòÇ°×ß£¬Õâ¾ÍÊÇÎÒ´ïµ½Ä¿±êµÄÎ¨Ò»°ì·¨¡£¡±
-* ¡°ÄÇÃ´ÄúÖªµÀÄúµÄÄ¿±êÁË£¿¡±ËûÎÊ¡£
-* ¡°ÊÇµÄ¡±ÎÒ»Ø´ð£¬
-* ¡°ÎÒ¸Õ¸Õ¸æËßÄãÁË£¬Àë¿ªÕâ¶ù£¬Àë¿ªÕâ¶ù£¬Õâ¾ÍÊÇÎÒµÄÄ¿±ê¡£¡±
-* ¡°Äú»¹Ã»ÓÐ´øÉÏ¿ÚÁ¸ÄØ£¬¡±ËûËµ¡£¡°Ê²Ã´¿ÚÁ¸ÎÒÒ²²»Òª¡£¡±ÎÒËµ£¬
-* ¡°ÂÃÍ¾ÊÇÄÇÃ´µÄÂþ³¤°¡£¬Èç¹ûÒ»Â·ÉÏÎÒµÃ²»µ½¶«Î÷£¬
-* ÄÇÎÒÒ»¶¨»á£¬ËÀµÄ¡£
+* åœ¨å¤§é—¨å£ï¼Œä»–å«ä½æˆ‘ï¼Œ
+* é—®ï¼šâ€œæ‚¨éª‘é©¬ä¸Šå“ªå„¿åŽ»å‘¢ï¼Œæˆ‘çš„ä¸»äººï¼Ÿâ€
+* â€œæˆ‘ä¸çŸ¥é“ï¼Œâ€æˆ‘è¯´ï¼Œâ€œåªæ˜¯ç¦»å¼€è¿™å„¿ï¼Œç¦»å¼€è¿™å„¿ã€‚
+* ç¦»å¼€è¿™å„¿å‘å‰èµ°ï¼Œå‘å‰èµ°ï¼Œè¿™å°±æ˜¯æˆ‘è¾¾åˆ°ç›®æ ‡çš„å”¯ä¸€åŠžæ³•ã€‚â€
+* â€œé‚£ä¹ˆæ‚¨çŸ¥é“æ‚¨çš„ç›®æ ‡äº†ï¼Ÿâ€ä»–é—®ã€‚
+* â€œæ˜¯çš„â€æˆ‘å›žç­”ï¼Œ
+* â€œæˆ‘åˆšåˆšå‘Šè¯‰ä½ äº†ï¼Œç¦»å¼€è¿™å„¿ï¼Œç¦»å¼€è¿™å„¿ï¼Œè¿™å°±æ˜¯æˆ‘çš„ç›®æ ‡ã€‚â€
+* â€œæ‚¨è¿˜æ²¡æœ‰å¸¦ä¸Šå£ç²®å‘¢ï¼Œâ€ä»–è¯´ã€‚â€œä»€ä¹ˆå£ç²®æˆ‘ä¹Ÿä¸è¦ã€‚â€æˆ‘è¯´ï¼Œ
+* â€œæ—…é€”æ˜¯é‚£ä¹ˆçš„æ¼«é•¿å•Šï¼Œå¦‚æžœä¸€è·¯ä¸Šæˆ‘å¾—ä¸åˆ°ä¸œè¥¿ï¼Œ
+* é‚£æˆ‘ä¸€å®šä¼šï¼Œæ­»çš„ã€‚
 *
-* Ê²Ã´¿ÚÁ¸Ò²²»ÄÜ´î¾ÈÎÒ£¬
-* ÐÒÔËµÄÊÇ£¬Õâ¿ÉÊÇÒ»´Î£¬ÕæÕýÃ»ÓÐ¾¡Í·µÄÂÃ³Ì°¡£¡¡±
+* ä»€ä¹ˆå£ç²®ä¹Ÿä¸èƒ½æ­æ•‘æˆ‘ï¼Œ
+* å¹¸è¿çš„æ˜¯ï¼Œè¿™å¯æ˜¯ä¸€æ¬¡ï¼ŒçœŸæ­£æ²¡æœ‰å°½å¤´çš„æ—…ç¨‹å•Šï¼â€
 *
 */
 #ifndef _ZCE_LIB_UUID_GENERATOR_H_
@@ -54,161 +54,160 @@ Class           : ZCE_UUID64
 #pragma pack(push,1)
 
 /*!
-* @brief      UUID64µÄÒ»ÖÖ±íÊ¾·½·¨
-*             ZCE_UUID64_16_48 ÓÃ1¸ö16bitµÄÊýÖµ+48Î»µÄÊýÖµ
-*             ±íÊ¾UUID64£¬¿ÉÒÔÓÃÓÚÒ»Ð©ÌØÊâ³¡ºÏ²úÉúÎ¨Ò»±íÊ¾£¬
+* @brief      UUID64çš„ä¸€ç§è¡¨ç¤ºæ–¹æ³•
+*             ZCE_UUID64_16_48 ç”¨1ä¸ª16bitçš„æ•°å€¼+48ä½çš„æ•°å€¼
+*             è¡¨ç¤ºUUID64ï¼Œå¯ä»¥ç”¨äºŽä¸€äº›ç‰¹æ®Šåœºåˆäº§ç”Ÿå”¯ä¸€è¡¨ç¤ºï¼Œ
 */
 struct ZCE_UUID64_16_48
 {
-    uint64_t       data1_: 16;
-    uint64_t       data2_: 48;
+    uint64_t       data1_:16;
+    uint64_t       data2_:48;
 };
 
 /*!
-* @brief      64Î»µÄUUID£¬ÄÚ²¿·Ö³É3ÖÖ±íÊ¾·½·¨£¬Ò²Ìá¹©ÁË±È½Ï==£¬<µÈ²Ù×÷
-*             @li 64Î»µÄÕûÊý
-*             @li 16Î»ÕûÊý+48ÎªµÄÕûÊý
-*             @li 2¸ö32Î»µÄÕûÊý
+* @brief      64ä½çš„UUIDï¼Œå†…éƒ¨åˆ†æˆ3ç§è¡¨ç¤ºæ–¹æ³•ï¼Œä¹Ÿæä¾›äº†æ¯”è¾ƒ==ï¼Œ<ç­‰æ“ä½œ
+*             @li 64ä½çš„æ•´æ•°
+*             @li 16ä½æ•´æ•°+48ä¸ºçš„æ•´æ•°
+*             @li 2ä¸ª32ä½çš„æ•´æ•°
 *
 */
 class ZCE_UUID64
 {
 public:
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
     ZCE_UUID64();
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     ~ZCE_UUID64();
 
-    /// < ÔËËã·ûÖØÔØ
-    bool operator < (const ZCE_UUID64 &others) const;
-    /// == ÔËËã·û
-    bool operator == (const ZCE_UUID64 &others) const;
+    /// < è¿ç®—ç¬¦é‡è½½
+    bool operator < (const ZCE_UUID64& others) const;
+    /// == è¿ç®—ç¬¦
+    bool operator == (const ZCE_UUID64& others) const;
 
-    /// ×ªÒÆ³ÉÒ»¸öuint64_tµÄ½á¹¹
+    /// è½¬ç§»æˆä¸€ä¸ªuint64_tçš„ç»“æž„
     operator uint64_t();
 
-    /// ×ª»»Îª×Ö·û´®
-    const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const;
+    /// è½¬æ¢ä¸ºå­—ç¬¦ä¸²
+    const char* to_string(char* buffer,size_t buf_len,size_t& use_buf) const;
 
 
 public:
 
-    ///½á¹¹Êý¾ÝµÄ¼¸ÖÖ²»Í¬µÄ±í´ï·½Ê½
+    ///ç»“æž„æ•°æ®çš„å‡ ç§ä¸åŒçš„è¡¨è¾¾æ–¹å¼
     union
     {
-        ///µ¥¸ö64×Ö½ÚµÄ±íÊ¾·½·¨
+        ///å•ä¸ª64å­—èŠ‚çš„è¡¨ç¤ºæ–¹æ³•
         uint64_t          u_uint64_;
-        ///2¸ö32×Ö½ÚµÄ±íÊ¾·½·¨
+        ///2ä¸ª32å­—èŠ‚çš„è¡¨ç¤ºæ–¹æ³•
         uint32_t          u_2uint32_[2];
-        ///16bit+48BitµÄ±íÊ¾·½·¨
+        ///16bit+48Bitçš„è¡¨ç¤ºæ–¹æ³•
         ZCE_UUID64_16_48  u_16_48_;
     };
 
 public:
 
-    ///UUIDÊä³ö×Ö·û´®µÄ×î´ó³¤¶È£¬²»°üÀ¨'\0',¸ñÊ½XXXXXXXX-XXXXXXXX
+    ///UUIDè¾“å‡ºå­—ç¬¦ä¸²çš„æœ€å¤§é•¿åº¦ï¼Œä¸åŒ…æ‹¬'\0',æ ¼å¼XXXXXXXX-XXXXXXXX
     static const size_t   LEN_OF_ZCE_UUID64_STR = 17;
 
 };
 
 #pragma pack(pop)
 
-/************************************************************************************************************
-Class           : ZCE_UUID64_Generator
-************************************************************************************************************/
+class ZCE_UUID_Generator_Base
+{
+
+public:
+    //UUIDäº§ç”Ÿæ–¹æ³•ï¼Œ
+    enum class UUID_GENERATOR
+    {
+        ///æ— æ•ˆçš„äº§ç”Ÿæ–¹å¼
+        INVALID,
+        ///ç”¨éšæœºæ•°çš„æ–¹æ³•äº§ç”Ÿ
+        RANDOM,
+        ///ç”¨äº‹ä»¶ä½œä¸ºåŸºæ•°è§¦å‘
+        TIME,
+    };
+
+    /*!
+    * @brief      æž„é€ å‡½æ•°
+    */
+    ZCE_UUID_Generator_Base(UUID_GENERATOR generator_type):
+        generator_type_(generator_type)
+    {
+    }
+
+    /*!
+    * @brief      æžæž„å‡½æ•°
+    */
+    ~ZCE_UUID_Generator_Base();
+
+protected:
+
+    ///å‘ç”Ÿå™¨ä½¿ç”¨ä»€ä¹ˆå‘ç”Ÿæ–¹å¼
+    UUID_GENERATOR         generator_type_;
+};
 
 /*!
-* @brief      UUID64µÄ²úÉúÆ÷£¬Ìá¹©Ëæ»úÊý²úÉú£¬ÒÔÊ±¼äÎª»ùÊý²úÉúËæ»úÊýµÄ·½·¨
-*             @li Ëæ»úÊý²úÉú£¬²úÉúÒ»¸öËæ»úµÄuint64_tµÄÊý×Ö,µ±È»´ó¼Ò·½ÏòÕâ¸öÖØ¸´ÂÉºÜµÍ
-*             @li ÒÔÊ±¼äÎª»ùÊýµÄ²úÉú³¤·¢£¬16Î»ÊýÖµÄã×Ô¼º¶¨Òå£¬ºóÃæ48Î»ÕûÊý£¬ÒÔÊ±¼äÎª»ùÊý
-*                 £¬È»ºóºóÃæÃ¿´Î²úÉú¾ÍÀÛ¼ÆÒ»´Î£¬ÕâÖÖ·½·¨ÊÊºÏÐ¡¹æÄ£µÄ·Ö²¼£¬16Î»±íÊ¾·Ö²¼µÄ
-*                 ·þÎñÆ÷£¬Ã¿¸ö·þÎñÆ÷×Ô¼º²úÉúUUIDµÄÇé¿ö£¬Ö»Òª1s²úÉúµÄUUIDµÄÊýÁ¿²»³¬¹ý16
-*                 Î»£¬¾Í±È½ÏºÜ°²È«¡£Õâ¸ö·½·¨Ê¼×÷Ó¼ÕßÓ¦¸ÃÊÇ sonicmao£¬Äã¿ÉÒÔ¸ù¾ÝUUID»ØËÝ
-*                 ÊÇÊ²Ã´·þÎñÆ÷²úÉúµÄÊý¾Ý
+* @brief      UUID64çš„äº§ç”Ÿå™¨ï¼Œæä¾›éšæœºæ•°äº§ç”Ÿï¼Œä»¥æ—¶é—´ä¸ºåŸºæ•°äº§ç”Ÿéšæœºæ•°çš„æ–¹æ³•
+*             @li éšæœºæ•°äº§ç”Ÿï¼Œäº§ç”Ÿä¸€ä¸ªéšæœºçš„uint64_tçš„æ•°å­—,å½“ç„¶å¤§å®¶æ–¹å‘è¿™ä¸ªé‡å¤å¾‹å¾ˆä½Ž
+*             @li ä»¥æ—¶é—´ä¸ºåŸºæ•°çš„äº§ç”Ÿé•¿å‘ï¼Œ16ä½æ•°å€¼ä½ è‡ªå·±å®šä¹‰ï¼ŒåŽé¢48ä½æ•´æ•°ï¼Œä»¥æ—¶é—´ä¸ºåŸºæ•°
+*                 ï¼Œç„¶åŽåŽé¢æ¯æ¬¡äº§ç”Ÿå°±ç´¯è®¡ä¸€æ¬¡ï¼Œè¿™ç§æ–¹æ³•é€‚åˆå°è§„æ¨¡çš„åˆ†å¸ƒï¼Œ16ä½è¡¨ç¤ºåˆ†å¸ƒçš„
+*                 æœåŠ¡å™¨ï¼Œæ¯ä¸ªæœåŠ¡å™¨è‡ªå·±äº§ç”ŸUUIDçš„æƒ…å†µï¼Œåªè¦1säº§ç”Ÿçš„UUIDçš„æ•°é‡ä¸è¶…è¿‡16
+*                 ä½ï¼Œå°±æ¯”è¾ƒå¾ˆå®‰å…¨ã€‚è¿™ä¸ªæ–¹æ³•å§‹ä½œè›¹è€…åº”è¯¥æ˜¯ sonicmaoï¼Œä½ å¯ä»¥æ ¹æ®UUIDå›žæº¯
+*                 æ˜¯ä»€ä¹ˆæœåŠ¡å™¨äº§ç”Ÿçš„æ•°æ®
 *
 */
-class ZCE_UUID64_Generator
+class ZCE_UUID64_Generator:public ZCE_UUID_Generator_Base
 {
-    //UUID²úÉú·½·¨£¬
-    enum UUID64_GENERATOR_TYPE
-    {
-        ///ÎÞÐ§µÄ²úÉú·½Ê½
-        UUID64_GENERATOR_INVALID,
-
-        ///ÓÃËæ»úÊýµÄ·½·¨²úÉú
-        UUID64_GENERATOR_RANDOM,
-        ///ÓÃÊÂ¼þ×÷Îª»ùÊý´¥·¢
-        UUID64_GENERATOR_TIME,
-    };
 
 public:
 
     /*!
-    * @brief      ¹¹Ôìº¯Êý
+    * @brief      æž„é€ å‡½æ•°
     */
     ZCE_UUID64_Generator();
 
     /*!
-    * @brief      Îö¹¹º¯Êý
+    * @brief      æžæž„å‡½æ•°
     */
     ~ZCE_UUID64_Generator();
 
 public:
 
     /*!
-    * @brief      Ëæ»úÊýµÄÖÖ×Ó,µ÷ÓÃÕâ¸öº¯Êýºó£¬
-    *             ¾Í»áÈ·ÈÏ²úÉú·½Ê½ÊÇUUID64_GENERATOR_RANDOM£¬²»ÄÜ¸ü¸ÄÁË¡£
-    * @param      seed Ëæ»úÊýµÄÖÖ×Ó,
+    * @brief      éšæœºæ•°çš„ç§å­,è°ƒç”¨è¿™ä¸ªå‡½æ•°åŽï¼Œ
+    *             å°±ä¼šç¡®è®¤äº§ç”Ÿæ–¹å¼æ˜¯UUID64_GENERATOR_RANDOMï¼Œä¸èƒ½æ›´æ”¹äº†ã€‚
+    * @param      seed éšæœºæ•°çš„ç§å­,
     */
     void random_seed(uint32_t seed);
     /*!
-    @brief      Í¨¹ýËæ»úÊý²úÉúÒ»¸öUUID64
-    @return     ZCE_UUID64 ²úÉúµÄUUID
+    @brief      é€šè¿‡éšæœºæ•°äº§ç”Ÿä¸€ä¸ªUUID64
+    @return     ZCE_UUID64 äº§ç”Ÿçš„UUID
     */
     ZCE_UUID64 random_gen();
 
     /*!
-    * @brief      ÒÔÊ±¼äÎª»ùÊýµÄ³õÊ¼»¯£¬radixÒ»°ã¿ÉÒÔÓÃµ±Ç°Ê±¼ätime_t
-    *             µ÷ÓÃÕâ¸öº¯Êýºó£¬¾Í»áÈ·ÈÏ²úÉú·½Ê½ÊÇUUID64_GENERATOR_TIME£¬²»ÄÜ¸ü¸ÄÁË¡£
-    * @param      identity µ±Ç°µÄÎ¨Ò»±íÊ¾£¬±ÈÈç·þÎñÆ÷IDµÈÐÅÏ¢
-    * @param      radix    Ê±¼ä»ùÊý
+    * @brief      ä»¥æ—¶é—´ä¸ºåŸºæ•°çš„åˆå§‹åŒ–ï¼Œradixä¸€èˆ¬å¯ä»¥ç”¨å½“å‰æ—¶é—´time_t
+    *             è°ƒç”¨è¿™ä¸ªå‡½æ•°åŽï¼Œå°±ä¼šç¡®è®¤äº§ç”Ÿæ–¹å¼æ˜¯UUID64_GENERATOR_TIMEï¼Œä¸èƒ½æ›´æ”¹äº†ã€‚
+    * @param      identity å½“å‰çš„å”¯ä¸€è¡¨ç¤ºï¼Œæ¯”å¦‚æœåŠ¡å™¨IDç­‰ä¿¡æ¯
+    * @param      radix    æ—¶é—´åŸºæ•°
     */
-    void time_radix(uint16_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint16_t identity,uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
-    * @brief      ÒÔÊ±¼äÎª»ùÊý²úÉúUUID64
-    * @return     ZCE_UUID64 ²úÉúµÄUUID64
+    * @brief      ä»¥æ—¶é—´ä¸ºåŸºæ•°äº§ç”ŸUUID64
+    * @return     ZCE_UUID64 äº§ç”Ÿçš„UUID64
     */
     ZCE_UUID64 timeradix_gen();
 
 protected:
 
-    ///·¢ÉúÆ÷ÊµÀýÖ¸Õë
-    static ZCE_UUID64_Generator *instance_;
-
-protected:
-
-    /*!
-    * @brief      µ¥×Óº¯Êý
-    * @return     ZCE_UUID64_Generator* ·µ»ØµÄÊµÀýÖ¸Õë
-    */
-    static ZCE_UUID64_Generator *instance();
-    /*!
-    * @brief      ÇåÀíÊµÀýÖ¸Õë
-    */
-    static void clean_instance();
-
-protected:
-
-    ///·¢ÉúÆ÷Ê¹ÓÃÊ²Ã´·¢Éú·½Ê½
-    UUID64_GENERATOR_TYPE         generator_type_;
-
-    ///Ëæ»ú·¢ÉúÆ÷1
+    ///éšæœºå‘ç”Ÿå™¨1
     zce::random_mt19937       mt_19937_random_;
-    ///Ëæ»ú·¢ÉúÆ÷2
+    ///éšæœºå‘ç”Ÿå™¨2
     zce::random_mt11213b      mt_11213b_random_;
 
-    ///Ëæ»úÊýµÄÖÖ×Ó
+    ///éšæœºæ•°çš„ç§å­
     ZCE_UUID64                    time_radix_seed_;
 
 
@@ -223,7 +222,7 @@ protected:
 /************************************************************************************************************
 Class           : ZCE_UUID128
 ************************************************************************************************************/
-///32bitÕûÊý+32ÕûÊý+64Î»ÕûÊýµÄ±íÊ¾·½·¨
+///32bitæ•´æ•°+32æ•´æ•°+64ä½æ•´æ•°çš„è¡¨ç¤ºæ–¹æ³•
 struct ZCE_UUID128_32_32_64
 {
 
@@ -233,70 +232,70 @@ struct ZCE_UUID128_32_32_64
     uint64_t       data3_;
 };
 
-///±ê×¼µÄUUIDµÄ¸ñÊ½
+///æ ‡å‡†çš„UUIDçš„æ ¼å¼
 struct ZCE_UUID128_32_16_16_16_48
 {
-    uint64_t       data1_ : 32;
-    uint64_t       data2_ : 16;
-    uint64_t       data3_ : 16;
-    uint64_t       data4_ : 16;
-    uint64_t       data5_ : 48;
+    uint64_t       data1_:32;
+    uint64_t       data2_:16;
+    uint64_t       data3_:16;
+    uint64_t       data4_:16;
+    uint64_t       data5_:48;
 };
 
-///Î¢ÈíµÄGUIDµÄ¸ñÊ½
+///å¾®è½¯çš„GUIDçš„æ ¼å¼
 struct ZCE_UUID128_32_16_16_64
 {
-    uint64_t       data1_ : 32;
-    uint64_t       data2_ : 16;
-    uint64_t       data3_ : 16;
+    uint64_t       data1_:32;
+    uint64_t       data2_:16;
+    uint64_t       data3_:16;
     uint64_t       data4_;
 
 };
 
 /*!
-* @brief      UUID128£¬128Î»µÄÎ¨Ò»±êÊ¶£¬
-*             ÓÐ5ÖÐ±íÊ¾·½·¨£¬
-*             @li 16¸ö×Ö½Ú
-*             @li 4¸ö32ÎªµÄÕûÊý
-*             @li 32Î»ÕûÊý+32Î»ÕûÊý+64Î»ÕûÊýµÄ±íÊ¾·½·¨
-*             @li 32Î»ÕûÊý+16Î»ÕûÊý+16Î»ÕûÊý+16Î»ÕûÊý+48Î»ÕûÊý£¬±ê×¼µÄUUID±íÊ¾·½·¨
-*             @li 32Î»ÕûÊý+16Î»ÕûÊý+16Î»ÕûÊý+64Î»ÕûÊý£¬Î¢ÈíµÄUUID±íÊ¾·½·¨£¬GUID£¬
+* @brief      UUID128ï¼Œ128ä½çš„å”¯ä¸€æ ‡è¯†ï¼Œ
+*             æœ‰5ä¸­è¡¨ç¤ºæ–¹æ³•ï¼Œ
+*             @li 16ä¸ªå­—èŠ‚
+*             @li 4ä¸ª32ä¸ºçš„æ•´æ•°
+*             @li 32ä½æ•´æ•°+32ä½æ•´æ•°+64ä½æ•´æ•°çš„è¡¨ç¤ºæ–¹æ³•
+*             @li 32ä½æ•´æ•°+16ä½æ•´æ•°+16ä½æ•´æ•°+16ä½æ•´æ•°+48ä½æ•´æ•°ï¼Œæ ‡å‡†çš„UUIDè¡¨ç¤ºæ–¹æ³•
+*             @li 32ä½æ•´æ•°+16ä½æ•´æ•°+16ä½æ•´æ•°+64ä½æ•´æ•°ï¼Œå¾®è½¯çš„UUIDè¡¨ç¤ºæ–¹æ³•ï¼ŒGUIDï¼Œ
 *
 */
 class ZCE_UUID128
 {
 public:
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
     ZCE_UUID128();
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     ~ZCE_UUID128();
 
-    /// < ÔËËã·ûÖØÔØ
-    bool operator < (const ZCE_UUID128 &others) const;
-    /// == ÔËËã·û
-    bool operator == (const ZCE_UUID128 &others) const;
+    /// < è¿ç®—ç¬¦é‡è½½
+    bool operator < (const ZCE_UUID128& others) const;
+    /// == è¿ç®—ç¬¦
+    bool operator == (const ZCE_UUID128& others) const;
 
-    /// ÒÔUUID8-4-4-4-12µÄ¸ñÊ½½øÐÐ×ª»»Îª×Ö·û´®
-    const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const;
+    /// ä»¥UUID8-4-4-4-12çš„æ ¼å¼è¿›è¡Œè½¬æ¢ä¸ºå­—ç¬¦ä¸²
+    const char* to_string(char* buffer,size_t buf_len,size_t& use_buf) const;
 
 public:
-    ///UUIDµÄ×Ö·û´®±íÊ¾µÄ³¤¶È
+    ///UUIDçš„å­—ç¬¦ä¸²è¡¨ç¤ºçš„é•¿åº¦
     static const size_t LEN_OF_ZCE_UUID128_STR = 36;
 
 public:
 
-    ///5ÖÖÊý¾Ý±íÊ¾·½·¨
+    ///5ç§æ•°æ®è¡¨ç¤ºæ–¹æ³•
     union
     {
-        ///16¸ö×Ö½ÚµÄ×é³É
+        ///16ä¸ªå­—èŠ‚çš„ç»„æˆ
         uint8_t                      u_16uint8_[16];
-        ///4¸ö32Îª×Ö½ÚµÄ×é³É
+        ///4ä¸ª32ä¸ºå­—èŠ‚çš„ç»„æˆ
         uint32_t                     u_4uint32_[4];
-        ///32Î»ÕûÊý+32Î»ÕûÊý+64Î»ÕûÊý
+        ///32ä½æ•´æ•°+32ä½æ•´æ•°+64ä½æ•´æ•°
         ZCE_UUID128_32_32_64         u_32_32_64_;
-        ///±ê×¼µÄUUIDµÄ±êÊ¶·½·¨
+        ///æ ‡å‡†çš„UUIDçš„æ ‡è¯†æ–¹æ³•
         ZCE_UUID128_32_16_16_16_48   u_32_16_16_16_48_;
-        ///Î¢ÈíµÄGUIDµÄ±êÊ¶·½·¨
+        ///å¾®è½¯çš„GUIDçš„æ ‡è¯†æ–¹æ³•
         ZCE_UUID128_32_16_16_64      u_32_16_16_64_;
 
     };
@@ -307,77 +306,62 @@ public:
 
 
 /************************************************************************************************************
-Class           : ZCE_UUID128_Generator UUIDµÄ·¢ÉúÆ÷
+Class           : ZCE_UUID128_Generator UUIDçš„å‘ç”Ÿå™¨
 ************************************************************************************************************/
 
 /*!
-* @brief      ZCE_UUID128_Generator UUIDµÄ·¢ÉúÆ÷
+* @brief      ZCE_UUID128_Generator UUIDçš„å‘ç”Ÿå™¨
 *
 */
-class ZCE_UUID128_Generator
+class ZCE_UUID128_Generator: public ZCE_UUID_Generator_Base
 {
-    //
-    enum UUID128_GENERATOR_TYPE
-    {
-        //
-        UUID128_GENERATOR_INVALID,
-
-        ///ÓÃËæ»úÊýµÄ·½·¨²úÉú
-        UUID128_GENERATOR_RANDOM,
-        ///ÓÃÊÂ¼þ×÷Îª»ùÊý´¥·¢
-        UUID128_GENERATOR_TIME,
-    };
 
 public:
 
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
     ZCE_UUID128_Generator();
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     ~ZCE_UUID128_Generator();
 
 public:
 
     /*!
-    * @brief      ×¢²áËæ»úÊýµÄÖÖ×Ó
-    * @param      seed ÖÖ×Ó
+    * @brief      æ³¨å†Œéšæœºæ•°çš„ç§å­
+    * @param      seed ç§å­
     */
     void random_seed(uint32_t seed);
     /*!
-    * @brief      ²úÉúÒ»¸öUUID128£¬
+    * @brief      äº§ç”Ÿä¸€ä¸ªUUID128ï¼Œ
     * @return     ZCE_UUID128
     */
     ZCE_UUID128 random_gen();
 
     /*!
-    * @brief      ÒÔÊ±¼äÎª»ùÊýµÄ³õÊ¼»¯£¬radixÒ»°ã¿ÉÒÔÓÃµ±Ç°Ê±¼ätime_t£¨µ±È»Ò²¿ÉÒÔ²»ÓÃ£¬ÄãÓÃÁíÍâÒ»¸ö±êÊ¶£©
+    * @brief      ä»¥æ—¶é—´ä¸ºåŸºæ•°çš„åˆå§‹åŒ–ï¼Œradixä¸€èˆ¬å¯ä»¥ç”¨å½“å‰æ—¶é—´time_tï¼ˆå½“ç„¶ä¹Ÿå¯ä»¥ä¸ç”¨ï¼Œä½ ç”¨å¦å¤–ä¸€ä¸ªæ ‡è¯†ï¼‰
     * @param      identity
     * @param      radix
     */
-    void time_radix(uint32_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint32_t identity,uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
-    * @brief      ÒÔÊ±¼äÎª»ùÊý²úÉúUUID64
+    * @brief      ä»¥æ—¶é—´ä¸ºåŸºæ•°äº§ç”ŸUUID64
     * @return     ZCE_UUID128
     */
     ZCE_UUID128 timeradix_gen();
 
 protected:
 
-    ///·¢ÉúÆ÷Ê¹ÓÃÊ²Ã´·¢Éú·½Ê½
-    UUID128_GENERATOR_TYPE        generator_type_;
 
-    ///Ëæ»ú·¢ÉúÆ÷1
+
+    ///éšæœºå‘ç”Ÿå™¨1
     zce::random_mt19937       mt_19937_random_;
-    ///Ëæ»ú·¢ÉúÆ÷2
+    ///éšæœºå‘ç”Ÿå™¨2
     zce::random_mt11213b      mt_11213b_random_;
 
-    ///
-    ZCE_UUID128                   time_radix_seed_;
 
-protected:
+    ZCE_UUID128               time_radix_seed_;
 
-    //·¢ÉúÆ÷ÊµÀýÖ¸Õë
-    static ZCE_UUID128_Generator *instance_;
+
 
 };
 

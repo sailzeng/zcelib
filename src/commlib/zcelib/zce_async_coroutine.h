@@ -10,8 +10,8 @@
 
 
 /*!
-* @brief      Ğ­³Ì¶ÔÏó
-*             ×¢Òâ£¬ÎªÁË±ÜÃâÒ»Ğ©ÎŞÒâÒåµÄ±©Â©£¬ÎÒÕâ¶ùÑ¡ÔñµÄ¼Ì³Ğ·½Ê½ÊÇprivate
+* @brief      åç¨‹å¯¹è±¡
+*             æ³¨æ„ï¼Œä¸ºäº†é¿å…ä¸€äº›æ— æ„ä¹‰çš„æš´æ¼ï¼Œæˆ‘è¿™å„¿é€‰æ‹©çš„ç»§æ‰¿æ–¹å¼æ˜¯private
 */
 class ZCE_Async_Coroutine : public ZCE_Async_Object
 {
@@ -22,37 +22,37 @@ class ZCE_Async_Coroutine : public ZCE_Async_Object
     {
         //
         COROUTINE_INVALID = 0x0,
-        //Ğ¯³Ì´«µİ¸ø¹ÜÀíÆ÷µÄ×´Ì¬Öµ£¬
+        //æºç¨‹ä¼ é€’ç»™ç®¡ç†å™¨çš„çŠ¶æ€å€¼ï¼Œ
         COROUTINE_CONTINUE = 0x10001,
         COROUTINE_EXIT = 0x10002,
 
-        //³¬Ê±ºó£¬¹ÜÀíÆ÷Í¨ÖªĞ¯³ÌµÄ×´Ì¬Öµ
+        //è¶…æ—¶åï¼Œç®¡ç†å™¨é€šçŸ¥æºç¨‹çš„çŠ¶æ€å€¼
         COROUTINE_TIMEOUT = 0x20002,
     };
 
 
 public:
     /*!
-    * @brief      ¹¹Ôìº¯Êı£¬
-    * @param      async_mgr ,Ğ­³ÌÒì²½¹ÜÀíÆ÷µÄÖ¸Õë
+    * @brief      æ„é€ å‡½æ•°ï¼Œ
+    * @param      async_mgr ,åç¨‹å¼‚æ­¥ç®¡ç†å™¨çš„æŒ‡é’ˆ
     */
     ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr, unsigned int reg_cmd);
 protected:
     /*!
-    * @brief      Îö¹¹º¯Êı
+    * @brief      ææ„å‡½æ•°
     */
     ~ZCE_Async_Coroutine();
 
 public:
 
     /*!
-    * @brief      ³õÊ¼»¯º¯Êı£¬ÔÚ¹¹Ôìº¯Êıºóµ÷ÓÃ£¬ÔÚ·ÅÈë³Ø×ÓÇ°Ö´ĞĞÒ»´Î£¬
-    * @return     int 0±êÊ¶³É¹¦
+    * @brief      åˆå§‹åŒ–å‡½æ•°ï¼Œåœ¨æ„é€ å‡½æ•°åè°ƒç”¨ï¼Œåœ¨æ”¾å…¥æ± å­å‰æ‰§è¡Œä¸€æ¬¡ï¼Œ
+    * @return     int 0æ ‡è¯†æˆåŠŸ
     */
     virtual int initialize();
 
     /*!
-    * @brief      ½áÊøÏú»Ùº¯Êı£¬ÔÚÎö¹¹Ç°µÄµ÷ÓÃ
+    * @brief      ç»“æŸé”€æ¯å‡½æ•°ï¼Œåœ¨ææ„å‰çš„è°ƒç”¨
     * @return     int
     */
     virtual void finish();
@@ -60,25 +60,25 @@ public:
 protected:
 
 
-    ///Ğ­³ÌÔËĞĞ,ÄãÒªÖØÔØµÄº¯Êı
+    ///åç¨‹è¿è¡Œ,ä½ è¦é‡è½½çš„å‡½æ•°
     virtual void coroutine_run() = 0;
 
-    ///ÇĞ»»»ØMain£¬Ğ­³Ì»¹»á¼ÌĞøÔËĞĞ
+    ///åˆ‡æ¢å›Mainï¼Œåç¨‹è¿˜ä¼šç»§ç»­è¿è¡Œ
     void yeild_main_continue();
 
 
-    ///Ğ­³Ì¶ÔÏóµÄÔËĞĞº¯Êı
+    ///åç¨‹å¯¹è±¡çš„è¿è¡Œå‡½æ•°
     void coroutine_do();
 
-    ///ÇĞ»»»ØMain,Ğ­³ÌÍË³ö
+    ///åˆ‡æ¢å›Main,åç¨‹é€€å‡º
     void yeild_main_exit();
 
-    ///ÇĞ»»»ØĞ­³Ì£¬Ò²¾ÍÊÇÇĞ»»µ½Ëû×Ô¼ºÔËĞĞ
+    ///åˆ‡æ¢å›åç¨‹ï¼Œä¹Ÿå°±æ˜¯åˆ‡æ¢åˆ°ä»–è‡ªå·±è¿è¡Œ
     void yeild_coroutine();
 
 
     /*!
-    * @brief      µÈ´ıtime_out Ê±¼äºó³¬Ê±£¬ÉèÖÃ¶¨Ê±Æ÷ºó£¬ÇĞ»»Ğ­³Ìµ½main
+    * @brief      ç­‰å¾…time_out æ—¶é—´åè¶…æ—¶ï¼Œè®¾ç½®å®šæ—¶å™¨åï¼Œåˆ‡æ¢åç¨‹åˆ°main
     * @return     int
     * @param      time_out
     */
@@ -86,15 +86,15 @@ protected:
 
 
     /*!
-    * @brief      ¼Ì³ĞZCE_Async_ObjectµÄº¯Êı£¬
-    * @param[out] continue_run ·µ»Ø²ÎÊı£¬·µ»Øµ±Ç°µÄĞ­³ÌÊÇ·ñÒª¼ÌĞøÔËĞĞÏÂÈ¥
+    * @brief      ç»§æ‰¿ZCE_Async_Objectçš„å‡½æ•°ï¼Œ
+    * @param[out] continue_run è¿”å›å‚æ•°ï¼Œè¿”å›å½“å‰çš„åç¨‹æ˜¯å¦è¦ç»§ç»­è¿è¡Œä¸‹å»
     */
     virtual void on_run(const void *outer_data, bool &continue_run) override;
 
     /*!
-    * @brief      Òì²½¶ÔÏó³¬Ê±´¦Àí
-    * @param[in]  now_time  ·¢Éú³¬Ê±µÄÊ±¼ä£¬
-    * @param[out] continue_run Òì²½¶ÔÏóÊÇ·ñ¼ÌĞøÔËĞĞ,
+    * @brief      å¼‚æ­¥å¯¹è±¡è¶…æ—¶å¤„ç†
+    * @param[in]  now_time  å‘ç”Ÿè¶…æ—¶çš„æ—¶é—´ï¼Œ
+    * @param[out] continue_run å¼‚æ­¥å¯¹è±¡æ˜¯å¦ç»§ç»­è¿è¡Œ,
     */
     virtual void on_timeout(const ZCE_Time_Value &now_time,
                             bool &continue_run) override;
@@ -102,27 +102,27 @@ protected:
 
 protected:
 
-    ///×îĞ¡µÄ¶ÑÕ»
+    ///æœ€å°çš„å †æ ˆ
     static const size_t MIN_STACK_SIZE = 16 * 1024;
-    ///Ä¬ÈÏ¶ÑÕ»
+    ///é»˜è®¤å †æ ˆ
     static const size_t DEF_STACK_SIZE = 64 * 1024;
-    ///×î´óµÄ¶ÑÕ»
+    ///æœ€å¤§çš„å †æ ˆ
     static const size_t MAX_STACK_SIZE = 256 * 1024;
 
 public:
 
-    ///static º¯Êı£¬ÓÃÓÚĞ­³ÌÔËĞĞº¯Êı£¬µ÷ÓÃĞ­³Ì¶ÔÏóµÄÔËĞĞº¯Êı
+    ///static å‡½æ•°ï¼Œç”¨äºåç¨‹è¿è¡Œå‡½æ•°ï¼Œè°ƒç”¨åç¨‹å¯¹è±¡çš„è¿è¡Œå‡½æ•°
     static void static_do(void *coroutine,void *,void *);
 
 protected:
 
-    ///Ğ­³Ì¶ÔÏó
+    ///åç¨‹å¯¹è±¡
     coroutine_t   handle_;
 
-    ///Ğ­³ÌµÄ¶ÑÕ»´óĞ¡£¬
+    ///åç¨‹çš„å †æ ˆå¤§å°ï¼Œ
     size_t           stack_size_ = DEF_STACK_SIZE;
 
-    ///Ğ­³ÌµÄ×´Ì¬
+    ///åç¨‹çš„çŠ¶æ€
     COROUTINE_STATE  coroutine_state_ = COROUTINE_INVALID;
 
 
@@ -131,7 +131,7 @@ protected:
 //====================================================================================
 
 /*!
-* @brief      Ğ­³Ì¶ÔÏóÖ÷¿Ø¹ÜÀíÀà
+* @brief      åç¨‹å¯¹è±¡ä¸»æ§ç®¡ç†ç±»
 *
 */
 class ZCE_Async_CoroutineMgr : public ZCE_Async_ObjectMgr
@@ -144,9 +144,9 @@ public:
 
 protected:
 
-    ///Ä¬ÈÏÒì²½¶ÔÏó³Ø×ÓµÄ³õÊ¼»¯µÄÊıÁ¿
+    ///é»˜è®¤å¼‚æ­¥å¯¹è±¡æ± å­çš„åˆå§‹åŒ–çš„æ•°é‡
     static const size_t COROUTINE_POOL_INIT_SIZE = 1;
-    ///Ä¬ÈÏ³Ø×ÓÀ©Õ¹µÄÊ±ºò£¬À©Õ¹µÄÒì²½¶ÔÏóµÄÊıÁ¿
+    ///é»˜è®¤æ± å­æ‰©å±•çš„æ—¶å€™ï¼Œæ‰©å±•çš„å¼‚æ­¥å¯¹è±¡çš„æ•°é‡
     static const size_t COROUTINE_POOL_EXTEND_SIZE = 16;
 
 };

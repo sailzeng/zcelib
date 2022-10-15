@@ -14,16 +14,16 @@
 //}
 //
 ///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006Äê10ÔÂ16ÈÕ
+//Author          : Sail ZENGXING  Date Of Creation: 2006å¹´10æœˆ16æ—¥
 //Function        : Zerg_Console_Handler::process_mml_command
 //Return          : int
 //Parameter List  :
-//  Param1: char* ret_string ·µ»ØµÄÊý¾Ý
-//  Param2: size_t& str_len  ÊäÈëÊä³ö²ÎÊý,ÊäÈë±íÊ¾bufµÄ³¤¶È,Êä³ö±íÊ¾Êä³öµÄÊý¾Ý³¤¶È
+//  Param1: char* ret_string è¿”å›žçš„æ•°æ®
+//  Param2: size_t& str_len  è¾“å…¥è¾“å‡ºå‚æ•°,è¾“å…¥è¡¨ç¤ºbufçš„é•¿åº¦,è¾“å‡ºè¡¨ç¤ºè¾“å‡ºçš„æ•°æ®é•¿åº¦
 //Description     :
 //Calls           :
 //Called By       :
-//Other           : str_len±ØÐë±»¸Ä±ä£¬ÇÐ¼Ç.
+//Other           : str_lenå¿…é¡»è¢«æ”¹å˜ï¼Œåˆ‡è®°.
 //Modify Record   :
 //******************************************************************************************/
 //int Zerg_Console_Handler::process_mml_command(char *ret_string, size_t &str_len)
@@ -38,7 +38,7 @@
 //        return ret;
 //    }
 //
-//    //²éÑ¯·þÎñÆ÷×´Ì¬
+//    //æŸ¥è¯¢æœåŠ¡å™¨çŠ¶æ€
 //    if ( strcasecmp(mml_cmd.c_str(), "QUERY_STATS") == 0 )
 //    {
 //        ret = cmd_get_zergstats(ret_string, str_len);
@@ -57,7 +57,7 @@
 //            return ret;
 //        }
 //    }
-//    //¹Ø±Õ¶Ë¿Ú
+//    //å…³é—­ç«¯å£
 //    else if (strcasecmp(mml_cmd.c_str(), "CLOSE_PEER") == 0)
 //    {
 //        ret = cmd_close_socketpeer(ret_string, str_len);
@@ -68,7 +68,7 @@
 //        }
 //    }
 //
-//    //ÐÞ¸ÄÈÕÖ¾µÄÊä³ö¼¶±ð
+//    //ä¿®æ”¹æ—¥å¿—çš„è¾“å‡ºçº§åˆ«
 //    else if (strcasecmp(mml_cmd.c_str(), "MODIFY_LOG") == 0)
 //    {
 //        ret = cmd_modify_logpriority(ret_string, str_len);
@@ -78,7 +78,7 @@
 //            return ret;
 //        }
 //    }
-//    //¹Ø±Õ·þÎñÆ÷
+//    //å…³é—­æœåŠ¡å™¨
 //    else if (strcasecmp(mml_cmd.c_str(), "CLOSE_SERVICE") == 0)
 //    {
 //        ret = cmd_close_services(ret_string, str_len);
@@ -89,29 +89,29 @@
 //        }
 //    }
 //
-//    //To Do:À´,Ìí¼ÓÄã×Ô¼ºÏ²»¶µÄ¼à¿Ø
+//    //To Do:æ¥,æ·»åŠ ä½ è‡ªå·±å–œæ¬¢çš„ç›‘æŽ§
 //    else
 //    {
 //        ZCE_LOG(RS_ERROR,"[zergsvr] Can't Process this command :%s.", mml_cmd.c_str());
 //        str_len = 0;
 //    }
 //
-//    //´¦Àí
+//    //å¤„ç†
 //    ZCE_LOG(RS_INFO,"[zergsvr] Process Command %s, Ret:%u.", mml_cmd.c_str(), ret);
 //    return 0;
 //}
 //
 ///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006Äê10ÔÂ17ÈÕ
+//Author          : Sail ZENGXING  Date Of Creation: 2006å¹´10æœˆ17æ—¥
 //Function        : Zerg_Console_Handler::cmd_get_zergstats
 //Return          : int
 //Parameter List  :
 //  Param1: char* ret_string
 //  Param2: size_t& str_len
-//Description     : µÃµ½ZERG·þÎñÆ÷µÄ×´Ì¬
+//Description     : å¾—åˆ°ZERGæœåŠ¡å™¨çš„çŠ¶æ€
 //Calls           :
 //Called By       :
-//Other           : Ò»°ãºÄÊ±¼ä
+//Other           : ä¸€èˆ¬è€—æ—¶é—´
 //Modify Record   :
 //******************************************************************************************/
 //int Zerg_Console_Handler::cmd_get_zergstats(char *ret_string, size_t &str_len)
@@ -124,10 +124,10 @@
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console Get Zerg(Tcpsvrd) services info.");
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Server Time %s.", day_and_time);
 //
-//    //µÃµ½Í³¼ÆÊý¾Ý
+//    //å¾—åˆ°ç»Ÿè®¡æ•°æ®
 //    std::ostringstream tmp_ostrstm;
 //
-//    //DUMPÐÅÏ¢
+//    //DUMPä¿¡æ¯
 //    Zerg_Server_Config::instance()->dump_status_info(tmp_ostrstm);
 //    Soar_Stat_Monitor::instance()->dump_status_info(tmp_ostrstm);
 //    TCP_Svc_Handler::dump_status_staticinfo(tmp_ostrstm);
@@ -141,16 +141,16 @@
 //}
 //
 ///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006Äê10ÔÂ17ÈÕ
+//Author          : Sail ZENGXING  Date Of Creation: 2006å¹´10æœˆ17æ—¥
 //Function        : Zerg_Console_Handler::cmd_get_peer_stats
 //Return          : int
 //Parameter List  :
 //  Param1: char* ret_string
 //  Param2: size_t& str_len
-//Description     : ²éÑ¯Áª½ÓµÄPeer×´Ì¬,²»Ò»¶¨ÄÜÈ«²¿·µ»Ø,¶øÇÒ±È½ÏºÄÊ±
+//Description     : æŸ¥è¯¢è”æŽ¥çš„PeerçŠ¶æ€,ä¸ä¸€å®šèƒ½å…¨éƒ¨è¿”å›ž,è€Œä¸”æ¯”è¾ƒè€—æ—¶
 //Calls           :
 //Called By       :
-//Other           : Êµ¼ÊÃüÁîQUERY PEER:STARTNO=?,NUMQUERY=?;
+//Other           : å®žé™…å‘½ä»¤QUERY PEER:STARTNO=?,NUMQUERY=?;
 //Modify Record   :
 //******************************************************************************************/
 //int Zerg_Console_Handler::cmd_get_peer_stats(char *ret_string, size_t &str_len)
@@ -162,11 +162,11 @@
 //    size_t startno = 0;
 //    size_t numquery = 0;
 //
-//    //¶ÁÈ¡STARTNO²ÎÊý
+//    //è¯»å–STARTNOå‚æ•°
 //    std::string tmpstr;
 //    ret = console_command_.GetCmdParameter("STARTNO", tmpstr);
 //
-//    //Ê¹ÓÃÄ¬ÈÏ²ÎÊý
+//    //ä½¿ç”¨é»˜è®¤å‚æ•°
 //    if (ret != 0)
 //    {
 //        startno = 0;
@@ -174,7 +174,7 @@
 //
 //    startno = atoi(tmpstr.c_str());
 //
-//    //¶ÁÈ¡NUMQUERY²ÎÊý
+//    //è¯»å–NUMQUERYå‚æ•°
 //    const size_t MAX_QUERY_NUMBER = 1024;
 //    ret = console_command_.GetCmdParameter("NUMQUERY", tmpstr);
 //
@@ -199,7 +199,7 @@
 //    return 0;
 //}
 //
-////Í£Ö¹ÔËÐÐ
+////åœæ­¢è¿è¡Œ
 //int Zerg_Console_Handler::cmd_close_services(char *ret_string, size_t &str_len)
 //{
 //    Zerg_Service_App::instance()->set_run_sign(false);
@@ -217,11 +217,11 @@
 //    int ret = 0;
 //    size_t tmp_size = 0;
 //    SERVICES_ID svr_info;
-//    //¶ÁÈ¡STARTNO²ÎÊý
+//    //è¯»å–STARTNOå‚æ•°
 //    std::string tmpstr;
 //    ret = console_command_.GetCmdParameter("SVCTYPE", tmpstr);
 //
-//    //Ê¹ÓÃÄ¬ÈÏ²ÎÊý
+//    //ä½¿ç”¨é»˜è®¤å‚æ•°
 //    if (ret != 0)
 //    {
 //        return ret;
@@ -231,7 +231,7 @@
 //
 //    ret = console_command_.GetCmdParameter("SVCID", tmpstr);
 //
-//    //Ê¹ÓÃÄ¬ÈÏ²ÎÊý
+//    //ä½¿ç”¨é»˜è®¤å‚æ•°
 //    if (ret != 0)
 //    {
 //        return ret;
@@ -251,7 +251,7 @@
 //}
 //
 ///******************************************************************************************
-//Author          : Sail ZENGXING  Date Of Creation: 2006Äê10ÔÂ17ÈÕ
+//Author          : Sail ZENGXING  Date Of Creation: 2006å¹´10æœˆ17æ—¥
 //Function        : Zerg_Console_Handler::cmd_modify_logpriority
 //Return          : int
 //Parameter List  :
@@ -260,7 +260,7 @@
 //Description     :
 //Calls           :
 //Called By       :
-//Other           : MODIFY LOG:PRIORITY=?;  PRIORITYÎªÈÕÖ¾µÄÓÅÏÈ¼¶±ð,
+//Other           : MODIFY LOG:PRIORITY=?;  PRIORITYä¸ºæ—¥å¿—çš„ä¼˜å…ˆçº§åˆ«,
 //Modify Record   :
 //******************************************************************************************/
 //int Zerg_Console_Handler::cmd_modify_logpriority(char *ret_string, size_t &str_len)
@@ -276,7 +276,7 @@
 //
 //    ZCE_LOG_PRIORITY new_log_priority =  zce_LogTrace_Basic::log_priorities(tmpstr.c_str());
 //    ZCE_LOG_PRIORITY old_log_priority = Zerg_Service_App::instance()->get_log_priority();
-//    //ÐÞ¸ÄAPPLµÄÈÕÖ¾¼¶±ð
+//    //ä¿®æ”¹APPLçš„æ—¥å¿—çº§åˆ«
 //    Zerg_Service_App::instance()->set_log_priority(new_log_priority);
 //
 //    size_t tmp_size = 0;

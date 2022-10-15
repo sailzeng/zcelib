@@ -3,11 +3,11 @@
 #include "zce_timer_handler_base.h"
 #include "zce_timer_queue_heap.h"
 
-//×¢ÒâÓÉÓÚC/C++µÄÏÂ±ê±ä»¯ÊÇ´Ó0¿ªÊ¼µÄ£¬
+//æ³¨æ„ç”±äºC/C++çš„ä¸‹æ ‡å˜åŒ–æ˜¯ä»0å¼€å§‹çš„ï¼Œ
 #define ZCE_TIMER_HEAP_PARENT(x)  ((x) == 0 ? 0 : (((x) - 1) / 2))
-//×ó×ÓÊ÷µÄÏÂ±ê
+//å·¦å­æ ‘çš„ä¸‹æ ‡
 #define ZCE_TIMER_HEAP_LCHILD(x)  ((x) + (x) + 1)
-//×ó×ÓÊ÷µÄÏÂ±ê
+//å·¦å­æ ‘çš„ä¸‹æ ‡
 #define ZCE_TIMER_HEAP_RCHILD(x)  ((x) + (x) + 2)
 
 //
@@ -29,7 +29,7 @@ ZCE_Timer_Heap::ZCE_Timer_Heap(size_t num_timer_node,
 
 }
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Timer_Heap::ZCE_Timer_Heap():
     size_heap_(0)
 {
@@ -45,7 +45,7 @@ int ZCE_Timer_Heap::initialize(size_t num_timer_node,
                                TRIGGER_MODE trigger_mode,
                                bool dynamic_expand_node)
 {
-    //ÔÚ»ùÀà½øĞĞ³õÊ¼»¯
+    //åœ¨åŸºç±»è¿›è¡Œåˆå§‹åŒ–
     int ret = 0;
     ret = ZCE_Timer_Queue_Base::initialize(num_timer_node,
                                            timer_precision_mesc,
@@ -57,13 +57,13 @@ int ZCE_Timer_Heap::initialize(size_t num_timer_node,
         return ret;
     }
 
-    //¿ªÊ¼½×¶ÎÃ»ÓĞÈÎºÎÊı¾İ
+    //å¼€å§‹é˜¶æ®µæ²¡æœ‰ä»»ä½•æ•°æ®
     size_heap_ = 0;
 
     return 0;
 }
 
-//À©ÕÅÏà¹ØÊ®×ÖÁ´±íµÄNODEµÄÊıÁ¿£¬Ò²µ÷ÓÃµ×²ãµÄextend_nodeº¯Êı
+//æ‰©å¼ ç›¸å…³åå­—é“¾è¡¨çš„NODEçš„æ•°é‡ï¼Œä¹Ÿè°ƒç”¨åº•å±‚çš„extend_nodeå‡½æ•°
 int ZCE_Timer_Heap::extend_node(size_t num_timer_node,
                                 size_t &old_num_node)
 {
@@ -77,7 +77,7 @@ int ZCE_Timer_Heap::extend_node(size_t num_timer_node,
 
     timer_node_heap_.resize(num_timer_node_);
 
-    //½«QUEUEÉÏµÄËùµã´¦Àí³ÉÎŞĞ§£¬±íÊ¾Ã»ÓĞ¹ÒNODE
+    //å°†QUEUEä¸Šçš„æ‰€ç‚¹å¤„ç†æˆæ— æ•ˆï¼Œè¡¨ç¤ºæ²¡æœ‰æŒ‚NODE
     for (size_t i = old_num_node; i < num_timer_node_; ++i)
     {
         timer_node_heap_[i] = INVALID_TIMER_ID;
@@ -85,7 +85,7 @@ int ZCE_Timer_Heap::extend_node(size_t num_timer_node,
 
     note_to_heapid_.resize(num_timer_node_);
 
-    //½«QUEUEÉÏµÄËùµã´¦Àí³ÉÎŞĞ§£¬±íÊ¾Ã»ÓĞ¶ÔÓ¦¹ØÏµ
+    //å°†QUEUEä¸Šçš„æ‰€ç‚¹å¤„ç†æˆæ— æ•ˆï¼Œè¡¨ç¤ºæ²¡æœ‰å¯¹åº”å…³ç³»
     for (size_t i = old_num_node; i < num_timer_node_; ++i)
     {
         note_to_heapid_[i] = INVALID_TIMER_ID;
@@ -94,12 +94,12 @@ int ZCE_Timer_Heap::extend_node(size_t num_timer_node,
     return 0;
 }
 
-//·Ö·¢¶¨Ê±Æ÷
+//åˆ†å‘å®šæ—¶å™¨
 size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
                                       uint64_t now_trigger_msec)
 {
     int ret = 0;
-    //·Ö·¢µÄÊıÁ¿
+    //åˆ†å‘çš„æ•°é‡
     size_t num_dispatch = 0;
 
     int timer_node_id = INVALID_TIMER_ID;
@@ -107,13 +107,13 @@ size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
 
     while (timer_node_id != INVALID_TIMER_ID )
     {
-        //Èç¹ûÒÑ¾­³¬Ê±£¬½øĞĞ´¥·¢
+        //å¦‚æœå·²ç»è¶…æ—¶ï¼Œè¿›è¡Œè§¦å‘
         if ( time_node_ary_[timer_node_id].next_trigger_point_ <= now_trigger_msec )
         {
             ++num_dispatch;
-            //±ê¼ÇÕâ¸ö¶¨Ê±Æ÷ÒÑ¾­´¥·¢¹ı£¬ÏêÏ¸¼ûalready_trigger_µÄ½âÊÍ
+            //æ ‡è®°è¿™ä¸ªå®šæ—¶å™¨å·²ç»è§¦å‘è¿‡ï¼Œè¯¦ç»†è§already_trigger_çš„è§£é‡Š
             time_node_ary_[timer_node_id].already_trigger_ = true;
-            //Ê±ÖÓ´¥·¢
+            //æ—¶é’Ÿè§¦å‘
             time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
                                                                        time_node_ary_[timer_node_id].action_);
 
@@ -123,10 +123,10 @@ size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
             break;
         }
 
-        //ÒòÎªtimer_timeoutÆäÊµ¿ÉÄÜÈ¡ÏûÁËÕâ¸ö¶¨Ê±Æ÷£¬ËùÒÔÔÚµ÷ÓÃÖ®ºó£¬Òª½øĞĞÒ»ÏÂ¼ì²é
+        //å› ä¸ºtimer_timeoutå…¶å®å¯èƒ½å–æ¶ˆäº†è¿™ä¸ªå®šæ—¶å™¨ï¼Œæ‰€ä»¥åœ¨è°ƒç”¨ä¹‹åï¼Œè¦è¿›è¡Œä¸€ä¸‹æ£€æŸ¥
         if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true )
         {
-            //ÖØĞÂ¹æ»®Õâ¸öTIME NODEµÄÎ»ÖÃµÈ,Èç¹û²»ĞèÒª´¥·¢ÁËÔòÈ¡Ïû¶¨Ê±Æ÷
+            //é‡æ–°è§„åˆ’è¿™ä¸ªTIME NODEçš„ä½ç½®ç­‰,å¦‚æœä¸éœ€è¦è§¦å‘äº†åˆ™å–æ¶ˆå®šæ—¶å™¨
             reschedule_timer(timer_node_id, now_trigger_msec);
         }
 
@@ -141,11 +141,11 @@ size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
 
     prev_trigger_msec_ = now_trigger_msec;
 
-    //·µ»ØÊıÁ¿
+    //è¿”å›æ•°é‡
     return num_dispatch;
 }
 
-//ÉèÖÃ¶¨Ê±Æ÷
+//è®¾ç½®å®šæ—¶å™¨
 int ZCE_Timer_Heap::schedule_timer(ZCE_Timer_Handler *timer_hdl,
                                    const void *action,
                                    const ZCE_Time_Value &delay_time,
@@ -154,7 +154,7 @@ int ZCE_Timer_Heap::schedule_timer(ZCE_Timer_Handler *timer_hdl,
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
 
-    //¿´ÄÜ·ñ·ÖÅäÒ»¸öTIME NODE
+    //çœ‹èƒ½å¦åˆ†é…ä¸€ä¸ªTIME NODE
     ZCE_TIMER_NODE *alloc_time_node = NULL;
     ret = alloc_timernode(timer_hdl,
                           action,
@@ -164,7 +164,7 @@ int ZCE_Timer_Heap::schedule_timer(ZCE_Timer_Handler *timer_hdl,
                           alloc_time_node
                          );
 
-    //×¢Òâ£¬Õâ¸öµØ·½·µ»ØINVALID_TIMER_ID±íÊ¾ÎŞĞ§£¬ÆäÊµÒ²Ğí²ÎÊı²»Ó¦¸ÃÕâÑùÉè¼Æ£¬µ«ÎªÁË¼æÈİACEµÄ´úÂë
+    //æ³¨æ„ï¼Œè¿™ä¸ªåœ°æ–¹è¿”å›INVALID_TIMER_IDè¡¨ç¤ºæ— æ•ˆï¼Œå…¶å®ä¹Ÿè®¸å‚æ•°ä¸åº”è¯¥è¿™æ ·è®¾è®¡ï¼Œä½†ä¸ºäº†å…¼å®¹ACEçš„ä»£ç 
     if (ret != 0)
     {
         return INVALID_TIMER_ID;
@@ -180,13 +180,13 @@ int ZCE_Timer_Heap::schedule_timer(ZCE_Timer_Handler *timer_hdl,
     return time_node_id;
 }
 
-//È¡Ïû¶¨Ê±Æ÷
+//å–æ¶ˆå®šæ—¶å™¨
 int ZCE_Timer_Heap::cancel_timer(int timer_id)
 {
     //
     int ret = 0;
 
-    //ÏÈ´Ó¶ÑÉÏÉÏÉ¾³ıÕâ¸ö½Úµã
+    //å…ˆä»å †ä¸Šä¸Šåˆ é™¤è¿™ä¸ªèŠ‚ç‚¹
     ret = remove_nodeid(timer_id);
 
     if (ret != 0)
@@ -194,7 +194,7 @@ int ZCE_Timer_Heap::cancel_timer(int timer_id)
         return ret;
     }
 
-    //»ØÊÕTIME NODE
+    //å›æ”¶TIME NODE
     ret = ZCE_Timer_Queue_Base::cancel_timer(timer_id);
 
     if (ret != 0)
@@ -209,20 +209,20 @@ int ZCE_Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
 {
     bool contiue_trigger = false;
 
-    //¼ÆËãÏÂÒ»´Î´¥·¢µÄµã
+    //è®¡ç®—ä¸‹ä¸€æ¬¡è§¦å‘çš„ç‚¹
     calc_next_trigger(timer_id,
                       now_trigger_msec,
                       contiue_trigger);
 
-    //Èç¹û²»ĞèÒª¼ÌĞø´¥·¢¶¨Ê±Æ÷ÁË£¬È¡Ïû
+    //å¦‚æœä¸éœ€è¦ç»§ç»­è§¦å‘å®šæ—¶å™¨äº†ï¼Œå–æ¶ˆ
     if (!contiue_trigger)
     {
         return cancel_timer(timer_id);
     }
 
-    //Õâ¸öTIMER NODE ÈÔÈ»Òª´¥·¢
+    //è¿™ä¸ªTIMER NODE ä»ç„¶è¦è§¦å‘
 
-    //ÏÈ´Ó¶ÑÉÏÉÏÉ¾³ıÕâ¸ö½Úµã
+    //å…ˆä»å †ä¸Šä¸Šåˆ é™¤è¿™ä¸ªèŠ‚ç‚¹
     int ret = remove_nodeid(timer_id);
 
     if (ret != 0)
@@ -230,7 +230,7 @@ int ZCE_Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
         return ret;
     }
 
-    //È»ºóÖØĞÂ·ÅÈë¶ÔÖĞ¼äÈ¥
+    //ç„¶åé‡æ–°æ”¾å…¥å¯¹ä¸­é—´å»
     ret = add_nodeid(timer_id);
 
     if (ret != 0)
@@ -241,7 +241,7 @@ int ZCE_Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
     return 0;
 }
 
-//ÏòÉÏÑ°ÕÒºÏÊÊµÄÎ»ÖÃ
+//å‘ä¸Šå¯»æ‰¾åˆé€‚çš„ä½ç½®
 bool ZCE_Timer_Heap::reheap_up(size_t  heap_id)
 {
     bool already_up = false;
@@ -258,14 +258,14 @@ bool ZCE_Timer_Heap::reheap_up(size_t  heap_id)
 
     do
     {
-        //×îĞ¡¶Ñ£¬·¢ÏÖ¸¸½Úµã´óÓÚ×Ó½Úµã£¬¾Íµ÷Õû
+        //æœ€å°å †ï¼Œå‘ç°çˆ¶èŠ‚ç‚¹å¤§äºå­èŠ‚ç‚¹ï¼Œå°±è°ƒæ•´
         if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ >
             time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ )
         {
             //
             already_up = true;
 
-            //½»»»
+            //äº¤æ¢
             int old_heap_parent = timer_node_heap_[parent_id];
             int old_heap_child =  timer_node_heap_[child_id];
 
@@ -291,10 +291,10 @@ bool ZCE_Timer_Heap::reheap_up(size_t  heap_id)
     return already_up;
 }
 
-//ÏòÏÂÑ°ÕÒºÏÊÊµÄÎ»ÖÃ
+//å‘ä¸‹å¯»æ‰¾åˆé€‚çš„ä½ç½®
 bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
 {
-    //ÊÇ·ñ½øĞĞÁËÏÂ½µ²Ù×÷
+    //æ˜¯å¦è¿›è¡Œäº†ä¸‹é™æ“ä½œ
     bool already_down = false;
     //
     size_t parent_id = heap_id;
@@ -305,10 +305,10 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
         return already_down;
     }
 
-    //ºÍ×óÓÒ½Úµã±È½Ï£¬È»ºóÏòÏÂĞı×ª
+    //å’Œå·¦å³èŠ‚ç‚¹æ¯”è¾ƒï¼Œç„¶åå‘ä¸‹æ—‹è½¬
     do
     {
-        //Èç¹û×ó×Ó½Úµã´óÓÚÓÒ×Ó½Úµã£¬ÄÇÃ´£¬ÏòÓÒ±ß½ø·¢
+        //å¦‚æœå·¦å­èŠ‚ç‚¹å¤§äºå³å­èŠ‚ç‚¹ï¼Œé‚£ä¹ˆï¼Œå‘å³è¾¹è¿›å‘
         if ( ((child_id + 1) <  size_heap_) &&
              (time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id + 1]].next_trigger_point_) )
         {
@@ -317,12 +317,12 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
 
         //dump();
 
-        //¸¸½Úµã´óÓÚ×Ó½Úµã£¬
+        //çˆ¶èŠ‚ç‚¹å¤§äºå­èŠ‚ç‚¹ï¼Œ
         if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ )
         {
             already_down = true;
 
-            //½»»»
+            //äº¤æ¢
             int old_heap_parent = timer_node_heap_[parent_id];
             int old_heap_child =  timer_node_heap_[child_id];
 
@@ -336,7 +336,7 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
             parent_id = child_id;
             child_id = ZCE_TIMER_HEAP_LCHILD(parent_id);
         }
-        //±íÊ¾×óÓÒ×ÓÊ÷¶¼´óÓÚ¸¸½Úµã,²»ÓÃÏòÏÂÑ°ÕÒÁË
+        //è¡¨ç¤ºå·¦å³å­æ ‘éƒ½å¤§äºçˆ¶èŠ‚ç‚¹,ä¸ç”¨å‘ä¸‹å¯»æ‰¾äº†
         else
         {
             return already_down;
@@ -344,13 +344,13 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
     }
     while (child_id < size_heap_);
 
-    //·µ»Ø
+    //è¿”å›
     return already_down;
 }
 
 int ZCE_Timer_Heap::get_frist_nodeid(int &timer_node_id)
 {
-    //ÏÈ¸½Ò»¸öÎŞĞ§Öµ
+    //å…ˆé™„ä¸€ä¸ªæ— æ•ˆå€¼
     timer_node_id = INVALID_TIMER_ID;
 
     if (size_heap_ == 0)
@@ -362,10 +362,10 @@ int ZCE_Timer_Heap::get_frist_nodeid(int &timer_node_id)
     return 0;
 };
 
-//Ôö¼ÓÒ»¸öTimer Node
+//å¢åŠ ä¸€ä¸ªTimer Node
 int ZCE_Timer_Heap::add_nodeid(int add_node_id)
 {
-    //·ÅÔÚ¶ÑµÄ×îºóÒ»¸ö£¬
+    //æ”¾åœ¨å †çš„æœ€åä¸€ä¸ªï¼Œ
     timer_node_heap_[size_heap_] = add_node_id;
     note_to_heapid_[add_node_id] = static_cast<int>( size_heap_);
 
@@ -383,7 +383,7 @@ int ZCE_Timer_Heap::remove_nodeid(int timer_node_id)
 
     if (size_heap_ == 0)
     {
-        //¿´ÄãÃÃÑ½£¬Ï¹Ìî²ÎÊı
+        //çœ‹ä½ å¦¹å‘€ï¼Œçå¡«å‚æ•°
         return -1;
     }
 
@@ -395,21 +395,21 @@ int ZCE_Timer_Heap::remove_nodeid(int timer_node_id)
 
     --size_heap_;
 
-    //ÊıÁ¿Îª0²»Ğı×ª
+    //æ•°é‡ä¸º0ä¸æ—‹è½¬
     if (size_heap_ == 0)
     {
         return 0;
     }
 
-    //½«×îºóÒ»¸ö¶Ñ·Åµ½É¾³ıµÄÎ»ÖÃ£¬½øĞĞµ÷Õû
+    //å°†æœ€åä¸€ä¸ªå †æ”¾åˆ°åˆ é™¤çš„ä½ç½®ï¼Œè¿›è¡Œè°ƒæ•´
     timer_node_heap_[delete_heap_id] = timer_node_heap_[size_heap_];
     note_to_heapid_[timer_node_heap_[delete_heap_id]] = static_cast<int>( delete_heap_id);
     timer_node_heap_[size_heap_] = INVALID_TIMER_ID;
 
-    //¿´ÊÇ·ñĞèÒªÏòÉÏµ÷Õû
+    //çœ‹æ˜¯å¦éœ€è¦å‘ä¸Šè°ƒæ•´
     bool alread_up = reheap_up(delete_heap_id);
 
-    //Èç¹û²»ĞèÒªÏòÉÏµ÷Õû£¬¿´ÊÇ·ñĞèÒªÏòÏÂµ÷Õû
+    //å¦‚æœä¸éœ€è¦å‘ä¸Šè°ƒæ•´ï¼Œçœ‹æ˜¯å¦éœ€è¦å‘ä¸‹è°ƒæ•´
     if ( !alread_up )
     {
         reheap_down(delete_heap_id);
@@ -418,7 +418,7 @@ int ZCE_Timer_Heap::remove_nodeid(int timer_node_id)
     return 0;
 }
 
-//dumpÊı¾İ
+//dumpæ•°æ®
 void ZCE_Timer_Heap::dump()
 {
     std::cout << "timer_node_heap_:";

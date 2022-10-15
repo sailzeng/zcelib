@@ -4,95 +4,95 @@
 namespace zce
 {
 
-//¸ù¾İÒªÇó£¬Éú³ÉÒ»¸öËæ»úÊı×Ö·û´®£¬
-void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
-                             char *rand_str,
+//æ ¹æ®è¦æ±‚ï¼Œç”Ÿæˆä¸€ä¸ªéšæœºæ•°å­—ç¬¦ä¸²ï¼Œ
+void random_base::get_string(random_base::RAND_STRING str_type,
+                             char* rand_str,
                              size_t str_len)
 {
 
     uint32_t rand_data = 0;
     uint32_t rand_number = 0;
 
-    for (size_t i = 0; i < str_len ; ++i )
+    for (size_t i = 0; i < str_len; ++i)
     {
 
-        //Ò»¸öËæ»úÊı×ÖÉú³É2¸ö×Ö·û
-        if (0 == i % 2 )
+        //ä¸€ä¸ªéšæœºæ•°å­—ç”Ÿæˆ2ä¸ªå­—ç¬¦
+        if (0 == i % 2)
         {
             rand_number = get_uint32();
             rand_data = rand_number & 0xFFFF;
         }
         else
         {
-            rand_data = (rand_number & 0xFFFF0000) >> 16 ;
+            rand_data = (rand_number & 0xFFFF0000) >> 16;
         }
-        //¸ù¾İÀàĞÍÉú³É×Ö·û´®£¬ÓĞÒ»Ğ©³£Á¿£¬µ«ÀÁµÃ¶¨ÒåÁË£¬ÄãÒ»¿´¾ÍÃ÷°×µÄ
+        //æ ¹æ®ç±»å‹ç”Ÿæˆå­—ç¬¦ä¸²ï¼Œæœ‰ä¸€äº›å¸¸é‡ï¼Œä½†æ‡’å¾—å®šä¹‰äº†ï¼Œä½ ä¸€çœ‹å°±æ˜ç™½çš„
         switch (str_type)
         {
-            //Êı×Ö
-            case random_base::RAND_STR_NUMBER:
-                rand_str [i] = static_cast<char>('0' + (rand_data % 10));
-                break;
-            //Ğ¡Ğ´
-            case random_base::RAND_STR_LOWER:
-                rand_str [i] = static_cast<char>('a' + (rand_data % 26));
-                break;
-            //´óĞ´
-            case random_base::RAND_STR_UPPER:
-                rand_str [i] = static_cast<char>('A' + (rand_data % 26));
-                break;
-            //Êı×Ö+Ğ¡Ğ´×Ö·û
-            case random_base::RAND_STR_NUMBER_LOWER:
-                rand_data = rand_data % 36;
-                if (rand_data < 10)
-                {
-                    rand_str [i] = '0' + static_cast<char>( rand_data );
-                }
-                else
-                {
-                    rand_str [i] = 'a' + static_cast<char>( rand_data ) ;
-                }
-                break;
-            //Êı×Ö+´óĞ´×Ö·û
-            case random_base::RAND_STR_NUMBER_UPPER:
-                rand_data = rand_data % 36;
-                if (rand_data < 10)
-                {
-                    rand_str [i] = '0' + static_cast<char>( rand_data );
-                }
-                else
-                {
-                    rand_str [i] = 'A' + static_cast<char>( rand_data ) ;
-                }
-                break;
-            //Êı×Ö£¬´óĞ´£¬Ğ¡Ğ´£¬
-            case random_base::RAND_STR_NUMBER_LOWER_UPPER:
-                rand_data = rand_data % 62;
-                if (rand_data < 10)
-                {
-                    rand_str [i] = '0' + static_cast<char>( rand_data );
-                }
-                else if (rand_data < 36)
-                {
-                    rand_str [i] = 'a' + static_cast<char>( rand_data ) ;
-                }
-                else
-                {
-                    rand_str [i] = 'A' + static_cast<char>( rand_data ) ;
-                }
-                break;
+            //æ•°å­—
+        case random_base::RAND_STRING::NUMBER:
+            rand_str[i] = static_cast<char>('0' + (rand_data % 10));
+            break;
+            //å°å†™
+        case random_base::RAND_STRING::LOWER:
+            rand_str[i] = static_cast<char>('a' + (rand_data % 26));
+            break;
+            //å¤§å†™
+        case random_base::RAND_STRING::UPPER:
+            rand_str[i] = static_cast<char>('A' + (rand_data % 26));
+            break;
+            //æ•°å­—+å°å†™å­—ç¬¦
+        case random_base::RAND_STRING::NUMBER_LOWER:
+            rand_data = rand_data % 36;
+            if (rand_data < 10)
+            {
+                rand_str[i] = '0' + static_cast<char>(rand_data);
+            }
+            else
+            {
+                rand_str[i] = 'a' + static_cast<char>(rand_data);
+            }
+            break;
+            //æ•°å­—+å¤§å†™å­—ç¬¦
+        case random_base::RAND_STRING::NUMBER_UPPER:
+            rand_data = rand_data % 36;
+            if (rand_data < 10)
+            {
+                rand_str[i] = '0' + static_cast<char>(rand_data);
+            }
+            else
+            {
+                rand_str[i] = 'A' + static_cast<char>(rand_data);
+            }
+            break;
+            //æ•°å­—ï¼Œå¤§å†™ï¼Œå°å†™ï¼Œ
+        case random_base::RAND_STRING::NUMBER_LOWER_UPPER:
+            rand_data = rand_data % 62;
+            if (rand_data < 10)
+            {
+                rand_str[i] = '0' + static_cast<char>(rand_data);
+            }
+            else if (rand_data < 36)
+            {
+                rand_str[i] = 'a' + static_cast<char>(rand_data);
+            }
+            else
+            {
+                rand_str[i] = 'A' + static_cast<char>(rand_data);
+            }
+            break;
 
-            ///²úÉú0-127µÄASCII(·ÇÀ©Õ¹)×Ö·û´®
-            case random_base::RAND_STR_ASCII:
-                rand_str [i] = static_cast<char>( rand_data & 0x7F ) ;
-                break;
-            ///²úÉú0-255¶ş½øÖÆ×Ö·û´®
-            case random_base::RAND_STR_BINARY:
-                rand_str [i] = static_cast<char>( rand_data & 0xFF ) ;
-                break;
-            default:
-                ZCE_ASSERT(false);
-                break;
+            ///äº§ç”Ÿ0-127çš„ASCII(éæ‰©å±•)å­—ç¬¦ä¸²
+        case random_base::RAND_STRING::ASCII:
+            rand_str[i] = static_cast<char>(rand_data & 0x7F);
+            break;
+            ///äº§ç”Ÿ0-255äºŒè¿›åˆ¶å­—ç¬¦ä¸²
+        case random_base::RAND_STRING::BINARY:
+            rand_str[i] = static_cast<char>(rand_data & 0xFF);
+            break;
+        default:
+            ZCE_ASSERT(false);
+            break;
         }
     }
 }

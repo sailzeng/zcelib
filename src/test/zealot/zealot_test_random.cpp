@@ -6,7 +6,7 @@
 #include "zce_boost_random.h"
 
 
-//½ö½öÓÃÓÚ²âÊÔ£¬²»ÊµÏÖÍêÈ«ÁË
+//ä»…ä»…ç”¨äºæµ‹è¯•ï¼Œä¸å®ç°å®Œå…¨äº†
 class random_libc : public zce::t_random_base<0, 0x00007FFF>
 {
 public:
@@ -32,7 +32,7 @@ public:
 };
 
 
-//½ö½öÓÃÓÚ²âÊÔ£¬²»ÊµÏÖÍêÈ«ÁË
+//ä»…ä»…ç”¨äºæµ‹è¯•ï¼Œä¸å®ç°å®Œå…¨äº†
 class random_pet2 : public zce::t_random_base<0, 0xFFFFFFFF>
 {
 public:
@@ -100,7 +100,7 @@ int test_random_example(int /*argc*/, char * /*argv*/[])
     return 0;
 }
 
-//ºÍBOOSTµÄº¯Êı×ö¶Ô±ÈµÄº¯Êı
+//å’ŒBOOSTçš„å‡½æ•°åšå¯¹æ¯”çš„å‡½æ•°
 //int test_matchboost_random(int /*argc*/ , char * /*argv*/ [])
 //{
 //
@@ -265,7 +265,7 @@ int test_random_example(int /*argc*/, char * /*argv*/[])
 
 
 
-//Ëæ»ú·Ö²¼ÄÜÁ¦²âÊÔ
+//éšæœºåˆ†å¸ƒèƒ½åŠ›æµ‹è¯•
 int test_random_distribution(zce::random_base *rand_gen)
 {
     const size_t TEST_SIZE = 0xFFFFF; //10*1000*1000;
@@ -297,7 +297,7 @@ int test_random_distribution(zce::random_base *rand_gen)
     return 0;
 }
 
-//Ëæ»ú·Ö²¼ÄÜÁ¦²âÊÔ
+//éšæœºåˆ†å¸ƒèƒ½åŠ›æµ‹è¯•
 template<typename rand_gen_t>
 int test_random_distribution2()
 {
@@ -371,7 +371,7 @@ int test_random_vargen()
 }
 
 
-//ĞÔÄÜ²âÊÔ
+//æ€§èƒ½æµ‹è¯•
 template<typename rand_gen_t>
 int test_random_elapsed_t()
 {
@@ -441,7 +441,7 @@ int test_random_variance(const char *rand_fun_name,
     return 0;
 }
 
-//¼ÆËã¼¸¸öËæ»úÊıº¯ÊıµÄ·½²î
+//è®¡ç®—å‡ ä¸ªéšæœºæ•°å‡½æ•°çš„æ–¹å·®
 template<typename rand_gen_t>
 int test_random_variance_t()
 {
@@ -488,14 +488,14 @@ int test_random_variance_t()
 }
 
 
-//¼ÆËã¼¸ÖÖÈ¥÷»×ÓµÄÇé¿öÏÂµÄ·½²îÇé¿ö
+//è®¡ç®—å‡ ç§å»éª°å­çš„æƒ…å†µä¸‹çš„æ–¹å·®æƒ…å†µ
 template<typename rand_gen_t>
 int test_die_variance_t()
 {
     const uint32_t TEST_SEED = 1010123;
     rand_gen_t rand_gen(TEST_SEED);
 
-    //·Ç³£Ğ¡µÄ÷»×Ó
+    //éå¸¸å°çš„éª°å­
     const size_t TEST_SIZE = 10;
     const size_t TEST_LUN = 1000000;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
@@ -529,7 +529,7 @@ int test_die_variance_t()
     fangcai = fangcai / TEST_SIZE;
     std::cout << "normal die " << typeid(rand_gen_t).name() << " variance " << (uint32_t) fangcai << " max caizhi :" << max_caizhi << std::endl;
 
-    //·Å´ó÷»×Ó£¬È¡µÃ÷»×ÓºóÔÙÈ¥ÆäÖĞµÄ¸ßÎ»
+    //æ”¾å¤§éª°å­ï¼Œå–å¾—éª°å­åå†å»å…¶ä¸­çš„é«˜ä½
     memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
     fangcai = 0.0;
     max_caizhi = 0, u32_data = 0;
@@ -562,7 +562,7 @@ int test_die_variance_t()
 
 }
 
-//¼ÆËã¼¸¸öËæ»úÊıº¯ÊıµÄºÄÊ±Çé¿ö
+//è®¡ç®—å‡ ä¸ªéšæœºæ•°å‡½æ•°çš„è€—æ—¶æƒ…å†µ
 int test_random_elapsed_time(int /*argc*/, char * /*argv*/ [])
 {
 
@@ -629,7 +629,7 @@ int test_random_variance(int /*argc*/, char * /*argv*/ [])
 }
 
 
-//Ê¹ÓÃÄ£°æº¯ÊıµÄ²âÊÔ
+//ä½¿ç”¨æ¨¡ç‰ˆå‡½æ•°çš„æµ‹è¯•
 int test_template_random(int /*argc*/, char * /*argv*/ [])
 {
 
@@ -654,7 +654,7 @@ int test_template_random(int /*argc*/, char * /*argv*/ [])
 
 
 
-//Ê¹ÓÃOO·½·¨µÄ²âÊÔ
+//ä½¿ç”¨OOæ–¹æ³•çš„æµ‹è¯•
 int test_oo_random(int /*argc*/, char * /*argv*/ [])
 {
     const uint32_t TEST_SEED = (uint32_t) time(NULL);
@@ -688,7 +688,7 @@ int test_oo_random(int /*argc*/, char * /*argv*/ [])
 
 
 
-//¼ÆËã¼¸¸öËæ»úÊıº¯ÊıµÄ·½²î
+//è®¡ç®—å‡ ä¸ªéšæœºæ•°å‡½æ•°çš„æ–¹å·®
 template<typename rand_gen_t>
 int test_random_repeat_t()
 {
@@ -719,7 +719,7 @@ int test_random_repeat_t()
     return 0;
 }
 
-//¼ÆËã¼¸¸öËæ»úÊıº¯ÊıµÄÖØ¸´Çé¿ö
+//è®¡ç®—å‡ ä¸ªéšæœºæ•°å‡½æ•°çš„é‡å¤æƒ…å†µ
 int test_random_repeat_number(int /*argc*/, char * /*argv*/ [])
 {
 
@@ -738,7 +738,7 @@ int test_random_repeat_number(int /*argc*/, char * /*argv*/ [])
 }
 
 
-//¼ÆËã¼¸¸öËæ»úÊıº¯ÊıµÄÖØ¸´Çé¿ö
+//è®¡ç®—å‡ ä¸ªéšæœºæ•°å‡½æ•°çš„é‡å¤æƒ…å†µ
 int test_random_var_obj_speed(int /*argc*/, char * /*argv*/ [])
 {
     ZCE_Progress_Timer rand_timer;

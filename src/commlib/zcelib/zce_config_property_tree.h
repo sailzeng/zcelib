@@ -3,17 +3,17 @@
 * @filename   zce_config_property_tree.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê10ÔÂ5ÈÕ
-* @brief      Ò»¸ö±£´æÅäÖÃĞÅÏ¢µÄÊı£¬Í¨¹ıpath·ÃÎÊnodeÉÏµÄĞÅÏ¢£¬
+* @date       2011å¹´10æœˆ5æ—¥
+* @brief      ä¸€ä¸ªä¿å­˜é…ç½®ä¿¡æ¯çš„æ•°ï¼Œé€šè¿‡pathè®¿é—®nodeä¸Šçš„ä¿¡æ¯ï¼Œ
 *
 *
-* @details    Õâ¸öÀàµÄ×îÖÕÊµÏÖÄ¿±êÊÇÊµÏÖÀàËÆBOOST £¬Property Tree ºÍ ACE_Configuration_Heap
-*             ÀàµÄÄ¿±ê£¬½«ÅäÖÃĞÅÏ¢×éÖ¯³ÉÒ»¿ÃÊ÷´æ·Å
-*             Ë¼Â·»¹ÊÇºÍBOOST Property TreeÓĞÒ»Ğ©Çø±ğ£¬ÎÒÃÇÄÚ²¿Ö±½Ó·ÅÈëÒ»¸ömap´æ·Å¡£ÊôĞÔÊı¾İ£¬
-*             XMLÎÄ¼şµÄname->valueÀïÃæµÄvalueÒ²·ÅÈëÕâ¸öµØ·½¡£
-*             ÒòÎªÎ¸¾õµÃBOOST µÄProperty TreeÌ«ÂıÁË£¬ËäÈ»Æä¿ÉÄÜÊÇÎªÁËĞ´»ØÅäÖÃÎÄ¼ş£¨Ë³Ğò£©ÓĞ¿¼ÂÇ£¬
-*             µ«×ÜÌå¿´ÉÏÈ¥ÓĞÌ«¶àµÄ½Úµã¡£
-* @note       ½ñÌìIPhone 5Ã»ÓĞ·¢²¼£¬¶øÊÇ·¢²¼ÁËÒ»¿îIphone 4S,¹ã´ó¹û·ÛÓĞµãÊ§Íû
+* @details    è¿™ä¸ªç±»çš„æœ€ç»ˆå®ç°ç›®æ ‡æ˜¯å®ç°ç±»ä¼¼BOOST ï¼ŒProperty Tree å’Œ ACE_Configuration_Heap
+*             ç±»çš„ç›®æ ‡ï¼Œå°†é…ç½®ä¿¡æ¯ç»„ç»‡æˆä¸€æ£µæ ‘å­˜æ”¾
+*             æ€è·¯è¿˜æ˜¯å’ŒBOOST Property Treeæœ‰ä¸€äº›åŒºåˆ«ï¼Œæˆ‘ä»¬å†…éƒ¨ç›´æ¥æ”¾å…¥ä¸€ä¸ªmapå­˜æ”¾ã€‚å±æ€§æ•°æ®ï¼Œ
+*             XMLæ–‡ä»¶çš„name->valueé‡Œé¢çš„valueä¹Ÿæ”¾å…¥è¿™ä¸ªåœ°æ–¹ã€‚
+*             å› ä¸ºèƒƒè§‰å¾—BOOST çš„Property Treeå¤ªæ…¢äº†ï¼Œè™½ç„¶å…¶å¯èƒ½æ˜¯ä¸ºäº†å†™å›é…ç½®æ–‡ä»¶ï¼ˆé¡ºåºï¼‰æœ‰è€ƒè™‘ï¼Œ
+*             ä½†æ€»ä½“çœ‹ä¸Šå»æœ‰å¤ªå¤šçš„èŠ‚ç‚¹ã€‚
+* @note       ä»Šå¤©IPhone 5æ²¡æœ‰å‘å¸ƒï¼Œè€Œæ˜¯å‘å¸ƒäº†ä¸€æ¬¾Iphone 4S,å¹¿å¤§æœç²‰æœ‰ç‚¹å¤±æœ›
 *
 *
 */
@@ -33,92 +33,92 @@ class ZCE_Time_Value;
 
 
 /*!
-* @brief      ÅäÖÃÎÄ¼ş¶ÁÈ¡ºó´æ·ÅµÄÊ÷
-*             ½«ÅäÖÃÎÄ¼ş¶ÁÈ¡¹¤¾ß¶ÁÈ¡Êı¾İÄÚÈİºó¶¼Éú³É·ÅÈëZCE_Conf_PropertyTreeÖĞ£¬
-*             ÄÚ²¿ÓĞ2¿ÃÊ÷£¬
-*             Ò»¿ÃÓÃÓÚ´æ·Å×ÓÊ÷£¬´æ·Åname=>sub tree£¬
-*             Ò»¿ÃÓÃÓÚ´æ·ÅÒ¶×Ó½Úµã¡£´æ·ÅÊôĞÔkey=>value,XMLÎÄ¼şµÄname=>valueÒ²´æ·Å
-*             ÔÚÕâ¸öµØ·½£¬
+* @brief      é…ç½®æ–‡ä»¶è¯»å–åå­˜æ”¾çš„æ ‘
+*             å°†é…ç½®æ–‡ä»¶è¯»å–å·¥å…·è¯»å–æ•°æ®å†…å®¹åéƒ½ç”Ÿæˆæ”¾å…¥ZCE_Conf_PropertyTreeä¸­ï¼Œ
+*             å†…éƒ¨æœ‰2æ£µæ ‘ï¼Œ
+*             ä¸€æ£µç”¨äºå­˜æ”¾å­æ ‘ï¼Œå­˜æ”¾name=>sub treeï¼Œ
+*             ä¸€æ£µç”¨äºå­˜æ”¾å¶å­èŠ‚ç‚¹ã€‚å­˜æ”¾å±æ€§key=>value,XMLæ–‡ä»¶çš„name=>valueä¹Ÿå­˜æ”¾
+*             åœ¨è¿™ä¸ªåœ°æ–¹ï¼Œ
 *
-* @note       ÒòÎªÓĞ2¿ÃÊ÷£¬ËùÒÔÄÚ²¿Ò²ÓĞÁ½¸öµü´úÆ÷£¬
+* @note       å› ä¸ºæœ‰2æ£µæ ‘ï¼Œæ‰€ä»¥å†…éƒ¨ä¹Ÿæœ‰ä¸¤ä¸ªè¿­ä»£å™¨ï¼Œ
 *
 */
 class ZCE_Conf_PropertyTree
 {
 protected:
 
-    ///Ò¶×Ó½Úµã,ÒÔ¼°ÏàÓ¦µÄµü´úÆ÷
+    ///å¶å­èŠ‚ç‚¹,ä»¥åŠç›¸åº”çš„è¿­ä»£å™¨
     typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
     typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
     typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
 
-    ///×ÓÊ÷µÄ½ÚµãµÄÀàĞÍ,Õâ¶ù²»ÊÇmap£¬ËùÒÔ²»ÊÇ¸ßĞ§ÊµÏÖ£¬µ«ÎªÉ¶²»ÓÃmapÄØ£¬ÎÒ¹À¼ÆÊÇ
-    ///ÒòÎªÆäÊµmap±¾ÊÂ²¢²»ÁËË³Ğò£¬ËùÒÔÔÚ»¹Ô­µÄÊ±ºò£¬»áÍêÈ«»ìÂÒÔ­À´µÄÊı¾İ£¬£¨ËäÈ»
-    ///²¢²»´í£©£¬ËùÒÔ
+    ///å­æ ‘çš„èŠ‚ç‚¹çš„ç±»å‹,è¿™å„¿ä¸æ˜¯mapï¼Œæ‰€ä»¥ä¸æ˜¯é«˜æ•ˆå®ç°ï¼Œä½†ä¸ºå•¥ä¸ç”¨mapå‘¢ï¼Œæˆ‘ä¼°è®¡æ˜¯
+    ///å› ä¸ºå…¶å®mapæœ¬äº‹å¹¶ä¸äº†é¡ºåºï¼Œæ‰€ä»¥åœ¨è¿˜åŸçš„æ—¶å€™ï¼Œä¼šå®Œå…¨æ··ä¹±åŸæ¥çš„æ•°æ®ï¼Œï¼ˆè™½ç„¶
+    ///å¹¶ä¸é”™ï¼‰ï¼Œæ‰€ä»¥
     typedef std::multimap<std::string, ZCE_Conf_PropertyTree > CHILDREN_NOTE_TYPE;
     typedef CHILDREN_NOTE_TYPE::iterator child_iterator;
     typedef CHILDREN_NOTE_TYPE::const_iterator const_child_iterator;
     //
 public:
 
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     ZCE_Conf_PropertyTree();
     ~ZCE_Conf_PropertyTree();
 
 
     /*!
-    * @brief      ¸ù¾İÂ·¾¶µÃµ½Ò»¸öCHILD ×ÓÊ÷½ÚµãµÄµü´úÆ÷
-    * @return     int == 0 ±íÊ¾³É¹¦£¬
-    * @param      path_str   ·ÃÎÊµÄÂ·¾¶
-    * @param      child_iter ·µ»ØµÄµü´úÆ÷£¬×¢ÒâÄÚ²¿ÔÚÃ»ÓĞÕÒµ½µÄÇé¿öÏÂ£¬Ã»ÓĞ½«ÆäÖÃÎªend£¬ÓÃ
-    *                        return µÄ·µ»ØÖµÅĞ¶ÏÊÇ·ñ³É¹¦£¬²»ÒªÓÃÕâ¸ö²ÎÊı¡£
+    * @brief      æ ¹æ®è·¯å¾„å¾—åˆ°ä¸€ä¸ªCHILD å­æ ‘èŠ‚ç‚¹çš„è¿­ä»£å™¨
+    * @return     int == 0 è¡¨ç¤ºæˆåŠŸï¼Œ
+    * @param      path_str   è®¿é—®çš„è·¯å¾„
+    * @param      child_iter è¿”å›çš„è¿­ä»£å™¨ï¼Œæ³¨æ„å†…éƒ¨åœ¨æ²¡æœ‰æ‰¾åˆ°çš„æƒ…å†µä¸‹ï¼Œæ²¡æœ‰å°†å…¶ç½®ä¸ºendï¼Œç”¨
+    *                        return çš„è¿”å›å€¼åˆ¤æ–­æ˜¯å¦æˆåŠŸï¼Œä¸è¦ç”¨è¿™ä¸ªå‚æ•°ã€‚
     */
     int path_get_childiter(const std::string &path_str,
                            child_iterator &child_iter);
-    ///Í¬ÉÏ£¬Ö»ÊÇconstµÄ
+    ///åŒä¸Šï¼Œåªæ˜¯constçš„
     int path_get_childiter(const std::string &path_str,
                            const_child_iterator &child_iter) const;
 
     /*!
-    * @brief      È¡µÃÒ¶×Ó½ÚµãµÄµü´úÆ÷
+    * @brief      å–å¾—å¶å­èŠ‚ç‚¹çš„è¿­ä»£å™¨
     * @return     int
-    * @param      path_str ·ÃÎÊµÄÂ·¾¶
-    * @param      key_str  ·ÃÎÊvalµÄkey
-    * @param      str_ptr  µÃµ½valµÄÖ¸Õë
+    * @param      path_str è®¿é—®çš„è·¯å¾„
+    * @param      key_str  è®¿é—®valçš„key
+    * @param      str_ptr  å¾—åˆ°valçš„æŒ‡é’ˆ
     */
     int path_get_leafiter(const std::string &path_str,
                           const std::string &key_str,
                           leaf_iterator &leaf_iter);
-    ///Í¬ÉÏ£¬Ö»ÊÇconstµÄ
+    ///åŒä¸Šï¼Œåªæ˜¯constçš„
     int path_get_leafiter(const std::string &path_str,
                           const std::string &key_str,
                           const_leaf_iterator &leaf_iter) const;
 
-    ///µÃµ½path¶ÔÓ¦µÄÄÇ¸öchild noteµÄÖ¸Õë
+    ///å¾—åˆ°pathå¯¹åº”çš„é‚£ä¸ªchild noteçš„æŒ‡é’ˆ
     int path_get_childptr(const std::string &path_str,
                           ZCE_Conf_PropertyTree *&child_ptr);
-    ///Í¬ÉÏ£¬Ö»ÊÇconstµÄ
+    ///åŒä¸Šï¼Œåªæ˜¯constçš„
     int path_get_childptr(const std::string &path_str,
                           const ZCE_Conf_PropertyTree *&child_ptr) const;
 
 
-    ///µÃµ½£¨µ±Ç°node£©Ò¶×Ó½ÚµãµÄbegin Î»ÖÃµÄµü´úÆ÷
+    ///å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å¶å­èŠ‚ç‚¹çš„begin ä½ç½®çš„è¿­ä»£å™¨
     leaf_iterator leaf_begin();
-    ///µÃµ½£¨µ±Ç°node£©Ò¶×Ó½ÚµãµÄend Î»ÖÃµÄµü´úÆ÷
+    ///å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å¶å­èŠ‚ç‚¹çš„end ä½ç½®çš„è¿­ä»£å™¨
     leaf_iterator leaf_end();
 
-    ///µÃµ½£¨µ±Ç°node£©×ÓÊ÷½ÚµãµÄbegin Î»ÖÃµÄµü´úÆ÷
+    ///å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å­æ ‘èŠ‚ç‚¹çš„begin ä½ç½®çš„è¿­ä»£å™¨
     child_iterator child_begin();
-    ///µÃµ½£¨µ±Ç°node£©×ÓÊ÷½ÚµãµÄbegin Î»ÖÃµÄµü´úÆ÷
+    ///å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å­æ ‘èŠ‚ç‚¹çš„begin ä½ç½®çš„è¿­ä»£å™¨
     child_iterator child_end();
 
     /*!
-    * @brief      »¹ÊÇÓÃÁËÌØ»¯µÄÄ£°å¸ßµãÕâÒ»×éº¯Êı,Ä£°åº¯Êı,ÒÀ¿¿ÌØ»¯ÊµÏÖ,
-    * @tparam     val_type ±»ÌØ»¯³É ZCE_Sockaddr_In£¬ZCE_Sockaddr_In6£¬ZCE_Time_Value
-    *             int32_t ,int64_t,std::string, µÈ¡£
-    * @return     int      ÊÇ·ñÕı³£µÄ¶ÁÈ¡µ¹ÁËÅäÖÃ
-    * @param      path_str ¶ÁÈ¡µÄÂ·¾¶
-    * @param      val      ¶ÁÈ¡·µ»ØµÄÖµ
+    * @brief      è¿˜æ˜¯ç”¨äº†ç‰¹åŒ–çš„æ¨¡æ¿é«˜ç‚¹è¿™ä¸€ç»„å‡½æ•°,æ¨¡æ¿å‡½æ•°,ä¾é ç‰¹åŒ–å®ç°,
+    * @tparam     val_type è¢«ç‰¹åŒ–æˆ ZCE_Sockaddr_Inï¼ŒZCE_Sockaddr_In6ï¼ŒZCE_Time_Value
+    *             int32_t ,int64_t,std::string, ç­‰ã€‚
+    * @return     int      æ˜¯å¦æ­£å¸¸çš„è¯»å–å€’äº†é…ç½®
+    * @param      path_str è¯»å–çš„è·¯å¾„
+    * @param      val      è¯»å–è¿”å›çš„å€¼
     */
     template<typename val_type>
     int path_get_leaf(const std::string &path_str,
@@ -128,12 +128,12 @@ public:
 
 
     /*!
-    * @brief      ÉÏÃæµÄº¯ÊıµÄÀ©Õ¹º¯Êı£¬
-    * @tparam     val_type ²Î¿¼ÉÏÃæº¯Êı
+    * @brief      ä¸Šé¢çš„å‡½æ•°çš„æ‰©å±•å‡½æ•°ï¼Œ
+    * @tparam     val_type å‚è€ƒä¸Šé¢å‡½æ•°
     * @return     int
-    * @param      path_str ²Î¿¼ÉÏÃæº¯Êı
-    * @param      key_str  ²Î¿¼ÉÏÃæº¯Êı
-    * @param      key_sequence keyµÄĞòÁĞºÅ
+    * @param      path_str å‚è€ƒä¸Šé¢å‡½æ•°
+    * @param      key_str  å‚è€ƒä¸Šé¢å‡½æ•°
+    * @param      key_sequence keyçš„åºåˆ—å·
     * @note
     */
     template<typename val_type>
@@ -147,7 +147,7 @@ public:
     }
 
     /*!
-    * @brief      »¹ÊÇÓÃÁËÌØ»¯µÄÄ£°å¸ßµãÕâÒ»×éº¯Êı,Ä£°åº¯Êı,Ö»¶¨Òå²»ÊµÏÖ
+    * @brief      è¿˜æ˜¯ç”¨äº†ç‰¹åŒ–çš„æ¨¡æ¿é«˜ç‚¹è¿™ä¸€ç»„å‡½æ•°,æ¨¡æ¿å‡½æ•°,åªå®šä¹‰ä¸å®ç°
     * @tparam     val_type
     * @return     void
     * @param      key_str
@@ -158,31 +158,31 @@ public:
                   val_type val);
 
 
-    ///Ôö¼ÓÒ»¸öĞÂµÄCHILD,µ±È»ÀïÃæÈ«²¿Êı¾İÎªNULL,²¢ÇÒ·µ»ØĞÂÔöµÄ½Úµã
+    ///å¢åŠ ä¸€ä¸ªæ–°çš„CHILD,å½“ç„¶é‡Œé¢å…¨éƒ¨æ•°æ®ä¸ºNULL,å¹¶ä¸”è¿”å›æ–°å¢çš„èŠ‚ç‚¹
     void add_child(const std::string &key_str,
                    ZCE_Conf_PropertyTree *&new_child_note);
 
 
-    ///ÇåÀí
+    ///æ¸…ç†
     void clear();
 
 
 public:
-    ///ÉèÖÃ·Ö¸î·ûºÅ,ÔÊĞíÄã¸ü»»Õâ¸ö
+    ///è®¾ç½®åˆ†å‰²ç¬¦å·,å…è®¸ä½ æ›´æ¢è¿™ä¸ª
     static void set_separator(char separator_char);
 
 protected:
 
-    ///Ä¬ÈÏÊ¹ÓÃ.×÷Îª·ç¸ñ·ûºÅ£¬¿¼ÂÇµ½nameÀïÃæ¿ÉÄÜ»áÊ¹ÓÃÕâ¸ö·ûºÅ£¬
-    ///ËùÒÔÕâ¶ùÒ²¿ÉÒÔÈÃÄã¸Ä,Ã»ÓĞÓÃconst £¬¶øÇÒÌá¹©ÁËĞŞ¸Äº¯Êı
+    ///é»˜è®¤ä½¿ç”¨.ä½œä¸ºé£æ ¼ç¬¦å·ï¼Œè€ƒè™‘åˆ°nameé‡Œé¢å¯èƒ½ä¼šä½¿ç”¨è¿™ä¸ªç¬¦å·ï¼Œ
+    ///æ‰€ä»¥è¿™å„¿ä¹Ÿå¯ä»¥è®©ä½ æ”¹,æ²¡æœ‰ç”¨const ï¼Œè€Œä¸”æä¾›äº†ä¿®æ”¹å‡½æ•°
     static char  SEPARATOR_STRING[2];
 
 protected:
 
-    ///Ò¶×Ó½ÚµãµÄMAP
+    ///å¶å­èŠ‚ç‚¹çš„MAP
     LEAF_NOTE_TYPE   leaf_node_;
 
-    ///×ÓÊ÷½ÚµãµÄMAP
+    ///å­æ ‘èŠ‚ç‚¹çš„MAP
     CHILDREN_NOTE_TYPE     child_node_;
 
 };

@@ -6,12 +6,14 @@
 #include "zce_log_logging.h"
 #include "zce_event_reactor_base.h"
 
-//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+ZCE_Event_INotify::ZCE_Event_INotify():
 ZCE_Event_INotify::ZCE_Event_INotify() :
     ZCE_Event_Handler(),
 
     read_buffer_(NULL)
 {
+    read_buffer_ = new char [READ_BUFFER_LEN + 1];
     read_buffer_ = new char[READ_BUFFER_LEN + 1];
     read_buffer_[READ_BUFFER_LEN] = '\0';
 #if defined ZCE_OS_LINUX
@@ -30,23 +32,25 @@ ZCE_Event_INotify::~ZCE_Event_INotify()
 {
     if (read_buffer_)
     {
+        delete []read_buffer_;
         delete[]read_buffer_;
         read_buffer_ = NULL;
     }
 }
 
-//´ò¿ª¼à¿Ø¾ä±úµÈ£¬°ó¶¨reactorµÈ
+//æ‰“å¼€ç›‘æ§å¥æŸ„ç­‰ï¼Œç»‘å®šreactorç­‰
 int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
 {
 #if defined (ZCE_OS_LINUX)
     int ret = 0;
-    //Èç¹ûÒÑ¾­³õÊ¼»¯¹ıÁË
+    //å¦‚æœå·²ç»åˆå§‹åŒ–è¿‡äº†
     if (ZCE_INVALID_HANDLE != inotify_handle_)
     {
         return -1;
     }
-    //ÔÚLINUXÏÂÊ¹ÓÃINOTIFYµÄ»úÖÆ
+    //åœ¨LINUXä¸‹ä½¿ç”¨INOTIFYçš„æœºåˆ¶
     inotify_handle_ = ::inotify_init();
+    if (ZCE_INVALID_HANDLE == inotify_handle_ )
     if (ZCE_INVALID_HANDLE == inotify_handle_)
     {
         ZCE_LOG(RS_ERROR, "[%s] invoke ::inotify_init fail,error [%u].",
@@ -68,24 +72,28 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     return 0;
 }
 
-//¹Ø±Õ¼à¿Ø¾ä±úµÈ£¬½â³ı°ó¶¨reactorµÈ
+
+//å…³é—­ç›‘æ§å¥æŸ„ç­‰ï¼Œè§£é™¤ç»‘å®šreactorç­‰
 int ZCE_Event_INotify::close()
 {
+
 #if defined (ZCE_OS_LINUX)
 
-    //ÓÉÓÚÊÇHASH MAPËÙ¶ÈÓĞµãÂı
+    //ç”±äºæ˜¯HASH MAPé€Ÿåº¦æœ‰ç‚¹æ…¢
+    HDL_TO_EIN_MAP::iterator iter_temp =  watch_event_map_.begin();
     HDL_TO_EIN_MAP::iterator iter_temp = watch_event_map_.begin();
     for (; iter_temp != watch_event_map_.end();)
     {
         rm_watch(iter_temp->second.watch_handle_);
-        //ÈÃµü´úÆ÷¼ÌĞø´Ó×î¿ªÊ¼¸ÉÆğ
+        //è®©è¿­ä»£å™¨ç»§ç»­ä»æœ€å¼€å§‹å¹²èµ·
         iter_temp = watch_event_map_.begin();
     }
 
-    //¹Ø±Õ¼à¿Ø¾ä±ú
+
+    //å…³é—­ç›‘æ§å¥æŸ„
     if (inotify_handle_ != ZCE_INVALID_HANDLE)
     {
-        //´Ó·´Ó¦Æ÷ÒÆ³ı
+        //ä»ååº”å™¨ç§»é™¤
         reactor()->remove_handler(this, false);
 
         ::close(inotify_handle_);
@@ -101,13 +109,17 @@ int ZCE_Event_INotify::close()
     return 0;
 }
 
-//Ìí¼Ó¼à¿Ø
+
+//æ·»åŠ ç›‘æ§
 int ZCE_Event_INotify::add_watch(const char *pathname,
                                  uint32_t mask,
                                  ZCE_HANDLE *watch_handle,
                                  bool watch_sub_dir)
 {
-    //¼ì²é²ÎÊıÊÇ·ñÓĞĞ§£¬
+
+    //æ£€æŸ¥å‚æ•°æ˜¯å¦æœ‰æ•ˆï¼Œ
+    ZCE_ASSERT( pathname &&  mask);
+    if ( pathname == NULL || mask == 0)
     ZCE_ASSERT(pathname && mask);
     if (pathname == NULL || mask == 0)
     {
@@ -117,13 +129,15 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
 #if defined (ZCE_OS_LINUX)
 
-    //LinuxµÄInotifyÃ»·¨¼à¿Ø×ÓÄ¿Â¼
+    //Linuxçš„Inotifyæ²¡æ³•ç›‘æ§å­ç›®å½•
     ZCE_ASSERT(watch_sub_dir == false);
 
     *watch_handle = ZCE_INVALID_HANDLE;
     EVENT_INOTIFY_NODE watch_note;
     ZCE_HANDLE hdl_dir = ZCE_INVALID_HANDLE;
 
+    hdl_dir =  ::inotify_add_watch(inotify_handle_, pathname, mask);
+    if (hdl_dir == ZCE_INVALID_HANDLE )
     hdl_dir = ::inotify_add_watch(inotify_handle_, pathname, mask);
     if (hdl_dir == ZCE_INVALID_HANDLE)
     {
@@ -138,12 +152,14 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     strncpy(watch_note.watch_path_, pathname, MAX_PATH);
 
     std::pair<HDL_TO_EIN_MAP::iterator, bool>
+    ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
         ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
 
-    //Èç¹û²åÈë²»³É¹¦£¬½øĞĞ¸÷ÖÖÄÑ¹ıÇåÀí¹¤×÷
+    //å¦‚æœæ’å…¥ä¸æˆåŠŸï¼Œè¿›è¡Œå„ç§éš¾è¿‡æ¸…ç†å·¥ä½œ
     if (ins_ret.second == false)
     {
-        //ÏÂÃæÕâ¶Î´úÂëÆÁ±ÎµÄÔ­ÒòÊÇ£¬¶øLInuxÏÂ£¬Èç¹ûinotify_add_watch Í¬Ò»¸öÄ¿Â¼£¬handleÊÇÒ»ÑùµÄ¡£
+
+        //ä¸‹é¢è¿™æ®µä»£ç å±è”½çš„åŸå› æ˜¯ï¼Œè€ŒLInuxä¸‹ï¼Œå¦‚æœinotify_add_watch åŒä¸€ä¸ªç›®å½•ï¼Œhandleæ˜¯ä¸€æ ·çš„ã€‚
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
         ZCE_LOG(RS_ERROR, "[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
@@ -154,12 +170,13 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     *watch_handle = hdl_dir;
     return 0;
 
+
 #elif defined (ZCE_OS_WINDOWS)
 
     int ret = 0;
     *watch_handle = ZCE_INVALID_HANDLE;
 
-    //ÒÑ¾­¼à¿ØÁËÒ»¸öÄ¿Â¼£¬WindowsµÄÒ»¸öZCE_Event_INotify²»ÄÜÍ¬Ê±¼à¿ØÁ½¸öÄ¿Â¼
+    //å·²ç»ç›‘æ§äº†ä¸€ä¸ªç›®å½•ï¼ŒWindowsçš„ä¸€ä¸ªZCE_Event_INotifyä¸èƒ½åŒæ—¶ç›‘æ§ä¸¤ä¸ªç›®å½•
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
         ZCE_LOG(RS_ERROR, "[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
@@ -168,7 +185,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         return -1;
     }
 
-    //²ÉÓÃOVERLAPPEDµÄ·½Ê½´ò¿ªÎÄ¼ş£¬×¢ÒâFILE_LIST_DIRECTORYºÍFILE_FLAG_OVERLAPPED
+    //é‡‡ç”¨OVERLAPPEDçš„æ–¹å¼æ‰“å¼€æ–‡ä»¶ï¼Œæ³¨æ„FILE_LIST_DIRECTORYå’ŒFILE_FLAG_OVERLAPPED
     watch_handle_ = ::CreateFileA(pathname, // pointer to the file name
                                   FILE_LIST_DIRECTORY,                // access (read/write) mode
                                   FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, // share mode
@@ -176,6 +193,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
                                   OPEN_EXISTING,                      // how to create
                                   FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,       // file attributes
                                   NULL                                // file with attributes to copy
+                                 );
     );
 
     if (watch_handle_ == ZCE_INVALID_HANDLE)
@@ -194,8 +212,25 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     watch_mask_ = mask;
     strncpy(watch_path_, pathname, MAX_PATH);
 
+
     DWORD bytes_returned = 0;
     BOOL bret = ::ReadDirectoryChangesW(
+                    watch_handle_,                                  // handle to directory
+                    read_buffer_,                                    // read results buffer
+                    READ_BUFFER_LEN,                               // length of buffer
+                    watch_sub_dir_,                                 // monitoring option
+                    FILE_NOTIFY_CHANGE_SECURITY |
+                    FILE_NOTIFY_CHANGE_CREATION |
+                    FILE_NOTIFY_CHANGE_LAST_ACCESS |
+                    FILE_NOTIFY_CHANGE_LAST_WRITE |
+                    FILE_NOTIFY_CHANGE_SIZE |
+                    FILE_NOTIFY_CHANGE_ATTRIBUTES |
+                    FILE_NOTIFY_CHANGE_DIR_NAME |
+                    FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
+                    &bytes_returned,                       // bytes returned
+                    &over_lapped_,   // overlapped buffer
+                    NULL // completion routine
+                );
         watch_handle_,                                  // handle to directory
         read_buffer_,                                    // read results buffer
         READ_BUFFER_LEN,                               // length of buffer
@@ -213,7 +248,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         NULL // completion routine
     );
 
-    //Èç¹û¶ÁÈ¡Ê§°Ü£¬Ò»°ã¶øÑÔ£¬ÕâÊÇÕâ¶Î´úÂëÓĞÎÊÌâ
+    //å¦‚æœè¯»å–å¤±è´¥ï¼Œä¸€èˆ¬è€Œè¨€ï¼Œè¿™æ˜¯è¿™æ®µä»£ç æœ‰é—®é¢˜
     if (bret == FALSE)
     {
         ZCE_LOG(RS_ERROR, "[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
@@ -238,23 +273,25 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 #endif
 }
 
+
 int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 {
 #if defined (ZCE_OS_LINUX)
-    //ÏÈÓÃ¾ä±ú²éÑ¯
+    //å…ˆç”¨å¥æŸ„æŸ¥è¯¢
     HDL_TO_EIN_MAP::iterator iter_del = watch_event_map_.find(watch_handle);
     if (iter_del == watch_event_map_.end())
     {
         return -1;
     }
 
+    int ret =  ::inotify_rm_watch(inotify_handle_, iter_del->second.watch_handle_);
     int ret = ::inotify_rm_watch(inotify_handle_, iter_del->second.watch_handle_);
     if (ret != 0)
     {
         return -1;
     }
 
-    //´ÓMAPÖĞÉ¾³ıÕâ¸öNODe
+    //ä»MAPä¸­åˆ é™¤è¿™ä¸ªNODe
     watch_event_map_.erase(iter_del);
     return 0;
 #elif defined (ZCE_OS_WINDOWS)
@@ -262,7 +299,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
     ZCE_UNUSED_ARG(watch_handle);
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
-        //´Ó·´Ó¦Æ÷ÒÆ³ı
+        //ä»ååº”å™¨ç§»é™¤
         reactor()->remove_handler(this, false);
 
         ::CloseHandle(watch_handle_);
@@ -273,9 +310,12 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 #endif
 }
 
-//¶ÁÈ¡ÊÂ¼ş´¥·¢µ÷ÓÃº¯Êı
+
+//è¯»å–äº‹ä»¶è§¦å‘è°ƒç”¨å‡½æ•°
+int ZCE_Event_INotify::handle_input ()
 int ZCE_Event_INotify::handle_input()
 {
+
 #if defined (ZCE_OS_LINUX)
 
     ZCE_LOG(RS_DEBUG, "ZCE_Event_INotify::handle_input");
@@ -283,7 +323,7 @@ int ZCE_Event_INotify::handle_input()
     int detect_ret = 0;
     size_t watch_event_num = 0;
 
-    //¶ÁÈ¡
+    //è¯»å–
     ssize_t read_ret = zce::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
     if (read_ret <= 0)
     {
@@ -293,21 +333,22 @@ int ZCE_Event_INotify::handle_input()
     uint32_t read_len = static_cast<uint32_t>(read_ret);
     uint32_t next_entry_offset = 0;
 
-    //¿ÉÄÜÒ»´Î¶ÁÈ¡³öÀ´¶à¸öinotify_eventÊı¾İ£¬ËùÒÔÒªÑ­»·´¦Àí
+    //å¯èƒ½ä¸€æ¬¡è¯»å–å‡ºæ¥å¤šä¸ªinotify_eventæ•°æ®ï¼Œæ‰€ä»¥è¦å¾ªç¯å¤„ç†
     do
     {
         detect_ret = 0;
 
+        ::inotify_event *ne_ptr = (::inotify_event *) (read_buffer_ + next_entry_offset);
         ::inotify_event *ne_ptr = (::inotify_event *)(read_buffer_ + next_entry_offset);
 
-        //¼ì²é¶ÁÈ¡µÄÊı¾İÊÇ·ñ»¹ÓĞÒ»¸ö£¬
+        //æ£€æŸ¥è¯»å–çš„æ•°æ®æ˜¯å¦è¿˜æœ‰ä¸€ä¸ªï¼Œ
         read_len -= (sizeof(::inotify_event) + ne_ptr->len);
         next_entry_offset += sizeof(::inotify_event) + ne_ptr->len;
 
         HDL_TO_EIN_MAP::iterator active_iter = watch_event_map_.find(ne_ptr->wd);
         if (active_iter == watch_event_map_.end())
         {
-            //Ä³¸öFDÔÚMAPÖĞ¼äÎŞ·¨ÕÒµ½£¬×î´óµÄ¿ÉÄÜÊÇ
+            //æŸä¸ªFDåœ¨MAPä¸­é—´æ— æ³•æ‰¾åˆ°ï¼Œæœ€å¤§çš„å¯èƒ½æ˜¯
             ZCE_LOG(RS_DEBUG,
                     "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]",
                     ne_ptr->wd);
@@ -315,11 +356,12 @@ int ZCE_Event_INotify::handle_input()
         }
         EVENT_INOTIFY_NODE *node_ptr = &(active_iter->second);
         const char *active_path = ne_ptr->name;
-        //¸ù¾İ·µ»ØµÄmask¾ö¶¨ÈçºÎ´¦Àí
+        //æ ¹æ®è¿”å›çš„maskå†³å®šå¦‚ä½•å¤„ç†
 
-        //×¢ÒâÏÂÃæµÄ´úÂë·ÖÖ§ÓÃµÄif else if ,¶ø²»ÊÇif if£¬ÎÒµÄ³õ²½¿´·¨ÊÇÕâĞ©ÊÂ¼ş²»»áÒ»Æğ´¥·¢£¬µ«Ò²Ğí²»¶Ô¡£
-        //ÏÂÃæ5¸öÊÇºÍWindows ¹²ÓĞµÄ£¬
+        //æ³¨æ„ä¸‹é¢çš„ä»£ç åˆ†æ”¯ç”¨çš„if else if ,è€Œä¸æ˜¯if ifï¼Œæˆ‘çš„åˆæ­¥çœ‹æ³•æ˜¯è¿™äº›äº‹ä»¶ä¸ä¼šä¸€èµ·è§¦å‘ï¼Œä½†ä¹Ÿè®¸ä¸å¯¹ã€‚
+        //ä¸‹é¢5ä¸ªæ˜¯å’ŒWindows å…±æœ‰çš„ï¼Œ
         uint32_t event_mask = ne_ptr->mask;
+        if (event_mask & IN_CREATE )
         if (event_mask & IN_CREATE)
         {
             detect_ret = inotify_create(node_ptr->watch_handle_,
@@ -327,6 +369,7 @@ int ZCE_Event_INotify::handle_input()
                                         node_ptr->watch_path_,
                                         active_path);
         }
+        else if (event_mask & IN_DELETE  )
         else if (event_mask & IN_DELETE)
         {
             detect_ret = inotify_delete(node_ptr->watch_handle_,
@@ -334,6 +377,7 @@ int ZCE_Event_INotify::handle_input()
                                         node_ptr->watch_path_,
                                         active_path);
         }
+        else if ( event_mask & IN_MODIFY )
         else if (event_mask & IN_MODIFY)
         {
             detect_ret = inotify_modify(node_ptr->watch_handle_,
@@ -341,6 +385,7 @@ int ZCE_Event_INotify::handle_input()
                                         node_ptr->watch_path_,
                                         active_path);
         }
+        else if ( event_mask & IN_MOVED_FROM)
         else if (event_mask & IN_MOVED_FROM)
         {
             detect_ret = inotify_moved_from(node_ptr->watch_handle_,
@@ -348,6 +393,7 @@ int ZCE_Event_INotify::handle_input()
                                             node_ptr->watch_path_,
                                             active_path);
         }
+        else if ( event_mask & IN_MOVED_TO)
         else if (event_mask & IN_MOVED_TO)
         {
             detect_ret = inotify_moved_to(node_ptr->watch_handle_,
@@ -355,7 +401,7 @@ int ZCE_Event_INotify::handle_input()
                                           node_ptr->watch_path_,
                                           active_path);
         }
-        //ÏÂÃæÕâĞ©ÊÇLINUX×Ô¼ºÌØÓĞµÄ
+        //ä¸‹é¢è¿™äº›æ˜¯LINUXè‡ªå·±ç‰¹æœ‰çš„
         else if (event_mask & IN_ACCESS)
         {
             detect_ret = inotify_access(node_ptr->watch_handle_,
@@ -399,15 +445,18 @@ int ZCE_Event_INotify::handle_input()
                                              active_path);
         }
 
-        //·µ»Ø-1£¬¹Ø±ÕÖ®,
+        //è¿”å›-1ï¼Œå…³é—­ä¹‹,
         if (detect_ret == -1)
         {
             rm_watch(node_ptr->watch_handle_);
         }
 
-        //ÀÛ¼Æ·¢ÏÖÊÂ¼ş¼ÆÊı
+        //ç´¯è®¡å‘ç°äº‹ä»¶è®¡æ•°
         ++(watch_event_num);
     } while (read_len > 0);
+
+    }
+    while (read_len > 0);
 
     return 0;
 
@@ -420,7 +469,7 @@ int ZCE_Event_INotify::handle_input()
                                       &num_read,
                                       FALSE);
 
-    //¶ÁÈ¡½á¹ûÊ§°Ü
+    //è¯»å–ç»“æœå¤±è´¥
     if (FALSE == bret)
     {
         ZCE_LOG(RS_ERROR, "[%s] ::GetOverlappedResult fail,error [%u].",
@@ -429,7 +478,9 @@ int ZCE_Event_INotify::handle_input()
         return -1;
     }
 
-    //¼ÇÂ¼µ±Ç°´¦ÀíµÄ¾ä±ú£¬
+
+    //è®°å½•å½“å‰å¤„ç†çš„å¥æŸ„ï¼Œ
+
 
     FILE_NOTIFY_INFORMATION *read_ptr = NULL;
     DWORD next_entry_offset = 0;
@@ -438,9 +489,9 @@ int ZCE_Event_INotify::handle_input()
         detect_ret = 0;
         read_ptr = (FILE_NOTIFY_INFORMATION *)(read_buffer_ + next_entry_offset);
 
-        //ÎÄ¼şÃû³Æ½øĞĞ×ª»»,´Ó¿í×Ö½Ú×ª»»Îª¶à×Ö½Ú,
-        //ÌìÉ±µÄWindowsÔÚÕâĞ©µØ·½ÓÖÂñÁËÏİÚåFILE_NOTIFY_INFORMATIONÀïÃæµÄ³¤¶ÈFileNameLengthÊÇ×Ö½Ú³¤¶È
-        //¶øWideCharToMultiByteº¯ÊıĞèÒªµÄ³¤¶ÈÊÇ×Ö³¤¶È£¬ÄãÄÜTMDÍ³Ò»Ò»µãÂğ£¿
+        //æ–‡ä»¶åç§°è¿›è¡Œè½¬æ¢,ä»å®½å­—èŠ‚è½¬æ¢ä¸ºå¤šå­—èŠ‚,
+        //å¤©æ€çš„Windowsåœ¨è¿™äº›åœ°æ–¹åˆåŸ‹äº†é™·é˜±FILE_NOTIFY_INFORMATIONé‡Œé¢çš„é•¿åº¦FileNameLengthæ˜¯å­—èŠ‚é•¿åº¦
+        //è€ŒWideCharToMultiByteå‡½æ•°éœ€è¦çš„é•¿åº¦æ˜¯å­—é•¿åº¦ï¼Œä½ èƒ½TMDç»Ÿä¸€ä¸€ç‚¹å—ï¼Ÿ
         int length_of_ws = ::WideCharToMultiByte(CP_ACP,
                                                  0,
                                                  read_ptr->FileName,
@@ -449,7 +500,7 @@ int ZCE_Event_INotify::handle_input()
                                                  0,
                                                  NULL,
                                                  NULL);
-        //Windows µÄÄ¿Â¼Ãû³Æ×î´ó³¤¶È¿ÉÒÔµ½3K£¬ÎÒÃ»ÓĞĞËÈ¤È¥¸ãÒ»Ì×Õâ¸öÍæ
+        //Windows çš„ç›®å½•åç§°æœ€å¤§é•¿åº¦å¯ä»¥åˆ°3Kï¼Œæˆ‘æ²¡æœ‰å…´è¶£å»æä¸€å¥—è¿™ä¸ªç©
         if (length_of_ws >= MAX_PATH)
         {
             ZCE_LOG(RS_ALERT, "My God ,your path length [%u] more than MAX_PATH [%u],I don't process this.",
@@ -468,9 +519,27 @@ int ZCE_Event_INotify::handle_input()
                               NULL);
         active_path[length_of_ws] = '\0';
 
-        //¸ù¾İActionºÍmaskÈ·¶¨µ÷ÓÃº¯Êı
+        //æ ¹æ®Actionå’Œmaskç¡®å®šè°ƒç”¨å‡½æ•°
         switch (read_ptr->Action)
         {
+            case FILE_ACTION_ADDED:
+                if (watch_mask_ | IN_CREATE)
+                {
+                    detect_ret = inotify_create(watch_handle_,
+                                                watch_mask_,
+                                                watch_path_,
+                                                active_path);
+                }
+                break;
+            case FILE_ACTION_REMOVED:
+                if (watch_mask_ | IN_DELETE)
+                {
+                    detect_ret = inotify_delete(watch_handle_,
+                                                watch_mask_,
+                                                watch_path_,
+                                                active_path);
+                }
+                break;
         case FILE_ACTION_ADDED:
             if (watch_mask_ | IN_CREATE)
             {
@@ -489,7 +558,11 @@ int ZCE_Event_INotify::handle_input()
                                             active_path);
             }
             break;
-            //×¢ÒâWindows ÏÂµÄÕâ¸öÀàĞÍ£¬°üÀ¨ÁËÊôĞÔ¸ü¸Ä
+            //æ³¨æ„Windows ä¸‹çš„è¿™ä¸ªç±»å‹ï¼ŒåŒ…æ‹¬äº†å±æ€§æ›´æ”¹
+            case FILE_ACTION_MODIFIED:
+                if (watch_mask_ | IN_MODIFY)
+                {
+                    detect_ret = inotify_modify(watch_handle_,
         case FILE_ACTION_MODIFIED:
             if (watch_mask_ | IN_MODIFY)
             {
@@ -506,6 +579,26 @@ int ZCE_Event_INotify::handle_input()
                                                 watch_mask_,
                                                 watch_path_,
                                                 active_path);
+                }
+                break;
+            case FILE_ACTION_RENAMED_OLD_NAME:
+                if (watch_mask_ | IN_MOVED_FROM)
+                {
+                    detect_ret = inotify_moved_from(watch_handle_,
+                                                    watch_mask_,
+                                                    watch_path_,
+                                                    active_path);
+                }
+                break;
+            case FILE_ACTION_RENAMED_NEW_NAME:
+                if (watch_mask_ | IN_MOVED_TO)
+                {
+                    detect_ret = inotify_moved_to(watch_handle_,
+                                                  watch_mask_,
+                                                  watch_path_,
+                                                  active_path);
+                }
+                break;
             }
             break;
         case FILE_ACTION_RENAMED_NEW_NAME:
@@ -519,26 +612,45 @@ int ZCE_Event_INotify::handle_input()
             break;
         }
 
-        //ÀÛ¼ÆÆ«ÒÆ³¤¶È
+        //ç´¯è®¡åç§»é•¿åº¦
         next_entry_offset += read_ptr->NextEntryOffset;
 
-        //·µ»Ø-1£¬¹Ø±ÕÖ®
+        //è¿”å›-1ï¼Œå…³é—­ä¹‹
         if (detect_ret == -1)
         {
             handle_close();
         }
 
-        //ÎªÊ²Ã´ÒªÕâÑù×ö£¬ÒòÎªÉÏÃæµÄ´¦Àí¹ı³Ì£¬¿ÉÄÜÓĞÈËÒÑ¾­µ÷ÓÃÁËrm_watch£¬»òÕßhandle_close£¬
+        //ä¸ºä»€ä¹ˆè¦è¿™æ ·åšï¼Œå› ä¸ºä¸Šé¢çš„å¤„ç†è¿‡ç¨‹ï¼Œå¯èƒ½æœ‰äººå·²ç»è°ƒç”¨äº†rm_watchï¼Œæˆ–è€…handle_closeï¼Œ
         if (watch_handle_ == ZCE_INVALID_HANDLE)
         {
             return 0;
         }
     } while (read_ptr->NextEntryOffset != 0);
 
+    }
+    while (read_ptr->NextEntryOffset != 0);
+
     DWORD bytes_returned = 0;
 
-    //¼ÌĞø½øĞĞ¼à¿Ø´¦Àí
+    //ç»§ç»­è¿›è¡Œç›‘æ§å¤„ç†
     bret = ::ReadDirectoryChangesW(
+               watch_handle_,            // handle to directory
+               read_buffer_, // read results buffer
+               READ_BUFFER_LEN,                               // length of buffer
+               watch_sub_dir_,                                 // monitoring option
+               FILE_NOTIFY_CHANGE_SECURITY |
+               FILE_NOTIFY_CHANGE_CREATION |
+               FILE_NOTIFY_CHANGE_LAST_ACCESS |
+               FILE_NOTIFY_CHANGE_LAST_WRITE |
+               FILE_NOTIFY_CHANGE_SIZE |
+               FILE_NOTIFY_CHANGE_ATTRIBUTES |
+               FILE_NOTIFY_CHANGE_DIR_NAME |
+               FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
+               &bytes_returned,                       // bytes returned
+               & (over_lapped_), // overlapped buffer
+               NULL                                   // completion routine
+           );
         watch_handle_,            // handle to directory
         read_buffer_, // read results buffer
         READ_BUFFER_LEN,                               // length of buffer
@@ -567,8 +679,18 @@ int ZCE_Event_INotify::handle_input()
 #endif
 }
 
-//¹Ø±Õ¼à¿Ø¾ä±ú
+
+//å…³é—­ç›‘æ§å¥æŸ„
+int ZCE_Event_INotify::handle_close ()
 int ZCE_Event_INotify::handle_close()
 {
     return close();
+}
+
+
+
+
+
+
+
 }

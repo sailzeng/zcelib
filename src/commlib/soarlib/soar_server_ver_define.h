@@ -3,8 +3,8 @@
 #ifndef SOARING_LIB_SERVER_VERSION_DEFINE_H_
 #define SOARING_LIB_SERVER_VERSION_DEFINE_H_
 
-//�������İ汾��Ϣ��ÿ���汾Ӧ��������д���
-//��д��;��Ӧ������MakefileΪ��
+//服务器的版本信息，每个版本应该主动改写这个
+//改写的途径应该是在Makefile为好
 
 #ifndef TSS_MAJOR_VER
 #define TSS_MAJOR_VER 1
@@ -14,12 +14,12 @@
 #define TSS_MINOR_VER 0
 #endif //#ifndef TSS_MINOR_VER
 
-// build num ��CI�����Զ��޸ģ��ֶ��޸�����
+// build num 由CI编译自动修改，手动修改无用
 #ifndef TSS_BUILD_VER
 #define TSS_BUILD_VER 0
 #endif //#ifndef TSS_BUILD_VER
 
-// svn revision ��CI�����Զ��޸ģ��ֶ��޸�����
+// svn revision 由CI编译自动修改，手动修改无用
 #ifndef TSS_REVISION
 #define TSS_REVISION 0
 #endif //#ifndef TSS_REVISION

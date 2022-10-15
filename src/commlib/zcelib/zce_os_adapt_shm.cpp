@@ -33,7 +33,7 @@ void *zce::mmap (void *addr,
         return MAP_FAILED;
     }
 
-    //ÄäÃûÊ¹ÓÃ£¬±ØĞëÎÄ¼ş¾ä±úÊÇÎŞĞ§Öµ
+    //åŒ¿åä½¿ç”¨ï¼Œå¿…é¡»æ–‡ä»¶å¥æŸ„æ˜¯æ— æ•ˆå€¼
     if (ZCE_BIT_IS_SET(flags, MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
     {
         errno = ENOTSUP;
@@ -41,7 +41,7 @@ void *zce::mmap (void *addr,
     }
 
 
-    //Õâ¶ÎÔÚ¸ÉÂï£¬¾ÍÊÇ½«mmapµÄprot²ÎÊı×ª»»³ÉÎ¢ÈíµÄµÄ²ÎÊı£¬TNND£¬
+    //è¿™æ®µåœ¨å¹²å˜›ï¼Œå°±æ˜¯å°†mmapçš„protå‚æ•°è½¬æ¢æˆå¾®è½¯çš„çš„å‚æ•°ï¼ŒTNNDï¼Œ
     if ( PROT_NONE == prot )
     {
         nt_flag_protect = PAGE_NOACCESS;
@@ -77,10 +77,10 @@ void *zce::mmap (void *addr,
         return MAP_FAILED;
     }
 
-    //Èç¹ûÊÇË½ÓĞµÄ£¬Ïàµ±ÓÚËùÓĞÈË¶¼ÊÇ¸±±¾
+    //å¦‚æœæ˜¯ç§æœ‰çš„ï¼Œç›¸å½“äºæ‰€æœ‰äººéƒ½æ˜¯å‰¯æœ¬
     if (ZCE_BIT_IS_SET (flags, MAP_PRIVATE))
     {
-        //PAGE_WRITECOPY µÈ¼Û PAGE_READONLY
+        //PAGE_WRITECOPY ç­‰ä»· PAGE_READONLY
         nt_flag_protect |= PAGE_WRITECOPY;
         nt_flags = FILE_MAP_COPY;
     }
@@ -89,7 +89,7 @@ void *zce::mmap (void *addr,
     LARGE_INTEGER longlong_value;
     longlong_value.QuadPart = len;
 
-    //file_handle == ZCE_INVALID_HANDLEºó£¬´´½¨µÄ¹²ÏíÄÚ´æ²»ÔÚÎÄ¼şÀïÃæ£¬¶øÔÚÏµÍ³Ó³ÉäÎÄ¼şÖĞ system paging file
+    //file_handle == ZCE_INVALID_HANDLEåï¼Œåˆ›å»ºçš„å…±äº«å†…å­˜ä¸åœ¨æ–‡ä»¶é‡Œé¢ï¼Œè€Œåœ¨ç³»ç»Ÿæ˜ å°„æ–‡ä»¶ä¸­ system paging file
     ZCE_HANDLE file_mapping = ::CreateFileMappingA (file_handle,
                                                     NULL,
                                                     nt_flag_protect,
@@ -143,7 +143,7 @@ int zce::mprotect (const void *addr, size_t len, int prot)
 
     DWORD nt_flag_protect = 0;
 
-    //Õâ¶ÎÔÚ¸ÉÂï£¬¾ÍÊÇ½«mmapµÄprot²ÎÊı×ª»»³ÉÎ¢ÈíµÄµÄ²ÎÊı£¬TNND£¬
+    //è¿™æ®µåœ¨å¹²å˜›ï¼Œå°±æ˜¯å°†mmapçš„protå‚æ•°è½¬æ¢æˆå¾®è½¯çš„çš„å‚æ•°ï¼ŒTNNDï¼Œ
     if ( PROT_NONE == prot )
     {
         nt_flag_protect = PAGE_NOACCESS;
@@ -238,7 +238,7 @@ ZCE_HANDLE zce::shm_open (const char *file_path,
     //
 #if defined (ZCE_OS_WINDOWS)
 
-    //ÏÈ½¨Á¢Ò»ÏÂÕâ¸öÄ¿Â¼,Ä£Äâ/dev/shm/
+    //å…ˆå»ºç«‹ä¸€ä¸‹è¿™ä¸ªç›®å½•,æ¨¡æ‹Ÿ/dev/shm/
     zce::mkdir(ZCE_POSIX_MMAP_DIRECTORY);
 
     char shm_file_name[PATH_MAX + 1];
@@ -268,12 +268,12 @@ int zce::shm_unlink (const char *file_path)
 }
 
 //-------------------------------------------------------------------------------------------------
-//SystemVµÄ¹²ÏíÄÚ´æ
+//SystemVçš„å…±äº«å†…å­˜
 
-//Ìá¹©Õâ×éÄ£Äâ¶ÔÎÒÀ´Ëµ½ö½öÊÇÎªÁËºÃÍæ£¬£¨µ±È»Ò²ÓÉÓÚSystem VÓĞ¹ã´óµÄÉîºñÈºÖÚ»ù´¡£¬ÖÁÉÙÈÃÄãÒÆÖ²ÆğÀ´ÈİÒ×Ò»µã£©
-//ÎÒ¸öÈË¶ÔSystem VµÄIPCÃ»ÓĞ°®£¬Ò»·½Ãæ±Ï¾¹²»ÈçPOSIX IPCÔÚ±ê×¼ÉÏÕ¾×¡ÁË½Å£¬System VµÄIPCÕâ·½ÃæÒªÈõÒ»µã£¬ÁíÒ»·½ÃæSystem V IPC µÄ½Ó¿ÚÉè¼ÆÒ²²»ÈçPOSIXÄÇÃ´ÓÅÑÅ£¬
+//æä¾›è¿™ç»„æ¨¡æ‹Ÿå¯¹æˆ‘æ¥è¯´ä»…ä»…æ˜¯ä¸ºäº†å¥½ç©ï¼Œï¼ˆå½“ç„¶ä¹Ÿç”±äºSystem Væœ‰å¹¿å¤§çš„æ·±åšç¾¤ä¼—åŸºç¡€ï¼Œè‡³å°‘è®©ä½ ç§»æ¤èµ·æ¥å®¹æ˜“ä¸€ç‚¹ï¼‰
+//æˆ‘ä¸ªäººå¯¹System Vçš„IPCæ²¡æœ‰çˆ±ï¼Œä¸€æ–¹é¢æ¯•ç«Ÿä¸å¦‚POSIX IPCåœ¨æ ‡å‡†ä¸Šç«™ä½äº†è„šï¼ŒSystem Vçš„IPCè¿™æ–¹é¢è¦å¼±ä¸€ç‚¹ï¼Œå¦ä¸€æ–¹é¢System V IPC çš„æ¥å£è®¾è®¡ä¹Ÿä¸å¦‚POSIXé‚£ä¹ˆä¼˜é›…ï¼Œ
 
-//´´½¨»òÕß·ÃÎÊÒ»¸ö¹²ÏíÄÚ´æÇø
+//åˆ›å»ºæˆ–è€…è®¿é—®ä¸€ä¸ªå…±äº«å†…å­˜åŒº
 ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -297,7 +297,7 @@ ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
     LARGE_INTEGER longlong_value;
     longlong_value.QuadPart = size;
 
-    //file_handle == ZCE_INVALID_HANDLEºó£¬´´½¨µÄ¹²ÏíÄÚ´æ²»ÔÙÎÄ¼şÀïÃæ£¬¶øÔÚÏµÍ³Ó³ÉäÎÄ¼şÖĞ system paging file
+    //file_handle == ZCE_INVALID_HANDLEåï¼Œåˆ›å»ºçš„å…±äº«å†…å­˜ä¸å†æ–‡ä»¶é‡Œé¢ï¼Œè€Œåœ¨ç³»ç»Ÿæ˜ å°„æ–‡ä»¶ä¸­ system paging file
     ZCE_HANDLE shm_handle = ::CreateFileMappingA (ZCE_INVALID_HANDLE,
                                                   NULL,
                                                   nt_flag_protect,
@@ -305,16 +305,16 @@ ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
                                                   longlong_value.LowPart,
                                                   (IPC_PRIVATE == sysv_key) ? NULL : map_file_name);
 
-    //½âÊÍÒ»ÏÂÉÏÃæ×îºóÒ»ĞĞµÄ²ÎÊı£¬µ±Ê¹ÓÃkeyÎªIPC_PRIVATE£¬Ã¿´Î¶¼´´½¨Ò»¸öÎŞÃûµÄ¹±Ï×ÄÚ´æ£¬
-    //Èç¹ûKey²»ÎªIPC_PRIVATE£¬ÎÒÍ³Ò»¸øËûÆğÒ»¸öÃû×Ö
+    //è§£é‡Šä¸€ä¸‹ä¸Šé¢æœ€åä¸€è¡Œçš„å‚æ•°ï¼Œå½“ä½¿ç”¨keyä¸ºIPC_PRIVATEï¼Œæ¯æ¬¡éƒ½åˆ›å»ºä¸€ä¸ªæ— åçš„è´¡çŒ®å†…å­˜ï¼Œ
+    //å¦‚æœKeyä¸ä¸ºIPC_PRIVATEï¼Œæˆ‘ç»Ÿä¸€ç»™ä»–èµ·ä¸€ä¸ªåå­—
 
-    //Èç¹û³öÏÖ´íÎó
+    //å¦‚æœå‡ºç°é”™è¯¯
     if (shm_handle == 0)
     {
         return ZCE_INVALID_HANDLE;
     }
 
-    //Èç¹ûÃ÷È·ÒªÇó±ØĞëÊÇ´´½¨£¬¶øÇÒ²»ÄÜÊÇÒÑ¾­´æÔÚµÄ·ÃÎÊ
+    //å¦‚æœæ˜ç¡®è¦æ±‚å¿…é¡»æ˜¯åˆ›å»ºï¼Œè€Œä¸”ä¸èƒ½æ˜¯å·²ç»å­˜åœ¨çš„è®¿é—®
     if ( ZCE_BIT_IS_SET(oflag, IPC_CREAT)  &&  ZCE_BIT_IS_SET(oflag, IPC_EXCL) )
     {
         if (ERROR_ALREADY_EXISTS == ::GetLastError() )
@@ -331,7 +331,7 @@ ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
 #endif
 }
 
-//´ò¿ªÒÑ¾­shmgetµÄ¹²ÏíÄÚ´æÇø
+//æ‰“å¼€å·²ç»shmgetçš„å…±äº«å†…å­˜åŒº
 void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -360,11 +360,11 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
         nt_flags = FILE_MAP_READ | FILE_MAP_EXECUTE;
     }
 
-    //Æ«ÒÆÁ¿
+    //åç§»é‡
     LARGE_INTEGER longlong_value;
     longlong_value.QuadPart = 0;
 
-    //size²ÎÊıÎª0±êÊ¶È«²¿ÄÚ´æÓ³Éä
+    //sizeå‚æ•°ä¸º0æ ‡è¯†å…¨éƒ¨å†…å­˜æ˜ å°„
     void *addr_mapping = ::MapViewOfFileEx (shmid,
                                             nt_flags,
                                             longlong_value.HighPart,
@@ -372,7 +372,7 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
                                             0,
                                             (LPVOID)shmaddr);
 
-    //Èç¹ûÓ³ÉäÊ§°Ü
+    //å¦‚æœæ˜ å°„å¤±è´¥
     if (NULL == addr_mapping)
     {
         return MAP_FAILED;
@@ -386,7 +386,7 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 #endif
 }
 
-//¶Ì½ÓÕâ¸öÄÚ´æÇø
+//çŸ­æ¥è¿™ä¸ªå†…å­˜åŒº
 int zce::shmdt(const void *shmaddr)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -404,7 +404,7 @@ int zce::shmdt(const void *shmaddr)
 #endif
 }
 
-//¶Ô¹²ÏíÄÚ´æÇøÌá¹©¶àÖÖ²Ù×÷
+//å¯¹å…±äº«å†…å­˜åŒºæä¾›å¤šç§æ“ä½œ
 int zce::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -412,7 +412,7 @@ int zce::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf)
     ZCE_UNUSED_ARG(shmid);
     ZCE_UNUSED_ARG(buf);
 
-    //Î¢ÈíµÄÓ³ÉäÄÚ´æµ±ÒıÓÃ¼ÆÊıÎª0Ê±»á×Ô¼ºÊÍ·ÅµÄ£¬ËùÒÔÎÒ¹ÃÇÒÏàĞÅÄãÊ¹ÓÃÕıÈ·°Ñ
+    //å¾®è½¯çš„æ˜ å°„å†…å­˜å½“å¼•ç”¨è®¡æ•°ä¸º0æ—¶ä¼šè‡ªå·±é‡Šæ”¾çš„ï¼Œæ‰€ä»¥æˆ‘å§‘ä¸”ç›¸ä¿¡ä½ ä½¿ç”¨æ­£ç¡®æŠŠ
     if (IPC_RMID == cmd)
     {
         return 0;

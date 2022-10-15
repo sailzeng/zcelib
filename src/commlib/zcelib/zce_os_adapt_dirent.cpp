@@ -5,9 +5,9 @@
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_dirent.h"
 
-//ÎªÊ²Ã´²»ÈÃÎÒÓÃACE£¬ÎÀÉúÃŞ£¡£¬ÎÀÉúÃŞ£¡£¡£¡£¡£¡ÎÀÉúÃŞÎÀÉúÃŞÎÀÉúÃŞ£¡£¡£¡£¡£¡£¡£¡£¡
+//ä¸ºä»€ä¹ˆä¸è®©æˆ‘ç”¨ACEï¼Œå«ç”Ÿæ£‰ï¼ï¼Œå«ç”Ÿæ£‰ï¼ï¼ï¼ï¼ï¼å«ç”Ÿæ£‰å«ç”Ÿæ£‰å«ç”Ÿæ£‰ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼
 
-//´ò¿ªÒ»¸öÄ¿Â¼£¬ÓÃÓÚ¶ÁÈ¡
+//æ‰“å¼€ä¸€ä¸ªç›®å½•ï¼Œç”¨äºè¯»å–
 DIR *zce::opendir (const char *dir_name)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -22,16 +22,16 @@ DIR *zce::opendir (const char *dir_name)
 
     DIR *dir_handle = new DIR();
 
-    //Ç°ÃæÒÑ¾­±£Ö¤ÁËÊÇÄ¿Â¼£¬Õâ¶ù²»»áÒç³ö
+    //å‰é¢å·²ç»ä¿è¯äº†æ˜¯ç›®å½•ï¼Œè¿™å„¿ä¸ä¼šæº¢å‡º
     ::strncpy (dir_handle->directory_name_, dir_name, PATH_MAX);
     dir_handle->directory_name_[PATH_MAX] = '\0';
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
     dir_handle->started_reading_ = 0;
     dir_handle->dirent_ = new dirent();
 
-    //ÕâÁ½¸ö²ÎÊıÔÚWINDOWSÏÂÃ»ÓÃ
+    //è¿™ä¸¤ä¸ªå‚æ•°åœ¨WINDOWSä¸‹æ²¡ç”¨
     dir_handle->dirent_->d_ino = 0;
     dir_handle->dirent_->d_off = 0;
 
@@ -39,7 +39,7 @@ DIR *zce::opendir (const char *dir_name)
     dir_handle->dirent_->d_reclen = sizeof (dirent);
 
     dir_handle->dirent_->d_name[0] = '\0';
-    //±ØĞëµ÷ÓÃclosedir
+    //å¿…é¡»è°ƒç”¨closedir
     return dir_handle;
 
 #elif defined (ZCE_OS_LINUX)
@@ -47,12 +47,12 @@ DIR *zce::opendir (const char *dir_name)
 #endif
 }
 
-//¹Ø±ÕÒÑ¾­´ò¿ªµÄÄ¿Â¼
+//å…³é—­å·²ç»æ‰“å¼€çš„ç›®å½•
 int zce::closedir (DIR *dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //¹Ø±Õ¾ä±ú,
+    //å…³é—­å¥æŸ„,
     if (dir_handle->current_handle_ != ZCE_INVALID_HANDLE)
     {
         ::FindClose (dir_handle->current_handle_);
@@ -61,7 +61,7 @@ int zce::closedir (DIR *dir_handle)
     dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
     dir_handle->started_reading_ = 0;
 
-    //ÊÍ·ÅÏàÓ¦µÄ×ÊÔ´
+    //é‡Šæ”¾ç›¸åº”çš„èµ„æº
     delete dir_handle->dirent_;
     dir_handle->dirent_ = NULL;
     delete dir_handle;
@@ -79,18 +79,18 @@ struct dirent *zce::readdir (DIR *dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //WIN32µÚÒ»´Î¶ÁµÄº¯Êı£¬ºÍºóÃæµÄº¯Êı²»Ò»Ñù¡£
+    //WIN32ç¬¬ä¸€æ¬¡è¯»çš„å‡½æ•°ï¼Œå’Œåé¢çš„å‡½æ•°ä¸ä¸€æ ·ã€‚
     if (!dir_handle->started_reading_)
     {
         char scan_dirname[PATH_MAX + 16];
-        //Ç°ÃæÑéÖ¤¹ıÊÇÄ¿Â¼£¬ÕıÈ·Ê¹ÓÃ²»»áÒç³ö
+        //å‰é¢éªŒè¯è¿‡æ˜¯ç›®å½•ï¼Œæ­£ç¡®ä½¿ç”¨ä¸ä¼šæº¢å‡º
         strncpy(scan_dirname, dir_handle->directory_name_, PATH_MAX);
         scan_dirname[PATH_MAX + 1] = '\0';
         size_t const lastchar = ::strlen (scan_dirname);
-        //Ç°ÃæÒÑ¾­±£Ö¤ÁËÊÇÄ¿Â¼,ÓÃ¶ÏÑÔ±£»¤Ö®
+        //å‰é¢å·²ç»ä¿è¯äº†æ˜¯ç›®å½•,ç”¨æ–­è¨€ä¿æŠ¤ä¹‹
         assert(lastchar > 0);
 
-        //WINDOSÄ¿Ç°Êµ¼ÊÖ§³ÖÁ½ÖÖ·Ö½Ú·û
+        //WINDOSç›®å‰å®é™…æ”¯æŒä¸¤ç§åˆ†èŠ‚ç¬¦
         if ( ZCE_IS_DIRECTORY_SEPARATOR(scan_dirname[lastchar - 1] ) )
         {
             ::strcat(scan_dirname, ("*"));
@@ -116,11 +116,11 @@ struct dirent *zce::readdir (DIR *dir_handle)
         }
     }
 
-    //Èç¹ûÓĞÎÄ¼ş
+    //å¦‚æœæœ‰æ–‡ä»¶
     if (dir_handle->current_handle_ != ZCE_INVALID_HANDLE)
     {
 
-        //°ÑÄ¿Â¼±êÊ¶³öÀ´
+        //æŠŠç›®å½•æ ‡è¯†å‡ºæ¥
         if (dir_handle->fdata_.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
             dir_handle->dirent_->d_type = DT_DIR;
@@ -146,7 +146,7 @@ struct dirent *zce::readdir (DIR *dir_handle)
 #endif
 }
 
-//read dir ¿ÉÒÔÖØÈë°æ±¾£¬
+//read dir å¯ä»¥é‡å…¥ç‰ˆæœ¬ï¼Œ
 int zce::readdir_r (DIR *dir_handle,
                     dirent *entry,
                     dirent **result)
@@ -156,7 +156,7 @@ int zce::readdir_r (DIR *dir_handle,
 
     dirent *p_dirent = zce::readdir(dir_handle);
 
-    //¸Ä½øºó£¬ÖØÈëÓ¦¸Ã°²È«ÁË¡£
+    //æ”¹è¿›åï¼Œé‡å…¥åº”è¯¥å®‰å…¨äº†ã€‚
     if (p_dirent)
     {
         *entry = *p_dirent;
@@ -164,19 +164,19 @@ int zce::readdir_r (DIR *dir_handle,
     }
     else
     {
-        //*resultÎªNULLÒ²±íÊ¾¶ÁÈ¡µ½ÁË×îºó
+        //*resultä¸ºNULLä¹Ÿè¡¨ç¤ºè¯»å–åˆ°äº†æœ€å
         *result = NULL;
 
-        //Ôø¾­ÓĞÒ»´ÎÔÚÏÂÃæµÄ´úÂëÔö¼ÓÁËÒ»¶ÎÅĞ¶¨£¬ÓÃlast_errorÅĞ¶¨ÊÇ·ñ·µ»Ø´íÎó
-        //µ«²âÊÔ·¢ÏÖÓĞÎÊÌâ£¬FindNextFile ÔÚÃ»ÓĞ·¢ÏÖÎÄ¼şºó£¬»á·ÅÈëÒ»¸ö´íÎóEXDEV£¬
-        //ËùÒÔÕâ¸ö·½·¨ÓĞÎÊÌâ£¬¸ĞĞ»charlieºÍderrick·¢ÏÖÎÊÌâ£¬ĞŞ¸Äºó×Ô´óÃ»ÓĞ²âÊÔ
+        //æ›¾ç»æœ‰ä¸€æ¬¡åœ¨ä¸‹é¢çš„ä»£ç å¢åŠ äº†ä¸€æ®µåˆ¤å®šï¼Œç”¨last_erroråˆ¤å®šæ˜¯å¦è¿”å›é”™è¯¯
+        //ä½†æµ‹è¯•å‘ç°æœ‰é—®é¢˜ï¼ŒFindNextFile åœ¨æ²¡æœ‰å‘ç°æ–‡ä»¶åï¼Œä¼šæ”¾å…¥ä¸€ä¸ªé”™è¯¯EXDEVï¼Œ
+        //æ‰€ä»¥è¿™ä¸ªæ–¹æ³•æœ‰é—®é¢˜ï¼Œæ„Ÿè°¢charlieå’Œderrickå‘ç°é—®é¢˜ï¼Œä¿®æ”¹åè‡ªå¤§æ²¡æœ‰æµ‹è¯•
         //if (zce::last_error() != 0) return -1;
     }
 
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    //readdir_r²¢²»±»ÍÆ¼ö
+    //readdir_rå¹¶ä¸è¢«æ¨è
     //https://blog.csdn.net/gqtcgq/article/details/50359124
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -187,7 +187,7 @@ int zce::readdir_r (DIR *dir_handle,
 }
 
 
-//¶ÁÈ¡Ä³¸öÇ°×º£¬ºó×ºµÄÎÄ¼şÃû³Æ
+//è¯»å–æŸä¸ªå‰ç¼€ï¼Œåç¼€çš„æ–‡ä»¶åç§°
 int zce::readdir_nameary(const char *dirname,
                          const char *prefix_name,
                          const char *ext_name,
@@ -212,14 +212,14 @@ int zce::readdir_nameary(const char *dirname,
         ext_len = ::strlen(ext_name);
     }
 
-    //Ñ­»·ËùÓĞÎÄ¼ş£¬¼ì²âÀ©Õ¹Ãû³Æ
+    //å¾ªç¯æ‰€æœ‰æ–‡ä»¶ï¼Œæ£€æµ‹æ‰©å±•åç§°
     dirent dir_tmp, *dir_p = NULL;
 
     for (retval = zce::readdir_r(dir_hdl, &dir_tmp, &dir_p);
          dir_p && retval == 0;
          retval = zce::readdir_r(dir_hdl, &dir_tmp, &dir_p))
     {
-        //Ä¿Â¼
+        //ç›®å½•
         if (dir_tmp.d_type == DT_DIR )
         {
             if (select_dir == false)
@@ -227,7 +227,7 @@ int zce::readdir_nameary(const char *dirname,
                 continue;
             }
         }
-        //ÎÄ¼ş
+        //æ–‡ä»¶
         else if (dir_tmp.d_type == DT_REG )
         {
             if (select_file == false)
@@ -241,7 +241,7 @@ int zce::readdir_nameary(const char *dirname,
         }
 
 
-        //±È½ÏÇ°×º
+        //æ¯”è¾ƒå‰ç¼€
         size_t name_len = ::strlen(dir_tmp.d_name);
         if (prefix_name)
         {
@@ -253,12 +253,12 @@ int zce::readdir_nameary(const char *dirname,
             }
         }
 
-        //±È½Ïºó×ºÎÄ¼ş
+        //æ¯”è¾ƒåç¼€æ–‡ä»¶
         if (ext_name)
         {
 
             if (name_len <= ext_len ||
-                //ÔÚwindows ÏÂ×Ô¶¯ºöÊÓ´óĞ¡Ğ´µÄºó×º£¿
+                //åœ¨windows ä¸‹è‡ªåŠ¨å¿½è§†å¤§å°å†™çš„åç¼€ï¼Ÿ
 #ifdef ZCE_OS_WINDOWS
                 0 != ::strcmp(dir_tmp.d_name + name_len - ext_len, ext_name))
 #else
@@ -281,18 +281,18 @@ int zce::readdir_nameary(const char *dirname,
     return 0;
 }
 
-//¹ıÂËÉ¨Ãè¼ì²éÒ»¸öÄ¿Â¼
-//const char *dirname£¬Ä¿Â¼Ãû³Æ
-//dirent **namelist[],·µ»Ø²ÎÊı£¬Ò»¸ödirentµÄÖ¸ÕëÊı×é£¬ÇĞ¼ÇÕâ¸ö²ÎÊıÊÇº¯ÊıÄÚ2²ã·ÖÅäµÄ¿Õ¼ä±ØĞëÊÍ·Å
-//Ñ¡ÔñÆ÷µÄº¯ÊıÖ¸Õë
-//±È½Ïº¯ÊıÅÅĞòº¯ÊıµÄÖ¸Õë
+//è¿‡æ»¤æ‰«ææ£€æŸ¥ä¸€ä¸ªç›®å½•
+//const char *dirnameï¼Œç›®å½•åç§°
+//dirent **namelist[],è¿”å›å‚æ•°ï¼Œä¸€ä¸ªdirentçš„æŒ‡é’ˆæ•°ç»„ï¼Œåˆ‡è®°è¿™ä¸ªå‚æ•°æ˜¯å‡½æ•°å†…2å±‚åˆ†é…çš„ç©ºé—´å¿…é¡»é‡Šæ”¾
+//é€‰æ‹©å™¨çš„å‡½æ•°æŒ‡é’ˆ
+//æ¯”è¾ƒå‡½æ•°æ’åºå‡½æ•°çš„æŒ‡é’ˆ
 int zce::scandir (const char *dirname,
                   dirent **namelist[],
                   int (*selector)(const struct dirent *),
                   int (*comparator)(const struct dirent **, const struct dirent **))
 {
 
-    //WindowsÏÂÊ¹ÓÃopendirµÈº¯ÊıÊµÏÖ£¬
+    //Windowsä¸‹ä½¿ç”¨opendirç­‰å‡½æ•°å®ç°ï¼Œ
 #if defined (ZCE_OS_WINDOWS)
 
     assert(namelist);
@@ -310,12 +310,12 @@ int zce::scandir (const char *dirname,
     int once_nfiles = 0;
     bool occur_fail = false;
 
-    //ÕÒµ½ºÏÊÊµÄÎÄ¼ş¸öÊı,
+    //æ‰¾åˆ°åˆé€‚çš„æ–‡ä»¶ä¸ªæ•°,
     for (retval = zce::readdir_r (dir_handle, &dir_tmp, &dir_p);
          dir_p && retval == 0;
          retval = zce::readdir_r (dir_handle, &dir_tmp, &dir_p))
     {
-        //Èç¹ûÓĞÑ¡ÔñÆ÷
+        //å¦‚æœæœ‰é€‰æ‹©å™¨
         if (selector )
         {
             if ( (*selector)(dir_p) != 0)
@@ -329,14 +329,14 @@ int zce::scandir (const char *dirname,
         }
     }
 
-    //Èç¹û·µ»Ø´íÎó£¬Ä¿Ç°ÊµÏÖµÄreaddir_r²»»á·µ»Ø·Ç0Öµ£¬µ«ÊÇÔÚÕâ¶ù×öÒ»ÏÂÅĞ¶Ï
+    //å¦‚æœè¿”å›é”™è¯¯ï¼Œç›®å‰å®ç°çš„readdir_rä¸ä¼šè¿”å›é0å€¼ï¼Œä½†æ˜¯åœ¨è¿™å„¿åšä¸€ä¸‹åˆ¤æ–­
     if (retval != 0)
     {
         occur_fail = true;
         once_nfiles = 0;
     }
 
-    //¹Ø±ÕDIR
+    //å…³é—­DIR
     zce::closedir (dir_handle);
 
     if (occur_fail)
@@ -344,13 +344,13 @@ int zce::scandir (const char *dirname,
         return -1;
     }
 
-    //Èç¹ûÒ»¸öºÏÊÊµÄ¶¼Ã»ÓĞ£¬Ö®¼ä·µ»Ø
+    //å¦‚æœä¸€ä¸ªåˆé€‚çš„éƒ½æ²¡æœ‰ï¼Œä¹‹é—´è¿”å›
     if (0 == once_nfiles)
     {
         return 0;
     }
 
-    //ÔÙ´ò¿ªÒ»´ÎÊ¹ÓÃ
+    //å†æ‰“å¼€ä¸€æ¬¡ä½¿ç”¨
     dir_handle = zce::opendir (dirname);
 
     if (dir_handle == 0)
@@ -358,7 +358,7 @@ int zce::scandir (const char *dirname,
         return -1;
     }
 
-    //Èç¹ûÓĞ·¢ÏÖ¿ÉÒÔÓÃµÄÎÄ¼ş
+    //å¦‚æœæœ‰å‘ç°å¯ä»¥ç”¨çš„æ–‡ä»¶
     if (once_nfiles > 0)
     {
         vector_dir = (dirent **)::malloc (once_nfiles * sizeof(dirent *));
@@ -368,22 +368,22 @@ int zce::scandir (const char *dirname,
         }
     }
 
-    //Á½´Î²Ù×÷ºÃ´¦ÊÇ´úÂëÇåÎú£¬²»ÓÃĞ´reallocÕâÀàº¯Êı£¬»µ´¦ÊÇµÚ¶ş´ÎºÍµÚÒ»´Î¿ÉÄÜ½á¹û²»Ò»ÖÂ
-    //ÎªÊ²Ã´ÒªÔö¼Ó¸öÊıÏŞÖÆ£¬ÒòÎªÁ½´Î¼ì²éÖ®¼ä£¬¿ÉÄÜÓĞ±ä»¯
+    //ä¸¤æ¬¡æ“ä½œå¥½å¤„æ˜¯ä»£ç æ¸…æ™°ï¼Œä¸ç”¨å†™reallocè¿™ç±»å‡½æ•°ï¼Œåå¤„æ˜¯ç¬¬äºŒæ¬¡å’Œç¬¬ä¸€æ¬¡å¯èƒ½ç»“æœä¸ä¸€è‡´
+    //ä¸ºä»€ä¹ˆè¦å¢åŠ ä¸ªæ•°é™åˆ¶ï¼Œå› ä¸ºä¸¤æ¬¡æ£€æŸ¥ä¹‹é—´ï¼Œå¯èƒ½æœ‰å˜åŒ–
     int twice_nfiles = 0;
 
     for (twice_nfiles = 0; twice_nfiles < once_nfiles; )
     {
         retval = zce::readdir_r (dir_handle, &dir_tmp, &dir_p);
 
-        //Èç¹û·¢ÉúÊ§°Ü
+        //å¦‚æœå‘ç”Ÿå¤±è´¥
         if (retval != 0 )
         {
             occur_fail = true;
             break;
         }
 
-        //Èç¹ûÃ»ÓĞ·¢ÏÖÎÄ¼şÁË
+        //å¦‚æœæ²¡æœ‰å‘ç°æ–‡ä»¶äº†
         if ( NULL == dir_p )
         {
             break;
@@ -406,10 +406,10 @@ int zce::scandir (const char *dirname,
         ++twice_nfiles;
     }
 
-    //¹Ø±ÕDIR
+    //å…³é—­DIR
     zce::closedir (dir_handle);
 
-    //Èç¹û³öÏÖÁË´íÎó£¬ÊÍ·Å·ÖÅäµÄÄÚ´æ
+    //å¦‚æœå‡ºç°äº†é”™è¯¯ï¼Œé‡Šæ”¾åˆ†é…çš„å†…å­˜
     if (occur_fail && vector_dir)
     {
         for (int i = 0; i < twice_nfiles; ++i)
@@ -431,7 +431,7 @@ int zce::scandir (const char *dirname,
                  (int ( *)(const void *, const void *)) comparator);
     }
 
-    //ÒÔµÚ¶ş´ÎÉ¨ÃèÊı¾İÎª×¼
+    //ä»¥ç¬¬äºŒæ¬¡æ‰«ææ•°æ®ä¸ºå‡†
     return twice_nfiles;
 
 #elif defined (ZCE_OS_LINUX)
@@ -442,7 +442,7 @@ int zce::scandir (const char *dirname,
                      selector,
                      (int ( *)(const void *, const void *))comparator);
 
-    //ÆäÊµÎÒ²»ÊÇÌØ±ğÈ·¶¨GCCÊ²Ã´°æ±¾¸Ä½øÁËÕâ¸öµØ·½£¬ÄÜ¿Ï¶¨4.4µÄ°æ±¾·¢ÉúÁË±ä»¯
+    //å…¶å®æˆ‘ä¸æ˜¯ç‰¹åˆ«ç¡®å®šGCCä»€ä¹ˆç‰ˆæœ¬æ”¹è¿›äº†è¿™ä¸ªåœ°æ–¹ï¼Œèƒ½è‚¯å®š4.4çš„ç‰ˆæœ¬å‘ç”Ÿäº†å˜åŒ–
 #else
     return ::scandir(dirname,
                      namelist,
@@ -454,7 +454,7 @@ int zce::scandir (const char *dirname,
 }
 
 
-//ÊÍ·Åscandir ·µ»Ø²ÎÊıµÄÀïÃæµÄ¸÷ÖÖ·ÖÅäÊı¾İ£¬·Ç±ê×¼º¯Êı
+//é‡Šæ”¾scandir è¿”å›å‚æ•°çš„é‡Œé¢çš„å„ç§åˆ†é…æ•°æ®ï¼Œéæ ‡å‡†å‡½æ•°
 void zce::free_scandir_result(int list_number, dirent *namelist[])
 {
     ZCE_ASSERT(list_number > 0);
@@ -467,7 +467,7 @@ void zce::free_scandir_result(int list_number, dirent *namelist[])
     free(namelist);
 }
 
-//ÓÃÓÚÄ¿Â¼ÅÅĞò±È½Ï
+//ç”¨äºç›®å½•æ’åºæ¯”è¾ƒ
 int zce::scandir_namesort (const struct dirent **left, const struct dirent **right)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -481,14 +481,14 @@ const char *zce::basename (const char *path_name, char *file_name, size_t buf_le
 {
     const char *temp = NULL;
 
-    //¸ù¾İ²»Í¬µÄÆ½Ì¨ÕÒµ½×îºóÒ»¸ö·Ö¸ô·û
+    //æ ¹æ®ä¸åŒçš„å¹³å°æ‰¾åˆ°æœ€åä¸€ä¸ªåˆ†éš”ç¬¦
 #if defined (ZCE_OS_WINDOWS)
 
-    //ÒòÎªWindowsÆ½Ì¨Ö§³ÖÁ½ÖÖ·Ö¸ô·ûºÅ£¬Õâ¸öµØ·½±ØĞëÌØÊâ´¦ÀíÒ»ÏÂ
+    //å› ä¸ºWindowså¹³å°æ”¯æŒä¸¤ç§åˆ†éš”ç¬¦å·ï¼Œè¿™ä¸ªåœ°æ–¹å¿…é¡»ç‰¹æ®Šå¤„ç†ä¸€ä¸‹
     const char *temp1 = ::strrchr (path_name, WIN_DIRECTORY_SEPARATOR_CHAR1);
     const char *temp2 = ::strrchr (path_name, WIN_DIRECTORY_SEPARATOR_CHAR2);
 
-    //Ñ¡Ôñ×îºóµÄÄÇ¸ö×÷Îª·Ö¸îµã
+    //é€‰æ‹©æœ€åçš„é‚£ä¸ªä½œä¸ºåˆ†å‰²ç‚¹
     if (temp1 > temp2)
     {
         temp = temp1;
@@ -502,7 +502,7 @@ const char *zce::basename (const char *path_name, char *file_name, size_t buf_le
     temp = ::strrchr (path_name, LINUX_DIRECTORY_SEPARATOR_CHAR);
 #endif
 
-    //Èç¹ûÃ»ÓĞ·¢ÏÖ·Ö¸î·ûºÅ£¬ÓÃÕû¸öÎÄ¼şÃû³Æ×÷Îªbase name
+    //å¦‚æœæ²¡æœ‰å‘ç°åˆ†å‰²ç¬¦å·ï¼Œç”¨æ•´ä¸ªæ–‡ä»¶åç§°ä½œä¸ºbase name
     if (0 == temp )
     {
         return ::strncpy(file_name, path_name, buf_len);
@@ -518,10 +518,10 @@ const char *zce::dirname (const char *path_name, char *dir_name, size_t buf_len)
 
     const char *temp = NULL;
 
-    //¸ù¾İ²»Í¬µÄÆ½Ì¨ÕÒµ½×îºóÒ»¸ö·Ö¸ô·û
+    //æ ¹æ®ä¸åŒçš„å¹³å°æ‰¾åˆ°æœ€åä¸€ä¸ªåˆ†éš”ç¬¦
 #if defined (ZCE_OS_WINDOWS)
 
-    //WINDOWSÆ½Ì¨Á½¸ö·Ö¸ô·û¶¼¿ÉÄÜ³öÏÖ£¬
+    //WINDOWSå¹³å°ä¸¤ä¸ªåˆ†éš”ç¬¦éƒ½å¯èƒ½å‡ºç°ï¼Œ
     const char *temp1 = ::strrchr (path_name, WIN_DIRECTORY_SEPARATOR_CHAR1);
     const char *temp2 = ::strrchr (path_name, WIN_DIRECTORY_SEPARATOR_CHAR2);
 
@@ -538,7 +538,7 @@ const char *zce::dirname (const char *path_name, char *dir_name, size_t buf_len)
     temp = ::strrchr (path_name, LINUX_DIRECTORY_SEPARATOR_CHAR);
 #endif
 
-    //Èç¹ûÃ»ÓĞÄ¿Â¼Ãû³Æ£¬¸´ÖÆµ±Ç°Ä¿Â¼Â·¾¶·µ»Ø¸øÄã£¬ÕâÑù¿ÉÒÔ±ÜÃâÒ»Ğ©Âé·³¡£
+    //å¦‚æœæ²¡æœ‰ç›®å½•åç§°ï¼Œå¤åˆ¶å½“å‰ç›®å½•è·¯å¾„è¿”å›ç»™ä½ ï¼Œè¿™æ ·å¯ä»¥é¿å…ä¸€äº›éº»çƒ¦ã€‚
     if (temp == 0)
     {
         return ::strncpy(dir_name, ZCE_CURRENT_DIRECTORY_STR, buf_len);
@@ -553,10 +553,10 @@ const char *zce::dirname (const char *path_name, char *dir_name, size_t buf_len)
     }
 }
 
-//µÃµ½µ±Ç°Ä¿Â¼
+//å¾—åˆ°å½“å‰ç›®å½•
 char *zce::getcwd(char *buffer, int maxlen  )
 {
-    //ÆäÊµ°²×°ÎÒÃÇÃ÷È·µÄºê¶¨Òå£¬ÏÂÃæµÄº¯Êı²»ÓÃ_Ò²¿ÉÒÔ
+    //å…¶å®å®‰è£…æˆ‘ä»¬æ˜ç¡®çš„å®å®šä¹‰ï¼Œä¸‹é¢çš„å‡½æ•°ä¸ç”¨_ä¹Ÿå¯ä»¥
 #if defined (ZCE_OS_WINDOWS)
     return ::_getcwd (buffer, maxlen);
 #elif defined (ZCE_OS_LINUX)
@@ -564,7 +564,7 @@ char *zce::getcwd(char *buffer, int maxlen  )
 #endif
 }
 
-//CDÄ³¸öÄ¿Â¼
+//CDæŸä¸ªç›®å½•
 int zce::chdir(const char *dirname )
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -574,7 +574,7 @@ int zce::chdir(const char *dirname )
 #endif
 }
 
-//½¨Á¢Ä³¸öÄ¿Â¼£¬µ¥²ã,WINDOWSÏÂ£¬ºóÃæÄÇ¸ö²ÎÊıÎŞĞ§
+//å»ºç«‹æŸä¸ªç›®å½•ï¼Œå•å±‚,WINDOWSä¸‹ï¼Œåé¢é‚£ä¸ªå‚æ•°æ— æ•ˆ
 int zce::mkdir(const char *pathname, mode_t mode)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -585,7 +585,7 @@ int zce::mkdir(const char *pathname, mode_t mode)
 #endif
 }
 
-//µİ¹éµÄ½¨Á¢Ä¿Â¼£¬·Ç±ê×¼º¯Êı£¬Èç¹ûÏëÒ»´Î½¨Á¢¶à²ãÄ¿Â¼£¬ÓÃÕâ¸öº¯Êı
+//é€’å½’çš„å»ºç«‹ç›®å½•ï¼Œéæ ‡å‡†å‡½æ•°ï¼Œå¦‚æœæƒ³ä¸€æ¬¡å»ºç«‹å¤šå±‚ç›®å½•ï¼Œç”¨è¿™ä¸ªå‡½æ•°
 int zce::mkdir_recurse(const char *pathname, mode_t mode)
 {
     char process_dir[PATH_MAX + 1];
@@ -595,14 +595,14 @@ int zce::mkdir_recurse(const char *pathname, mode_t mode)
 
     int ret = 0;
 
-    //Ñ­»·´¦Àí£¬¶ÔÃ¿Ò»²ãÄ¿Â¼¶¼³¢ÊÔ½¨Á¢
+    //å¾ªç¯å¤„ç†ï¼Œå¯¹æ¯ä¸€å±‚ç›®å½•éƒ½å°è¯•å»ºç«‹
     for (size_t i = 0; i < path_len; ++i)
     {
         if (ZCE_IS_DIRECTORY_SEPARATOR(pathname[i]))
         {
 
 #if defined ZCE_OS_WINDOWS
-            //WindowsÏÂ£¬ÓÉÓÚÓĞÅÌ·ûµÄ´æÔÚ£¬±ÈÈçF:\ABC\EDF£¬Äã½¨Á¢F:\ÊÇ»á·¢Éú´íÎóµÄ,¶øÇÒ²»ÊÇEEXIST£¨ºÃÏñÊÇEINVAL£©£¬ËùÒÔ±ØĞëÅĞ¶ÏÒ»ÏÂ
+            //Windowsä¸‹ï¼Œç”±äºæœ‰ç›˜ç¬¦çš„å­˜åœ¨ï¼Œæ¯”å¦‚F:\ABC\EDFï¼Œä½ å»ºç«‹F:\æ˜¯ä¼šå‘ç”Ÿé”™è¯¯çš„,è€Œä¸”ä¸æ˜¯EEXISTï¼ˆå¥½åƒæ˜¯EINVALï¼‰ï¼Œæ‰€ä»¥å¿…é¡»åˆ¤æ–­ä¸€ä¸‹
             if ( i > 0 &&  pathname[i - 1] == ':')
             {
                 continue;
@@ -612,7 +612,7 @@ int zce::mkdir_recurse(const char *pathname, mode_t mode)
             ::strncpy(process_dir, pathname, i + 1);
             ret = zce::mkdir(process_dir, mode);
 
-            //Èç¹ûÄ¿Â¼ÒÑ¾­´æÔÚ£¬²»½øĞĞ´¦Àí
+            //å¦‚æœç›®å½•å·²ç»å­˜åœ¨ï¼Œä¸è¿›è¡Œå¤„ç†
             if (ret != 0 && errno != EEXIST)
             {
                 return ret;
@@ -620,7 +620,7 @@ int zce::mkdir_recurse(const char *pathname, mode_t mode)
         }
     }
 
-    //Èç¹ûÄãĞ´µÄÂ·¾¶×îºó²»ÊÇÒÔ\»òÕß/½áÎ²£¬ÒÔÕû¸öÂ·¾¶´´½¨Ò»ÏÂ
+    //å¦‚æœä½ å†™çš„è·¯å¾„æœ€åä¸æ˜¯ä»¥\æˆ–è€…/ç»“å°¾ï¼Œä»¥æ•´ä¸ªè·¯å¾„åˆ›å»ºä¸€ä¸‹
     if (path_len > 0 && false == ZCE_IS_DIRECTORY_SEPARATOR(pathname[path_len - 1]) )
     {
         ret = zce::mkdir(pathname, mode);
@@ -629,7 +629,7 @@ int zce::mkdir_recurse(const char *pathname, mode_t mode)
     return 0;
 }
 
-//É¾³ıÄ³¸öÄ¿Â¼
+//åˆ é™¤æŸä¸ªç›®å½•
 int zce::rmdir(const char *pathname)
 {
 #if defined (ZCE_OS_WINDOWS)

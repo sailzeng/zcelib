@@ -11,7 +11,7 @@
 ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr, unsigned int reg_cmd) :
     ZCE_Async_Object(async_mgr, reg_cmd)
 {
-    //¶ÑÕ»´óĞ¡Ä¬ÈÏÑ¡Ôñ×îĞ¡µÄ£¬
+    //å †æ ˆå¤§å°é»˜è®¤é€‰æ‹©æœ€å°çš„ï¼Œ
 }
 
 ZCE_Async_Coroutine::~ZCE_Async_Coroutine()
@@ -19,7 +19,7 @@ ZCE_Async_Coroutine::~ZCE_Async_Coroutine()
 }
 
 
-//³õÊ¼»¯Ğ­³ÌµÄ¶ÔÏó
+//åˆå§‹åŒ–åç¨‹çš„å¯¹è±¡
 int ZCE_Async_Coroutine::initialize()
 {
     ZCE_Async_Object::initialize();
@@ -40,7 +40,7 @@ int ZCE_Async_Coroutine::initialize()
     return 0;
 }
 
-//ÇåÀíĞ­³Ì¶ÔÏó
+//æ¸…ç†åç¨‹å¯¹è±¡
 void ZCE_Async_Coroutine::finish()
 {
     ZCE_Async_Object::finish();
@@ -48,7 +48,7 @@ void ZCE_Async_Coroutine::finish()
     return;
 }
 
-//µ÷ÓÃĞ­³Ì
+//è°ƒç”¨åç¨‹
 void ZCE_Async_Coroutine::on_run(const void *outer_data, bool &continue_run)
 {
     receive_data(outer_data);
@@ -58,7 +58,7 @@ void ZCE_Async_Coroutine::on_run(const void *outer_data, bool &continue_run)
 
     receive_data_ = NULL;
 
-    //¸ù¾İµ÷ÓÃ·µ»ØµÄº¯Êı¼ÇÂ¼µÄ×´Ì¬ÖµµÃµ½µ±Ç°µÄ×´Ì¬
+    //æ ¹æ®è°ƒç”¨è¿”å›çš„å‡½æ•°è®°å½•çš„çŠ¶æ€å€¼å¾—åˆ°å½“å‰çš„çŠ¶æ€
     if (coroutine_state_ == COROUTINE_CONTINUE)
     {
         continue_run = true;
@@ -74,7 +74,7 @@ void ZCE_Async_Coroutine::on_run(const void *outer_data, bool &continue_run)
 }
 
 
-//µ÷ÓÃĞ­³Ì
+//è°ƒç”¨åç¨‹
 void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
                                      bool &continue_run)
 {
@@ -82,7 +82,7 @@ void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
     coroutine_state_ = COROUTINE_TIMEOUT;
     yeild_coroutine();
 
-    //¸ù¾İµ÷ÓÃ·µ»ØµÄº¯Êı¼ÇÂ¼µÄ×´Ì¬ÖµµÃµ½µ±Ç°µÄ×´Ì¬
+    //æ ¹æ®è°ƒç”¨è¿”å›çš„å‡½æ•°è®°å½•çš„çŠ¶æ€å€¼å¾—åˆ°å½“å‰çš„çŠ¶æ€
     if (coroutine_state_ == COROUTINE_CONTINUE)
     {
         continue_run = true;
@@ -97,14 +97,14 @@ void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
     }
 }
 
-//ÇĞ»»»ØMain£¬Ğ­³Ì»¹»á¼ÌĞøÔËĞĞ
+//åˆ‡æ¢å›Mainï¼Œåç¨‹è¿˜ä¼šç»§ç»­è¿è¡Œ
 void ZCE_Async_Coroutine::yeild_main_continue()
 {
     coroutine_state_ = COROUTINE_CONTINUE;
     zce::yeild_main(&handle_);
 }
 
-//ÇĞ»»»ØMain,Ğ­³ÌÍË³ö
+//åˆ‡æ¢å›Main,åç¨‹é€€å‡º
 void ZCE_Async_Coroutine::yeild_main_exit()
 {
     coroutine_state_ = COROUTINE_EXIT;
@@ -112,7 +112,7 @@ void ZCE_Async_Coroutine::yeild_main_exit()
 }
 
 
-//ÇĞ»»»ØĞ­³Ì£¬Ò²¾ÍÊÇÇĞ»»µ½Ëû×Ô¼ºÔËĞĞ
+//åˆ‡æ¢å›åç¨‹ï¼Œä¹Ÿå°±æ˜¯åˆ‡æ¢åˆ°ä»–è‡ªå·±è¿è¡Œ
 void ZCE_Async_Coroutine::yeild_coroutine()
 {
     zce::yeild_coroutine(&handle_);
@@ -120,21 +120,21 @@ void ZCE_Async_Coroutine::yeild_coroutine()
 
 
 
-//Ğ­³Ì¶ÔÏóµÄÔËĞĞº¯Êı
+//åç¨‹å¯¹è±¡çš„è¿è¡Œå‡½æ•°
 void ZCE_Async_Coroutine::coroutine_do()
 {
-    //Èç¹ûĞèÒªĞ­³Ì
+    //å¦‚æœéœ€è¦åç¨‹
     for (;;)
     {
         //
         coroutine_run();
 
-        //ÔËĞĞÍê±Ïºó£¬·µ»ØÖ÷³ÌĞò
+        //è¿è¡Œå®Œæ¯•åï¼Œè¿”å›ä¸»ç¨‹åº
         yeild_main_exit();
     }
 }
 
-///static º¯Êı£¬ÓÃÓÚĞ­³ÌÔËĞĞº¯Êı£¬µ÷ÓÃĞ­³Ì¶ÔÏóµÄÔËĞĞº¯Êı
+///static å‡½æ•°ï¼Œç”¨äºåç¨‹è¿è¡Œå‡½æ•°ï¼Œè°ƒç”¨åç¨‹å¯¹è±¡çš„è¿è¡Œå‡½æ•°
 void ZCE_Async_Coroutine::static_do(void *coroutine,
                                     void*,
                                     void*)
@@ -144,7 +144,7 @@ void ZCE_Async_Coroutine::static_do(void *coroutine,
 
 
 
-//µÈ´ıtime_out Ê±¼äºó³¬Ê±£¬ÉèÖÃ¶¨Ê±Æ÷ºó£¬ÇĞ»»Ğ­³Ìµ½main
+//ç­‰å¾…time_out æ—¶é—´åè¶…æ—¶ï¼Œè®¾ç½®å®šæ—¶å™¨åï¼Œåˆ‡æ¢åç¨‹åˆ°main
 int ZCE_Async_Coroutine::waitfor_timeout(const ZCE_Time_Value &time_out)
 {
     int ret = 0;
@@ -161,7 +161,7 @@ int ZCE_Async_Coroutine::waitfor_timeout(const ZCE_Time_Value &time_out)
 
 //=====================================================================================
 
-//Ğ¯³ÌÖ÷¿Ø¹ÜÀíÀà
+//æºç¨‹ä¸»æ§ç®¡ç†ç±»
 ZCE_Async_CoroutineMgr::ZCE_Async_CoroutineMgr() :
     ZCE_Async_ObjectMgr()
 {

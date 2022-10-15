@@ -1,5 +1,4 @@
-
-// illusion_main.h : main header file for the illusion application
+é”˜å¡Šæ•‡?// illusion_main.h : main header file for the illusion application
 //
 #pragma once
 
@@ -22,20 +21,23 @@ protected:
 public:
 
     /*!
-    * @brief      ¸ù¾Ýµ±Ç°Ä¬ÈÏµÄ×Ö·û±àÂë·½Ê½£¬×ª»»ÎªUTF8
-    * @return     int == 0±íÊ¾×ª»»³É¹¦
-    * @param      src Ô´×Ö·û´®£¬CString½á¹¹£¬¸ù¾ÝMFCµÄ×Ö·û¼¯±àÂë¼¯¾ö¶¨
-    * @param      dst ×ªºóµÄµÄ×Ö·û´®£¬Õâ¸öº¯ÊýÄ¬ÈÏ×ª»»ÎªUTF8µÄ×Ö·û¼¯ºÏ
+<<<<<<< HEAD
+    * @brief      é—€æ¬’
+=======
+    * @brief      æ ¹æ®å½“å‰é»˜è®¤çš„å­—ç¬¦ç¼–ç æ–¹å¼ï¼Œè½¬æ¢ä¸ºUTF8
+    * @return     int == 0è¡¨ç¤ºè½¬æ¢æˆåŠŸ
+    * @param      src æºå­—ç¬¦ä¸²ï¼ŒCStringç»“æž„ï¼Œæ ¹æ®MFCçš„å­—ç¬¦é›†ç¼–ç é›†å†³å®š
+    * @param      dst è½¬åŽçš„çš„å­—ç¬¦ä¸²ï¼Œè¿™ä¸ªå‡½æ•°é»˜è®¤è½¬æ¢ä¸ºUTF8çš„å­—ç¬¦é›†åˆ
     * @note
     */
     int default_to_utf8(const CString &src, std::string &dst);
 
-    ///Ä¬ÈÏ±àÂë×ª»»ÎªUTF16
+    ///é»˜è®¤ç¼–ç è½¬æ¢ä¸ºUTF16
     int default_to_utf16(const CString &src, std::string &dst);
-    //Ä¬ÈÏ±àÂë×ª»»ÎªMBCS
+    //é»˜è®¤ç¼–ç è½¬æ¢ä¸ºMBCS
     int default_to_mbcs(const CString &src, std::string &dst);
 
-    ///MFCÄ¬ÈÏµÄ×Ö·û¼¯×ª»»ÎªbytesÐèÒªµÄ×Ö·û¼¯
+    ///MFCé»˜è®¤çš„å­—ç¬¦é›†è½¬æ¢ä¸ºbyteséœ€è¦çš„å­—ç¬¦é›†
     int default_to_bytescoding(const CString &src, std::string &dst);
     ///
     int bytescoding_to_mbcs(const std::string &src, std::string &dst);
@@ -45,7 +47,7 @@ public:
     ///
     int utf16_to_mbcs(const std::string &src, std::string &dst);
 
-    ///ÉèÖÃbytes ×ª»»µÄµÄCODING£¬ÔÊÐíbytesÉèÖÃ²»Í¬µÄ×Ö·û¼¯
+    ///è®¾ç½®bytes è½¬æ¢çš„çš„CODINGï¼Œå…è®¸bytesè®¾ç½®ä¸åŒçš„å­—ç¬¦é›†
     void set_bytes_coding(CVT_CODING cvt_coding);
 
 public:
@@ -61,7 +63,7 @@ protected:
 
 protected:
 
-    //µ¥×ÓÊµÀý
+    //å•å­å®žä¾‹
     static Coding_Convert  *instance_;
 
 protected:
@@ -80,3 +82,4 @@ protected:
 
 
 
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
