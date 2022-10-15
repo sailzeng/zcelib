@@ -113,9 +113,6 @@
     <ClInclude Include="zce_lock_thread_spin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_mysql_command.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_mysql_connect.h">
       <Filter>Source Files</Filter>
     </ClInclude>

@@ -555,7 +555,7 @@ void ZCE_Server_Status::copy_stat_counter()
     status_copy_mandy_->resize(num_of_counter);
     ZCE_STATUS_ITEM *stat_sandy_begin = status_stat_sandy_->begin();
     ZCE_STATUS_ITEM *stat_mandy_begin = status_copy_mandy_->begin();
-    std::copy_n(stat_sandy_begin,num_of_counter,stat_mandy_begin);
+    std::copy_n(stat_sandy_begin, num_of_counter, stat_mandy_begin);
     std::copy_n(stat_sandy_begin, num_of_counter, stat_mandy_begin);
 
     //刷新备份时间
@@ -589,10 +589,8 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
 
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
-
     for (size_t i = 0; i < num_of_counter; ++i)
     {
-
         STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find((stat_process_iter + i)->item_id_.statics_id_);
 
         if (iter != conf_stat_map_.end())
@@ -621,7 +619,6 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
 {
     size_t num_of_counter = 0;
     ZCE_STATUS_ITEM *stat_process_iter = NULL;
-
 
     //记录监控配置的名字的变量
     char statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN + 1];
@@ -669,13 +666,11 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
                 (stat_process_iter + i)->item_id_.subclassing_id_,
                 statics_item_name,
                 (stat_process_iter + i)->counter_
-               );
         );
     }
 }
 
 //得到文件的头部信息
-void ZCE_Server_Status::get_stat_head(ZCE_STATUS_HEAD *stat_head )
 void ZCE_Server_Status::get_stat_head(ZCE_STATUS_HEAD *stat_head)
 {
     *stat_head = *stat_file_head_;
@@ -716,6 +711,4 @@ void ZCE_Server_Status::clean_instance()
 
     instance_ = NULL;
     return;
-}
-
 }

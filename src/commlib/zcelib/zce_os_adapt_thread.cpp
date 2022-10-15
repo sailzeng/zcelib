@@ -66,8 +66,6 @@ int zce::pthread_attr_getex(const pthread_attr_t *attr,
         return ret;
     }
 
-    *threadpriority  = param.sched_priority;
-    ret = ::pthread_attr_getstacksize (attr, stacksize);
     *threadpriority = param.sched_priority;
     ret = ::pthread_attr_getstacksize(attr, stacksize);
 
@@ -84,12 +82,9 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
                             int detachstate,
                             size_t stacksize,
                             int threadpriority
-                           )
 )
 {
-
 #if defined (ZCE_OS_WINDOWS)
-    assert( PTHREAD_CREATE_JOINABLE == detachstate || PTHREAD_CREATE_DETACHED == detachstate );
     assert(PTHREAD_CREATE_JOINABLE == detachstate || PTHREAD_CREATE_DETACHED == detachstate);
     attr->detachstate = detachstate;
     attr->stacksize = stacksize;
@@ -101,7 +96,6 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 
 #elif defined (ZCE_OS_LINUX)
     int ret = 0;
-    ret = ::pthread_attr_setdetachstate (attr, detachstate);
     ret = ::pthread_attr_setdetachstate(attr, detachstate);
 
     if (ret != 0)
@@ -119,7 +113,6 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
 
     sched_param param;
     param.sched_priority = threadpriority;
-    ret = ::pthread_attr_setschedparam (attr, &param);
     ret = ::pthread_attr_setschedparam(attr, &param);
 
     if (ret != 0)
@@ -128,13 +121,11 @@ int zce::pthread_attr_setex(pthread_attr_t *attr,
     }
 
     // 加个判断如果小于最小值，则赋为最小值
-    if (stacksize < PTHREAD_STACK_MIN)
     if (stacksize < (size_t)PTHREAD_STACK_MIN)
     {
         stacksize = PTHREAD_STACK_MIN;
     }
 
-    ret = ::pthread_attr_setstacksize (attr, stacksize);
     ret = ::pthread_attr_setstacksize(attr, stacksize);
 
     if (ret != 0)
@@ -159,7 +150,6 @@ protected:
 
 public:
     //构造函数和析构函数
-    THREAD_START_FUN_ADAPT(void (*start_routine)(void *), void *arg):
     THREAD_START_FUN_ADAPT(void (*start_routine)(void *), void *arg) :
         start_routine_(start_routine),
         arg_(arg)
@@ -226,14 +216,12 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 
     //设置线程优先级
     if (PTHREAD_EXPLICIT_SCHED == attr->inheritsched &&
-        0 != attr->schedparam.sched_priority )
         0 != attr->schedparam.sched_priority)
     {
         //线程相对优先级（取值对应如下）
         BOOL bret = ::SetThreadPriority(thread_handle,
                                         attr->schedparam.sched_priority);
 
-        if ( !bret )
         if (!bret)
         {
             //是否记录一下，呵呵
@@ -245,9 +233,6 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 #elif defined (ZCE_OS_LINUX)
 
     THREAD_START_FUN_ADAPT *adapt_object = new THREAD_START_FUN_ADAPT(start_routine, arg);
-    return ::pthread_create (threadid, attr,
-                             THREAD_START_FUN_ADAPT::adapt_svc_run,
-                             adapt_object);
     return ::pthread_create(threadid, attr,
                             THREAD_START_FUN_ADAPT::adapt_svc_run,
                             adapt_object);
@@ -263,7 +248,6 @@ int zce::pthread_createex(void (*start_routine)(void *),
                           int detachstate,
                           size_t stacksize,
                           int threadpriority
-                         )
 )
 {
     int ret = 0;
@@ -280,7 +264,6 @@ int zce::pthread_createex(void (*start_routine)(void *),
                                   detachstate,
                                   stacksize,
                                   threadpriority
-                                 );
     );
 
     if (0 != ret)
@@ -305,7 +288,6 @@ int zce::pthread_createex(void (*start_routine)(void *),
 }
 
 //退出，传递void，各个平台不兼容，所以干脆什么都不传递出来
-void zce::pthread_exit( void )
 void zce::pthread_exit(void)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -316,7 +298,6 @@ void zce::pthread_exit(void)
 
 #elif defined (ZCE_OS_LINUX)
     void *return_data = NULL;
-    return ::pthread_exit (return_data);
     return ::pthread_exit(return_data);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -325,7 +306,6 @@ void zce::pthread_exit(void)
 int zce::pthread_join(ZCE_THREAD_ID threadid)
 {
     ZCE_THR_FUNC_RETURN ret_val;
-    return zce::pthread_join (threadid, &ret_val);
     return zce::pthread_join(threadid, &ret_val);
 }
 
@@ -347,7 +327,6 @@ protected:
 
 public:
     //构造函数和析构函数
-    WIN_THREAD_STARTFUN_ADAPT(unsigned int (*start_routine)(void *), void *arg):
     WIN_THREAD_STARTFUN_ADAPT(unsigned int (*start_routine)(void *), void *arg) :
         start_routine_(start_routine),
         arg_(arg)
@@ -365,7 +344,6 @@ public:
         unsigned int return_data = my_adapt->start_routine_(my_adapt->arg_);
         return return_data;
     }
-
 };
 
 #endif //
@@ -373,7 +351,6 @@ public:
 //创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值
 int zce::pthread_create(ZCE_THREAD_ID *threadid,
                         const pthread_attr_t *attr,
-                        ZCE_THR_FUNC_RETURN (* start_routine)(void *),
                         ZCE_THR_FUNC_RETURN(*start_routine)(void *),
                         void *arg)
 {
@@ -395,14 +372,12 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
 
     //设置线程优先级
     if (PTHREAD_EXPLICIT_SCHED == attr->inheritsched &&
-        0 != attr->schedparam.sched_priority )
         0 != attr->schedparam.sched_priority)
     {
         //线程相对优先级（取值对应如下）
         BOOL bret = ::SetThreadPriority(thread_handle,
                                         attr->schedparam.sched_priority);
 
-        if ( !bret )
         if (!bret)
         {
             //是否记录一下，呵呵
@@ -412,10 +387,6 @@ int zce::pthread_create(ZCE_THREAD_ID *threadid,
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_create (threadid,
-                             attr,
-                             start_routine,
-                             arg);
     return ::pthread_create(threadid,
                             attr,
                             start_routine,
@@ -431,7 +402,6 @@ void zce::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
     return _endthreadex(thr_ret);
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_exit (thr_ret);
     return ::pthread_exit(thr_ret);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -439,14 +409,12 @@ void zce::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
 //等待某个JOIN的线程结束,并且得到线程回调函数的返回值
 int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     //OpenThread是一个WIN SERVER 2000后才有的函数 VC6应该没有
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
-                                            );
     );
     if (thr_handle == NULL)
     {
@@ -454,8 +422,6 @@ int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
     }
     DWORD thread_ret;
 
-    if (::WaitForSingleObject (thr_handle, INFINITE) == WAIT_OBJECT_0
-        && ::GetExitCodeThread (thr_handle, &thread_ret) != FALSE)
     if (::WaitForSingleObject(thr_handle, INFINITE) == WAIT_OBJECT_0
         && ::GetExitCodeThread(thr_handle, &thread_ret) != FALSE)
     {
@@ -468,7 +434,6 @@ int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_join (threadid, ret_val);
     return ::pthread_join(threadid, ret_val);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -481,7 +446,6 @@ ZCE_THREAD_ID zce::pthread_self(void)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_self ();
     return ::pthread_self();
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -499,7 +463,6 @@ int zce::pthread_cancel(ZCE_THREAD_ID threadid)
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
-                                            );
     );
     if (thr_handle == NULL)
     {
@@ -521,7 +484,6 @@ int zce::pthread_cancel(ZCE_THREAD_ID threadid)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_cancel (threadid);
     return ::pthread_cancel(threadid);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -536,7 +498,6 @@ int zce::pthread_detach(ZCE_THREAD_ID threadid)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_detach (threadid);
     return ::pthread_detach(threadid);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -549,10 +510,8 @@ ZCE_THREAD_HANDLE pthread_id2handle(ZCE_THREAD_ID threadid)
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
-                                            );
     );
     return thr_handle;
-
 }
 #endif //
 
@@ -564,7 +523,6 @@ int zce::pthread_yield(void)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::pthread_yield ();
     return ::sched_yield();
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -579,7 +537,6 @@ int zce::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 
     ZCE_UNUSED_ARG(destructor);
 
-    *key = ::TlsAlloc ();
     *key = ::TlsAlloc();
 
     //如果返回FALSE标识失败
@@ -600,10 +557,8 @@ int zce::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 //
 int zce::pthread_key_delete(pthread_key_t key)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
-    BOOL bool_ret =  ::TlsFree (key);
     BOOL bool_ret = ::TlsFree(key);
 
     //如果返回FALSE标识失败
@@ -623,10 +578,8 @@ int zce::pthread_key_delete(pthread_key_t key)
 
 int zce::pthread_setspecific(pthread_key_t key, const void *data)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
-    BOOL bool_ret =  ::TlsSetValue (key, (LPVOID)( data));
     BOOL bool_ret = ::TlsSetValue(key, (LPVOID)(data));
 
     //如果返回FALSE标识失败
@@ -640,20 +593,16 @@ int zce::pthread_setspecific(pthread_key_t key, const void *data)
 
 #elif defined (ZCE_OS_LINUX)
     //
-    return ::pthread_setspecific (key, data);
     return ::pthread_setspecific(key, data);
 #endif
 }
 
-void *zce::pthread_getspecific (pthread_key_t key)
 void *zce::pthread_getspecific(pthread_key_t key)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    LPVOID  data = ::TlsGetValue (key);
     LPVOID  data = ::TlsGetValue(key);
 
-    if (data == 0 && ::GetLastError () != NO_ERROR)
     if (data == 0 && ::GetLastError() != NO_ERROR)
     {
         errno = GetLastError();
@@ -666,11 +615,7 @@ void *zce::pthread_getspecific(pthread_key_t key)
 
 #elif defined (ZCE_OS_LINUX)
     //
-    return ::pthread_getspecific (key);
     return ::pthread_getspecific(key);
 
 #endif
-
-}
-
 }

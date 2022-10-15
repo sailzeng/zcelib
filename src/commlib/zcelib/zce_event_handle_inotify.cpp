@@ -7,13 +7,11 @@
 #include "zce_event_reactor_base.h"
 
 //构造函数和析构函数
-ZCE_Event_INotify::ZCE_Event_INotify():
 ZCE_Event_INotify::ZCE_Event_INotify() :
     ZCE_Event_Handler(),
-
     read_buffer_(NULL)
 {
-    read_buffer_ = new char [READ_BUFFER_LEN + 1];
+    read_buffer_ = new char[READ_BUFFER_LEN + 1];
     read_buffer_ = new char[READ_BUFFER_LEN + 1];
     read_buffer_[READ_BUFFER_LEN] = '\0';
 #if defined ZCE_OS_LINUX
@@ -32,7 +30,7 @@ ZCE_Event_INotify::~ZCE_Event_INotify()
 {
     if (read_buffer_)
     {
-        delete []read_buffer_;
+        delete[]read_buffer_;
         delete[]read_buffer_;
         read_buffer_ = NULL;
     }
@@ -50,7 +48,6 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     }
     //在LINUX下使用INOTIFY的机制
     inotify_handle_ = ::inotify_init();
-    if (ZCE_INVALID_HANDLE == inotify_handle_ )
     if (ZCE_INVALID_HANDLE == inotify_handle_)
     {
         ZCE_LOG(RS_ERROR, "[%s] invoke ::inotify_init fail,error [%u].",
@@ -72,15 +69,12 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     return 0;
 }
 
-
 //关闭监控句柄等，解除绑定reactor等
 int ZCE_Event_INotify::close()
 {
-
 #if defined (ZCE_OS_LINUX)
 
     //由于是HASH MAP速度有点慢
-    HDL_TO_EIN_MAP::iterator iter_temp =  watch_event_map_.begin();
     HDL_TO_EIN_MAP::iterator iter_temp = watch_event_map_.begin();
     for (; iter_temp != watch_event_map_.end();)
     {
@@ -88,7 +82,6 @@ int ZCE_Event_INotify::close()
         //让迭代器继续从最开始干起
         iter_temp = watch_event_map_.begin();
     }
-
 
     //关闭监控句柄
     if (inotify_handle_ != ZCE_INVALID_HANDLE)
@@ -109,18 +102,16 @@ int ZCE_Event_INotify::close()
     return 0;
 }
 
-
 //添加监控
 int ZCE_Event_INotify::add_watch(const char *pathname,
                                  uint32_t mask,
                                  ZCE_HANDLE *watch_handle,
                                  bool watch_sub_dir)
 {
-
     //检查参数是否有效，
-    ZCE_ASSERT( pathname &&  mask);
-    if ( pathname == NULL || mask == 0)
     ZCE_ASSERT(pathname && mask);
+    if (pathname == NULL || mask == 0)
+        ZCE_ASSERT(pathname && mask);
     if (pathname == NULL || mask == 0)
     {
         errno = EINVAL;
@@ -136,8 +127,6 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     EVENT_INOTIFY_NODE watch_note;
     ZCE_HANDLE hdl_dir = ZCE_INVALID_HANDLE;
 
-    hdl_dir =  ::inotify_add_watch(inotify_handle_, pathname, mask);
-    if (hdl_dir == ZCE_INVALID_HANDLE )
     hdl_dir = ::inotify_add_watch(inotify_handle_, pathname, mask);
     if (hdl_dir == ZCE_INVALID_HANDLE)
     {
@@ -152,13 +141,12 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     strncpy(watch_note.watch_path_, pathname, MAX_PATH);
 
     std::pair<HDL_TO_EIN_MAP::iterator, bool>
-    ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
         ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
+    ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
 
     //如果插入不成功，进行各种难过清理工作
     if (ins_ret.second == false)
     {
-
         //下面这段代码屏蔽的原因是，而LInux下，如果inotify_add_watch 同一个目录，handle是一样的。
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
@@ -169,7 +157,6 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     }
     *watch_handle = hdl_dir;
     return 0;
-
 
 #elif defined (ZCE_OS_WINDOWS)
 
@@ -193,7 +180,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
                                   OPEN_EXISTING,                      // how to create
                                   FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,       // file attributes
                                   NULL                                // file with attributes to copy
-                                 );
+    );
     );
 
     if (watch_handle_ == ZCE_INVALID_HANDLE)
@@ -212,25 +199,8 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     watch_mask_ = mask;
     strncpy(watch_path_, pathname, MAX_PATH);
 
-
     DWORD bytes_returned = 0;
     BOOL bret = ::ReadDirectoryChangesW(
-                    watch_handle_,                                  // handle to directory
-                    read_buffer_,                                    // read results buffer
-                    READ_BUFFER_LEN,                               // length of buffer
-                    watch_sub_dir_,                                 // monitoring option
-                    FILE_NOTIFY_CHANGE_SECURITY |
-                    FILE_NOTIFY_CHANGE_CREATION |
-                    FILE_NOTIFY_CHANGE_LAST_ACCESS |
-                    FILE_NOTIFY_CHANGE_LAST_WRITE |
-                    FILE_NOTIFY_CHANGE_SIZE |
-                    FILE_NOTIFY_CHANGE_ATTRIBUTES |
-                    FILE_NOTIFY_CHANGE_DIR_NAME |
-                    FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
-                    &bytes_returned,                       // bytes returned
-                    &over_lapped_,   // overlapped buffer
-                    NULL // completion routine
-                );
         watch_handle_,                                  // handle to directory
         read_buffer_,                                    // read results buffer
         READ_BUFFER_LEN,                               // length of buffer
@@ -273,7 +243,6 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 #endif
 }
 
-
 int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 {
 #if defined (ZCE_OS_LINUX)
@@ -284,7 +253,6 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
         return -1;
     }
 
-    int ret =  ::inotify_rm_watch(inotify_handle_, iter_del->second.watch_handle_);
     int ret = ::inotify_rm_watch(inotify_handle_, iter_del->second.watch_handle_);
     if (ret != 0)
     {
@@ -310,12 +278,9 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 #endif
 }
 
-
 //读取事件触发调用函数
-int ZCE_Event_INotify::handle_input ()
 int ZCE_Event_INotify::handle_input()
 {
-
 #if defined (ZCE_OS_LINUX)
 
     ZCE_LOG(RS_DEBUG, "ZCE_Event_INotify::handle_input");
@@ -338,7 +303,6 @@ int ZCE_Event_INotify::handle_input()
     {
         detect_ret = 0;
 
-        ::inotify_event *ne_ptr = (::inotify_event *) (read_buffer_ + next_entry_offset);
         ::inotify_event *ne_ptr = (::inotify_event *)(read_buffer_ + next_entry_offset);
 
         //检查读取的数据是否还有一个，
@@ -361,7 +325,6 @@ int ZCE_Event_INotify::handle_input()
         //注意下面的代码分支用的if else if ,而不是if if，我的初步看法是这些事件不会一起触发，但也许不对。
         //下面5个是和Windows 共有的，
         uint32_t event_mask = ne_ptr->mask;
-        if (event_mask & IN_CREATE )
         if (event_mask & IN_CREATE)
         {
             detect_ret = inotify_create(node_ptr->watch_handle_,
@@ -369,7 +332,6 @@ int ZCE_Event_INotify::handle_input()
                                         node_ptr->watch_path_,
                                         active_path);
         }
-        else if (event_mask & IN_DELETE  )
         else if (event_mask & IN_DELETE)
         {
             detect_ret = inotify_delete(node_ptr->watch_handle_,
@@ -377,7 +339,6 @@ int ZCE_Event_INotify::handle_input()
                                         node_ptr->watch_path_,
                                         active_path);
         }
-        else if ( event_mask & IN_MODIFY )
         else if (event_mask & IN_MODIFY)
         {
             detect_ret = inotify_modify(node_ptr->watch_handle_,
@@ -385,7 +346,6 @@ int ZCE_Event_INotify::handle_input()
                                         node_ptr->watch_path_,
                                         active_path);
         }
-        else if ( event_mask & IN_MOVED_FROM)
         else if (event_mask & IN_MOVED_FROM)
         {
             detect_ret = inotify_moved_from(node_ptr->watch_handle_,
@@ -393,7 +353,6 @@ int ZCE_Event_INotify::handle_input()
                                             node_ptr->watch_path_,
                                             active_path);
         }
-        else if ( event_mask & IN_MOVED_TO)
         else if (event_mask & IN_MOVED_TO)
         {
             detect_ret = inotify_moved_to(node_ptr->watch_handle_,
@@ -455,9 +414,6 @@ int ZCE_Event_INotify::handle_input()
         ++(watch_event_num);
     } while (read_len > 0);
 
-    }
-    while (read_len > 0);
-
     return 0;
 
 #elif defined (ZCE_OS_WINDOWS)
@@ -478,9 +434,7 @@ int ZCE_Event_INotify::handle_input()
         return -1;
     }
 
-
     //记录当前处理的句柄，
-
 
     FILE_NOTIFY_INFORMATION *read_ptr = NULL;
     DWORD next_entry_offset = 0;
@@ -522,24 +476,6 @@ int ZCE_Event_INotify::handle_input()
         //根据Action和mask确定调用函数
         switch (read_ptr->Action)
         {
-            case FILE_ACTION_ADDED:
-                if (watch_mask_ | IN_CREATE)
-                {
-                    detect_ret = inotify_create(watch_handle_,
-                                                watch_mask_,
-                                                watch_path_,
-                                                active_path);
-                }
-                break;
-            case FILE_ACTION_REMOVED:
-                if (watch_mask_ | IN_DELETE)
-                {
-                    detect_ret = inotify_delete(watch_handle_,
-                                                watch_mask_,
-                                                watch_path_,
-                                                active_path);
-                }
-                break;
         case FILE_ACTION_ADDED:
             if (watch_mask_ | IN_CREATE)
             {
@@ -559,10 +495,6 @@ int ZCE_Event_INotify::handle_input()
             }
             break;
             //注意Windows 下的这个类型，包括了属性更改
-            case FILE_ACTION_MODIFIED:
-                if (watch_mask_ | IN_MODIFY)
-                {
-                    detect_ret = inotify_modify(watch_handle_,
         case FILE_ACTION_MODIFIED:
             if (watch_mask_ | IN_MODIFY)
             {
@@ -579,26 +511,6 @@ int ZCE_Event_INotify::handle_input()
                                                 watch_mask_,
                                                 watch_path_,
                                                 active_path);
-                }
-                break;
-            case FILE_ACTION_RENAMED_OLD_NAME:
-                if (watch_mask_ | IN_MOVED_FROM)
-                {
-                    detect_ret = inotify_moved_from(watch_handle_,
-                                                    watch_mask_,
-                                                    watch_path_,
-                                                    active_path);
-                }
-                break;
-            case FILE_ACTION_RENAMED_NEW_NAME:
-                if (watch_mask_ | IN_MOVED_TO)
-                {
-                    detect_ret = inotify_moved_to(watch_handle_,
-                                                  watch_mask_,
-                                                  watch_path_,
-                                                  active_path);
-                }
-                break;
             }
             break;
         case FILE_ACTION_RENAMED_NEW_NAME:
@@ -628,29 +540,10 @@ int ZCE_Event_INotify::handle_input()
         }
     } while (read_ptr->NextEntryOffset != 0);
 
-    }
-    while (read_ptr->NextEntryOffset != 0);
-
     DWORD bytes_returned = 0;
 
     //继续进行监控处理
     bret = ::ReadDirectoryChangesW(
-               watch_handle_,            // handle to directory
-               read_buffer_, // read results buffer
-               READ_BUFFER_LEN,                               // length of buffer
-               watch_sub_dir_,                                 // monitoring option
-               FILE_NOTIFY_CHANGE_SECURITY |
-               FILE_NOTIFY_CHANGE_CREATION |
-               FILE_NOTIFY_CHANGE_LAST_ACCESS |
-               FILE_NOTIFY_CHANGE_LAST_WRITE |
-               FILE_NOTIFY_CHANGE_SIZE |
-               FILE_NOTIFY_CHANGE_ATTRIBUTES |
-               FILE_NOTIFY_CHANGE_DIR_NAME |
-               FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
-               &bytes_returned,                       // bytes returned
-               & (over_lapped_), // overlapped buffer
-               NULL                                   // completion routine
-           );
         watch_handle_,            // handle to directory
         read_buffer_, // read results buffer
         READ_BUFFER_LEN,                               // length of buffer
@@ -679,18 +572,8 @@ int ZCE_Event_INotify::handle_input()
 #endif
 }
 
-
 //关闭监控句柄
-int ZCE_Event_INotify::handle_close ()
 int ZCE_Event_INotify::handle_close()
 {
     return close();
-}
-
-
-
-
-
-
-
 }
