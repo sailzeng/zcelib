@@ -361,10 +361,6 @@ LIB_DEV_INNER := $(LIB_ZCELIB) $(LIB_SOARLIB)
 INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
 LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
-ifneq ($(PCH_FILE),)
-INCLDIRS := -I$(PCH_DIR) $(INCLDIRS)
-endif
-
 CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
 #--------------------------------------------------------------------------------------------------------------------

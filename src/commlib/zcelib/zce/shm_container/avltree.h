@@ -1464,13 +1464,13 @@ class mmap_avl_set :
 {
 protected:
 
-    mmap_avl_set<T, _compare_key >() = default;
+    mmap_avl_set() = default;
 public:
-    ~mmap_avl_set<T, _compare_key >() = default;
+    ~mmap_avl_set() = default;
 
 public:
 
-    static mmap_avl_set< T, _compare_key  >*
+    static mmap_avl_set*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_set< T, _compare_key  > *>(
@@ -1492,17 +1492,17 @@ class mmap_avl_map :
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    mmap_avl_map<K, T, _extract_key, _compare_key >(size_t numnode, void* pmmap, bool if_restore) :
+    mmap_avl_map(size_t numnode, void* pmmap, bool if_restore) :
         avl_tree< std::pair <K, T>, K, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~mmap_avl_map<K, T, _extract_key, _compare_key >()
+    ~mmap_avl_map()
     {
     }
 public:
-    static mmap_avl_map< K, T, _extract_key, _compare_key  >*
+    static mmap_avl_map*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast <mmap_avl_map < K,

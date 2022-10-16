@@ -6,9 +6,10 @@ int test_pool(int /*argc*/, char* /*argv*/[])
 
     size_t BUCKET_NUM = 6;
     size_t BUCKET_SIZE_ARY[] = { 128,256,512,768,1024,1536 };
-    pool.initialize(BUCKET_NUM, BUCKET_SIZE_ARY,
-                    &zce::queue_buffer::new_self,
-                    128, 512);
+    pool.initialize(BUCKET_NUM,
+                    BUCKET_SIZE_ARY,
+                    128,
+                    512);
     zce::queue_buffer* buf = nullptr;
     bool ret = pool.alloc_buffer(64, buf);
     if (!ret)
@@ -59,9 +60,10 @@ int test_pool6(int /*argc*/, char* /*argv*/[])
 
     size_t BUCKET_NUM = 6;
     size_t BUCKET_SIZE_ARY[] = { 128,256,512,768,1024,1536 };
-    pool.initialize(BUCKET_NUM, BUCKET_SIZE_ARY,
-                    &zce::queue_buffer::new_self,
-                    128, 512);
+    pool.initialize(BUCKET_NUM,
+                    BUCKET_SIZE_ARY,
+                    128,
+                    512);
     zce::queue_buffer* buf = nullptr;
     bool ret = pool.alloc_buffer(64, buf);
     if (!ret)

@@ -74,7 +74,7 @@ int svc_udp::init_udp_services()
     dgram_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void*>(&opval), opvallen);
     dgram_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void*>(&opval), opvallen);
 
-    ret = reactor()->register_handler(this, zce::event_handler::READ_MASK);
+    ret = reactor()->register_handler(this, zce::READ_MASK);
 
     if (ret != 0)
     {

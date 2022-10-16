@@ -70,22 +70,20 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator<T>(size_t seq, shm_list<T>* instance) :
+    _shm_list_iterator(size_t seq, shm_list<T>* instance) :
         serial_(seq),
         list_instance_(instance)
     {
     }
 
     ///构造函数
-    _shm_list_iterator<T>() :
+    _shm_list_iterator() :
         serial_(zce::SHM_CNTR_INVALID_POINT),
         list_instance_(NULL)
     {
     }
     ///析构函数
-    ~_shm_list_iterator<T>()
-    {
-    }
+    ~_shm_list_iterator() = default;
 
     ///初始化，
     void initialize(size_t seq, shm_list<T>* instance)

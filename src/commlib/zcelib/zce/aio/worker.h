@@ -38,7 +38,7 @@ class worker
 public:
 
     worker() = default;
-    ~worker() = default;
+    ~worker() noexcept = default;
 
     //!初始化
     int initialize(size_t work_thread_num,

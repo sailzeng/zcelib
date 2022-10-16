@@ -101,7 +101,7 @@ int thread_do_push(int push_start, size_t push_num)
 {
     for (size_t i = 0; i < push_num;)
     {
-        int *data = new int(push_start + push_num + i);
+        int *data = new int(push_start + (int)push_num + (int)i);
         auto ret = g_ring_ptr.push_back(data);
         if (!ret)
         {
@@ -198,7 +198,7 @@ int test_lockfree_ring1(int /*argc*/, char* /*argv*/[])
     int data = 0;
     for (size_t i = 0; i < MAX_RINGS_SIZE; i++)
     {
-        data = 0 + i;
+        data = 0 + (int)i;
         ret = g_ring.push_back(data);
         if (ret)
         {
@@ -226,7 +226,7 @@ int test_lockfree_ring1(int /*argc*/, char* /*argv*/[])
 
     for (size_t i = 0; i < MAX_RINGS_SIZE; i++)
     {
-        data = 0 + i;
+        data = 0 + (int)i;
         ret = g_ring.pop_front(data);
         if (ret)
         {
@@ -253,7 +253,7 @@ int thread_rings_push(int push_start, size_t push_num)
 {
     for (size_t i = 0; i < push_num;)
     {
-        int data = (push_start + push_num + i);
+        int data = (push_start + (int)push_num + (int)i);
         auto ret = g_ring.push_back(data);
         if (!ret)
         {
@@ -297,7 +297,7 @@ int test_lockfree_ring2(int /*argc*/, char* /*argv*/[])
     int data = 0;
     for (size_t i = 0; i < MAX_RINGS_SIZE; i++)
     {
-        data = 0 + i;
+        data = 0 + (int)i;
         ret = g_ring.push_back(data);
         if (!ret)
         {

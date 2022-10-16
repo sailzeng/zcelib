@@ -549,7 +549,7 @@ int er_recv(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             bool *alread_do,
-            std::function<void(EVENT_ATOM*)> call_back);
+            std::function<void(AIO_ATOM*)> call_back);
 
 //! 事件模式等待进行进行send，
 int er_send(zce::aio::worker* worker,
@@ -558,7 +558,7 @@ int er_send(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             bool *alread_do,
-            std::function<void(EVENT_ATOM*)> call_back);
+            std::function<void(AIO_ATOM*)> call_back);
 
 //!事件模式等待进行recv数据，
 int er_recvfrom(zce::aio::worker* worker,
@@ -569,5 +569,5 @@ int er_recvfrom(zce::aio::worker* worker,
                 sockaddr* from,
                 socklen_t* from_len,
                 bool *alread_do,
-                std::function<void(EVENT_ATOM*)> call_back);
+                std::function<void(AIO_ATOM*)> call_back);
 }//namespace zce::aio

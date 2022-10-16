@@ -99,7 +99,7 @@ int svc_accept::create_listen()
 #endif
 
     //
-    reactor()->register_handler(this, zce::event_handler::ACCEPT_MASK);
+    reactor()->register_handler(this, zce::ACCEPT_MASK);
 
     return 0;
 }

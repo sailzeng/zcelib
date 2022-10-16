@@ -1181,11 +1181,11 @@ class mmap_set :
 {
 protected:
 
-    mmap_set<T, _compare_key >() = default;
-    ~mmap_set<T, _compare_key >() = default;
+    mmap_set() = default;
+    ~mmap_set() = default;
 
 public:
-    static mmap_set< T, _compare_key  >*
+    static mmap_set*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_set< T, _compare_key  > *>(
@@ -1200,11 +1200,11 @@ class mmap_map :
 {
 protected:
 
-    mmap_map<K, T, _extract_key, _compare_key >() = default;
-    ~mmap_map<K, T, _extract_key, _compare_key >() = default;
+    mmap_map() = default;
+    ~mmap_map() = default;
 
 public:
-    static mmap_map< K, T, _extract_key, _compare_key  >*
+    static mmap_map*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_map< K, T, _extract_key, _compare_key  > *>(

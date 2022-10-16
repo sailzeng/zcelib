@@ -292,47 +292,47 @@ ZCE_HANDLE zce::open(const char* filename,
 
     DWORD access = GENERIC_READ;
 
-    if (ZCE_BIT_IS_SET(flags, O_WRONLY))
+    if (flags & O_WRONLY)
     {
         //如果仅仅只能写
         access = GENERIC_WRITE;
     }
-    else if (ZCE_BIT_IS_SET(flags, O_RDWR))
+    else if (flags & O_RDWR)
     {
         access = GENERIC_READ | GENERIC_WRITE;
     }
 
     DWORD  creation = OPEN_EXISTING;
 
-    if (ZCE_BIT_IS_SET(flags, O_CREAT) && ZCE_BIT_IS_SET(flags, O_EXCL))
+    if ((flags & O_CREAT) && (flags & O_EXCL))
     {
         creation = CREATE_NEW;
     }
-    else if (ZCE_BIT_IS_SET(flags, O_CREAT) && ZCE_BIT_IS_SET(flags, O_TRUNC))
+    else if ((flags & O_CREAT) && (flags & O_TRUNC))
     {
         creation = CREATE_ALWAYS;
     }
-    else if (ZCE_BIT_IS_SET(flags, O_CREAT))
+    else if ((flags & O_CREAT))
     {
         creation = OPEN_ALWAYS;
     }
-    else if (ZCE_BIT_IS_SET(flags, O_TRUNC))
+    else if ((flags & O_TRUNC))
     {
         creation = TRUNCATE_EXISTING;
     }
 
     DWORD shared_mode = 0;
 
-    if (ZCE_BIT_IS_SET(mode, S_IRGRP)
-        || ZCE_BIT_IS_SET(mode, S_IROTH)
-        || ZCE_BIT_IS_SET(mode, S_IWUSR))
+    if ((mode & S_IRGRP)
+        || (mode & S_IROTH)
+        || (mode & S_IWUSR))
     {
         shared_mode |= FILE_SHARE_READ;
     }
 
-    if (ZCE_BIT_IS_SET(mode, S_IWGRP)
-        || ZCE_BIT_IS_SET(mode, S_IWOTH)
-        || ZCE_BIT_IS_SET(mode, S_IWUSR))
+    if ((mode & S_IWGRP)
+        || (mode & S_IWOTH)
+        || (mode & S_IWUSR))
     {
         shared_mode |= FILE_SHARE_WRITE;
         shared_mode |= FILE_SHARE_DELETE;
@@ -366,7 +366,7 @@ ZCE_HANDLE zce::open(const char* filename,
 
     //如果打开的文件句柄是无效的
 
-    if (openfile_handle != ZCE_INVALID_HANDLE && ZCE_BIT_IS_SET(flags, O_APPEND))
+    if (openfile_handle != ZCE_INVALID_HANDLE && (flags & O_APPEND))
     {
         LARGE_INTEGER distance_to_move, new_file_pointer;
 

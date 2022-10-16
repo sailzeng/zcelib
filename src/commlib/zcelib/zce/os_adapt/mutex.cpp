@@ -14,22 +14,22 @@
 //用临界区模拟的PTHREAD MUTEX，要求进程内部（线程），递归，不需要超时
 #ifndef ZCE_IS_CS_SIMULATE_PMUTEX
 #define ZCE_IS_CS_SIMULATE_PMUTEX(mutex) ( (PTHREAD_PROCESS_PRIVATE == (mutex)->lock_shared_  ) \
-                                           && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE))  \
-                                           && (ZCE_BIT_ISNOT_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_TIMEOUT)) )
+                                           && (((mutex)->lock_type_ & PTHREAD_MUTEX_RECURSIVE))  \
+                                           && (((mutex)->lock_type_  & PTHREAD_MUTEX_TIMEOUT)) !=0 )
 #endif
 
 //用MUTEX模拟PTHREAD MUTEX，多进程，递归，或者进程内部，递归，而且有超时
 #ifndef ZCE_IS_MUTEX_SIMULATE_PMUTEX
 #define ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex) ( ( (PTHREAD_PROCESS_SHARED == (mutex)->lock_shared_ ) \
-                                                && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE)) ) \
+                                                && (((mutex)->lock_type_  & PTHREAD_MUTEX_RECURSIVE)) ) \
                                               || ( (PTHREAD_PROCESS_PRIVATE == (mutex)->lock_shared_) \
-                                                   && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE))  \
-                                                   && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_TIMEOUT)) ) )
+                                                   && (((mutex)->lock_type_ & PTHREAD_MUTEX_RECURSIVE))  \
+                                                   && (((mutex)->lock_type_ & PTHREAD_MUTEX_TIMEOUT)) ) )
 #endif
 
 //用信号灯模拟PTHREAD MUTEX，非递归
 #ifndef ZCE_IS_SEMA_SIMULATE_PMUTEX
-#define ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex) (!ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE))
+#define ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex) (!((mutex)->lock_type_ & PTHREAD_MUTEX_RECURSIVE))
 #endif
 
 //互斥量属性初始化
@@ -438,11 +438,11 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t* mutex,
     timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
 
     //如果是可以递归的
-    if (ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_RECURSIVE))
+    if ((mutex->lock_type_ & PTHREAD_MUTEX_RECURSIVE))
     {
         if ((PTHREAD_PROCESS_SHARED == mutex->lock_shared_)
             || (PTHREAD_PROCESS_PRIVATE == mutex->lock_shared_
-            && ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
+            && (mutex->lock_type_ & PTHREAD_MUTEX_TIMEOUT))
             )
         {
             //等待时间触发
@@ -464,7 +464,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t* mutex,
         }
         //明确了这种方式是不支持超时的，如果到这儿标识你调用错了初始化函数
         else if (PTHREAD_PROCESS_PRIVATE == mutex->lock_shared_
-                 && !ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
+                 && !(mutex->lock_type_ & PTHREAD_MUTEX_TIMEOUT))
         {
             return ENOTSUP;
         }

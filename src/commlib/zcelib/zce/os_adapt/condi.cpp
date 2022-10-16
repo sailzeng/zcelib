@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/bytes/bytes_common.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/mutex.h"
 #include "zce/os_adapt/error.h"

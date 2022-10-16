@@ -1189,11 +1189,11 @@ private:
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashset_expire<T, _hash_fun, _equal_key, _washout_fun>() = default;
+    shm_hashset_expire() = default;
 
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashset_expire<T, _hash_fun, _equal_key, _washout_fun>() = default;
+    ~shm_hashset_expire() = default;
 
 public:
     static self*
@@ -1230,11 +1230,11 @@ protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
 
     //这个函数,不给你用,就是不给你用
-    shm_hashmap_expire<K, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+    shm_hashmap_expire() = default;
 
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashmap_expire<K, T, _hash_fun, _extract_key, _equal_key, _washout_fun >() = default;
+    ~shm_hashmap_expire() = default;
 
 public:
     static self* initialize(size_t& numnode, char* pmmap, bool if_restore = false)

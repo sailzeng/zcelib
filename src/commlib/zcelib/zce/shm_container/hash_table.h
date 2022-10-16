@@ -818,13 +818,13 @@ public:
     //typedef shm_hashtable< _value_type,_value_type ,_hash_fun, _extract_key,_equal_key  >::iterator iterator;
 
 protected:
-    shm_hashset<T, _hash_fun, _equal_key >() = default;
+    shm_hashset() = default;
 
 public:
-    ~shm_hashset<T, _hash_fun, _equal_key >() = default;
+    ~shm_hashset() = default;
 
 public:
-    static shm_hashset< T, _hash_fun, _equal_key  >*
+    static shm_hashset*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<shm_hashset< T, _hash_fun, _equal_key  > *>(
@@ -841,13 +841,13 @@ protected:
 
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashmap<K, T, _hash_fun, _equal_key >(size_t numnode, void* pmmap, bool if_restore) :
+    shm_hashmap(size_t numnode, void* pmmap, bool if_restore) :
         shm_hashtable< std::pair <K, T>, K, mmap_select1st <std::pair <K, T> >, _equal_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~shm_hashmap<K, T, _hash_fun, _equal_key >()
+    ~shm_hashmap()
     {
     }
 public:
