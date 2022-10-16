@@ -494,7 +494,7 @@ public:
     }
 
     ///得到随机数，其实MT的算法非常非常快,他只在mt_n轮后才计算一次，计算结构保存在数组里面
-    inline virtual uint32_t rand()
+    virtual uint32_t rand()
     {
         // new state vector needed
         if (postion_ == mt_n)

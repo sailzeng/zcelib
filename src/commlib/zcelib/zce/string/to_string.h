@@ -48,13 +48,13 @@ inline void to_str(char* buffer,
     {
         const size_t SIZE_OF_STR_TRUE = 4;
         use_len = std::min<size_t>(max_len, SIZE_OF_STR_TRUE);
-        strncpy(buffer, "TRUE", use_len);
+        ::memcpy(buffer, "TRUE", use_len);
     }
     else
     {
         const size_t SIZE_OF_STR_FALSE = 5;
         use_len = std::min<size_t>(max_len, SIZE_OF_STR_FALSE);
-        strncpy(buffer, "FALSE", max_len);
+        ::memcpy(buffer, "FALSE", use_len);
     }
 }
 

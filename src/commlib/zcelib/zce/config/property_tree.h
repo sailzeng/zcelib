@@ -56,7 +56,7 @@ public:
 
     //!构造函数
     propertytree() = default;
-    ~propertytree() = default;
+    ~propertytree();
 
     /*!
     * @brief      根据路径得到一个CHILD 子树节点的迭代器

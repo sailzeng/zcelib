@@ -12,6 +12,7 @@ public:
     client() = default;
     client(const client&) = default;
     client& operator = (const client & other) = default;
+    ~client();
 
 public:
 

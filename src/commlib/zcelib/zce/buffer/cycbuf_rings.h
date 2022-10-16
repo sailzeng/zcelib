@@ -162,17 +162,17 @@ public:
     }
 
     //将一个NODE放入尾部
-    bool push_end(const node* node)
+    bool push_end(const node* n)
     {
         //粗略的检查,如果长度不合格,返回不成功
-        if (node->size_of_node_ < sizeof(INTEGRAL_T) ||
-            node->size_of_node_ > max_len_node_)
+        if (n->size_of_node_ < sizeof(INTEGRAL_T) ||
+            n->size_of_node_ > max_len_node_)
         {
             return false;
         }
 
         //检查队列的空间是否够用
-        if (free() < node->size_of_node_)
+        if (free() < n->size_of_node_)
         {
             return false;
         }
@@ -181,27 +181,27 @@ public:
         char* pend = cycbuf_data_ + cycbuf_end_;
 
         //如果绕圈
-        if (pend + node->size_of_node_ > cycbuf_data_ + size_of_cycle_)
+        if (pend + n->size_of_node_ > cycbuf_data_ + size_of_cycle_)
         {
             size_t first = size_of_cycle_ - cycbuf_end_;
-            size_t second = node->size_of_node_ - first;
-            memcpy(pend, reinterpret_cast<const char*>(node), first);
-            memcpy(cycbuf_data_, reinterpret_cast<const char*>(node) + first, second);
+            size_t second = n->size_of_node_ - first;
+            memcpy(pend, reinterpret_cast<const char*>(n), first);
+            memcpy(cycbuf_data_, reinterpret_cast<const char*>(n) + first, second);
             cycbuf_end_ = second;
         }
         //如果可以一次拷贝完成
         else
         {
-            memcpy(pend, reinterpret_cast<const char*>(node), node->size_of_node_);
-            cycbuf_end_ += node->size_of_node_;
+            memcpy(pend, reinterpret_cast<const char*>(n), n->size_of_node_);
+            cycbuf_end_ += n->size_of_node_;
         }
 
         return true;
     }
 
-    bool pop_front(node* const node)
+    bool pop_front(node* const n)
     {
-        assert(node != NULL);
+        assert(n != NULL);
 
         //检查是否为空
         if (empty() == true)
@@ -220,14 +220,14 @@ public:
         {
             size_t first = size_of_cycle_ - cycbuf_begin_;
             size_t second = node_len - first;
-            memcpy(reinterpret_cast<char*>(node), pbegin, first);
-            memcpy(reinterpret_cast<char*>(node) + first, cycbuf_data_, second);
+            memcpy(reinterpret_cast<char*>(n), pbegin, first);
+            memcpy(reinterpret_cast<char*>(n) + first, cycbuf_data_, second);
             cycbuf_begin_ = second;
         }
         else
         {
-            memcpy(reinterpret_cast<char*>(node), pbegin, node_len);
-            cycbuf_begin_ += node->size_of_node_;
+            memcpy(reinterpret_cast<char*>(n), pbegin, node_len);
+            cycbuf_begin_ += n->size_of_node_;
             assert(cycbuf_begin_ <= size_of_cycle_);
         }
 

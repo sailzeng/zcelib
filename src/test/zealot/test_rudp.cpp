@@ -15,12 +15,14 @@ const char TEST_FILE[4][256] =
 bool core_run = true;
 bool peer_run = true;
 
+#ifdef ZCE_OS_WINDOWS
 BOOL win_exit_signal(DWORD)
 {
     core_run = false;
     peer_run = false;
     return TRUE;
 }
+#endif
 
 void exit_signal(int)
 {

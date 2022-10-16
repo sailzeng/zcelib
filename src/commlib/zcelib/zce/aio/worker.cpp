@@ -10,6 +10,10 @@
 
 namespace zce::aio
 {
+worker::~worker()
+{
+    terminate();
+}
 //!
 int worker::initialize(size_t work_thread_num,
                        size_t work_queue_len,

@@ -86,7 +86,7 @@ public:
         }
         if (pools_)
         {
-            delete pools_;
+            delete[] pools_;
             pools_ = nullptr;
         }
     }

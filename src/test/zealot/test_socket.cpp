@@ -226,7 +226,10 @@ int test_dns_resolve([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     ::sockaddr_in addrs_ary[ARRAYS_SIZE];
     zce::time_value tv(5);
     ret = dns.answer(&tid, AF_INET, (sockaddr*)addrs_ary, &arrays_size, &tv);
-    printf("query ret=%d tid = %x arrays_size = %llu\n", ret, tid, arrays_size);
+    printf("query ret=%d tid = %x arrays_size = %" PRId64 "\n",
+           ret,
+           tid,
+           arrays_size);
     if (ret != 0)
     {
         return ret;

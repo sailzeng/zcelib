@@ -59,7 +59,9 @@ public:
     server_core(const server_core&) = default;
     server_core& operator = (const server_core & other) = default;
     //析构函数
-    ~server_core() = default;
+    ~server_core()
+    {
+    };
 
     /**
      * @brief 初始化CORE
@@ -149,7 +151,9 @@ protected:
         zce::rudp::server_peer*>  peer_map_;
 
     //地址对应的session id的map
-    std::unordered_map<zce::sockaddr_any, uint32_t, sockaddr_ip_hash> peer_addr_set_;
+    std::unordered_map<zce::sockaddr_any,
+        uint32_t,
+        sockaddr_ip_hash> peer_addr_set_;
 
     //! receive_i内完成(多次)接收后，需要回调接受函数的PEER的seesion id队列
     //! 为什么保存seesion id，而不保存指针，你可以想想
