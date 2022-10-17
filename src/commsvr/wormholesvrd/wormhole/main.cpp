@@ -5,7 +5,7 @@
 int main(int argc, const char* argv[])
 {
     //利用模板开始启动
-    return soar::svrd_main < Wormhole_Proxy_App,
-        Wormhole_Server_Config,
+    return soar::svrd_main < wormhole::application,
+        wormhole::configure,
         soar::server_timer >(argc, argv);
 }

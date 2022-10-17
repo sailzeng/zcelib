@@ -18,14 +18,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="wormhole\proxyprocess.cpp" />
+    <ClCompile Include="wormhole\proxy_process.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wormhole\application.h" />
     <ClInclude Include="wormhole\configture.h" />
     <ClInclude Include="wormhole\predefine.h" />
-    <ClInclude Include="wormhole\proxyprocess.h" />
-    <ClInclude Include="stat_define.h" />
+    <ClInclude Include="wormhole\proxy_process.h" />
     <ClInclude Include="wormhole\stat_define.h" />
   </ItemGroup>
   <ItemGroup>

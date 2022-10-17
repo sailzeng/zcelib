@@ -71,7 +71,6 @@ int zerg_app::app_start(int argc, const char* argv[])
     size_t frame_max_len[1] = { soar::zerg_frame::MAX_LEN_OF_FRAME };
     zce::queue_buffer_pool_inst::instance()->initialize(1,
                                                         frame_max_len,
-                                                        zce::queue_buffer::new_self,
                                                         max_peer / 2,
                                                         128);
 

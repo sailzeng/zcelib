@@ -107,7 +107,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
     if (num_accept_peer_ < max_accept_svr_)
     {
         //注册读写事件
-        ret = reactor()->register_handler(this, zce::event_handler::READ_MASK | zce::event_handler::WRITE_MASK);
+        ret = reactor()->register_handler(this, zce::READ_MASK | zce::WRITE_MASK);
 
         //
         if (ret != 0)
@@ -120,7 +120,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
             return;
         }
 
-        reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, zce::WRITE_MASK);
     }
     //要测试检查一下,
     else
@@ -187,7 +187,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
     socket_peer_.getsockname(&local_address_);
 
     //注册到
-    ret = reactor()->register_handler(this, zce::event_handler::CONNECT_MASK);
+    ret = reactor()->register_handler(this, zce::CONNECT_MASK);
 
     //我几乎没有见过register_handler失败,
     if (ret != 0)
@@ -453,17 +453,17 @@ int svc_tcp::process_connect_register()
     peer_status_ = PEER_STATUS_ACTIVE;
 
     //再折腾了我至少3天以后，终于发现了EPOLL反复触发写事件的原因是没有取消CONNECT_MASK
-    reactor()->cancel_wakeup(this, zce::event_handler::CONNECT_MASK);
+    reactor()->cancel_wakeup(this, zce::CONNECT_MASK);
 
     //如果有数据要发送
     if (snd_buffer_deque_.empty() != true)
     {
-        reactor()->schedule_wakeup(this, zce::event_handler::WRITE_MASK | zce::event_handler::READ_MASK);
+        reactor()->schedule_wakeup(this, zce::WRITE_MASK | zce::READ_MASK);
     }
     //只读取
     else
     {
-        reactor()->schedule_wakeup(this, zce::event_handler::READ_MASK);
+        reactor()->schedule_wakeup(this, zce::READ_MASK);
     }
 
     //打印信息
@@ -572,7 +572,7 @@ int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
     {
         ZCE_LOG(RS_ERROR, "Write error,[%s] goto write_event|write_data_to_peer ,but not data to send. Please check you code.\n",
                 remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, zce::WRITE_MASK);
         return 0;
     }
 
@@ -671,10 +671,10 @@ int svc_tcp::write_all_aata_to_peer()
     if (snd_buffer_deque_.size() == 0)
     {
         //如果有写标志，取消之
-        if (handle_mask & zce::event_handler::WRITE_MASK)
+        if (handle_mask & zce::WRITE_MASK)
         {
             //取消可写的MASK值,
-            ret = reactor()->cancel_wakeup(this, zce::event_handler::WRITE_MASK);
+            ret = reactor()->cancel_wakeup(this, zce::WRITE_MASK);
 
             //return -1表示错误，正确返回的是old mask值
             if (-1 == ret)
@@ -704,9 +704,9 @@ int svc_tcp::write_all_aata_to_peer()
     else
     {
         //没有WRITE MASK，准备增加写标志
-        if (!(handle_mask & RECTOR_EVENT::WRITE_MASK))
+        if (!(handle_mask & zce::WRITE_MASK))
         {
-            ret = reactor()->schedule_wakeup(this, RECTOR_EVENT::WRITE_MASK);
+            ret = reactor()->schedule_wakeup(this, zce::WRITE_MASK);
 
             //schedule_wakeup 返回return -1表示错误，再次BS ACE一次，正确返回的是old mask值
             if (-1 == ret)

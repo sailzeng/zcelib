@@ -56,7 +56,7 @@ int svc_udp::init_udp_peer()
         return -1;
     }
 
-    ret = reactor()->register_handler(this, zce::event_handler::READ_MASK);
+    ret = reactor()->register_handler(this, zce::READ_MASK);
 
     if (ret != 0)
     {

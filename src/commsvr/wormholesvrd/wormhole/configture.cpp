@@ -2,15 +2,17 @@
 #include "application.h"
 #include "configture.h"
 
-Wormhole_Server_Config::Wormhole_Server_Config()
+namespace wormhole
+{
+configure::configure()
 {
 }
 
-Wormhole_Server_Config::~Wormhole_Server_Config()
+configure::~configure()
 {
 }
 
-int Wormhole_Server_Config::read_cfgfile()
+int configure::read_cfgfile()
 {
     //
     int ret = 0;
@@ -24,7 +26,7 @@ int Wormhole_Server_Config::read_cfgfile()
     proxy_conf_tree_.clear();
     ret = zce::cfg::read_ini(app_cfg_file_.c_str(), &proxy_conf_tree_);
     ZCE_LOG(RS_INFO, "[%s] read config file [%s] ret [%d].",
-            Wormhole_Proxy_App::instance()->get_app_basename(),
+            application::instance()->get_app_basename(),
             app_cfg_file_.c_str(), ret);
     if (ret != 0)
     {
@@ -46,7 +48,7 @@ int Wormhole_Server_Config::read_cfgfile()
     return 0;
 }
 
-int Wormhole_Server_Config::get_wormhole_cfg(const zce::propertytree* conf_tree)
+int configure::get_wormhole_cfg(const zce::propertytree* conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -60,12 +62,13 @@ int Wormhole_Server_Config::get_wormhole_cfg(const zce::propertytree* conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    proxy_type_ = Interface_WH_Proxy::str_to_proxytype(temp_value.c_str());
-    if (proxy_type_ == Interface_WH_Proxy::INVALID_PROXY_TYPE)
+    proxy_type_ = proxy_i::str_to_proxytype(temp_value.c_str());
+    if (proxy_type_ == proxy_i::INVALID_PROXY_TYPE)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
     return 0;
+}
 }

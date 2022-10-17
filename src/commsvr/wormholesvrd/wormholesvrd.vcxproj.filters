@@ -23,7 +23,7 @@
     <ClCompile Include="wormhole\predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wormhole\proxyprocess.cpp">
+    <ClCompile Include="wormhole\proxy_process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -37,10 +37,7 @@
     <ClInclude Include="wormhole\predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="wormhole\proxyprocess.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stat_define.h">
+    <ClInclude Include="wormhole\proxy_process.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="wormhole\stat_define.h">

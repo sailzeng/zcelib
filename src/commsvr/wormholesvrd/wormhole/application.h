@@ -1,18 +1,20 @@
 #pragma once
 
-#include "proxyprocess.h"
+#include "proxy_process.h"
 
 /*!
 * @brief
 *
 * @note
 */
-class Wormhole_Proxy_App : public soar::svrdapp_plain
+namespace wormhole
+{
+class application : public soar::svrdapp_plain
 {
 public:
     // 自己的单子偷偷藏着，
-    Wormhole_Proxy_App();
-    ~Wormhole_Proxy_App();
+    application();
+    ~application();
 
 public:
 
@@ -37,5 +39,6 @@ protected:
 protected:
 
     /// 处理的PROXY的接口
-    Interface_WH_Proxy* interface_proxy_ = NULL;
+    proxy_i* interface_proxy_ = NULL;
 };
+}
