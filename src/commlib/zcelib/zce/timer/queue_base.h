@@ -111,14 +111,14 @@ public:
     /*!
     @brief      设置第一个定时器，接口参考了ACE的设计，这个设计其实算很完整了，你扩展的类，必须实现这个接口
     @return     int           返回定时器ID，>=0标识成功，-1标识失败
-    @param      timer_hdl     放入的定时器句柄，触发后回调的对象
-    @param[in]  action        一个指针，在定时器触发会用参数还给你，
+    @param[in]  timer_hdl     放入的定时器句柄，触发后回调的对象
+    @param[in]  time_id       一个指针，在定时器触发会用参数还给你，
     @param[in]  delay_time    第一次触发的时间，为什么要这样设计参数？你自己考虑一下，想想如何在10:00播放第6套广播体操
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
                               如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
     virtual int schedule_timer(zce::timer_handler* timer_hdl,
-                               const void* action,
+                               int &time_id,
                                const zce::time_value& delay_time,
                                const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) = 0;
 
@@ -215,14 +215,12 @@ protected:
     @brief      分配一个崭新的Timer Node
     @return     int             返回0标识分配成功
     @param[in]  timer_hdl       Timer Handler的指针，TIMER NODE中需要记录的，
-    @param[in]  action          schedule_timer的参数，在回调timer_timeout的时候会回填回去
     @param[in]  delay_time_     第一次触发的时间
     @param[in]  interval_time_  后续持续触发的间隔时间
     @param[out] time_node_id    返回的分配的ID
     @param[out] alloc_time_node 返回的分配的TIMER NODE的指针
     */
     int alloc_timernode(timer_handler* timer_hdl,
-                        const void* action,
                         const zce::time_value& delay_time_,
                         const zce::time_value& interval_time_,
                         int& time_node_id,

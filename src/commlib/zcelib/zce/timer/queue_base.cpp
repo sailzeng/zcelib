@@ -187,7 +187,6 @@ int timer_queue::cancel_timer(const zce::timer_handler* timer_hdl)
 
 //分配Timer Node
 int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
-                                 const void* action,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time,
                                  int& time_node_id,
@@ -230,7 +229,6 @@ int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
     //对时间NODE进行赋值
     alloc_time_node->timer_handle_ = timer_hdl;
     alloc_time_node->interval_time_ = interval_time;
-    alloc_time_node->action_ = action;
 
     //如果你追求高进度，定义这个宏，默认我关闭了
 #if defined(MORE_HIGH_TIMER_PRECISION)

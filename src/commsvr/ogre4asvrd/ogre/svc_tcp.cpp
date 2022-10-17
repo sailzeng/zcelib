@@ -13,9 +13,7 @@ unsigned int   svc_tcp::accept_timeout_ = 3;
 //接受数据的超时时间
 unsigned int   svc_tcp::receive_timeout_ = 5;
 
-//TIME ID
-const int      svc_tcp::TCPCTRL_TIME_ID[] = { 1,2 };
-
+//
 unsigned int   svc_tcp::error_try_num_ = 3;
 
 //
@@ -147,7 +145,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
             delay.sec(receive_timeout_);
         }
 
-        timeout_time_id_ = timer_queue()->schedule_timer(this, &TCPCTRL_TIME_ID[0], delay, interval);
+        timer_queue()->schedule_timer(this, timeout_time_id_, delay, interval);
     }
 
     soar::OGRE_PEER_ID peer_svr_info(remote_address_);
@@ -332,15 +330,14 @@ int svc_tcp::write_event(ZCE_HANDLE)
 }
 
 //定时触发
-int svc_tcp::timer_timeout(const zce::time_value&/*time*/, const void* arg)
+int svc_tcp::timer_timeout(const zce::time_value&/*time*/, int timer_id)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    const int timeid = *(static_cast<const int*>(arg));
 
     //连接上3秒没有反应
-    if (TCPCTRL_TIME_ID[0] == timeid)
+    if (timeout_time_id_ == timer_id)
     {
         //如果有受到数据，那么什么也不做
         if (receive_times_ > 0)
@@ -359,7 +356,7 @@ int svc_tcp::timer_timeout(const zce::time_value&/*time*/, const void* arg)
             return 0;
         }
     }
-    else if (TCPCTRL_TIME_ID[1] == timeid)
+    else
     {
     }
 

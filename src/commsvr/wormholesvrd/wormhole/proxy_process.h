@@ -7,7 +7,7 @@ namespace wormhole
 *
 * @note
 */
-class proxy_i
+class proxy_interface
 {
 public:
 
@@ -36,8 +36,8 @@ public:
 public:
 
     ///构造函数
-    proxy_i();
-    virtual ~proxy_i();
+    proxy_interface();
+    virtual ~proxy_interface();
 
     //初始化代理的实例
     virtual int init_proxy_instance();
@@ -62,10 +62,10 @@ public:
 
     /*!
     * @brief      代理接口制造的工厂
-    * @return     proxy_i*
+    * @return     proxy_interface*
     * @param      proxytype
     */
-    static proxy_i* create_proxy_factory(PROXY_TYPE proxytype);
+    static proxy_interface* create_proxy_factory(PROXY_TYPE proxytype);
 
     /*!
     * @brief
@@ -90,12 +90,12 @@ protected:
 *
 * @note
 */
-class Echo_Proxy_Process : public proxy_i
+class echo_process : public proxy_interface
 {
 public:
     // Echo处理
-    Echo_Proxy_Process();
-    virtual ~Echo_Proxy_Process();
+    echo_process();
+    virtual ~echo_process();
 
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
     // 进行代理的处理
@@ -109,12 +109,12 @@ public:
 *
 * @note
 */
-class Transmit_Proxy : public proxy_i
+class transmit_proxy : public proxy_interface
 {
 public:
 
-    Transmit_Proxy();
-    virtual ~Transmit_Proxy();
+    transmit_proxy();
+    virtual ~transmit_proxy();
 
     ///处理配置文件
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
@@ -129,11 +129,11 @@ public:
 *
 * @note
 */
-class Broadcast_ProxyProcess : public proxy_i
+class broadcast_proxy : public proxy_interface
 {
 public:
-    Broadcast_ProxyProcess();
-    virtual ~Broadcast_ProxyProcess();
+    broadcast_proxy();
+    virtual ~broadcast_proxy();
 
     ///处理配置文件
     virtual int get_proxy_config(const zce::propertytree* conf_tree);
@@ -155,7 +155,7 @@ protected:
 
 //====================================================================================
 
-class Modulo_ProxyProcess : public proxy_i
+class Modulo_ProxyProcess : public proxy_interface
 {
 public:
 
@@ -217,7 +217,7 @@ protected:
 //
 //};
 //
-//class DBModalProxyProcess : public proxy_i
+//class DBModalProxyProcess : public proxy_interface
 //{
 //
 //protected:
@@ -291,7 +291,7 @@ protected:
 ///****************************************************************************************************
 //class  DBModalProxyMGProcess 手游类按照APPID和uid进行数据转发的处理方式
 //****************************************************************************************************/
-//class DBModalMGProxyProcess : public proxy_i
+//class DBModalMGProxyProcess : public proxy_interface
 //{
 //protected:
 //    //

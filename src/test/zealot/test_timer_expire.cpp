@@ -8,7 +8,7 @@ class Test_Timer_Handler : public zce::timer_handler
 {
 public:
     virtual int timer_timeout(const zce::time_value& now_timenow_time,
-                              const void* act)
+                              int timer_id)
     {
         char time_str[128];
         int timer_action = *(int*)act;
@@ -30,6 +30,7 @@ public:
 
 int test_timer_expire(int /*argc*/, char* /*argv*/[])
 {
+    int ret = 0;
     zce::timer_queue::instance(new zce::timer_wheel(1024));
 
     Test_Timer_Handler test_timer[10];
@@ -39,10 +40,11 @@ int test_timer_expire(int /*argc*/, char* /*argv*/[])
     for (size_t i = 0; i < TEST_TIMER_NUMBER; ++i)
     {
         delay_time.sec(i);
-        timer_id[i] = zce::timer_queue::instance()->schedule_timer(&test_timer[i],
-                                                                   &TEST_TIMER_ACT[i],
-                                                                   delay_time,
-                                                                   interval_time);
+        ret = zce::timer_queue::instance()->schedule_timer(&test_timer[i],
+                                                           timer_id[i],
+                                                           delay_time,
+                                                           interval_time);
+        assert(ret == 0);
     }
 
     for (size_t j = 0; j < 100000; j++)

@@ -99,9 +99,10 @@ public:
     * @brief      超时事件触发
     * @return     virtual int
     * @param      time  时间
-    * @param      arg   唯一标示参数
+    * @param      timer_id 唯一标示参数
     */
-    virtual int timer_timeout(const zce::time_value& time, const void* arg);
+    virtual int timer_timeout(const zce::time_value& time,
+                              int timer_id);
 
     ///得到Handle对应PEER的端口
     const zce::skt::addr_in& get_peer();
@@ -229,9 +230,6 @@ public:
                                       std::vector<uint32_t>*& ms_svcid_ary);
 protected:
 
-    //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
-    static const  int         TCPCTRL_TIME_ID[];
-
     //ACCEPT PEER最大可以等待发送的FRAME数量
     static const size_t       MAX_OF_ACCEPT_PEER_SEND_DEQUE = 32;
     //CONNECT PEER最大可以等待发送的FRAME数量,
@@ -248,7 +246,7 @@ protected:
     static const unsigned int STAT_TIMER_INTERVAL_SEC = 60;
 
     //SessionKey
-    static const size_t   MAX_SESSION_KEY_LEN = 32;
+    static const size_t       MAX_SESSION_KEY_LEN = 32;
 
 protected:
 

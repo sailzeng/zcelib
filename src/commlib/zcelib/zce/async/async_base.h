@@ -254,6 +254,18 @@ public:
     */
     void dump_info(zce::LOG_PRIORITY log_priority) const;
 
+    /*!
+     * @brief 给一个async_object设置一个定时器
+     * @param aysnc_obj
+     * @param delay_time
+     * @return
+    */
+    int schedule_timer(zce::async_object* aysnc_obj,
+                       const zce::time_value& delay_time);
+
+    //! 取消定时器
+    int cancel_timer(zce::async_object* aysnc_obj);
+
 protected:
 
     /*!
@@ -289,7 +301,7 @@ protected:
     * @param      act
     */
     int timer_timeout(const zce::time_value& now_time,
-                      const void* act);
+                      int timer_id);
 
     // 得到负载因子
     void load_foctor(size_t& load_cur, size_t& load_max);
@@ -315,6 +327,9 @@ protected:
 
     ///正在运行的协程
     RUNNING_ASYNOBJ_MAP running_aysncobj_;
+
+    ///Timer ID到异步对象的MAP
+    std::unordered_map<int, zce::async_object* > timer_to_async_map_;
 
     ///异步对象池子的初始化大小，
     size_t  pool_init_size_ = DEFUALT_ASYNC_TYPE_NUM;

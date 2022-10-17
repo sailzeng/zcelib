@@ -570,4 +570,10 @@ int er_recvfrom(zce::aio::worker* worker,
                 socklen_t* from_len,
                 bool *alread_do,
                 std::function<void(AIO_ATOM*)> call_back);
+
+//=========================================================================
+//!
+int to_timeout(zce::aio::worker* worker,
+               zce::time_value* timeout_tv,
+               std::function<void(AIO_ATOM*)> call_back);
 }//namespace zce::aio

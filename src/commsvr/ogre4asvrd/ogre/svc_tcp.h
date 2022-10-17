@@ -75,7 +75,8 @@ public:
     //
     virtual int write_event(ZCE_HANDLE);
     //
-    virtual int timer_timeout(const zce::time_value& time, const void* arg);
+    virtual int timer_timeout(const zce::time_value& time,
+                              int timer_id);
     //
     virtual int close_event();
 
@@ -149,9 +150,6 @@ protected:
     ///
     typedef zce::lord_rings<svc_tcp*> POOL_OF_TCP_HANDLER;
 
-    ///定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
-    static const  int      TCPCTRL_TIME_ID[];
-
     ///一个未能连接上的Connect 最大可以等待发送的FRAME数量
     static const size_t   MAX_LEN_OF_SEND_LIST = 8;
 
@@ -177,10 +175,10 @@ protected:
     static unsigned int           error_try_num_;
 
     ///SVRINFO对应的PEER的HASHMAP
-    static tcppeer_set   svr_peer_hdl_set_;
+    static tcppeer_set            svr_peer_hdl_set_;
 
     ///要自动链接的服务器的管理类
-    static auto_connect    zerg_auto_connect_;
+    static auto_connect           zerg_auto_connect_;
 
     ///已经Accept的PEER数量
     static size_t                 num_accept_peer_;
@@ -224,7 +222,7 @@ protected:
     PEER_STATUS                   peer_status_;
 
     ///连接后无反应超时的TimeID,
-    long                          timeout_time_id_;
+    int                           timeout_time_id_;
 
     ///一个时间间隔内接受数据的次数
     unsigned int                  receive_times_;

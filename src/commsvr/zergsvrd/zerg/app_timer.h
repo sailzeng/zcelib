@@ -17,13 +17,7 @@ protected:
     ~app_timer();
 
     ///定时器触发
-    virtual int timer_timeout(const zce::time_value& time, const void* arg);
-
-public:
-
-    ///ZERG服务器定时器ID,
-    static const  int  ZERG_TIMER_ID[];
-
-protected:
+    virtual int timer_timeout(const zce::time_value& time,
+                              int timer_id);
 };
 }

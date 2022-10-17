@@ -62,8 +62,8 @@ int configure::get_wormhole_cfg(const zce::propertytree* conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    proxy_type_ = proxy_i::str_to_proxytype(temp_value.c_str());
-    if (proxy_type_ == proxy_i::INVALID_PROXY_TYPE)
+    proxy_type_ = proxy_interface::str_to_proxytype(temp_value.c_str());
+    if (proxy_type_ == proxy_interface::INVALID_PROXY_TYPE)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;

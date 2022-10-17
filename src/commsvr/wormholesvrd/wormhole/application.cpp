@@ -36,8 +36,8 @@ int application::app_start(int argc, const char* argv[])
     wormhole::configure* wh_cfg = dynamic_cast <wormhole::configure*>(config_base_);
 
     // 初始化数据转发模式
-    interface_proxy_ = proxy_i::create_proxy_factory(
-        static_cast<proxy_i::PROXY_TYPE>(wh_cfg->proxy_type_));
+    interface_proxy_ = proxy_interface::create_proxy_factory(
+        static_cast<proxy_interface::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
@@ -86,8 +86,8 @@ int application::reload_config()
 
     wormhole::configure* wh_cfg = dynamic_cast <wormhole::configure*>(config_base_);
     // 初始化数据转发模式
-    interface_proxy_ = proxy_i::create_proxy_factory(
-        static_cast<proxy_i::PROXY_TYPE>(wh_cfg->proxy_type_));
+    interface_proxy_ = proxy_interface::create_proxy_factory(
+        static_cast<proxy_interface::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));

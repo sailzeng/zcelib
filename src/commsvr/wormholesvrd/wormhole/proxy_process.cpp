@@ -6,14 +6,14 @@
 //===================================================================================================
 namespace wormhole
 {
-proxy_i::proxy_i()
+proxy_interface::proxy_interface()
 {
 }
-proxy_i::~proxy_i()
+proxy_interface::~proxy_interface()
 {
 }
 
-proxy_i::PROXY_TYPE proxy_i::str_to_proxytype(const char* str_proxy)
+proxy_interface::PROXY_TYPE proxy_interface::str_to_proxytype(const char* str_proxy)
 {
     if (0 == strcasecmp(str_proxy, "ECHO"))
     {
@@ -42,9 +42,9 @@ proxy_i::PROXY_TYPE proxy_i::str_to_proxytype(const char* str_proxy)
 }
 
 //代理接口制造的工厂
-proxy_i* proxy_i::create_proxy_factory(PROXY_TYPE proxytype)
+proxy_interface* proxy_interface::create_proxy_factory(PROXY_TYPE proxytype)
 {
-    proxy_i* tmpintface = NULL;
+    proxy_interface* tmpintface = NULL;
     ZCE_LOG(RS_INFO, "Interface_Proxy_Process::CreatePorxyFactory PROXY_TYPE: %d.", proxytype);
 
     switch (proxytype)
@@ -52,21 +52,21 @@ proxy_i* proxy_i::create_proxy_factory(PROXY_TYPE proxytype)
         // 回显服务器
     case PROXY_TYPE_ECHO:
     {
-        tmpintface = new Echo_Proxy_Process();
+        tmpintface = new echo_process();
         break;
     }
 
     // 透转转发的方式
     case PROXY_TYPE_TRANSMIT:
     {
-        tmpintface = new Transmit_Proxy();
+        tmpintface = new transmit_proxy();
         break;
     }
 
     // 对数据进行拷贝分发广播
     case PROXY_TYPE_BROADCAST:
     {
-        tmpintface = new Broadcast_ProxyProcess();
+        tmpintface = new broadcast_proxy();
         break;
     }
 
@@ -95,7 +95,7 @@ proxy_i* proxy_i::create_proxy_factory(PROXY_TYPE proxytype)
     return tmpintface;
 }
 
-int proxy_i::init_proxy_instance()
+int proxy_interface::init_proxy_instance()
 {
     // int ret =0;
     // 初始化MMAP内存的PIPE
@@ -105,7 +105,7 @@ int proxy_i::init_proxy_instance()
 }
 
 //读取配置
-int proxy_i::get_proxy_config(const zce::propertytree* conf_tree)
+int proxy_interface::get_proxy_config(const zce::propertytree* conf_tree)
 {
     ZCE_UNUSED_ARG(conf_tree);
     return 0;
@@ -113,17 +113,17 @@ int proxy_i::get_proxy_config(const zce::propertytree* conf_tree)
 
 //===================================================================================================
 
-Echo_Proxy_Process::Echo_Proxy_Process()
+echo_process::echo_process()
 {
 }
-Echo_Proxy_Process::~Echo_Proxy_Process()
+echo_process::~echo_process()
 {
 }
 
-int Echo_Proxy_Process::get_proxy_config(const zce::propertytree* conf_tree)
+int echo_process::get_proxy_config(const zce::propertytree* conf_tree)
 {
     //
-    int ret = proxy_i::get_proxy_config(conf_tree);
+    int ret = proxy_interface::get_proxy_config(conf_tree);
     if (ret != 0)
     {
         return ret;
@@ -132,7 +132,7 @@ int Echo_Proxy_Process::get_proxy_config(const zce::propertytree* conf_tree)
     return 0;
 }
 
-int Echo_Proxy_Process::process_proxy(soar::zerg_frame* proc_frame)
+int echo_process::process_proxy(soar::zerg_frame* proc_frame)
 {
     ZCE_LOG_DEBUG(RS_DEBUG, "Receive a echo frame to process,"
                   "send svr:[%u|%u], "
@@ -179,18 +179,18 @@ int Echo_Proxy_Process::process_proxy(soar::zerg_frame* proc_frame)
 //===================================================================================================
 //直接进行转发处理，不对数据帧进行任何处理
 
-Transmit_Proxy::Transmit_Proxy()
+transmit_proxy::transmit_proxy()
 {
 }
 
-Transmit_Proxy::~Transmit_Proxy()
+transmit_proxy::~transmit_proxy()
 {
 }
 
-int Transmit_Proxy::get_proxy_config(const zce::propertytree* conf_tree)
+int transmit_proxy::get_proxy_config(const zce::propertytree* conf_tree)
 {
     //
-    int ret = proxy_i::get_proxy_config(conf_tree);
+    int ret = proxy_interface::get_proxy_config(conf_tree);
     if (ret != 0)
     {
         return ret;
@@ -199,7 +199,7 @@ int Transmit_Proxy::get_proxy_config(const zce::propertytree* conf_tree)
     return 0;
 }
 
-int Transmit_Proxy::process_proxy(soar::zerg_frame* proc_frame)
+int transmit_proxy::process_proxy(soar::zerg_frame* proc_frame)
 {
     ZCE_LOG_DEBUG(RS_DEBUG, "Receive a transmit frame to process,"
                   "send svr:[%u|%u], "
@@ -247,22 +247,22 @@ int Transmit_Proxy::process_proxy(soar::zerg_frame* proc_frame)
 //===================================================================================================
 
 //将数据复制转发给所有配置的服务器
-Broadcast_ProxyProcess::Broadcast_ProxyProcess() :
-    proxy_i(),
+broadcast_proxy::broadcast_proxy() :
+    proxy_interface(),
     broadcast_svctype_(0),
     broadcast_svcnum_(0)
 {
     memset(broadcast_svcid_, 0, sizeof(broadcast_svcid_));
 }
 
-Broadcast_ProxyProcess::~Broadcast_ProxyProcess()
+broadcast_proxy::~broadcast_proxy()
 {
 }
 
-int Broadcast_ProxyProcess::get_proxy_config(const zce::propertytree* conf_tree)
+int broadcast_proxy::get_proxy_config(const zce::propertytree* conf_tree)
 {
     //
-    int ret = proxy_i::get_proxy_config(conf_tree);
+    int ret = proxy_interface::get_proxy_config(conf_tree);
 
     if (ret != 0)
     {
@@ -319,7 +319,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const zce::propertytree* conf_tree)
 }
 
 //
-int Broadcast_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
+int broadcast_proxy::process_proxy(soar::zerg_frame* proc_frame)
 {
     int ret = 0;
 
@@ -369,7 +369,7 @@ int Broadcast_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 //===================================================================================================
 
 Modulo_ProxyProcess::Modulo_ProxyProcess(MODULO_TYPE modulo_type) :
-    proxy_i(),
+    proxy_interface(),
     modulo_type_(modulo_type)
 {
     memset(modulo_svcid_, 0, sizeof(modulo_svcid_));
@@ -382,7 +382,7 @@ Modulo_ProxyProcess::~Modulo_ProxyProcess()
 int Modulo_ProxyProcess::get_proxy_config(const zce::propertytree* conf_tree)
 {
     //
-    int ret = proxy_i::get_proxy_config(conf_tree);
+    int ret = proxy_interface::get_proxy_config(conf_tree);
 
     if (ret != 0)
     {
@@ -524,7 +524,7 @@ int Modulo_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 //
 ////按照DB取模进行Proxy转发，用于DBServer和金融服务器
 //DBModalProxyProcess::DBModalProxyProcess():
-//    proxy_i()
+//    proxy_interface()
 //{
 //}
 //
@@ -547,7 +547,7 @@ int Modulo_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 //    int ret = 0;
 //
 //    //得到过滤得命令
-//    ret = proxy_i::get_proxy_config(conf_tree);
+//    ret = proxy_interface::get_proxy_config(conf_tree);
 //    if (ret != 0)
 //    {
 //        return ret;

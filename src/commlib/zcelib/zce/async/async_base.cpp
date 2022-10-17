@@ -41,11 +41,11 @@ int async_object::set_timeout(const zce::time_value& time_out)
     timer_queue* timer_queue = async_mgr_->timer_queue();
     zce::time_value delay_time(time_out);
     //注意使用的TIME ID
-    timeout_id_ = timer_queue->schedule_timer(async_mgr_,
-                                              this,
-                                              delay_time);
+    int ret = timer_queue->schedule_timer(async_mgr_,
+                                          timeout_id_,
+                                          delay_time);
 
-    if (timer_queue::INVALID_TIMER_ID == timeout_id_)
+    if (0 != ret)
     {
         return -1;
     }
@@ -409,9 +409,14 @@ int async_obj_mgr::active_asyncobj(uint32_t id,
 
 //超时处理
 int async_obj_mgr::timer_timeout(const zce::time_value& now_time,
-                                 const void* act)
+                                 int timer_id)
 {
-    async_object* async_obj = (async_object*)(act);
+    auto iter = timer_to_async_map_.find(timer_id);
+    if (iter == timer_to_async_map_.end())
+    {
+        return -1;
+    }
+    auto async_obj = iter->second;
     //增加记录统计数据
     ASYNC_RECORD_POOL::iterator mapiter = regaysnc_pool_.find(async_obj->create_cmd_);
     if (mapiter == regaysnc_pool_.end())
@@ -421,7 +426,7 @@ int async_obj_mgr::timer_timeout(const zce::time_value& now_time,
     ASYNC_OBJECT_RECORD& async_rec = mapiter->second;
 
     //处理前取消定时器
-    async_obj->cancel_timeout();
+    cancel_timer(async_obj);
 
     bool continue_run = false;
     async_obj->on_timeout(now_time, continue_run);
@@ -440,6 +445,49 @@ int async_obj_mgr::timer_timeout(const zce::time_value& now_time,
             async_obj->asyncobj_id_,
             continue_run ? "TRUE" : "FALSE");
 
+    return 0;
+}
+
+//给一个async_object设置一个定时器
+int async_obj_mgr::schedule_timer(zce::async_object* aysnc_obj,
+                                  const zce::time_value& delay_time)
+{
+    int ret = 0;
+    ZCE_ASSERT_ALL(aysnc_obj->timeout_id_ == -1);
+    if (aysnc_obj->timeout_id_ != -1)
+    {
+        return -1;
+    }
+    ret = timer_queue_->schedule_timer(this,
+                                       aysnc_obj->timeout_id_,
+                                       delay_time);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    timer_to_async_map_[aysnc_obj->timeout_id_] = aysnc_obj;
+    return 0;
+}
+
+//! 取消定时器
+int async_obj_mgr::cancel_timer(zce::async_object* aysnc_obj)
+{
+    ZCE_ASSERT_ALL(aysnc_obj->timeout_id_ != -1);
+    if (aysnc_obj->timeout_id_ == -1)
+    {
+        return -1;
+    }
+    int ret = timer_queue_->cancel_timer(aysnc_obj->timeout_id_);
+    auto iter = timer_to_async_map_.find(aysnc_obj->timeout_id_);
+    aysnc_obj->timeout_id_ = -1;
+    if (ret != 0)
+    {
+        return ret;
+    }
+    if (iter == timer_to_async_map_.end())
+    {
+        return -1;
+    }
     return 0;
 }
 

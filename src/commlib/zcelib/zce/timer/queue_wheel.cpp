@@ -180,12 +180,12 @@ void timer_wheel::unbind_wheel_listnode(int time_node_id)
 
 //设置定时器
 int timer_wheel::schedule_timer(zce::timer_handler* timer_hdl,
-                                const void* action,
+                                int& time_id,
                                 const zce::time_value& delay_time,
                                 const zce::time_value& interval_time)
 {
     int ret = 0;
-    int time_node_id = INVALID_TIMER_ID;
+    time_id = INVALID_TIMER_ID;
 
 #if defined(ZCE_HAS_DEBUG)
 
@@ -193,10 +193,9 @@ int timer_wheel::schedule_timer(zce::timer_handler* timer_hdl,
 
     ZCE_TIMER_NODE* alloc_time_node = NULL;
     ret = alloc_timernode(timer_hdl,
-                          action,
                           delay_time,
                           interval_time,
-                          time_node_id,
+                          time_id,
                           alloc_time_node);
 
     //注意，这个地方返回INVALID_TIMER_ID表示无效，其实也许参数不应该这样设计，但为了兼容ACE的代码
@@ -205,9 +204,9 @@ int timer_wheel::schedule_timer(zce::timer_handler* timer_hdl,
         return INVALID_TIMER_ID;
     }
 
-    bind_wheel_listnode(time_node_id);
+    bind_wheel_listnode(time_id);
 
-    return time_node_id;
+    return 0;
 }
 
 //取消定时器
@@ -376,7 +375,7 @@ size_t timer_wheel::dispatch_timer(const zce::time_value& now_time,
                 time_node_ary_[timer_node_id].already_trigger_ = true;
                 //时钟触发
                 time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
-                                                                           time_node_ary_[timer_node_id].action_);
+                                                                           time_node_ary_[timer_node_id].time_id_);
 
                 ++num_dispatch;
 

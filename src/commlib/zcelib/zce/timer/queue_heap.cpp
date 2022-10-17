@@ -102,20 +102,20 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
     //分发的数量
     size_t num_dispatch = 0;
 
-    int timer_node_id = INVALID_TIMER_ID;
-    ret = get_frist_nodeid(timer_node_id);
+    int timer_id = INVALID_TIMER_ID;
+    ret = get_frist_nodeid(timer_id);
 
-    while (timer_node_id != INVALID_TIMER_ID)
+    while (timer_id != INVALID_TIMER_ID)
     {
         //如果已经超时，进行触发
-        if (time_node_ary_[timer_node_id].next_trigger_point_ <= now_trigger_msec)
+        if (time_node_ary_[timer_id].next_trigger_point_ <= now_trigger_msec)
         {
             ++num_dispatch;
             //标记这个定时器已经触发过，详细见already_trigger_的解释
-            time_node_ary_[timer_node_id].already_trigger_ = true;
+            time_node_ary_[timer_id].already_trigger_ = true;
             //时钟触发
-            time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
-                                                                       time_node_ary_[timer_node_id].action_);
+            time_node_ary_[timer_id].timer_handle_->timer_timeout(now_time,
+                                                                  timer_id);
         }
         else
         {
@@ -123,14 +123,14 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
         }
 
         //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
-        if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true)
+        if (time_node_ary_[timer_id].timer_handle_ && time_node_ary_[timer_id].already_trigger_ == true)
         {
             //重新规划这个TIME NODE的位置等,如果不需要触发了则取消定时器
-            reschedule_timer(timer_node_id, now_trigger_msec);
+            reschedule_timer(timer_id, now_trigger_msec);
         }
 
         //
-        ret = get_frist_nodeid(timer_node_id);
+        ret = get_frist_nodeid(timer_id);
 
         if (0 != ret)
         {
@@ -146,22 +146,20 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
 
 //设置定时器
 int timer_heap::schedule_timer(zce::timer_handler* timer_hdl,
-                               const void* action,
+                               int &timer_id,
                                const zce::time_value& delay_time,
                                const zce::time_value& interval_time)
 {
     int ret = 0;
-    int time_node_id = INVALID_TIMER_ID;
+    timer_id = INVALID_TIMER_ID;
 
     //看能否分配一个TIME NODE
     ZCE_TIMER_NODE* alloc_time_node = NULL;
     ret = alloc_timernode(timer_hdl,
-                          action,
                           delay_time,
                           interval_time,
-                          time_node_id,
-                          alloc_time_node
-    );
+                          timer_id,
+                          alloc_time_node);
 
     //注意，这个地方返回INVALID_TIMER_ID表示无效，其实也许参数不应该这样设计，但为了兼容ACE的代码
     if (ret != 0)
@@ -169,14 +167,14 @@ int timer_heap::schedule_timer(zce::timer_handler* timer_hdl,
         return INVALID_TIMER_ID;
     }
 
-    ret = add_nodeid(time_node_id);
+    ret = add_nodeid(timer_id);
 
     if (ret != 0)
     {
         return INVALID_TIMER_ID;
     }
 
-    return time_node_id;
+    return 0;
 }
 
 //取消定时器

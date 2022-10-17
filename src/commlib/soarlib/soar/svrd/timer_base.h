@@ -96,9 +96,14 @@ protected:
     */
     virtual int initialize(zce::timer_queue* queue);
 
-    /// 定时处理监控数据
+    /*!
+     * @brief 定时处理回到数据，
+     * @param[in] now_time 定时器触发的世界，也就是当前的时间
+     * @param[in] timer_id 触发的定时器ID，ACE当年传递的是一个指针，我还是改成了timer_id
+     * @return
+    */
     virtual int timer_timeout(const zce::time_value& now_time,
-                              const void* act = 0);
+                              int timer_id);
 
     ///定时器关闭
     virtual int timer_close();
@@ -110,14 +115,10 @@ protected:
     /*!
     * @brief      增加一个APP的定时器
     * @param[in]  interval 增加的定时器的间隔
-    * @param[in]  act      增加的定时器的标示
     */
-    void add_app_timer(const zce::time_value& interval, const void* act);
+    void add_app_timer(const zce::time_value& interval);
 
 protected:
-
-    ///服务器定时器ID,
-    static const  int  SERVER_TIMER_ID[];
 
     ///APP Timer的最大数量，
     static const size_t MAX_APP_TIMER_NUMBER = 16;
@@ -139,6 +140,9 @@ protected:
 
     time_t last_check_ = 0;
 
+    //! Timer ID
+    int  server_timer_id_ = -1;
+
     // 监控的实例
     soar::stat_monitor* stat_monitor_ = NULL;
 
@@ -147,7 +151,7 @@ protected:
     ///
     zce::time_value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
     ///
-    const void* zan_timer_act_[MAX_APP_TIMER_NUMBER] = { 0 };
+    int zan_timer_act_[MAX_APP_TIMER_NUMBER] = { 0 };
 
 protected:
     ///当前时间

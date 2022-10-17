@@ -39,6 +39,6 @@ protected:
 protected:
 
     /// 处理的PROXY的接口
-    proxy_i* interface_proxy_ = NULL;
+    proxy_interface* interface_proxy_ = NULL;
 };
 }

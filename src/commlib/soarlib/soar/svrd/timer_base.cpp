@@ -10,12 +10,6 @@ namespace soar
 {
 zce::time_value server_timer::now_time_ = zce::gettimeofday();
 
-//定时器ID,避免New传递,回收
-const int server_timer::SERVER_TIMER_ID[] =
-{
-    0x201208,                      //心跳ID
-};
-
 //
 server_timer::server_timer() :
     zce::timer_handler()
@@ -38,7 +32,7 @@ int server_timer::initialize(zce::timer_queue* queue)
     last_check_ = now_time_.sec();
 
     timer_queue()->schedule_timer(this,
-                                  &(SERVER_TIMER_ID[0]),
+                                  server_timer_id_,
                                   zce::time_value::ZERO_TIME_VALUE,
                                   heart_precision_);
 
@@ -55,15 +49,12 @@ int server_timer::initialize(zce::timer_queue* queue)
 
 //超时处理
 int server_timer::timer_timeout(const zce::time_value& now_time,
-                                const void* act)
+                                int timer_id)
 {
-    ZCE_UNUSED_ARG(act);
-
     //记录当前时间，
     now_time_ = now_time;
 
-    const int timeid = *(static_cast<const int*>(act));
-    if (SERVER_TIMER_ID[0] == timeid)
+    if (server_timer_id_ == timer_id)
     {
         ++heartbeat_counter_;
         heart_total_mesc_ = heartbeat_counter_ * heart_precision_.total_msec();
@@ -155,12 +146,12 @@ void server_timer::set_heart_precision(const zce::time_value& precision)
 }
 
 //增加一个APP的定时器
-void server_timer::add_app_timer(const zce::time_value& interval, const void* act)
+void server_timer::add_app_timer(const zce::time_value& interval)
 {
     ZCE_ASSERT(zan_timer_num_ + 1 <= MAX_APP_TIMER_NUMBER);
 
     zan_timer_internal_[zan_timer_num_] = interval;
-    zan_timer_act_[zan_timer_num_] = act;
+    zan_timer_act_[zan_timer_num_] = 0;
     ++zan_timer_num_;
 }
 }

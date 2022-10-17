@@ -22,7 +22,7 @@ public:
 public:
 
     ///代理类型
-    proxy_i::PROXY_TYPE  proxy_type_ = proxy_i::INVALID_PROXY_TYPE;
+    proxy_interface::PROXY_TYPE  proxy_type_ = proxy_interface::INVALID_PROXY_TYPE;
 
     ///代理的配置数据要
     zce::propertytree proxy_conf_tree_;

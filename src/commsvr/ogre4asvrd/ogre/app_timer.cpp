@@ -5,13 +5,6 @@
 
 namespace ogre
 {
-//定时器ID,避免New传递,回收
-const int app_timer::OGRE_APP_TIME_ID[] =
-{
-    0x101,                    //重连服务器的ID
-    0x102                     //
-};
-
 //
 app_timer::app_timer()
 {
@@ -19,7 +12,7 @@ app_timer::app_timer()
     const time_t AUTOCONNECT_RETRY_SEC = 5;
     zce::time_value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
 
-    add_app_timer(connect_all_internal, &OGRE_APP_TIME_ID[0]);
+    add_app_timer(connect_all_internal);
 }
 
 app_timer::~app_timer()
@@ -27,15 +20,13 @@ app_timer::~app_timer()
 }
 
 //
-int app_timer::timer_timeout(const zce::time_value& time_now, const void* arg)
+int app_timer::timer_timeout(const zce::time_value& time_now, int time_id)
 {
     //等到当前的时间
-    server_timer::timer_timeout(time_now, arg);
-
-    const int timeid = *(static_cast<const int*>(arg));
+    server_timer::timer_timeout(time_now, time_id);
 
     //处理一个错误发送数据
-    if (OGRE_APP_TIME_ID[0] == timeid)
+    if (zan_timer_act_[0] == time_id)
     {
         svc_tcp::connect_all_server();
     }
