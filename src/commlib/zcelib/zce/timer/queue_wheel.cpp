@@ -179,10 +179,11 @@ void timer_wheel::unbind_wheel_listnode(int time_node_id)
 }
 
 //设置定时器
-int timer_wheel::schedule_timer(zce::timer_handler* timer_hdl,
-                                int& time_id,
-                                const zce::time_value& delay_time,
-                                const zce::time_value& interval_time)
+int timer_wheel::schedule_timer_i(zce::timer_handler* timer_hdl,
+                                  std::function<int(const zce::time_value &, int) > &call_fun,
+                                  int& time_id,
+                                  const zce::time_value& delay_time,
+                                  const zce::time_value& interval_time)
 {
     int ret = 0;
     time_id = INVALID_TIMER_ID;
@@ -193,6 +194,7 @@ int timer_wheel::schedule_timer(zce::timer_handler* timer_hdl,
 
     ZCE_TIMER_NODE* alloc_time_node = NULL;
     ret = alloc_timernode(timer_hdl,
+                          call_fun,
                           delay_time,
                           interval_time,
                           time_id,

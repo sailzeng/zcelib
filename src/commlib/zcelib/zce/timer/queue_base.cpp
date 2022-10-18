@@ -95,7 +95,10 @@ int timer_queue::close()
         {
             //为什么要赋值再使用呢，我担心timer_close会被你调用来清理
             zce::timer_handler* time_hdl = time_node_ary_[i].timer_handle_;
-            time_hdl->timer_close();
+            if (time_hdl)
+            {
+                time_hdl->timer_close();
+            }
         }
     }
 
@@ -147,6 +150,31 @@ int timer_queue::extend_node(size_t num_timer_node,
     return 0;
 }
 
+int timer_queue::schedule_timer(std::function<int(const zce::time_value &, int) > &call_fun,
+                                int &time_id,
+                                const zce::time_value& delay_time,
+                                const zce::time_value& interval_time)
+{
+    return schedule_timer_i(nullptr,
+                            call_fun,
+                            time_id,
+                            delay_time,
+                            interval_time);
+}
+
+int timer_queue::schedule_timer(zce::timer_handler* timer_hdl,
+                                int &time_id,
+                                const zce::time_value& delay_time,
+                                const zce::time_value& interval_time)
+{
+    std::function<int(const zce::time_value &, int) > call_null;
+    return schedule_timer_i(timer_hdl,
+                            call_null,
+                            time_id,
+                            delay_time,
+                            interval_time);
+}
+
 //取消定时器，
 int timer_queue::cancel_timer(int timer_id)
 {
@@ -187,13 +215,13 @@ int timer_queue::cancel_timer(const zce::timer_handler* timer_hdl)
 
 //分配Timer Node
 int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
+                                 std::function<int(const zce::time_value &, int) > &call_fun,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time,
                                  int& time_node_id,
                                  ZCE_TIMER_NODE*& alloc_time_node)
 {
     //TIME HANDLE不能为NULL
-    assert(timer_hdl != NULL);
 
     int ret = 0;
     //默认没有分配到，避免你搞错情况
@@ -228,6 +256,7 @@ int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
 
     //对时间NODE进行赋值
     alloc_time_node->timer_handle_ = timer_hdl;
+    alloc_time_node->call_back_ = call_fun;
     alloc_time_node->interval_time_ = interval_time;
 
     //如果你追求高进度，定义这个宏，默认我关闭了

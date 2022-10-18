@@ -114,8 +114,17 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
             //标记这个定时器已经触发过，详细见already_trigger_的解释
             time_node_ary_[timer_id].already_trigger_ = true;
             //时钟触发
-            time_node_ary_[timer_id].timer_handle_->timer_timeout(now_time,
-                                                                  timer_id);
+            auto tm_hdl = time_node_ary_[timer_id].timer_handle_;
+            if (tm_hdl)
+            {
+                tm_hdl->timer_timeout(now_time,
+                                      timer_id);
+            }
+            else
+            {
+                auto call = time_node_ary_[timer_id].call_back_;
+                call(now_time, timer_id);
+            }
         }
         else
         {
@@ -145,10 +154,11 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
 }
 
 //设置定时器
-int timer_heap::schedule_timer(zce::timer_handler* timer_hdl,
-                               int &timer_id,
-                               const zce::time_value& delay_time,
-                               const zce::time_value& interval_time)
+int timer_heap::schedule_timer_i(zce::timer_handler* timer_hdl,
+                                 std::function<int(const zce::time_value &, int) > &call_fun,
+                                 int &timer_id,
+                                 const zce::time_value& delay_time,
+                                 const zce::time_value& interval_time)
 {
     int ret = 0;
     timer_id = INVALID_TIMER_ID;
@@ -156,6 +166,7 @@ int timer_heap::schedule_timer(zce::timer_handler* timer_hdl,
     //看能否分配一个TIME NODE
     ZCE_TIMER_NODE* alloc_time_node = NULL;
     ret = alloc_timernode(timer_hdl,
+                          call_fun,
                           delay_time,
                           interval_time,
                           timer_id,

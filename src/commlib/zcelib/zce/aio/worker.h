@@ -28,6 +28,7 @@
 namespace zce
 {
 class reactor_mini;
+class time_queue;
 }
 
 namespace zce::aio
@@ -96,6 +97,8 @@ protected:
     bool worker_running_ = true;
 
     zce::reactor_mini *reactor_ = nullptr;
+
+    zce::time_queue *time_queue_ = nullptr;
 
     //! 请求，应答队列，用于Caller 和Worker 线程交互
     zce::msgring_condi<zce::aio::AIO_ATOM*>* requst_queue_ = nullptr;

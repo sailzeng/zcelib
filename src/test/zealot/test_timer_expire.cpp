@@ -2,7 +2,7 @@
 
 static const size_t TEST_TIMER_NUMBER = 10;
 
-int TEST_TIMER_ACT[10] = { 1,2,3,4,5,6,7,8,9,10 };
+int timer_id_ary[10] = { 0 };
 
 class Test_Timer_Handler : public zce::timer_handler
 {
@@ -11,15 +11,23 @@ public:
                               int timer_id)
     {
         char time_str[128];
-        int timer_action = *(int*)act;
-        std::cout << now_timenow_time.timestamp(time_str, 128) << " " << "Timer action =" << timer_action << std::endl;
+
+        std::cout << now_timenow_time.timestamp(time_str, 128) << " " << "Timer id =" << timer_id << std::endl;
         zce::timer_queue::instance()->cancel_timer(this);
 
         zce::time_value delay_time(1, 0);
         zce::time_value interval_time(0, 0);
+        size_t i = 0;
+        for (; i < timer_id_ary[i]; ++i)
+        {
+            if (timer_id_ary[i] == timer_id)
+            {
+                break;
+            }
+        }
 
         int time_id = zce::timer_queue::instance()->schedule_timer(this,
-                                                                   &TEST_TIMER_ACT[timer_action - 1],
+                                                                   timer_id_ary[i],
                                                                    delay_time,
                                                                    interval_time);
         std::cout << now_timenow_time.timestamp(time_str, 128) << " " << "Timer id =" << time_id << std::endl;
@@ -69,7 +77,7 @@ int test_timer_expire2(int /*argc*/, char* /*argv*/[])
     {
         delay_time.sec(i);
         timer_id[i] = zce::timer_queue::instance()->schedule_timer(&test_timer[i],
-                                                                   &TEST_TIMER_ACT[i],
+                                                                   timer_id[i],
                                                                    delay_time,
                                                                    interval_time);
     }

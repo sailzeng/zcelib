@@ -115,6 +115,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="test_aio.cpp" />
+    <ClCompile Include="test_hash.cpp" />
     <ClCompile Include="test_rudp.cpp" />
     <ClCompile Include="zealot_main.cpp" />
     <ClCompile Include="predefine.cpp">

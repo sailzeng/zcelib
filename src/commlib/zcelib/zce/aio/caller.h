@@ -115,6 +115,7 @@ enum AIO_TYPE
 
     AIO_THREAD_END = 9999,
 
+    //
     AIO_EVENT_BEGIN = 10001,
     //事件处理模块
     EVENT_BEGIN = 10001,
@@ -124,8 +125,13 @@ enum AIO_TYPE
     EVENT_ACCEPT,
     EVENT_RECVFROM,
     EVENT_END = 10099,
-
+    //
     AIO_EVENT_END = 19999,
+
+    AIO_TIMER_BEGIN = 20001,
+    TIMER_SCHEDULE = 20001,
+    TIMER_CANCEL = 20002,
+    AIO_TIMER_END = 29999,
 };
 
 //! AIO异步操作的原子
@@ -573,7 +579,17 @@ int er_recvfrom(zce::aio::worker* worker,
 
 //=========================================================================
 //!
-int to_timeout(zce::aio::worker* worker,
-               zce::time_value* timeout_tv,
-               std::function<void(AIO_ATOM*)> call_back);
+struct TIMER_ATOM :public AIO_ATOM
+{
+    virtual void clear();
+    //!
+    const zce::time_value *timeout_tv_ = nullptr;
+    //!
+    int *timer_id_ = nullptr;
+};
+
+int tmo_schedule_timeout(zce::aio::worker* worker,
+                         const zce::time_value* timeout_tv,
+                         int *timer_id,
+                         std::function<void(AIO_ATOM*)> call_back);
 }//namespace zce::aio

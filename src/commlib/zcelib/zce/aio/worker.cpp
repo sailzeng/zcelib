@@ -192,7 +192,6 @@ void worker::process_response(zce::time_value* wait_time,
         {
             //调用回调函数
             base->call_back_(base);
-            free_handle(base);
             ++num_rsp;
         }
     } while (go);

@@ -61,11 +61,11 @@ protected:
         void clear()
         {
             interval_time_.set(0, 0);
-
             action_ = NULL;
             timer_handle_ = NULL;
             next_trigger_point_ = 0;
             already_trigger_ = false;
+            call_back_ = std::function<int(const zce::time_value &, int) >();
         }
 
     public:
@@ -81,6 +81,8 @@ protected:
 
         ///对应的时间句柄的的指针
         zce::timer_handler* timer_handle_ = NULL;
+        ///
+        std::function<int(const zce::time_value &, int)> call_back_;
 
         ///下一次触发点，可能是一个绝度时间，也可能是一个CPU TICK的计数,但都是一个绝对值
         uint64_t            next_trigger_point_ = 0;
@@ -117,10 +119,15 @@ public:
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
                               如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(zce::timer_handler* timer_hdl,
-                               int &time_id,
-                               const zce::time_value& delay_time,
-                               const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) = 0;
+    int schedule_timer(zce::timer_handler* timer_hdl,
+                       int &time_id,
+                       const zce::time_value& delay_time,
+                       const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
+
+    int schedule_timer(std::function<int(const zce::time_value &, int) > &call_fun,
+                       int &time_id,
+                       const zce::time_value& delay_time,
+                       const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
 
     /*!
     @brief      取消定时器，你继承后必须实现这个接口
@@ -131,10 +138,16 @@ public:
 
 protected:
 
+    virtual int schedule_timer_i(zce::timer_handler* timer_hdl,
+                                 std::function<int(const zce::time_value &, int) > &call_fun,
+                                 int &time_id,
+                                 const zce::time_value& delay_time,
+                                 const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) = 0;
+
     /*!
     @brief      取得第一个要触发的定时器NODE，也就是，最近的触发定时器，你继承后必须实现这个接口
     @return     int   0标识成功，否则失败
-    @param[out] timer_node_id
+    @param[out] timer_node_id 就是timer_id
     */
     virtual int get_frist_nodeid(int& timer_node_id) = 0;
 
@@ -215,12 +228,14 @@ protected:
     @brief      分配一个崭新的Timer Node
     @return     int             返回0标识分配成功
     @param[in]  timer_hdl       Timer Handler的指针，TIMER NODE中需要记录的，
+    @param[in]  call_fun        回调函数，timer_hdl为空时使用这个参数
     @param[in]  delay_time_     第一次触发的时间
     @param[in]  interval_time_  后续持续触发的间隔时间
     @param[out] time_node_id    返回的分配的ID
     @param[out] alloc_time_node 返回的分配的TIMER NODE的指针
     */
     int alloc_timernode(timer_handler* timer_hdl,
+                        std::function<int(const zce::time_value &, int) > &call_fun,
                         const zce::time_value& delay_time_,
                         const zce::time_value& interval_time_,
                         int& time_node_id,
