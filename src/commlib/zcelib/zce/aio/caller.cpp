@@ -721,7 +721,6 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
             result_ = -1;
             *result_len_ = 0;
         }
-        call_back_(this);
     }
     else if (event == RECTOR_EVENT::WRITE_MASK)
     {
@@ -738,7 +737,6 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
             result_ = -1;
             *result_len_ = 0;
         }
-        call_back_(this);
     }
     else if (event == RECTOR_EVENT::CONNECT_MASK)
     {
@@ -750,7 +748,6 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
         {
             result_ = -1;
         }
-        call_back_(this);
     }
     else if (event == RECTOR_EVENT::ACCEPT_MASK)
     {
@@ -765,7 +762,6 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
         {
             result_ = -1;
         }
-        call_back_(this);
     }
     else if (event == RECTOR_EVENT::EXCEPTION_MASK)
     {
@@ -779,6 +775,7 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
     {
         assert(false);
     }
+    call_back_(this);
     return 0;
 }
 
@@ -1045,24 +1042,4 @@ int er_recvfrom(zce::aio::worker* worker,
 }
 
 //=======================================================================
-
-int tmo_schedule_timeout(zce::aio::worker* worker,
-                         const zce::time_value* timeout_tv,
-                         int *timer_id,
-                         std::function<void(AIO_ATOM*)> call_back)
-{
-    //aio_atom->handle_ = handle;
-    //aio_atom->snd_buf_ = buf;
-    //aio_atom->len_ = len;
-    //aio_atom->result_len_ = result_len;
-    //aio_atom->flags_ = flags;
-    //aio_atom->timeout_tv_ = timeout_tv;
-    //aio_atom->call_back_ = call_back;
-    //auto succ_req = worker->request(aio_atom);
-    //if (!succ_req)
-    //{
-    //    return -1;
-    //}
-    return 0;
-}
 }

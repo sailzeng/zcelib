@@ -129,14 +129,20 @@ enum AIO_TYPE
     AIO_EVENT_END = 19999,
 
     AIO_TIMER_BEGIN = 20001,
+    TIMER_BEGIN = 20001,
     TIMER_SCHEDULE = 20001,
     TIMER_CANCEL = 20002,
+    TIMER_END = 20999,
     AIO_TIMER_END = 29999,
 };
 
 //! AIO异步操作的原子
 struct AIO_ATOM
 {
+protected:
+    AIO_ATOM() = default;
+    ~AIO_ATOM() = default;
+public:
     virtual void clear() = 0;
 
     //!
@@ -477,7 +483,7 @@ struct EVENT_ATOM :public AIO_ATOM
     //!清理
     virtual void clear();
 
-    ///
+    //!发生事件后被回调的函数
     int event_do(ZCE_HANDLE socket,
                  RECTOR_EVENT event,
                  bool connect_succ);

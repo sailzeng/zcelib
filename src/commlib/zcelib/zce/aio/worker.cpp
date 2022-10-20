@@ -36,6 +36,7 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::HOST_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::SOCKET_TIMEOUT_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(128, 256);
+    aio_obj_pool_.initialize<zce::aio::TIMER_ATOM>(128, 256);
     reactor_ = new reactor_mini();
     reactor_->initialize(max_event_num, 1024, true);
     return 0;
@@ -94,6 +95,11 @@ AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
     {
         handle = aio_obj_pool_.alloc_object<EVENT_ATOM>();
     }
+    else if (aio_type > AIO_TYPE::TIMER_BEGIN &&
+             aio_type < AIO_TYPE::TIMER_END)
+    {
+        handle = aio_obj_pool_.alloc_object<TIMER_ATOM>();
+    }
     else
     {
         return nullptr;
@@ -135,6 +141,11 @@ void worker::free_handle(zce::aio::AIO_ATOM* base)
              base->aio_type_ < AIO_TYPE::EVENT_END)
     {
         aio_obj_pool_.free_object<EVENT_ATOM>(static_cast<EVENT_ATOM*>(base));
+    }
+    else if (base->aio_type_ > AIO_TYPE::TIMER_BEGIN &&
+             base->aio_type_ < AIO_TYPE::TIMER_END)
+    {
+        aio_obj_pool_.free_object<TIMER_ATOM>(static_cast<TIMER_ATOM*>(base));
     }
     else
     {
