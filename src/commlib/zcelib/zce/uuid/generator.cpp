@@ -175,6 +175,7 @@ bool UUID128::operator < (const UUID128& others) const
 // == 运算符
 bool UUID128::operator == (const UUID128& others) const
 {
+#if defined ZCE_OS32
     if (this->u_4uint32_[0] == others.u_4uint32_[0] &&
         this->u_4uint32_[1] == others.u_4uint32_[1] &&
         this->u_4uint32_[2] == others.u_4uint32_[2] &&
@@ -182,7 +183,13 @@ bool UUID128::operator == (const UUID128& others) const
     {
         return true;
     }
-
+#elif defined ZCE_OS64
+    if (this->u_2uint64_[0] == others.u_2uint64_[0] &&
+        this->u_2uint64_[1] == others.u_2uint64_[1])
+    {
+        return true;
+    }
+#endif
     return false;
 }
 
