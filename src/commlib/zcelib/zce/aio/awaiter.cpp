@@ -488,4 +488,16 @@ awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
     aio_atom->from_len_ = from_len;
     return awaiter_aio(worker, aio_atom);
 }
+
+//============================================================================
+awaiter_aio  co_schedule_timeout(zce::aio::worker* worker,
+                                 const zce::time_value* timeout_tv,
+                                 int *timer_id)
+{
+    zce::aio::TIMER_ATOM* aio_atom = (TIMER_ATOM*)
+        worker->alloc_handle(AIO_TYPE::TIMER_SCHEDULE);
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->timer_id_ = timer_id;
+    return awaiter_aio(worker, aio_atom);
+}
 }
