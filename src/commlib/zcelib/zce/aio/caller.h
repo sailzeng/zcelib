@@ -194,19 +194,19 @@ int fs_open(zce::aio::worker* worker,
             const char* path,
             int flags,
             int mode,
-            std::function<void(AIO_ATOM*)> call_back);
+            std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步关闭某个文件，完成后回调函数call_back
 int fs_close(zce::aio::worker* worker,
              ZCE_HANDLE handle,
-             std::function<void(AIO_ATOM*)> call_back);
+             std::function<void(AIO_ATOM*)> &call_back);
 
 //!移动文件的读写位置,
 int fs_lseek(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              off_t offset,
              int whence,
-             std::function<void(AIO_ATOM*)> call_back);
+             std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步读取文件内容
 int fs_read(zce::aio::worker* worker,
@@ -214,7 +214,7 @@ int fs_read(zce::aio::worker* worker,
             char* read_bufs,
             size_t nbufs,
             size_t *result_len,
-            std::function<void(AIO_ATOM*)> call_back,
+            std::function<void(AIO_ATOM*)> &call_back,
             ssize_t offset = 0,
             int whence = SEEK_CUR);
 
@@ -224,7 +224,7 @@ int fs_write(zce::aio::worker* worker,
              const char* write_bufs,
              size_t nbufs,
              size_t *result_len,
-             std::function<void(AIO_ATOM*)> call_back,
+             std::function<void(AIO_ATOM*)> &call_back,
              ssize_t offset = 0,
              int whence = SEEK_CUR);
 
@@ -232,14 +232,14 @@ int fs_write(zce::aio::worker* worker,
 int fs_ftruncate(zce::aio::worker* worker,
                  ZCE_HANDLE handle,
                  size_t offset,
-                 std::function<void(AIO_ATOM*)> call_back);
+                 std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步打开文件，读取文件内容，然后关闭
 int fs_read_file(zce::aio::worker* worker,
                  const char* path,
                  char* read_bufs,
                  size_t nbufs,
-                 std::function<void(AIO_ATOM*)> call_back,
+                 std::function<void(AIO_ATOM*)> &call_back,
                  ssize_t offset = 0);
 
 //!异步打开文件，写入文件内容，然后关闭
@@ -247,25 +247,25 @@ int fs_write_file(zce::aio::worker* worker,
                   const char* path,
                   const char* write_bufs,
                   size_t nbufs,
-                  std::function<void(AIO_ATOM*)> call_back,
+                  std::function<void(AIO_ATOM*)> &call_back,
                   ssize_t offset = 0);
 
 //!异步删除文件
 int fs_unlink(zce::aio::worker* worker,
               const char* path,
-              std::function<void(AIO_ATOM*)> call_back);
+              std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步改名
 int fs_rename(zce::aio::worker* worker,
               const char* path,
               const char* new_path,
-              std::function<void(AIO_ATOM*)> call_back);
+              std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步获取stat
 int fs_stat(zce::aio::worker* worker,
             const char* path,
             struct stat* file_stat,
-            std::function<void(AIO_ATOM*)> call_back);
+            std::function<void(AIO_ATOM*)> &call_back);
 
 //=========================================================================
 //! 目录操作的原子
@@ -286,18 +286,18 @@ struct DIR_ATOM :public AIO_ATOM
 int dir_scandir(zce::aio::worker* worker,
                 const char* dirname,
                 struct dirent*** namelist,
-                std::function<void(AIO_ATOM*)> call_back);
+                std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步建立dir
 int dir_mkdir(zce::aio::worker* worker,
               const char* dirname,
               int mode,
-              std::function<void(AIO_ATOM*)> call_back);
+              std::function<void(AIO_ATOM*)> &call_back);
 
 //!异步删除dir
 int dir_rmdir(zce::aio::worker* worker,
               const char* dirname,
-              std::function<void(AIO_ATOM*)> call_back);
+              std::function<void(AIO_ATOM*)> &call_back);
 
 //=========================================================================
 //! 数据库操作原子
@@ -325,12 +325,12 @@ int mysql_connect(zce::aio::worker* worker,
                   const char* user,
                   const char* pwd,
                   unsigned int port, //默认填写MYSQL_PORT
-                  std::function<void(AIO_ATOM*)> call_back);
+                  std::function<void(AIO_ATOM*)> &call_back);
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::worker* worker,
                      zce::mysql::connect* db_connect,
-                     std::function<void(AIO_ATOM*)> call_back);
+                     std::function<void(AIO_ATOM*)> &call_back);
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::worker* worker,
@@ -339,7 +339,7 @@ int mysql_query(zce::aio::worker* worker,
                 size_t sql_len,
                 uint64_t* num_affect,
                 uint64_t* insert_id,
-                std::function<void(AIO_ATOM*)> call_back);
+                std::function<void(AIO_ATOM*)> &call_back);
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::worker* worker,
@@ -348,7 +348,7 @@ int mysql_query(zce::aio::worker* worker,
                 size_t sql_len,
                 uint64_t* num_affect,
                 zce::mysql::result* db_result,
-                std::function<void(AIO_ATOM*)> call_back);
+                std::function<void(AIO_ATOM*)> &call_back);
 
 //=========================================================================
 //!
@@ -378,7 +378,7 @@ int host_getaddr_ary(zce::aio::worker* worker,
                      sockaddr_in* ary_addr,
                      size_t* ary_addr6_num,
                      sockaddr_in6* ary_addr6,
-                     std::function<void(AIO_ATOM*)> call_back);
+                     std::function<void(AIO_ATOM*)> &call_back);
 
 //!获得host对应的一个地址信息，类似getaddrinfo_one
 int host_getaddr_one(zce::aio::worker* worker,
@@ -386,7 +386,7 @@ int host_getaddr_one(zce::aio::worker* worker,
                      const char* service,
                      sockaddr* addr,
                      socklen_t addr_len,
-                     std::function<void(AIO_ATOM*)> call_back);
+                     std::function<void(AIO_ATOM*)> &call_back);
 
 //=========================================================================
 //! Socket atom
@@ -422,7 +422,7 @@ int st_connect(zce::aio::worker* worker,
                const sockaddr* addr,
                socklen_t addr_len,
                zce::time_value* timeout_tv,
-               std::function<void(AIO_ATOM*)> call_back);
+               std::function<void(AIO_ATOM*)> &call_back);
 
 int st_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
@@ -431,7 +431,7 @@ int st_connect(zce::aio::worker* worker,
                sockaddr* host_addr,
                socklen_t addr_len,
                zce::time_value& timeout_tv,
-               std::function<void(AIO_ATOM*)> call_back);
+               std::function<void(AIO_ATOM*)> &call_back);
 
 //! 等待若干时间进行accept，直至超时
 int st_accept(zce::aio::worker* worker,
@@ -440,7 +440,7 @@ int st_accept(zce::aio::worker* worker,
               sockaddr* from,
               socklen_t* from_len,
               zce::time_value* timeout_tv,
-              std::function<void(AIO_ATOM*)> call_back);
+              std::function<void(AIO_ATOM*)> &call_back);
 
 //! 等待若干时间进行recv，直至超时
 int st_recv(zce::aio::worker* worker,
@@ -449,7 +449,7 @@ int st_recv(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             zce::time_value* timeout_tv,
-            std::function<void(AIO_ATOM*)> call_back,
+            std::function<void(AIO_ATOM*)> &call_back,
             int flags = 0);
 
 //!等待若干时间进行send，直至超时
@@ -459,7 +459,7 @@ int st_send(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             zce::time_value* timeout_tv,
-            std::function<void(AIO_ATOM*)> call_back,
+            std::function<void(AIO_ATOM*)> &call_back,
             int flags = 0);
 
 //!等待若干时间进行recv数据，直至超时
@@ -471,7 +471,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 sockaddr* from,
                 socklen_t* from_len,
                 zce::time_value* timeout_tv,
-                std::function<void(AIO_ATOM*)> call_back,
+                std::function<void(AIO_ATOM*)> &call_back,
                 int flags = 0);
 
 //!用超时机制发起send数据,注意，注意，UDP，直接用sendto就可以了。
@@ -543,7 +543,7 @@ int er_connect(zce::aio::worker* worker,
                const sockaddr* addr,
                socklen_t addr_len,
                bool *alread_do,
-               std::function<void(AIO_ATOM*)> call_back);
+               std::function<void(AIO_ATOM*)> &call_back);
 
 //! 事件模式等待间进行accept，直至超时
 int er_accept(zce::aio::worker* worker,
@@ -552,7 +552,7 @@ int er_accept(zce::aio::worker* worker,
               sockaddr* from,
               socklen_t* from_len,
               bool *alread_do,
-              std::function<void(AIO_ATOM*)> call_back);
+              std::function<void(AIO_ATOM*)> &call_back);
 
 //! 事件模式等待间进行进行recv，
 int er_recv(zce::aio::worker* worker,
@@ -561,7 +561,7 @@ int er_recv(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             bool *alread_do,
-            std::function<void(AIO_ATOM*)> call_back);
+            std::function<void(AIO_ATOM*)> &call_back);
 
 //! 事件模式等待进行进行send，
 int er_send(zce::aio::worker* worker,
@@ -570,7 +570,7 @@ int er_send(zce::aio::worker* worker,
             size_t len,
             size_t *result_len,
             bool *alread_do,
-            std::function<void(AIO_ATOM*)> call_back);
+            std::function<void(AIO_ATOM*)> &call_back);
 
 //!事件模式等待进行recv数据，
 int er_recvfrom(zce::aio::worker* worker,
@@ -581,7 +581,7 @@ int er_recvfrom(zce::aio::worker* worker,
                 sockaddr* from,
                 socklen_t* from_len,
                 bool *alread_do,
-                std::function<void(AIO_ATOM*)> call_back);
+                std::function<void(AIO_ATOM*)> &call_back);
 
 //=========================================================================
 //!
