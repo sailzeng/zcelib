@@ -278,6 +278,7 @@
     <ClInclude Include="zce\pool\multiobjs_pool.h" />
     <ClInclude Include="zce\pool\object_pool.h" />
     <ClInclude Include="zce\pool\buffer_pool.h" />
+    <ClInclude Include="zce\pool\shareptr_pool.h" />
     <ClInclude Include="zce\rudp\base.h" />
     <ClInclude Include="zce\rudp\client.h" />
     <ClInclude Include="zce\rudp\peer.h" />

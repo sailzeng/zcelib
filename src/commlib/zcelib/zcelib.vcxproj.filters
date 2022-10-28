@@ -825,6 +825,9 @@
     <ClInclude Include="zce\event\reactor_mini.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\pool\shareptr_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
