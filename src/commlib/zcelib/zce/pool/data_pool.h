@@ -194,6 +194,7 @@ protected:
     LOCK lock_;
 };
 
+//=======================================================================================
 /*!
 * @brief      多对象池子，可以用于分配对象，避免反复使用new or delete
 *             要分配的对象作为模板参数
@@ -208,7 +209,7 @@ public:
     multidata_pool() = default;
     ~multidata_pool() = default;
 
-    //==============================
+    //============================
     //!对某个对象池子进行初始化,使用对象名称作为模板参数
     template<typename O>
     bool initialize(size_t init_node_size,
@@ -257,7 +258,7 @@ public:
         return std::get<zce::data_pool<LOCK, O> >(pools_).free_object(ptr);
     }
 
-    //=======================================
+    //============================
     //!对某个对象池子进行初始化,使用对象在tuple的序号作为模板参数
     template<size_t I>
     bool initialize(size_t init_node_size,
