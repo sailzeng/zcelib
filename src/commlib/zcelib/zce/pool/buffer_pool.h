@@ -2,7 +2,7 @@
 
 #include "zce/buffer/cycle_buffer.h"
 #include "zce/buffer/queue_buffer.h"
-#include "zce/pool/object_pool.h"
+#include "zce/pool/data_pool.h"
 #include "zce/lock/null_lock.h"
 #include "zce/util/singleton.h"
 
@@ -20,7 +20,7 @@ class buffer_pool
 protected:
 
     //每个桶里面存放一种尺寸的B
-    typedef zce::object_pool<LOCK, B>  bucket;
+    typedef zce::data_pool<LOCK, B>  bucket;
 
 public:
     //

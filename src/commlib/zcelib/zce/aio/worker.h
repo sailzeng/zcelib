@@ -20,7 +20,7 @@
 */
 #pragma once
 
-#include "zce/pool/multiobjs_pool.h"
+#include "zce/pool/data_pool.h"
 #include "zce/thread/msgque_condi.h"
 #include "zce/event/reactor_mini.h"
 #include "zce/aio/caller.h"
@@ -105,7 +105,7 @@ protected:
     zce::msgring_condi<zce::aio::AIO_ATOM*>* response_queue_ = nullptr;
 
     //! 对象池子，用于分配对象
-    zce::multiobjs_pool<std::mutex,
+    zce::multidata_pool<std::mutex,
         zce::aio::FS_ATOM,
         zce::aio::DIR_ATOM,
         zce::aio::MYSQL_ATOM,

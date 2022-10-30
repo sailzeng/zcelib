@@ -7,6 +7,10 @@ int main(int argc, char* argv[])
 #if defined ZCE_OS_WINDOWS
     SetConsoleOutputCP(65001);
 #endif
+
+    std::cout << std::is_pod<zce::cycle_buffer>::value << std::endl;
+    std::cout << std::is_pod<zce::queue_buffer>::value << std::endl;
+
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 
@@ -93,4 +97,4 @@ int main(int argc, char* argv[])
     //system("pause");
     //test_rw_lock1(argc, argv);
 #endif
-}
+    }

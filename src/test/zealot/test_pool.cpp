@@ -44,16 +44,6 @@ class CI
 {
 };
 
-int test_pool5(int /*argc*/, char* /*argv*/[])
-{
-    zce::object_pool_ex<std::mutex, CI> pool;
-    pool.initialize(16,
-                    16);
-    CI* a = pool.alloc_object();
-    pool.free_object(a);
-    return 0;
-}
-
 int test_pool6(int /*argc*/, char* /*argv*/[])
 {
     zce::queue_buffer_pool pool;
@@ -153,7 +143,7 @@ class CC
 
 int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
 {
-    zce::multiobjs_pool<zce::null_lock, CA, CB, CC, int, double> m_o_1;
+    zce::multidata_pool<zce::null_lock, CA, CB, CC, int, double> m_o_1;
     m_o_1.initialize<0>(10, 10);
     m_o_1.initialize<1>(10, 10);
     m_o_1.initialize<2>(10, 10);
@@ -173,7 +163,7 @@ int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
     m_o_1.terminate<3>();
     m_o_1.terminate<4>();
 
-    zce::multiobjs_pool<std::mutex, CA, CB, CC, int, double> m_o_2;
+    zce::multidata_pool<std::mutex, CA, CB, CC, int, double> m_o_2;
     m_o_2.initialize<CA>(10, 10);
     m_o_2.initialize<CB>(10, 10);
     m_o_2.initialize<CC>(10, 10);

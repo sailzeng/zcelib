@@ -262,10 +262,10 @@ protected:
     std::mutex              queue_lock_;
 
     //信号灯，满的信号灯
-    std::binary_semaphore   sem_full_;
+    std::counting_semaphore<1024>   sem_full_;
 
     //信号灯，空的信号灯，当数据
-    std::binary_semaphore   sem_empty_;
+    std::counting_semaphore<1024>   sem_empty_;
 
     //容器类型，可以是list,dequeue,
     C                       message_queue_;
