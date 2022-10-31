@@ -83,7 +83,7 @@ struct is_random_access_iterator
 };
 //----------------------------------------------------------------------------
 
-//关注一下 std::invoke 函数std::result_of, std::invoke_result
+//关注一下 std::invoke 函数std::result_of, std::invoke_result，std::mem_fun
 
 template<typename fun_t, typename para_tuple, std::size_t... I>
 auto g_func_invoke_impl(fun_t& f, const para_tuple& a, std::index_sequence<I...>)
@@ -134,6 +134,16 @@ auto mem_func_invoke(class_type* obj, fun_t& f, args_type && ...datalist)
     auto a = std::make_tuple(std::forward<args_type>(datalist)...);
     return mem_func_invoke_impl(obj, f, a);
 }
+
+//----------------------------------------------------------------------------
+template<typename class_type, typename ...args_type>
+struct new_helper
+{
+    static class_type* invoke(args_type...datalist)
+    {
+        return new class_type(datalist...);
+    }
+};
 };
 
 #endif //ZCE_LIB_BOOST_MPL_H_

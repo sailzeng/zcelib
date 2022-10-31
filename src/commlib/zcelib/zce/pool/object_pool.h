@@ -90,7 +90,7 @@ public:
     //! 构造函数和销毁的方式，constructor 和 destroy 成对使用
     //! 用于你需要使用构造函数初始化指针的地方，需要析构释放资源的地方
     template<typename... Args>
-    object_pool::object *constructor(Args... args)
+    object_pool::object *constructor(Args&&... args)
     {
         void *ptr = alloc_ptr();
         return new(ptr) object_pool::object(args...);
@@ -247,7 +247,7 @@ public:
     }
     //!分配一个对象
     template<typename O, typename... Args>
-    O* constructor(Args... args)
+    O* constructor(Args&&... args)
     {
         return std::get<zce::object_pool<LOCK, O> >(pools_).constructor(args...);
     }
@@ -262,7 +262,7 @@ public:
     //!对某个对象池子进行初始化,使用对象在tuple的序号作为模板参数
     template<size_t I>
     bool initialize(size_t init_node_size,
-                    size_t extend_node_sizer)
+                    size_t extend_node_size)
     {
         return std::get<I>(pools_).initialize(init_node_size,
                                               extend_node_size);
@@ -298,9 +298,9 @@ public:
     //!分配一个对象
     template<size_t I, typename... Args>
     typename std::tuple_element<I, std::tuple<object_pool<LOCK, T>...> >::type::object*
-        constructor(Args... args)
+        constructor(Args&&... args)
     {
-        return std::get<I>(pools_).alloc_object(args...);
+        return std::get<I>(pools_).constructor(args...);
     }
     //归还一个对象
     template<size_t I >

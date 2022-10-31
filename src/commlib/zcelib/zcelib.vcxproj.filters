@@ -819,7 +819,7 @@
     <ClInclude Include="zce\event\reactor_mini.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\pool\data_pool.h">
+    <ClInclude Include="zce\pool\dataptr_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

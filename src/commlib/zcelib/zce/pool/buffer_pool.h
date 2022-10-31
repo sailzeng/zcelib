@@ -2,9 +2,10 @@
 
 #include "zce/buffer/cycle_buffer.h"
 #include "zce/buffer/queue_buffer.h"
-#include "zce/pool/data_pool.h"
+#include "zce/pool/dataptr_pool.h"
 #include "zce/lock/null_lock.h"
 #include "zce/util/singleton.h"
+#include "zce/util/mpl.h"
 
 namespace zce
 {
@@ -59,7 +60,7 @@ public:
         for (size_t i = 0; i < bucket_num; ++i)
         {
             std::function<B* ()> new_fun =
-                std::bind(&B::new_self,
+                std::bind(zce::new_helper<B,size_t>::invoke,
                           bucket_bufsize_[i]);
             ret = pools_[i].initialize(init_node_size,
                                        extend_node_size,

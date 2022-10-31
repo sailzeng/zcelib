@@ -196,3 +196,112 @@ int test_multiobj_pool(int /*argc*/, char* /*argv*/[])
 
     return 0;
 }
+
+class DA
+{
+public:
+};
+
+class DB
+{
+public:
+    DB(int a, const char *b)
+    {
+        a_ = a;
+        b_ = b;
+    }
+    int a_;
+    std::string b_;
+};
+
+class DC
+{
+public:
+    DC(int d1, int d2, int d3, double d4)
+    {
+        d_1_ = d1;
+        d_2_ = d2;
+        d_3_ = d3;
+        d_4_ = d4;
+    }
+    int d_1_;
+    int d_2_;
+    int d_3_;
+    double d_4_;
+};
+
+int test_multiobj_pool_001(int /*argc*/, char* /*argv*/[])
+{
+    zce::multiobjs_pool<zce::null_lock, DA, DB, DC, int, double> m_o_1;
+    m_o_1.initialize<0>(10, 10);
+    m_o_1.initialize<1>(10, 10);
+    m_o_1.initialize<2>(10, 10);
+    m_o_1.initialize<3>(10, 10);
+    m_o_1.initialize<4>(10, 10);
+    auto sz = m_o_1.size<0>();
+    ZCE_LOG(RS_INFO, "m_o_1 %u", sz);
+
+    auto a_1_1 = m_o_1.constructor<0>();
+    auto a_1_2 = m_o_1.constructor<0>();
+    m_o_1.destroy<0>(a_1_1);
+    m_o_1.destroy<0>(a_1_2);
+
+    auto b_1_1 = m_o_1.constructor<1>(1, "Oh.Oh");
+    auto b_1_2 = m_o_1.constructor<1>(2, "Oh.Oh");
+    m_o_1.destroy<1>(b_1_1);
+    m_o_1.destroy<1>(b_1_2);
+
+    auto c_1_1 = m_o_1.constructor<2>(1, 2, 3, 4.001f);
+    auto c_1_2 = m_o_1.constructor<2>(5, 6, 7, 8.001f);
+    m_o_1.destroy<2>(c_1_1);
+    m_o_1.destroy<2>(c_1_2);
+
+    auto d_1_1 = m_o_1.constructor<3>(1);
+    auto d_1_2 = m_o_1.constructor<3>(5000);
+    m_o_1.destroy<3>(d_1_1);
+    m_o_1.destroy<3>(d_1_2);
+
+    auto e_1_1 = m_o_1.constructor<4>(1.185);
+    auto e_1_2 = m_o_1.constructor<4>(5000.34);
+    m_o_1.destroy<4>(e_1_1);
+    m_o_1.destroy<4>(e_1_2);
+
+    m_o_1.terminate<0>();
+    m_o_1.terminate<1>();
+    m_o_1.terminate<2>();
+    m_o_1.terminate<3>();
+    m_o_1.terminate<4>();
+
+    zce::multiobjs_pool<zce::null_lock, DA, DB, DC, int, double> m_o_2;
+    m_o_2.initialize<DA>(10, 10);
+    m_o_2.initialize<DB>(10, 10);
+    m_o_2.initialize<DC>(10, 10);
+    m_o_2.initialize<int>(10, 10);
+    m_o_2.initialize<double>(10, 10);
+
+    auto a_2_1 = m_o_2.constructor<DA>();
+    auto a_2_2 = m_o_2.constructor<DA>();
+    m_o_2.destroy<DA>(a_2_1);
+    m_o_2.destroy<DA>(a_2_2);
+
+    DC* c_ary[20];
+    for (size_t i = 0; i < 20; ++i)
+    {
+        c_ary[i] = m_o_2.constructor<DC>((int)i, 2, 3, 4.001f);
+        ZCE_LOG(RS_INFO, "CC pool size %u", m_o_2.size<DC>());
+        ZCE_LOG(RS_INFO, "CC pool capacity %u", m_o_2.capacity<DC>());
+    }
+    for (size_t i = 0; i < 20; ++i)
+    {
+        m_o_2.destroy<DC>(c_ary[i]);
+        ZCE_LOG(RS_INFO, "CC pool size %u", m_o_2.size<DC>());
+        ZCE_LOG(RS_INFO, "CC pool capacity %u", m_o_2.capacity<DC>());
+    }
+    m_o_2.terminate<DA>();
+    m_o_2.terminate<DB>();
+    m_o_2.terminate<DC>();
+    m_o_2.terminate<int>();
+    m_o_2.terminate<double>();
+
+    return 0;
+}
