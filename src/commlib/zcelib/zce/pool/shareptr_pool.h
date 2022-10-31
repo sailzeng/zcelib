@@ -86,18 +86,9 @@ public:
         for (; i < sz; i++)
         {
             find_pos_ = (find_pos_ + 1) % sz;
+            
+            assert(obj_pool_[find_pos_]);
             //第一次的时候new分配一个数据
-            if (!obj_pool_[find_pos_])
-            {
-                if (new_fun_)
-                {
-                    obj_pool_[find_pos_] = std::shared_ptr<T>(new_fun_());
-                }
-                else
-                {
-                    obj_pool_[find_pos_] = std::shared_ptr<T>(new T());
-                }
-            }
             if (obj_pool_[find_pos_].use_count() == 1)
             {
                 return obj_pool_[find_pos_];
@@ -109,14 +100,7 @@ public:
             extend_pool = true;
             extend(extend_size_);
         }
-        if (new_fun_)
-        {
-            obj_pool_[sz] = std::shared_ptr<T>(new_fun_());
-        }
-        else
-        {
-            obj_pool_[sz] = std::shared_ptr<T>(new T());
-        }
+
         return  obj_pool_[sz];
     }
 
@@ -125,6 +109,17 @@ public:
     {
         size_t pool_size = obj_pool_.size();
         obj_pool_.resize(pool_size + extend_size);
+        for (i = 0; i < extend_size; ++i)
+        {
+            if (new_fun_)
+            {
+                obj_pool_[pool_size+i] = std::shared_ptr<T>(new_fun_());
+            }
+            else
+            {
+                obj_pool_[pool_size + i] = std::shared_ptr<T>(new T());
+            }
+        }
         return;
     }
 
