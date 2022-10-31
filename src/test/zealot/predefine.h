@@ -102,6 +102,7 @@
 #include <zce/pool/object_pool.h>
 #include <zce/pool/buffer_pool.h>
 #include <zce/pool/dataptr_pool.h>
+#include <zce/pool/shareptr_pool.h>
 
 #include <zce/aio/caller.h>
 #include <zce/aio/worker.h>

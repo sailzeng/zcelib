@@ -822,6 +822,9 @@
     <ClInclude Include="zce\pool\dataptr_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\pool\shareptr_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

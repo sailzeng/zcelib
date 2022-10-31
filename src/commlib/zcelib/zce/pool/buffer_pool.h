@@ -60,7 +60,7 @@ public:
         for (size_t i = 0; i < bucket_num; ++i)
         {
             std::function<B* ()> new_fun =
-                std::bind(zce::new_helper<B,size_t>::invoke,
+                std::bind(zce::new_helper<B, size_t>::invoke,
                           bucket_bufsize_[i]);
             ret = pools_[i].initialize(init_node_size,
                                        extend_node_size,

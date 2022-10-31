@@ -547,14 +547,47 @@ protected:
 
 //看不懂吧，其实我也看不懂，mt[数字]，里面的数字其实是说循环长度是2^数字
 ///后缀为A这个里面的魔术数字是我从网上爬到的 http://www.quadibloc.com/crypto/co4814.htm
-typedef random_mt<351, 175, 0xFFF80000, 0x0007FFFF, 0xE4BD75F5, 11, 0xFFFFFFFF, 7, 0x655E5280, 15, 0xFFD58000, 17>  random_mt11213a;
+typedef random_mt<351,
+    175,
+    0xFFF80000,
+    0x0007FFFF,
+    0xE4BD75F5,
+    11,
+    0xFFFFFFFF,
+    7,
+    0x655E5280,
+    15,
+    0xFFD58000,
+    17>  random_mt11213a;
 ///为啥名字中要一个B的后缀呢，因为对应有一个A，BOOST只选择了mt11213b.
-typedef random_mt<351, 175, 0xFFF80000, 0x0007FFFF, 0xCCAB8EE7, 11, 0xFFFFFFFF, 7, 0x31B6AB00, 15, 0xFFE50000, 17>  random_mt11213b;
+typedef random_mt<351,
+    175,
+    0xFFF80000,
+    0x0007FFFF,
+    0xCCAB8EE7,
+    11,
+    0xFFFFFFFF,
+    7,
+    0x31B6AB00,
+    15,
+    0xFFE50000,
+    17>  random_mt11213b;
 ///@brief mt19937大概是现在大家最推荐的算法
 ///这儿要介绍一下的是我们一般默认使用的算法mt19937的算法，
 ///这种算法速度快，而且循环周期长2^19937，在不那么大（2^623,你有需要创建比这个大的数值？）的数值中平均分布能力好，
 ///所以是群众们的最爱，所以大家默认选择这算法，
-typedef random_mt<624, 397, 0x80000000, 0x7FFFFFFF, 0x9908B0DF, 11, 0xFFFFFFFF, 7, 0x9D2C5680, 15, 0xEFC60000, 18>  random_mt19937;
+typedef random_mt<624,
+    397,
+    0x80000000,
+    0x7FFFFFFF,
+    0x9908B0DF,
+    11,
+    0xFFFFFFFF,
+    7,
+    0x9D2C5680,
+    15,
+    0xEFC60000,
+    18>  random_mt19937;
 
 //==============================================================================================================
 //

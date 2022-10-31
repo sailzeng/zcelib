@@ -305,3 +305,66 @@ int test_multiobj_pool_001(int /*argc*/, char* /*argv*/[])
 
     return 0;
 }
+
+int test_share_ptr_pool(int /*argc*/, char* /*argv*/[])
+{
+    zce::shareptr_pool<std::mutex, int> pool;
+    pool.initialize(5, 5);
+    bool extended = false;
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    auto a = pool.alloc_object(extended);
+    auto b = pool.alloc_object(extended);
+    auto c = pool.alloc_object(extended);
+    auto d = pool.alloc_object(extended);
+    auto e = pool.alloc_object(extended);
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    *(a.get()) = 1;
+    *(a.get()) = 2;
+    *(a.get()) = 3;
+
+    auto f = pool.alloc_object(extended);
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    auto g = pool.alloc_object(extended);
+    auto h = pool.alloc_object(extended);
+    auto i = pool.alloc_object(extended);
+    auto j = pool.alloc_object(extended);
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    a.reset();
+    b.reset();
+    c.reset();
+    d.reset();
+    e.reset();
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    a = pool.alloc_object(extended);
+    b = pool.alloc_object(extended);
+    c = pool.alloc_object(extended);
+    d = pool.alloc_object(extended);
+    e = pool.alloc_object(extended);
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    auto k = pool.alloc_object(extended);
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+    auto l = pool.alloc_object(extended);
+    auto m = pool.alloc_object(extended);
+    auto n = pool.alloc_object(extended);
+    auto o = pool.alloc_object(extended);
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+
+    a.reset();
+    b.reset();
+    c.reset();
+    d.reset();
+    e.reset();
+    f.reset();
+    g.reset();
+    h.reset();
+    i.reset();
+    j.reset();
+    k.reset();
+    l.reset();
+    m.reset();
+    n.reset();
+    o.reset();
+    std::cout << "Pool size:" << pool.size() << " capacity:" << pool.capacity() << " extended:" << extended << std::endl;
+
+    return 0;
+}
