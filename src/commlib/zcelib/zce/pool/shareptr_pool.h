@@ -14,12 +14,14 @@
 *
 */
 #pragma once
+
 namespace zce
 {
 /*!
 * @brief      （单）对象池子，可以用于分配对象，避免反复使用new or delete
 *
-* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是 std::recursive_mutex（优先）
+*             std::mutex 也应该可以，不过写代码要注意避免出现递归
 * @tparam     T 对象类型，
 */
 template<typename LOCK, typename T>
@@ -77,7 +79,8 @@ public:
         }
     }
 
-    //!分配一个对象
+    //! 分配一个对象，
+    //! 也许未来可以加个收缩
     std::shared_ptr<T> alloc_object(bool &extend_pool)
     {
         std::lock_guard<LOCK> lock(lock_);
@@ -104,6 +107,58 @@ public:
         return  obj_pool_[sz];
     }
 
+    //有点耗时的操作，会检测所有的
+    size_t size()
+    {
+        std::lock_guard<LOCK> lock(lock_);
+        size_t use = 0, sz = obj_pool_.size();
+        for (size_t i = 0; i < sz; i++)
+        {
+            if (obj_pool_[i].use_count() > 1)
+            {
+                ++use;
+            }
+        }
+        return use;
+    }
+    //! 下面2个函数代码搞得有点丑，目标是为了避免出现递归锁的可能
+    //! 计算是否为空
+    inline bool empty()
+    {
+        std::lock_guard<LOCK> lock(lock_);
+        size_t use = 0, sz = obj_pool_.size();
+        for (size_t i = 0; i < sz; i++)
+        {
+            if (obj_pool_[i].use_count() > 1)
+            {
+                ++use;
+            }
+        }
+        return use == 0;
+    }
+    //是否满
+    inline bool full()
+    {
+        std::lock_guard<LOCK> lock(lock_);
+        size_t use = 0, sz = obj_pool_.size();
+        for (size_t i = 0; i < sz; i++)
+        {
+            if (obj_pool_[i].use_count() > 1)
+            {
+                ++use;
+            }
+        }
+        return use == sz;
+    }
+    inline size_t capacity()
+    {
+        std::lock_guard<LOCK> lock(lock_);
+        //! 容量就是vector的size
+        return obj_pool_.size();
+    }
+
+protected:
+
     //!扩展池子的容量
     void extend(size_t extend_size)
     {
@@ -122,44 +177,6 @@ public:
         }
         return;
     }
-
-    //有点耗时的操作，会检测所有的
-    size_t size()
-    {
-        size_t use = 0;
-        std::lock_guard<LOCK> lock(lock_);
-        size_t sz = obj_pool_.size(), i = 0;
-        for (; i < sz; i++)
-        {
-            if (obj_pool_[i])
-            {
-                if (obj_pool_[i].use_count() > 1)
-                {
-                    ++use;
-                }
-            }
-        }
-        return use;
-    }
-
-    inline size_t capacity()
-    {
-        std::lock_guard<LOCK> lock(lock_);
-        return obj_pool_.size();
-    }
-    inline bool empty()
-    {
-        std::lock_guard<LOCK> lock;
-        return size() == 0;
-    }
-    inline bool full()
-    {
-        std::lock_guard<LOCK> lock(lock_);
-        return size() == capacity();
-    }
-
-    //也许未来可以加个收缩
-
 protected:
 
     //! 池子初始化大小
@@ -174,7 +191,130 @@ protected:
 
     //! T的初始化函数，
     std::function <T* ()> new_fun_;
-    //! 锁记录
+    //! 锁记录，
     LOCK lock_;
+};
+
+/*!
+* @brief      多对象share ptr池子，可以用于分配对象，避免反复使用new or delete
+*             要分配的对象作为模板参数
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::recursive_mutex
+* @tparam     ... T 多种对象类型，
+*/
+template< typename LOCK, typename... T >
+class multishare_pool
+{
+public:
+
+    multishare_pool() = default;
+    ~multishare_pool() = default;
+
+    //============================
+    //!对某个对象池子进行初始化,使用对象名称作为模板参数
+    template<typename O>
+    bool initialize(size_t init_node_size,
+                    size_t extend_node_size,
+                    std::function <O* () >* new_fun = nullptr)
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).initialize(init_node_size,
+                                                                         extend_node_size,
+                                                                         new_fun);
+    }
+    template<typename O>
+    void terminate()
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).terminate();
+    }
+    template<typename O>
+    inline size_t size()
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).size();
+    }
+    template<typename O>
+    size_t capacity()
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).capacity();
+    }
+    template<typename O>
+    bool empty()
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).empty();
+    }
+    template<typename O>
+    bool full()
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).full();
+    }
+    //!分配一个对象
+    template<typename O>
+    O* alloc_object()
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).alloc_object();
+    }
+    //归还一个对象
+    template<typename O>
+    void free_object(O* ptr)
+    {
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).free_object(ptr);
+    }
+
+    //============================
+    //!对某个对象池子进行初始化,使用对象在tuple的序号作为模板参数
+    template<size_t I>
+    bool initialize(size_t init_node_size,
+                    size_t extend_node_size,
+                    std::function <typename std::tuple_element<I, \
+                    std::tuple<shareptr_pool<LOCK, T>...> >::type::object* () >* new_fun = nullptr)
+    {
+        return std::get<I>(pools_).initialize(init_node_size,
+                                              extend_node_size,
+                                              new_fun);
+    }
+    //!对某个对象池子进行销毁,使用对象在tuple的序号作为模板参数
+    template<size_t I>
+    void terminate()
+    {
+        return std::get<I>(pools_).terminate();
+    }
+    //对对象池子
+    template<size_t I>
+    inline size_t size()
+    {
+        return std::get<I>(pools_).size();
+    }
+    template<size_t I>
+    size_t capacity()
+    {
+        return std::get<I>(pools_).capacity();
+    }
+    template<size_t I>
+    bool empty()
+    {
+        return std::get<I>(pools_).empty();
+    }
+    template<size_t I>
+    bool full()
+    {
+        return std::get<I>(pools_).full();
+    }
+
+    //!分配一个对象
+    template<size_t I>
+    typename std::tuple_element<I, std::tuple<shareptr_pool<LOCK, T>...> >::type::object*
+        alloc_object()
+    {
+        return std::get<I>(pools_).alloc_object();
+    }
+    //归还一个对象
+    template<size_t I >
+    void free_object(typename std::tuple_element<I,
+                     std::tuple<shareptr_pool<LOCK, T>...> >::type::object* ptr)
+    {
+        return std::get<I>(pools_).free_object(ptr);
+    }
+
+protected:
+    //!对象池子堆
+    std::tuple<shareptr_pool<LOCK, T>... > pools_;
 };
 }

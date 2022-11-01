@@ -82,7 +82,7 @@ namespace zce
 class queue_buffer;
 
 template<typename L, typename B> class buffer_pool;
-typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_s;
+typedef buffer_pool<std::recursive_mutex, queue_buffer> queue_buffer_pool_s;
 
 struct LOG_RECORD
 {

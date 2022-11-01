@@ -21,7 +21,7 @@ class buffer_pool
 protected:
 
     //每个桶里面存放一种尺寸的B
-    typedef zce::data_pool<LOCK, B>  bucket;
+    typedef zce::dataptr_pool<LOCK, B>  bucket;
 
 public:
     //
@@ -156,8 +156,8 @@ protected:
 
 typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;
 typedef buffer_pool<zce::null_lock, queue_buffer> queue_buffer_pool;
-typedef buffer_pool<std::mutex, cycle_buffer> cycle_buffer_pool_s;
-typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_s;
+typedef buffer_pool<std::recursive_mutex, cycle_buffer> cycle_buffer_pool_s;
+typedef buffer_pool<std::recursive_mutex, queue_buffer> queue_buffer_pool_s;
 
 typedef zce::singleton<cycle_buffer_pool> cycle_buffer_pool_inst;
 typedef zce::singleton<queue_buffer_pool> queue_buffer_pool_inst;

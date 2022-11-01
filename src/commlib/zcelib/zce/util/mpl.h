@@ -139,7 +139,8 @@ auto mem_func_invoke(class_type* obj, fun_t& f, args_type && ...datalist)
 template<typename class_type, typename ...args_type>
 struct new_helper
 {
-    static class_type* invoke(args_type...datalist)
+    //因为
+    static class_type* invoke(args_type... datalist)
     {
         return new class_type(datalist...);
     }
