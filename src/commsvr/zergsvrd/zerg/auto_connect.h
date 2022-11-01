@@ -83,7 +83,7 @@ protected:
     zce::skt::connector zerg_connector_;
 
     //配置实例指针
-    const zerg_config* zerg_svr_cfg_ = NULL;
+    const zerg_config* zerg_svr_cfg_ = nullptr;
 
     ///主动链接的
     size_t size_of_autoconnect_ = 0;

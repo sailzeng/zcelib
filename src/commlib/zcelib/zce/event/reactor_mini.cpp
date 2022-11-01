@@ -7,7 +7,7 @@
 namespace zce
 {
 //
-reactor_mini* reactor_mini::instance_ = NULL;
+reactor_mini* reactor_mini::instance_ = nullptr;
 
 //当前反应器容器的句柄数量
 size_t reactor_mini::size()
@@ -598,7 +598,7 @@ void reactor_mini::clear_inst()
         delete instance_;
     }
 
-    instance_ = NULL;
+    instance_ = nullptr;
     return;
 }
 }

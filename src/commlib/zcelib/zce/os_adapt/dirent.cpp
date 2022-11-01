@@ -16,7 +16,7 @@ DIR* zce::opendir(const char* dir_name)
     if (fileAttribute == INVALID_FILE_ATTRIBUTES
         || !(fileAttribute & FILE_ATTRIBUTE_DIRECTORY))
     {
-        return NULL;
+        return nullptr;
     }
 
     DIR* dir_handle = new DIR();
@@ -62,9 +62,9 @@ int zce::closedir(DIR* dir_handle)
 
     //释放相应的资源
     delete dir_handle->dirent_;
-    dir_handle->dirent_ = NULL;
+    dir_handle->dirent_ = nullptr;
     delete dir_handle;
-    dir_handle = NULL;
+    dir_handle = nullptr;
 
     return 0;
 
@@ -159,8 +159,8 @@ int zce::readdir_r(DIR* dir_handle,
     }
     else
     {
-        //*result为NULL也表示读取到了最后
-        *result = NULL;
+        //*result为nullptr也表示读取到了最后
+        *result = nullptr;
 
         //曾经有一次在下面的代码增加了一段判定，用last_error判定是否返回错误
         //但测试发现有问题，FindNextFile 在没有发现文件后，会放入一个错误EXDEV，
@@ -190,7 +190,7 @@ int zce::readdir_nameary(const char* dirname,
 {
     int retval = 0;
     DIR* dir_hdl = zce::opendir(dirname);
-    if (dir_hdl == NULL)
+    if (dir_hdl == nullptr)
     {
         return -1;
     }
@@ -206,7 +206,7 @@ int zce::readdir_nameary(const char* dirname,
     }
 
     //循环所有文件，检测扩展名称
-    dirent dir_tmp, * dir_p = NULL;
+    dirent dir_tmp, * dir_p = nullptr;
 
     for (retval = zce::readdir_r(dir_hdl, &dir_tmp, &dir_p);
          dir_p && retval == 0;
@@ -292,8 +292,8 @@ int zce::scandir(const char* dirname,
         return -1;
     }
 
-    dirent** vector_dir = NULL;
-    dirent dir_tmp, * dir_p = NULL;
+    dirent** vector_dir = nullptr;
+    dirent dir_tmp, * dir_p = nullptr;
 
     int once_nfiles = 0;
     bool occur_fail = false;
@@ -368,7 +368,7 @@ int zce::scandir(const char* dirname,
         }
 
         //如果没有发现文件了
-        if (NULL == dir_p)
+        if (nullptr == dir_p)
         {
             break;
         }
@@ -462,7 +462,7 @@ int zce::scandir_namesort(const struct dirent** left, const struct dirent** righ
 
 const char* zce::basename(const char* path_name, char* file_name, size_t buf_len)
 {
-    const char* temp = NULL;
+    const char* temp = nullptr;
 
     //根据不同的平台找到最后一个分隔符
 #if defined (ZCE_OS_WINDOWS)
@@ -498,7 +498,7 @@ const char* zce::basename(const char* path_name, char* file_name, size_t buf_len
 
 const char* zce::dirname(const char* path_name, char* dir_name, size_t buf_len)
 {
-    const char* temp = NULL;
+    const char* temp = nullptr;
 
     //根据不同的平台找到最后一个分隔符
 #if defined (ZCE_OS_WINDOWS)

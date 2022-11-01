@@ -46,7 +46,7 @@ int select_reactor::schedule_wakeup(zce::event_handler* event_handler,
     int ret = 0;
 
     ZCE_SOCKET socket_hd = (ZCE_SOCKET)(event_handler->get_handle());
-    zce::event_handler* tmp_handler = NULL;
+    zce::event_handler* tmp_handler = nullptr;
 
     //如果已经存在，不能继续注册
     ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
@@ -107,7 +107,7 @@ int select_reactor::cancel_wakeup(zce::event_handler* event_handler, int cancel_
     int ret = 0;
 
     ZCE_SOCKET socket_hd = (ZCE_SOCKET)event_handler->get_handle();
-    zce::event_handler* tmp_handler = NULL;
+    zce::event_handler* tmp_handler = nullptr;
 
     //如果已经存在，不能继续注册
     ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
@@ -262,7 +262,7 @@ void select_reactor::process_ready(const fd_set* out_fds,
             continue;
         }
 
-        zce::event_handler* event_hdl = NULL;
+        zce::event_handler* event_hdl = nullptr;
         ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
 
         //到这个地方，可能是代码有问题(比如你用了多线程？)，也可能不是，因为一个事件处理后，可能就被关闭了？

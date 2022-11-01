@@ -193,7 +193,7 @@ public:
         //必须大于间隔长度
         if (size_of_deque <= sizeof(INTEGRAL_T) + JUDGE_FULL_INTERVAL)
         {
-            return NULL;
+            return nullptr;
         }
 
         //
@@ -207,7 +207,7 @@ public:
                 || dequechunk_head->size_of_cycle_ != size_of_deque + JUDGE_FULL_INTERVAL
                 || dequechunk_head->max_len_node_ != max_len_node)
             {
-                return NULL;
+                return nullptr;
             }
         }
 
@@ -293,13 +293,13 @@ public:
     }
 
     /*!//将队列一个NODE拷贝取出,
-    @brief      将队列一个NODE从队首部取出,要求node!=NULL,已经分配好了数据区
+    @brief      将队列一个NODE从队首部取出,要求node!=nullptr,已经分配好了数据区
     @return     bool  true表示成功取出，否则表示没有取出
     @param      node  保存pop 数据的的buffer，
     */
     bool pop_front(node* const i)
     {
-        assert(i != NULL);
+        assert(i != nullptr);
 
         //检查是否为空
         if (empty() == true)
@@ -336,13 +336,13 @@ public:
     }
 
     /*!
-    @brief      读取队列的第一个NODE,但是不取出,要求node!=NULL,我认为你已经分配好了数据区
+    @brief      读取队列的第一个NODE,但是不取出,要求node!=nullptr,我认为你已经分配好了数据区
     @return     bool  true表示成功读取
     @param      node  保存read 数据的的buffer，
     */
     bool read_front(node* const i)
     {
-        assert(i != NULL);
+        assert(i != nullptr);
 
         //检查是否为空
         if (empty() == true)
@@ -372,13 +372,13 @@ public:
 
     /*!
     @brief      将队列一个NODE从队首部取出,我根据node的长度帮你分配空间,
-                要求new_node=NULL,表示你要函数帮你分配缓冲,
+                要求new_node=nullptr,表示你要函数帮你分配缓冲,
     @return     bool      true表示成功读取
     @param      new_node  获得数据的指针，这个数据你要自己释放，我概不负责了
     */
     bool pop_front_new(node*& n)
     {
-        assert(n == NULL);
+        assert(n == nullptr);
 
         //检查是否为空
         if (empty() == true)
@@ -394,13 +394,13 @@ public:
     }
 
     /*!
-    @brief      读取队列的第一个NODE，我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
+    @brief      读取队列的第一个NODE，我根据node的长度帮你分配空间,要求new_node=nullptr,表示你要函数帮你分配缓冲,
     @return     bool      true表示成功读取
     @param      new_node
     */
     bool read_front_new(node*& n)
     {
-        assert(n == NULL);
+        assert(n == nullptr);
 
         //检查是否为空
         if (empty() == true)
@@ -529,7 +529,7 @@ public:
 protected:
 
     ///判断是非为满的间隔，你可以认为环形队列还是一个前闭后开的结构
-    ///deque_begin_ = deque_end_ 表示队列为NULL
+    ///deque_begin_ = deque_end_ 表示队列为nullptr
     ///deque_begin_ = deque_end_ + JUDGE_FULL_INTERVAL 表示队列满
     static const size_t   JUDGE_FULL_INTERVAL = 8;
 

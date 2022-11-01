@@ -33,16 +33,16 @@ bool UUID64::operator == (const UUID64& others) const
 //转换为字符串
 const char* UUID64::to_string(char* buffer, size_t buf_len, size_t& use_buf) const
 {
-    //如果传递的BUFFER空间不够，直接返回NULL
+    //如果传递的BUFFER空间不够，直接返回nullptr
     if (buf_len < LEN_OF_ZCE_UUID64_STR + 1)
     {
-        return NULL;
+        return nullptr;
     }
 
     int ret = snprintf(buffer, buf_len, "%08x-%08x", this->u_2uint32_[1], this->u_2uint32_[0]);
     if (ret < 0 || ret > static_cast<int>(buf_len))
     {
-        return NULL;
+        return nullptr;
     }
     use_buf = LEN_OF_ZCE_UUID64_STR;
     return buffer;
@@ -59,7 +59,7 @@ Class           : UUID64_Generator
 ************************************************************************************************************/
 
 //实例指针
-uuid64_gen* uuid64_gen::instance_ = NULL;
+uuid64_gen* uuid64_gen::instance_ = nullptr;
 
 //构造函数
 uuid64_gen::uuid64_gen() :
@@ -196,10 +196,10 @@ bool UUID128::operator == (const UUID128& others) const
 //转换为字符串,这儿采用的格式是标准的8-4-4-4-12，而不是GUID的8-4-4-16的格式
 const char* UUID128::to_string(char* buffer, size_t buf_len, size_t& use_buf) const
 {
-    //如果传递的BUFFER空间不够，干脆什么都不做,直接返回NULL,长度要考虑'\0'
+    //如果传递的BUFFER空间不够，干脆什么都不做,直接返回nullptr,长度要考虑'\0'
     if (buf_len < LEN_OF_ZCE_UUID128_STR + 1)
     {
-        return NULL;
+        return nullptr;
     }
 
     //输出8-4-4-4-12的格式
@@ -223,7 +223,7 @@ const char* UUID128::to_string(char* buffer, size_t buf_len, size_t& use_buf) co
 
     if (ret < 0 || ret > static_cast<int>(buf_len))
     {
-        return NULL;
+        return nullptr;
     }
     use_buf = LEN_OF_ZCE_UUID128_STR;
     return buffer;

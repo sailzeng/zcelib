@@ -227,7 +227,7 @@ zergframe_mallocor<zce_lock>::~zergframe_mallocor()
 
         for (size_t j = 0; j < frame_pool_len; ++j)
         {
-            soar::zerg_frame* proc_frame = NULL;
+            soar::zerg_frame* proc_frame = nullptr;
             frame_pool_[i].pop_front(proc_frame);
             soar::zerg_frame::delete_frame(proc_frame);
         }
@@ -248,7 +248,7 @@ soar::zerg_frame* zergframe_mallocor<zce_lock>::alloc_appframe(size_t frame_len)
     }
 
     //
-    soar::zerg_frame* new_frame = NULL;
+    soar::zerg_frame* new_frame = nullptr;
     frame_pool_[hk].pop_front(new_frame);
     new_frame->init_head(static_cast<unsigned int>(frame_len));
 
@@ -292,7 +292,7 @@ void zergframe_mallocor<zce_lock>::adjust_pool_capacity()
 
             for (size_t j = 0; j < free_sz; ++j)
             {
-                soar::zerg_frame* new_frame = NULL;
+                soar::zerg_frame* new_frame = nullptr;
                 frame_pool_[i].pop_front(new_frame);
                 delete new_frame;
             }
@@ -318,7 +318,7 @@ void zergframe_mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t e
 template <typename zce_lock >
 zergframe_mallocor<zce_lock>* zergframe_mallocor<zce_lock>::instance()
 {
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new zergframe_mallocor();
     }
@@ -333,7 +333,7 @@ void zergframe_mallocor<zce_lock>::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 

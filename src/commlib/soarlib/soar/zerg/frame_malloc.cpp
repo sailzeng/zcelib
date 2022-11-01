@@ -3,7 +3,7 @@
 
 //放入CPP?还是?
 template <> zergframe_mallocor<zce::thread_light_mutex>*
-zergframe_mallocor<zce::thread_light_mutex>::instance_ = NULL;
+zergframe_mallocor<zce::thread_light_mutex>::instance_ = nullptr;
 
 template <> zergframe_mallocor<zce::null_lock>*
-zergframe_mallocor<zce::null_lock>::instance_ = NULL;
+zergframe_mallocor<zce::null_lock>::instance_ = nullptr;

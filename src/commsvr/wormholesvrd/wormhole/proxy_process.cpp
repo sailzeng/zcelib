@@ -44,7 +44,7 @@ proxy_interface::PROXY_TYPE proxy_interface::str_to_proxytype(const char* str_pr
 //代理接口制造的工厂
 proxy_interface* proxy_interface::create_proxy_factory(PROXY_TYPE proxytype)
 {
-    proxy_interface* tmpintface = NULL;
+    proxy_interface* tmpintface = nullptr;
     ZCE_LOG(RS_INFO, "Interface_Proxy_Process::CreatePorxyFactory PROXY_TYPE: %d.", proxytype);
 
     switch (proxytype)
@@ -88,7 +88,7 @@ proxy_interface* proxy_interface::create_proxy_factory(PROXY_TYPE proxytype)
     {
         // 错误
         ZCE_LOG(RS_ERROR, "Error Proxy Type define. Please check you code. ");
-        return NULL;
+        return nullptr;
     }
     }
 
@@ -501,7 +501,7 @@ int Modulo_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 //    {
 //        // 没有配置路由,这一定是个错误
 //        ZCE_LOG(RS_ERROR,"[%s] no route configed", __ZCE_FUNC__);
-//        return NULL;
+//        return nullptr;
 //    }
 //
 //    DBModalMGRouteItem tmp;
@@ -536,7 +536,7 @@ int Modulo_ProxyProcess::process_proxy(soar::zerg_frame* proc_frame)
 //    {
 //        // 释放分配的内存
 //        delete iter->second;
-//        iter->second = NULL;
+//        iter->second = nullptr;
 //    }
 //}
 //

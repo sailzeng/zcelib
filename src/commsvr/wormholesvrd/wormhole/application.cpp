@@ -9,7 +9,7 @@ class  Arbiter_Appliction
 namespace wormhole
 {
 application::application() :
-    interface_proxy_(NULL)
+    interface_proxy_(nullptr)
 {
 }
 
@@ -18,7 +18,7 @@ application::~application()
     if (interface_proxy_)
     {
         delete interface_proxy_;
-        interface_proxy_ = NULL;
+        interface_proxy_ = nullptr;
     }
 }
 

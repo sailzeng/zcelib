@@ -140,11 +140,11 @@ struct win_simulate_cv_t
     pthread_mutex_t      waiters_lock_;
 
     /// 信号灯，阻塞排队等待的线程直到 signaled.
-    sem_t* block_sema_ = NULL;
+    sem_t* block_sema_ = nullptr;
 
     ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
     ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
-    sem_t* finish_broadcast_ = NULL;
+    sem_t* finish_broadcast_ = nullptr;
 };
 
 struct pthread_cond_t

@@ -320,8 +320,8 @@ void worker::thread_dir(zce::aio::DIR_ATOM* atom)
     case DIR_SCANDIR:
         atom->result_ = zce::scandir(atom->dirname_,
                                      atom->namelist_,
-                                     NULL,
-                                     NULL);
+                                     nullptr,
+                                     nullptr);
         break;
     default:
         break;

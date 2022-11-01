@@ -5,7 +5,7 @@
 namespace ogre
 {
 //单子实例
-ip_restrict* ip_restrict::instance_ = NULL;
+ip_restrict* ip_restrict::instance_ = nullptr;
 
 /****************************************************************************************************
 class  OgreIPRestrict 处理通讯中间的IP限制问题
@@ -103,7 +103,7 @@ int ip_restrict::check_ip_restrict(const zce::skt::addr_in& remoteaddress)
 ip_restrict* ip_restrict::instance()
 {
     //如果没有初始化
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new ip_restrict();
     }
@@ -117,7 +117,7 @@ void ip_restrict::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 } //namespace ogre

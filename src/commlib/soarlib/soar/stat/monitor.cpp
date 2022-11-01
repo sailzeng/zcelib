@@ -8,11 +8,11 @@ class stat_monitor 单线程版本的实例
 ******************************************************************************************/
 namespace soar
 {
-stat_monitor* stat_monitor::instance_ = NULL;
+stat_monitor* stat_monitor::instance_ = nullptr;
 
 stat_monitor* stat_monitor::instance()
 {
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new stat_monitor();
     }
@@ -23,7 +23,7 @@ stat_monitor* stat_monitor::instance()
 void stat_monitor::clear_inst()
 {
     delete instance_;
-    instance_ = NULL;
+    instance_ = nullptr;
 }
 
 //初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
@@ -67,8 +67,8 @@ int stat_monitor::get_info_from_fname(const char* stat_file_name,
                                       soar::SERVICES_ID* svc_id,
                                       char* app_base_name)
 {
-    ZCE_ASSERT(stat_file_name != NULL);
-    ZCE_ASSERT(svc_id != NULL);
+    ZCE_ASSERT(stat_file_name != nullptr);
+    ZCE_ASSERT(svc_id != nullptr);
 
     int ret = 0;
     char file_name[STAT_MMAP_FILENAME_LEN + 1];
@@ -96,10 +96,10 @@ int stat_monitor::get_info_from_fname(const char* stat_file_name,
 
     //从后面开始找_
     soar::SERVICES_ID tmp_svc_id;
-    char* find_pos = NULL;
+    char* find_pos = nullptr;
     //反向查询的，先解决svc id，
     find_pos = strrchr(file_name, '_');
-    if (NULL == find_pos)
+    if (nullptr == find_pos)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
@@ -118,7 +118,7 @@ int stat_monitor::get_info_from_fname(const char* stat_file_name,
     *find_pos = '\0';
     unsigned int tmp_business_id;
     find_pos = strrchr(file_name, '_');
-    if (NULL == find_pos)
+    if (nullptr == find_pos)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }

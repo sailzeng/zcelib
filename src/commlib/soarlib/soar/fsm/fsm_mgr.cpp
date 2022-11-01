@@ -10,7 +10,7 @@ namespace soar
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-fsm_manager* fsm_manager::instance_ = NULL;
+fsm_manager* fsm_manager::instance_ = nullptr;
 
 fsm_manager::fsm_manager()
 {
@@ -32,8 +32,8 @@ int fsm_manager::initialize(zce::timer_queue* timer_queue,
 {
     ZCE_TRACE_FILELINE(RS_INFO);
 
-    ZCE_ASSERT(timer_queue != NULL);
-    ZCE_ASSERT(zerg_mmap_pipe != NULL);
+    ZCE_ASSERT(timer_queue != nullptr);
+    ZCE_ASSERT(zerg_mmap_pipe != nullptr);
 
     int ret = 0;
     ret = async_fsmmgr::initialize(timer_queue,
@@ -79,28 +79,28 @@ void fsm_manager::terminate()
     if (inner_frame_mallocor_)
     {
         delete inner_frame_mallocor_;
-        inner_frame_mallocor_ = NULL;
+        inner_frame_mallocor_ = nullptr;
     }
     //销毁消息队列
     if (message_queue_)
     {
         delete message_queue_;
-        message_queue_ = NULL;
+        message_queue_ = nullptr;
     }
     if (trans_send_buffer_)
     {
         soar::zerg_frame::delete_frame(trans_send_buffer_);
-        trans_send_buffer_ = NULL;
+        trans_send_buffer_ = nullptr;
     }
     if (trans_recv_buffer_)
     {
         soar::zerg_frame::delete_frame(trans_recv_buffer_);
-        trans_recv_buffer_ = NULL;
+        trans_recv_buffer_ = nullptr;
     }
     if (fake_recv_buffer_)
     {
         soar::zerg_frame::delete_frame(fake_recv_buffer_);
-        fake_recv_buffer_ = NULL;
+        fake_recv_buffer_ = nullptr;
     }
 
     async_fsmmgr::terminate();
@@ -239,7 +239,7 @@ int fsm_manager::sendbuf_to_pipe(const soar::zerg_head& zerg_head,
 int fsm_manager::postmsg_to_queue(soar::zerg_frame* post_frame)
 {
     int ret = 0;
-    soar::zerg_frame* tmp_frame = NULL;
+    soar::zerg_frame* tmp_frame = nullptr;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     inner_frame_mallocor_->clone_appframe(post_frame, tmp_frame);
@@ -280,7 +280,7 @@ int fsm_manager::process_queue_frame(size_t& proc_frame,
     //处理队列
     for (proc_frame = 0; message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-        soar::zerg_frame* tmp_frame = NULL;
+        soar::zerg_frame* tmp_frame = nullptr;
         //
         ret = message_queue_->dequeue(tmp_frame);
 
@@ -339,7 +339,7 @@ int fsm_manager::fake_receive_frame(const soar::zerg_frame* fake_recv)
 //得到实例
 fsm_manager* fsm_manager::instance()
 {
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new fsm_manager();
     }
@@ -395,7 +395,7 @@ void fsm_manager::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
     return;
 }

@@ -41,14 +41,14 @@ svc_tcp::POOL_OF_TCP_HANDLER svc_tcp::pool_of_cnthdl_;
 svc_tcp::svc_tcp(svc_tcp::OGRE_HANDLER_MODE hdl_mode) :
     zce::event_handler(zce::reactor::instance()),
     handler_mode_(hdl_mode),
-    rcv_buffer_(NULL),
+    rcv_buffer_(nullptr),
     recieve_bytes_(0),
     send_bytes_(0),
     peer_status_(PEER_STATUS_JUST_CONNECT),
     timeout_time_id_(-1),
     receive_times_(0),
     if_force_close_(false),
-    fp_judge_whole_frame_(NULL)
+    fp_judge_whole_frame_(nullptr)
 {
     if (HANDLER_MODE_CONNECT == hdl_mode)
     {
@@ -74,7 +74,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
                                    FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
-    rcv_buffer_ = NULL;
+    rcv_buffer_ = nullptr;
     recieve_bytes_ = 0;
     send_bytes_ = 0;
     socket_peer_ = sockstream;
@@ -168,7 +168,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
                                    FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
-    rcv_buffer_ = NULL;
+    rcv_buffer_ = nullptr;
     recieve_bytes_ = 0;
     send_bytes_ = 0;
     socket_peer_ = sockstream;
@@ -388,7 +388,7 @@ int svc_tcp::close_event()
     if (rcv_buffer_)
     {
         buffer_storage::instance()->free_byte_buffer(rcv_buffer_);
-        rcv_buffer_ = NULL;
+        rcv_buffer_ = nullptr;
     }
 
     //处理发送数据缓冲区
@@ -398,7 +398,7 @@ int svc_tcp::close_event()
     {
         //处理发送错误队列,同时进行回收
         process_senderror(snd_buffer_deque_[i]);
-        snd_buffer_deque_[i] = NULL;
+        snd_buffer_deque_[i] = nullptr;
     }
 
     snd_buffer_deque_.clear();
@@ -483,7 +483,7 @@ int svc_tcp::read_data_from_peer(size_t& szrevc)
     ssize_t recvret = 0;
 
     //申请分配一个内存
-    if (rcv_buffer_ == NULL)
+    if (rcv_buffer_ == nullptr)
     {
         rcv_buffer_ = buffer_storage::instance()->allocate_byte_buffer();
         rcv_buffer_->snd_peer_info_.set(remote_address_);
@@ -871,10 +871,10 @@ svc_tcp* svc_tcp::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
                     pool_of_acpthdl_.size(),
                     pool_of_acpthdl_.capacity()
             );
-            return NULL;
+            return nullptr;
         }
 
-        svc_tcp* p_handler = NULL;
+        svc_tcp* p_handler = nullptr;
         pool_of_acpthdl_.pop_front(p_handler);
         return p_handler;
     }
@@ -882,7 +882,7 @@ svc_tcp* svc_tcp::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
     else if (HANDLER_MODE_CONNECT == handler_mode)
     {
         ZCE_ASSERT(pool_of_cnthdl_.size() > 0);
-        svc_tcp* p_handler = NULL;
+        svc_tcp* p_handler = nullptr;
         pool_of_cnthdl_.pop_front(p_handler);
         return p_handler;
     }
@@ -890,7 +890,7 @@ svc_tcp* svc_tcp::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
     else
     {
         ZCE_ASSERT(false);
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -905,7 +905,7 @@ int svc_tcp::process_send_data(soar::ogre4a_frame* ogre_frame)
 
     soar::OGRE_PEER_ID svrinfo = ogre_frame->rcv_peer_info_;
 
-    svc_tcp* svchanle = NULL;
+    svc_tcp* svchanle = nullptr;
     ret = svr_peer_hdl_set_.find_services_peerinfo(svrinfo, svchanle);
 
     //如果是要重新进行连接的服务器主动主动连接,
@@ -922,7 +922,7 @@ int svc_tcp::process_send_data(soar::ogre4a_frame* ogre_frame)
     }
 
     //如果SVCHANDLE为空,表示没有相关的连接,进行错误处理
-    if (svchanle == NULL)
+    if (svchanle == nullptr)
     {
         //无法发送
         ZCE_LOG(RS_INFO, "Can't find handle remote address[%s|%u],send fail ,local address [%s|%u],frame len[%u].\n",
@@ -1050,7 +1050,7 @@ void svc_tcp::unite_frame_sendlist()
 
         //将倒数第一个施放掉
         buffer_storage::instance()->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
-        snd_buffer_deque_[sz_deque - 1] = NULL;
+        snd_buffer_deque_[sz_deque - 1] = nullptr;
         snd_buffer_deque_.pop_back();
     }
 
@@ -1087,7 +1087,7 @@ int svc_tcp::push_frame_to_recvpipe(unsigned int sz_data)
     {
         //无论处理正确与否,都释放缓冲区的空间
         buffer_storage::instance()->free_byte_buffer(rcv_buffer_);
-        rcv_buffer_ = NULL;
+        rcv_buffer_ = nullptr;
     }
     //代码错误
     else

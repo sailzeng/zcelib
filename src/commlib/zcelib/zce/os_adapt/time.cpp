@@ -164,7 +164,7 @@ int zce::gettimezone()
 
 //将参数timeval的值作为的时间格格式化后输出打印出来
 //可以控制各种格式输出
-//如果成功，返回参数字符串str_date_time，如果失败返回NULL
+//如果成功，返回参数字符串str_date_time，如果失败返回nullptr
 //timeval->tv_usec 千万不要溢出，会导致不可以预期问题
 const char* zce::timeval_to_str(const timeval* timeval,
                                 char* str_date_time,
@@ -211,7 +211,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         {
             ZCE_ASSERT(false);
             errno = EINVAL;
-            return NULL;
+            return nullptr;
         }
         zce::gmtime_r(&now_time, &tm_data);
     }
@@ -222,7 +222,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         {
             ZCE_ASSERT(false);
             errno = EINVAL;
-            return NULL;
+            return nullptr;
         }
         zce::localtime_r(&now_time, &tm_data);
     }
@@ -233,7 +233,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_DAY_LEN);
         if (str_len <= zce::TIMESTR_COMPACT_DAY_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -251,7 +251,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_SEC_LEN);
         if (str_len <= zce::TIMESTR_COMPACT_SEC_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -271,7 +271,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > zce::TIMESTR_ISO_DAY_LEN);
         if (str_len <= zce::TIMESTR_ISO_DAY_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -288,7 +288,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > zce::TIMESTR_ISO_SEC_LEN);
         if (str_len <= zce::TIMESTR_ISO_SEC_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -309,7 +309,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > zce::TIMESTR_ISO_USEC_LEN);
         if (str_len <= zce::TIMESTR_ISO_USEC_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -330,7 +330,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > TIMESTR_US_SEC_LEN);
         if (str_len <= TIMESTR_US_SEC_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -351,7 +351,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > TIMESTR_US_USEC_LEN);
         if (str_len <= TIMESTR_US_USEC_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -373,7 +373,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > TIMESTR_HTTP_GMT_LEN);
         if (str_len <= TIMESTR_HTTP_GMT_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         snprintf(str_date_time,
@@ -394,7 +394,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         ZCE_ASSERT(str_len > TIMESTR_EMAIL_DATE_LEN);
         if (str_len <= TIMESTR_EMAIL_DATE_LEN)
         {
-            return NULL;
+            return nullptr;
         }
 
         //注意timezone理论上需要tzset()函数初始化
@@ -417,7 +417,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
     {
         ZCE_ASSERT(false);
         errno = EINVAL;
-        return NULL;
+        return nullptr;
     }
 
     return str_date_time;
@@ -448,11 +448,11 @@ void zce::str_to_tm(const char* strtm,
     static const time_t CHARATER_ZERO_TIME_T = '0';
 
     ZCE_ASSERT(strtm && ptr_tm);
-    if (usec != NULL)
+    if (usec != nullptr)
     {
         *usec = 0;
     }
-    if (tz != NULL)
+    if (tz != nullptr)
     {
         *tz = 0;
     }
@@ -514,7 +514,7 @@ void zce::str_to_tm(const char* strtm,
                 + (*(strtm + 18) - '0');
         }
         if (zce::TIME_STR_FORMAT::ISO_USEC == fmt &&
-            usec != NULL)
+            usec != nullptr)
         {
             *usec = ((*(strtm + 20)) - CHARATER_ZERO_TIME_T) * 100000
                 + ((*(strtm + 21) - CHARATER_ZERO_TIME_T)) * 10000
@@ -557,7 +557,7 @@ void zce::str_to_tm(const char* strtm,
             + (*(strtm + 23) - '0');
         //如果输入字符串精度到微秒
         if (zce::TIME_STR_FORMAT::US_USEC == fmt &&
-            usec != NULL)
+            usec != nullptr)
         {
             *usec = (*(strtm + 25) - CHARATER_ZERO_TIME_T) * 100000
                 + (*(strtm + 26) - CHARATER_ZERO_TIME_T) * 10000

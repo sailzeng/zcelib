@@ -80,7 +80,7 @@ protected:
     static const size_t INIT_PROCESS_FRAME = 64;
 
     //
-    soar::svrd_buspipe* zerg_mmap_pipe_ = NULL;
+    soar::svrd_buspipe* zerg_mmap_pipe_ = nullptr;
 };
 
 //====================================================================================

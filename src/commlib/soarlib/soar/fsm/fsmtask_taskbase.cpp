@@ -7,10 +7,10 @@ namespace soar
 {
 //
 fsmtask_taskbase::fsmtask_taskbase() :
-    fsmtask_mgr_(NULL),
+    fsmtask_mgr_(nullptr),
     once_max_get_sendqueue_(DEFAULT_ONCE_MAX_GET_SENDQUEUE),
     task_run_(false),
-    task_frame_buf_(NULL)
+    task_frame_buf_(nullptr)
 {
     task_frame_buf_ = soar::zerg_frame::new_frame(soar::zerg_frame::MAX_LEN_OF_FRAME + 16);
     task_frame_buf_->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME);
@@ -22,7 +22,7 @@ fsmtask_taskbase::~fsmtask_taskbase()
     if (task_frame_buf_)
     {
         soar::zerg_frame::delete_frame(task_frame_buf_);
-        task_frame_buf_ = NULL;
+        task_frame_buf_ = nullptr;
     }
 }
 
@@ -73,7 +73,7 @@ int fsmtask_taskbase::svc(void)
 
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
-            soar::zerg_frame* tmp_frame = NULL;
+            soar::zerg_frame* tmp_frame = nullptr;
             //忙的时候只测试，不阻塞等待
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)
             {

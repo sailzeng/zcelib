@@ -14,7 +14,7 @@ class Server_Base
 *********************************************************************************/
 namespace zce
 {
-server_base* server_base::base_instance_ = NULL;
+server_base* server_base::base_instance_ = nullptr;
 
 // 构造函数,私有,使用单子类的实例,
 server_base::server_base()
@@ -440,11 +440,11 @@ void server_base::set_reload_sign(bool app_reload)
 void server_base::set_service_info(const char* svc_name,
                                    const char* svc_desc)
 {
-    if (svc_name != NULL)
+    if (svc_name != nullptr)
     {
         display_name_ = svc_name;
     }
-    if (svc_desc != NULL)
+    if (svc_desc != nullptr)
     {
         service_desc_ = svc_desc;
     }
@@ -487,7 +487,7 @@ int server_base::win_services_run()
     SERVICE_TABLE_ENTRY st[] =
     {
         {service_name,(LPSERVICE_MAIN_FUNCTION)win_service_main},
-        {NULL,NULL}
+        {nullptr,nullptr}
     };
 
     BOOL b_ret = ::StartServiceCtrlDispatcher(st);
@@ -516,11 +516,11 @@ int server_base::win_services_install()
     }
 
     //打开服务控制管理器
-    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    SC_HANDLE handle_scm = ::OpenSCManager(nullptr, nullptr, SC_MANAGER_ALL_ACCESS);
 
-    if (handle_scm == NULL)
+    if (handle_scm == nullptr)
     {
-        //::MessageBox(NULL, _T("Couldn't open service manager"), app_base_name_.c_str(), MB_OK);
+        //::MessageBox(nullptr, _T("Couldn't open service manager"), app_base_name_.c_str(), MB_OK);
         printf("can't open service manager.\n");
         return FALSE;
     }
@@ -528,7 +528,7 @@ int server_base::win_services_install()
     // Get the executable file path
     char file_path[MAX_PATH + 1];
     file_path[MAX_PATH] = '\0';
-    ::GetModuleFileName(NULL, file_path, MAX_PATH);
+    ::GetModuleFileName(nullptr, file_path, MAX_PATH);
 
     //创建服务
     SC_HANDLE handle_services = ::CreateService(
@@ -540,25 +540,25 @@ int server_base::win_services_install()
         SERVICE_DEMAND_START,
         SERVICE_ERROR_NORMAL,
         file_path,
-        NULL,
-        NULL,
+        nullptr,
+        nullptr,
         "",
-        NULL,
-        NULL);
+        nullptr,
+        nullptr);
 
-    if (handle_services == NULL)
+    if (handle_services == nullptr)
     {
         printf("install service %s fail. err=%d\n", app_base_name_.c_str(),
                GetLastError());
         ::CloseServiceHandle(handle_scm);
-        //MessageBox(NULL, _T("Couldn't create service"), app_base_name_.c_str(), MB_OK);
+        //MessageBox(nullptr, _T("Couldn't create service"), app_base_name_.c_str(), MB_OK);
         return -1;
     }
 
     // 修改描述
     SC_LOCK lock = ::LockServiceDatabase(handle_scm);
 
-    if (lock != NULL)
+    if (lock != nullptr)
     {
         SERVICE_DESCRIPTION desc;
         desc.lpDescription = (LPSTR)service_desc_.c_str();
@@ -583,11 +583,11 @@ int server_base::win_services_uninstall()
         return 0;
     }
 
-    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    SC_HANDLE handle_scm = ::OpenSCManager(nullptr, nullptr, SC_MANAGER_ALL_ACCESS);
 
-    if (handle_scm == NULL)
+    if (handle_scm == nullptr)
     {
-        //::MessageBox(NULL, _T("Couldn't open service manager"), app_base_name_.c_str(), MB_OK);
+        //::MessageBox(nullptr, _T("Couldn't open service manager"), app_base_name_.c_str(), MB_OK);
         printf("uninstall fail. can't open service manager");
         return FALSE;
     }
@@ -596,10 +596,10 @@ int server_base::win_services_uninstall()
                                               app_base_name_.c_str(),
                                               SERVICE_STOP | DELETE);
 
-    if (handle_services == NULL)
+    if (handle_services == nullptr)
     {
         ::CloseServiceHandle(handle_scm);
-        //::MessageBox(NULL, _T("Couldn't open service"), app_base_name_.c_str(), MB_OK);
+        //::MessageBox(nullptr, _T("Couldn't open service"), app_base_name_.c_str(), MB_OK);
         printf("can't open service %s\n", app_base_name_.c_str());
         return -1;
     }
@@ -628,15 +628,15 @@ bool server_base::win_services_isinstalled()
     bool b_result = false;
 
     //打开服务控制管理器
-    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    SC_HANDLE handle_scm = ::OpenSCManager(nullptr, nullptr, SC_MANAGER_ALL_ACCESS);
 
-    if (handle_scm != NULL)
+    if (handle_scm != nullptr)
     {
         //打开服务
         SC_HANDLE handle_service = ::OpenService(handle_scm,
                                                  app_base_name_.c_str(),
                                                  SERVICE_QUERY_CONFIG);
-        if (handle_service != NULL)
+        if (handle_service != nullptr)
         {
             b_result = true;
             ::CloseServiceHandle(handle_service);
@@ -651,7 +651,7 @@ bool server_base::win_services_isinstalled()
 void WINAPI server_base::win_service_main()
 {
     //WIN服务用的状态
-    static SERVICE_STATUS_HANDLE handle_service_status = NULL;
+    static SERVICE_STATUS_HANDLE handle_service_status = nullptr;
 
     SERVICE_STATUS status;
 
@@ -671,7 +671,7 @@ void WINAPI server_base::win_service_main()
     handle_service_status = ::RegisterServiceCtrlHandler(base_instance_->get_app_basename(),
                                                          win_services_ctrl);
 
-    if (handle_service_status == NULL)
+    if (handle_service_status == nullptr)
     {
         //LogEvent(_T("Handler not installed"));
         return;
@@ -733,10 +733,10 @@ int server_base::log_event(const char* format_str, ...)
     vsnprintf(out_msg, BUFFER_LEN - 1, format_str, arg_list);
     va_end(arg_list);
 
-    event_source = ::RegisterEventSource(NULL, app_base_name_.c_str());
-    if (event_source != NULL)
+    event_source = ::RegisterEventSource(nullptr, app_base_name_.c_str());
+    if (event_source != nullptr)
     {
-        ::ReportEvent(event_source, EVENTLOG_INFORMATION_TYPE, 0, 0, NULL, 1, 0, (LPCSTR*)one_string, NULL);
+        ::ReportEvent(event_source, EVENTLOG_INFORMATION_TYPE, 0, 0, nullptr, 1, 0, (LPCSTR*)one_string, nullptr);
         ::DeregisterEventSource(event_source);
     }
     return 0;

@@ -144,7 +144,7 @@ int active_svc_set::find_mshdl_by_type(uint16_t services_type,
                                        svc_tcp*& svc_handle)
 {
     int ret = 0;
-    std::vector<uint32_t>* ms_svcid_ary = NULL;
+    std::vector<uint32_t>* ms_svcid_ary = nullptr;
     ret = svc_tcp::find_conf_ms_svcid_ary(services_type,
                                           ms_svcid_ary);
     if (ret != 0)
@@ -247,7 +247,7 @@ int active_svc_set::replace_services_peerInfo(const soar::SERVICES_ID& svc_id,
                                               svc_tcp* new_svchdl,
                                               svc_tcp*& old_svchdl)
 {
-    old_svchdl = NULL;
+    old_svchdl = nullptr;
     MAP_OF_SVCID_TO_HDL::iterator iter = svr_info_set_.find(svc_id);
 
     //已经有相关的记录了

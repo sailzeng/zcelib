@@ -8,7 +8,7 @@ namespace soar
 {
 svrdapp_plain::svrdapp_plain() :
     app_buspipe(),
-    nonctrl_recv_buffer_(NULL)
+    nonctrl_recv_buffer_(nullptr)
 {
     nonctrl_recv_buffer_ = soar::zerg_frame::new_frame(
         soar::zerg_frame::MAX_LEN_OF_FRAME);
@@ -20,7 +20,7 @@ svrdapp_plain::~svrdapp_plain()
     if (nonctrl_recv_buffer_)
     {
         soar::zerg_frame::delete_frame(nonctrl_recv_buffer_);
-        nonctrl_recv_buffer_ = NULL;
+        nonctrl_recv_buffer_ = nullptr;
     }
 }
 

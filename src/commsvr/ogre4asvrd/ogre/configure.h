@@ -52,7 +52,7 @@ public:
     ///TCP收取数据的模块HANDLER
     ZCE_SHLIB_HANDLE     recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;
     ///
-    FP_JudgeRecv_WholeFrame   fp_judge_whole_frame_ = NULL;
+    FP_JudgeRecv_WholeFrame   fp_judge_whole_frame_ = nullptr;
 };
 
 //得到KEY的HASH函数

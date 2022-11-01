@@ -63,7 +63,7 @@ int log_file::initialize(int output_way,
     reserve_file_num_ = reserve_file_num;
 
     //断言检查输入参数
-    if (log_file_prefix != NULL)
+    if (log_file_prefix != nullptr)
     {
         log_file_prefix_ = log_file_prefix;
     }

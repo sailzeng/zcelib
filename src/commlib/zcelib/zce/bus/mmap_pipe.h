@@ -106,7 +106,7 @@ public:
     //怀疑TMD我有强迫症倾向，提供这么多接口干嘛，下面一组足够用了。
     bool is_exist_bus(size_t pipe_id)
     {
-        return bus_pipe_pointer_[pipe_id] == NULL ? false : true;
+        return bus_pipe_pointer_[pipe_id] == nullptr ? false : true;
     }
 
     //MMAP隐射文件名称
@@ -428,7 +428,7 @@ int mmap_buspipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
         );
 
         //管道创建自己也会检查是否能恢复
-        if (bus_pipe_pointer_[i] == NULL)
+        if (bus_pipe_pointer_[i] == nullptr)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] mmap_buspipe::initialize pipe[%u] size[%u] room[%u] fail.",
                     i,
@@ -437,7 +437,7 @@ int mmap_buspipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
             return -1;
         }
 
-        ZCE_ASSERT(bus_pipe_pointer_[i] != NULL);
+        ZCE_ASSERT(bus_pipe_pointer_[i] != nullptr);
 
         size_t sz_room = bus_pipe::getallocsize(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;

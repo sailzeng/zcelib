@@ -172,7 +172,7 @@ public:
     * @param      radix    时间基数，一般时间作为基础
     */
     void time_radix(uint16_t identity,
-                    uint32_t radix = static_cast<uint32_t> (time(NULL)));
+                    uint32_t radix = static_cast<uint32_t> (time(nullptr)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -319,7 +319,7 @@ public:
     * @param      radix
     */
     void time_radix(uint32_t identity,
-                    uint32_t radix = static_cast<uint32_t> (time(NULL)));
+                    uint32_t radix = static_cast<uint32_t> (time(nullptr)));
 
     /*!
     * @brief      以时间为基数产生UUID64

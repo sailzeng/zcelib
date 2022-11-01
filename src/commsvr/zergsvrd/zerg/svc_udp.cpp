@@ -10,9 +10,9 @@ namespace zerg
 //
 svc_udp::ARY_OF_UDPSVC_HANDLER svc_udp::ary_udpsvc_handler_;
 //
-soar::stat_monitor* svc_udp::server_status_ = NULL;
+soar::stat_monitor* svc_udp::server_status_ = nullptr;
 //通信管理器
-zerg::comm_manager* svc_udp::zerg_comm_mgr_ = NULL;
+zerg::comm_manager* svc_udp::zerg_comm_mgr_ = nullptr;
 
 //自己是否是代理
 bool           svc_udp::if_proxy_ = false;
@@ -25,7 +25,7 @@ svc_udp::svc_udp(const soar::SERVICES_ID& my_svcinfo,
     udp_bind_addr_(addr),
     my_svc_info_(my_svcinfo),
     sessionkey_verify_(sessionkey_verify),
-    dgram_databuf_(NULL),
+    dgram_databuf_(nullptr),
     ip_restrict_(zerg::IPRestrict_Mgr::instance())
 {
     //
@@ -35,7 +35,7 @@ svc_udp::svc_udp(const soar::SERVICES_ID& my_svcinfo,
 //这就要求UDP_Svc_Handler比InstOfZBufferStorage先释放
 svc_udp::~svc_udp()
 {
-    if (dgram_databuf_ != NULL)
+    if (dgram_databuf_ != nullptr)
     {
         zce::queue_buffer_pool_inst::instance()->free_buffer(dgram_databuf_);
     }

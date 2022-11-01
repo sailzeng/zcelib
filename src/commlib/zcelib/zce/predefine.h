@@ -560,12 +560,12 @@ extern "C"
 #  define TRUE                1
 #endif
 
-//NULL
-#ifndef NULL
+//nullptr
+#ifndef nullptr
 #  ifdef __cplusplus
-#    define NULL    0
+#    define nullptr    0
 #  else
-#    define NULL    ((void *)0)
+#    define nullptr    ((void *)0)
 #  endif
 #endif
 

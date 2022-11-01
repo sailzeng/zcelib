@@ -12,7 +12,7 @@ namespace zerg
 
 //我又要偷偷藏着
 zerg_app::zerg_app() :
-    zerg_comm_mgr_(NULL),
+    zerg_comm_mgr_(nullptr),
     conf_timestamp_(0)
 {
 }

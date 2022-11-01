@@ -142,7 +142,7 @@ int svc_accept::accept_event(ZCE_HANDLE /*handle*/)
 
     svc_tcp* phandler = svc_tcp::alloc_svchandler_from_pool(svc_tcp::HANDLER_MODE_ACCEPTED);
 
-    if (phandler != NULL)
+    if (phandler != nullptr)
     {
         phandler->init_tcp_svc_handler(sockstream, peer_module_info_.fp_judge_whole_frame_);
     }

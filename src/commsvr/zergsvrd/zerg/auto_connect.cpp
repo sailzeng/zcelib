@@ -97,7 +97,7 @@ void auto_connector::reconnect_allserver(size_t& szvalid, size_t& szsucc, size_t
     auto iter_tmp = autocnt_svcinfo_set_.begin();
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
-        svc_tcp* svc_handle = NULL;
+        svc_tcp* svc_handle = nullptr;
         //进行连接,
         ret = connect_one_server(iter_tmp->svc_id_, iter_tmp->ip_address_, svc_handle);
         if (0 != ret)
@@ -143,7 +143,7 @@ int auto_connector::connect_server_bysvcid(const soar::SERVICES_ID& reconnect_sv
         return SOAR_RET::ERR_ZERG_ISNOT_CONNECT_SERVICES;
     }
 
-    svc_tcp* svc_handle = NULL;
+    svc_tcp* svc_handle = nullptr;
     return connect_one_server(reconnect_svcid, iter->ip_address_, svc_handle);
 }
 

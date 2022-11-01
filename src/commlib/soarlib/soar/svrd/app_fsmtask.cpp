@@ -52,7 +52,7 @@ int svrdapp_fsmtask::app_start(int argc, const char* argv[])
         return ret;
     }
 
-    soar::fsmtask_taskbase* clone_task = NULL;
+    soar::fsmtask_taskbase* clone_task = nullptr;
     size_t task_num = 0;
     size_t task_stack_size = 0;
 

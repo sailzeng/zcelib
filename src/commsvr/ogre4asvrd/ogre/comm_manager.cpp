@@ -9,10 +9,10 @@
 #include "ogre/ip_restrict.h"
 namespace ogre
 {
-comm_manager* comm_manager::instance_ = NULL;
+comm_manager* comm_manager::instance_ = nullptr;
 
 comm_manager::comm_manager() :
-    ogre_config_(NULL)
+    ogre_config_(nullptr)
 {
 }
 
@@ -198,7 +198,7 @@ int comm_manager::uninit_comm_manger()
 //得到单子的实例
 comm_manager* comm_manager::instance()
 {
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new comm_manager();
     }
@@ -212,7 +212,7 @@ void comm_manager::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 }

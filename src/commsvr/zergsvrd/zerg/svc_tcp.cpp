@@ -18,11 +18,11 @@ active_svc_set svc_tcp::svr_peer_info_set_;
 //2.原来没有用instance
 
 //
-zce::queue_buffer_pool* svc_tcp::zbuffer_storage_ = NULL;
+zce::queue_buffer_pool* svc_tcp::zbuffer_storage_ = nullptr;
 //通信管理器
-zerg::comm_manager* svc_tcp::zerg_comm_mgr_ = NULL;
+zerg::comm_manager* svc_tcp::zerg_comm_mgr_ = nullptr;
 //
-soar::stat_monitor* svc_tcp::server_status_ = NULL;
+soar::stat_monitor* svc_tcp::server_status_ = nullptr;
 
 //自己是否是代理
 bool           svc_tcp::if_proxy_ = false;
@@ -65,7 +65,7 @@ svc_tcp::svc_tcp(svc_tcp::HANDLER_MODE hdl_mode) :
     handler_mode_(hdl_mode),
     my_svc_id_(0, 0),
     peer_svr_id_(0, 0),
-    rcv_buffer_(NULL),
+    rcv_buffer_(nullptr),
     recieve_counter_(0),
     send_counter_(0),
     recieve_bytes_(0),
@@ -99,7 +99,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     handler_mode_ = HANDLER_MODE_ACCEPTED;
     my_svc_id_ = my_svcinfo;
     peer_svr_id_.set_svcid(0, 0);
-    rcv_buffer_ = NULL;
+    rcv_buffer_ = nullptr;
     recieve_counter_ = 0;
     send_counter_ = 0;
     recieve_bytes_ = 0;
@@ -231,7 +231,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     handler_mode_ = HANDLER_MODE_CONNECT;
     my_svc_id_ = my_svcinfo;
     peer_svr_id_ = peer_svrinfo;
-    rcv_buffer_ = NULL;
+    rcv_buffer_ = nullptr;
     recieve_counter_ = 0;
     send_counter_ = 0;
     recieve_bytes_ = 0;
@@ -624,7 +624,7 @@ int svc_tcp::close_event()
     if (rcv_buffer_)
     {
         zbuffer_storage_->free_buffer(rcv_buffer_);
-        rcv_buffer_ = NULL;
+        rcv_buffer_ = nullptr;
     }
 
     //处理发送数据缓冲区
@@ -634,7 +634,7 @@ int svc_tcp::close_event()
     {
         //处理发送错误队列,同时进行回收
         process_send_error(snd_buffer_deque_[i], true);
-        snd_buffer_deque_[i] = NULL;
+        snd_buffer_deque_[i] = nullptr;
     }
 
     snd_buffer_deque_.clear();
@@ -778,11 +778,11 @@ int svc_tcp::preprocess_recvframe(soar::zerg_frame* proc_frame)
         }
 
         //注册,如果原来有响应的链接,会返回原有的链接.replace_services_peerInfo,必然成功
-        svc_tcp* old_hdl = NULL;
+        svc_tcp* old_hdl = nullptr;
         svr_peer_info_set_.replace_services_peerInfo(peer_svr_id_, this, old_hdl);
 
         //如果有原有的链接,则找到原来的那个踢下去.
-        if (old_hdl != NULL)
+        if (old_hdl != nullptr)
         {
             //而且修改原有链接的状态,避免重复从SET删除
             old_hdl->peer_status_ = PEER_STATUS_JUST_ACCEPT;
@@ -892,7 +892,7 @@ int svc_tcp::read_data_from_peer(size_t& szrevc)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //申请分配一个内存
-    if (rcv_buffer_ == NULL)
+    if (rcv_buffer_ == nullptr)
     {
         zbuffer_storage_->alloc_buffer(soar::zerg_frame::MAX_LEN_OF_FRAME,
                                        rcv_buffer_);
@@ -1033,7 +1033,7 @@ int svc_tcp::write_all_data_to_peer()
         {
             //成功，释放申请的空间
             zbuffer_storage_->free_buffer(snd_buffer_deque_[0]);
-            snd_buffer_deque_[0] = NULL;
+            snd_buffer_deque_[0] = nullptr;
             snd_buffer_deque_.pop_front();
         }
         //如果没有全部发送出去，等待下一次写时间的触发
@@ -1251,10 +1251,10 @@ svc_tcp* svc_tcp::alloce_hdl_from_pool(HANDLER_MODE handler_mode)
                     pool_of_acpthdl_.size(),
                     pool_of_acpthdl_.capacity()
             );
-            return NULL;
+            return nullptr;
         }
 
-        svc_tcp* p_handler = NULL;
+        svc_tcp* p_handler = nullptr;
         pool_of_acpthdl_.pop_front(p_handler);
         return p_handler;
     }
@@ -1262,7 +1262,7 @@ svc_tcp* svc_tcp::alloce_hdl_from_pool(HANDLER_MODE handler_mode)
     else if (HANDLER_MODE_CONNECT == handler_mode)
     {
         ZCE_ASSERT(pool_of_cnthdl_.size() > 0);
-        svc_tcp* p_handler = NULL;
+        svc_tcp* p_handler = nullptr;
         pool_of_cnthdl_.pop_front(p_handler);
         return p_handler;
     }
@@ -1270,7 +1270,7 @@ svc_tcp* svc_tcp::alloce_hdl_from_pool(HANDLER_MODE handler_mode)
     else
     {
         ZCE_ASSERT(false);
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -1307,7 +1307,7 @@ int svc_tcp::process_send_data(zce::queue_buffer* tmpbuf)
                             proc_frame->recv_service_.services_type_,
                             0);
 
-    soar::SERVICES_ID* p_sendto_svrinfo = NULL;
+    soar::SERVICES_ID* p_sendto_svrinfo = nullptr;
 
     //发送给代理，发送给接受者
     if (proc_frame->proxy_service_.services_type_ != soar::SERVICES_ID::INVALID_SERVICES_TYPE && if_proxy_ == false)
@@ -1332,7 +1332,7 @@ int svc_tcp::process_send_data(zce::queue_buffer* tmpbuf)
         }
 
         size_t ary_size = id_ary->size();
-        svc_tcp* svchanle = NULL;
+        svc_tcp* svchanle = nullptr;
         for (size_t i = 0; i < ary_size; ++i)
         {
             soar::SERVICES_ID bc_svc_id(p_sendto_svrinfo->services_type_, (*id_ary)[i]);
@@ -1352,7 +1352,7 @@ int svc_tcp::process_send_data(zce::queue_buffer* tmpbuf)
     else
     {
         uint32_t services_id = soar::SERVICES_ID::INVALID_SERVICES_ID;
-        svc_tcp* svchanle = NULL;
+        svc_tcp* svchanle = nullptr;
 
         //对一些动态的SVC ID进行处理
         //负载均衡的方式
@@ -1413,7 +1413,7 @@ int svc_tcp::process_send_data(zce::queue_buffer* tmpbuf)
 
         //Double Check方法
         //如果SVCHANDLE为空,表示没有相关的连接,进行错误处理
-        if (svchanle == NULL)
+        if (svchanle == nullptr)
         {
             //这儿还没有编码
             ZCE_LOG(RS_ERROR, "[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
@@ -1605,7 +1605,7 @@ void svc_tcp::unite_frame_sendlist()
 
         //将倒数第一个施放掉
         zbuffer_storage_->free_buffer(snd_buffer_deque_[sz_deque - 1]);
-        snd_buffer_deque_[sz_deque - 1] = NULL;
+        snd_buffer_deque_[sz_deque - 1] = nullptr;
         snd_buffer_deque_.pop_back();
     }
 
@@ -1713,7 +1713,7 @@ int svc_tcp::push_frame_to_comm_mgr()
         {
             //无论处理正确与否,都释放缓冲区的空间
             zbuffer_storage_->free_buffer(rcv_buffer_);
-            rcv_buffer_ = NULL;
+            rcv_buffer_ = nullptr;
         }
         //如果第一个包的收到数据已经大于这个长度.那么就会出现下面的情况，
         //如果这儿想避免复杂的判断，可以限定收到的第一个数据包的最大长度为帧头的长度，但是这样会降低效率。
@@ -1766,7 +1766,7 @@ void svc_tcp::dump_status_info(zce::LOG_PRIORITY out_lvl)
 #elif defined (ZCE_OS_LINUX)
     ZCE_LOG(out_lvl, "get_handle=%d", get_handle());
 #endif
-    ZCE_LOG(out_lvl, "recieve_bytes_ =%lu,rcv_buffer_ =%d", recieve_bytes_, ((rcv_buffer_ != NULL) ? 1 : 0));
+    ZCE_LOG(out_lvl, "recieve_bytes_ =%lu,rcv_buffer_ =%d", recieve_bytes_, ((rcv_buffer_ != nullptr) ? 1 : 0));
     ZCE_LOG(out_lvl, "send_bytes_=%lu snd_buffer_deque_.size=%lu", send_bytes_, snd_buffer_deque_.size());
 }
 
@@ -1781,7 +1781,7 @@ void svc_tcp::dump_svcpeer_info(zce::LOG_PRIORITY out_lvl)
 int svc_tcp::close_services_peer(const soar::SERVICES_ID& svr_info)
 {
     int ret = 0;
-    svc_tcp* svchanle = NULL;
+    svc_tcp* svchanle = nullptr;
     ret = svr_peer_info_set_.find_handle_by_svcid(svr_info, svchanle);
 
     //如果是要重新进行连接的服务器主动主动连接,

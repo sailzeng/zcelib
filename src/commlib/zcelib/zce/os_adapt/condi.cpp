@@ -205,7 +205,7 @@ int zce::pthread_cond_wait(pthread_cond_t* cond,
 {
 #if defined (ZCE_OS_WINDOWS)
     //这样写是为了避免函数冲突告警，
-    const ::timespec* abs_timespec_out = NULL;
+    const ::timespec* abs_timespec_out = nullptr;
     return zce::pthread_cond_timedwait(cond,
                                        external_mutex,
                                        abs_timespec_out);

@@ -117,8 +117,8 @@ int mml_cmd::parse_mml_str_1(const char* mml_string)
     //
     //读取字段的位置标示符号
     const char* part_tmp = mml_string;
-    const char* part_end = NULL;
-    const char* part_start = NULL;
+    const char* part_end = nullptr;
+    const char* part_start = nullptr;
 
     //跳过空格
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp; ++part_tmp);
@@ -244,8 +244,8 @@ int mml_cmd::parse_mml_str_2(const char* mml_string)
 
     //读取字段的位置标示符号
     const char* part_tmp = mml_string;
-    const char* part_end = NULL;
-    const char* part_start = NULL;
+    const char* part_end = nullptr;
+    const char* part_start = nullptr;
 
     //过滤前面的空格，没有用trim函数，
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp && END_SEPARATOR != *part_tmp; ++part_tmp);

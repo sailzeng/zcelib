@@ -65,7 +65,7 @@ int TCP_PEER_MODULE_INFO::open_module()
     fp_judge_whole_frame_ = (FP_JudgeRecv_WholeFrame)zce::dlsym(recv_mod_handler_,
                                                                 STR_JUDGE_RECV_WHOLEFRAME);
 
-    if (NULL == fp_judge_whole_frame_)
+    if (nullptr == fp_judge_whole_frame_)
     {
         ZCE_LOG(RS_ERROR, "Open Module [%s|%s] fail. recv_mod_handler =%u .\n",
                 peer_info_.module_file_.c_str(),
