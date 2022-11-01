@@ -765,9 +765,6 @@
     <ClInclude Include="zce\net\ping.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\pool\multiobjs_pool.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\version.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -819,10 +816,13 @@
     <ClInclude Include="zce\thread\msgque_waitmodel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\pool\object_pool_ex.h">
+    <ClInclude Include="zce\event\reactor_mini.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\event\reactor_mini.h">
+    <ClInclude Include="zce\pool\dataptr_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\pool\shareptr_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\pool\shareptr_pool.h">

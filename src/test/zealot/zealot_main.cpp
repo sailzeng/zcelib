@@ -7,6 +7,7 @@ int main(int argc, char* argv[])
 #if defined ZCE_OS_WINDOWS
     SetConsoleOutputCP(65001);
 #endif
+
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 

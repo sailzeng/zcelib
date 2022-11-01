@@ -169,7 +169,7 @@ public:
     * @brief      以时间为基数的初始化，radix一般可以用当前时间time_t
     *             调用这个函数后，就会确认产生方式是UUID64_GENERATOR_TIME，不能更改了。
     * @param      identity 当前的唯一表示，比如服务器ID等信息
-    * @param      radix    时间基数
+    * @param      radix    时间基数，一般时间作为基础
     */
     void time_radix(uint16_t identity,
                     uint32_t radix = static_cast<uint32_t> (time(NULL)));

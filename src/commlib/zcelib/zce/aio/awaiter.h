@@ -42,6 +42,11 @@ struct awaiter_aio
     }
     ~awaiter_aio()
     {
+        if (request_atom_)
+        {
+            worker_->free_handle(request_atom_);
+            request_atom_ = nullptr;
+        }
     }
 
     //请求进行AIO操作，如果请求成功.return false挂起协程
@@ -62,10 +67,7 @@ struct awaiter_aio
     {
         ret_result_ = return_hdl->result_;
         awaiting_.resume();
-        if (request_atom_)
-        {
-            worker_->free_handle(request_atom_);
-        }
+
         return;
     }
 

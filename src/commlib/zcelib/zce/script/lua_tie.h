@@ -220,7 +220,7 @@ void push_stack(lua_State* /*state*/);
 
 ///为变参模板函数递归准备的函数
 template<typename val_type, typename... val_tlist>
-void push_stack(lua_State* state, val_type val, val_tlist ... val_s)
+void push_stack(lua_State* state, val_type val, val_tlist &&... val_s)
 {
     push_stack<val_type>(state, val);
     push_stack(state, val_s...);

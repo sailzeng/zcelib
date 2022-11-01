@@ -1042,4 +1042,9 @@ int er_recvfrom(zce::aio::worker* worker,
 }
 
 //=======================================================================
+void TIMER_ATOM::clear()
+{
+    timeout_tv_ = nullptr;
+    timer_id_ = nullptr;
+}
 }

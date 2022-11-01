@@ -223,7 +223,7 @@ public:
     template <typename... out_type >
     void foo_write_logmsg(LOG_PRIORITY outlevel,
                           const char* str_format,
-                          const out_type &...out_data)
+                          const out_type... out_data)
     {
         //如果日志输出开关关闭
         if (allow_output_log_ == false)
@@ -310,7 +310,7 @@ public:
     template <typename... out_type >
     static void write_logplus(LOG_PRIORITY outlevel,
                               const char* str_format,
-                              const out_type &...out_data) noexcept
+                              const out_type... out_data) noexcept
     {
         log_instance_->foo_write_logmsg(outlevel,
                                         str_format,

@@ -288,7 +288,7 @@ char* str_nprintf(char* foo_buffer,
                   size_t foo_max_len,
                   size_t& foo_use_len,
                   const char* foo_fmt_spec,
-                  const out_type & ...out_data)
+                  const out_type& ...out_data)
 {
     foo_use_len = 0;
 

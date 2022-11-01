@@ -7,6 +7,7 @@
 #include <zce/logger/logging.h>
 #include <zce/logger/log_file.h>
 #include <zce/logger/log_msg.h>
+#include <zce/logger/log_print.h>
 
 #include <zce/os_adapt/common.h>
 #include <zce/os_adapt/file.h>
@@ -59,6 +60,7 @@
 #include <zce/mysql/connect.h>
 #include <zce/mysql/command.h>
 #include <zce/util/id_to_string.h>
+#include <zce/util/mpl.h>
 
 #include <zce/server/get_option.h>
 
@@ -99,8 +101,8 @@
 
 #include <zce/pool/object_pool.h>
 #include <zce/pool/buffer_pool.h>
-#include <zce/pool/multiobjs_pool.h>
-#include <zce/pool/object_pool_ex.h>
+#include <zce/pool/dataptr_pool.h>
+#include <zce/pool/shareptr_pool.h>
 
 #include <zce/aio/caller.h>
 #include <zce/aio/worker.h>
