@@ -6,7 +6,7 @@
 namespace zce
 {
 //单子实例
-thread_wait_manager* thread_wait_manager::instance_ = NULL;
+thread_wait_manager* thread_wait_manager::instance_ = nullptr;
 
 //构造函数等
 thread_wait_manager::thread_wait_manager()
@@ -77,7 +77,7 @@ void thread_wait_manager::wait_group(int group_id)
 //得到唯一的单子实例
 thread_wait_manager* thread_wait_manager::instance()
 {
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new thread_wait_manager();
     }
@@ -93,7 +93,7 @@ void thread_wait_manager::clear_inst()
         delete instance_;
     }
 
-    instance_ = NULL;
+    instance_ = nullptr;
     return;
 }
 }

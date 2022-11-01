@@ -83,7 +83,7 @@ static const time_t TIMEZONE_SECONDS = timezone;
 * @note       gettimeofday 这个函数在POSIX中已经被抛弃，但是大量的LINUX还会继续使用，所以暂时留下来，
 *             POSIX推荐的clock_gettime好像还没有看见多少人呢用
 */
-inline int gettimeofday(struct timeval* tv, struct timezone* tz = NULL);
+inline int gettimeofday(struct timeval* tv, struct timezone* tz = nullptr);
 
 //别名而已，
 inline int system_clock(struct ::timeval* tv);
@@ -235,14 +235,14 @@ const char* timeval_to_str(const timeval* timeval,
 * @param[in]  strtm   字符串，字符串的正确性你自己要保证
 * @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STR_FORMAT
 * @param[out] ptr_tm  返回的tm结构的指针，注意，如果字符串错误，可能会导致tm错误喔
-* @param[out] usec    返回的的微秒的时间，默认为NULL，表示不需要返回，
-* @param[out] tz      返回的的时区,默认为NULL，表示不需要返回，很多种格式里面没有时区信息
+* @param[out] usec    返回的的微秒的时间，默认为nullptr，表示不需要返回，
+* @param[out] tz      返回的的时区,默认为nullptr，表示不需要返回，很多种格式里面没有时区信息
 */
 void str_to_tm(const char* strtm,
                TIME_STR_FORMAT fmt,
                tm* ptr_tm,
-               time_t* usec = NULL,
-               int* tz = NULL);
+               time_t* usec = nullptr,
+               int* tz = nullptr);
 
 /*!
 * @brief      从字符串转换得到本地时间timeval函数
@@ -561,7 +561,7 @@ inline int zce::gettimeofday(struct timeval* tv, struct timezone* tz)
     //
 #if defined ZCE_OS_WINDOWS
     //
-    if (tv == NULL && tz == NULL)
+    if (tv == nullptr && tz == nullptr)
     {
         return 0;
     }
@@ -660,7 +660,7 @@ inline struct tm* zce::localtime_r(const time_t* timep, struct tm* result)
 
     if (convert_err)
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -683,7 +683,7 @@ inline struct tm* zce::gmtime_r(const time_t* timep, struct tm* result)
 
     if (convert_err)
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -711,7 +711,7 @@ inline char* zce::asctime_r(const struct tm* tm_data, char* buf)
 
     if (convert_err)
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -738,7 +738,7 @@ inline char* zce::ctime_r(const time_t* timep, char* buf)
 
     if (convert_err)
     {
-        return NULL;
+        return nullptr;
     }
     else
     {

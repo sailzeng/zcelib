@@ -276,7 +276,7 @@ public:
     zce::LOG_PRIORITY   log_priority_;
 
     //!如果需要跟踪返回值，把返回值的变量的指针作为一个参数
-    int* ret_ptr_ = NULL;
+    int* ret_ptr_ = nullptr;
 
 public:
     //利用构造函数显示进入函数的输出
@@ -288,7 +288,7 @@ public:
         codefile_name_(file_name),
         code_line_(file_line),
         log_priority_(log_priority),
-        ret_ptr_(NULL)
+        ret_ptr_(nullptr)
     {
         ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ", func_name_, codefile_name_, code_line_);
     }

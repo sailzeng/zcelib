@@ -122,7 +122,7 @@ public:
 
     _avl_tree_iterator()
         : serial_(zce::SHM_CNTR_INVALID_POINT),
-        avl_tree_inst_(NULL)
+        avl_tree_inst_(nullptr)
     {
     }
 
@@ -376,7 +376,7 @@ public:
     //初始化
     static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
-        //assert(pmmap!=NULL && numnode >0 );
+        //assert(pmmap!=nullptr && numnode >0 );
         _avl_tree_head* avl_tree_head = reinterpret_cast<_avl_tree_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
@@ -386,7 +386,7 @@ public:
             if (getallocsize(numnode) != avl_tree_head->size_of_mmap_ ||
                 numnode != avl_tree_head->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
         }
 
@@ -436,7 +436,7 @@ public:
         avl_tree_head_->sz_free_node_ = avl_tree_head_->num_of_node_;
         avl_tree_head_->sz_use_node_ = 0;
 
-        //将清理为NULL,让指针都指向自己
+        //将清理为nullptr,让指针都指向自己
         head_index_->parent_ = SHM_CNTR_INVALID_POINT;
         head_index_->right_ = avl_tree_head_->num_of_node_;
         head_index_->left_ = avl_tree_head_->num_of_node_;

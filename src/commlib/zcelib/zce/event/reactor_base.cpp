@@ -7,7 +7,7 @@
 namespace zce
 {
 //
-reactor* reactor::instance_ = NULL;
+reactor* reactor::instance_ = nullptr;
 
 reactor::reactor() :
     max_event_number_(FD_SETSIZE)
@@ -83,7 +83,7 @@ int reactor::register_handler(zce::event_handler* event_handler,
     }
 
     ZCE_HANDLE socket_hd = event_handler->get_handle();
-    zce::event_handler* tmp_handler = NULL;
+    zce::event_handler* tmp_handler = nullptr;
 
     //如果已经存在，不能继续注册
     ret = find_event_handler(socket_hd, tmp_handler);
@@ -115,7 +115,7 @@ int reactor::remove_handler(zce::event_handler* event_handler,
     int ret = 0;
 
     ZCE_HANDLE ev_hd = event_handler->get_handle();
-    zce::event_handler* tmp_handler = NULL;
+    zce::event_handler* tmp_handler = nullptr;
 
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用event_close
     ret = find_event_handler(ev_hd, tmp_handler);
@@ -190,7 +190,7 @@ int reactor::find_event_handler(ZCE_HANDLE handle,
     //已经有一个HANDLE了
     if (iter_temp == handler_map_.end())
     {
-        event_handler = NULL;
+        event_handler = nullptr;
         return -1;
     }
 
@@ -222,7 +222,7 @@ void reactor::clear_inst()
         delete instance_;
     }
 
-    instance_ = NULL;
+    instance_ = nullptr;
     return;
 }
 }

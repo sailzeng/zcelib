@@ -61,16 +61,16 @@ int zce::make_coroutine(coroutine_t* coroutine_hdl,
 {
 #if defined ZCE_OS_WINDOWS
 
-    coroutine_hdl->main_ = NULL;
-    coroutine_hdl->coroutine_ = NULL;
+    coroutine_hdl->main_ = nullptr;
+    coroutine_hdl->coroutine_ = nullptr;
 
     //如果当前还不是纤程，进行转换，同时也到当前的纤程标识
     if (FALSE == ::IsThreadAFiber())
     {
         //FIBER_FLAG_FLOAT_SWITCH XP不支持，浮点环境切换应该会耗时，有一些简化去掉了
-        coroutine_hdl->main_ = ::ConvertThreadToFiberEx(NULL,
+        coroutine_hdl->main_ = ::ConvertThreadToFiberEx(nullptr,
                                                         FIBER_FLAG_FLOAT_SWITCH);
-        if (NULL == coroutine_hdl->main_)
+        if (nullptr == coroutine_hdl->main_)
         {
             return -1;
         }
@@ -79,7 +79,7 @@ int zce::make_coroutine(coroutine_t* coroutine_hdl,
     else
     {
         coroutine_hdl->main_ = ::GetCurrentFiber();
-        if (NULL == coroutine_hdl->main_)
+        if (nullptr == coroutine_hdl->main_)
         {
             return -1;
         }
@@ -100,7 +100,7 @@ int zce::make_coroutine(coroutine_t* coroutine_hdl,
                                                 _fibers_adapt_fun,
                                                 fibers_adapt);
 
-    if (NULL == coroutine_hdl->coroutine_)
+    if (nullptr == coroutine_hdl->coroutine_)
     {
         return -1;
     }
@@ -130,7 +130,7 @@ int zce::make_coroutine(coroutine_t* coroutine_hdl,
     }
     else
     {
-        coroutine_hdl->coroutine_.uc_link = NULL;
+        coroutine_hdl->coroutine_.uc_link = nullptr;
     }
     coroutine_hdl->coroutine_.uc_stack.ss_sp = new char[stack_size];
     coroutine_hdl->coroutine_.uc_stack.ss_size = stack_size;
@@ -160,7 +160,7 @@ void zce::delete_coroutine(coroutine_t* coroutine_hdl)
 
     //释放zce::makecontext申请的空间
     delete[](char*) coroutine_hdl->coroutine_.uc_stack.ss_sp;
-    coroutine_hdl->coroutine_.uc_stack.ss_sp = NULL;
+    coroutine_hdl->coroutine_.uc_stack.ss_sp = nullptr;
     coroutine_hdl->coroutine_.uc_stack.ss_size = 0;
 #endif
 }
@@ -171,7 +171,7 @@ int zce::resume_coroutine(coroutine_t* coroutine_hdl)
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
 
-    if ((coroutine_hdl == NULL))
+    if ((coroutine_hdl == nullptr))
     {
         errno = EINVAL;
         return -1;
@@ -194,7 +194,7 @@ int zce::yeild_coroutine(coroutine_t* coroutine_hdl)
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
 
-    if ((coroutine_hdl == NULL))
+    if ((coroutine_hdl == nullptr))
     {
         errno = EINVAL;
         return -1;

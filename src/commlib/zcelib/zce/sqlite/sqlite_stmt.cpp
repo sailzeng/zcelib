@@ -16,11 +16,11 @@ namespace zce
 //构造函数,从很细小的地方就可以看出SQLITE的设计有不足，一个INDEX从1开始，1个从0
 sqlite_stmt::sqlite_stmt(sqlite_hdl* sqlite3_handler) :
     sqlite_handler_(sqlite3_handler),
-    prepared_statement_(NULL),
+    prepared_statement_(nullptr),
     current_col_(0),
     current_bind_(1)
 {
-    assert(sqlite3_handler != NULL && sqlite3_handler->get_sqlite_handler() != NULL);
+    assert(sqlite3_handler != nullptr && sqlite3_handler->get_sqlite_handler() != nullptr);
 }
 
 sqlite_stmt::~sqlite_stmt()
@@ -70,9 +70,9 @@ int sqlite_stmt::prepare(const char* sql_string)
                                    sql_string,
                                    -1,                                      //注意这个参数，必须小于0
                                    &prepared_statement_,
-                                   NULL);
+                                   nullptr);
     //如果分析结果错误，或者不是一个SQL
-    if (SQLITE_OK != ret || prepared_statement_ == NULL)
+    if (SQLITE_OK != ret || prepared_statement_ == nullptr)
     {
         //其他返回错误
         ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",

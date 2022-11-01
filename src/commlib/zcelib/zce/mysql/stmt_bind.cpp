@@ -11,7 +11,7 @@ namespace zce::mysql
 stmt_bind::stmt_bind(size_t numbind) :
     num_bind_(numbind),
     current_bind_(0),
-    stmt_bind_(NULL)
+    stmt_bind_(nullptr)
 {
     stmt_bind_ = new MYSQL_BIND[num_bind_];
     memset(stmt_bind_, 0, sizeof(MYSQL_BIND) * num_bind_);
@@ -50,7 +50,7 @@ int stmt_bind::bind_one_param(size_t paramno,
     stmt_bind_[paramno].buffer = paramdata;
 
     stmt_bind_[paramno].is_null = is_null;
-    stmt_bind_[paramno].length = NULL;
+    stmt_bind_[paramno].length = nullptr;
     stmt_bind_[paramno].buffer_length = szparam;
     return 0;
 }
@@ -202,7 +202,7 @@ void stmt_bind::bind(size_t bind_col, stmt_bind::BinData_Param& bin_data)
 
     //这个可能既是绑定参数,也是绑定结果
     stmt_bind_[bind_col].buffer_length = bin_data.stmt_data_length_;
-    stmt_bind_[bind_col].length = NULL;
+    stmt_bind_[bind_col].length = nullptr;
 
     return;
 }
@@ -227,7 +227,7 @@ void stmt_bind::bind(size_t bind_col, stmt_bind::TimeData& val)
     stmt_bind_[bind_col].buffer = reinterpret_cast<void*>(val.stmt_ptime_);
 
     stmt_bind_[bind_col].buffer_length = sizeof(MYSQL_TIME);
-    stmt_bind_[bind_col].length = NULL;
+    stmt_bind_[bind_col].length = nullptr;
 
     return;
 }

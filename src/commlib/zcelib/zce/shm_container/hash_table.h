@@ -289,7 +289,7 @@ public:
     */
     static self* initialize(size_t req_num, size_t& real_num, char* pmmap, bool if_restore = false)
     {
-        assert(pmmap != NULL && req_num > 0);
+        assert(pmmap != nullptr && req_num > 0);
         //调整
         size_t sz_mmap = getallocsize(req_num, real_num);
 
@@ -302,9 +302,9 @@ public:
             if (sz_mmap != hashhead->size_of_mmap_ ||
                 real_num != hashhead->num_of_node_)
             {
-                //一般情况下不一致返回NULL，标识恢复失败，
+                //一般情况下不一致返回nullptr，标识恢复失败，
 #if ALLOW_RESTORE_INCONFORMITY != 1
-                return NULL;
+                return nullptr;
 #else
                 ZCE_LOG(RS_ALERT, "Hash Table node initialize number[%lu|%lu] and restore number [%lu|%lu] "
                         "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",

@@ -1132,9 +1132,9 @@ int Lua_Thread::resume(int narg)
 #if LUA_VERSION_NUM == 501
     return ::lua_resume(lua_state_, narg);
 #elif LUA_VERSION_NUM == 502 || LUA_VERSION_NUM == 503
-    return ::lua_resume(lua_state_, NULL, narg);
+    return ::lua_resume(lua_state_, nullptr, narg);
 #else
-    return ::lua_resume(lua_state_, NULL, narg, NULL);
+    return ::lua_resume(lua_state_, nullptr, narg, nullptr);
 #endif
 }
 
@@ -1162,7 +1162,7 @@ int Lua_Tie::open(bool open_libs,
     //如果错误
     if (lua_state_)
     {
-        ZCE_LOG(RS_ERROR, "lua_state_ != NULL ,reopen?");
+        ZCE_LOG(RS_ERROR, "lua_state_ != nullptr ,reopen?");
         close();
     }
 

@@ -408,7 +408,7 @@ char* hash_fun(const char* buf,
                size_t buf_size,
                char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
-    ZCE_ASSERT(result != NULL);
+    ZCE_ASSERT(result != nullptr);
 
     typename HASH_STRATEGY::context ctx;
     HASH_STRATEGY::initialize(&ctx);

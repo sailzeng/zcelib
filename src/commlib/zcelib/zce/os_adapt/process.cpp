@@ -73,7 +73,7 @@ pid_t zce::getppid(void)
                                        0,
                                        (PVOID)&pbi,
                                        sizeof(PROCESS_BASIC_INFORMATION),
-                                       NULL
+                                       nullptr
     );
 
     // Copy parent Id on success
@@ -162,7 +162,7 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_pe
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
     in_para = zce::skip_token(in_para);              /* skip  pid*/
     in_para = zce::skip_token(in_para);              /* skip  name*/
     in_para = zce::skip_token(in_para);              /* skip  state*/
@@ -240,7 +240,7 @@ static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_per
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
 
     //64位下应该是8096
     long page_size = 4096;

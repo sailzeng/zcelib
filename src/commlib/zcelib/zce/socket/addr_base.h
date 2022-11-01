@@ -14,7 +14,7 @@ class addr_base
 public:
 
     //构造函数，
-    addr_base(sockaddr* sockaddr_ptr = NULL, int sa_size = -1);
+    addr_base(sockaddr* sockaddr_ptr = nullptr, int sa_size = -1);
     //析构函数,内部有virtual函数
     virtual ~addr_base(void);
 

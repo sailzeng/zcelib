@@ -10,8 +10,8 @@
 namespace zce::mysql
 {
 stmt_cmd::stmt_cmd() :
-    mysql_connect_(NULL),
-    mysql_stmt_(NULL),
+    mysql_connect_(nullptr),
+    mysql_stmt_(nullptr),
     is_bind_result_(false)
 {
     //保留INITBUFSIZE的空间
@@ -20,12 +20,12 @@ stmt_cmd::stmt_cmd() :
 
 //指定一个connect
 stmt_cmd::stmt_cmd(zce::mysql::connect* conn) :
-    mysql_connect_(NULL),
-    mysql_stmt_(NULL),
+    mysql_connect_(nullptr),
+    mysql_stmt_(nullptr),
     is_bind_result_(false)
 {
-    //assert(conn != NULL);
-    if (conn != NULL && conn->is_connected())
+    //assert(conn != nullptr);
+    if (conn != nullptr && conn->is_connected())
     {
         mysql_connect_ = conn;
         //处理
@@ -38,7 +38,7 @@ stmt_cmd::stmt_cmd(zce::mysql::connect* conn) :
 
 stmt_cmd::~stmt_cmd()
 {
-    if (NULL != mysql_stmt_)
+    if (nullptr != mysql_stmt_)
     {
         int tmpret = ::mysql_stmt_free_result(mysql_stmt_);
         tmpret = ::mysql_stmt_close(mysql_stmt_);
@@ -50,22 +50,22 @@ stmt_cmd::~stmt_cmd()
 int stmt_cmd::set_connect(zce::mysql::connect* conn)
 {
     //检查参数
-    if (conn != NULL && conn->is_connected())
+    if (conn != nullptr && conn->is_connected())
     {
         mysql_connect_ = conn;
 
-        if (mysql_stmt_ != NULL)
+        if (mysql_stmt_ != nullptr)
         {
             int tmpret = ::mysql_stmt_close(mysql_stmt_);
             if (tmpret != 0)
             {
                 return tmpret;
             }
-            mysql_stmt_ = NULL;
+            mysql_stmt_ = nullptr;
         }
 
         mysql_stmt_ = ::mysql_stmt_init(mysql_connect_->get_mysql_handle());
-        if (NULL == mysql_stmt_)
+        if (nullptr == mysql_stmt_)
         {
             return -1;
         }
@@ -93,7 +93,7 @@ int stmt_cmd::stmt_prepare_bind(zce::mysql::stmt_bind* bindparam,
 
     //原打算检查语句的绑定变量个数,后来决定还是让MySQL自己检查,
     //unsigned long paramcount = mysql_stmt_param_count(mysql_stmt_);
-    //ZASSERT(paramcount > 0 &&  bindparam!=NULL || paramcount == 0 && bindparam == NULL);
+    //ZASSERT(paramcount > 0 &&  bindparam!=nullptr || paramcount == 0 && bindparam == nullptr);
 
     //绑定的参数
     if (bindparam)
@@ -138,7 +138,7 @@ int stmt_cmd::set_stmt_command(const char* sqlcmd,
                                zce::mysql::stmt_bind* bindparam,
                                zce::mysql::stmt_bind* bindresult)
 {
-    ZCE_ASSERT(sqlcmd != NULL);
+    ZCE_ASSERT(sqlcmd != nullptr);
     //
     stmt_command_.assign(sqlcmd, szsql);
 
@@ -199,7 +199,7 @@ int stmt_cmd::query(unsigned int& num_affect, unsigned int& lastid)
 //执行SQL语句,SELECT语句,转储结果集合的那种,
 int stmt_cmd::query(unsigned int& num_affect)
 {
-    return query_i(&num_affect, NULL);
+    return query_i(&num_affect, nullptr);
 }
 
 //

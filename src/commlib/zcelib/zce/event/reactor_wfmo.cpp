@@ -255,7 +255,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
     *size_event = 1;
     size_t activate_id = wait_status - WAIT_OBJECT_0;
 
-    zce::event_handler* event_hdl = NULL;
+    zce::event_handler* event_hdl = nullptr;
 
     //因为Socket 的事件处理，放入的反应器的是事件句柄，但在event handle内部是socket句柄，而
     //保存event handle的 map是用socket句柄做得key，所以有如下的代码

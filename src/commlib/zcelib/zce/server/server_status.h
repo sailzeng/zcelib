@@ -371,7 +371,7 @@ public:
     void get_stat_head(ZCE_STATUS_HEAD* stat_head);
 
     ///记录监控的上报时间
-    void report_monitor_time(uint64_t report_time = static_cast<uint64_t>(time(NULL)));
+    void report_monitor_time(uint64_t report_time = static_cast<uint64_t>(time(nullptr)));
 
     //单子的函数群，不是我不知道可以用BOOST的模板使用单子，是这样更加直接清爽，容易扩张修改一些
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入

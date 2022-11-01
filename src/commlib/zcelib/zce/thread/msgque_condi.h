@@ -47,7 +47,7 @@ public:
 
     ~msgqueue_condi() = default;
 
-    //QUEUE是否为NULL
+    //QUEUE是否为nullptr
     inline bool empty()
     {
         std::lock_guard<std::mutex> guard(queue_lock_);
@@ -338,7 +338,7 @@ public:
 
     ~MsgQueue_Condi() = default;
 
-    //QUEUE是否为NULL
+    //QUEUE是否为nullptr
     inline bool empty()
     {
         zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);

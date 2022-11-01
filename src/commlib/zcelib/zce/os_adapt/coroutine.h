@@ -53,8 +53,8 @@ struct  coroutine_t
 {
     coroutine_t()
     {
-        main_ = NULL;
-        coroutine_ = NULL;
+        main_ = nullptr;
+        coroutine_ = nullptr;
     }
 
     void* main_;

@@ -25,7 +25,7 @@ int read_proc_get_cpuhz(struct ZCE_SYSTEM_INFO* info)
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
     in_para = zce::skip_line(in_para);
     in_para = zce::skip_line(in_para);
     in_para = zce::skip_line(in_para);
@@ -52,7 +52,7 @@ static int read_proc_get_loadavg(struct ZCE_SYSTEM_PERFORMANCE* info)
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
 
     //1,5,10 min load averages
     info->sys_loads_[0] = ::strtod(in_para, &out_para);
@@ -84,7 +84,7 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE* info)
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
 
     uint64_t mem_data = 0;
 
@@ -159,7 +159,7 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE* info)
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
 
     // "cpu"
     in_para = zce::skip_token(in_para);
@@ -240,7 +240,7 @@ int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE* info)
     }
 
     const char* in_para = pair.second.get();
-    char* out_para = NULL;
+    char* out_para = nullptr;
 
     //
     double uptime = ::strtod(in_para, &out_para);
@@ -393,7 +393,7 @@ int zce::get_system_info(ZCE_SYSTEM_INFO* zce_system_info)
     {
         return -1;
     }
-    l_return = ::RegQueryValueExA(hdl_key, "~MHz", NULL, NULL, (LPBYTE)&dw_mhz, &dw_size);
+    l_return = ::RegQueryValueExA(hdl_key, "~MHz", nullptr, nullptr, (LPBYTE)&dw_mhz, &dw_size);
     if (l_return != ERROR_SUCCESS)
     {
         return -1;

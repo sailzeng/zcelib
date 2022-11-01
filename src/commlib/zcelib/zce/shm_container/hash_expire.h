@@ -64,7 +64,7 @@ protected:
 public:
     _hashtable_expire_iterator() :
         serial_(0),
-        lruht_instance_(NULL)
+        lruht_instance_(nullptr)
     {
     }
 
@@ -278,7 +278,7 @@ public:
     //初始化
     static self* initialize(size_t req_num, size_t& real_num, char* pmmap, bool if_restore = false)
     {
-        assert(pmmap != NULL && req_num > 0);
+        assert(pmmap != nullptr && req_num > 0);
         //调整
         size_t sz_mmap = getallocsize(req_num, real_num);
         _hashtable_expire_head* hashhead = reinterpret_cast<_hashtable_expire_head*>(pmmap);
@@ -291,9 +291,9 @@ public:
             if (sz_mmap != hashhead->size_of_mmap_ ||
                 real_num != hashhead->num_of_node_)
             {
-                //一般情况下不一致返回NULL，标识恢复失败，
+                //一般情况下不一致返回nullptr，标识恢复失败，
 #if ALLOW_RESTORE_INCONFORMITY != 1
-                return NULL;
+                return nullptr;
 #else
                 ZCE_LOG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
                         "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
@@ -350,7 +350,7 @@ public:
         lru_hash_head_->sz_usenode_ = 0;
         lru_hash_head_->sz_useindex_ = 0;
 
-        //将两个队列都清理为NULL,让指针都指向自己,这儿有一点小技巧,
+        //将两个队列都清理为nullptr,让指针都指向自己,这儿有一点小技巧,
         //你可以将其视为将双向链表的头指针,(其实也是尾指针).
         lst_use_node_->idx_next_ = lru_hash_head_->num_of_node_;
         lst_use_node_->idx_prev_ = lru_hash_head_->num_of_node_;
@@ -515,11 +515,11 @@ public:
     * @param      val      插入的节点
     * @param      priority 优先级可以，传递入当前时间作为参数，淘汰时用小于某个值
     *                      都淘汰的方法处理,所以要保证后面传入数据值更大  我为什
-    *                      么不直接用time(NULL),是给你更大的灵活性,
+    *                      么不直接用time(nullptr),是给你更大的灵活性,
     * @note       这儿会将插入的数据放在最后淘汰的地方
     */
     std::pair<iterator, bool> insert_unique(const T& val,
-                                            unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/)
+                                            unsigned int priority  /*=reinterpret_cast<unsigned int>(time(nullptr))*/)
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -558,7 +558,7 @@ public:
     //插入节点,允许相等
     //优先级可以，传递入当前时间作为参数，
     std::pair<iterator, bool> insert_equal(const T& val,
-                                           unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/)
+                                           unsigned int priority /*=reinterpret_cast<unsigned int>(time(nullptr))*/)
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -817,7 +817,7 @@ public:
     * @param      priority 优先级参数可以使用当前的时间
     */
     bool active_unique(const K& key,
-                       unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                       unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
@@ -863,7 +863,7 @@ public:
     * @note       LRU中如果，一个值被使用后，可以认为是激活过一次，
     */
     bool active_unique_value(const T& val,
-                             unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                             unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
     {
         _extract_key get_key;
         _equal_key   equal_key;
@@ -904,7 +904,7 @@ public:
 
     //激活所有相同的KEY,将激活的数据挂到LIST的最开始,淘汰使用expire
     size_t active_equal(const K& key,
-                        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                        unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
     {
         size_t active_count = 0;
 
@@ -1117,7 +1117,7 @@ public:
         size_t list_idx = lst_use_node_->idx_next_;
         size_t num_del = 0;
 
-        //不为NULL，而且删除的个数没有达到，从头部开始是否好呢?我不确定，打算在提供一个函数
+        //不为nullptr，而且删除的个数没有达到，从头部开始是否好呢?我不确定，打算在提供一个函数
         while (list_idx != lru_hash_head_->num_of_node_ && num_del < num_wash)
         {
             //如果优先级小于淘汰系数

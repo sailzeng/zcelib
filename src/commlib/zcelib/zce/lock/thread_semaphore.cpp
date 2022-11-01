@@ -9,7 +9,7 @@ namespace zce
 {
 //构造函数,默认创建匿名信号灯，线程下一般用匿名信号灯就足够了,
 thread_semaphore::thread_semaphore(unsigned int init_value) :
-    lock_(NULL)
+    lock_(nullptr)
 {
     int ret = 0;
 
@@ -31,7 +31,7 @@ thread_semaphore::~thread_semaphore()
     zce::sem_destroy(lock_);
     //sem_destroy不会释放，
     delete lock_;
-    lock_ = NULL;
+    lock_ = nullptr;
 }
 
 //锁定

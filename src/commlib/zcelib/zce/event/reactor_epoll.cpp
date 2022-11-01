@@ -14,7 +14,7 @@ epoll_reactor::epoll_reactor() :
     epoll_fd_(-1),
     edge_triggered_(false),
     once_max_events_(DEFAULT_ONCE_TRIGGER_MAX_EVENT),
-    once_events_ary_(NULL)
+    once_events_ary_(nullptr)
 {
 }
 
@@ -26,7 +26,7 @@ epoll_reactor::epoll_reactor(size_t max_event_number,
     epoll_fd_(-1),
     edge_triggered_(edge_triggered),
     once_max_events_(once_max_events),
-    once_events_ary_(NULL)
+    once_events_ary_(nullptr)
 {
     initialize(max_event_number, edge_triggered, once_max_events);
 }
@@ -288,7 +288,7 @@ int epoll_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
 void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
 {
     int ret = 0;
-    zce::event_handler* event_hdl = NULL;
+    zce::event_handler* event_hdl = nullptr;
     bool event_in_happen = false, event_out_happen = false;
 
     ret = find_event_handler(ep_event->data.fd, event_hdl);

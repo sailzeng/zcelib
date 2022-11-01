@@ -49,7 +49,7 @@ int test_cache_chunk2()
     char cachebuf[2000];
 
     char testdata[] = "12345678";
-    zce::shm_cachechunk* testchunk = NULL;
+    zce::shm_cachechunk* testchunk = nullptr;
     size_t testindex, testfreenode, testfreechunk, testfreeroom;
     testchunk = zce::shm_cachechunk::initialize(10, 100, 10, cachebuf);
     testchunk->free(testfreenode, testfreechunk, testfreeroom);
@@ -205,7 +205,7 @@ int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_rb_tree = TEST_RB_TREE::initialize(size_of_tree, pt_rb_tree, false);
-    if (NULL == test_rb_tree)
+    if (nullptr == test_rb_tree)
     {
         return 0;
     }
@@ -314,7 +314,7 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_rb_tree = TEST_RB_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (NULL == test_rb_tree)
+    if (nullptr == test_rb_tree)
     {
         return 0;
     }
@@ -419,7 +419,7 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
            test_rb_tree->full());
 
     delete[] pt_avl_tree;
-    pt_avl_tree = NULL;
+    pt_avl_tree = nullptr;
 
     return 0;
 }
@@ -438,7 +438,7 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (NULL == test_avl_tree)
+    if (nullptr == test_avl_tree)
     {
         return 0;
     }
@@ -489,7 +489,7 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
     }
 
     delete[] pt_avl_tree;
-    pt_avl_tree = NULL;
+    pt_avl_tree = nullptr;
 
     return 0;
 }
@@ -508,7 +508,7 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (NULL == test_avl_tree)
+    if (nullptr == test_avl_tree)
     {
         return 0;
     }
@@ -624,7 +624,7 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
            test_avl_tree->full());
 
     delete[] pt_avl_tree;
-    pt_avl_tree = NULL;
+    pt_avl_tree = nullptr;
 
     return 0;
 }
@@ -643,7 +643,7 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (NULL == test_avl_tree)
+    if (nullptr == test_avl_tree)
     {
         return 0;
     }
@@ -769,7 +769,7 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
     printf("\nfind : %d \n", (*iter));
 
     delete[] pt_avl_tree;
-    pt_avl_tree = NULL;
+    pt_avl_tree = nullptr;
 
     return 0;
 }
@@ -788,7 +788,7 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (NULL == test_avl_tree)
+    if (nullptr == test_avl_tree)
     {
         return 0;
     }
@@ -876,7 +876,7 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
     printf("%s", "\n");
 
     delete[] pt_avl_tree;
-    pt_avl_tree = NULL;
+    pt_avl_tree = nullptr;
 
     return 0;
 }
@@ -895,7 +895,7 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
 
     //初始化
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (NULL == test_avl_tree)
+    if (nullptr == test_avl_tree)
     {
         return 0;
     }
@@ -1016,7 +1016,7 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
            test_avl_tree->full());
 
     delete[] pt_avl_tree;
-    pt_avl_tree = NULL;
+    pt_avl_tree = nullptr;
 
     return 0;
 }
@@ -1035,13 +1035,13 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
 
     //
     zce::shm_hashtable_expire<int, int >* pmmap = zce::shm_hashtable_expire<int, int >::initialize(node_num, real_num, tmproom);
-    pmmap->insert_unique(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
 
-    pmmap->insert_unique(38637, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(38637, static_cast<unsigned int>(time(nullptr)));
 
     size_t count = pmmap->count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
@@ -1055,12 +1055,12 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
     count = pmmap->count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
-    pmmap->insert_unique(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
 
-    pmmap->insert_unique(38637, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(38637, static_cast<unsigned int>(time(nullptr)));
     count = pmmap->count(1001);
 
     std::cout << "count:" << (unsigned int)(count) << std::endl;
@@ -1131,7 +1131,7 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
         pmmap->insert_unique(static_cast<int>(1000 + i), static_cast<unsigned int>(i + 1950));
     }
 
-    std::pair<zce::shm_hashtable_expire <int, int >::iterator, bool> iter_bool = pmmap->insert_unique(100022, static_cast<unsigned int>(time(NULL)));
+    std::pair<zce::shm_hashtable_expire <int, int >::iterator, bool> iter_bool = pmmap->insert_unique(100022, static_cast<unsigned int>(time(nullptr)));
     assert(iter_bool.second == false);
 
     it = pmmap->begin();
@@ -1161,10 +1161,10 @@ int test_lru_hashtable2(int /*argc*/, char* /*argv*/[])
 
     //
     zce::shm_hashtable_expire<int, int >* pmmap = zce::shm_hashtable_expire<int, int >::initialize(numnode, real_num, tmproom);
-    pmmap->insert_unique(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_unique(38636, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_unique(36384378, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_unique(65231237, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_unique(38636, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_unique(36384378, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_unique(65231237, static_cast<unsigned int>(time(nullptr)));
     num_count = pmmap->count(1001);
 
     zce::shm_hashtable_expire<int, int >::iterator it_tmp = pmmap->begin();
@@ -1175,7 +1175,7 @@ int test_lru_hashtable2(int /*argc*/, char* /*argv*/[])
         std::cout << "it_tmp value: " << (*it_tmp) << std::endl;
     }
 
-    pmmap->active_unique(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->active_unique(1001, static_cast<unsigned int>(time(nullptr)));
     it_tmp = pmmap->begin();
 
     for (; it_tmp != it_end; ++it_tmp)
@@ -1202,24 +1202,24 @@ int test_lru_hashtable3(int /*argc*/, char* /*argv*/[])
 
     zce::shm_hashtable_expire<int, int >* pmmap = zce::shm_hashtable_expire<int, int >::initialize(numnode, real_num, tmproom);
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
     pmmap->count(1001);
 
     pmmap->erase_equal(1001);
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
     size_t sz_count = pmmap->count(1001);
     std::cout << sz_count << std::endl;
 
     pmmap->erase_equal(1001);
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
     pmmap->erase_equal(1001);
 
     count = pmmap->count(1001);
@@ -1304,7 +1304,7 @@ public:
         return 0;
     }
 
-    int insert(const MY_DATA& my_data, unsigned int priority = time(NULL))
+    int insert(const MY_DATA& my_data, unsigned int priority = time(nullptr))
     {
         std::pair<HASH_TABLE_MY_DATA::iterator, bool > iter_pair =
             hash_my_data_->insert_unique(my_data, priority);
@@ -1315,7 +1315,7 @@ public:
         return 0;
     }
 
-    int insert_equal(const MY_DATA& my_data, unsigned int priority = time(NULL))
+    int insert_equal(const MY_DATA& my_data, unsigned int priority = time(nullptr))
     {
         std::pair<HASH_TABLE_MY_DATA::iterator, bool > iter_pair =
             hash_my_data_->insert_equal(my_data, priority);
@@ -1362,7 +1362,7 @@ public:
     //
     static Lux_Data_Manager* instance()
     {
-        if (instance_ == NULL)
+        if (instance_ == nullptr)
         {
             instance_ = new Lux_Data_Manager();
         }
@@ -1375,12 +1375,12 @@ public:
         {
             delete instance_;
         }
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 };
 
 //
-Lux_Data_Manager* Lux_Data_Manager::instance_ = NULL;
+Lux_Data_Manager* Lux_Data_Manager::instance_ = nullptr;
 
 int test_lux_data_manager(int argc, char* /*argv*/[])
 {
@@ -1490,7 +1490,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     //测试的数量
     const size_t req_node_number = 50000000;
 
-    SMEM_HASH_SAFE_INT* hash_safe_p = NULL;
+    SMEM_HASH_SAFE_INT* hash_safe_p = nullptr;
     size_t safe_node_number = req_node_number;
     size_t real_node_number = 0;
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
@@ -1504,7 +1504,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
 
     hash_safe_p = SMEM_HASH_SAFE_INT::initialize(safe_node_number, real_node_number, safe_smem, -1, false);
 
-    zce::mt19937_instance::instance()->srand((uint32_t)time(NULL));
+    zce::mt19937_instance::instance()->srand((uint32_t)time(nullptr));
     zce::random_mt19937* mt19937_ptr = zce::mt19937_instance::instance();
 
     size_t insert_count = 0;
@@ -1550,14 +1550,14 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
 
     //
     delete safe_smem;
-    safe_smem = NULL;
+    safe_smem = nullptr;
     delete hash_safe_p;
-    hash_safe_p = NULL;
+    hash_safe_p = nullptr;
 
     std::cout << std::endl;
     std::cout << std::endl;
 
-    SMEM_HASH_TABLE_INT* hash_table_p = NULL;
+    SMEM_HASH_TABLE_INT* hash_table_p = nullptr;
     size_t table_node_number = req_node_number, real_table_number = 0;
     size_t table_len_smem = SMEM_HASH_TABLE_INT::getallocsize(table_node_number, real_table_number);
 
@@ -1596,11 +1596,11 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     std::cout << "Hash link table expect use micro seconds :" << progress_timer.elapsed_sec() << std::endl;
     //
     delete table_smem;
-    table_smem = NULL;
+    table_smem = nullptr;
     delete insert_node;
-    insert_node = NULL;
+    insert_node = nullptr;
     delete hash_table_p;
-    hash_table_p = NULL;
+    hash_table_p = nullptr;
 
     return 0;
 }
@@ -1612,7 +1612,7 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
     //计时器，不是定时器呀
     zce::hr_progress_timer auto_timer;
 
-    SMEM_HASH_SAFE_INT* abc = NULL;
+    SMEM_HASH_SAFE_INT* abc = nullptr;
 
     size_t node_req_number = 1000000;
     size_t node_number = node_req_number;
@@ -1630,7 +1630,7 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
 
     bool exit_for = false;
 
-    zce::mt19937_instance::instance()->srand((uint32_t)time(NULL));
+    zce::mt19937_instance::instance()->srand((uint32_t)time(nullptr));
     zce::random_mt19937* mt19937_ptr = zce::mt19937_instance::instance();
 
     for (; exit_for == false;)

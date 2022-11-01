@@ -264,7 +264,7 @@ int test_random_distribution(zce::random_base* rand_gen)
     const size_t TEST_SIZE = 0xFFFFF; //10*1000*1000;
     const size_t TEST_NUMBER = TEST_SIZE;
 
-    char* coverage_chart = NULL;
+    char* coverage_chart = nullptr;
     coverage_chart = new char[TEST_SIZE];
 
     uint32_t u32_data = 0;
@@ -300,7 +300,7 @@ int test_random_distribution2()
     const size_t TEST_SIZE = 100 * 100;
     const size_t TEST_NUMBER = TEST_SIZE * 10;
 
-    char* coverage_chart = NULL;
+    char* coverage_chart = nullptr;
     coverage_chart = new char[TEST_SIZE];
 
     uint32_t u32_data = 0;
@@ -335,7 +335,7 @@ int test_random_distribution2()
     std::cout << typeid(rand_gen).name() << "  non repeat :" << TEST_SIZE - conflict_count << " conflict count :" << conflict_count << std::endl;
 
     delete coverage_chart;
-    coverage_chart = NULL;
+    coverage_chart = nullptr;
 
     return 0;
 }
@@ -396,7 +396,7 @@ int test_random_variance(const char* rand_fun_name,
     const size_t TEST_LUN = 100;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
 
-    int* coverage_chart = NULL;
+    int* coverage_chart = nullptr;
     coverage_chart = new int[TEST_SIZE];
 
     memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
@@ -425,7 +425,7 @@ int test_random_variance(const char* rand_fun_name,
     std::cout << rand_fun_name << " variance " << fangcai << " max caizhi :" << max_caizhi << std::endl;
 
     delete[] coverage_chart;
-    coverage_chart = NULL;
+    coverage_chart = nullptr;
 
     return 0;
 }
@@ -441,7 +441,7 @@ int test_random_variance_t()
     const size_t TEST_LUN = 100;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
 
-    int* coverage_chart = NULL;
+    int* coverage_chart = nullptr;
     coverage_chart = new int[TEST_SIZE];
 
     memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
@@ -470,7 +470,7 @@ int test_random_variance_t()
     std::cout << typeid(rand_gen_t).name() << " variance " << fangcai << " max caizhi :" << max_caizhi << std::endl;
 
     delete coverage_chart;
-    coverage_chart = NULL;
+    coverage_chart = nullptr;
 
     return 0;
 }
@@ -487,7 +487,7 @@ int test_die_variance_t()
     const size_t TEST_LUN = 1000000;
     const size_t TEST_NUMBER = TEST_LUN * TEST_SIZE;
 
-    int* coverage_chart = NULL;
+    int* coverage_chart = nullptr;
     coverage_chart = new int[TEST_SIZE];
 
     memset(coverage_chart, 0, TEST_SIZE * sizeof(int));
@@ -541,7 +541,7 @@ int test_die_variance_t()
     std::cout << "fangda die " << typeid(rand_gen_t).name() << " variance " << (uint32_t)fangcai << " max caizhi :" << max_caizhi << std::endl;
 
     delete coverage_chart;
-    coverage_chart = NULL;
+    coverage_chart = nullptr;
 
     return 0;
 }
@@ -633,7 +633,7 @@ int test_template_random(int /*argc*/, char* /*argv*/[])
 //使用OO方法的测试
 int test_oo_random(int /*argc*/, char* /*argv*/[])
 {
-    const uint32_t TEST_SEED = (uint32_t)time(NULL);
+    const uint32_t TEST_SEED = (uint32_t)time(nullptr);
 
     zce::random_bsdrand  randbsd_gen(TEST_SEED);
     zce::random_rand48   rand48_gen(TEST_SEED);
@@ -752,7 +752,7 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
     a1.initialize(CYCBUF_LEN, NODE_MAX_LEN);
 
     zce::mt19937_var_gen random;
-    random.srand((uint32_t)time(NULL));
+    random.srand((uint32_t)time(nullptr));
 
     for (size_t i = 0;; ++i)
     {

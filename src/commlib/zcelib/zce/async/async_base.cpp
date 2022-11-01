@@ -153,11 +153,11 @@ void async_obj_mgr::terminate()
         size_t pool_reg_trans_len = pool_reg.aysncobj_pool_.size();
         for (size_t i = 0; i < pool_reg_trans_len; ++i)
         {
-            async_object* corout_base = NULL;
+            async_object* corout_base = nullptr;
             pool_reg.aysncobj_pool_.pop_front(corout_base);
             corout_base->terminate();
             delete corout_base;
-            corout_base = NULL;
+            corout_base = nullptr;
         }
     }
     return;
@@ -233,7 +233,7 @@ int async_obj_mgr::allocate_from_pool(uint32_t create_cmd,
     {
         ZCE_LOG(RS_INFO, "[ZCELIB] Before extend pool.");
         //取一个模型
-        async_object* model_trans = NULL;
+        async_object* model_trans = nullptr;
         reg_async.aysncobj_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_async.aysncobj_pool_.capacity();
@@ -296,8 +296,8 @@ int async_obj_mgr::create_asyncobj(uint32_t cmd,
                                    bool& continued)
 {
     int ret = 0;
-    async_object* crt_async = NULL;
-    ASYNC_OBJECT_RECORD* async_rec = NULL;
+    async_object* crt_async = nullptr;
+    ASYNC_OBJECT_RECORD* async_rec = nullptr;
     continued = false;
     //从池子里面找一个异步对象
     ret = allocate_from_pool(cmd, async_rec, crt_async);
@@ -348,7 +348,7 @@ int async_obj_mgr::create_asyncobj(uint32_t cmd,
 int async_obj_mgr::find_running_asyncobj(uint32_t id,
                                          async_object*& running_aysnc)
 {
-    running_aysnc = NULL;
+    running_aysnc = nullptr;
     auto iter = running_aysncobj_.find(id);
     if (running_aysncobj_.end() == iter)
     {
@@ -365,7 +365,7 @@ int async_obj_mgr::active_asyncobj(uint32_t id,
                                    bool& running)
 {
     int ret = 0;
-    async_object* async_obj = NULL;
+    async_object* async_obj = nullptr;
     running = false;
     ret = find_running_asyncobj(id, async_obj);
     if (ret != 0)

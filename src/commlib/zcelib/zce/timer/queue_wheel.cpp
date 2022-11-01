@@ -100,7 +100,7 @@ int timer_wheel::extend_node(size_t num_timer_node,
     wheel_node_list_.resize(num_timer_node_);
 
     //构造函数其实都写了
-    //让所有的节点都为NULL
+    //让所有的节点都为nullptr
     //for (size_t i=old_num_node;i<num_timer_node_;++i)
     //{
     //    wheel_node_list_[i].wheel_point_id_ = INVALID_TIMER_ID;
@@ -172,7 +172,7 @@ void timer_wheel::unbind_wheel_listnode(int time_node_id)
         }
     }
 
-    //清理为NULL，避免麻烦，
+    //清理为nullptr，避免麻烦，
     wheel_node_list_[time_node_id].list_prev_ = INVALID_TIMER_ID;
     wheel_node_list_[time_node_id].list_next_ = INVALID_TIMER_ID;
     wheel_node_list_[time_node_id].wheel_point_id_ = INVALID_TIMER_ID;
@@ -192,7 +192,7 @@ int timer_wheel::schedule_timer_i(zce::timer_handler* timer_hdl,
 
 #endif //
 
-    ZCE_TIMER_NODE* alloc_time_node = NULL;
+    ZCE_TIMER_NODE* alloc_time_node = nullptr;
     ret = alloc_timernode(timer_hdl,
                           call_fun,
                           delay_time,

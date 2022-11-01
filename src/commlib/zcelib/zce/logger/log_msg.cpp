@@ -527,7 +527,7 @@ LOGFILE_DEVIDE log_msg::log_file_devide(const char* str_devide)
 //得到唯一的单子实例
 log_msg* log_msg::instance()
 {
-    if (log_instance_ == NULL)
+    if (log_instance_ == nullptr)
     {
         log_instance_ = new log_msg();
     }
@@ -549,7 +549,7 @@ void log_msg::clear_inst()
     {
         delete log_instance_;
     }
-    log_instance_ = NULL;
+    log_instance_ = nullptr;
     return;
 }
 }

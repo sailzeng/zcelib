@@ -108,13 +108,13 @@ int pthread_mutex_initex(pthread_mutex_t* mutex,
                          bool process_share = false,
                          bool recursive = true,
                          bool need_timeout = false,
-                         const char* mutex_name = NULL);
+                         const char* mutex_name = nullptr);
 #elif defined (ZCE_OS_LINUX)
 int pthread_mutex_initex(pthread_mutex_t* mutex,
                          bool process_share = false,
                          bool recursive = true,
                          bool need_timeout = true,
-                         const char* mutex_name = NULL);
+                         const char* mutex_name = nullptr);
 #endif
 
 /*!
@@ -145,8 +145,8 @@ int pthread_mutex_timedlock(pthread_mutex_t* mutex,
 * @return     int             等于0表示成功，否则返回错误ID
 * @param      mutex           MUTEX对象
 * @param      abs_timeout_val 超时的时间，timeval类型，绝对时间，
-*                             如果希望这个值填写NULL，这个函数可能和上面的函数冲突，
-*                             请这样操作 timeval*time_out =NULL,将这个time_out作为参数，
+*                             如果希望这个值填写nullptr，这个函数可能和上面的函数冲突，
+*                             请这样操作 timeval*time_out =nullptr,将这个time_out作为参数，
 */
 int pthread_mutex_timedlock(pthread_mutex_t* mutex,
                             const timeval* abs_timeout_val);

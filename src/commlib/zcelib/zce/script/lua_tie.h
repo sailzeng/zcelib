@@ -97,7 +97,7 @@ public:
     * @param      name        记录的名称，非空的时候标记名称，为空取得原来的一个
     * @note
     */
-    static const char* name(const char* name = NULL)
+    static const char* name(const char* name = nullptr)
     {
         const size_t MAX_LEN = 255;
         static char cname[MAX_LEN + 1] = "";

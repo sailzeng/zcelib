@@ -43,7 +43,7 @@ int sem_destroy(sem_t* sem) noexcept;
 /*!
 * @brief      打开(有名)信号灯,max_val最大值不是标准参数，所以用默认只修饰了，这个主要用于创建有名信号灯,
 *             有名信号灯，可以跨进程访问
-* @return     sem_t*     如果成功返回，信号灯句柄 否则返回NULL
+* @return     sem_t*     如果成功返回，信号灯句柄 否则返回nullptr
 * @param      name       信号灯的名字
 * @param      oflag      同文件open的创建参数，
 * @param      mode       同文件open的访问权限参数

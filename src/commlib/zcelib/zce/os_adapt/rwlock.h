@@ -127,11 +127,11 @@ int pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
                                const ::timespec* abs_timeout_spec);
 
 /*!
-@param      abs_timeout_val 超时时间点，绝对时间,timeval类型的,如果希望这个值填写NULL，这个函数可能和上面的函数冲突，
+@param      abs_timeout_val 超时时间点，绝对时间,timeval类型的,如果希望这个值填写nullptr，这个函数可能和上面的函数冲突，
 * @brief      非标准，写取锁的超时锁定，时间参数调整成timeval，
 * @return     int         0成功，否则失败
 * @param      rwlock          读写锁对象
-*                             请这样操作 timeval*time_out =NULL,将这个time_out作为参数，
+*                             请这样操作 timeval*time_out =nullptr,将这个time_out作为参数，
 */
 int pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
                                const timeval* abs_timeout_val);

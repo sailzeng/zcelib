@@ -222,7 +222,7 @@ protected:
 public:
 
     //! SQL语句
-    char* sql_string_ = NULL;
+    char* sql_string_ = nullptr;
     //!
     zce::sqlite_hdl* sqlite_handler_;
 };

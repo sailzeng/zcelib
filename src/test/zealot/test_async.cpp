@@ -235,14 +235,14 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
 //    mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));
 //    bool running;
 //    uint32_t fsm1_async_id1;
-//    ret = mgr->create_asyncobj(CMD_1, NULL, 0, fsm1_async_id1, running);
+//    ret = mgr->create_asyncobj(CMD_1, nullptr, 0, fsm1_async_id1, running);
 //    uint32_t fsm1_async_id2;
-//    ret = mgr->create_asyncobj(CMD_1, NULL, 0, fsm1_async_id2, running);
+//    ret = mgr->create_asyncobj(CMD_1, nullptr, 0, fsm1_async_id2, running);
 //
-//    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
-//    ret = mgr->active_asyncobj(fsm1_async_id2, NULL, 0, running);
-//    ret = mgr->active_asyncobj(fsm1_async_id1, NULL, 0, running);
-//    ret = mgr->active_asyncobj(fsm1_async_id2, NULL, 0, running);
+//    ret = mgr->active_asyncobj(fsm1_async_id1, nullptr, 0, running);
+//    ret = mgr->active_asyncobj(fsm1_async_id2, nullptr, 0, running);
+//    ret = mgr->active_asyncobj(fsm1_async_id1, nullptr, 0, running);
+//    ret = mgr->active_asyncobj(fsm1_async_id2, nullptr, 0, running);
 //
 //    ZCE_ASSERT(ret == 0);
 //
@@ -317,7 +317,7 @@ int test_coroutine2(int /*argc*/, char* /*argv*/[])
                         (ZCE_COROUTINE_3PARA)loop,
                         (void*)&loop_context,
                         (void*)&i_from_iterator,
-                        NULL);
+                        nullptr);
 
     /* Clear the finished flag. */
     iterator_finished = 0;

@@ -17,7 +17,7 @@ shm_systemv::shm_systemv() :
     sysv_key_(0),
     sysv_shmid_(ZCE_INVALID_HANDLE),
     shm_size_(0),
-    shm_addr_(NULL)
+    shm_addr_(nullptr)
 {
 }
 
@@ -37,7 +37,7 @@ int shm_systemv::open(key_t sysv_key,
                       const void* want_address)
 {
     //避免重入调用open函数，如果出现断言表示多次调用open,
-    ZCE_ASSERT(NULL == shm_addr_);
+    ZCE_ASSERT(nullptr == shm_addr_);
     ZCE_ASSERT(ZCE_INVALID_HANDLE == sysv_shmid_);
 
     sysv_shmid_ = zce::shmget(sysv_key, shm_size, shmget_flg);
@@ -109,12 +109,12 @@ int shm_systemv::open(key_t sysv_key,
 int shm_systemv::close()
 {
     //断言保证不出现没有open就调用close的情况
-    ZCE_ASSERT(shm_addr_ != NULL);
+    ZCE_ASSERT(shm_addr_ != nullptr);
     ZCE_ASSERT(sysv_shmid_ != ZCE_INVALID_HANDLE);
 
     int ret = 0;
     ret = zce::shmdt(shm_addr_);
-    shm_addr_ = NULL;
+    shm_addr_ = nullptr;
     shm_size_ = 0;
     sysv_shmid_ = ZCE_INVALID_HANDLE;
 
@@ -129,7 +129,7 @@ int shm_systemv::close()
 //删除映射的文件，当然正在映射的时候不能删除
 int shm_systemv::remove()
 {
-    return zce::shmctl(sysv_shmid_, IPC_RMID, NULL);
+    return zce::shmctl(sysv_shmid_, IPC_RMID, nullptr);
 }
 
 //返回映射的内存地址

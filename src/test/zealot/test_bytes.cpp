@@ -18,9 +18,9 @@ int test_bytes_ntoh(int /*argc*/, char* /*argv*/[])
 
 int test_bytes_hash(int /*argc*/, char* /*argv*/[])
 {
-    test_bytes_encode(0, NULL);
+    test_bytes_encode(0, nullptr);
 
-    test_bytes_ntoh(0, NULL);
+    test_bytes_ntoh(0, nullptr);
 
     int ret = 0;
     const size_t TEST_ARRAY_NUMBER = 10;
@@ -522,9 +522,9 @@ int perf_fast_memcpy(size_t test_len)
     unsigned char* src_buf = new unsigned char[test_len + 8];
     unsigned char* dst_buf = new unsigned char[test_len + 8];
     memset(src_buf, 0, test_len);
-    unsigned char* cpy_dst = NULL;
-    const unsigned char* cpy_src = NULL;
-    const unsigned char* stop_pos = NULL;
+    unsigned char* cpy_dst = nullptr;
+    const unsigned char* cpy_src = nullptr;
+    const unsigned char* stop_pos = nullptr;
 
     zce::hr_progress_timer hr_timer;
 
@@ -614,9 +614,9 @@ int perf_nonalign_memcpy(size_t test_len)
     unsigned char* src_buf = new unsigned char[test_len + 16];
     unsigned char* dst_buf = new unsigned char[test_len + 16];
     memset(src_buf, 0, test_len + 16);
-    const unsigned char* cpy_src = NULL;
-    const unsigned char* cpy_dst = NULL;
-    const unsigned char* stop_pos = NULL;
+    const unsigned char* cpy_src = nullptr;
+    const unsigned char* cpy_dst = nullptr;
+    const unsigned char* stop_pos = nullptr;
 
     zce::hr_progress_timer hr_timer;
 

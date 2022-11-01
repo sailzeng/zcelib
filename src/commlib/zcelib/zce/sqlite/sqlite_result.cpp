@@ -13,7 +13,7 @@ sqlite_result::~sqlite_result()
 
 bool sqlite_result::is_null()
 {
-    return (result_ == NULL);
+    return (result_ == nullptr);
 }
 
 const char* sqlite_result::field_name(size_t column)

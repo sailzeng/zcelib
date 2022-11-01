@@ -15,14 +15,14 @@ template<>
 int8_t from_str(const char* str)
 {
     //10表示10进制，
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<int8_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
 uint8_t from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<uint8_t>(::strtol(str, &stopstring, 10));
 }
 
@@ -30,56 +30,56 @@ template<>
 int16_t from_str(const char* str)
 {
     //10表示10进制，
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<int16_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
 uint16_t from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<uint16_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
 int32_t from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<int32_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
 uint32_t from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<uint32_t>(::strtoul(str, &stopstring, 10));
 }
 
 template<>
 int64_t from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<int64_t>(::strtoll(str, &stopstring, 10));
 }
 
 template<>
 uint64_t from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<uint64_t>(::strtoull(str, &stopstring, 10));
 }
 
 template<>
 double from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<double>(::strtod(str, &stopstring));
 }
 
 template<>
 float from_str(const char* str)
 {
-    char* stopstring = NULL;
+    char* stopstring = nullptr;
     return static_cast<float>(::strtod(str, &stopstring));
 }
 

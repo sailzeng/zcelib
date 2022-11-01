@@ -79,7 +79,7 @@ public:
     ///构造函数
     _shm_list_iterator() :
         serial_(zce::SHM_CNTR_INVALID_POINT),
-        list_instance_(NULL)
+        list_instance_(nullptr)
     {
     }
     ///析构函数
@@ -302,7 +302,7 @@ public:
     //初始化
     static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
-        //assert(pmmap!=NULL && numnode >0 );
+        //assert(pmmap!=nullptr && numnode >0 );
         _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
@@ -312,7 +312,7 @@ public:
             if (getallocsize(numnode) != listhead->size_of_mmap_ ||
                 numnode != listhead->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
         }
 
@@ -352,7 +352,7 @@ public:
         list_head_->size_free_node_ = list_head_->num_of_node_;
         list_head_->size_use_node_ = 0;
 
-        //将两个队列都清理为NULL,让指针都指向自己,这儿有一点小技巧,
+        //将两个队列都清理为nullptr,让指针都指向自己,这儿有一点小技巧,
         //你可以将其视为将双向链表的头指针,(其实也是尾指针).
         freenode_->idx_next_ = list_head_->num_of_node_;
         freenode_->idx_prev_ = list_head_->num_of_node_;

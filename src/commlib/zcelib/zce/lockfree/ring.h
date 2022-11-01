@@ -66,7 +66,7 @@ public:
         if (value_ptr_)
         {
             ::free(value_ptr_);
-            value_ptr_ = NULL;
+            value_ptr_ = nullptr;
         }
         //不用new避免使用的构造函数
         value_ptr_ = (T*)::malloc(sizeof(T) * rings_capacity_);
@@ -85,7 +85,7 @@ public:
             }
 
             ::free(value_ptr_);
-            value_ptr_ = NULL;
+            value_ptr_ = nullptr;
         }
         clear();
         rings_capacity_ = 0;
@@ -105,7 +105,7 @@ public:
         new_max_size += 1;
         T* new_value_ptr = (T*)::malloc(sizeof(T) * new_max_size);
         //如果原来有数据,拷贝到新的数据区
-        if (value_ptr_ != NULL)
+        if (value_ptr_ != nullptr)
         {
             for (size_t i = 0; i < rings_size && i < new_max_size; ++i)
             {
@@ -113,7 +113,7 @@ public:
             }
 
             ::free(value_ptr_);
-            value_ptr_ = NULL;
+            value_ptr_ = nullptr;
         }
 
         //调整几个内部参数

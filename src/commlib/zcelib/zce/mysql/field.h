@@ -137,7 +137,7 @@ inline const char* field::get_data() const
 //是否数据为空
 inline bool field::is_null() const
 {
-    if (field_data_ == NULL)
+    if (field_data_ == nullptr)
     {
         return true;
     }

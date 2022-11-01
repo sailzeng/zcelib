@@ -19,10 +19,10 @@ int zce::sem_init(sem_t* sem,
 
     ZCE_UNUSED_ARG(pshared);
 
-    HANDLE sem_handle = ::CreateSemaphoreA(NULL,
+    HANDLE sem_handle = ::CreateSemaphoreA(nullptr,
                                            init_value,
                                            max_val,
-                                           NULL);
+                                           nullptr);
 
     if (sem_handle == 0)
     {
@@ -76,7 +76,7 @@ sem_t* zce::sem_open(const char* name,
     sem_t* ret_sem = new sem_t();
     ret_sem->sem_unnamed_ = false;
 
-    HANDLE sem_handle = ::CreateSemaphoreA(NULL,
+    HANDLE sem_handle = ::CreateSemaphoreA(nullptr,
                                            init_value,
                                            max_val,
                                            name);
@@ -84,7 +84,7 @@ sem_t* zce::sem_open(const char* name,
     if (sem_handle == 0)
     {
         delete ret_sem;
-        ret_sem = NULL;
+        ret_sem = nullptr;
         return SEM_FAILED;
     }
     else
@@ -113,7 +113,7 @@ int zce::sem_close(sem_t* sem) noexcept
 #if defined (ZCE_OS_WINDOWS)
     ::CloseHandle(sem->sem_hanlde_);
     delete sem;
-    sem = NULL;
+    sem = nullptr;
     return 0;
 #elif defined (ZCE_OS_LINUX)
     return ::sem_close(sem);
@@ -138,7 +138,7 @@ int zce::sem_post(sem_t* sem) noexcept
     const LONG ONCE_POST_NUMBER = 1;
     BOOL  ret_bool = ::ReleaseSemaphore(sem->sem_hanlde_,
                                         ONCE_POST_NUMBER,
-                                        NULL);
+                                        nullptr);
 
     if (!ret_bool)
     {
@@ -158,7 +158,7 @@ int zce::sem_post(sem_t* sem, u_int release_count) noexcept
 
     BOOL  ret_bool = ::ReleaseSemaphore(sem->sem_hanlde_,
                                         release_count,
-                                        NULL);
+                                        nullptr);
 
     if (!ret_bool)
     {

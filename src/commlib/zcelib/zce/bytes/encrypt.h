@@ -303,7 +303,7 @@ public:
     @param[in]     src_len     原文长度
     @param[out]    cipher_buf  密文的BUFFER
     @param[in,out] cipher_len  密文长度，入参标识密文BUFFER的长度，返回时，返回密文的实际长度
-    @param[in]     iv          initialization vector,初始化的向量，为NULL表示你不关心，我会用随机数帮你填充，
+    @param[in]     iv          initialization vector,初始化的向量，为nullptr表示你不关心，我会用随机数帮你填充，
     */
     static int cbc_encrypt(const unsigned char* key,
                            size_t key_len,
@@ -311,7 +311,7 @@ public:
                            size_t src_len,
                            unsigned char* cipher_buf,
                            size_t* cipher_len,
-                           const uint32_t* iv = NULL)
+                           const uint32_t* iv = nullptr)
     {
         //检查参数，如果不合适断言或者返回错误
         ZCE_ASSERT(key
@@ -319,9 +319,9 @@ public:
                    && cipher_buf
                    && key_len > 0
                    && src_len > 0);
-        if (key == NULL
-            || src_buf == NULL
-            || cipher_buf == NULL
+        if (key == nullptr
+            || src_buf == nullptr
+            || cipher_buf == nullptr
             || key_len <= 0
             || src_len <= 0)
         {
@@ -361,7 +361,7 @@ public:
                                 size_t src_len,
                                 unsigned char* cipher_buf,
                                 size_t* cipher_len,
-                                const uint32_t* iv = NULL)
+                                const uint32_t* iv = nullptr)
     {
         //加密BUF所需要的长度，
         size_t cphbuf_need_len = ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2)
@@ -373,9 +373,9 @@ public:
                    && cipher_buf
                    && src_len > 0
                    && *cipher_len >= cphbuf_need_len);
-        if (sub_key == NULL
-            || src_buf == NULL
-            || cipher_buf == NULL
+        if (sub_key == nullptr
+            || src_buf == nullptr
+            || cipher_buf == nullptr
             || src_len <= 0
             || *cipher_len < cphbuf_need_len)
         {
@@ -496,7 +496,7 @@ public:
                            size_t cipher_len,
                            unsigned char* src_buf,
                            size_t* src_len,
-                           uint32_t* iv = NULL)
+                           uint32_t* iv = nullptr)
     {
         //
         size_t srcbuf_need_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -509,9 +509,9 @@ public:
                    && cipher_len >= ENCRYPT_STRATEGY::BLOCK_SIZE * 2
                    && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
                    && *src_len >= srcbuf_need_len);
-        if (key == NULL
-            || src_buf == NULL
-            || cipher_buf == NULL
+        if (key == nullptr
+            || src_buf == nullptr
+            || cipher_buf == nullptr
             || key_len <= 0
             || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
             || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
@@ -553,7 +553,7 @@ public:
                                 size_t cipher_len,
                                 unsigned char* src_buf,
                                 size_t* src_len,
-                                uint32_t* iv = NULL)
+                                uint32_t* iv = nullptr)
     {
         //
         size_t srcbuf_need_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -565,9 +565,9 @@ public:
                    && cipher_len >= ENCRYPT_STRATEGY::BLOCK_SIZE * 2
                    && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
                    && *src_len >= srcbuf_need_len);
-        if (sub_key == NULL
-            || src_buf == NULL
-            || cipher_buf == NULL
+        if (sub_key == nullptr
+            || src_buf == nullptr
+            || cipher_buf == nullptr
             || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
             || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
             || *src_len < srcbuf_need_len)

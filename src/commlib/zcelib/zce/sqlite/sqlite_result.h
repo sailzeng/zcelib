@@ -21,7 +21,7 @@ public:
     sqlite_result() = default;
     ~sqlite_result();
 
-    //!结果集合释放为NULL
+    //!结果集合释放为nullptr
     bool is_null();
 
     //!释放结果集合
@@ -71,7 +71,7 @@ public:
 protected:
 
     //! Results of the query
-    char** result_ = NULL;
+    char** result_ = nullptr;
     //! Number of result rows written here ，row_也是从1开始
     //! 使用int的原因是内部函数用的int
     int row_ = 0;

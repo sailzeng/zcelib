@@ -128,7 +128,7 @@ protected:
     uint32_t asyncobj_id_ = 0;
 
     ///管理者
-    async_obj_mgr* async_mgr_ = NULL;
+    async_obj_mgr* async_mgr_ = nullptr;
 
     ///对应激活的处理的命令
     uint32_t  create_cmd_ = 0;

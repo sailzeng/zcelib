@@ -86,7 +86,7 @@ public:
             if (getallocsize(numnode) != aryhead->size_of_mmap_ ||
                 numnode != aryhead->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
         }
 

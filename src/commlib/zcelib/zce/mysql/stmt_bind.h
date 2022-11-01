@@ -28,7 +28,7 @@ namespace zce::mysql
 /*!
 * @brief MYSQL_BIND 的包装封装累，
 *
-* @note  STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
+* @note  STMT_Bind里面bind的变量数据，是否为nullptr，返回长度，都是指针，
 *        外部的保存生命周期，请慎重处理。
 */
 class stmt_bind
@@ -181,7 +181,7 @@ public:
     * @return     int
     * @param      paramno   参数的编号
     * @param      paramtype 参数类型
-    * @param      bisnull   是否为NULL,
+    * @param      bisnull   是否为nullptr,
     * @param      paramdata 参数的数据的指针
     * @param      szparam   参数的长度
     */

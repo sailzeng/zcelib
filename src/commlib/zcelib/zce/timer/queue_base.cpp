@@ -9,7 +9,7 @@
 
 namespace zce
 {
-timer_queue* timer_queue::instance_ = NULL;
+timer_queue* timer_queue::instance_ = nullptr;
 /******************************************************************************************
 timer_queue ，定时器的基类
 ******************************************************************************************/
@@ -221,12 +221,12 @@ int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
                                  int& time_node_id,
                                  ZCE_TIMER_NODE*& alloc_time_node)
 {
-    //TIME HANDLE不能为NULL
+    //TIME HANDLE不能为nullptr
 
     int ret = 0;
     //默认没有分配到，避免你搞错情况
     time_node_id = INVALID_TIMER_ID;
-    alloc_time_node = NULL;
+    alloc_time_node = nullptr;
 
     //如果已经没有了NODE
     if (free_node_id_head_ == INVALID_TIMER_ID)
@@ -334,10 +334,10 @@ void timer_queue::calc_next_trigger(int time_node_id,
 int timer_queue::free_timernode(int time_node_id)
 {
     //考虑了一下还是用断言了，避免你写错代码祸国殃民
-    ZCE_ASSERT(time_node_ary_[time_node_id].timer_handle_ != NULL &&
+    ZCE_ASSERT(time_node_ary_[time_node_id].timer_handle_ != nullptr &&
                static_cast<size_t>(time_node_id) < num_timer_node_);
 
-    //如果NODE内部的指针为NULL,表示这个NODE没有使用
+    //如果NODE内部的指针为nullptr,表示这个NODE没有使用
     if (!time_node_ary_[time_node_id].timer_handle_)
     {
         return -1;
@@ -452,7 +452,7 @@ void timer_queue::clear_inst()
         delete instance_;
     }
 
-    instance_ = NULL;
+    instance_ = nullptr;
     return;
 }
 }

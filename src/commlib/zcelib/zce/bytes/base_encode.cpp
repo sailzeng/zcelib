@@ -22,7 +22,7 @@ int zce::base64_encode(const char* in,
     size_t i, leven;
     char* p;
 
-    ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
+    ZCE_ASSERT(in != nullptr && out != nullptr && out_len != nullptr);
 
     //如果输入的空间不够，返回错误，同时告诉你需要的长度
     size_t output_len = 4 * ((in_len + 2) / 3);
@@ -55,7 +55,7 @@ int zce::base64_encode(const char* in,
         *p++ = '=';
     }
 
-    /* append a NULL byte */
+    /* append a nullptr byte */
     *p = '\0';
     *out_len = output_len;
     return 0;
@@ -97,7 +97,7 @@ int zce::base64_decode(const char* in,
     unsigned char c;
     int           g;
 
-    ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL && in_len % 4 == 0);
+    ZCE_ASSERT(in != nullptr && out != nullptr && out_len != nullptr && in_len % 4 == 0);
 
     size_t need_len = in_len / 4 * 3;
     if (*out_len < need_len)
@@ -166,7 +166,7 @@ int zce::base16_encode(const char* in,
                        char* out,
                        size_t* out_len)
 {
-    ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
+    ZCE_ASSERT(in != nullptr && out != nullptr && out_len != nullptr);
 
     size_t output_len = in_len * 2;
     if (*out_len < output_len + 1)
@@ -196,7 +196,7 @@ int zce::base16_decode(const char* in,
                        char* out,
                        size_t* out_len)
 {
-    ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL && in_len % 2 == 0);
+    ZCE_ASSERT(in != nullptr && out != nullptr && out_len != nullptr && in_len % 2 == 0);
     size_t need_len = in_len / 2;
     if (*out_len < need_len)
     {

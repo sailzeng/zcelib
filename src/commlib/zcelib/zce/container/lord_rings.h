@@ -61,7 +61,7 @@ public:
     _lordrings_iterator() :
         ring_start_(0),
         ring_capacity_(0),
-        rings_value_base_(NULL),
+        rings_value_base_(nullptr),
         serial_(0)
     {
     }
@@ -214,7 +214,7 @@ public:
         if (vptr_ptr_)
         {
             ::free(vptr_ptr_);
-            vptr_ptr_ = NULL;
+            vptr_ptr_ = nullptr;
         }
         lordring_capacity_ = 0;
     }
@@ -222,7 +222,7 @@ public:
     ///清理管道，析构素有的数据，
     void clear()
     {
-        if (vptr_ptr_ != NULL)
+        if (vptr_ptr_ != nullptr)
         {
             auto lordring_size = size();
             for (size_t i = 0; i < lordring_size; ++i)

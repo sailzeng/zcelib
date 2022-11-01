@@ -116,7 +116,7 @@ public:
 protected:
 
     //!判断是非为满的间隔，你可以认为环形队列还是一个前闭后开的结构
-    //!cycbuf_begin_ = cycbuf_end_ 表示队列为NULL
+    //!cycbuf_begin_ = cycbuf_end_ 表示队列为nullptr
     //!cycbuf_begin_ = cycbuf_end_ + JUDGE_FULL_INTERVAL 表示队列满
     static const size_t   JUDGE_FULL_INTERVAL = 4;
 

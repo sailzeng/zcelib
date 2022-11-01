@@ -133,7 +133,7 @@ for(unsigned int i =0; i< numstrtable; i++)   \
 if(strid == __strtable_00_[i].strID)  \
 return __strtable_00_[i].pstrRes;  \
 } \
-return NULL; \
+return nullptr; \
 } \
 };
 #endif //ENDSTRINGTABLE

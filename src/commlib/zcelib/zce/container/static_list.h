@@ -229,7 +229,7 @@ public:
         size_free_node_ = capacity_of_list_;
         size_use_node_ = 0;
 
-        //将两个队列都清理为NULL,让指针都指向自己,这儿有一点小技巧,
+        //将两个队列都清理为nullptr,让指针都指向自己,这儿有一点小技巧,
         //你可以将其视为将双向链表的头指针,(其实也是尾指针).
         free_node_->idx_next_ = capacity_of_list_;
         free_node_->idx_prev_ = capacity_of_list_;

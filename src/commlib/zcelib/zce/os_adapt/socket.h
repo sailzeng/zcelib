@@ -298,7 +298,7 @@ inline ssize_t send(ZCE_SOCKET handle,
 * @param[out] buf      接收数据的buffer
 * @param[in]  len      接收数据的buffer的长度
 * @param[in]  flags    接受操作的flag 默认为0，MSG_DONTWAI LINUX支持，相当于非阻塞接收
-* @param[out] addr     数据来源的地址，from可以和from_len一起为NULL,表示不关心从哪儿来的数据
+* @param[out] addr     数据来源的地址，from可以和from_len一起为nullptr,表示不关心从哪儿来的数据
 * @param[out] addr_len 数据来源地址的长度
 */
 inline ssize_t recvfrom(ZCE_SOCKET handle,
@@ -416,8 +416,8 @@ int handle_ready(ZCE_SOCKET handle,
 * @param[in]     handle     操作的句柄，WINDOWS下要求句柄是阻塞状态的
 * @param[out]    buf        接收数据的buffer
 * @param[out]    len        指定接收数据的长度
-* @param[in,out] timeout_tv 超时时长，相对时长，timeout_tv !=NULL标识超时处理，超时是用SELECT函数进行的处理，
-*                           timeout_tv ==NULL 标识不进行超时处理,根据Socket状态自己决定，返回剩余的时间
+* @param[in,out] timeout_tv 超时时长，相对时长，timeout_tv !=nullptr标识超时处理，超时是用SELECT函数进行的处理，
+*                           timeout_tv ==nullptr 标识不进行超时处理,根据Socket状态自己决定，返回剩余的时间
 * @param[in]     flags      接收的flag,参考@ref recv
 * @note
 */
@@ -433,8 +433,8 @@ inline ssize_t recv_n(ZCE_SOCKET handle,
 * @param[in]     handle     操作的句柄，WINDOWS下要求句柄是阻塞状态的
 * @param[in]     buf        发送数据的buffer
 * @param[in]     len        指定发送数据的长度
-* @param[in,out] timeout_tv 超时时长，相对时长，timeout_tv !=NULL标识超时处理,超时是用SELECT函数进行的处理，
-*                           timeout_tv ==NULL 标识不进行超时处理,根据Socket状态自己决定,返回剩余的时间
+* @param[in,out] timeout_tv 超时时长，相对时长，timeout_tv !=nullptr标识超时处理,超时是用SELECT函数进行的处理，
+*                           timeout_tv ==nullptr 标识不进行超时处理,根据Socket状态自己决定,返回剩余的时间
 * @param[in]     flags      发送的flag，参考@ref send
 */
 inline ssize_t send_n(ZCE_SOCKET handle,
@@ -449,10 +449,10 @@ inline ssize_t send_n(ZCE_SOCKET handle,
 * @param[in]     handle     操作的句柄，WINDOWS下要求句柄是阻塞状态的
 * @param[out]    buf        接收数据的buffer
 * @param[out]    len        接收数据的buffer的长度
-* @param[out]    from       数据来源的地址，from可以和from_len一起为NULL,表示不关心从哪儿来的数据
+* @param[out]    from       数据来源的地址，from可以和from_len一起为nullptr,表示不关心从哪儿来的数据
 * @param[out]    from_len   数据来源地址的长度
-* @param[in,out] timeout_tv 超时时长，相对时长，timeout_tv !=NULL标识超时处理,超时是用SELECT函数进行的处理，
-*                           timeout_tv ==NULL 标识不进行超时处理,根据Socket状态自己决定,返回剩余的时间
+* @param[in,out] timeout_tv 超时时长，相对时长，timeout_tv !=nullptr标识超时处理,超时是用SELECT函数进行的处理，
+*                           timeout_tv ==nullptr 标识不进行超时处理,根据Socket状态自己决定,返回剩余的时间
 * @param[in]     flags      接收操作的flag 参考@ref recv
 * @note
 */
@@ -530,7 +530,7 @@ int accept_timeout(ZCE_SOCKET handle,
 
 /*!
 * @brief      TCP接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n
-*             recvn_timeout 和 recvn_n 的区别是recvn_n 如果超时参数为NULL，可能立即返回或者一致阻塞等待
+*             recvn_timeout 和 recvn_n 的区别是recvn_n 如果超时参数为nullptr，可能立即返回或者一致阻塞等待
 *             内部超时用select 实现
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
 * @param      only_once  只收取一次数据，收取后就返回，不等待一定要收取到len的数据
@@ -544,7 +544,7 @@ ssize_t recvn_timeout(ZCE_SOCKET handle,
 
 /*!
 * @brief      TCP发送数据，发送len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref sendv_n
-*             sendn_timeout 和 sendv_n 的区别是recvn_n 如果超时参数为NULL，可能立即返回或者一致阻塞等待
+*             sendn_timeout 和 sendv_n 的区别是recvn_n 如果超时参数为nullptr，可能立即返回或者一致阻塞等待
 *             而sendn_timeout 的超时参数必须填写
 *             内部超时用select 实现
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
@@ -850,7 +850,7 @@ int gethostbyaddr_in6(const sockaddr_in6* sock_addr6,
 *                        ai_socktype参数最好还是填写一个值，否则可能返回SOCK_DGRAM,SOCK_STREAM各一个，
 *                        ai_flags 填0一般就OK，（蛋疼的一个参数）
 *                          AI_CANONNAME表示返回的addrinfo结果的第一个节点会有ai_canoname参数（见addrinfo 结构），
-*                          AI_PASSIVE表示返回的地址用于bind（hostname为NULL时，让IP地址信息返回0，）否则用于connect
+*                          AI_PASSIVE表示返回的地址用于bind（hostname为nullptr时，让IP地址信息返回0，）否则用于connect
 *                          AI_NUMERICHOST 阻止域名解析，认为hostname是数值格式地址
 *                          AI_ALL 新选项，返回IPV4和IPV6地址，IPV4的地址也会MAP成IPV6返回（也返回IPV4的地址）。
 *                          AI_V4MAPPED 如果没有IPV6的地址返回，用IPV4的地址MAPIPV6的地址返回。
@@ -1170,8 +1170,8 @@ inline ZCE_SOCKET zce::socket(int family,
             DWORD status;
             status = WSAIoctl(socket_hdl, SIO_UDP_CONNRESET,
                               &new_behavior, sizeof(bytes_returned),
-                              NULL, 0, &bytes_returned,
-                              NULL, NULL);
+                              nullptr, 0, &bytes_returned,
+                              nullptr, nullptr);
 
             if (SOCKET_ERROR == status)
             {
@@ -1619,8 +1619,8 @@ inline ssize_t zce::sendto(ZCE_SOCKET handle,
 
 //--------------------------------------------------------------------------------------------
 //根据timeout_tv决定是否超时处理的TCP接收函数，
-//timeout_tv !=NULL标识超时处理，接收N个字节后返回,超时用的是select那组超时函数
-//timeout_tv ==NULL 标识不进行超时处理,根据Socket状态自己决定
+//timeout_tv !=nullptr标识超时处理，接收N个字节后返回,超时用的是select那组超时函数
+//timeout_tv ==nullptr 标识不进行超时处理,根据Socket状态自己决定
 inline ssize_t zce::recv_n(ZCE_SOCKET handle,
                            void* buf,
                            size_t len,
@@ -1645,8 +1645,8 @@ inline ssize_t zce::recv_n(ZCE_SOCKET handle,
 }
 
 //根据timeout_tv决定是否超时处理的TCP发送函数
-//timeout_tv !=NULL标识超时处理，发送N个字节后返回,超时用的是select那组超时函数 ,
-//timeout_tv ==NULL 标识不进行超时处理,根据Socket状态自己决定,可能阻塞或者非阻塞,
+//timeout_tv !=nullptr标识超时处理，发送N个字节后返回,超时用的是select那组超时函数 ,
+//timeout_tv ==nullptr 标识不进行超时处理,根据Socket状态自己决定,可能阻塞或者非阻塞,
 inline ssize_t zce::send_n(ZCE_SOCKET handle,
                            const void* buf,
                            size_t len,
@@ -1671,8 +1671,8 @@ inline ssize_t zce::send_n(ZCE_SOCKET handle,
 }
 
 //根据timeout_tv决定是否超时处理的UDP接收函数，
-//timeout_tv !=NULL标识超时处理，发送N个字节后返回,超时用的是select那组超时函数 ,
-//timeout_tv ==NULL 标识不进行超时处理,根据Socket状态自己决定,可能阻塞或者非阻塞,
+//timeout_tv !=nullptr标识超时处理，发送N个字节后返回,超时用的是select那组超时函数 ,
+//timeout_tv ==nullptr 标识不进行超时处理,根据Socket状态自己决定,可能阻塞或者非阻塞,
 inline ssize_t zce::recvfrom(ZCE_SOCKET handle,
                              void* buf,
                              size_t len,

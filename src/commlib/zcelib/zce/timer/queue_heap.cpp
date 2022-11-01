@@ -164,7 +164,7 @@ int timer_heap::schedule_timer_i(zce::timer_handler* timer_hdl,
     timer_id = INVALID_TIMER_ID;
 
     //看能否分配一个TIME NODE
-    ZCE_TIMER_NODE* alloc_time_node = NULL;
+    ZCE_TIMER_NODE* alloc_time_node = nullptr;
     ret = alloc_timernode(timer_hdl,
                           call_fun,
                           delay_time,
