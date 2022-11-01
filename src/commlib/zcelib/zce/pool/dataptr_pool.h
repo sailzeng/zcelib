@@ -23,6 +23,10 @@ public:
     dataptr_pool() = default;
     ~dataptr_pool() = default;
 
+    //!拷贝构造函数，声明但不实现，避免您使用
+    dataptr_pool(const dataptr_pool&) = delete;
+    const dataptr_pool& operator=(const dataptr_pool&) = delete;
+
     /*!
     * @brief
     * @return     bool 是否初始化成果

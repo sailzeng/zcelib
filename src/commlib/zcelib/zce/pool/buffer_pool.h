@@ -29,10 +29,11 @@ public:
 
     //! 构造函数，析构函数，赋值函数
     buffer_pool() = default;
-    ~buffer_pool()
-    {
-        terminate();
-    }
+    ~buffer_pool() = default;
+
+    //!拷贝构造函数，声明但不实现，避免您使用
+    buffer_pool(const buffer_pool&) = delete;
+    const buffer_pool& operator=(const buffer_pool&) = delete;
 
     /*!
     * @brief      初始化

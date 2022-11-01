@@ -37,6 +37,10 @@ public:
     object_pool() = default;
     ~object_pool() = default;
 
+    //!拷贝构造函数，声明但不实现，避免您使用
+    object_pool(const object_pool&) = delete;
+    const object_pool& operator=(const object_pool&) = delete;
+
     /*!
     * @brief
     * @return     bool 是否初始化成果
