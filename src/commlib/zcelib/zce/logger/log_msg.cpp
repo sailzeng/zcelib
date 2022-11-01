@@ -222,12 +222,11 @@ void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
         return;
     }
 
-    //得到当前时间
+    //得到当前时
     timeval now_time_val(gettimeofday());
 
     //用static 变量，保证只初始化一次， 用thread_local 保证每个线程一个
-    static thread_local char* log_buffer = \
-        new char[log_file::SIZE_OF_LOG_BUFFER];
+    static thread_local char log_buffer[log_file::SIZE_OF_LOG_BUFFER];
     log_buffer[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
     //我要保留一个位置放'\0'，以及一个\n

@@ -86,7 +86,9 @@ struct is_random_access_iterator
 //关注一下 std::invoke 函数std::result_of, std::invoke_result，std::mem_fun
 
 template<typename fun_t, typename para_tuple, std::size_t... I>
-auto g_func_invoke_impl(fun_t& f, const para_tuple& a, std::index_sequence<I...>)
+auto g_func_invoke_impl(fun_t& f,
+                        const para_tuple& a,
+                        std::index_sequence<I...>)
 {
     return f(std::get<I>(a)...);
 }
@@ -110,8 +112,14 @@ auto g_func_invoke(fun_t&& f, args_type &&...datalist)
     g_func_tuplearg_invoke(f, a);
 }
 
-template<typename class_type, typename fun_t, typename para_tuple, std::size_t... I>
-auto mem_func_invoke_impl(class_type* obj, fun_t& f, const para_tuple& a, std::index_sequence<I...>)
+template<typename class_type,
+    typename fun_t,
+    typename para_tuple,
+    std::size_t... I>
+auto mem_func_invoke_impl(class_type* obj,
+                          fun_t& f,
+                          const para_tuple& a,
+                          std::index_sequence<I...>)
 {
     //注意这儿一定要加(),否则编译器会抓狂
     return (obj->*f)(std::get<I>(a)...);

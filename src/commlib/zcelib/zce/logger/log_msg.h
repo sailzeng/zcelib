@@ -334,6 +334,11 @@ public:
 
 protected:
 
+    ///单子实例指针
+    static log_msg * log_instance_;
+
+protected:
+
     //!是否进行多线程的同步
     bool multithread_log_ = false;
 
@@ -357,10 +362,5 @@ protected:
 
     //!日志文件
     log_file log_file_;
-
-protected:
-
-    ///单子实例指针
-    static log_msg * log_instance_;
 };
 }

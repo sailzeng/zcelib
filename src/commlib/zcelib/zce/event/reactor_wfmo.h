@@ -31,19 +31,19 @@ namespace zce
 * @brief      WaitForMultipleObjects 的IO反应器，IO多路复用模型
 *
 */
-class WFMO_Reactor : public reactor
+class wmfo_reactor : public reactor
 {
 public:
 
     /*!
     * @brief    构造函数
     */
-    WFMO_Reactor();
+    wmfo_reactor();
 
     /*!
     * @brief      和析构函数 virtual的喔。
     */
-    virtual ~WFMO_Reactor();
+    virtual ~wmfo_reactor();
 
 public:
 

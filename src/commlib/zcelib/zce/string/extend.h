@@ -75,7 +75,8 @@ void _foo_c11_outstring(std::string& foo_string,
         //找到{}，
         id_pos = strstr(foo_fmt_spec, zce::SNRPINTF_FMT_IDENTIFY);
         //将{}前面的字符串输出
-        zce::fmt_str(foo_string, foo_fmt_spec, (id_pos == nullptr) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
+        zce::fmt_str(foo_string, foo_fmt_spec,
+                     (id_pos == nullptr) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
         if (id_pos == nullptr)
         {
             return;
@@ -153,7 +154,11 @@ static void _foo_c11_outdata(char*& foo_buffer,
         //找到{}，
         id_pos = ::strstr(foo_fmt_spec, zce::SNRPINTF_FMT_IDENTIFY);
         //将{}前面的字符串输出
-        zce::fmt_str(foo_buffer, foo_max_len, use_len, foo_fmt_spec, (id_pos == nullptr) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
+        zce::fmt_str(foo_buffer,
+                     foo_max_len,
+                     use_len,
+                     foo_fmt_spec,
+                     (id_pos == nullptr) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
 
         foo_buffer += use_len;
         foo_max_len -= use_len;
@@ -357,7 +362,8 @@ char* foo_strnsplice(char* foo_buffer,
     char* buffer = foo_buffer;
     buffer[max_len] = '\0';
 
-    _foo_c11_splice(buffer, max_len, foo_use_len, separator_char, out_data...);
+    _foo_c11_splice(buffer,
+                    max_len, foo_use_len, separator_char, out_data...);
 
     foo_buffer[foo_use_len] = '\0';
     //返回

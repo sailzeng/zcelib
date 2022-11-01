@@ -402,6 +402,11 @@ protected:
 
 protected:
 
+    //单子实例
+    static server_status* instance_;
+
+protected:
+
     //多态的锁,
     zce::lock_base* stat_lock_;
 
@@ -422,20 +427,15 @@ protected:
     ARRYA_OF_SHM_STATUS* status_copy_mandy_;
 
     //记录配置的的统计数据SET，用于记录配置的统计项目，也用于防止重复插入和dump 输出时有名称信息
-    STATUS_WITHNAME_MAP       conf_stat_map_;
+    STATUS_WITHNAME_MAP  conf_stat_map_;
 
     //STAT_ID to idx索引的MAP
-    STATID_TO_INDEX_MAP       statid_to_index_;
+    STATID_TO_INDEX_MAP  statid_to_index_;
 
     //是否进行多线程保护
-    bool                      multi_thread_guard_;
+    bool                 multi_thread_guard_;
 
     // 是否已经初始化
-    bool                      initialized_;
-
-protected:
-
-    //单子实例
-    static server_status* instance_;
+    bool                 initialized_;
 };
 }
