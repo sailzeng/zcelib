@@ -119,6 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\..\..\run\cfg\zergsvrd.cfg" />
     <None Include="cpp.hint" />
     <None Include="makefile" />
     <None Include="zcelib.ruleset" />
