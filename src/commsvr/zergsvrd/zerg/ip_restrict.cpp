@@ -5,7 +5,7 @@
 namespace zerg
 {
 //实例
-IPRestrict_Mgr* IPRestrict_Mgr::instance_ = NULL;
+IPRestrict_Mgr* IPRestrict_Mgr::instance_ = nullptr;
 
 /****************************************************************************************************
 class  IPRestrict_Mgr 处理通讯中间的IP限制问题
@@ -102,7 +102,7 @@ int IPRestrict_Mgr::check_iprestrict(const zce::skt::addr_in& remoteaddress)
 IPRestrict_Mgr* IPRestrict_Mgr::instance()
 {
     //如果没有初始化
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new IPRestrict_Mgr();
     }
@@ -116,7 +116,7 @@ void IPRestrict_Mgr::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 }

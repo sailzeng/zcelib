@@ -254,13 +254,13 @@ public:
     int protobuf_encode(size_t szframe_appdata,
                         const google::protobuf::MessageLite* msg,
                         size_t data_start = 0,
-                        size_t* sz_code = NULL
+                        size_t* sz_code = nullptr
     );
 
     ///将一个结构进行解码
     int protobuf_decode(google::protobuf::MessageLite* msg,
                         size_t data_start = 0,
-                        size_t* sz_code = NULL);
+                        size_t* sz_code = nullptr);
 
 #endif
 

@@ -15,13 +15,13 @@ sendrecv_msg_base::~sendrecv_msg_base()
     if (msg_send_frame_)
     {
         soar::zerg_frame::delete_frame(msg_send_frame_);
-        msg_send_frame_ = NULL;
+        msg_send_frame_ = nullptr;
     }
 
     if (msg_recv_frame_)
     {
         soar::zerg_frame::delete_frame(msg_recv_frame_);
-        msg_recv_frame_ = NULL;
+        msg_recv_frame_ = nullptr;
     }
 }
 

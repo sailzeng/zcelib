@@ -14,7 +14,7 @@ svc_udp::svc_udp(const zce::skt::addr_in& upd_addr, zce::reactor* reactor) :
     zce::event_handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port()),
-    dgram_databuf_(NULL),
+    dgram_databuf_(nullptr),
     ip_restrict_(ip_restrict::instance())
 {
     //保存到PEER数组
@@ -24,7 +24,7 @@ svc_udp::svc_udp(const zce::skt::addr_in& upd_addr, zce::reactor* reactor) :
 //析构函数
 svc_udp::~svc_udp()
 {
-    if (dgram_databuf_ != NULL)
+    if (dgram_databuf_ != nullptr)
     {
         buffer_storage::instance()->free_byte_buffer(dgram_databuf_);
     }

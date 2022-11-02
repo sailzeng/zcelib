@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/pool/data_pool.h
+* @filename   zce/pool/dataptr_pool.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date
@@ -23,7 +23,7 @@ namespace zce
 /*!
 * @brief      对象池子2，可以用于分配对象，避免反复使用new or delete
 *             对象在分配的时候构造，释放的时候析构
-* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex or std::recursive_mutex
 * @tparam     T 对象类型，
 */
 template<typename LOCK, typename T>
@@ -36,6 +36,10 @@ public:
     //!构造函数，析构函数，赋值函数
     object_pool() = default;
     ~object_pool() = default;
+
+    //!拷贝构造函数，声明但不实现，避免您使用
+    object_pool(const object_pool&) = delete;
+    const object_pool& operator=(const object_pool&) = delete;
 
     /*!
     * @brief
@@ -92,12 +96,14 @@ public:
     template<typename... Args>
     object_pool::object *constructor(Args&&... args)
     {
+        std::lock_guard<LOCK> lock(lock_);
         void *ptr = alloc_ptr();
         return new(ptr) object_pool::object(args...);
     }
-
+    //! 析构释放指针
     void destroy(object_pool::object* obj)
     {
+        std::lock_guard<LOCK> lock(lock_);
         obj->~T();
         free_ptr((void *)obj);
     }
@@ -126,10 +132,9 @@ public:
 protected:
 
     //也许未来可以加个收缩
-        //!分配一个对象
+    //!分配一个对象
     void* alloc_ptr()
     {
-        std::lock_guard<LOCK> lock(lock_);
         auto ret = false;
         void* ptr = nullptr;
         if (voidptr_pool_.size() == 0)
@@ -147,7 +152,6 @@ protected:
     //归还一个对象
     void free_ptr(void* ptr)
     {
-        std::lock_guard<LOCK> lock(lock_);
         voidptr_pool_.push_back(ptr);
         return;
     }
@@ -156,7 +160,8 @@ protected:
     bool extend(size_t extend_size)
     {
         bool ret = false;
-        size_t pool_capacity = capacity();
+        //不要直接使用capacity函数，会形成递归锁，
+        size_t pool_capacity = voidptr_pool_.capacity();
         if (pool_capacity == 0)
         {
             ret = voidptr_pool_.initialize(extend_size);
@@ -200,7 +205,8 @@ protected:
 /*!
 * @brief      多对象池子，可以用于分配对象，避免反复使用new or delete
 *             要分配的对象作为模板参数
-* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::recursive_mutex
+*
 * @tparam     ... T 多种对象类型，
 */
 template< typename LOCK, typename... T >

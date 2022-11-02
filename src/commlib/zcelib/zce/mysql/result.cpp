@@ -9,25 +9,25 @@ namespace zce::mysql
 {
 //构造函数
 result::result() :
-    mysql_result_(NULL),
-    current_row_(NULL),
+    mysql_result_(nullptr),
+    current_row_(nullptr),
     current_field_(0),
-    fields_length_(NULL),
+    fields_length_(nullptr),
     num_result_row_(0),
     num_result_field_(0),
-    mysql_fields_(NULL)
+    mysql_fields_(nullptr)
 {
 }
 
 //构造函数
 result::result(MYSQL_RES* sqlresult) :
-    mysql_result_(NULL),
-    current_row_(NULL),
+    mysql_result_(nullptr),
+    current_row_(nullptr),
     current_field_(0),
-    fields_length_(NULL),
+    fields_length_(nullptr),
     num_result_row_(0),
     num_result_field_(0),
-    mysql_fields_(NULL)
+    mysql_fields_(nullptr)
 {
     set_mysql_result(sqlresult);
 }
@@ -36,7 +36,7 @@ result::result(MYSQL_RES* sqlresult) :
 result::~result()
 {
     // 释放结果集合的内存资源
-    if (mysql_result_ != NULL)
+    if (mysql_result_ != nullptr)
     {
         mysql_free_result(mysql_result_);
     }
@@ -48,15 +48,15 @@ void result::set_mysql_result(MYSQL_RES* sqlresult)
     ZCE_ASSERT(sqlresult);
 
     //如果已经有结果集, 释放原有的结果集,
-    if (NULL != mysql_result_)
+    if (nullptr != mysql_result_)
     {
         mysql_free_result(mysql_result_);
-        mysql_result_ = NULL;
+        mysql_result_ = nullptr;
     }
 
     //清0当前行,列以及当前行长度数组指针
-    fields_length_ = NULL;
-    current_row_ = NULL;
+    fields_length_ = nullptr;
+    current_row_ = nullptr;
     current_field_ = 0;
 
     //行数目，列数目清0
@@ -86,17 +86,17 @@ void result::set_mysql_result(MYSQL_RES* sqlresult)
 void result::free_result()
 {
     //如果已经有结果集, 释放原有的结果集,
-    if (NULL != mysql_result_)
+    if (nullptr != mysql_result_)
     {
         mysql_free_result(mysql_result_);
-        mysql_result_ = NULL;
+        mysql_result_ = nullptr;
     }
 }
 
 //检索一个结果集合的下一行,最开始从0行开始
 bool result::fetch_row_next()
 {
-    if (mysql_result_ == NULL)
+    if (mysql_result_ == nullptr)
     {
         return false;
     }
@@ -105,7 +105,7 @@ bool result::fetch_row_next()
     current_row_ = ::mysql_fetch_row(mysql_result_);
 
     //如果NEXT行为空,结束访问
-    if (current_row_ == NULL)
+    if (current_row_ == nullptr)
     {
         return false;
     }
@@ -121,7 +121,7 @@ bool result::fetch_row_next()
 int result::seek_row(size_t row_id)
 {
     //检查结果集合为空,或者参数row错误
-    if (mysql_result_ == NULL || row_id >= num_result_row_)
+    if (mysql_result_ == nullptr || row_id >= num_result_row_)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -141,10 +141,10 @@ const char* result::field_data(const char* fname) const
     size_t fid = 0;
     int ret = field_index(fname, fid);
 
-    if (ret == -1 || current_row_ == NULL)
+    if (ret == -1 || current_row_ == nullptr)
     {
         ZCE_ASSERT(false);
-        return NULL;
+        return nullptr;
     }
 
     return current_row_[fid];
@@ -158,7 +158,7 @@ int result::field_data(const char* fname, char* pfdata) const
     int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
-    if (ret == -1 || current_row_ == NULL || pfdata == NULL)
+    if (ret == -1 || current_row_ == nullptr || pfdata == nullptr)
     {
         ZCE_ASSERT(false);
         return ret;
@@ -177,7 +177,7 @@ int result::get_field(const char* fname, zce::mysql::field& ffield) const
     int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
-    if (ret == -1 || current_row_ == NULL)
+    if (ret == -1 || current_row_ == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -196,7 +196,7 @@ int result::field_type(const char* fname, enum_field_types& ftype) const
     int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
-    if (ret == -1 || current_row_ == NULL)
+    if (ret == -1 || current_row_ == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -214,7 +214,7 @@ int result::field_length(const char* fname, unsigned int& flength) const
     int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
-    if (ret == -1 || current_row_ == NULL)
+    if (ret == -1 || current_row_ == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -228,7 +228,7 @@ int result::field_length(const char* fname, unsigned int& flength) const
 int result::field_define_size(unsigned int fieldid, unsigned int& flength) const
 {
     //检查结果集合为空,或者参数fieldid错误
-    if (mysql_result_ == NULL && fieldid >= num_result_field_)
+    if (mysql_result_ == nullptr && fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -246,7 +246,7 @@ int result::field_define_size(const char* fname, unsigned int& fdefsz) const
     int ret = field_index(fname, fid);
 
     //如果结果集为空
-    if (ret == -1 || mysql_result_ != NULL)
+    if (ret == -1 || mysql_result_ != nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -417,7 +417,7 @@ result& result::operator >> (double& val)
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 result& result::operator >> (char* val)
 {
-    ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
+    ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
 
     //长度不包括结束符号
     memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
@@ -431,7 +431,7 @@ result& result::operator >> (char* val)
 //考虑过对于unsigned char *做一些特别处理，后来还是算了,用BINARY去考虑了
 result& result::operator >> (unsigned char* val)
 {
-    ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
+    ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
 
     //长度不包括结束符号
     memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
@@ -444,7 +444,7 @@ result& result::operator >> (unsigned char* val)
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 result& result::operator >> (result::BINARY* val)
 {
-    ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
+    ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
 
     //长度不包括结束符号
     memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
@@ -501,9 +501,9 @@ inline int result::field_index(const char* fname, size_t& field_id) const
 char* result::field_name(size_t fieldid) const
 {
     //检查结果集合为空,或者参数nfield错误
-    if (mysql_result_ == NULL || fieldid >= num_result_field_)
+    if (mysql_result_ == nullptr || fieldid >= num_result_field_)
     {
-        return NULL;
+        return nullptr;
     }
 
     //直接得到列域的名字
@@ -525,9 +525,9 @@ unsigned int result::num_of_fields() const
 //根据字段列ID,得到字段值
 const char* result::field_data(size_t fieldid) const
 {
-    if (current_row_ == NULL || fieldid >= num_result_field_)
+    if (current_row_ == nullptr || fieldid >= num_result_field_)
     {
-        return NULL;
+        return nullptr;
     }
 
     return current_row_[fieldid];
@@ -537,7 +537,7 @@ const char* result::field_data(size_t fieldid) const
 int result::field_data(size_t fieldid, char* pfdata) const
 {
     //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
-    if (current_row_ == NULL || fieldid >= num_result_field_ || pfdata == NULL)
+    if (current_row_ == nullptr || fieldid >= num_result_field_ || pfdata == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -551,7 +551,7 @@ int result::field_data(size_t fieldid, char* pfdata) const
 int result::field_type(size_t fieldid, enum_field_types& ftype) const
 {
     //检查结果集合为空,或者参数nfield错误
-    if (current_row_ == NULL || fieldid >= num_result_field_)
+    if (current_row_ == nullptr || fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -565,7 +565,7 @@ int result::field_type(size_t fieldid, enum_field_types& ftype) const
 int result::field_length(size_t fieldid, unsigned int& flength) const
 {
     //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
-    if (current_row_ == NULL && fieldid >= num_result_field_)
+    if (current_row_ == nullptr && fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -584,7 +584,7 @@ unsigned int result::get_cur_field_length()
 int result::get_field(size_t fieldid, zce::mysql::field& ffield) const
 {
     //进行安全检查，如果错误返回
-    if (current_row_ == NULL || fieldid >= num_result_field_)
+    if (current_row_ == nullptr || fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;

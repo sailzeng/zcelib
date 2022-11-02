@@ -26,14 +26,14 @@
 
 namespace soar
 {
-app_buspipe* app_buspipe::instance_ = NULL;
+app_buspipe* app_buspipe::instance_ = nullptr;
 
 app_buspipe::app_buspipe() :
     self_svc_info_(),
     max_msg_num_(1024),
-    zerg_mmap_pipe_(NULL),
-    timer_base_(NULL),
-    config_base_(NULL)
+    zerg_mmap_pipe_(nullptr),
+    timer_base_(nullptr),
+    config_base_(nullptr)
 {
     //作者名称
     app_author_ = "FXL Platform Server Dev Team.";
@@ -44,13 +44,13 @@ app_buspipe::~app_buspipe()
     if (timer_base_)
     {
         delete timer_base_;
-        timer_base_ = NULL;
+        timer_base_ = nullptr;
     }
 
     if (config_base_)
     {
         delete config_base_;
-        config_base_ = NULL;
+        config_base_ = nullptr;
     }
 }
 
@@ -73,7 +73,7 @@ svrd_cfg_base* app_buspipe::config_instance()
 int app_buspipe::app_start(int argc, const char* argv[])
 {
     int ret = 0;
-    ::srand(static_cast<unsigned int>(time(NULL)));
+    ::srand(static_cast<unsigned int>(time(nullptr)));
 
     //app_buspipe 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
@@ -376,7 +376,7 @@ void app_buspipe::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 } //namespace soar

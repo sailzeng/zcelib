@@ -387,7 +387,7 @@ public:
     {
         if (seed == 0)
         {
-            seed = static_cast<uint32_t>(time(NULL));
+            seed = static_cast<uint32_t>(time(nullptr));
         }
 
         seed_arg_[0] = 69069 * seed;

@@ -118,7 +118,7 @@ public:
 
     /*!
     * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
-    * @return     const char* 数据的指针，返回NULL表示取错误
+    * @return     const char* 数据的指针，返回nullptr表示取错误
     * @param      fieldid     下标
     * @note
     */
@@ -126,7 +126,7 @@ public:
 
     /*!
     * @brief      在当前行，当前列，得到字段值,将数据的指针作为作为返回值
-    * @return     const char* 数据的指针，返回NULL表示取错误
+    * @return     const char* 数据的指针，返回nullptr表示取错误
     * @param      fname       列（字段）名称
     */
     const char* field_data(const char* fname) const;

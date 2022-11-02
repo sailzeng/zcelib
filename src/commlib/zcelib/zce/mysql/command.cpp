@@ -8,7 +8,7 @@
 namespace zce::mysql
 {
 command::command() :
-    mysql_connect_(NULL)
+    mysql_connect_(nullptr)
 {
     //保留INITBUFSIZE的空间
     mysql_command_.reserve(INITBUFSIZE);
@@ -16,10 +16,10 @@ command::command() :
 }
 
 command::command(zce::mysql::connect* conn) :
-    mysql_connect_(NULL)
+    mysql_connect_(nullptr)
 {
-    //assert(conn != NULL);
-    if (conn != NULL && conn->is_connected())
+    //assert(conn != nullptr);
+    if (conn != nullptr && conn->is_connected())
     {
         mysql_connect_ = conn;
     }
@@ -34,14 +34,14 @@ command::~command()
     if (sql_buffer_)
     {
         delete sql_buffer_;
-        sql_buffer_ = NULL;
+        sql_buffer_ = nullptr;
     }
 }
 
 //为Command设置相关的连接对象，而且是必须已经成功连接上数据的
 int command::set_connect(zce::mysql::connect* conn)
 {
-    if (conn != NULL && conn->is_connected())
+    if (conn != nullptr && conn->is_connected())
     {
         mysql_connect_ = conn;
         return 0;
@@ -83,7 +83,7 @@ const char* command::get_sql_command() const
 // 得到SQL 语句. 类型数据,传入的char buf长度是否足够自己保证
 int command::get_sql_command(char* cmdbuf, size_t& szbuf) const
 {
-    if (cmdbuf == NULL)
+    if (cmdbuf == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -117,7 +117,7 @@ int command::query(uint64_t* num_affect,
                    bool bstore)
 {
     //如果没有设置连接或者没有设置命令
-    if (mysql_connect_ == NULL || mysql_command_.empty())
+    if (mysql_connect_ == nullptr || mysql_command_.empty())
     {
         return -1;
     }
@@ -134,7 +134,7 @@ int command::query(uint64_t* num_affect,
     //如果用户要求转储结果集
     if (sql_result)
     {
-        MYSQL_RES* tmp_res = NULL;
+        MYSQL_RES* tmp_res = nullptr;
         if (bstore)
         {
             //转储结果
@@ -147,10 +147,10 @@ int command::query(uint64_t* num_affect,
         }
 
         //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
-        //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回NULL? "
-        //如果是INSERT语句，那么mysql_store_result就是返回NULL，mysql_field_count也应该等于0，
-        //如果MYSQL内部发生某个错误，那么mysql_store_result 返回NULL，但mysql_field_count 会大于0，此时是个错误
-        if (tmp_res == NULL && mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
+        //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回nullptr? "
+        //如果是INSERT语句，那么mysql_store_result就是返回nullptr，mysql_field_count也应该等于0，
+        //如果MYSQL内部发生某个错误，那么mysql_store_result 返回nullptr，但mysql_field_count 会大于0，此时是个错误
+        if (tmp_res == nullptr && mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
         {
             return -1;
         }
@@ -178,14 +178,14 @@ int command::query(uint64_t* num_affect,
 //num_affect 为返回参数,告诉你修改了几行
 int command::query(uint64_t& num_affect, uint64_t& last_id)
 {
-    return query(&num_affect, &last_id, NULL, false);
+    return query(&num_affect, &last_id, nullptr, false);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
 int command::query(uint64_t& num_affect, zce::mysql::result& sql_result)
 {
-    return query(&num_affect, NULL, &sql_result, true);
+    return query(&num_affect, nullptr, &sql_result, true);
 }
 
 //执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
@@ -193,7 +193,7 @@ int command::query(uint64_t& num_affect, zce::mysql::result& sql_result)
 //但不推荐使用,一次取一行,交互太多
 int command::query(zce::mysql::result& sql_result)
 {
-    return query(NULL, NULL, &sql_result, false);
+    return query(nullptr, nullptr, &sql_result, false);
 }
 
 //得到connect 的句柄
@@ -218,7 +218,7 @@ unsigned int command::error_no()
 int command::set_sql_command(const char* sqlcmd, size_t szsql)
 {
     //如果错误,返回
-    if (sqlcmd == NULL)
+    if (sqlcmd == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -276,7 +276,7 @@ int command::fetch_next_multi_result(zce::mysql::result& sqlresult, bool bstore)
         return -1;
     }
 
-    MYSQL_RES* tmp_res = NULL;
+    MYSQL_RES* tmp_res = nullptr;
 
     if (bstore)
     {
@@ -290,8 +290,8 @@ int command::fetch_next_multi_result(zce::mysql::result& sqlresult, bool bstore)
     }
 
     //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
-    //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回NULL? "
-    if (tmp_res == NULL && ::mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
+    //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回nullptr? "
+    if (tmp_res == nullptr && ::mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
     {
         return -1;
     }

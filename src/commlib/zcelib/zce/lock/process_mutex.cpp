@@ -16,7 +16,7 @@ namespace zce
 //WINDOWS的核心对象的名称被用于标识一个核心对象（互斥量，信号灯），而LINUX下的pthread_xxx同步对象，如果对象在共享内存里面，
 //那么就是进程间同步对象，当然还要注意属性PTHREAD_PROCESS_SHARED的设置
 process_mutex::process_mutex(const char* mutex_name, bool recursive) :
-    lock_(NULL)
+    lock_(nullptr)
 {
     ZCE_ASSERT(mutex_name);
     int ret = 0;
@@ -69,13 +69,13 @@ process_mutex::~process_mutex(void)
     if (lock_)
     {
         delete lock_;
-        lock_ = NULL;
+        lock_ = nullptr;
     }
 
 #elif defined ZCE_OS_LINUX
     posix_sharemem_.close();
     posix_sharemem_.remove();
-    lock_ = NULL;
+    lock_ = nullptr;
 #endif
 }
 

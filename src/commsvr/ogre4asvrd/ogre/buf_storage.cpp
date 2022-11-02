@@ -4,7 +4,7 @@
 namespace ogre
 {
 //instance函数使用的东西
-buffer_storage* buffer_storage::instance_ = NULL;
+buffer_storage* buffer_storage::instance_ = nullptr;
 
 /****************************************************************************************************
 class buffer_storage
@@ -34,7 +34,7 @@ void buffer_storage::uninit_buffer_list()
     for (size_t i = 0; i < sz_of_buffer; ++i)
     {
         soar::ogre4a_frame::delete_ogre(frame_buffer_ary_[i]);
-        frame_buffer_ary_[i] = NULL;
+        frame_buffer_ary_[i] = nullptr;
     }
 
     frame_buffer_ary_.clear();
@@ -50,7 +50,7 @@ soar::ogre4a_frame* buffer_storage::allocate_byte_buffer()
     }
 
     soar::ogre4a_frame* tmppr = frame_buffer_ary_[0];
-    frame_buffer_ary_[0] = NULL;
+    frame_buffer_ary_[0] = nullptr;
     frame_buffer_ary_.pop_front();
     return tmppr;
 }
@@ -98,7 +98,7 @@ void buffer_storage::instance(buffer_storage* instance)
 //实例的获得
 buffer_storage* buffer_storage::instance()
 {
-    if (NULL == instance_)
+    if (nullptr == instance_)
     {
         clear_inst();
         instance_ = new buffer_storage();
@@ -112,7 +112,7 @@ void buffer_storage::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 } //namespace ogre

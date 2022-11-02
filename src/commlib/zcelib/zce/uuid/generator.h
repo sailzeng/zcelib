@@ -55,7 +55,7 @@ enum class UUID_GENERATOR
     INVALID,
     ///用随机数的方法产生
     RANDOM,
-    ///用事件作为基数触发
+    ///用时间作为基数触发
     TIME,
 };
 
@@ -171,8 +171,8 @@ public:
     * @param      identity 当前的唯一表示，比如服务器ID等信息
     * @param      radix    时间基数，一般时间作为基础
     */
-    void time_radix(uint16_t identity, 
-                    uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint16_t identity,
+                    uint32_t radix = static_cast<uint32_t> (time(nullptr)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -195,7 +195,7 @@ protected:
     ///随机发生器2
     zce::random_mt11213b  mt_11213b_random_;
 
-    ///随机数的种子
+    ///以时间作为基数的UUID种子
     UUID64                time_radix_seed_;
 };
 
@@ -272,6 +272,8 @@ public:
         uint8_t                  u_16uint8_[16];
         ///4个32为字节的组成
         uint32_t                 u_4uint32_[4];
+        ///2个64为字节的组成
+        uint64_t                 u_2uint64_[2];
         ///32位整数+32位整数+64位整数
         UUID128_32_32_64         u_32_32_64_;
         ///标准的UUID的标识方法
@@ -317,7 +319,7 @@ public:
     * @param      radix
     */
     void time_radix(uint32_t identity,
-                    uint32_t radix = static_cast<uint32_t> (time(NULL)));
+                    uint32_t radix = static_cast<uint32_t> (time(nullptr)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -335,7 +337,7 @@ protected:
     ///随机发生器2
     zce::random_mt11213b      mt_11213b_random_;
 
-    ///
+    ///以时间作为基数的UUID种子
     UUID128                   time_radix_seed_;
 };
 

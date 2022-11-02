@@ -22,7 +22,7 @@ thread_light_mutex::thread_light_mutex()
                                     false,
                                     true,
                                     false,
-                                    NULL);
+                                    nullptr);
 
     if (0 != ret)
     {
@@ -103,7 +103,7 @@ thread_recursive_mutex::thread_recursive_mutex()
                                     false,
                                     true,
                                     true,
-                                    NULL);
+                                    nullptr);
 
     if (0 != ret)
     {
@@ -209,7 +209,7 @@ thread_nonr_mutex::thread_nonr_mutex()
                                     false,
                                     false,
                                     true,
-                                    NULL);
+                                    nullptr);
 
     if (0 != ret)
     {

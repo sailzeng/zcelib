@@ -49,7 +49,7 @@ public:
                 zce::time_value& timeout,
                 bool reuse_addr = false,
                 int protocol = 0,
-                const zce::skt::addr_base* local_addr = NULL);
+                const zce::skt::addr_base* local_addr = nullptr);
 
     /*!
     * @brief      阻塞或者非阻塞的连接
@@ -66,6 +66,6 @@ public:
                 bool non_blocing,
                 bool reuse_addr = false,
                 int protocol = 0,
-                const zce::skt::addr_base* local_addr = NULL);
+                const zce::skt::addr_base* local_addr = nullptr);
 };
 }

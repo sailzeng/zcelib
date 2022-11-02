@@ -43,10 +43,10 @@ public:
 protected:
 
     //接收一个APPFRAME，放入内部的tibetan_recv_appframe_
-    int receive_svc_msg(zce::time_value* time_wait = NULL);
+    int receive_svc_msg(zce::time_value* time_wait = nullptr);
 
     //将内部的tibetan_send_appframe_发送出去
-    int send_svc_msg(zce::time_value* time_wait = NULL);
+    int send_svc_msg(zce::time_value* time_wait = nullptr);
 
 public:
 
@@ -82,7 +82,7 @@ public:
     int send_svc_msg(uint32_t user_id,
                      uint32_t cmd,
                      const T1& snd_info,
-                     zce::time_value* time_out = NULL,
+                     zce::time_value* time_out = nullptr,
                      uint32_t backfill_fsm_id = 0,
                      uint16_t business_id = 0);
 
@@ -93,17 +93,17 @@ public:
     * @param      cmd       预计接受的的命令字
     * @param      rcv_info  接收的信息数据
     * @param      error_continue 如果收到的数据不是期望的，就继续等待，直到等待相应的命令
-    * @param      time_out  超时时长，如果要一直阻塞，就用NULL
+    * @param      time_out  超时时长，如果要一直阻塞，就用nullptr
     */
     template< class T2>
     int receive_svc_msg(uint32_t cmd,
                         T2& rcv_info,
                         bool error_continue = true,
-                        zce::time_value* time_out = NULL);
+                        zce::time_value* time_out = nullptr);
 
     //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
     int receive_svc_msg(unsigned int& recv_cmd,
-                        zce::time_value* time_out = NULL);
+                        zce::time_value* time_out = nullptr);
 
     /*!
     * @brief      发送和接收数据，会提前进行连接的。

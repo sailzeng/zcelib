@@ -57,7 +57,7 @@ void hash_md5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                              const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
     uint32_t a, b, c, d;
-    const uint32_t* x = NULL;
+    const uint32_t* x = nullptr;
     a = state[0];
     b = state[1];
     c = state[2];

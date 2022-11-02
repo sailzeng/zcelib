@@ -30,7 +30,7 @@ void* zce::mmap(void* addr,
     }
 
     //匿名使用，必须文件句柄是无效值
-    if ((flags & MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
+    if ((flags & MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == nullptr)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
@@ -85,11 +85,11 @@ void* zce::mmap(void* addr,
 
     //file_handle == ZCE_INVALID_HANDLE后，创建的共享内存不在文件里面，而在系统映射文件中 system paging file
     ZCE_HANDLE file_mapping = ::CreateFileMappingA(file_handle,
-                                                   NULL,
+                                                   nullptr,
                                                    nt_flag_protect,
                                                    (file_handle == ZCE_INVALID_HANDLE) ? longlong_value.HighPart : 0,
                                                    (file_handle == ZCE_INVALID_HANDLE) ? longlong_value.LowPart : 0,
-                                                   NULL);
+                                                   nullptr);
 
     if (file_mapping == 0)
     {
@@ -298,11 +298,11 @@ ZCE_HANDLE zce::shmget(key_t sysv_key,
 
     //file_handle == ZCE_INVALID_HANDLE后，创建的共享内存不再文件里面，而在系统映射文件中 system paging file
     ZCE_HANDLE shm_handle = ::CreateFileMappingA(ZCE_INVALID_HANDLE,
-                                                 NULL,
+                                                 nullptr,
                                                  nt_flag_protect,
                                                  longlong_value.HighPart,
                                                  longlong_value.LowPart,
-                                                 (IPC_PRIVATE == sysv_key) ? NULL : map_file_name);
+                                                 (IPC_PRIVATE == sysv_key) ? nullptr : map_file_name);
 
     //解释一下上面最后一行的参数，当使用key为IPC_PRIVATE，每次都创建一个无名的贡献内存，
     //如果Key不为IPC_PRIVATE，我统一给他起一个名字
@@ -374,7 +374,7 @@ void* zce::shmat(ZCE_HANDLE shmid,
                                            (LPVOID)shmaddr);
 
     //如果映射失败
-    if (NULL == addr_mapping)
+    if (nullptr == addr_mapping)
     {
         return MAP_FAILED;
     }

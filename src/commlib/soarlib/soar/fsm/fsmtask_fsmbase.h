@@ -12,7 +12,7 @@ public:
     //这儿是一个典型的设计两难，如果使用向下朔型DOWNCAST，无意是丑陋的。
     FSMTask_FSMBase(fsm_manager* trans_notify_mgr, unsigned int create_cmd)
         : fsm_base(trans_notify_mgr, create_cmd)
-        , fsmtask_mgr_(NULL)
+        , fsmtask_mgr_(nullptr)
     {
         //必须要求trans_notify_mgr至少是trans_notify_mgr的子类，
         fsmtask_mgr_ = dynamic_cast<fsmtask_manger*> (trans_notify_mgr);

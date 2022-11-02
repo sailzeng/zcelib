@@ -198,7 +198,7 @@ int zce::pthread_create(ZCE_THREAD_ID* threadid,
     //所以真正的删除点在，THREAD_START_FUN_ADAPT::adapt_svc_run这个地方，
     THREAD_START_FUN_ADAPT* adapt_object = new THREAD_START_FUN_ADAPT(start_routine, arg);
     //用CRT的线程创建函数创建线程
-    HANDLE thread_handle = (HANDLE)::_beginthreadex(NULL,
+    HANDLE thread_handle = (HANDLE)::_beginthreadex(nullptr,
                                                     static_cast<unsigned int>(attr->stacksize),
                                                     THREAD_START_FUN_ADAPT::adapt_svc_run,
                                                     adapt_object,
@@ -206,7 +206,7 @@ int zce::pthread_create(ZCE_THREAD_ID* threadid,
                                                     threadid);
 
     //注意_beginthreadex的返回值0表示错误，和_beginthread不一样
-    if (NULL == thread_handle)
+    if (nullptr == thread_handle)
     {
         delete adapt_object;
         return -1;
@@ -295,7 +295,7 @@ void zce::pthread_exit(void)
     return;
 
 #elif defined (ZCE_OS_LINUX)
-    void* return_data = NULL;
+    void* return_data = nullptr;
     return ::pthread_exit(return_data);
 #endif //#if defined (ZCE_OS_LINUX)
 }
@@ -356,14 +356,14 @@ int zce::pthread_create(ZCE_THREAD_ID* threadid,
 
     WIN_THREAD_STARTFUN_ADAPT adapt_object(start_routine, arg);
     //用CRT的线程创建函数创建线程
-    HANDLE thread_handle = (HANDLE)::_beginthreadex(NULL,
+    HANDLE thread_handle = (HANDLE)::_beginthreadex(nullptr,
                                                     static_cast<unsigned int>(attr->stacksize),
                                                     THREAD_START_FUN_ADAPT::adapt_svc_run,
                                                     &adapt_object,
                                                     0,
                                                     threadid);
     //注意_beginthreadex的返回值0表示错误，和_beginthread不一样
-    if (NULL == thread_handle)
+    if (nullptr == thread_handle)
     {
         return -1;
     }
@@ -414,7 +414,7 @@ int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN* ret_val)
                                              FALSE,
                                              threadid
     );
-    if (thr_handle == NULL)
+    if (thr_handle == nullptr)
     {
         return -1;
     }
@@ -462,7 +462,7 @@ int zce::pthread_cancel(ZCE_THREAD_ID threadid)
                                              FALSE,
                                              threadid
     );
-    if (thr_handle == NULL)
+    if (thr_handle == nullptr)
     {
         errno = GetLastError();
         return -1;
@@ -605,7 +605,7 @@ void* zce::pthread_getspecific(pthread_key_t key)
     if (data == 0 && ::GetLastError() != NO_ERROR)
     {
         errno = GetLastError();
-        return NULL;
+        return nullptr;
     }
     else
     {

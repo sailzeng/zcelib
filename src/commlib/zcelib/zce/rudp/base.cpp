@@ -74,7 +74,7 @@ void RUDP_FRAME::delete_frame(RUDP_FRAME *frame)
 
 //=================================================================================================
 //class base
-std::mt19937 base::random_gen_(19190504 + (uint32_t)::time(NULL));
+std::mt19937 base::random_gen_(19190504 + (uint32_t)::time(nullptr));
 
 uint32_t base::random()
 {

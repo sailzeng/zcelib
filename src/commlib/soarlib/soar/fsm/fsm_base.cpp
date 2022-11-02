@@ -216,7 +216,7 @@ int fsm_base::close_request_service() const
     cmd_head.recv_service_ = req_zerg_head_.send_service_;
     cmd_head.proxy_service_ = req_zerg_head_.proxy_service_;
     cmd_head.send_service_ = req_zerg_head_.recv_service_;
-    return trans_manager_->sendbuf_to_pipe(cmd_head, NULL, 0);
+    return trans_manager_->sendbuf_to_pipe(cmd_head, nullptr, 0);
 }
 
 //对当前用户的，当前事务命令字进行加锁

@@ -80,9 +80,9 @@ void zce::zlz_format::compress_core(const unsigned char original_buf[],
     //初始化各种初始值
     const unsigned char* read_pos = original_buf;
     const unsigned char* read_end = original_buf + original_size;
-    const unsigned char* next_read_pos = NULL;
+    const unsigned char* next_read_pos = nullptr;
     unsigned char* write_pos = compressed_buf;
-    unsigned char* write_stop = NULL;
+    unsigned char* write_stop = nullptr;
 
     //因为快速拷贝，一次处理8个字节，用16个字节保证不溢出，
     const unsigned char* match_end = read_end - ZCE_LZ_NOPROCESS_TAIL;
@@ -90,10 +90,10 @@ void zce::zlz_format::compress_core(const unsigned char original_buf[],
     //清理成0
     memset(hash_lz_offset_, 0, sizeof(uint32_t) * HASH_TABLE_LEN);
 
-    const unsigned char* ref_offset = NULL;
-    const unsigned char* nomatch_achor = NULL;
+    const unsigned char* ref_offset = nullptr;
+    const unsigned char* nomatch_achor = nullptr;
 
-    unsigned char* offset_token = NULL;
+    unsigned char* offset_token = nullptr;
 
     size_t nomatch_count = 0, match_count = 0, match_offset = 0;
 
@@ -387,11 +387,11 @@ int zce::zlz_format::decompress_core(const unsigned char* compressed_buf,
 
     unsigned char* write_pos = original_buf;
     unsigned char* write_end = original_buf + original_size;
-    unsigned char* write_stop = NULL;
-    const unsigned char* read_stop = NULL;
+    unsigned char* write_stop = nullptr;
+    const unsigned char* read_stop = nullptr;
 
     unsigned char offset_token = 0;
-    const unsigned char* ref_pos = NULL;
+    const unsigned char* ref_pos = nullptr;
 
     size_t noncomp_count = 0;
     size_t comp_count = 0;
@@ -564,10 +564,10 @@ void zce::lz4_format::compress_core(const unsigned char* original_buf,
 {
     //初始化各种初始值
     const unsigned char* read_pos = original_buf;
-    const unsigned char* next_read_pos = NULL;
+    const unsigned char* next_read_pos = nullptr;
     const unsigned char* read_end = original_buf + original_size;
     unsigned char* write_pos = compressed_buf;
-    unsigned char* write_stop = NULL;
+    unsigned char* write_stop = nullptr;
 
     //因为快速拷贝，比较等，用16个字节保证不溢出，
     const unsigned char* match_end = read_end - ZCE_LZ_NOPROCESS_TAIL;
@@ -575,9 +575,9 @@ void zce::lz4_format::compress_core(const unsigned char* original_buf,
     //清0
     memset(hash_lz_offset_, 0, sizeof(uint32_t) * HASH_TABLE_LEN);
 
-    const unsigned char* ref_offset = NULL;
-    const unsigned char* nomatch_achor = NULL, * match_achor = NULL;
-    unsigned char* offset_token = NULL;
+    const unsigned char* ref_offset = nullptr;
+    const unsigned char* nomatch_achor = nullptr, * match_achor = nullptr;
+    unsigned char* offset_token = nullptr;
 
     size_t match_offset, nomatch_count = 0, match_count = 0;
     nomatch_achor = read_pos;
@@ -871,11 +871,11 @@ int zce::lz4_format::decompress_core(const unsigned char* compressed_buf,
 
     unsigned char* write_pos = original_buf;
     unsigned char* write_end = original_buf + original_size;
-    unsigned char* write_stop = NULL;
-    const unsigned char* read_stop = NULL;
+    unsigned char* write_stop = nullptr;
+    const unsigned char* read_stop = nullptr;
 
     unsigned char offset_token = 0;
-    const unsigned char* ref_pos = NULL;
+    const unsigned char* ref_pos = nullptr;
 
     size_t noncomp_count = 0;
     size_t comp_count = 0;

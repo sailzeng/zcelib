@@ -153,7 +153,7 @@ int addr_in::getnameinfo(char* host_name, size_t name_len) const
                             sizeof(addr_in),
                             host_name,
                             name_len,
-                            NULL,
+                            nullptr,
                             0,
                             NI_NAMEREQD);
 }

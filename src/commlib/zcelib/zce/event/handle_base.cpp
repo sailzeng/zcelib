@@ -8,7 +8,7 @@ namespace zce
 {
 //构造函数和析构函数
 event_handler::event_handler() :
-    zce_reactor_(NULL),
+    zce_reactor_(nullptr),
     event_mask_(static_cast<int>(RECTOR_EVENT::NULL_MASK))
 {
 }

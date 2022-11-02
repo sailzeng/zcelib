@@ -74,7 +74,7 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     hints.ai_family = AF_INET;
     hints.ai_flags = AI_CANONNAME;
     ret = zce::getaddrinfo(TEST_HOST_NAME,
-                           NULL,
+                           nullptr,
                            &hints,
                            &result);
     ary_addr_num = ARRAY_NUM;
@@ -90,7 +90,7 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     hints.ai_family = AF_INET6;
     hints.ai_flags = AI_CANONNAME;
     ret = zce::getaddrinfo(TEST_HOST_NAME,
-                           NULL,
+                           nullptr,
                            &hints,
                            &result);
     ary_addr_num = ARRAY_NUM;
@@ -106,7 +106,7 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     hints.ai_family = AF_UNSPEC;
     hints.ai_flags = 0;
     ret = zce::getaddrinfo(TEST_HOST_NAME,
-                           NULL,
+                           nullptr,
                            &hints,
                            &result);
     ary_addr_num = ARRAY_NUM;
@@ -122,7 +122,7 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     hints.ai_family = AF_UNSPEC;
     hints.ai_flags = AI_ALL;
     ret = zce::getaddrinfo("ipv6.google.com",
-                           NULL,
+                           nullptr,
                            &hints,
                            &result);
     ary_addr_num = ARRAY_NUM;
@@ -138,7 +138,7 @@ int test_net_getaddrinfo(int /*argc*/, char* /*argv*/[])
     hints.ai_family = AF_UNSPEC;
     hints.ai_flags = AI_ALL;
     ret = zce::getaddrinfo(TEST_HOST_NAME,
-                           NULL,
+                           nullptr,
                            &hints,
                            &result);
     ary_addr_num = ARRAY_NUM;

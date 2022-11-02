@@ -150,7 +150,7 @@ int svc_accept::accept_event()
 
     svc_tcp* phandler = svc_tcp::alloce_hdl_from_pool(svc_tcp::HANDLER_MODE_ACCEPTED);
 
-    if (phandler != NULL)
+    if (phandler != nullptr)
     {
         phandler->init_tcpsvr_handler(my_svc_info_, sockstream, remote_address);
         //避免析构的时候close句柄

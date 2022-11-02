@@ -28,13 +28,13 @@ shm_cachechunk* shm_cachechunk::initialize(const size_t numnode,
     //如果采用恢复的形式,
     if (if_restore == true)
     {
-        //检查所有的尺寸,如果有不对的地方返回NULL,这样可以保证不出现错误
+        //检查所有的尺寸,如果有不对的地方返回nullptr,这样可以保证不出现错误
         if (cachechunk_head->size_of_mmap_ != getallocsize(numnode, numchunk, szchunk) ||
             cachechunk_head->num_of_node_ != numnode ||
             cachechunk_head->num_of_chunk_ != numchunk ||
             cachechunk_head->size_of_chunk_ != szchunk)
         {
-            return NULL;
+            return nullptr;
         }
     }
 

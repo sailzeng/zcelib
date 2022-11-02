@@ -61,8 +61,8 @@ protected:
         void clear()
         {
             interval_time_.set(0, 0);
-            action_ = NULL;
-            timer_handle_ = NULL;
+            action_ = nullptr;
+            timer_handle_ = nullptr;
             next_trigger_point_ = 0;
             already_trigger_ = false;
             call_back_ = std::function<int(const zce::time_value &, int) >();
@@ -77,10 +77,10 @@ protected:
         zce::time_value      interval_time_ = { 0,0 };
 
         ///回调的时候返回的指针，我只是保存他，给你用的。你自己把握好
-        const void* action_ = NULL;
+        const void* action_ = nullptr;
 
         ///对应的时间句柄的的指针
-        zce::timer_handler* timer_handle_ = NULL;
+        zce::timer_handler* timer_handle_ = nullptr;
         ///
         std::function<int(const zce::time_value &, int)> call_back_;
 

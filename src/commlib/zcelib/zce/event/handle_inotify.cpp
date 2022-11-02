@@ -12,7 +12,7 @@ namespace zce
 event_inotify::event_inotify() :
     zce::event_handler(),
 
-    read_buffer_(NULL)
+    read_buffer_(nullptr)
 {
     read_buffer_ = new char[READ_BUFFER_LEN + 1];
     read_buffer_[READ_BUFFER_LEN] = '\0';
@@ -33,7 +33,7 @@ event_inotify::~event_inotify()
     if (read_buffer_)
     {
         delete[]read_buffer_;
-        read_buffer_ = NULL;
+        read_buffer_ = nullptr;
     }
 }
 
@@ -111,7 +111,7 @@ int event_inotify::add_watch(const char* pathname,
 {
     //检查参数是否有效，
     ZCE_ASSERT(pathname && mask);
-    if (pathname == NULL || mask == 0)
+    if (pathname == nullptr || mask == 0)
     {
         errno = EINVAL;
         return -1;
@@ -176,10 +176,10 @@ int event_inotify::add_watch(const char* pathname,
     watch_handle_ = ::CreateFileA(pathname, // pointer to the file name
                                   FILE_LIST_DIRECTORY,                // access (read/write) mode
                                   FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, // share mode
-                                  NULL,                               // security descriptor
+                                  nullptr,                               // security descriptor
                                   OPEN_EXISTING,                      // how to create
                                   FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,       // file attributes
-                                  NULL                                // file with attributes to copy
+                                  nullptr                                // file with attributes to copy
     );
 
     if (watch_handle_ == ZCE_INVALID_HANDLE)
@@ -214,7 +214,7 @@ int event_inotify::add_watch(const char* pathname,
         FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
         &bytes_returned,                       // bytes returned
         &over_lapped_,   // overlapped buffer
-        NULL // completion routine
+        nullptr // completion routine
     );
 
     //如果读取失败，一般而言，这是这段代码有问题
@@ -435,7 +435,7 @@ int event_inotify::inotify_event()
 
     //记录当前处理的句柄，
 
-    FILE_NOTIFY_INFORMATION* read_ptr = NULL;
+    FILE_NOTIFY_INFORMATION* read_ptr = nullptr;
     DWORD next_entry_offset = 0;
     do
     {
@@ -449,10 +449,10 @@ int event_inotify::inotify_event()
                                                  0,
                                                  read_ptr->FileName,
                                                  read_ptr->FileNameLength / sizeof(wchar_t),
-                                                 NULL,
+                                                 nullptr,
                                                  0,
-                                                 NULL,
-                                                 NULL);
+                                                 nullptr,
+                                                 nullptr);
         //Windows 的目录名称最大长度可以到3K，我没有兴趣去搞一套这个玩
         if (length_of_ws >= MAX_PATH)
         {
@@ -468,8 +468,8 @@ int event_inotify::inotify_event()
                               read_ptr->FileNameLength / sizeof(wchar_t),
                               active_path,
                               length_of_ws,
-                              NULL,
-                              NULL);
+                              nullptr,
+                              nullptr);
         active_path[length_of_ws] = '\0';
 
         //根据Action和mask确定调用函数
@@ -557,7 +557,7 @@ int event_inotify::inotify_event()
         FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
         &bytes_returned,                       // bytes returned
         &(over_lapped_), // overlapped buffer
-        NULL                                   // completion routine
+        nullptr                                   // completion routine
     );
     if (FALSE == bret)
     {

@@ -130,7 +130,7 @@ bool cycle_buffer::push_end(const char* data,
                             size_t data_len,
                             char*& write_ptr)
 {
-    assert(data != NULL);
+    assert(data != nullptr);
     write_ptr = nullptr;
     //检查队列的空间是否够用
     if (free() < data_len)
@@ -190,7 +190,7 @@ bool cycle_buffer::push_end(char fill_ch,
 //从cycle_buffer头部，取出一个data_len长度的数据放入data
 bool cycle_buffer::pop_front(char* const data, size_t data_len)
 {
-    assert(data != NULL && data_len > 0);
+    assert(data != nullptr && data_len > 0);
 
     //检查是否有数据给他取走
     if (size() < data_len)

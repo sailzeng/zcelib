@@ -18,7 +18,7 @@ server_timer::server_timer() :
 
 server_timer::~server_timer()
 {
-    stat_monitor_ = NULL;
+    stat_monitor_ = nullptr;
 }
 
 //初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成

@@ -23,7 +23,7 @@ public:
              std::size_t shm_size,
              int file_open_mode = O_CREAT | O_RDWR,
              int file_perms_mode = ZCE_SHARE_FILE_PERMS,
-             const void* want_address = NULL,
+             const void* want_address = nullptr,
              int mmap_prot = PROT_READ | PROT_WRITE,
              int mmap_flags = MAP_SHARED,
              std::size_t offset = 0
@@ -35,7 +35,7 @@ public:
              bool if_restore,
              bool read_only = false,
              bool share_file = true,
-             const void* want_address = NULL,
+             const void* want_address = nullptr,
              std::size_t  offset = 0
     );
 

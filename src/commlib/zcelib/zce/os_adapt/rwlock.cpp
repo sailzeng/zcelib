@@ -82,7 +82,7 @@ int zce::pthread_rwlock_initex(pthread_rwlock_t* rwlock,
 
     ZCE_UNUSED_ARG(priority_to_write);
 
-    //其实我在想，不如搞个NULL，其实都一样
+    //其实我在想，不如搞个nullptr，其实都一样
     result = ::pthread_rwlockattr_init(&attr);
 
     if (result != 0)

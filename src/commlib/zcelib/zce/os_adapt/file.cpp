@@ -19,7 +19,7 @@ ssize_t zce::read(ZCE_HANDLE file_handle,
                                buf,
                                static_cast<DWORD> (count),
                                &ok_len,
-                               NULL);
+                               nullptr);
 
     if (ret_bool)
     {
@@ -48,7 +48,7 @@ ssize_t zce::write(ZCE_HANDLE file_handle,
                                 buf,
                                 static_cast<DWORD> (count),
                                 &ok_len,
-                                NULL);
+                                nullptr);
 
     if (ret_bool)
     {
@@ -359,7 +359,7 @@ ZCE_HANDLE zce::open(const char* filename,
     openfile_handle = ::CreateFileA(filename,
                                     access,
                                     shared_mode,
-                                    NULL,
+                                    nullptr,
                                     creation,
                                     FILE_ATTRIBUTE_NORMAL,
                                     0);

@@ -111,7 +111,7 @@ const char* zce::str_replace(const char* src, char* dst, const char* sub, const 
     size_t sub_len = strlen(sub);
     size_t replace_len = strlen(replace);
 
-    const char* find_pos = NULL;
+    const char* find_pos = nullptr;
     //strstr查找sub字符串出现的指针
     while (0 != (find_pos = strstr(src + src_offset, sub)))
     {

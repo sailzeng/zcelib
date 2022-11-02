@@ -214,13 +214,13 @@ int zce::pthread_mutex_init(pthread_mutex_t* mutex,
     //
 #if defined (ZCE_OS_WINDOWS)
 
-    //根据attr是否为NULL，如果NULL，初始化为默认参数
-    const char* mutex_name = NULL;
+    //根据attr是否为nullptr，如果nullptr，初始化为默认参数
+    const char* mutex_name = nullptr;
     if (attr)
     {
         mutex->lock_shared_ = attr->lock_shared_;
         mutex->lock_type_ = attr->lock_type_;
-        mutex_name = (('\0' == attr->mutex_name_[0]) ? NULL : attr->mutex_name_);
+        mutex_name = (('\0' == attr->mutex_name_[0]) ? nullptr : attr->mutex_name_);
     }
     else
     {
@@ -233,12 +233,12 @@ int zce::pthread_mutex_init(pthread_mutex_t* mutex,
     //如果合适用信号灯模拟PTHREAD MUTEX （非递归）
     if (ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex))
     {
-        mutex->non_recursive_mutex_ = NULL;
+        mutex->non_recursive_mutex_ = nullptr;
 
         //注意信号灯函数都是return -1表示失败，错误保存在errno，这个地方要转换
 
         //如果不需要名字，创建匿名信号灯
-        if (NULL == mutex_name)
+        if (nullptr == mutex_name)
         {
             mutex->non_recursive_mutex_ = new sem_t();
             int ret = zce::sem_init(mutex->non_recursive_mutex_,
@@ -249,7 +249,7 @@ int zce::pthread_mutex_init(pthread_mutex_t* mutex,
             if (ret != 0)
             {
                 delete mutex->non_recursive_mutex_;
-                mutex->non_recursive_mutex_ = NULL;
+                mutex->non_recursive_mutex_ = nullptr;
 
                 //得到最后的错误，如果没有就用EINVAL
                 return last_error_with_default(EINVAL);
@@ -290,7 +290,7 @@ int zce::pthread_mutex_init(pthread_mutex_t* mutex,
     //如果合适MUTEX模拟PTHREAD MUTEX，进程内部，递归而且需要超时 或者进程外部，递归，
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
-        mutex->recursive_mutex_ = ::CreateMutexA(NULL,
+        mutex->recursive_mutex_ = ::CreateMutexA(nullptr,
                                                  FALSE,
                                                  mutex_name);
 

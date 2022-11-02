@@ -99,12 +99,12 @@ public:
                 continue;
             }
             // 如果是空队列
-            if (old_head == old_tail && old_next == NULL)
+            if (old_head == old_tail && old_next == nullptr)
             {
                 return false;
             }
             //(3),
-            if (old_head == old_tail && old_next != NULL)
+            if (old_head == old_tail && old_next != nullptr)
             {
                 //下面这行注释掉也可以，这儿只是加快移动tail_。再次循环tail也应该可以改变
                 tail_.compare_exchange_strong(old_tail, old_next);

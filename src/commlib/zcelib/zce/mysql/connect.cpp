@@ -33,12 +33,12 @@ int connect::connect_by_optionfile(const char* optfile, const char* group)
     //初始化MYSQL句柄
     ::mysql_init(&mysql_handle_);
 
-    if (optfile != NULL)
+    if (optfile != nullptr)
     {
         int opret = mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
 
-        //如果使group==NULL,将读写optfile的[client]配置,否则读写group下的配置
-        if (group != NULL)
+        //如果使group==nullptr,将读写optfile的[client]配置,否则读写group下的配置
+        if (group != nullptr)
         {
             opret = mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
         }
@@ -50,8 +50,8 @@ int connect::connect_by_optionfile(const char* optfile, const char* group)
     }
 
     //连接数据库
-    MYSQL* ret = mysql_real_connect(&mysql_handle_, NULL, NULL, NULL, NULL, 0, NULL, 0);
-    if (ret == NULL)
+    MYSQL* ret = mysql_real_connect(&mysql_handle_, nullptr, nullptr, nullptr, nullptr, 0, nullptr, 0);
+    if (ret == nullptr)
     {
         return -1;
     }
@@ -103,7 +103,7 @@ int connect::connect_i(const char* host_name,
 #endif
 
     //连接数据库
-    MYSQL* ret = NULL;
+    MYSQL* ret = nullptr;
 
     //如果使用域名或者IP地址进行连接
     if (host_name)
@@ -114,16 +114,16 @@ int connect::connect_i(const char* host_name,
                                    pwd,
                                    db,
                                    port,
-                                   NULL,
+                                   nullptr,
                                    client_flag);
     }
     //如果使用UNIXSOCKET或者命名管道进行本地连接
     else if (socket_file)
     {
-        //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为NULL，是先进行命名管道连接，如果不行用TCP/IP连接本地
+        //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为nullptr，是先进行命名管道连接，如果不行用TCP/IP连接本地
         //如果要不保证绝对使用命名管道，则参数host_name=".",
         ret = ::mysql_real_connect(&mysql_handle_,
-                                   NULL,
+                                   nullptr,
                                    user,
                                    pwd,
                                    db,
@@ -131,7 +131,7 @@ int connect::connect_i(const char* host_name,
                                    socket_file,
                                    client_flag);
     }
-    //参数使用错误，不能host和unixsocket都为NULL
+    //参数使用错误，不能host和unixsocket都为nullptr
     else
     {
         ZCE_ASSERT(false);
@@ -157,7 +157,7 @@ int connect::connect_by_host(const char* host_name,
                              unsigned int timeout,
                              bool if_multi_sql)
 {
-    return connect_i(host_name, NULL, user, pwd, db, port, timeout, if_multi_sql);
+    return connect_i(host_name, nullptr, user, pwd, db, port, timeout, if_multi_sql);
 }
 
 //连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
@@ -168,7 +168,7 @@ int connect::connect_by_socketfile(const char* socket_file,
                                    unsigned int timeout,
                                    bool if_multi_sql)
 {
-    return connect_i(NULL, socket_file, user, pwd, db, 0, timeout, if_multi_sql);
+    return connect_i(nullptr, socket_file, user, pwd, db, 0, timeout, if_multi_sql);
 }
 
 //断开数据库服务器连接

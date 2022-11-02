@@ -62,7 +62,7 @@ namespace zce
 {
 /*!
 * @brief      打开一个目录进行读取
-* @return     DIR* 返回的是目录的句柄，成功返回一个非NULL值，你必须用closedir释放掉，失败返回NULL
+* @return     DIR* 返回的是目录的句柄，成功返回一个非nullptr值，你必须用closedir释放掉，失败返回nullptr
 * @param      dir_name 目录名称
 * @note       可以认为操作数序是opendir，readdir（readdir_r），closedir，参考closedir，readdir
 */
@@ -78,7 +78,7 @@ int closedir(DIR* dir_handle);
 
 /*!
 * @brief      读取一个目录项，并且返回，
-* @return     struct dirent* 返回NULL标识读取失败，或者完毕，
+* @return     struct dirent* 返回nullptr标识读取失败，或者完毕，
 * @param      dir_handle 读取目录DIR句柄，读到什么位置等信息其实是记录在DIR句柄内部
 * @note       WIN的实现因为readdir的返回dirent 是参数DIR *dir_handle内部数据，读取
 *             的位置信息也是记录在参数DIR *dir_handle内部，所以其是不可重入版本，
@@ -94,7 +94,7 @@ struct dirent* readdir(DIR* dir_handle);
 * @return     int ==0 标识成功
 * @param[in]  dir_handle 读取目录DIR句柄，
 * @param[out] entry 返回的读取到的目录项目,entry必须是外部已经分配好的变量
-* @param[out] result 读取到的目录项目指针，如果是已经读取到了最后，*result将被置为NULL
+* @param[out] result 读取到的目录项目指针，如果是已经读取到了最后，*result将被置为nullptr
 *                    如果读取到了项目，result指向entry
 */
 int readdir_r(DIR* dir_handle,
@@ -105,8 +105,8 @@ int readdir_r(DIR* dir_handle,
 * @brief      根据前缀和后缀，读取目录下面的各种文件，
 * @return     int == 0 表示成功
 * @param[in]  dirname 读取目录
-* @param[in]  prefix_name 前缀名称，可以为NULL，也可以就是某个文件名称
-* @param[in]  ext_name 后缀名称，可以为NULL，为NULL表示不检查
+* @param[in]  prefix_name 前缀名称，可以为nullptr，也可以就是某个文件名称
+* @param[in]  ext_name 后缀名称，可以为nullptr，为nullptr表示不检查
 * @param[in]  select_dir 选择目录
 * @param[in]  select_file 选择文件
 * @param[out] file_name_ary 文件名称队列
@@ -123,8 +123,8 @@ int readdir_nameary(const char* dirname,
 * @return     int           返回扫描到的项目的数量，返回值<0表示失败
 * @param      dirname       目录的名字，
 * @param      namelist      返回的文件名称列表，注意这个是一个指向数组指针的指针，里面的每个数据也要施放，数组也要释放
-* @param      (*selector)   选择器的函数指针，可以为NULL，选择器返回非0表示选择
-* @param      (*comparator) 排序器具的函数指针，可以为NULL
+* @param      (*selector)   选择器的函数指针，可以为nullptr，选择器返回非0表示选择
+* @param      (*comparator) 排序器具的函数指针，可以为nullptr
 * @note       namelist 返回的数据一定释放，而且是2次释放，可以用free_scandir_list函数释放
 */
 int scandir(const char* dirname,

@@ -97,7 +97,7 @@ int hfile_selector(const struct dirent* dir_info)
 int test_scandir(int /*argc*/, char /*argv*/*[])
 {
     zce::clear_last_error();
-    struct  dirent** namelist = NULL;
+    struct  dirent** namelist = nullptr;
     int number_file = zce::scandir("E:\\Courage\\readline-5.2",
                                    &namelist,
                                    hfile_selector,

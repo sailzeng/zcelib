@@ -144,7 +144,7 @@ protected:
     int  server_timer_id_ = -1;
 
     // 监控的实例
-    soar::stat_monitor* stat_monitor_ = NULL;
+    soar::stat_monitor* stat_monitor_ = nullptr;
 
     ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
     size_t zan_timer_num_ = 0;

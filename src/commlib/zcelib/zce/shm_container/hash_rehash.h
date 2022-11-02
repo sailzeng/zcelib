@@ -103,7 +103,7 @@ protected:
 public:
     _hash_rehash_iterator() :
         serial_(zce::SHM_CNTR_INVALID_POINT),
-        ht_rehash_instance_(NULL)
+        ht_rehash_instance_(nullptr)
     {
     }
 
@@ -347,8 +347,8 @@ protected:
         }
         else
         {
-            //还是强调一次成NULL
-            instance->priority_base_ = NULL;
+            //还是强调一次成nullptr
+            instance->priority_base_ = nullptr;
         }
 
         instance->invalid_data_ = invalid_data;
@@ -477,7 +477,7 @@ public:
                             size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
                             bool if_restore = false)
     {
-        ZCE_ASSERT(pmmap != NULL && req_num > 0);
+        ZCE_ASSERT(pmmap != nullptr && req_num > 0);
 
         //调整,根据你的尺寸，向上找一个合适的空间
         size_t prime_ary[MAX_PRIMES_LIST_NUM];
@@ -495,13 +495,13 @@ public:
             if (sz_alloc != hashhead->size_of_mmap_ ||
                 req_num != hashhead->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
 
             //质数列表的个数应该一致
             if (hashhead->row_primes_ary_ != row_prime_ary)
             {
-                return NULL;
+                return nullptr;
             }
 
             //HASH列表的个数，应该等于元素的总和，是不是应该将每个数据都拿出来比较一下呢
@@ -514,7 +514,7 @@ public:
 
             if (num_node_count != hashhead->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
 
             //检查质数队列是否一致
@@ -522,7 +522,7 @@ public:
             {
                 if (hashhead->primes_ary_[y] != prime_ary[y])
                 {
-                    return NULL;
+                    return nullptr;
                 }
             }
         }
@@ -567,7 +567,7 @@ public:
                             bool if_expire,
                             bool if_restore = false)
     {
-        assert(pmmap != NULL);
+        assert(pmmap != nullptr);
 
         _hashtable_rehash_head* hashhead = reinterpret_cast<_hashtable_rehash_head*>(pmmap);
 
@@ -584,13 +584,13 @@ public:
             if (sz_alloc = hashhead->size_of_mmap_ ||
                 node_count != hashhead->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
 
             //质数列表的个数应该一致
             if (hashhead->row_primes_ary_ != primes_number)
             {
-                return NULL;
+                return nullptr;
             }
 
             //检查质数队列是否一致
@@ -598,7 +598,7 @@ public:
             {
                 if (hashhead->primes_ary_[y] != primes_list[y])
                 {
-                    return NULL;
+                    return nullptr;
                 }
             }
         }
@@ -860,7 +860,7 @@ public:
     //激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
     //优先级参数可以使用当前的时间
     bool active(const K& key,
-                unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
     {
         iterator  iter_tmp = find(key);
 
@@ -876,7 +876,7 @@ public:
 
     //
     bool active_value(const T& val,
-                      unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
+                      unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
     {
         _extract_key get_key;
         return active(get_key(val), priority);

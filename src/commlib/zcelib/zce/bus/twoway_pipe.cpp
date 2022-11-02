@@ -8,7 +8,7 @@
 
 namespace zce
 {
-twoway_buspipe* twoway_buspipe::two_way_instance_ = NULL;
+twoway_buspipe* twoway_buspipe::two_way_instance_ = nullptr;
 
 const char  twoway_buspipe::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
 {
@@ -53,7 +53,7 @@ int twoway_buspipe::initialize(const char* bus_mmap_name,
 //得到唯一的单子实例
 twoway_buspipe* twoway_buspipe::instance()
 {
-    if (two_way_instance_ == NULL)
+    if (two_way_instance_ == nullptr)
     {
         two_way_instance_ = new twoway_buspipe();
     }
@@ -77,7 +77,7 @@ void twoway_buspipe::clear_inst()
         delete two_way_instance_;
     }
 
-    two_way_instance_ = NULL;
+    two_way_instance_ = nullptr;
     return;
 }
 }

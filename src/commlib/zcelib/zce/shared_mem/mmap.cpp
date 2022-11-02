@@ -11,7 +11,7 @@ namespace zce
 {
 //构造函数
 shm_mmap::shm_mmap() :
-    mmap_addr_(NULL),
+    mmap_addr_(nullptr),
     mmap_handle_(ZCE_INVALID_HANDLE),
     shm_size_(0)
 {
@@ -36,7 +36,7 @@ int shm_mmap::open(const char* file_name,
                    std::size_t offset)
 {
     //避免重入调用open函数，如果出现断言表示多次调用open,
-    ZCE_ASSERT(NULL == mmap_addr_);
+    ZCE_ASSERT(nullptr == mmap_addr_);
     ZCE_ASSERT(ZCE_INVALID_HANDLE == mmap_handle_);
 
     int ret = 0;
@@ -183,12 +183,12 @@ int shm_mmap::open(const char* file_name,
 int shm_mmap::close()
 {
     //断言保证不出现没有open就调用close的情况
-    ZCE_ASSERT(mmap_addr_ != NULL);
+    ZCE_ASSERT(mmap_addr_ != nullptr);
     ZCE_ASSERT(mmap_handle_ != ZCE_INVALID_HANDLE);
 
     int ret = 0;
     ret = zce::munmap(mmap_addr_, shm_size_);
-    mmap_addr_ = NULL;
+    mmap_addr_ = nullptr;
 
     // 关闭文件
     zce::close(mmap_handle_);

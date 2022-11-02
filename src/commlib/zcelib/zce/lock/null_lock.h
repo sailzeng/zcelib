@@ -34,7 +34,7 @@ class time_value;
 class null_lock : public zce::lock_base
 {
 public:
-    //NULL锁的GUARD
+    //nullptr锁的GUARD
     typedef lock_guard<zce::null_lock>      LOCK_GUARD;
     typedef Shared_Guard<zce::null_lock>    LOCK_SHARED_GUARD;
     typedef Unique_Guard<zce::null_lock>    LOCK_UNIQUE_GUARD;

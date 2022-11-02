@@ -11,7 +11,7 @@ namespace zce
 //构造函数,
 process_semaphore::process_semaphore(unsigned int init_value,
                                      const char* sem_name) :
-    lock_(NULL)
+    lock_(nullptr)
 {
     ZCE_ASSERT(sem_name);
 
@@ -49,7 +49,7 @@ process_semaphore::~process_semaphore()
         //释放，关闭信号灯对象，删除名字关联的文件
         zce::sem_close(lock_);
         zce::sem_unlink(sema_name_);
-        lock_ = NULL;
+        lock_ = nullptr;
     }
     else
     {
@@ -57,7 +57,7 @@ process_semaphore::~process_semaphore()
 
         //sem_destroy不会释放，
         delete lock_;
-        lock_ = NULL;
+        lock_ = nullptr;
     }
 }
 

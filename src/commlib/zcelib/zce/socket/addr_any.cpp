@@ -183,7 +183,7 @@ int addr_any::getnameinfo(char* host_name,
                                 sizeof(::sockaddr_in),
                                 host_name,
                                 name_len,
-                                NULL,
+                                nullptr,
                                 0,
                                 NI_NAMEREQD);
     }
@@ -193,7 +193,7 @@ int addr_any::getnameinfo(char* host_name,
                                 sizeof(::sockaddr_in6),
                                 host_name,
                                 name_len,
-                                NULL,
+                                nullptr,
                                 0,
                                 NI_NAMEREQD);
     }

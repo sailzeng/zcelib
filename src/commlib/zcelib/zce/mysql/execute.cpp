@@ -43,7 +43,7 @@ int execute::connect()
             ret = db_connect_.connect_by_host(db_hostname_.c_str(),
                                               db_user_name_.c_str(),
                                               db_password_.c_str(),
-                                              NULL,
+                                              nullptr,
                                               db_port_);
         }
         else if (db_socket_file_.length() > 0)
@@ -249,7 +249,7 @@ int connect(zce::mysql::connect* db_connect,
         ret = db_connect->connect_by_host(host_name,
                                           user,
                                           pwd,
-                                          NULL,
+                                          nullptr,
                                           port);
 
         //如果错误

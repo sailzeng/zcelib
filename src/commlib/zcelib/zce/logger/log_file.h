@@ -82,7 +82,7 @@ namespace zce
 class queue_buffer;
 
 template<typename L, typename B> class buffer_pool;
-typedef buffer_pool<std::mutex, queue_buffer> queue_buffer_pool_s;
+typedef buffer_pool<std::recursive_mutex, queue_buffer> queue_buffer_pool_s;
 
 struct LOG_RECORD
 {
@@ -98,7 +98,7 @@ class log_file
 {
 protected:
 
-    //time(NULL)函数是一个比较耗时的操作,如果你对性能有强烈的癖好,可以使用时间戳提高效率
+    //time(nullptr)函数是一个比较耗时的操作,如果你对性能有强烈的癖好,可以使用时间戳提高效率
     //你自己使用定时器每秒改写定时器,然后所有的日志系统时间将使用这个时间戳
     //对于这方面ACE也没有用考虑,
 

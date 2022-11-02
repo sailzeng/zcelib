@@ -10,7 +10,7 @@
 namespace zce
 {
 //构造函数
-WFMO_Reactor::WFMO_Reactor() :
+wmfo_reactor::wmfo_reactor() :
     watch_handle_ary_{ ZCE_INVALID_HANDLE }
 {
     initialize();
@@ -20,12 +20,12 @@ WFMO_Reactor::WFMO_Reactor() :
 #endif
 }
 
-WFMO_Reactor::~WFMO_Reactor()
+wmfo_reactor::~wmfo_reactor()
 {
 }
 
 //初始化
-int WFMO_Reactor::initialize()
+int wmfo_reactor::initialize()
 {
     //全部处理为无效
     for (size_t i = 0; i < MAXIMUM_WAIT_OBJECTS; ++i)
@@ -41,7 +41,7 @@ int WFMO_Reactor::initialize()
 }
 
 //注册一个句柄，以及他关心的事件
-int WFMO_Reactor::register_handler(zce::event_handler* event_handler,
+int wmfo_reactor::register_handler(zce::event_handler* event_handler,
                                    int event_mask)
 {
     int ret = 0;
@@ -94,7 +94,7 @@ int WFMO_Reactor::register_handler(zce::event_handler* event_handler,
 }
 
 //从反应器注销一个zce::Event_Handler，同时取消他所有的mask
-int WFMO_Reactor::remove_handler(zce::event_handler* event_handler,
+int wmfo_reactor::remove_handler(zce::event_handler* event_handler,
                                  bool call_event_close)
 {
     size_t watch_size = handler_map_.size();
@@ -125,7 +125,7 @@ int WFMO_Reactor::remove_handler(zce::event_handler* event_handler,
 }
 
 //对一个（已经注册的）句柄，设置他关心的事件
-int WFMO_Reactor::schedule_wakeup(zce::event_handler* event_handler,
+int wmfo_reactor::schedule_wakeup(zce::event_handler* event_handler,
                                   int event_mask)
 {
     int ret = 0;
@@ -150,7 +150,7 @@ int WFMO_Reactor::schedule_wakeup(zce::event_handler* event_handler,
 }
 
 //对一个（已经注册的）句柄，取消他关心的事件
-int WFMO_Reactor::cancel_wakeup(zce::event_handler* event_handler,
+int wmfo_reactor::cancel_wakeup(zce::event_handler* event_handler,
                                 int cancel_mask)
 {
     int ret = 0;
@@ -179,7 +179,7 @@ int WFMO_Reactor::cancel_wakeup(zce::event_handler* event_handler,
 }
 
 //Windows 下 对Socket 根据EVENT_MASK设置其对应的网络事件，并且绑定到事件上
-int WFMO_Reactor::wfmo_socket_event(zce::event_handler* event_handler,
+int wmfo_reactor::wfmo_socket_event(zce::event_handler* event_handler,
                                     WSAEVENT socket_event,
                                     int event_mask)
 {
@@ -224,7 +224,7 @@ int WFMO_Reactor::wfmo_socket_event(zce::event_handler* event_handler,
 }
 
 //进行IO触发操作
-int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
+int wmfo_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
 {
     int ret = 0;
     *size_event = 0;
@@ -255,7 +255,7 @@ int WFMO_Reactor::handle_events(zce::time_value* time_out, size_t* size_event)
     *size_event = 1;
     size_t activate_id = wait_status - WAIT_OBJECT_0;
 
-    zce::event_handler* event_hdl = NULL;
+    zce::event_handler* event_hdl = nullptr;
 
     //因为Socket 的事件处理，放入的反应器的是事件句柄，但在event handle内部是socket句柄，而
     //保存event handle的 map是用socket句柄做得key，所以有如下的代码

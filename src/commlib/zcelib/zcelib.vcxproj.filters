@@ -20,6 +20,7 @@
     <None Include="zcelib.ruleset" />
     <None Include="cpp.hint" />
     <None Include="zce\version.h.in" />
+    <None Include="..\..\..\run\cfg\zergsvrd.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce\net\http_client.cpp">
@@ -820,6 +821,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\pool\dataptr_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\pool\shareptr_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\pool\shareptr_pool.h">

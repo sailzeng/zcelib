@@ -129,7 +129,7 @@ int addr_in6::getnameinfo(char* host_name, size_t name_len) const
                             sizeof(sockaddr_in6),
                             host_name,
                             name_len,
-                            NULL,
+                            nullptr,
                             0,
                             NI_NAMEREQD);
 }

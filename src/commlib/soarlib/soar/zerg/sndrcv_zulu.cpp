@@ -57,7 +57,7 @@ int zulu_sendrecv::connect_zulu_server(zce::time_value* time_wait)
         // 否则用默认的值
         zce::time_value real_time_wait(10, 0);
 
-        if (time_wait != NULL)
+        if (time_wait != nullptr)
         {
             real_time_wait = *time_wait;
         }

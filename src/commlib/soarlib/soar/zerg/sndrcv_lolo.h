@@ -87,7 +87,7 @@ public:
     template<class T2>
     int receive_svc_msg(uint32_t cmd,
                         T2& msg,
-                        zce::time_value* time_wait = NULL);
+                        zce::time_value* time_wait = nullptr);
 
     //发送和接收数据，一起一锅搞掂的方式
     template< class T1, class T2>
@@ -231,7 +231,7 @@ int lolo_sendrecv::send_svc_msg(uint32_t user_id,
     ssize_t socket_ret = lolo_datagram_.sendto((void*)(msg_send_frame_),
                                                len,
                                                &lolo_svc_ip_,
-                                               NULL
+                                               nullptr
     );
 
     //ZCE_LOG(RS_DEBUG,"[framework] SEND %u BYTES  Frame To Svr Succ. ",ret);

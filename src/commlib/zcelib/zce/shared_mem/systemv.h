@@ -22,7 +22,7 @@ public:
              std::size_t shm_size,
              int shmget_flg = IPC_CREAT | SHM_R | SHM_W,
              int shmat_flg = 0,
-             const void* want_address = NULL
+             const void* want_address = nullptr
     );
 
     //打开文件，进行映射, 简单，推荐使用这个函数
@@ -30,7 +30,7 @@ public:
              std::size_t shm_size,
              bool fail_if_exist,
              bool read_only = false,
-             const void* want_address = NULL
+             const void* want_address = nullptr
     );
 
     //关闭映射(文件)

@@ -8,19 +8,24 @@ namespace zce
 /*!
 * @brief      （单）对象(DATA)池子，可以用于分配对象，避免反复使用new or delete
 *             对象已经构造完成，分配时不需要构建对象，
-* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::recursive_mutex（最好）
+*             std::mutex也应该可以用，但总担心不小心写错了，多次调用导致递归
 * @tparam     T 对象类型，
 */
 template<typename LOCK, typename T>
-class data_pool
+class dataptr_pool
 {
 public:
     //!对象池子对象
     typedef T object;
 
     //!构造函数，析构函数，赋值函数
-    data_pool() = default;
-    ~data_pool() = default;
+    dataptr_pool() = default;
+    ~dataptr_pool() = default;
+
+    //!拷贝构造函数，声明但不实现，避免您使用
+    dataptr_pool(const dataptr_pool&) = delete;
+    const dataptr_pool& operator=(const dataptr_pool&) = delete;
 
     /*!
     * @brief
@@ -132,11 +137,12 @@ public:
         return obj_pool_.full();
     }
 
-    //!扩展池子的容量
+protected:
+    //!扩展池子的容量, 没有加锁，依靠外面加锁
     bool extend(size_t extend_size)
     {
         bool ret = false;
-        size_t pool_capacity = capacity();
+        size_t pool_capacity = obj_pool_.capacity();
         if (pool_capacity == 0)
         {
             ret = obj_pool_.initialize(extend_size);
@@ -198,7 +204,7 @@ protected:
 /*!
 * @brief      多对象池子，可以用于分配对象，避免反复使用new or delete
 *             要分配的对象作为模板参数
-* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::mutex
+* @tparam     LOCK 锁，可以是zce::null_lock,也可以是std::recursive_mutex
 * @tparam     ... T 多种对象类型，
 */
 template< typename LOCK, typename... T >
@@ -216,46 +222,46 @@ public:
                     size_t extend_node_size,
                     std::function <O* () >* new_fun = nullptr)
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).initialize(init_node_size,
-                                                                     extend_node_size,
-                                                                     new_fun);
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).initialize(init_node_size,
+                                                                        extend_node_size,
+                                                                        new_fun);
     }
     template<typename O>
     void terminate()
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).terminate();
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).terminate();
     }
     template<typename O>
     inline size_t size()
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).size();
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).size();
     }
     template<typename O>
     size_t capacity()
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).capacity();
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).capacity();
     }
     template<typename O>
     bool empty()
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).empty();
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).empty();
     }
     template<typename O>
     bool full()
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).full();
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).full();
     }
     //!分配一个对象
     template<typename O>
     O* alloc_object()
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).alloc_object();
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).alloc_object();
     }
     //归还一个对象
     template<typename O>
     void free_object(O* ptr)
     {
-        return std::get<zce::data_pool<LOCK, O> >(pools_).free_object(ptr);
+        return std::get<zce::dataptr_pool<LOCK, O> >(pools_).free_object(ptr);
     }
 
     //============================
@@ -264,7 +270,7 @@ public:
     bool initialize(size_t init_node_size,
                     size_t extend_node_size,
                     std::function <typename std::tuple_element<I, \
-                    std::tuple<data_pool<LOCK, T>...> >::type::object* () >* new_fun = nullptr)
+                    std::tuple<dataptr_pool<LOCK, T>...> >::type::object* () >* new_fun = nullptr)
     {
         return std::get<I>(pools_).initialize(init_node_size,
                                               extend_node_size,
@@ -300,7 +306,7 @@ public:
 
     //!分配一个对象
     template<size_t I>
-    typename std::tuple_element<I, std::tuple<data_pool<LOCK, T>...> >::type::object*
+    typename std::tuple_element<I, std::tuple<dataptr_pool<LOCK, T>...> >::type::object*
         alloc_object()
     {
         return std::get<I>(pools_).alloc_object();
@@ -308,13 +314,13 @@ public:
     //归还一个对象
     template<size_t I >
     void free_object(typename std::tuple_element<I,
-                     std::tuple<data_pool<LOCK, T>...> >::type::object* ptr)
+                     std::tuple<dataptr_pool<LOCK, T>...> >::type::object* ptr)
     {
         return std::get<I>(pools_).free_object(ptr);
     }
 
 protected:
     //!对象池子堆
-    std::tuple<data_pool<LOCK, T>... > pools_;
+    std::tuple<dataptr_pool<LOCK, T>... > pools_;
 };
 }

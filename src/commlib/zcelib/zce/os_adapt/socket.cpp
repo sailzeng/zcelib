@@ -668,7 +668,7 @@ int handle_ready(ZCE_SOCKET handle,
 #if defined ZCE_OS_WINDOWS || (defined ZCE_OS_LINUX && !defined HANDLEREADY_USE_EPOLL)
 
     fd_set handle_set_read, handle_set_write, handle_set_exeception;
-    fd_set* p_set_read = NULL, * p_set_write = NULL, * p_set_exception = NULL;
+    fd_set* p_set_read = nullptr, * p_set_write = nullptr, * p_set_exception = nullptr;
     FD_ZERO(&handle_set_read);
     FD_ZERO(&handle_set_write);
     FD_ZERO(&handle_set_exeception);
@@ -1573,7 +1573,7 @@ int inet_pton(int family,
             else
             {
                 //出现其他字符，认为错误，滚蛋，
-                if (NULL == strchr(INET6_STR_UP_CHAR, toupper(strptr[i])))
+                if (nullptr == strchr(INET6_STR_UP_CHAR, toupper(strptr[i])))
                 {
                     return 0;
                 }
@@ -1679,7 +1679,7 @@ const char* inet_ntop(int family,
         if (ret_len > static_cast<int>(len) || ret_len <= 0)
         {
             errno = ENOSPC;
-            return NULL;
+            return nullptr;
         }
 
         return strptr;
@@ -1719,7 +1719,7 @@ const char* inet_ntop(int family,
         if (ret_len > static_cast<int>(len) || ret_len <= 0)
         {
             errno = ENOSPC;
-            return NULL;
+            return nullptr;
         }
 
         return strptr;
@@ -1727,7 +1727,7 @@ const char* inet_ntop(int family,
     else
     {
         errno = EAFNOSUPPORT;
-        return NULL;
+        return nullptr;
     }
 #endif
 #elif defined (ZCE_OS_LINUX)
@@ -1760,7 +1760,7 @@ const char* sockaddr_ntop(const sockaddr* sock_addr,
     else
     {
         errno = EAFNOSUPPORT;
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -1898,7 +1898,7 @@ hostent* gethostbyname2(const char* hostname,
     hostent* hostent_ptr = ::gethostbyname(hostname);
     if (hostent_ptr->h_addrtype != af)
     {
-        return NULL;
+        return nullptr;
     }
     return hostent_ptr;
 
@@ -1938,7 +1938,7 @@ int gethostbyname_inary(const char* hostname,
     size_t i = 0;
     char** addr_pptr = hostent_ptr->h_addr_list;
 
-    for (; (i < *ary_addr_num) && (*addr_pptr != NULL); addr_pptr++, ++i)
+    for (; (i < *ary_addr_num) && (*addr_pptr != nullptr); addr_pptr++, ++i)
     {
         ary_sock_addr[i].sin_family = AF_INET;
         //本来就是网络序
@@ -1980,7 +1980,7 @@ int gethostbyname_in6ary(const char* hostname,
     size_t i = 0;
     char** addr_pptr = hostent_ptr->h_addr_list;
 
-    for (; (i < *ary_addr6_num) && (*addr_pptr != NULL); addr_pptr++, ++i)
+    for (; (i < *ary_addr6_num) && (*addr_pptr != nullptr); addr_pptr++, ++i)
     {
         ary_sock_addr6[i].sin6_family = AF_INET6;
         //本来就是网络序
@@ -2068,7 +2068,7 @@ int getaddrinfo_result_to_oneaddr(addrinfo* result,
                                   socklen_t addr_len)
 {
     addrinfo* prc_node = result;
-    for (; (prc_node != NULL); prc_node = prc_node->ai_next)
+    for (; (prc_node != nullptr); prc_node = prc_node->ai_next)
     {
         //只取相应的地址
         if (addr_len == static_cast<socklen_t>(prc_node->ai_addrlen))
@@ -2094,7 +2094,7 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
     addrinfo* prc_node = result;
     size_t num_addr = 0, num_addr6 = 0;
     for (size_t i = 0;
-         (i < *ary_addr_num) && (prc_node != NULL);
+         (i < *ary_addr_num) && (prc_node != nullptr);
          prc_node = prc_node->ai_next, ++i)
     {
         //只取相应的地址
@@ -2109,7 +2109,7 @@ void getaddrinfo_result_to_addrary(addrinfo* result,
 
     prc_node = result;
     for (size_t j = 0;
-         (j < *ary_addr6_num) && (prc_node != NULL);
+         (j < *ary_addr6_num) && (prc_node != nullptr);
          prc_node = prc_node->ai_next, ++j)
     {
         if (AF_INET6 == prc_node->ai_family)
@@ -2130,7 +2130,7 @@ int getaddrinfo_to_addrary(const char* hostname,
                            sockaddr_in6 ary_addr6[])
 {
     int ret = 0;
-    addrinfo hints, * result = NULL;
+    addrinfo hints, * result = nullptr;
 
     ::memset(&hints, 0, sizeof(addrinfo));
     //同时返回IPV4.和IPV6，如果只需要IPV4填写AF_INET，如果只需要IPV6填写AF_INET6
@@ -2168,7 +2168,7 @@ int getaddrinfo_to_addr(const char* nodename,
                         socklen_t addr_len)
 {
     int ret = 0;
-    addrinfo hints, * result = NULL;
+    addrinfo hints, * result = nullptr;
 
     ::memset(&hints, 0, sizeof(addrinfo));
     //同时返回IPV4.和IPV6，如果只需要IPV4填写AF_INET，如果只需要IPV6填写AF_INET6
@@ -2184,7 +2184,7 @@ int getaddrinfo_to_addr(const char* nodename,
         //进行域名解析
         hints.ai_flags = 0;
         ret = zce::getaddrinfo(nodename,
-                               NULL,
+                               nullptr,
                                &hints,
                                &result);
         if (ret != 0)
@@ -2243,7 +2243,7 @@ int getnameinfo_sockaddr(const sockaddr* sock_addr,
                                 sizeof(sockaddr_in),
                                 host_name,
                                 name_len,
-                                NULL,
+                                nullptr,
                                 0,
                                 NI_NAMEREQD);
     }
@@ -2253,7 +2253,7 @@ int getnameinfo_sockaddr(const sockaddr* sock_addr,
                                 sizeof(sockaddr_in6),
                                 host_name,
                                 name_len,
-                                NULL,
+                                nullptr,
                                 0,
                                 NI_NAMEREQD);
     }
@@ -2374,11 +2374,11 @@ int select(
     //检查是否没有句柄在等待
     bool no_handle_to_wait = false;
 
-    if ((NULL == readfds) || (NULL != readfds && 0 == readfds->fd_count))
+    if ((nullptr == readfds) || (nullptr != readfds && 0 == readfds->fd_count))
     {
-        if ((NULL == writefds) || (NULL != writefds && 0 == writefds->fd_count))
+        if ((nullptr == writefds) || (nullptr != writefds && 0 == writefds->fd_count))
         {
-            if ((NULL == exceptfds) || (NULL != exceptfds && 0 == exceptfds->fd_count))
+            if ((nullptr == exceptfds) || (nullptr != exceptfds && 0 == exceptfds->fd_count))
             {
                 no_handle_to_wait = true;
             }
@@ -2395,7 +2395,7 @@ int select(
     }
 
     clock_t start_clock = 0;
-    timeval* select_tv = NULL;
+    timeval* select_tv = nullptr;
 
     if (timeout_tv)
     {
@@ -2431,7 +2431,7 @@ int select(
 
 #elif defined (ZCE_OS_LINUX)
 
-    timeval* select_tv = NULL;
+    timeval* select_tv = nullptr;
 
     if (timeout_tv)
     {
@@ -2516,7 +2516,7 @@ int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
     }
     //如果有#，而且后面还有空间，
     const char* port_pos = strchr(ipv4_addr_str, '#');
-    if (port_pos != NULL && *(++port_pos) != '\0')
+    if (port_pos != nullptr && *(++port_pos) != '\0')
     {
         //注意到这儿pos已经++了。
         uint16_t read_port = 0;
@@ -2531,7 +2531,7 @@ int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
     return 0;
 }
 
-//设置一个IPV4的地址,错误返回NULL，正确返回设置的地址的变换
+//设置一个IPV4的地址,错误返回nullptr，正确返回设置的地址的变换
 int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
                     uint32_t ipv4_addr_val,
                     uint16_t ipv4_port
@@ -2585,7 +2585,7 @@ int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
     }
     //如果有#，而且后面还有空间，
     const char* port_pos = strchr(ipv6_addr_str, '#');
-    if (port_pos != NULL && *(++port_pos) != '\0')
+    if (port_pos != nullptr && *(++port_pos) != '\0')
     {
         //注意到这儿pos已经++了。
         uint16_t read_port = 0;
@@ -2599,7 +2599,7 @@ int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
     return 0;
 }
 
-//设置一个IPV6的地址,错误返回NULL，正确返回设置的地址的变换
+//设置一个IPV6的地址,错误返回nullptr，正确返回设置的地址的变换
 int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
                      uint16_t ipv6_port,
                      const char ipv6_addr_val[16])

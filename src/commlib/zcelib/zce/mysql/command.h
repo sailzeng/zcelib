@@ -204,12 +204,12 @@ protected:
 protected:
 
     ///联接
-    zce::mysql::connect* mysql_connect_ = NULL;
+    zce::mysql::connect* mysql_connect_ = nullptr;
     ///SQL
     std::string mysql_command_;
 
     //
-    char* sql_buffer_ = NULL;
+    char* sql_buffer_ = nullptr;
 };
 }
 

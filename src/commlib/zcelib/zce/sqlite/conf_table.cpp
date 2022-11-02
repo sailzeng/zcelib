@@ -89,7 +89,7 @@ int AII_BINARY_DATA::protobuf_encode(unsigned int index_1,
         return -1;
     }
     ai_data_length_ = protobuf_len;
-    last_mod_time_ = static_cast<unsigned int>(::time(NULL));
+    last_mod_time_ = static_cast<unsigned int>(::time(nullptr));
     return 0;
 }
 
@@ -132,14 +132,14 @@ config_table::~config_table()
     if (sql_string_)
     {
         delete sql_string_;
-        sql_string_ = NULL;
+        sql_string_ = nullptr;
     }
 
     sqlite_handler_->close_database();
     if (sqlite_handler_)
     {
         delete sqlite_handler_;
-        sqlite_handler_ = NULL;
+        sqlite_handler_ = nullptr;
     }
 }
 
@@ -248,7 +248,7 @@ int config_table::base16_encode(const char* in,
     //
     static const char BASE16_ENC_MAP[] = "0123456789abcdef";
 
-    ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
+    ZCE_ASSERT(in != nullptr && out != nullptr && out_len != nullptr);
 
     size_t output_len = in_len * 2;
     if (*out_len < output_len + 1)

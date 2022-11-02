@@ -11,7 +11,7 @@ namespace zce
 /*!
 * @brief      将共享内存和文件进行映射
 * @return     void* 映射返回的地址，
-* @param      addr  准备映射的地址，一般传递NULL，让OS自己决定
+* @param      addr  准备映射的地址，一般传递nullptr，让OS自己决定
 * @param      len   准备映射的长度
 * @param      prot  映射的内存区域的操作权限（保护属性）包括PROT_READ、PROT_WRITE、PROT_READ|PROT_WRITE
 * @param      flags 标志位参数，包括：MAP_SHARED、MAP_PRIVATE与MAP_ANONYMOUS

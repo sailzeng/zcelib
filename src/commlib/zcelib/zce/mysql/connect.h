@@ -50,7 +50,7 @@ public:
     int connect_by_host(const char* host_name,
                         const char* user = "mysql",
                         const char* pwd = "",
-                        const char* db = NULL,
+                        const char* db = nullptr,
                         const unsigned int port = MYSQL_PORT,
                         unsigned int timeout = 0,
                         bool if_multi_sql = false);
@@ -68,7 +68,7 @@ public:
     int connect_by_socketfile(const char* socket_file,
                               const char* user = "mysql",
                               const char* pwd = "",
-                              const char* db = NULL,
+                              const char* db = nullptr,
                               unsigned int timeout = 0,
                               bool if_multi_sql = false);
 
@@ -186,7 +186,7 @@ protected:
                   const char* socket_file,
                   const char* user = "mysql",
                   const char* pwd = "",
-                  const char* db = NULL,
+                  const char* db = nullptr,
                   const unsigned int port = MYSQL_PORT,
                   unsigned int timeout = 0,
                   bool bmultisql = false);

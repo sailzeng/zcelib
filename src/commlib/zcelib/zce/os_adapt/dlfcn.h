@@ -21,7 +21,7 @@ namespace zce
 
 /*!
 * @brief      打开动态库
-* @return     ZCE_SHLIB_HANDLE 动态库的句柄，在不同的平台有不同的typdef，==NULL标识失败
+* @return     ZCE_SHLIB_HANDLE 动态库的句柄，在不同的平台有不同的typdef，==nullptr标识失败
 * @param      fname DLL的文件名称
 * @param      mode 打开的模式
 */

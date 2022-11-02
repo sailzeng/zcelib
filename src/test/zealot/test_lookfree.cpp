@@ -85,7 +85,7 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
     }
 
     kfifo_32_t::node::delete_node(pnode1);
-    //pnode1 =NULL;
+    //pnode1 =nullptr;
     //pmmap->pop_frond(pnode1);
     //std::cout<<"pnode1 sz:"<<(int)pnode1->sizeofnode<<std::endl;
     //std::cout<<"free:"<<(int)pmmap->free()<<std::endl;
@@ -334,7 +334,7 @@ zce::lockfree::queue<int> g_queue;
 
 int test_lockfree_queue2(int /*argc*/, char* /*argv*/[])
 {
-    int *data = NULL;
+    int *data = nullptr;
     g_queue.enqueue(new int(0));
     g_queue.enqueue(data);
     return 0;

@@ -123,7 +123,7 @@ int auto_connect::connect_one_server(const TCP_PEER_MODULE_INFO& peer_module)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //如果已经连接上了，不进行连接
-    svc_tcp* tcp_hdl = NULL;
+    svc_tcp* tcp_hdl = nullptr;
     ret = svc_tcp::find_services_peer(peer_module.peer_id_, tcp_hdl);
     if (ret == 0)
     {

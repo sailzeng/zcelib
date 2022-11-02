@@ -8,16 +8,16 @@
 namespace zerg
 {
 //实例
-comm_manager* comm_manager::instance_ = NULL;
+comm_manager* comm_manager::instance_ = nullptr;
 
 comm_manager::comm_manager() :
     error_try_num_(3),
     monitor_size_(0),
-    zerg_mmap_pipe_(NULL),
-    zbuffer_storage_(NULL),
-    server_status_(NULL),
+    zerg_mmap_pipe_(nullptr),
+    zbuffer_storage_(nullptr),
+    server_status_(nullptr),
     send_frame_count_(0),
-    zerg_config_(NULL)
+    zerg_config_(nullptr)
 
 {
     zerg_mmap_pipe_ = soar::svrd_buspipe::instance();
@@ -283,7 +283,7 @@ void comm_manager::check_freamcount(time_t now)
 comm_manager* comm_manager::instance()
 {
     //如果没有初始化
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new comm_manager();
     }
@@ -297,7 +297,7 @@ void comm_manager::clear_inst()
     if (instance_)
     {
         delete instance_;
-        instance_ = NULL;
+        instance_ = nullptr;
     }
 }
 

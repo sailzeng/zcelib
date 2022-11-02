@@ -784,7 +784,7 @@ void zce::fmt_str(char* buffer,
     //对参数进行整理
     if (value == nullptr)
     {
-        value = "<NULL>";
+        value = "<nullptr>";
         str_len = 6;
     }
 
@@ -837,7 +837,7 @@ void zce::fmt_str(std::string& stdstr,
     //对参数进行整理
     if (value == 0)
     {
-        value = "<NULL>";
+        value = "<nullptr>";
         str_len = 6;
     }
     size_t out_len = FMT_MIN(str_len, precision);

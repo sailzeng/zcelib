@@ -25,7 +25,7 @@ int read_ini(const char* file_name, zce::propertytree* propertytree)
     str_key[LINE_BUFFER_LEN] = '\0';
     str_value[LINE_BUFFER_LEN] = '\0';
 
-    zce::propertytree* cur_node = NULL;
+    zce::propertytree* cur_node = nullptr;
 
     std::ifstream cfgfile(file_name);
 
@@ -63,7 +63,7 @@ int read_ini(const char* file_name, zce::propertytree* propertytree)
             //消灭空格
             zce::strtrim(one_line.get());
 
-            zce::propertytree* tree_node = NULL;
+            zce::propertytree* tree_node = nullptr;
             propertytree->add_child(one_line.get(), tree_node);
             cur_node = tree_node;
 
@@ -71,7 +71,7 @@ int read_ini(const char* file_name, zce::propertytree* propertytree)
         }
 
         char* str = strstr(one_line.get(), "=");
-        if (str != NULL && cur_node)
+        if (str != nullptr && cur_node)
         {
             char* snext = str + 1;
             *str = '\0';
@@ -98,7 +98,7 @@ int write_ini(const char* file_name,
     std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
     one_line[LINE_BUFFER_LEN] = '\0';
 
-    const zce::propertytree* cur_node = NULL;
+    const zce::propertytree* cur_node = nullptr;
     std::ofstream cfgfile(file_name);
 
     //文件打不开，返回默认值
@@ -142,8 +142,8 @@ class XML_Implement INI文件的配置读取，写入实现器
 void read_xml_dfs(const rapidxml::xml_node<char>* node,
                   zce::propertytree* propertytree)
 {
-    if (NULL == node->value() && NULL == node->first_attribute() &&
-        NULL == node->first_node())
+    if (nullptr == node->value() && nullptr == node->first_attribute() &&
+        nullptr == node->first_node())
     {
         return;
     }
@@ -152,7 +152,7 @@ void read_xml_dfs(const rapidxml::xml_node<char>* node,
     {
         return;
     }
-    zce::propertytree* pt_note = NULL;
+    zce::propertytree* pt_note = nullptr;
     propertytree->add_child(node->name(), pt_note);
 
     if (node->value())

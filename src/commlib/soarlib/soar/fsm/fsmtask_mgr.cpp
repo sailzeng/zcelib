@@ -17,20 +17,20 @@ fsmtask_manger::~fsmtask_manger()
     if (send_msg_queue_)
     {
         delete send_msg_queue_;
-        send_msg_queue_ = NULL;
+        send_msg_queue_ = nullptr;
     }
 
     //
     if (recv_msg_queue_)
     {
         delete recv_msg_queue_;
-        recv_msg_queue_ = NULL;
+        recv_msg_queue_ = nullptr;
     }
 
     if (frame_mallocor_)
     {
         delete frame_mallocor_;
-        frame_mallocor_ = NULL;
+        frame_mallocor_ = nullptr;
     }
 
     //删除TASK对象
@@ -39,11 +39,11 @@ fsmtask_manger::~fsmtask_manger()
         for (size_t i = 0; i < task_number_; ++i)
         {
             delete task_list_[i];
-            task_list_[i] = NULL;
+            task_list_[i] = nullptr;
         }
 
         delete[]task_list_;
-        task_list_ = NULL;
+        task_list_ = nullptr;
     }
 }
 
@@ -79,7 +79,7 @@ int fsmtask_manger::active_notify_task(fsmtask_taskbase* clone_task,
 {
     int ret = 0;
     //这个函数只用进来一次
-    ZCE_ASSERT(task_list_ == NULL);
+    ZCE_ASSERT(task_list_ == nullptr);
 
     task_number_ = task_num;
     clone_task_ = clone_task;
@@ -158,7 +158,7 @@ int fsmtask_manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_t
     //
     for (proc_frame = 0; proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-        soar::zerg_frame* tmp_frame = NULL;
+        soar::zerg_frame* tmp_frame = nullptr;
         //
         ret = recv_msg_queue_->try_dequeue(tmp_frame);
 
@@ -207,7 +207,7 @@ int fsmtask_manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_t
 int fsmtask_manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_frame)
 {
     int ret = 0;
-    soar::zerg_frame* tmp_frame = NULL;
+    soar::zerg_frame* tmp_frame = nullptr;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     if (alloc_frame)

@@ -6,7 +6,7 @@
 
 namespace zce
 {
-server_status* server_status::instance_ = NULL;
+server_status* server_status::instance_ = nullptr;
 
 /******************************************************************************************
 class ZCE_STATUS_ITEM_ID
@@ -71,10 +71,10 @@ Server_Status
 
 //构造函数,也给你单独使用的机会，所以不用protected
 server_status::server_status() :
-    stat_lock_(NULL),
-    stat_file_head_(NULL),
-    status_stat_sandy_(NULL),
-    status_copy_mandy_(NULL),
+    stat_lock_(nullptr),
+    stat_file_head_(nullptr),
+    status_stat_sandy_(nullptr),
+    status_copy_mandy_(nullptr),
     multi_thread_guard_(false),
     initialized_(false)
 {
@@ -87,19 +87,19 @@ server_status::~server_status()
     if (stat_lock_)
     {
         delete stat_lock_;
-        stat_lock_ = NULL;
+        stat_lock_ = nullptr;
     }
 
     if (status_stat_sandy_)
     {
         delete status_stat_sandy_;
-        status_stat_sandy_ = NULL;
+        status_stat_sandy_ = nullptr;
     }
 
     if (status_copy_mandy_)
     {
         delete status_copy_mandy_;
-        status_copy_mandy_ = NULL;
+        status_copy_mandy_ = nullptr;
     }
 }
 
@@ -110,7 +110,7 @@ int server_status::initialize(const char* stat_filename,
                               bool restore_mmap,
                               bool multi_thread)
 {
-    //映射文件名称不能为NULL，统计数量不能为0，统计初始化数组不能为NULL
+    //映射文件名称不能为nullptr，统计数量不能为0，统计初始化数组不能为nullptr
     int ret = 0;
 
     //计算所需的空间
@@ -135,9 +135,9 @@ int server_status::initialize(const char* stat_filename,
     stat_file_head_ = static_cast<ZCE_STATUS_HEAD*>(stat_file_.addr());
 
     //如果在这儿出现断言，就是你代码使用错误了.
-    ZCE_ASSERT(NULL == status_stat_sandy_
-               && NULL == status_copy_mandy_
-               && NULL == stat_lock_);
+    ZCE_ASSERT(nullptr == status_stat_sandy_
+               && nullptr == status_copy_mandy_
+               && nullptr == stat_lock_);
 
     // 统计数据区初始化
     char* stat_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);
@@ -217,7 +217,7 @@ void server_status::multi_thread_guard(bool multi_thread)
     if (stat_lock_)
     {
         delete stat_lock_;
-        stat_lock_ = NULL;
+        stat_lock_ = nullptr;
     }
 
     multi_thread_guard_ = multi_thread;
@@ -287,7 +287,7 @@ int server_status::find_insert_idx(uint32_t statics_id,
 //根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
 int server_status::initialize(const char* stat_filename, bool multi_thread)
 {
-    ZCE_ASSERT(stat_filename != NULL);
+    ZCE_ASSERT(stat_filename != nullptr);
 
     int ret = 0;
     //
@@ -312,7 +312,7 @@ int server_status::initialize(const char* stat_filename,
                               bool multi_thread)
 {
     // 允许参数num_stat_item == 0, 因为有些app是不需要app层的监控的
-    ZCE_ASSERT(stat_filename != NULL);
+    ZCE_ASSERT(stat_filename != nullptr);
     //
     int ret = 0;
     ret = initialize(stat_filename, false, multi_thread);
@@ -328,9 +328,9 @@ int server_status::initialize(const char* stat_filename,
     statid_to_index_.rehash(static_cast<size_t>(MAX_MONITOR_STAT_ITEM * 1.2));
 
     //
-    stat_file_head_->monitor_start_time_ = static_cast<uint64_t>(time(NULL));
-    stat_file_head_->copy_time_ = static_cast<uint64_t>(time(NULL));
-    stat_file_head_->active_time_ = static_cast<uint64_t>(time(NULL));
+    stat_file_head_->monitor_start_time_ = static_cast<uint64_t>(time(nullptr));
+    stat_file_head_->copy_time_ = static_cast<uint64_t>(time(nullptr));
+    stat_file_head_->active_time_ = static_cast<uint64_t>(time(nullptr));
 
     initialized_ = true;
 
@@ -539,8 +539,8 @@ void server_status::copy_stat_counter()
     std::copy_n(stat_sandy_begin, num_of_counter, stat_mandy_begin);
 
     //刷新备份时间
-    ZCE_ASSERT(stat_file_head_ != NULL);
-    stat_file_head_->copy_time_ = static_cast<uint32_t>(time(NULL));
+    ZCE_ASSERT(stat_file_head_ != nullptr);
+    stat_file_head_->copy_time_ = static_cast<uint32_t>(time(nullptr));
 }
 
 //Dump所有的数据
@@ -549,7 +549,7 @@ void server_status::dump_status_info(std::ostringstream& strstream, bool dump_co
     size_t num_of_counter = 0;
     strstream << "Statistics Number:" << static_cast<unsigned int>(num_of_counter) << std::endl;
 
-    ZCE_STATUS_ITEM* stat_process_iter = NULL;
+    ZCE_STATUS_ITEM* stat_process_iter = nullptr;
 
     //根据确定是从哪个数据区读取数据
     if (dump_copy)
@@ -598,7 +598,7 @@ void server_status::dump_status_info(std::ostringstream& strstream, bool dump_co
 void server_status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_copy)
 {
     size_t num_of_counter = 0;
-    ZCE_STATUS_ITEM* stat_process_iter = NULL;
+    ZCE_STATUS_ITEM* stat_process_iter = nullptr;
 
     //记录监控配置的名字的变量
     char statics_item_name[STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN + 1];
@@ -665,7 +665,7 @@ void server_status::report_monitor_time(uint64_t report_time)
 //得到唯一的单子实例
 server_status* server_status::instance()
 {
-    if (instance_ == NULL)
+    if (instance_ == nullptr)
     {
         instance_ = new server_status();
     }
@@ -689,7 +689,7 @@ void server_status::clear_inst()
         delete instance_;
     }
 
-    instance_ = NULL;
+    instance_ = nullptr;
     return;
 }
 }

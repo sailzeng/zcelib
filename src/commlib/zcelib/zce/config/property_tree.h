@@ -177,7 +177,7 @@ public:
         this->leaf_node_.insert(std::make_pair(key_str, val_str));
     }
 
-    ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
+    ///增加一个新的CHILD,当然里面全部数据为nullptr,并且返回新增的节点
     void add_child(const std::string& key_str,
                    zce::propertytree*& new_child_note) noexcept;
 

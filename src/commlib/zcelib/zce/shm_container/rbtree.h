@@ -102,7 +102,7 @@ public:
 
     _shm_rb_tree_iterator()
         : serial_(zce::SHM_CNTR_INVALID_POINT),
-        rb_tree_instance_(NULL)
+        rb_tree_instance_(nullptr)
     {
     }
 
@@ -346,7 +346,7 @@ public:
     //初始化
     static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
     {
-        //assert(pmmap!=NULL && numnode >0 );
+        //assert(pmmap!=nullptr && numnode >0 );
         _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
@@ -356,7 +356,7 @@ public:
             if (getallocsize(numnode) != rb_tree_head->size_of_mmap_ ||
                 numnode != rb_tree_head->num_of_node_)
             {
-                return NULL;
+                return nullptr;
             }
         }
 
@@ -392,7 +392,7 @@ public:
         rb_tree_head_->sz_free_node_ = rb_tree_head_->num_of_node_;
         rb_tree_head_->sz_use_node_ = 0;
 
-        //将清理为NULL,让指针都指向自己
+        //将清理为nullptr,让指针都指向自己
         head_index_->parent_ = SHM_CNTR_INVALID_POINT;
         head_index_->right_ = rb_tree_head_->num_of_node_;
         head_index_->left_ = rb_tree_head_->num_of_node_;
@@ -721,19 +721,19 @@ protected:
         size_t x = SHM_CNTR_INVALID_POINT;
         size_t x_parent = SHM_CNTR_INVALID_POINT;
 
-        //如果左子树为NULL，选择右子树
+        //如果左子树为nullptr，选择右子树
         if (left(y) == SHM_CNTR_INVALID_POINT)
         {
             x = right(y);
         }
         else
         {
-            //如果左子树不为NULL，而右子树为NULL
+            //如果左子树不为nullptr，而右子树为nullptr
             if (right(x) == SHM_CNTR_INVALID_POINT)
             {
                 x = left(y);
             }
-            //如果左右子树都不为NULL
+            //如果左右子树都不为nullptr
             else
             {
                 y = minimum(right(y));

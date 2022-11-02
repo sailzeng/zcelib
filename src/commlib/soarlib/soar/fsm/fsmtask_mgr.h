@@ -205,7 +205,7 @@ public:
                           const zce::time_value* tv)
     {
         int ret = 0;
-        soar::zerg_frame* tmp_frame = NULL;
+        soar::zerg_frame* tmp_frame = nullptr;
         frame_mallocor_->clone_appframe(post_frame, tmp_frame);
         ret = recv_msg_queue_->enqueue_wait(tmp_frame, *tv);
 

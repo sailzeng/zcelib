@@ -4,7 +4,7 @@
 
 namespace soar
 {
-svrd_buspipe* svrd_buspipe::zerg_bus_instance_ = NULL;
+svrd_buspipe* svrd_buspipe::zerg_bus_instance_ = nullptr;
 
 char svrd_buspipe::send_buffer_[soar::zerg_frame::MAX_LEN_OF_FRAME];
 
@@ -49,7 +49,7 @@ void svrd_buspipe::get_mmapfile_name(char* mmapfile, size_t buflen)
 //得到唯一的单子实例
 svrd_buspipe* svrd_buspipe::instance()
 {
-    if (zerg_bus_instance_ == NULL)
+    if (zerg_bus_instance_ == nullptr)
     {
         zerg_bus_instance_ = new svrd_buspipe();
     }
@@ -215,7 +215,7 @@ void svrd_buspipe::clear_inst()
         delete zerg_bus_instance_;
     }
 
-    zerg_bus_instance_ = NULL;
+    zerg_bus_instance_ = nullptr;
     return;
 }
 }

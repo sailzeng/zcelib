@@ -65,8 +65,7 @@ else()
 endif()
 
 
-#输出目录
-
+#增加子目录
 add_subdirectory(commlib/zcelib)
 add_subdirectory(commlib/soarlib)
 add_subdirectory(test/zealot)

@@ -23,8 +23,8 @@ namespace zce
 * @brief      SOCKS5代理初始化，进行用户验证等
 * @return     int 返回0标识成功
 * @param      handle      已经连接SOCKS5服务器的句柄，必须先连接 connect,可以使用connect_timeout函数
-* @param      username    验证模式下的用户名称，如果不需要验证用填写NULL
-* @param      password    验证模式下的密码，如果不需要验证用填写NULL
+* @param      username    验证模式下的用户名称，如果不需要验证用填写nullptr
+* @param      password    验证模式下的密码，如果不需要验证用填写nullptr
 * @param      timeout_tv  超时时间
 * @note       handle 必须先连接
 */
@@ -37,7 +37,7 @@ int socks5_initialize(ZCE_SOCKET handle,
 * @brief      SOCKS5代理初始化，进行用户验证等
 * @return     int  返回0标识成功
 * @param      handle     已经连接SOCKS5服务器的句柄，必须先连接 connect
-* @param      host_name  跳转的域名，域名和地址只选一个，优先域名，为NULL
+* @param      host_name  跳转的域名，域名和地址只选一个，优先域名，为nullptr
 * @param      port       跳转的端口
 * @param      addr       跳转的地址
 * @param      addr_len   跳转的地址的长度

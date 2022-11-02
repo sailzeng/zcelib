@@ -21,7 +21,7 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
 
     //
     symbols_strings = ::backtrace_symbols(backtrace_stack_ptr, sz_of_stack);
-    if (symbols_strings == NULL)
+    if (symbols_strings == nullptr)
     {
         ZCE_LOG(RS_ERROR, "%s", "[BACKTRACE] backtrace_symbols return fail.");
     }
@@ -104,7 +104,7 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
     cur_thread = ::GetCurrentThread();
 
     //初始化  dbghelp library 并且加载symbol表，注意pdb文件的位置，
-    if (!::SymInitialize(process, NULL, TRUE))
+    if (!::SymInitialize(process, nullptr, TRUE))
     {
         ZCE_LOG(RS_ERROR, "SymInitialize fail,no symbol loaded error =%d,Please notice PDB file directory.",
                 ::GetLastError());
@@ -124,10 +124,10 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
            cur_thread,
            &stackframe,
            &context,
-           NULL,
+           nullptr,
            SymFunctionTableAccess64,
            SymGetModuleBase64,
-           NULL))
+           nullptr))
     {
         // 结束处理
         if (stackframe.AddrFrame.Offset == 0 || k > SIZE_OF_BACKTRACE_FUNC)
@@ -136,7 +136,7 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
         }
 
         // Get symbol.
-        load_symbol = ::SymFromAddr(process, stackframe.AddrPC.Offset, NULL, symbol);
+        load_symbol = ::SymFromAddr(process, stackframe.AddrPC.Offset, nullptr, symbol);
         if (!load_symbol && !save_ls_error)
         {
             ZCE_LOG(RS_ERROR, "SymFromAddr fail,no debug symbol loaded for this function error =%d.",

@@ -12,7 +12,7 @@ namespace zce
 SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
 ******************************************************************************************/
 sqlite_hdl::sqlite_hdl() :
-    sqlite3_handler_(NULL)
+    sqlite3_handler_(nullptr)
 {
 }
 
@@ -43,7 +43,7 @@ int sqlite_hdl::open_database(const char* db_file,
     int ret = ::sqlite3_open_v2(db_file,
                                 &sqlite3_handler_,
                                 flags,
-                                NULL);
+                                nullptr);
     if (ret != SQLITE_OK)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
@@ -62,7 +62,7 @@ void sqlite_hdl::close_database()
     if (sqlite3_handler_)
     {
         ::sqlite3_close_v2(sqlite3_handler_);
-        sqlite3_handler_ = NULL;
+        sqlite3_handler_ = nullptr;
     }
 }
 
@@ -100,11 +100,11 @@ int sqlite_hdl::turn_off_synch()
 int sqlite_hdl::exe(const char* sql_string)
 {
     int ret = 0;
-    char* err_msg = NULL;
+    char* err_msg = nullptr;
     ret = ::sqlite3_exec(sqlite3_handler_,
                          sql_string,
-                         NULL,
-                         NULL,
+                         nullptr,
+                         nullptr,
                          &err_msg);
     if (ret == SQLITE_OK)
     {
@@ -126,7 +126,7 @@ int sqlite_hdl::get_table(const char* sql_string,
                           zce::sqlite_result* result)
 {
     int ret = SQLITE_OK;
-    char* err_msg = NULL;
+    char* err_msg = nullptr;
     ret = ::sqlite3_get_table(sqlite3_handler_, sql_string,
                               &(result->result_),
                               &(result->row_),
