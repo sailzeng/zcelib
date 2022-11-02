@@ -145,10 +145,11 @@ protected:
     ///析构函数
     ~shm_kfifo() = default;
 
-protected:
-
     ///只定义不实现
+    shm_kfifo(const shm_kfifo &) = delete;
     const shm_kfifo& operator=(const shm_kfifo&) = delete;
+
+protected:
 
     /*!
     @brief      得到两个关键指针的快照，用于判定队列里面的数据还有多少，是否为满或者空
@@ -218,13 +219,12 @@ public:
         shm_kfifo* kfifo = new shm_kfifo();
 
         //得到空间大小
-        kfifo->smem_base_ = mmap_ptr;
+        kfifo->shm_base_ = mmap_ptr;
 
         //
         kfifo->kfifo_head_ = dequechunk_head;
         //
         kfifo->kfifo_data_ = mmap_ptr + sizeof(shm_kfifo_head);
-
         if (if_restore == false)
         {
             kfifo->clear();
@@ -536,7 +536,7 @@ protected:
 protected:
 
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* shm_base_ = nullptr;
 
     ///内存的头部
     shm_kfifo_head* kfifo_head_ = nullptr;

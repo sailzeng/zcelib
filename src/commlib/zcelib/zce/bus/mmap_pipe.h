@@ -17,7 +17,8 @@
 
 #pragma once
 
-//美国著名计算机专家、C语言及Unix之父、图灵奖获得者丹尼斯·里奇（Dennis Ritchie）于2011年10日12日于家中去世，享年70岁。
+//美国著名计算机专家、C语言及Unix之父、图灵奖获得者丹尼斯·里奇（Dennis Ritchie）
+//于2011年10日12日于家中去世，享年70岁。
 
 #include "zce/util/non_copyable.h"
 #include "zce/shared_mem/mmap.h"

@@ -86,9 +86,8 @@ public:
         for (; i < sz; i++)
         {
             find_pos_ = (find_pos_ + 1) % sz;
-            
-            assert(obj_pool_[find_pos_]);
-            //第一次的时候new分配一个数据
+
+            //assert(obj_pool_[find_pos_]);
             if (obj_pool_[find_pos_].use_count() == 1)
             {
                 return obj_pool_[find_pos_];
@@ -109,11 +108,13 @@ public:
     {
         size_t pool_size = obj_pool_.size();
         obj_pool_.resize(pool_size + extend_size);
+
+        //第一次的时候new分配一个数据
         for (i = 0; i < extend_size; ++i)
         {
             if (new_fun_)
             {
-                obj_pool_[pool_size+i] = std::shared_ptr<T>(new_fun_());
+                obj_pool_[pool_size + i] = std::shared_ptr<T>(new_fun_());
             }
             else
             {
@@ -174,7 +175,7 @@ protected:
 
     //! T的初始化函数，
     std::function <T* ()> new_fun_;
-    //! 锁记录
+    //! 锁，
     LOCK lock_;
 };
 }

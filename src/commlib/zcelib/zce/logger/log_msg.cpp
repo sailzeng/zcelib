@@ -9,19 +9,7 @@
 namespace zce
 {
 log_msg* log_msg::log_instance_ = nullptr;
-
-/******************************************************************************************
-class Log_Msg
-******************************************************************************************/
-//析构函数
-log_msg::log_msg()
-{
-}
-
-//析构函数
-log_msg::~log_msg()
-{
-}
+thread_local std::unique_ptr<char[]> log_msg::log_buffer_(new char[log_file::SIZE_OF_LOG_BUFFER]);
 
 //初始化函数,用于时间分割日志的构造
 int log_msg::init_time_log(LOGFILE_DEVIDE div_log_file,
@@ -225,10 +213,9 @@ void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     //得到当前时间
     timeval now_time_val(gettimeofday());
 
-    //用static 变量，保证只初始化一次， 用thread_local 保证每个线程一个
-    static thread_local char* log_buffer = \
-        new char[log_file::SIZE_OF_LOG_BUFFER];
-    log_buffer[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
+    //log_buffer_ 是 static thread_local变量，保证每个线程一个
+    char *log_buf = log_buffer_.get();
+    log_buf[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
     //我要保留一个位置放'\0'，以及一个\n
     size_t sz_buf_len = log_file::SIZE_OF_LOG_BUFFER - 2;
@@ -237,13 +224,13 @@ void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     //输出头部信息
     stringbuf_loghead(outlevel,
                       now_time_val,
-                      log_buffer,
+                      log_buf,
                       sz_buf_len,
                       sz_use_len);
     sz_buf_len -= sz_use_len;
 
     //得到打印信息,_vsnprintf为特殊函数
-    int len_of_out = vsnprintf(log_buffer + sz_use_len,
+    int len_of_out = vsnprintf(log_buf + sz_use_len,
                                sz_buf_len, str_format, args);
 
     //如果输出的字符串比想想的长，-2是因为后面有'\0','\n'
@@ -261,7 +248,7 @@ void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     //如果要自动增加换行符号，
     if (auto_new_line_)
     {
-        log_buffer[sz_use_len] = '\n';
+        log_buf[sz_use_len] = '\n';
         ++sz_use_len;
 
         //注意sz_buf_len在这儿没有调整，因为'\n'的位置我前面为了安全扣除了
@@ -269,7 +256,7 @@ void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     }
 
     output_log_info(now_time_val,
-                    log_buffer,
+                    log_buf,
                     sz_use_len);
 }
 

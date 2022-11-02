@@ -46,8 +46,8 @@ class log_msg
 public:
 
     ///构造函数
-    log_msg();
-    virtual ~log_msg();
+    log_msg() = default;
+    ~log_msg() = default;
 
     log_msg(const log_msg &) = delete;
     log_msg& operator=(const log_msg&) = delete;
@@ -334,11 +334,21 @@ public:
 
 protected:
 
+    //! 单子实例指针
+    static log_msg * log_instance_;
+
+    //! 日志输出的缓冲区，使用thread_local让每个线程一个，避免冲突和写buffer时加锁
+    //! thread_local 会让每个线程生产一个，所以如果你采用不断产生线程的方式，这个如果性能不好可能要调整
+    //! thread_local + unique_ptr 理论上会在线程消失后自己回收
+    static thread_local std::unique_ptr<char[]> log_buffer_;
+
+protected:
+
     //!是否进行多线程的同步
     bool multithread_log_ = false;
 
     //!由于我内部还是使用的C++的ofstream 作为输出对象，所以我在多线程下还是使用了锁。
-    std::mutex protect_lock_;
+    std::recursive_mutex protect_lock_;
 
     ///输出的方式，LOG_OUTPUT的枚举值组合 @ref LOG_OUTPUT
     int output_way_ = (int)LOG_OUTPUT::LOGFILE | (int)LOG_OUTPUT::ERROUT;
@@ -357,10 +367,5 @@ protected:
 
     //!日志文件
     log_file log_file_;
-
-protected:
-
-    ///单子实例指针
-    static log_msg * log_instance_;
 };
 }
