@@ -80,9 +80,7 @@ public:
 
 public:
 
-    cycbuf_rings()
-    {
-    }
+    cycbuf_rings() = default;
 
     ~cycbuf_rings()
     {
