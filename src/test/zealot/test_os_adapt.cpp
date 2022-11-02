@@ -252,7 +252,7 @@ int test_progress_timer(int  /*argc*/, char* /*argv*/[])
 
 static int test_stack5()
 {
-    zce::backtrace_stack(stdout);
+    zce::backtrace_stack(5, stdout);
     return 0;
 }
 

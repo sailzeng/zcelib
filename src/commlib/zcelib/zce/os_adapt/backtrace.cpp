@@ -6,18 +6,22 @@
 //=====================================================================================================================
 
 //打印堆栈信息
-int zce::backtrace_stack(std::vector<std::string>& str_ary)
+int zce::backtrace_stack(size_t level_num,
+                         std::vector<std::string>& str_ary)
 {
     //跟踪函数的层数
-    const size_t SIZE_OF_BACKTRACE_FUNC = 100;
-
+    constexpr size_t MAX_BACKTRACE_STACK_LEVEL = 100;
+    if (level_num > MAX_BACKTRACE_STACK_LEVEL)
+    {
+        level_num = MAX_BACKTRACE_STACK_LEVEL;
+    }
     //这个方法是提供给Linux 下的GCC使用的
 #if defined(ZCE_OS_LINUX)
 
-    void* backtrace_stack_ptr[SIZE_OF_BACKTRACE_FUNC];
+    void* backtrace_stack_ptr[MAX_BACKTRACE_STACK_LEVEL];
     char** symbols_strings;
     std::string line_data;
-    int sz_of_stack = ::backtrace(backtrace_stack_ptr, SIZE_OF_BACKTRACE_FUNC);
+    int sz_of_stack = ::backtrace(backtrace_stack_ptr, level_num);
 
     //
     symbols_strings = ::backtrace_symbols(backtrace_stack_ptr, sz_of_stack);
@@ -130,7 +134,7 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
            nullptr))
     {
         // 结束处理
-        if (stackframe.AddrFrame.Offset == 0 || k > SIZE_OF_BACKTRACE_FUNC)
+        if (stackframe.AddrFrame.Offset == 0 || k > level_num)
         {
             break;
         }
@@ -182,12 +186,13 @@ int zce::backtrace_stack(std::vector<std::string>& str_ary)
 }
 
 //调试打印内存信息，就是简单的内存翻译为16进制字符串
-int zce::backtrace_stack(FILE* stream)
+int zce::backtrace_stack(size_t level_num,
+                         FILE* stream)
 {
     int ret = 0;
     //%zu不知道VC从什么年代支持的
     std::vector<std::string> str_ary;
-    ret = zce::backtrace_stack(str_ary);
+    ret = zce::backtrace_stack(level_num, str_ary);
     for (std::string& out : str_ary)
     {
         fprintf(stream, "%s\n", out.c_str());
@@ -197,12 +202,13 @@ int zce::backtrace_stack(FILE* stream)
 
 //辅助打印一个指针内部数据的函数，用16进制的方式打印日志
 int zce::backtrace_stack(zce::LOG_PRIORITY dbg_lvl,
+                         size_t level_num,
                          const char* dbg_info)
 {
     int ret = 0;
     ZCE_LOG(dbg_lvl, "[BACKTRACE_STACK] out pointer [%s].", dbg_info);
     std::vector<std::string> str_ary;
-    zce::backtrace_stack(str_ary);
+    zce::backtrace_stack(level_num, str_ary);
     for (std::string& out : str_ary)
     {
         //方便你grep

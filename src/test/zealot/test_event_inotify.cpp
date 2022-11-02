@@ -93,7 +93,7 @@ int test_inotify_reactor(int /*argc*/, char* /*argv*/[])
     My_INotify_Event* inotify_event = new My_INotify_Event();
 
 #if defined ZCE_OS_WINDOWS
-    zce::WFMO_Reactor* reactor_ptr = new zce::WFMO_Reactor();
+    zce::wmfo_reactor* reactor_ptr = new zce::wmfo_reactor();
     ret = reactor_ptr->initialize();
 #else
     zce::select_reactor* reactor_ptr = new zce::select_reactor();
