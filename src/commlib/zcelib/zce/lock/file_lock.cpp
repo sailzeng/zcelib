@@ -8,20 +8,20 @@
 namespace zce
 {
 //构造函数
-File_Lock::File_Lock() :
+file_lock::file_lock() :
     open_by_self_(false),
     file_len_(0)
 {
 }
 
 //析构函数
-File_Lock::~File_Lock()
+file_lock::~file_lock()
 {
     close();
 }
 
 //通过文件名称参数初始化文件锁，会打开这个文件
-int File_Lock::open(const char* file_name,
+int file_lock::open(const char* file_name,
                     int open_mode,
                     mode_t perms)
 {
@@ -54,7 +54,7 @@ int File_Lock::open(const char* file_name,
 }
 
 //通过文件句柄初始化文件锁
-int File_Lock::open(ZCE_HANDLE file_handle)
+int file_lock::open(ZCE_HANDLE file_handle)
 {
     int ret = 0;
     ret = zce::filesize(file_handle, &file_len_);
@@ -69,7 +69,7 @@ int File_Lock::open(ZCE_HANDLE file_handle)
 }
 
 //关闭文件锁
-int File_Lock::close()
+int file_lock::close()
 {
     unlock();
 
@@ -82,13 +82,13 @@ int File_Lock::close()
 }
 
 //得到锁文件的句柄
-ZCE_HANDLE File_Lock::get_file_handle()
+ZCE_HANDLE file_lock::get_file_handle()
 {
     return file_lock_.handle_;
 }
 
 //读取锁
-void File_Lock::lock_read()
+void file_lock::lock_read()
 {
     int ret = 0;
     ret = zce::fcntl_rdlock(&file_lock_, SEEK_SET, 0, file_len_);
@@ -102,7 +102,7 @@ void File_Lock::lock_read()
     return;
 }
 //尝试读取锁
-bool File_Lock::try_lock_read()
+bool file_lock::try_lock_read()
 {
     int ret = 0;
 
@@ -117,7 +117,7 @@ bool File_Lock::try_lock_read()
 }
 
 //写锁定
-void File_Lock::lock_write()
+void file_lock::lock_write()
 {
     int ret = 0;
     ret = zce::fcntl_wrlock(&file_lock_, SEEK_SET, 0, file_len_);
@@ -128,7 +128,7 @@ void File_Lock::lock_write()
     }
 }
 //尝试读取锁
-bool File_Lock::try_lock_write()
+bool file_lock::try_lock_write()
 {
     int ret = 0;
 
@@ -143,7 +143,7 @@ bool File_Lock::try_lock_write()
 }
 
 //解锁,如果是读写锁也只需要这一个函数
-void File_Lock::unlock()
+void file_lock::unlock()
 {
     int ret = 0;
 

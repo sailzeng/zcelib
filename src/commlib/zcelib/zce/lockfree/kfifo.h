@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include "zce/lock/spin_lock.h"
+
 namespace zce::lockfree
 {
 /*!
@@ -35,7 +37,7 @@ template<typename T>
 concept integral_t = std::is_integral<T>::value;
 
 template <typename T> requires integral_t<T>
-class shm_kfifo
+class kfifo
 {
 public:
 
@@ -111,17 +113,17 @@ protected:
                 的一些状态，关键数据，用于恢复，在恢复的时候会进行比对检查
                 内部使用结构，所以前面加了_
     */
-    class shm_kfifo_head
+    class kfifo_head
     {
         //
-        friend  class shm_kfifo;
+        friend  class kfifo;
 
     protected:
 
         ///构造函数，不对外提供，
-        shm_kfifo_head() = default;
+        kfifo_head() = default;
         ///析构函数
-        ~shm_kfifo_head() = default;
+        ~kfifo_head() = default;
 
         //数据也不提供给大众访问，shm_kfifo除外
     protected:
@@ -145,13 +147,13 @@ protected:
 protected:
 
     ///构造函数，用protected保护，避免你用了
-    shm_kfifo() = default;
+    kfifo() = default;
     ///析构函数
-    ~shm_kfifo() = default;
+    ~kfifo() = default;
 
     ///只定义不实现
-    shm_kfifo(const shm_kfifo &) = delete;
-    const shm_kfifo& operator=(const shm_kfifo&) = delete;
+    kfifo(const kfifo &) = delete;
+    const kfifo& operator=(const kfifo&) = delete;
 
 protected:
 
@@ -179,7 +181,7 @@ public:
     */
     static size_t getallocsize(const size_t size_of_deque)
     {
-        return  sizeof(shm_kfifo_head) + size_of_deque + JUDGE_FULL_INTERVAL;
+        return  sizeof(kfifo_head) + size_of_deque + JUDGE_FULL_INTERVAL;
     }
 
     /*!
@@ -190,10 +192,11 @@ public:
     * @param      mmap_ptr         内存的指针，共享内存也可以，普通内存也可以
     * @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
     */
-    static shm_kfifo* initialize(size_t size_of_deque,
-                                 size_t max_len_node,
-                                 char* mmap_ptr,
-                                 bool if_restore = false)
+    static kfifo* initialize(size_t size_of_deque,
+                             size_t max_len_node,
+                             char* mmap_ptr,
+                             bool if_restore = false,
+                             bool multi_thread = false)
     {
         //必须大于间隔长度
         if (size_of_deque <= sizeof(T) + JUDGE_FULL_INTERVAL)
@@ -202,7 +205,7 @@ public:
         }
 
         //
-        shm_kfifo_head* dequechunk_head = reinterpret_cast<shm_kfifo_head*>(mmap_ptr);
+        kfifo_head* dequechunk_head = reinterpret_cast<kfifo_head*>(mmap_ptr);
 
         //如果是恢复，检查几个值是否相等
         if (if_restore == true)
@@ -220,27 +223,28 @@ public:
         dequechunk_head->size_of_cycle_ = size_of_deque + JUDGE_FULL_INTERVAL;
         dequechunk_head->max_len_node_ = max_len_node;
 
-        shm_kfifo* kfifo = new shm_kfifo();
+        kfifo* k = new kfifo();
 
         //得到空间大小
-        kfifo->shm_base_ = mmap_ptr;
-
-        //
-        kfifo->kfifo_head_ = dequechunk_head;
-        //
-        kfifo->kfifo_data_ = mmap_ptr + sizeof(shm_kfifo_head);
+        k->shm_base_ = mmap_ptr;
+        k->kfifo_head_ = dequechunk_head;
+        k->kfifo_data_ = mmap_ptr + sizeof(kfifo_head);
         if (if_restore == false)
         {
-            kfifo->clear();
+            k->clear();
         }
-        return kfifo;
+        if (multi_thread == false)
+        {
+            k->spin_lock_ = std::move(std::make_unique<zce::spin_lock>());
+        }
+        return k;
     }
 
     /*!
     @brief      销毁初始化 initialize 得到的指针
     @param      deque_ptr  销毁的指针，
     */
-    static void terminate(shm_kfifo* kfifo_ptr)
+    static void terminate(kfifo* kfifo_ptr)
     {
         delete kfifo_ptr;
         kfifo_ptr = nullptr;
@@ -390,8 +394,8 @@ public:
             return false;
         }
 
-        size_t tmplen = get_front_len();
-        n = node::new_node(tmplen);
+        size_t node_len = get_front_len();
+        n = node::new_node(node_len);
 
         //这样写会有一些重复调用，但是我觉得这个地方性能不会是问题。
         return pop_front(n);
@@ -412,8 +416,8 @@ public:
             return false;
         }
 
-        size_t tmplen = get_front_len();
-        n = node::new_node(tmplen);
+        size_t node_len = get_front_len();
+        n = node::new_node(node_len);
 
         return read_front(n);
     }
@@ -543,9 +547,12 @@ protected:
     char* shm_base_ = nullptr;
 
     ///内存的头部
-    shm_kfifo_head* kfifo_head_ = nullptr;
+    kfifo_head* kfifo_head_ = nullptr;
 
     ///数据区的头指针,方便计算
     char* kfifo_data_ = nullptr;
+
+    //!spin_lock
+    std::unique_ptr<zce::spin_lock>  spin_lock_;
 };
 };

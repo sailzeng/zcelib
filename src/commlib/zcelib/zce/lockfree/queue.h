@@ -5,18 +5,22 @@
 namespace zce::lockfree
 {
 /*!
-* @brief      lockfree的Queue 队列
+* @brief      lockfree的Queue 队列，压入头部，从尾部取出
 *
-* @tparam     T
+* @tparam     T,保存的是指针
 * note        这个玩意测试性质非常大，主要就是为了满足我学习的爱好
+*             这个代码可能存在ABA的问题
+*             不要使用这个代码
 */
 template <typename T>
 class queue
 {
+    //数据都以指针存放，同时保留
     struct node
     {
+        //指向数据的指针
         T *data_ = nullptr;
-
+        //next的指针，指向后面的数据
         std::atomic <node *> next_ = nullptr;
     };
 
@@ -42,10 +46,11 @@ public:
     queue(const queue& other) = delete;
     queue& operator=(const queue& other) = delete;
 
-    //
+    //压入数据
     bool enqueue(T *const data)
     {
         auto new_tail = new node();
+        new_tail->data_ = data;
         while (true)
         {
             //先取一下尾指针和尾指针的next
@@ -61,7 +66,7 @@ public:
             if (old_next != nullptr)
             {
                 //下面这行注释掉也可以，这儿只是加快移动tail_。再次循环tail也应该可以改变
-                tail_.compare_exchange_strong(old_tail, old_next);
+                //tail_.compare_exchange_strong(old_tail, old_next);
                 continue;
             }
             //如果加入新的尾结点成功，则退出
@@ -69,7 +74,6 @@ public:
             auto ret = old_tail->next_.compare_exchange_weak(write_null, new_tail);
             if (ret)
             {
-                old_tail->data_ = data;
                 //（2）置尾结点, 这儿确实存在tail没有后移的情况，所以对应会有(1)(3)的处理
                 tail_.compare_exchange_strong(old_tail, new_tail);
                 ++queue_size_;
@@ -107,7 +111,7 @@ public:
             if (old_head == old_tail && old_next != nullptr)
             {
                 //下面这行注释掉也可以，这儿只是加快移动tail_。再次循环tail也应该可以改变
-                tail_.compare_exchange_strong(old_tail, old_next);
+                //tail_.compare_exchange_strong(old_tail, old_next);
                 continue;
             }
             auto ret = head_.compare_exchange_weak(old_head, old_next);

@@ -41,7 +41,7 @@ public:
     virtual ~lock_base(void) = default;
 
     ///允许Lock_Ptr_Guard使用一些函数
-    friend class lock_ptr_guard;
+    friend class lock_ptr_guard<lock_base>;
 
     //为了避免其他人的使用，特此将这些函数隐藏起来
 private:
@@ -137,14 +137,14 @@ public:
 *             扩展应该都是从这个基类扩展
 *
 */
-class Condition_Base
+class condition_base
 {
 protected:
     ///构造函数,protected，允许析构，不允许构造的写法
-    Condition_Base() = default;
+    condition_base() = default;
 public:
     ///析构函数，
-    virtual ~Condition_Base() = default;
+    virtual ~condition_base() = default;
 
     //为了避免其他人的使用，特此将这些函数隐藏起来
 private:

@@ -36,8 +36,8 @@ class null_lock : public zce::lock_base
 public:
     //nullptr锁的GUARD
     typedef lock_guard<zce::null_lock>      LOCK_GUARD;
-    typedef Shared_Guard<zce::null_lock>    LOCK_SHARED_GUARD;
-    typedef Unique_Guard<zce::null_lock>    LOCK_UNIQUE_GUARD;
+    typedef shared_Guard<zce::null_lock>    LOCK_SHARED_GUARD;
+    typedef unique_guard<zce::null_lock>    LOCK_UNIQUE_GUARD;
 
 public:
     ///构造函数
@@ -143,7 +143,7 @@ public:
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
 */
-class Null_Condition : public Condition_Base
+class Null_Condition : public condition_base
 {
 public:
     //

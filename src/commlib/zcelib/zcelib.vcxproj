@@ -267,6 +267,7 @@
     <ClInclude Include="zce\lockfree\ptr_ring.h" />
     <ClInclude Include="zce\lockfree\spsc_ring.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
+    <ClInclude Include="zce\lock\spin_lock.h" />
     <ClInclude Include="zce\logger\logging.h" />
     <ClInclude Include="zce\logger\log_file.h" />
     <ClInclude Include="zce\logger\log_msg.h" />

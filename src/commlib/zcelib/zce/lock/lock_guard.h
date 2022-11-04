@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include "zce/util/non_copyable.h"
-
 namespace zce
 {
 /*!
@@ -25,7 +23,7 @@ namespace zce
 *             process_semaphore,thread_nonr_mutex,等
 */
 template <typename zce_lock>
-class lock_guard : public ::zce::non_copyable
+class lock_guard
 {
 public:
 
@@ -58,6 +56,9 @@ public:
         return lock_->lock();
     }
 
+    lock_guard(const lock_guard&) = delete;
+    lock_guard& operator=(const lock_guard&) = delete;
+
     ///尝试锁定操作
     bool try_lock(void)
     {
@@ -81,18 +82,18 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_lock>
-class Shared_Guard : public zce::non_copyable
+class shared_Guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    Shared_Guard(zce_lock& lock) :
+    shared_Guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock_shared();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    Shared_Guard(zce_lock& lock, bool block) :
+    shared_Guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -102,10 +103,13 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~Shared_Guard()
+    ~shared_Guard()
     {
         lock_->unlock_shared();
     }
+
+    shared_Guard(const shared_Guard&) = delete;
+    shared_Guard& operator=(const shared_Guard&) = delete;
 
     ///读取锁
     void lock_shared()
@@ -135,18 +139,18 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_lock>
-class Unique_Guard : public zce::non_copyable
+class unique_guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    Unique_Guard(zce_lock& lock) :
+    unique_guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock_write();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    Unique_Guard(zce_lock& lock, bool block) :
+    unique_guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -156,10 +160,13 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~Unique_Guard()
+    ~unique_guard()
     {
         lock_->unlock();
     }
+
+    unique_guard(const unique_guard&) = delete;
+    unique_guard& operator=(const unique_guard&) = delete;
 
     ///读取锁
     void lock()
@@ -189,7 +196,7 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_sema>
-class semaphore_guard : public zce::non_copyable
+class semaphore_guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
@@ -215,6 +222,9 @@ public:
         lock_->release();
     }
 
+    semaphore_guard(const semaphore_guard&) = delete;
+    semaphore_guard& operator=(const semaphore_guard&) = delete;
+
     ///读取锁
     void acquire()
     {
@@ -235,5 +245,85 @@ protected:
 
     ///用来GUARD保护的锁
     zce_sema* lock_;
+};
+
+/*!
+* @brief      锁GUARD，利用构造和析构进行加锁解锁操作方法，利用多态兼容变化
+*             多态的好处是，你可以动态的决定使用什么锁，而不是在编译的时候。
+*
+*/
+template <class zce_lock>
+class lock_ptr_guard
+{
+public:
+
+    //构造，得到锁，进行锁定
+    lock_ptr_guard(zce_lock* lock_ptr) :
+        lock_ptr_(lock_ptr)
+    {
+        if (lock_ptr_)
+        {
+            lock_ptr_->lock();
+        }
+    }
+
+    ///构造，得到锁，根据要求决定是否进行锁定操作
+    lock_ptr_guard(zce_lock* lock_ptr, bool block) :
+        lock_ptr_(lock_ptr)
+    {
+        if (block && lock_ptr_)
+        {
+            lock_ptr_->lock();
+        }
+    }
+
+    ///析构，同时对锁进行释放操作
+    ~lock_ptr_guard(void)
+    {
+        if (lock_ptr_)
+        {
+            lock_ptr_->unlock();
+        }
+    };
+
+    lock_ptr_guard(const lock_ptr_guard&) = delete;
+    lock_ptr_guard& operator=(const lock_ptr_guard&) = delete;
+
+    ///锁定操作
+    void lock(void)
+    {
+        if (lock_ptr_)
+        {
+            lock_ptr_->lock();
+        }
+    }
+
+    ///尝试锁定操作
+    bool try_lock(void)
+    {
+        if (lock_ptr_)
+        {
+            return lock_ptr_->try_lock();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    ///解锁操作
+    void unlock(void)
+    {
+        if (lock_ptr_)
+        {
+            lock_ptr_->unlock();
+        }
+        return;
+    }
+
+protected:
+
+    ///用来GUARD保护的锁,利用C++特性实现锁差异
+    zce_lock* lock_ptr_;
 };
 }

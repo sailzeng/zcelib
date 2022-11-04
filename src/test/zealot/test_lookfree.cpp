@@ -6,7 +6,7 @@
 
 int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::lockfree::shm_kfifo<uint32_t> kfifo_32_t;
+    typedef zce::lockfree::kfifo<uint32_t> kfifo_32_t;
     size_t dequesize = 1026;
     size_t szalloc = kfifo_32_t::getallocsize(dequesize);
     std::cout << "need mem: " << (int)szalloc << std::endl;

@@ -40,7 +40,7 @@
 namespace zce
 {
 class node;
-class shm_kfifo;
+class kfifo;
 };
 
 namespace zce

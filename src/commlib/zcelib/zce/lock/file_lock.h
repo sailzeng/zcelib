@@ -24,20 +24,23 @@ namespace zce
 /*!
 * @brief      文件锁，对于整个文件进行操作
 */
-class File_Lock : public zce::non_copyable
+class file_lock
 {
 public:
 
     ///读锁的GUARD
-    typedef Shared_Guard<File_Lock> LOCK_SHARED_GUARD;
+    typedef shared_Guard<file_lock> LOCK_SHARED_GUARD;
     ///写锁的GUARD
-    typedef Unique_Guard<File_Lock> LOCK_UNIQUE_GUARD;
+    typedef unique_guard<file_lock> LOCK_UNIQUE_GUARD;
 
 public:
 
     //构造函数
-    File_Lock();
-    ~File_Lock();
+    file_lock();
+    ~file_lock();
+
+    file_lock(const file_lock&) = delete;
+    file_lock& operator=(const file_lock &) = delete;
 
 public:
 

@@ -829,6 +829,9 @@
     <ClInclude Include="zce\pool\shareptr_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\lock\spin_lock.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

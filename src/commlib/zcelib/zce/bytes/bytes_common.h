@@ -46,65 +46,73 @@
 //因为我没有环境进行相关的测试。
 //注意#pragma pack(push, 1) 和__attribute__ ((packed)) 是有区别的，
 //以下参考之 德问
+// pragma pack(push, 1) :
 //前者告诉编译器结构体或类内部的成员变量相对于第一个变量的地址的偏移量的对齐方式，
 //缺省情况下，编译器按照自然边界对齐，当变量所需的自然对齐边界比n大 时，按照n对齐，
 //否则按照自然边界对齐；
+// __attribute__ ((packed)) :
 //后者告诉编译器一个结构体或者类或者联合或者一个类型的变量
+// C++ 有一个新对应的关键字 alignas
 //(对象)分配地址空间时的地址对齐方式。也就是所，如果将__attribute__((aligned(m)))
 //作用于一个类型，那么该类型的变量在分配地址空间时，其存放的地址一定按照m字节对齐
 //(m必 须是2的幂次方)。并且其占用的空间，即大小,也是m的整数倍，以保证在申请连续存储空间的时候，
 //每一个元素的地址也是按照m字节对齐。 __attribute__((aligned(m)))也可以作用于一个单独的变量。
 //由上可以看出__attribute__((aligned(m)))的功能更全。
 
-#if defined ZCE_OS_WINDOWS
-
 #pragma pack(push, 1)
 
-struct ZU16_STRUCT
+struct alignas(1) ZU16_STRUCT
 {
     uint16_t value_;
 };
-struct ZU32_STRUCT
+struct alignas(1) ZU32_STRUCT
 {
     uint32_t value_;
 };
-struct ZU64_STRUCT
+struct alignas(1) ZU64_STRUCT
 {
     uint64_t value_;
 };
-struct ZFLOAT_STRUCT
+struct alignas(1) ZFLOAT_STRUCT
 {
     float value_;
 };
-struct ZDOUBLE_STRUCT
+struct alignas(1) ZDOUBLE_STRUCT
 {
     double value_;
 };
 
 #pragma pack(pop)
 
+//Linux GCC支持#pragma pack
+//保留这些代码是为了记录
+#if 0
+#if defined ZCE_OS_WINDOWS
+
 #elif defined ZCE_OS_LINUX
 //__attribute__ ((packed)) 在这儿的目的是利用其特性避免BUS ERROR错误
+//__attribute__((packed, aligned(1)));
 struct ZU16_STRUCT
 {
     uint16_t value_;
-} __attribute__((packed));
+} __attribute__((packed, aligned(1)));
 struct ZU32_STRUCT
 {
     uint32_t value_;
-} __attribute__((packed));
+} __attribute__((packed, aligned(1)));
 struct ZU64_STRUCT
 {
     uint64_t value_;
-} __attribute__((packed));
+} __attribute__((packed, aligned(1)));
 struct ZFLOAT_STRUCT
 {
     float value_;
-} __attribute__((packed));
+} __attribute__((packed, aligned(1)));
 struct ZDOUBLE_STRUCT
 {
     double value_;
-} __attribute__((packed));
+} __attribute__((packed, aligned(1)));
+#endif
 #endif
 
 ///从一个(char *)指针内读取(也可以用于写入)一个uint16_t,or uint32_t or uint64_t
