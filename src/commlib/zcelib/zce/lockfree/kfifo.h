@@ -27,17 +27,21 @@ namespace zce::lockfree
 *             判断EMPTY,FULL使用快照,
 *             如果非要多个进程读写,要加锁,要自己实现锁,我只提供了一个基类,
 *             是一个先进，先出的存放任意大小的数据快的队列
-* @tparam     INTEGRAL_T  Node 最开始的标识长度是用了几个字节
+* @tparam     T  Node 最开始的标识长度是用了几个字节
 * note        不是容器模版,如果非要容器队列,用shm_list自己解决,很容易
 */
-template <typename INTEGRAL_T>
+
+template<typename T>
+concept integral_t = std::is_integral<T>::value;
+
+template <typename T> requires integral_t<T>
 class shm_kfifo
 {
 public:
 
     /*!
     * @brief      可以放如deque的node结构，变长，前面若干个字节表示长度，
-    *             长度用模版参数 INTEGRAL_T 控制
+    *             长度用模版参数 T 控制
     *             外部使用时，只要你BUFFER最开始标识长度和INTEGRAL_T一致，
     *             就可以强转成指针使用
     *
@@ -58,10 +62,10 @@ public:
         //*
         static node* new_node(size_t node_len)
         {
-            static_assert(std::is_integral<INTEGRAL_T>::value, "Not integral!");
-            assert(node_len > sizeof(INTEGRAL_T) &&
+            static_assert(std::is_integral<T>::value, "Not integral!");
+            assert(node_len > sizeof(T) &&
                    node_len <= static_cast<size_t>(std::numeric_limits<int>::max()));
-            if (node_len <= sizeof(INTEGRAL_T) ||
+            if (node_len <= sizeof(T) ||
                 node_len > static_cast<size_t>(std::numeric_limits<int>::max()))
 
             {
@@ -74,7 +78,7 @@ public:
             memset(ptr, 0, node_len);
 #endif
             //
-            ((node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
+            ((node*)ptr)->size_of_node_ = (T)node_len;
 
             return ((node*)ptr);
         }
@@ -88,14 +92,14 @@ public:
     public:
 
         ///头部的长度，
-        static const size_t NODE_HEAD_LEN = sizeof(INTEGRAL_T);
+        static const size_t NODE_HEAD_LEN = sizeof(T);
 
         ///最小的CHUNK NODE长度，NODE_HEAD_LEN+1
         static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = NODE_HEAD_LEN + 1;
 
         /// 整个Node的长度,包括size_of_node_ + chunkdata, 你可以用模版描述这个长度是多少
         /// 这里使用size_t,long在64位下会有问题
-        INTEGRAL_T    size_of_node_;
+        T    size_of_node_;
 
         /// 数据区的数据，变长的数据,1只是占位符号
         char          chunk_data_[1];
@@ -192,7 +196,7 @@ public:
                                  bool if_restore = false)
     {
         //必须大于间隔长度
-        if (size_of_deque <= sizeof(INTEGRAL_T) + JUDGE_FULL_INTERVAL)
+        if (size_of_deque <= sizeof(T) + JUDGE_FULL_INTERVAL)
         {
             return nullptr;
         }
@@ -453,7 +457,7 @@ public:
     {
         //还是要担心长度截断2节,头大,头大,多写好多代码
         char* tmp1 = kfifo_data_ + kfifo_head_->deque_begin_;
-        INTEGRAL_T node_len = 0;
+        T node_len = 0;
         char* tmp2 = reinterpret_cast<char*>(&node_len);
 
         //如果管道的长度也绕圈，采用野蛮的法子得到长度
@@ -461,7 +465,7 @@ public:
             kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
             //一个个字节读取长度
-            for (size_t i = 0; i < sizeof(INTEGRAL_T); ++i)
+            for (size_t i = 0; i < sizeof(T); ++i)
             {
                 if (tmp1 >= kfifo_data_ + kfifo_head_->size_of_cycle_)
                 {
@@ -476,7 +480,7 @@ public:
         //
         else
         {
-            node_len = *(reinterpret_cast<INTEGRAL_T*>(tmp1));
+            node_len = *(reinterpret_cast<T*>(tmp1));
         }
 
         return node_len;

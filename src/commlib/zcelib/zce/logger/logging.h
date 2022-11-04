@@ -368,7 +368,7 @@ public:
 
 //日志打印堆栈信息的宏，x是日志的输出级别
 #ifndef ZCE_BACKTRACE_STACK
-#define ZCE_BACKTRACE_STACK(x) zce::backtrace_stack(x,__ZCE_FUNC__)
+#define ZCE_BACKTRACE_STACK(x) zce::backtrace_stack(x,20,__ZCE_FUNC__)
 #endif
 
 //日志打印堆栈信息的宏，x是日志的输出级别,y是指针，z是指针长度

@@ -169,7 +169,7 @@ public:
     }
 
     //将一个数据放入队列的尾部,如果队列已经满了,返回false
-    bool push_back(const T &value_data)
+    bool push_back(const T &value)
     {
         //如果已经满了
         if (full())
@@ -177,13 +177,13 @@ public:
             return false;
         }
         //如果还有空间，直接放在队伍尾部
-        vptr_ptr_[spscring_end_] = value_data;
+        vptr_ptr_[spscring_end_] = value;
         spscring_end_ = (spscring_end_ + 1) % spscring_capacity_;
         return true;
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了
-    bool push_front(const T &value_data)
+    bool push_front(const T &value)
     {
         //如果已经满了
         if (full())
@@ -192,12 +192,12 @@ public:
         }
         //如果还有空间，直接放在队伍首部
         spscring_start_ = (spscring_start_ > 0) ? spscring_start_ - 1 : spscring_capacity_ - 1;
-        vptr_ptr_[spscring_start_] = value_data;
+        vptr_ptr_[spscring_start_] = value;
         return true;
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(T &value_data)
+    bool pop_front(T &value)
     {
         //如果是空的返回错误
         if (empty())
@@ -205,7 +205,7 @@ public:
             return false;
         }
 
-        value_data = vptr_ptr_[spscring_start_];
+        value = vptr_ptr_[spscring_start_];
         vptr_ptr_[spscring_start_].~T();
         spscring_start_ = (spscring_start_ + 1) % spscring_capacity_;
         return true;
@@ -225,7 +225,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(T &value_data)
+    bool pop_back(T &value)
     {
         //如果是空的返回错误
         if (empty())
@@ -233,7 +233,7 @@ public:
             return false;
         }
         spscring_end_ = (spscring_end_ > 0) ? spscring_end_ - 1 : spscring_capacity_ - 1;
-        value_data = vptr_ptr_[spscring_end_];
+        value = vptr_ptr_[spscring_end_];
         vptr_ptr_[spscring_end_].~T();
 
         return true;

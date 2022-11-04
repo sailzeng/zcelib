@@ -185,7 +185,7 @@ public:
     }
 
     ///将一个数据放入队列的尾部
-    bool push_back(const T& value_data)
+    bool push_back(const T& value)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
         size_t w_start = 0, w_end = 0, r_end;
@@ -205,7 +205,7 @@ public:
                  std::memory_order_acq_rel));
 
         //写入数据，直接放在队尾
-        new (value_ptr_ + w_start) T(value_data);
+        new (value_ptr_ + w_start) T(value);
 
         //调整可读范围.只步进+1，所以稍微的不同步不影响任何使用
         do
@@ -218,7 +218,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(T& value_data)
+    bool pop_front(T& value)
     {
         size_t r_start = 0, r_end = 0, w_end = 0;
         do
@@ -233,7 +233,7 @@ public:
                  (r_start + 1) % rings_capacity_,
                  std::memory_order_acq_rel));
         //读取数据，
-        value_data = value_ptr_[r_start];
+        value = value_ptr_[r_start];
         value_ptr_[r_start].~T();
 
         do
@@ -246,7 +246,7 @@ public:
     }
 
     ///将一个数据放入队列的头部
-    bool push_front(const T& value_data)
+    bool push_front(const T& value)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
         size_t w_start = 0, w_end = 0, r_start = 0;
@@ -266,7 +266,7 @@ public:
                  std::memory_order_acq_rel));
 
         //写入数据，直接放在队尾
-        new (value_ptr_ + w_end) T(value_data);
+        new (value_ptr_ + w_end) T(value);
 
         //调整可读范围,步进-1
         do
@@ -279,7 +279,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_back(T& value_data)
+    bool pop_back(T& value)
     {
         size_t r_start = 0, r_end = 0, w_start = 0;
         do
@@ -294,7 +294,7 @@ public:
                  (r_end > 0) ? r_end - 1 : rings_capacity_ - 1,
                  std::memory_order_acq_rel));
         //读取数据，
-        value_data = value_ptr_[r_end];
+        value = value_ptr_[r_end];
         value_ptr_[r_end].~T();
 
         do

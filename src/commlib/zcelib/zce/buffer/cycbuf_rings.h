@@ -18,7 +18,10 @@
 
 namespace zce
 {
-template <typename INTEGRAL_T>
+template<typename T>
+concept integral_t = std::is_integral<T>::value;
+
+template <typename T> requires integral_t<T>
 class cycbuf_rings
 {
 public:
@@ -38,10 +41,10 @@ public:
         //*
         static node* new_node(size_t node_len)
         {
-            static_assert(std::is_integral<INTEGRAL_T>::value, "Not integral!");
-            assert(node_len > sizeof(INTEGRAL_T) &&
+            static_assert(std::is_integral<T>::value, "Not integral!");
+            assert(node_len > sizeof(T) &&
                    node_len <= static_cast<size_t>(std::numeric_limits<int>::max()));
-            if (node_len <= sizeof(INTEGRAL_T) ||
+            if (node_len <= sizeof(T) ||
                 node_len > static_cast<size_t>(std::numeric_limits<int>::max()))
             {
                 return nullptr;
@@ -52,7 +55,7 @@ public:
             memset(ptr, 0, node_len);
 #endif
             //
-            ((node*)ptr)->size_of_node_ = (INTEGRAL_T)node_len;
+            ((node*)ptr)->size_of_node_ = (T)node_len;
             return ((node*)ptr);
         }
 
@@ -65,7 +68,7 @@ public:
 
         /// 整个Node的长度,包括size_of_node_ + node_data_数据,
         /// 这里使用size_t,long在64位下会有问题
-        INTEGRAL_T    size_of_node_;
+        T    size_of_node_;
 
         /// 数据区的数据，变长的数据
         char            node_data_[1];
@@ -73,7 +76,7 @@ public:
 public:
 
     ///头部的长度，
-    static const size_t NODE_HEAD_LEN = sizeof(INTEGRAL_T);
+    static const size_t NODE_HEAD_LEN = sizeof(T);
 
     ///最小的CHUNK NODE长度，4+1
     static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = NODE_HEAD_LEN + 1;
@@ -141,7 +144,7 @@ public:
                     size_t max_len_node)
     {
         //必须大于间隔长度
-        if (size_of_deque <= sizeof(INTEGRAL_T) + JUDGE_FULL_INTERVAL)
+        if (size_of_deque <= sizeof(T) + JUDGE_FULL_INTERVAL)
         {
             return false;
         }
@@ -163,7 +166,7 @@ public:
     bool push_end(const node* n)
     {
         //粗略的检查,如果长度不合格,返回不成功
-        if (n->size_of_node_ < sizeof(INTEGRAL_T) ||
+        if (n->size_of_node_ < sizeof(T) ||
             n->size_of_node_ > max_len_node_)
         {
             return false;
@@ -239,7 +242,7 @@ public:
     {
         //还是要担心长度截断2节,头大,头大,多写好多代码
         char* tmp1 = cycbuf_data_ + cycbuf_begin_;
-        INTEGRAL_T node_len = 0;
+        T node_len = 0;
         char* tmp2 = reinterpret_cast<char*>(&node_len);
 
         //如果管道的长度也绕圈，采用野蛮的法子得到长度
@@ -261,7 +264,7 @@ public:
         //
         else
         {
-            node_len = *(reinterpret_cast<INTEGRAL_T*>(tmp1));
+            node_len = *(reinterpret_cast<T*>(tmp1));
         }
 
         return node_len;

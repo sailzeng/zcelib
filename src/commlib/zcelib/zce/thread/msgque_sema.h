@@ -53,7 +53,7 @@ public:
     //QUEUE是否为nullptr
     inline bool empty()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::lock_guard guard(queue_lock_);
         if (queue_cur_size_ == 0)
         {
             return true;
@@ -64,7 +64,7 @@ public:
     //QUEUE是否为满
     inline bool full()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::lock_guard guard(queue_lock_);
         if (queue_cur_size_ == queue_max_size_)
         {
             return true;
@@ -73,73 +73,73 @@ public:
     }
 
     //放入数据，一直等待
-    bool enqueue(const T& value_data)
+    bool enqueue(const T& value)
     {
         std::chrono::microseconds no_use;
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_FOREVER,
                          no_use);
     }
 
     //放入一个数据，进行超时等待
     template<class Rep, class Period>
-    bool enqueue_wait(const T& value_data,
+    bool enqueue_wait(const T& value,
                       const std::chrono::duration<Rep, Period>& wait_time)
     {
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-    bool enqueue_wait(const T& value_data,
+    bool enqueue_wait(const T& value,
                       const zce::time_value& wait_time)
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
     //试着放入新的数据进入队列，如果没有成功，立即返回
-    bool try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value)
     {
         std::chrono::microseconds no_use;
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_NO_WAIT,
                          no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     template<class Rep, class Period>
-    bool dequeue_wait(T& value_data,
+    bool dequeue_wait(T& value,
                       const std::chrono::duration<Rep, Period>& wait_time)
     {
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-    bool dequeue_wait(T& value_data,
+    bool dequeue_wait(T& value,
                       const zce::time_value& wait_time)
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
     //取出一个数据，一直等待
-    bool dequeue(T& value_data)
+    bool dequeue(T& value)
     {
         std::chrono::microseconds no_use;
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_FOREVER,
                          no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    bool try_dequeue(T& value_data)
+    bool try_dequeue(T& value)
     {
         std::chrono::microseconds no_use;
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_NO_WAIT,
                          no_use);
     }
@@ -163,7 +163,7 @@ protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     template<class Rep, class Period>
-    bool dequeue_i(T& value_data,
+    bool dequeue_i(T& value,
                    MQW_WAIT_MODEL model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {
@@ -196,9 +196,9 @@ protected:
 
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            std::lock_guard<std::mutex> guard(queue_lock_);
+            std::lock_guard guard(queue_lock_);
             //
-            value_data = *message_queue_.begin();
+            value = *message_queue_.begin();
             message_queue_.pop_front();
             --queue_cur_size_;
         }
@@ -208,7 +208,7 @@ protected:
     }
 
     template<class Rep, class Period>
-    bool enqueue_i(const T& value_data,
+    bool enqueue_i(const T& value,
                    MQW_WAIT_MODEL model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {
@@ -242,9 +242,9 @@ protected:
 
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            std::lock_guard<std::mutex> lock_guard(queue_lock_);
+            std::lock_guard lock_guard(queue_lock_);
 
-            message_queue_.push_back(value_data);
+            message_queue_.push_back(value);
             ++queue_cur_size_;
         }
         sem_empty_.release();
@@ -259,13 +259,13 @@ protected:
     size_t                  queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    std::mutex              queue_lock_;
+    std::recursive_mutex                 queue_lock_;
 
     //信号灯，满的信号灯
-    std::counting_semaphore<1024>   sem_full_;
+    std::counting_semaphore<0xFFFFFFF>   sem_full_;
 
     //信号灯，空的信号灯，当数据
-    std::counting_semaphore<1024>   sem_empty_;
+    std::counting_semaphore<0xFFFFFFF>   sem_empty_;
 
     //容器类型，可以是list,dequeue,
     C                       message_queue_;
@@ -362,55 +362,55 @@ public:
     }
 
     //放入数据，一直等待
-    bool enqueue(const T& value_data)
+    bool enqueue(const T& value)
     {
         zce::time_value no_use;
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_MODEL::MQW_WAIT_FOREVER,
                          no_use);
     }
 
     //放入一个数据，进行超时等待
-    bool enqueue(const T& value_data,
+    bool enqueue(const T& value,
                  const zce::time_value& wait_time)
     {
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT,
                          wait_time);
     }
 
     //试着放入新的数据进入队列，如果没有成功，立即返回
-    bool try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value)
     {
         zce::time_value no_use;
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_MODEL::MQW_NO_WAIT,
                          no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    bool dequeue_wait(T& value_data,
+    bool dequeue_wait(T& value,
                       const zce::time_value& wait_time)
     {
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_MODEL::MQW_WAIT_TIMEOUT,
                          wait_time);
     }
 
     //取出一个数据，一直等待
-    bool dequeue(T& value_data)
+    bool dequeue(T& value)
     {
         zce::time_value no_use;
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_MODEL::MQW_WAIT_FOREVER,
                          no_use);
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    bool try_dequeue(T& value_data)
+    bool try_dequeue(T& value)
     {
         zce::time_value no_use;
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_MODEL::MQW_NO_WAIT,
                          no_use);
     }
@@ -432,7 +432,7 @@ public:
 
 protected:
 
-    bool enqueue_i(const T& value_data,
+    bool enqueue_i(const T& value,
                    MQW_WAIT_MODEL model,
                    const zce::time_value& wait_time)
     {
@@ -466,7 +466,7 @@ protected:
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
             thread_light_mutex::LOCK_GUARD guard(queue_lock_);
-            message_queue_.push_back(value_data);
+            message_queue_.push_back(value);
             ++queue_cur_size_;
         }
         sem_empty_.release();
@@ -475,7 +475,7 @@ protected:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    bool dequeue_i(T& value_data,
+    bool dequeue_i(T& value,
                    MQW_WAIT_MODEL model,
                    const zce::time_value& wait_time)
     {
@@ -510,7 +510,7 @@ protected:
         {
             thread_light_mutex::LOCK_GUARD guard(queue_lock_);
             //
-            value_data = *message_queue_.begin();
+            value = *message_queue_.begin();
             message_queue_.pop_front();
             --queue_cur_size_;
         }

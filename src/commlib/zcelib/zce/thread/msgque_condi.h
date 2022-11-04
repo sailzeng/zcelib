@@ -71,73 +71,73 @@ public:
     }
 
     //放入，一直等待
-    bool enqueue(const T& value_data)
+    bool enqueue(const T& value)
     {
         std::chrono::microseconds nouse_timeout;
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_FOREVER,
                          nouse_timeout);
     }
 
     //有超时放入
     template<class Rep, class Period>
-    bool enqueue_wait(const T& value_data,
+    bool enqueue_wait(const T& value,
                       const std::chrono::duration<Rep, Period>& wait_time)
     {
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-    bool enqueue_wait(const T& value_data,
+    bool enqueue_wait(const T& value,
                       const zce::time_value& wait_time)
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
     //尝试放入，立即返回
-    bool try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value)
     {
         std::chrono::microseconds nouse_timeout;
-        return enqueue_i(value_data,
+        return enqueue_i(value,
                          MQW_NO_WAIT,
                          nouse_timeout);
     }
 
     //取出
-    bool dequeue(T& value_data)
+    bool dequeue(T& value)
     {
         std::chrono::microseconds nouse_timeout;
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_FOREVER,
                          nouse_timeout);
     }
 
     //有超时处理的取出
     template<class Rep, class Period>
-    bool dequeue_wait(T& value_data,
+    bool dequeue_wait(T& value,
                       const std::chrono::duration<Rep, Period>& wait_time)
     {
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
-    bool dequeue_wait(T& value_data,
+    bool dequeue_wait(T& value,
                       const zce::time_value& wait_time)
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
     //尝试取出，立即返回
-    bool try_dequeue(T& value_data)
+    bool try_dequeue(T& value)
     {
         std::chrono::microseconds nouse_timeout;
-        return dequeue_i(value_data,
+        return dequeue_i(value,
                          MQW_NO_WAIT,
                          nouse_timeout);
     }
@@ -159,7 +159,7 @@ protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
     template<class Rep, class Period>
-    bool enqueue_i(const T& value_data,
+    bool enqueue_i(const T& value,
                    MQW_WAIT_MODEL wait_model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {
@@ -194,7 +194,7 @@ protected:
                 }
             }
 
-            message_queue_.push_back(value_data);
+            message_queue_.push_back(value);
             ++queue_cur_size_;
         }
 
@@ -206,13 +206,13 @@ protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     template<class Rep, class Period>
-    bool dequeue_i(T& value_data,
+    bool dequeue_i(T& value,
                    MQW_WAIT_MODEL wait_model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            std::unique_lock<std::mutex> guard(queue_lock_);
+            std::unique_lock guard(queue_lock_);
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，
             //详细见pthread_condi的说明，
@@ -242,7 +242,7 @@ protected:
             }
 
             //
-            value_data = *message_queue_.begin();
+            value = *message_queue_.begin();
             message_queue_.pop_front();
             --queue_cur_size_;
         }
@@ -365,55 +365,55 @@ public:
     }
 
     //放入，一直等待
-    bool enqueue(const T& value_data)
+    bool enqueue(const T& value)
     {
         zce::time_value  nouse_timeout;
-        return enqueue_interior(value_data,
+        return enqueue_interior(value,
                                 MQW_WAIT_FOREVER,
                                 nouse_timeout);
     }
 
     //有超时放入
-    bool enqueue(const T& value_data,
+    bool enqueue(const T& value,
                  const zce::time_value& wait_time)
     {
-        return enqueue_interior(value_data,
+        return enqueue_interior(value,
                                 MQW_WAIT_TIMEOUT,
                                 wait_time);
     }
 
     //尝试放入，立即返回
-    bool try_enqueue(const T& value_data)
+    bool try_enqueue(const T& value)
     {
         zce::time_value  nouse_timeout;
-        return enqueue_interior(value_data,
+        return enqueue_interior(value,
                                 MQW_NO_WAIT,
                                 nouse_timeout);
     }
 
     //取出
-    bool dequeue(T& value_data)
+    bool dequeue(T& value)
     {
         zce::time_value  nouse_timeout;
-        return dequeue_interior(value_data,
+        return dequeue_interior(value,
                                 MQW_WAIT_FOREVER,
                                 nouse_timeout);
     }
 
     //有超时处理的取出
-    bool dequeue(T& value_data,
+    bool dequeue(T& value,
                  const zce::time_value& wait_time)
     {
-        return dequeue_interior(value_data,
+        return dequeue_interior(value,
                                 MQW_WAIT_TIMEOUT,
                                 wait_time);
     }
 
     //尝试取出，立即返回
-    bool try_dequeue(T& value_data)
+    bool try_dequeue(T& value)
     {
         zce::time_value  nouse_timeout;
-        return dequeue_interior(value_data,
+        return dequeue_interior(value,
                                 MQW_NO_WAIT,
                                 nouse_timeout);
     }
@@ -434,7 +434,7 @@ public:
 protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
-    bool enqueue_interior(const T& value_data,
+    bool enqueue_interior(const T& value,
                           MQW_WAIT_MODEL wait_model,
                           const timeval& wait_time)
     {
@@ -470,7 +470,7 @@ protected:
                 }
             }
 
-            message_queue_.push_back(value_data);
+            message_queue_.push_back(value);
             ++queue_cur_size_;
         }
 
@@ -481,7 +481,7 @@ protected:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    bool dequeue_interior(T& value_data,
+    bool dequeue_interior(T& value,
                           MQW_WAIT_MODEL wait_model,
                           const zce::time_value& wait_time)
     {
@@ -518,7 +518,7 @@ protected:
             }
 
             //
-            value_data = *message_queue_.begin();
+            value = *message_queue_.begin();
             message_queue_.pop_front();
             --queue_cur_size_;
         }

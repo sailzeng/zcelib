@@ -335,63 +335,31 @@ public:
     /*!
     * @brief      将一个数据放入队列的尾部,如果队列已经满了,根据lay_over参数决定是覆盖最后一个数据
     * @return     bool      是否成功push
-    * @param      value_data push的数据
+    * @param      value push的数据
     * @param      lay_over  你可以将lay_over参数置位true,覆盖原有的数据
     */
-    bool push_back(const T &value_data, bool lay_over = false)
+    bool push_back(const T &value, bool lay_over = false)
     {
-        //如果已经满了
-        if (full())
-        {
-            //如果不要覆盖，返回错误
-            if (lay_over == false)
-            {
-                return false;
-            }
-            else
-            {
-                //将最后一个位置覆盖，并且调整起始和结束位置
-                vptr_ptr_[lordring_end_] = value_data;
-                lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
-                lordring_start_ = (lordring_start_ + 1) % lordring_capacity_;
-                return true;
-            }
-        }
-        //如果还有空间，直接放在队伍尾部
-        vptr_ptr_[lordring_end_] = value_data;
-        lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
-        return true;
+        return push_back_i(value, lay_over);
     }
-
-    ///将一个数据放入队列的尾部,如果队列已经满了
-    bool push_front(const T &value_data, bool lay_over = false)
+    //! 右值push_back
+    bool push_back(T&& value, bool lay_over = false)
     {
-        //如果已经满了
-        if (full())
-        {
-            //如果不要覆盖，返回错误
-            if (lay_over == false)
-            {
-                return false;
-            }
-            else
-            {
-                //将起始位置调整覆盖，并且调整起始和结束位置
-                lordring_start_ = (lordring_start_ > 0) ?
-                    lordring_start_ - 1 : lordring_capacity_ - 1;
-                lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
-                vptr_ptr_[lordring_start_] = value_data;
-                return true;
-            }
-        }
-        //如果还有空间，直接放在队伍首部
-        lordring_start_ = (lordring_start_ > 0) ? lordring_start_ - 1 : lordring_capacity_ - 1;
-        vptr_ptr_[lordring_start_] = value_data;
-        return true;
+        return push_back_i(std::move(value), lay_over);
+    }
+    ///将一个数据放入队列的头部,如果队列已经满了看lay_over参数处理
+    bool push_front(const T &value, bool lay_over = false)
+    {
+        return push_front_i(value, lay_over);
+    }
+    //! 右值push_front
+    bool push_front(T &&value, bool lay_over = false)
+    {
+        return push_front_i(std::move(value), lay_over);
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(T &value_data)
+    bool pop_front(T &value)
     {
         //如果是空的返回错误
         if (empty())
@@ -399,7 +367,7 @@ public:
             return false;
         }
 
-        value_data = vptr_ptr_[lordring_start_];
+        value = vptr_ptr_[lordring_start_];
         vptr_ptr_[lordring_start_].~T();
         lordring_start_ = (lordring_start_ + 1) % lordring_capacity_;
         return true;
@@ -419,7 +387,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(T &value_data)
+    bool pop_back(T &&value)
     {
         //如果是空的返回错误
         if (empty())
@@ -427,7 +395,7 @@ public:
             return false;
         }
         lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
-        value_data = vptr_ptr_[lordring_end_];
+        value = vptr_ptr_[lordring_end_];
         vptr_ptr_[lordring_end_].~T();
 
         return true;
@@ -447,7 +415,7 @@ public:
     }
 
     //在某个位置上插入数据，后面的数据都后移一位
-    bool insert(size_t pos, T &value_data)
+    bool insert(size_t pos, T &value)
     {
         if (full())
         {
@@ -461,7 +429,7 @@ public:
             vptr_ptr_[(absolute_pos + i + 1) % lordring_capacity_] =
                 vptr_ptr_[(absolute_pos + i) % lordring_capacity_];
         }
-        vptr_ptr_[absolute_pos] = value_data;
+        vptr_ptr_[absolute_pos] = value;
         lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
         return true;
     }
@@ -509,6 +477,61 @@ public:
     iterator end()
     {
         return iterator(lordring_start_, lordring_capacity_, vptr_ptr_, size());
+    }
+
+protected:
+
+    //!push_back内部实现
+    bool push_back_i(T value, bool lay_over)
+    {
+        //如果已经满了
+        if (full())
+        {
+            //如果不要覆盖，返回错误
+            if (lay_over == false)
+            {
+                return false;
+            }
+            else
+            {
+                //将最后一个位置覆盖，并且调整起始和结束位置
+                vptr_ptr_[lordring_end_] = value;
+                lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
+                lordring_start_ = (lordring_start_ + 1) % lordring_capacity_;
+                return true;
+            }
+        }
+        //如果还有空间，直接放在队伍尾部
+        vptr_ptr_[lordring_end_] = value;
+        lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
+        return true;
+    }
+
+    //!push_front内部实现
+    bool push_front_i(T value, bool lay_over)
+    {
+        //如果已经满了
+        if (full())
+        {
+            //如果不要覆盖，返回错误
+            if (lay_over == false)
+            {
+                return false;
+            }
+            else
+            {
+                //将起始位置调整覆盖，并且调整起始和结束位置
+                lordring_start_ = (lordring_start_ > 0) ?
+                    lordring_start_ - 1 : lordring_capacity_ - 1;
+                lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
+                vptr_ptr_[lordring_start_] = value;
+                return true;
+            }
+        }
+        //如果还有空间，直接放在队伍首部
+        lordring_start_ = (lordring_start_ > 0) ? lordring_start_ - 1 : lordring_capacity_ - 1;
+        vptr_ptr_[lordring_start_] = value;
+        return true;
     }
 
 protected:
