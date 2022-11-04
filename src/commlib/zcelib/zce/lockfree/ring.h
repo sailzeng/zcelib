@@ -184,8 +184,82 @@ public:
         return false;
     }
 
-    ///将一个数据放入队列的尾部
     bool push_back(const T& value)
+    {
+        return push_back_i(value);
+    }
+    bool push_back(T&& value)
+    {
+        return push_back_i(std::move(value));
+    }
+    bool push_front(const T& value)
+    {
+        return push_front_i(value);
+    }
+    bool push_front(T&& value)
+    {
+        return push_front_i(std::move(value));
+    }
+
+    ///从队列的前面pop并且得到一个数据
+    bool pop_front(T&& value)
+    {
+        size_t r_start = 0, r_end = 0, w_end = 0;
+        do
+        {
+            r_start = read_start_.load(std::memory_order_acquire);
+            r_end = read_end_.load(std::memory_order_acquire);
+            if (r_end == r_start)
+            {
+                return false;
+            }
+        } while (!read_start_.compare_exchange_weak(r_start,
+                 (r_start + 1) % rings_capacity_,
+                 std::memory_order_acq_rel));
+        //读取数据，
+        value = value_ptr_[r_start];
+        value_ptr_[r_start].~T();
+
+        do
+        {
+            w_end = write_end_;
+        } while (write_end_.compare_exchange_weak(w_end,
+                 (w_end + 1) % rings_capacity_,
+                 std::memory_order_acq_rel));
+        return true;
+    }
+
+    ///从队列的前面pop并且得到一个数据
+    bool pop_back(T&& value)
+    {
+        size_t r_start = 0, r_end = 0, w_start = 0;
+        do
+        {
+            r_start = read_start_.load(std::memory_order_acquire);
+            r_end = read_end_.load(std::memory_order_acquire);
+            if (r_end == r_start)
+            {
+                return false;
+            }
+        } while (!read_end_.compare_exchange_weak(r_end,
+                 (r_end > 0) ? r_end - 1 : rings_capacity_ - 1,
+                 std::memory_order_acq_rel));
+        //读取数据，
+        value = value_ptr_[r_end];
+        value_ptr_[r_end].~T();
+
+        do
+        {
+            w_start = write_start_;
+        } while (write_end_.compare_exchange_weak(w_start,
+                 (w_start > 0) ? w_start - 1 : rings_capacity_ - 1,
+                 std::memory_order_acq_rel));
+        return true;
+    }
+protected:
+
+    ///将一个数据放入队列的尾部
+    bool push_back_i(T value)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
         size_t w_start = 0, w_end = 0, r_end;
@@ -217,36 +291,8 @@ public:
         return true;
     }
 
-    ///从队列的前面pop并且得到一个数据
-    bool pop_front(T& value)
-    {
-        size_t r_start = 0, r_end = 0, w_end = 0;
-        do
-        {
-            r_start = read_start_.load(std::memory_order_acquire);
-            r_end = read_end_.load(std::memory_order_acquire);
-            if (r_end == r_start)
-            {
-                return false;
-            }
-        } while (!read_start_.compare_exchange_weak(r_start,
-                 (r_start + 1) % rings_capacity_,
-                 std::memory_order_acq_rel));
-        //读取数据，
-        value = value_ptr_[r_start];
-        value_ptr_[r_start].~T();
-
-        do
-        {
-            w_end = write_end_;
-        } while (write_end_.compare_exchange_weak(w_end,
-                 (w_end + 1) % rings_capacity_,
-                 std::memory_order_acq_rel));
-        return true;
-    }
-
     ///将一个数据放入队列的头部
-    bool push_front(const T& value)
+    bool push_front_i(T value)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
         size_t w_start = 0, w_end = 0, r_start = 0;
@@ -274,34 +320,6 @@ public:
             r_start = read_start_;
         } while (read_start_.compare_exchange_weak(r_start,
                  (r_start > 0) ? r_start - 1 : rings_capacity_ - 1,
-                 std::memory_order_acq_rel));
-        return true;
-    }
-
-    ///从队列的前面pop并且得到一个数据
-    bool pop_back(T& value)
-    {
-        size_t r_start = 0, r_end = 0, w_start = 0;
-        do
-        {
-            r_start = read_start_.load(std::memory_order_acquire);
-            r_end = read_end_.load(std::memory_order_acquire);
-            if (r_end == r_start)
-            {
-                return false;
-            }
-        } while (!read_end_.compare_exchange_weak(r_end,
-                 (r_end > 0) ? r_end - 1 : rings_capacity_ - 1,
-                 std::memory_order_acq_rel));
-        //读取数据，
-        value = value_ptr_[r_end];
-        value_ptr_[r_end].~T();
-
-        do
-        {
-            w_start = write_start_;
-        } while (write_end_.compare_exchange_weak(w_start,
-                 (w_start > 0) ? w_start - 1 : rings_capacity_ - 1,
                  std::memory_order_acq_rel));
         return true;
     }
