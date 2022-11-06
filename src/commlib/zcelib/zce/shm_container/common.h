@@ -111,8 +111,7 @@
 *
 */
 
-#ifndef ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
-#define ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
+#pragma once
 
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/math.h"
@@ -124,7 +123,7 @@ namespace zce
 #define ALLOW_RESTORE_INCONFORMITY 0
 
 //空序号指针标示,32位为0xFFFFFFFF,64位为0xFFFFFFFFFFFFFFFF CNTR = CONTAINER SHM = Share memory
-const size_t  SHM_CNTR_INVALID_POINT = static_cast<size_t>(-1);
+const std::size_t  SHM_CNTR_INVALID_POINT = static_cast<std::size_t>(-1);
 
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
 //STL采用的方式一个查表的方式
@@ -319,11 +318,6 @@ template <class _Pair> struct mmap_select2st
 class _shm_list_index
 {
 public:
-    ///LiST后驱索引，
-    size_t  idx_next_;
-    ///LiST的前驱索引，
-    size_t  idx_prev_;
-
     _shm_list_index() :
         idx_next_(zce::SHM_CNTR_INVALID_POINT),
         idx_prev_(zce::SHM_CNTR_INVALID_POINT)
@@ -337,7 +331,10 @@ public:
     ~_shm_list_index()
     {
     }
-};
-};
 
-#endif //ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
+    ///LiST后驱索引，
+    std::size_t  idx_next_;
+    ///LiST的前驱索引，
+    std::size_t  idx_prev_;
+};
+};

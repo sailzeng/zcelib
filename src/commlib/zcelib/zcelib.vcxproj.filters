@@ -188,9 +188,6 @@
     <ClCompile Include="zce\script\lua_tie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\shm_container\cache_chunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\shm_container\common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -354,6 +351,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\event\reactor_mini.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\pool\chunk_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -569,9 +569,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\shm_container\avltree.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\shm_container\cache_chunk.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\shm_container\common.h">
@@ -827,6 +824,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\lock\spin_lock.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\shm_container\vector.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\pool\chunk_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

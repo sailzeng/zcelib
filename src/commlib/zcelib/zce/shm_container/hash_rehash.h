@@ -325,8 +325,8 @@ protected:
             _extract_key,
             _equal_key >();
 
-        instance->smem_base_ = pmmap;
-        char* tmp_base = instance->smem_base_;
+        instance->mem_addr_ = pmmap;
+        char* tmp_base = instance->mem_addr_;
         instance->hash_safe_head_ = reinterpret_cast<_hashtable_rehash_head*>(tmp_base);
         tmp_base = tmp_base + sizeof(_hashtable_rehash_head);
 
@@ -915,7 +915,7 @@ public:
 protected:
 
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
 
     //无效的数据，比如这个数据里面的KEY是永远不会出现的，一般是比如0，或者-1
     //这个地方其实是偷懒的表现，用于简化处理某个空间，是否有效

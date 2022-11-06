@@ -328,8 +328,8 @@ public:
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
 
         //计算这些指针的地址，主要是为了方便后面的处理
-        instance->smem_base_ = pmmap;
-        char* tmp_base = instance->smem_base_;
+        instance->mem_addr_ = pmmap;
+        char* tmp_base = instance->mem_addr_;
 
         instance->hash_head_ = hashhead;
         tmp_base = tmp_base + sizeof(_shm_hash_table_head);
@@ -778,13 +778,13 @@ public:
     }
 
     //空闲的节点个数
-    size_t sizefreenode()
+    size_t free()
     {
         return hash_head_->sz_freenode_;
     }
 
     //使用的索引的个数
-    size_t sizeuseindex()
+    size_t index_size()
     {
         return hash_head_->sz_useindex_;
     }
@@ -792,7 +792,7 @@ public:
 protected:
 
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
 
     //头部数据
     _shm_hash_table_head* hash_head_ = nullptr;

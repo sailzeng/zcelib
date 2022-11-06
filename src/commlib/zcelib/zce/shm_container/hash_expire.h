@@ -313,8 +313,8 @@ public:
 
         self* instance = new self();
 
-        instance->smem_base_ = pmmap;
-        char* tmp_base = instance->smem_base_;
+        instance->mem_addr_ = pmmap;
+        char* tmp_base = instance->mem_addr_;
         instance->lru_hash_head_ = reinterpret_cast<_hashtable_expire_head*>(tmp_base);
         tmp_base = tmp_base + sizeof(_hashtable_expire_head);
         instance->hash_factor_base_ = reinterpret_cast<size_t*>(tmp_base);
@@ -1146,7 +1146,7 @@ protected:
 
 protected:
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
     //头部指针
     _hashtable_expire_head* lru_hash_head_ = nullptr;
 

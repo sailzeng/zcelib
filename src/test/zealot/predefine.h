@@ -34,7 +34,7 @@
 #include <zce/shm_container/rbtree.h>
 #include <zce/shm_container/array.h>
 #include <zce/shm_container/list.h>
-#include <zce/shm_container/cache_chunk.h>
+
 #include <zce/lockfree/kfifo.h>
 #include <zce/shm_container/avltree.h>
 
@@ -103,6 +103,7 @@
 #include <zce/pool/buffer_pool.h>
 #include <zce/pool/dataptr_pool.h>
 #include <zce/pool/shareptr_pool.h>
+#include <zce/pool/chunk_pool.h>
 
 #include <zce/aio/caller.h>
 #include <zce/aio/worker.h>

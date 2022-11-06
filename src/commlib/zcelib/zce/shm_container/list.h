@@ -56,6 +56,7 @@ template <class T> class _shm_list_iterator
     typedef _shm_list_iterator<T> iterator;
 
     //迭代器萃取器所有的东东
+    typedef std::size_t size_type;
     typedef ptrdiff_t difference_type;
     typedef T* pointer;
     typedef T& reference;
@@ -70,7 +71,7 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator(size_t seq, shm_list<T>* instance) :
+    _shm_list_iterator(size_type seq, shm_list<T>* instance) :
         serial_(seq),
         list_instance_(instance)
     {
@@ -86,14 +87,14 @@ public:
     ~_shm_list_iterator() = default;
 
     ///初始化，
-    void initialize(size_t seq, shm_list<T>* instance)
+    void initialize(size_type seq, shm_list<T>* instance)
     {
         serial_ = seq;
         list_instance_ = instance;
     }
 
     ///保留序号就可以再根据模版实例化对象找到相应数据,不用使用指针
-    size_t getserial() const
+    size_type getserial() const
     {
         return serial_;
     }
@@ -155,38 +156,12 @@ public:
 protected:
 
     //序列号，相对于数组下标
-    size_t                  serial_;
+    size_type                  serial_;
     //对应的list对象指针
     shm_list<T>* list_instance_;
 };
 
 //============================================================================================
-
-/*!
-@brief      LIST数据区的头部，用于存放此次，对象数量，等数据
-            使用的NODE数量，FREE的NODE数量等
-*/
-class _shm_list_head
-{
-protected:
-
-    ///构造函数
-    _shm_list_head() = default;
-    ~_shm_list_head() = default;
-
-    //我不能对模版搞个友元，算了，开始开放出来把
-public:
-
-    ///内存区的长度
-    size_t               size_of_mmap_ = 0;
-    ///NODE结点个数
-    size_t               num_of_node_ = 0;
-
-    ///FREE的NODE个数
-    size_t               size_free_node_ = 0;
-    ///USE的NODE个数
-    size_t               size_use_node_ = 0;
-};
 
 //============================================================================================
 
@@ -201,19 +176,49 @@ public:
 template <class T>
 class shm_list
 {
+    //某些函数提供给迭代器用
+    friend class _shm_list_iterator<T>;
 private:
 
     //定义自己
     typedef shm_list<T> self;
 
+private:
+    typedef shm_list<T> self;
 public:
-    ///定义迭代器
     typedef _shm_list_iterator<T> iterator;
-
-    //某些函数提供给迭代器用
-    friend class _shm_list_iterator<T>;
+    typedef T value_type;
+    typedef std::size_t size_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
 
 protected:
+    /*!
+    @brief      LIST数据区的头部，用于存放此次，对象数量，等数据
+                使用的NODE数量，FREE的NODE数量等
+    */
+    class _shm_list_head
+    {
+    protected:
+
+        ///构造函数
+        _shm_list_head() = default;
+        ~_shm_list_head() = default;
+
+        //我不能对模版搞个友元，算了，开始开放出来把
+    public:
+
+        ///内存区的长度
+        size_type        size_of_mmap_ = 0;
+        ///NODE结点个数
+        size_type        num_of_node_ = 0;
+
+        ///FREE的NODE个数
+        size_type        size_free_node_ = 0;
+        ///USE的NODE个数
+        size_type        size_use_node_ = 0;
+    };
 
     ///如果在共享内存使用,没有new,所以统一用initialize 初始化
     ///这个函数,不给你用,就是不给你用
@@ -240,7 +245,7 @@ protected:
     }
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const T& val)
+    size_type create_node(T val)
     {
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
@@ -249,7 +254,7 @@ protected:
         }
 
         //从链上取1个下来
-        size_t node = freenode_->idx_next_;
+        size_type node = freenode_->idx_next_;
 
         //从FREE链表上摘下来
         freenode_->idx_next_ = (index_base_ + node)->idx_next_;
@@ -266,9 +271,9 @@ protected:
         return node;
     }
     //释放一个NODE,将其归还给FREELIST
-    void destroy_node(size_t pos)
+    void destroy_node(size_type pos)
     {
-        size_t freenext = freenode_->idx_next_;
+        size_type freenext = freenode_->idx_next_;
 
         (index_base_ + pos)->idx_next_ = freenext;
         (index_base_ + pos)->idx_prev_ = (index_base_ + freenext)->idx_prev_;
@@ -289,9 +294,10 @@ protected:
 public:
 
     //内存区的构成为 定义区,index区,data区,返回所需要的长度,
-    static size_t getallocsize(const size_t numnode)
+    static size_type getallocsize(const size_type numnode)
     {
-        return  sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(T) * numnode;
+        return  sizeof(_shm_list_head) +
+            sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(T) * numnode;
     }
 
     self* getinstance()
@@ -299,11 +305,17 @@ public:
         return this;
     }
 
-    //初始化
-    static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
+    /*!
+     * @brief 初始化，得到一个self的对象指针，
+     * @param numnode    对象数量
+     * @param mem_addr   内心地址指针，可以是共享内存指针
+     * @param if_restore 如果是共享内存，可以尝试恢复
+     * @return self，自己的对象指针
+    */
+    static self* initialize(size_type numnode, char* mem_addr, bool if_restore = false)
     {
-        //assert(pmmap!=nullptr && numnode >0 );
-        _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(pmmap);
+        //assert(mem_addr!=nullptr && numnode >0 );
+        _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
@@ -323,29 +335,61 @@ public:
         self* instance = new self();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->smem_base_ = pmmap;
+        instance->mem_addr_ = mem_addr;
         instance->list_head_ = listhead;
-        instance->index_base_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head));
-        instance->data_base_ = reinterpret_cast<T*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->index_base_ = reinterpret_cast<_shm_list_index*>(mem_addr + sizeof(_shm_list_head));
+        instance->data_base_ = reinterpret_cast<T*>
+            (mem_addr + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //这两个家伙用于FREENODE,USENODE的使用
-        instance->freenode_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode));
-        instance->usenode_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + 1));
+        instance->freenode_ = reinterpret_cast<_shm_list_index*>
+            (mem_addr + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode));
+        instance->usenode_ = reinterpret_cast<_shm_list_index*>
+            (mem_addr + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + 1));
 
         //
-        if (if_restore == false)
+        if (if_restore)
+        {
+            instance->restore();
+        }
+        else
         {
             //清理初始化所有的内存,所有的节点为FREE
             instance->clear();
         }
-
         assert(listhead->size_use_node_ + listhead->size_free_node_ == listhead->num_of_node_);
 
         //打完收工
         return instance;
     }
 
-    //清理初始化所有的内存,所有的节点为FREE
+    //!销毁，析构所有的已有元素，注意，如果想恢复，不要调用这个函数
+    void terminate()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            (data_base_ + pos)->~T();
+        }
+        clear();
+    }
+
+    //!恢复函数，用于从(共享)内存中恢复数据，
+    void restore()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            T val(std::move(*iter_tmp));
+            new (data_base_ + pos) T(std::move(val));
+        }
+    }
+
+    //!清理初始化所有的内存,所有的节点为FREE
     void clear()
     {
         //处理2个关键Node,以及相关长度,开始所有的数据是free.
@@ -363,7 +407,7 @@ public:
         _shm_list_index* pindex = index_base_;
 
         //初始化free数据区
-        for (size_t i = 0; i < list_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < list_head_->num_of_node_; ++i)
         {
             pindex->idx_next_ = (i + 1);
             pindex->idx_prev_ = (i - 1);
@@ -423,9 +467,9 @@ public:
 protected:
     //通过偏移序列号插入,如果你胡乱使用,不是非常安全,FREENODE也是有POS的.
     //插入在这个POS节点的前面
-    size_t insert(size_t pos, const T& val)
+    size_type insert_i(size_type pos, T val)
     {
-        size_t node = create_node(val);
+        size_type node = create_node(val);
 
         if (node == SHM_CNTR_INVALID_POINT)
         {
@@ -442,13 +486,11 @@ protected:
         return node;
     }
 
-public:
-
     //通过迭代器插入,推荐使用这个函数,
     //插入在这个迭代器节点的前面
-    std::pair<iterator, bool> insert(const iterator& pos, const T& val)
+    std::pair<iterator, bool> insert_i(const iterator& pos, T val)
     {
-        size_t tmp = insert(pos.getserial(), val);
+        size_type tmp = insert_i(pos.getserial(), val);
 
         //插入失败
         if (SHM_CNTR_INVALID_POINT == tmp)
@@ -461,13 +503,25 @@ public:
         }
     }
 
+public:
+
+    //!通过迭代器插入
+    std::pair<iterator, bool> insert(const iterator& pos, const T& val)
+    {
+        return insert_i(pos, val);
+    }
+    std::pair<iterator, bool> insert(const iterator& pos, T&& val)
+    {
+        return insert_i(pos, val);
+    }
+
 protected:
 
     //通过偏移序列号删除,危险函数,自己包装正确使用
-    size_t erase(size_t pos)
+    size_type erase(size_type pos)
     {
-        size_t nextnode = (index_base_ + pos)->idx_next_;
-        size_t prevnode = (index_base_ + pos)->idx_prev_;
+        size_type nextnode = (index_base_ + pos)->idx_next_;
+        size_type prevnode = (index_base_ + pos)->idx_prev_;
 
         (index_base_ + prevnode)->idx_next_ = nextnode;
         (index_base_ + nextnode)->idx_prev_ = prevnode;
@@ -481,23 +535,31 @@ public:
     //通过迭代器删除
     iterator erase(const iterator& pos)
     {
-        size_t tmp = erase(pos.getserial());
+        size_type tmp = erase(pos.getserial());
         return iterator(tmp, this);
     }
 
     //有了迭代器,这些函数居然如此简单,想不到吧
     bool push_front(const T& x)
     {
-        std::pair<iterator, bool> tmp = insert(begin(), x);
-        return tmp.second;
+        std::pair<iterator, bool> result = insert(begin(), x);
+        return result.second;
     }
-
+    bool push_front(T&& x)
+    {
+        std::pair<iterator, bool> result = insert(begin(), std::move(x));
+        return result.second;
+    }
     bool push_back(const T& x)
     {
-        std::pair<iterator, bool> tmp = insert(end(), x);
-        return tmp.second;
+        std::pair<iterator, bool> result = insert(end(), x);
+        return result.second;
     }
-
+    bool push_back(T&& x)
+    {
+        std::pair<iterator, bool> result = insert(end(), std::move(x));
+        return result.second;
+    }
     void pop_front()
     {
         erase(begin());
@@ -515,12 +577,12 @@ public:
         //实在不愿意想,
         if (pos != last && pos != first)
         {
-            size_t sqpos = pos.getserial();
-            size_t sqfirst = first.getserial();
-            size_t sqlast = last.getserial();
-            size_t sqpos_prev = (index_base_ + sqpos)->idx_prev_;
-            size_t sqfirst_prev = (index_base_ + sqfirst)->idx_prev_;
-            size_t sqlast_prev = (index_base_ + sqlast)->idx_prev_;
+            size_type sqpos = pos.getserial();
+            size_type sqfirst = first.getserial();
+            size_type sqlast = last.getserial();
+            size_type sqpos_prev = (index_base_ + sqpos)->idx_prev_;
+            size_type sqfirst_prev = (index_base_ + sqfirst)->idx_prev_;
+            size_type sqlast_prev = (index_base_ + sqlast)->idx_prev_;
 
             (index_base_ + sqlast)->idx_prev_ = sqfirst_prev;
             (index_base_ + sqfirst_prev)->idx_next_ = sqlast;
@@ -552,17 +614,17 @@ public:
     }
 
     //返回链表中已经有的元素个数
-    size_t size()
+    size_type size()
     {
         return list_head_->size_use_node_;
     }
     //返回链表池子的容量
-    size_t capacity()
+    size_type max_size()
     {
         return list_head_->num_of_node_;
     }
     //
-    size_t sizefreenode()
+    size_type free()
     {
         return list_head_->size_free_node_;
     }
@@ -583,13 +645,13 @@ public:
 protected:
 
     //index区要增加两个数据,一个表示
-    static const size_t ADDED_NUM_OF_INDEX = 2;
+    static const size_type ADDED_NUM_OF_INDEX = 2;
 
 protected:
 
     //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
     //LIST的头部区指针
     _shm_list_head* list_head_ = nullptr;
     //索引数据区指针,

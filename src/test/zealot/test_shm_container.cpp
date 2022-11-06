@@ -2,43 +2,48 @@
 
 int test_cachechunk(int /*argc*/, char* /*argv*/[])
 {
-    size_t szalloc = zce::shm_cachechunk::getallocsize(4, 32, 32);
+    size_t szalloc = zce::chunk_pool::getallocsize(4, 32, 32);
     bool bret = false;
     std::cout << "need mem: " << (int)szalloc << std::endl;
-    std::cout << "sizeof(smem_cachechunk)" << sizeof(zce::shm_cachechunk) << std::endl;
+    std::cout << "sizeof(chunk_pool)" << sizeof(zce::chunk_pool) << std::endl;
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::shm_cachechunk* pmmap = zce::shm_cachechunk::initialize(4, 32, 32, tmproom, false);
+    zce::chunk_pool pmmap;
+    int ret = pmmap.initialize(4, 32, 32, tmproom, false);
+    if (ret != 0)
+    {
+        return -1;
+    }
     char tmpbuf[512];
     char tmpbuf1[68] = { "1234567890123456789012345678901234567890" };
     tmpbuf1[67] = '\0';
     size_t usenode;
-    pmmap->push_node(68, tmpbuf1, usenode);
+    pmmap.push_node(68, tmpbuf1, usenode);
     size_t szdatalen;
-    pmmap->pull_node(usenode, szdatalen, tmpbuf);
+    pmmap.pull_node(usenode, szdatalen, tmpbuf);
     char tmpbuf2[32] = { "12345678901234567890" };
-    pmmap->push_node(32, tmpbuf2, usenode);
-    pmmap->pull_node(usenode, szdatalen, tmpbuf);
+    pmmap.push_node(32, tmpbuf2, usenode);
+    pmmap.pull_node(usenode, szdatalen, tmpbuf);
     usenode = 0;
-    pmmap->free_node(usenode);
+    pmmap.free_node(usenode);
 
     char tmpbuf3[168] = { "12345678901234567890123456789012345678901234567890123456789012345678901234567890" };
-    bret = pmmap->push_node(168, tmpbuf3, usenode);
-    pmmap->pull_node(usenode, szdatalen, tmpbuf);
-    pmmap->free_node(usenode);
+    bret = pmmap.push_node(168, tmpbuf3, usenode);
+    pmmap.pull_node(usenode, szdatalen, tmpbuf);
+    pmmap.free_node(usenode);
 
-    bret = pmmap->push_node(168, tmpbuf3, usenode);
-    pmmap->pull_node(usenode, szdatalen, tmpbuf);
-    bret = pmmap->push_node(32, tmpbuf2, usenode);
-    bret = pmmap->push_node(32, tmpbuf2, usenode);
-    bret = pmmap->push_node(32, tmpbuf2, usenode);
+    bret = pmmap.push_node(168, tmpbuf3, usenode);
+    pmmap.pull_node(usenode, szdatalen, tmpbuf);
+    bret = pmmap.push_node(32, tmpbuf2, usenode);
+    bret = pmmap.push_node(32, tmpbuf2, usenode);
+    bret = pmmap.push_node(32, tmpbuf2, usenode);
     usenode = 3;
-    pmmap->free_node(usenode);
+    pmmap.free_node(usenode);
     char tmpbuf4[2048] = { ":(---)" };
-    bret = pmmap->push_node(2048, tmpbuf4, usenode);
-    bret = pmmap->push_node(704, tmpbuf4, usenode);
-    bret = pmmap->push_node(672, tmpbuf4, usenode);
+    bret = pmmap.push_node(2048, tmpbuf4, usenode);
+    bret = pmmap.push_node(704, tmpbuf4, usenode);
+    bret = pmmap.push_node(672, tmpbuf4, usenode);
 
     ZCE_UNUSED_ARG(bret);
     return 0;
@@ -49,22 +54,26 @@ int test_cache_chunk2()
     char cachebuf[2000];
 
     char testdata[] = "12345678";
-    zce::shm_cachechunk* testchunk = nullptr;
+    zce::chunk_pool testchunk;
     size_t testindex, testfreenode, testfreechunk, testfreeroom;
-    testchunk = zce::shm_cachechunk::initialize(10, 100, 10, cachebuf);
-    testchunk->free(testfreenode, testfreechunk, testfreeroom);
+    int ret = testchunk.initialize(10, 100, 10, cachebuf);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    testchunk.free(testfreenode, testfreechunk, testfreeroom);
     std::cout << "free chunk:" << testfreechunk << std::endl;
 
-    testchunk->push_node(9, testdata, testindex);
-    testchunk->free(testfreenode, testfreechunk, testfreeroom);
+    testchunk.push_node(9, testdata, testindex);
+    testchunk.free(testfreenode, testfreechunk, testfreeroom);
 
     char tmpbuf[128];
     size_t szdatalen = 0;
-    testchunk->pull_node(testindex, szdatalen, tmpbuf);
+    testchunk.pull_node(testindex, szdatalen, tmpbuf);
 
     std::cout << "index:" << testindex << " " << "free chunk:" << testfreechunk << std::endl;
-    testchunk->free_node(testindex);
-    testchunk->free(testfreenode, testfreechunk, testfreeroom);
+    testchunk.free_node(testindex);
+    testchunk.free(testfreenode, testfreechunk, testfreeroom);
     std::cout << "free chunk:" << testfreechunk << std::endl;
 
     return 0;
@@ -84,7 +93,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     zce::shm_list<int>* pmmap = zce::shm_list<int>::initialize(numnode, tmproom, false);
 
-    std::cout << "capacity:" << (int)pmmap->capacity() << std::endl;
+    std::cout << "capacity:" << (int)pmmap->max_size() << std::endl;
 
     int tmpx = 0;
 
@@ -100,7 +109,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     std::cout << std::endl;
     std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
+    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
 
     for (tmpx = 0; tmpx < 10; tmpx++)
     {
@@ -119,7 +128,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     std::cout << std::endl;
     std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
+    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
 
     for (tmpx = 0; tmpx < 100; tmpx++)
     {
@@ -143,7 +152,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     std::cout << std::endl;
     std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
+    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
 
     //少打一个Begin
     for (zce::shm_list<int>::iterator it = --pmmap->end(); it != pmmap->begin(); --it)
@@ -170,7 +179,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     std::cout << std::endl;
     std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
+    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
 
     zce::shm_list<int>::iterator ittmp = pmmap->end();
     ittmp--;
@@ -185,7 +194,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     std::cout << std::endl;
     std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
+    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
 
     return 0;
 }

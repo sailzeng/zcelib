@@ -19,98 +19,120 @@
 */
 #pragma once
 
-#include "zce/shm_container/common.h"
-
 namespace zce
 {
-/*!
-@brief      NODE的信息，NODE就是一个数据，NODE内部会存放最开始的CHUNK，
-            （后面的CHUNK会形成一条链）
-            NODE的大小，（帮助我们知道数据的实际长度）
-*/
-class cachechunk_node_index
-{
-public:
-    ///NODE链表的起始桶索引
-    size_t     chunk_index_;
-    ///NODE的实际尺寸
-    size_t     size_of_node_;
-};
-
-/*!
-@brief      放在内存的头部数据区，用于标识还有多少空闲的NODE，CHUNK等
-            信息，也会记录FREENODE，FREECHUNK的起始节点等。
-            内部结构，外部不要使用
-*/
-class _shm_cachechunk_head
-{
-    ///通过友元让其他人使用
-    friend class shm_cachechunk;
-
-private:
-    ///构造函数
-    _shm_cachechunk_head() = default;
-    ///析构函数
-    ~_shm_cachechunk_head() = default;
-
-private:
-    ///内存区的长度
-    size_t               size_of_mmap_ = 0;
-
-    ///NODE的数量
-    size_t               num_of_node_ = 0;
-    ///还可以使用的NODE的数量，注意是可用，不是已经使用
-    size_t               usable_of_node_ = 0;
-
-    ///Chunk的数量
-    size_t               num_of_chunk_ = 0;
-    ///还可以使用的CHUNK的数量
-    size_t               usable_of_chunk_ = 0;
-
-    ///chunk尺寸
-    size_t               size_of_chunk_ = 0;
-
-    ///FREE NODE的起始节点
-    size_t               free_node_head_ = 0;
-    ///FREE CHUNK的起始节点
-    size_t               free_chunk_head_ = 0;
-};
-
 /*!
 * @brief      一个简单的存放变长数据的Cache，用于大小不太固定的数据的缓冲，
 *             用最小的内存，存放最大的数据，空间浪费小。
 *
 */
-class shm_cachechunk
+class chunk_pool
 {
 protected:
-    //构造函数,
-    shm_cachechunk() = default;
+    /*!
+    @brief      NODE的信息，NODE就是一个数据，NODE内部会存放最开始的CHUNK，
+                （后面的CHUNK会形成一条链）
+                NODE的大小，（帮助我们知道数据的实际长度）
+    */
+    class chunkpool_node_index
+    {
+    public:
+        ///NODE链表的起始桶索引
+        std::size_t     chunk_index_;
+        ///NODE的实际尺寸
+        std::size_t     size_of_node_;
+    };
 
-    //不实现，避免误用
-    shm_cachechunk(const shm_cachechunk&) = delete;
-    const shm_cachechunk& operator=(const shm_cachechunk& others) = delete;
+    /*!
+    @brief      放在内存的头部数据区，用于标识还有多少空闲的NODE，CHUNK等
+                信息，也会记录FREENODE，FREECHUNK的起始节点等。
+                内部结构，外部不要使用
+    */
+    class _chunkpool_head
+    {
+        ///通过友元让其他人使用
+        friend class chunk_pool;
+
+    private:
+        ///构造函数
+        _chunkpool_head() = default;
+        ///析构函数
+        ~_chunkpool_head() = default;
+
+    private:
+        ///内存区的长度
+        std::size_t          size_of_mmap_ = 0;
+
+        ///NODE的数量
+        std::size_t          num_of_node_ = 0;
+        ///还可以使用的NODE的数量，注意是可用，不是已经使用
+        std::size_t          usable_of_node_ = 0;
+
+        ///Chunk的数量
+        std::size_t          num_of_chunk_ = 0;
+        ///还可以使用的CHUNK的数量
+        std::size_t          usable_of_chunk_ = 0;
+
+        ///chunk尺寸
+        std::size_t          size_of_chunk_ = 0;
+
+        ///FREE NODE的起始节点
+        std::size_t          free_node_head_ = 0;
+        ///FREE CHUNK的起始节点
+        std::size_t          free_chunk_head_ = 0;
+    };
+
 public:
+    //构造函数,
+    chunk_pool() = default;
     //析构函数,
-    ~shm_cachechunk() = default;
+    ~chunk_pool() = default;
+
+protected:
+    //不实现，避免误用
+    chunk_pool(const chunk_pool&) = delete;
+    const chunk_pool& operator=(const chunk_pool& others) = delete;
 
 protected:
 
     /*!
     * @brief      根据申请的空间,分配一个NODE,
     * @return     bool    是否成功申请
-    * @param[in]  size_t    希望申请放入的NODE的长度
+    * @param[in]  szdata     希望申请放入的NODE的长度
     * @param[out] node_index 返回参数，申请到的NODE的索引
     */
-    bool create_node(size_t, size_t& node_index);
+    bool create_node(std::size_t szdata, std::size_t& node_index);
 
     /*!
     * @brief      释放一个NODE,将其归还给FREELIST
     * @param      node_index 释放的NODE索引
     */
-    void destroy_node(const size_t node_index);
+    void destroy_node(const std::size_t node_index);
 
 public:
+
+    /*!
+    * @brief      根据参数初始化相应的内存，
+    * @return     int ==0表示初始化成功
+    * @param[in]  numnode     NODE节点的个数
+    * @param[in]  numchunk    CHUNK节点的个数
+    * @param[in]  szchunk     CHUNK的尺寸大小
+    * @param[in]  pmmap       外部传入的内存地址，用于构建chunkpool，可以是共享内存指针
+    * @param[in]  if_restore  是否恢复原有（共享内存）内存中数据
+    */
+    int initialize(std::size_t numnode,
+                   std::size_t numchunk,
+                   std::size_t szchunk,
+                   char* pmmap,
+                   bool if_restore = false);
+
+    //! 初始化，自己根据参数申请内存
+    int initialize(std::size_t numnode,
+                   std::size_t numchunk,
+                   std::size_t szchunk);
+
+    //! 销毁
+    void terminate();
 
     ///@brief      清理所有的数据,将Cache还原成初始化，没有任何数据的样子
     void clear();
@@ -121,16 +143,16 @@ public:
     * @param[out] free_chunk   剩余的桶的数量，
     * @param[out] max_room     剩余的空间，最大可以放多大的数据
     */
-    void free(size_t& free_node,
-              size_t& free_chunk,
-              size_t& max_room);
+    void free(std::size_t& free_node,
+              std::size_t& free_chunk,
+              std::size_t& max_room);
 
     /*!
     * @brief      检查是否有足够空间存放一个尺寸为szdata数据
     * @return     bool   返回值，是否可以放入，
     * @param[in]  szdata 要放入的数据大小
     */
-    bool check_enough(size_t szdata);
+    bool check_enough(std::size_t szdata);
 
     /*!
     * @brief      放入一个NODE数据，
@@ -139,16 +161,16 @@ public:
     * @param[in]  indata     数据指针
     * @param[out] node_index  NODE放入的NODE的索引，根据这个可以找到这个NODE
     */
-    bool push_node(const size_t szdata,
+    bool push_node(const std::size_t szdata,
                    const char* indata,
-                   size_t& node_index);
+                   std::size_t& node_index);
 
     /*!
     * @brief      得到某个NODE的尺寸
-    * @return     size_t    返回NODE的尺寸
+    * @return     std::size_t    返回NODE的尺寸
     * @param[in]  node_index NODE的索引，拜托你传递一个正确的参数，否则行为未定义
     */
-    size_t node_size(const size_t node_index);
+    std::size_t node_size(const std::size_t node_index);
 
     /*!
     * @brief      得到某个NODE的尺寸,桶数量，本来打算用一个返回值表示是否取值成功的，
@@ -157,9 +179,9 @@ public:
     * @param[out] node_size   返回参数，NODE的尺寸
     * @param[out] chunknum   返回参数，存放所用的CHUNK的数量
     */
-    void node_size(const size_t node_index,
-                   size_t& node_size,
-                   size_t& chunknum);
+    void node_size(const std::size_t node_index,
+                   std::size_t& node_size,
+                   std::size_t& chunknum);
 
     /*!
     * @brief      取得一个节点的数据
@@ -167,8 +189,8 @@ public:
     * @param[out] szdata     返回NODE的大小
     * @param[out] outdata    返回的NODE数据数据空间的尺寸你要自己保证喔，
     */
-    void pull_node(const size_t node_index,
-                   size_t& szdata,
+    void pull_node(const std::size_t node_index,
+                   std::size_t& szdata,
                    char* outdata);
 
     /*!
@@ -178,9 +200,9 @@ public:
     * @param[out] szdata     返回参数，返回的数据长度，（小于等于桶长度）
     * @param[out] outdata    返回参数，这个桶的数据，数据空间要大于桶的容量
     */
-    void get_chunk(const size_t node_index,
-                   size_t chunk_no,
-                   size_t& szdata,
+    void get_chunk(const std::size_t node_index,
+                   std::size_t chunk_no,
+                   std::size_t& szdata,
                    char* outdata);
 
     /*!
@@ -193,23 +215,23 @@ public:
     * @param[out] szdata      返回参数，返回的数据长度
     * @param[out] outdata     返回参数，这个桶的从data_start开始到桶结束位置的数据，
     */
-    void get_chunkdata(const size_t node_index,
-                       const size_t data_start,
-                       size_t& chunk_no,
-                       size_t& szdata,
+    void get_chunkdata(const std::size_t node_index,
+                       const std::size_t data_start,
+                       std::size_t& chunk_no,
+                       std::size_t& szdata,
                        char* outdata);
 
     /*!
     * @brief      释放某个NODE节点
     * @param[in]  node_index  释放的NODE的索引
     */
-    void free_node(const size_t node_index);
+    void free_node(const std::size_t node_index);
 
     /*!
     * @brief      得到CHUNK的定义大小,注意这是CHUNK的容量,不是里面数据的大小
-    * @return     size_t CHUNK的定义大小
+    * @return     std::size_t CHUNK的定义大小
     */
-    size_t chunk_capacity();
+    std::size_t chunk_capacity();
 
     /*!
     * @brief      用于每次取一个CHUNK的指针操作，根据NODE索引，第几个CHUNK,返回
@@ -220,9 +242,9 @@ public:
     * @param[out] szdata      这个CHUNK中数据的长度
     * @param[out] chunk_point 这个CHUNK开始的指针
     */
-    void get_chunk_point(const size_t node_index,
-                         size_t chunk_no,
-                         size_t& szdata,
+    void get_chunk_point(const std::size_t node_index,
+                         std::size_t chunk_no,
+                         std::size_t& szdata,
                          char*& chunk_point);
 
     /*!
@@ -236,51 +258,43 @@ public:
     * @param[out] chunk_data_point 返回参数，这个data_start位置在CHUNK中的位置指针
     * @note       注意指针的生命周期，当年jovi用这个好像搞了一套引用技术，呵呵
     */
-    void get_chunkdata_point(const size_t node_index,
-                             const size_t data_start,
-                             size_t& chunk_no,
-                             size_t& szdata,
+    void get_chunkdata_point(const std::size_t node_index,
+                             const std::size_t data_start,
+                             std::size_t& chunk_no,
+                             std::size_t& szdata,
                              char*& chunk_data_point);
 
 public:
     /*!
     * @brief      得到初始化所需的内存尺寸，单位字节，你应该根据这个长度去申请内存
-    * @return     size_t     所需的内存大小，
+    * @return     std::size_t     所需的内存大小，
     * @param[in]  numnode    NODE节点的个数
     * @param[in]  numchunk   CHUNK节点的个数，多个桶存放一个NODE
     * @param[in]  szchunk    CHUNK的尺寸大小
     */
-    static size_t getallocsize(const size_t numnode,
-                               const size_t numchunk,
-                               const size_t szchunk);
-
-    /*!
-    * @brief      根据参数初始化相应的内存，
-    * @return     shm_cachechunk* 如果初始化成功，返回指针让你使用
-    * @param[in]  numnode     NODE节点的个数
-    * @param[in]  numchunk    CHUNK节点的个数
-    * @param[in]  szchunk     CHUNK的尺寸大小
-    * @param[in]  pmmap       输入的内存指针
-    * @param[in]  if_restore  是否恢复原有内存中数据
-    */
-    static shm_cachechunk* initialize(const size_t numnode,
-                                      const size_t numchunk,
-                                      const size_t szchunk,
-                                      char* pmmap,
-                                      bool if_restore = false);
+    static std::size_t getallocsize(std::size_t numnode,
+                                    std::size_t numchunk,
+                                    std::size_t szchunk);
 
 protected:
+    //
+    std::size_t INDEX_INVALID = std::size_t(-1);
+protected:
+
+    ///是否自己分配的内存
+    bool self_alloc_mem_ = false;
+
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
 
     ///CACHE的头部，
-    _shm_cachechunk_head* cachechunk_head_ = nullptr;
+    _chunkpool_head* chunkpool_head_ = nullptr;
 
     ///Cache NODE 的BASE指针,NODE表示使用的
-    cachechunk_node_index* cachenode_base_ = nullptr;
+    chunkpool_node_index* cachenode_base_ = nullptr;
 
     ///CHUNK INDEX的BASE指针,
-    size_t* chunkindex_base_ = nullptr;
+    std::size_t* chunkindex_base_ = nullptr;
 
     ///CHUNK DATA数据区的BASE指针
     char* chunkdata_base_ = nullptr;

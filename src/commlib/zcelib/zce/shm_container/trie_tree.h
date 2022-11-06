@@ -228,7 +228,7 @@ public:
         shm_list<_value_type>* instance = new shm_list<_value_type>();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->smem_base_ = pmmap;
+        instance->mem_addr_ = pmmap;
         instance->list_head_ = listhead;
         instance->index_base_ = reinterpret_cast<_shm_list_index*>(pmmap + sizeof(_shm_list_head));
         instance->data_base_ = reinterpret_cast<_value_type*>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));

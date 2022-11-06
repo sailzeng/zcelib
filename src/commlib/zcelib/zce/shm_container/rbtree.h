@@ -343,11 +343,17 @@ public:
             sizeof(T) * numnode;
     }
 
-    //初始化
-    static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
+    /*!
+     * @brief 初始化，得到一个self的对象指针，
+     * @param numnode    对象数量
+     * @param mem_addr   内心地址指针，可以是共享内存指针
+     * @param if_restore 如果是共享内存，可以尝试恢复
+     * @return self，自己的对象指针
+    */
+    static self* initialize(const size_t numnode, char* mem_addr, bool if_restore = false)
     {
-        //assert(pmmap!=nullptr && numnode >0 );
-        _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(pmmap);
+        //assert(mem_addr!=nullptr && numnode >0 );
+        _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (true == if_restore)
@@ -367,21 +373,24 @@ public:
         self* instance = new self();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->smem_base_ = pmmap;
+        instance->mem_addr_ = mem_addr;
         instance->rb_tree_head_ = rb_tree_head;
-        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head));
-        instance->data_base_ = reinterpret_cast<T*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(mem_addr + sizeof(_shm_rb_tree_head));
+        instance->data_base_ = reinterpret_cast<T*>(mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
-        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
-        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index*>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
+        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
+        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index*>(mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
 
-        if (false == if_restore)
+        if (if_restore)
+        {
+            instance->restore();
+        }
+        else
         {
             //清理初始化所有的内存,所有的节点为FREE
             instance->clear();
         }
-
         return instance;
     }
 
@@ -414,6 +423,32 @@ public:
             }
 
             pindex++;
+        }
+    }
+
+    //!销毁，析构所有的已有元素，注意，如果想恢复，不要调用这个函数
+    void terminate()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            (data_base_ + pos)->~T();
+        }
+        clear();
+    }
+
+    //!恢复函数，用于从(共享)内存中恢复数据，
+    void restore()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            T val(std::move(*iter_tmp));
+            new (data_base_ + pos) T(std::move(val));
         }
     }
 
@@ -1156,7 +1191,7 @@ protected:
 
 protected:
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
     //RBTree头部
     _shm_rb_tree_head* rb_tree_head_ = nullptr;
 
@@ -1176,19 +1211,19 @@ protected:
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分
 template<class T, class _compare_key = std::less<T> >
-class mmap_set :
+class shm_set :
     public shm_rb_tree< T, T, smem_identity<T>, _compare_key >
 {
 protected:
 
-    mmap_set() = default;
-    ~mmap_set() = default;
+    shm_set() = default;
+    ~shm_set() = default;
 
 public:
-    static mmap_set*
+    static shm_set*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_set< T, _compare_key  > *>(
+        return reinterpret_cast<shm_set< T, _compare_key  > *>(
             shm_rb_tree<T, T, smem_identity<T>, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
 };

@@ -150,6 +150,7 @@
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
+    <ClCompile Include="zce\pool\chunk_pool.cpp" />
     <ClCompile Include="zce\rudp\client.cpp" />
     <ClCompile Include="zce\rudp\base.cpp" />
     <ClCompile Include="zce\rudp\peer.cpp" />
@@ -228,7 +229,6 @@
     <ClCompile Include="zce\shared_mem\mmap.cpp" />
     <ClCompile Include="zce\shared_mem\posix.cpp" />
     <ClCompile Include="zce\shared_mem\systemv.cpp" />
-    <ClCompile Include="zce\shm_container\cache_chunk.cpp" />
     <ClCompile Include="zce\shm_container\common.cpp" />
     <ClCompile Include="zce\socket\acceptor.cpp" />
     <ClCompile Include="zce\socket\addr_base.cpp" />
@@ -275,6 +275,7 @@
     <ClInclude Include="zce\net\dns_resolve.h" />
     <ClInclude Include="zce\net\ping.h" />
     <ClInclude Include="zce\net\sock5_client.h" />
+    <ClInclude Include="zce\pool\chunk_pool.h" />
     <ClInclude Include="zce\pool\dataptr_pool.h" />
     <ClInclude Include="zce\pool\object_pool.h" />
     <ClInclude Include="zce\pool\buffer_pool.h" />
@@ -284,6 +285,7 @@
     <ClInclude Include="zce\rudp\peer.h" />
     <ClInclude Include="zce\rudp\server.h" />
     <ClInclude Include="zce\script\javascript.h" />
+    <ClInclude Include="zce\shm_container\vector.h" />
     <ClInclude Include="zce\socket\addr_any.h" />
     <ClInclude Include="zce\sqlite\sqlite_result.h" />
     <ClInclude Include="zce\string\from_string.h" />
@@ -375,7 +377,6 @@
     <ClInclude Include="zce\shared_mem\systemv.h" />
     <ClInclude Include="zce\shm_container\array.h" />
     <ClInclude Include="zce\shm_container\avltree.h" />
-    <ClInclude Include="zce\shm_container\cache_chunk.h" />
     <ClInclude Include="zce\shm_container\hash_expire.h" />
     <ClInclude Include="zce\shm_container\hash_rehash.h" />
     <ClInclude Include="zce\shm_container\hash_table.h" />

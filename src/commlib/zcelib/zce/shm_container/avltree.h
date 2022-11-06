@@ -397,7 +397,7 @@ public:
         self* instance = new self();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->smem_base_ = pmmap;
+        instance->mem_addr_ = pmmap;
         //头部
         instance->avl_tree_head_ = avl_tree_head;
         //索引区
@@ -511,7 +511,7 @@ public:
     }
 
     //空闲的节点个数
-    size_t sizefree()
+    size_t free()
     {
         return avl_tree_head_->sz_free_node_;
     }
@@ -1437,7 +1437,7 @@ protected:
 
 protected:
     //内存基础地址
-    char* smem_base_ = nullptr;
+    char* mem_addr_ = nullptr;
 
     ///RBTree头部
     _avl_tree_head* avl_tree_head_ = nullptr;
@@ -1473,7 +1473,7 @@ public:
     static mmap_avl_set*
         initialize(size_t& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_set< T, _compare_key  > *>(
+        return reinterpret_cast<shm_set< T, _compare_key  > *>(
             avl_tree < T,
             T,
             smem_identity<T>,
