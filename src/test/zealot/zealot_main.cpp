@@ -28,7 +28,8 @@ int main(int argc, char* argv[])
     }
 
     //test_aio1(argc, argv);
-    test_aio3(argc, argv);
+    test_msgring_condi(argc, argv);
+    return 0;
 #if 0
     test_dns_resolve(argc, argv);
     test_rudp(argc, argv);

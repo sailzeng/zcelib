@@ -347,7 +347,9 @@ public:
 
     //将[first,last)的队列移动到pos的位置,注意:pos,first,last必须是同一个对象的数据.!!!
     //另外不要有交叉.
-    void transfer(const iterator& pos, const iterator& first, const iterator& last)
+    void transfer(const iterator& pos,
+                  const iterator& first,
+                  const iterator& last)
     {
         //实在不愿意想,
         if (pos != last && pos != first)

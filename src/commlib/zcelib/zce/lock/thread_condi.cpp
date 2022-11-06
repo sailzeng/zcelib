@@ -100,7 +100,7 @@ void thread_condition::notify_all(void) noexcept
 
 //---------------------------------------------------------------------------------------
 //为Thread_Recursive_Mutex做的处理
-Thread_Recursive_Condition::Thread_Recursive_Condition()
+thread_recursive_condition::thread_recursive_condition()
 {
     int ret = 0;
     ret = zce::pthread_cond_initex(&lock_, false);
@@ -112,7 +112,7 @@ Thread_Recursive_Condition::Thread_Recursive_Condition()
 }
 
 //!析构函数
-Thread_Recursive_Condition::~Thread_Recursive_Condition(void)
+thread_recursive_condition::~thread_recursive_condition(void)
 {
     //销毁条件变量
     const int ret = zce::pthread_cond_destroy(&lock_);
@@ -124,7 +124,7 @@ Thread_Recursive_Condition::~Thread_Recursive_Condition(void)
 }
 
 //等待
-void Thread_Recursive_Condition::wait(thread_recursive_mutex* external_mutex) noexcept
+void thread_recursive_condition::wait(thread_recursive_mutex* external_mutex) noexcept
 {
     int ret = zce::pthread_cond_wait(&lock_,
                                      external_mutex->get_lock());
@@ -137,7 +137,7 @@ void Thread_Recursive_Condition::wait(thread_recursive_mutex* external_mutex) no
 }
 
 //绝对时间超时的的等待，超时后解锁
-bool Thread_Recursive_Condition::wait_until(thread_recursive_mutex* external_mutex,
+bool thread_recursive_condition::wait_until(thread_recursive_mutex* external_mutex,
                                             const zce::time_value& abs_time) noexcept
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
@@ -152,7 +152,7 @@ bool Thread_Recursive_Condition::wait_until(thread_recursive_mutex* external_mut
 }
 
 //相对时间的超时锁定等待，超时后，解锁
-bool Thread_Recursive_Condition::wait_for(thread_recursive_mutex* external_mutex,
+bool thread_recursive_condition::wait_for(thread_recursive_mutex* external_mutex,
                                           const zce::time_value& relative_time) noexcept
 {
     zce::time_value abs_time(zce::gettimeofday());
@@ -161,7 +161,7 @@ bool Thread_Recursive_Condition::wait_for(thread_recursive_mutex* external_mutex
 }
 
 //!给一个等待线程发送信号 Signal one waiting thread.
-void Thread_Recursive_Condition::notify_one(void) noexcept
+void thread_recursive_condition::notify_one(void) noexcept
 {
     //
     auto ret = zce::pthread_cond_signal(&lock_);
@@ -173,7 +173,7 @@ void Thread_Recursive_Condition::notify_one(void) noexcept
 }
 
 //!给所有的等待线程广播信号 Signal *all* waiting threads.
-void Thread_Recursive_Condition::notify_all(void) noexcept
+void thread_recursive_condition::notify_all(void) noexcept
 {
     //
     auto ret = zce::pthread_cond_broadcast(&lock_);

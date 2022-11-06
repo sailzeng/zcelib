@@ -78,6 +78,13 @@ public:
                          MQW_WAIT_FOREVER,
                          nouse_timeout);
     }
+    bool enqueue(T&& value)
+    {
+        std::chrono::microseconds nouse_timeout;
+        return enqueue_i(value,
+                         MQW_WAIT_FOREVER,
+                         nouse_timeout);
+    }
 
     //有超时放入
     template<class Rep, class Period>
@@ -97,6 +104,24 @@ public:
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
+    template<class Rep, class Period>
+    bool enqueue_wait(T&& value,
+                      const std::chrono::duration<Rep, Period>& wait_time)
+    {
+        return enqueue_i(value,
+                         MQW_WAIT_TIMEOUT,
+                         wait_time);
+    }
+    bool enqueue_wait(T&& value,
+                      const zce::time_value& wait_time)
+    {
+        std::chrono::microseconds wait_mircosec;
+        wait_time.to(wait_mircosec);
+        return enqueue_i(value,
+                         MQW_WAIT_TIMEOUT,
+                         wait_mircosec);
+    }
+
     //尝试放入，立即返回
     bool try_enqueue(const T& value)
     {
@@ -105,7 +130,13 @@ public:
                          MQW_NO_WAIT,
                          nouse_timeout);
     }
-
+    bool try_enqueue(T&& value)
+    {
+        std::chrono::microseconds nouse_timeout;
+        return enqueue_i(value,
+                         MQW_NO_WAIT,
+                         nouse_timeout);
+    }
     //取出
     bool dequeue(T& value)
     {
@@ -159,7 +190,7 @@ protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
     template<class Rep, class Period>
-    bool enqueue_i(const T& value,
+    bool enqueue_i(T value,
                    MQW_WAIT_MODEL wait_model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {

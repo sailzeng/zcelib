@@ -2,7 +2,7 @@
 #include "zce/logger/logging.h"
 #include "zce/server/server_status.h"
 #include "zce/lock/thread_mutex.h"
-#include "zce/lock/ptr_guard.h"
+#include "zce/lock/lock_guard.h"
 
 namespace zce
 {

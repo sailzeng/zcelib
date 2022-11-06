@@ -90,6 +90,14 @@ public:
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
+    template<class Rep, class Period>
+    bool enqueue_wait(T&& value,
+                      const std::chrono::duration<Rep, Period>& wait_time)
+    {
+        return enqueue_i(value,
+                         MQW_WAIT_TIMEOUT,
+                         wait_time);
+    }
     bool enqueue_wait(const T& value,
                       const zce::time_value& wait_time)
     {
@@ -99,8 +107,25 @@ public:
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
+    bool enqueue_wait(T&& value,
+                      const zce::time_value& wait_time)
+    {
+        std::chrono::microseconds wait_mircosec;
+        wait_time.to(wait_mircosec);
+        return enqueue_i(value,
+                         MQW_WAIT_TIMEOUT,
+                         wait_mircosec);
+    }
+
     //试着放入新的数据进入队列，如果没有成功，立即返回
     bool try_enqueue(const T& value)
+    {
+        std::chrono::microseconds no_use;
+        return enqueue_i(value,
+                         MQW_NO_WAIT,
+                         no_use);
+    }
+    bool try_enqueue(T&& value)
     {
         std::chrono::microseconds no_use;
         return enqueue_i(value,
@@ -147,7 +172,7 @@ public:
     //清理消息队列
     void clear()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::lock_guard guard(queue_lock_);
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
@@ -155,7 +180,7 @@ public:
     //返回消息对象的尺寸
     size_t size()
     {
-        std::lock_guard<std::mutex> guard(queue_lock_);
+        std::lock_guard guard(queue_lock_);
         return queue_cur_size_;
     }
 
@@ -208,7 +233,7 @@ protected:
     }
 
     template<class Rep, class Period>
-    bool enqueue_i(const T& value,
+    bool enqueue_i(T value,
                    MQW_WAIT_MODEL model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {

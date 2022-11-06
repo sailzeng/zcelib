@@ -358,6 +358,17 @@ public:
         return push_front_i(std::move(value), lay_over);
     }
 
+    template< class... Args >
+    bool emplace_back(bool lay_over, Args&&... args)
+    {
+        return push_back_i(std::move(T(args...)), lay_over);
+    }
+    template< class... Args >
+    bool emplace_front(bool lay_over, Args&&... args)
+    {
+        return push_front_i(std::move(T(args...)), lay_over);
+    }
+
     ///从队列的前面pop并且得到一个数据
     bool pop_front(T &value)
     {
@@ -387,7 +398,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(T &&value)
+    bool pop_back(T &value)
     {
         //如果是空的返回错误
         if (empty())
@@ -495,14 +506,14 @@ protected:
             else
             {
                 //将最后一个位置覆盖，并且调整起始和结束位置
-                vptr_ptr_[lordring_end_] = value;
+                new(&vptr_ptr_[lordring_end_]) T(value);
                 lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
                 lordring_start_ = (lordring_start_ + 1) % lordring_capacity_;
                 return true;
             }
         }
         //如果还有空间，直接放在队伍尾部
-        vptr_ptr_[lordring_end_] = value;
+        new(&vptr_ptr_[lordring_end_]) T(value);
         lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
         return true;
     }
@@ -524,13 +535,13 @@ protected:
                 lordring_start_ = (lordring_start_ > 0) ?
                     lordring_start_ - 1 : lordring_capacity_ - 1;
                 lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
-                vptr_ptr_[lordring_start_] = value;
+                new(&vptr_ptr_[lordring_start_]) T(value);
                 return true;
             }
         }
         //如果还有空间，直接放在队伍首部
         lordring_start_ = (lordring_start_ > 0) ? lordring_start_ - 1 : lordring_capacity_ - 1;
-        vptr_ptr_[lordring_start_] = value;
+        new(&vptr_ptr_[lordring_start_]) T(value);
         return true;
     }
 

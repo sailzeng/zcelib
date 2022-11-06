@@ -85,10 +85,9 @@ public:
 
     //! 分配一个对象，没有对应的free函数，是share_ptr，使用完成了自己回收
     //! 也许未来可以加个收缩
-    std::shared_ptr<T> alloc_share(bool &extend_pool)
+    std::shared_ptr<T> alloc_share()
     {
         std::lock_guard<LOCK> lock(lock_);
-        extend_pool = false;
         size_t sz = obj_pool_.size(), i = 0;
         for (; i < sz; i++)
         {
@@ -104,7 +103,6 @@ public:
         //地主没有余量了
         if (i == sz)
         {
-            extend_pool = true;
             extend(extend_size_);
         }
 
@@ -114,15 +112,13 @@ public:
     //有点耗时的操作，会检测所有的
     size_t size()
     {
-        size_t pool_size = obj_pool_.size();
-        obj_pool_.resize(pool_size + extend_size);
-
         //第一次的时候new分配一个数据
-        for (i = 0; i < extend_size; ++i)
+        size_t use = 0, sz = obj_pool_.size();
+        for (size_t i = 0; i < sz; i++)
         {
             if (obj_pool_[i].use_count() > 1)
             {
-                obj_pool_[pool_size + i] = std::shared_ptr<T>(new_fun_());
+                ++use;
             }
         }
         return use;
@@ -218,7 +214,7 @@ public:
     //============================
     //!对某个对象池子进行初始化,使用对象名称作为模板参数
     template<typename O>
-    bool initialize(size_t init_node_size,
+    void initialize(size_t init_node_size,
                     size_t extend_node_size,
                     std::function <O* () >* new_fun = nullptr)
     {
@@ -253,7 +249,7 @@ public:
     }
     //!分配一个对象
     template<typename O>
-    std::shared_ptr<T> alloc_object()
+    std::shared_ptr<O> alloc_share()
     {
         return std::get<zce::shareptr_pool<LOCK, O> >(pools_).alloc_share();
     }
@@ -261,7 +257,7 @@ public:
     //============================
     //!对某个对象池子进行初始化,使用对象在tuple的序号作为模板参数
     template<size_t I>
-    bool initialize(size_t init_node_size,
+    void initialize(size_t init_node_size,
                     size_t extend_node_size,
                     std::function <typename std::tuple_element<I, \
                     std::tuple<shareptr_pool<LOCK, T>...> >::type::object* () >* new_fun = nullptr)
@@ -300,7 +296,8 @@ public:
 
     //!分配一个对象
     template<size_t I>
-    auto alloc_share()
+    typename std::shared_ptr<typename std::tuple_element<I, std::tuple<shareptr_pool<LOCK, T>...> >::type::object>
+        alloc_share()
     {
         return std::get<I>(pools_).alloc_share();
     }

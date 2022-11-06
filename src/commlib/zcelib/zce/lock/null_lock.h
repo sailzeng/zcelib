@@ -102,15 +102,15 @@ public:
 typedef null_lock null_lock;
 
 //=====================================================================
-class Null_Semaphore : public semaphore_base
+class null_semaphore : public semaphore_base
 {
     ///信号灯的GUARD
-    typedef zce::semaphore_guard<Null_Semaphore> LOCK_GUARD;
+    typedef zce::semaphore_guard<null_semaphore> LOCK_GUARD;
 
 public:
 
-    Null_Semaphore() = default;
-    virtual ~Null_Semaphore(void) = default;
+    null_semaphore() = default;
+    virtual ~null_semaphore(void) = default;
 
     //!
     void acquire() noexcept override
@@ -143,12 +143,12 @@ public:
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
 */
-class Null_Condition : public condition_base
+class null_condition : public condition_base
 {
 public:
     //
-    Null_Condition() = default;
-    virtual ~Null_Condition() = default;
+    null_condition() = default;
+    virtual ~null_condition() = default;
 
 private:
 

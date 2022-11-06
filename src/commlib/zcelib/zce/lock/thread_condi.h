@@ -55,14 +55,14 @@ protected:
 };
 
 //!使用可递归的MUTEX的类
-class Thread_Recursive_Condition : public zce::condition_base
+class thread_recursive_condition : public zce::condition_base
 {
 public:
 
     //!构造函数
-    Thread_Recursive_Condition();
+    thread_recursive_condition();
     //!析构函数
-    virtual ~Thread_Recursive_Condition(void);
+    virtual ~thread_recursive_condition(void);
 
     //!等待
     virtual void wait(thread_recursive_mutex* external_mutex) noexcept;

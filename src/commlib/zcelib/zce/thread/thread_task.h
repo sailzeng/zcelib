@@ -31,10 +31,9 @@ class thread_task : public zce::non_copyable
 {
 public:
 
-    ///构造函数
-    thread_task();
-    ///析构函数
-    virtual ~thread_task();
+    ///构造函数,析构函数
+    thread_task() = default;
+    virtual ~thread_task() = default;
 
 public:
 
@@ -90,12 +89,12 @@ public:
 protected:
 
     //!线程的GROUP ID,
-    int                     group_id_;
+    int                     group_id_ = INVALID_GROUP_ID;
 
     //!线程的ID
-    ZCE_THREAD_ID           thread_id_;
+    ZCE_THREAD_ID           thread_id_ = 0;
 
     //!线程的返回值
-    int                     thread_return_;
+    int                     thread_return_ = -1;
 };
 }

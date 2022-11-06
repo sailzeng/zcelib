@@ -50,6 +50,9 @@ public:
         terminate();
     }
 
+    rings(const rings& other) = delete;
+    rings& operator=(const rings& other) = delete;
+
     ///初始化数据区，和构造函数干的事情基本一样，只是多了一步原来有数据就清理掉
     ///initialize 不是lock-free函数，
     void initialize(size_t max_len)
@@ -202,7 +205,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(T&& value)
+    bool pop_front(T& value)
     {
         size_t r_start = 0, r_end = 0, w_end = 0;
         do
@@ -230,7 +233,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_back(T&& value)
+    bool pop_back(T& value)
     {
         size_t r_start = 0, r_end = 0, w_start = 0;
         do

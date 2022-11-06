@@ -7,16 +7,6 @@ namespace zce
 /************************************************************************************************************
 Class           : Thread_Task
 ************************************************************************************************************/
-thread_task::thread_task() :
-    group_id_(INVALID_GROUP_ID),
-    thread_id_(0),
-    thread_return_(0)
-{
-}
-
-thread_task::~thread_task()
-{
-}
 
 //
 void thread_task::svc_run(void* args)

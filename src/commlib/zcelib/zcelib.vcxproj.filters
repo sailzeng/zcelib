@@ -709,9 +709,6 @@
     <ClInclude Include="zce\config\property_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\lock\ptr_guard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\logger\logging.h">
       <Filter>Source Files</Filter>
     </ClInclude>
