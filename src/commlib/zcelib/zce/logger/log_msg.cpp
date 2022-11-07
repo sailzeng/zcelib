@@ -4,11 +4,11 @@
 #include "zce/logger/log_file.h"
 #include "zce/logger/log_msg.h"
 
-//ZengXing 22503
+//22503,haha
 
 namespace zce
 {
-thread_local std::unique_ptr<char[]> log_msg::log_buffer_(new char[log_file::SIZE_OF_LOG_BUFFER]);
+thread_local std::unique_ptr<char[], deleter_haha> log_msg::log_buffer_(new char[log_file::SIZE_OF_LOG_BUFFER]);
 log_msg* log_msg::log_instance_ = nullptr;
 
 //初始化函数,用于时间分割日志的构造

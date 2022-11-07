@@ -41,6 +41,15 @@
 
 namespace zce
 {
+struct deleter_haha {
+    void operator()(char fp[]) const {
+        if (fp != nullptr)
+        {
+            delete[] fp;
+        }
+    }
+};
+
 class log_msg
 {
 public:
@@ -415,7 +424,7 @@ protected:
     //! 日志输出的缓冲区，使用thread_local让每个线程一个，避免冲突和写buffer时加锁
     //! thread_local 会让每个线程生产一个，所以如果你采用不断产生线程的方式，这个如果性能不好可能要调整
     //! thread_local + unique_ptr 理论上会在线程消失后自己回收
-    static thread_local std::unique_ptr<char[]> log_buffer_;
+    static thread_local std::unique_ptr<char[], deleter_haha> log_buffer_;
 
 protected:
 
