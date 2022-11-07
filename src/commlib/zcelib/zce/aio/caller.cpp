@@ -661,80 +661,82 @@ int st_recvfrom(zce::aio::worker* worker,
 
 //=======================================================================
 
-int EVENT_ATOM::event_do(ZCE_HANDLE socket,
+int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
+                         ZCE_HANDLE socket,
                          RECTOR_EVENT event,
                          bool connect_succ)
 {
-    assert((ZCE_HANDLE)handle_ == socket);
+    auto eva = (EVENT_ATOM *)(atom.get());
+    assert((ZCE_HANDLE)eva->handle_ == socket);
     if (event == RECTOR_EVENT::READ_MASK)
     {
         ssize_t sz_rcv = 0;
-        if (EVENT_RECV == aio_type_)
+        if (EVENT_RECV == eva->aio_type_)
         {
-            sz_rcv = zce::recv(handle_,
-                               rcv_buf_,
-                               len_);
+            sz_rcv = zce::recv(eva->handle_,
+                               eva->rcv_buf_,
+                               eva->len_);
         }
-        else if (EVENT_RECVFROM == aio_type_)
+        else if (EVENT_RECVFROM == eva->aio_type_)
         {
-            sz_rcv = zce::recvfrom(handle_,
-                                   rcv_buf_,
-                                   len_,
+            sz_rcv = zce::recvfrom(eva->handle_,
+                                   eva->rcv_buf_,
+                                   eva->len_,
                                    0,
-                                   from_,
-                                   from_len_);
+                                   eva->from_,
+                                   eva->from_len_);
         }
 
         if (sz_rcv >= 0)
         {
-            result_ = 0;
-            *result_len_ = sz_rcv;
+            eva->result_ = 0;
+            *eva->result_len_ = sz_rcv;
         }
         else
         {
-            result_ = -1;
-            *result_len_ = 0;
+            eva->result_ = -1;
+            *eva->result_len_ = 0;
         }
     }
     else if (event == RECTOR_EVENT::WRITE_MASK)
     {
-        ssize_t sz_rcv = zce::recv(handle_,
-                                   rcv_buf_,
-                                   len_);
+        ssize_t sz_rcv = zce::recv(eva->handle_,
+                                   eva->rcv_buf_,
+                                   eva->len_);
         if (sz_rcv >= 0)
         {
-            result_ = 0;
-            *result_len_ = sz_rcv;
+            eva->result_ = 0;
+            *eva->result_len_ = sz_rcv;
         }
         else
         {
-            result_ = -1;
-            *result_len_ = 0;
+            eva->result_ = -1;
+            *eva->result_len_ = 0;
         }
     }
     else if (event == RECTOR_EVENT::CONNECT_MASK)
     {
         if (connect_succ)
         {
-            result_ = 0;
+            eva->result_ = 0;
         }
         else
         {
-            result_ = -1;
+            eva->result_ = -1;
         }
     }
     else if (event == RECTOR_EVENT::ACCEPT_MASK)
     {
-        *accept_hdl_ = zce::accept(handle_,
-                                   from_,
-                                   from_len_);
-        if (*accept_hdl_ != ZCE_INVALID_SOCKET)
+        *eva->accept_hdl_ = zce::accept(eva->handle_,
+                                        eva->from_,
+                                        eva->from_len_);
+        if (*eva->accept_hdl_ != ZCE_INVALID_SOCKET)
         {
-            result_ = 0;
+            eva->result_ = 0;
         }
         else
         {
-            result_ = -1;
+            eva->result_ = -1;
         }
     }
     else if (event == RECTOR_EVENT::EXCEPTION_MASK)
@@ -749,7 +751,7 @@ int EVENT_ATOM::event_do(ZCE_HANDLE socket,
     {
         assert(false);
     }
-    call_back_(this);
+    eva->call_back_(eva);
     return 0;
 }
 
@@ -806,7 +808,7 @@ int er_connect(zce::aio::worker* worker,
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::CONNECT_MASK,
         std::bind(&EVENT_ATOM::event_do,
-        aio_atom,
+        std::shared_ptr<void>(aio_atom),
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
@@ -851,7 +853,7 @@ int er_accept(zce::aio::worker* worker,
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::ACCEPT_MASK,
         std::bind(&EVENT_ATOM::event_do,
-        aio_atom,
+        std::shared_ptr<void>(aio_atom),
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
@@ -897,7 +899,7 @@ int er_recv(zce::aio::worker* worker,
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::READ_MASK,
         std::bind(&EVENT_ATOM::event_do,
-        aio_atom,
+        std::shared_ptr<void>(aio_atom),
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
@@ -943,7 +945,7 @@ int er_send(zce::aio::worker* worker,
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::WRITE_MASK,
         std::bind(&EVENT_ATOM::event_do,
-        aio_atom,
+        std::shared_ptr<void>(aio_atom),
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
@@ -998,7 +1000,7 @@ int er_recvfrom(zce::aio::worker* worker,
         (ZCE_HANDLE)handle,
         RECTOR_EVENT::READ_MASK,
         std::bind(&EVENT_ATOM::event_do,
-        aio_atom,
+        std::shared_ptr<void>(aio_atom),
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
@@ -1029,6 +1031,7 @@ int tmo_schedule(zce::aio::worker* worker,
                  std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
+    aio_atom->call_back_ = std::move(call_back);
     std::shared_ptr<void> void_ptr = aio_atom;
     int ret = worker->schedule_timer(std::bind(&TIMER_ATOM::time_out,
                                      void_ptr,

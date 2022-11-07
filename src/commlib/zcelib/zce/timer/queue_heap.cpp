@@ -114,15 +114,19 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
             //标记这个定时器已经触发过，详细见already_trigger_的解释
             time_node_ary_[timer_id].already_trigger_ = true;
             //时钟触发
-            auto tm_hdl = time_node_ary_[timer_id].timer_handle_;
-            if (tm_hdl)
+            if (time_node_ary_[timer_id].timer_handle_)
             {
-                tm_hdl->timer_timeout(now_time,
-                                      timer_id);
+                time_node_ary_[timer_id].timer_handle_->timer_timeout(now_time,
+                                                                      timer_id);
+            }
+            else if (time_node_ary_[timer_id].timer_call_)
+            {
+                time_node_ary_[timer_id].timer_call_(now_time,
+                                                     timer_id);
             }
             else
             {
-                time_node_ary_[timer_id].timer_call_(now_time, timer_id);
+                ZCE_ASSERT(false);
             }
         }
         else
@@ -131,7 +135,8 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
         }
 
         //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
-        if (time_node_ary_[timer_id].timer_handle_ && time_node_ary_[timer_id].already_trigger_ == true)
+        if ((time_node_ary_[timer_id].timer_handle_ || time_node_ary_[timer_id].timer_call_) &&
+            time_node_ary_[timer_id].already_trigger_ == true)
         {
             //重新规划这个TIME NODE的位置等,如果不需要触发了则取消定时器
             reschedule_timer(timer_id, now_trigger_msec);
@@ -139,7 +144,6 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
 
         //
         ret = get_frist_nodeid(timer_id);
-
         if (0 != ret)
         {
             break;
@@ -178,7 +182,6 @@ int timer_heap::schedule_timer_i(zce::timer_handler* timer_hdl,
     }
 
     ret = add_nodeid(timer_id);
-
     if (ret != 0)
     {
         return INVALID_TIMER_ID;
@@ -195,7 +198,6 @@ int timer_heap::cancel_timer(int timer_id)
 
     //先从堆上上删除这个节点
     ret = remove_nodeid(timer_id);
-
     if (ret != 0)
     {
         return ret;
@@ -203,7 +205,6 @@ int timer_heap::cancel_timer(int timer_id)
 
     //回收TIME NODE
     ret = zce::timer_queue::cancel_timer(timer_id);
-
     if (ret != 0)
     {
         return ret;
@@ -231,7 +232,6 @@ int timer_heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
 
     //先从堆上上删除这个节点
     int ret = remove_nodeid(timer_id);
-
     if (ret != 0)
     {
         return ret;
@@ -239,7 +239,6 @@ int timer_heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
 
     //然后重新放入对中间去
     ret = add_nodeid(timer_id);
-
     if (ret != 0)
     {
         return ret;

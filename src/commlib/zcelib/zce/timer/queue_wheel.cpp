@@ -381,14 +381,21 @@ size_t timer_wheel::dispatch_timer(const zce::time_value& now_time,
                     time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
                                                                                time_node_ary_[timer_node_id].time_id_);
                 }
+                else if (time_node_ary_[timer_node_id].timer_call_)
+                {
+                    time_node_ary_[timer_node_id].timer_call_(now_time,
+                                                              time_node_ary_[timer_node_id].time_id_);
+                }
                 else
                 {
-                    time_node_ary_[timer_node_id].timer_call_(now_time, time_node_ary_[timer_node_id].time_id_);
+                    ZCE_ASSERT(false);
                 }
                 ++num_dispatch;
 
                 //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
-                if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true)
+                //正常already_trigger_ == true，如果cancel，又重新schedule，那么already_trigger_ == false
+                if ((time_node_ary_[timer_node_id].timer_handle_ || time_node_ary_[timer_node_id].timer_call_)
+                    && time_node_ary_[timer_node_id].already_trigger_ == true)
                 {
                     //重新规划这个定时器是否要安排，如果不用内部会取消他，理论不可能失败，暂时不加跟踪
                     reschedule_timer(timer_node_id, now_trigger_msec);

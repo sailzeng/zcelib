@@ -25,7 +25,7 @@ timer_queue::timer_queue(size_t num_timer_node,
                          timer_precision_mesc,
                          trigger_mode,
                          dynamic_expand_node);
-    assert(ret == 0);
+    ZCE_ASSERT(ret == 0);
     ZCE_UNUSED_ARG(ret);
 }
 
@@ -392,7 +392,6 @@ int timer_queue::get_first_timeout(zce::time_value* first_timeout)
     }
 
     uint64_t first_timeout_msec = 0;
-
     //
     if (time_node_ary_[time_node_id].next_trigger_point_ > now_trigger_msec)
     {

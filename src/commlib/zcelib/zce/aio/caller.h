@@ -484,9 +484,10 @@ struct EVENT_ATOM :public AIO_ATOM
     virtual void clear();
 
     //!发生事件后被回调的函数
-    int event_do(ZCE_HANDLE socket,
-                 RECTOR_EVENT event,
-                 bool connect_succ);
+    static int event_do(std::shared_ptr<void> &atom,
+                        ZCE_HANDLE socket,
+                        RECTOR_EVENT event,
+                        bool connect_succ);
 
     //!参数
     size_t *result_len_ = nullptr;
