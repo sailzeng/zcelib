@@ -33,10 +33,10 @@ int zce::backtrace_stack(size_t level_num,
     //打印所有的堆栈信息,有些时候信息无法显示符号表，建议使用
     for (int j = 0; j < sz_of_stack; j++)
     {
-        zce::foo_string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
-                               zce::aidout::o_int(j + 1, 3),
-                               backtrace_stack_ptr[j],
-                               symbols_strings ? symbols_strings[j] : "<no symbol>");
+        zce::string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
+                           zce::aidout::o_int(j + 1, 3),
+                           backtrace_stack_ptr[j],
+                           symbols_strings ? symbols_strings[j] : "<no symbol>");
         str_ary.push_back(line_data);
         line_data.clear();
     }
@@ -164,12 +164,12 @@ int zce::backtrace_stack(size_t level_num,
         //{
         //    break;
         //}
-        zce::foo_string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
-                               zce::aidout::o_int(k + 1, 3),
-                               zce::aidout::o_hexint(stackframe.AddrPC.Offset, 16),
-                               load_symbol ? symbol->Name : "<no symbol>",
-                               load_line ? source_info.FileName : "<no source file info>",
-                               load_line ? source_info.LineNumber : 0);
+        zce::string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
+                           zce::aidout::o_int(k + 1, 3),
+                           zce::aidout::o_hexint(stackframe.AddrPC.Offset, 16),
+                           load_symbol ? symbol->Name : "<no symbol>",
+                           load_line ? source_info.FileName : "<no source file info>",
+                           load_line ? source_info.LineNumber : 0);
 
         str_ary.push_back(line_data);
         line_data.clear();

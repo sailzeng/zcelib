@@ -6,34 +6,34 @@ int test_foo_snprintf(int /*argc*/, char* /*argv*/[])
     size_t cur_len = 0;
     size_t buf_max_len = 1024;
 
-    zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data=## bool_data=## Haha!\n");
+    zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data=## bool_data=## Haha!\n");
     printf("%s", out_buffer);
 
     int int_data = 123456;
     bool bool_data = false;
-    zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} Haha!\n", int_data, bool_data);
+    zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} Haha!\n", int_data, bool_data);
     printf("%s", out_buffer);
 
-    zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data= Haha!\n", int_data, bool_data);
+    zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data= Haha!\n", int_data, bool_data);
     printf("%s", out_buffer);
 
-    zce::str_nprintf(out_buffer, 10, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
+    zce::sformat_n(out_buffer, 10, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    zce::str_nprintf(out_buffer, 15, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
+    zce::sformat_n(out_buffer, 15, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    zce::str_nprintf(out_buffer, 20, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
+    zce::sformat_n(out_buffer, 20, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    zce::str_nprintf(out_buffer, 30, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
+    zce::sformat_n(out_buffer, 30, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
     double double_data = 123456789012.1234f;
-    zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data= {} double_data = {}Haha!\n",
-                     int_data,
-                     bool_data,
-                     double_data);
+    zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data= {} double_data = {}Haha!\n",
+                   int_data,
+                   bool_data,
+                   double_data);
     std::cout << (out_buffer) << std::endl;
     return 0;
 }
@@ -89,16 +89,16 @@ int test_fmt_splice(int /*argc*/, char* /*argv*/[])
     const size_t BUFFER_LEN = 1023;
     size_t use_len = 0;
     char buffer[BUFFER_LEN + 1] = { 0 };
-    zce::foo_strnsplice(buffer, BUFFER_LEN, use_len, '|', "ABC", "efghi");
+    zce::ssplice_n(buffer, BUFFER_LEN, use_len, '|', "ABC", "efghi");
     std::cout << buffer << std::endl;
     double double_data = 123.45678;
     std::string str_data = "I love hongkong.";
-    zce::foo_strnsplice(buffer, BUFFER_LEN, use_len,
-                        ' ',
-                        zce::aidout::o_double(double_data, 16, 3),
-                        "ABC",
-                        "efghi",
-                        str_data);
+    zce::ssplice_n(buffer, BUFFER_LEN, use_len,
+                   ' ',
+                   zce::aidout::o_double(double_data, 16, 3),
+                   "ABC",
+                   "efghi",
+                   str_data);
     std::cout << buffer << std::endl;
 
     return 0;
@@ -272,36 +272,37 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     zce::aidout::o_string abc(def);
 
     zce::progress_timer progress_timer;
+
     progress_timer.restart();
     ZCE_TRACE_FILELINE(RS_DEBUG);
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         int_data,
-                         bool_data,
-                         double_data,
-                         cstr_data,
-                         stdstr_data
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       int_data,
+                       bool_data,
+                       double_data,
+                       cstr_data,
+                       stdstr_data
         );
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "foo_snprintf use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "sformat_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         int_data,
-                         bool_data,
-                         double_data,
-                         cstr_data,
-                         stdstr_data
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       int_data,
+                       bool_data,
+                       double_data,
+                       cstr_data,
+                       stdstr_data
         );
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "foo_snprintf use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "sformat_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -315,7 +316,7 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "format_to_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "std::format_to_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -350,37 +351,37 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     }
     progress_timer.end();
     std::cout << "out string:[" << ostr_stream.str() << "]" << std::endl;
-    std::cout << "ostringstream use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "std::ostringstream use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         zce::aidout::o_int(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
-                         bool_data,
-                         zce::aidout::o_double(double_data, 16, 3),
-                         zce::aidout::o_string(cstr_data, 30),
-                         zce::aidout::o_string(stdstr_data.c_str(), stdstr_data.length())
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       zce::aidout::o_int(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
+                       bool_data,
+                       zce::aidout::o_double(double_data, 16, 3),
+                       zce::aidout::o_string(cstr_data, 30),
+                       zce::aidout::o_string(stdstr_data.c_str(), stdstr_data.length())
         );
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "foo_snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "zce::sformat_n format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         zce::aidout::o_int(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
-                         bool_data,
-                         zce::aidout::o_double(double_data, 16, 3),
-                         zce::aidout::o_string(cstr_data, 30),
-                         zce::aidout::o_string(stdstr_data.c_str(), 28)
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       zce::aidout::o_int(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
+                       bool_data,
+                       zce::aidout::o_double(double_data, 16, 3),
+                       zce::aidout::o_string(cstr_data, 30),
+                       zce::aidout::o_string(stdstr_data.c_str(), 28)
         );
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "foo_snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "zce::sformat_n format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -395,6 +396,20 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+
+    progress_timer.restart();
+    for (size_t i = 0; i < A_TEST_TIMES; ++i)
+    {
+        std::format_to_n(out_buffer, buf_max_len, "int_data={:032x} bool_data={} double_data={:16.3f} cstr_data={:>30} stdstr_data={:>28} Haha!\n",
+                         int_data,
+                         bool_data,
+                         double_data,
+                         cstr_data,
+                         stdstr_data.c_str());
+    }
+    progress_timer.end();
+    std::cout << "out string:[" << out_buffer << "]" << std::endl;
+    std::cout << "std::format_to_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -430,12 +445,12 @@ int test_out_file()
     std::ofstream of_stream_1("FILE_A1.txt", std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         int_data,
-                         bool_data,
-                         double_data,
-                         cstr_data,
-                         stdstr_data
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       int_data,
+                       bool_data,
+                       double_data,
+                       cstr_data,
+                       stdstr_data
         );
         of_stream_1.write(out_buffer, cur_len);
     }
@@ -491,12 +506,12 @@ int test_out_file_stream()
     std::ofstream of_stream_1("FILE_B1.txt", std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         int_data,
-                         bool_data,
-                         double_data,
-                         cstr_data,
-                         stdstr_data
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       int_data,
+                       bool_data,
+                       double_data,
+                       cstr_data,
+                       stdstr_data
         );
         of_stream_1.write(out_buffer, cur_len);
     }
@@ -510,12 +525,12 @@ int test_out_file_stream()
     ZCE_HANDLE file_handle = zce::open("FILE_B2.txt", O_CREAT | O_TRUNC | O_RDWR | O_APPEND, S_IWRITE | S_IREAD);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        zce::str_nprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
-                         int_data,
-                         bool_data,
-                         double_data,
-                         cstr_data,
-                         stdstr_data
+        zce::sformat_n(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                       int_data,
+                       bool_data,
+                       double_data,
+                       cstr_data,
+                       stdstr_data
         );
         zce::write(file_handle, out_buffer, cur_len);
     }

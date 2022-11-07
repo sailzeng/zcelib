@@ -18,13 +18,13 @@
 *             用FOO_FMT_STRING_USE_VARIADIC
 *             速度测试比较（都是是REALSE版本）
 *             Windows 下：
-*             variadic版本foo_snprintf : 0.509 sec .
-*             重载版本foo_snprintf      : 0.448 sec .
+*             variadic版本sformat_n    : 0.509 sec .
+*             重载版本sformat_n         : 0.448 sec .
 *             snprintf                 : 1.705 sec .
 *             iostream                 : 2.477 sec .
 *             Linux 下：(同一台机器，但是是虚拟机,VirtualBox)
-*             variadic版本foo_snprintf : 0.882927 sec .
-*             重载版本foo_snprintf      : 0.820313 sec .
+*             variadic版本sformat_n     : 0.882927 sec .
+*             重载版本sformat_n          : 0.820313 sec .
 *             snprintf                 : 0.711378 sec .
 *             iostream                 : 0.949645 sec .
 *
@@ -54,18 +54,18 @@ static const size_t LEN_OF_ESCAPE_IDENTIFY = 3;
 //转义字符，如果前面出现{}再出现%，就标识转义
 static const char SNRPINTF_FMT_ESCAPE_CHAR = '%';
 
-// 下面代码推荐使用的是 str_nprintf string_format，如果使用，你未来应该很容易切换的std::format
+// 下面代码推荐使用的是 sformat_n string_format，如果使用，你未来应该很容易切换的std::format
 
-inline static void _foo_c11_outstring(std::string& foo_string,
-                                      const char*& foo_fmt_spec)
+inline static void _foo_string_format_out(std::string& foo_string,
+                                          const char*& foo_fmt_spec)
 {
     foo_string.append(foo_fmt_spec);
 }
 
 template <typename out_type >
-void _foo_c11_outstring(std::string& foo_string,
-                        const char*& foo_fmt_spec,
-                        const out_type& out_data)
+void _foo_string_format_out(std::string& foo_string,
+                            const char*& foo_fmt_spec,
+                            const out_type& out_data)
 {
     const char* id_pos = nullptr;
 
@@ -105,19 +105,39 @@ void _foo_c11_outstring(std::string& foo_string,
 
 //vanic 递归展开
 template <typename out_type, typename... out_tlist >
-static void _foo_c11_outstring(std::string& foo_string,
-                               const char*& foo_fmt_spec,
-                               const out_type& out_data,
-                               out_tlist ... out_datalist)
+static void _foo_string_format_out(std::string& foo_string,
+                                   const char*& foo_fmt_spec,
+                                   const out_type& out_data,
+                                   out_tlist ... out_datalist)
 {
-    _foo_c11_outstring(foo_string, foo_fmt_spec, out_data);
-    _foo_c11_outstring(foo_string, foo_fmt_spec, out_datalist...);
+    _foo_string_format_out(foo_string, foo_fmt_spec, out_data);
+    _foo_string_format_out(foo_string, foo_fmt_spec, out_datalist...);
+}
+
+/*!
+* @brief
+* @tparam     out_type
+* @return     std::string&
+* @param      foo_string
+* @param      foo_fmt_spec
+* @param      ...out_data
+* @note
+*/
+template <typename... out_type >
+std::string& string_format(std::string& foo_string,
+                           const char* foo_fmt_spec,
+                           const out_type &...out_data)
+{
+    const char* fmt_spec = foo_fmt_spec;
+    _foo_string_format_out(foo_string, fmt_spec, out_data...);
+    _foo_string_format_out(foo_string, fmt_spec);
+    return foo_string;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 //如果没有参数的特殊处理
-inline static void _foo_c11_outdata(char*& foo_buffer,
+inline static void _foo_sformat_out(char*& foo_buffer,
                                     size_t& foo_max_len,
                                     size_t& foo_use_len,
                                     const char*& foo_fmt_spec)
@@ -138,7 +158,7 @@ inline static void _foo_c11_outdata(char*& foo_buffer,
 }
 
 template <typename out_type >
-static void _foo_c11_outdata(char*& foo_buffer,
+static void _foo_sformat_out(char*& foo_buffer,
                              size_t& foo_max_len,
                              size_t& foo_use_len,
                              const char*& foo_fmt_spec,
@@ -195,21 +215,60 @@ static void _foo_c11_outdata(char*& foo_buffer,
 }
 
 template <typename out_type, typename... out_tlist >
-static void _foo_c11_outdata(char*& foo_buffer,
+static void _foo_sformat_out(char*& foo_buffer,
                              size_t& foo_max_len,
                              size_t& foo_use_len,
                              const char*& foo_fmt_spec,
                              const out_type& out_data,
                              out_tlist ... out_datalist)
 {
-    _foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
-    _foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
+    _foo_sformat_out(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
+    _foo_sformat_out(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
+}
+
+/*!
+* @brief      类似snprintf的格式化字符串函数，但用C++11方式优化处理。{}作为输出点。
+*             格式控制通过辅助类完成。
+* @tparam     out_type     输出的参数类型
+* @return     char*        格式化后的字符串指针
+* @param      foo_buffer   用于格式化字符串
+* @param      foo_max_len  字符串最大长度
+* @param      foo_use_len  使用的字符串长度
+* @param      foo_fmt_spec 格式化的格式字符串
+* @param      ...out_data  输出数据，插入格式化字符串中
+* @note
+*/
+template <typename... out_type >
+char* sformat_n(char* foo_buffer,
+                size_t foo_max_len,
+                size_t& foo_use_len,
+                const char* foo_fmt_spec,
+                const out_type& ...out_data)
+{
+    foo_use_len = 0;
+
+    if (0 == foo_max_len)
+    {
+        return foo_buffer;
+    }
+
+    size_t max_len = foo_max_len - 1;
+    char* buffer = foo_buffer;
+    buffer[max_len] = '\0';
+    const char* fmt_spec = foo_fmt_spec;
+
+    _foo_sformat_out(buffer, max_len, foo_use_len, fmt_spec, out_data...);
+    //尾巴上的那点东西也要输出，
+    _foo_sformat_out(buffer, max_len, foo_use_len, fmt_spec);
+    foo_buffer[foo_use_len] = '\0';
+    //返回
+    return foo_buffer;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 template <typename out_type >
-void _foo_c11_splice(char*& foo_buffer,
+void _foo_splice_out(char*& foo_buffer,
                      size_t foo_max_len,
                      size_t& foo_use_len,
                      char separator_char,
@@ -236,26 +295,52 @@ void _foo_c11_splice(char*& foo_buffer,
 }
 
 template <typename out_type, typename... out_tlist >
-void _foo_c11_splice(char*& foo_buffer,
+void _foo_splice_out(char*& foo_buffer,
                      size_t foo_max_len,
                      size_t& foo_use_len,
                      char separator_char,
                      const out_type& out_data,
                      out_tlist ... out_datalist)
 {
-    _foo_c11_splice(foo_buffer, foo_max_len, foo_use_len, separator_char, out_data);
-    _foo_c11_splice(foo_buffer, foo_max_len, foo_use_len, separator_char, out_datalist...);
+    _foo_splice_out(foo_buffer, foo_max_len, foo_use_len, separator_char, out_data);
+    _foo_splice_out(foo_buffer, foo_max_len, foo_use_len, separator_char, out_datalist...);
+}
+
+/*!
+* @brief      函数用于讲多个参数拼接成一个字符串，可以使用风格符
+* @return     char*    返回字符串
+* @param      foo_buffer  存放拼接结果的字符串
+* @param      foo_max_len 字符串长度
+* @param      foo_use_len 字符串使用的长度
+* @param      separator_char 拼接的分割符号，=0表示不需要
+* @param      ...out_data 用于拼接的类型 多个参数
+*/
+template <typename... out_type >
+char* ssplice_n(char* foo_buffer,
+                size_t foo_max_len,
+                size_t& foo_use_len,
+                char separator_char,
+                const out_type & ...out_data)
+{
+    foo_use_len = 0;
+    if (0 == foo_max_len)
+    {
+        return foo_buffer;
+    }
+
+    size_t max_len = foo_max_len - 1;
+    char* buffer = foo_buffer;
+    buffer[max_len] = '\0';
+
+    _foo_splice_out(buffer,
+                    max_len, foo_use_len, separator_char, out_data...);
+
+    foo_buffer[foo_use_len] = '\0';
+    //返回
+    return foo_buffer;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
-template <typename... out_type >
-std::string& foo_string_splice(std::string& foo_string,
-                               char separator_char,
-                               const out_type &...out_data)
-{
-    _foo_c11_string_splice(foo_string, separator_char, out_data...);
-    return foo_string;
-}
 
 template <typename out_type >
 static void _foo_c11_string_splice(std::string& foo_string,
@@ -263,7 +348,10 @@ static void _foo_c11_string_splice(std::string& foo_string,
                                    const out_type& out_data)
 {
     zce::to_string(foo_string, out_data);
-    foo_string.append(1, separator_char);
+    if (separator_char != '\0')
+    {
+        foo_string.append(1, separator_char);
+    }
 }
 
 template <typename out_type, typename... out_tlist >
@@ -277,96 +365,18 @@ static void _foo_c11_string_splice(std::string& foo_string,
 }
 
 /*!
-* @brief      类似snprintf的格式化字符串函数，但用C++11方式优化处理。{}作为输出点。
-*             格式控制通过辅助类完成。
-* @tparam     out_type     输出的参数类型
-* @return     char*        格式化后的字符串指针
-* @param      foo_buffer   用于格式化字符串
-* @param      foo_max_len  字符串最大长度
-* @param      foo_use_len  使用的字符串长度
-* @param      foo_fmt_spec 格式化的格式字符串
-* @param      ...out_data  输出数据，插入格式化字符串中
-* @note
+ * @brief
+ * @tparam ...out_type 合并的类型列表
+ * @param foo_string     合并输出的string
+ * @param separator_char 分割字符
+ * @param ...out_data    合并的数据
 */
 template <typename... out_type >
-char* str_nprintf(char* foo_buffer,
-                  size_t foo_max_len,
-                  size_t& foo_use_len,
-                  const char* foo_fmt_spec,
-                  const out_type& ...out_data)
+std::string& splice_string(std::string& foo_string,
+                           char separator_char,
+                           const out_type &...out_data)
 {
-    foo_use_len = 0;
-
-    if (0 == foo_max_len)
-    {
-        return foo_buffer;
-    }
-
-    size_t max_len = foo_max_len - 1, use_len = 0;
-    char* buffer = foo_buffer;
-    buffer[max_len] = '\0';
-    const char* fmt_spec = foo_fmt_spec;
-
-    _foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
-
-    buffer[use_len] = '\0';
-    //返回
-    return foo_buffer;
-}
-
-/*!
-* @brief
-* @tparam     out_type
-* @return     std::string&
-* @param      foo_string
-* @param      foo_fmt_spec
-* @param      ...out_data
-* @note
-*/
-template <typename... out_type >
-std::string& foo_string_format(std::string& foo_string,
-                               const char* foo_fmt_spec,
-                               const out_type &...out_data)
-{
-    const char* fmt_spec = foo_fmt_spec;
-    _foo_c11_outstring(foo_string, fmt_spec, out_data...);
-    zce::fmt_str(foo_string,
-                 fmt_spec,
-                 strlen(fmt_spec));
+    _foo_c11_string_splice(foo_string, separator_char, out_data...);
     return foo_string;
-}
-
-/*!
-* @brief      函数用于讲多个参数拼接成一个字符串，可以使用风格符
-* @return     char*    返回字符串
-* @param      foo_buffer  存放拼接结果的字符串
-* @param      foo_max_len 字符串长度
-* @param      foo_use_len 字符串使用的长度
-* @param      separator_char 拼接的分割符号，=0表示不需要
-* @param      ...out_data 用于拼接的类型 多个参数
-*/
-template <typename... out_type >
-char* foo_strnsplice(char* foo_buffer,
-                     size_t foo_max_len,
-                     size_t& foo_use_len,
-                     char separator_char,
-                     const out_type & ...out_data)
-{
-    foo_use_len = 0;
-    if (0 == foo_max_len)
-    {
-        return foo_buffer;
-    }
-
-    size_t max_len = foo_max_len - 1;
-    char* buffer = foo_buffer;
-    buffer[max_len] = '\0';
-
-    _foo_c11_splice(buffer,
-                    max_len, foo_use_len, separator_char, out_data...);
-
-    foo_buffer[foo_use_len] = '\0';
-    //返回
-    return foo_buffer;
 }
 };

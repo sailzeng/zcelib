@@ -22,7 +22,7 @@
 *             所以当要彻底重构的时候，我决定测定抛弃steam的代码，特别是当我发现
 *             fast format这些函数库在字符串格式化上已经超越C的snprintf，无疑
 *             极大的振奋了我。我决定自己实现一下，当然C的log函数迅速整理完毕，
-*             C++的版本却仍然等待了很长一段时间，即使我的str_nprintf
+*             C++的版本却仍然等待了很长一段时间，即使我的sformat_n
 *             已经完成后，因为我发现，如果没有变餐的模版，每一次用模版实现字符串格式
 *             化都是一次煎熬，你只能用宏完成代码替换。好在C++11目前以及普及，
 *             大约在15年，C++的版本也完成了。
@@ -264,13 +264,13 @@ public:
 
         sz_buf_len -= sz_use_len;
 
-        //得到打印信息,str_nprintf 为自己内部的函数，str_format使用{}作为输出控制符
+        //得到打印信息,sformat_n 为自己内部的函数，str_format使用{}作为输出控制符
         size_t sprt_use_len = 0;
-        str_nprintf(log_buf + sz_use_len,
-                    sz_buf_len,
-                    sprt_use_len,
-                    str_format,
-                    out_data...);
+        sformat_n(log_buf + sz_use_len,
+                  sz_buf_len,
+                  sprt_use_len,
+                  str_format,
+                  out_data...);
         sz_use_len += sprt_use_len;
         sz_buf_len -= sprt_use_len;
 
@@ -289,6 +289,7 @@ public:
                         sz_use_len);
     }
 
+#if defined ZCE_OS_WINDOWS
     template <typename... out_type >
     void cpp20_write_logmsg(LOG_PRIORITY outlevel,
                             const char* str_format,
@@ -324,7 +325,7 @@ public:
 
         sz_buf_len -= sz_use_len;
 
-        //得到打印信息,str_nprintf 为自己内部的函数，str_format使用{}作为输出控制符
+        //得到打印信息,sformat_n 为自己内部的函数，str_format使用{}作为输出控制符
         const auto result = std::format_to_n(log_buf + sz_use_len,
                                              sz_buf_len,
                                              str_format,
@@ -346,6 +347,7 @@ public:
                         log_buf,
                         sz_use_len);
     }
+#endif
 
 public:
 

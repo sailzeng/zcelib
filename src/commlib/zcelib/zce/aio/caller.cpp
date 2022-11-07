@@ -668,6 +668,10 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
 {
     auto eva = (EVENT_ATOM *)(atom.get());
     assert((ZCE_HANDLE)eva->handle_ == socket);
+    if ((ZCE_HANDLE)eva->handle_ != socket)
+    {
+        return -1;
+    }
     if (event == RECTOR_EVENT::READ_MASK)
     {
         ssize_t sz_rcv = 0;

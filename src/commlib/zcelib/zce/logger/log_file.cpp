@@ -140,7 +140,10 @@ void log_file::terminate()
     div_log_file_ = LOGFILE_DEVIDE::NONE;
     size_log_file_ = 0;
     out_thread_run_ = false;
-    thread_outlog_.join();
+    if (thread_outfile_)
+    {
+        thread_outlog_.join();
+    }
     vaild_ = false;
 }
 

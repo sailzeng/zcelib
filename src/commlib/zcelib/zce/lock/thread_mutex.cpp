@@ -38,7 +38,7 @@ thread_light_mutex::~thread_light_mutex(void)
     ret = zce::pthread_mutex_destroy(&lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
+        //ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
         return;
     }
 }

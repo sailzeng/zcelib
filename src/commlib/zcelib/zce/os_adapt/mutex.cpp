@@ -15,7 +15,7 @@
 #ifndef ZCE_IS_CS_SIMULATE_PMUTEX
 #define ZCE_IS_CS_SIMULATE_PMUTEX(mutex) ( (PTHREAD_PROCESS_PRIVATE == (mutex)->lock_shared_  ) \
                                            && (((mutex)->lock_type_ & PTHREAD_MUTEX_RECURSIVE))  \
-                                           && (((mutex)->lock_type_  & PTHREAD_MUTEX_TIMEOUT)) !=0 )
+                                           && (((mutex)->lock_type_  & PTHREAD_MUTEX_TIMEOUT)) ==0 )
 #endif
 
 //用MUTEX模拟PTHREAD MUTEX，多进程，递归，或者进程内部，递归，而且有超时
