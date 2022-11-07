@@ -150,13 +150,13 @@ int timer_queue::extend_node(size_t num_timer_node,
     return 0;
 }
 
-int timer_queue::schedule_timer(std::function<int(const zce::time_value &, int) > &call_fun,
+int timer_queue::schedule_timer(timeout_callback_t &timer_call,
                                 int &time_id,
                                 const zce::time_value& delay_time,
                                 const zce::time_value& interval_time)
 {
     return schedule_timer_i(nullptr,
-                            call_fun,
+                            timer_call,
                             time_id,
                             delay_time,
                             interval_time);
@@ -215,7 +215,7 @@ int timer_queue::cancel_timer(const zce::timer_handler* timer_hdl)
 
 //分配Timer Node
 int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
-                                 std::function<int(const zce::time_value &, int) > &call_fun,
+                                 timeout_callback_t &timer_call,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time,
                                  int& time_node_id,
@@ -256,7 +256,7 @@ int timer_queue::alloc_timernode(zce::timer_handler* timer_hdl,
 
     //对时间NODE进行赋值
     alloc_time_node->timer_handle_ = timer_hdl;
-    alloc_time_node->call_back_ = call_fun;
+    alloc_time_node->timer_call_ = timer_call;
     alloc_time_node->interval_time_ = interval_time;
 
     //如果你追求高进度，定义这个宏，默认我关闭了

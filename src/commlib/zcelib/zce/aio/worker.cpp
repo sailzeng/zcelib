@@ -28,8 +28,8 @@ int worker::initialize(size_t work_thread_num,
                                           this);
     }
 
-    requst_queue_ = new zce::msgring_condi<zce::aio::AIO_ATOM*>(work_queue_len);
-    response_queue_ = new zce::msgring_condi<zce::aio::AIO_ATOM*>(work_queue_len);
+    requst_queue_ = new zce::msgring_condi<std::shared_ptr<void>>(work_queue_len);
+    response_queue_ = new zce::msgring_condi<std::shared_ptr<void>>(work_queue_len);
     aio_obj_pool_.initialize<zce::aio::FS_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::DIR_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::MYSQL_ATOM>(128, 256);
@@ -62,100 +62,95 @@ void worker::terminate()
     }
 }
 
-AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
-{
-    AIO_ATOM* handle = nullptr;
-    if (aio_type > AIO_TYPE::FS_BEGIN &&
-        aio_type < AIO_TYPE::FS_END)
-    {
-        handle = aio_obj_pool_.alloc_object<FS_ATOM>();
-    }
-    else if (aio_type > AIO_TYPE::DIR_BEGIN &&
-             aio_type < AIO_TYPE::DIR_END)
-    {
-        handle = aio_obj_pool_.alloc_object<DIR_ATOM>();
-    }
-    else if (aio_type > AIO_TYPE::MYSQL_BEGIN &&
-             aio_type < AIO_TYPE::MYSQL_END)
-    {
-        handle = aio_obj_pool_.alloc_object<MYSQL_ATOM>();
-    }
-    else if (aio_type > AIO_TYPE::HOST_BEGIN &&
-             aio_type < AIO_TYPE::HOST_END)
-    {
-        handle = aio_obj_pool_.alloc_object<HOST_ATOM>();
-    }
-    else if (aio_type > AIO_TYPE::SOCKET_BEGIN &&
-             aio_type < AIO_TYPE::SOCKET_END)
-    {
-        handle = aio_obj_pool_.alloc_object<SOCKET_TIMEOUT_ATOM>();
-    }
-    else if (aio_type > AIO_TYPE::EVENT_BEGIN &&
-             aio_type < AIO_TYPE::EVENT_END)
-    {
-        handle = aio_obj_pool_.alloc_object<EVENT_ATOM>();
-    }
-    else if (aio_type > AIO_TYPE::TIMER_BEGIN &&
-             aio_type < AIO_TYPE::TIMER_END)
-    {
-        handle = aio_obj_pool_.alloc_object<TIMER_ATOM>();
-    }
-    else
-    {
-        return nullptr;
-    }
-    handle->aio_type_ = aio_type;
-    handle->id_ = caller_id_builder_++;
-    return handle;
-}
+//AIO_ATOM* worker::alloc_handle(AIO_TYPE aio_type)
+//{
+//    AIO_ATOM* handle = nullptr;
+//    if (aio_type > AIO_TYPE::FS_BEGIN &&
+//        aio_type < AIO_TYPE::FS_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<FS_ATOM>();
+//    }
+//    else if (aio_type > AIO_TYPE::DIR_BEGIN &&
+//             aio_type < AIO_TYPE::DIR_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<DIR_ATOM>();
+//    }
+//    else if (aio_type > AIO_TYPE::MYSQL_BEGIN &&
+//             aio_type < AIO_TYPE::MYSQL_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<MYSQL_ATOM>();
+//    }
+//    else if (aio_type > AIO_TYPE::HOST_BEGIN &&
+//             aio_type < AIO_TYPE::HOST_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<HOST_ATOM>();
+//    }
+//    else if (aio_type > AIO_TYPE::SOCKET_BEGIN &&
+//             aio_type < AIO_TYPE::SOCKET_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<SOCKET_TIMEOUT_ATOM>();
+//    }
+//    else if (aio_type > AIO_TYPE::EVENT_BEGIN &&
+//             aio_type < AIO_TYPE::EVENT_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<EVENT_ATOM>();
+//    }
+//    else if (aio_type > AIO_TYPE::TIMER_BEGIN &&
+//             aio_type < AIO_TYPE::TIMER_END)
+//    {
+//        handle = aio_obj_pool_.alloc_object<TIMER_ATOM>();
+//    }
+//    else
+//    {
+//        return nullptr;
+//    }
+//    handle->aio_type_ = aio_type;
+//    handle->id_ = caller_id_builder_++;
+//    return handle;
+//}
 
-void worker::free_handle(zce::aio::AIO_ATOM* base)
-{
-    base->clear();
-    if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
-        base->aio_type_ < AIO_TYPE::FS_END)
-    {
-        aio_obj_pool_.free_object<FS_ATOM>(static_cast<FS_ATOM*>(base));
-    }
-    else if (base->aio_type_ > AIO_TYPE::DIR_BEGIN &&
-             base->aio_type_ < AIO_TYPE::DIR_END)
-    {
-        aio_obj_pool_.free_object<DIR_ATOM>(static_cast<DIR_ATOM*>(base));
-    }
-    else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
-             base->aio_type_ < AIO_TYPE::MYSQL_END)
-    {
-        aio_obj_pool_.free_object<MYSQL_ATOM>(static_cast<MYSQL_ATOM*>(base));
-    }
-    else if (base->aio_type_ > AIO_TYPE::HOST_BEGIN &&
-             base->aio_type_ < AIO_TYPE::HOST_END)
-    {
-        aio_obj_pool_.free_object<HOST_ATOM>(static_cast<HOST_ATOM*>(base));
-    }
-    else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
-             base->aio_type_ < AIO_TYPE::SOCKET_END)
-    {
-        aio_obj_pool_.free_object<SOCKET_TIMEOUT_ATOM>(static_cast<SOCKET_TIMEOUT_ATOM*>(base));
-    }
-    else if (base->aio_type_ > AIO_TYPE::EVENT_BEGIN &&
-             base->aio_type_ < AIO_TYPE::EVENT_END)
-    {
-        aio_obj_pool_.free_object<EVENT_ATOM>(static_cast<EVENT_ATOM*>(base));
-    }
-    else if (base->aio_type_ > AIO_TYPE::TIMER_BEGIN &&
-             base->aio_type_ < AIO_TYPE::TIMER_END)
-    {
-        aio_obj_pool_.free_object<TIMER_ATOM>(static_cast<TIMER_ATOM*>(base));
-    }
-    else
-    {
-    }
-}
-
-bool worker::request(AIO_ATOM* base)
-{
-    return requst_queue_->try_enqueue(base);
-}
+//void worker::free_handle(zce::aio::AIO_ATOM* base)
+//{
+//    base->clear();
+//    if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
+//        base->aio_type_ < AIO_TYPE::FS_END)
+//    {
+//        aio_obj_pool_.free_object<FS_ATOM>(static_cast<FS_ATOM*>(base));
+//    }
+//    else if (base->aio_type_ > AIO_TYPE::DIR_BEGIN &&
+//             base->aio_type_ < AIO_TYPE::DIR_END)
+//    {
+//        aio_obj_pool_.free_object<DIR_ATOM>(static_cast<DIR_ATOM*>(base));
+//    }
+//    else if (base->aio_type_ > AIO_TYPE::MYSQL_BEGIN &&
+//             base->aio_type_ < AIO_TYPE::MYSQL_END)
+//    {
+//        aio_obj_pool_.free_object<MYSQL_ATOM>(static_cast<MYSQL_ATOM*>(base));
+//    }
+//    else if (base->aio_type_ > AIO_TYPE::HOST_BEGIN &&
+//             base->aio_type_ < AIO_TYPE::HOST_END)
+//    {
+//        aio_obj_pool_.free_object<HOST_ATOM>(static_cast<HOST_ATOM*>(base));
+//    }
+//    else if (base->aio_type_ > AIO_TYPE::SOCKET_BEGIN &&
+//             base->aio_type_ < AIO_TYPE::SOCKET_END)
+//    {
+//        aio_obj_pool_.free_object<SOCKET_TIMEOUT_ATOM>(static_cast<SOCKET_TIMEOUT_ATOM*>(base));
+//    }
+//    else if (base->aio_type_ > AIO_TYPE::EVENT_BEGIN &&
+//             base->aio_type_ < AIO_TYPE::EVENT_END)
+//    {
+//        aio_obj_pool_.free_object<EVENT_ATOM>(static_cast<EVENT_ATOM*>(base));
+//    }
+//    else if (base->aio_type_ > AIO_TYPE::TIMER_BEGIN &&
+//             base->aio_type_ < AIO_TYPE::TIMER_END)
+//    {
+//        aio_obj_pool_.free_object<TIMER_ATOM>(static_cast<TIMER_ATOM*>(base));
+//    }
+//    else
+//    {
+//    }
+//}
 
 //!处理请求
 void worker::process_request()
@@ -164,7 +159,7 @@ void worker::process_request()
     bool go = false;
     do
     {
-        AIO_ATOM* base = nullptr;
+        std::shared_ptr<void> base;
         zce::time_value tv(0, 2000);
         go = requst_queue_->dequeue_wait(base, tv);
         if (go)
@@ -189,7 +184,7 @@ void worker::process_response(zce::time_value* wait_time,
     do
     {
         reactor_->tiggers_events(wait_time, num_event);
-        AIO_ATOM* base = nullptr;
+        std::shared_ptr<void> base;
         if (wait_time)
         {
             go = response_queue_->dequeue_wait(base,
@@ -201,16 +196,18 @@ void worker::process_response(zce::time_value* wait_time,
         }
         if (go)
         {
+            AIO_ATOM *atom_base = (AIO_ATOM *)base.get();
             //调用回调函数
-            base->call_back_(base);
+            atom_base->call_back_(atom_base);
             ++num_rsp;
         }
     } while (go);
 }
 
 //!
-void worker::thread_aio(zce::aio::AIO_ATOM* base)
+void worker::thread_aio(std::shared_ptr<void> &atom)
 {
+    AIO_ATOM *base = (AIO_ATOM *)atom.get();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {
@@ -240,7 +237,7 @@ void worker::thread_aio(zce::aio::AIO_ATOM* base)
     {
     }
     //放入应答队列
-    response_queue_->enqueue(base);
+    response_queue_->enqueue(atom);
 }
 //!在线程中处理文件
 void worker::thread_fs(zce::aio::FS_ATOM* atom)

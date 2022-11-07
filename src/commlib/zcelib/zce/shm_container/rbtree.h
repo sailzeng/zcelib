@@ -259,15 +259,19 @@ template < class T,
     class _compare_key = std::less<K> >
 class shm_rb_tree
 {
-public:
-    //定义自己
-    typedef shm_rb_tree<T, K, _extract_key, _compare_key> self;
-
-    //定义迭代器
-    typedef _shm_rb_tree_iterator<T, K, _extract_key, _compare_key> iterator;
-
     //迭代器友元
     friend class _shm_rb_tree_iterator<T, K, _extract_key, _compare_key>;
+
+    //定义typedef
+private:
+    typedef shm_rb_tree<T, K, _extract_key, _compare_key> self;
+public:
+    typedef _shm_rb_tree_iterator<T, K, _extract_key, _compare_key> iterator;
+    typedef T value_type;
+    typedef std::size_t size_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
 
 protected:
 
@@ -497,7 +501,7 @@ public:
     }
 
     //空闲的节点个数
-    size_t sizefree()
+    size_t free()
     {
         return rb_tree_head_->sz_free_node_;
     }

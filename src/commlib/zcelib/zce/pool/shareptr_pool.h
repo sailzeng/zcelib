@@ -18,7 +18,7 @@
 namespace zce
 {
 /*!
-* @brief      （单）share_ptr池子，可以用于分配share_ptr，避免反复使用new or delete
+* @brief      （单）share_ptr池子，可以用于分配shared_ptr，避免反复使用new or delete
 *
 * @tparam     LOCK 锁，可以是zce::null_lock,也可以是 std::recursive_mutex（优先）
 *             std::mutex 也应该可以，不过写代码要注意避免出现递归
@@ -83,9 +83,9 @@ public:
         }
     }
 
-    //! 分配一个对象，没有对应的free函数，是share_ptr，使用完成了自己回收
+    //! 分配一个对象，没有对应的free函数，是shared_ptr，使用完成了自己回收
     //! 也许未来可以加个收缩
-    std::shared_ptr<T> alloc_share()
+    std::shared_ptr<T> alloc_shared()
     {
         std::lock_guard<LOCK> lock(lock_);
         size_t sz = obj_pool_.size(), i = 0;
@@ -249,9 +249,9 @@ public:
     }
     //!分配一个对象
     template<typename O>
-    std::shared_ptr<O> alloc_share()
+    std::shared_ptr<O> alloc_shared()
     {
-        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).alloc_share();
+        return std::get<zce::shareptr_pool<LOCK, O> >(pools_).alloc_shared();
     }
 
     //============================
@@ -297,9 +297,9 @@ public:
     //!分配一个对象
     template<size_t I>
     typename std::shared_ptr<typename std::tuple_element<I, std::tuple<shareptr_pool<LOCK, T>...> >::type::object>
-        alloc_share()
+        alloc_shared()
     {
-        return std::get<I>(pools_).alloc_share();
+        return std::get<I>(pools_).alloc_shared();
     }
 
 protected:

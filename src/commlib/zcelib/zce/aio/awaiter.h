@@ -34,8 +34,9 @@ struct AIO_ATOM;
 //AIO FS文件处理相关的awaiter等待体
 struct awaiter_aio
 {
+    template<typename T>
     awaiter_aio(zce::aio::worker* worker,
-                AIO_ATOM* request_atom) :
+                std::shared_ptr<T> &request_atom) :
         worker_(worker),
         request_atom_(request_atom)
     {
@@ -44,7 +45,6 @@ struct awaiter_aio
     {
         if (request_atom_)
         {
-            worker_->free_handle(request_atom_);
             request_atom_ = nullptr;
         }
     }
@@ -82,7 +82,7 @@ protected:
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
     zce::aio::worker* worker_ = nullptr;
     //!请求的文件操作句柄
-    AIO_ATOM* request_atom_ = nullptr;
+    std::shared_ptr<void> request_atom_;
 
     //!完成后返回的句柄
     int ret_result_ = -1;

@@ -21,6 +21,8 @@ namespace zce
 {
 class timer_handler;
 
+typedef std::function<int(const zce::time_value &, int) > timeout_callback_t;
+
 /*!
 * @brief      定时器发生器的基础类
 *
@@ -65,7 +67,7 @@ protected:
             timer_handle_ = nullptr;
             next_trigger_point_ = 0;
             already_trigger_ = false;
-            call_back_ = std::function<int(const zce::time_value &, int) >();
+            timer_call_ = std::function<int(const zce::time_value &, int) >();
         }
 
     public:
@@ -82,7 +84,7 @@ protected:
         ///对应的时间句柄的的指针
         zce::timer_handler* timer_handle_ = nullptr;
         ///
-        std::function<int(const zce::time_value &, int)> call_back_;
+        std::function<int(const zce::time_value &, int)> timer_call_;
 
         ///下一次触发点，可能是一个绝度时间，也可能是一个CPU TICK的计数,但都是一个绝对值
         uint64_t            next_trigger_point_ = 0;
@@ -111,7 +113,7 @@ public:
 public:
 
     /*!
-    @brief      设置第一个定时器，接口参考了ACE的设计，这个设计其实算很完整了，你扩展的类，必须实现这个接口
+    @brief      设置一个定时器，接口参考了ACE的设计，这个设计其实算很完整了，你扩展的类，必须实现这个接口
     @return     int           返回定时器ID，>=0标识成功，-1标识失败
     @param[in]  timer_hdl     放入的定时器句柄，触发后回调的对象
     @param[in]  time_id       一个指针，在定时器触发会用参数还给你，
@@ -124,7 +126,9 @@ public:
                        const zce::time_value& delay_time,
                        const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
 
-    int schedule_timer(std::function<int(const zce::time_value &, int) > &call_fun,
+    //! @brief      设置一个定时器，接口采用std::function
+    //! param[in]   call_fun 超时触发后的回调函数
+    int schedule_timer(timeout_callback_t &timer_call,
                        int &time_id,
                        const zce::time_value& delay_time,
                        const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
@@ -139,7 +143,7 @@ public:
 protected:
 
     virtual int schedule_timer_i(zce::timer_handler* timer_hdl,
-                                 std::function<int(const zce::time_value &, int) > &call_fun,
+                                 timeout_callback_t &timer_call,
                                  int &time_id,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) = 0;
@@ -235,7 +239,7 @@ protected:
     @param[out] alloc_time_node 返回的分配的TIMER NODE的指针
     */
     int alloc_timernode(timer_handler* timer_hdl,
-                        std::function<int(const zce::time_value &, int) > &call_fun,
+                        timeout_callback_t &call_fun,
                         const zce::time_value& delay_time_,
                         const zce::time_value& interval_time_,
                         int& time_node_id,

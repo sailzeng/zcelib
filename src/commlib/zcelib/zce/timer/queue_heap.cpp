@@ -122,8 +122,7 @@ size_t timer_heap::dispatch_timer(const zce::time_value& now_time,
             }
             else
             {
-                auto call = time_node_ary_[timer_id].call_back_;
-                call(now_time, timer_id);
+                time_node_ary_[timer_id].timer_call_(now_time, timer_id);
             }
         }
         else

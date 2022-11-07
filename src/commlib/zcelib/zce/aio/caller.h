@@ -588,14 +588,18 @@ int er_recvfrom(zce::aio::worker* worker,
 struct TIMER_ATOM :public AIO_ATOM
 {
     virtual void clear();
+
+    static int time_out(std::shared_ptr<void> &atom,
+                        const zce::time_value &,
+                        int time_id);
     //!
     const zce::time_value *timeout_tv_ = nullptr;
     //!
     int *timer_id_ = nullptr;
 };
 
-int tmo_schedule_timeout(zce::aio::worker* worker,
-                         const zce::time_value* timeout_tv,
-                         int *timer_id,
-                         std::function<void(AIO_ATOM*)> call_back);
+int tmo_schedule(zce::aio::worker* worker,
+                 const zce::time_value& timeout_tv,
+                 int &timer_id,
+                 std::function<void(AIO_ATOM*)> call_back);
 }//namespace zce::aio

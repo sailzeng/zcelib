@@ -150,8 +150,8 @@ int test_msgring_condi(int /*argc*/, char* /*argv*/[])
     aio_share_pool.initialize<4>(10, 10);
     aio_share_pool.initialize<5>(10, 10);
 
-    auto fs_1_1 = aio_share_pool.alloc_share<0>();
-    auto fs_1_2 = aio_share_pool.alloc_share<0>();
+    auto fs_1_1 = aio_share_pool.alloc_shared<0>();
+    auto fs_1_2 = aio_share_pool.alloc_shared<0>();
     std::cout << "Type info " << typeid(fs_1_1).name() << std::endl;
     std::shared_ptr<void> ptr_1_1 = fs_1_1;
     requst_queue_2.enqueue(std::move(ptr_1_1));
