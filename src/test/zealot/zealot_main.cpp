@@ -20,15 +20,16 @@ int main(int argc, char* argv[])
                                             false,
                                             ZCE_U32_OR_2(zce::LOG_OUTPUT::LOGFILE, zce::LOG_OUTPUT::ERROUT),
                                             static_cast<int>(zce::LOG_HEAD::LOGLEVEL));
-    ZCE_TRACE_FILELINE(RS_DEBUG);
+    int ret = 0;
+    //ZCE_TRACE_FILELINE(RS_DEBUG);
+    //ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
+    //for (size_t i = 0; i < 100; ++i)
+    //{
+    //    ZCE_LOG(RS_INFO, "Hallelujah");
+    //}
 
-    for (size_t i = 0; i < 100; ++i)
-    {
-        ZCE_LOG(RS_INFO, "Hallelujah");
-    }
-
-    //test_aio1(argc, argv);
-    test_msgring_condi(argc, argv);
+    ////test_aio1(argc, argv);
+    //test_out_buffer(argc, argv);
     return 0;
 #if 0
     test_dns_resolve(argc, argv);

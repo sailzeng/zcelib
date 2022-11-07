@@ -1585,7 +1585,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     std::cout << "Hash link size " << hash_table_p->size() << std::endl;
     std::cout << "Hash link real use ratio :" << double(hash_table_p->size()) / hash_table_p->capacity() << std::endl;
     std::cout << "Hash link expect use ratio : " << double(hash_table_p->size()) / req_node_number << std::endl;
-    std::cout << "Hash link index use ratio : " << double(hash_table_p->sizeuseindex()) / hash_table_p->capacity() << std::endl;
+    std::cout << "Hash link index use ratio : " << double(hash_table_p->index_size()) / hash_table_p->capacity() << std::endl;
 
     //
     progress_timer.restart();

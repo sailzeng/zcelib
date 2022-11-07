@@ -65,7 +65,8 @@ protected:
         ///双向链表的后置，
         int    list_next_;
 
-        ///表示当前TIMER NODE所在WHEEL上的那个点的标示,这儿理论用size_t合理一点，但是为了空间和处理方便，用了int存储
+        ///表示当前TIMER NODE所在WHEEL上的那个点的标示,这儿理论用size_t合理一点，
+        ///但是为了空间和处理方便，用了int存储
         int    wheel_point_id_;
     };
 

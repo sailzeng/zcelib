@@ -101,24 +101,66 @@
 #ifndef ZPP_LOG
 #define ZPP_LOG               zce::log_msg::write_logplus
 #endif
-#ifndef ZLOG_TRACE
-#define ZLOG_TRACE(...)       zce::log_msg::write_logmsg(RS_TRACE,__VA_ARGS__)
+#ifndef Z20_LOG
+#define Z20_LOG               zce::log_msg::write_logcpp20
 #endif
-#ifndef ZLOG_DEBUG
-#define ZLOG_DEBUG(...)       zce::log_msg::write_logmsg(RS_DEBUG,__VA_ARGS__)
+#ifndef ZCE_TRACE
+#define ZCE_TRACE(...)        zce::log_msg::write_logmsg(RS_TRACE,__VA_ARGS__)
 #endif
-#ifndef ZLOG_INFO
-#define ZLOG_INFO(...)        zce::log_msg::write_logmsg(RS_INFO,__VA_ARGS__)
+#ifndef ZCE_DEBUG
+#define ZCE_DEBUG(...)        zce::log_msg::write_logmsg(RS_DEBUG,__VA_ARGS__)
 #endif
-#ifndef ZLOG_ERROR
-#define ZLOG_ERROR(...)       zce::log_msg::write_logmsg(RS_ERROR,__VA_ARGS__)
+#ifndef ZCE_INFO
+#define ZCE_INFO(...)         zce::log_msg::write_logmsg(RS_INFO,__VA_ARGS__)
 #endif
-#ifndef ZLOG_ALERT
-#define ZLOG_ALERT(...)       zce::log_msg::write_logmsg(RS_ALERT,__VA_ARGS__)
+#ifndef ZCE_ERROR
+#define ZCE_ERROR(...)        zce::log_msg::write_logmsg(RS_ERROR,__VA_ARGS__)
 #endif
-#ifndef ZLOG_FATAL
-#define ZLOG_FATAL(...)       zce::log_msg::write_logmsg(RS_FATAL,__VA_ARGS__)
+#ifndef ZCE_ALERT
+#define ZCE_ALERT(...)        zce::log_msg::write_logmsg(RS_ALERT,__VA_ARGS__)
 #endif
+#ifndef ZCE_FATAL
+#define ZCE_FATAL(...)        zce::log_msg::write_logmsg(RS_FATAL,__VA_ARGS__)
+#endif
+
+#ifndef ZPP_TRACE
+#define ZPP_TRACE(...)        zce::log_msg::write_logplus(RS_TRACE,__VA_ARGS__)
+#endif
+#ifndef ZPP_DEBUG
+#define ZPP_DEBUG(...)        zce::log_msg::write_logplus(RS_DEBUG,__VA_ARGS__)
+#endif
+#ifndef ZPP_INFO
+#define ZPP_INFO(...)         zce::log_msg::write_logplus(RS_INFO,__VA_ARGS__)
+#endif
+#ifndef ZPP_ERROR
+#define ZPP_ERROR(...)        zce::log_msg::write_logplus(RS_ERROR,__VA_ARGS__)
+#endif
+#ifndef ZPP_ALERT
+#define ZPP_ALERT(...)        zce::log_msg::write_logplus(RS_ALERT,__VA_ARGS__)
+#endif
+#ifndef ZPP_FATAL
+#define ZPP_FATAL(...)        zce::log_msg::write_logplus(RS_FATAL,__VA_ARGS__)
+#endif
+
+#ifndef Z20_TRACE
+#define Z20_TRACE(...)        zce::log_msg::write_logcpp20(RS_TRACE,__VA_ARGS__)
+#endif
+#ifndef Z20_DEBUG
+#define Z20_DEBUG(...)        zce::log_msg::write_logcpp20(RS_DEBUG,__VA_ARGS__)
+#endif
+#ifndef Z20_INFO
+#define Z20_INFO(...)         zce::log_msg::write_logcpp20(RS_INFO,__VA_ARGS__)
+#endif
+#ifndef Z20_ERROR
+#define Z20_ERROR(...)        zce::log_msg::write_logcpp20(RS_ERROR,__VA_ARGS__)
+#endif
+#ifndef Z20_ALERT
+#define Z20_ALERT(...)        zce::log_msg::write_logcpp20(RS_ALERT,__VA_ARGS__)
+#endif
+#ifndef Z20_FATAL
+#define Z20_FATAL(...)        zce::log_msg::write_logcpp20(RS_FATAL,__VA_ARGS__)
+#endif
+
 //----------------------------------------------------------------------------------
 //无论，DEBUG版本，REALSE版本也起作用的一些断言，这些宏在所有版本都起作用，用于一些在运行时期也要判断的东东
 //ALL，任何时候，
@@ -390,8 +432,12 @@ public:
 #define ZPP_LOG_DEBUG        ZPP_LOG
 #endif
 
+#ifndef Z20_LOG_DEBUG
+#define Z20_LOG_DEBUG        Z20_LOG
+#endif
+
 #ifndef ZCE_ASSERT_DEBUG
-#define ZCE_ASSERT_DEBUG         ZCE_ASSERT
+#define ZCE_ASSERT_DEBUG     ZCE_ASSERT
 #endif
 
 #ifndef ZCE_FUNCTION_TRACE_DEBUG
@@ -403,7 +449,7 @@ public:
 #endif
 
 #ifndef ZCE_BACKTRACE_STACK_DEBUG
-#define ZCE_BACKTRACE_STACK_DEBUG    ZCE_BACKTRACE_STACK
+#define ZCE_BACKTRACE_STACK_DEBUG  ZCE_BACKTRACE_STACK
 #endif
 
 //非调试版本的宏定义，

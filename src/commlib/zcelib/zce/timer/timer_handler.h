@@ -36,8 +36,6 @@ protected:
     timer_handler();
     virtual ~timer_handler();
 
-    //
-
 public:
 
     //超时触发

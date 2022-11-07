@@ -36,7 +36,6 @@ thread_light_mutex::~thread_light_mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(&lock_);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
@@ -49,7 +48,6 @@ void thread_light_mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(&lock_);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
@@ -62,7 +60,6 @@ bool thread_light_mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(&lock_);
-
     if (0 != ret)
     {
         return false;
@@ -76,7 +73,6 @@ void thread_light_mutex::unlock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(&lock_);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);

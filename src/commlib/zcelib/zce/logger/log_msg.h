@@ -241,16 +241,15 @@ public:
         timeval now_time_val(zce::gettimeofday());
 
         //我要保留一个位置放'\0',还为\n考虑留一个空间,注意thread_local
-        static thread_local char \
-            log_tmp_buffer[log_file::SIZE_OF_LOG_BUFFER];
-        log_tmp_buffer[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
+        char *log_buf = log_buffer_.get();
+        log_buf[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
         size_t sz_buf_len = log_file::SIZE_OF_LOG_BUFFER - 2;
         size_t sz_use_len = 0;
 
         stringbuf_loghead(outlevel,
                           now_time_val,
-                          log_tmp_buffer,
+                          log_buf,
                           sz_buf_len,
                           sz_use_len);
 
@@ -258,7 +257,7 @@ public:
 
         //得到打印信息,str_nprintf 为自己内部的函数，str_format使用{}作为输出控制符
         size_t sprt_use_len = 0;
-        str_nprintf(log_tmp_buffer + sz_use_len,
+        str_nprintf(log_buf + sz_use_len,
                     sz_buf_len,
                     sprt_use_len,
                     str_format,
@@ -269,7 +268,7 @@ public:
         //如果要自动增加换行符号，
         if (auto_new_line_)
         {
-            log_tmp_buffer[sz_use_len] = '\n';
+            log_buf[sz_use_len] = '\n';
             ++sz_use_len;
 
             //注意sz_buf_len在这儿没有调整，因为'\n'的位置我前面为了安全扣除了
@@ -277,9 +276,68 @@ public:
         }
 
         output_log_info(now_time_val,
-                        log_tmp_buffer,
+                        log_buf,
                         sz_use_len);
     }
+
+    template <typename... out_type >
+    void cpp20_write_logmsg(LOG_PRIORITY outlevel,
+                            const char* str_format,
+                            const out_type... out_data)
+    {
+        //如果日志输出开关关闭
+        if (allow_output_log_ == false)
+        {
+            return;
+        }
+
+        //如果输出的日志级别低于Mask值
+        if (permit_outlevel_ > outlevel)
+        {
+            return;
+        }
+
+        //得到当前时间
+        timeval now_time_val(zce::gettimeofday());
+
+        //我要保留一个位置放'\0',还为\n考虑留一个空间,注意thread_local
+        char *log_buf = log_buffer_.get();
+        log_buf[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
+
+        size_t sz_buf_len = log_file::SIZE_OF_LOG_BUFFER - 2;
+        size_t sz_use_len = 0;
+
+        stringbuf_loghead(outlevel,
+                          now_time_val,
+                          log_buf,
+                          sz_buf_len,
+                          sz_use_len);
+
+        sz_buf_len -= sz_use_len;
+
+        //得到打印信息,str_nprintf 为自己内部的函数，str_format使用{}作为输出控制符
+        const auto result = std::format_to_n(log_buf + sz_use_len,
+                                             sz_buf_len,
+                                             str_format,
+                                             out_data...);
+        sz_use_len += result.size;
+        sz_buf_len -= result.size;
+
+        //如果要自动增加换行符号，
+        if (auto_new_line_)
+        {
+            log_buf[sz_use_len] = '\n';
+            ++sz_use_len;
+
+            //注意sz_buf_len在这儿没有调整，因为'\n'的位置我前面为了安全扣除了
+            //也不能直接用--sz_buf_len;因为sz_buf_len可能==0
+        }
+
+        output_log_info(now_time_val,
+                        log_buf,
+                        sz_use_len);
+    }
+
 public:
 
     //实例的赋值
@@ -312,11 +370,28 @@ public:
                               const char* str_format,
                               const out_type... out_data) noexcept
     {
+        if (!log_instance_)
+        {
+            return;
+        }
         log_instance_->foo_write_logmsg(outlevel,
                                         str_format,
                                         out_data...);
     }
 
+    template <typename... out_type >
+    static void write_logcpp20(LOG_PRIORITY outlevel,
+                               const char* str_format,
+                               const out_type... out_data) noexcept
+    {
+        if (!log_instance_)
+        {
+            return;
+        }
+        log_instance_->cpp20_write_logmsg(outlevel,
+                                          str_format,
+                                          out_data...);
+    }
 public:
 
     //!根据字符串，得到日志级别

@@ -490,6 +490,16 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
     }
 }
 
+int worker::schedule_timer(timeout_callback_t call_fun,
+                           int &time_id,
+                           const zce::time_value& delay_time)
+{
+    time_queue_->schedule_timer(call_fun,
+                                time_id,
+                                delay_time);
+    return 0;
+}
+
 int worker::reg_event(ZCE_HANDLE handle,
                       RECTOR_EVENT event_todo,
                       event_callback_t call_back)

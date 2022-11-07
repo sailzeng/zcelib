@@ -8,8 +8,8 @@
 
 namespace zce
 {
-log_msg* log_msg::log_instance_ = nullptr;
 thread_local std::unique_ptr<char[]> log_msg::log_buffer_(new char[log_file::SIZE_OF_LOG_BUFFER]);
+log_msg* log_msg::log_instance_ = nullptr;
 
 //初始化函数,用于时间分割日志的构造
 int log_msg::init_time_log(LOGFILE_DEVIDE div_log_file,
@@ -295,12 +295,13 @@ void log_msg::debug_assert_ex(const char* file_name,
 void log_msg::write_logmsg(LOG_PRIORITY dbglevel,
                            const char* str_format, ...) noexcept
 {
+    if (!log_instance_)
+    {
+        return;
+    }
     va_list args;
     va_start(args, str_format);
-    if (log_instance_)
-    {
-        log_instance_->vwrite_logmsg(dbglevel, str_format, args);
-    }
+    log_instance_->vwrite_logmsg(dbglevel, str_format, args);
     va_end(args);
 }
 

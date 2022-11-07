@@ -35,7 +35,6 @@ thread_rw_mutex::~thread_rw_mutex()
 {
     int ret = 0;
     ret = zce::pthread_rwlock_destroy(&rw_lock_);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_destroy", ret);

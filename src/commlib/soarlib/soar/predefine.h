@@ -66,7 +66,6 @@
 #include <zce/mysql/connect.h>
 #include <zce/mysql/command.h>
 #include <zce/mysql/execute.h>
-#include <zce/shm_container/cache_chunk.h>
 #include <zce/lockfree/kfifo.h>
 #include <zce/server/server_base.h>
 #include <zce/shm_container/hash_table.h>

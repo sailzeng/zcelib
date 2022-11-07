@@ -306,6 +306,20 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
+        std::format_to_n(out_buffer, buf_max_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
+                         int_data,
+                         bool_data,
+                         double_data,
+                         cstr_data,
+                         stdstr_data.c_str());
+    }
+    progress_timer.end();
+    std::cout << "out string:[" << out_buffer << "]" << std::endl;
+    std::cout << "format_to_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+
+    progress_timer.restart();
+    for (size_t i = 0; i < A_TEST_TIMES; ++i)
+    {
         snprintf(out_buffer, buf_max_len, "int_data=%d bool_data=%s double_data=%e cstr_data=%s stdstr_data=%s Haha!\n",
                  int_data,
                  bool_data ? "TRUE" : "FALSE",
