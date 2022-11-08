@@ -29,19 +29,6 @@ timer_wheel::timer_wheel(size_t num_timer_node,
     }
 }
 
-//构造函数
-timer_wheel::timer_wheel() :
-    timer_length_mesc_(0),
-    num_wheel_point_(0),
-    proc_wheel_start_(0)
-{
-}
-
-//析构函数
-timer_wheel::~timer_wheel()
-{
-}
-
 int timer_wheel::initialize(size_t num_timer_node,
                             unsigned int timer_length_mesc,
                             unsigned int timer_precision_mesc,

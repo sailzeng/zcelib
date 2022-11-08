@@ -42,10 +42,10 @@ public:
                TRIGGER_MODE trigger_mode = TRIGGER_MODE::STEADY_CLOCK,
                bool dynamic_expand_node = true);
     ///默认构造函数
-    timer_heap();
+    timer_heap() = default;
 
     ///析构函数
-    virtual ~timer_heap();
+    virtual ~timer_heap() = default;
 public:
 
     /*!

@@ -21,13 +21,15 @@
 
 namespace zce
 {
-class shm_mmap : public zce::non_copyable
+class shm_mmap
 {
 public:
     //构造函数
     shm_mmap();
     ~shm_mmap();
 
+    shm_mmap(const shm_mmap &) = delete;
+    shm_mmap& operator=(const shm_mmap&) = delete;
 public:
     //打开文件，进行映射
     int open(const char* file_name,

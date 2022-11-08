@@ -29,16 +29,6 @@ timer_queue::timer_queue(size_t num_timer_node,
     ZCE_UNUSED_ARG(ret);
 }
 
-timer_queue::timer_queue()
-{
-}
-
-//析构函数
-timer_queue::~timer_queue()
-{
-    //使用vector的好处就是自己不用管理内存了
-}
-
 //初始化
 int timer_queue::initialize(size_t num_timer_node,
                             unsigned int timer_precision_mesc,

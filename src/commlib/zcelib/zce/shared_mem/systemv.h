@@ -16,6 +16,8 @@ public:
     shm_systemv();
     ~shm_systemv();
 
+    shm_systemv(const shm_systemv &) = delete;
+    shm_systemv& operator=(const shm_systemv&) = delete;
 public:
     //打开文件，进行映射
     int open(key_t sysv_key,

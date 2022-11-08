@@ -100,11 +100,10 @@ public:
                 TRIGGER_MODE trigger_mode = TRIGGER_MODE::STEADY_CLOCK,
                 bool dynamic_expand_node = true);
     ///构造函数
-    timer_wheel();
+    timer_wheel() = default;
 
     ///析构函数
-    virtual ~timer_wheel();
-public:
+    virtual ~timer_wheel() = default;
 
     /*!
     * @brief      初始化
@@ -121,6 +120,7 @@ public:
                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::STEADY_CLOCK,
                    bool dynamic_expand_node = true);
 
+public:
     /*!
     * @brief      取消定时器
     * @return     int      0标识成功，否则失败
@@ -172,15 +172,15 @@ protected:
 
 protected:
     ///定时器能处理的毫秒数
-    unsigned int            timer_length_mesc_;
+    unsigned int            timer_length_mesc_ = 0;
 
     ///定时器点的数量，决定可以设置多长时间的定时器
-    size_t                  num_wheel_point_;
+    size_t                  num_wheel_point_ = 0;
     ///
     std::vector<int>        timer_wheel_point_;
 
     ///当前处理的时间点，因为是一个轮子，这个表示轮子开始的地方，每次触发后前进一点
-    size_t                  proc_wheel_start_;
+    size_t                  proc_wheel_start_ = 0;
 
     ///时间数组队列
     ARRAY_WHEEL_TIMER_NODE  wheel_node_list_;

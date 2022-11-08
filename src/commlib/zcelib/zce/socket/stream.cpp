@@ -9,29 +9,10 @@ stream::stream(const ZCE_SOCKET& socket_handle) :
 {
 }
 
-stream::stream(const stream& others) :
-    zce::skt::socket_base(others.socket_handle_)
-{
-}
-
 stream::stream(stream&& others) noexcept :
     zce::skt::socket_base(others.socket_handle_)
 {
     others.socket_handle_ = ZCE_INVALID_SOCKET;
-}
-
-stream& stream::operator=(const stream& others)
-{
-    if (this == &others)
-    {
-        return *this;
-    }
-    if (socket_handle_ != ZCE_INVALID_SOCKET)
-    {
-        zce::close_socket(socket_handle_);
-    }
-    socket_handle_ = others.socket_handle_;
-    return *this;
 }
 
 stream& stream::operator=(stream&& others) noexcept

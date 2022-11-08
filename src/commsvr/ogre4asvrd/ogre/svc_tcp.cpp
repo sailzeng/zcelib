@@ -77,7 +77,7 @@ void svc_tcp::init_tcp_svc_handler(zce::skt::stream&& sockstream,
     rcv_buffer_ = nullptr;
     recieve_bytes_ = 0;
     send_bytes_ = 0;
-    socket_peer_ = sockstream;
+    socket_peer_ = std::move(sockstream);
     peer_status_ = PEER_STATUS_JUST_CONNECT;
     timeout_time_id_ = -1;
     receive_times_ = 0;

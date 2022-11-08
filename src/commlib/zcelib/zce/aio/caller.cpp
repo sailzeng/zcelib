@@ -1018,14 +1018,18 @@ int er_recvfrom(zce::aio::worker* worker,
 //=======================================================================
 void TIMER_ATOM::clear()
 {
-    timeout_tv_ = nullptr;
-    timer_id_ = nullptr;
+    trigger_tv_ = { 0,0 };
+    timer_id_ = -1;
 }
 
-int TIMER_ATOM::time_out(std::shared_ptr<void> &/*atom*/,
-                         const zce::time_value &/*tv*/,
-                         int /*time_id*/)
+int TIMER_ATOM::time_out(std::shared_ptr<void> &atom,
+                         const zce::time_value &tv,
+                         int timer_id)
 {
+    auto toa = (TIMER_ATOM *)(atom.get());
+    toa->trigger_tv_ = tv;
+    toa->timer_id_ = timer_id;
+    toa->call_back_(toa);
     return 0;
 }
 
@@ -1036,7 +1040,7 @@ int tmo_schedule(zce::aio::worker* worker,
 {
     auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
     aio_atom->call_back_ = std::move(call_back);
-    std::shared_ptr<void> void_ptr = aio_atom;
+    std::shared_ptr<void> void_ptr = std::move(aio_atom);
     int ret = worker->schedule_timer(std::bind(&TIMER_ATOM::time_out,
                                      void_ptr,
                                      std::placeholders::_1,

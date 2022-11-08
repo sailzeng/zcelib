@@ -5,7 +5,6 @@
 #include "zce/os_adapt/socket.h"
 #include "zce/os_adapt/time.h"
 #include "zce/mysql/execute.h"
-
 #include "zce/aio/worker.h"
 
 namespace zce::aio
@@ -19,6 +18,7 @@ int worker::initialize(size_t work_thread_num,
                        size_t work_queue_len,
                        size_t max_event_num)
 {
+    int ret = 0;
     worker_running_ = true;
     work_thread_num_ = work_thread_num;
     work_thread_ = new std::thread * [work_thread_num_];
@@ -38,7 +38,18 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::TIMER_ATOM>(128, 256);
     reactor_ = new reactor_mini();
-    reactor_->initialize(max_event_num, 1024, true);
+    ret = reactor_->initialize(max_event_num, 1024, true);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    timer_queue_ = new zce::timer_wheel();
+    ret = timer_queue_->initialize(1024);
+    if (ret != 0)
+    {
+        return ret;
+    }
     return 0;
 }
 
@@ -171,6 +182,7 @@ void worker::process_request()
         {
             continue;
         }
+        timer_queue_->expire();
     } while (worker_running_);
 }
 
@@ -494,9 +506,9 @@ int worker::schedule_timer(timeout_callback_t call_fun,
                            int &time_id,
                            const zce::time_value& delay_time)
 {
-    time_queue_->schedule_timer(call_fun,
-                                time_id,
-                                delay_time);
+    timer_queue_->schedule_timer(call_fun,
+                                 time_id,
+                                 delay_time);
     return 0;
 }
 
