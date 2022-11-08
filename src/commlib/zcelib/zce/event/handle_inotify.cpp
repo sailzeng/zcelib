@@ -200,10 +200,10 @@ int event_inotify::add_watch(const char* pathname,
 
     DWORD bytes_returned = 0;
     BOOL bret = ::ReadDirectoryChangesW(
-        watch_handle_,                                  // handle to directory
-        read_buffer_,                                    // read results buffer
-        READ_BUFFER_LEN,                               // length of buffer
-        watch_sub_dir_,                                 // monitoring option
+        watch_handle_,                         // handle to directory
+        read_buffer_,                          // read results buffer
+        READ_BUFFER_LEN,                       // length of buffer
+        watch_sub_dir_,                        // monitoring option
         FILE_NOTIFY_CHANGE_SECURITY |
         FILE_NOTIFY_CHANGE_CREATION |
         FILE_NOTIFY_CHANGE_LAST_ACCESS |
@@ -213,8 +213,8 @@ int event_inotify::add_watch(const char* pathname,
         FILE_NOTIFY_CHANGE_DIR_NAME |
         FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
         &bytes_returned,                       // bytes returned
-        &over_lapped_,   // overlapped buffer
-        nullptr // completion routine
+        &over_lapped_,                         // overlapped buffer
+        nullptr                                // completion routine
     );
 
     //如果读取失败，一般而言，这是这段代码有问题
@@ -226,7 +226,6 @@ int event_inotify::add_watch(const char* pathname,
                 strerror(zce::last_error()));
 
         ::CloseHandle(watch_handle_);
-
         return -1;
     }
     ret = reactor()->register_handler(this, static_cast<int>(RECTOR_EVENT::INOTIFY_MASK));
@@ -445,7 +444,9 @@ void event_inotify::inotify_event()
         //Windows 的目录名称最大长度可以到3K，我没有兴趣去搞一套这个玩
         if (length_of_ws >= MAX_PATH)
         {
-            ZCE_LOG(RS_ALERT, "My God ,your path length [%u] more than MAX_PATH [%u],I don't process this.",
+            ZCE_LOG(RS_ALERT,
+                    "My God ,your path length [%u] more than MAX_PATH [%u],"
+                    "I don't process this.",
                     length_of_ws,
                     MAX_PATH);
             continue;
@@ -526,10 +527,10 @@ void event_inotify::inotify_event()
 
     //继续进行监控处理
     bret = ::ReadDirectoryChangesW(
-        watch_handle_,            // handle to directory
-        read_buffer_, // read results buffer
-        READ_BUFFER_LEN,                               // length of buffer
-        watch_sub_dir_,                                 // monitoring option
+        watch_handle_,                       // handle to directory
+        read_buffer_,                        // read results buffer
+        READ_BUFFER_LEN,                     // length of buffer
+        watch_sub_dir_,                      // monitoring option
         FILE_NOTIFY_CHANGE_SECURITY |
         FILE_NOTIFY_CHANGE_CREATION |
         FILE_NOTIFY_CHANGE_LAST_ACCESS |
@@ -537,10 +538,10 @@ void event_inotify::inotify_event()
         FILE_NOTIFY_CHANGE_SIZE |
         FILE_NOTIFY_CHANGE_ATTRIBUTES |
         FILE_NOTIFY_CHANGE_DIR_NAME |
-        FILE_NOTIFY_CHANGE_FILE_NAME,          // filter conditions
-        &bytes_returned,                       // bytes returned
-        &(over_lapped_), // overlapped buffer
-        nullptr                                   // completion routine
+        FILE_NOTIFY_CHANGE_FILE_NAME,        // filter conditions
+        &bytes_returned,                     // bytes returned
+        &(over_lapped_),                     // overlapped buffer
+        nullptr                              // completion routine
     );
     if (FALSE == bret)
     {
