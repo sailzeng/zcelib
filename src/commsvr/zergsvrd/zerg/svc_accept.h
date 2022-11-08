@@ -34,13 +34,13 @@ public:
     * @brief      事件触发的毁掉处理，表示有一个accept 的数据
     * @return     int
     */
-    virtual int accept_event();
+    int accept_event() override;
 
     ///关闭处理
-    virtual int close_event();
+    void close_event() override;
 
     ///得到Acceptor的句柄
-    virtual ZCE_HANDLE get_handle(void) const;
+    ZCE_HANDLE get_handle(void) const override;
 
 protected:
 

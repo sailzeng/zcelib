@@ -597,7 +597,7 @@ int svc_tcp::timer_timeout(const zce::time_value& now_time, int timer_id)
 }
 
 //PEER Event Handler关闭的处理
-int svc_tcp::close_event()
+void svc_tcp::close_event()
 {
     ZCE_LOG(RS_DEBUG, "[zergsvr] svc_tcp::close_event : %u.%u.",
             peer_svr_id_.services_type_, peer_svr_id_.services_id_);
@@ -705,7 +705,7 @@ int svc_tcp::close_event()
         pool_of_acpthdl_.push_back(this);
     }
 
-    return 0;
+    return;
 }
 
 //收到一个完整的帧后的预处理工作

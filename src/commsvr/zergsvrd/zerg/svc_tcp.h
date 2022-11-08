@@ -93,7 +93,7 @@ public:
     virtual int connect_event(bool success) override;
 
     ///关闭事件触发,
-    virtual int close_event();
+    virtual void close_event();
 
     /*!
     * @brief      超时事件触发

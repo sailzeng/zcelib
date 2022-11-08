@@ -136,7 +136,6 @@ int svc_accept::accept_event()
         }
 
         //这儿应该退出进程???,还是继续把。哈哈。
-        //return -1;
         return 0;
     }
 
@@ -171,7 +170,7 @@ ZCE_HANDLE svc_accept::get_handle(void) const
 }
 
 //退出处理
-int svc_accept::close_event()
+void svc_accept::close_event()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)
@@ -183,6 +182,6 @@ int svc_accept::close_event()
     //删除自己
     delete this;
 
-    return 0;
+    return;
 }
 }//namespace zerg
