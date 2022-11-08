@@ -182,7 +182,6 @@ void worker::process_request()
         {
             continue;
         }
-        timer_queue_->expire();
     } while (worker_running_);
 }
 
@@ -213,6 +212,7 @@ void worker::process_response(zce::time_value* wait_time,
             atom_base->call_back_(atom_base);
             ++num_rsp;
         }
+        timer_queue_->expire();
     } while (go);
 }
 
