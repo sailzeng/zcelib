@@ -186,10 +186,9 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
 
     //注册到
     ret = reactor()->register_handler(this, zce::CONNECT_MASK);
-
-    //我几乎没有见过register_handler失败,
     if (ret != 0)
     {
+        //我几乎没有见过register_handler失败,
         ZCE_LOG(RS_ERROR, "Register connect handler fail! ret =%  errno=%u|%s \n",
                 ret,
                 zce::last_error(),
@@ -235,7 +234,7 @@ ZCE_HANDLE svc_tcp::get_handle(void) const
 }
 
 //读取,断连的事件触发处理函数
-int svc_tcp::read_event(ZCE_HANDLE)
+int svc_tcp::read_event()
 {
     //读取数据
     size_t szrecv;
@@ -243,12 +242,10 @@ int svc_tcp::read_event(ZCE_HANDLE)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     int ret = read_data_from_peer(szrecv);
-
     ZCE_LOG(RS_DEBUG, "Read event,[%s] ,TCP handle input event triggered. ret:%d,szrecv:%u.\n",
             remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
             ret,
             szrecv);
-
     //这儿任何错误都关闭,
     if (ret != 0)
     {
@@ -266,7 +263,6 @@ int svc_tcp::read_event(ZCE_HANDLE)
                                     static_cast<unsigned int>(soar::ogre4a_frame::MAX_OF_OGRE_DATA_LEN),
                                     if_recv_whole,
                                     size_frame);
-
         if (0 != ret)
         {
             ZCE_LOG(RS_ERROR, "Read data error [%s].Judge whole fale error ret=%u.\n",
@@ -305,27 +301,34 @@ int svc_tcp::read_event(ZCE_HANDLE)
 }
 
 //写事件触发,链接成功的事件触发处理函数
-int svc_tcp::write_event(ZCE_HANDLE)
+int svc_tcp::write_event()
 {
-    //如果NON BLOCK Connect成功,也会调用handle_output
-    if (PEER_STATUS_NOACTIVE == peer_status_)
-    {
-        //处理连接后的事宜
-        process_connect_register();
-        return 0;
-    }
-
-    //
+    //尝试发送所有的数据
     int ret = write_all_aata_to_peer();
-
-    //出现错误,
     if (ret != 0)
     {
         //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,read_event将被调用,这儿不重复处理
         //如果是中断等错误,程序可以继续的.
         return -1;
     }
+    return 0;
+}
 
+int svc_tcp::connect_event(bool success)
+{
+    if (success)
+    {
+        //如果NON BLOCK Connect成功,也会调用write_event
+        if (PEER_STATUS_NOACTIVE == peer_status_)
+        {
+            //处理连接后的事宜
+            process_connect_register();
+            return 0;
+        }
+    }
+    else
+    {
+    }
     return 0;
 }
 
@@ -364,7 +367,7 @@ int svc_tcp::timer_timeout(const zce::time_value&/*time*/, int timer_id)
 }
 
 //PEER Event Handler关闭的处理
-int svc_tcp::close_event()
+void svc_tcp::close_event()
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -435,7 +438,7 @@ int svc_tcp::close_event()
         --num_accept_peer_;
     }
 
-    return 0;
+    return;
 }
 
 //返回端口的状态,
@@ -494,8 +497,8 @@ int svc_tcp::read_data_from_peer(size_t& szrevc)
     }
 
     //
-    size_t data_len = rcv_buffer_->ogre_frame_len_ - soar::ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD;
-
+    size_t data_len =
+        rcv_buffer_->ogre_frame_len_ - soar::ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD;
     if (data_len < soar::ogre4a_frame::MAX_OF_OGRE_DATA_LEN)
     {
         recvret = socket_peer_.recv(rcv_buffer_->frame_data_ + data_len,
@@ -573,11 +576,8 @@ int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
         return 0;
     }
 
-    //#endif //#if defined DEBUG || defined _DEBUG
-
     //前面有检查,不会越界
     soar::ogre4a_frame* sndbuffer = snd_buffer_deque_[0];
-
     ssize_t sendret = socket_peer_.send(sndbuffer->frame_data_ + send_bytes_,
                                         (sndbuffer->ogre_frame_len_ - send_bytes_ - \
                                         soar::ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD));
@@ -956,13 +956,13 @@ int svc_tcp::process_send_data(soar::ogre4a_frame* ogre_frame)
 }
 
 //将发送数据放入发送队列中
-//如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
 int svc_tcp::put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
+
     //对于一个没有连接上的PEER,等待连接队列的数据不能过多,
     if (peer_status_ == PEER_STATUS_NOACTIVE &&
         snd_buffer_deque_.size() >= MAX_LEN_OF_SEND_LIST)
@@ -984,12 +984,12 @@ int svc_tcp::put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame)
 
     //放入发送队列,
     bool bret = snd_buffer_deque_.push_back(ogre_frame);
-
     if (false == bret)
     {
         //丢弃或者错误处理那个数据比较好呢?这儿值得商榷, 我这儿进行错误处理(可能丢弃)的是最新的.
         //我的考虑是如果命令有先后性.而且可以避免内存操作.
-        ZCE_LOG(RS_ERROR, "Peer handle [%u] IP|Port[%s] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.\n",
+        ZCE_LOG(RS_ERROR, "Peer handle [%u] IP|Port[%s] send buffer cycle deque is "
+                "full,this data must throw away,Send deque capacity =%u,may be extend it.\n",
                 socket_peer_.get_handle(),
                 remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                 snd_buffer_deque_.capacity());
@@ -1001,17 +1001,14 @@ int svc_tcp::put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame)
     }
 
     //尝试发送这个数据包
-
     if (peer_status_ != PEER_STATUS_NOACTIVE)
     {
         ret = write_all_aata_to_peer();
-
         //出现错误,
         if (ret != 0)
         {
             //这儿已经进行了调整，坚决关闭之，对于中断错误在上层已经转化了错误
             close_event();
-
             //发送数据已经放入队列，返回OK
             return 0;
         }

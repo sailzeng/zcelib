@@ -289,7 +289,7 @@ public:
                         sz_use_len);
     }
 
-#if defined ZCE_OS_WINDOWS
+#if ZCE_SUPPORT_STDFORMAT == 1
     template <typename... out_type >
     void cpp20_write_logmsg(LOG_PRIORITY outlevel,
                             const char* str_format,
@@ -389,7 +389,8 @@ public:
                                         str_format,
                                         out_data...);
     }
-#if defined ZCE_OS_WINDOWS
+
+#if ZCE_SUPPORT_STDFORMAT == 1
     template <typename... out_type >
     static void write_logcpp20(LOG_PRIORITY outlevel,
                                const char* str_format,

@@ -303,7 +303,7 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "sformat_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
-
+#if ZCE_SUPPORT_STDFORMAT == 1
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
@@ -317,7 +317,7 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "std::format_to_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
-
+#endif
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
@@ -396,7 +396,7 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
-
+#if ZCE_SUPPORT_STDFORMAT == 1
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
@@ -410,7 +410,7 @@ int test_out_buffer(int /*argc*/, char* /*argv*/[])
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "std::format_to_n use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
-
+#endif
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {

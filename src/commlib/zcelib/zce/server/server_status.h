@@ -206,11 +206,9 @@ protected:
     ///存放统计数据的共享内存数组，
     typedef zce::shm_vector<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
     ///统计ID到数组的下标的hash map
-    typedef unordered_map<STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
+    typedef std::unordered_map<STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<uint32_t, STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
-
-public:
+    typedef std::unordered_map<uint32_t, STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
     ///统计数据的数组，用于dump输出的数据结构
     typedef std::vector<STATUS_ITEM_WITHNAME>  ARRAY_OF_STATUS_WITHNAME;

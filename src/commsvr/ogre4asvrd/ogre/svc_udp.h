@@ -21,7 +21,7 @@ public:
     //
     virtual int read_event(ZCE_HANDLE);
     //
-    virtual int close_event();
+    virtual void close_event();
 
 public:
     //初始化UPD端口

@@ -104,7 +104,7 @@ int svc_udp::read_event(ZCE_HANDLE)
 }
 
 //
-int svc_udp::close_event()
+void svc_udp::close_event()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
@@ -116,7 +116,7 @@ int svc_udp::close_event()
     //删除自己
     delete this;
 
-    return 0;
+    return;
 }
 
 //读取UDP数据

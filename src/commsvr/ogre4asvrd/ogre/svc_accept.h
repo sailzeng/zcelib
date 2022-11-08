@@ -29,7 +29,7 @@ public:
     virtual int accept_event(ZCE_HANDLE);
 
     //关闭处理
-    virtual int close_event();
+    virtual void close_event();
 
     //得到Acceptor的句柄
     ZCE_HANDLE get_handle(void) const;

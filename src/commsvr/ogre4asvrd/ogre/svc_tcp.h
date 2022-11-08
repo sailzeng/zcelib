@@ -68,17 +68,19 @@ public:
                               const zce::skt::addr_in& socketaddr,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
-    //ZEN的一组要求自己继承的函数.
-    virtual ZCE_HANDLE get_handle(void) const;
+    //event的一组要求自己继承的函数.
+    ZCE_HANDLE get_handle(void) const override;
     //
-    virtual int read_event(ZCE_HANDLE);
+    int read_event() override;
     //
-    virtual int write_event(ZCE_HANDLE);
+    int write_event() override;
     //
-    virtual int timer_timeout(const zce::time_value& time,
-                              int timer_id);
+    int connect_event(bool success) override;
     //
-    virtual int close_event();
+    int timer_timeout(const zce::time_value& time,
+                      int timer_id);
+    //
+    void close_event();
 
     //得到Handle对应PEER的IP地址
     const zce::skt::addr_in& get_peer();

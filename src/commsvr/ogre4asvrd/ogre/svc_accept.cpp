@@ -160,7 +160,7 @@ ZCE_HANDLE svc_accept::get_handle(void) const
 }
 
 //
-int svc_accept::close_event()
+void svc_accept::close_event()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)
@@ -172,6 +172,6 @@ int svc_accept::close_event()
     //删除自己
     delete this;
 
-    return 0;
+    return;
 }
 }

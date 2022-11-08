@@ -71,7 +71,7 @@ int event_inotify::open(zce::reactor* reactor_base)
 }
 
 //关闭监控句柄等，解除绑定reactor等
-int event_inotify::close()
+void event_inotify::close()
 {
 #if defined (ZCE_OS_LINUX)
 
@@ -100,7 +100,7 @@ int event_inotify::close()
 
 #endif
 
-    return 0;
+    return;
 }
 
 //添加监控
@@ -572,7 +572,7 @@ int event_inotify::inotify_event()
 }
 
 //关闭监控句柄
-int event_inotify::close_event()
+void event_inotify::close_event()
 {
     return close();
 }

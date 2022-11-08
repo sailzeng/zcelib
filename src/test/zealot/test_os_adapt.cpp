@@ -142,7 +142,7 @@ void test_findwith_container(size_t container_len)
 {
     std::vector<int>          int_vector;
     std::map<int, int>         int_map;
-    unordered_map<int, int>    int_hash;
+    std::unordered_map<int, int>    int_hash;
 
     int_vector.resize(container_len);
     int_hash.rehash(container_len);

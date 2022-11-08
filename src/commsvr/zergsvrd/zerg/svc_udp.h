@@ -25,11 +25,11 @@ protected:
 
 public:
     //取得句柄
-    virtual ZCE_HANDLE get_handle(void) const;
+    ZCE_HANDLE get_handle(void) const override;
     //
-    virtual int read_event();
+    int read_event() override;
     //
-    virtual int close_event();
+    void close_event() override;
 
 public:
 

@@ -105,7 +105,7 @@ public:
     @brief      关闭监控句柄等，取消绑定reactor等
     @return     返回0表示成功，否则失败
     */
-    int close();
+    void close();
 
     /*!
     @brief      取回对应的ZCE_SOCKET 句柄
@@ -151,7 +151,7 @@ public:
     @brief
     @return     int
     */
-    virtual int close_event();
+    virtual void close_event();
 
     ///需要你继承使用的虚函数，你关注什么事件，就重载什么函数
 protected:

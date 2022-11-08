@@ -53,13 +53,11 @@ public:
 
     /*!
     * @brief  读取事件触发调用函数，用于读取数据。
-    * @return int return -1会记录，error等信息，
     */
     virtual int read_event();
 
     /*!
     * @brief      写入事件触发调用函数，用于写入事件
-    * @return int return -1会记录，error等信息，
     */
     virtual int write_event();
 
@@ -87,7 +85,7 @@ public:
     /*!
     * @brief      句柄关闭处理函数，基类函数调用了remove
     */
-    virtual int close_event();
+    virtual void close_event();
 
     /*!
     * @brief      取得当前的标志位

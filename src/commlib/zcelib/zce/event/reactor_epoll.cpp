@@ -308,7 +308,7 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
     //先说明一下这个问题，当内部处理的事件发生错误后，上层可能就会删除掉对应的zce::event_handler，但底层可能还有事件要触发。
     //由于该代码的时候面临抉择，我必须写一段说明，我在改这段代码的时候有几种种方式,
     //1.整体写成do { break} while()的方式，每个IO事件都作为触发方式，这个好处是简单，但对于epoll,如果是水平触发，那么你可能丢失事件
-    //2.继续使用return -1作为一个判断，ACE就是这样的，原来曾经觉得ACE这个设计有点冗余，但自己设计看来，还是有好处的，
+    //2.不继续使用return -1作为一个判断，（ACE就是这样的），因为你自己可以调用close_event，导致最后归谁调用很迷惑
     //3.每次调用后，都检查一下event_hdl是否还存在，
     //最后我采用了兼容2，3的方法，2是为了和ACE兼容，3是为了保证就是你TMD天翻地覆，我也能应付,
 
@@ -344,7 +344,7 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
     //READ和ACCEPT事件都调用read_event
     if (ep_event->events & EPOLLOUT)
     {
-        //如果写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
+        //如果写事件触发了，那么里面可能调用event_close,再查询一次，double check.
         if (event_in_happen)
         {
             ret = find_event_handler(ep_event->data.fd,
@@ -376,7 +376,7 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
     //异常事件，其实我也不知道，什么算异常
     if (ep_event->events & EPOLLERR)
     {
-        //如果读取或者写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
+        //如果读取或者写事件触发了，那么里面可能调用event_close,再查询一次，double check.
         if (event_out_happen || event_in_happen)
         {
             ret = find_event_handler(ep_event->data.fd,

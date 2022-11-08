@@ -156,7 +156,9 @@ int auto_connect::connect_one_server(const TCP_PEER_MODULE_INFO& peer_module)
         svc_tcp* connect_hdl = svc_tcp::alloc_svchandler_from_pool(
             svc_tcp::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(connect_hdl);
-        connect_hdl->init_tcp_svc_handler(tcpscoket, inetaddr, peer_module.fp_judge_whole_frame_);
+        connect_hdl->init_tcp_svc_handler(tcpscoket,
+                                          inetaddr,
+                                          peer_module.fp_judge_whole_frame_);
     }
     //tmpret == 0 那就是让我去跳楼,但按照 UNIX网络编程 说应该是有本地连接时可能的.(我的测试还是返回错误)
     //而ACE的说明是立即返回错误,我暂时不处理这种情况,实在不行又只有根据类型写晦涩的朦胧诗了

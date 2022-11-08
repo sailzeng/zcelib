@@ -95,7 +95,7 @@
 
 //==================================================================================================
 //关于C++11的特性使用问题，C++11的很多特效如此的诱人，但想真心爱他还是有一些门槛的。
-//我曾经安装C++98的推广速度认为，我们到2015年可以开始使用C++11特性，2018年才能推广，
+//我曾经按照C++98的推广速度认为，我们到2015年可以开始使用C++11特性，2018年才能推广，
 //但这一次编译机的厂商感觉都比较努力，到2013年，VC++和GCC 已经大部分完成任务，但要在现
 //有的代码里面使用C++11容易，兼容之就比较蛋疼了。
 //如果有兴趣看看这两篇文档
@@ -109,36 +109,60 @@
 //如果抛开上面的繁杂的特效可以认为，VC++，从2010版本开始支持，在2013版本支持特效比较完整，
 //GCC 从4.3版本开始到.到4.8版本支持比较完整，GCC4.8的支持特性数量程度都远好于VC++2013
 //__cplusplus 在MSVC下还不能使用。到VS2018
-#if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1800)) \
-    || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 40800))
-#define ZCE_SUPPORT_CPP11 1
-#else
-#define ZCE_SUPPORT_CPP11 0
-#endif
 
 //VC++ 2019只有支持14，和19的选项
 //#if __cplusplus < 201103L
 //#error "Should use --std=c++11 option for compile."
 //#endif
+//in VC++ 2019的编译器，请同时调节Property Pages /General/C++ Language Standard
 
-//我懒了，我不想倒退回去支持非C11的编译器了，我努力拥抱C11，如果你要向更低的VS编译器靠近，要修改
-//一些auto或者默认非静态成员初始化，
-#if ZCE_SUPPORT_CPP11 == 0
-#error "[Error]Only support C11 compiler, include Visual Studio 2013 and "\
-"upper version, or GCC 4.8 and upper version, and use –std=c++11 options."
+//VS 默认的__cplusplus 默认一直是199711L，
+//如果需要增加编译选项 /Zc:__cplusplus 会将__cplusplus 标记为实际值
+
+#if __cplusplus >= 201103L
+#define  ZCE_SUPPORT_CPP11  1L
+#else
+#define  ZCE_SUPPORT_CPP11  0
 #endif
 
-//in VC++ 2019的编译器，请同时调节Property Pages /General/C++ Language Standard
 #if __cplusplus >= 201402L
-#define  ZCE_SUPPORT_CPP14 == 1
+#define  ZCE_SUPPORT_CPP14  1
 #else
-#define  ZCE_SUPPORT_CPP14 == 0
+#define  ZCE_SUPPORT_CPP14  0
 #endif
 
 #if __cplusplus >= 201703L
-#define  ZCE_SUPPORT_CPP17 == 1
+#define  ZCE_SUPPORT_CPP17  1
 #else
-#define  ZCE_SUPPORT_CPP17 == 0
+#define  ZCE_SUPPORT_CPP17  0
+#endif
+
+#if __cplusplus >= 202002L
+#define  ZCE_SUPPORT_CPP20  1
+#else
+#define  ZCE_SUPPORT_CPP20  0
+#endif
+
+//我懒了，我不想倒退回去支持非C11的编译器了，我努力拥抱CPP20，如果你要向更低的VS编译器靠近，要修改
+//一些auto或者默认非静态成员初始化，
+#if (!defined ZCE_SUPPORT_CPP20) && (ZCE_SUPPORT_CPP20 == 0)
+#error "[Error]Only support C20 compiler, include Visual Studio 2019 and "\
+"upper version, or GCC 9.0 and upper version, and use –std=c++20 options."
+#endif
+
+//
+//可以用下面的定義支撑某些特性，
+#if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1932)) \
+    || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 180800))
+#define ZCE_SUPPORT_XXXXX 1
+#else
+#define ZCE_SUPPORT_XXXXX 0
+#endif
+//比如std::format ,GCC v12 目前也没有支持，所以我瞎定义了一个
+#if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1932))
+#define ZCE_SUPPORT_STDFORMAT 1
+#else
+#define ZCE_SUPPORT_STDFORMAT 0
 #endif
 
 //==================================================================================================
@@ -300,6 +324,8 @@
 #include <list>
 #include <set>
 #include <map>
+#include <unordered_set>
+#include <unordered_map>
 #include <deque>
 #include <queue>
 #include <string>
@@ -324,34 +350,6 @@
 #include <mutex>
 #include <semaphore>
 #include <condition_variable>
-
-//hash_map,hash_set的头文件包含处理要麻烦一点
-
-//在VS2008以后，才有unordered_map和unordered_set，所以在这之前，你必须用stlport，
-//当然由于stlport的性能强过微软自带的容器，其他版本也建议大家用stlport
-#if defined ZCE_OS_WINDOWS && !defined _STLP_CONFIX_H && defined (_MSC_VER) && (_MSC_VER <= 1400)
-#error " Please use stlport ,in Visual studio 2005, have not unordered_map and unordered_set ."
-#endif
-
-//在VC++2008版本,VC++2005+STLport，GCC 4.6版本以及更早的版本，unordered_map的名字空间是std::tr1
-//在VC++2008版本以前(包括),必须实用STLport
-//在VC++2008版本后，可以考虑是否实用STLport,如果_STLP_CONFIX_H 被定义了，我认为你有使用
-#if (defined ZCE_OS_LINUX && (_GCC_VER <= 40600)) \
-    || ( defined ZCE_OS_WINDOWS && (_MSC_VER <= 1400) ) \
-    || ( defined ZCE_OS_WINDOWS && (_MSC_VER > 1400) && defined _STLP_CONFIX_H)
-#include <unordered_map>
-#include <unordered_set>
-using std::tr1::unordered_map;
-using std::tr1::unordered_set;
-
-//后面的版本都是直接用了std的名字空间
-#else
-#include <unordered_set>
-#include <unordered_map>
-using std::unordered_map;
-using std::unordered_set;
-#endif
-//更早的版本其实是支持hash_map和hash_set的头文件的，先我放弃支持了,那个要改一点代码。
 
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( pop )
@@ -562,11 +560,11 @@ extern "C"
 #endif
 
 //nullptr
-#ifndef nullptr
+#ifndef NULL
 #  ifdef __cplusplus
-#    define nullptr    0
+#    define NULL    0
 #  else
-#    define nullptr    ((void *)0)
+#    define NULL    ((void *)0)
 #  endif
 #endif
 
