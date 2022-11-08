@@ -389,7 +389,7 @@ public:
                                         str_format,
                                         out_data...);
     }
-
+#if defined ZCE_OS_WINDOWS
     template <typename... out_type >
     static void write_logcpp20(LOG_PRIORITY outlevel,
                                const char* str_format,
@@ -403,6 +403,7 @@ public:
                                           str_format,
                                           out_data...);
     }
+#endif
 public:
 
     //!根据字符串，得到日志级别
