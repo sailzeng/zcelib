@@ -57,12 +57,12 @@ public:
     * @brief      用于Accept的端口的处理Event Handle初始化处理.
     * @return     void
     * @param      my_svcinfo  此句柄对应的本端的SVC ID
-    * @param      sockstream  SOCKET 句柄
+    * @param      sockstream  SOCKET stream，右值避免错误释放
     * @param      socketaddr  对端的地址，其实可以从sockstream中得到，但为了效率和方便.
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                             const zce::skt::stream& sockstream,
+                             zce::skt::stream&& sockstream,
                              const zce::skt::addr_in& socketaddr);
 
     /*!
@@ -70,30 +70,30 @@ public:
     * @return     void
     * @param      my_svcinfo  此句柄对应的本端SVC ID
     * @param      svrinfo     对端的SVC ID
-    * @param      sockstream  SOCKET 句柄
+    * @param      sockstream  SOCKET stream 右值避免错误释放
     * @param      socketaddr  对应连接的对端地址信息
     * @note
     */
     void init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                              const soar::SERVICES_ID& svrinfo,
-                             const zce::skt::stream& sockstream,
+                             zce::skt::stream&& sockstream,
                              const zce::skt::addr_in& socketaddr);
 
     //ZEN的一组要求自己继承的函数.
     //zce::Event_Handler必须重载的函数，取得SOCKET句柄
-    virtual ZCE_HANDLE get_handle(void) const;
+    ZCE_HANDLE get_handle(void) const override;
 
     ///读事件触发 ，
-    virtual int read_event() override;
+    void read_event() override;
 
     ///读事件触发 ，
-    virtual int write_event() override;
+    void write_event() override;
 
     ///异步链接成功触发,异步链接失败触发
-    virtual int connect_event(bool success) override;
+    void connect_event(bool success) override;
 
     ///关闭事件触发,
-    virtual void close_event();
+    void close_handle();
 
     /*!
     * @brief      超时事件触发

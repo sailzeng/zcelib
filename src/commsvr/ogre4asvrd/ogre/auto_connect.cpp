@@ -156,7 +156,7 @@ int auto_connect::connect_one_server(const TCP_PEER_MODULE_INFO& peer_module)
         svc_tcp* connect_hdl = svc_tcp::alloc_svchandler_from_pool(
             svc_tcp::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(connect_hdl);
-        connect_hdl->init_tcp_svc_handler(tcpscoket,
+        connect_hdl->init_tcp_svc_handler(std::move(tcpscoket),
                                           inetaddr,
                                           peer_module.fp_judge_whole_frame_);
     }

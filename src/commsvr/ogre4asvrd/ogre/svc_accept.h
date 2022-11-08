@@ -26,13 +26,13 @@ public:
     int create_listenpeer();
 
     //处理有端口
-    virtual int accept_event(ZCE_HANDLE);
+    void accept_event() override;
 
     //关闭处理
-    virtual void close_event();
+    void close_handle() override;
 
     //得到Acceptor的句柄
-    ZCE_HANDLE get_handle(void) const;
+    ZCE_HANDLE get_handle(void) const override;
 
 protected:
 

@@ -47,14 +47,14 @@ queue_buffer::queue_buffer(queue_buffer&& others) noexcept :
 //赋值函数
 queue_buffer& queue_buffer::operator=(const queue_buffer& others)
 {
+    if (this == &others)
+    {
+        return *this;
+    }
     if (buffer_data_)
     {
         delete[] buffer_data_;
         buffer_data_ = nullptr;
-    }
-    if (this == &others)
-    {
-        return *this;
     }
     size_of_capacity_ = others.size_of_capacity_;
     start_point_ = others.start_point_;

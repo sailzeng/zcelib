@@ -54,38 +54,38 @@ public:
     /*!
     * @brief  读取事件触发调用函数，用于读取数据。
     */
-    virtual int read_event();
+    virtual void read_event();
 
     /*!
     * @brief      写入事件触发调用函数，用于写入事件
     */
-    virtual int write_event();
+    virtual void write_event();
 
     /*!
     * @brief      发生异常事件后调用，返回值参考其他函数
     */
-    virtual int exception_event();
+    virtual void exception_event();
 
     /*!
       * @brief  发生了链接的事件
       * @param success 连接是否成功
      */
-    virtual int connect_event(bool success);
+    virtual void connect_event(bool success);
 
     /*!
      * @brief  发生了accept的事件是调用
     */
-    virtual int accept_event();
+    virtual void accept_event();
 
     /*!
      * @brief  发生了inotify的事件是调用
     */
-    virtual int inotify_event();
+    virtual void inotify_event();
 
     /*!
     * @brief      句柄关闭处理函数，基类函数调用了remove
     */
-    virtual void close_event();
+    virtual void close_handle();
 
     /*!
     * @brief      取得当前的标志位

@@ -61,7 +61,7 @@ int svc_udp::init_udp_services()
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
                 udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        close_event();
+        close_handle();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
@@ -80,7 +80,7 @@ int svc_udp::init_udp_services()
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
                 udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
-        close_event();
+        close_handle();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
@@ -95,7 +95,7 @@ ZCE_HANDLE svc_udp::get_handle(void) const
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int svc_udp::read_event()
+void svc_udp::read_event()
 {
     //多次读取UDP的数据，保证UDP的响应也比较及时。
     for (size_t i = 0; i < ONCE_MAX_READ_UDP_NUMBER; ++i)
@@ -124,17 +124,17 @@ int svc_udp::read_event()
         }
     }
 
-    return 0;
+    return;
 }
 
 //
-void svc_udp::close_event()
+void svc_udp::close_handle()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
     {
         //内部会进行remove_handler
-        zce::event_handler::close_event();
+        zce::event_handler::close_handle();
         dgram_peer_.close();
     }
 

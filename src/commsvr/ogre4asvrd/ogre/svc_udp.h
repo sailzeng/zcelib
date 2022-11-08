@@ -19,9 +19,9 @@ public:
     //取得句柄
     virtual ZCE_HANDLE get_handle(void) const;
     //
-    virtual int read_event(ZCE_HANDLE);
+    void read_event() override;
     //
-    virtual void close_event();
+    void close_handle() override;
 
 public:
     //初始化UPD端口

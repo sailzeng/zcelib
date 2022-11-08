@@ -96,7 +96,7 @@ int svc_accept::create_listenpeer()
 }
 
 //
-int svc_accept::accept_event(ZCE_HANDLE /*handle*/)
+void svc_accept::accept_event()
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -124,34 +124,34 @@ int svc_accept::accept_event(ZCE_HANDLE /*handle*/)
         if (accept_error == EWOULDBLOCK || accept_error == EINVAL
             || accept_error == ECONNABORTED || accept_error == EPROTOTYPE)
         {
-            return 0;
+            return;
         }
 
         //这儿应该退出进程
-        //return -1;
-        return 0;
+        return;
     }
 
     //如果允许的连接的服务器地址中间没有.或者在拒绝的服务列表中... kill
     ret = ip_restrict_->check_ip_restrict(remoteaddress);
-
     if (ret != 0)
     {
-        return ret;
+        sockstream.close();
+        return;
     }
 
     svc_tcp* phandler = svc_tcp::alloc_svchandler_from_pool(svc_tcp::HANDLER_MODE_ACCEPTED);
 
     if (phandler != nullptr)
     {
-        phandler->init_tcp_svc_handler(sockstream, peer_module_info_.fp_judge_whole_frame_);
+        phandler->init_tcp_svc_handler(std::move(sockstream),
+                                       peer_module_info_.fp_judge_whole_frame_);
     }
     else
     {
         sockstream.close();
     }
 
-    return 0;
+    return;
 }
 //
 ZCE_HANDLE svc_accept::get_handle(void) const
@@ -160,7 +160,7 @@ ZCE_HANDLE svc_accept::get_handle(void) const
 }
 
 //
-void svc_accept::close_event()
+void svc_accept::close_handle()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)

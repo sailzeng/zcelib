@@ -301,11 +301,7 @@ int wmfo_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
             {
-                ret = event_hdl->read_event();
-                if (ret == -1)
-                {
-                    event_hdl->close_event();
-                }
+                event_hdl->read_event();
             }
         }
         if (socket_event.lNetworkEvents & FD_CLOSE)
@@ -313,11 +309,7 @@ int wmfo_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
             {
-                ret = event_hdl->read_event();
-                if (ret == -1)
-                {
-                    event_hdl->close_event();
-                }
+                event_hdl->read_event();
             }
         }
         if (socket_event.lNetworkEvents & FD_WRITE)
@@ -325,11 +317,7 @@ int wmfo_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
             {
-                ret = event_hdl->write_event();
-                if (ret == -1)
-                {
-                    event_hdl->close_event();
-                }
+                event_hdl->write_event();
             }
         }
         if (socket_event.lNetworkEvents & FD_OOB)
@@ -337,11 +325,7 @@ int wmfo_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
             ret = find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
             if (ret == 0)
             {
-                ret = event_hdl->exception_event();
-                if (ret == -1)
-                {
-                    event_hdl->close_event();
-                }
+                event_hdl->exception_event();
             }
         }
         if (socket_event.lNetworkEvents & FD_CONNECT)
@@ -352,27 +336,18 @@ int wmfo_reactor::handle_events(zce::time_value* time_out, size_t* size_event)
                 //统一，异步CONNECT如果失败，调用read_event,成功调用write_event
                 if (socket_event.iErrorCode[FD_CONNECT_BIT])
                 {
-                    ret = event_hdl->connect_event(false);
+                    event_hdl->connect_event(false);
                 }
                 else
                 {
-                    ret = event_hdl->connect_event(true);
-                }
-                if (ret == -1)
-                {
-                    event_hdl->close_event();
+                    event_hdl->connect_event(true);
                 }
             }
         }
     }
-
-    if (event_mask & zce::INOTIFY_MASK)
+    else if (event_mask & zce::INOTIFY_MASK)
     {
-        ret = event_hdl->read_event();
-        if (ret == -1)
-        {
-            event_hdl->close_event();
-        }
+        event_hdl->read_event();
     }
     return 0;
 }

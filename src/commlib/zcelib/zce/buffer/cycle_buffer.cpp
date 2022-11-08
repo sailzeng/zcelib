@@ -51,7 +51,7 @@ cycle_buffer& cycle_buffer::operator=(const cycle_buffer& others)
     }
     if (cycbuf_data_)
     {
-        delete cycbuf_data_;
+        delete[] cycbuf_data_;
         cycbuf_data_ = nullptr;
     }
     size_of_cycle_ = others.size_of_cycle_;

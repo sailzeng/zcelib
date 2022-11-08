@@ -58,8 +58,8 @@ int reactor::close()
         //关闭之
         zce::event_handler* event_handler = (iter_temp->second);
 
-        //先close_event,
-        event_handler->close_event();
+        //先close_handle,
+        event_handler->close_handle();
 
         //让迭代器继续从最开始干起
         iter_temp = handler_map_.begin();
@@ -146,7 +146,7 @@ int reactor::remove_handler(zce::event_handler* event_handler,
     if (call_close_event)
     {
         //调用event_close
-        event_handler->close_event();
+        event_handler->close_handle();
     }
 
     return 0;

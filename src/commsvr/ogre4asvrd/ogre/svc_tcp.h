@@ -55,7 +55,7 @@ public:
     * @param      sockstream
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const zce::skt::stream& sockstream,
+    void init_tcp_svc_handler(zce::skt::stream&& sockstream,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     /*!
@@ -64,23 +64,23 @@ public:
     * @param      socketaddr
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const zce::skt::stream& sockstream,
+    void init_tcp_svc_handler(zce::skt::stream&& sockstream,
                               const zce::skt::addr_in& socketaddr,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     //event的一组要求自己继承的函数.
     ZCE_HANDLE get_handle(void) const override;
     //
-    int read_event() override;
+    void read_event() override;
     //
-    int write_event() override;
+    void write_event() override;
     //
-    int connect_event(bool success) override;
+    void connect_event(bool success) override;
     //
     int timer_timeout(const zce::time_value& time,
-                      int timer_id);
+                      int timer_id) override;
     //
-    void close_event();
+    void close_handle();
 
     //得到Handle对应PEER的IP地址
     const zce::skt::addr_in& get_peer();
@@ -92,7 +92,7 @@ protected:
     //将数据写入PEER
     int write_data_to_peer(size_t& szsend, bool& bfull);
     //将所有可以发送的数据都发送出去
-    int write_all_aata_to_peer();
+    int write_all_data_to_peer();
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
     int  preprocess_recv_frame();

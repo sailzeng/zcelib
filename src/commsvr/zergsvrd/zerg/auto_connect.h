@@ -33,7 +33,7 @@ public:
     * @brief      根据SVC ID,检查是否是主动连接的服务.,
     * @return     int
     * @param      reconnect_svcid 要进行重连的主路由信息
-    * @note       为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能close_event.
+    * @note       为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能close_handle.
     */
     int connect_server_bysvcid(const soar::SERVICES_ID& reconnect_svcid);
 

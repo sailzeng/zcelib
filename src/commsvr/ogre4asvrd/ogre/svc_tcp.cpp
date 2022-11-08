@@ -70,7 +70,7 @@ svc_tcp::~svc_tcp()
 }
 
 //初始化函数,用于Accept的端口的处理Event Handle构造.
-void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
+void svc_tcp::init_tcp_svc_handler(zce::skt::stream&& sockstream,
                                    FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
@@ -114,7 +114,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
                     ret,
                     zce::last_error(),
                     strerror(zce::last_error()));
-            close_event();
+            close_handle();
             return;
         }
 
@@ -126,7 +126,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
         ZCE_LOG(RS_ERROR, "Great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u \n",
                 num_accept_peer_,
                 max_accept_svr_);
-        close_event();
+        close_handle();
         return;
     }
 
@@ -155,7 +155,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        close_event();
+        close_handle();
         return;
     }
 
@@ -163,7 +163,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
 }
 
 //初始化函数,用于Connect出去的PEER 对应Event Handle构造.
-void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
+void svc_tcp::init_tcp_svc_handler(zce::skt::stream&& sockstream,
                                    const zce::skt::addr_in& socketaddr,
                                    FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
@@ -171,7 +171,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
     rcv_buffer_ = nullptr;
     recieve_bytes_ = 0;
     send_bytes_ = 0;
-    socket_peer_ = sockstream;
+    socket_peer_ = std::move(sockstream);
     remote_address_ = socketaddr;
     peer_status_ = PEER_STATUS_NOACTIVE;
     timeout_time_id_ = -1;
@@ -193,7 +193,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
-        close_event();
+        close_handle();
         return;
     }
 
@@ -204,7 +204,7 @@ void svc_tcp::init_tcp_svc_handler(const zce::skt::stream& sockstream,
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        close_event();
+        close_handle();
         return;
     }
 
@@ -234,7 +234,7 @@ ZCE_HANDLE svc_tcp::get_handle(void) const
 }
 
 //读取,断连的事件触发处理函数
-int svc_tcp::read_event()
+void svc_tcp::read_event()
 {
     //读取数据
     size_t szrecv;
@@ -249,7 +249,7 @@ int svc_tcp::read_event()
     //这儿任何错误都关闭,
     if (ret != 0)
     {
-        return -1;
+        return close_handle();
     }
 
     //
@@ -268,7 +268,7 @@ int svc_tcp::read_event()
             ZCE_LOG(RS_ERROR, "Read data error [%s].Judge whole fale error ret=%u.\n",
                     remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                     ret);
-            return -1;
+            return close_handle();
         }
 
         //如果已经收集了一个数据
@@ -297,24 +297,23 @@ int svc_tcp::read_event()
         }
     }
 
-    return 0;
+    return;
 }
 
 //写事件触发,链接成功的事件触发处理函数
-int svc_tcp::write_event()
+void svc_tcp::write_event()
 {
     //尝试发送所有的数据
-    int ret = write_all_aata_to_peer();
+    int ret = write_all_data_to_peer();
     if (ret != 0)
     {
-        //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,read_event将被调用,这儿不重复处理
-        //如果是中断等错误,程序可以继续的.
-        return -1;
+        close_handle();
+        return;
     }
-    return 0;
+    return;
 }
 
-int svc_tcp::connect_event(bool success)
+void svc_tcp::connect_event(bool success)
 {
     if (success)
     {
@@ -323,13 +322,14 @@ int svc_tcp::connect_event(bool success)
         {
             //处理连接后的事宜
             process_connect_register();
-            return 0;
+            return;
         }
     }
     else
     {
+        close_handle();
     }
-    return 0;
+    return;
 }
 
 //定时触发
@@ -355,7 +355,7 @@ int svc_tcp::timer_timeout(const zce::time_value&/*time*/, int timer_id)
                     receive_times_);
             //原来是在这个地方reutrn -1,现在发现return -1是一个很消耗的事情,(定时器的取消会使用指针的方式,会遍历所有的数据)
             //所以在这儿直接调用event_close
-            close_event();
+            close_handle();
             return 0;
         }
     }
@@ -367,7 +367,7 @@ int svc_tcp::timer_timeout(const zce::time_value&/*time*/, int timer_id)
 }
 
 //PEER Event Handler关闭的处理
-void svc_tcp::close_event()
+void svc_tcp::close_handle()
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -622,7 +622,7 @@ int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
 }
 
 //给力的发送所有要发送的数据，尽自己最大的努力
-int svc_tcp::write_all_aata_to_peer()
+int svc_tcp::write_all_data_to_peer()
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 31;
@@ -942,7 +942,7 @@ int svc_tcp::process_send_data(soar::ogre4a_frame* ogre_frame)
                 zce::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
                 svrinfo.peer_port_);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
-        svchanle->close_event();
+        svchanle->close_handle();
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -1003,12 +1003,12 @@ int svc_tcp::put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame)
     //尝试发送这个数据包
     if (peer_status_ != PEER_STATUS_NOACTIVE)
     {
-        ret = write_all_aata_to_peer();
+        ret = write_all_data_to_peer();
         //出现错误,
         if (ret != 0)
         {
             //这儿已经进行了调整，坚决关闭之，对于中断错误在上层已经转化了错误
-            close_event();
+            close_handle();
             //发送数据已经放入队列，返回OK
             return 0;
         }

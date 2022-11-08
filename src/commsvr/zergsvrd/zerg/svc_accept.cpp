@@ -15,7 +15,7 @@ svc_accept::svc_accept(const soar::SERVICES_ID& svcid,
 {
 }
 
-//自己清理的类型，统一关闭在close_event,这个地方不用关闭
+//自己清理的类型，统一关闭在close_handle,这个地方不用关闭
 svc_accept::~svc_accept()
 {
 }
@@ -105,7 +105,7 @@ int svc_accept::create_listen()
 }
 
 //事件触发处理，表示有一个accept 的数据
-int svc_accept::accept_event()
+void svc_accept::accept_event()
 {
     zce::skt::stream  sockstream;
     zce::skt::addr_in       remote_address;
@@ -132,35 +132,34 @@ int svc_accept::accept_event()
         if (accept_error == EWOULDBLOCK || accept_error == EINVAL
             || accept_error == ECONNABORTED || accept_error == EPROTOTYPE)
         {
-            return 0;
+            return;
         }
 
         //这儿应该退出进程???,还是继续把。哈哈。
-        return 0;
+        return;
     }
 
     ret = ip_restrict_->check_iprestrict(remote_address);
-
     if (ret != 0)
     {
         sockstream.close();
-        return 0;
+        return;
     }
 
     svc_tcp* phandler = svc_tcp::alloce_hdl_from_pool(svc_tcp::HANDLER_MODE_ACCEPTED);
-
     if (phandler != nullptr)
     {
-        phandler->init_tcpsvr_handler(my_svc_info_, sockstream, remote_address);
-        //避免析构的时候close句柄
-        sockstream.release_noclose();
+        phandler->init_tcpsvr_handler(my_svc_info_,
+                                      std::move(sockstream),
+                                      remote_address);
+        //sockstream 会用move传递，不用担心析构关闭
     }
     else
     {
         sockstream.close();
     }
 
-    return 0;
+    return;
 }
 
 //返回句柄ID
@@ -170,7 +169,7 @@ ZCE_HANDLE svc_accept::get_handle(void) const
 }
 
 //退出处理
-void svc_accept::close_event()
+void svc_accept::close_handle()
 {
     //
     if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)

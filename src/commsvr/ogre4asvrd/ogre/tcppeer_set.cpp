@@ -103,8 +103,8 @@ void tcppeer_set::clear_and_close()
         MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();
         svc_tcp* svrhandle = (*(iter)).second;
 
-        //svc_tcp::close_event调用了del_services_peerinfo
-        svrhandle->close_event();
+        //svc_tcp::close_handle调用了del_services_peerinfo
+        svrhandle->close_handle();
     }
 }
 }

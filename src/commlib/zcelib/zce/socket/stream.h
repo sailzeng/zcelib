@@ -11,9 +11,16 @@ class stream : public zce::skt::socket_base
 public:
 
     //构造函数
-    stream();
+    stream() = default;
+    //注意：子类socket_base  析构会关闭handle，考虑右值引用使用
+    ~stream() = default;
     explicit stream(const ZCE_SOCKET& socket_hanle);
-    ~stream();
+
+    //为了安全，避免反复关闭，可以使用右值引用 && 构造和 && =
+    explicit stream(const stream& others);
+    explicit stream(stream&& others) noexcept;
+    stream& operator=(const stream& others);
+    stream& operator=(stream&& others) noexcept;
 
 public:
 

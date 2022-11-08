@@ -52,7 +52,7 @@ int svc_udp::init_udp_peer()
     ret = dgram_peer_.open(&udp_bind_addr_);
     if (ret != 0)
     {
-        close_event();
+        close_handle();
         return -1;
     }
 
@@ -72,7 +72,7 @@ ZCE_HANDLE svc_udp::get_handle(void) const
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int svc_udp::read_event(ZCE_HANDLE)
+void svc_udp::read_event()
 {
     size_t szrevc = 0;
     int ret = 0;
@@ -90,8 +90,8 @@ int svc_udp::read_event(ZCE_HANDLE)
 
     if (ret != 0)
     {
-        //return -1吗，但是我真不知道如何处理
-        //return -1;
+        //close_handle 吗，但是我真不知道如何处理
+        //return close_handle();
     }
 
     //如果出来成功
@@ -100,11 +100,11 @@ int svc_udp::read_event(ZCE_HANDLE)
         pushdata_to_recvpipe();
     }
 
-    return 0;
+    return;
 }
 
 //
-void svc_udp::close_event()
+void svc_udp::close_handle()
 {
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)

@@ -12,9 +12,16 @@ class datagram : public zce::skt::socket_base
 public:
 
     //构造函数和析构函数等
-    datagram();
+    datagram() = default;
+    //注意：子类socket_base  析构会关闭handle，考虑右值引用使用
+    ~datagram() = default;
     explicit datagram(const ZCE_SOCKET& socket_hanle);
-    ~datagram();
+
+    //为了安全，避免反复关闭，可以使用右值引用构造 && 和右值赋值 && =
+    explicit datagram(const datagram& others);
+    explicit datagram(datagram&& others) noexcept;
+    datagram& operator=(const datagram& others);
+    datagram& operator=(datagram&& others) noexcept;
 
     //Open SOCK句柄，不BIND本地地址的方式
     ///family 参数可以是AF_INET,或者AF_INET6等

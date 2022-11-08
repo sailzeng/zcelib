@@ -299,18 +299,15 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
         return;
     }
 
-    //根据不同的事件进行调动，触发
-    int hdl_ret = 0;
-
     //【注意】所有的reactor 都要保证各种触发的顺序，必须保证，否则就有不兼容的问题，正确的顺序应该是读,写,异常处理
 
     //修正connect发生连接错误，内部希望停止处理，但epoll会返回3个事件的修正,
     //先说明一下这个问题，当内部处理的事件发生错误后，上层可能就会删除掉对应的zce::event_handler，但底层可能还有事件要触发。
     //由于该代码的时候面临抉择，我必须写一段说明，我在改这段代码的时候有几种种方式,
     //1.整体写成do { break} while()的方式，每个IO事件都作为触发方式，这个好处是简单，但对于epoll,如果是水平触发，那么你可能丢失事件
-    //2.不继续使用return -1作为一个判断，（ACE就是这样的），因为你自己可以调用close_event，导致最后归谁调用很迷惑
+    //2.是否继续使用return -1作为一个判断，（ACE就是这样的），因为你自己可以调用close_handle，导致最后归谁调用清理很迷惑
     //3.每次调用后，都检查一下event_hdl是否还存在，
-    //最后我采用了兼容2，3的方法，2是为了和ACE兼容，3是为了保证就是你TMD天翻地覆，我也能应付,
+    //最后我采用了兼容2，3的方法，2是为了避免责任不清，3是为了保证就是你TMD天翻地覆，我也能应付,
 
     //代码有点怪，部分目的是加快速度,避免每个调用都要检查，
     int register_mask = event_hdl->get_mask();
@@ -320,24 +317,19 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
         event_in_happen = true;
         if (register_mask & zce::CONNECT_MASK)
         {
-            hdl_ret = event_hdl->connect_event(false);
+            event_hdl->connect_event(false);
         }
         else if (register_mask & zce::ACCEPT_MASK)
         {
-            hdl_ret = event_hdl->accept_event();
+            event_hdl->accept_event();
         }
         else if (register_mask & zce::INOTIFY_MASK)
         {
-            hdl_ret = event_hdl->inotify_event();
+            event_hdl->inotify_event();
         }
         else
         {
-            hdl_ret = event_hdl->read_event();
-        }
-        //返回-1表示 handle_xxxxx希望调用event_close退出
-        if (hdl_ret == -1)
-        {
-            event_hdl->close_event();
+            event_hdl->read_event();
         }
     }
 
@@ -355,21 +347,14 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
                 return;
             }
         }
-
         event_out_happen = true;
         if (register_mask & zce::CONNECT_MASK)
         {
-            hdl_ret = event_hdl->connect_event(true);
+            event_hdl->connect_event(true);
         }
         else
         {
-            hdl_ret = event_hdl->write_event();
-        }
-
-        //返回-1表示 handle_xxxxx希望调用event_close退出
-        if (hdl_ret == -1)
-        {
-            event_hdl->close_event();
+            event_hdl->write_event();
         }
     }
 
@@ -388,12 +373,7 @@ void epoll_reactor::process_ready_event(struct epoll_event* ep_event)
             }
         }
 
-        hdl_ret = event_hdl->exception_event();
-        //返回-1表示 handle_xxxxx希望调用event_close退出
-        if (hdl_ret == -1)
-        {
-            event_hdl->close_event();
-        }
+        event_hdl->exception_event();
     }
 }
 }

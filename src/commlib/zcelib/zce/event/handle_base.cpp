@@ -23,42 +23,42 @@ event_handler::~event_handler()
 }
 
 //读事件
-int event_handler::read_event()
+void event_handler::read_event()
 {
-    return 0;
+    return;
 }
 
 //写事件
-int event_handler::write_event()
+void event_handler::write_event()
 {
-    return 0;
+    return;
 }
 //异常事件调用函数
-int event_handler::exception_event()
+void event_handler::exception_event()
 {
-    return 0;
+    return;
 }
 
 //发生了链接的事件
-int event_handler::connect_event(bool /*success*/)
+void event_handler::connect_event(bool /*success*/)
 {
-    return 0;
+    return;
 }
 
 //发生了accept的事件是调用
-int event_handler::accept_event()
+void event_handler::accept_event()
 {
-    return 0;
+    return;
 }
 
 //发生了inotify的事件是调用
-int event_handler::inotify_event()
+void event_handler::inotify_event()
 {
-    return 0;
+    return;
 }
 
 //
-void event_handler::close_event()
+void event_handler::close_handle()
 {
     //移除自己，但是不判断返回，因为如果代码考虑的不细致，可能出现两次remove_handler
     reactor()->remove_handler(this, false);

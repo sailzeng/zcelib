@@ -27,9 +27,9 @@ public:
     //取得句柄
     ZCE_HANDLE get_handle(void) const override;
     //
-    int read_event() override;
+    void read_event() override;
     //
-    void close_event() override;
+    void close_handle() override;
 
 public:
 

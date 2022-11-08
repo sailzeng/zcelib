@@ -278,7 +278,7 @@ int event_inotify::rm_watch(ZCE_HANDLE watch_handle)
 }
 
 //读取事件触发调用函数
-int event_inotify::inotify_event()
+void event_inotify::inotify_event()
 {
 #if defined (ZCE_OS_LINUX)
 
@@ -291,7 +291,7 @@ int event_inotify::inotify_event()
     ssize_t read_ret = zce::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
     if (read_ret <= 0)
     {
-        return -1;
+        return close_handle();
     }
 
     uint32_t read_len = static_cast<uint32_t>(read_ret);
@@ -300,8 +300,6 @@ int event_inotify::inotify_event()
     //可能一次读取出来多个inotify_event数据，所以要循环处理
     do
     {
-        detect_ret = 0;
-
         ::inotify_event* ne_ptr = (::inotify_event*)(read_buffer_ + next_entry_offset);
 
         //检查读取的数据是否还有一个，
@@ -326,98 +324,91 @@ int event_inotify::inotify_event()
         uint32_t event_mask = ne_ptr->mask;
         if (event_mask & IN_CREATE)
         {
-            detect_ret = inotify_create(node_ptr->watch_handle_,
-                                        event_mask,
-                                        node_ptr->watch_path_,
-                                        active_path);
+            inotify_create(node_ptr->watch_handle_,
+                           event_mask,
+                           node_ptr->watch_path_,
+                           active_path);
         }
         else if (event_mask & IN_DELETE)
         {
-            detect_ret = inotify_delete(node_ptr->watch_handle_,
-                                        event_mask,
-                                        node_ptr->watch_path_,
-                                        active_path);
+            inotify_delete(node_ptr->watch_handle_,
+                           event_mask,
+                           node_ptr->watch_path_,
+                           active_path);
         }
         else if (event_mask & IN_MODIFY)
         {
-            detect_ret = inotify_modify(node_ptr->watch_handle_,
-                                        event_mask,
-                                        node_ptr->watch_path_,
-                                        active_path);
+            inotify_modify(node_ptr->watch_handle_,
+                           event_mask,
+                           node_ptr->watch_path_,
+                           active_path);
         }
         else if (event_mask & IN_MOVED_FROM)
         {
-            detect_ret = inotify_moved_from(node_ptr->watch_handle_,
-                                            event_mask,
-                                            node_ptr->watch_path_,
-                                            active_path);
+            inotify_moved_from(node_ptr->watch_handle_,
+                               event_mask,
+                               node_ptr->watch_path_,
+                               active_path);
         }
         else if (event_mask & IN_MOVED_TO)
         {
-            detect_ret = inotify_moved_to(node_ptr->watch_handle_,
-                                          event_mask,
-                                          node_ptr->watch_path_,
-                                          active_path);
+            inotify_moved_to(node_ptr->watch_handle_,
+                             event_mask,
+                             node_ptr->watch_path_,
+                             active_path);
         }
         //下面这些是LINUX自己特有的
         else if (event_mask & IN_ACCESS)
         {
-            detect_ret = inotify_access(node_ptr->watch_handle_,
-                                        event_mask,
-                                        node_ptr->watch_path_,
-                                        active_path);
+            inotify_access(node_ptr->watch_handle_,
+                           event_mask,
+                           node_ptr->watch_path_,
+                           active_path);
         }
         else if (event_mask & IN_OPEN)
         {
-            detect_ret = inotify_open(node_ptr->watch_handle_,
-                                      event_mask,
-                                      node_ptr->watch_path_,
-                                      active_path);
+            inotify_open(node_ptr->watch_handle_,
+                         event_mask,
+                         node_ptr->watch_path_,
+                         active_path);
         }
         else if (event_mask & IN_CLOSE_WRITE || event_mask | IN_CLOSE_NOWRITE)
         {
-            detect_ret = inotify_close(node_ptr->watch_handle_,
-                                       event_mask,
-                                       node_ptr->watch_path_,
-                                       active_path);
+            inotify_close(node_ptr->watch_handle_,
+                          event_mask,
+                          node_ptr->watch_path_,
+                          active_path);
         }
         else if (event_mask & IN_ATTRIB)
         {
-            detect_ret = inotify_attrib(node_ptr->watch_handle_,
-                                        event_mask,
-                                        node_ptr->watch_path_,
-                                        active_path);
+            inotify_attrib(node_ptr->watch_handle_,
+                           event_mask,
+                           node_ptr->watch_path_,
+                           active_path);
         }
         else if (event_mask & IN_MOVE_SELF)
         {
-            detect_ret = inotify_move_slef(node_ptr->watch_handle_,
-                                           event_mask,
-                                           node_ptr->watch_path_,
-                                           active_path);
+            inotify_move_slef(node_ptr->watch_handle_,
+                              event_mask,
+                              node_ptr->watch_path_,
+                              active_path);
         }
         else if (event_mask & IN_DELETE_SELF)
         {
-            detect_ret = inotify_delete_slef(node_ptr->watch_handle_,
-                                             event_mask,
-                                             node_ptr->watch_path_,
-                                             active_path);
-        }
-
-        //返回-1，关闭之,
-        if (detect_ret == -1)
-        {
-            rm_watch(node_ptr->watch_handle_);
+            inotify_delete_slef(node_ptr->watch_handle_,
+                                event_mask,
+                                node_ptr->watch_path_,
+                                active_path);
         }
 
         //累计发现事件计数
         ++(watch_event_num);
     } while (read_len > 0);
 
-    return 0;
+    return;
 
 #elif defined (ZCE_OS_WINDOWS)
 
-    int detect_ret = 0;
     DWORD num_read = 0;
     BOOL bret = ::GetOverlappedResult(watch_handle_,
                                       &over_lapped_,
@@ -430,16 +421,14 @@ int event_inotify::inotify_event()
         ZCE_LOG(RS_ERROR, "[%s] ::GetOverlappedResult fail,error [%u].",
                 __ZCE_FUNC__,
                 zce::last_error());
-        return -1;
+        return close_handle();
     }
 
     //记录当前处理的句柄，
-
     FILE_NOTIFY_INFORMATION* read_ptr = nullptr;
     DWORD next_entry_offset = 0;
     do
     {
-        detect_ret = 0;
         read_ptr = (FILE_NOTIFY_INFORMATION*)(read_buffer_ + next_entry_offset);
 
         //文件名称进行转换,从宽字节转换为多字节,
@@ -478,47 +467,47 @@ int event_inotify::inotify_event()
         case FILE_ACTION_ADDED:
             if (watch_mask_ | IN_CREATE)
             {
-                detect_ret = inotify_create(watch_handle_,
-                                            watch_mask_,
-                                            watch_path_,
-                                            active_path);
+                inotify_create(watch_handle_,
+                               watch_mask_,
+                               watch_path_,
+                               active_path);
             }
             break;
         case FILE_ACTION_REMOVED:
             if (watch_mask_ | IN_DELETE)
             {
-                detect_ret = inotify_delete(watch_handle_,
-                                            watch_mask_,
-                                            watch_path_,
-                                            active_path);
+                inotify_delete(watch_handle_,
+                               watch_mask_,
+                               watch_path_,
+                               active_path);
             }
             break;
             //注意Windows 下的这个类型，包括了属性更改
         case FILE_ACTION_MODIFIED:
             if (watch_mask_ | IN_MODIFY)
             {
-                detect_ret = inotify_modify(watch_handle_,
-                                            watch_mask_,
-                                            watch_path_,
-                                            active_path);
+                inotify_modify(watch_handle_,
+                               watch_mask_,
+                               watch_path_,
+                               active_path);
             }
             break;
         case FILE_ACTION_RENAMED_OLD_NAME:
             if (watch_mask_ | IN_MOVED_FROM)
             {
-                detect_ret = inotify_moved_from(watch_handle_,
-                                                watch_mask_,
-                                                watch_path_,
-                                                active_path);
+                inotify_moved_from(watch_handle_,
+                                   watch_mask_,
+                                   watch_path_,
+                                   active_path);
             }
             break;
         case FILE_ACTION_RENAMED_NEW_NAME:
             if (watch_mask_ | IN_MOVED_TO)
             {
-                detect_ret = inotify_moved_to(watch_handle_,
-                                              watch_mask_,
-                                              watch_path_,
-                                              active_path);
+                inotify_moved_to(watch_handle_,
+                                 watch_mask_,
+                                 watch_path_,
+                                 active_path);
             }
             break;
         }
@@ -526,16 +515,10 @@ int event_inotify::inotify_event()
         //累计偏移长度
         next_entry_offset += read_ptr->NextEntryOffset;
 
-        //返回-1，关闭之
-        if (detect_ret == -1)
-        {
-            close_event();
-        }
-
-        //为什么要这样做，因为上面的处理过程，可能有人已经调用了rm_watch，或者close_event，
+        //为什么要这样做，因为上面的处理过程，可能有人已经调用了rm_watch，或者close_handle，
         if (watch_handle_ == ZCE_INVALID_HANDLE)
         {
-            return 0;
+            return;
         }
     } while (read_ptr->NextEntryOffset != 0);
 
@@ -566,13 +549,13 @@ int event_inotify::inotify_event()
                 zce::last_error());
     }
 
-    return 0;
+    return;
 
 #endif
 }
 
 //关闭监控句柄
-void event_inotify::close_event()
+void event_inotify::close_handle()
 {
     return close();
 }

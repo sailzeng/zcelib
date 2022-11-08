@@ -93,7 +93,7 @@ svc_tcp::svc_tcp(svc_tcp::HANDLER_MODE hdl_mode) :
 
 //用于Accept的端口的处理Event Handle初始化处理.
 void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
-                                  const zce::skt::stream& sockstream,
+                                  zce::skt::stream&& sockstream,
                                   const zce::skt::addr_in& socketaddr)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
@@ -104,7 +104,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     send_counter_ = 0;
     recieve_bytes_ = 0;
     send_bytes_ = 0;
-    socket_peer_ = sockstream;
+    socket_peer_ = std::move(sockstream);
     peer_address_ = socketaddr;
     peer_status_ = PEER_STATUS_JUST_ACCEPT;
     timeout_time_id_ = -1;
@@ -162,7 +162,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                     zce::last_error(),
                     strerror(zce::last_error()));
 
-            close_event();
+            close_handle();
             return;
         }
 
@@ -179,7 +179,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                 peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
                 num_accept_peer_,
                 max_accept_svr_);
-        close_event();
+        close_handle();
         return;
     }
 
@@ -225,7 +225,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
 //主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
 void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                                   const soar::SERVICES_ID& peer_svrinfo,
-                                  const zce::skt::stream& sockstream,
+                                  zce::skt::stream&& sockstream,
                                   const zce::skt::addr_in& socketaddr)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
@@ -236,7 +236,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     send_counter_ = 0;
     recieve_bytes_ = 0;
     send_bytes_ = 0;
-    socket_peer_ = sockstream;
+    socket_peer_ = std::move(sockstream);
     peer_address_ = socketaddr;
     peer_status_ = PEER_STATUS_NOACTIVE;
     timeout_time_id_ = -1;
@@ -272,7 +272,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
-        close_event();
+        close_handle();
         return;
     }
 
@@ -282,7 +282,7 @@ void svc_tcp::init_tcpsvr_handler(const soar::SERVICES_ID& my_svcinfo,
     //在这儿自杀是不是危险了一点
     if (ret != 0)
     {
-        close_event();
+        close_handle();
         return;
     }
 
@@ -458,7 +458,7 @@ unsigned int svc_tcp::get_handle_id()
 }
 
 //读取,断连的事件触发处理函数
-int svc_tcp::read_event()
+void svc_tcp::read_event()
 {
     //读取数据
     size_t szrecv;
@@ -477,39 +477,35 @@ int svc_tcp::read_event()
     //这儿任何错误都关闭,
     if (ret != 0)
     {
-        return -1;
+        return close_handle();
     }
 
     //将数据放入接收的管道,这儿返回的错误应该都是预处理的错误,放入管道的错误应该不会上升
     ret = push_frame_to_comm_mgr();
-
     //这儿任何错误都关闭,
     if (ret != 0)
     {
-        return -1;
+        return close_handle();
     }
 
-    return 0;
+    return;
 }
 
 //读取,断连的事件触发处理函数
-int svc_tcp::write_event()
+void svc_tcp::write_event()
 {
     int ret = 0;
     ret = write_all_data_to_peer();
     if (0 != ret)
     {
-        //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,handle_input将被调用,这儿不重复处理
-        //如果是中断等错误,程序可以继续的.
-        //后来为啥又改成了return -1,加快处理?忘记忘记了。应该写注释呀。
-        return -1;
+        return close_handle();
     }
 
-    return 0;
+    return;
 }
 
 ///异步链接成功触发,异步链接失败触发
-int svc_tcp::connect_event(bool success)
+void svc_tcp::connect_event(bool success)
 {
     //如果NON BLOCK Connect成功,也会调用write_event
     if (PEER_STATUS_NOACTIVE == peer_status_)
@@ -521,10 +517,10 @@ int svc_tcp::connect_event(bool success)
         }
         else
         {
-            return -1;
+            return close_handle();
         }
     }
-    return 0;
+    return;
 }
 
 //定时器触发
@@ -558,7 +554,7 @@ int svc_tcp::timer_timeout(const zce::time_value& now_time, int timer_id)
                         receive_times_);
 
                 //在这儿直接调用event_close
-                close_event();
+                close_handle();
                 return 0;
             }
         }
@@ -597,9 +593,9 @@ int svc_tcp::timer_timeout(const zce::time_value& now_time, int timer_id)
 }
 
 //PEER Event Handler关闭的处理
-void svc_tcp::close_event()
+void svc_tcp::close_handle()
 {
-    ZCE_LOG(RS_DEBUG, "[zergsvr] svc_tcp::close_event : %u.%u.",
+    ZCE_LOG(RS_DEBUG, "[zergsvr] svc_tcp::close_handle : %u.%u.",
             peer_svr_id_.services_type_, peer_svr_id_.services_id_);
 
     //不要使用cancel_timer(this),其繁琐,而且慢,好要new,而且有一个不知名的死机
@@ -613,9 +609,9 @@ void svc_tcp::close_event()
         timeout_time_id_ = -1;
     }
 
-    //取消MASK,最后阶段,避免调用close_event,
+    //取消MASK,最后阶段,避免调用close_handle,
     //内部会进行remove_handler
-    zce::event_handler::close_event();
+    zce::event_handler::close_handle();
 
     //关闭端口,
     socket_peer_.close();
@@ -791,7 +787,7 @@ int svc_tcp::preprocess_recvframe(soar::zerg_frame* proc_frame)
                                           soar::zerg_frame::DESC_SNDPRC_CLOSE_PEER);
 
             //不直接关闭了，而是先把命令发送完成了，再关闭
-            //old_hdl->close_event(ACE_INVALID_HANDLE, 0);
+            //old_hdl->close_handle(ACE_INVALID_HANDLE, 0);
         }
 
         //最后调整自己PEER的状态
@@ -1511,7 +1507,7 @@ int svc_tcp::put_frame_to_sendlist(zce::queue_buffer* tmpbuf)
         //回收帧
         process_send_error(tmpbuf, false);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
-        close_event();
+        close_handle();
 
         //返回一个错误，让上层回收
         return SOAR_RET::ERR_ZERG_SOCKET_CLOSE;
@@ -1558,7 +1554,7 @@ int svc_tcp::put_frame_to_sendlist(zce::queue_buffer* tmpbuf)
     }
 
     //------------------------------------------------------------------
-    //这儿开始，数据已经放入发送队列，回收可以再close_event自己回收了.
+    //这儿开始，数据已经放入发送队列，回收可以再close_handle自己回收了.
 
     if (peer_status_ != PEER_STATUS_NOACTIVE)
     {
@@ -1569,7 +1565,7 @@ int svc_tcp::put_frame_to_sendlist(zce::queue_buffer* tmpbuf)
         {
             //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,read_event将被调用,这儿不重复处理
             //如果是中断等错误,程序可以继续的.
-            close_event();
+            close_handle();
 
             //发送数据已经放入队列，返回OK
             return 0;
@@ -1790,7 +1786,7 @@ int svc_tcp::close_services_peer(const soar::SERVICES_ID& svr_info)
         return ret;
     }
 
-    svchanle->close_event();
+    svchanle->close_handle();
     return 0;
 }
 

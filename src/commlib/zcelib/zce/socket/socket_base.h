@@ -18,12 +18,6 @@ protected:
     socket_base();
 
     /*!
-    * @brief      拷贝构造函数
-    * @param      socket_hanle
-    */
-    explicit socket_base(const ZCE_SOCKET& socket_hanle);
-
-    /*!
     * @brief      析构函数，会调用close，
     * @note       这儿必须说明一下，ACE在设计socket封装的时候，在析构函数里面
     *             没有调用close，他的出发点是避免在参数(value)传递的时候被析构
@@ -31,6 +25,13 @@ protected:
     *             有释放资源，这个反而更难。
     */
     ~socket_base();
+
+    explicit socket_base(const ZCE_SOCKET& socket_hanle);
+    //为了安全，避免反复关闭，可以使用右值引用构造 && 和右值赋值 && =
+    explicit socket_base(const socket_base& others);
+    explicit socket_base(socket_base&& others) noexcept;
+    socket_base& operator=(const socket_base& others);
+    socket_base& operator=(socket_base&& others) noexcept;
 
 public:
 

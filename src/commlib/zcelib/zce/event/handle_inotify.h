@@ -145,13 +145,13 @@ public:
                 函数内部分析具体发生的事件，
     @return     int 返回0表示句柄处理正常，return -1后，反应器会主动read_event，帮助结束句柄
     */
-    virtual int inotify_event() override;
+    void inotify_event() override;
 
     /*!
     @brief
     @return     int
     */
-    virtual void close_event();
+    virtual void close_handle();
 
     ///需要你继承使用的虚函数，你关注什么事件，就重载什么函数
 protected:

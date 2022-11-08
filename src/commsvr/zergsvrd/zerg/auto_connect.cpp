@@ -199,11 +199,9 @@ int auto_connector::connect_one_server(const soar::SERVICES_ID& svc_id,
         //以self_svc_info出去链接其他服务器.
         p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_info_.svc_id_,
                                        svc_id,
-                                       sockstream,
+                                       std::move(sockstream),
                                        inetaddr);
-
-        //避免析构的时候close句柄
-        sockstream.release_noclose();
+        //sockstream 会用move传递，不用担心析构关闭
     }
     //tmpret == 0 那就是让我去跳楼,但按照 UNIX网络编程 说应该是有本地连接时可能的.(我的测试还是返回错误)
     //而ACE的说明是立即返回错误,我暂时不处理这种情况,实在不行又只有根据类型写晦涩的朦胧诗了

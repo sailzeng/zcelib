@@ -241,8 +241,7 @@ int select_reactor::handle_events(zce::time_value* max_wait_time,
 void select_reactor::process_ready(const fd_set* out_fds,
                                    SELECT_EVENT proc_event)
 {
-    int ret = 0, hdl_ret = 0;
-    //
+    int ret = 0;
     int max_process = max_fd_plus_one_;
 
     //下面三个代码段都非常类似，也许封装几个函数更好看一点，但是...
@@ -278,19 +277,19 @@ void select_reactor::process_ready(const fd_set* out_fds,
         {
             if (register_mask & zce::CONNECT_MASK)
             {
-                hdl_ret = event_hdl->connect_event(false);
+                event_hdl->connect_event(false);
             }
             else if (register_mask & zce::ACCEPT_MASK)
             {
-                hdl_ret = event_hdl->accept_event();
+                event_hdl->accept_event();
             }
             else if (register_mask & zce::INOTIFY_MASK)
             {
-                hdl_ret = event_hdl->inotify_event();
+                event_hdl->inotify_event();
             }
             else
             {
-                hdl_ret = event_hdl->read_event();
+                event_hdl->read_event();
             }
         }
         //WRITE和CONNECT事件都调用write_event,CONNECT_MASK,不写的原因是，这个函数是我内部调用的，我只用了3个参数
@@ -298,11 +297,11 @@ void select_reactor::process_ready(const fd_set* out_fds,
         {
             if (register_mask & zce::CONNECT_MASK)
             {
-                hdl_ret = event_hdl->connect_event(true);
+                event_hdl->connect_event(true);
             }
             else
             {
-                hdl_ret = event_hdl->write_event();
+                event_hdl->write_event();
             }
         }
         //异常事件，其实我也不知道，什么算异常
@@ -313,26 +312,20 @@ void select_reactor::process_ready(const fd_set* out_fds,
             //（曾经，曾经为了和LINUX环境统一，我们触发read_event)
             if (register_mask & zce::CONNECT_MASK)
             {
-                hdl_ret = event_hdl->connect_event(false);
+                event_hdl->connect_event(false);
             }
             else
             {
-                hdl_ret = event_hdl->exception_event();
+                event_hdl->exception_event();
             }
 
 #elif defined ZCE_OS_LINUX
-            hdl_ret = event_hdl->exception_event();
+            event_hdl->exception_event();
 #endif
         }
         else
         {
             ZCE_ASSERT(false);
-        }
-
-        //返回-1表示 handle_xxxxx希望调用close_event退出
-        if (hdl_ret == -1)
-        {
-            event_hdl->close_event();
         }
     }
 }
