@@ -485,33 +485,10 @@ inline void to_string(std::string& stdstr,
 inline void to_str(char* buffer,
                    size_t max_len,
                    size_t& use_len,
-                   timeval& out_data)
-{
-    const char* ret_str = zce::timestamp(&out_data,
-                                         buffer,
-                                         max_len);
-    //返回成功
-    if (ret_str)
-    {
-        use_len = strlen(buffer);
-    }
-    else
-    {
-        zce::to_str(buffer, max_len, use_len, "<ERROR>");
-    }
-}
+                   timeval& out_data);
 
 inline void to_string(std::string& stdstr,
-                      timeval& out_data)
-{
-    char time_str[MAX_TIMEVAL_STRING_LEN + 1];
-    time_str[MAX_TIMEVAL_STRING_LEN] = '\0';
-    size_t max_len = MAX_TIMEVAL_STRING_LEN + 1;
-    auto ret_str = zce::timestamp(&out_data,
-                                  time_str,
-                                  max_len);
-    stdstr.append(ret_str ? ret_str : "<ERROR>");
-}
+                      timeval& out_data);
 
 ///IPV4的socket地址
 void to_str(char* buffer,
@@ -858,4 +835,4 @@ inline void to_string(std::string& stdstr,
                  out_data.precision_,
                  out_data.flags_);
 }
-};//zce
+}//zce

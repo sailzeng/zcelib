@@ -40,7 +40,7 @@
 #ifndef ZCE_LIB_OS_ADAPT_SPIN_H_
 #define ZCE_LIB_OS_ADAPT_SPIN_H_
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 
 namespace zce
 {

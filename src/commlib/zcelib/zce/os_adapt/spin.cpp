@@ -1,5 +1,5 @@
 #include "zce/predefine.h"
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/mutex.h"
 #include "zce/os_adapt/spin.h"

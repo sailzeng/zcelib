@@ -29,7 +29,7 @@
 #ifndef ZCE_LIB_OS_ADAPT_SYSINFO_H_
 #define ZCE_LIB_OS_ADAPT_SYSINFO_H_
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 
 //TODO:还可以增加一些IO处理，NET的系统数据数据。但WINDOWS下得到这些数据就有点麻烦了，要依靠注册表，TNNND
 

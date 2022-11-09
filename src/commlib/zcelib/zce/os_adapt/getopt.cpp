@@ -1,5 +1,5 @@
 #include "zce/predefine.h"
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/os_adapt/math.h"
 #include "zce/os_adapt/getopt.h"
 

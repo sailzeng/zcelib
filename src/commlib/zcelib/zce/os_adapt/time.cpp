@@ -16,7 +16,7 @@
 */
 
 #include "zce/predefine.h"
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/os_adapt/mutex.h"
 #include "zce/lock/thread_mutex.h"
 #include "zce/logger/logging.h"

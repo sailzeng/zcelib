@@ -56,16 +56,10 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR = '%';
 
 // 下面代码推荐使用的是 sformat_n string_format，如果使用，你未来应该很容易切换的std::format
 
-inline static void _foo_string_format_out(std::string& foo_string,
-                                          const char*& foo_fmt_spec)
-{
-    foo_string.append(foo_fmt_spec);
-}
-
 template <typename out_type >
-void _foo_string_format_out(std::string& foo_string,
+void _string_format_outdata(std::string& foo_string,
                             const char*& foo_fmt_spec,
-                            const out_type& out_data)
+                            out_type&& out_data)
 {
     const char* id_pos = nullptr;
 
@@ -103,15 +97,18 @@ void _foo_string_format_out(std::string& foo_string,
     }
 }
 
+void _string_format_outlist(std::string& foo_string,
+                            const char*& foo_fmt_spec);
+
 //vanic 递归展开
 template <typename out_type, typename... out_tlist >
-static void _foo_string_format_out(std::string& foo_string,
-                                   const char*& foo_fmt_spec,
-                                   const out_type& out_data,
-                                   out_tlist ... out_datalist)
+void _string_format_outlist(std::string& foo_string,
+                            const char*& foo_fmt_spec,
+                            const out_type& out_data,
+                            out_tlist&& ... out_datalist)
 {
-    _foo_string_format_out(foo_string, foo_fmt_spec, out_data);
-    _foo_string_format_out(foo_string, foo_fmt_spec, out_datalist...);
+    _string_format_outdata(foo_string, foo_fmt_spec, out_data);
+    _string_format_outlist(foo_string, foo_fmt_spec, out_datalist...);
 }
 
 /*!
@@ -126,43 +123,28 @@ static void _foo_string_format_out(std::string& foo_string,
 template <typename... out_type >
 std::string& string_format(std::string& foo_string,
                            const char* foo_fmt_spec,
-                           const out_type &...out_data)
+                           out_type&&...out_data)
 {
     const char* fmt_spec = foo_fmt_spec;
-    _foo_string_format_out(foo_string, fmt_spec, out_data...);
-    _foo_string_format_out(foo_string, fmt_spec);
+    _string_format_outlist(foo_string, fmt_spec, out_data...);
+    _string_format_outlist(foo_string, fmt_spec);
     return foo_string;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 //如果没有参数的特殊处理
-inline static void _foo_sformat_out(char*& foo_buffer,
-                                    size_t& foo_max_len,
-                                    size_t& foo_use_len,
-                                    const char*& foo_fmt_spec)
-{
-    size_t len_of_str = ::strlen(foo_fmt_spec);
-    if (len_of_str > foo_max_len)
-    {
-        foo_max_len = 0;
-        foo_use_len += foo_max_len;
-        ::memcpy(foo_buffer, foo_fmt_spec, foo_max_len);
-    }
-    else
-    {
-        foo_max_len -= len_of_str;
-        foo_use_len += len_of_str;
-        ::memcpy(foo_buffer, foo_fmt_spec, len_of_str);
-    }
-}
+void _sformat_outlist(char*& foo_buffer,
+                      size_t& foo_max_len,
+                      size_t& foo_use_len,
+                      const char*& foo_fmt_spec);
 
-template <typename out_type >
-static void _foo_sformat_out(char*& foo_buffer,
-                             size_t& foo_max_len,
-                             size_t& foo_use_len,
-                             const char*& foo_fmt_spec,
-                             const out_type& out_data
+template <typename T >
+void _sformat_outdata(char*& foo_buffer,
+                      size_t& foo_max_len,
+                      size_t& foo_use_len,
+                      const char*& foo_fmt_spec,
+                      T&& out_data
 )
 {
     size_t use_len = 0;
@@ -204,7 +186,11 @@ static void _foo_sformat_out(char*& foo_buffer,
         //{}%将转义为{}输出
         else
         {
-            zce::fmt_str(foo_buffer, foo_max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
+            zce::fmt_str(foo_buffer,
+                         foo_max_len,
+                         use_len,
+                         SNRPINTF_FMT_IDENTIFY,
+                         LEN_OF_FMT_IDENTIFY);
             foo_buffer += use_len;
             foo_max_len -= use_len;
             foo_use_len += use_len;
@@ -214,16 +200,24 @@ static void _foo_sformat_out(char*& foo_buffer,
     }
 }
 
-template <typename out_type, typename... out_tlist >
-static void _foo_sformat_out(char*& foo_buffer,
-                             size_t& foo_max_len,
-                             size_t& foo_use_len,
-                             const char*& foo_fmt_spec,
-                             const out_type& out_data,
-                             out_tlist ... out_datalist)
+template <typename T, typename... Args >
+void _sformat_outlist(char*& foo_buffer,
+                      size_t& foo_max_len,
+                      size_t& foo_use_len,
+                      const char*& foo_fmt_spec,
+                      T&& out_data,
+                      Args&& ... out_datalist)
 {
-    _foo_sformat_out(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
-    _foo_sformat_out(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
+    _sformat_outdata(foo_buffer,
+                     foo_max_len,
+                     foo_use_len,
+                     foo_fmt_spec,
+                     out_data);
+    _sformat_outlist(foo_buffer,
+                     foo_max_len,
+                     foo_use_len,
+                     foo_fmt_spec,
+                     out_datalist...);
 }
 
 /*!
@@ -238,12 +232,12 @@ static void _foo_sformat_out(char*& foo_buffer,
 * @param      ...out_data  输出数据，插入格式化字符串中
 * @note
 */
-template <typename... out_type >
+template <typename... Args >
 char* sformat_n(char* foo_buffer,
                 size_t foo_max_len,
                 size_t& foo_use_len,
                 const char* foo_fmt_spec,
-                const out_type& ...out_data)
+                Args&& ...out_data)
 {
     foo_use_len = 0;
 
@@ -257,9 +251,9 @@ char* sformat_n(char* foo_buffer,
     buffer[max_len] = '\0';
     const char* fmt_spec = foo_fmt_spec;
 
-    _foo_sformat_out(buffer, max_len, foo_use_len, fmt_spec, out_data...);
+    _sformat_outlist(buffer, max_len, foo_use_len, fmt_spec, out_data...);
     //尾巴上的那点东西也要输出，
-    _foo_sformat_out(buffer, max_len, foo_use_len, fmt_spec);
+    _sformat_outlist(buffer, max_len, foo_use_len, fmt_spec);
     foo_buffer[foo_use_len] = '\0';
     //返回
     return foo_buffer;
@@ -267,12 +261,12 @@ char* sformat_n(char* foo_buffer,
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
-template <typename out_type >
-void _foo_splice_out(char*& foo_buffer,
+template <typename T >
+void _splice_outdata(char*& foo_buffer,
                      size_t foo_max_len,
                      size_t& foo_use_len,
                      char separator_char,
-                     const out_type& out_data)
+                     T&& out_data)
 {
     size_t max_len = foo_max_len - 1;
     size_t use_len = 0;
@@ -294,16 +288,22 @@ void _foo_splice_out(char*& foo_buffer,
     }
 }
 
-template <typename out_type, typename... out_tlist >
-void _foo_splice_out(char*& foo_buffer,
+///啥也不干,就是完成变参递归
+void _splice_outlist(char*& foo_buffer,
+                     size_t foo_max_len,
+                     size_t& foo_use_len,
+                     char separator_char);
+
+template <typename T, typename... Args >
+void _splice_outlist(char*& foo_buffer,
                      size_t foo_max_len,
                      size_t& foo_use_len,
                      char separator_char,
-                     const out_type& out_data,
-                     out_tlist ... out_datalist)
+                     T&& out_data,
+                     Args&& ... out_datalist)
 {
-    _foo_splice_out(foo_buffer, foo_max_len, foo_use_len, separator_char, out_data);
-    _foo_splice_out(foo_buffer, foo_max_len, foo_use_len, separator_char, out_datalist...);
+    _splice_outdata(foo_buffer, foo_max_len, foo_use_len, separator_char, out_data);
+    _splice_outlist(foo_buffer, foo_max_len, foo_use_len, separator_char, out_datalist...);
 }
 
 /*!
@@ -315,12 +315,12 @@ void _foo_splice_out(char*& foo_buffer,
 * @param      separator_char 拼接的分割符号，=0表示不需要
 * @param      ...out_data 用于拼接的类型 多个参数
 */
-template <typename... out_type >
+template <typename... Args >
 char* ssplice_n(char* foo_buffer,
                 size_t foo_max_len,
                 size_t& foo_use_len,
                 char separator_char,
-                const out_type & ...out_data)
+                Args&& ...out_data)
 {
     foo_use_len = 0;
     if (0 == foo_max_len)
@@ -332,7 +332,7 @@ char* ssplice_n(char* foo_buffer,
     char* buffer = foo_buffer;
     buffer[max_len] = '\0';
 
-    _foo_splice_out(buffer,
+    _splice_outlist(buffer,
                     max_len, foo_use_len, separator_char, out_data...);
 
     foo_buffer[foo_use_len] = '\0';
@@ -342,10 +342,10 @@ char* ssplice_n(char* foo_buffer,
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
-template <typename out_type >
-static void _foo_c11_string_splice(std::string& foo_string,
-                                   char separator_char,
-                                   const out_type& out_data)
+template <typename T >
+void _string_splice_data(std::string& foo_string,
+                         char separator_char,
+                         T&& out_data)
 {
     zce::to_string(foo_string, out_data);
     if (separator_char != '\0')
@@ -354,14 +354,17 @@ static void _foo_c11_string_splice(std::string& foo_string,
     }
 }
 
-template <typename out_type, typename... out_tlist >
-static void _foo_c11_string_splice(std::string& foo_string,
-                                   char separator_char,
-                                   const out_type& out_data,
-                                   out_tlist ... out_datalist)
+void _string_splice_list(std::string& foo_string,
+                         char separator_char);
+
+template <typename T, typename... Args >
+void _string_splice_list(std::string& foo_string,
+                         char separator_char,
+                         T&& out_data,
+                         Args&&... out_datalist)
 {
-    _foo_c11_string_splice(foo_string, separator_char, out_data);
-    _foo_c11_string_splice(foo_string, separator_char, out_datalist...);
+    _string_splice_data(foo_string, separator_char, out_data);
+    _string_splice_list(foo_string, separator_char, out_datalist...);
 }
 
 /*!
@@ -371,10 +374,10 @@ static void _foo_c11_string_splice(std::string& foo_string,
  * @param separator_char 分割字符
  * @param ...out_data    合并的数据
 */
-template <typename... out_type >
+template <typename... Args >
 std::string& splice_string(std::string& foo_string,
                            char separator_char,
-                           const out_type &...out_data)
+                           Args&&...out_data)
 {
     _foo_c11_string_splice(foo_string, separator_char, out_data...);
     return foo_string;

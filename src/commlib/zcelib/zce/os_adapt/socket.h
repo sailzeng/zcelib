@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "zce/os_adapt/common.h"
+#include "zce/comm/common.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/error.h"
 

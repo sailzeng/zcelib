@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/logger/log_comm.h"
 #include "zce/os_adapt/socket.h"
 #include "zce/container/static_list.h"

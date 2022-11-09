@@ -21,7 +21,7 @@
 #include "zce/lock/thread_mutex.h"
 #include "zce/container/lord_rings.h"
 #include "zce/lock/thread_condi.h"
-#include "zce/thread/msgque_waitmodel.h"
+#include "zce/comm/common.h"
 
 namespace zce
 {
@@ -189,9 +189,10 @@ public:
 
 protected:
 
-    //放入一个数据，根据参数确定是否等待一个相对时间
+    //放入一个数据，根据参数确定是否等待一个相对时间，
+    //U&& 是一个万能引用universal reference
     template<typename U, typename Rep, typename Period>
-    bool enqueue_i(U &&value,
+    bool enqueue_i(U&& value,
                    MQW_WAIT_MODEL wait_model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {
@@ -237,7 +238,7 @@ protected:
     }
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    template<typename U Rep, typename U Period>
+    template<typename Rep, typename Period>
     bool dequeue_i(T& value,
                    MQW_WAIT_MODEL wait_model,
                    const std::chrono::duration<Rep, Period>& wait_time)

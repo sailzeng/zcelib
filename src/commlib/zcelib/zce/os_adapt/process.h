@@ -15,7 +15,7 @@
 #ifndef ZCE_LIB_OS_ADAPT_PROCESS_H_
 #define ZCE_LIB_OS_ADAPT_PROCESS_H_
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 
 ///@brief      进程下的性能数据信息，
 struct ZCE_PROCESS_PERFORM

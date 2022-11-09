@@ -4,7 +4,7 @@
 //所以只有换一下方式，在Windows下也找一个公用目录,
 
 #include "zce/predefine.h"
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/shm.h"
 #include "zce/os_adapt/file.h"

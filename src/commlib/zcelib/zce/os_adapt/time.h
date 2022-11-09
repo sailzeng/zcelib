@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 
 #if defined ZCE_OS_WINDOWS
 

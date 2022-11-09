@@ -16,7 +16,7 @@
 */
 #pragma once
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/util/non_copyable.h"
 
 namespace zce

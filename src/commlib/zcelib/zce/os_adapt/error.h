@@ -18,7 +18,7 @@
 #ifndef ZCE_LIB_OS_ADAPT_ERROR_H_
 #define ZCE_LIB_OS_ADAPT_ERROR_H_
 
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 
 # if !defined (EPERM)
 #   define EPERM           1

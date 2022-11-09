@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/string.h"
 #include "zce/os_adapt/time.h"

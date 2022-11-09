@@ -356,6 +356,9 @@
     <ClCompile Include="zce\pool\chunk_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\string\extend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -436,7 +439,7 @@
     <ClInclude Include="zce\predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\os_adapt\common.h">
+    <ClInclude Include="zce\os_adapt\define.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\time\time_value.h">
@@ -808,9 +811,6 @@
     <ClInclude Include="zce\buffer\queue_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\thread\msgque_waitmodel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\event\reactor_mini.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -830,6 +830,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\pool\chunk_pool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\comm\common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

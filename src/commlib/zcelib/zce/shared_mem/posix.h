@@ -1,7 +1,7 @@
 #pragma once
 
 #include "zce/util/non_copyable.h"
-#include "zce/os_adapt/common.h"
+#include "zce/os_adapt/define.h"
 
 /*!
 * @brief      封装POSIX共享内存映射代码，

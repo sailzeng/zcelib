@@ -158,6 +158,7 @@
     <ClCompile Include="zce\script\javascript.cpp" />
     <ClCompile Include="zce\socket\addr_any.cpp" />
     <ClCompile Include="zce\sqlite\sqlite_result.cpp" />
+    <ClCompile Include="zce\string\extend.cpp" />
     <ClCompile Include="zce\string\from_string.cpp" />
     <ClCompile Include="zce\buffer\cycle_buffer.cpp" />
     <ClCompile Include="zce\util\random.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\async\lua_thread.h" />
     <ClInclude Include="zce\buffer\queue_buffer.h" />
+    <ClInclude Include="zce\comm\common.h" />
     <ClInclude Include="zce\container\static_list.h" />
     <ClInclude Include="zce\event\reactor_mini.h" />
     <ClInclude Include="zce\lockfree\ptr_ring.h" />
@@ -289,7 +291,6 @@
     <ClInclude Include="zce\socket\addr_any.h" />
     <ClInclude Include="zce\sqlite\sqlite_result.h" />
     <ClInclude Include="zce\string\from_string.h" />
-    <ClInclude Include="zce\thread\msgque_waitmodel.h" />
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\buffer\cycle_buffer.h" />
     <ClInclude Include="zce\buffer\cycbuf_rings.h" />
@@ -354,7 +355,7 @@
     <ClInclude Include="zce\os_adapt\getopt.h" />
     <ClInclude Include="zce\os_adapt\math.h" />
     <ClInclude Include="zce\os_adapt\mutex.h" />
-    <ClInclude Include="zce\os_adapt\common.h" />
+    <ClInclude Include="zce\os_adapt\define.h" />
     <ClInclude Include="zce\os_adapt\process.h" />
     <ClInclude Include="zce\os_adapt\rwlock.h" />
     <ClInclude Include="zce\os_adapt\semaphore.h" />

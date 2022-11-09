@@ -9,7 +9,7 @@
 #include <zce/logger/log_msg.h>
 #include <zce/logger/log_print.h>
 
-#include <zce/os_adapt/common.h>
+#include <zce/os_adapt/define.h>
 #include <zce/os_adapt/file.h>
 #include <zce/os_adapt/process.h>
 #include <zce/os_adapt/sysinfo.h>
