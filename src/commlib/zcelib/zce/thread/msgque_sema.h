@@ -80,6 +80,13 @@ public:
                          MQW_WAIT_FOREVER,
                          no_use);
     }
+    bool enqueue(T&& value)
+    {
+        std::chrono::microseconds no_use;
+        return enqueue_i(std::forward<T>(value),
+                         MQW_WAIT_FOREVER,
+                         no_use);
+    }
 
     //放入一个数据，进行超时等待
     template<class Rep, class Period>
@@ -94,7 +101,7 @@ public:
     bool enqueue_wait(T&& value,
                       const std::chrono::duration<Rep, Period>& wait_time)
     {
-        return enqueue_i(value,
+        return enqueue_i(std::forward<T>(value),
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
@@ -112,7 +119,7 @@ public:
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return enqueue_i(value,
+        return enqueue_i(std::forward<T>(value),
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
@@ -128,7 +135,7 @@ public:
     bool try_enqueue(T&& value)
     {
         std::chrono::microseconds no_use;
-        return enqueue_i(value,
+        return enqueue_i(std::forward<T>(value),
                          MQW_NO_WAIT,
                          no_use);
     }
@@ -187,7 +194,7 @@ public:
 protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
-    template<class Rep, class Period>
+    template<typename Rep, typename Period>
     bool dequeue_i(T& value,
                    MQW_WAIT_MODEL model,
                    const std::chrono::duration<Rep, Period>& wait_time)
@@ -232,8 +239,8 @@ protected:
         return true;
     }
 
-    template<class Rep, class Period>
-    bool enqueue_i(T value,
+    template<typename U, typename Rep, typename Period>
+    bool enqueue_i(U&& value,
                    MQW_WAIT_MODEL model,
                    const std::chrono::duration<Rep, Period>& wait_time)
     {
@@ -269,7 +276,7 @@ protected:
         {
             std::lock_guard lock_guard(queue_lock_);
 
-            message_queue_.push_back(value);
+            message_queue_.push_back(std::forward<U>(value));
             ++queue_cur_size_;
         }
         sem_empty_.release();

@@ -193,7 +193,7 @@ public:
     }
     bool push_back(T&& value)
     {
-        return push_back_i(std::move(value));
+        return push_back_i(std::forward<T>(value));
     }
     bool push_front(const T& value)
     {
@@ -201,7 +201,7 @@ public:
     }
     bool push_front(T&& value)
     {
-        return push_front_i(std::move(value));
+        return push_front_i(std::forward<T>(value));
     }
 
     ///从队列的前面pop并且得到一个数据
@@ -262,7 +262,8 @@ public:
 protected:
 
     ///将一个数据放入队列的尾部
-    bool push_back_i(T value)
+    template<typename U>
+    bool push_back_i(U&& value)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
         size_t w_start = 0, w_end = 0, r_end;
@@ -282,7 +283,7 @@ protected:
                  std::memory_order_acq_rel));
 
         //写入数据，直接放在队尾
-        new (value_ptr_ + w_start) T(value);
+        new (value_ptr_ + w_start) T(std::forward<U>(value));
 
         //调整可读范围.只步进+1，所以稍微的不同步不影响任何使用
         do
@@ -295,7 +296,8 @@ protected:
     }
 
     ///将一个数据放入队列的头部
-    bool push_front_i(T value)
+    template<typename U>
+    bool push_front_i(U&& value)
     {
         //先调整可写入区域，然后写数据，在调整可读区域
         size_t w_start = 0, w_end = 0, r_start = 0;
@@ -315,7 +317,7 @@ protected:
                  std::memory_order_acq_rel));
 
         //写入数据，直接放在队尾
-        new (value_ptr_ + w_end) T(value);
+        new (value_ptr_ + w_end) T(std::forward<U>(value));
 
         //调整可读范围,步进-1
         do

@@ -205,7 +205,7 @@ void worker::process_response(zce::time_value* wait_time,
 }
 
 //!
-void worker::thread_aio(std::shared_ptr<void> &atom)
+void worker::thread_aio(const std::shared_ptr<void> &atom)
 {
     AIO_ATOM *base = (AIO_ATOM *)atom.get();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&

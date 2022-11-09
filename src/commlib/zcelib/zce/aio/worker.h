@@ -79,7 +79,7 @@ protected:
     void process_request();
 
     //! 在线程中处理AIO操作，会根据type分解工作到下面这些函数
-    void thread_aio(std::shared_ptr<void> &base);
+    void thread_aio(const std::shared_ptr<void> &base);
     //! 在线程中处理文件操作
     void thread_fs(zce::aio::FS_ATOM* base);
     //! 在线程中处理目录操作

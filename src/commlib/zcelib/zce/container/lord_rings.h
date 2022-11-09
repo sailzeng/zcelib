@@ -345,7 +345,7 @@ public:
     //! 右值push_back
     bool push_back(T&& value, bool lay_over = false)
     {
-        return push_back_i(std::move(value), lay_over);
+        return push_back_i(std::forward<T>(value), lay_over);
     }
     ///将一个数据放入队列的头部,如果队列已经满了看lay_over参数处理
     bool push_front(const T &value, bool lay_over = false)
@@ -355,18 +355,18 @@ public:
     //! 右值push_front
     bool push_front(T &&value, bool lay_over = false)
     {
-        return push_front_i(std::move(value), lay_over);
+        return push_front_i(std::forward<T>(value), lay_over);
     }
 
     template< class... Args >
     bool emplace_back(bool lay_over, Args&&... args)
     {
-        return push_back_i(std::move(T(args...)), lay_over);
+        return push_back_i(T(args...), lay_over);
     }
     template< class... Args >
     bool emplace_front(bool lay_over, Args&&... args)
     {
-        return push_front_i(std::move(T(args...)), lay_over);
+        return push_front_i(T(args...), lay_over);
     }
 
     ///从队列的前面pop并且得到一个数据
@@ -492,8 +492,10 @@ public:
 
 protected:
 
-    //!push_back内部实现
-    bool push_back_i(T value, bool lay_over)
+    //!push_back内部实现,注意这儿又用了一个模板参数U，因为必须让其再进行一次类型推导，
+    //! 否则&& 不是万能引用，而是右值
+    template<typename U>
+    bool push_back_i(U&& value, bool lay_over)
     {
         //如果已经满了
         if (full())
@@ -506,20 +508,21 @@ protected:
             else
             {
                 //将最后一个位置覆盖，并且调整起始和结束位置
-                new(&vptr_ptr_[lordring_end_]) T(value);
+                new(&vptr_ptr_[lordring_end_]) T(std::forward<U>(value));
                 lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
                 lordring_start_ = (lordring_start_ + 1) % lordring_capacity_;
                 return true;
             }
         }
         //如果还有空间，直接放在队伍尾部
-        new(&vptr_ptr_[lordring_end_]) T(value);
+        new(&vptr_ptr_[lordring_end_]) T(std::forward<U>(value));
         lordring_end_ = (lordring_end_ + 1) % lordring_capacity_;
         return true;
     }
 
     //!push_front内部实现
-    bool push_front_i(T value, bool lay_over)
+    template<typename U>
+    bool push_front_i(U&& value, bool lay_over)
     {
         //如果已经满了
         if (full())
@@ -535,13 +538,13 @@ protected:
                 lordring_start_ = (lordring_start_ > 0) ?
                     lordring_start_ - 1 : lordring_capacity_ - 1;
                 lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
-                new(&vptr_ptr_[lordring_start_]) T(value);
+                new(&vptr_ptr_[lordring_start_]) T(std::forward<U>(value));
                 return true;
             }
         }
         //如果还有空间，直接放在队伍首部
         lordring_start_ = (lordring_start_ > 0) ? lordring_start_ - 1 : lordring_capacity_ - 1;
-        new(&vptr_ptr_[lordring_start_]) T(value);
+        new(&vptr_ptr_[lordring_start_]) T(std::forward<U>(value));
         return true;
     }
 
