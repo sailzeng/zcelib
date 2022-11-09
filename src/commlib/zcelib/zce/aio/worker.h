@@ -23,7 +23,7 @@
 #include "zce/pool/shareptr_pool.h"
 #include "zce/thread/msgque_condi.h"
 #include "zce/event/reactor_mini.h"
-#include "zce/timer/queue_base.h"
+#include "zce/timer/queue_wheel.h"
 #include "zce/aio/caller.h"
 
 namespace zce::aio
@@ -105,7 +105,7 @@ protected:
 
     zce::reactor_mini *reactor_ = nullptr;
 
-    zce::timer_queue *time_queue_ = nullptr;
+    zce::timer_wheel *timer_queue_ = nullptr;
 
     //! 请求，应答队列，用于Caller 和Worker 线程交互
     zce::msgring_condi<std::shared_ptr<void> >* requst_queue_ = nullptr;

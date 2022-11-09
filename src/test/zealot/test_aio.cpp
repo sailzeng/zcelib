@@ -221,3 +221,48 @@ int test_aio3(int /*argc*/, char* /*argv*/[])
     aio_worker.terminate();
     return 0;
 }
+
+void on_timeout(zce::aio::AIO_ATOM* ahdl)
+{
+    auto tom = (zce::aio::TIMER_ATOM*)(ahdl);
+    char tv_str[128];
+    size_t use_len = 0;
+    std::cout << "on_timeout:" << tom->timer_id_ << " timevalue:" << tom->trigger_tv_.to_string(tv_str, 128, use_len) << std::endl;
+}
+
+int test_aio4(int /*argc*/, char* /*argv*/[])
+{
+    int ret = 0;
+    zce::aio::worker aio_worker;
+    ret = aio_worker.initialize(5, 2048, 2048);
+    if (ret)
+    {
+        return 101;
+    }
+    int timer_id = 0;
+    zce::time_value tv_to(5, 0);
+    ret = zce::aio::tmo_schedule(&aio_worker,
+                                 tv_to,
+                                 timer_id,
+                                 on_timeout);
+    if (ret)
+    {
+        return ret;
+    }
+
+    //此时没有进入Stage 1
+    size_t count = 0;
+    do
+    {
+        size_t num_event = 0, num_rsp = 0;
+        zce::time_value tv(1, 0);
+        aio_worker.process_response(&tv, num_event, num_rsp);
+        if (num_rsp > 0)
+        {
+            count += num_rsp;
+        }
+    } while (true);
+    aio_worker.terminate();
+
+    return 0;
+}

@@ -17,6 +17,8 @@ public:
     shm_posix();
     ~shm_posix();
 
+    shm_posix(const shm_posix &) = delete;
+    shm_posix& operator=(const shm_posix&) = delete;
 public:
     //打开文件，进行映射
     int open(const char* file_name,

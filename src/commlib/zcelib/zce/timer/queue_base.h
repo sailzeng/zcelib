@@ -104,13 +104,16 @@ protected:
 
 protected:
     //构造函数
+    timer_queue() = default;
+
     timer_queue(size_t num_timer_node,
                 unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                 TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                 bool dynamic_expand_node = true);
-    timer_queue();
+
 public:
-    virtual ~timer_queue();
+    //析构函数
+    virtual ~timer_queue() = default;
 
 public:
 
@@ -213,8 +216,6 @@ public:
     */
     virtual int close();
 
-protected:
-
     //--------------------------------------------------------------------------------------
 
     /*!
@@ -230,6 +231,7 @@ protected:
                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                    bool dynamic_expand_node = true);
 
+protected:
     /*!
     @brief      分配一个崭新的Timer Node
     @return     int             返回0标识分配成功

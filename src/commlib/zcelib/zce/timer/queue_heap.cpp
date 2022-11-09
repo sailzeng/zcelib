@@ -30,16 +30,6 @@ timer_heap::timer_heap(size_t num_timer_node,
     }
 }
 
-//构造函数
-timer_heap::timer_heap() :
-    size_heap_(0)
-{
-}
-
-timer_heap::~timer_heap()
-{
-}
-
 int timer_heap::initialize(size_t num_timer_node,
                            unsigned int timer_precision_mesc,
                            TRIGGER_MODE trigger_mode,

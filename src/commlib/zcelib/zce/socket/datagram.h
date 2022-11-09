@@ -18,9 +18,7 @@ public:
     explicit datagram(const ZCE_SOCKET& socket_hanle);
 
     //为了安全，避免反复关闭，可以使用右值引用构造 && 和右值赋值 && =
-    explicit datagram(const datagram& others);
     explicit datagram(datagram&& others) noexcept;
-    datagram& operator=(const datagram& others);
     datagram& operator=(datagram&& others) noexcept;
 
     //Open SOCK句柄，不BIND本地地址的方式

@@ -17,9 +17,7 @@ public:
     explicit stream(const ZCE_SOCKET& socket_hanle);
 
     //为了安全，避免反复关闭，可以使用右值引用 && 构造和 && =
-    explicit stream(const stream& others);
     explicit stream(stream&& others) noexcept;
-    stream& operator=(const stream& others);
     stream& operator=(stream&& others) noexcept;
 
 public:

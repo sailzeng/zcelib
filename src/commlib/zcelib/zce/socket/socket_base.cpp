@@ -24,29 +24,10 @@ socket_base::~socket_base()
     close();
 }
 
-socket_base::socket_base(const socket_base& others) :
-    socket_handle_(others.socket_handle_)
-{
-}
-
 socket_base::socket_base(socket_base&& others) noexcept :
     zce::skt::socket_base(others.socket_handle_)
 {
     others.socket_handle_ = ZCE_INVALID_SOCKET;
-}
-
-socket_base& socket_base::operator=(const socket_base& others)
-{
-    if (this == &others)
-    {
-        return *this;
-    }
-    if (socket_handle_ != ZCE_INVALID_SOCKET)
-    {
-        zce::close_socket(socket_handle_);
-    }
-    socket_handle_ = others.socket_handle_;
-    return *this;
 }
 
 socket_base& socket_base::operator=(socket_base&& others) noexcept

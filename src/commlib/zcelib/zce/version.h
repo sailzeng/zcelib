@@ -87,5 +87,5 @@
 "Compilation Timestamp :" __DATE__ " " __TIME__ " .\n" \
 "Copyright :(C) 2008-2012 . My Team (We are best!). All rights reserved. \n"  \
 "Author :sail and her firends.\n" \
-"Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
+"Have fun. My brother.  You Can't Write Perfect Code !  Free as in Freedom .\n"
 #endif

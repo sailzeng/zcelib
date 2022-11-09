@@ -46,6 +46,7 @@
 #pragma once
 
 #include "zce/event/handle_base.h"
+#include "zce/time/time_value.h"
 #include "zce/os_adapt/common.h"
 
 namespace zce
@@ -594,9 +595,9 @@ struct TIMER_ATOM :public AIO_ATOM
                         const zce::time_value &,
                         int time_id);
     //!
-    const zce::time_value *timeout_tv_ = nullptr;
+    zce::time_value trigger_tv_;
     //!
-    int *timer_id_ = nullptr;
+    int timer_id_ = -1;
 };
 
 int tmo_schedule(zce::aio::worker* worker,

@@ -12,29 +12,10 @@ datagram::datagram(const ZCE_SOCKET& socket_hanle) :
 {
 }
 
-datagram::datagram(const datagram& others) :
-    zce::skt::socket_base(others.socket_handle_)
-{
-}
-
 datagram::datagram(datagram&& others) noexcept :
     zce::skt::socket_base(others.socket_handle_)
 {
     others.socket_handle_ = ZCE_INVALID_SOCKET;
-}
-
-datagram& datagram::operator=(const datagram& others)
-{
-    if (this == &others)
-    {
-        return *this;
-    }
-    if (socket_handle_ != ZCE_INVALID_SOCKET)
-    {
-        zce::close_socket(socket_handle_);
-    }
-    socket_handle_ = others.socket_handle_;
-    return *this;
 }
 
 datagram& datagram::operator=(datagram&& others) noexcept
