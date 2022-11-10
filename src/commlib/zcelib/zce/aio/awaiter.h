@@ -76,7 +76,8 @@ protected:
     bool aio_thread_await_ready();
     //请求进行事件的AIO操作
     bool event_await_ready();
-
+    //请求进行timer out操作
+    bool timer_out_ready();
 protected:
 
     //!工作者，具有请求，应答管道，处理IO多线程的管理者
@@ -262,8 +263,9 @@ awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
 
 //!
 awaiter_aio  co_schedule_timeout(zce::aio::worker* worker,
-                                 const zce::time_value* timeout_tv,
-                                 int *timer_id);
+                                 const zce::time_value& timeout_tv,
+                                 int *timer_id,
+                                 zce::time_value* trigger_tv);
 
 //!
 awaiter_aio  co_cancel_timeout(int timer_id);

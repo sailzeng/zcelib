@@ -256,16 +256,16 @@ void worker::thread_fs(zce::aio::FS_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
-    case FS_OPEN:
+    case AIO_TYPE::FS_OPEN:
         atom->result_ = zce::open2(atom->handle_,
                                    atom->path_,
                                    atom->mode_,
                                    atom->flags_);
         break;
-    case FS_CLOSE:
+    case AIO_TYPE::FS_CLOSE:
         atom->result_ = zce::close(atom->handle_);
         break;
-    case FS_LSEEK:
+    case AIO_TYPE::FS_LSEEK:
         off_t off;
         atom->result_ = zce::lseek(atom->handle_,
                                    (off_t)atom->offset_,
@@ -273,8 +273,7 @@ void worker::thread_fs(zce::aio::FS_ATOM* atom)
                                    off);
         break;
 
-    case FS_READ:
-
+    case AIO_TYPE::FS_READ:
         atom->result_ = zce::read(atom->handle_,
                                   atom->read_bufs_,
                                   atom->bufs_len_,
@@ -282,7 +281,7 @@ void worker::thread_fs(zce::aio::FS_ATOM* atom)
                                   (off_t)atom->offset_,
                                   atom->whence_);
         break;
-    case FS_WRITE:
+    case AIO_TYPE::FS_WRITE:
         atom->result_ = zce::write(atom->handle_,
                                    atom->write_bufs_,
                                    atom->bufs_len_,
@@ -290,21 +289,21 @@ void worker::thread_fs(zce::aio::FS_ATOM* atom)
                                    (off_t)atom->offset_,
                                    atom->whence_);
         break;
-    case FS_READFILE:
+    case AIO_TYPE::FS_READFILE:
         atom->result_ = zce::read_file(atom->path_,
                                        atom->read_bufs_,
                                        atom->bufs_len_,
                                        atom->result_len_,
                                        (off_t)atom->offset_);
         break;
-    case FS_WRITEFILE:
+    case AIO_TYPE::FS_WRITEFILE:
         atom->result_ = zce::write_file(atom->path_,
                                         atom->write_bufs_,
                                         atom->bufs_len_,
                                         atom->result_len_,
                                         (off_t)atom->offset_);
         break;
-    case FS_STAT:
+    case AIO_TYPE::FS_STAT:
         atom->result_ = zce::fstat(atom->handle_,
                                    atom->file_stat_);
         break;
@@ -319,14 +318,14 @@ void worker::thread_dir(zce::aio::DIR_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
-    case DIR_MKDIR:
+    case AIO_TYPE::DIR_MKDIR:
         atom->result_ = zce::mkdir(atom->dirname_,
                                    atom->mode_);
         break;
-    case DIR_RMDIR:
+    case AIO_TYPE::DIR_RMDIR:
         atom->result_ = zce::rmdir(atom->dirname_);
         break;
-    case DIR_SCANDIR:
+    case AIO_TYPE::DIR_SCANDIR:
         atom->result_ = zce::scandir(atom->dirname_,
                                      atom->namelist_,
                                      nullptr,
@@ -342,7 +341,7 @@ void worker::thread_mysql(zce::aio::MYSQL_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
-    case MYSQL_CONNECT:
+    case AIO_TYPE::MYSQL_CONNECT:
         atom->result_ = zce::mysql::exe::connect(
             atom->db_connect_,
             atom->host_name_,
@@ -350,12 +349,12 @@ void worker::thread_mysql(zce::aio::MYSQL_ATOM* atom)
             atom->pwd_,
             atom->port_);
         break;
-    case MYSQL_DISCONNECT:
+    case AIO_TYPE::MYSQL_DISCONNECT:
         atom->result_ = 0;
         zce::mysql::exe::disconnect(
             atom->db_connect_);
         break;
-    case MYSQL_QUERY_NOSELECT:
+    case AIO_TYPE::MYSQL_QUERY_NOSELECT:
         atom->result_ = zce::mysql::exe::query(
             atom->db_connect_,
             atom->sql_,
@@ -363,7 +362,7 @@ void worker::thread_mysql(zce::aio::MYSQL_ATOM* atom)
             atom->num_affect_,
             atom->insert_id_);
         break;
-    case MYSQL_QUERY_SELECT:
+    case AIO_TYPE::MYSQL_QUERY_SELECT:
         atom->result_ = zce::mysql::exe::query(
             atom->db_connect_,
             atom->sql_,
@@ -381,7 +380,7 @@ void worker::thread_host(zce::aio::HOST_ATOM* atom)
 {
     switch (atom->aio_type_)
     {
-    case HOST_GETADDRINFO_ARY:
+    case AIO_TYPE::HOST_GETADDRINFO_ARY:
         atom->result_ = zce::getaddrinfo_to_addrary(
             atom->hostname_,
             atom->service_,
@@ -390,7 +389,7 @@ void worker::thread_host(zce::aio::HOST_ATOM* atom)
             atom->ary_addr6_num_,
             atom->ary_addr6_);
         break;
-    case HOST_GETADDRINFO_ONE:
+    case AIO_TYPE::HOST_GETADDRINFO_ONE:
         atom->result_ = zce::getaddrinfo_to_addr(
             atom->hostname_,
             atom->service_,
@@ -408,14 +407,14 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
     ssize_t len = 0;
     switch (atom->aio_type_)
     {
-    case SOCKET_CONNECT_ADDR:
+    case AIO_TYPE::SOCKET_CONNECT_ADDR:
         atom->result_ = zce::connect_timeout(
             atom->handle_,
             atom->addr_,
             atom->addr_len_,
             *atom->timeout_tv_);
         break;
-    case SOCKET_CONNECT_HOST:
+    case AIO_TYPE::SOCKET_CONNECT_HOST:
         atom->result_ = zce::connect_timeout(
             atom->handle_,
             atom->host_name_,
@@ -424,7 +423,7 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
             atom->addr_len_,
             *atom->timeout_tv_);
         break;
-    case SOCKET_ACCEPT:
+    case AIO_TYPE::SOCKET_ACCEPT:
         atom->result_ = zce::accept_timeout(
             atom->handle_,
             atom->accept_hdl_,
@@ -440,7 +439,7 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
             atom->result_ = 0;
         }
         break;
-    case SOCKET_RECV:
+    case AIO_TYPE::SOCKET_RECV:
         len = zce::recvn_timeout(
             atom->handle_,
             atom->rcv_buf_,
@@ -459,7 +458,7 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
             *(atom->result_len_) = 0;
         }
         break;
-    case SOCKET_SEND:
+    case AIO_TYPE::SOCKET_SEND:
         len = zce::sendn_timeout(
             atom->handle_,
             atom->snd_buf_,
@@ -477,7 +476,7 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
             *(atom->result_len_) = 0;
         }
         break;
-    case SOCKET_RECVFROM:
+    case AIO_TYPE::SOCKET_RECVFROM:
         len = zce::recvfrom_timeout(
             atom->handle_,
             atom->rcv_buf_,

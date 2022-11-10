@@ -67,7 +67,7 @@ namespace zce::aio
 class worker;
 
 //!
-enum AIO_TYPE
+enum class AIO_TYPE
 {
     AIO_INVALID = 0,
     //文件处理
@@ -510,30 +510,6 @@ struct EVENT_ATOM :public AIO_ATOM
     ZCE_SOCKET *accept_hdl_ = nullptr;
 };
 
-struct hash_event_atom
-{
-    size_t operator()(EVENT_ATOM *obj)
-    {
-        return (size_t)(obj->handle_) + obj->aio_type_;
-    }
-};
-
-struct equal_to_event_atom
-{
-    bool operator()(EVENT_ATOM *obj1, EVENT_ATOM *obj2)
-    {
-        if (obj1->handle_ == obj2->handle_ &&
-            obj1->aio_type_ == obj2->aio_type_)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-};
-
 //! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
 //! 使用open_socket函数的时候，注意参数
 
@@ -595,13 +571,16 @@ struct TIMER_ATOM :public AIO_ATOM
                         const zce::time_value &,
                         int time_id);
     //!
-    zce::time_value trigger_tv_;
+    zce::time_value timeout_tv_;
     //!
-    int timer_id_ = -1;
+    int *timer_id_ = nullptr;
+    //!
+    zce::time_value *trigger_tv_ = nullptr;
 };
 
 int tmo_schedule(zce::aio::worker* worker,
                  const zce::time_value& timeout_tv,
-                 int &timer_id,
+                 int *timer_id,
+                 zce::time_value *trigger_tv_,
                  std::function<void(AIO_ATOM*)> call_back);
 }//namespace zce::aio

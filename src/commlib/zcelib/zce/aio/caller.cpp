@@ -10,7 +10,7 @@ namespace zce::aio
 {
 void AIO_ATOM::clear()
 {
-    aio_type_ = AIO_INVALID;
+    aio_type_ = AIO_TYPE::AIO_INVALID;
     id_ = 0;
     std::function<void(AIO_ATOM*)> tmp;
     call_back_.swap(tmp);
@@ -44,6 +44,7 @@ int fs_open(zce::aio::worker* worker,
             std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_OPEN;
     aio_atom->path_ = path;
     aio_atom->flags_ = flags;
     aio_atom->mode_ = mode;
@@ -62,6 +63,7 @@ int fs_close(zce::aio::worker* worker,
              std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_CLOSE;
     aio_atom->handle_ = handle;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
@@ -80,6 +82,7 @@ int fs_lseek(zce::aio::worker* worker,
              std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_LSEEK;
     aio_atom->handle_ = handle;
     aio_atom->offset_ = offset;
     aio_atom->whence_ = whence;
@@ -103,6 +106,7 @@ int fs_read(zce::aio::worker* worker,
             int whence)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_READ;
     aio_atom->handle_ = handle;
     aio_atom->read_bufs_ = read_bufs;
     aio_atom->bufs_len_ = nbufs;
@@ -129,6 +133,7 @@ int fs_write(zce::aio::worker* worker,
              int whence)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_WRITE;
     aio_atom->handle_ = handle;
     aio_atom->write_bufs_ = write_bufs;
     aio_atom->bufs_len_ = nbufs;
@@ -151,6 +156,7 @@ int fs_ftruncate(zce::aio::worker* worker,
                  std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_FTRUNCATE;
     aio_atom->handle_ = handle;
     aio_atom->offset_ = offset;
     aio_atom->call_back_ = std::move(call_back);
@@ -171,6 +177,7 @@ int fs_read_file(zce::aio::worker* worker,
                  ssize_t offset)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_READFILE;
     aio_atom->path_ = path;
     aio_atom->read_bufs_ = read_bufs;
     aio_atom->bufs_len_ = nbufs;
@@ -193,6 +200,7 @@ int fs_write_file(zce::aio::worker* worker,
                   ssize_t offset)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_WRITEFILE;
     aio_atom->path_ = path;
     aio_atom->write_bufs_ = write_bufs;
     aio_atom->bufs_len_ = nbufs;
@@ -212,6 +220,7 @@ int fs_unlink(zce::aio::worker* worker,
               std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_UNLINK;
     aio_atom->path_ = path;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
@@ -229,6 +238,7 @@ int fs_rename(zce::aio::worker* worker,
               std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_RENAME;
     aio_atom->path_ = path;
     aio_atom->new_path_ = new_path;
     aio_atom->call_back_ = std::move(call_back);
@@ -247,6 +257,7 @@ int fs_stat(zce::aio::worker* worker,
             std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_STAT;
     aio_atom->path_ = path;
     aio_atom->file_stat_ = file_stat;
     aio_atom->call_back_ = std::move(call_back);
@@ -675,13 +686,13 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
     if (event == RECTOR_EVENT::READ_MASK)
     {
         ssize_t sz_rcv = 0;
-        if (EVENT_RECV == eva->aio_type_)
+        if (AIO_TYPE::EVENT_RECV == eva->aio_type_)
         {
             sz_rcv = zce::recv(eva->handle_,
                                eva->rcv_buf_,
                                eva->len_);
         }
-        else if (EVENT_RECVFROM == eva->aio_type_)
+        else if (AIO_TYPE::EVENT_RECVFROM == eva->aio_type_)
         {
             sz_rcv = zce::recvfrom(eva->handle_,
                                    eva->rcv_buf_,
@@ -1018,34 +1029,39 @@ int er_recvfrom(zce::aio::worker* worker,
 //=======================================================================
 void TIMER_ATOM::clear()
 {
-    trigger_tv_ = { 0,0 };
-    timer_id_ = -1;
+    trigger_tv_ = nullptr;
+    timer_id_ = nullptr;
 }
 
 int TIMER_ATOM::time_out(std::shared_ptr<void> &atom,
-                         const zce::time_value &tv,
+                         const zce::time_value &trigger_tv,
                          int timer_id)
 {
     auto toa = (TIMER_ATOM *)(atom.get());
-    toa->trigger_tv_ = tv;
-    toa->timer_id_ = timer_id;
+    *(toa->trigger_tv_) = trigger_tv;
+    *(toa->timer_id_) = timer_id;
     toa->call_back_(toa);
     return 0;
 }
 
 int tmo_schedule(zce::aio::worker* worker,
                  const zce::time_value& timeout_tv,
-                 int &timer_id,
+                 int *timer_id,
+                 zce::time_value *trigger_tv,
                  std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->timer_id_ = timer_id;
+    aio_atom->trigger_tv_ = trigger_tv;
     aio_atom->call_back_ = std::move(call_back);
     std::shared_ptr<void> void_ptr = std::move(aio_atom);
+    int t_id = -1;
     int ret = worker->schedule_timer(std::bind(&TIMER_ATOM::time_out,
                                      void_ptr,
                                      std::placeholders::_1,
                                      std::placeholders::_2),
-                                     timer_id,
+                                     t_id,
                                      timeout_tv);
     if (ret != 0)
     {

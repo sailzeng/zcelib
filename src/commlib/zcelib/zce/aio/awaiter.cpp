@@ -6,13 +6,13 @@ namespace zce::aio
 bool awaiter_aio::await_ready()
 {
     AIO_ATOM *atom_base = (AIO_ATOM *)request_atom_.get();
-    if (atom_base->aio_type_ >= AIO_THREAD_BEGIN &&
-        atom_base->aio_type_ <= AIO_THREAD_END)
+    if (atom_base->aio_type_ >= AIO_TYPE::AIO_THREAD_BEGIN &&
+        atom_base->aio_type_ <= AIO_TYPE::AIO_THREAD_END)
     {
         return aio_thread_await_ready();
     }
-    else if (atom_base->aio_type_ >= AIO_EVENT_BEGIN &&
-             atom_base->aio_type_ <= AIO_EVENT_END)
+    else if (atom_base->aio_type_ >= AIO_TYPE::AIO_EVENT_BEGIN &&
+             atom_base->aio_type_ <= AIO_TYPE::AIO_EVENT_END)
     {
         return event_await_ready();
     }
@@ -117,6 +117,24 @@ bool awaiter_aio::event_await_ready()
         //没有完成，挂起
         return false;
     }
+}
+
+bool awaiter_aio::timer_out_ready()
+{
+    auto to_atom = (zce::aio::TIMER_ATOM *)request_atom_.get();
+    to_atom->call_back_ = std::move(std::bind(&awaiter_aio::resume,
+                                    this,
+                                    std::placeholders::_1));
+    int ret = 0;
+    if (to_atom->aio_type_ == AIO_TYPE::EVENT_CONNECT)
+    {
+        ret = tmo_schedule(worker_,
+                           to_atom->timeout_tv_,
+                           to_atom->timer_id_,
+                           to_atom->trigger_tv_,
+                           to_atom->call_back_);
+    }
+    return false;
 }
 
 //============================================================================
@@ -470,13 +488,15 @@ awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
 }
 
 //============================================================================
-//awaiter_aio  co_schedule_timeout(zce::aio::worker* worker,
-//                                 const zce::time_value* timeout_tv,
-//                                 int *timer_id)
-//{
-//    auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
-//    aio_atom->timeout_tv_ = timeout_tv;
-//    aio_atom->timer_id_ = timer_id;
-//    return awaiter_aio(worker, aio_atom);
-//}
+awaiter_aio  co_schedule_timeout(zce::aio::worker* worker,
+                                 const zce::time_value& timeout_tv,
+                                 int *timer_id,
+                                 zce::time_value* trigger_tv)
+{
+    auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
+    aio_atom->timeout_tv_ = timeout_tv;
+    aio_atom->trigger_tv_ = trigger_tv;
+    aio_atom->timer_id_ = timer_id;
+    return awaiter_aio(worker, aio_atom);
+}
 }
