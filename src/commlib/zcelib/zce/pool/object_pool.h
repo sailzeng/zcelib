@@ -172,7 +172,7 @@ protected:
         }
         else
         {
-            ret = voidptr_pool_.resize(pool_capacity + extend_size);
+            ret = voidptr_pool_.reserve(pool_capacity + extend_size);
             if (!ret)
             {
                 return false;

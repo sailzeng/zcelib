@@ -305,31 +305,16 @@ protected:
 
 /*!
 * @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
-*             zce::MsgQueue_List <MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
+*             zce::msgqueue_sema <_value_type>  参数特化
 * @tparam     T 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <typename T >
-class msglist_sema : public msgqueue_sema<T, std::list<T> >
-{
-public:
-    msglist_sema(size_t queue_max_size) :
-        msgqueue_sema<T, std::list<T> >(queue_max_size)
-    {
-    }
-    ~msglist_sema() = default;
-};
 
-template <typename T >
-class msgdeque_sema : public msgqueue_sema<T, std::deque<T> >
-{
-public:
-    msgdeque_sema(size_t queue_max_size) :
-        msgqueue_sema<T, std::deque<T> >(queue_max_size)
-    {
-    }
-    ~msgdeque_sema() = default;
-};
+template <typename T>
+using msglist_sema = msgqueue_sema<T, std::list<T>>;
+
+template <typename T>
+using msgdeque_sema = msgqueue_sema<T, std::deque<T>>;
 
 template <typename T >
 class msgrings_sema : public msgqueue_sema<T, zce::lord_rings<T> >
@@ -338,7 +323,7 @@ public:
     msgrings_sema(size_t queue_max_size) :
         msgqueue_sema<T, zce::lord_rings<T> >(queue_max_size)
     {
-        msgqueue_sema<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
+        msgqueue_sema<T, zce::lord_rings<T> >::message_queue_.reserve(queue_max_size);
     }
     ~msgrings_sema() = default;
 };
@@ -573,32 +558,16 @@ protected:
 };
 
 /*!
-* @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
+* @brief      内部用LIST,DEQUE,RINGS实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
 *
-* @tparam     T 消息队列保存的数据类型
+* @tparam     T 消息队列保存的数据类型LIST,DEQUE,RINGS
 * note        主要就是为了给你一些语法糖
 */
-template <typename T >
-class MsgList_Sema : public MsgQueue_Sema<T, std::list<T> >
-{
-public:
-    explicit MsgList_Sema(size_t queue_max_size) :
-        MsgQueue_Sema<T, std::list<T> >(queue_max_size)
-    {
-    }
-    ~MsgList_Sema() = default;
-};
+template <typename T>
+using MsgList_Sema = MsgQueue_Sema<T, std::list<T>>;
 
-template <typename T >
-class MsgDeque_Sema : public MsgQueue_Sema<T, std::deque<T> >
-{
-public:
-    explicit MsgDeque_Sema(size_t queue_max_size) :
-        MsgQueue_Sema<T, std::deque<T> >(queue_max_size)
-    {
-    }
-    ~MsgDeque_Sema() = default;
-};
+template <typename T>
+using MsgDeque_Sema = MsgQueue_Sema<T, std::deque<T>>;
 
 template <typename T >
 class MsgRings_Sema : public MsgQueue_Sema<T, zce::lord_rings<T> >
@@ -607,7 +576,7 @@ public:
     explicit MsgRings_Sema(size_t queue_max_size) :
         MsgQueue_Sema<T, zce::lord_rings<T> >(queue_max_size)
     {
-        MsgQueue_Sema<T, zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
+        MsgQueue_Sema<T, zce::lord_rings<T> >::message_queue_.reserve(queue_max_size);
     }
     ~MsgRings_Sema() = default;
 };

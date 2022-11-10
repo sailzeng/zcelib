@@ -153,7 +153,7 @@ protected:
         }
         else
         {
-            ret = obj_pool_.resize(pool_capacity + extend_size);
+            ret = obj_pool_.reserve(pool_capacity + extend_size);
             if (!ret)
             {
                 return false;

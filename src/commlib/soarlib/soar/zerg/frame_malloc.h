@@ -305,7 +305,7 @@ template <typename zce_lock >
 void zergframe_mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t extend_num)
 {
     size_t old_capacity = frame_pool_[list_no].capacity();
-    frame_pool_[list_no].resize(old_capacity + extend_num);
+    frame_pool_[list_no].reserve(old_capacity + extend_num);
 
     for (size_t j = 0; j < extend_num; ++j)
     {

@@ -197,7 +197,7 @@ public:
         lordring_start_ = 0;
         lordring_end_ = 0;
 
-        auto ret = resize(max_len);
+        auto ret = reserve(max_len);
         if (ret == false)
         {
             return false;
@@ -280,8 +280,8 @@ public:
         return false;
     }
 
-    ///重新分配一个空间,
-    bool resize(size_t new_size)
+    ///重新保留一个空间,
+    bool reserve(size_t new_size)
     {
         assert(new_size > 0);
         if (new_size <= 0)
@@ -311,7 +311,7 @@ public:
             if (new_size < deque_size)
             {
                 size_t destruction_size = deque_size - new_size;
-                for (; i < destruction_size; ++i)
+                for (size_t j = 0; j < destruction_size; ++i, ++j)
                 {
                     vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~T();
                 }

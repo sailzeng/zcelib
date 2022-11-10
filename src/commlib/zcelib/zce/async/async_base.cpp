@@ -237,7 +237,7 @@ int async_obj_mgr::allocate_from_pool(uint32_t create_cmd,
         reg_async.aysncobj_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_async.aysncobj_pool_.capacity();
-        reg_async.aysncobj_pool_.resize(capacity_of_pool + pool_extend_size_);
+        reg_async.aysncobj_pool_.reserve(capacity_of_pool + pool_extend_size_);
 
         ZCE_LOG(RS_INFO, "[ZCELIB] Async object pool size[%u],  command[%u],"
                 " capacity[%u] , resize[%u] .",

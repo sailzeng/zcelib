@@ -166,13 +166,13 @@ protected:
     event_call_set_t  event_set_;
 
     ///最大的处理句柄大小，用于一些容器的resize
-    size_t            max_event_number_ = 1024;
+    size_t       max_event_number_ = 1024;
 
     ///一次触发最大处理的句柄数量
-    size_t            once_max_events_;
+    size_t       once_max_events_;
 
     ///
-    bool              trigger_auto_close_ = true;
+    bool         trigger_auto_close_ = true;
 
     //! Windows 下用select 进行事件处理
 #if defined (ZCE_OS_WINDOWS)

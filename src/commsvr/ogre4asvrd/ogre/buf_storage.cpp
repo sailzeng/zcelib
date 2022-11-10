@@ -74,7 +74,7 @@ void buffer_storage::extend_buffer_list(size_t szlist)
     );
 
     //重新扩展一下空间
-    frame_buffer_ary_.resize(size_buffer_alloc_ + szlist);
+    frame_buffer_ary_.reserve(size_buffer_alloc_ + szlist);
 
     //将新的NEW数据装载进去
     for (size_t i = 0; i < szlist; ++i)

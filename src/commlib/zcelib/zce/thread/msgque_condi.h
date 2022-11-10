@@ -313,27 +313,13 @@ protected:
 * @tparam     T 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <typename T >
-class msglist_condi : public msgqueue_condi<T, std::list<T> >
-{
-public:
-    explicit msglist_condi(size_t queue_max_size) :
-        msgqueue_condi<T, std::list<T> >(queue_max_size)
-    {
-    }
-    ~msglist_condi() = default;
-};
 
-template <class T >
-class msgdeque_condi : public msgqueue_condi<T, std::deque<T> >
-{
-public:
-    explicit msgdeque_condi(size_t queue_max_size) :
-        msgqueue_condi<T, std::deque<T> >(queue_max_size)
-    {
-    }
-    ~msgdeque_condi() = default;
-};
+template <typename T>
+using msglist_condi = msgqueue_condi<T, std::list<T>>;
+
+template <typename T>
+using msgdeque_condi = msgqueue_condi<T, std::deque<T>>;
+
 template <class T >
 class msgring_condi : public msgqueue_condi<T, zce::lord_rings<T> >
 {
@@ -342,7 +328,7 @@ public:
         msgqueue_condi<T, zce::lord_rings<T> >(queue_max_size)
     {
         msgqueue_condi<T,
-            zce::lord_rings<T> >::message_queue_.resize(queue_max_size);
+            zce::lord_rings<T> >::message_queue_.reserve(queue_max_size);
     }
     ~msgring_condi() = default;
 };
@@ -591,35 +577,12 @@ protected:
 * @tparam     T 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-template <typename T >
-class MsgList_Condi : public MsgQueue_Condi<T, std::list<T> >
-{
-public:
-    explicit MsgList_Condi(size_t queue_max_size) :
-        MsgQueue_Condi<T, std::list<T> >(queue_max_size)
-    {
-    }
 
-    ~MsgList_Condi() = default;
-};
+template <typename T>
+using MsgList_Condi = MsgQueue_Condi<T, std::list<T>>;
 
-/*!
-* @brief      内部用DQUEUE实现的消息队列，性能较好,边界保护用的条件变量。
-*
-* @tparam     T 消息队列保存的数据类型
-* note
-*/
-template <class T >
-class MsgDeque_Condi : public MsgQueue_Condi<T, std::deque<T> >
-{
-public:
-    explicit MsgDeque_Condi(size_t queue_max_size) :
-        MsgQueue_Condi<T, std::deque<T> >(queue_max_size)
-    {
-    }
-
-    ~MsgDeque_Condi() = default;
-};
+template <typename T>
+using MsgDeque_Condi = MsgQueue_Condi<T, std::deque<T>>;
 
 template <class T >
 class MsgRings_Condi : public MsgQueue_Condi<T, zce::lord_rings<T> >
