@@ -184,6 +184,16 @@ coro_ret<int> coroutine_aio(zce::aio::worker* worker)
                                                   20,
                                                   &write_size);
     std::cout << "co_write_file,reuslt:" << w_ret << " count:" << write_size << std::endl;
+    char tm_stt[128];
+    size_t sz_buf = 0;
+    zce::time_value tmo_tv(5, 0);
+    int time_id;
+    zce::time_value tigger_tv;
+    auto tmo_ret = co_await zce::aio::co_timeout_schedule(worker,
+                                                          tmo_tv,
+                                                          &time_id,
+                                                          &tigger_tv);
+    std::cout << "co_write_file,reuslt:" << tmo_ret << " count:" << tigger_tv.to_string(tm_stt, 128, sz_buf) << std::endl;
 
     co_return 0;
 }
@@ -217,7 +227,7 @@ int test_aio3(int /*argc*/, char* /*argv*/[])
         }
         std::cout << "coroutine done ?:" <<
             (c_r.done() ? "true" : "false") << std::endl;
-    } while (count < 2);
+    } while (count < 3);
     aio_worker.terminate();
     return 0;
 }
@@ -227,7 +237,7 @@ void on_timeout(zce::aio::AIO_ATOM* ahdl)
     auto tom = (zce::aio::TIMER_ATOM*)(ahdl);
     char tv_str[128];
     size_t use_len = 0;
-    std::cout << "on_timeout:" << tom->timer_id_ << " timevalue:" << tom->trigger_tv_.to_string(tv_str, 128, use_len) << std::endl;
+    std::cout << "on_timeout:" << tom->timer_id_ << " timevalue:" << tom->trigger_tv_->to_string(tv_str, 128, use_len) << std::endl;
 }
 
 int test_aio4(int /*argc*/, char* /*argv*/[])
@@ -241,9 +251,11 @@ int test_aio4(int /*argc*/, char* /*argv*/[])
     }
     int timer_id = 0;
     zce::time_value tv_to(5, 0);
+    zce::time_value trigger_tv;
     ret = zce::aio::tmo_schedule(&aio_worker,
                                  tv_to,
-                                 timer_id,
+                                 &timer_id,
+                                 &trigger_tv,
                                  on_timeout);
     if (ret)
     {

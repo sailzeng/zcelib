@@ -262,7 +262,7 @@ awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
 //========================================================================================
 
 //!
-awaiter_aio  co_schedule_timeout(zce::aio::worker* worker,
+awaiter_aio  co_timeout_schedule(zce::aio::worker* worker,
                                  const zce::time_value& timeout_tv,
                                  int *timer_id,
                                  zce::time_value* trigger_tv);

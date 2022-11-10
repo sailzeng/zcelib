@@ -285,6 +285,7 @@ int dir_scandir(zce::aio::worker* worker,
                 std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<DIR_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::DIR_SCANDIR;
     aio_atom->dirname_ = dirname;
     aio_atom->namelist_ = namelist;
     aio_atom->call_back_ = std::move(call_back);
@@ -303,6 +304,7 @@ int dir_mkdir(zce::aio::worker* worker,
               std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<DIR_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::DIR_MKDIR;
     aio_atom->dirname_ = dirname;
     aio_atom->mode_ = mode;
     aio_atom->call_back_ = std::move(call_back);
@@ -320,6 +322,7 @@ int dir_rmdir(zce::aio::worker* worker,
               std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<DIR_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::DIR_RMDIR;
     aio_atom->dirname_ = dirname;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
@@ -357,6 +360,7 @@ int mysql_connect(zce::aio::worker* worker,
                   std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::MYSQL_CONNECT;
     aio_atom->db_connect_ = db_connect;
     aio_atom->host_name_ = host_name;
     aio_atom->user_ = user;
@@ -377,6 +381,7 @@ int mysql_disconnect(zce::aio::worker* worker,
                      std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::MYSQL_DISCONNECT;
     aio_atom->db_connect_ = db_connect;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
@@ -397,6 +402,7 @@ int mysql_query(zce::aio::worker* worker,
                 std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::MYSQL_QUERY_NOSELECT;
     aio_atom->db_connect_ = db_connect;
     aio_atom->sql_ = sql;
     aio_atom->sql_len_ = sql_len;
@@ -422,6 +428,7 @@ int mysql_query(zce::aio::worker* worker,
                 std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::MYSQL_QUERY_SELECT;
     aio_atom->db_connect_ = db_connect;
     aio_atom->sql_ = sql;
     aio_atom->sql_len_ = sql_len;
@@ -459,6 +466,7 @@ int host_getaddr_ary(zce::aio::worker* worker,
                      std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<HOST_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::HOST_GETADDRINFO_ARY;
     aio_atom->hostname_ = hostname;
     aio_atom->service_ = service;
     aio_atom->ary_addr_num_ = ary_addr_num;
@@ -483,6 +491,7 @@ int host_getaddr_one(zce::aio::worker* worker,
                      std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<HOST_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::HOST_GETADDRINFO_ONE;
     aio_atom->hostname_ = hostname;
     aio_atom->service_ = service;
     aio_atom->addr_ = addr;
@@ -528,6 +537,7 @@ int st_connect(zce::aio::worker* worker,
                std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<SOCKET_TIMEOUT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::SOCKET_CONNECT_ADDR;
     aio_atom->handle_ = handle;
     aio_atom->addr_ = addr;
     aio_atom->addr_len_ = addr_len;
@@ -551,6 +561,7 @@ int st_connect(zce::aio::worker* worker,
                std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<SOCKET_TIMEOUT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::SOCKET_CONNECT_HOST;
     aio_atom->handle_ = handle;
     aio_atom->host_name_ = host_name;
     aio_atom->host_port_ = host_port;
@@ -575,6 +586,7 @@ int st_accept(zce::aio::worker* worker,
               std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<SOCKET_TIMEOUT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::SOCKET_ACCEPT;
     aio_atom->handle_ = handle;
     aio_atom->accept_hdl_ = accept_hdl;
     aio_atom->from_ = from;
@@ -600,6 +612,7 @@ int st_recv(zce::aio::worker* worker,
             int flags)
 {
     auto aio_atom = worker->alloc_handle<SOCKET_TIMEOUT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::SOCKET_RECV;
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
     aio_atom->len_ = len;
@@ -626,6 +639,7 @@ int st_send(zce::aio::worker* worker,
             int flags)
 {
     auto aio_atom = worker->alloc_handle<SOCKET_TIMEOUT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::SOCKET_SEND;
     aio_atom->handle_ = handle;
     aio_atom->snd_buf_ = buf;
     aio_atom->len_ = len;
@@ -653,6 +667,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 int flags)
 {
     auto aio_atom = worker->alloc_handle<SOCKET_TIMEOUT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::SOCKET_RECVFROM;
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = buf;
     aio_atom->len_ = len;
@@ -817,6 +832,7 @@ int er_connect(zce::aio::worker* worker,
         }
     }
     auto aio_atom = worker->alloc_handle<EVENT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::EVENT_CONNECT;
     aio_atom->handle_ = handle;
     aio_atom->call_back_ = std::move(call_back);
     ret = worker->reg_event(
@@ -859,6 +875,7 @@ int er_accept(zce::aio::worker* worker,
         }
     }
     auto aio_atom = worker->alloc_handle<EVENT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::EVENT_ACCEPT;
     aio_atom->handle_ = handle;
     aio_atom->call_back_ = std::move(call_back);
     aio_atom->accept_hdl_ = accept_hdl;
@@ -905,6 +922,7 @@ int er_recv(zce::aio::worker* worker,
         }
     }
     auto aio_atom = worker->alloc_handle<EVENT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::EVENT_RECV;
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = rcv_buf;
     aio_atom->len_ = len;
@@ -951,6 +969,7 @@ int er_send(zce::aio::worker* worker,
         }
     }
     auto aio_atom = worker->alloc_handle<EVENT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::EVENT_SEND;
     aio_atom->handle_ = handle;
     aio_atom->snd_buf_ = snd_buf;
     aio_atom->len_ = len;
@@ -1004,6 +1023,7 @@ int er_recvfrom(zce::aio::worker* worker,
         }
     }
     auto aio_atom = worker->alloc_handle<EVENT_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::EVENT_RECVFROM;
     aio_atom->handle_ = handle;
     aio_atom->rcv_buf_ = rcv_buf;
     aio_atom->len_ = len;
@@ -1051,6 +1071,7 @@ int tmo_schedule(zce::aio::worker* worker,
                  std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::TIMER_SCHEDULE;
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->timer_id_ = timer_id;
     aio_atom->trigger_tv_ = trigger_tv;

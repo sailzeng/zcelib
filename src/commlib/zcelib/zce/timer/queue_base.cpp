@@ -324,8 +324,9 @@ void timer_queue::calc_next_trigger(int time_node_id,
 int timer_queue::free_timernode(int time_node_id)
 {
     //考虑了一下还是用断言了，避免你写错代码祸国殃民
-    ZCE_ASSERT(time_node_ary_[time_node_id].timer_handle_ != nullptr &&
-               static_cast<size_t>(time_node_id) < num_timer_node_);
+    ZCE_ASSERT((time_node_ary_[time_node_id].timer_handle_ != nullptr ||
+               time_node_ary_[time_node_id].timer_call_)
+               && static_cast<size_t>(time_node_id) < num_timer_node_);
 
     //如果NODE内部的指针为nullptr,表示这个NODE没有使用
     if (!time_node_ary_[time_node_id].timer_handle_)
