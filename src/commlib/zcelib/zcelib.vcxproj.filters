@@ -592,9 +592,6 @@
     <ClInclude Include="zce\shm_container\rbtree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\shm_container\trie_tree.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\socket\socket_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>

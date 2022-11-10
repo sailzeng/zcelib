@@ -289,7 +289,7 @@ int mmap_buspipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
 
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        size_t sz_room = bus_pipe::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = bus_pipe::alloc_size(bus_head_.size_of_pipe_[i]);
         bus_head_.size_of_room_[i] = sz_room;
         sz_malloc += sz_room;
     }
@@ -440,7 +440,7 @@ int mmap_buspipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
 
         ZCE_ASSERT(bus_pipe_pointer_[i] != nullptr);
 
-        size_t sz_room = bus_pipe::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = bus_pipe::alloc_size(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;
     }
 

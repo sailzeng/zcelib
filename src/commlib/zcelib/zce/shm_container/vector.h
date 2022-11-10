@@ -74,7 +74,7 @@ public:
 public:
 
     ///内存区的构成为 定义区,data区,返回所需要的长度,
-    static size_type getallocsize(const size_type numnode)
+    static size_type alloc_size(const size_type numnode)
     {
         return  sizeof(_shm_vector_head) + sizeof(T) * (numnode);
     }
@@ -88,7 +88,7 @@ public:
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != aryhead->size_of_mmap_ ||
+            if (alloc_size(numnode) != aryhead->size_of_mmap_ ||
                 numnode != aryhead->num_of_node_)
             {
                 return nullptr;
@@ -96,7 +96,7 @@ public:
         }
 
         //初始化尺寸
-        aryhead->size_of_mmap_ = getallocsize(numnode);
+        aryhead->size_of_mmap_ = alloc_size(numnode);
         aryhead->num_of_node_ = numnode;
 
         self* instance = new self();

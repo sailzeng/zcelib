@@ -272,9 +272,9 @@ public:
     * @param[in]  numchunk   CHUNK节点的个数，多个桶存放一个NODE
     * @param[in]  szchunk    CHUNK的尺寸大小
     */
-    static std::size_t getallocsize(std::size_t numnode,
-                                    std::size_t numchunk,
-                                    std::size_t szchunk);
+    static std::size_t alloc_size(std::size_t numnode,
+                                  std::size_t numchunk,
+                                  std::size_t szchunk);
 
 protected:
     //

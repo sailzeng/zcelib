@@ -123,7 +123,8 @@ namespace zce
 #define ALLOW_RESTORE_INCONFORMITY 0
 
 //空序号指针标示,32位为0xFFFFFFFF,64位为0xFFFFFFFFFFFFFFFF CNTR = CONTAINER SHM = Share memory
-const std::size_t  SHM_CNTR_INVALID_POINT = static_cast<std::size_t>(-1);
+typedef std::size_t  shmc_size_type;
+const shmc_size_type SHMC_INVALID_POINT = static_cast<shmc_size_type>(-1);
 
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
 //STL采用的方式一个查表的方式
@@ -317,24 +318,20 @@ template <class _Pair> struct mmap_select2st
 ///放到这儿是因为HASH—EXPIRE和LIST都用了这个结构,
 class _shm_list_index
 {
+    typedef shmc_size_type size_type;
 public:
-    _shm_list_index() :
-        idx_next_(zce::SHM_CNTR_INVALID_POINT),
-        idx_prev_(zce::SHM_CNTR_INVALID_POINT)
-    {
-    }
-    _shm_list_index(const size_t& nxt, const size_t& prv) :
+    _shm_list_index() = default;
+    ~_shm_list_index() = default;
+
+    _shm_list_index(size_type nxt, size_type prv) :
         idx_next_(nxt),
         idx_prev_(prv)
     {
     }
-    ~_shm_list_index()
-    {
-    }
 
     ///LiST后驱索引，
-    std::size_t  idx_next_;
+    size_type  idx_next_ = zce::SHMC_INVALID_POINT;
     ///LiST的前驱索引，
-    std::size_t  idx_prev_;
+    size_type  idx_prev_ = zce::SHMC_INVALID_POINT;
 };
-};
+}

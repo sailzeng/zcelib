@@ -2,7 +2,7 @@
 
 int test_cachechunk(int /*argc*/, char* /*argv*/[])
 {
-    size_t szalloc = zce::chunk_pool::getallocsize(4, 32, 32);
+    size_t szalloc = zce::chunk_pool::alloc_size(4, 32, 32);
     bool bret = false;
     std::cout << "need mem: " << (int)szalloc << std::endl;
     std::cout << "sizeof(chunk_pool)" << sizeof(zce::chunk_pool) << std::endl;
@@ -83,9 +83,9 @@ int test_list(int /*argc*/, char* /*argv*/[])
 {
     const size_t numnode = 100;
 
-    //size_t szalloc1 = shm_list<void *>::getallocsize(numnode,40);
+    //size_t szalloc1 = shm_list<void *>::alloc_size(numnode,40);
 
-    size_t szalloc = zce::shm_list<int>::getallocsize(numnode);
+    size_t szalloc = zce::shm_list<int>::alloc_size(numnode);
     std::cout << "need mem: " << (int)szalloc << std::endl;
     std::cout << "sizeof(shm_list<int >)" << sizeof(zce::shm_list<int >) << std::endl;
     char* tmproom = new char[szalloc + 4];
@@ -203,11 +203,11 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
 int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shm_rb_tree< int, int >  TEST_RB_TREE;
+    typedef zce::rb_tree< int, int >  TEST_RB_TREE;
     TEST_RB_TREE* test_rb_tree;
     size_t  size_of_tree = 16;
 
-    size_t sz_malloc = TEST_RB_TREE::getallocsize(size_of_tree);
+    size_t sz_malloc = TEST_RB_TREE::alloc_size(size_of_tree);
 
     char* pt_rb_tree = new char[sz_malloc];
     memset(pt_rb_tree, 0, sz_malloc);
@@ -312,11 +312,11 @@ int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 //使用随机数测试，RB Tree
 int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shm_rb_tree< int, int >  TEST_RB_TREE;
+    typedef zce::rb_tree< int, int >  TEST_RB_TREE;
     TEST_RB_TREE* test_rb_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_RB_TREE::iterator  tree_iter, tree_iter_end;
-    size_t sz_malloc = TEST_RB_TREE::getallocsize(SIZE_OF_TREE);
+    size_t sz_malloc = TEST_RB_TREE::alloc_size(SIZE_OF_TREE);
 
     char* pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
@@ -436,11 +436,11 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 //测试，AVL Tree
 int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+    size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
 
     char* pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
@@ -506,11 +506,11 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 //使用随机数测试，AVL Tree
 int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+    size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
 
     char* pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
@@ -641,11 +641,11 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
 int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 {
     size_t erase_count = 0;
-    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
     size_t  SIZE_OF_TREE = 16;
 
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+    size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
 
     char* pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
@@ -786,11 +786,11 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 //测试4种插入情况的平衡旋转
 int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+    size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
 
     char* pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
@@ -893,11 +893,11 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 //使用随机数测试，测试equal的情况,AVL Tree
 int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+    size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
 
     char* pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
@@ -1035,7 +1035,7 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
     size_t node_num = 100, real_num = 0;
     size_t sz_del = 0;
 
-    size_t szalloc = zce::shm_hashtable_expire <int, int >::getallocsize(node_num, real_num);
+    size_t szalloc = zce::shm_hashtable_expire <int, int >::alloc_size(node_num, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)node_num << std::endl;
     std::cout << "sizeof :" << sizeof(zce::shm_hashtable_expire <int, int >) << std::endl;
@@ -1161,7 +1161,7 @@ int test_lru_hashtable2(int /*argc*/, char* /*argv*/[])
     size_t numnode = 100, real_num = 0;
     size_t num_count = 0;
 
-    size_t szalloc = zce::shm_hashtable_expire <int, int >::getallocsize(numnode, real_num);
+    size_t szalloc = zce::shm_hashtable_expire <int, int >::alloc_size(numnode, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)numnode << std::endl;
     std::cout << "sizeof :" << sizeof(zce::shm_hashtable_expire <int, int >) << std::endl;
@@ -1202,7 +1202,7 @@ int test_lru_hashtable3(int /*argc*/, char* /*argv*/[])
 
     size_t count = 0;
 
-    size_t szalloc = zce::shm_hashtable_expire <int, int >::getallocsize(numnode, real_num);
+    size_t szalloc = zce::shm_hashtable_expire <int, int >::alloc_size(numnode, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)numnode << std::endl;
     std::cout << "sizeof :" << sizeof(zce::shm_hashtable_expire <int, int >) << std::endl;
@@ -1297,7 +1297,7 @@ public:
         int ret = 0;
 
         data_number_ = data_number;
-        size_t malloc_size = HASH_TABLE_MY_DATA::getallocsize(data_number, data_number_);
+        size_t malloc_size = HASH_TABLE_MY_DATA::alloc_size(data_number, data_number_);
 
         ret = mmap_file_.open("./LUX_DATA_.MMAP", malloc_size);
 
@@ -1503,7 +1503,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     size_t safe_node_number = req_node_number;
     size_t real_node_number = 0;
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
-    size_t safe_len_smem = SMEM_HASH_SAFE_INT::getallocsize(safe_node_number, real_node_number, prime_ary, false);
+    size_t safe_len_smem = SMEM_HASH_SAFE_INT::alloc_size(safe_node_number, real_node_number, prime_ary, false);
 
     std::cout << "Hash safe table nobe nubmer " << real_node_number << std::endl;
     std::cout << "Hash safe table room size " << safe_len_smem << std::endl;
@@ -1568,7 +1568,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
 
     SMEM_HASH_TABLE_INT* hash_table_p = nullptr;
     size_t table_node_number = req_node_number, real_table_number = 0;
-    size_t table_len_smem = SMEM_HASH_TABLE_INT::getallocsize(table_node_number, real_table_number);
+    size_t table_len_smem = SMEM_HASH_TABLE_INT::alloc_size(table_node_number, real_table_number);
 
     std::cout << "Hash link table nobe nubmer " << real_table_number << std::endl;
     std::cout << "Hash link table room size " << table_len_smem << std::endl;
@@ -1628,7 +1628,7 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
     size_t node_real_number = 0;
 
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
-    size_t len_smem = SMEM_HASH_SAFE_INT::getallocsize(node_number, node_real_number, prime_ary, false);
+    size_t len_smem = SMEM_HASH_SAFE_INT::alloc_size(node_number, node_real_number, prime_ary, false);
 
     std::cout << "Hash table nobe nubmer " << node_real_number << std::endl;
     std::cout << "Hash table room size " << len_smem << std::endl;
@@ -1686,7 +1686,7 @@ int test_hash_safe2(int /*argc*/, char* /*argv*/[])
     size_t node_number = node_req_number;
     size_t node_real_number = 0;
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
-    size_t len_smem = SMEM_HASH_SAFE_INT::getallocsize(node_number, node_real_number, prime_ary, false);
+    size_t len_smem = SMEM_HASH_SAFE_INT::alloc_size(node_number, node_real_number, prime_ary, false);
 
     std::cout << "Hash table nobe nubmer " << node_real_number << std::endl;
     std::cout << "Hash table room size " << len_smem << std::endl;
@@ -1720,7 +1720,7 @@ int test_hashtable(int /*argc*/, char* /*argv*/[])
 {
     size_t numnode = 100, real_num = 0;
 
-    size_t szalloc = zce::shm_hashtable <int, int >::getallocsize(numnode, real_num);
+    size_t szalloc = zce::shm_hashtable <int, int >::alloc_size(numnode, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)real_num << std::endl;
     std::cout << "sizeof smem_hashtable:" << sizeof(zce::shm_hashtable <int, int >) << std::endl;

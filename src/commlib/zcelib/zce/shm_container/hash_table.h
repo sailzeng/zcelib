@@ -116,12 +116,12 @@ public:
         serial_ = *(ht_instance_->next_index_ + serial_);
 
         //如果这个节点是末位的节点
-        if (serial_ == zce::SHM_CNTR_INVALID_POINT)
+        if (serial_ == zce::SHMC_INVALID_POINT)
         {
             //顺着Index查询.
             size_t bucket = ht_instance_->bkt_num_value(*(ht_instance_->data_base_ + oldseq));
 
-            while (serial_ == zce::SHM_CNTR_INVALID_POINT && ++bucket < ht_instance_->capacity())
+            while (serial_ == zce::SHMC_INVALID_POINT && ++bucket < ht_instance_->capacity())
             {
                 serial_ = *(ht_instance_->index_base_ + bucket);
             }
@@ -227,12 +227,13 @@ public:
 protected:
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const T& val)
+    template<typename U>
+    size_t create_node(U&& v)
     {
         //如果没有空间可以分配
         if (hash_head_->sz_freenode_ == 0)
         {
-            return SHM_CNTR_INVALID_POINT;
+            return SHMC_INVALID_POINT;
         }
 
         //从连上取下一个空闲节点
@@ -242,7 +243,7 @@ protected:
         ++hash_head_->sz_usenode_;
 
         //用placement new进行赋值
-        new (data_base_ + new_node)T(val);
+        new (data_base_ + new_node)T(std::forward<U>(v));
 
         return new_node;
     }
@@ -261,6 +262,107 @@ protected:
         (data_base_ + pos)->~T();
     }
 
+    template<typename U>
+    std::pair<iterator, bool> insert_unique_i(U&& v)
+    {
+        size_t idx = bkt_num_value(std::forward<U>(v));
+        size_t first_idx = *(index_base_ + idx);
+
+        //使用量函数对象,一个类单独定义一个是否更好?
+        _extract_key get_key;
+        _equal_key   equal_key;
+
+        size_t nxt_idx = first_idx;
+
+        while (nxt_idx != SHMC_INVALID_POINT)
+        {
+            //如果找到相同的Key函数
+            if (equal_key((get_key(*(data_base_ + nxt_idx))), (get_key(std::forward<U>(v)))) == true)
+            {
+                return std::pair<iterator, bool>(iterator(nxt_idx, this), false);
+            }
+
+            nxt_idx = *(next_index_ + nxt_idx);
+        }
+
+        //没有找到,插入新数据
+        size_t newnode = create_node(std::forward<U>(v));
+        //空间不足,
+        if (newnode == SHMC_INVALID_POINT)
+        {
+            return std::pair<iterator, bool>(iterator(SHMC_INVALID_POINT, this), false);
+        }
+
+        //放入链表中
+        *(next_index_ + newnode) = *(index_base_ + idx);
+        *(index_base_ + idx) = newnode;
+
+        //如果第一个位置就不是无效的INDEX
+        if (first_idx == SHMC_INVALID_POINT)
+        {
+            //记录使用量一个索引
+            ++(hash_head_->sz_useindex_);
+        }
+
+        return std::pair<iterator, bool>(iterator(newnode, this), true);
+    }
+
+    template<typename U>
+    std::pair<iterator, bool> insert_equal_i(U&& v)
+    {
+        size_t idx = bkt_num_value(std::forward<U>(v));
+        size_t first_idx = *(index_base_ + idx);
+
+        //使用量函数对象,一个类单独定义一个是否更好?
+        _extract_key get_key;
+        _equal_key   equal_key;
+
+        size_t nxt_idx = first_idx;
+
+        while (nxt_idx != SHMC_INVALID_POINT)
+        {
+            //如果找到相同的Key函数,会将相同的数据放在一起，便于处理
+            if (equal_key((get_key(*(data_base_ + nxt_idx))), (get_key(std::forward<U>(v)))) == true)
+            {
+                break;
+            }
+
+            nxt_idx = *(next_index_ + nxt_idx);
+        }
+
+        //没有找到,插入新数据
+        size_t newnode = create_node(std::forward<U>(v));
+
+        //空间不足,
+        if (newnode == SHMC_INVALID_POINT)
+        {
+            return std::pair<iterator, bool>(iterator(SHMC_INVALID_POINT, this), false);
+        }
+
+        //没有找到相同KEY的数据
+        if (nxt_idx == SHMC_INVALID_POINT)
+        {
+            //放入链表的首部就可以了
+            (next_index_ + newnode) = *(index_base_ + idx);
+            *(index_base_ + idx) = newnode;
+        }
+        //如果找到了相同的KEY节点
+        else
+        {
+            //放到这个节点的后面
+            *(next_index_ + newnode) = *(next_index_ + nxt_idx);
+            *(next_index_ + nxt_idx) = newnode;
+        }
+
+        //如果第一个位置就不是无效的INDEX,记录使用了INDEX
+        if (first_idx == SHMC_INVALID_POINT)
+        {
+            ++(hash_head_->sz_useindex_);
+        }
+
+        return std::pair<iterator, bool>(iterator(newnode, this), true);
+    }
+
 public:
 
     /*!
@@ -270,7 +372,7 @@ public:
     * @param      real_num 实际分配的NODE数量
     * @note       注意返回的是实际INDEX长度,会取一个质数
     */
-    static size_t getallocsize(size_t req_num, size_t& real_num)
+    static size_t alloc_size(size_t req_num, size_t& real_num)
     {
         zce::hash_prime(req_num, real_num);
         return  sizeof(_shm_hash_table_head) +
@@ -291,7 +393,7 @@ public:
     {
         assert(pmmap != nullptr && req_num > 0);
         //调整
-        size_t sz_mmap = getallocsize(req_num, real_num);
+        size_t sz_mmap = alloc_size(req_num, real_num);
 
         _shm_hash_table_head* hashhead = reinterpret_cast<_shm_hash_table_head*>(pmmap);
 
@@ -363,7 +465,7 @@ public:
         //初始化free数据区
         for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
         {
-            index_base_[i] = SHM_CNTR_INVALID_POINT;
+            index_base_[i] = SHMC_INVALID_POINT;
         }
 
         //清理FREELIST的单向NODE,
@@ -376,7 +478,7 @@ public:
 
             if (i == hash_head_->num_of_node_ - 1)
             {
-                next_index_[i] = SHM_CNTR_INVALID_POINT;
+                next_index_[i] = SHMC_INVALID_POINT;
             }
         }
     }
@@ -399,7 +501,7 @@ public:
     {
         for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
         {
-            if (*(index_base_ + i) != SHM_CNTR_INVALID_POINT)
+            if (*(index_base_ + i) != SHMC_INVALID_POINT)
             {
                 return iterator(*(index_base_ + i), this);
             }
@@ -410,7 +512,7 @@ public:
     //用无效指针
     iterator end()
     {
-        return iterator(SHM_CNTR_INVALID_POINT, this);
+        return iterator(SHMC_INVALID_POINT, this);
     }
 
     //
@@ -444,7 +546,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != SHM_CNTR_INVALID_POINT && !equal_key(get_key(*(data_base_ + first)), key))
+        while (first != SHMC_INVALID_POINT && !equal_key(get_key(*(data_base_ + first)), key))
         {
             first = *(next_index_ + first);
         }
@@ -462,7 +564,6 @@ public:
     T& find_or_insert(const T& val)
     {
         iterator iter = find_value(val);
-
         if (iter == end())
         {
             std::pair<iterator, bool> pair_iter = insert_unique(val);
@@ -479,48 +580,12 @@ public:
     */
     std::pair<iterator, bool> insert_unique(const T& val)
     {
-        size_t idx = bkt_num_value(val);
-        size_t first_idx = *(index_base_ + idx);
-
-        //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
-
-        size_t nxt_idx = first_idx;
-
-        while (nxt_idx != SHM_CNTR_INVALID_POINT)
-        {
-            //如果找到相同的Key函数
-            if (equal_key((get_key(*(data_base_ + nxt_idx))), (get_key(val))) == true)
-            {
-                return std::pair<iterator, bool>(iterator(nxt_idx, this), false);
-            }
-
-            nxt_idx = *(next_index_ + nxt_idx);
-        }
-
-        //没有找到,插入新数据
-        size_t newnode = create_node(val);
-        //空间不足,
-        if (newnode == SHM_CNTR_INVALID_POINT)
-        {
-            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
-        }
-
-        //放入链表中
-        *(next_index_ + newnode) = *(index_base_ + idx);
-        *(index_base_ + idx) = newnode;
-
-        //如果第一个位置就不是无效的INDEX
-        if (first_idx == SHM_CNTR_INVALID_POINT)
-        {
-            //记录使用量一个索引
-            ++(hash_head_->sz_useindex_);
-        }
-
-        return std::pair<iterator, bool>(iterator(newnode, this), true);
+        return insert_unique_i(val);
     }
-
+    std::pair<iterator, bool> insert_unique(T&& val)
+    {
+        return insert_unique_i(val);
+    }
     /*!
     * @brief      插入节点,允许相等（KEY）的节点插入,
     * @return     std::pair<iterator, bool> iterator为返回的迭代器，bool为是否插入成功，
@@ -528,57 +593,11 @@ public:
     */
     std::pair<iterator, bool> insert_equal(const T& val)
     {
-        size_t idx = bkt_num_value(val);
-        size_t first_idx = *(index_base_ + idx);
-
-        //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
-
-        size_t nxt_idx = first_idx;
-
-        while (nxt_idx != SHM_CNTR_INVALID_POINT)
-        {
-            //如果找到相同的Key函数,会将相同的数据放在一起，便于处理
-            if (equal_key((get_key(*(data_base_ + nxt_idx))), (get_key(val))) == true)
-            {
-                break;
-            }
-
-            nxt_idx = *(next_index_ + nxt_idx);
-        }
-
-        //没有找到,插入新数据
-        size_t newnode = create_node(val);
-
-        //空间不足,
-        if (newnode == SHM_CNTR_INVALID_POINT)
-        {
-            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
-        }
-
-        //没有找到相同KEY的数据
-        if (nxt_idx == SHM_CNTR_INVALID_POINT)
-        {
-            //放入链表的首部就可以了
-            (next_index_ + newnode) = *(index_base_ + idx);
-            *(index_base_ + idx) = newnode;
-        }
-        //如果找到了相同的KEY节点
-        else
-        {
-            //放到这个节点的后面
-            *(next_index_ + newnode) = *(next_index_ + nxt_idx);
-            *(next_index_ + nxt_idx) = newnode;
-        }
-
-        //如果第一个位置就不是无效的INDEX,记录使用了INDEX
-        if (first_idx == SHM_CNTR_INVALID_POINT)
-        {
-            ++(hash_head_->sz_useindex_);
-        }
-
-        return std::pair<iterator, bool>(iterator(newnode, this), true);
+        return insert_equal_i(val);
+    }
+    std::pair<iterator, bool> insert_equal(T&& val)
+    {
+        return insert_equal_i(val);
     }
 
     /*!
@@ -598,7 +617,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(*(data_base_ + first)), key) == true)
@@ -629,7 +648,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(*(data_base_ + first)), key) == true)
@@ -646,7 +665,7 @@ public:
                 destroy_node(first);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == zce::SHM_CNTR_INVALID_POINT)
+                if (*(index_base_ + idx) == zce::SHMC_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -675,7 +694,7 @@ public:
         size_t itseq = it.getserial();
 
         //
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             if (first == itseq)
             {
@@ -691,7 +710,7 @@ public:
                 destroy_node(first);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == zce::SHM_CNTR_INVALID_POINT)
+                if (*(index_base_ + idx) == zce::SHMC_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }
@@ -720,7 +739,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(*(data_base_ + first)), key) == true)
@@ -741,7 +760,7 @@ public:
                 destroy_node(del_pos);
 
                 //如果INDEX已经被删除了，取消记录
-                if (*(index_base_ + idx) == zce::SHM_CNTR_INVALID_POINT)
+                if (*(index_base_ + idx) == zce::SHMC_INVALID_POINT)
                 {
                     --(hash_head_->sz_useindex_);
                 }

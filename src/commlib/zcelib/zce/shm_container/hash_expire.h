@@ -97,13 +97,13 @@ public:
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
         //如果这个节点是末位的节点
-        if (serial_ == zce::SHM_CNTR_INVALID_POINT)
+        if (serial_ == zce::SHMC_INVALID_POINT)
         {
             //顺着Index查询.
             size_t bucket = lruht_instance_->bkt_num_value(*(lruht_instance_->value_base_ + oldseq));
 
             //
-            while (serial_ == zce::SHM_CNTR_INVALID_POINT && ++bucket < lruht_instance_->capacity())
+            while (serial_ == zce::SHMC_INVALID_POINT && ++bucket < lruht_instance_->capacity())
             {
                 serial_ = *(lruht_instance_->hash_factor_base_ + bucket);
             }
@@ -122,7 +122,7 @@ public:
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
         //如果这个节点不是末位的节点
-        if (serial_ != zce::SHM_CNTR_INVALID_POINT)
+        if (serial_ != zce::SHMC_INVALID_POINT)
         {
             _extract_key get_key;
             _equal_key   equal_key;
@@ -130,7 +130,7 @@ public:
             if (false == equal_key(get_key(*(lruht_instance_->value_base_ + oldseq)),
                 get_key(*(lruht_instance_->value_base_ + serial_))))
             {
-                serial_ = zce::SHM_CNTR_INVALID_POINT;
+                serial_ = zce::SHMC_INVALID_POINT;
             }
         }
         else
@@ -259,7 +259,7 @@ public:
     * @param      real_num 实际分配的NODE数量
     * @note       注意返回的是实际INDEX长度,会取一个质数
     */
-    static size_t getallocsize(size_t req_num, size_t& real_num)
+    static size_t alloc_size(size_t req_num, size_t& real_num)
     {
         //取得一个比这个数字做一定放大的质数，
         zce::hash_prime(req_num, real_num);
@@ -280,7 +280,7 @@ public:
     {
         assert(pmmap != nullptr && req_num > 0);
         //调整
-        size_t sz_mmap = getallocsize(req_num, real_num);
+        size_t sz_mmap = alloc_size(req_num, real_num);
         _hashtable_expire_head* hashhead = reinterpret_cast<_hashtable_expire_head*>(pmmap);
 
         //如果是恢复,数据都在内存中,
@@ -364,8 +364,8 @@ public:
         for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
         {
             //
-            hash_factor_base_[i] = SHM_CNTR_INVALID_POINT;
-            hash_index_base_[i] = SHM_CNTR_INVALID_POINT;
+            hash_factor_base_[i] = SHMC_INVALID_POINT;
+            hash_index_base_[i] = SHMC_INVALID_POINT;
             priority_base_[i] = 0;
 
             pindex->idx_next_ = (i + 1);
@@ -396,7 +396,7 @@ protected:
         //如果没有空间可以分配
         if (lru_hash_head_->sz_freenode_ == 0)
         {
-            return SHM_CNTR_INVALID_POINT;
+            return SHMC_INVALID_POINT;
         }
 
         //从链上取1个下来
@@ -443,7 +443,7 @@ protected:
         lru_hash_head_->sz_usenode_--;
         lru_hash_head_->sz_freenode_++;
 
-        hash_index_base_[pos] = SHM_CNTR_INVALID_POINT;
+        hash_index_base_[pos] = SHMC_INVALID_POINT;
 
         //调用显式的析构函数
         (value_base_ + pos)->~T();
@@ -474,7 +474,7 @@ public:
     {
         for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
         {
-            if (*(hash_factor_base_ + i) != SHM_CNTR_INVALID_POINT)
+            if (*(hash_factor_base_ + i) != SHMC_INVALID_POINT)
             {
                 return iterator(*(hash_factor_base_ + i), this);
             }
@@ -486,7 +486,7 @@ public:
     //得到结束位置
     iterator end()
     {
-        return iterator(SHM_CNTR_INVALID_POINT, this);
+        return iterator(SHMC_INVALID_POINT, this);
     }
     //当前使用的节点数量
     size_t size() const
@@ -528,7 +528,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key函数
             if (equal_key((get_key(value_base_[first])), (get_key(val))) == true)
@@ -543,9 +543,9 @@ public:
         size_t newnode = create_node(val, priority);
 
         //空间不足,
-        if (newnode == SHM_CNTR_INVALID_POINT)
+        if (newnode == SHMC_INVALID_POINT)
         {
-            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(iterator(SHMC_INVALID_POINT, this), false);
         }
 
         //放入链表中
@@ -567,7 +567,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key函数
             if (equal_key((get_key(value_base_[first])), (get_key(val))) == true)
@@ -582,13 +582,13 @@ public:
         size_t newnode = create_node(val, priority);
 
         //空间不足,
-        if (newnode == SHM_CNTR_INVALID_POINT)
+        if (newnode == SHMC_INVALID_POINT)
         {
-            return std::pair<iterator, bool>(iterator(SHM_CNTR_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(iterator(SHMC_INVALID_POINT, this), false);
         }
 
         //没有找到相同KEY的数据
-        if (first == SHM_CNTR_INVALID_POINT)
+        if (first == SHMC_INVALID_POINT)
         {
             //放入链表的首部就可以了
             hash_index_base_[newnode] = hash_factor_base_[idx];
@@ -614,7 +614,7 @@ public:
         _extract_key get_key;
         _equal_key   equal_key;
 
-        while (first != SHM_CNTR_INVALID_POINT && !equal_key(get_key(value_base_[first]), key))
+        while (first != SHMC_INVALID_POINT && !equal_key(get_key(value_base_[first]), key))
         {
             first = hash_index_base_[first];
         }
@@ -642,7 +642,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -680,7 +680,7 @@ public:
         _equal_key   equal_key;
 
         //
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -721,7 +721,7 @@ public:
         size_t itseq = it.getserial();
 
         //
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             if (first == itseq)
             {
@@ -773,7 +773,7 @@ public:
         _equal_key   equal_key;
 
         //循环查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -826,7 +826,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -874,7 +874,7 @@ public:
         //使用量函数对象,一个类单独定义一个是否更好?
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -915,7 +915,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1025,7 +1025,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1054,7 +1054,7 @@ public:
         size_t first = hash_factor_base_[idx];
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)
@@ -1082,7 +1082,7 @@ public:
         _equal_key   equal_key;
 
         //在列表中间查询
-        while (first != SHM_CNTR_INVALID_POINT)
+        while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key
             if (equal_key(get_key(value_base_[first]), key) == true)

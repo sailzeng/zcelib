@@ -29,116 +29,45 @@
 
 #include "zce/shm_container/common.h"
 
-namespace zce::shmc
+namespace zce
 {
-template<class T, class K, class _extract_key, class _compare_key> class avl_tree;
-
-///AVL TREE的头部数据区
-class _avl_tree_head
-{
-protected:
-    _avl_tree_head()
-        : size_of_mmap_(0)
-        , num_of_node_(0)
-        , sz_free_node_(0)
-        , sz_use_node_(0)
-    {
-    }
-    ~_avl_tree_head()
-    {
-    }
-
-public:
-    //内存区的长度
-    size_t               size_of_mmap_;
-    //NODE结点个数
-    size_t               num_of_node_;
-    //FREE的NODE个数
-    size_t               sz_free_node_;
-    //USE的NODE个数
-    size_t               sz_use_node_;
-};
-
-//AVL tree的索引的节点
-class _avl_tree_index
-{
-public:
-    _avl_tree_index()
-        : parent_(zce::SHM_CNTR_INVALID_POINT)
-        , left_(zce::SHM_CNTR_INVALID_POINT)
-        , right_(zce::SHM_CNTR_INVALID_POINT)
-        , balanced_(0)
-    {
-    }
-
-    _avl_tree_index(const size_t& p, const size_t& l, const size_t& r, int8_t hb)
-        : parent_(p)
-        , left_(l)
-        , right_(r)
-        , balanced_(hb)
-    {
-    }
-
-    ~_avl_tree_index()
-    {
-    }
-
-public:
-    ///父节点
-    size_t       parent_;
-    ///左子树
-    size_t       left_;
-    ///右子树
-    size_t       right_;
-    ///平衡
-    int32_t      balanced_;
-};
+template<class T, class Key, class Extract, class Compare> class shm_avltree;
 
 //AVL tree的迭代器
 template < class T,
-    class K,
-    class _extract_key,
-    class _compare_key >
+    class Key,
+    class Extract,
+    class Compare >
 class _avl_tree_iterator
 {
-    typedef _avl_tree_iterator<T, K, _extract_key, _compare_key> iterator;
+    typedef _avl_tree_iterator<T, Key, Extract, Compare> iterator;
 
-    typedef avl_tree<T, K, _extract_key, _compare_key> shm_avl_tree_t;
+    typedef shm_avltree<T, Key, Extract, Compare> avl_tree_t;
 
     //迭代器萃取器所有的东东
-    typedef ptrdiff_t difference_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef T value_type;
+    typedef shmc_size_type size_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
     //构造函数
-    _avl_tree_iterator(size_t seq, shm_avl_tree_t* instance)
+    _avl_tree_iterator(size_type seq, avl_tree_t* instance)
         : serial_(seq)
         , avl_tree_inst_(instance)
     {
     }
 
-    _avl_tree_iterator()
-        : serial_(zce::SHM_CNTR_INVALID_POINT),
-        avl_tree_inst_(nullptr)
-    {
-    }
-
-    ~_avl_tree_iterator()
-    {
-    }
+    _avl_tree_iterator() = default;
+    ~_avl_tree_iterator() = default;
 
     //初始化
-    void initialize(size_t seq, shm_avl_tree_t* instance)
+    void initialize(size_type seq, avl_tree_t* instance)
     {
         serial_ = seq;
         avl_tree_inst_ = instance;
     }
 
     //保留序号就可以再根据模版实例化对象找到相应数据,不用使用指针
-    size_t getserial() const
+    size_type getserial() const
     {
         return serial_;
     }
@@ -190,12 +119,12 @@ public:
     ///用于实现operator++，找下一个比自己大(比较函数而言)的节点
     void increment()
     {
-        if ((avl_tree_inst_->index_base_ + serial_)->right_ != zce::SHM_CNTR_INVALID_POINT)
+        if ((avl_tree_inst_->index_base_ + serial_)->right_ != zce::SHMC_INVALID_POINT)
         {
             //如果有右子节点，就向右走，然后一直沿左子树走到底即可
             serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
 
-            while ((avl_tree_inst_->index_base_ + serial_)->left_ != zce::SHM_CNTR_INVALID_POINT)
+            while ((avl_tree_inst_->index_base_ + serial_)->left_ != zce::SHMC_INVALID_POINT)
             {
                 serial_ = (avl_tree_inst_->index_base_ + serial_)->left_;
             }
@@ -203,7 +132,7 @@ public:
         else
         {
             //如果没有右子节点，找到父节点，如果当前节点是某个右子节点，就一直上溯到不为右子节点为止
-            size_t y = (avl_tree_inst_->index_base_ + serial_)->parent_;
+            size_type y = (avl_tree_inst_->index_base_ + serial_)->parent_;
 
             while (serial_ == (avl_tree_inst_->index_base_ + y)->right_)
             {
@@ -228,12 +157,12 @@ public:
             serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
         }
         //如果有左子节点
-        else if ((avl_tree_inst_->index_base_ + serial_)->left_ != zce::SHM_CNTR_INVALID_POINT)
+        else if ((avl_tree_inst_->index_base_ + serial_)->left_ != zce::SHMC_INVALID_POINT)
         {
             //令y指向左子节点，找到y的右子节点，向右走到底即是
-            size_t y = (avl_tree_inst_->index_base_ + serial_)->left_;
+            size_type y = (avl_tree_inst_->index_base_ + serial_)->left_;
 
-            while ((avl_tree_inst_->index_base_ + y)->right_ != zce::SHM_CNTR_INVALID_POINT)
+            while ((avl_tree_inst_->index_base_ + y)->right_ != zce::SHMC_INVALID_POINT)
             {
                 y = (avl_tree_inst_->index_base_ + y)->right_;
             }
@@ -243,7 +172,7 @@ public:
         else
         {
             //找出父节点，如果当前节点是个左子节点，就一直上溯，直到不再为左子节点，则其的父节点即是
-            size_t y = (avl_tree_inst_->index_base_ + serial_)->parent_;
+            size_type y = (avl_tree_inst_->index_base_ + serial_)->parent_;
 
             while (serial_ == (avl_tree_inst_->index_base_ + y)->left_)
             {
@@ -256,54 +185,94 @@ public:
     }
 
 protected:
-    //序列号
-    size_t          serial_;
-    //RBtree的实例指针
-    shm_avl_tree_t* avl_tree_inst_;
+    //!序列号
+    size_type      serial_ = SHMC_INVALID_POINT;
+    //!RBtree的实例指针
+    avl_tree_t* avl_tree_inst_ = nullptr;
 };
 
 /*!
 * @brief      AVL Tree的容器，用于排序的处理等，
 *             AVL的各方面的处理性能都较为一般，比如插入，删除的耗时都是 O(LOG2N)
 *             的级别
-* @tparam     _value_type   数据类型
-* @tparam     _key_type     KEY的类型
-* @tparam     _extract_key  如果从_value_type中获取_key_type的方法
-* @tparam     _compare_key  比较方法
+* @tparam     T   数据类型
+* @tparam     Key   KEY的类型
+* @tparam     Extract  如果从T中获取Key的方法
+* @tparam     Compare  比较方法
 */
 template < class T,
-    class K,
-    class _extract_key = smem_identity<T>,
-    class _compare_key = std::less<K> >
-class avl_tree
+    class Key,
+    class Extract = smem_identity<T>,
+    class Compare = std::less<Key> >
+class shm_avltree
 {
-private:
+protected:
     //定义自己
-    typedef avl_tree < T,
-        K,
-        _extract_key,
-        _compare_key > self;
+    typedef shm_avltree < T, Key, Extract, Compare > self;
 public:
-    //定义迭代器
-    typedef _avl_tree_iterator < T,
-        K,
-        _extract_key,
-        _compare_key > iterator;
+    typedef T value_type;
+    typedef Key key_type;
+    typedef _avl_tree_iterator < T, Key, Extract, Compare > iterator;
+    typedef const _avl_tree_iterator<T, Key, Extract, Compare> const_iterator;
+    typedef shmc_size_type size_type;
 
     //迭代器友元
-    friend class _avl_tree_iterator<T, K, _extract_key, _compare_key>;
+    friend class _avl_tree_iterator<T, Key, Extract, Compare>;
 
 protected:
+    ///AVL TREE的头部数据区
+    class _avl_tree_head
+    {
+    protected:
+        _avl_tree_head() = default;
+        ~_avl_tree_head() = default;
 
-    avl_tree() = default;
+    public:
+        //内存区的长度
+        std::size_t             size_of_mmap_ = 0;
+        //NODE结点个数
+        size_type               num_of_node_ = 0;
+        //FREE的NODE个数
+        size_type               sz_free_node_ = 0;
+        //USE的NODE个数
+        size_type               sz_use_node_ = 0;
+    };
+
+    //AVL tree的索引的节点
+    class _avl_tree_index
+    {
+    public:
+        _avl_tree_index() = default;
+        ~_avl_tree_index() = default;
+        _avl_tree_index(const size_type& p, const size_type& l, const size_type& r, int8_t hb)
+            : parent_(p)
+            , left_(l)
+            , right_(r)
+            , balanced_(hb)
+        {
+        }
+
+    public:
+        ///父节点
+        size_type    parent_ = SHMC_INVALID_POINT;
+        ///左子树
+        size_type    left_ = SHMC_INVALID_POINT;
+        ///右子树
+        size_type    right_ = SHMC_INVALID_POINT;
+        ///平衡
+        int32_t      balanced_ = 0;
+    };
+protected:
+
+    shm_avltree() = default;
 
     //只定义,不实现,避免犯错
-    avl_tree(const avl_tree&) = delete;
+    shm_avltree(const shm_avltree&) = delete;
     const self& operator=(const self& others) = delete;
 
 public:
 
-    ~avl_tree() = default;
+    ~shm_avltree() = default;
 
     //得到索引的基础地址
     inline _avl_tree_index* getindexbase()
@@ -320,24 +289,24 @@ public:
 protected:
     //分配一个NODE,将其从FREELIST中取出
     template<typename U>
-    size_t create_node(U&& val)
+    size_type create_node(U&& val)
     {
         //如果没有空间可以分配
         if (avl_tree_head_->sz_free_node_ == 0)
         {
-            return SHM_CNTR_INVALID_POINT;
+            return SHMC_INVALID_POINT;
         }
 
         //从链上取1个下来
-        size_t new_node = free_index_->right_;
+        size_type new_node = free_index_->right_;
         free_index_->right_ = (index_base_ + new_node)->right_;
         avl_tree_head_->sz_free_node_--;
         avl_tree_head_->sz_use_node_++;
 
         //初始化
-        (index_base_ + new_node)->parent_ = SHM_CNTR_INVALID_POINT;
-        (index_base_ + new_node)->left_ = SHM_CNTR_INVALID_POINT;
-        (index_base_ + new_node)->right_ = SHM_CNTR_INVALID_POINT;
+        (index_base_ + new_node)->parent_ = SHMC_INVALID_POINT;
+        (index_base_ + new_node)->left_ = SHMC_INVALID_POINT;
+        (index_base_ + new_node)->right_ = SHMC_INVALID_POINT;
         (index_base_ + new_node)->balanced_ = 0;
 
         new (data_base_ + new_node)T(std::forward<U>(val));
@@ -346,15 +315,15 @@ protected:
     }
 
     //释放一个NODE,将其归还给FREELIST
-    void destroy_node(size_t pos)
+    void destroy_node(size_type pos)
     {
-        size_t freenext = free_index_->right_;
+        size_type freenext = free_index_->right_;
 
         (index_base_ + pos)->right_ = freenext;
         free_index_->right_ = pos;
 
-        (index_base_ + pos)->left_ = SHM_CNTR_INVALID_POINT;
-        (index_base_ + pos)->parent_ = SHM_CNTR_INVALID_POINT;
+        (index_base_ + pos)->left_ = SHMC_INVALID_POINT;
+        (index_base_ + pos)->parent_ = SHMC_INVALID_POINT;
         (index_base_ + pos)->balanced_ = 0;
 
         avl_tree_head_->sz_free_node_++;
@@ -367,15 +336,17 @@ protected:
 public:
 
     //内存区的构成为 头部定义区,index区,data区,返回所需要的长度,
-    static size_t getallocsize(const size_t numnode)
+    static std::size_t alloc_size(const size_type numnode)
     {
-        return  sizeof(_avl_tree_head)
+        return  std::size_t(sizeof(_avl_tree_head))
             + sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
             + sizeof(T) * numnode;
     }
 
     //初始化
-    static self* initialize(const size_t numnode, char* pmmap, bool if_restore = false)
+    static self* initialize(const size_type numnode,
+                            char* pmmap,
+                            bool if_restore = false)
     {
         //assert(pmmap!=nullptr && numnode >0 );
         _avl_tree_head* avl_tree_head = reinterpret_cast<_avl_tree_head*>(pmmap);
@@ -384,7 +355,7 @@ public:
         if (true == if_restore)
         {
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != avl_tree_head->size_of_mmap_ ||
+            if (alloc_size(numnode) != avl_tree_head->size_of_mmap_ ||
                 numnode != avl_tree_head->num_of_node_)
             {
                 return nullptr;
@@ -392,7 +363,7 @@ public:
         }
 
         //初始化尺寸
-        avl_tree_head->size_of_mmap_ = getallocsize(numnode);
+        avl_tree_head->size_of_mmap_ = alloc_size(numnode);
         avl_tree_head->num_of_node_ = numnode;
 
         self* instance = new self();
@@ -438,14 +409,14 @@ public:
         avl_tree_head_->sz_use_node_ = 0;
 
         //将清理为nullptr,让指针都指向自己
-        head_index_->parent_ = SHM_CNTR_INVALID_POINT;
+        head_index_->parent_ = SHMC_INVALID_POINT;
         head_index_->right_ = avl_tree_head_->num_of_node_;
         head_index_->left_ = avl_tree_head_->num_of_node_;
         head_index_->balanced_ = 0;
 
         //
-        free_index_->left_ = SHM_CNTR_INVALID_POINT;
-        free_index_->parent_ = SHM_CNTR_INVALID_POINT;
+        free_index_->left_ = SHMC_INVALID_POINT;
+        free_index_->parent_ = SHMC_INVALID_POINT;
         free_index_->balanced_ = 0;
 
         //用right_串起来FREE NODE的列表
@@ -453,7 +424,7 @@ public:
 
         //初始化free数据区
         _avl_tree_index* pindex = index_base_;
-        for (size_t i = 0; i < avl_tree_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < avl_tree_head_->num_of_node_; ++i)
         {
             pindex->right_ = (i + 1);
 
@@ -501,18 +472,18 @@ public:
         return false;
     };
 
-    size_t size() const
+    size_type size() const
     {
         return avl_tree_head_->sz_use_node_;
     }
 
-    size_t capacity() const
+    size_type capacity() const
     {
         return avl_tree_head_->num_of_node_;
     }
 
     //空闲的节点个数
-    size_t free()
+    size_type free()
     {
         return avl_tree_head_->sz_free_node_;
     }
@@ -522,60 +493,60 @@ public:
     //本来打算把这段代码全部宏定义的，但考虑了一下，觉得还是inline就足够了。
     //宏毕竟会让代码变得丑陋，算了。而且这些函数的长度应该是可以被inline的。
 
-    inline size_t& header() const
+    inline size_type& header() const
     {
         return avl_tree_head_->num_of_node_;
     }
 
-    inline size_t& root() const
+    inline size_type& root() const
     {
         return head_index_->parent_;
     }
 
-    inline size_t& leftmost() const
+    inline size_type& leftmost() const
     {
         return head_index_->left_;
     }
 
-    inline size_t& rightmost() const
+    inline size_type& rightmost() const
     {
         return head_index_->right_;
     }
 
-    inline size_t& left(size_t x)
+    inline size_type& left(size_type x)
     {
         return (index_base_ + x)->left_;
     }
 
-    inline size_t& right(size_t x)
+    inline size_type& right(size_type x)
     {
         return (index_base_ + x)->right_;
     }
 
-    inline size_t& parent(size_t x)
+    inline size_type& parent(size_type x)
     {
         return (index_base_ + x)->parent_;
     }
 
-    inline int32_t& balanced(size_t x)
+    inline int32_t& balanced(size_type x)
     {
         return (index_base_ + x)->balanced_;
     }
 
-    inline const T& value(size_t x)
+    inline const T& value(size_type x)
     {
         return *(data_base_ + x);
     }
 
-    inline const K& key(size_t x)
+    inline const Key& key(size_type x)
     {
-        return _extract_key()(value(x));
+        return Extract()(value(x));
     }
 
     //取极大值
-    size_t minimum(size_t x)
+    size_type minimum(size_type x)
     {
-        while (left(x) != SHM_CNTR_INVALID_POINT)
+        while (left(x) != SHMC_INVALID_POINT)
         {
             x = left(x);
         }
@@ -584,13 +555,12 @@ public:
     }
 
     //取极小值
-    size_t maximum(size_t x)
+    size_type maximum(size_type x)
     {
-        while (right(x) != SHM_CNTR_INVALID_POINT)
+        while (right(x) != SHMC_INVALID_POINT)
         {
             x = right(x);
         }
-
         return x;
     }
 
@@ -599,17 +569,17 @@ protected:
     /*!
     * @brief      真正的插入是由这个函数完成的
     * @return     std::pair<iterator, bool> 返回的插入结构，包括迭代器和结果
-    * @param      x   插入点,大部分时候为SHM_CNTR_INVALID_POINT
+    * @param      x   插入点,大部分时候为SHMC_INVALID_POINT
     * @param      y   插入点的父节点
     * @param      val 插入的数据
     */
     template<typename U>
-    std::pair<iterator, bool> _insert(size_t x, size_t y, U&& val)
+    std::pair<iterator, bool> _insert(size_type x, size_type y, U&& val)
     {
         //分配一个空间
-        size_t z = create_node(std::forward<U>(val));
+        size_type z = create_node(std::forward<U>(val));
         //日过空间不足，无法插入，返回end,false的pair
-        if (SHM_CNTR_INVALID_POINT == z)
+        if (SHMC_INVALID_POINT == z)
         {
             return std::pair<iterator, bool>(end(), false);
         }
@@ -617,7 +587,7 @@ protected:
         //把此二货插入进去，而且调整各种东东
 
         //如果1.插入的是root节点，2.如果插入节点不是空节点，3.如果比较为TRUE
-        if (y == header() || x != SHM_CNTR_INVALID_POINT || _compare_key()(_extract_key()(val), key(y)))
+        if (y == header() || x != SHMC_INVALID_POINT || Compare()(Extract()(val), key(y)))
         {
             left(y) = z;
 
@@ -643,8 +613,8 @@ protected:
         }
 
         parent(z) = y;
-        left(z) = SHM_CNTR_INVALID_POINT;
-        right(z) = SHM_CNTR_INVALID_POINT;
+        left(z) = SHMC_INVALID_POINT;
+        right(z) = SHMC_INVALID_POINT;
 
         //如果不是根节点，我们进行平衡调整
         if (y != header())
@@ -660,14 +630,14 @@ protected:
     * @param[in]  z 插入的节点位置
     * @param[in]  if_inssert 是否是插入操作进行调整，如果是删除操作，填写false
     */
-    void _balance_adjust(size_t z, bool if_inssert)
+    void _balance_adjust(size_type z, bool if_inssert)
     {
         //其实这个地方直接使用常量还更加清晰一点,所以我没有用枚举或者宏
 
         //找到最小的不平衡的点,
 
-        size_t s = parent(z);
-        size_t t = z, u = 0;
+        size_type s = parent(z);
+        size_type t = z, u = 0;
         int32_t mod_balance = 0;
         for (; s != header(); t = s, s = parent(s))
         {
@@ -707,7 +677,7 @@ protected:
                     int32_t u_b = balanced(u);
                     if (-1 == u_b)
                     {
-                        size_t u_r = right(u);
+                        size_type u_r = right(u);
                         _lr_rotate(s, u, right(u));
                         s = u_r;
                     }
@@ -729,7 +699,7 @@ protected:
                     int32_t u_b = balanced(u);
                     if (1 == u_b)
                     {
-                        size_t u_l = left(u);
+                        size_type u_l = left(u);
                         _rl_rotate(s, u, left(u));
                         s = u_l;
                     }
@@ -765,13 +735,13 @@ protected:
     * @param      a   父节点，最小的不平衡树的根节点
     * @param      b  左边的子节点
     */
-    void _ll_rotate(size_t a, size_t b)
+    void _ll_rotate(size_type a, size_type b)
     {
-        size_t gf = parent(a);
-        size_t b_r = right(b);
+        size_type gf = parent(a);
+        size_type b_r = right(b);
         parent(a) = b;
         left(a) = b_r;
-        if (SHM_CNTR_INVALID_POINT != b_r)
+        if (SHMC_INVALID_POINT != b_r)
         {
             parent(b_r) = a;
         }
@@ -815,19 +785,19 @@ protected:
     * @param      b   a的左子节点
     * @param      c   b的右子节点
     */
-    void _lr_rotate(size_t a, size_t b, size_t c)
+    void _lr_rotate(size_type a, size_type b, size_type c)
     {
-        size_t gf = parent(a);
-        size_t c_l = left(c), c_r = right(c);
+        size_type gf = parent(a);
+        size_type c_l = left(c), c_r = right(c);
         parent(a) = c;
         left(a) = c_r;
-        if (SHM_CNTR_INVALID_POINT != c_r)
+        if (SHMC_INVALID_POINT != c_r)
         {
             parent(c_r) = a;
         }
         parent(b) = c;
         right(b) = c_l;
-        if (SHM_CNTR_INVALID_POINT != c_l)
+        if (SHMC_INVALID_POINT != c_l)
         {
             parent(c_l) = b;
         }
@@ -878,13 +848,13 @@ protected:
     * @param      a  父节点，最小的不平衡树的根节点
     * @param      b  右边的子节点
     */
-    void _rr_rotate(size_t a, size_t b)
+    void _rr_rotate(size_type a, size_type b)
     {
-        size_t gf = parent(a);
-        size_t b_l = left(b);
+        size_type gf = parent(a);
+        size_type b_l = left(b);
         parent(a) = b;
         right(a) = b_l;
-        if (SHM_CNTR_INVALID_POINT != b_l)
+        if (SHMC_INVALID_POINT != b_l)
         {
             parent(b_l) = a;
         }
@@ -922,19 +892,19 @@ protected:
         }
     }
 
-    void _rl_rotate(size_t a, size_t b, size_t c)
+    void _rl_rotate(size_type a, size_type b, size_type c)
     {
-        size_t gf = parent(a);
-        size_t c_l = left(c), c_r = right(c);
+        size_type gf = parent(a);
+        size_type c_l = left(c), c_r = right(c);
         parent(a) = c;
         right(a) = c_l;
-        if (SHM_CNTR_INVALID_POINT != c_l)
+        if (SHMC_INVALID_POINT != c_l)
         {
             parent(c_l) = a;
         }
         parent(b) = c;
         left(b) = c_r;
-        if (SHM_CNTR_INVALID_POINT != c_r)
+        if (SHMC_INVALID_POINT != c_r)
         {
             parent(c_r) = b;
         }
@@ -985,7 +955,7 @@ protected:
     * @param      x 为删除的位置
     * @param      y 为X的父节点
     */
-    void _erase(size_t x, size_t y)
+    void _erase(size_type x, size_type y)
     {
         //对leftmost，rightmost进行处理，
         if (x == leftmost())
@@ -1008,15 +978,15 @@ protected:
             }
         }
 
-        size_t a = x, a_p = y, a_l = left(a), a_r = right(a), b = 0, b_p = 0;
+        size_type a = x, a_p = y, a_l = left(a), a_r = right(a), b = 0, b_p = 0;
         //要把A向下交换，选择和他最接近的节点B替换他，比如左子树的一直向右边的节点，
         //比如右子树的一直向左边的节点，直到A是叶子节点
-        while (a_l != SHM_CNTR_INVALID_POINT || a_r != SHM_CNTR_INVALID_POINT)
+        while (a_l != SHMC_INVALID_POINT || a_r != SHMC_INVALID_POINT)
         {
-            if (a_l != SHM_CNTR_INVALID_POINT)
+            if (a_l != SHMC_INVALID_POINT)
             {
                 b = a_l;
-                while (SHM_CNTR_INVALID_POINT != right(b))
+                while (SHMC_INVALID_POINT != right(b))
                 {
                     b = right(b);
                 }
@@ -1024,7 +994,7 @@ protected:
             else
             {
                 b = a_r;
-                while (SHM_CNTR_INVALID_POINT != left(b))
+                while (SHMC_INVALID_POINT != left(b))
                 {
                     b = left(b);
                 }
@@ -1041,21 +1011,21 @@ protected:
         //做平衡调整
         _balance_adjust(a, false);
 
-        size_t last_p = parent(x);
+        size_type last_p = parent(x);
         if (last_p != header())
         {
             if (left(last_p) == a)
             {
-                left(last_p) = SHM_CNTR_INVALID_POINT;
+                left(last_p) = SHMC_INVALID_POINT;
             }
             else
             {
-                right(last_p) = SHM_CNTR_INVALID_POINT;
+                right(last_p) = SHMC_INVALID_POINT;
             }
         }
         else
         {
-            root() = SHM_CNTR_INVALID_POINT;
+            root() = SHMC_INVALID_POINT;
         }
         //
         destroy_node(x);
@@ -1070,14 +1040,14 @@ protected:
     * @param      b   b节点，
     * @param      b_p b他妈
     */
-    void _exchange(size_t a, size_t a_p, size_t b, size_t b_p)
+    void _exchange(size_type a, size_type a_p, size_type b, size_type b_p)
     {
-        size_t a_l = left(a);
-        size_t a_r = right(a);
+        size_type a_l = left(a);
+        size_type a_r = right(a);
         uint32_t a_b = balanced(a);
 
-        size_t b_l = left(b);
-        size_t b_r = right(b);
+        size_type b_l = left(b);
+        size_type b_r = right(b);
         uint32_t b_b = balanced(b);
 
         if (a_p != header())
@@ -1122,7 +1092,7 @@ protected:
         right(a) = b_r;
         balanced(a) = b_b;
 
-        if (a_l != SHM_CNTR_INVALID_POINT)
+        if (a_l != SHMC_INVALID_POINT)
         {
             if (a_l != b)
             {
@@ -1133,7 +1103,7 @@ protected:
                 parent(a) = b;
             }
         }
-        if (a_r != SHM_CNTR_INVALID_POINT)
+        if (a_r != SHMC_INVALID_POINT)
         {
             if (a_r != b)
             {
@@ -1144,11 +1114,11 @@ protected:
                 parent(a) = b;
             }
         }
-        if (b_l != SHM_CNTR_INVALID_POINT)
+        if (b_l != SHMC_INVALID_POINT)
         {
             parent(b_l) = a;
         }
-        if (b_r != SHM_CNTR_INVALID_POINT)
+        if (b_r != SHMC_INVALID_POINT)
         {
             parent(b_r) = a;
         }
@@ -1181,14 +1151,14 @@ protected:
             return std::pair<iterator, bool>(end(), false);
         }
 
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
         //插入到一个空节点上
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             y = x;
-            x = _compare_key()(_extract_key()(std::forward<U>(v)), key(x)) ? left(x) : right(x);
+            x = Compare()(Extract()(std::forward<U>(v)), key(x)) ? left(x) : right(x);
         }
 
         return _insert(x, y, std::forward<U>(v));
@@ -1218,15 +1188,15 @@ protected:
             return std::pair<iterator, bool>(end(), false);
         }
 
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
         bool comp = true;
 
         //如果比较(比如是<)返回true,就向左，否则(>=)就向右，
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             y = x;
-            comp = _compare_key()(_extract_key()(std::forward<U>(v)), key(x));
+            comp = Compare()(Extract()(std::forward<U>(v)), key(x));
             x = comp ? left(x) : right(x);
         }
 
@@ -1243,7 +1213,7 @@ protected:
             }
         }
 
-        if (_compare_key()(key(j.getserial()), _extract_key()(v)))
+        if (Compare()(key(j.getserial()), Extract()(v)))
         {
             return _insert(x, y, v);
         }
@@ -1260,15 +1230,15 @@ public:
     void erase(const iterator& pos)
     {
         //x,为删除的位置，y为X的父节点，z用于为替换x的节点
-        size_t x = pos.getserial();
-        size_t y = parent(x);
+        size_type x = pos.getserial();
+        size_type y = parent(x);
         return _erase(x, y);
     }
 
     //通过起始迭代器删除一段节点
-    size_t erase(iterator first, iterator last)
+    size_type erase(iterator first, iterator last)
     {
-        size_t erase_count = 0;
+        size_type erase_count = 0;
 
         //特殊情况的加速
         if (first == begin() && last == end())
@@ -1290,7 +1260,7 @@ public:
     }
 
     //通过key删除节点，MAP使用
-    size_t erase_unique(const K& k)
+    size_type erase_unique(const Key& k)
     {
         //先尝试找到节点
         iterator find_iter = find(k);
@@ -1303,14 +1273,14 @@ public:
     }
 
     //通过value删除节点，SET使用
-    size_t erase_unique_value(const T& v)
+    size_type erase_unique_value(const T& v)
     {
-        _extract_key get_key;
+        Extract get_key;
         return erase_unique(get_key(v));
     }
 
     //通过key删除节点，MULTIMAP用
-    size_t erase_equal(const K& k)
+    size_type erase_equal(const Key& k)
     {
         iterator it_l = lower_bound(k);
         iterator it_u = upper_bound(k);
@@ -1318,22 +1288,22 @@ public:
     }
 
     //通过值删除节点，MULTISET用
-    size_t erase_equal_value(const T& v)
+    size_type erase_equal_value(const T& v)
     {
-        _extract_key get_key;
+        Extract get_key;
         return erase_equal(get_key(v));
     }
 
     //找到第一个key值相同的节点
-    iterator lower_bound(const K& k)
+    iterator lower_bound(const Key& k)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             //上下两个函数就这行代码不一样，注意先后比较
-            if (!_compare_key()(key(x), k))
+            if (!Compare()(key(x), k))
             {
                 y = x;
                 x = left(x);
@@ -1348,15 +1318,15 @@ public:
     }
 
     //找到最后一个key值相同的节点
-    iterator upper_bound(const K& k)
+    iterator upper_bound(const Key& k)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             //上下两个函数就这行代码不一样，注意先后比较关系
-            if (_compare_key()(k, key(x)))
+            if (Compare()(k, key(x)))
             {
                 y = x;
                 x = left(x);
@@ -1371,14 +1341,14 @@ public:
     }
 
     //找key相同的节点
-    iterator find(const K& k)
+    iterator find(const Key& k)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
-            if (!_compare_key()(key(x), k))
+            if (!Compare()(key(x), k))
             {
                 y = x;
                 x = left(x);
@@ -1390,14 +1360,14 @@ public:
         }
 
         iterator j = iterator(y, this);
-        //注意两次调用_compare_key的比较参数顺序喔
-        return (j == end() || _compare_key()(k, key(j.getserial()))) ? end() : j;
+        //注意两次调用Compare的比较参数顺序喔
+        return (j == end() || Compare()(k, key(j.getserial()))) ? end() : j;
     }
 
     //找value相同的节点
     iterator find_value(const T& v)
     {
-        _extract_key get_key;
+        Extract get_key;
         return find(get_key(v));
     }
 
@@ -1416,7 +1386,8 @@ public:
     }
 
     //调试代码，如果_value_type是整数 的时候生效，否则无效
-    void debug_note(size_t x, typename std::enable_if<std::is_integral<T>::value >::type* /*ptr*/ = 0)
+    void debug_note(size_type x,
+                    typename std::enable_if<std::is_integral<T>::value >::type* /*ptr*/ = 0)
     {
         std::cout << "Note :" << std::setw(6) << x
             << " Data:" << std::setw(8) << data_base_[x]
@@ -1428,11 +1399,11 @@ public:
     }
 
     //检查树形结构是否平衡
-    bool check_balanced(size_t x)
+    bool check_balanced(size_type x)
     {
         int32_t x_b = balanced(x);
-        size_t x_lh = height(left(x));
-        size_t x_rh = height(right(x));
+        size_type x_lh = height(left(x));
+        size_type x_rh = height(right(x));
         if (x_b != (int32_t)(x_lh - x_rh))
         {
             return false;
@@ -1441,13 +1412,13 @@ public:
     }
 
     //得到某个节点的高度
-    size_t height(size_t x)
+    size_type height(size_type x)
     {
-        if (x == SHM_CNTR_INVALID_POINT)
+        if (x == SHMC_INVALID_POINT)
         {
             return 0;
         }
-        size_t l_h = 0, r_h = 0;
+        size_type l_h = 0, r_h = 0;
         l_h = height(left(x)) + 1;
         r_h = height(right(x)) + 1;
 
@@ -1456,7 +1427,7 @@ public:
 
 protected:
     //index区要增加两个数据,一个是头指针，一个是空节点的头指针
-    static const size_t ADDED_NUM_OF_INDEX = 2;
+    static const size_type ADDED_NUM_OF_INDEX = 2;
 
 protected:
     //内存基础地址
@@ -1481,67 +1452,66 @@ protected:
 
 //用AVL Tree实现SET，不区分multiset和set，通过不通的insert自己区分
 template < class T,
-    class _compare_key = std::less<T> >
-class mmap_avl_set :
-    public avl_tree< T, T, smem_identity<T>, _compare_key >
+    class Compare = std::less<T> >
+class avl_set :
+    public shm_avltree< T, T, smem_identity<T>, Compare >
 {
 protected:
 
-    mmap_avl_set() = default;
+    avl_set() = default;
 public:
-    ~mmap_avl_set() = default;
+    ~avl_set() = default;
 
 public:
 
-    static mmap_avl_set*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    static avl_set*
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_set< T, _compare_key  > *>(
-            avl_tree < T,
+        return reinterpret_cast<shm_set< T, Compare  > *>(
+            shm_avltree < T,
             T,
             smem_identity<T>,
-            _compare_key >::initialize(numnode, pmmap, if_restore));
+            Compare >::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用AVL Tree实现MAP，不区分multiset和set，通过不通的insert自己区分
-template < class K,
+template < class Key,
     class T,
-    class _extract_key = mmap_select1st <std::pair <K, T> >,
-    class _compare_key = std::less<T>  >
-class mmap_avl_map :
-    public avl_tree< std::pair <K, T>, K, _extract_key, _compare_key  >
+    class Extract = mmap_select1st <std::pair <Key, T> >,
+    class Compare = std::less<T>  >
+class avl_map :
+    public shm_avltree< std::pair <Key, T>, Key, Extract, Compare  >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    mmap_avl_map(size_t numnode, void* pmmap, bool if_restore) :
-        avl_tree< std::pair <K, T>, K, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
+    avl_map(size_type numnode, void* pmmap, bool if_restore) :
+        shm_avltree< std::pair <Key, T>, Key, Extract, Compare  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~mmap_avl_map()
-    {
-    }
+    ~avl_map() = default;
+
 public:
-    static mmap_avl_map*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    static avl_map*
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast <mmap_avl_map < K,
+        return reinterpret_cast <avl_map < Key,
             T,
-            _extract_key,
-            _compare_key  > *> (
-            avl_tree < std::pair < K,
+            Extract,
+            Compare  > *> (
+            shm_avltree < std::pair < Key,
             T >,
-            K,
-            _extract_key,
-            _compare_key >::initialize(numnode, pmmap, if_restore));
+            Key,
+            Extract,
+            Compare >::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
-    T& operator[](const K& key)
+    T& operator[](const Key& key)
     {
-        return (find_or_insert(std::pair<K, T >(key, T()))).second;
+        return (find_or_insert(std::pair<Key, T >(key, T()))).second;
     }
 };
-};
+} //namespace zce::shmc

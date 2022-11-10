@@ -79,7 +79,7 @@ public:
 
     ///构造函数
     _shm_list_iterator() :
-        serial_(zce::SHM_CNTR_INVALID_POINT),
+        serial_(zce::SHMC_INVALID_POINT),
         list_instance_(nullptr)
     {
     }
@@ -156,7 +156,7 @@ public:
 protected:
 
     //序列号，相对于数组下标
-    size_type                  serial_;
+    size_type    serial_;
     //对应的list对象指针
     shm_list<T>* list_instance_;
 };
@@ -187,6 +187,7 @@ private:
     typedef shm_list<T> self;
 public:
     typedef _shm_list_iterator<T> iterator;
+    typedef const _shm_list_iterator<T> const_iterator;
     typedef T value_type;
     typedef std::size_t size_type;
     typedef value_type& reference;
@@ -210,7 +211,7 @@ protected:
     public:
 
         ///内存区的长度
-        size_type        size_of_mmap_ = 0;
+        std::size_t      size_of_mmap_ = 0;
         ///NODE结点个数
         size_type        num_of_node_ = 0;
 
@@ -251,7 +252,7 @@ protected:
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
         {
-            return SHM_CNTR_INVALID_POINT;
+            return SHMC_INVALID_POINT;
         }
 
         //从链上取1个下来
@@ -300,9 +301,9 @@ protected:
                        U&& val)
     {
         size_type node = create_node(std::forward<U>(val));
-        if (node == SHM_CNTR_INVALID_POINT)
+        if (node == SHMC_INVALID_POINT)
         {
-            return SHM_CNTR_INVALID_POINT;
+            return SHMC_INVALID_POINT;
         }
 
         //将新结点挂接到队列中
@@ -324,7 +325,7 @@ protected:
                                  std::forward<U>(val));
 
         //插入失败
-        if (SHM_CNTR_INVALID_POINT == tmp)
+        if (SHMC_INVALID_POINT == tmp)
         {
             return std::pair<iterator, bool>(end(), false);
         }
@@ -351,7 +352,7 @@ protected:
 public:
 
     //内存区的构成为 定义区,index区,data区,返回所需要的长度,
-    static size_type getallocsize(const size_type numnode)
+    static std::size_t alloc_size(const size_type numnode)
     {
         return  sizeof(_shm_list_head) +
             sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(T) * numnode;
@@ -378,7 +379,7 @@ public:
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != listhead->size_of_mmap_ ||
+            if (alloc_size(numnode) != listhead->size_of_mmap_ ||
                 numnode != listhead->num_of_node_)
             {
                 return nullptr;
@@ -386,7 +387,7 @@ public:
         }
 
         //初始化尺寸
-        listhead->size_of_mmap_ = getallocsize(numnode);
+        listhead->size_of_mmap_ = alloc_size(numnode);
         listhead->num_of_node_ = numnode;
 
         self* instance = new self();

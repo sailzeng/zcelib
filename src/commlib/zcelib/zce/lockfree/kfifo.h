@@ -179,7 +179,7 @@ public:
     @return     size_t         实际所需的空间长度，会大于你的长度，
     @param      size_of_deque  你所必须的deque长度,你按这个大小申请内存
     */
-    static size_t getallocsize(const size_t size_of_deque)
+    static size_t alloc_size(const size_t size_of_deque)
     {
         return  sizeof(kfifo_head) + size_of_deque + JUDGE_FULL_INTERVAL;
     }
@@ -187,7 +187,7 @@ public:
     /*!
     * @brief      根据参数初始化
     * @return     shm_kfifo * 返回的初始化的指针，需要销毁，你用delete就可以，或者调用
-    * @param      size_of_deque    deque的长度，(就是 getallocsize 的参数，不是返回值呀)
+    * @param      size_of_deque    deque的长度，(就是 alloc_size 的参数，不是返回值呀)
     * @param      max_len_node     放入的note最大长度，我会帮你检查一下
     * @param      mmap_ptr         内存的指针，共享内存也可以，普通内存也可以
     * @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
@@ -211,7 +211,7 @@ public:
         if (if_restore == true)
         {
             //坚持关键数据是否一致
-            if (dequechunk_head->size_of_mmap_ != getallocsize(size_of_deque)
+            if (dequechunk_head->size_of_mmap_ != alloc_size(size_of_deque)
                 || dequechunk_head->size_of_cycle_ != size_of_deque + JUDGE_FULL_INTERVAL
                 || dequechunk_head->max_len_node_ != max_len_node)
             {
@@ -219,7 +219,7 @@ public:
             }
         }
 
-        dequechunk_head->size_of_mmap_ = getallocsize(size_of_deque);
+        dequechunk_head->size_of_mmap_ = alloc_size(size_of_deque);
         dequechunk_head->size_of_cycle_ = size_of_deque + JUDGE_FULL_INTERVAL;
         dequechunk_head->max_len_node_ = max_len_node;
 

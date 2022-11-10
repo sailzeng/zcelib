@@ -4,8 +4,8 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年10月21日
-* @brief      2014年，根据新的C++11的规范，重新简化了一个array，
-*             array是一开始就分配好空间的，数据尺寸是固定的
+* @brief      2014年，根据新的C++11的规范，重新简化了一个shm_array，
+*             shm_array是一开始就分配好空间的，数据尺寸是固定的
 *             不能push_back的。
 *
 * @details
@@ -37,19 +37,19 @@ public:
 
 protected:
     ///共享内存vector头部数据区
-    class _shm_array_head
+    class _array_head
     {
     protected:
 
         //头部构造函数
-        _shm_array_head() = default;
+        _array_head() = default;
         //析构函数
-        ~_shm_array_head() = default;
+        ~_array_head() = default;
 
     public:
 
         ///内存区的长度
-        size_type        size_of_mmap_ = 0;
+        std::size_t      size_of_mmap_ = 0;
         ///结点总数，
         size_type        num_of_node_ = 0;
     };
@@ -66,21 +66,23 @@ public:
 public:
 
     ///内存区的构成为 定义区,data区,返回所需要的长度,
-    static size_type getallocsize(const size_type numnode)
+    static std::size_t alloc_size(const size_type numnode)
     {
-        return  sizeof(_shm_array_head) + sizeof(T) * (numnode);
+        return  sizeof(_array_head) + sizeof(T) * (numnode);
     }
 
     ///初始化
-    static self* initialize(const size_type numnode, char* mem_addr, bool if_restore = false)
+    static self* initialize(const size_type numnode,
+                            char* mem_addr,
+                            bool if_restore = false)
     {
-        _shm_array_head* aryhead = reinterpret_cast<_shm_array_head*>(mem_addr);
+        _array_head* aryhead = reinterpret_cast<_array_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != aryhead->size_of_mmap_ ||
+            if (alloc_size(numnode) != aryhead->size_of_mmap_ ||
                 numnode != aryhead->num_of_node_)
             {
                 return nullptr;
@@ -88,7 +90,7 @@ public:
         }
 
         //初始化尺寸
-        aryhead->size_of_mmap_ = getallocsize(numnode);
+        aryhead->size_of_mmap_ = alloc_size(numnode);
         aryhead->num_of_node_ = numnode;
 
         shm_array<T>* instance = new shm_array<T>();
@@ -96,7 +98,7 @@ public:
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->mem_addr_ = mem_addr;
         instance->array_head_ = aryhead;
-        instance->data_base_ = reinterpret_cast<T*>(mem_addr + sizeof(_shm_array_head));
+        instance->data_base_ = reinterpret_cast<T*>(mem_addr + sizeof(_array_head));
 
         if (if_restore)
         {
@@ -185,7 +187,7 @@ protected:
     //内存基础地址
     char* mem_addr_ = nullptr;
     ///
-    _shm_array_head* array_head_ = nullptr;
+    _array_head* array_head_ = nullptr;
     ///数据区起始指针,
     T* data_base_ = nullptr;
 };

@@ -384,7 +384,6 @@
     <ClInclude Include="zce\shm_container\list.h" />
     <ClInclude Include="zce\shm_container\common.h" />
     <ClInclude Include="zce\shm_container\rbtree.h" />
-    <ClInclude Include="zce\shm_container\trie_tree.h" />
     <ClInclude Include="zce\socket\acceptor.h" />
     <ClInclude Include="zce\socket\addr_base.h" />
     <ClInclude Include="zce\socket\addr_in.h" />

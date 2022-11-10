@@ -4,9 +4,9 @@
 namespace zce
 {
 //得到初始化所需内存的大小
-std::size_t chunk_pool::getallocsize(const std::size_t numnode,
-                                     const std::size_t numchunk,
-                                     const std::size_t szchunk)
+std::size_t chunk_pool::alloc_size(const std::size_t numnode,
+                                   const std::size_t numchunk,
+                                   const std::size_t szchunk)
 {
     return  sizeof(_chunkpool_head)
         + numnode * sizeof(chunkpool_node_index)
@@ -27,7 +27,7 @@ int chunk_pool::initialize(std::size_t numnode,
     if (if_restore == true)
     {
         //检查所有的尺寸,如果有不对的地方返回nullptr,这样可以保证不出现错误
-        if (chunk_head->size_of_mmap_ != getallocsize(numnode, numchunk, szchunk) ||
+        if (chunk_head->size_of_mmap_ != alloc_size(numnode, numchunk, szchunk) ||
             chunk_head->num_of_node_ != numnode ||
             chunk_head->num_of_chunk_ != numchunk ||
             chunk_head->size_of_chunk_ != szchunk)
@@ -37,7 +37,7 @@ int chunk_pool::initialize(std::size_t numnode,
     }
 
     //得到空间大小
-    chunk_head->size_of_mmap_ = getallocsize(numnode, numchunk, szchunk);
+    chunk_head->size_of_mmap_ = alloc_size(numnode, numchunk, szchunk);
     chunk_head->num_of_node_ = numnode;
     chunk_head->num_of_chunk_ = numchunk;
     chunk_head->size_of_chunk_ = szchunk;
@@ -66,7 +66,7 @@ int chunk_pool::initialize(std::size_t numnode,
                            std::size_t numchunk,
                            std::size_t szchunk)
 {
-    std::size_t sz_pool = getallocsize(numnode, numchunk, szchunk);
+    std::size_t sz_pool = alloc_size(numnode, numchunk, szchunk);
     char *pool_area = new char[sz_pool];
     self_alloc_mem_ = true;
     return initialize(numnode, numchunk, szchunk, pool_area, false);

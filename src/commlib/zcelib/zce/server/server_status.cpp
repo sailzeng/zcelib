@@ -114,7 +114,7 @@ int server_status::initialize(const char* stat_filename,
     int ret = 0;
 
     //计算所需的空间
-    size_t size_alloc = ARRYA_OF_SHM_STATUS::getallocsize(MAX_MONITOR_STAT_ITEM);
+    size_t size_alloc = ARRYA_OF_SHM_STATUS::alloc_size(MAX_MONITOR_STAT_ITEM);
 
     //正常讲启动都会重新建立一个状态文件，
     //原来在restore_mmap == false是，会在open_mode后面并上一个O_TRUNC,但没有考虑到的是上报程序可能

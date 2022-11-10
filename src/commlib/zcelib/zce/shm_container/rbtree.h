@@ -31,94 +31,44 @@ enum RB_TREE_COLOR
 //
 typedef char  color_type;
 
-template<class T, class K, class _extract_key, class _compare_key> class shm_rb_tree;
-
-//RB TREE的头部数据区
-class _shm_rb_tree_head
-{
-protected:
-    _shm_rb_tree_head() = default;
-
-    ~_shm_rb_tree_head() = default;
-
-public:
-    //内存区的长度
-    size_t               size_of_mmap_ = 0;
-    //NODE结点个数;
-    size_t               num_of_node_ = 0;
-    //FREE的NODE个数
-    size_t               sz_free_node_ = 0;
-    //USE的NODE个数
-    size_t               sz_use_node_ = 0;
-};
-
-//RBtree的索引的节点
-class _shm_rb_tree_index
-{
-public:
-    _shm_rb_tree_index() = default;
-
-    _shm_rb_tree_index(const size_t& p, const size_t& l, const size_t& r, char cl)
-        : parent_(p)
-        , left_(l)
-        , right_(r)
-        , color_(cl)
-    {
-    }
-
-    ~_shm_rb_tree_index() = default;
-
-public:
-    //父节点
-    size_t       parent_ = zce::SHM_CNTR_INVALID_POINT;
-    //左子树
-    size_t       left_ = zce::SHM_CNTR_INVALID_POINT;
-    //右子树
-    size_t       right_ = zce::SHM_CNTR_INVALID_POINT;
-    //颜色
-    color_type   color_ = RB_TREE_RED;
-};
+template<class T, class Key, class Extract, class Compare> class rb_tree;
 
 //RBtree的迭代器
-template <class T, class K, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
+template <class T, class Key, class Extract, class Compare> class _rb_tree_iterator
 {
-    typedef _shm_rb_tree_iterator<T, K, _extract_key, _compare_key> iterator;
-
-    typedef shm_rb_tree<T, K, _extract_key, _compare_key> shm_rb_tree_t;
+    typedef _rb_tree_iterator<T, Key, Extract, Compare> iterator;
+    typedef rb_tree<T, Key, Extract, Compare> shm_rb_tree_t;
 
     //迭代器萃取器所有的东东
-    typedef ptrdiff_t difference_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef T value_type;
+    typedef shmc_size_type size_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
-    _shm_rb_tree_iterator(size_t seq, shm_rb_tree_t* instance)
+    _rb_tree_iterator(size_type seq, shm_rb_tree_t* instance)
         : serial_(seq)
         , rb_tree_instance_(instance)
     {
     }
 
-    _shm_rb_tree_iterator()
-        : serial_(zce::SHM_CNTR_INVALID_POINT),
+    _rb_tree_iterator()
+        : serial_(),
         rb_tree_instance_(nullptr)
     {
     }
 
-    ~_shm_rb_tree_iterator()
+    ~_rb_tree_iterator()
     {
     }
 
     //初始化
-    void initialize(size_t seq, shm_rb_tree_t* instance)
+    void initialize(size_type seq, shm_rb_tree_t* instance)
     {
         serial_ = seq;
         rb_tree_instance_ = instance;
     }
 
     //保留序号就可以再根据模版实例化对象找到相应数据,不用使用指针
-    size_t getserial() const
+    size_type getserial() const
     {
         return serial_;
     }
@@ -170,12 +120,12 @@ public:
     //用于实现operator++，找下一个节点
     void increment()
     {
-        if ((rb_tree_instance_->index_base_ + serial_)->right_ != zce::SHM_CNTR_INVALID_POINT)
+        if ((rb_tree_instance_->index_base_ + serial_)->right_ != zce::SHMC_INVALID_POINT)
         {
             //如果有右子节点，就向右走，然后一直沿左子树走到底即可
             serial_ = (rb_tree_instance_->index_base_ + serial_)->right_;
 
-            while ((rb_tree_instance_->index_base_ + serial_)->left_ != zce::SHM_CNTR_INVALID_POINT)
+            while ((rb_tree_instance_->index_base_ + serial_)->left_ != zce::SHMC_INVALID_POINT)
             {
                 serial_ = (rb_tree_instance_->index_base_ + serial_)->left_;
             }
@@ -183,7 +133,7 @@ public:
         else
         {
             //如果没有右子节点，找到父节点，如果当前节点是某个右子节点，就一直上溯到不为右子节点为止
-            size_t y = (rb_tree_instance_->index_base_ + serial_)->parent_;
+            size_type y = (rb_tree_instance_->index_base_ + serial_)->parent_;
 
             while (serial_ == (rb_tree_instance_->index_base_ + y)->right_)
             {
@@ -204,18 +154,19 @@ public:
     {
         //如果是红节点，且父节点的的父节点等于自己
         if ((rb_tree_instance_->index_base_ + serial_)->color_ == RB_TREE_RED &&
-            (rb_tree_instance_->index_base_ + ((rb_tree_instance_->index_base_ + serial_)->parent_))->parent_ == serial_)
+            (rb_tree_instance_->index_base_ +
+            ((rb_tree_instance_->index_base_ + serial_)->parent_))->parent_ == serial_)
         {
             //右子节点即是
             serial_ = (rb_tree_instance_->index_base_ + serial_)->right_;
         }
         //如果有左子节点
-        else if ((rb_tree_instance_->index_base_ + serial_)->left_ != zce::SHM_CNTR_INVALID_POINT)
+        else if ((rb_tree_instance_->index_base_ + serial_)->left_ != zce::SHMC_INVALID_POINT)
         {
             //令y指向左子节点，找到y的右子节点，向右走到底即是
-            size_t y = (rb_tree_instance_->index_base_ + serial_)->left_;
+            size_type y = (rb_tree_instance_->index_base_ + serial_)->left_;
 
-            while ((rb_tree_instance_->index_base_ + y)->right_ != zce::SHM_CNTR_INVALID_POINT)
+            while ((rb_tree_instance_->index_base_ + y)->right_ != zce::SHMC_INVALID_POINT)
             {
                 y = (rb_tree_instance_->index_base_ + y)->right_;
             }
@@ -225,7 +176,7 @@ public:
         else
         {
             //找出父节点，如果当前节点是个左子节点，就一直上溯，直到不再为左子节点，则其的父节点即是
-            size_t y = (rb_tree_instance_->index_base_ + serial_)->parent_;
+            size_type y = (rb_tree_instance_->index_base_ + serial_)->parent_;
 
             while (serial_ == (rb_tree_instance_->index_base_ + y)->left_)
             {
@@ -239,9 +190,9 @@ public:
 
 protected:
     //序列号
-    size_t          serial_;
+    size_type          serial_ = SHMC_INVALID_POINT;
     //RBtree的实例指针
-    shm_rb_tree_t* rb_tree_instance_;
+    shm_rb_tree_t * rb_tree_instance_ = nullptr;
 };
 
 /*!
@@ -249,41 +200,86 @@ protected:
 *
 * @tparam     _value_type   节点的实际值型别
 * @tparam     _key_type     节点的键的型别
-* @tparam     _extract_key  从节点中得到键值的方法,或者函数对象
-* @tparam     _compare_key  比较键值大小的方法,或者函数对象
+* @tparam     Extract  从节点中得到键值的方法,或者函数对象
+* @tparam     Compare  比较键值大小的方法,或者函数对象
 * @note
 */
 template < class T,
-    class K,
-    class _extract_key = smem_identity<T>,
-    class _compare_key = std::less<K> >
-class shm_rb_tree
+    class Key,
+    class Extract = smem_identity<T>,
+    class Compare = std::less<Key> >
+class rb_tree
 {
     //迭代器友元
-    friend class _shm_rb_tree_iterator<T, K, _extract_key, _compare_key>;
+    friend class _rb_tree_iterator<T, Key, Extract, Compare>;
 
     //定义typedef
 private:
-    typedef shm_rb_tree<T, K, _extract_key, _compare_key> self;
+    typedef rb_tree<T, Key, Extract, Compare> self;
 public:
-    typedef _shm_rb_tree_iterator<T, K, _extract_key, _compare_key> iterator;
+    typedef _rb_tree_iterator<T, Key, Extract, Compare> iterator;
     typedef T value_type;
-    typedef std::size_t size_type;
+    typedef shmc_size_type size_type;
     typedef value_type& reference;
     typedef const value_type& const_reference;
     typedef value_type* pointer;
 
+    //RB TREE的头部数据区
+    class _shm_rb_tree_head
+    {
+    protected:
+        _shm_rb_tree_head() = default;
+
+        ~_shm_rb_tree_head() = default;
+
+    public:
+        //内存区的长度
+        std::size_t             size_of_mmap_ = 0;
+        //NODE结点个数;
+        size_type               num_of_node_ = 0;
+        //FREE的NODE个数
+        size_type               sz_free_node_ = 0;
+        //USE的NODE个数
+        size_type               sz_use_node_ = 0;
+    };
+
+    //RBtree的索引的节点
+    class _shm_rb_tree_index
+    {
+    public:
+        _shm_rb_tree_index() = default;
+        ~_shm_rb_tree_index() = default;
+
+        _shm_rb_tree_index(size_type p,
+                           size_type l,
+                           size_type r,
+                           char cl)
+            : parent_(p)
+            , left_(l)
+            , right_(r)
+            , color_(cl)
+        {
+        }
+
+    public:
+        //父节点
+        size_type    parent_ = SHMC_INVALID_POINT;
+        //左子树
+        size_type    left_ = SHMC_INVALID_POINT;
+        //右子树
+        size_type    right_ = SHMC_INVALID_POINT;
+        //颜色
+        color_type   color_ = RB_TREE_RED;
+    };
+
 protected:
-
-    shm_rb_tree() = default;
-
+    //构造函数，析构函数
+    rb_tree() = default;
     //只定义,不实现,避免犯错
-    shm_rb_tree(const shm_rb_tree&) = delete;
+    rb_tree(const rb_tree&) = delete;
     const self& operator=(const self& others) = delete;
-
 public:
-
-    ~shm_rb_tree() = default;
+    ~rb_tree() = default;
 
     //得到索引的基础地址
     inline _shm_rb_tree_index* getindexbase()
@@ -300,24 +296,24 @@ public:
 protected:
     //分配一个NODE,将其从FREELIST中取出
     template<typename U>
-    size_t create_node(U&& v)
+    size_type create_node(U&& v)
     {
         //如果没有空间可以分配
         if (rb_tree_head_->sz_free_node_ == 0)
         {
-            return SHM_CNTR_INVALID_POINT;
+            return SHMC_INVALID_POINT;
         }
 
         //从链上取1个下来
-        size_t new_node = free_index_->right_;
+        size_type new_node = free_index_->right_;
         free_index_->right_ = (index_base_ + new_node)->right_;
         rb_tree_head_->sz_free_node_--;
         rb_tree_head_->sz_use_node_++;
 
         //初始化
-        (index_base_ + new_node)->parent_ = SHM_CNTR_INVALID_POINT;
-        (index_base_ + new_node)->left_ = SHM_CNTR_INVALID_POINT;
-        (index_base_ + new_node)->right_ = SHM_CNTR_INVALID_POINT;
+        (index_base_ + new_node)->parent_ = SHMC_INVALID_POINT;
+        (index_base_ + new_node)->left_ = SHMC_INVALID_POINT;
+        (index_base_ + new_node)->right_ = SHMC_INVALID_POINT;
         (index_base_ + new_node)->color_ = RB_TREE_RED;
 
         new (data_base_ + new_node)T(std::forward<T>(v));
@@ -326,9 +322,9 @@ protected:
     }
 
     //释放一个NODE,将其归还给FREELIST
-    void destroy_node(size_t pos)
+    void destroy_node(size_type pos)
     {
-        size_t freenext = free_index_->right_;
+        size_type freenext = free_index_->right_;
         (index_base_ + pos)->right_ = freenext;
         free_index_->right_ = pos;
         rb_tree_head_->sz_free_node_++;
@@ -341,60 +337,60 @@ protected:
 
     //本来打算把这段代码全部宏定义的，但考虑了一下，觉得还是inline就足够了。
     //宏毕竟会让代码变得丑陋，算了。而且这些函数的长度应该是可以被inline的。
-    inline size_t& header() const
+    inline size_type& header() const
     {
         return rb_tree_head_->num_of_node_;
     }
 
-    inline size_t& root() const
+    inline size_type& root() const
     {
         return head_index_->parent_;
     }
 
-    inline size_t& leftmost() const
+    inline size_type& leftmost() const
     {
         return head_index_->left_;
     }
 
-    inline size_t& rightmost() const
+    inline size_type& rightmost() const
     {
         return head_index_->right_;
     }
 
-    inline size_t& left(size_t x)
+    inline size_type& left(size_type x)
     {
         return (index_base_ + x)->left_;
     }
 
-    inline size_t& right(size_t x)
+    inline size_type& right(size_type x)
     {
         return (index_base_ + x)->right_;
     }
 
-    inline size_t& parent(size_t x)
+    inline size_type& parent(size_type x)
     {
         return (index_base_ + x)->parent_;
     }
 
-    inline color_type& color(size_t x)
+    inline color_type& color(size_type x)
     {
         return (index_base_ + x)->color_;
     }
 
-    inline const T& value(size_t x)
+    inline const T& value(size_type x)
     {
         return *(data_base_ + x);
     }
 
-    inline const K& key(size_t x)
+    inline const Key& key(size_type x)
     {
-        return _extract_key()(value(x));
+        return Extract()(value(x));
     }
 
     //取极大值
-    size_t minimum(size_t x)
+    size_type minimum(size_type x)
     {
-        while (left(x) != SHM_CNTR_INVALID_POINT)
+        while (left(x) != SHMC_INVALID_POINT)
         {
             x = left(x);
         }
@@ -403,9 +399,9 @@ protected:
     }
 
     //取极小值
-    size_t maximum(size_t x)
+    size_type maximum(size_type x)
     {
-        while (right(x) != SHM_CNTR_INVALID_POINT)
+        while (right(x) != SHMC_INVALID_POINT)
         {
             x = right(x);
         }
@@ -415,17 +411,17 @@ protected:
 
     //真正的插入是由这个函数完成的
     template<typename U>
-    std::pair<iterator, bool>  _insert(size_t x, size_t y, U&& v)
+    std::pair<iterator, bool>  _insert(size_type x, size_type y, U&& v)
     {
-        size_t z = create_node(v);
+        size_type z = create_node(v);
         //如果空间不足，无法插入，返回end,false的pair
-        if (SHM_CNTR_INVALID_POINT == z)
+        if (SHMC_INVALID_POINT == z)
         {
             return std::pair<iterator, bool>(end(), false);
         }
 
-        if (y == header() || x != SHM_CNTR_INVALID_POINT ||
-            _compare_key()(_extract_key()(std::forward<U>(v)), key(y)))
+        if (y == header() || x != SHMC_INVALID_POINT ||
+            Compare()(Extract()(std::forward<U>(v)), key(y)))
         {
             left(y) = z;
 
@@ -450,8 +446,8 @@ protected:
         }
 
         parent(z) = y;
-        left(z) = SHM_CNTR_INVALID_POINT;
-        right(z) = SHM_CNTR_INVALID_POINT;
+        left(z) = SHMC_INVALID_POINT;
+        right(z) = SHMC_INVALID_POINT;
         *(data_base_ + z) = std::forward<U>(v);
 
         _rb_tree_rebalance(z, parent(header()));
@@ -461,7 +457,7 @@ protected:
     //通过旋转和变色，调整整个树，让其符合RBTree要求
     //参数1：新增节点
     //参数2：根节点
-    void _rb_tree_rebalance(size_t x, size_t& root)
+    void _rb_tree_rebalance(size_type x, size_type& root)
     {
         color(x) = RB_TREE_RED;
 
@@ -469,9 +465,9 @@ protected:
         {
             if (parent(x) == left(parent(parent(x))))
             {
-                size_t y = right(parent(parent(x)));
+                size_type y = right(parent(parent(x)));
 
-                if (y != SHM_CNTR_INVALID_POINT && color(y) == RB_TREE_RED)
+                if (y != SHMC_INVALID_POINT && color(y) == RB_TREE_RED)
                 {
                     color(parent(x)) = RB_TREE_BLACK;
                     color(y) = RB_TREE_BLACK;
@@ -493,9 +489,9 @@ protected:
             }
             else
             {
-                size_t y = left(parent(parent(x)));
+                size_type y = left(parent(parent(x)));
 
-                if (y != SHM_CNTR_INVALID_POINT && color(y) == RB_TREE_RED)
+                if (y != SHMC_INVALID_POINT && color(y) == RB_TREE_RED)
                 {
                     color(parent(x)) = RB_TREE_BLACK;
                     color(y) = RB_TREE_BLACK;
@@ -523,12 +519,12 @@ protected:
     //左旋函数
     //参数1：左旋节点
     //参数2：根节点
-    void _rb_tree_rotate_left(size_t x, size_t& root)
+    void _rb_tree_rotate_left(size_type x, size_type& root)
     {
-        size_t y = right(x);
+        size_type y = right(x);
         right(x) = left(y);
 
-        if (left(y) != SHM_CNTR_INVALID_POINT)
+        if (left(y) != SHMC_INVALID_POINT)
         {
             parent(left(y)) = x;
         }
@@ -555,12 +551,12 @@ protected:
     //右旋函数
     //参数1：右旋节点
     //参数2：根节点
-    void _rb_tree_rotate_right(size_t x, size_t& root)
+    void _rb_tree_rotate_right(size_type x, size_type& root)
     {
-        size_t y = left(x);
+        size_type y = left(x);
         left(x) = right(y);
 
-        if (right(y) != SHM_CNTR_INVALID_POINT)
+        if (right(y) != SHMC_INVALID_POINT)
         {
             parent(right(y)) = x;
         }
@@ -585,21 +581,21 @@ protected:
     }
 
     //删除时的树形调整，让其符合RBTree要求
-    size_t _erase(size_t z)
+    size_type _erase(size_type z)
     {
-        size_t y = z;
-        size_t x = SHM_CNTR_INVALID_POINT;
-        size_t x_parent = SHM_CNTR_INVALID_POINT;
+        size_type y = z;
+        size_type x = SHMC_INVALID_POINT;
+        size_type x_parent = SHMC_INVALID_POINT;
 
         //如果左子树为nullptr，选择右子树
-        if (left(y) == SHM_CNTR_INVALID_POINT)
+        if (left(y) == SHMC_INVALID_POINT)
         {
             x = right(y);
         }
         else
         {
             //如果左子树不为nullptr，而右子树为nullptr
-            if (right(x) == SHM_CNTR_INVALID_POINT)
+            if (right(x) == SHMC_INVALID_POINT)
             {
                 x = left(y);
             }
@@ -621,7 +617,7 @@ protected:
             {
                 x_parent = parent(y);
 
-                if (x != SHM_CNTR_INVALID_POINT)
+                if (x != SHMC_INVALID_POINT)
                 {
                     parent(x) = parent(y);
                 }
@@ -658,7 +654,7 @@ protected:
         {
             x_parent = parent(y);
 
-            if (x != SHM_CNTR_INVALID_POINT)
+            if (x != SHMC_INVALID_POINT)
             {
                 parent(x) = parent(y);
             }
@@ -681,7 +677,7 @@ protected:
 
             if (leftmost() == z)
             {
-                if (right(z) == SHM_CNTR_INVALID_POINT)
+                if (right(z) == SHMC_INVALID_POINT)
                 {
                     leftmost() = parent(z);
                 }
@@ -693,7 +689,7 @@ protected:
 
             if (rightmost() == z)
             {
-                if (left(z) == SHM_CNTR_INVALID_POINT)
+                if (left(z) == SHMC_INVALID_POINT)
                 {
                     rightmost() = parent(z);
                 }
@@ -706,11 +702,11 @@ protected:
 
         if (color(y) != RB_TREE_RED)
         {
-            while (x != root() && (x == SHM_CNTR_INVALID_POINT || color(x) == RB_TREE_BLACK))
+            while (x != root() && (x == SHMC_INVALID_POINT || color(x) == RB_TREE_BLACK))
             {
                 if (x == left(x_parent))
                 {
-                    size_t w = right(x_parent);
+                    size_type w = right(x_parent);
 
                     if (color(w) == RB_TREE_RED)
                     {
@@ -720,8 +716,8 @@ protected:
                         w = right(x_parent);
                     }
 
-                    if ((left(w) == SHM_CNTR_INVALID_POINT || color(left(w)) == RB_TREE_BLACK) &&
-                        (right(w) == SHM_CNTR_INVALID_POINT || color(right(w)) == RB_TREE_BLACK))
+                    if ((left(w) == SHMC_INVALID_POINT || color(left(w)) == RB_TREE_BLACK) &&
+                        (right(w) == SHMC_INVALID_POINT || color(right(w)) == RB_TREE_BLACK))
                     {
                         color(w) = RB_TREE_RED;
                         x = x_parent;
@@ -729,9 +725,9 @@ protected:
                     }
                     else
                     {
-                        if (right(w) == SHM_CNTR_INVALID_POINT || color(right(w)) == RB_TREE_BLACK)
+                        if (right(w) == SHMC_INVALID_POINT || color(right(w)) == RB_TREE_BLACK)
                         {
-                            if (left(w) != SHM_CNTR_INVALID_POINT)
+                            if (left(w) != SHMC_INVALID_POINT)
                             {
                                 color(left(w)) = RB_TREE_BLACK;
                             }
@@ -744,7 +740,7 @@ protected:
                         color(w) = color(x_parent);
                         color(x_parent) = RB_TREE_BLACK;
 
-                        if (right(w) != SHM_CNTR_INVALID_POINT)
+                        if (right(w) != SHMC_INVALID_POINT)
                         {
                             color(right(w)) = RB_TREE_BLACK;
                         }
@@ -755,7 +751,7 @@ protected:
                 }
                 else
                 {
-                    size_t w = left(x_parent);
+                    size_type w = left(x_parent);
 
                     if (color(w) == RB_TREE_RED)
                     {
@@ -765,8 +761,8 @@ protected:
                         w = left(x_parent);
                     }
 
-                    if ((right(w) == SHM_CNTR_INVALID_POINT || color(right(w)) == RB_TREE_BLACK) &&
-                        (left(w) == SHM_CNTR_INVALID_POINT || color(left(w)) == RB_TREE_BLACK))
+                    if ((right(w) == SHMC_INVALID_POINT || color(right(w)) == RB_TREE_BLACK) &&
+                        (left(w) == SHMC_INVALID_POINT || color(left(w)) == RB_TREE_BLACK))
                     {
                         color(w) = RB_TREE_RED;
                         x = x_parent;
@@ -774,9 +770,9 @@ protected:
                     }
                     else
                     {
-                        if (left(w) == SHM_CNTR_INVALID_POINT || color(left(w)) == RB_TREE_BLACK)
+                        if (left(w) == SHMC_INVALID_POINT || color(left(w)) == RB_TREE_BLACK)
                         {
-                            if (right(w) != SHM_CNTR_INVALID_POINT)
+                            if (right(w) != SHMC_INVALID_POINT)
                             {
                                 color(right(w)) = RB_TREE_BLACK;
                             }
@@ -789,7 +785,7 @@ protected:
                         color(w) = color(x_parent);
                         color(x_parent) = RB_TREE_BLACK;
 
-                        if (left(w) != SHM_CNTR_INVALID_POINT)
+                        if (left(w) != SHMC_INVALID_POINT)
                         {
                             color(left(w)) = RB_TREE_BLACK;
                         }
@@ -800,7 +796,7 @@ protected:
                 }
             }
 
-            if (x != SHM_CNTR_INVALID_POINT)
+            if (x != SHMC_INVALID_POINT)
             {
                 color(x) = RB_TREE_BLACK;
             }
@@ -813,14 +809,14 @@ protected:
     template<typename U>
     std::pair<iterator, bool>  _insert_equal(U&& v)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             y = x;
-            x = _compare_key()(_extract_key()(std::forward<T>(v)),
-                               key(x)) ? left(x) : right(x);
+            x = Compare()(Extract()(std::forward<T>(v)),
+                          key(x)) ? left(x) : right(x);
         }
 
         return _insert(x, y, std::forward<T>(v));
@@ -829,14 +825,14 @@ protected:
     template<typename U>
     std::pair<iterator, bool> _insert_unique(U&& v)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
         bool comp = true;
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             y = x;
-            comp = _compare_key()(_extract_key()(std::forward<T>(v)), key(x));
+            comp = Compare()(Extract()(std::forward<T>(v)), key(x));
             x = comp ? left(x) : right(x);
         }
 
@@ -854,7 +850,7 @@ protected:
             }
         }
 
-        if (_compare_key()(key(j.getserial()), _extract_key()(v)))
+        if (Compare()(key(j.getserial()), Extract()(v)))
         {
             return _insert(x, y, std::forward<T>(v));
         }
@@ -865,7 +861,7 @@ protected:
 public:
 
     //内存区的构成为 定义区,index区,data区,返回所需要的长度,
-    static size_t getallocsize(const size_t numnode)
+    static std::size_t alloc_size(size_type numnode)
     {
         return  sizeof(_shm_rb_tree_head) +
             sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
@@ -879,7 +875,9 @@ public:
         * @param if_restore 如果是共享内存，可以尝试恢复
         * @return self，自己的对象指针
     */
-    static self* initialize(const size_t numnode, char* mem_addr, bool if_restore = false)
+    static self* initialize(const size_type numnode,
+                            char* mem_addr,
+                            bool if_restore = false)
     {
         //assert(mem_addr!=nullptr && numnode >0 );
         _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(mem_addr);
@@ -888,7 +886,7 @@ public:
         if (true == if_restore)
         {
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != rb_tree_head->size_of_mmap_ ||
+            if (alloc_size(numnode) != rb_tree_head->size_of_mmap_ ||
                 numnode != rb_tree_head->num_of_node_)
             {
                 return nullptr;
@@ -896,7 +894,7 @@ public:
         }
 
         //初始化尺寸
-        rb_tree_head->size_of_mmap_ = getallocsize(numnode);
+        rb_tree_head->size_of_mmap_ = alloc_size(numnode);
         rb_tree_head->num_of_node_ = numnode;
 
         self* instance = new self();
@@ -936,7 +934,7 @@ public:
         rb_tree_head_->sz_use_node_ = 0;
 
         //将清理为nullptr,让指针都指向自己
-        head_index_->parent_ = SHM_CNTR_INVALID_POINT;
+        head_index_->parent_ = SHMC_INVALID_POINT;
         head_index_->right_ = rb_tree_head_->num_of_node_;
         head_index_->left_ = rb_tree_head_->num_of_node_;
         head_index_->color_ = RB_TREE_RED;
@@ -946,7 +944,7 @@ public:
         free_index_->right_ = 0;
 
         //初始化free数据区
-        for (size_t i = 0; i < rb_tree_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < rb_tree_head_->num_of_node_; ++i)
         {
             pindex->right_ = (i + 1);
 
@@ -1020,18 +1018,18 @@ public:
         return false;
     };
 
-    size_t size() const
+    size_type size() const
     {
         return rb_tree_head_->sz_use_node_;
     }
 
-    size_t capacity() const
+    size_type capacity() const
     {
         return rb_tree_head_->num_of_node_;
     }
 
     //空闲的节点个数
-    size_t free()
+    size_type free()
     {
         return rb_tree_head_->sz_free_node_;
     }
@@ -1058,15 +1056,15 @@ public:
     //通过迭代器删除一个节点
     iterator erase(const iterator& pos)
     {
-        size_t tmp = _erase(pos.getserial());
+        size_type tmp = _erase(pos.getserial());
         destroy_node(pos.getserial());
         return iterator(tmp, this);
     }
 
     //通过起始迭代器删除一段节点
-    size_t erase(iterator first, iterator last)
+    size_type erase(iterator first, iterator last)
     {
-        size_t erase_count = 0;
+        size_type erase_count = 0;
 
         //特殊情况的加速
         if (first == begin() && last == end())
@@ -1088,7 +1086,7 @@ public:
     }
 
     //通过key删除节点，Map和Set用
-    size_t erase_unique(const K& k)
+    size_type erase_unique(const Key& k)
     {
         iterator it = find(k);
 
@@ -1102,14 +1100,14 @@ public:
     }
 
     //通过value删除节点，Map和Set用
-    size_t erase_unique_value(const T& v)
+    size_type erase_unique_value(const T& v)
     {
-        _extract_key get_key;
+        Extract get_key;
         return erase_unique(get_key(v));
     }
 
     //通过key删除节点，Multimap和Multiset用
-    size_t erase_equal(const K& k)
+    size_type erase_equal(const Key& k)
     {
         iterator it_l = lower_bound(k);
         iterator it_u = upper_bound(k);
@@ -1117,22 +1115,22 @@ public:
     }
 
     //通过值删除节点，Multimap和Multiset用
-    size_t erase_equal_value(const T& v)
+    size_type erase_equal_value(const T& v)
     {
-        _extract_key get_key;
+        Extract get_key;
         return erase_equal(get_key(v));
     }
 
     //找到第一个key值相同的节点
-    iterator lower_bound(const K& k)
+    iterator lower_bound(const Key& k)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             //上下两个函数就这行代码不一样，注意先后比较
-            if (!_compare_key()(key(x), k))
+            if (!Compare()(key(x), k))
             {
                 y = x;
                 x = left(x);
@@ -1147,15 +1145,15 @@ public:
     }
 
     //找到最后一个key值相同的节点
-    iterator upper_bound(const K& k)
+    iterator upper_bound(const Key& k)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
             //上下两个函数就这行代码不一样，注意先后比较关系
-            if (_compare_key()(k, key(x)))
+            if (Compare()(k, key(x)))
             {
                 y = x;
                 x = left(x);
@@ -1170,14 +1168,14 @@ public:
     }
 
     //找key相同的节点
-    iterator find(const K& k)
+    iterator find(const Key& k)
     {
-        size_t y = header();
-        size_t x = root();
+        size_type y = header();
+        size_type x = root();
 
-        while (x != SHM_CNTR_INVALID_POINT)
+        while (x != SHMC_INVALID_POINT)
         {
-            if (!_compare_key()(key(x), k))
+            if (!Compare()(key(x), k))
             {
                 y = x;
                 x = left(x);
@@ -1189,13 +1187,13 @@ public:
         }
 
         iterator j = iterator(y, this);
-        return (j == end() || _compare_key()(k, key(j.getserial()))) ? end() : j;
+        return (j == end() || Compare()(k, key(j.getserial()))) ? end() : j;
     }
 
     //找value相同的节点
     iterator find_value(const T& v)
     {
-        _extract_key get_key;
+        Extract get_key;
         return find(get_key(v));
     }
 
@@ -1215,7 +1213,7 @@ public:
 
 protected:
     //index区要增加两个数据,一个是头指针，一个是空节点的头指针
-    static const size_t ADDED_NUM_OF_INDEX = 2;
+    static const size_type ADDED_NUM_OF_INDEX = 2;
 
 protected:
     //内存基础地址
@@ -1238,9 +1236,9 @@ protected:
 };
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分
-template<class T, class _compare_key = std::less<T> >
+template<class T, class Compare = std::less<T> >
 class shm_set :
-    public shm_rb_tree< T, T, smem_identity<T>, _compare_key >
+    public rb_tree< T, T, smem_identity<T>, Compare >
 {
 protected:
 
@@ -1249,34 +1247,34 @@ protected:
 
 public:
     static shm_set*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_set< T, _compare_key  > *>(
-            shm_rb_tree<T, T, smem_identity<T>, _compare_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<shm_set< T, Compare  > *>(
+            rb_tree<T, T, smem_identity<T>, Compare>::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
-template<class K, class T, class _extract_key = mmap_select1st <std::pair <K, T> >, class _compare_key = std::less<T>  >
-class mmap_map :
-    public shm_rb_tree< std::pair <K, T>, K, _extract_key, _compare_key  >
+template<class Key, class T, class Extract = mmap_select1st <std::pair <Key, T> >, class Compare = std::less<T>  >
+class shm_map :
+    public rb_tree< std::pair <Key, T>, Key, Extract, Compare  >
 {
 protected:
 
-    mmap_map() = default;
-    ~mmap_map() = default;
+    shm_map() = default;
+    ~shm_map() = default;
 
 public:
-    static mmap_map*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    static shm_map*
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_map< K, T, _extract_key, _compare_key  > *>(
-            shm_rb_tree< std::pair <K, T>, K, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<shm_map< Key, T, Extract, Compare  > *>(
+            rb_tree< std::pair <Key, T>, Key, Extract, Compare>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
-    T& operator[](const K& key)
+    T& operator[](const Key& key)
     {
-        return (find_or_insert(std::pair<K, T >(key, T()))).second;
+        return (find_or_insert(std::pair<Key, T >(key, T()))).second;
     }
 };
 };

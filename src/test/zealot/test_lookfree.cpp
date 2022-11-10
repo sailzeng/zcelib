@@ -8,7 +8,7 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::lockfree::kfifo<uint32_t> kfifo_32_t;
     size_t dequesize = 1026;
-    size_t szalloc = kfifo_32_t::getallocsize(dequesize);
+    size_t szalloc = kfifo_32_t::alloc_size(dequesize);
     std::cout << "need mem: " << (int)szalloc << std::endl;
 
     char* tmproom = new char[szalloc + 4];
