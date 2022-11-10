@@ -29,7 +29,7 @@ class file_lock
 public:
 
     ///读锁的GUARD
-    typedef shared_Guard<file_lock> LOCK_SHARED_GUARD;
+    typedef shared_guard<file_lock> LOCK_SHARED_GUARD;
     ///写锁的GUARD
     typedef unique_guard<file_lock> LOCK_UNIQUE_GUARD;
 

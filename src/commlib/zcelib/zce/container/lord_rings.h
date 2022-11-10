@@ -280,17 +280,17 @@ public:
         return false;
     }
 
-    ///重新保留一个空间,
-    bool reserve(size_t new_size)
+    //!重新保留空间,
+    bool reserve(size_t rsv_size)
     {
-        assert(new_size > 0);
-        if (new_size <= 0)
+        assert(rsv_size > 0);
+        if (rsv_size <= 0)
         {
             return false;
         }
         size_t deque_size = size();
 
-        size_t new_capacity = new_size + 1;
+        size_t new_capacity = rsv_size + 1;
         T *new_value_ptr = (T *)::malloc(sizeof(T) * new_capacity);
         if (new_value_ptr == nullptr)
         {
@@ -302,15 +302,15 @@ public:
         {
             //拷贝到新的数据区,下面这个
             size_t i = 0;
-            for (; i < deque_size && i < new_size; ++i)
+            for (; i < deque_size && i < rsv_size; ++i)
             {
                 new_value_ptr[i] = vptr_ptr_[(lordring_start_ + i) % lordring_capacity_];
                 vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~T();
             }
             //如果其实是缩小
-            if (new_size < deque_size)
+            if (rsv_size < deque_size)
             {
-                size_t destruction_size = deque_size - new_size;
+                size_t destruction_size = deque_size - rsv_size;
                 for (size_t j = 0; j < destruction_size; ++i, ++j)
                 {
                     vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~T();
@@ -329,6 +329,44 @@ public:
 
         vptr_ptr_ = new_value_ptr;
 
+        return true;
+    }
+
+    //!重新定义rings的size。
+    bool resize(size_t new_size)
+    {
+        assert(new_size > 0 && new_size <= lordring_capacity_ - 1);
+        if (new_size <= 0 || new_size > lordring_capacity_ - 1)
+        {
+            return false;
+        }
+        size_t deque_size = size();
+
+        //如果其实是缩小
+        if (new_size < deque_size)
+        {
+            size_t destruction_size = deque_size - new_size;
+            size_t i = new_size;
+            for (size_t j = 0; j < destruction_size; ++i, ++j)
+            {
+                vptr_ptr_[(lordring_start_ + i) % lordring_capacity_].~T();
+            }
+            lordring_end_ = (lordring_start_ + new_size) % lordring_capacity_;
+        }
+        //如果其实是扩大
+        else if (new_size > deque_size)
+        {
+            size_t construct_size = new_size - deque_size;
+            size_t i = deque_size;
+            for (size_t j = 0; j < construct_size; ++i, ++j)
+            {
+                new(&vptr_ptr_[(lordring_start_ + i) % lordring_capacity_]) T();
+            }
+            lordring_end_ = (lordring_start_ + new_size) % lordring_capacity_;
+        }
+        else
+        {
+        }
         return true;
     }
 
@@ -361,12 +399,14 @@ public:
     template< class... Args >
     bool emplace_back(bool lay_over, Args&&... args)
     {
-        return push_back_i(T(args...), lay_over);
+        return push_back_i(T(std::forward<Args>(args)...),
+                           lay_over);
     }
     template< class... Args >
     bool emplace_front(bool lay_over, Args&&... args)
     {
-        return push_front_i(T(args...), lay_over);
+        return push_front_i(T(std::forward<Args>(args)...),
+                            lay_over);
     }
 
     ///从队列的前面pop并且得到一个数据

@@ -134,7 +134,7 @@ public:
     ///清理
     void clear()
     {
-        //生产默认的数据,析构
+        //生产默认的数据,这儿是重新构造，不是析构
         for (size_type i = 0; i < array_head_->num_of_node_; ++i)
         {
             new(data_base_ + i)T();

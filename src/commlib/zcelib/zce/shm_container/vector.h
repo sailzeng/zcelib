@@ -234,17 +234,13 @@ public:
     ///向后添加数据
     bool push_back(const T& val)
     {
-        if (vector_head_->num_of_use_ == vector_head_->num_of_node_)
-        {
-            return false;
-        }
+        return push_back_i(val);
+    }
 
-        //使用placement new 复制对象
-        new (data_base_ + vector_head_->num_of_use_) T(val);
-
-        ++(vector_head_->num_of_use_);
-
-        return true;
+    ///向后添加数据
+    bool push_back(T&& val)
+    {
+        return push_back_i(val);
     }
 
     ///从后面删除数据
@@ -261,7 +257,21 @@ public:
         --(vector_head_->num_of_use_);
         return true;
     }
+protected:
 
+    template<typename U>
+    bool push_back_i(U&& val)
+    {
+        if (vector_head_->num_of_use_ == vector_head_->num_of_node_)
+        {
+            return false;
+        }
+
+        //使用placement new 复制对象
+        new (data_base_ + vector_head_->num_of_use_) T(std::forward<U>(val));
+        ++(vector_head_->num_of_use_);
+        return true;
+    }
 protected:
     //内存基础地址
     char* mem_addr_ = nullptr;

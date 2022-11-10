@@ -36,7 +36,7 @@ class null_lock : public zce::lock_base
 public:
     //nullptr锁的GUARD
     typedef lock_guard<zce::null_lock>      LOCK_GUARD;
-    typedef shared_Guard<zce::null_lock>    LOCK_SHARED_GUARD;
+    typedef shared_guard<zce::null_lock>    LOCK_SHARED_GUARD;
     typedef unique_guard<zce::null_lock>    LOCK_UNIQUE_GUARD;
 
 public:

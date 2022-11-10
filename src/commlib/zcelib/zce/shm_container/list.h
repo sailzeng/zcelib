@@ -245,7 +245,8 @@ protected:
     }
 
     //分配一个NODE,将其从FREELIST中取出
-    size_type create_node(T val)
+    template<typename U>
+    size_type create_node(U&& val)
     {
         //如果没有空间可以分配
         if (list_head_->size_free_node_ == 0)
@@ -261,7 +262,7 @@ protected:
         (index_base_ + freenode_->idx_next_)->idx_prev_ = (index_base_ + node)->idx_prev_;
 
         //用placement new生产对象
-        new (data_base_ + node) T(val);
+        new (data_base_ + node) T(std::forward<U>(val));
 
         list_head_->size_use_node_++;
         list_head_->size_free_node_--;
@@ -289,6 +290,62 @@ protected:
         list_head_->size_free_node_++;
 
         //assert(list_head_->szusenode_ + list_head_->szfreenode_ == list_head_->numofnode_);
+    }
+
+protected:
+    //通过偏移序列号插入,如果你胡乱使用,不是非常安全,FREENODE也是有POS的.
+    //插入在这个POS节点的前面
+    template<typename U>
+    size_type insert_i(size_type pos,
+                       U&& val)
+    {
+        size_type node = create_node(std::forward<U>(val));
+        if (node == SHM_CNTR_INVALID_POINT)
+        {
+            return SHM_CNTR_INVALID_POINT;
+        }
+
+        //将新结点挂接到队列中
+        (index_base_ + node)->idx_next_ = pos;
+        (index_base_ + node)->idx_prev_ = (index_base_ + pos)->idx_prev_;
+
+        (index_base_ + (index_base_ + pos)->idx_prev_)->idx_next_ = node;
+        (index_base_ + pos)->idx_prev_ = node;
+
+        return node;
+    }
+
+    //通过迭代器插入,推荐使用这个函数,
+    //插入在这个迭代器节点的前面
+    template<typename U>
+    std::pair<iterator, bool> insert_i(const iterator& pos, U&& val)
+    {
+        size_type tmp = insert_i(pos.getserial(),
+                                 std::forward<U>(val));
+
+        //插入失败
+        if (SHM_CNTR_INVALID_POINT == tmp)
+        {
+            return std::pair<iterator, bool>(end(), false);
+        }
+        else
+        {
+            return std::pair<iterator, bool>(iterator(tmp, this), true);
+        }
+    }
+
+    //通过偏移序列号删除,危险函数,自己包装正确使用
+    size_type erase_i(size_type pos)
+    {
+        size_type nextnode = (index_base_ + pos)->idx_next_;
+        size_type prevnode = (index_base_ + pos)->idx_prev_;
+
+        (index_base_ + prevnode)->idx_next_ = nextnode;
+        (index_base_ + nextnode)->idx_prev_ = prevnode;
+
+        destroy_node(pos);
+
+        return nextnode;
     }
 
 public:
@@ -464,47 +521,6 @@ public:
         return false;
     };
 
-protected:
-    //通过偏移序列号插入,如果你胡乱使用,不是非常安全,FREENODE也是有POS的.
-    //插入在这个POS节点的前面
-    size_type insert_i(size_type pos, T val)
-    {
-        size_type node = create_node(val);
-
-        if (node == SHM_CNTR_INVALID_POINT)
-        {
-            return SHM_CNTR_INVALID_POINT;
-        }
-
-        //将新结点挂接到队列中
-        (index_base_ + node)->idx_next_ = pos;
-        (index_base_ + node)->idx_prev_ = (index_base_ + pos)->idx_prev_;
-
-        (index_base_ + (index_base_ + pos)->idx_prev_)->idx_next_ = node;
-        (index_base_ + pos)->idx_prev_ = node;
-
-        return node;
-    }
-
-    //通过迭代器插入,推荐使用这个函数,
-    //插入在这个迭代器节点的前面
-    std::pair<iterator, bool> insert_i(const iterator& pos, T val)
-    {
-        size_type tmp = insert_i(pos.getserial(), val);
-
-        //插入失败
-        if (SHM_CNTR_INVALID_POINT == tmp)
-        {
-            return std::pair<iterator, bool>(end(), false);
-        }
-        else
-        {
-            return std::pair<iterator, bool>(iterator(tmp, this), true);
-        }
-    }
-
-public:
-
     //!通过迭代器插入
     std::pair<iterator, bool> insert(const iterator& pos, const T& val)
     {
@@ -515,27 +531,10 @@ public:
         return insert_i(pos, val);
     }
 
-protected:
-
-    //通过偏移序列号删除,危险函数,自己包装正确使用
-    size_type erase(size_type pos)
-    {
-        size_type nextnode = (index_base_ + pos)->idx_next_;
-        size_type prevnode = (index_base_ + pos)->idx_prev_;
-
-        (index_base_ + prevnode)->idx_next_ = nextnode;
-        (index_base_ + nextnode)->idx_prev_ = prevnode;
-
-        destroy_node(pos);
-
-        return nextnode;
-    }
-
-public:
     //通过迭代器删除
     iterator erase(const iterator& pos)
     {
-        size_type tmp = erase(pos.getserial());
+        size_type tmp = erase_i(pos.getserial());
         return iterator(tmp, this);
     }
 

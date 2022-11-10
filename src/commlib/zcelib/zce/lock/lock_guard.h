@@ -82,18 +82,18 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
 */
 template <class zce_lock>
-class shared_Guard
+class shared_guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    shared_Guard(zce_lock& lock) :
+    shared_guard(zce_lock& lock) :
         lock_(&lock)
     {
         lock_->lock_shared();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    shared_Guard(zce_lock& lock, bool block) :
+    shared_guard(zce_lock& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -103,13 +103,13 @@ public:
     }
 
     ///析构，进行解锁操作
-    ~shared_Guard()
+    ~shared_guard()
     {
         lock_->unlock_shared();
     }
 
-    shared_Guard(const shared_Guard&) = delete;
-    shared_Guard& operator=(const shared_Guard&) = delete;
+    shared_guard(const shared_guard&) = delete;
+    shared_guard& operator=(const shared_guard&) = delete;
 
     ///读取锁
     void lock_shared()

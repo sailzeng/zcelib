@@ -92,7 +92,7 @@ public:
 
 @tparam     _meta_type 元类型，每个NODE包括的数据
 */
-template <class _meta_type> class smem_trie_tree
+template <class _meta_type> class shm_trie_tree
 {
 protected:
 
@@ -110,26 +110,26 @@ public:
 
     ///如果在共享内存使用,没有new,所以统一用initialize 初始化
     ///这个函数,不给你用,就是不给你用
-    smem_trie_tree<_meta_type>(size_t numnode, void* pmmap, bool if_restore) :
+    shm_trie_tree<_meta_type>(size_t numnode, void* pmmap, bool if_restore) :
         shm_container(pmmap),
         trie_head_(nullptr),
         trie_tree_base_(nullptr)
     {
     }
 
-    smem_trie_tree<_meta_type>() :
+    shm_trie_tree<_meta_type>() :
         shm_container(nullptr),
         trie_head_(nullptr),
         trie_tree_base_(nullptr)
     {
     }
 
-    ~smem_trie_tree<_meta_type>()
+    ~shm_trie_tree<_meta_type>()
     {
     }
 
     //只定义,不实现,
-    const smem_trie_tree<_meta_type>& operator=(const smem_trie_tree<_meta_type>& others) = delete;
+    const shm_trie_tree<_meta_type>& operator=(const shm_trie_tree<_meta_type>& others) = delete;
 
 protected:
 

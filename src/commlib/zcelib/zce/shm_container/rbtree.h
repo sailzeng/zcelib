@@ -299,7 +299,8 @@ public:
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const T& val)
+    template<typename U>
+    size_t create_node(U&& v)
     {
         //如果没有空间可以分配
         if (rb_tree_head_->sz_free_node_ == 0)
@@ -319,7 +320,7 @@ protected:
         (index_base_ + new_node)->right_ = SHM_CNTR_INVALID_POINT;
         (index_base_ + new_node)->color_ = RB_TREE_RED;
 
-        new (data_base_ + new_node)T(val);
+        new (data_base_ + new_node)T(std::forward<T>(v));
 
         return new_node;
     }
@@ -336,181 +337,10 @@ protected:
         //调用显式的析构函数
         (data_base_ + pos)->~T();
     }
-
-public:
-
-    //内存区的构成为 定义区,index区,data区,返回所需要的长度,
-    static size_t getallocsize(const size_t numnode)
-    {
-        return  sizeof(_shm_rb_tree_head) +
-            sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
-            sizeof(T) * numnode;
-    }
-
-    /*!
-     * @brief 初始化，得到一个self的对象指针，
-     * @param numnode    对象数量
-     * @param mem_addr   内心地址指针，可以是共享内存指针
-     * @param if_restore 如果是共享内存，可以尝试恢复
-     * @return self，自己的对象指针
-    */
-    static self* initialize(const size_t numnode, char* mem_addr, bool if_restore = false)
-    {
-        //assert(mem_addr!=nullptr && numnode >0 );
-        _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(mem_addr);
-
-        //如果是恢复,数据都在内存中,
-        if (true == if_restore)
-        {
-            //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != rb_tree_head->size_of_mmap_ ||
-                numnode != rb_tree_head->num_of_node_)
-            {
-                return nullptr;
-            }
-        }
-
-        //初始化尺寸
-        rb_tree_head->size_of_mmap_ = getallocsize(numnode);
-        rb_tree_head->num_of_node_ = numnode;
-
-        self* instance = new self();
-
-        //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->mem_addr_ = mem_addr;
-        instance->rb_tree_head_ = rb_tree_head;
-        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(mem_addr + sizeof(_shm_rb_tree_head));
-        instance->data_base_ = reinterpret_cast<T*>(mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
-
-        //初始化free_index_,head_index_
-        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
-        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index*>(mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
-
-        if (if_restore)
-        {
-            instance->restore();
-        }
-        else
-        {
-            //清理初始化所有的内存,所有的节点为FREE
-            instance->clear();
-        }
-        return instance;
-    }
-
-    //清理初始化所有的内存,所有的节点为FREE
-    void clear()
-    {
-        //处理2个关键Node,以及相关长度,开始所有的数据是free.
-        rb_tree_head_->sz_free_node_ = rb_tree_head_->num_of_node_;
-        rb_tree_head_->sz_use_node_ = 0;
-
-        //将清理为nullptr,让指针都指向自己
-        head_index_->parent_ = SHM_CNTR_INVALID_POINT;
-        head_index_->right_ = rb_tree_head_->num_of_node_;
-        head_index_->left_ = rb_tree_head_->num_of_node_;
-        head_index_->color_ = RB_TREE_RED;
-
-        _shm_rb_tree_index* pindex = index_base_;
-
-        free_index_->right_ = 0;
-
-        //初始化free数据区
-        for (size_t i = 0; i < rb_tree_head_->num_of_node_; ++i)
-        {
-            pindex->right_ = (i + 1);
-
-            //将所有FREENODE串起来
-            if (i == rb_tree_head_->num_of_node_ - 1)
-            {
-                pindex->right_ = rb_tree_head_->num_of_node_ + 1;
-            }
-
-            pindex++;
-        }
-    }
-
-    //!销毁，析构所有的已有元素，注意，如果想恢复，不要调用这个函数
-    void terminate()
-    {
-        iterator iter_tmp = begin();
-        iterator iter_end = end();
-        for (; iter_tmp != iter_end; ++iter_tmp)
-        {
-            size_type pos = iter_tmp.getserial();
-            (data_base_ + pos)->~T();
-        }
-        clear();
-    }
-
-    //!恢复函数，用于从(共享)内存中恢复数据，
-    void restore()
-    {
-        iterator iter_tmp = begin();
-        iterator iter_end = end();
-        for (; iter_tmp != iter_end; ++iter_tmp)
-        {
-            size_type pos = iter_tmp.getserial();
-            T val(std::move(*iter_tmp));
-            new (data_base_ + pos) T(std::move(val));
-        }
-    }
-
-    //找到第一个节点
-    iterator begin()
-    {
-        return iterator(head_index_->left_, this);
-    };
-
-    //容器应该是前闭后开的,头节点视为最后一个index
-    iterator end()
-    {
-        return iterator(rb_tree_head_->num_of_node_, this);
-    }
-
-    //所有节点都在free链上即是空
-    bool empty()
-    {
-        if (rb_tree_head_->sz_free_node_ == rb_tree_head_->num_of_node_)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    //在插入数据前调用,这个函数检查
-    bool full()
-    {
-        if (rb_tree_head_->sz_free_node_ == 0)
-        {
-            return true;
-        }
-
-        return false;
-    };
-
-    size_t size() const
-    {
-        return rb_tree_head_->sz_use_node_;
-    }
-
-    size_t capacity() const
-    {
-        return rb_tree_head_->num_of_node_;
-    }
-
-    //空闲的节点个数
-    size_t free()
-    {
-        return rb_tree_head_->sz_free_node_;
-    }
-
 protected:
 
     //本来打算把这段代码全部宏定义的，但考虑了一下，觉得还是inline就足够了。
     //宏毕竟会让代码变得丑陋，算了。而且这些函数的长度应该是可以被inline的。
-
     inline size_t& header() const
     {
         return rb_tree_head_->num_of_node_;
@@ -583,9 +413,9 @@ protected:
         return x;
     }
 
-protected:
     //真正的插入是由这个函数完成的
-    std::pair<iterator, bool>  _insert(size_t x, size_t y, const T& v)
+    template<typename U>
+    std::pair<iterator, bool>  _insert(size_t x, size_t y, U&& v)
     {
         size_t z = create_node(v);
         //如果空间不足，无法插入，返回end,false的pair
@@ -594,7 +424,8 @@ protected:
             return std::pair<iterator, bool>(end(), false);
         }
 
-        if (y == header() || x != SHM_CNTR_INVALID_POINT || _compare_key()(_extract_key()(v), key(y)))
+        if (y == header() || x != SHM_CNTR_INVALID_POINT ||
+            _compare_key()(_extract_key()(std::forward<U>(v)), key(y)))
         {
             left(y) = z;
 
@@ -621,7 +452,7 @@ protected:
         parent(z) = y;
         left(z) = SHM_CNTR_INVALID_POINT;
         right(z) = SHM_CNTR_INVALID_POINT;
-        *(data_base_ + z) = v;
+        *(data_base_ + z) = std::forward<U>(v);
 
         _rb_tree_rebalance(z, parent(header()));
         return  std::pair<iterator, bool>(iterator(z, this), true);
@@ -978,10 +809,9 @@ protected:
         return y;
     }
 
-public:
-
-    //允许重复key插入的插入函数，Multimap、Multimap用这个
-    std::pair<iterator, bool>  insert_equal(const T& v)
+    //为了万能引用定义了个模板函数
+    template<typename U>
+    std::pair<iterator, bool>  _insert_equal(U&& v)
     {
         size_t y = header();
         size_t x = root();
@@ -989,14 +819,15 @@ public:
         while (x != SHM_CNTR_INVALID_POINT)
         {
             y = x;
-            x = _compare_key()(_extract_key()(v), key(x)) ? left(x) : right(x);
+            x = _compare_key()(_extract_key()(std::forward<T>(v)),
+                               key(x)) ? left(x) : right(x);
         }
 
-        return _insert(x, y, v);
+        return _insert(x, y, std::forward<T>(v));
     }
 
-    //重复key插入则失败的插入函数，Map、Sap用这个
-    std::pair<iterator, bool> insert_unique(const T& v)
+    template<typename U>
+    std::pair<iterator, bool> _insert_unique(U&& v)
     {
         size_t y = header();
         size_t x = root();
@@ -1005,7 +836,7 @@ public:
         while (x != SHM_CNTR_INVALID_POINT)
         {
             y = x;
-            comp = _compare_key()(_extract_key()(v), key(x));
+            comp = _compare_key()(_extract_key()(std::forward<T>(v)), key(x));
             x = comp ? left(x) : right(x);
         }
 
@@ -1015,7 +846,7 @@ public:
         {
             if (j == begin())
             {
-                return _insert(x, y, v);
+                return _insert(x, y, std::forward<T>(v));
             }
             else
             {
@@ -1025,10 +856,203 @@ public:
 
         if (_compare_key()(key(j.getserial()), _extract_key()(v)))
         {
-            return _insert(x, y, v);
+            return _insert(x, y, std::forward<T>(v));
         }
 
         return std::pair<iterator, bool>(j, false);
+    }
+
+public:
+
+    //内存区的构成为 定义区,index区,data区,返回所需要的长度,
+    static size_t getallocsize(const size_t numnode)
+    {
+        return  sizeof(_shm_rb_tree_head) +
+            sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
+            sizeof(T) * numnode;
+    }
+
+    /*!
+        * @brief 初始化，得到一个self的对象指针，
+        * @param numnode    对象数量
+        * @param mem_addr   内心地址指针，可以是共享内存指针
+        * @param if_restore 如果是共享内存，可以尝试恢复
+        * @return self，自己的对象指针
+    */
+    static self* initialize(const size_t numnode, char* mem_addr, bool if_restore = false)
+    {
+        //assert(mem_addr!=nullptr && numnode >0 );
+        _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(mem_addr);
+
+        //如果是恢复,数据都在内存中,
+        if (true == if_restore)
+        {
+            //检查一下恢复的内存是否正确,
+            if (getallocsize(numnode) != rb_tree_head->size_of_mmap_ ||
+                numnode != rb_tree_head->num_of_node_)
+            {
+                return nullptr;
+            }
+        }
+
+        //初始化尺寸
+        rb_tree_head->size_of_mmap_ = getallocsize(numnode);
+        rb_tree_head->num_of_node_ = numnode;
+
+        self* instance = new self();
+
+        //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
+        instance->mem_addr_ = mem_addr;
+        instance->rb_tree_head_ = rb_tree_head;
+        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(
+            mem_addr + sizeof(_shm_rb_tree_head));
+        instance->data_base_ = reinterpret_cast<T*>(
+            mem_addr + sizeof(_shm_rb_tree_head) +
+            sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+
+        //初始化free_index_,head_index_
+        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(
+            mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
+        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index*>(
+            mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
+
+        if (if_restore)
+        {
+            instance->restore();
+        }
+        else
+        {
+            //清理初始化所有的内存,所有的节点为FREE
+            instance->clear();
+        }
+        return instance;
+    }
+
+    //清理初始化所有的内存,所有的节点为FREE
+    void clear()
+    {
+        //处理2个关键Node,以及相关长度,开始所有的数据是free.
+        rb_tree_head_->sz_free_node_ = rb_tree_head_->num_of_node_;
+        rb_tree_head_->sz_use_node_ = 0;
+
+        //将清理为nullptr,让指针都指向自己
+        head_index_->parent_ = SHM_CNTR_INVALID_POINT;
+        head_index_->right_ = rb_tree_head_->num_of_node_;
+        head_index_->left_ = rb_tree_head_->num_of_node_;
+        head_index_->color_ = RB_TREE_RED;
+
+        _shm_rb_tree_index* pindex = index_base_;
+
+        free_index_->right_ = 0;
+
+        //初始化free数据区
+        for (size_t i = 0; i < rb_tree_head_->num_of_node_; ++i)
+        {
+            pindex->right_ = (i + 1);
+
+            //将所有FREENODE串起来
+            if (i == rb_tree_head_->num_of_node_ - 1)
+            {
+                pindex->right_ = rb_tree_head_->num_of_node_ + 1;
+            }
+
+            pindex++;
+        }
+    }
+
+    //!销毁，析构所有的已有元素，注意，如果想恢复，不要调用这个函数
+    void terminate()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            (data_base_ + pos)->~T();
+        }
+        clear();
+    }
+
+    //!恢复函数，用于从(共享)内存中恢复数据，
+    void restore()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            T val(std::move(*iter_tmp));
+            new (data_base_ + pos) T(std::move(val));
+        }
+    }
+
+    //找到第一个节点
+    iterator begin()
+    {
+        return iterator(head_index_->left_, this);
+    };
+
+    //容器应该是前闭后开的,头节点视为最后一个index
+    iterator end()
+    {
+        return iterator(rb_tree_head_->num_of_node_, this);
+    }
+
+    //所有节点都在free链上即是空
+    bool empty()
+    {
+        if (rb_tree_head_->sz_free_node_ == rb_tree_head_->num_of_node_)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    //在插入数据前调用,这个函数检查
+    bool full()
+    {
+        if (rb_tree_head_->sz_free_node_ == 0)
+        {
+            return true;
+        }
+
+        return false;
+    };
+
+    size_t size() const
+    {
+        return rb_tree_head_->sz_use_node_;
+    }
+
+    size_t capacity() const
+    {
+        return rb_tree_head_->num_of_node_;
+    }
+
+    //空闲的节点个数
+    size_t free()
+    {
+        return rb_tree_head_->sz_free_node_;
+    }
+    //重复key插入则失败的插入函数，Map、Sap用这个
+    std::pair<iterator, bool> insert_unique(const T& v)
+    {
+        return _insert_unique(v);
+    }
+    std::pair<iterator, bool> insert_unique(T&& v)
+    {
+        return _insert_unique(v);
+    }
+
+    //允许重复key插入的插入函数，Multimap、Multimap用这个
+    std::pair<iterator, bool>  insert_equal(const T& v)
+    {
+        return _insert_equal(v);
+    }
+    std::pair<iterator, bool>  insert_equal(T&& v)
+    {
+        return _insert_equal(v);
     }
 
     //通过迭代器删除一个节点

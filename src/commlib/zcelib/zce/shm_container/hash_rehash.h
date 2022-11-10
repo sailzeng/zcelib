@@ -581,7 +581,7 @@ public:
             //但如果不进行这样，即使如果质数的矩阵改变了，还是可以用共享内存中间的数据继续跑，我选择了严谨，而不是
 
             //检查一下恢复的内存是否正确,
-            if (sz_alloc = hashhead->size_of_mmap_ ||
+            if (sz_alloc == hashhead->size_of_mmap_ ||
                 node_count != hashhead->num_of_node_)
             {
                 return nullptr;
@@ -661,8 +661,20 @@ public:
         return (hash_safe_head_->sz_freenode_ == 0);
     }
 
+public:
     //插入节点
     std::pair<iterator, bool> insert(const T& val)
+    {
+        return insert_i(val);
+    }
+    std::pair<iterator, bool> insert(T&& val)
+    {
+        return insert_i(val);
+    }
+protected:
+    //插入节点,内部实现
+    template<typename U>
+    std::pair<iterator, bool> insert_i(U&& val)
     {
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -674,11 +686,11 @@ public:
         //循环进行N此取模操作，
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
-            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_value(std::forward<U>(val), hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])), (get_key(val))))
+            if (equal_key((get_key(value_base_[idx_count])), (get_key(std::forward<U>(val)))))
             {
                 return std::pair<iterator, bool>(iterator(idx_count, this), false);
             }
@@ -704,7 +716,7 @@ public:
         }
 
         //使用placement new进行赋值
-        new (value_base_ + idx_no_use)T(val);
+        new (value_base_ + idx_no_use)T(std::forward<U>(val));
 
         ++(hash_safe_head_->sz_usenode_);
         --(hash_safe_head_->sz_freenode_);
@@ -712,6 +724,7 @@ public:
         return std::pair<iterator, bool>(iterator(idx_no_use, this), true);
     }
 
+public:
     //带优先级的插入，开始初始化的时候必须if_expire == true
     //@const _value_type &val 插入的数据
     //@unsigned int priority  插入数据优先级，
@@ -719,6 +732,20 @@ public:
     std::pair<iterator, bool> insert(const T& val,
                                      unsigned int priority,
                                      unsigned int expire_priority = 0)
+    {
+        return insert_i(val, priority, expire_priority);
+    }
+    std::pair<iterator, bool> insert(T&& val,
+                                     unsigned int priority,
+                                     unsigned int expire_priority = 0)
+    {
+        return insert_i(val, priority, expire_priority);
+    }
+protected:
+    template<typename U>
+    std::pair<iterator, bool> insert_i(U&& val,
+                                       unsigned int priority,
+                                       unsigned int expire_priority)
     {
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -730,11 +757,11 @@ public:
         //循环进行N此取模操作，
         for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
-            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_value(std::forward<U>(val), hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])), (get_key(val))))
+            if (equal_key((get_key(value_base_[idx_count])), (get_key(std::forward<U>(val)))))
             {
                 return std::pair<iterator, bool>(iterator(idx_count, this), false);
             }
@@ -771,7 +798,7 @@ public:
         }
 
         //使用placement new进行赋值
-        new (value_base_ + idx_no_use)T(val);
+        new (value_base_ + idx_no_use)T(std::forward<U>(val));
 
         ++(hash_safe_head_->sz_usenode_);
         --(hash_safe_head_->sz_freenode_);
@@ -781,7 +808,7 @@ public:
 
         return std::pair<iterator, bool>(iterator(idx_no_use, this), true);
     }
-
+public:
     //查询相应的Key是否有,返回迭代器
     //这个地方有一个陷阱,这个地方返回的迭代器++，不能给你找到相同的key的数据,而开链的HASH实现了这个功能
     iterator find(const K& key)

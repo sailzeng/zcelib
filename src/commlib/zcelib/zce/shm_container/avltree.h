@@ -319,7 +319,8 @@ public:
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const T& val)
+    template<typename U>
+    size_t create_node(U&& val)
     {
         //如果没有空间可以分配
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -339,7 +340,7 @@ protected:
         (index_base_ + new_node)->right_ = SHM_CNTR_INVALID_POINT;
         (index_base_ + new_node)->balanced_ = 0;
 
-        new (data_base_ + new_node)T(val);
+        new (data_base_ + new_node)T(std::forward<U>(val));
 
         return new_node;
     }
@@ -602,10 +603,11 @@ protected:
     * @param      y   插入点的父节点
     * @param      val 插入的数据
     */
-    std::pair<iterator, bool> _insert(size_t x, size_t y, const T& val)
+    template<typename U>
+    std::pair<iterator, bool> _insert(size_t x, size_t y, U&& val)
     {
         //分配一个空间
-        size_t z = create_node(val);
+        size_t z = create_node(std::forward<U>(val));
         //日过空间不足，无法插入，返回end,false的pair
         if (SHM_CNTR_INVALID_POINT == z)
         {
@@ -1162,6 +1164,17 @@ public:
     */
     std::pair<iterator, bool> insert_equal(const T& v)
     {
+        return _insert_equal(v);
+    }
+    std::pair<iterator, bool> insert_equal(T&& v)
+    {
+        return _insert_equal(v);
+    }
+protected:
+
+    template<typename U>
+    std::pair<iterator, bool> _insert_equal(U&& v)
+    {
         //如果依据满了，也返回失败
         if (avl_tree_head_->sz_free_node_ == 0)
         {
@@ -1175,18 +1188,29 @@ public:
         while (x != SHM_CNTR_INVALID_POINT)
         {
             y = x;
-            x = _compare_key()(_extract_key()(v), key(x)) ? left(x) : right(x);
+            x = _compare_key()(_extract_key()(std::forward<U>(v)), key(x)) ? left(x) : right(x);
         }
 
-        return _insert(x, y, v);
+        return _insert(x, y, std::forward<U>(v));
     }
 
+public:
     /*!
     * @brief      重复key插入则失败的插入函数，Map、Sap用这个
     * @return     std::pair<iterator, bool> 返回的iterator为迭代器，bool为是否插入成功
     * @param      v 插入的_value_type的数据
     */
     std::pair<iterator, bool> insert_unique(const T& v)
+    {
+        return _insert_unique(v);
+    }
+    std::pair<iterator, bool> insert_unique(T&& v)
+    {
+        return _insert_unique(v);
+    }
+protected:
+    template<typename U>
+    std::pair<iterator, bool> _insert_unique(U&& v)
     {
         //如果依据满了，也返回失败
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -1202,17 +1226,16 @@ public:
         while (x != SHM_CNTR_INVALID_POINT)
         {
             y = x;
-            comp = _compare_key()(_extract_key()(v), key(x));
+            comp = _compare_key()(_extract_key()(std::forward<U>(v)), key(x));
             x = comp ? left(x) : right(x);
         }
 
         iterator j = iterator(y, this);
-
         if (comp)
         {
             if (j == begin())
             {
-                return _insert(x, y, v);
+                return _insert(x, y, std::forward<U>(v));
             }
             else
             {
@@ -1228,7 +1251,7 @@ public:
         //如果既不是>,又不是<，那么就是==,那么返回错误
         return std::pair<iterator, bool>(j, false);
     }
-
+public:
     /*!
     * @brief      通过迭代器删除一个节点
     * @return     void 注意，微软的这个函数好像返回一个迭代器，
