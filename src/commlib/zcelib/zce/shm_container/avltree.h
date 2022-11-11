@@ -202,22 +202,24 @@ protected:
 */
 template < class T,
     class Key,
-    class Extract = smem_identity<T>,
+    class Extract = shm_identity<T>,
     class Compare = std::less<Key> >
 class shm_avltree
 {
-protected:
+    //迭代器友元
+    friend class _avl_tree_iterator<T, Key, Extract, Compare>;
+private:
     //定义自己
     typedef shm_avltree < T, Key, Extract, Compare > self;
 public:
     typedef T value_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
     typedef Key key_type;
     typedef _avl_tree_iterator < T, Key, Extract, Compare > iterator;
-    typedef const _avl_tree_iterator<T, Key, Extract, Compare> const_iterator;
+    typedef const iterator const_iterator;
     typedef shmc_size_type size_type;
-
-    //迭代器友元
-    friend class _avl_tree_iterator<T, Key, Extract, Compare>;
 
 protected:
     ///AVL TREE的头部数据区
@@ -379,7 +381,7 @@ public:
         //数据区
         instance->data_base_ = reinterpret_cast<T*>(
             pmmap +
-            sizeof(_shm_rb_tree_head) +
+            sizeof(_avl_tree_head) +
             sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
@@ -1453,60 +1455,54 @@ protected:
 //用AVL Tree实现SET，不区分multiset和set，通过不通的insert自己区分
 template < class T,
     class Compare = std::less<T> >
-class avl_set :
-    public shm_avltree< T, T, smem_identity<T>, Compare >
+class shm_avlset :
+    public shm_avltree< T, T, shm_identity<T>, Compare >
 {
+private:
+    typedef shm_avlset<T, Compare > self;
+    typedef shm_avltree<T, T, shm_identity<T>, Compare> avl_tree_t;
 protected:
-
-    avl_set() = default;
+    shm_avlset() = default;
+    shm_avlset(const shm_avlset& others) = delete;
+    const self& operator=(const self& others) = delete;
 public:
-    ~avl_set() = default;
+    ~shm_avlset() = default;
 
 public:
 
-    static avl_set*
-        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
+    static self*
+        initialize(self::size_type& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_set< T, Compare  > *>(
-            shm_avltree < T,
-            T,
-            smem_identity<T>,
-            Compare >::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<self *>(
+            avl_tree_t::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用AVL Tree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template < class Key,
     class T,
-    class Extract = mmap_select1st <std::pair <Key, T> >,
+    class Extract = shm_select1st <std::pair <Key, T> >,
     class Compare = std::less<T>  >
-class avl_map :
+class shm_avlmap :
     public shm_avltree< std::pair <Key, T>, Key, Extract, Compare  >
 {
-protected:
-    //如果在共享内存使用,没有new,所以统一用initialize 初始化
-    //这个函数,不给你用,就是不给你用
-    avl_map(size_type numnode, void* pmmap, bool if_restore) :
-        shm_avltree< std::pair <Key, T>, Key, Extract, Compare  >(numnode, pmmap, if_restore)
-    {
-        initialize(numnode, pmmap, if_restore);
-    }
+private:
+    typedef shm_avlmap<Key, T, Extract, Compare > self;
+    typedef shm_avltree<std::pair <Key, T>, Key, Extract, Compare> avl_tree_t;
 
-    ~avl_map() = default;
+protected:
+    shm_avlmap() = default;
+    shm_avlmap(const shm_avlmap& others) = delete;
+    const self& operator=(const self& others) = delete;
+public:
+    ~shm_avlmap() = default;
 
 public:
-    static avl_map*
-        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
+    static self*
+        initialize(self::size_type& numnode, char* pmmap, bool if_restore = false)
     {
-        return reinterpret_cast <avl_map < Key,
-            T,
-            Extract,
-            Compare  > *> (
-            shm_avltree < std::pair < Key,
-            T >,
-            Key,
-            Extract,
-            Compare >::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast <self *> (
+            avl_tree_t::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用
     T& operator[](const Key& key)

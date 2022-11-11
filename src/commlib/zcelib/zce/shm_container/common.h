@@ -122,8 +122,12 @@ namespace zce
 //除非你知道你自己在干嘛，否则不要调整这个宏
 #define ALLOW_RESTORE_INCONFORMITY 0
 
-//空序号指针标示,32位为0xFFFFFFFF,64位为0xFFFFFFFFFFFFFFFF CNTR = CONTAINER SHM = Share memory
+//! size_type 定义，目前使用std::size_t(32位系统32bit，64位系统64bit)，
+//! 如果您觉得不需要那么大空间，需要缩小内存占用，可以将其调整uint32_t
 typedef std::size_t  shmc_size_type;
+
+//! 空序号指针标示,32位为0xFFFFFFFF(-1),64位为0xFFFFFFFFFFFFFFFF(-1)
+//! SHMC = Share memory CONTAINER
 const shmc_size_type SHMC_INVALID_POINT = static_cast<shmc_size_type>(-1);
 
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
@@ -141,7 +145,7 @@ void hash_prime_ary(const size_t node_num, size_t& real_num, size_t row, size_t 
 //写这个代码的时候hashtable还不是标准STL,
 //为了能直接在.net下编译,我不得不如此,其实你可以自己定义返回size_t整数Key的函数对象
 
-template <class keytpe> struct smem_hash {};
+template <class keytpe> struct shm_hash {};
 
 //这个函数其实是BKDRHash的描述，原有的STLPort中间seed 是5，BKDRHash 推荐使用131等值
 inline size_t _shm_hash_string(const char* str)
@@ -158,7 +162,7 @@ inline size_t _shm_hash_string(const char* str)
     return size_t(hashval);
 }
 
-template<> struct smem_hash<char*>
+template<> struct shm_hash<char*>
 {
     size_t operator()(const char* str) const
     {
@@ -166,7 +170,7 @@ template<> struct smem_hash<char*>
     }
 };
 
-template<> struct smem_hash<const char*>
+template<> struct shm_hash<const char*>
 {
     size_t operator()(const char* str) const
     {
@@ -174,7 +178,7 @@ template<> struct smem_hash<const char*>
     }
 };
 
-template<> struct smem_hash<std::string>
+template<> struct shm_hash<std::string>
 {
     size_t operator()(const std::string& str) const
     {
@@ -182,7 +186,7 @@ template<> struct smem_hash<std::string>
     }
 };
 
-template<> struct smem_hash<const std::string>
+template<> struct shm_hash<const std::string>
 {
     size_t operator()(const std::string& str) const
     {
@@ -190,7 +194,7 @@ template<> struct smem_hash<const std::string>
     }
 };
 
-template<> struct smem_hash<char>
+template<> struct shm_hash<char>
 {
     size_t operator()(char x) const
     {
@@ -198,7 +202,7 @@ template<> struct smem_hash<char>
     }
 };
 
-template<> struct smem_hash<unsigned char>
+template<> struct shm_hash<unsigned char>
 {
     size_t operator()(unsigned char x) const
     {
@@ -206,14 +210,14 @@ template<> struct smem_hash<unsigned char>
     }
 };
 
-template<> struct smem_hash<short>
+template<> struct shm_hash<short>
 {
     size_t operator()(short x) const
     {
         return static_cast<size_t>(x);
     }
 };
-template<> struct smem_hash<unsigned short>
+template<> struct shm_hash<unsigned short>
 {
     size_t operator()(unsigned short x) const
     {
@@ -221,7 +225,7 @@ template<> struct smem_hash<unsigned short>
     }
 };
 
-template<> struct smem_hash<int>
+template<> struct shm_hash<int>
 {
     size_t operator()(int x) const
     {
@@ -229,14 +233,14 @@ template<> struct smem_hash<int>
     }
 };
 
-template<> struct smem_hash<unsigned int>
+template<> struct shm_hash<unsigned int>
 {
     size_t operator()(unsigned int x) const
     {
         return static_cast<size_t>(x);
     }
 };
-template<> struct smem_hash<long>
+template<> struct shm_hash<long>
 {
     size_t operator()(long x) const
     {
@@ -244,7 +248,7 @@ template<> struct smem_hash<long>
     }
 };
 
-template<> struct smem_hash<uint64_t>
+template<> struct shm_hash<uint64_t>
 {
     size_t operator()(uint64_t x) const
     {
@@ -262,7 +266,7 @@ template<> struct smem_hash<uint64_t>
 //---------------------------------------------------------------------------------------------
 //默认的一个淘汰函数，在自动淘汰时调用，用于完成一些不便于用析构处理的代码
 template < class T>
-class _default_washout_fun
+class default_washout
 {
 public:
     void operator()(T& /*da*/)
@@ -274,7 +278,7 @@ public:
 //---------------------------------------------------------------------------------------------
 
 //identity也不是标准STL,偷,偷,偷, identity其实就是萃取自己
-template <class T> struct smem_identity
+template <class T> struct shm_identity
 {
     const T& operator()(const T& x) const
     {
@@ -282,8 +286,11 @@ template <class T> struct smem_identity
     }
 };
 
+//select1st select2st不是标准函数
+//可以用std::get<N>()代替他们
+
 //
-template <class _Pair> struct mmap_select1st
+template <class _Pair> struct shm_select1st
 {
     typename _Pair::first_type&
         operator()(_Pair& __x) const
@@ -298,8 +305,7 @@ template <class _Pair> struct mmap_select1st
     }
 };
 
-//
-template <class _Pair> struct mmap_select2st
+template <class _Pair> struct shm_select2st
 {
     typename _Pair::second_type&
         operator()(_Pair& __x) const
@@ -312,6 +318,12 @@ template <class _Pair> struct mmap_select2st
     {
         return __x.second;
     }
+};
+
+template <std::size_t N>
+constexpr auto shm_select = [](auto&& x) noexcept -> decltype(auto)
+{
+    return std::get<N>(std::forward<decltype(x)>(x));
 };
 
 //=============================================================================================

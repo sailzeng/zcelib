@@ -53,16 +53,17 @@ template <class T> class shm_list;
 */
 template <class T> class _shm_list_iterator
 {
-    typedef _shm_list_iterator<T> iterator;
-
-    //迭代器萃取器所有的东东
-    typedef std::size_t size_type;
+public:
+    typedef shmc_size_type size_type;
     typedef ptrdiff_t difference_type;
+    typedef T value_type;
     typedef T* pointer;
     typedef T& reference;
-    typedef T value_type;
+    //迭代器萃取器所有的东东
     typedef std::bidirectional_iterator_tag iterator_category;
-
+private:
+    typedef _shm_list_iterator<T> iterator;
+    typedef shm_list<T> shm_list_t;
 public:
 
     /*!
@@ -71,23 +72,19 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator(size_type seq, shm_list<T>* instance) :
+    _shm_list_iterator(size_type seq, shm_list_t* instance) :
         serial_(seq),
         list_instance_(instance)
     {
     }
 
     ///构造函数
-    _shm_list_iterator() :
-        serial_(zce::SHMC_INVALID_POINT),
-        list_instance_(nullptr)
-    {
-    }
+    _shm_list_iterator() = default;
     ///析构函数
     ~_shm_list_iterator() = default;
 
     ///初始化，
-    void initialize(size_type seq, shm_list<T>* instance)
+    void initialize(size_type seq, shm_list_t* instance)
     {
         serial_ = seq;
         list_instance_ = instance;
@@ -156,12 +153,10 @@ public:
 protected:
 
     //序列号，相对于数组下标
-    size_type    serial_;
+    size_type    serial_ = zce::SHMC_INVALID_POINT;
     //对应的list对象指针
-    shm_list<T>* list_instance_;
+    shm_list_t*  list_instance_ = nullptr;
 };
-
-//============================================================================================
 
 //============================================================================================
 
@@ -179,20 +174,17 @@ class shm_list
     //某些函数提供给迭代器用
     friend class _shm_list_iterator<T>;
 private:
-
     //定义自己
-    typedef shm_list<T> self;
-
-private:
     typedef shm_list<T> self;
 public:
     typedef _shm_list_iterator<T> iterator;
-    typedef const _shm_list_iterator<T> const_iterator;
+    typedef const iterator const_iterator;
+    typedef iterator::iterator_category iterator_category;
     typedef T value_type;
-    typedef std::size_t size_type;
     typedef value_type& reference;
     typedef const value_type& const_reference;
     typedef value_type* pointer;
+    typedef shmc_size_type size_type;
 
 protected:
     /*!
@@ -293,7 +285,6 @@ protected:
         //assert(list_head_->szusenode_ + list_head_->szfreenode_ == list_head_->numofnode_);
     }
 
-protected:
     //通过偏移序列号插入,如果你胡乱使用,不是非常安全,FREENODE也是有POS的.
     //插入在这个POS节点的前面
     template<typename U>

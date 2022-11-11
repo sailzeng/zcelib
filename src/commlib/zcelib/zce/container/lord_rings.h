@@ -383,7 +383,7 @@ public:
     //! 右值push_back
     bool push_back(T&& value, bool lay_over = false)
     {
-        return push_back_i(std::forward<T>(value), lay_over);
+        return push_back_i(value, lay_over);
     }
     ///将一个数据放入队列的头部,如果队列已经满了看lay_over参数处理
     bool push_front(const T &value, bool lay_over = false)
@@ -393,7 +393,7 @@ public:
     //! 右值push_front
     bool push_front(T &&value, bool lay_over = false)
     {
-        return push_front_i(std::forward<T>(value), lay_over);
+        return push_front_i(value, lay_over);
     }
 
     template< class... Args >

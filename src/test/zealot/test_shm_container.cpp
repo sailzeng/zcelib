@@ -1035,15 +1035,15 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
     size_t node_num = 100, real_num = 0;
     size_t sz_del = 0;
 
-    size_t szalloc = zce::shm_hashtable_expire <int, int >::alloc_size(node_num, real_num);
+    size_t szalloc = zce::shm_expire_hashtable <int, int >::alloc_size(node_num, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)node_num << std::endl;
-    std::cout << "sizeof :" << sizeof(zce::shm_hashtable_expire <int, int >) << std::endl;
+    std::cout << "sizeof :" << sizeof(zce::shm_expire_hashtable <int, int >) << std::endl;
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
     //
-    zce::shm_hashtable_expire<int, int >* pmmap = zce::shm_hashtable_expire<int, int >::initialize(node_num, real_num, tmproom);
+    zce::shm_expire_hashtable<int, int >* pmmap = zce::shm_expire_hashtable<int, int >::initialize(node_num, real_num, tmproom);
     pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
 
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
@@ -1074,11 +1074,11 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
 
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
-    zce::shm_hashtable_expire<int, int >::iterator it;
+    zce::shm_expire_hashtable<int, int >::iterator it;
     //
     it = pmmap->find(1001);
 
-    zce::shm_hashtable_expire<int, int >::iterator it_end = pmmap->end();
+    zce::shm_expire_hashtable<int, int >::iterator it_end = pmmap->end();
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
     if (it == it_end)
@@ -1140,7 +1140,7 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
         pmmap->insert_unique(static_cast<int>(1000 + i), static_cast<unsigned int>(i + 1950));
     }
 
-    std::pair<zce::shm_hashtable_expire <int, int >::iterator, bool> iter_bool = pmmap->insert_unique(100022, static_cast<unsigned int>(time(nullptr)));
+    std::pair<zce::shm_expire_hashtable <int, int >::iterator, bool> iter_bool = pmmap->insert_unique(100022, static_cast<unsigned int>(time(nullptr)));
     assert(iter_bool.second == false);
 
     it = pmmap->begin();
@@ -1161,23 +1161,23 @@ int test_lru_hashtable2(int /*argc*/, char* /*argv*/[])
     size_t numnode = 100, real_num = 0;
     size_t num_count = 0;
 
-    size_t szalloc = zce::shm_hashtable_expire <int, int >::alloc_size(numnode, real_num);
+    size_t szalloc = zce::shm_expire_hashtable <int, int >::alloc_size(numnode, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)numnode << std::endl;
-    std::cout << "sizeof :" << sizeof(zce::shm_hashtable_expire <int, int >) << std::endl;
+    std::cout << "sizeof :" << sizeof(zce::shm_expire_hashtable <int, int >) << std::endl;
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
     //
-    zce::shm_hashtable_expire<int, int >* pmmap = zce::shm_hashtable_expire<int, int >::initialize(numnode, real_num, tmproom);
+    zce::shm_expire_hashtable<int, int >* pmmap = zce::shm_expire_hashtable<int, int >::initialize(numnode, real_num, tmproom);
     pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
     pmmap->insert_unique(38636, static_cast<unsigned int>(time(nullptr)));
     pmmap->insert_unique(36384378, static_cast<unsigned int>(time(nullptr)));
     pmmap->insert_unique(65231237, static_cast<unsigned int>(time(nullptr)));
     num_count = pmmap->count(1001);
 
-    zce::shm_hashtable_expire<int, int >::iterator it_tmp = pmmap->begin();
-    zce::shm_hashtable_expire<int, int >::iterator it_end = pmmap->end();
+    zce::shm_expire_hashtable<int, int >::iterator it_tmp = pmmap->begin();
+    zce::shm_expire_hashtable<int, int >::iterator it_end = pmmap->end();
 
     for (; it_tmp != it_end; ++it_tmp)
     {
@@ -1202,14 +1202,14 @@ int test_lru_hashtable3(int /*argc*/, char* /*argv*/[])
 
     size_t count = 0;
 
-    size_t szalloc = zce::shm_hashtable_expire <int, int >::alloc_size(numnode, real_num);
+    size_t szalloc = zce::shm_expire_hashtable <int, int >::alloc_size(numnode, real_num);
 
     std::cout << "need mem: " << (int)szalloc << " num of node:" << (int)numnode << std::endl;
-    std::cout << "sizeof :" << sizeof(zce::shm_hashtable_expire <int, int >) << std::endl;
+    std::cout << "sizeof :" << sizeof(zce::shm_expire_hashtable <int, int >) << std::endl;
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::shm_hashtable_expire<int, int >* pmmap = zce::shm_hashtable_expire<int, int >::initialize(numnode, real_num, tmproom);
+    zce::shm_expire_hashtable<int, int >* pmmap = zce::shm_expire_hashtable<int, int >::initialize(numnode, real_num, tmproom);
 
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
@@ -1269,7 +1269,7 @@ class Lux_Data_Manager : public  zce::non_copyable
 {
 protected:
     //
-    typedef zce::shm_hashtable_expire<MY_DATA, int, zce::smem_hash<int>, EXTRACT_INT_MY_DATA> HASH_TABLE_MY_DATA;
+    typedef zce::shm_expire_hashtable<MY_DATA, int, zce::shm_hash<int>, EXTRACT_INT_MY_DATA> HASH_TABLE_MY_DATA;
     //
     size_t              data_number_;
     //
@@ -1490,7 +1490,7 @@ int test_lux_data_manager(int argc, char* /*argv*/[])
     return 0;
 }
 
-typedef zce::shm_hash_rehash<int, int> SMEM_HASH_SAFE_INT;
+typedef zce::shm_rehash_hashtable<int, int> SMEM_HASH_SAFE_INT;
 
 typedef zce::shm_hashtable<int, int> SMEM_HASH_TABLE_INT;
 
@@ -1614,7 +1614,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-typedef zce::shm_hash_rehash<int, int> SMEM_HASH_SAFE_INT;
+typedef zce::shm_rehash_hashtable<int, int> SMEM_HASH_SAFE_INT;
 
 int test_hash_safe(int /*argc*/, char* /*argv*/[])
 {

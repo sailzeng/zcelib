@@ -30,7 +30,7 @@
 //{
 //public:
 //    //NODE链表的指针,
-//    size_t        next_;
+//    size_type        next_;
 //    //ValueType数据
 //    _value_type   hash_data_;
 //
@@ -38,50 +38,52 @@
 namespace zce
 {
 template < class T,
-    class K,
-    class _hash_fun,
-    class _extract_key,
-    class _equal_key > class shm_hashtable;
-
-///
+    class Key,
+    class Hash,
+    class Extract,
+    class keyEqual > class shm_hashtable;
 
 /*!
 * @brief      hash_table的迭代器.
 *             只提供了单向迭代器，++，
 *             模版参数我就不解释，反正和hash_table一致，你看下面的说明把。
 */
-template <class T, class K, class _hash_fun, class _extract_key, class _equal_key>
-class _shm_hashtable_iterator
+template <class T, class Key, class Hash, class Extract, class keyEqual>
+class _shm_ht_iterator
 {
-protected:
-
-    ///hash_type定义，方便使用
-    typedef shm_hashtable<T, K, _hash_fun, _extract_key, _equal_key> shm_hashtable_t;
+public:
+    typedef shmc_size_type size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    //迭代器萃取器所有的东东
+    typedef std::bidirectional_iterator_tag iterator_category;
+private:
     ///迭代器定义，方便下面的使用
-    typedef _shm_hashtable_iterator<T, K, _hash_fun, _extract_key, _equal_key> iterator;
+    typedef _shm_ht_iterator<T, Key, Hash, Extract, keyEqual> iterator;
+    ///hash_type定义，方便使用
+    typedef shm_hashtable<T, Key, Hash, Extract, keyEqual> shm_hashtable_t;
 
 public:
-
+    ///默认构造函数
+    _shm_ht_iterator() = default;
+    ~_shm_ht_iterator() = default;
     ///构造函数
-    _shm_hashtable_iterator(size_t seq, shm_hashtable_t* instance) :
+    _shm_ht_iterator(size_type seq, shm_hashtable_t* instance) :
         serial_(seq),
         ht_instance_(instance)
     {
     }
 
-    ///默认构造函数
-    _shm_hashtable_iterator()
-    {
-    }
-
     ///保留序号就可以再根据模版实例化对象找到相应数据,不用使用指针
-    size_t getserial() const
+    size_type getserial() const
     {
         return serial_;
     }
 
     ///提供这个方法事为了加快很多函数的速度,
-    size_t getnext()
+    size_type getnext()
     {
         return *(ht_instance_->next_index_ + serial_);
     }
@@ -112,14 +114,14 @@ public:
     ///单向迭代器
     iterator& operator++()
     {
-        size_t oldseq = serial_;
+        size_type oldseq = serial_;
         serial_ = *(ht_instance_->next_index_ + serial_);
 
         //如果这个节点是末位的节点
         if (serial_ == zce::SHMC_INVALID_POINT)
         {
             //顺着Index查询.
-            size_t bucket = ht_instance_->bkt_num_value(*(ht_instance_->data_base_ + oldseq));
+            size_type bucket = ht_instance_->bkt_num_value(*(ht_instance_->data_base_ + oldseq));
 
             while (serial_ == zce::SHMC_INVALID_POINT && ++bucket < ht_instance_->capacity())
             {
@@ -140,95 +142,89 @@ public:
 
 protected:
     ///序列号
-    size_t           serial_;
+    size_type           serial_ = zce::SHMC_INVALID_POINT;
     ///HashTable的指针,
-    shm_hashtable_t* ht_instance_;
-};
-
-/*!
-* @brief shm_hash_table的头部数据区的结构
-*        记录大小，使用情况等
-*/
-class _shm_hash_table_head
-{
-protected:
-    _shm_hash_table_head() :
-        size_of_mmap_(0),
-        num_of_node_(0),
-        sz_freenode_(0),
-        sz_usenode_(0),
-        sz_useindex_(0),
-        free_headnode_(0)
-    {
-    }
-    ~_shm_hash_table_head()
-    {
-    }
-
-public:
-    ///内存区的长度
-    size_t                             size_of_mmap_;
-
-    ///NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
-    size_t                             num_of_node_;
-
-    ///FREE的NODE个数
-    size_t                             sz_freenode_;
-    ///USE的NODE个数
-    size_t                             sz_usenode_;
-
-    ///使用的INDEX个数,可以了解实际开链的负载比率
-    size_t                             sz_useindex_;
-
-    ///FREE NODE的头指针
-    size_t                             free_headnode_;
+    shm_hashtable_t* ht_instance_ = nullptr;
 };
 
 /*!
 * @brief      HashTABLE的定义,看完HashTable,才发现封装太太经典,爱死STL了,向那些聪明的脑瓜致敬
 *             另外,最大负载系数我设计为1,本来想搞大一些,但是考虑STL的hasttable在复杂达到1后会调整,
 *             这儿的参数顺序我不喜欢,但遵照STL的顺序把
-* @tparam     _value_type  节点的实际值型别
-* @tparam     _key_type    节点的键的型别
-* @tparam     _hash_fun    _key_type的hash函数,或者函数对象
-* @tparam     _extract_key 从节点中得到键值的方法,或者函数对象
-* @tparam     _equal_key    比较键值是否相等的方法,或者函数对象
+* @tparam     T        节点的实际值型别
+* @tparam     Key      节点的键的型别
+* @tparam     Hash     Key的hash函数,得到Hash因子，std::hash满足大部分情况，
+* @tparam     Extract  从节点中得到Key键值的方法,或者函数对象
+* @tparam     keyEqual 比较Key键值是否相等的方法,或者函数对象
 * @note
 */
 template < class T,
-    class K,
-    class _hash_fun = smem_hash<K>,
-    class _extract_key = smem_identity<T>,
-    class _equal_key = std::equal_to<K> >
+    class Key,
+    class Hash = std::hash<Key>,
+    class Extract = shm_identity<T>,
+    class keyEqual = std::equal_to<Key> >
 class shm_hashtable
 {
+    //迭代器作为自己友元
+    friend class _shm_ht_iterator<T, Key, Hash, Extract, keyEqual>;
 private:
     //定义自己
-    typedef shm_hashtable<T, K, _hash_fun, _extract_key, _equal_key> self;
-
+    typedef shm_hashtable<T, Key, Hash, Extract, keyEqual> self;
 public:
     //定义迭代器
-    typedef _shm_hashtable_iterator<T, K, _hash_fun, _extract_key, _equal_key> iterator;
-
-    //友元
-    friend class _shm_hashtable_iterator<T, K, _hash_fun, _extract_key, _equal_key>;
+    typedef _shm_ht_iterator<T, Key, Hash, Extract, keyEqual> iterator;
+    typedef const iterator const_iterator;
+    typedef iterator::iterator_category iterator_category;
+    typedef T value_type;
+    typedef Key key_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
+    typedef shmc_size_type size_type;
 
 protected:
-
     shm_hashtable() = default;
-
     //只定义,不实现,
     shm_hashtable(const shm_hashtable&) = delete;
     const self& operator=(const self& others) = delete;
 public:
-
     ~shm_hashtable() = default;
 
 protected:
 
+    /*!
+    * @brief _shm_ht_head的头部数据区的结构
+    *        记录大小，使用情况等
+    */
+    class _shm_ht_head
+    {
+    protected:
+        //默认的构造函数
+        _shm_ht_head() = default;
+        ~_shm_ht_head() = default;
+
+    public:
+        ///内存区的长度,这个长度可能超过32bit
+        std::size_t          size_of_mmap_ = 0;
+
+        ///NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
+        size_type            num_of_node_ = 0;
+
+        ///FREE的NODE个数
+        size_type            sz_freenode_ = 0;
+        ///USE的NODE个数
+        size_type            sz_usenode_ = 0;
+
+        ///使用的INDEX个数,可以了解实际开链的负载比率
+        size_type            sz_useindex_ = 0;
+
+        ///FREE NODE的头指针
+        size_type             free_headnode_ = 0;
+    };
+
     //分配一个NODE,将其从FREELIST中取出
     template<typename U>
-    size_t create_node(U&& v)
+    size_type create_node(U&& v)
     {
         //如果没有空间可以分配
         if (hash_head_->sz_freenode_ == 0)
@@ -237,7 +233,7 @@ protected:
         }
 
         //从连上取下一个空闲节点
-        size_t new_node = hash_head_->free_headnode_;
+        size_type new_node = hash_head_->free_headnode_;
         hash_head_->free_headnode_ = *(next_index_ + new_node);
         --hash_head_->sz_freenode_;
         ++hash_head_->sz_usenode_;
@@ -249,9 +245,9 @@ protected:
     }
 
     //释放一个NODE,将其归还给FREELIST,单向链表就是简单
-    void destroy_node(size_t pos)
+    void destroy_node(size_type pos)
     {
-        size_t freenext = hash_head_->free_headnode_;
+        size_type freenext = hash_head_->free_headnode_;
         *(next_index_ + pos) = freenext;
         hash_head_->free_headnode_ = pos;
 
@@ -265,14 +261,14 @@ protected:
     template<typename U>
     std::pair<iterator, bool> insert_unique_i(U&& v)
     {
-        size_t idx = bkt_num_value(std::forward<U>(v));
-        size_t first_idx = *(index_base_ + idx);
+        size_type idx = bkt_num_value(std::forward<U>(v));
+        size_type first_idx = *(index_base_ + idx);
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
-        size_t nxt_idx = first_idx;
+        size_type nxt_idx = first_idx;
 
         while (nxt_idx != SHMC_INVALID_POINT)
         {
@@ -286,7 +282,7 @@ protected:
         }
 
         //没有找到,插入新数据
-        size_t newnode = create_node(std::forward<U>(v));
+        size_type newnode = create_node(std::forward<U>(v));
         //空间不足,
         if (newnode == SHMC_INVALID_POINT)
         {
@@ -310,14 +306,14 @@ protected:
     template<typename U>
     std::pair<iterator, bool> insert_equal_i(U&& v)
     {
-        size_t idx = bkt_num_value(std::forward<U>(v));
-        size_t first_idx = *(index_base_ + idx);
+        size_type idx = bkt_num_value(std::forward<U>(v));
+        size_type first_idx = *(index_base_ + idx);
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
-        size_t nxt_idx = first_idx;
+        size_type nxt_idx = first_idx;
 
         while (nxt_idx != SHMC_INVALID_POINT)
         {
@@ -331,7 +327,7 @@ protected:
         }
 
         //没有找到,插入新数据
-        size_t newnode = create_node(std::forward<U>(v));
+        size_type newnode = create_node(std::forward<U>(v));
 
         //空间不足,
         if (newnode == SHMC_INVALID_POINT)
@@ -367,18 +363,18 @@ public:
 
     /*!
     * @brief      内存区的构成为 define区,index区,data区,返回所需要的长度,
-    * @return     size_t   所需的尺寸
+    * @return     size_type   所需的尺寸
     * @param      req_num  请求的NODE数量
     * @param      real_num 实际分配的NODE数量
     * @note       注意返回的是实际INDEX长度,会取一个质数
     */
-    static size_t alloc_size(size_t req_num, size_t& real_num)
+    static std::size_t alloc_size(size_type req_num, size_type& real_num)
     {
         zce::hash_prime(req_num, real_num);
-        return  sizeof(_shm_hash_table_head) +
-            sizeof(size_t) * (real_num)+
+        return  sizeof(_shm_ht_head) +
+            sizeof(size_type) * (real_num)+
             sizeof(T) * real_num +
-            sizeof(size_t) * (real_num);
+            sizeof(size_type) * (real_num);
     }
 
     /*!
@@ -389,13 +385,15 @@ public:
     * @param      pmmap
     * @param      if_restore
     */
-    static self* initialize(size_t req_num, size_t& real_num, char* pmmap, bool if_restore = false)
+    static self* initialize(size_type req_num,
+                            size_type& real_num,
+                            char* mem_addr,
+                            bool if_restore = false)
     {
         assert(pmmap != nullptr && req_num > 0);
         //调整
-        size_t sz_mmap = alloc_size(req_num, real_num);
-
-        _shm_hash_table_head* hashhead = reinterpret_cast<_shm_hash_table_head*>(pmmap);
+        std::size_t sz_mmap = alloc_size(req_num, real_num);
+        _shm_ht_head* hashhead = reinterpret_cast<_shm_ht_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
@@ -425,24 +423,24 @@ public:
         }
 
         self* instance
-            = new shm_hashtable< T, K, _hash_fun, _extract_key, _equal_key  >();
+            = new shm_hashtable< T, Key, Hash, Extract, keyEqual  >();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
 
         //计算这些指针的地址，主要是为了方便后面的处理
-        instance->mem_addr_ = pmmap;
+        instance->mem_addr_ = mem_addr;
         char* tmp_base = instance->mem_addr_;
 
         instance->hash_head_ = hashhead;
-        tmp_base = tmp_base + sizeof(_shm_hash_table_head);
+        tmp_base = tmp_base + sizeof(_shm_ht_head);
 
-        instance->index_base_ = reinterpret_cast<size_t*>(tmp_base);
-        tmp_base = tmp_base + sizeof(size_t) * (real_num);
+        instance->index_base_ = reinterpret_cast<size_type*>(tmp_base);
+        tmp_base = tmp_base + sizeof(size_type) * (real_num);
 
         instance->data_base_ = reinterpret_cast<T*>(tmp_base);
         tmp_base = tmp_base + sizeof(T) * (real_num);
 
-        instance->next_index_ = reinterpret_cast<size_t*>(tmp_base);
+        instance->next_index_ = reinterpret_cast<size_type*>(tmp_base);
 
         if (if_restore == false)
         {
@@ -463,7 +461,7 @@ public:
         hash_head_->sz_useindex_ = 0;
 
         //初始化free数据区
-        for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < hash_head_->num_of_node_; ++i)
         {
             index_base_[i] = SHMC_INVALID_POINT;
         }
@@ -472,7 +470,7 @@ public:
         hash_head_->free_headnode_ = 0;
 
         //
-        for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < hash_head_->num_of_node_; ++i)
         {
             next_index_[i] = i + 1;
 
@@ -484,22 +482,22 @@ public:
     }
 
     //从value中取值
-    size_t bkt_num_value(const T& obj) const
+    size_type bkt_num_value(const T& obj) const
     {
-        _extract_key get_key;
-        return static_cast<size_t>(bkt_num_key(get_key(obj)));
+        Extract get_key;
+        return static_cast<size_type>(bkt_num_key(get_key(obj)));
     }
     //为什么不能重载上面的函数,自己考虑一下,
-    size_t bkt_num_key(const K& key) const
+    size_type bkt_num_key(const Key& key) const
     {
-        _hash_fun hash_fun;
-        return static_cast<size_t>(hash_fun(key) % hash_head_->num_of_node_);
+        Hash hash_fun;
+        return static_cast<size_type>(hash_fun(key) % hash_head_->num_of_node_);
     }
 
     //HashTable的Begin 不是高效函数,不建议太多使用
     iterator begin()
     {
-        for (size_t i = 0; i < hash_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < hash_head_->num_of_node_; ++i)
         {
             if (*(index_base_ + i) != SHMC_INVALID_POINT)
             {
@@ -537,13 +535,13 @@ public:
     }
 
     //查询相应的Key是否有
-    iterator find(const K& key)
+    iterator find(const Key& key)
     {
-        size_t idx = bkt_num_key(key);
-        size_t first = *(index_base_ + idx);
+        size_type idx = bkt_num_key(key);
+        size_type first = *(index_base_ + idx);
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //
         while (first != SHMC_INVALID_POINT && !equal_key(get_key(*(data_base_ + first)), key))
@@ -556,7 +554,7 @@ public:
     //
     iterator find_value(const T& val)
     {
-        _extract_key get_key;
+        Extract get_key;
         return find(get_key(val));
     }
 
@@ -602,19 +600,19 @@ public:
 
     /*!
     * @brief      得到KEY相同的元素个数，有点相当于查询操作
-    * @return     size_t 数量
+    * @return     size_type 数量
     * @param      key    查询的key，
     */
-    size_t count(const K& key)
+    size_type count(const Key& key)
     {
-        size_t equal_count = 0;
-        size_t idx = bkt_num_key(key);
+        size_type equal_count = 0;
+        size_type idx = bkt_num_key(key);
         //从索引中找到第一个
-        size_t first = *(index_base_ + idx);
+        size_type first = *(index_base_ + idx);
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //
         while (first != SHMC_INVALID_POINT)
@@ -636,16 +634,16 @@ public:
     * @return     bool 是否删除成功
     * @param      key 删除依据的key
     */
-    bool erase_unique(const K& key)
+    bool erase_unique(const Key& key)
     {
-        size_t idx = bkt_num_key(key);
+        size_type idx = bkt_num_key(key);
         //从索引中找到第一个
-        size_t first = *(index_base_ + idx);
-        size_t prev = first;
+        size_type first = *(index_base_ + idx);
+        size_type prev = first;
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //
         while (first != SHMC_INVALID_POINT)
@@ -687,11 +685,11 @@ public:
     */
     bool erase(const iterator& it)
     {
-        _extract_key get_key;
-        size_t idx = bkt_num_key(get_key(*it));
-        size_t first = *(index_base_ + idx);
-        size_t prev = first;
-        size_t itseq = it.getserial();
+        Extract get_key;
+        size_type idx = bkt_num_key(get_key(*it));
+        size_type first = *(index_base_ + idx);
+        size_type prev = first;
+        size_type itseq = it.getserial();
 
         //
         while (first != SHMC_INVALID_POINT)
@@ -726,17 +724,17 @@ public:
     }
 
     //删除所有相等的KEY的数据,和insert_equal配对使用，返回删除了几个数据
-    size_t erase_equal(const K& key)
+    size_type erase_equal(const Key& key)
     {
-        size_t erase_count = 0;
-        size_t idx = bkt_num_key(key);
+        size_type erase_count = 0;
+        size_type idx = bkt_num_key(key);
         //从索引中找到第一个
-        size_t first = *(index_base_ + idx);
-        size_t prev = first;
+        size_type first = *(index_base_ + idx);
+        size_type prev = first;
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //
         while (first != SHMC_INVALID_POINT)
@@ -754,7 +752,7 @@ public:
                 }
 
                 //删除的情况下prev不用调整，first向后移动
-                size_t del_pos = first;
+                size_type del_pos = first;
                 first = *(next_index_ + first);
 
                 destroy_node(del_pos);
@@ -785,25 +783,25 @@ public:
     }
 
     //返回链表中已经有的元素个数
-    size_t size()
+    size_type size()
     {
         return hash_head_->sz_usenode_;
     }
 
     //返回NODE池子的容量
-    size_t capacity()
+    size_type capacity()
     {
         return hash_head_->num_of_node_;
     }
 
     //空闲的节点个数
-    size_t free()
+    size_type free()
     {
         return hash_head_->sz_freenode_;
     }
 
     //使用的索引的个数
-    size_t index_size()
+    size_type index_size()
     {
         return hash_head_->sz_useindex_;
     }
@@ -814,70 +812,83 @@ protected:
     char* mem_addr_ = nullptr;
 
     //头部数据
-    _shm_hash_table_head* hash_head_ = nullptr;
+    _shm_ht_head* hash_head_ = nullptr;
 
     ///所有的指针都是根据基地址计算得到的,保留他们主要用于方便计算,
     ///每次初始化会重新计算,所以不会有地址错误的问题，而且这些值是各自拥有，不共享的，
     //索引数据区,
-    size_t* index_base_;
+    size_type* index_base_ = nullptr;
 
     //数据区起始指针,
-    T* data_base_;
+    T* data_base_ = nullptr;
 
     //这个元素后面跟的开链的索引
-    size_t* next_index_;
+    size_type* next_index_ = nullptr;
 };
 
-template<class T, class _hash_fun = smem_hash<T>, class _equal_key = std::equal_to<T> >
+template<class T, class Hash = shm_hash<T>, class keyEqual = std::equal_to<T> >
 class shm_hashset :
-    public shm_hashtable< T, T, _hash_fun, smem_identity<T>, _equal_key  >
+    public shm_hashtable< T, T, Hash, shm_identity<T>, keyEqual>
 {
-public:
-    //定义迭代器
-    //typedef shm_hashtable< _value_type,_value_type ,_hash_fun, _extract_key,_equal_key  >::iterator iterator;
-
+private:
+    typedef shm_hashset< T, Hash, keyEqual> self;
+    typedef shm_hashtable< T, T, Hash, shm_identity<T>, keyEqual> shm_hashtable_t;
 protected:
     shm_hashset() = default;
-
+    shm_hashset(const shm_hashset& others) = delete;
+    const self& operator=(const self& others) = delete;
 public:
     ~shm_hashset() = default;
 
 public:
-    static shm_hashset*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    static self*
+        initialize(self::size_type req_num,
+                   self::size_type& real_num,
+                   char* mem_addr,
+                   bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashset< T, _hash_fun, _equal_key  > *>(
-            shm_hashtable<T, T, _hash_fun, smem_identity<T>, _equal_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<self *>(
+            shm_hashtable_t::initialize(req_num,
+            real_num,
+            mem_addr,
+            if_restore));
     }
 };
 
 //HASH MAP
-template<class K, class T, class _hash_fun = smem_hash<K>, class _equal_key = std::equal_to<K> >
+template<class Key, class T, class Hash = shm_hash<Key>,
+    class keyEqual = std::equal_to<Key> >
 class shm_hashmap :
-    public shm_hashtable< std::pair <K, T>, K, _hash_fun, mmap_select1st <std::pair <K, T> >, _equal_key  >
+    public shm_hashtable< std::pair <Key, T>, Key, Hash,
+    shm_select1st <std::pair <Key, T> >, keyEqual  >
 {
+private:
+    typedef shm_hashmap< Key, T, Hash, keyEqual> self;
+    typedef shm_hashtable<T, Key, Hash, shm_select1st<std::pair <Key, T> >, keyEqual> shm_hashtable_t;
 protected:
-
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashmap(size_t numnode, void* pmmap, bool if_restore) :
-        shm_hashtable< std::pair <K, T>, K, mmap_select1st <std::pair <K, T> >, _equal_key  >(numnode, pmmap, if_restore)
-    {
-        initialize(numnode, pmmap, if_restore);
-    }
-
-    ~shm_hashmap()
-    {
-    }
+    shm_hashmap() = default;
+    shm_hashmap(const shm_hashmap& others) = delete;
+    const self& operator=(const self& others) = delete;
 public:
-    static shm_hashmap< K, T, _hash_fun, _equal_key  >*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    ~shm_hashmap() = default;
+
+public:
+    static self*
+        initialize(self::size_type req_num,
+                   self::size_type& real_num,
+                   char* mem_addr,
+                   bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashmap< K, T, _hash_fun, _equal_key  > *>(
-            shm_hashtable< std::pair <K, T>, K, _hash_fun, mmap_select1st <std::pair <K, T> >, _equal_key>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<self *>(
+            shm_hashtable_t::initialize(req_num,
+            real_num,
+            mem_addr,
+            if_restore));
     }
     //[]操作符号有优点和缺点，
-    T& operator[](const K& key)
+    T& operator[](const Key& key)
     {
         return (find(key)).second;
     }

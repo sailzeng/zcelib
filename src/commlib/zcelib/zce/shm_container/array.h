@@ -29,8 +29,9 @@ private:
     typedef shm_array<T> self;
 public:
     typedef T* iterator;
+    typedef const iterator const_iterator;
     typedef T value_type;
-    typedef std::size_t size_type;
+    typedef shmc_size_type size_type;
     typedef value_type& reference;
     typedef const value_type& const_reference;
     typedef value_type* pointer;

@@ -193,7 +193,7 @@ public:
     }
     bool push_back(T&& value)
     {
-        return push_back_i(std::forward<T>(value));
+        return push_back_i(value);
     }
     bool push_front(const T& value)
     {
@@ -201,7 +201,7 @@ public:
     }
     bool push_front(T&& value)
     {
-        return push_front_i(std::forward<T>(value));
+        return push_front_i(value);
     }
 
     ///从队列的前面pop并且得到一个数据

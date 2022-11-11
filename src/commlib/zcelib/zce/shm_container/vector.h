@@ -28,12 +28,16 @@ template <class T> class shm_vector
 private:
     typedef shm_vector<T> self;
 public:
-    typedef T* iterator;
+
     typedef T value_type;
-    typedef std::size_t size_type;
     typedef value_type& reference;
     typedef const value_type& const_reference;
     typedef value_type* pointer;
+    typedef shmc_size_type size_type;
+    typedef T* iterator;
+    typedef const iterator const_iterator;
+    //随机访问的迭代器tag
+    typedef std::random_access_iterator_tag iterator_category;
 
 protected:
 
@@ -49,11 +53,10 @@ protected:
 
     public:
 
-        ///内存区的长度
-        size_type      size_of_mmap_ = 0;
+        ///内存区的长度，因为可能超过32bit，所以用了size_t
+        std::size_t    size_of_mmap_ = 0;
         ///结点总数，
         size_type      num_of_node_ = 0;
-
         ///表示目前使用的结点个数
         size_type      num_of_use_ = 0;
     };
@@ -74,7 +77,7 @@ public:
 public:
 
     ///内存区的构成为 定义区,data区,返回所需要的长度,
-    static size_type alloc_size(const size_type numnode)
+    static std::size_t alloc_size(const size_type numnode)
     {
         return  sizeof(_shm_vector_head) + sizeof(T) * (numnode);
     }

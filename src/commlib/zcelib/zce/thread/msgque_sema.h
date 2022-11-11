@@ -83,7 +83,7 @@ public:
     bool enqueue(T&& value)
     {
         std::chrono::microseconds no_use;
-        return enqueue_i(std::forward<T>(value),
+        return enqueue_i(value,
                          MQW_WAIT_FOREVER,
                          no_use);
     }
@@ -101,7 +101,7 @@ public:
     bool enqueue_wait(T&& value,
                       const std::chrono::duration<Rep, Period>& wait_time)
     {
-        return enqueue_i(std::forward<T>(value),
+        return enqueue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_time);
     }
@@ -119,7 +119,7 @@ public:
     {
         std::chrono::microseconds wait_mircosec;
         wait_time.to(wait_mircosec);
-        return enqueue_i(std::forward<T>(value),
+        return enqueue_i(value,
                          MQW_WAIT_TIMEOUT,
                          wait_mircosec);
     }
@@ -135,7 +135,7 @@ public:
     bool try_enqueue(T&& value)
     {
         std::chrono::microseconds no_use;
-        return enqueue_i(std::forward<T>(value),
+        return enqueue_i(value,
                          MQW_NO_WAIT,
                          no_use);
     }

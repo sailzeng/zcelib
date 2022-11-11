@@ -21,71 +21,49 @@
 
 namespace zce
 {
-template < class T,
-    class K,
-    class _hash_fun,
-    class _extract_key,
-    class _equal_key,
-    class _washout_fun > class shm_hashtable_expire;
+template < class T, class Key, class Hash, class Extract, class keyEqual, class Washout > class shm_expire_hashtable;
 
 //LRU HASH 迭代器
 template < class T,
-    class K,
-    class _hashfun,
-    class _extract_key,
-    class _equal_key,
-    class _washout_fun >
-class _hashtable_expire_iterator
+    class Key,
+    class Hash,
+    class Extract,
+    class keyEqual,
+    class Washout >
+class _ht_expire_iterator
 {
 protected:
-
     //HASH TABLE的定义
-    typedef shm_hashtable_expire < T,
-        K,
-        _hashfun,
-        _extract_key,
-        _equal_key,
-        _washout_fun  > _lru_hashtable;
-
+    typedef shm_expire_hashtable <T, Key, Hash, Extract, keyEqual, Washout> expire_hashtable_t;
     //定义迭代器
-    typedef _hashtable_expire_iterator < T,
-        K,
-        _hashfun,
-        _extract_key,
-        _equal_key,
-        _washout_fun > iterator;
-
-protected:
-    //序列号
-    size_t                 serial_;
-    //
-    _lru_hashtable* lruht_instance_;
+    typedef _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout> iterator;
 
 public:
-    _hashtable_expire_iterator() :
-        serial_(0),
-        lruht_instance_(nullptr)
-    {
-    }
+    typedef shmc_size_type size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    //迭代器萃取器所有的东东
+    typedef std::bidirectional_iterator_tag iterator_category;
+public:
+    _ht_expire_iterator() = default;
+    ~_ht_expire_iterator() = default;
 
-    _hashtable_expire_iterator(size_t serial, _lru_hashtable* lru_ht_inst) :
+    _ht_expire_iterator(size_type serial, expire_hashtable_t* e_ht_inst) :
         serial_(serial),
-        lruht_instance_(lru_ht_inst)
-    {
-    }
-
-    ~_hashtable_expire_iterator()
+        expire_ht_inst_(e_ht_inst)
     {
     }
 
     T& operator*() const
     {
-        return lruht_instance_->value_base_[serial_];
+        return expire_ht_inst_->value_base_[serial_];
     }
 
     T* operator->() const
     {
-        return lruht_instance_->value_base_ + serial_;
+        return expire_ht_inst_->value_base_ + serial_;
     }
 
     //本来只提供前向迭代器，曾经以为使用可以使用LIST保证迭代的高效，发现不行，
@@ -93,19 +71,19 @@ public:
     //前向迭代器
     iterator& operator++()
     {
-        size_t oldseq = serial_;
-        serial_ = *(lruht_instance_->hash_index_base_ + serial_);
+        size_type oldseq = serial_;
+        serial_ = *(expire_ht_inst_->hash_index_base_ + serial_);
 
         //如果这个节点是末位的节点
         if (serial_ == zce::SHMC_INVALID_POINT)
         {
             //顺着Index查询.
-            size_t bucket = lruht_instance_->bkt_num_value(*(lruht_instance_->value_base_ + oldseq));
+            size_type bucket = expire_ht_inst_->bkt_num_value(*(expire_ht_inst_->value_base_ + oldseq));
 
             //
-            while (serial_ == zce::SHMC_INVALID_POINT && ++bucket < lruht_instance_->capacity())
+            while (serial_ == zce::SHMC_INVALID_POINT && ++bucket < expire_ht_inst_->capacity())
             {
-                serial_ = *(lruht_instance_->hash_factor_base_ + bucket);
+                serial_ = *(expire_ht_inst_->hash_factor_base_ + bucket);
             }
         }
 
@@ -118,17 +96,17 @@ public:
     //其实也就比你自己做快一点点。
     iterator& goto_next_equal()
     {
-        size_t oldseq = serial_;
-        serial_ = *(lruht_instance_->hash_index_base_ + serial_);
+        size_type oldseq = serial_;
+        serial_ = *(expire_ht_inst_->hash_index_base_ + serial_);
 
         //如果这个节点不是末位的节点
         if (serial_ != zce::SHMC_INVALID_POINT)
         {
-            _extract_key get_key;
-            _equal_key   equal_key;
+            Extract get_key;
+            keyEqual   equal_key;
 
-            if (false == equal_key(get_key(*(lruht_instance_->value_base_ + oldseq)),
-                get_key(*(lruht_instance_->value_base_ + serial_))))
+            if (false == equal_key(get_key(*(expire_ht_inst_->value_base_ + oldseq)),
+                get_key(*(expire_ht_inst_->value_base_ + serial_))))
             {
                 serial_ = zce::SHMC_INVALID_POINT;
             }
@@ -150,7 +128,7 @@ public:
     //
     bool operator==(const iterator& it) const
     {
-        if (lruht_instance_ == it.lruht_instance_ &&
+        if (expire_ht_inst_ == it.expire_ht_inst_ &&
             serial_ == it.serial_)
         {
             return true;
@@ -165,33 +143,15 @@ public:
     }
 
     //保留序号就可以再根据模版实例化对象找到相应数据,不用使用指针
-    size_t getserial() const
+    size_type getserial() const
     {
         return serial_;
     }
-};
-
-//头部，LRU_HASH的头部结构，放在LRUHASH内存的前面
-class _hashtable_expire_head
-{
 protected:
-    _hashtable_expire_head() = default;
-    ~_hashtable_expire_head() = default;
-
-public:
-    //内存区的长度
-    size_t           size_of_mmap_ = 0;
-
-    //NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
-    size_t           num_of_node_ = 0;
-
-    //FREE的NODE个数
-    size_t           sz_freenode_ = 0;
-    //USE的NODE个数
-    size_t           sz_usenode_ = 0;
-
-    //使用的INDEX个数,可以了解实际开链的负载比率
-    size_t           sz_useindex_ = 0;
+    //序列号
+    size_type              serial_ = zce::SHMC_INVALID_POINT;
+    //
+    expire_hashtable_t* expire_ht_inst_ = nullptr;
 };
 
 /*!
@@ -199,89 +159,104 @@ public:
 
 @tparam     _value_type
 @tparam     _key_type
-@tparam     _hash_fun
-@tparam     _extract_key
-@tparam     _equal_key
-@tparam     _washout_fun
+@tparam     Hash
+@tparam     Extract
+@tparam     keyEqual
+@tparam     Washout
 @note
 */
 template < class T,
-    class K,
-    class _hash_fun = smem_hash<K>,
-    class _extract_key = smem_identity<T>,
-    class _equal_key = std::equal_to<K>,
-    class _washout_fun = _default_washout_fun<T> >
-class shm_hashtable_expire
+    class Key,
+    class Hash = shm_hash<Key>,
+    class Extract = shm_identity<T>,
+    class keyEqual = std::equal_to<Key>,
+    class Washout = default_washout<T> >
+class shm_expire_hashtable
 {
+    friend class _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout >;
 private:
-
-    typedef shm_hashtable_expire < T,
-        K,
-        _hash_fun,
-        _extract_key,
-        _equal_key,
-        _washout_fun > self;
-
+    //定义自己
+    typedef shm_expire_hashtable < T, Key, Hash, Extract, keyEqual, Washout > self;
 public:
     //定义迭代器
-    typedef _hashtable_expire_iterator < T,
-        K,
-        _hash_fun,
-        _extract_key,
-        _equal_key,
-        _washout_fun > iterator;
-
-    friend class _hashtable_expire_iterator < T,
-        K,
-        _hash_fun,
-        _extract_key,
-        _equal_key,
-        _washout_fun >;
+    typedef _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout > iterator;
+    typedef const iterator const_iterator;
+    typedef iterator::iterator_category iterator_category;
+    typedef T value_type;
+    typedef Key key_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
+    typedef shmc_size_type size_type;
 
 protected:
     //protected 构造函数，避免你用
-    shm_hashtable_expire() = default;
+    shm_expire_hashtable() = default;
     //只定义,不实现,避免犯错
-    const self& operator=(const self& others);
-    shm_hashtable_expire(const shm_hashtable_expire&) = delete;
+    const self& operator=(const self& others) = delete;
+    shm_expire_hashtable(const shm_expire_hashtable&) = delete;
 public:
 
-    ~shm_hashtable_expire() = default;
+    ~shm_expire_hashtable() = default;
 
 protected:
+    //头部，LRU_HASH的头部结构，放在LRUHASH内存的前面
+    class _expire_ht_head
+    {
+    protected:
+        _expire_ht_head() = default;
+        ~_expire_ht_head() = default;
 
+    public:
+        //内存区的长度
+        std::size_t         size_of_mmap_ = 0;
+
+        //NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
+        size_type           num_of_node_ = 0;
+
+        //FREE的NODE个数
+        size_type           sz_freenode_ = 0;
+        //USE的NODE个数
+        size_type           sz_usenode_ = 0;
+
+        //使用的INDEX个数,可以了解实际开链的负载比率
+        size_type           sz_useindex_ = 0;
+    };
 public:
 
     /*!
     * @brief      内存区的构成为 define区,index区,data区,返回所需要的长度,
-    * @return     size_t   所需的尺寸
+    * @return     size_type   所需的尺寸
     * @param      req_num  请求的NODE数量
     * @param      real_num 实际分配的NODE数量
     * @note       注意返回的是实际INDEX长度,会取一个质数
     */
-    static size_t alloc_size(size_t req_num, size_t& real_num)
+    static std::size_t alloc_size(size_type req_num, size_type& real_num)
     {
         //取得一个比这个数字做一定放大的质数，
         zce::hash_prime(req_num, real_num);
-        size_t sz_alloc = 0;
+        std::size_t sz_alloc = 0;
         //
-        sz_alloc += sizeof(_hashtable_expire_head);
-        sz_alloc += sizeof(size_t) * real_num;
-        sz_alloc += sizeof(size_t) * real_num;
+        sz_alloc += sizeof(_expire_ht_head);
+        sz_alloc += sizeof(size_type) * real_num;
+        sz_alloc += sizeof(size_type) * real_num;
         //
         sz_alloc += sizeof(_shm_list_index) * (real_num + LIST_ADD_NODE_NUMBER);
-        sz_alloc += sizeof(unsigned int) * (real_num);
+        sz_alloc += sizeof(uint32_t) * (real_num);
         sz_alloc += sizeof(T) * (real_num);
         return sz_alloc;
     }
 
     //初始化
-    static self* initialize(size_t req_num, size_t& real_num, char* pmmap, bool if_restore = false)
+    static self* initialize(size_type req_num,
+                            size_type& real_num,
+                            char* mem_addr,
+                            bool if_restore = false)
     {
-        assert(pmmap != nullptr && req_num > 0);
+        assert(mem_addr != nullptr && req_num > 0);
         //调整
-        size_t sz_mmap = alloc_size(req_num, real_num);
-        _hashtable_expire_head* hashhead = reinterpret_cast<_hashtable_expire_head*>(pmmap);
+        std::size_t sz_mmap = alloc_size(req_num, real_num);
+        _expire_ht_head* hashhead = reinterpret_cast<_expire_ht_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (true == if_restore)
@@ -313,22 +288,22 @@ public:
 
         self* instance = new self();
 
-        instance->mem_addr_ = pmmap;
+        instance->mem_addr_ = mem_addr;
         char* tmp_base = instance->mem_addr_;
-        instance->lru_hash_head_ = reinterpret_cast<_hashtable_expire_head*>(tmp_base);
-        tmp_base = tmp_base + sizeof(_hashtable_expire_head);
-        instance->hash_factor_base_ = reinterpret_cast<size_t*>(tmp_base);
-        tmp_base = tmp_base + sizeof(size_t) * real_num;
-        instance->hash_index_base_ = reinterpret_cast<size_t*>(tmp_base);
+        instance->lru_hash_head_ = reinterpret_cast<_expire_ht_head*>(tmp_base);
+        tmp_base = tmp_base + sizeof(_expire_ht_head);
+        instance->hash_factor_base_ = reinterpret_cast<size_type*>(tmp_base);
+        tmp_base = tmp_base + sizeof(size_type) * real_num;
+        instance->hash_index_base_ = reinterpret_cast<size_type*>(tmp_base);
 
-        tmp_base = tmp_base + sizeof(size_t) * real_num;
+        tmp_base = tmp_base + sizeof(size_type) * real_num;
         instance->lst_index_base_ = reinterpret_cast<_shm_list_index*>(tmp_base);
         tmp_base = tmp_base + sizeof(_shm_list_index) * (real_num + LIST_ADD_NODE_NUMBER);
         instance->lst_use_node_ = instance->lst_index_base_ + real_num;
         instance->lst_free_node_ = instance->lst_index_base_ + real_num + 1;
 
-        instance->priority_base_ = reinterpret_cast<unsigned int*>(tmp_base);
-        tmp_base = tmp_base + sizeof(unsigned int) * (real_num);
+        instance->priority_base_ = reinterpret_cast<uint32_t*>(tmp_base);
+        tmp_base = tmp_base + sizeof(uint32_t) * (real_num);
         instance->value_base_ = reinterpret_cast<T*>(tmp_base);
 
         if (false == if_restore)
@@ -361,7 +336,7 @@ public:
         _shm_list_index* pindex = lst_index_base_;
 
         //初始化free数据区
-        for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < lru_hash_head_->num_of_node_; ++i)
         {
             //
             hash_factor_base_[i] = SHMC_INVALID_POINT;
@@ -391,7 +366,8 @@ public:
 protected:
 
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node(const T& val, unsigned int priority)
+    template<typename U>
+    size_type create_node(U&& v, uint32_t priority)
     {
         //如果没有空间可以分配
         if (lru_hash_head_->sz_freenode_ == 0)
@@ -400,7 +376,7 @@ protected:
         }
 
         //从链上取1个下来
-        size_t newnode = lst_free_node_->idx_next_;
+        size_type newnode = lst_free_node_->idx_next_;
 
         lst_free_node_->idx_next_ = (lst_index_base_ + newnode)->idx_next_;
         //lst_free_node_->idx_next_已经向后调整一个位置了
@@ -413,7 +389,7 @@ protected:
         lst_use_node_->idx_next_ = newnode;
 
         //placement new记录数据和优先级
-        new (value_base_ + newnode)  T(val);
+        new (value_base_ + newnode)  T(std::forward<U>(v));
         priority_base_[newnode] = priority;
 
         lru_hash_head_->sz_usenode_++;
@@ -425,12 +401,12 @@ protected:
     }
 
     //释放一个NODE,将其归还给FREELIST,单向链表就是简单
-    void destroy_node(size_t pos)
+    void destroy_node(size_type pos)
     {
-        size_t freenext = lst_free_node_->idx_next_;
+        size_type freenext = lst_free_node_->idx_next_;
 
-        size_t pos_next = lst_index_base_[pos].idx_next_;
-        size_t pos_prev = lst_index_base_[pos].idx_prev_;
+        size_type pos_next = lst_index_base_[pos].idx_next_;
+        size_type pos_prev = lst_index_base_[pos].idx_prev_;
         lst_index_base_[pos_next].idx_prev_ = pos_prev;
         lst_index_base_[pos_prev].idx_next_ = pos_next;
 
@@ -452,86 +428,22 @@ protected:
         assert(lru_hash_head_->sz_usenode_ + lru_hash_head_->sz_freenode_ == lru_hash_head_->num_of_node_);
     }
 
-    //从value中取值
-    size_t bkt_num_value(const T& obj) const
+    template<typename U>
+    std::pair<iterator, bool> insert_unique_i(U&& v,
+                                              uint32_t priority)
     {
-        _extract_key get_key;
-        return static_cast<size_t>(bkt_num_key(get_key(obj)));
-    }
-
-    //为什么不能重载上面的函数,自己考虑一下,
-    //重载的话，如果_value_type和_key_type一样，就等着哭吧 ---inmore
-    size_t bkt_num_key(const K& key) const
-    {
-        _hash_fun hash_fun;
-        return static_cast<size_t>(hash_fun(key) % lru_hash_head_->num_of_node_);
-    }
-
-public:
-
-    //得到开始的迭代器的位置
-    iterator begin()
-    {
-        for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
-        {
-            if (*(hash_factor_base_ + i) != SHMC_INVALID_POINT)
-            {
-                return iterator(*(hash_factor_base_ + i), this);
-            }
-        }
-
-        return end();
-    }
-
-    //得到结束位置
-    iterator end()
-    {
-        return iterator(SHMC_INVALID_POINT, this);
-    }
-    //当前使用的节点数量
-    size_t size() const
-    {
-        return lru_hash_head_->sz_usenode_;
-    }
-    //得到容量
-    size_t capacity() const
-    {
-        return lru_hash_head_->num_of_node_;
-    }
-    //
-    bool empty() const
-    {
-        return (lru_hash_head_->sz_freenode_ == lru_hash_head_->num_of_node_);
-    }
-    //是否空间已经满了
-    bool full() const
-    {
-        return (lru_hash_head_->sz_freenode_ == 0);
-    }
-
-    /*!
-    * @brief      插入节点
-    * @return     std::pair<iterator, bool>  返回的迭代器和bool,
-    * @param      val      插入的节点
-    * @param      priority 优先级可以，传递入当前时间作为参数，淘汰时用小于某个值
-    *                      都淘汰的方法处理,所以要保证后面传入数据值更大  我为什
-    *                      么不直接用time(nullptr),是给你更大的灵活性,
-    * @note       这儿会将插入的数据放在最后淘汰的地方
-    */
-    std::pair<iterator, bool> insert_unique(const T& val,
-                                            unsigned int priority  /*=reinterpret_cast<unsigned int>(time(nullptr))*/)
-    {
-        size_t idx = bkt_num_value(val);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_value(std::forward<U>(v));
+        size_type first = hash_factor_base_[idx];
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key函数
-            if (equal_key((get_key(value_base_[first])), (get_key(val))) == true)
+            if (equal_key((get_key(value_base_[first])),
+                (get_key(std::forward<U>(v)))) == true)
             {
                 return std::pair<iterator, bool>(iterator(first, this), false);
             }
@@ -540,7 +452,7 @@ public:
         }
 
         //没有找到,插入新数据
-        size_t newnode = create_node(val, priority);
+        size_type newnode = create_node(std::forward<U>(v), priority);
 
         //空间不足,
         if (newnode == SHMC_INVALID_POINT)
@@ -555,22 +467,23 @@ public:
         return std::pair<iterator, bool>(iterator(newnode, this), true);
     }
 
-    //插入节点,允许相等
-    //优先级可以，传递入当前时间作为参数，
-    std::pair<iterator, bool> insert_equal(const T& val,
-                                           unsigned int priority /*=reinterpret_cast<unsigned int>(time(nullptr))*/)
+    //! 插入节点,允许相等
+    //! 优先级可以，传递入当前时间作为参数，
+    template<typename U>
+    std::pair<iterator, bool> insert_equal_i(U&& v,
+                                             uint32_t priority)
     {
-        size_t idx = bkt_num_value(val);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_value(std::forward<U>(v));
+        size_type first = hash_factor_base_[idx];
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         while (first != SHMC_INVALID_POINT)
         {
             //如果找到相同的Key函数
-            if (equal_key((get_key(value_base_[first])), (get_key(val))) == true)
+            if (equal_key((get_key(value_base_[first])), (get_key(std::forward<U>(v)))) == true)
             {
                 break;
             }
@@ -579,7 +492,7 @@ public:
         }
 
         //没有找到,插入新数据
-        size_t newnode = create_node(val, priority);
+        size_type newnode = create_node(std::forward<U>(v), priority);
 
         //空间不足,
         if (newnode == SHMC_INVALID_POINT)
@@ -605,14 +518,102 @@ public:
         return std::pair<iterator, bool>(iterator(newnode, this), true);
     }
 
-    //查询相应的Key是否有,返回迭代器
-    iterator find(const K& key)
+    //从value中取值
+    size_type bkt_num_value(const T& obj) const
     {
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        Extract get_key;
+        return static_cast<size_type>(bkt_num_key(get_key(obj)));
+    }
+
+    //为什么不能重载上面的函数,自己考虑一下,
+    //重载的话，如果_value_type和_key_type一样，就等着哭吧 ---inmore
+    size_type bkt_num_key(const Key& key) const
+    {
+        Hash hash_fun;
+        return static_cast<size_type>(hash_fun(key) % lru_hash_head_->num_of_node_);
+    }
+
+public:
+
+    //得到开始的迭代器的位置
+    iterator begin()
+    {
+        for (size_type i = 0; i < lru_hash_head_->num_of_node_; ++i)
+        {
+            if (*(hash_factor_base_ + i) != SHMC_INVALID_POINT)
+            {
+                return iterator(*(hash_factor_base_ + i), this);
+            }
+        }
+        return end();
+    }
+
+    //得到结束位置
+    iterator end()
+    {
+        return iterator(SHMC_INVALID_POINT, this);
+    }
+    //当前使用的节点数量
+    size_type size() const
+    {
+        return lru_hash_head_->sz_usenode_;
+    }
+    //得到容量
+    size_type capacity() const
+    {
+        return lru_hash_head_->num_of_node_;
+    }
+    //
+    bool empty() const
+    {
+        return (lru_hash_head_->sz_freenode_ == lru_hash_head_->num_of_node_);
+    }
+    //是否空间已经满了
+    bool full() const
+    {
+        return (lru_hash_head_->sz_freenode_ == 0);
+    }
+
+    /*!
+    * @brief      插入节点
+    * @return     std::pair<iterator, bool>  返回的迭代器和bool,
+    * @param      v        插入的节点
+    * @param      priority 优先级可以，传递入当前时间作为参数，淘汰时用小于某个值
+    *                      都淘汰的方法处理,所以要保证后面传入数据值更大  我为什
+    *                      么不直接用time(nullptr),是给你更大的灵活性,
+    * @note       这儿会将插入的数据放在最后淘汰的地方
+    */
+    std::pair<iterator, bool> insert_unique(const T& v,
+                                            uint32_t priority)
+    {
+        return insert_unique_i(v, priority);
+    }
+    std::pair<iterator, bool> insert_unique(T&& v,
+                                            uint32_t priority)
+    {
+        return insert_unique_i(v, priority);
+    }
+
+    //插入节点,允许相等
+    //优先级可以，传递入当前时间作为参数，
+    std::pair<iterator, bool> insert_equal(const T& val,
+                                           uint32_t priority)
+    {
+        return insert_equal_i(val, priority);
+    }
+    std::pair<iterator, bool> insert_equal(T&& val,
+                                           uint32_t priority)
+    {
+        return insert_equal_i(val, priority);
+    }
+    //查询相应的Key是否有,返回迭代器
+    iterator find(const Key& key)
+    {
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         while (first != SHMC_INVALID_POINT && !equal_key(get_key(value_base_[first]), key))
         {
@@ -625,21 +626,21 @@ public:
     //
     iterator find_value(const T& val)
     {
-        _extract_key get_key;
+        Extract get_key;
         return find(get_key(val));
     }
 
     //得到某个KEY的元素个数，有点相当于查询操作
-    size_t count(const K& key)
+    size_type count(const Key& key)
     {
-        size_t equal_count = 0;
-        size_t idx = bkt_num_key(key);
+        size_type equal_count = 0;
+        size_type idx = bkt_num_key(key);
         //从索引中找到第一个
-        size_t first = hash_factor_base_[idx];
+        size_type first = hash_factor_base_[idx];
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //在列表中间查询
         while (first != SHMC_INVALID_POINT)
@@ -657,9 +658,9 @@ public:
     }
 
     //得到某个VALUE的元素个数，有点相当于查询操作
-    size_t count_value(const T& val)
+    size_type count_value(const T& val)
     {
-        _extract_key get_key;
+        Extract get_key;
         return count(get_key(val));
     }
 
@@ -668,16 +669,16 @@ public:
     * @return     bool
     * @param      key
     */
-    bool erase_unique(const K& key)
+    bool erase_unique(const Key& key)
     {
-        size_t idx = bkt_num_key(key);
+        size_type idx = bkt_num_key(key);
         //从索引中找到第一个
-        size_t first = hash_factor_base_[idx];
-        size_t prev = first;
+        size_type first = hash_factor_base_[idx];
+        size_type prev = first;
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //
         while (first != SHMC_INVALID_POINT)
@@ -703,7 +704,6 @@ public:
             prev = first;
             first = hash_index_base_[first];
         }
-
         return false;
     }
 
@@ -714,11 +714,11 @@ public:
     */
     bool erase(const iterator& it)
     {
-        _extract_key get_key;
-        size_t idx = bkt_num_key(get_key(*it));
-        size_t first = hash_factor_base_[idx];
-        size_t prev = first;
-        size_t itseq = it.getserial();
+        Extract get_key;
+        size_type idx = bkt_num_key(get_key(*it));
+        size_type first = hash_factor_base_[idx];
+        size_type prev = first;
+        size_type itseq = it.getserial();
 
         //
         while (first != SHMC_INVALID_POINT)
@@ -743,34 +743,33 @@ public:
             prev = first;
             first = hash_index_base_[first];
         }
-
         return false;
     }
 
     //删除某个值
     bool erase_unique_value(const T& val)
     {
-        _extract_key get_key;
+        Extract get_key;
         return erase_unique(get_key(val));
     }
 
     /*!
     * @brief      删除所有相等的KEY的数据,和insert_equal配对使用，返回删除了几个数据
-    * @return     size_t
+    * @return     size_type
     * @param      key
     * @note
     */
-    size_t erase_equal(const K& key)
+    size_type erase_equal(const Key& key)
     {
-        size_t erase_count = 0;
-        size_t idx = bkt_num_key(key);
+        size_type erase_count = 0;
+        size_type idx = bkt_num_key(key);
         //从索引中找到第一个
-        size_t first = hash_factor_base_[idx];
-        size_t prev = first;
+        size_type first = hash_factor_base_[idx];
+        size_type prev = first;
 
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //循环查询
         while (first != SHMC_INVALID_POINT)
@@ -788,7 +787,7 @@ public:
                 }
 
                 //删除的情况下prev不用调整，first向后移动
-                size_t del_pos = first;
+                size_type del_pos = first;
                 first = hash_index_base_[first];
                 //回收空间
                 destroy_node(del_pos);
@@ -806,7 +805,6 @@ public:
                 first = hash_index_base_[first];
             }
         }
-
         return erase_count;
     }
 
@@ -816,14 +814,14 @@ public:
     * @param      key
     * @param      priority 优先级参数可以使用当前的时间
     */
-    bool active_unique(const K& key,
-                       unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
+    bool active_unique(const Key& key,
+                       uint32_t priority /*=static_cast<uint32_t>(time(nullptr))*/)
     {
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //在列表中间查询
         while (first != SHMC_INVALID_POINT)
@@ -833,8 +831,8 @@ public:
             {
                 priority_base_[first] = priority;
 
-                size_t first_prv = lst_index_base_[first].idx_prev_;
-                size_t first_nxt = lst_index_base_[first].idx_next_;
+                size_type first_prv = lst_index_base_[first].idx_prev_;
+                size_type first_nxt = lst_index_base_[first].idx_next_;
                 //从原来的地方取下来
                 lst_index_base_[first_prv].idx_next_ = lst_index_base_[first].idx_next_;
                 lst_index_base_[first_nxt].idx_prev_ = lst_index_base_[first].idx_prev_;
@@ -858,19 +856,19 @@ public:
     * @brief      通过VALUE激活，同时讲值替换成最新的数据VALUE，
     *             优先级参数可以使用当前的时间，MAP使用，
     * @return     bool     是否激活成功
-    * @param      val      值
+    * @param      v      值
     * @param      priority 优先级
     * @note       LRU中如果，一个值被使用后，可以认为是激活过一次，
     */
     bool active_unique_value(const T& val,
-                             unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
+                             uint32_t priority /*=static_cast<uint32_t>(time(nullptr))*/)
     {
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
-        K key = get_key(val);
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        Key key = get_key(val);
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
 
         //在列表中间查询
@@ -881,8 +879,8 @@ public:
             {
                 priority_base_[first] = priority;
                 value_base_[first] = val;
-                size_t first_prv = lst_index_base_[first].idx_prev_;
-                size_t first_nxt = lst_index_base_[first].idx_next_;
+                size_type first_prv = lst_index_base_[first].idx_prev_;
+                size_type first_nxt = lst_index_base_[first].idx_next_;
                 //从原来的地方取下来
                 lst_index_base_[first_prv].idx_next_ = lst_index_base_[first].idx_next_;
                 lst_index_base_[first_nxt].idx_prev_ = lst_index_base_[first].idx_prev_;
@@ -898,21 +896,20 @@ public:
 
             first = hash_index_base_[first];
         }
-
         return false;
     }
 
     //激活所有相同的KEY,将激活的数据挂到LIST的最开始,淘汰使用expire
-    size_t active_equal(const K& key,
-                        unsigned int priority /*=static_cast<unsigned int>(time(nullptr))*/)
+    size_type active_equal(const Key& key,
+                           uint32_t priority /*=static_cast<uint32_t>(time(nullptr))*/)
     {
-        size_t active_count = 0;
+        size_type active_count = 0;
 
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //在列表中间查询
         while (first != SHMC_INVALID_POINT)
@@ -922,8 +919,8 @@ public:
             {
                 priority_base_[first] = priority;
 
-                size_t first_prv = lst_index_base_[first].idx_prev_;
-                size_t first_nxt = lst_index_base_[first].idx_next_;
+                size_type first_prv = lst_index_base_[first].idx_prev_;
+                size_type first_nxt = lst_index_base_[first].idx_next_;
                 //从原来的地方取下来
                 lst_index_base_[first_prv].idx_next_ = lst_index_base_[first].idx_next_;
                 lst_index_base_[first_nxt].idx_prev_ = lst_index_base_[first].idx_prev_;
@@ -942,28 +939,26 @@ public:
                     break;
                 }
             }
-
             first = hash_index_base_[first];
         }
-
         return active_count;
     }
 
     //淘汰过期的数据,假设LIST中间的数据是按照过期实际排序的，这要求你传入的优先级最好是时间
     //小于等于这个优先级的数据将被淘汰
-    size_t expire(unsigned int expire_time)
+    size_type expire(uint32_t expire_time)
     {
         //从尾部开始检查，
-        size_t list_idx = lst_use_node_->idx_prev_;
-        size_t expire_num = 0;
+        size_type list_idx = lst_use_node_->idx_prev_;
+        size_type expire_num = 0;
 
         while (list_idx != lru_hash_head_->num_of_node_)
         {
             //小于等于
             if (priority_base_[list_idx] <= expire_time)
             {
-                size_t del_iter = list_idx;
-                _washout_fun wash_fun;
+                size_type del_iter = list_idx;
+                Washout wash_fun;
                 wash_fun(value_base_[del_iter]);
                 ++expire_num;
                 //
@@ -985,17 +980,17 @@ public:
     //希望淘汰掉disuse_num个数据，
     //如果disuse_eaqul == ture，则删除和最后删除的那个优先级相等的所有元素
     //disuse_eaqul可以保证数据的整体淘汰，避免一个KEY的部分数据在内存，一部分不在
-    size_t disuse(size_t disuse_num, bool disuse_eaqul)
+    size_type disuse(size_type disuse_num, bool disuse_eaqul)
     {
         //从尾部开始检查，
-        size_t list_idx = lst_use_node_->idx_prev_;
-        size_t fact_del_num = 0;
-        unsigned int disuse_priority = 0;
+        size_type list_idx = lst_use_node_->idx_prev_;
+        size_type fact_del_num = 0;
+        uint32_t disuse_priority = 0;
 
-        for (size_t i = 0; i < disuse_num && list_idx != lru_hash_head_->num_of_node_; ++i)
+        for (size_type i = 0; i < disuse_num && list_idx != lru_hash_head_->num_of_node_; ++i)
         {
-            size_t del_iter = list_idx;
-            _washout_fun wash_fun;
+            size_type del_iter = list_idx;
+            Washout wash_fun;
             wash_fun(value_base_[del_iter]);
             ++fact_del_num;
             //
@@ -1016,13 +1011,13 @@ public:
     }
 
     //标注，重新给一个数据打一个优先级标签，淘汰使用函数washout
-    bool mark_unique(const K& key, unsigned int priority)
+    bool mark_unique(const Key& key, uint32_t priority)
     {
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //在列表中间查询
         while (first != SHMC_INVALID_POINT)
@@ -1042,16 +1037,16 @@ public:
     }
 
     //根据value将优先级跟新，重新给一个数据打一个优先级标签，同时将值替换，
-    bool mark_value(const T& val, unsigned int priority)
+    bool mark_value(const T& val, uint32_t priority)
     {
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
-        K key = get_key(val);
+        Key key = get_key(val);
 
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
 
         //在列表中间查询
         while (first != SHMC_INVALID_POINT)
@@ -1063,23 +1058,21 @@ public:
                 value_base_[first] = val;
                 return true;
             }
-
             first = hash_index_base_[first];
         }
-
         return false;
     }
 
     //标注所有相等的数据，重新给一个数据打一个优先级标签，淘汰使用函数washout
-    bool mark_equal(const K& key, unsigned int priority)
+    bool mark_equal(const Key& key, uint32_t priority)
     {
-        size_t mark_count = 0;
+        size_type mark_count = 0;
 
-        size_t idx = bkt_num_key(key);
-        size_t first = hash_factor_base_[idx];
+        size_type idx = bkt_num_key(key);
+        size_type first = hash_factor_base_[idx];
         //使用量函数对象,一个类单独定义一个是否更好?
-        _extract_key get_key;
-        _equal_key   equal_key;
+        Extract get_key;
+        keyEqual   equal_key;
 
         //在列表中间查询
         while (first != SHMC_INVALID_POINT)
@@ -1105,17 +1098,17 @@ public:
     }
 
     //标注所有相等的数据。这个函数有点别扭。我不喜欢，，因为VALUE没有（没法）跟新
-    //size_t mark_value_equal(const _value_type &val, unsigned int priority )
+    //size_type mark_value_equal(const _value_type &v, uint32_t priority )
     //{
-    //    return mark(_extract_key(val),priority);
+    //    return mark(Extract(v),priority);
     //}
 
     //淘汰优先级过低的数据,LIST中间的数据是是乱序的也可以.只淘汰num_wash数量的数据
     //但限制淘汰是从头部开始，感觉不是太好。
-    void washout(unsigned int wash_priority, size_t num_wash)
+    void washout(uint32_t wash_priority, size_type num_wash)
     {
-        size_t list_idx = lst_use_node_->idx_next_;
-        size_t num_del = 0;
+        size_type list_idx = lst_use_node_->idx_next_;
+        size_type num_del = 0;
 
         //不为nullptr，而且删除的个数没有达到，从头部开始是否好呢?我不确定，打算在提供一个函数
         while (list_idx != lru_hash_head_->num_of_node_ && num_del < num_wash)
@@ -1124,10 +1117,10 @@ public:
             if (priority_base_[list_idx] < wash_priority)
             {
                 ++num_del;
-                size_t del_iter = list_idx;
+                size_type del_iter = list_idx;
                 list_idx = lst_index_base_[list_idx].idx_next_;
                 //
-                _washout_fun wash_fun;
+                Washout wash_fun;
                 wash_fun(value_base_[del_iter]);
                 //
                 iterator iter_tmp(del_iter, this);
@@ -1142,18 +1135,18 @@ public:
 
 protected:
     //
-    static const size_t  LIST_ADD_NODE_NUMBER = 2;
+    static const size_type  LIST_ADD_NODE_NUMBER = 2;
 
 protected:
     //内存基础地址
     char* mem_addr_ = nullptr;
     //头部指针
-    _hashtable_expire_head* lru_hash_head_ = nullptr;
+    _expire_ht_head* lru_hash_head_ = nullptr;
 
     //Hash因子的BASE
-    size_t* hash_factor_base_ = nullptr;
+    size_type* hash_factor_base_ = nullptr;
     //Hash的索引,hash链的索引,注释写得不清楚，自己都记不得了.
-    size_t* hash_index_base_;
+    size_type* hash_index_base_;
 
     //LIST的索引
     _shm_list_index* lst_index_base_ = nullptr;
@@ -1163,88 +1156,99 @@ protected:
     _shm_list_index* lst_use_node_ = nullptr;
 
     //优先级的数据指针,用32位的数据保存优先级
-    unsigned int* priority_base_ = nullptr;
+    uint32_t* priority_base_ = nullptr;
     //数据区指针
     T* value_base_ = nullptr;
 };
 
 /************************************************************************************************************
-template           : shm_hashset_expire
+template           : shm_expire_hashset
 ************************************************************************************************************/
 template < class T,
-    class _hash_fun = smem_hash<T>,
-    class _equal_key = std::equal_to<T>,
-    class _washout_fun = _default_washout_fun<T> >
-class shm_hashset_expire :
-    public shm_hashtable_expire < T,
+    class Hash = std::hash<T>,
+    class keyEqual = std::equal_to<T>,
+    class Washout = default_washout<T> >
+class shm_expire_hashset :
+    public shm_expire_hashtable < T,
     T,
-    _hash_fun,
-    smem_identity<T>,
-    _equal_key,
-    _washout_fun >
+    Hash,
+    shm_identity<T>,
+    keyEqual,
+    Washout >
 {
 private:
-    //定义自己
-    typedef shm_hashset_expire<T, _hash_fun, _equal_key, _washout_fun> self;
+    typedef shm_expire_hashset<T, Hash, keyEqual, Washout> self;
+    typedef shm_expire_hashtable<T, T, Hash, shm_identity<T>, keyEqual, Washout> shm_expire_hashtable_t;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_hashset_expire() = default;
-
+    shm_expire_hashset() = default;
+    shm_expire_hashset(const shm_expire_hashset& others) = delete;
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashset_expire() = default;
+    ~shm_expire_hashset() = default;
 
 public:
     static self*
-        initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+        initialize(self::size_type num_node,
+                   self::size_type& real_num,
+                   char* mem_addr,
+                   bool if_restore = false)
     {
-        return reinterpret_cast<self*>(
-            shm_hashtable_expire<T, T, _hash_fun, smem_identity<T>, _equal_key, _washout_fun>::initialize(
-            numnode, pmmap, if_restore));
+        return reinterpret_cast<self*>(shm_expire_hashtable_t::initialize(
+            num_node,
+            real_num,
+            mem_addr,
+            if_restore));
     }
 };
 
 /************************************************************************************************************
-template           : shm_hashmap_expire
+template           : shm_expire_hashmap
 ************************************************************************************************************/
-template < class K,
+template < class Key,
     class T,
-    class _hash_fun = smem_hash<K>,
-    class _extract_key = mmap_select1st <std::pair <K, T> >,
-    class _equal_key = std::equal_to<K>,
-    class _washout_fun = _default_washout_fun<T> >
-class shm_hashmap_expire :
-    public shm_hashtable_expire < std::pair <K, T>,
-    K,
-    _hash_fun,
-    _extract_key,
-    _equal_key,
-    _washout_fun >
+    class Hash = std::hash<Key>,
+    class Extract = shm_select1st <std::pair <Key, T> >,
+    class keyEqual = std::equal_to<Key>,
+    class Washout = default_washout<T> >
+class shm_expire_hashmap :
+    public shm_expire_hashtable < std::pair <Key, T>,
+    Key,
+    Hash,
+    Extract,
+    keyEqual,
+    Washout >
 {
 private:
-    //定义自己
-    typedef shm_hashmap_expire<K, T, _hash_fun, _extract_key, _equal_key, _washout_fun > self;
-
+    typedef shm_expire_hashmap<Key, T, Hash, Extract, keyEqual, Washout > self;
+    typedef shm_expire_hashtable< std::pair <Key, T>, Key, Hash, Extract, keyEqual, Washout > shm_expire_hashtable_t;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
 
     //这个函数,不给你用,就是不给你用
-    shm_hashmap_expire() = default;
+    shm_expire_hashmap() = default;
 
+    shm_expire_hashmap(const shm_expire_hashmap& others) = delete;
     const self& operator=(const self& others) = delete;
 public:
-    ~shm_hashmap_expire() = default;
+    ~shm_expire_hashmap() = default;
 
 public:
-    static self* initialize(size_t& numnode, char* pmmap, bool if_restore = false)
+    static self* initialize(self::size_type num_node,
+                            self::size_type& real_num,
+                            char* mem_addr,
+                            bool if_restore = false)
     {
         return reinterpret_cast<self*>(
-            shm_hashtable_expire< std::pair <K, T>, K, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(
-            numnode, pmmap, if_restore));
+            shm_expire_hashtable_t::initialize(
+            num_node,
+            real_num,
+            mem_addr,
+            if_restore));
     }
     //[]操作符号有优点和缺点，
-    T& operator[](const K& key)
+    T& operator[](const Key& key)
     {
         return (find(key)).second;
     }
