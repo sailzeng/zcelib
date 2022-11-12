@@ -121,9 +121,7 @@ int server_status::initialize(const char* stat_filename,
     stat_file_head_ = static_cast<ZCE_STATUS_HEAD*>(stat_file_.addr());
 
     //如果在这儿出现断言，就是你代码使用错误了.
-    ZCE_ASSERT(nullptr == status_stat_sandy_
-               && nullptr == status_copy_mandy_
-               && nullptr == stat_lock_);
+    ZCE_ASSERT(nullptr == stat_lock_);
 
     // 统计数据区初始化
     char* stat_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);

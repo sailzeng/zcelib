@@ -457,7 +457,7 @@ int bytes_encrypt_right(int /*argc*/, char* /*argv*/[])
     test_encrypt<zce::TEA_Crypt_64_128_32>();
     test_encrypt<zce::TEA_Crypt_64_128_64>();
     //测试一下特殊的轮数
-    test_encrypt<zce::zce_crypt< zce::tea_ecb<19 > > >();
+    test_encrypt<zce::ZCE_Crypt< zce::TEA_ECB<19 > > >();
 
     test_encrypt<zce::XTEA_Crypt_64_128_16>();
     test_encrypt<zce::XTEA_Crypt_64_128_32>();

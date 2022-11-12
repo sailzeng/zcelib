@@ -17,7 +17,7 @@ public:
 
         zce::time_value delay_time(1, 0);
         zce::time_value interval_time(0, 0);
-        size_t i = 0;
+        int i = 0;
         for (; i < timer_id_ary[i]; ++i)
         {
             if (timer_id_ary[i] == timer_id)

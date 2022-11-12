@@ -45,7 +45,9 @@ public:
     {
     }
 
-    ~msgqueue_condi() = default;
+    ~msgqueue_condi()
+    {
+    }
 
     //QUEUE是否为nullptr
     inline bool empty()

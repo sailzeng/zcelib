@@ -9,6 +9,9 @@
 
 namespace zce::aio
 {
+worker::worker()
+{
+}
 worker::~worker()
 {
     terminate();

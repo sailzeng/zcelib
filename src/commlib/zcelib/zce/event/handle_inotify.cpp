@@ -283,7 +283,6 @@ void event_inotify::inotify_event()
 
     ZCE_LOG(RS_DEBUG, "event_inotify::read_event");
 
-    int detect_ret = 0;
     size_t watch_event_num = 0;
 
     //读取

@@ -33,7 +33,7 @@ class worker
 {
 public:
 
-    worker() = default;
+    worker();
     ~worker();
 
     //!初始化

@@ -39,7 +39,6 @@ template <class T, class Key, class Extract, class Compare> class _rb_tree_itera
 public:
     typedef shmc_size_type size_type;
     typedef ptrdiff_t difference_type;
-    typedef shmc_size_type size_type;
     typedef T value_type;
     typedef T* pointer;
     typedef T& reference;
@@ -1269,7 +1268,7 @@ class shm_set :
 private:
     typedef shm_set<T, Compare > self;
     typedef rb_tree< T, T, shm_identity<T>, Compare> rb_tree_t;
-
+    typedef shmc_size_type size_type;
 protected:
     shm_set() = default;
     shm_set(const shm_set& others) = delete;
@@ -1278,7 +1277,7 @@ public:
     ~shm_set() = default;
 public:
     static shm_set*
-        initialize(self::size_type& numnode, char* pmmap, bool if_restore = false)
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<self *>(
             rb_tree_t::initialize(numnode, pmmap, if_restore));
@@ -1293,6 +1292,7 @@ class shm_map :
 private:
     typedef shm_map<Key, T, Extract, Compare > self;
     typedef rb_tree< std::pair <Key, T>, Key, Extract, Compare> rb_tree_t;
+    typedef shmc_size_type size_type;
 protected:
     shm_map() = default;
     shm_map(const shm_map& others) = delete;
@@ -1301,7 +1301,7 @@ public:
     ~shm_map() = default;
 
     static shm_map*
-        initialize(self::size_type& numnode, char* pmmap, bool if_restore = false)
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<self *>(
             rb_tree_t::initialize(numnode, pmmap, if_restore));

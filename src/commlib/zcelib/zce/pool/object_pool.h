@@ -85,9 +85,9 @@ public:
         size_t sz = voidptr_pool_.size();
         for (size_t i = 0; i < sz; i++)
         {
-            void* ptr = nullptr;
+            char* ptr = nullptr;
             voidptr_pool_.pop_front(ptr);
-            delete ptr;
+            delete[] ptr;
         }
     }
 
@@ -105,7 +105,7 @@ public:
     {
         std::lock_guard<LOCK> lock(lock_);
         obj->~T();
-        free_ptr((void *)obj);
+        free_ptr((char *)obj);
     }
 
     inline size_t size()
@@ -133,10 +133,10 @@ protected:
 
     //也许未来可以加个收缩
     //!分配一个对象
-    void* alloc_ptr()
+    char* alloc_ptr()
     {
         auto ret = false;
-        void* ptr = nullptr;
+        char* ptr = nullptr;
         if (voidptr_pool_.size() == 0)
         {
             ret = extend(extend_size_);
@@ -150,7 +150,7 @@ protected:
     }
 
     //归还一个对象
-    void free_ptr(void* ptr)
+    void free_ptr(char* ptr)
     {
         voidptr_pool_.push_back(ptr);
         return;
@@ -182,7 +182,7 @@ protected:
         //
         for (size_t i = 0; i < extend_size; ++i)
         {
-            void *new_ptr = new char[sz_object];
+            char *new_ptr = new char[sz_object];
             voidptr_pool_.push_back(new_ptr);
         }
         return true;
@@ -195,7 +195,7 @@ protected:
     size_t extend_size_ = 0;
 
     //! 对象池子
-    zce::lord_rings<void*>   voidptr_pool_;
+    zce::lord_rings<char*>   voidptr_pool_;
     //!
     LOCK lock_;
 };

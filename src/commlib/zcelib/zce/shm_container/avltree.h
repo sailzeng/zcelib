@@ -1506,6 +1506,7 @@ class shm_avlset :
 private:
     typedef shm_avlset<T, Compare > self;
     typedef shm_avltree<T, T, shm_identity<T>, Compare> avl_tree_t;
+    typedef shmc_size_type size_type;
 protected:
     shm_avlset() = default;
     shm_avlset(const shm_avlset& others) = delete;
@@ -1516,7 +1517,7 @@ public:
 public:
 
     static self*
-        initialize(self::size_type& numnode, char* pmmap, bool if_restore = false)
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast<self *>(
             avl_tree_t::initialize(numnode, pmmap, if_restore));
@@ -1534,7 +1535,7 @@ class shm_avlmap :
 private:
     typedef shm_avlmap<Key, T, Extract, Compare > self;
     typedef shm_avltree<std::pair <Key, T>, Key, Extract, Compare> avl_tree_t;
-
+    typedef shmc_size_type size_type;
 protected:
     shm_avlmap() = default;
     shm_avlmap(const shm_avlmap& others) = delete;
@@ -1544,7 +1545,7 @@ public:
 
 public:
     static self*
-        initialize(self::size_type& numnode, char* pmmap, bool if_restore = false)
+        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
     {
         return reinterpret_cast <self *> (
             avl_tree_t::initialize(numnode, pmmap, if_restore));

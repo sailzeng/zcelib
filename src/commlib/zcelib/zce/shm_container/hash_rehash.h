@@ -547,7 +547,7 @@ public:
             real_num += prime_ary[i];
         }
 
-        ZCE_ASSERT(node_count > 0);
+        ZCE_ASSERT(real_num > 0);
         //
         std::size_t sz_alloc = 0;
         //计算空间，根据头，质数队列,结构数量，优先级空间
@@ -613,8 +613,7 @@ public:
                     bool if_expire,
                     std::size_t row_prime_ary = DEF_PRIMES_LIST_NUM)
     {
-        ZCE_ASSERT(mem_addr != nullptr
-                   && req_num > 0
+        ZCE_ASSERT(req_num > 0
                    && row_prime_ary <= MAX_PRIMES_LIST_NUM);
 
         //调整,根据你的尺寸，向上找一个合适的空间
@@ -675,8 +674,7 @@ public:
                     const T& invalid_data,
                     bool if_expire)
     {
-        ZCE_ASSERT(mem_addr != nullptr &&
-                   row_prime_ary > 0);
+        ZCE_ASSERT(row_prime_ary > 0);
         real_num = 0;
         std::size_t sz_alloc = alloc_size(row_prime_ary,
                                           prime_ary,

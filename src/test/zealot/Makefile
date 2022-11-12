@@ -25,12 +25,12 @@ COMPILE_OBJECT = executeprg
 PCH_FILE = predefine.h
 
 #zealot只测试ZCELIB
-INCLDIRS = $(INC_ZCELIB) $(INC_DEV_OUTER)
+INCLDIRS = -I. $(INC_ZCELIB) $(INC_DEV_OUTER)
 LIBARYS  = $(LIB_ZCELIB) $(LIB_DEV_OUTER)
 
 #DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
 #如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
-DEPENDS_DIR = $(PATH_SRC)/commlib/zcelib   
+DEPENDS_DIR = $(PATH_SRC)/commlib/zcelib
 
 DEPENDS_LIB = $(PATH_LIB)/libzcelib.a
 

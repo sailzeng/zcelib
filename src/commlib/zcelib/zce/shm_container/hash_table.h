@@ -875,6 +875,7 @@ class shm_hashset :
 private:
     typedef shm_hashset< T, Hash, keyEqual> self;
     typedef shm_hashtable< T, T, Hash, shm_identity<T>, keyEqual> shm_hashtable_t;
+    typedef shmc_size_type size_type;
 protected:
     shm_hashset() = default;
     shm_hashset(const shm_hashset& others) = delete;
@@ -884,8 +885,8 @@ public:
 
 public:
     static self*
-        initialize(self::size_type req_num,
-                   self::size_type& real_num,
+        initialize(size_type req_num,
+                   size_type& real_num,
                    char* mem_addr,
                    bool if_restore = false)
     {
@@ -907,6 +908,7 @@ class shm_hashmap :
 private:
     typedef shm_hashmap< Key, T, Hash, keyEqual> self;
     typedef shm_hashtable<T, Key, Hash, shm_select1st<std::pair <Key, T> >, keyEqual> shm_hashtable_t;
+    typedef shmc_size_type size_type;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
@@ -918,8 +920,8 @@ public:
 
 public:
     static self*
-        initialize(self::size_type req_num,
-                   self::size_type& real_num,
+        initialize(size_type req_num,
+                   size_type& real_num,
                    char* mem_addr,
                    bool if_restore = false)
     {

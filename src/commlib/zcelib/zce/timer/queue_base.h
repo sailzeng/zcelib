@@ -113,7 +113,9 @@ protected:
 
 public:
     //析构函数
-    virtual ~timer_queue() = default;
+    virtual ~timer_queue()
+    {
+    }
 
     //---------------------------------------------------------------------------------------
 public:

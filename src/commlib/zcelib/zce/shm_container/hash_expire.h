@@ -1216,6 +1216,7 @@ class shm_expire_hashset :
 private:
     typedef shm_expire_hashset<T, Hash, keyEqual, Washout> self;
     typedef shm_expire_hashtable<T, T, Hash, shm_identity<T>, keyEqual, Washout> shm_expire_hashtable_t;
+    typedef shmc_size_type size_type;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
@@ -1227,8 +1228,8 @@ public:
 
 public:
     static self*
-        initialize(self::size_type num_node,
-                   self::size_type& real_num,
+        initialize(size_type num_node,
+                   size_type& real_num,
                    char* mem_addr,
                    bool if_restore = false)
     {
@@ -1260,6 +1261,7 @@ class shm_expire_hashmap :
 private:
     typedef shm_expire_hashmap<Key, T, Hash, Extract, keyEqual, Washout > self;
     typedef shm_expire_hashtable< std::pair <Key, T>, Key, Hash, Extract, keyEqual, Washout > shm_expire_hashtable_t;
+    typedef shmc_size_type size_type;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
 
@@ -1272,8 +1274,8 @@ public:
     ~shm_expire_hashmap() = default;
 
 public:
-    static self* initialize(self::size_type num_node,
-                            self::size_type& real_num,
+    static self* initialize(size_type num_node,
+                            size_type& real_num,
                             char* mem_addr,
                             bool if_restore = false)
     {

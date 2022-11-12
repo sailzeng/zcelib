@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/os_adapt/common.h
+* @filename   zce/os_adapt/define.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年5月1日

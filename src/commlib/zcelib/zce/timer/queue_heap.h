@@ -45,7 +45,9 @@ public:
     timer_heap() = default;
 
     ///析构函数
-    virtual ~timer_heap() = default;
+    virtual ~timer_heap()
+    {
+    }
 public:
 
     /*!

@@ -3,7 +3,7 @@
 
 #include "zce/os_adapt/define.h"
 
-//这一段不放在zce/os_adapt/common.h里面的原因是因为有的代码也实现了这个函数，和这些全局变量
+//这一段不放在zce/os_adapt/define.h里面的原因是因为有的代码也实现了这个函数，和这些全局变量
 //所以会引发冲突，所以除非明确你使用这些函数，否则不暴漏他们
 #if defined (ZCE_OS_WINDOWS)
 
