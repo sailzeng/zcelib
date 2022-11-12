@@ -334,6 +334,8 @@ public:
 public:
     ///为0的时间
     static const time_value    ZERO_TIME_VALUE;
+    ///
+    static const std::chrono::seconds ZERO_DURATION_VALUE;
     ///最大能表示的时间
     static const time_value    MAX_TIME_VALUE;
 

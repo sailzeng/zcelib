@@ -115,7 +115,27 @@ public:
     //析构函数
     virtual ~timer_queue() = default;
 
+    //---------------------------------------------------------------------------------------
 public:
+
+    /*!
+    @brief      初始化
+    @return     int                   返回0标识初始化成功吗，否则失败
+    @param[in]  num_timer_node        定时器NODE的数量，初始化的时候会分配好，
+    @param[in]  timer_precision_mesc  定时器的进度，多少msec，如果设置过大，有些定时器会超时后才触发，如果太小，需要更多的轮的槽位空间，
+    @param[in]  trigger_mode          触发模式是用墙上时钟还是CPU TICK，参考 @ref ZCE_Timer_Queue::TRIGGER_MODE
+    @param[in]  dynamic_expand_node   如果初始化的NODE节点数量不够，是否自动扩展
+    */
+    int initialize(size_t num_timer_node,
+                   unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
+                   bool dynamic_expand_node = true);
+
+    /*!
+    @brief      关闭定时器队列
+    @return     int 0表示成，否则失败
+    */
+    virtual int close();
 
     /*!
     @brief      设置一个定时器，接口参考了ACE的设计，这个设计其实算很完整了，你扩展的类，必须实现这个接口
@@ -124,7 +144,7 @@ public:
     @param[in]  time_id       一个指针，在定时器触发会用参数还给你，
     @param[in]  delay_time    第一次触发的时间，为什么要这样设计参数？你自己考虑一下，想想如何在10:00播放第6套广播体操
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
-                              如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
+                                如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
     int schedule_timer(zce::timer_handler* timer_hdl,
                        int &time_id,
@@ -138,12 +158,61 @@ public:
                        const zce::time_value& delay_time,
                        const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
 
+    template<typename Rep, typename Period>
+    int schedule_timer(zce::timer_handler* timer_hdl,
+                       int &time_id,
+                       std::chrono::duration<Rep, Period>& delay_duration,
+                       std::chrono::duration<Rep, Period>& interval_duration = zce::time_value::ZERO_DURATION_VALUE)
+    {
+        zce::time_value delay_time = delay_duration;
+        zce::time_value interval_time = interval_duration;
+        return schedule_timer(timer_hdl, time_id, delay_time, interval_time);
+    }
+
+    template<typename Rep, typename Period>
+    int schedule_timer(timeout_callback_t &timer_call,
+                       int &time_id,
+                       std::chrono::duration<Rep, Period>& delay_duration,
+                       std::chrono::duration<Rep, Period>& interval_duration = zce::time_value::ZERO_DURATION_VALUE)
+    {
+        zce::time_value delay_time = delay_duration;
+        zce::time_value interval_time = interval_duration;
+        return schedule_timer(timer_call, time_id, delay_time, interval_time);
+    }
+
     /*!
     @brief      取消定时器，你继承后必须实现这个接口
     @return     int      0标识成功，否则失败
     @param[in]  timer_id 定时器ID
     */
     virtual int cancel_timer(int timer_id) = 0;
+
+    //下面这些已经实现，你可以重载，或者直接使用而已
+
+    /*!
+    @brief      进行超时处理，你需要调用的函数，分发,直接调用函数取得时间然后进行分发
+    @return     size_t 返回分发的触发的定时器的数量
+    */
+    virtual size_t expire();
+
+    /*!
+    @brief      使用 zce::Timer_Handler的指针 @a timer_hdl 取消定时器方式，超级
+                超级，超级慢的函数，(当然使用起来可能比较方便)，你可以继承,
+                一般情况下，推荐用time id 取消定时器
+    @return     int       返回0表示成功，否则失败
+    @param      timer_hdl 定时器句柄的指针
+    */
+    virtual int cancel_timer(const zce::timer_handler* timer_hdl);
+
+    /*!
+    @brief      扩张相关定时器的NODE的数量，
+                由于子类还有和NOE相关的数据结构，在扩展是也要扩展，所以是visual
+    @return     int 返回0标识成功
+    @param[in]  num_timer_node 要设置的定时器NODE数量
+    @param[out] old_num_node   返回原来的定时器NODE数量
+    */
+    virtual int extend_node(size_t num_timer_node,
+                            size_t& old_num_node) = 0;
 
 protected:
 
@@ -180,58 +249,6 @@ protected:
     */
     virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) = 0;
 
-    //---------------------------------------------------------------------------------------
-public:
-
-    //下面这些已经实现，你可以重载，或者直接使用而已
-
-    /*!
-    @brief      进行超时处理，你需要调用的函数，分发,直接调用函数取得时间然后进行分发
-    @return     size_t 返回分发的触发的定时器的数量
-    */
-    virtual size_t expire();
-
-    /*!
-    @brief      使用 zce::Timer_Handler的指针 @a timer_hdl 取消定时器方式，超级
-                超级，超级慢的函数，(当然使用起来可能比较方便)，你可以继承,
-                一般情况下，推荐用time id 取消定时器
-    @return     int       返回0表示成功，否则失败
-    @param      timer_hdl 定时器句柄的指针
-    */
-    virtual int cancel_timer(const zce::timer_handler* timer_hdl);
-
-    /*!
-    @brief      扩张相关定时器的NODE的数量，
-                由于子类还有和NOE相关的数据结构，在扩展是也要扩展，所以是visual
-    @return     int 返回0标识成功
-    @param[in]  num_timer_node 要设置的定时器NODE数量
-    @param[out] old_num_node   返回原来的定时器NODE数量
-    */
-    virtual int extend_node(size_t num_timer_node,
-                            size_t& old_num_node) = 0;
-
-    /*!
-    @brief      关闭定时器队列
-    @return     int 0表示成，否则失败
-    */
-    virtual int close();
-
-    //--------------------------------------------------------------------------------------
-
-    /*!
-    @brief      初始化
-    @return     int                   返回0标识初始化成功吗，否则失败
-    @param[in]  num_timer_node        定时器NODE的数量，初始化的时候会分配好，
-    @param[in]  timer_precision_mesc  定时器的进度，多少msec，如果设置过大，有些定时器会超时后才触发，如果太小，需要更多的轮的槽位空间，
-    @param[in]  trigger_mode          触发模式是用墙上时钟还是CPU TICK，参考 @ref ZCE_Timer_Queue::TRIGGER_MODE
-    @param[in]  dynamic_expand_node   如果初始化的NODE节点数量不够，是否自动扩展
-    */
-    int initialize(size_t num_timer_node,
-                   unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                   bool dynamic_expand_node = true);
-
-protected:
     /*!
     @brief      分配一个崭新的Timer Node
     @return     int             返回0标识分配成功

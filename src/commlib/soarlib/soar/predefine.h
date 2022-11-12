@@ -61,6 +61,8 @@
 
 //ZCElib的库文件
 #include <zce/predefine.h>
+#include <zce/logger/log_comm.h>
+#include <zce/logger/logging.h>
 #include <zce/util/id_to_string.h>
 #include <zce/time/time_value.h>
 #include <zce/mysql/connect.h>
@@ -68,7 +70,6 @@
 #include <zce/mysql/execute.h>
 #include <zce/lockfree/kfifo.h>
 #include <zce/server/server_base.h>
-#include <zce/shm_container/hash_table.h>
 #include <zce/util/non_copyable.h>
 #include <zce/container/lord_rings.h>
 #include <zce/os_adapt/string.h>
@@ -83,8 +84,6 @@
 #include <zce/os_adapt/dirent.h>
 #include <zce/shared_mem/mmap.h>
 #include <zce/shared_mem/posix.h>
-#include <zce/logger/log_comm.h>
-#include <zce/logger/logging.h>
 #include <zce/lock/null_lock.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/config/property_tree.h>
@@ -107,6 +106,7 @@
 #include <zce/event/reactor_epoll.h>
 #include <zce/thread/thread_task.h>
 #include <zce/thread/thread_wait_mgr.h>
+#include <zce/shm_container/hash_table.h>
 #include <zce/thread/msgque_condi.h>
 #include <zce/server/mml_command.h>
 #include <zce/server/get_option.h>

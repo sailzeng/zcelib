@@ -936,6 +936,7 @@ public:
         return true;
     }
 
+    //!自己内部分配内存的初始化
     bool initialize(size_type num_node)
     {
         std::size_t sz_alloc = alloc_size(num_node);

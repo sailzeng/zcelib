@@ -374,7 +374,8 @@ public:
     * @param      real_num 实际分配的NODE数量
     * @note       注意返回的是实际INDEX长度,会取一个质数
     */
-    static std::size_t alloc_size(size_type req_num, size_type& real_num)
+    static std::size_t alloc_size(size_type req_num,
+                                  size_type& real_num)
     {
         zce::hash_prime(req_num, real_num);
         return  sizeof(_shm_ht_head) +

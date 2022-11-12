@@ -7,6 +7,8 @@ namespace zce
 const time_value time_value::ZERO_TIME_VALUE(0, 0);
 //
 const time_value time_value::MAX_TIME_VALUE(0x7FFFFFFF, 0x7FFFFFFF);
+//
+const std::chrono::seconds time_value::ZERO_DURATION_VALUE(0);
 
 //默认构造函数
 time_value::time_value()
