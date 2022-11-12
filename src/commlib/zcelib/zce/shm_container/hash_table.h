@@ -935,4 +935,13 @@ public:
         return (find(key)).second;
     }
 };
-};
+
+template < class T, class Key, class Hash, class keyEqual >
+using static_hashtable = zce::shm_hashtable<T, Key, Hash, keyEqual>;
+
+template<class T, class Hash, class keyEqual >
+using static_hashset = zce::shm_hashset<T, Hash, keyEqual>;
+
+template<class Key, class T, class Hash, class keyEqual>
+using static_hashmap = zce::shm_hashmap<Key, T, Hash, keyEqual>;
+}

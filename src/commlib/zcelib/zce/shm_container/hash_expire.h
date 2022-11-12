@@ -1290,4 +1290,13 @@ public:
         return (find(key)).second;
     }
 };
+
+template < class T, class Key, class Hash, class keyEqual, class Washout >
+using static_expire_hashtable = zce::shm_expire_hashtable<T, Key, Hash, keyEqual, Washout>;
+
+template<class T, class Hash, class keyEqual, class Washout >
+using static_expire_hashset = zce::shm_expire_hashset<T, Hash, keyEqual, Washout>;
+
+template<class Key, class T, class Hash, class keyEqual, class Washout>
+using static_expire_hashmap = zce::shm_expire_hashmap<Key, T, Hash, keyEqual, Washout>;
 };

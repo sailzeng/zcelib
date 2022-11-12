@@ -964,4 +964,7 @@ protected:
     //优先级的数据指针,用32位的数据保存优先级
     uint32_t* priority_base_ = nullptr;
 };
-};
+
+template < class T, class Key, class Hash, class keyEqual, class Washout >
+using static_rehash_hashtable = zce::shm_rehash_hashtable<T, Key, Hash, keyEqual, Washout>;
+}
