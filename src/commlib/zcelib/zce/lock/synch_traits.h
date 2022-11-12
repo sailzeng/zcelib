@@ -30,7 +30,7 @@ namespace zce
 class MT_SYNCH
 {
 public:
-    typedef thread_light_mutex                  MUTEX;
+    typedef thread_mutex                  MUTEX;
     typedef null_lock                           NULL_MUTEX;
     typedef process_mutex                       PROCESS_MUTEX;
     typedef thread_recursive_mutex              RECURSIVE_MUTEX;

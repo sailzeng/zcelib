@@ -131,7 +131,8 @@ public:
 };
 
 //======================================================
-
+class thread_mutex;
+class thread_recursive_mutex;
 /*!
 * @brief      CV,Condition Variable 条件变量的基类，条件变量的
 *             扩展应该都是从这个基类扩展
@@ -150,21 +151,63 @@ public:
 private:
 
     ///等待,
-    virtual void wait(zce::lock_base* /*external_mutex*/) noexcept
+    virtual void wait(thread_mutex* /*external_mutex*/) noexcept
     {
     }
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(zce::lock_base* /*external_mutex*/,
+    virtual bool wait_until(thread_mutex* /*external_mutex*/,
                             const zce::time_value& /*abs_time*/) noexcept
     {
         return false;
     }
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(zce::lock_base* /*external_mutex*/,
+    virtual bool wait_for(thread_mutex* /*external_mutex*/,
                           const zce::time_value& /*relative_time*/) noexcept
     {
         return false;
     }
+
+    /// 给一个等待线程发送信号 Signal one waiting thread.
+    virtual void notify_one(void) noexcept
+    {
+    }
+    ///给所有的等待线程广播信号 Signal *all* waiting threads.
+    virtual void notify_all(void) noexcept
+    {
+    }
+};
+
+class condition_rmutex_base
+{
+protected:
+    ///构造函数,protected，允许析构，不允许构造的写法
+    condition_rmutex_base() = default;
+public:
+    ///析构函数，
+    virtual ~condition_rmutex_base() = default;
+
+    //为了避免其他人的使用，特此将这些函数隐藏起来
+private:
+
+    virtual void wait(thread_recursive_mutex* /*external_mutex*/) noexcept
+    {
+        return;
+    }
+
+    //!绝对时间超时的的等待，超时后解锁
+    virtual bool wait_until(thread_recursive_mutex* /*external_mutex*/,
+                            const zce::time_value& /*abs_time*/) noexcept
+    {
+        return false;
+    }
+
+    //!相对时间的超时锁定等待，超时后，解锁
+    virtual bool wait_for(thread_recursive_mutex* /*external_mutex*/,
+                          const zce::time_value& /*relative_time*/) noexcept
+    {
+        return false;
+    }
+
     /// 给一个等待线程发送信号 Signal one waiting thread.
     virtual void notify_one(void) noexcept
     {

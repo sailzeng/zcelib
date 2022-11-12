@@ -204,7 +204,7 @@ public:
     @return     int       返回0表示成功，否则失败
     @param      timer_hdl 定时器句柄的指针
     */
-    virtual int cancel_timer(const zce::timer_handler* timer_hdl);
+    int cancel_timer(const zce::timer_handler* timer_hdl);
 
     /*!
     @brief      扩张相关定时器的NODE的数量，

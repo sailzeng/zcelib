@@ -17,7 +17,7 @@ int test_nonr_thread_mutex(int, char*[])
 zce::msglist_sema <int >  message_queue_(100);
 //ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 
-zce::thread_light_mutex  io_mutex;
+zce::thread_mutex  io_mutex;
 
 class Task_Producer : public zce::thread_task
 {
@@ -34,7 +34,7 @@ public:
             message_queue_.enqueue(data);
 
             {
-                zce::lock_guard<zce::thread_light_mutex>  lock(io_mutex);
+                zce::lock_guard<zce::thread_mutex>  lock(io_mutex);
                 std::cout << "queue size:" << message_queue_.size() << " input data " << i << std::endl;
             }
         }
@@ -64,7 +64,7 @@ public:
             message_queue_.dequeue(x);
 
             {
-                zce::lock_guard<zce::thread_light_mutex> lock(io_mutex);
+                zce::lock_guard<zce::thread_mutex> lock(io_mutex);
                 std::cout << "queue size:" << message_queue_.size() << " output data " << x << std::endl;
             }
         }

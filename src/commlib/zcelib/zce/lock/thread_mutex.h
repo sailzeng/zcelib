@@ -6,7 +6,7 @@
 * @date       2011年9月12日
 * @brief      线程的互斥量封装，分成3种方式
 *             线程的互斥量，有轻量的锁，递归锁，非递归锁，读写锁
-*             thread_light_mutex  轻量级的线程锁，WINDODOWS下用临界区模拟，LINUX用pthread_mutex, 可递归，但是没有超时处理
+*             thread_mutex  轻量级的线程锁，WINDODOWS下用临界区模拟，LINUX用pthread_mutex, 可递归，但是没有超时处理
 *             thread_recursive_mutex 递归的线程锁 WINDODOWS下用MUTEX模拟，可递归，有超时处理
 *             thread_nonr_mutex 不可以递归的线程锁 WINDODOWS用信号灯模拟的MUTEX，不可以递归，有超时处理
 *
@@ -27,18 +27,18 @@ class time_value;
 *             Windows下是用临界区实现的，所以嘛，同时注意临界区是可递归的
 *             因为临界区没有超时处理能录，这个封装也就不提供了。（临界区本来也不应该有超时）
 */
-class thread_light_mutex : public zce::lock_base
+class thread_mutex : public zce::lock_base
 {
 public:
     ///线程锁的GUARD
-    typedef zce::lock_guard<thread_light_mutex> LOCK_GUARD;
+    typedef zce::lock_guard<thread_mutex> LOCK_GUARD;
 
 public:
 
     //构造函数
-    thread_light_mutex();
+    thread_mutex();
     ///析构函数
-    virtual ~thread_light_mutex(void);
+    virtual ~thread_mutex(void);
 
     ///锁定
     virtual void lock() noexcept;

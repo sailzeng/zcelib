@@ -45,9 +45,7 @@ public:
     {
     }
 
-    ~msgqueue_condi()
-    {
-    }
+    ~msgqueue_condi() = default;
 
     //QUEUE是否为nullptr
     inline bool empty()
@@ -362,7 +360,7 @@ public:
     //QUEUE是否为nullptr
     inline bool empty()
     {
-        zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);
+        zce::thread_mutex::LOCK_GUARD guard(queue_lock_);
 
         if (queue_cur_size_ == 0)
         {
@@ -375,7 +373,7 @@ public:
     //QUEUE是否为满
     inline bool full()
     {
-        zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);
+        zce::thread_mutex::LOCK_GUARD guard(queue_lock_);
 
         if (queue_cur_size_ == queue_max_size_)
         {
@@ -441,14 +439,14 @@ public:
 
     void clear()
     {
-        zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);
+        zce::thread_mutex::LOCK_GUARD guard(queue_lock_);
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
 
     size_t size()
     {
-        zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);
+        zce::thread_mutex::LOCK_GUARD guard(queue_lock_);
         return queue_cur_size_;
     }
 
@@ -462,7 +460,7 @@ protected:
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
         {
-            zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);
+            zce::thread_mutex::LOCK_GUARD guard(queue_lock_);
             bool bret = false;
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，必须重入检查
@@ -508,7 +506,7 @@ protected:
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {
-            zce::thread_light_mutex::LOCK_GUARD guard(queue_lock_);
+            zce::thread_mutex::LOCK_GUARD guard(queue_lock_);
             bool bret = false;
 
             //cond的语意是非常含混的，讨厌的，这个地方必须用while，
@@ -559,7 +557,7 @@ protected:
     std::size_t                  queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    zce::thread_light_mutex      queue_lock_;
+    zce::thread_mutex      queue_lock_;
 
     //插入保护的条件变量
     zce::thread_condition        cond_enqueue_;

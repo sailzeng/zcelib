@@ -122,8 +122,13 @@ CC  := ccache $(CC)
 CXX := ccache $(CXX)
 endif
 
+
 #告警标志
-WARNFLAGS += -W -Wall -Wpointer-arith -Winline -Wunreachable-code -Wshadow -Wcast-align
+# -Wextra = -W
+# -Wchkp 警告由指针界限检查器 -fcheck-pointer-bounds,新版本已经废弃了
+# -Winline 我去掉了。因为使用了C++ default 后，GCC有不少告警
+# -Wpointer-arith 对函数指针或者void *类型的指针进行算术操作时给出警告。也很有用。
+WARNFLAGS += -Wextra -Wall -Wpointer-arith -Wunreachable-code -Wshadow -Wcast-align -Wnon-virtual-dtor -Woverloaded-virtual
 
 #这个告警有胆量的可以考虑一下，我第一次挑战以失败告终
 ifeq ($(effcpp),1)

@@ -209,7 +209,7 @@ void server_status::multi_thread_guard(bool multi_thread)
     //利用多态决定锁的行为
     if (multi_thread)
     {
-        stat_lock_ = new thread_light_mutex();
+        stat_lock_ = new thread_mutex();
     }
     else
     {

@@ -48,8 +48,8 @@ int zce::steady_clock(timeval* tv)
     unsigned int cpu_tick = static_cast<unsigned int>(::GetTickCount());
 
     //用了静态变量，防止重入
-    thread_light_mutex lock_static_var;
-    thread_light_mutex::LOCK_GUARD guard(lock_static_var);
+    thread_mutex lock_static_var;
+    thread_mutex::LOCK_GUARD guard(lock_static_var);
 
     static unsigned int one_period_tick = 0;
     static uint64_t cpu_tick_count = 0;

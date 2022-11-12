@@ -824,6 +824,9 @@ private:
 class memvar_base
 {
 public:
+    memvar_base() = default;
+    virtual ~memvar_base() = default;
+public:
     virtual void get(lua_State* state) = 0;
     virtual void set(lua_State* state) = 0;
 };

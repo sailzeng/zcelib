@@ -18,7 +18,17 @@ message(STATUS "CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+# using Clang
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+# using GCC
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+# using Intel C++
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+# using Visual Studio C++
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 " )
+endif()
+
 
 # 工程外部的头文件
 set(PATH_THIRDPARTY_INC "../third_party/include/")

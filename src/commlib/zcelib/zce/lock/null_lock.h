@@ -153,17 +153,17 @@ public:
 private:
 
     //!等待
-    void wait(zce::lock_base* /*external_mutex*/) noexcept override
+    void wait(thread_mutex* /*external_mutex*/) noexcept override
     {
     }
     //!绝对时间超时的的等待，超时后解锁
-    bool wait_until(zce::lock_base* /*external_mutex*/,
+    bool wait_until(thread_mutex* /*external_mutex*/,
                     const zce::time_value& /*abs_time*/) noexcept override
     {
         return true;
     }
     //!相对时间的超时锁定等待，超时后，解锁
-    bool wait_for(zce::lock_base* /*external_mutex*/,
+    bool wait_for(thread_mutex* /*external_mutex*/,
                   const zce::time_value& /*relative_time*/) noexcept override
     {
         return true;

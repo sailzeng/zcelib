@@ -8,13 +8,13 @@
 #include "zce/lock/thread_mutex.h"
 
 /************************************************************************************************************
-Class           : thread_light_mutex 轻量级的互斥锁，不提供超时。
+Class           : thread_mutex 轻量级的互斥锁，不提供超时。
 ************************************************************************************************************/
 
 namespace zce
 {
 //构造函数
-thread_light_mutex::thread_light_mutex()
+thread_mutex::thread_mutex()
 {
     int ret = 0;
 
@@ -32,7 +32,7 @@ thread_light_mutex::thread_light_mutex()
 }
 
 //销毁互斥量
-thread_light_mutex::~thread_light_mutex(void)
+thread_mutex::~thread_mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_mutex_destroy(&lock_);
@@ -44,7 +44,7 @@ thread_light_mutex::~thread_light_mutex(void)
 }
 
 //锁定
-void thread_light_mutex::lock() noexcept
+void thread_mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_lock(&lock_);
@@ -56,7 +56,7 @@ void thread_light_mutex::lock() noexcept
 }
 
 //尝试锁定
-bool thread_light_mutex::try_lock() noexcept
+bool thread_mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_trylock(&lock_);
@@ -69,7 +69,7 @@ bool thread_light_mutex::try_lock() noexcept
 }
 
 //解锁,
-void thread_light_mutex::unlock() noexcept
+void thread_mutex::unlock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_mutex_unlock(&lock_);
@@ -81,7 +81,7 @@ void thread_light_mutex::unlock() noexcept
 }
 
 //取出内部的锁的指针
-pthread_mutex_t* thread_light_mutex::get_lock()
+pthread_mutex_t* thread_mutex::get_lock()
 {
     return &lock_;
 }

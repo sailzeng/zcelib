@@ -339,6 +339,6 @@ void zergframe_mallocor<zce_lock>::clear_inst()
 
 //
 typedef zergframe_mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
-typedef zergframe_mallocor<zce::thread_light_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
+typedef zergframe_mallocor<zce::thread_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

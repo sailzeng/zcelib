@@ -142,14 +142,14 @@ struct AIO_ATOM
 {
 protected:
     AIO_ATOM() = default;
-    ~AIO_ATOM() = default;
+    virtual ~AIO_ATOM() noexcept = default;
 public:
     virtual void clear() = 0;
 
     //!
-    AIO_TYPE  aio_type_;
+    AIO_TYPE  aio_type_ = AIO_TYPE::AIO_INVALID;
     //!
-    uint32_t id_;
+    uint32_t id_ = 0;
     //!
     std::function<void(AIO_ATOM*)> call_back_;
     //!结果
