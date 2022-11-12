@@ -96,7 +96,7 @@ public:
     //在多线程的环境下提供这个运送符号是不安全的,没有加锁,上层自己保证
     T* operator->() const
     {
-        return rb_tree_instance_->getdatabase() + serial_;
+        return rb_tree_instance_->data_base() + serial_;
     }
 
     iterator& operator++()
@@ -242,7 +242,7 @@ public:
 
     public:
         //内存区的长度
-        std::size_t             size_of_mmap_ = 0;
+        std::size_t             size_of_mem_ = 0;
         //NODE结点个数;
         size_type               num_of_node_ = 0;
         //FREE的NODE个数
@@ -280,23 +280,27 @@ public:
         color_type   color_ = RB_TREE_RED;
     };
 
-protected:
+public:
     //构造函数，析构函数
     rb_tree() = default;
     //只定义,不实现,避免犯错
     rb_tree(const rb_tree&) = delete;
     const self& operator=(const self& others) = delete;
-public:
-    ~rb_tree() = default;
-
+    ~rb_tree()
+    {
+        if (slef_alloc_)
+        {
+            terminate();
+        }
+    }
     //得到索引的基础地址
-    inline _shm_rb_tree_index* getindexbase()
+    inline _shm_rb_tree_index* index_base()
     {
         return index_base_;
     }
 
     //得到数据区的基础地质
-    inline  T* getdatabase()
+    inline  T* data_base()
     {
         return data_base_;
     }
@@ -878,60 +882,67 @@ public:
 
     /*!
         * @brief 初始化，得到一个self的对象指针，
-        * @param numnode    对象数量
+        * @param num_node    对象数量
         * @param mem_addr   内心地址指针，可以是共享内存指针
         * @param if_restore 如果是共享内存，可以尝试恢复
         * @return self，自己的对象指针
     */
-    static self* initialize(const size_type numnode,
-                            char* mem_addr,
-                            bool if_restore = false)
+    bool initialize(const size_type num_node,
+                    char* mem_addr,
+                    bool if_restore = false)
     {
-        //assert(mem_addr!=nullptr && numnode >0 );
+        ZCE_ASSERT(mem_addr != nullptr && num_node > 0);
+        mem_addr_ = mem_addr;
         _shm_rb_tree_head* rb_tree_head = reinterpret_cast<_shm_rb_tree_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (true == if_restore)
         {
             //检查一下恢复的内存是否正确,
-            if (alloc_size(numnode) != rb_tree_head->size_of_mmap_ ||
-                numnode != rb_tree_head->num_of_node_)
+            if (alloc_size(num_node) != rb_tree_head->size_of_mem_ ||
+                num_node != rb_tree_head->num_of_node_)
             {
-                return nullptr;
+                return false;
             }
         }
 
         //初始化尺寸
-        rb_tree_head->size_of_mmap_ = alloc_size(numnode);
-        rb_tree_head->num_of_node_ = numnode;
-
-        self* instance = new self();
+        rb_tree_head->size_of_mem_ = alloc_size(num_node);
+        rb_tree_head->num_of_node_ = num_node;
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->mem_addr_ = mem_addr;
-        instance->rb_tree_head_ = rb_tree_head;
-        instance->index_base_ = reinterpret_cast<_shm_rb_tree_index*>(
+        rb_tree_head_ = rb_tree_head;
+        index_base_ = reinterpret_cast<_shm_rb_tree_index*>(
             mem_addr + sizeof(_shm_rb_tree_head));
-        instance->data_base_ = reinterpret_cast<T*>(
+        data_base_ = reinterpret_cast<T*>(
             mem_addr + sizeof(_shm_rb_tree_head) +
-            sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+            sizeof(_shm_rb_tree_index) * (num_node + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
-        instance->head_index_ = reinterpret_cast<_shm_rb_tree_index*>(
-            mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode));
-        instance->free_index_ = reinterpret_cast<_shm_rb_tree_index*>(
-            mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
+        head_index_ = reinterpret_cast<_shm_rb_tree_index*>(
+            mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (num_node));
+        free_index_ = reinterpret_cast<_shm_rb_tree_index*>(
+            mem_addr + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (num_node + 1));
 
         if (if_restore)
         {
-            instance->restore();
+            restore();
         }
         else
         {
             //清理初始化所有的内存,所有的节点为FREE
-            instance->clear();
+            clear();
         }
-        return instance;
+        return true;
+    }
+
+    bool initialize(size_type num_node)
+    {
+        std::size_t sz_alloc = alloc_size(num_node);
+        //自己分配一个空间，自己使用
+        char *mem_addr = new char[sz_alloc];
+        slef_alloc_ = true;
+        return initialize(num_node, mem_addr, false);
     }
 
     //清理初始化所有的内存,所有的节点为FREE
@@ -977,6 +988,10 @@ public:
             (data_base_ + pos)->~T();
         }
         clear();
+        if (slef_alloc_)
+        {
+            delete[] mem_addr_;
+        }
     }
 
     //!恢复函数，用于从(共享)内存中恢复数据，
@@ -1224,6 +1239,8 @@ protected:
     static const size_type ADDED_NUM_OF_INDEX = 2;
 
 protected:
+    //mem_addr_是否是自己分配的，如果是自己分配的，自己负责释放
+    bool slef_alloc_ = false;
     //内存基础地址
     char* mem_addr_ = nullptr;
     //RBTree头部
@@ -1294,4 +1311,13 @@ public:
         return (find_or_insert(std::pair<Key, T >(key, T()))).second;
     }
 };
+
+template < class T, class Key, class Extract, class Compare >
+using static_rbtree = zce::rb_tree<T, Key, Extract, Compare>;
+
+template<class T, class Compare >
+using static_set = zce::shm_set<T, Compare>;
+
+template<class Key, class T, class Extract, class Compare>
+using static_map = zce::shm_map<Key, T, Extract, Compare>;
 };

@@ -129,7 +129,7 @@ protected:
     protected:
 
         ///内存区的长度
-        size_t               size_of_mmap_ = 0;
+        size_t               size_of_mem_ = 0;
 
         ///deque的长度,必须>JUDGE_FULL_INTERVAL
         size_t               size_of_cycle_ = 0;
@@ -211,7 +211,7 @@ public:
         if (if_restore == true)
         {
             //坚持关键数据是否一致
-            if (dequechunk_head->size_of_mmap_ != alloc_size(size_of_deque)
+            if (dequechunk_head->size_of_mem_ != alloc_size(size_of_deque)
                 || dequechunk_head->size_of_cycle_ != size_of_deque + JUDGE_FULL_INTERVAL
                 || dequechunk_head->max_len_node_ != max_len_node)
             {
@@ -219,7 +219,7 @@ public:
             }
         }
 
-        dequechunk_head->size_of_mmap_ = alloc_size(size_of_deque);
+        dequechunk_head->size_of_mem_ = alloc_size(size_of_deque);
         dequechunk_head->size_of_cycle_ = size_of_deque + JUDGE_FULL_INTERVAL;
         dequechunk_head->max_len_node_ = max_len_node;
 
@@ -519,7 +519,7 @@ public:
     ///容量
     size_t capacity()
     {
-        return kfifo_head_->size_of_mmap_;
+        return kfifo_head_->size_of_mem_;
     }
 
     ///得到是否满的快照

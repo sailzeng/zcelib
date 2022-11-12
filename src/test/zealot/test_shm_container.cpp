@@ -91,71 +91,71 @@ int test_list(int /*argc*/, char* /*argv*/[])
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::shm_list<int>* pmmap = zce::shm_list<int>::initialize(numnode, tmproom, false);
-
-    std::cout << "capacity:" << (int)pmmap->max_size() << std::endl;
+    zce::shm_list<int> mylist;
+    auto succ = mylist.initialize(numnode, tmproom, false);
+    std::cout << "initialize:" << succ << std::endl;
+    std::cout << "capacity:" << (int)mylist.max_size() << std::endl;
 
     int tmpx = 0;
+    for (tmpx = 0; tmpx < 100; tmpx++)
+    {
+        mylist.push_front(tmpx);
+    }
+
+    for (zce::shm_list<int>::iterator it = mylist.begin(); it != mylist.end(); ++it)
+    {
+        std::cout << " " << *it;
+    }
+
+    std::cout << std::endl;
+    std::cout << "size:" << (int)mylist.size() << std::endl;
+    std::cout << "sizefreenode:" << (int)mylist.free() << std::endl;
+
+    for (tmpx = 0; tmpx < 10; tmpx++)
+    {
+        mylist.pop_back();
+    }
+
+    for (tmpx = 0; tmpx < 10; tmpx++)
+    {
+        mylist.push_back(tmpx);
+    }
+
+    for (zce::shm_list<int>::iterator it = mylist.begin(); it != mylist.end(); ++it)
+    {
+        std::cout << " " << *it;
+    }
+
+    std::cout << std::endl;
+    std::cout << "size:" << (int)mylist.size() << std::endl;
+    std::cout << "sizefreenode:" << (int)mylist.free() << std::endl;
 
     for (tmpx = 0; tmpx < 100; tmpx++)
     {
-        pmmap->push_front(tmpx);
+        mylist.pop_back();
     }
 
-    for (zce::shm_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
+    for (tmpx = 0; tmpx < 10; tmpx++)
+    {
+        mylist.push_back(tmpx);
+    }
+
+    for (tmpx = 0; tmpx < 10; tmpx++)
+    {
+        mylist.push_front(tmpx);
+    }
+
+    for (zce::shm_list<int>::iterator it = mylist.begin(); it != mylist.end(); ++it)
     {
         std::cout << " " << *it;
     }
 
     std::cout << std::endl;
-    std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
-
-    for (tmpx = 0; tmpx < 10; tmpx++)
-    {
-        pmmap->pop_back();
-    }
-
-    for (tmpx = 0; tmpx < 10; tmpx++)
-    {
-        pmmap->push_back(tmpx);
-    }
-
-    for (zce::shm_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
-    {
-        std::cout << " " << *it;
-    }
-
-    std::cout << std::endl;
-    std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
-
-    for (tmpx = 0; tmpx < 100; tmpx++)
-    {
-        pmmap->pop_back();
-    }
-
-    for (tmpx = 0; tmpx < 10; tmpx++)
-    {
-        pmmap->push_back(tmpx);
-    }
-
-    for (tmpx = 0; tmpx < 10; tmpx++)
-    {
-        pmmap->push_front(tmpx);
-    }
-
-    for (zce::shm_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
-    {
-        std::cout << " " << *it;
-    }
-
-    std::cout << std::endl;
-    std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
+    std::cout << "size:" << (int)mylist.size() << std::endl;
+    std::cout << "sizefreenode:" << (int)mylist.free() << std::endl;
 
     //少打一个Begin
-    for (zce::shm_list<int>::iterator it = --pmmap->end(); it != pmmap->begin(); --it)
+    for (zce::shm_list<int>::iterator it = --mylist.end(); it != mylist.begin(); --it)
     {
         std::cout << " " << *it;
     }
@@ -164,37 +164,37 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
     for (tmpx = 0; tmpx < 5; tmpx++)
     {
-        pmmap->pop_back();
+        mylist.pop_back();
     }
 
     for (tmpx = 0; tmpx < 5; tmpx++)
     {
-        pmmap->pop_front();
+        mylist.pop_front();
     }
 
-    for (zce::shm_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
+    for (zce::shm_list<int>::iterator it = mylist.begin(); it != mylist.end(); ++it)
     {
         std::cout << " " << *it;
     }
 
     std::cout << std::endl;
-    std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
+    std::cout << "size:" << (int)mylist.size() << std::endl;
+    std::cout << "sizefreenode:" << (int)mylist.free() << std::endl;
 
-    zce::shm_list<int>::iterator ittmp = pmmap->end();
+    zce::shm_list<int>::iterator ittmp = mylist.end();
     ittmp--;
     ittmp--;
     ittmp--;
-    pmmap->move_begin(ittmp, pmmap->end());
+    mylist.move_begin(ittmp, mylist.end());
 
-    for (zce::shm_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
+    for (zce::shm_list<int>::iterator it = mylist.begin(); it != mylist.end(); ++it)
     {
         std::cout << " " << *it;
     }
 
     std::cout << std::endl;
-    std::cout << "size:" << (int)pmmap->size() << std::endl;
-    std::cout << "sizefreenode:" << (int)pmmap->free() << std::endl;
+    std::cout << "size:" << (int)mylist.size() << std::endl;
+    std::cout << "sizefreenode:" << (int)mylist.free() << std::endl;
 
     return 0;
 }
@@ -204,7 +204,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::rb_tree< int, int >  TEST_RB_TREE;
-    TEST_RB_TREE* test_rb_tree;
+    TEST_RB_TREE test_rb_tree;
     size_t  size_of_tree = 16;
 
     size_t sz_malloc = TEST_RB_TREE::alloc_size(size_of_tree);
@@ -213,27 +213,27 @@ int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
     memset(pt_rb_tree, 0, sz_malloc);
 
     //初始化
-    test_rb_tree = TEST_RB_TREE::initialize(size_of_tree, pt_rb_tree, false);
-    if (nullptr == test_rb_tree)
+    auto succ = test_rb_tree.initialize(size_of_tree, pt_rb_tree, false);
+    if (!succ)
     {
         return 0;
     }
 
-    test_rb_tree->clear();
-    //bool b_flag = test_rb_tree->empty();
-    //b_flag = test_rb_tree->full();
+    test_rb_tree.clear();
+    //bool b_flag = test_rb_tree.empty();
+    //b_flag = test_rb_tree.full();
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full());
+           test_rb_tree.size(), test_rb_tree.capacity(), test_rb_tree.empty(), test_rb_tree.full());
 
-    test_rb_tree->insert_equal(10);
-    test_rb_tree->insert_equal(7);
-    test_rb_tree->insert_equal(8);
-    test_rb_tree->insert_equal(15);
-    test_rb_tree->insert_equal(5);
-    test_rb_tree->insert_equal(12);
-    test_rb_tree->insert_equal(6);
-    test_rb_tree->insert_equal(11);
-    auto insert_iter = test_rb_tree->insert_unique(12);
+    test_rb_tree.insert_equal(10);
+    test_rb_tree.insert_equal(7);
+    test_rb_tree.insert_equal(8);
+    test_rb_tree.insert_equal(15);
+    test_rb_tree.insert_equal(5);
+    test_rb_tree.insert_equal(12);
+    test_rb_tree.insert_equal(6);
+    test_rb_tree.insert_equal(11);
+    auto insert_iter = test_rb_tree.insert_unique(12);
     if (insert_iter.second == true)
     {
         abort();
@@ -243,64 +243,64 @@ int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
         printf("%s", "OK\n");
     }
 
-    test_rb_tree->insert_equal(12);
+    test_rb_tree.insert_equal(12);
 
     printf("\nAfter insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full());
+           test_rb_tree.size(), test_rb_tree.capacity(), test_rb_tree.empty(), test_rb_tree.full());
 
     printf("After insert Tree_node: ");
-    TEST_RB_TREE::iterator  tree_iter = test_rb_tree->begin();
-    TEST_RB_TREE::iterator  tree_iter_end = test_rb_tree->end();
+    TEST_RB_TREE::iterator  tree_iter = test_rb_tree.begin();
+    TEST_RB_TREE::iterator  tree_iter_end = test_rb_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    TEST_RB_TREE::iterator iter = test_rb_tree->find(12);
+    TEST_RB_TREE::iterator iter = test_rb_tree.find(12);
     printf("\nfind : %d \n", (*iter));
 
     size_t erase_count = 0;
 
-    erase_count = test_rb_tree->erase_unique(5);
+    erase_count = test_rb_tree.erase_unique(5);
 
     printf("\nAfter erase:size=%zu, capacity=%zu, empty=%u, full=%u erase count =%zu\n",
-           test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full(),
+           test_rb_tree.size(), test_rb_tree.capacity(), test_rb_tree.empty(), test_rb_tree.full(),
            erase_count);
 
     printf("After erase Tree_node: ");
-    tree_iter = test_rb_tree->begin();
-    tree_iter_end = test_rb_tree->end();
+    tree_iter = test_rb_tree.begin();
+    tree_iter_end = test_rb_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    erase_count = test_rb_tree->erase_equal(12);
+    erase_count = test_rb_tree.erase_equal(12);
 
     printf("\nAfter erase:size=%zu, capacity=%zu, empty=%u, full=%u erase count =%zu\n",
-           test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full(),
+           test_rb_tree.size(), test_rb_tree.capacity(), test_rb_tree.empty(), test_rb_tree.full(),
            erase_count);
 
     printf("After erase Tree_node: ");
-    tree_iter = test_rb_tree->begin();
-    tree_iter_end = test_rb_tree->end();
+    tree_iter = test_rb_tree.begin();
+    tree_iter_end = test_rb_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    iter = test_rb_tree->find(12);
+    iter = test_rb_tree.find(12);
     printf("\nfind : %d \n", (*iter));
 
-    erase_count = test_rb_tree->erase_unique(15);
+    erase_count = test_rb_tree.erase_unique(15);
 
     printf("\nAfter erase:size=%zu, capacity=%zu, empty=%u, full=%u erase count =%zu\n",
-           test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full(),
+           test_rb_tree.size(), test_rb_tree.capacity(), test_rb_tree.empty(), test_rb_tree.full(),
            erase_count);
 
     printf("After erase Tree_node: ");
-    tree_iter = test_rb_tree->begin();
-    tree_iter_end = test_rb_tree->end();
+    tree_iter = test_rb_tree.begin();
+    tree_iter_end = test_rb_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
@@ -313,7 +313,7 @@ int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::rb_tree< int, int >  TEST_RB_TREE;
-    TEST_RB_TREE* test_rb_tree;
+    TEST_RB_TREE test_rb_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_RB_TREE::iterator  tree_iter, tree_iter_end;
     size_t sz_malloc = TEST_RB_TREE::alloc_size(SIZE_OF_TREE);
@@ -322,8 +322,8 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
     memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_rb_tree = TEST_RB_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (nullptr == test_rb_tree)
+    auto succ = test_rb_tree.initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (!succ)
     {
         return 0;
     }
@@ -336,27 +336,27 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
     for (ins_count = 0; ins_count < SIZE_OF_TREE;)
     {
         ins = mt11231b_gen.rand() % SIZE_OF_TREE;
-        auto ins_iter = test_rb_tree->insert_unique(ins);
+        auto ins_iter = test_rb_tree.insert_unique(ins);
         if (ins_iter.second == true)
         {
             ++ins_count;
         }
     }
 
-    auto f_iter = test_rb_tree->insert_unique(5);
+    auto f_iter = test_rb_tree.insert_unique(5);
     if (f_iter.second == true)
     {
         ZCE_ASSERT_ALL(false);
     }
     printf("%s", "\n==========================================================\n");
     printf("After insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_rb_tree->size(),
-           test_rb_tree->capacity(),
-           test_rb_tree->empty(),
-           test_rb_tree->full());
+           test_rb_tree.size(),
+           test_rb_tree.capacity(),
+           test_rb_tree.empty(),
+           test_rb_tree.full());
 
-    tree_iter = test_rb_tree->begin();
-    tree_iter_end = test_rb_tree->end();
+    tree_iter = test_rb_tree.begin();
+    tree_iter_end = test_rb_tree.end();
     int a = 0, b = 0;
     for (; tree_iter != tree_iter_end;)
     {
@@ -377,7 +377,7 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
     //printf("%s", "\n-----------------------------------------------------\n");
     //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
     //{
-    //    test_avl_tree->debug_note(u);
+    //    test_avl_tree.debug_note(u);
     //}
     //printf("%s", "\n-----------------------------------------------------\n");
 
@@ -388,13 +388,13 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
     for (erase_count = 0; erase_count < SIZE_OF_TREE;)
     {
         del = mt11231b_gen.rand() % SIZE_OF_TREE;
-        del_count = test_rb_tree->erase_unique(del);
+        del_count = test_rb_tree.erase_unique(del);
         if (del_count > 0)
         {
             erase_count += del_count;
             printf("del %d .After del list:", del);
-            tree_iter = test_rb_tree->begin();
-            tree_iter_end = test_rb_tree->end();
+            tree_iter = test_rb_tree.begin();
+            tree_iter_end = test_rb_tree.end();
             for (; tree_iter != tree_iter_end; ++tree_iter)
             {
                 printf("%d ", (*tree_iter));
@@ -415,17 +415,17 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
             //printf("%s", "\n-----------------------------------------------------\n");
             //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
             //{
-            //    test_avl_tree->debug_note(u);
+            //    test_avl_tree.debug_note(u);
             //}
             //printf("%s", "\n-----------------------------------------------------\n");
         }
     }
     printf("%s", "\n---------------------------------------------\n");
     printf("\nAfter erase :size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_rb_tree->size(),
-           test_rb_tree->capacity(),
-           test_rb_tree->empty(),
-           test_rb_tree->full());
+           test_rb_tree.size(),
+           test_rb_tree.capacity(),
+           test_rb_tree.empty(),
+           test_rb_tree.full());
 
     delete[] pt_avl_tree;
     pt_avl_tree = nullptr;
@@ -437,7 +437,7 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
-    TEST_AVL_TREE* test_avl_tree;
+    TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
     size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
@@ -446,8 +446,8 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
     memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (nullptr == test_avl_tree)
+    auto succ = test_avl_tree.initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (!succ)
     {
         return 0;
     }
@@ -460,27 +460,27 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
     for (ins_count = 0; ins_count < SIZE_OF_TREE;)
     {
         int ins = mt11231b_gen.rand() % SIZE_OF_TREE;
-        auto iter = test_avl_tree->insert_unique(ins);
+        auto iter = test_avl_tree.insert_unique(ins);
         if (iter.second == true)
         {
             ++ins_count;
         }
     }
 
-    auto f_iter = test_avl_tree->insert_unique(1);
+    auto f_iter = test_avl_tree.insert_unique(1);
     if (f_iter.second == true)
     {
         ZCE_ASSERT_ALL(false);
     }
 
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     int a = 0, b = 0;
     for (; tree_iter != tree_iter_end;)
     {
@@ -507,7 +507,7 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
-    TEST_AVL_TREE* test_avl_tree;
+    TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
     size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
@@ -516,8 +516,8 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
     memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (nullptr == test_avl_tree)
+    auto succ = test_avl_tree.initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (!succ)
     {
         return 0;
     }
@@ -530,33 +530,33 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
     for (ins_count = 0; ins_count < SIZE_OF_TREE;)
     {
         ins = mt11231b_gen.rand() % SIZE_OF_TREE;
-        auto ins_iter = test_avl_tree->insert_unique(ins);
+        auto ins_iter = test_avl_tree.insert_unique(ins);
         if (ins_iter.second == true)
         {
             ++ins_count;
         }
     }
 
-    auto f_iter = test_avl_tree->insert_unique(5);
+    auto f_iter = test_avl_tree.insert_unique(5);
     if (f_iter.second == true)
     {
         ZCE_ASSERT_ALL(false);
     }
     printf("%s", "\n==========================================================\n");
     printf("After insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     int a = 0, b = 0;
     for (; tree_iter != tree_iter_end; )
     {
         printf("%d ", (*tree_iter));
 
-        bool ok = test_avl_tree->check_balanced(tree_iter.getserial());
+        bool ok = test_avl_tree.check_balanced(tree_iter.getserial());
         if (!ok)
         {
             printf("(No OK)");
@@ -577,7 +577,7 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
     //printf("%s", "\n-----------------------------------------------------\n");
     //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
     //{
-    //    test_avl_tree->debug_note(u);
+    //    test_avl_tree.debug_note(u);
     //}
     //printf("%s", "\n-----------------------------------------------------\n");
 
@@ -587,18 +587,18 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
     for (erase_count = 0; erase_count < SIZE_OF_TREE;)
     {
         del = mt11231b_gen.rand() % SIZE_OF_TREE;
-        del_count = test_avl_tree->erase_unique(del);
+        del_count = test_avl_tree.erase_unique(del);
         if (del_count > 0)
         {
             erase_count += del_count;
             printf("del %d .After del list:", del);
-            tree_iter = test_avl_tree->begin();
-            tree_iter_end = test_avl_tree->end();
+            tree_iter = test_avl_tree.begin();
+            tree_iter_end = test_avl_tree.end();
             for (; tree_iter != tree_iter_end; ++tree_iter)
             {
                 printf("%d ", (*tree_iter));
 
-                bool ok = test_avl_tree->check_balanced(tree_iter.getserial());
+                bool ok = test_avl_tree.check_balanced(tree_iter.getserial());
                 if (!ok)
                 {
                     printf("(No OK)");
@@ -620,17 +620,17 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
             //printf("%s", "\n-----------------------------------------------------\n");
             //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
             //{
-            //    test_avl_tree->debug_note(u);
+            //    test_avl_tree.debug_note(u);
             //}
             //printf("%s", "\n-----------------------------------------------------\n");
         }
     }
     printf("%s", "\n---------------------------------------------\n");
     printf("\nAfter erase :size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
     delete[] pt_avl_tree;
     pt_avl_tree = nullptr;
@@ -642,7 +642,7 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 {
     size_t erase_count = 0;
     typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
-    TEST_AVL_TREE* test_avl_tree;
+    TEST_AVL_TREE test_avl_tree;
     size_t  SIZE_OF_TREE = 16;
 
     size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
@@ -651,32 +651,32 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
     memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (nullptr == test_avl_tree)
+    auto succ = test_avl_tree.initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (!succ)
     {
         return 0;
     }
 
-    test_avl_tree->clear();
-    //bool b_flag = test_avl_tree->empty();
-    //b_flag = test_avl_tree->full();
+    test_avl_tree.clear();
+    //bool b_flag = test_avl_tree.empty();
+    //b_flag = test_avl_tree.full();
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    test_avl_tree->insert_equal(10);
-    test_avl_tree->insert_equal(7);
-    test_avl_tree->insert_equal(8);
-    test_avl_tree->insert_equal(15);
-    test_avl_tree->insert_equal(5);
-    test_avl_tree->insert_equal(12);
-    test_avl_tree->insert_equal(6);
-    test_avl_tree->insert_equal(11);
-    test_avl_tree->insert_equal(12);
+    test_avl_tree.insert_equal(10);
+    test_avl_tree.insert_equal(7);
+    test_avl_tree.insert_equal(8);
+    test_avl_tree.insert_equal(15);
+    test_avl_tree.insert_equal(5);
+    test_avl_tree.insert_equal(12);
+    test_avl_tree.insert_equal(6);
+    test_avl_tree.insert_equal(11);
+    test_avl_tree.insert_equal(12);
 
-    auto insert_iter = test_avl_tree->insert_unique(12);
+    auto insert_iter = test_avl_tree.insert_unique(12);
     if (insert_iter.second == true)
     {
         abort();
@@ -687,94 +687,94 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
     }
 
     printf("\nAfter insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
     printf("After insert Tree_node: \n");
 
-    TEST_AVL_TREE::iterator  tree_iter = test_avl_tree->begin();
-    TEST_AVL_TREE::iterator  tree_iter_end = test_avl_tree->end();
+    TEST_AVL_TREE::iterator  tree_iter = test_avl_tree.begin();
+    TEST_AVL_TREE::iterator  tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    TEST_AVL_TREE::iterator iter = test_avl_tree->find(12);
+    TEST_AVL_TREE::iterator iter = test_avl_tree.find(12);
     printf("\nfind : %d \n", (*iter));
 
-    erase_count = test_avl_tree->erase_unique(12);
+    erase_count = test_avl_tree.erase_unique(12);
     printf("\nAfter erase:size=%zu, capacity=%zu, empty=%u, full=%u erase count =%zu\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full(),
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full(),
            erase_count);
     printf("\nAfter erase Tree_node: ");
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    test_avl_tree->clear();
-    test_avl_tree->insert_equal(10);
-    erase_count = test_avl_tree->erase_unique(10);
+    test_avl_tree.clear();
+    test_avl_tree.insert_equal(10);
+    erase_count = test_avl_tree.erase_unique(10);
     printf("\nAfter erase Tree_node: ");
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    test_avl_tree->clear();
-    test_avl_tree->insert_equal(7);
-    test_avl_tree->insert_equal(8);
-    test_avl_tree->insert_equal(15);
-    erase_count = test_avl_tree->erase_unique(8);
+    test_avl_tree.clear();
+    test_avl_tree.insert_equal(7);
+    test_avl_tree.insert_equal(8);
+    test_avl_tree.insert_equal(15);
+    erase_count = test_avl_tree.erase_unique(8);
 
     printf("\nAfter erase:size=%zu, capacity=%zu, empty=%u, full=%u erase count =%zu\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full(),
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full(),
            erase_count);
     printf("\nAfter erase Tree_node: ");
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    erase_count = test_avl_tree->erase_unique(7);
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    erase_count = test_avl_tree.erase_unique(7);
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    erase_count = test_avl_tree->erase_unique(10);
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    erase_count = test_avl_tree.erase_unique(10);
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    erase_count = test_avl_tree->erase_unique(15);
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    erase_count = test_avl_tree.erase_unique(15);
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
         printf("%d ", (*tree_iter));
     }
 
-    iter = test_avl_tree->find(12);
+    iter = test_avl_tree.find(12);
     printf("\nfind : %d \n", (*iter));
 
     delete[] pt_avl_tree;
@@ -787,7 +787,7 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
-    TEST_AVL_TREE* test_avl_tree;
+    TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
     size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
@@ -796,25 +796,25 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
     memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (nullptr == test_avl_tree)
+    auto succ = test_avl_tree.initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (succ)
     {
         return 0;
     }
 
-    test_avl_tree->clear();
-    test_avl_tree->insert_unique(15);
-    test_avl_tree->insert_unique(10);
-    test_avl_tree->insert_unique(5);
+    test_avl_tree.clear();
+    test_avl_tree.insert_unique(15);
+    test_avl_tree.insert_unique(10);
+    test_avl_tree.insert_unique(5);
 
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     printf("data list: \n");
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
@@ -823,19 +823,19 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
     printf("%s", "\n");
 
     //
-    test_avl_tree->clear();
-    test_avl_tree->insert_unique(5);
-    test_avl_tree->insert_unique(10);
-    test_avl_tree->insert_unique(15);
+    test_avl_tree.clear();
+    test_avl_tree.insert_unique(5);
+    test_avl_tree.insert_unique(10);
+    test_avl_tree.insert_unique(15);
 
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     printf("data list: \n");
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
@@ -844,19 +844,19 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
     printf("%s", "\n");
 
     //
-    test_avl_tree->clear();
-    test_avl_tree->insert_unique(15);
-    test_avl_tree->insert_unique(10);
-    test_avl_tree->insert_unique(12);
+    test_avl_tree.clear();
+    test_avl_tree.insert_unique(15);
+    test_avl_tree.insert_unique(10);
+    test_avl_tree.insert_unique(12);
 
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     printf("data list: \n");
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
@@ -864,19 +864,19 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
     }
     printf("%s", "\n");
 
-    test_avl_tree->clear();
-    test_avl_tree->insert_unique(15);
-    test_avl_tree->insert_unique(20);
-    test_avl_tree->insert_unique(18);
+    test_avl_tree.clear();
+    test_avl_tree.insert_unique(15);
+    test_avl_tree.insert_unique(20);
+    test_avl_tree.insert_unique(18);
 
     printf("Before insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     printf("data list: \n");
     for (; tree_iter != tree_iter_end; ++tree_iter)
     {
@@ -894,7 +894,7 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
 {
     typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
-    TEST_AVL_TREE* test_avl_tree;
+    TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
     size_t sz_malloc = TEST_AVL_TREE::alloc_size(SIZE_OF_TREE);
@@ -903,8 +903,8 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
     memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
-    if (nullptr == test_avl_tree)
+    auto succ = test_avl_tree.initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (!succ)
     {
         return 0;
     }
@@ -918,7 +918,7 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
     for (ins_count = 0; ins_count < SIZE_OF_TREE;)
     {
         ins = mt11231b_gen.rand() % SIZE_OF_TREE;
-        auto ins_iter = test_avl_tree->insert_equal(ins);
+        auto ins_iter = test_avl_tree.insert_equal(ins);
         if (ins_iter.second == true)
         {
             ++ins_count;
@@ -929,26 +929,26 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
         }
     }
 
-    auto f_iter = test_avl_tree->insert_unique(5);
+    auto f_iter = test_avl_tree.insert_unique(5);
     if (f_iter.second == true)
     {
         ZCE_ASSERT_ALL(false);
     }
     printf("%s", "\n==========================================================\n");
     printf("After insert:size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
-    tree_iter = test_avl_tree->begin();
-    tree_iter_end = test_avl_tree->end();
+    tree_iter = test_avl_tree.begin();
+    tree_iter_end = test_avl_tree.end();
     int a = 0, b = 0;
     for (; tree_iter != tree_iter_end;)
     {
         printf("%d ", (*tree_iter));
 
-        bool ok = test_avl_tree->check_balanced(tree_iter.getserial());
+        bool ok = test_avl_tree.check_balanced(tree_iter.getserial());
         if (!ok)
         {
             printf("(No OK)");
@@ -969,7 +969,7 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
     //printf("%s", "\n-----------------------------------------------------\n");
     //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
     //{
-    //    test_avl_tree->debug_note(u);
+    //    test_avl_tree.debug_note(u);
     //}
     //printf("%s", "\n-----------------------------------------------------\n");
 
@@ -979,18 +979,18 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
     for (erase_count = 0; erase_count < SIZE_OF_TREE;)
     {
         del = mt11231b_gen.rand() % SIZE_OF_TREE;
-        del_count = test_avl_tree->erase_equal(del);
+        del_count = test_avl_tree.erase_equal(del);
         if (del_count > 0)
         {
             erase_count += del_count;
             printf("del %d count.After del list: %zu", del, del_count);
-            tree_iter = test_avl_tree->begin();
-            tree_iter_end = test_avl_tree->end();
+            tree_iter = test_avl_tree.begin();
+            tree_iter_end = test_avl_tree.end();
             for (; tree_iter != tree_iter_end; ++tree_iter)
             {
                 printf("%d ", (*tree_iter));
 
-                bool ok = test_avl_tree->check_balanced(tree_iter.getserial());
+                bool ok = test_avl_tree.check_balanced(tree_iter.getserial());
                 if (!ok)
                 {
                     printf("(No OK)");
@@ -1012,17 +1012,17 @@ int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
             //printf("%s", "\n-----------------------------------------------------\n");
             //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
             //{
-            //    test_avl_tree->debug_note(u);
+            //    test_avl_tree.debug_note(u);
             //}
             //printf("%s", "\n-----------------------------------------------------\n");
         }
     }
     printf("%s", "\n---------------------------------------------\n");
     printf("\nAfter erase :size=%zu, capacity=%zu, empty=%u, full=%u\n",
-           test_avl_tree->size(),
-           test_avl_tree->capacity(),
-           test_avl_tree->empty(),
-           test_avl_tree->full());
+           test_avl_tree.size(),
+           test_avl_tree.capacity(),
+           test_avl_tree.empty(),
+           test_avl_tree.full());
 
     delete[] pt_avl_tree;
     pt_avl_tree = nullptr;
@@ -1043,42 +1043,47 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
     memset(tmproom, 0, szalloc + 4);
 
     //
-    zce::shm_expire_hashtable<int, int >* pmmap = zce::shm_expire_hashtable<int, int >::initialize(node_num, real_num, tmproom);
-    pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
+    zce::shm_expire_hashtable<int, int > myehash;
+    auto succ = myehash.initialize(node_num, real_num, tmproom);
+    if (!succ)
+    {
+        return 0;
+    }
+    myehash.insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
 
-    pmmap->insert_unique(38637, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_unique(38637, static_cast<unsigned int>(time(nullptr)));
 
-    size_t count = pmmap->count(1001);
+    size_t count = myehash.count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
-    bool bdel = pmmap->erase_unique(38637);
+    bool bdel = myehash.erase_unique(38637);
     assert(bdel == true);
 
-    bdel = pmmap->erase_unique(1001);
+    bdel = myehash.erase_unique(1001);
     assert(bdel == true);
 
-    count = pmmap->count(1001);
+    count = myehash.count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
-    pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
 
-    pmmap->insert_unique(38637, static_cast<unsigned int>(time(nullptr)));
-    count = pmmap->count(1001);
+    myehash.insert_unique(38637, static_cast<unsigned int>(time(nullptr)));
+    count = myehash.count(1001);
 
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
     zce::shm_expire_hashtable<int, int >::iterator it;
     //
-    it = pmmap->find(1001);
+    it = myehash.find(1001);
 
-    zce::shm_expire_hashtable<int, int >::iterator it_end = pmmap->end();
+    zce::shm_expire_hashtable<int, int >::iterator it_end = myehash.end();
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
     if (it == it_end)
@@ -1091,10 +1096,10 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
         std::cout << "*it :" << *it << std::endl;
     }
 
-    it = pmmap->find(1002);
+    it = myehash.find(1002);
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
-    if (it == pmmap->end())
+    if (it == myehash.end())
     {
         std::cout << "Not Fount." << std::endl;
     }
@@ -1105,54 +1110,54 @@ int test_lru_hashtable(int /*argc*/, char* /*argv*/[])
 
     bdel = true;
 
-    bdel = pmmap->erase_unique(38637);
+    bdel = myehash.erase_unique(38637);
     assert(bdel == true);
 
-    sz_del = pmmap->erase_equal(1001);
+    sz_del = myehash.erase_equal(1001);
     assert(sz_del == 4);
 
-    std::cout << "size of :" << (unsigned int)(pmmap->size()) << std::endl;
+    std::cout << "size of :" << (unsigned int)(myehash.size()) << std::endl;
 
-    pmmap->insert_unique(1001, 1);
-    pmmap->insert_unique(1002, 2);
-    pmmap->insert_unique(1003, 3);
-    pmmap->insert_unique(1004, 4);
-    pmmap->insert_unique(38637, 5);
-    std::cout << "size of :" << (unsigned int)(pmmap->size()) << std::endl;
+    myehash.insert_unique(1001, 1);
+    myehash.insert_unique(1002, 2);
+    myehash.insert_unique(1003, 3);
+    myehash.insert_unique(1004, 4);
+    myehash.insert_unique(38637, 5);
+    std::cout << "size of :" << (unsigned int)(myehash.size()) << std::endl;
 
-    //pmmap->active(1004,1000);
+    //myehash.active(1004,1000);
 
-    pmmap->expire(3);
+    myehash.expire(3);
 
-    std::cout << "size of :" << (unsigned int)(pmmap->size()) << std::endl;
-    it = pmmap->begin();
-    it_end = pmmap->end();
+    std::cout << "size of :" << (unsigned int)(myehash.size()) << std::endl;
+    it = myehash.begin();
+    it_end = myehash.end();
 
     for (int i = 0; it != it_end; ++it, ++i)
     {
         std::cout << "idx of :" << i << " " << *it << std::endl;
     }
 
-    pmmap->clear();
+    myehash.clear();
 
     for (size_t i = 0; i < node_num; ++i)
     {
-        pmmap->insert_unique(static_cast<int>(1000 + i), static_cast<unsigned int>(i + 1950));
+        myehash.insert_unique(static_cast<int>(1000 + i), static_cast<unsigned int>(i + 1950));
     }
 
-    std::pair<zce::shm_expire_hashtable <int, int >::iterator, bool> iter_bool = pmmap->insert_unique(100022, static_cast<unsigned int>(time(nullptr)));
+    std::pair<zce::shm_expire_hashtable <int, int >::iterator, bool> iter_bool = myehash.insert_unique(100022, static_cast<unsigned int>(time(nullptr)));
     assert(iter_bool.second == false);
 
-    it = pmmap->begin();
-    it_end = pmmap->end();
+    it = myehash.begin();
+    it_end = myehash.end();
 
     for (int i = 0; it != it_end; ++it, ++i)
     {
         std::cout << "idx of :" << i << " " << *it << std::endl;
     }
 
-    pmmap->expire(2000);
-    std::cout << "size of :" << (unsigned int)(pmmap->size()) << std::endl;
+    myehash.expire(2000);
+    std::cout << "size of :" << (unsigned int)(myehash.size()) << std::endl;
     return 0;
 }
 
@@ -1169,23 +1174,28 @@ int test_lru_hashtable2(int /*argc*/, char* /*argv*/[])
     memset(tmproom, 0, szalloc + 4);
 
     //
-    zce::shm_expire_hashtable<int, int >* pmmap = zce::shm_expire_hashtable<int, int >::initialize(numnode, real_num, tmproom);
-    pmmap->insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_unique(38636, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_unique(36384378, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_unique(65231237, static_cast<unsigned int>(time(nullptr)));
-    num_count = pmmap->count(1001);
+    zce::shm_expire_hashtable<int, int > myehash;
+    auto succ = myehash.initialize(numnode, real_num, tmproom);
+    if (!succ)
+    {
+        return 0;
+    }
+    myehash.insert_unique(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_unique(38636, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_unique(36384378, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_unique(65231237, static_cast<unsigned int>(time(nullptr)));
+    num_count = myehash.count(1001);
 
-    zce::shm_expire_hashtable<int, int >::iterator it_tmp = pmmap->begin();
-    zce::shm_expire_hashtable<int, int >::iterator it_end = pmmap->end();
+    zce::shm_expire_hashtable<int, int >::iterator it_tmp = myehash.begin();
+    zce::shm_expire_hashtable<int, int >::iterator it_end = myehash.end();
 
     for (; it_tmp != it_end; ++it_tmp)
     {
         std::cout << "it_tmp value: " << (*it_tmp) << std::endl;
     }
 
-    pmmap->active_unique(1001, static_cast<unsigned int>(time(nullptr)));
-    it_tmp = pmmap->begin();
+    myehash.active_unique(1001, static_cast<unsigned int>(time(nullptr)));
+    it_tmp = myehash.begin();
 
     for (; it_tmp != it_end; ++it_tmp)
     {
@@ -1209,29 +1219,34 @@ int test_lru_hashtable3(int /*argc*/, char* /*argv*/[])
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::shm_expire_hashtable<int, int >* pmmap = zce::shm_expire_hashtable<int, int >::initialize(numnode, real_num, tmproom);
+    zce::shm_expire_hashtable<int, int > myehash;
+    auto succ = myehash.initialize(numnode, real_num, tmproom);
+    if (!succ)
+    {
+        return 0;
+    }
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->count(1001);
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.count(1001);
 
-    pmmap->erase_equal(1001);
+    myehash.erase_equal(1001);
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    size_t sz_count = pmmap->count(1001);
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    size_t sz_count = myehash.count(1001);
     std::cout << sz_count << std::endl;
 
-    pmmap->erase_equal(1001);
+    myehash.erase_equal(1001);
 
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
-    pmmap->erase_equal(1001);
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.insert_equal(1001, static_cast<unsigned int>(time(nullptr)));
+    myehash.erase_equal(1001);
 
-    count = pmmap->count(1001);
+    count = myehash.count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
     return 0;
@@ -1273,7 +1288,7 @@ protected:
     //
     size_t              data_number_;
     //
-    HASH_TABLE_MY_DATA* hash_my_data_;
+    HASH_TABLE_MY_DATA hash_my_data_;
 
     zce::shm_mmap   mmap_file_;
 
@@ -1301,11 +1316,11 @@ public:
 
         ret = mmap_file_.open("./LUX_DATA_.MMAP", malloc_size);
 
-        hash_my_data_ = HASH_TABLE_MY_DATA::initialize(data_number,
-                                                       data_number_,
-                                                       (char*)(mmap_file_.addr()),
-                                                       if_restore);
-        if (hash_my_data_)
+        auto succ = hash_my_data_.initialize(data_number,
+                                             data_number_,
+                                             (char*)(mmap_file_.addr()),
+                                             if_restore);
+        if (!succ)
         {
             return -1;
         }
@@ -1316,7 +1331,7 @@ public:
     int insert(const MY_DATA& my_data, unsigned int priority = time(nullptr))
     {
         std::pair<HASH_TABLE_MY_DATA::iterator, bool > iter_pair =
-            hash_my_data_->insert_unique(my_data, priority);
+            hash_my_data_.insert_unique(my_data, priority);
         if (false == iter_pair.second)
         {
             return -1;
@@ -1327,7 +1342,7 @@ public:
     int insert_equal(const MY_DATA& my_data, unsigned int priority = time(nullptr))
     {
         std::pair<HASH_TABLE_MY_DATA::iterator, bool > iter_pair =
-            hash_my_data_->insert_equal(my_data, priority);
+            hash_my_data_.insert_equal(my_data, priority);
         if (false == iter_pair.second)
         {
             return -1;
@@ -1337,7 +1352,7 @@ public:
 
     int erase(const MY_DATA& my_data)
     {
-        bool bool_ret = hash_my_data_->erase_unique_value(my_data);
+        bool bool_ret = hash_my_data_.erase_unique_value(my_data);
         if (!bool_ret)
         {
             return -1;
@@ -1347,8 +1362,8 @@ public:
 
     int getmydata(MY_DATA& my_data)
     {
-        HASH_TABLE_MY_DATA::iterator iter_tmp = hash_my_data_->find(my_data.abc_);
-        if (iter_tmp == hash_my_data_->end())
+        HASH_TABLE_MY_DATA::iterator iter_tmp = hash_my_data_.find(my_data.abc_);
+        if (iter_tmp == hash_my_data_.end())
         {
             return -1;
         }
@@ -1358,8 +1373,8 @@ public:
 
     void dump()
     {
-        HASH_TABLE_MY_DATA::iterator iter_tmp = hash_my_data_->begin();
-        HASH_TABLE_MY_DATA::iterator iter_end = hash_my_data_->end();
+        HASH_TABLE_MY_DATA::iterator iter_tmp = hash_my_data_.begin();
+        HASH_TABLE_MY_DATA::iterator iter_end = hash_my_data_.end();
         for (; iter_tmp != iter_end; ++iter_tmp)
         {
             std::cout << (*iter_tmp).abc_ << " ";
@@ -1499,7 +1514,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     //测试的数量
     const size_t req_node_number = 50000000;
 
-    SMEM_HASH_SAFE_INT* hash_safe_p = nullptr;
+    SMEM_HASH_SAFE_INT hash_safe_;
     size_t safe_node_number = req_node_number;
     size_t real_node_number = 0;
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
@@ -1511,7 +1526,11 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     char* safe_smem = new char[safe_len_smem];
     int* insert_node = new int[req_node_number];
 
-    hash_safe_p = SMEM_HASH_SAFE_INT::initialize(safe_node_number, real_node_number, safe_smem, -1, false);
+    auto succ = hash_safe_.initialize(safe_node_number, real_node_number, safe_smem, 32, false);
+    if (!succ)
+    {
+        return -1;
+    }
 
     zce::mt19937_instance::instance()->srand((uint32_t)time(nullptr));
     zce::random_mt19937* mt19937_ptr = zce::mt19937_instance::instance();
@@ -1521,7 +1540,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
 
     for (; insert_count < req_node_number; rand_num += 3)
     {
-        std::pair<SMEM_HASH_SAFE_INT::iterator, bool> piar_iter = hash_safe_p->insert(rand_num);
+        std::pair<SMEM_HASH_SAFE_INT::iterator, bool> piar_iter = hash_safe_.insert(rand_num);
 
         //
         if (piar_iter.second == true)
@@ -1535,9 +1554,9 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
         }
     }
 
-    std::cout << "Hash safe table size " << hash_safe_p->size() << std::endl;
-    std::cout << "Hash safe table real use ratio :" << double(hash_safe_p->size()) / hash_safe_p->capacity() << std::endl;
-    std::cout << "Hash safe table expect use ratio : " << double(hash_safe_p->size()) / req_node_number << std::endl;
+    std::cout << "Hash safe table size " << hash_safe_.size() << std::endl;
+    std::cout << "Hash safe table real use ratio :" << double(hash_safe_.size()) / hash_safe_.capacity() << std::endl;
+    std::cout << "Hash safe table expect use ratio : " << double(hash_safe_.size()) / req_node_number << std::endl;
 
     //
     zce::progress_timer progress_timer;
@@ -1548,7 +1567,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     {
         for (size_t y = 0; y < req_node_number; ++y)
         {
-            hash_safe_p->find(insert_node[y]);
+            hash_safe_.find(insert_node[y]);
         }
     }
 
@@ -1560,13 +1579,11 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     //
     delete safe_smem;
     safe_smem = nullptr;
-    delete hash_safe_p;
-    hash_safe_p = nullptr;
 
     std::cout << std::endl;
     std::cout << std::endl;
 
-    SMEM_HASH_TABLE_INT* hash_table_p = nullptr;
+    SMEM_HASH_TABLE_INT hash_table_;
     size_t table_node_number = req_node_number, real_table_number = 0;
     size_t table_len_smem = SMEM_HASH_TABLE_INT::alloc_size(table_node_number, real_table_number);
 
@@ -1575,17 +1592,20 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
 
     char* table_smem = new char[table_len_smem];
 
-    hash_table_p = SMEM_HASH_TABLE_INT::initialize(table_node_number, real_table_number, table_smem, false);
-
+    succ = hash_table_.initialize(table_node_number, real_table_number, table_smem, false);
+    if (!succ)
+    {
+        return -1;
+    }
     for (size_t y = 0; y < req_node_number; ++y)
     {
-        hash_table_p->insert_unique(insert_node[y]);
+        hash_table_.insert_unique(insert_node[y]);
     }
 
-    std::cout << "Hash link size " << hash_table_p->size() << std::endl;
-    std::cout << "Hash link real use ratio :" << double(hash_table_p->size()) / hash_table_p->capacity() << std::endl;
-    std::cout << "Hash link expect use ratio : " << double(hash_table_p->size()) / req_node_number << std::endl;
-    std::cout << "Hash link index use ratio : " << double(hash_table_p->index_size()) / hash_table_p->capacity() << std::endl;
+    std::cout << "Hash link size " << hash_table_.size() << std::endl;
+    std::cout << "Hash link real use ratio :" << double(hash_table_.size()) / hash_table_.capacity() << std::endl;
+    std::cout << "Hash link expect use ratio : " << double(hash_table_.size()) / req_node_number << std::endl;
+    std::cout << "Hash link index use ratio : " << double(hash_table_.index_size()) / hash_table_.capacity() << std::endl;
 
     //
     progress_timer.restart();
@@ -1595,7 +1615,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     {
         for (size_t y = 0; y < req_node_number; ++y)
         {
-            hash_table_p->find(insert_node[y]);
+            hash_table_.find(insert_node[y]);
         }
     }
 
@@ -1608,8 +1628,6 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     table_smem = nullptr;
     delete insert_node;
     insert_node = nullptr;
-    delete hash_table_p;
-    hash_table_p = nullptr;
 
     return 0;
 }
@@ -1621,7 +1639,7 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
     //计时器，不是定时器呀
     zce::hr_progress_timer auto_timer;
 
-    SMEM_HASH_SAFE_INT* abc = nullptr;
+    SMEM_HASH_SAFE_INT abc;
 
     size_t node_req_number = 1000000;
     size_t node_number = node_req_number;
@@ -1635,8 +1653,11 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
 
     char* p_smem = new char[len_smem];
 
-    abc = SMEM_HASH_SAFE_INT::initialize(node_number, node_real_number, p_smem, -1, false, false);
-
+    auto succ = abc.initialize(node_number, node_real_number, p_smem, -1, false, false);
+    if (!succ)
+    {
+        return -1;
+    }
     bool exit_for = false;
 
     zce::mt19937_instance::instance()->srand((uint32_t)time(nullptr));
@@ -1648,11 +1669,11 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
 
         for (;;)
         {
-            std::pair<SMEM_HASH_SAFE_INT::iterator, bool> piar_iter = abc->insert(rand_num);
+            std::pair<SMEM_HASH_SAFE_INT::iterator, bool> piar_iter = abc.insert(rand_num);
 
             if (piar_iter.second == false)
             {
-                if (piar_iter.first == abc->end())
+                if (piar_iter.first == abc.end())
                 {
                     exit_for = true;
                     break;
@@ -1669,13 +1690,12 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
         }
     }
 
-    std::cout << "Hash table size " << abc->size() << std::endl;
-    std::cout << "Hash table real use ratio :" << double(abc->size()) / abc->capacity() << std::endl;
-    std::cout << "Hash table expect use ratio : " << double(abc->size()) / node_req_number << std::endl;
+    std::cout << "Hash table size " << abc.size() << std::endl;
+    std::cout << "Hash table real use ratio :" << double(abc.size()) / abc.capacity() << std::endl;
+    std::cout << "Hash table expect use ratio : " << double(abc.size()) / node_req_number << std::endl;
 
     //
     delete p_smem;
-    delete abc;
 
     return 0;
 }
@@ -1692,26 +1712,29 @@ int test_hash_safe2(int /*argc*/, char* /*argv*/[])
     std::cout << "Hash table room size " << len_smem << std::endl;
 
     char* p_smem = new char[len_smem];
-    SMEM_HASH_SAFE_INT* hash_safe_int = SMEM_HASH_SAFE_INT::initialize(node_number, node_real_number, p_smem, -1, false);
+    SMEM_HASH_SAFE_INT hash_safe_int;
+    auto succ = hash_safe_int.initialize(node_number, node_real_number, p_smem, -1, false);
+    if (!succ)
+    {
+        return -1;
+    }
+    hash_safe_int.insert(100101);
+    hash_safe_int.insert(5004102);
+    hash_safe_int.insert(9013019);
+    hash_safe_int.insert(19033017);
+    hash_safe_int.insert(89033017);
 
-    hash_safe_int->insert(100101);
-    hash_safe_int->insert(5004102);
-    hash_safe_int->insert(9013019);
-    hash_safe_int->insert(19033017);
-    hash_safe_int->insert(89033017);
+    hash_safe_int.erase(19033017);
 
-    hash_safe_int->erase(19033017);
+    SMEM_HASH_SAFE_INT::iterator iter_tmp = hash_safe_int.begin();
 
-    SMEM_HASH_SAFE_INT::iterator iter_tmp = hash_safe_int->begin();
-
-    for (; iter_tmp != hash_safe_int->end(); ++iter_tmp)
+    for (; iter_tmp != hash_safe_int.end(); ++iter_tmp)
     {
         std::cout << "Hash table node " << *iter_tmp << std::endl;
     }
 
     //
     delete p_smem;
-    delete hash_safe_int;
 
     return 0;
 }
@@ -1727,21 +1750,23 @@ int test_hashtable(int /*argc*/, char* /*argv*/[])
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::shm_hashtable<int, int >* pmmap = zce::shm_hashtable<int, int >::initialize(numnode, real_num, tmproom);
-    pmmap->insert_unique(1001);
-    zce::shm_hashtable<int, int >::iterator it = pmmap->find_value(1001);
+    zce::shm_hashtable<int, int > myhash;
+    auto succ = myhash.initialize(numnode, real_num, tmproom);
+    std::cout << "initialize: " << succ << std::endl;
+    myhash.insert_unique(1001);
+    zce::shm_hashtable<int, int >::iterator it = myhash.find_value(1001);
 
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
-    bool bdel = pmmap->erase_unique(1001);
+    bool bdel = myhash.erase_unique(1001);
 
-    it = pmmap->find_value(1002);
+    it = myhash.find_value(1002);
 
-    bdel = pmmap->erase_unique(1001);
+    bdel = myhash.erase_unique(1001);
 
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
-    if (it == pmmap->end())
+    if (it == myhash.end())
     {
         std::cout << "Not Fount." << std::endl;
     }

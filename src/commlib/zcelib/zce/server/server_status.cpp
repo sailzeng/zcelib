@@ -73,8 +73,6 @@ Server_Status
 server_status::server_status() :
     stat_lock_(nullptr),
     stat_file_head_(nullptr),
-    status_stat_sandy_(nullptr),
-    status_copy_mandy_(nullptr),
     multi_thread_guard_(false),
     initialized_(false)
 {
@@ -88,18 +86,6 @@ server_status::~server_status()
     {
         delete stat_lock_;
         stat_lock_ = nullptr;
-    }
-
-    if (status_stat_sandy_)
-    {
-        delete status_stat_sandy_;
-        status_stat_sandy_ = nullptr;
-    }
-
-    if (status_copy_mandy_)
-    {
-        delete status_copy_mandy_;
-        status_copy_mandy_ = nullptr;
     }
 }
 
@@ -141,29 +127,29 @@ int server_status::initialize(const char* stat_filename,
 
     // 统计数据区初始化
     char* stat_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);
-    status_stat_sandy_ = ARRYA_OF_SHM_STATUS::initialize(MAX_MONITOR_STAT_ITEM,
-                                                         stat_ptr,
-                                                         restore_mmap);
+    auto succ = false;
+    succ = status_stat_sandy_.initialize(MAX_MONITOR_STAT_ITEM,
+                                         stat_ptr,
+                                         restore_mmap);
 
-    if (!status_stat_sandy_)
+    if (!succ)
     {
         return -1;
     }
 
     // 拷贝数据区初始化
     char* copy_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD) + size_alloc;
-    status_copy_mandy_ = ARRYA_OF_SHM_STATUS::initialize(MAX_MONITOR_STAT_ITEM,
-                                                         copy_ptr,
-                                                         restore_mmap);
+    succ = status_copy_mandy_.initialize(MAX_MONITOR_STAT_ITEM,
+                                         copy_ptr,
+                                         restore_mmap);
 
-    if (!status_copy_mandy_)
+    if (!succ)
     {
         return -1;
     }
 
     //修改线程锁保护的行为
     multi_thread_guard(multi_thread);
-
     //
     return 0;
 }
@@ -261,21 +247,21 @@ int server_status::find_insert_idx(uint32_t statics_id,
     }
 
     //如果已经满了，也算了
-    if (status_stat_sandy_->full())
+    if (status_stat_sandy_.full())
     {
         ZCE_LOG(RS_ERROR, "Statics array is full,please extend in start. ary size is [%lu]",
-                status_stat_sandy_->size());
+                status_stat_sandy_.size());
         return -1;
     }
 
-    size_t idx = status_stat_sandy_->size();
+    size_t idx = status_stat_sandy_.size();
 
     ZCE_STATUS_ITEM status_item;
     status_item.item_id_ = stat_item_id;
     status_item.counter_ = 0;
 
     //定义过这个统计项目，只是没有没有添加
-    status_stat_sandy_->push_back(status_item);
+    status_stat_sandy_.push_back(status_item);
 
     //在MAP中间增加这个索引
     statid_to_index_[stat_item_id] = idx;
@@ -363,7 +349,7 @@ int server_status::add_number(uint32_t statics_id,
     }
 
     //增加统计数值
-    (status_stat_sandy_->begin() + sandy_idx)->counter_ += incre_value;
+    (status_stat_sandy_.begin() + sandy_idx)->counter_ += incre_value;
     return 0;
 }
 
@@ -393,7 +379,7 @@ int server_status::set_counter(uint32_t statics_id,
     }
 
     //设置统计数值
-    (status_stat_sandy_->begin() + sandy_idx)->counter_ = set_value;
+    (status_stat_sandy_.begin() + sandy_idx)->counter_ = set_value;
     return 0;
 }
 
@@ -409,7 +395,7 @@ uint64_t server_status::get_counter(uint32_t statics_id,
     {
         zce::lock_ptr_guard guard(stat_lock_);
         size_t index = iter_tmp->second;
-        return (status_stat_sandy_->begin() + index)->counter_;
+        return (status_stat_sandy_.begin() + index)->counter_;
     }
     else
     {
@@ -421,7 +407,7 @@ uint64_t server_status::get_counter(uint32_t statics_id,
 size_t server_status::num_of_counter()
 {
     //不会改变的数值，不加锁
-    return status_stat_sandy_->size();
+    return status_stat_sandy_.size();
 }
 
 //获取copy_time
@@ -461,7 +447,7 @@ void server_status::check_overtime(time_t now_time)
         }
     }
 
-    size_t num_of_counter = status_stat_sandy_->size();
+    size_t num_of_counter = status_stat_sandy_.size();
 
     //如果没有处理
     if (clear_type == STATUS_STATICS::INVALID_TYPE)
@@ -477,7 +463,7 @@ void server_status::check_overtime(time_t now_time)
 
     for (size_t i = 0; i < num_of_counter; ++i)
     {
-        ZCE_STATUS_ITEM* cur_item = status_stat_sandy_->begin() + i;
+        ZCE_STATUS_ITEM* cur_item = status_stat_sandy_.begin() + i;
 
         if (clear_type >= cur_item->statics_type_)
         {
@@ -498,18 +484,18 @@ void server_status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_c
     zce::lock_ptr_guard guard(stat_lock_);
 
     //两个数据区大小应该一样
-    size_t num_of_counter = status_stat_sandy_->size();
+    size_t num_of_counter = status_stat_sandy_.size();
     array_status.resize(num_of_counter);
 
     for (size_t i = 0; i < num_of_counter; ++i)
     {
         if (false == dump_copy)
         {
-            array_status[i].statics_item_ = (*status_stat_sandy_)[i];
+            array_status[i].statics_item_ = status_stat_sandy_[i];
         }
         else
         {
-            array_status[i].statics_item_ = (*status_copy_mandy_)[i];
+            array_status[i].statics_item_ = status_copy_mandy_[i];
         }
 
         STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(array_status[i].statics_item_.item_id_.statics_id_);
@@ -532,10 +518,10 @@ void server_status::dump_all(ARRAY_OF_STATUS_WITHNAME& array_status, bool dump_c
 void server_status::copy_stat_counter()
 {
     //将备份数据数据去赋值
-    size_t num_of_counter = status_stat_sandy_->size();
-    status_copy_mandy_->resize(num_of_counter);
-    ZCE_STATUS_ITEM* stat_sandy_begin = status_stat_sandy_->begin();
-    ZCE_STATUS_ITEM* stat_mandy_begin = status_copy_mandy_->begin();
+    size_t num_of_counter = status_stat_sandy_.size();
+    status_copy_mandy_.resize(num_of_counter);
+    ZCE_STATUS_ITEM* stat_sandy_begin = status_stat_sandy_.begin();
+    ZCE_STATUS_ITEM* stat_mandy_begin = status_copy_mandy_.begin();
     std::copy_n(stat_sandy_begin, num_of_counter, stat_mandy_begin);
 
     //刷新备份时间
@@ -554,13 +540,13 @@ void server_status::dump_status_info(std::ostringstream& strstream, bool dump_co
     //根据确定是从哪个数据区读取数据
     if (dump_copy)
     {
-        num_of_counter = status_stat_sandy_->size();
-        stat_process_iter = status_stat_sandy_->begin();
+        num_of_counter = status_stat_sandy_.size();
+        stat_process_iter = status_stat_sandy_.begin();
     }
     else
     {
-        num_of_counter = status_copy_mandy_->size();
-        stat_process_iter = status_copy_mandy_->begin();
+        num_of_counter = status_copy_mandy_.size();
+        stat_process_iter = status_copy_mandy_.begin();
     }
 
     //记录监控配置的名字的变量
@@ -607,17 +593,17 @@ void server_status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_c
     //根据确定是从哪个数据区读取数据
     if (dump_copy)
     {
-        num_of_counter = status_stat_sandy_->size();
-        stat_process_iter = status_stat_sandy_->begin();
+        num_of_counter = status_stat_sandy_.size();
+        stat_process_iter = status_stat_sandy_.begin();
     }
     else
     {
-        num_of_counter = status_copy_mandy_->size();
-        stat_process_iter = status_copy_mandy_->begin();
+        num_of_counter = status_copy_mandy_.size();
+        stat_process_iter = status_copy_mandy_.begin();
     }
 
     ZCE_LOG(RS_INFO, "Statistics Number: %u", num_of_counter);
-    ZCE_LOG(RS_INFO, "index.<statics id,classify id> name                            :number");
+    ZCE_LOG(RS_INFO, "index.<statics id,classify id> name :number");
 
     STATUS_ITEM_WITHNAME tmp_check;
     zce::lock_ptr_guard guard(stat_lock_);

@@ -27,7 +27,7 @@ int chunk_pool::initialize(std::size_t numnode,
     if (if_restore == true)
     {
         //检查所有的尺寸,如果有不对的地方返回nullptr,这样可以保证不出现错误
-        if (chunk_head->size_of_mmap_ != alloc_size(numnode, numchunk, szchunk) ||
+        if (chunk_head->size_of_mem_ != alloc_size(numnode, numchunk, szchunk) ||
             chunk_head->num_of_node_ != numnode ||
             chunk_head->num_of_chunk_ != numchunk ||
             chunk_head->size_of_chunk_ != szchunk)
@@ -37,7 +37,7 @@ int chunk_pool::initialize(std::size_t numnode,
     }
 
     //得到空间大小
-    chunk_head->size_of_mmap_ = alloc_size(numnode, numchunk, szchunk);
+    chunk_head->size_of_mem_ = alloc_size(numnode, numchunk, szchunk);
     chunk_head->num_of_node_ = numnode;
     chunk_head->num_of_chunk_ = numchunk;
     chunk_head->size_of_chunk_ = szchunk;

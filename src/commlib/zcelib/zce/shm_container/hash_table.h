@@ -182,13 +182,19 @@ public:
     typedef value_type* pointer;
     typedef shmc_size_type size_type;
 
-protected:
+public:
     shm_hashtable() = default;
     //只定义,不实现,
     shm_hashtable(const shm_hashtable&) = delete;
     const self& operator=(const self& others) = delete;
-public:
-    ~shm_hashtable() = default;
+    //析构
+    ~shm_hashtable()
+    {
+        if (slef_alloc_)
+        {
+            terminate();
+        }
+    }
 
 protected:
 
@@ -205,7 +211,7 @@ protected:
 
     public:
         ///内存区的长度,这个长度可能超过32bit
-        std::size_t          size_of_mmap_ = 0;
+        std::size_t          size_of_mem_ = 0;
 
         ///NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
         size_type            num_of_node_ = 0;
@@ -385,12 +391,12 @@ public:
     * @param      pmmap
     * @param      if_restore
     */
-    static self* initialize(size_type req_num,
-                            size_type& real_num,
-                            char* mem_addr,
-                            bool if_restore = false)
+    bool initialize(size_type req_num,
+                    size_type& real_num,
+                    char* mem_addr,
+                    bool if_restore = false)
     {
-        assert(pmmap != nullptr && req_num > 0);
+        ZCE_ASSERT(mem_addr != nullptr && req_num > 0);
         //调整
         std::size_t sz_mmap = alloc_size(req_num, real_num);
         _shm_ht_head* hashhead = reinterpret_cast<_shm_ht_head*>(mem_addr);
@@ -399,60 +405,64 @@ public:
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (sz_mmap != hashhead->size_of_mmap_ ||
+            if (sz_mmap != hashhead->size_of_mem_ ||
                 real_num != hashhead->num_of_node_)
             {
                 //一般情况下不一致返回nullptr，标识恢复失败，
-#if ALLOW_RESTORE_INCONFORMITY != 1
-                return nullptr;
-#else
-                ZCE_LOG(RS_ALERT, "Hash Table node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                        "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                        sz_mmap,
-                        real_num,
-                        hashhead->size_of_mmap_,
-                        hashhead->num_of_node_);
-#endif
+
+                return false;
             }
         }
         else
         {
             //初始化尺寸
-            hashhead->size_of_mmap_ = sz_mmap;
+            hashhead->size_of_mem_ = sz_mmap;
             hashhead->num_of_node_ = real_num;
         }
-
-        self* instance
-            = new shm_hashtable< T, Key, Hash, Extract, keyEqual  >();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
 
         //计算这些指针的地址，主要是为了方便后面的处理
-        instance->mem_addr_ = mem_addr;
-        char* tmp_base = instance->mem_addr_;
+        mem_addr_ = mem_addr;
+        char* tmp_base = mem_addr_;
 
-        instance->hash_head_ = hashhead;
+        hash_head_ = hashhead;
         tmp_base = tmp_base + sizeof(_shm_ht_head);
 
-        instance->index_base_ = reinterpret_cast<size_type*>(tmp_base);
+        index_base_ = reinterpret_cast<size_type*>(tmp_base);
         tmp_base = tmp_base + sizeof(size_type) * (real_num);
 
-        instance->data_base_ = reinterpret_cast<T*>(tmp_base);
+        data_base_ = reinterpret_cast<T*>(tmp_base);
         tmp_base = tmp_base + sizeof(T) * (real_num);
 
-        instance->next_index_ = reinterpret_cast<size_type*>(tmp_base);
+        next_index_ = reinterpret_cast<size_type*>(tmp_base);
 
-        if (if_restore == false)
+        //根据是否恢复抉择处理方式
+        if (if_restore)
+        {
+            restore();
+        }
+        else
         {
             //清理初始化所有的内存,所有的节点为FREE
-            instance->clear();
+            clear();
         }
-
         //打完收工
-        return instance;
+        return true;
     }
 
-    //清理初始化所有的内存,所有的节点为FREE
+    //!初始化，自己内部分配内存，
+    bool initialize(size_type req_num,
+                    size_type& real_num)
+    {
+        std::size_t sz_alloc = alloc_size(req_num, real_num);
+        //自己分配一个空间，自己使用
+        char *mem_addr = new char[sz_alloc];
+        slef_alloc_ = true;
+        return initialize(req_num, real_num, mem_addr, false);
+    }
+
+    //!清理初始化所有的内存,所有的节点为FREE
     void clear()
     {
         //处理关键Node,以及相关长度,开始所有的数据是free.
@@ -473,11 +483,41 @@ public:
         for (size_type i = 0; i < hash_head_->num_of_node_; ++i)
         {
             next_index_[i] = i + 1;
-
             if (i == hash_head_->num_of_node_ - 1)
             {
                 next_index_[i] = SHMC_INVALID_POINT;
             }
+        }
+    }
+
+    //!恢复函数，用于从(共享)内存中恢复数据，
+    void restore()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            T val(std::move(*iter_tmp));
+            new (data_base_ + pos) T(std::move(val));
+        }
+    }
+
+    //!销毁，析构所有的已有元素，注意，如果想恢复，不要调用这个函数
+    void terminate()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            (data_base_ + pos)->~T();
+        }
+        clear();
+        if (slef_alloc_)
+        {
+            delete[] mem_addr_;
+            mem_addr_ = nullptr;
         }
     }
 
@@ -807,7 +847,8 @@ public:
     }
 
 protected:
-
+    //mem_addr_是否是自己分配的，如果是自己分配的，自己负责释放
+    bool slef_alloc_ = false;
     //内存基础地址
     char* mem_addr_ = nullptr;
 

@@ -89,7 +89,7 @@ public:
     //在多线程的环境下提供这个运送符号是不安全的,没有加锁,上层自己保证
     T* operator->() const
     {
-        return avl_tree_inst_->getdatabase() + serial_;
+        return avl_tree_inst_->data_base() + serial_;
     }
 
     iterator& operator++()
@@ -231,7 +231,7 @@ protected:
 
     public:
         //内存区的长度
-        std::size_t             size_of_mmap_ = 0;
+        std::size_t             size_of_mem_ = 0;
         //NODE结点个数
         size_type               num_of_node_ = 0;
         //FREE的NODE个数
@@ -264,26 +264,29 @@ protected:
         ///平衡
         int32_t      balanced_ = 0;
     };
-protected:
-
-    shm_avltree() = default;
-
-    //只定义,不实现,避免犯错
-    shm_avltree(const shm_avltree&) = delete;
-    const self& operator=(const self& others) = delete;
 
 public:
 
-    ~shm_avltree() = default;
+    shm_avltree() = default;
+    //只定义,不实现,避免犯错
+    shm_avltree(const shm_avltree&) = delete;
+    const self& operator=(const self& others) = delete;
+    ~shm_avltree()
+    {
+        if (slef_alloc_)
+        {
+            terminate();
+        }
+    }
 
     //得到索引的基础地址
-    inline _avl_tree_index* getindexbase()
+    inline _avl_tree_index* index_base()
     {
         return index_base_;
     }
 
     //得到数据区的基础地质
-    inline  T* getdatabase()
+    inline  T* data_base()
     {
         return data_base_;
     }
@@ -346,61 +349,71 @@ public:
     }
 
     //初始化
-    static self* initialize(const size_type numnode,
-                            char* pmmap,
-                            bool if_restore = false)
+    bool initialize(const size_type num_node,
+                    char* mem_addr,
+                    bool if_restore = false)
     {
-        //assert(pmmap!=nullptr && numnode >0 );
-        _avl_tree_head* avl_tree_head = reinterpret_cast<_avl_tree_head*>(pmmap);
+        ZCE_ASSERT(num_node > 0 && mem_addr_ == nullptr);
 
+        _avl_tree_head* avl_tree_head = reinterpret_cast<_avl_tree_head*>(mem_addr);
         //如果是恢复,数据都在内存中,
         if (true == if_restore)
         {
             //检查一下恢复的内存是否正确,
-            if (alloc_size(numnode) != avl_tree_head->size_of_mmap_ ||
-                numnode != avl_tree_head->num_of_node_)
+            if (alloc_size(num_node) != avl_tree_head->size_of_mem_ ||
+                num_node != avl_tree_head->num_of_node_)
             {
-                return nullptr;
+                return false;
             }
         }
 
         //初始化尺寸
-        avl_tree_head->size_of_mmap_ = alloc_size(numnode);
-        avl_tree_head->num_of_node_ = numnode;
-
-        self* instance = new self();
+        avl_tree_head->size_of_mem_ = alloc_size(num_node);
+        avl_tree_head->num_of_node_ = num_node;
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->mem_addr_ = pmmap;
+        mem_addr_ = mem_addr;
         //头部
-        instance->avl_tree_head_ = avl_tree_head;
+        avl_tree_head_ = avl_tree_head;
         //索引区
-        instance->index_base_ = reinterpret_cast<_avl_tree_index*>(
-            pmmap +
+        index_base_ = reinterpret_cast<_avl_tree_index*>(
+            mem_addr +
             sizeof(_avl_tree_head));
         //数据区
-        instance->data_base_ = reinterpret_cast<T*>(
-            pmmap +
+        data_base_ = reinterpret_cast<T*>(
+            mem_addr +
             sizeof(_avl_tree_head) +
-            sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+            sizeof(_avl_tree_index) * (num_node + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
-        instance->head_index_ = reinterpret_cast<_avl_tree_index*>(
-            pmmap +
+        head_index_ = reinterpret_cast<_avl_tree_index*>(
+            mem_addr +
             sizeof(_avl_tree_head) +
-            sizeof(_avl_tree_index) * (numnode));
-        instance->free_index_ = reinterpret_cast<_avl_tree_index*>(
-            pmmap +
+            sizeof(_avl_tree_index) * (num_node));
+        free_index_ = reinterpret_cast<_avl_tree_index*>(
+            mem_addr_ +
             sizeof(_avl_tree_head) +
-            sizeof(_avl_tree_index) * (numnode + 1));
+            sizeof(_avl_tree_index) * (num_node + 1));
 
-        if (false == if_restore)
+        if (if_restore)
+        {
+            restore();
+        }
+        else
         {
             //清理初始化所有的内存,所有的节点为FREE
-            instance->clear();
+            clear();
         }
+        return true;
+    }
 
-        return instance;
+    bool initialize(size_type num_node)
+    {
+        std::size_t sz_alloc = alloc_size(num_node);
+        //自己分配一个空间，自己使用
+        char *mem_addr = new char[sz_alloc];
+        slef_alloc_ = true;
+        return initialize(num_node, mem_addr, false);
     }
 
     //清理初始化所有的内存,所有的节点为FREE
@@ -437,6 +450,36 @@ public:
             }
 
             pindex++;
+        }
+    }
+
+    //!恢复函数，用于从(共享)内存中恢复数据，
+    void restore()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            T val(std::move(*iter_tmp));
+            new (data_base_ + pos) T(std::move(val));
+        }
+    }
+
+    void terminate()
+    {
+        iterator iter_tmp = begin();
+        iterator iter_end = end();
+        for (; iter_tmp != iter_end; ++iter_tmp)
+        {
+            size_type pos = iter_tmp.getserial();
+            (data_base_ + pos)->~T();
+        }
+        clear();
+        if (slef_alloc_)
+        {
+            delete[] mem_addr_;
+            mem_addr_ = nullptr;
         }
     }
 
@@ -1432,6 +1475,8 @@ protected:
     static const size_type ADDED_NUM_OF_INDEX = 2;
 
 protected:
+    //mem_addr_是否是自己分配的，如果是自己分配的，自己负责释放
+    bool slef_alloc_ = false;
     //内存基础地址
     char* mem_addr_ = nullptr;
 
@@ -1510,4 +1555,13 @@ public:
         return (find_or_insert(std::pair<Key, T >(key, T()))).second;
     }
 };
-} //namespace zce::shmc
+
+template < class T, class Key, class Extract, class Compare >
+using static_avltree = zce::shm_avltree<T, Key, Extract, Compare>;
+
+template<class T, class Compare >
+using static_avlset = zce::shm_avlset<T, Compare>;
+
+template<class Key, class T, class Extract, class Compare>
+using static_avlmap = zce::shm_avlmap<Key, T, Extract, Compare>;
+} //namespace zce

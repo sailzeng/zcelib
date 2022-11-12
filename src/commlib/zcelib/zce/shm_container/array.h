@@ -50,32 +50,37 @@ protected:
     public:
 
         ///内存区的长度
-        std::size_t      size_of_mmap_ = 0;
+        std::size_t      size_of_mem_ = 0;
         ///结点总数，
         size_type        num_of_node_ = 0;
     };
 
-protected:
+public:
     ///默认构造函数,就是不给你用
     shm_array() = default;
     //只定义,不实现,
     shm_array(const shm_array&) = delete;
     const self& operator=(const self& others) = delete;
-public:
     ///析构函数
-    ~shm_array() = default;
+    ~shm_array()
+    {
+        if (slef_alloc_)
+        {
+            terminate();
+        }
+    }
 public:
 
     ///内存区的构成为 定义区,data区,返回所需要的长度,
-    static std::size_t alloc_size(const size_type numnode)
+    static std::size_t alloc_size(size_type numnode)
     {
         return  sizeof(_array_head) + sizeof(T) * (numnode);
     }
 
     ///初始化
-    static self* initialize(const size_type numnode,
-                            char* mem_addr,
-                            bool if_restore = false)
+    bool initialize(size_type num_node,
+                    char* mem_addr,
+                    bool if_restore = false)
     {
         _array_head* aryhead = reinterpret_cast<_array_head*>(mem_addr);
 
@@ -83,34 +88,41 @@ public:
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (alloc_size(numnode) != aryhead->size_of_mmap_ ||
-                numnode != aryhead->num_of_node_)
+            if (alloc_size(num_node) != aryhead->size_of_mem_ ||
+                num_node != aryhead->num_of_node_)
             {
                 return nullptr;
             }
         }
 
         //初始化尺寸
-        aryhead->size_of_mmap_ = alloc_size(numnode);
-        aryhead->num_of_node_ = numnode;
-
-        shm_array<T>* instance = new shm_array<T>();
+        aryhead->size_of_mem_ = alloc_size(num_node);
+        aryhead->num_of_node_ = num_node;
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->mem_addr_ = mem_addr;
-        instance->array_head_ = aryhead;
-        instance->data_base_ = reinterpret_cast<T*>(mem_addr + sizeof(_array_head));
+        mem_addr_ = mem_addr;
+        array_head_ = aryhead;
+        data_base_ = reinterpret_cast<T*>(mem_addr + sizeof(_array_head));
 
         if (if_restore)
         {
-            instance->resotre();
+            resotre();
         }
         else
         {
-            instance->clear();
+            clear();
         }
         //打完收工
-        return instance;
+        return true;
+    }
+
+    bool initialize(size_type num_node)
+    {
+        std::size_t sz_alloc = alloc_size(num_node);
+        //自己分配一个空间，自己使用
+        char *mem_addr = new char[sz_alloc];
+        slef_alloc_ = true;
+        return initialize(num_node, mem_addr, false);
     }
 
     //!销毁，析构所有的元素，注意，如果想恢复，不要调用这个函数
@@ -122,6 +134,11 @@ public:
             (data_base_ + i)->~T();
         }
         array_head_->num_of_node_ = 0;
+        if (slef_alloc_)
+        {
+            delete[] mem_addr_;
+            mem_addr_ = nullptr;
+        }
     }
 
     void resotre()
@@ -185,9 +202,12 @@ public:
     }
 
 protected:
+    //mem_addr_是否是自己分配的，如果是自己分配的，自己负责释放
+    bool slef_alloc_ = false;
     //内存基础地址
     char* mem_addr_ = nullptr;
-    ///
+
+    ///保存一些核心数据的头部指针，目的为了在共享内存使用
     _array_head* array_head_ = nullptr;
     ///数据区起始指针,
     T* data_base_ = nullptr;

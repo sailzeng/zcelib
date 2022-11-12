@@ -44,11 +44,9 @@ namespace zce
 template <class T >
 class _lordrings_iterator
 {
-protected:
-
     //定义迭代器
     typedef _lordrings_iterator<T > iterator;
-
+public:
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
     typedef T *pointer;
@@ -171,7 +169,14 @@ class lord_rings
 {
 public:
     //定义迭代器
-    typedef _lordrings_iterator<T > iterator;
+    typedef _lordrings_iterator<T> iterator;
+    typedef const iterator const_iterator;
+    typedef iterator::iterator_category iterator_category;
+    typedef T value_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
+    typedef std::size_t size_type;
 
     ///构造函数，后面必须调用,initialize
     lord_rings() = default;
@@ -418,7 +423,7 @@ public:
             return false;
         }
 
-        value = vptr_ptr_[lordring_start_];
+        value = std::move(vptr_ptr_[lordring_start_]);
         vptr_ptr_[lordring_start_].~T();
         lordring_start_ = (lordring_start_ + 1) % lordring_capacity_;
         return true;
@@ -446,7 +451,7 @@ public:
             return false;
         }
         lordring_end_ = (lordring_end_ > 0) ? lordring_end_ - 1 : lordring_capacity_ - 1;
-        value = vptr_ptr_[lordring_end_];
+        value = std::move(vptr_ptr_[lordring_end_]);
         vptr_ptr_[lordring_end_].~T();
 
         return true;

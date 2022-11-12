@@ -117,13 +117,13 @@ public:
     T* operator->() const
     {
         //
-        return list_instance_->getdatabase() + serial_;
+        return list_instance_->data_base() + serial_;
     }
 
     ///++iter，迭代器后向移动操作
     iterator& operator++()
     {
-        serial_ = (list_instance_->getindexbase() + serial_)->idx_next_;
+        serial_ = (list_instance_->index_base() + serial_)->idx_next_;
         return *this;
     }
 
@@ -138,7 +138,7 @@ public:
     /// --iter操作
     iterator& operator--()
     {
-        serial_ = (list_instance_->getindexbase() + serial_)->idx_prev_;
+        serial_ = (list_instance_->index_base() + serial_)->idx_prev_;
         return *this;
     }
 
@@ -203,7 +203,7 @@ protected:
     public:
 
         ///内存区的长度
-        std::size_t      size_of_mmap_ = 0;
+        std::size_t      size_of_mem_ = 0;
         ///NODE结点个数
         size_type        num_of_node_ = 0;
 
@@ -213,26 +213,28 @@ protected:
         size_type        size_use_node_ = 0;
     };
 
-    ///如果在共享内存使用,没有new,所以统一用initialize 初始化
-    ///这个函数,不给你用,就是不给你用
+public:
+    //构造函数和析构函数
     shm_list() = default;
-
     //只定义,不实现,
     shm_list(const shm_list&) = delete;
     const self operator=(const self& others) = delete;
-
-public:
-    ~shm_list() = default;
-
+    ~shm_list()
+    {
+        if (slef_alloc_)
+        {
+            terminate();
+        }
+    }
 protected:
 
     //得到索引的基础地址
-    inline _shm_list_index* getindexbase()
+    inline _shm_list_index* index_base()
     {
         return index_base_;
     }
     //得到数据区的基础地质
-    inline  T* getdatabase()
+    inline  T* data_base()
     {
         return data_base_;
     }
@@ -361,55 +363,67 @@ public:
      * @param if_restore 如果是共享内存，可以尝试恢复
      * @return self，自己的对象指针
     */
-    static self* initialize(size_type numnode, char* mem_addr, bool if_restore = false)
+    bool initialize(size_type num_node, char* mem_addr, bool if_restore = false)
     {
-        //assert(mem_addr!=nullptr && numnode >0 );
-        _shm_list_head* listhead = reinterpret_cast<_shm_list_head*>(mem_addr);
+        ZCE_ASSERT(num_node > 0 && mem_addr_ == nullptr);
+        mem_addr_ = mem_addr;
+        _shm_list_head* list_head = reinterpret_cast<_shm_list_head*>(mem_addr);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (alloc_size(numnode) != listhead->size_of_mmap_ ||
-                numnode != listhead->num_of_node_)
+            if (alloc_size(num_node) != list_head->size_of_mem_ ||
+                num_node != list_head->num_of_node_)
             {
-                return nullptr;
+                return false;
             }
         }
 
         //初始化尺寸
-        listhead->size_of_mmap_ = alloc_size(numnode);
-        listhead->num_of_node_ = numnode;
-
-        self* instance = new self();
+        list_head->size_of_mem_ = alloc_size(num_node);
+        list_head->num_of_node_ = num_node;
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
-        instance->mem_addr_ = mem_addr;
-        instance->list_head_ = listhead;
-        instance->index_base_ = reinterpret_cast<_shm_list_index*>(mem_addr + sizeof(_shm_list_head));
-        instance->data_base_ = reinterpret_cast<T*>
-            (mem_addr + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX));
+        mem_addr_ = mem_addr;
+        list_head_ = list_head;
+        index_base_ = reinterpret_cast<_shm_list_index*>(
+            mem_addr_ +
+            sizeof(_shm_list_head));
+        data_base_ = reinterpret_cast<T*>(
+            mem_addr_ +
+            sizeof(_shm_list_head) +
+            sizeof(_shm_list_index) * (num_node + ADDED_NUM_OF_INDEX));
 
         //这两个家伙用于FREENODE,USENODE的使用
-        instance->freenode_ = reinterpret_cast<_shm_list_index*>
-            (mem_addr + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode));
-        instance->usenode_ = reinterpret_cast<_shm_list_index*>
-            (mem_addr + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + 1));
+        freenode_ = reinterpret_cast<_shm_list_index*>
+            (mem_addr_ + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (num_node));
+        usenode_ = reinterpret_cast<_shm_list_index*>
+            (mem_addr_ + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (num_node + 1));
 
-        //
+        //根据是否恢复抉择处理方式
         if (if_restore)
         {
-            instance->restore();
+            restore();
         }
         else
         {
             //清理初始化所有的内存,所有的节点为FREE
-            instance->clear();
+            clear();
         }
-        assert(listhead->size_use_node_ + listhead->size_free_node_ == listhead->num_of_node_);
+        ZCE_ASSERT(list_head->size_use_node_ + list_head->size_free_node_ == list_head->num_of_node_);
 
         //打完收工
-        return instance;
+        return true;
+    }
+
+    bool initialize(size_type num_node)
+    {
+        std::size_t sz_alloc = alloc_size(num_node);
+        //自己分配一个空间，自己使用
+        char *mem_addr = new char[sz_alloc];
+        slef_alloc_ = true;
+        return initialize(num_node, mem_addr, false);
     }
 
     //!销毁，析构所有的已有元素，注意，如果想恢复，不要调用这个函数
@@ -423,6 +437,11 @@ public:
             (data_base_ + pos)->~T();
         }
         clear();
+        if (slef_alloc_)
+        {
+            delete[] mem_addr_;
+            mem_addr_ = nullptr;
+        }
     }
 
     //!恢复函数，用于从(共享)内存中恢复数据，
@@ -639,10 +658,12 @@ protected:
     static const size_type ADDED_NUM_OF_INDEX = 2;
 
 protected:
-
+    //mem_addr_是否是自己分配的，如果是自己分配的，自己负责释放
+    bool slef_alloc_ = false;
     //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
     //内存基础地址
     char* mem_addr_ = nullptr;
+
     //LIST的头部区指针
     _shm_list_head* list_head_ = nullptr;
     //索引数据区指针,
@@ -655,4 +676,8 @@ protected:
     //USE NODE的头指针,N+2个索引位表示
     _shm_list_index* usenode_ = nullptr;
 };
+
+//定义一个别名，shm_list也可以作为一个static_list用
+template<typename T>
+using static_list = zce::shm_list<T>;
 }

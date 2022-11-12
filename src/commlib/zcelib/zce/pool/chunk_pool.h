@@ -61,7 +61,7 @@ protected:
 
     private:
         ///内存区的长度
-        std::size_t          size_of_mmap_ = 0;
+        std::size_t          size_of_mem_ = 0;
 
         ///NODE的数量
         std::size_t          num_of_node_ = 0;
