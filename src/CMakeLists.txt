@@ -77,6 +77,7 @@ endif()
 
 #增加子目录
 add_subdirectory(commlib/zcelib)
-add_subdirectory(commlib/soarlib)
 add_subdirectory(test/zealot)
+add_subdirectory(commlib/soarlib)
+
 
