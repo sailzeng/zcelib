@@ -5,11 +5,14 @@
 #include "zerg/comm_manager.h"
 
 //forward declaration
-class soar::zerg_frame;
-class zerg_config;
+namespace soar
+{
+class zerg_frame;
+}
 
 namespace zerg
 {
+class zerg_config;
 class svc_udp : public zce::event_handler
 {
 protected:

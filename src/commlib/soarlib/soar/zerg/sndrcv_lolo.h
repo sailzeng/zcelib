@@ -119,13 +119,12 @@ int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
                                          time_wait);
 
     msg_recv_frame_->ntoh();
-    msg_recv_frame_->dump_frame_head("UDP recv", RS_DEBUG);
+    soar::zerg_frame::dump_frame_head(RS_DEBUG, "UDP recv", msg_recv_frame_);
 
 #if defined _DEBUG || defined DEBUG
     ZCE_ASSERT(test_frame_len_ >= msg_recv_frame_->length_);
 #endif //#if defined _DEBUG || defined DEBUG
 
-    //ret == 0
     if (socket_ret == 0)
     {
         ZCE_LOG(RS_INFO, "[framework] Link is disconnect recv ret =%d, error[%u|%s].",
@@ -231,8 +230,7 @@ int lolo_sendrecv::send_svc_msg(uint32_t user_id,
     ssize_t socket_ret = lolo_datagram_.sendto((void*)(msg_send_frame_),
                                                len,
                                                &lolo_svc_ip_,
-                                               nullptr
-    );
+                                               0);
 
     //ZCE_LOG(RS_DEBUG,"[framework] SEND %u BYTES  Frame To Svr Succ. ",ret);
     if (socket_ret <= 0)

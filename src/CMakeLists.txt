@@ -63,7 +63,7 @@ else()
 endif()
 
 # 
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
+if (CMAKE_BUILD_TYPE MATCHES "")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/debug/ )
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/debug/ )
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../lib/debug/ )
@@ -79,5 +79,8 @@ endif()
 add_subdirectory(commlib/zcelib)
 add_subdirectory(test/zealot)
 add_subdirectory(commlib/soarlib)
+add_subdirectory(commsvr/zergsvrd)
+add_subdirectory(commsvr/ogre4asvrd)
+add_subdirectory(commsvr/wormholesvrd)
 
 

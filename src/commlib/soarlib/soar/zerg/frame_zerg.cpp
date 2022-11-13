@@ -147,7 +147,7 @@ void zerg_frame::dump_frame_head(zce::LOG_PRIORITY log_priority,
              MAX_LEN,
              "zerg fame head:length_=%u,option=%u,command_=%u,user_id_=%u"
              "serial_number_=%u,transaction_id_=%u,backfill_trans_id_=%u"
-             "send_service_=%lu|%lu,recv_service_=%lu|%lu,proxy_service_=%lu|%lu",
+             "send_service_=%u|%u,recv_service_=%u|%u,proxy_service_=%u|%u",
              proc_frame->length_,
              proc_frame->u32_option_,
              proc_frame->command_,

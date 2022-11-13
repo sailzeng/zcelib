@@ -211,40 +211,23 @@ int read_file(const char* filename,
 * @param[in]  offset   从开始的偏移量，
 * @note       Windows下面不可能一次读取超过4G大小的数据但，超大文件别指望这个函数
 */
-std::pair<int, std::shared_ptr<char>> read_file(const char* filename,
-                                                size_t* file_len,
-                                                size_t offset = 0);
+std::pair<int, std::shared_ptr<char>>
+read_file(const char* filename,
+          size_t* file_len,
+          off_t offset = 0);
 
+/*!
+ * @brief
+ * @param filename  文件名称
+ * @param buff      写入的buffer
+ * @param buf_len   写入的buffer长度
+ * @param write_len 实际写入的长度
+ * @param offset    写入的偏移地址，从开始位置计算
+ * @return
+*/
 int write_file(const char* filename,
                const char* buff,
                size_t buf_len,
                size_t* write_len,
-               size_t offset = 0);
-
-//!辅助类，利用析构关闭ZCE_HANDLE,ZCE_HANDLE 不能用unique_ptr
-//!自动释放的ZCE_HANDLE
-class AUTO_HANDLE
-{
-public:
-    AUTO_HANDLE() = delete;
-    inline AUTO_HANDLE(ZCE_HANDLE handle) :
-        handle_(handle)
-    {
-    }
-    inline ~AUTO_HANDLE()
-    {
-        zce::close(handle_);
-    }
-    inline ZCE_HANDLE get()
-    {
-        return handle_;
-    }
-protected:
-    ZCE_HANDLE handle_;
-};
-
-//! 这样使用 zce::AUTO_FILE fd(::fopen("xxx"));
-using AUTO_FILE = std::unique_ptr<FILE, decltype(::fclose)*>;
-
-using AUTO_STDFILE = std::unique_ptr<std::FILE, decltype(std::fclose)*>;
+               off_t offset = 0);
 };

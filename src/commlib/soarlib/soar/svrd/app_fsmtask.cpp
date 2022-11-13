@@ -7,6 +7,8 @@
 #include "soar/fsm/fsmtask_fsmbase.h"
 #include "soar/svrd/app_fsmtask.h"
 
+namespace sosar
+{
 svrdapp_fsmtask::svrdapp_fsmtask() :
     soar::app_buspipe()
 {
@@ -175,4 +177,5 @@ int svrdapp_fsmtask::app_exit()
     }
 
     return 0;
+}
 }

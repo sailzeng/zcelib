@@ -297,6 +297,7 @@
     <ClInclude Include="zce\util\mpl.h" />
     <ClInclude Include="zce\util\non_copyable.h" />
     <ClInclude Include="zce\util\random.h" />
+    <ClInclude Include="zce\util\scope_guard.h" />
     <ClInclude Include="zce\util\singleton.h" />
     <ClInclude Include="zce\util\id_to_string.h" />
     <ClInclude Include="zce\bus\mmap_pipe.h" />

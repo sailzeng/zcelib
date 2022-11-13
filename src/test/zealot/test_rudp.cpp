@@ -83,7 +83,7 @@ ssize_t core_recv(zce::rudp::server_peer* peer)
             peer->session_id(),
             peer->recv_bytes());
 
-    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
+    zce::auto_handle fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "");
@@ -127,7 +127,7 @@ ssize_t client_recv(zce::rudp::client* peer)
     ZCE_LOG(RS_DEBUG, "[CLIENT recv] session id[%u] recv data len [%u]",
             peer->session_id(),
             peer->recv_bytes());
-    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
+    zce::auto_handle fd(zce::open(TEST_FILE[3], O_CREAT | O_APPEND | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "");
@@ -168,7 +168,7 @@ int test_rudp_core(int /*argc*/, char* /*argv*/[])
     }
     /*
     //打开文件
-    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[0], O_RDONLY));
+    zce::auto_handle fd(zce::open(TEST_FILE[0], O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "open file fail.");
@@ -295,7 +295,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
         return ret;
     }
     //打开文件
-    zce::AUTO_HANDLE fd(zce::open(TEST_FILE[2], O_RDONLY));
+    zce::auto_handle fd(zce::open(TEST_FILE[2], O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "open file fail.");

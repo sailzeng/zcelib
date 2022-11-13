@@ -56,7 +56,7 @@ protected:
     {
         soar::zerg_frame* rsp_msg =
             reinterpret_cast<soar::zerg_frame*>(task_frame_buf_);
-        rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME,
+        rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME,
                            option,
                            cmd);
         rsp_msg->user_id_ = recv_frame->user_id_;
@@ -110,7 +110,7 @@ protected:
     )
     {
         soar::zerg_frame* rsp_msg = reinterpret_cast<soar::zerg_frame*>(task_frame_buf_);
-        rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME, option, cmd);
+        rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME, option, cmd);
 
         rsp_msg->user_id_ = user_id;
 

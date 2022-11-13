@@ -2,6 +2,7 @@
 
 #include <zce/predefine.h>
 #include <zce/time/time_value.h>
+#include <zce/logger/logging.h>
 #include <zce/mysql/connect.h>
 #include <zce/mysql/command.h>
 #include <zce/mysql/execute.h>
@@ -19,7 +20,6 @@
 #include <zce/os_adapt/process.h>
 #include <zce/os_adapt/getopt.h>
 #include <zce/os_adapt/backtrace.h>
-#include <zce/logger/logging.h>
 #include <zce/lock/null_lock.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/config/property_tree.h>

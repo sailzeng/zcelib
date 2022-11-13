@@ -2,10 +2,10 @@
 
 #include "soar/svrd/app_bus.h"
 
-class soar::zerg_frame;
-
 namespace soar
 {
+class zerg_frame;
+
 //单个函数处理APP FRAME
 class svrdapp_plain : public soar::app_buspipe
 {

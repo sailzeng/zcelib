@@ -127,7 +127,7 @@
 #pragma once
 
 #include "zce/bytes/bytes_common.h"
-#include "zce/os_adapt/file.h"
+#include "zce/util/scope_guard.h"
 
 namespace zce
 {
@@ -432,7 +432,7 @@ int hash_file(const char* file_name,
               char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
     //打开文件
-    zce::AUTO_HANDLE  fd(zce::open(file_name, O_RDONLY));
+    zce::auto_handle  fd(zce::open(file_name, O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         return -1;

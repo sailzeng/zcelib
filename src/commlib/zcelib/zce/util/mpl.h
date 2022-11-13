@@ -121,7 +121,7 @@ auto mem_func_invoke_impl(class_type* obj,
                           const para_tuple& a,
                           std::index_sequence<I...>)
 {
-    //注意这儿一定要加(),否则编译器会抓狂
+    //注意这儿一定要加(),否则编译器会抓狂，让我找错误找了一天
     return (obj->*f)(std::get<I>(a)...);
 }
 
@@ -144,15 +144,15 @@ auto mem_func_invoke(class_type* obj, fun_t& f, args_type && ...datalist)
 }
 
 //----------------------------------------------------------------------------
-template<typename class_type, typename ...args_type>
+template<typename T, typename ...Args>
 struct new_helper
 {
-    //因为
-    static class_type* invoke(args_type... datalist)
+    //Args 没有使用Args&&，因为我这儿要明确指明参数类型调用
+    static T* invoke(Args... args)
     {
-        return new class_type(datalist...);
+        return new T(args...);
     }
 };
-};
+}
 
 #endif //ZCE_LIB_BOOST_MPL_H_

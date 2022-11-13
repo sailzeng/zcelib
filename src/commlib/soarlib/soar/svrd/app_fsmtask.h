@@ -13,7 +13,9 @@
         } \
     }
 
-class soar::fsmtask_taskbase;
+namespace sosar
+{
+class fsmtask_taskbase;
 
 class svrdapp_fsmtask : public soar::app_buspipe
 {
@@ -48,3 +50,4 @@ protected:
                                      size_t& task_num,
                                      size_t& task_stack_size) = 0;
 };
+}

@@ -330,7 +330,7 @@ int fsm_manager::fake_receive_frame(uint32_t cmd,
     int ret = 0;
 
     soar::zerg_frame* tmp_frame = reinterpret_cast<soar::zerg_frame*>(fake_recv_buffer_);
-    tmp_frame->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    tmp_frame->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME, option, cmd);
 
     tmp_frame->user_id_ = user_id;
     tmp_frame->send_service_ = snd_svc;
@@ -371,7 +371,7 @@ int fsm_manager::sendmsg_to_service(uint32_t cmd,
                                     uint32_t option)
 {
     soar::zerg_frame* rsp_msg = reinterpret_cast<soar::zerg_frame*>(trans_send_buffer_);
-    rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME, option, cmd);
     rsp_msg->user_id_ = user_id;
     rsp_msg->fsm_id_ = fsm_id;
     rsp_msg->recv_service_ = rcvsvc;
@@ -404,7 +404,7 @@ int fsm_manager::post_msg_to_queue(uint32_t cmd,
                                    uint32_t option)
 {
     soar::zerg_frame* rsp_msg = reinterpret_cast<soar::zerg_frame*>(trans_send_buffer_);
-    rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    rsp_msg->init_head(soar::zerg_frame::MAX_LEN_OF_FRAME, option, cmd);
     rsp_msg->user_id_ = user_id;
     rsp_msg->fsm_id_ = fsm_id;
     rsp_msg->recv_service_ = rcvsvc;

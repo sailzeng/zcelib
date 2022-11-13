@@ -4,6 +4,7 @@
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/file.h"
+#include "zce/util/scope_guard.h"
 
 //读取文件
 ssize_t zce::read(ZCE_HANDLE file_handle,
@@ -601,34 +602,42 @@ int zce::read_file(const char* filename,
 //读取文件的全部数据，
 std::pair<int, std::shared_ptr<char> > zce::read_file(const char* filename,
                                                       size_t* file_len,
-                                                      size_t offset)
+                                                      off_t offset)
 {
     int ret = -1;
     std::shared_ptr<char> null_ptr;
     //打开文件
-    ZCE_HANDLE  fd = zce::open(filename, O_RDONLY);
-    if (ZCE_INVALID_HANDLE == fd)
+    zce::auto_handle fd(zce::open(filename, O_RDONLY));
+    if (ZCE_INVALID_HANDLE == fd.get())
     {
-        ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d", filename, zce::last_error());
+        ZCE_LOG(RS_ERROR, "read_file open file [%s]  fail ,error =%d", filename, zce::last_error());
         return std::make_pair(ret, null_ptr);
     }
-    *file_len = zce::lseek(fd, 0, SEEK_END);
+    *file_len = zce::lseek(fd.get(), 0, SEEK_END);
     if (static_cast<size_t>(-1) == *file_len)
     {
-        zce::close(fd);
-        ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d",
+        ZCE_LOG(RS_ERROR, "read_file open file [%s]  fail ,error =%d",
                 filename, zce::last_error());
         return std::make_pair(ret, null_ptr);
     }
     std::shared_ptr<char> ptr(new char[*file_len + 1], std::default_delete<char[]>());
     *(ptr.get() + *file_len) = '\0';
     //调整偏移，读取内容
-    zce::lseek(fd, static_cast<off_t>(offset), SEEK_SET);
-    ssize_t len = zce::read(fd, ptr.get(), *file_len);
-    zce::close(fd);
+    if (offset)
+    {
+        off_t oft = zce::lseek(fd.get(), static_cast<off_t>(offset), SEEK_SET);
+        if (oft < 0)
+        {
+            ZCE_LOG(RS_ERROR, "read_file lseek file [%s]  fail ,error =%d",
+                    filename, zce::last_error());
+            return std::make_pair(-1, null_ptr);
+        }
+    }
+
+    ssize_t len = zce::read(fd.get(), ptr.get(), *file_len);
     if (len < 0)
     {
-        ZCE_LOG(RS_ERROR, "read file [%s] fail ,error =%d",
+        ZCE_LOG(RS_ERROR, "read_file read file [%s] fail ,error =%d",
                 filename,
                 zce::last_error());
         return std::make_pair(ret, null_ptr);
@@ -642,27 +651,35 @@ int zce::write_file(const char* filename,
                     const char* buff,
                     size_t buf_len,
                     size_t* write_len,
-                    size_t offset)
+                    off_t offset)
 {
     //参数检查
     ZCE_ASSERT(filename && buff && buf_len >= 1);
     *write_len = 0;
     //打开文件
-    ZCE_HANDLE  fd = zce::open(filename, O_CREAT | O_WRONLY);
-    if (ZCE_INVALID_HANDLE == fd)
+    zce::auto_handle  fd(zce::open(filename, O_CREAT | O_WRONLY));
+    if (ZCE_INVALID_HANDLE == fd.get())
     {
-        ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d",
+        ZCE_LOG(RS_ERROR, "write_file open file [%s]  fail ,error =%d",
                 filename, zce::last_error());
         return -1;
     }
-    zce::lseek(fd, static_cast<off_t>(offset), SEEK_SET);
-    //读取内容
-    ssize_t len = zce::write(fd, buff, buf_len);
-    zce::close(fd);
+    if (offset)
+    {
+        off_t oft = zce::lseek(fd.get(), static_cast<off_t>(offset), SEEK_SET);
+        if (oft < 0)
+        {
+            ZCE_LOG(RS_ERROR, "write_file lseek file [%s]  fail ,error =%d",
+                    filename, zce::last_error());
+            return -1;
+        }
+    }
 
+    //读取内容
+    ssize_t len = zce::write(fd.get(), buff, buf_len);
     if (len < 0)
     {
-        ZCE_LOG(RS_ERROR, "write file [%s] fail ,error =%d",
+        ZCE_LOG(RS_ERROR, "write_file write file [%s] fail ,error =%d",
                 filename, zce::last_error());
         return -1;
     }

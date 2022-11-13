@@ -973,7 +973,7 @@ int svc_tcp::check_recv_full_frame(bool& bfull,
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
         if (whole_frame_len > soar::zerg_frame::MAX_LEN_OF_FRAME || whole_frame_len < soar::zerg_frame::LEN_OF_HEAD)
         {
-            ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
+            ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_FRAME:%u ,recv and use len:%u|%u.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
                     peer_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),

@@ -6,10 +6,10 @@
 #include "soar/stat/define.h"
 #include "soar/svrd/cfg_fsm.h"
 
-class soar::zerg_frame;
-
 namespace soar
 {
+class zerg_frame;
+
 class svrd_buspipe : protected zce::twoway_buspipe
 {
 public:

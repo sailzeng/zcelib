@@ -829,6 +829,9 @@
     <ClInclude Include="zce\comm\common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\util\scope_guard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

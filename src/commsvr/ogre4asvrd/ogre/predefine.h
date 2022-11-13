@@ -1,8 +1,9 @@
 #pragma once
 
 #include <zce/predefine.h>
-#include <zce/util/id_to_string.h>
 #include <zce/time/time_value.h>
+#include <zce/logger/logging.h>
+#include <zce/logger/log_msg.h>
 #include <zce/mysql/connect.h>
 #include <zce/mysql/command.h>
 #include <zce/mysql/execute.h>
@@ -20,8 +21,6 @@
 #include <zce/os_adapt/process.h>
 #include <zce/os_adapt/getopt.h>
 #include <zce/os_adapt/dlfcn.h>
-#include <zce/logger/logging.h>
-#include <zce/logger/log_msg.h>
 #include <zce/lock/null_lock.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/config/property_tree.h>
@@ -33,7 +32,6 @@
 #include <zce/shared_mem/mmap.h>
 #include <zce/bus/mmap_pipe.h>
 #include <zce/bus/twoway_pipe.h>
-#include <zce/thread/thread_task.h>
 #include <zce/event/handle_base.h>
 #include <zce/event/reactor_base.h>
 #include <zce/server/get_option.h>
