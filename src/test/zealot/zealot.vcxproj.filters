@@ -20,75 +20,75 @@
     <ClCompile Include="zealot_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_rbtree.cpp">
+    <ClCompile Include="test_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_lockfree_deque.cpp">
+    <ClCompile Include="test_shm_container.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_list.cpp">
+    <ClCompile Include="predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_cache_chunk.cpp">
+    <ClCompile Include="test_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_predefine.cpp">
+    <ClCompile Include="test_os_adapt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_random.cpp">
+    <ClCompile Include="test_thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_os_adapt.cpp">
+    <ClCompile Include="test_socket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_thread.cpp">
+    <ClCompile Include="test_lock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_socket.cpp">
+    <ClCompile Include="test_timer_expire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_rwlock.cpp">
+    <ClCompile Include="test_fmtstr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_timer_expire.cpp">
+    <ClCompile Include="test_mysql.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_fmtstr.cpp">
+    <ClCompile Include="test_bytes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_mysql_benchmark.cpp">
+    <ClCompile Include="test_event_inotify.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_bytes.cpp">
+    <ClCompile Include="test_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_inotify.cpp">
+    <ClCompile Include="test_script_lua.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_hash.cpp">
+    <ClCompile Include="test_async.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_server.cpp">
+    <ClCompile Include="test_config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_lua.cpp">
+    <ClCompile Include="test_sqlite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_copy_boost.cpp">
+    <ClCompile Include="test_lookfree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_async.cpp">
+    <ClCompile Include="test_rudp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_config.cpp">
+    <ClCompile Include="test_aio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="zealot_predefine.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zealot_test_function.h">
+    <ClInclude Include="predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,81 +11,81 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ogre_accept_handler.cpp">
+    <ClCompile Include="ogre\svc_accept.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_app_timer.cpp">
+    <ClCompile Include="ogre\app_timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_application.cpp">
+    <ClCompile Include="ogre\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_auto_connect.cpp">
+    <ClCompile Include="ogre\auto_connect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_buf_storage.cpp">
+    <ClCompile Include="ogre\buf_storage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_comm_manager.cpp">
+    <ClCompile Include="ogre\comm_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_configure.cpp">
+    <ClCompile Include="ogre\configure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_ip_restrict.cpp">
+    <ClCompile Include="ogre\ip_restrict.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_main.cpp">
+    <ClCompile Include="ogre\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_predefine.cpp">
+    <ClCompile Include="ogre\predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_tcp_ctrl_handler.cpp">
+    <ClCompile Include="ogre\svc_tcp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_udp_ctrl_handler.cpp">
+    <ClCompile Include="ogre\svc_udp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_tcppeer_id_set.cpp">
+    <ClCompile Include="ogre\tcppeer_set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ogre_accept_handler.h">
+    <ClInclude Include="ogre\svc_accept.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_app_timer.h">
+    <ClInclude Include="ogre\app_timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_application.h">
+    <ClInclude Include="ogre\application.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_auto_connect.h">
+    <ClInclude Include="ogre\auto_connect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_buf_storage.h">
+    <ClInclude Include="ogre\buf_storage.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_comm_manager.h">
+    <ClInclude Include="ogre\comm_manager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_configure.h">
+    <ClInclude Include="ogre\configure.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_ip_restrict.h">
+    <ClInclude Include="ogre\ip_restrict.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_predefine.h">
+    <ClInclude Include="ogre\predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_tcp_ctrl_handler.h">
+    <ClInclude Include="ogre\svc_tcp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_udp_ctrl_handler.h">
+    <ClInclude Include="ogre\svc_udp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_tcppeer_id_set.h">
+    <ClInclude Include="ogre\tcppeer_set.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -26,16 +18,6 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
@@ -49,12 +31,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -65,57 +41,20 @@
   <PropertyGroup>
     <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../lib/win/$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../lib/win/$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PreBuildEvent>
-      <Command />
-    </PreBuildEvent>
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
-      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <AssemblerOutput>NoListing</AssemblerOutput>
-      <AdditionalIncludeDirectories>../zcelib/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-    </Lib>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Command />
@@ -129,59 +68,40 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>soar/predefine.h</PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <AssemblerOutput>NoListing</AssemblerOutput>
-      <AdditionalIncludeDirectories>../zcelib/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../zcelib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-    </Lib>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../zcelib/</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>soar/predefine.h</PrecompiledHeaderFile>
       <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -191,67 +111,68 @@
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="soar_error_code.cpp" />
-    <ClCompile Include="soar_ogre_frame.cpp" />
-    <ClCompile Include="soar_svrd_cfg_base.cpp" />
-    <ClCompile Include="soar_zerg_frame.cpp" />
-    <ClCompile Include="soar_fsm_notify_transbase.cpp" />
-    <ClCompile Include="soar_fsm_notify_trans_mgr.cpp" />
-    <ClCompile Include="soar_fsm_notify_taskbase.cpp" />
-    <ClCompile Include="soar_fsm_trans_base.cpp" />
-    <ClCompile Include="soar_fsm_trans_mgr.cpp" />
-    <ClCompile Include="soar_predefine.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    <ClCompile Include="soar\enum\error_code.cpp" />
+    <ClCompile Include="soar\ogre\frame_ogre.cpp" />
+    <ClCompile Include="soar\svrd\cfg_base.cpp" />
+    <ClCompile Include="soar\svrd\svc_console.cpp" />
+    <ClCompile Include="soar\zerg\frame_zerg.cpp" />
+    <ClCompile Include="soar\fsm\fsmtask_fsmbase.cpp" />
+    <ClCompile Include="soar\fsm\fsmtask_mgr.cpp" />
+    <ClCompile Include="soar\fsm\fsmtask_taskbase.cpp" />
+    <ClCompile Include="soar\fsm\fsm_base.cpp" />
+    <ClCompile Include="soar\fsm\fsm_mgr.cpp" />
+    <ClCompile Include="soar\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="soar_services_info.cpp" />
-    <ClCompile Include="soar_ogre_peer_id.cpp" />
-    <ClCompile Include="soar_zerg_frame_malloc.cpp" />
-    <ClCompile Include="soar_zerg_sndrcv_base.cpp" />
-    <ClCompile Include="soar_zerg_sndrcv_lolo.cpp" />
-    <ClCompile Include="soar_zerg_sndrcv_zulu.cpp" />
-    <ClCompile Include="soar_stat_monitor.cpp" />
-    <ClCompile Include="soar_svrd_app_base.cpp" />
-    <ClCompile Include="soar_svrd_app_bus.cpp" />
-    <ClCompile Include="soar_svrd_app_fsm_notify.cpp" />
-    <ClCompile Include="soar_svrd_app_fsm.cpp" />
-    <ClCompile Include="soar_svrd_cfg_fsm.cpp" />
-    <ClCompile Include="soar_svrd_timer_base.cpp" />
-    <ClCompile Include="soar_mmap_buspipe.cpp" />
+    <ClCompile Include="soar\zerg\services_id.cpp" />
+    <ClCompile Include="soar\zerg\services_info.cpp" />
+    <ClCompile Include="soar\ogre\peer_id.cpp" />
+    <ClCompile Include="soar\zerg\frame_malloc.cpp" />
+    <ClCompile Include="soar\zerg\sndrcv_base.cpp" />
+    <ClCompile Include="soar\zerg\sndrcv_lolo.cpp" />
+    <ClCompile Include="soar\zerg\sndrcv_zulu.cpp" />
+    <ClCompile Include="soar\stat\monitor.cpp" />
+    <ClCompile Include="soar\svrd\app_bus.cpp" />
+    <ClCompile Include="soar\svrd\app_plain.cpp" />
+    <ClCompile Include="soar\svrd\app_fsmtask.cpp" />
+    <ClCompile Include="soar\svrd\app_fsm.cpp" />
+    <ClCompile Include="soar\svrd\cfg_fsm.cpp" />
+    <ClCompile Include="soar\svrd\timer_base.cpp" />
+    <ClCompile Include="soar\svrd\svrd_buspipe.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="soar_enum_define.h" />
-    <ClInclude Include="soar_error_code.h" />
-    <ClInclude Include="soar_frame_command.h" />
-    <ClInclude Include="soar_ogre_frame.h" />
-    <ClInclude Include="soar_svrd_cfg_base.h" />
-    <ClInclude Include="soar_zerg_frame.h" />
-    <ClInclude Include="soar_fsm_notify_transbase.h" />
-    <ClInclude Include="soar_fsm_notify_trans_mgr.h" />
-    <ClInclude Include="soar_fsm_notify_taskbase.h" />
-    <ClInclude Include="soar_fsm_trans_base.h" />
-    <ClInclude Include="soar_fsm_trans_mgr.h" />
-    <ClInclude Include="soar_mmapalloc.h" />
-    <ClInclude Include="soar_predefine.h" />
-    <ClInclude Include="soar_server_ver_define.h" />
-    <ClInclude Include="soar_services_info.h" />
-    <ClInclude Include="soar_ogre_peer_id.h" />
-    <ClInclude Include="soar_zerg_frame_malloc.h" />
-    <ClInclude Include="soar_zerg_sndrcv_base.h" />
-    <ClInclude Include="soar_zerg_sndrcv_lolo.h" />
-    <ClInclude Include="soar_zerg_sndrcv_zulu.h" />
-    <ClInclude Include="soar_stat_define.h" />
-    <ClInclude Include="soar_stat_monitor.h" />
-    <ClInclude Include="soar_svrd_app_base.h" />
-    <ClInclude Include="soar_svrd_app_main.h" />
-    <ClInclude Include="soar_svrd_app_bus.h" />
-    <ClInclude Include="soar_svrd_app_fsm_notify.h" />
-    <ClInclude Include="soar_svrd_app_fsm.h" />
-    <ClInclude Include="soar_svrd_cfg_fsm.h" />
-    <ClInclude Include="soar_svrd_timer_base.h" />
-    <ClInclude Include="soar_mmap_buspipe.h" />
+    <ClInclude Include="soar\enum\enum_define.h" />
+    <ClInclude Include="soar\enum\error_code.h" />
+    <ClInclude Include="soar\predefine.h" />
+    <ClInclude Include="soar\svrd\svc_console.h" />
+    <ClInclude Include="soar\zerg\frame_command.h" />
+    <ClInclude Include="soar\ogre\frame_ogre.h" />
+    <ClInclude Include="soar\svrd\cfg_base.h" />
+    <ClInclude Include="soar\zerg\frame_zerg.h" />
+    <ClInclude Include="soar\fsm\fsmtask_fsmbase.h" />
+    <ClInclude Include="soar\fsm\fsmtask_mgr.h" />
+    <ClInclude Include="soar\fsm\fsmtask_taskbase.h" />
+    <ClInclude Include="soar\fsm\fsm_base.h" />
+    <ClInclude Include="soar\fsm\fsm_mgr.h" />
+    <ClInclude Include="soar\zerg\services_id.h" />
+    <ClInclude Include="soar\svrd\soar_server_ver_define.h" />
+    <ClInclude Include="soar\zerg\services_info.h" />
+    <ClInclude Include="soar\ogre\peer_id.h" />
+    <ClInclude Include="soar\zerg\frame_malloc.h" />
+    <ClInclude Include="soar\zerg\sndrcv_base.h" />
+    <ClInclude Include="soar\zerg\sndrcv_lolo.h" />
+    <ClInclude Include="soar\zerg\sndrcv_zulu.h" />
+    <ClInclude Include="soar\stat\define.h" />
+    <ClInclude Include="soar\stat\monitor.h" />
+    <ClInclude Include="soar\svrd\app_bus.h" />
+    <ClInclude Include="soar\svrd\app_main.h" />
+    <ClInclude Include="soar\svrd\app_plain.h" />
+    <ClInclude Include="soar\svrd\app_fsmtask.h" />
+    <ClInclude Include="soar\svrd\app_fsm.h" />
+    <ClInclude Include="soar\svrd\cfg_fsm.h" />
+    <ClInclude Include="soar\svrd\timer_base.h" />
+    <ClInclude Include="soar\svrd\svrd_buspipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

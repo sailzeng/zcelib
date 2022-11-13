@@ -1,4 +1,5 @@
-锘塊敇?// illusion_main.h : main header file for the illusion application
+
+// illusion_main.h : main header file for the illusion application
 //
 #pragma once
 
@@ -13,9 +14,6 @@ public:
     virtual ~Illusion_Application();
 
 
-<<<<<<< HEAD
-    /// app闀勫嫬绱戞慨瀣
-=======
     /// app的开始运行
     virtual int app_start(int argc, const char *argv[]);
 
@@ -45,4 +43,3 @@ protected:
 
 
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

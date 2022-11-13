@@ -1,4 +1,5 @@
-锘塊敇?// illusion_main.h : main header file for the illusion application
+
+// illusion_main.h : main header file for the illusion application
 //
 #pragma once
 
@@ -21,9 +22,6 @@ protected:
 public:
 
     /*!
-<<<<<<< HEAD
-    * @brief      闀欒
-=======
     * @brief      根据当前默认的字符编码方式，转换为UTF8
     * @return     int == 0表示转换成功
     * @param      src 源字符串，CString结构，根据MFC的字符集编码集决定
@@ -82,4 +80,3 @@ protected:
 
 
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

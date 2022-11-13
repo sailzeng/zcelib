@@ -1,23 +1,16 @@
-锘塊敇?*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   illusion_excel_file.cpp
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-<<<<<<< HEAD
-* @date       2009楠?閾?闀?* @brief
-=======
 * @date       2009年4月3日
 * @brief
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 *
 *
 * @details
 *
 *
 *
-<<<<<<< HEAD
-* @note           鏉╂瑤閲滅猾緇樻Ц嫻犲海綞夋稉濞勭瑓鏉炵晫孌戦敍灞懼灉閸ф劒闊╅崗鑸靛灇閿涘本鍔呯拫銏犲笀閺夈儳孌戞擔婊嗘粏
-=======
 * @note           这个类是从网上下载的，我坐享其成，感谢原来的作者，我只试试是
 *                 做了一下修正。
 *                 修正包括一些参数的使用不谨慎，bool 改为BOOL等,对于对象关系，
@@ -135,4 +128,3 @@ protected:
     //Create the SAFEARRAY from the VARIANT ret.
     COleSafeArray ole_safe_array_;
 };
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

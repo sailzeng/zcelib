@@ -1,36 +1,52 @@
-
 //#define _STLP_USE_STATIC_LIB
 
+#include "predefine.h"
 
-#include "zealot_predefine.h"
-#include "zealot_test_function.h"
-
-
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
+#if defined ZCE_OS_WINDOWS
+    SetConsoleOutputCP(65001);
+#endif
+
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 
-#define ZCE_USE_LOGMSG 1
-    ZCE_Trace_LogMsg::instance()->init_time_log(NAME_TIME_DAY_DEVIDE_TIME,
-                                                "E:\\My.Log\\TEST_1",
-                                                false,
-                                                true,
-                                                0,
-                                                LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT,
-                                                LOG_HEAD_RECORD_NONE);
+    zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+                                            "E:\\My.Log\\TEST_2",
+                                            zce::log_file::DEFAULT_LOG_SIZE,
+                                            true,
+                                            false,
+                                            true,
+                                            false,
+                                            ZCE_U32_OR_2(zce::LOG_OUTPUT::LOGFILE, zce::LOG_OUTPUT::ERROUT),
+                                            static_cast<int>(zce::LOG_HEAD::LOGLEVEL));
+    int ret = 0;
     ZCE_TRACE_FILELINE(RS_DEBUG);
-    
-    test_lua_script3(argc,argv);
+    ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
 
+    //for (size_t i = 0; i < 100; ++i)
+    //{
+    //    ZCE_LOG(RS_INFO, "Hallelujah");
+    //}
+
+    ////test_aio1(argc, argv);
+    test_aio3(argc, argv);
+
+    //!需要关闭日志
+    zce::log_msg::instance()->terminate();
+    zce::log_msg::clear_inst();
     return 0;
-
 #if 0
+    test_dns_resolve(argc, argv);
+    test_rudp(argc, argv);
+    return 0;
+    test_sqlite_handle(argc, argv);
+    test_sqlite_stmt(argc, argv);
 
-    test_memory_debug(argc,argv);
-    test_back_stack(argc,argv);
+    test_memory_debug(argc, argv);
+    test_back_stack(argc, argv);
     test_out_buffer(argc, argv);
-    test_progress_timer(argc,argv);
+    test_progress_timer(argc, argv);
     test_bytes_hash(argc, argv);
 
     benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
@@ -50,23 +66,21 @@ int main(int argc, char *argv[])
     //test_lua_script3(argc, argv);
 
     printf("%s", "----------------------------------------------------------------------------\n");
-    test_lua_script1(argc,argv);
-    test_lua_script2(argc,argv);
-    test_lua_script3(argc,argv);
-    test_lua_script4(argc,argv);
-    test_lua_script4(argc,argv);
-    test_lua_script5(argc,argv);
-    test_lua_script6(argc,argv);
-    test_lua_script7(argc,argv);
-    test_lua_script8(argc,argv);
-    test_lua_script9(argc,argv);
+    test_lua_script1(argc, argv);
+    test_lua_script2(argc, argv);
+    test_lua_script3(argc, argv);
+    test_lua_script4(argc, argv);
+    test_lua_script4(argc, argv);
+    test_lua_script5(argc, argv);
+    test_lua_script6(argc, argv);
+    test_lua_script7(argc, argv);
+    test_lua_script8(argc, argv);
+    test_lua_script9(argc, argv);
     printf("%s", "----------------------------------------------------------------------------\n");
-
 
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
     test_out_buffer(argc, argv);
-
 
     printf("%s", "----------------------------------------------------------------------------\n");
     test_mmap_rbtree1(argc, argv);
@@ -76,7 +90,6 @@ int main(int argc, char *argv[])
 
     test_mmap_avltree5(argc, argv);
     //test_mmap_avltree2(argc, argv);
-
 
     //std::cin.ignore().get();
 
@@ -88,7 +101,4 @@ int main(int argc, char *argv[])
     //system("pause");
     //test_rw_lock1(argc, argv);
 #endif
-
 }
-
-

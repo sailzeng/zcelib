@@ -1,4 +1,4 @@
-锘?include "stdafx.h"
+#include "stdafx.h"
 #include "illusion_excel_file.h"
 #include "illusion_coding_convert.h"
 #include "illusion_read_config.h"
@@ -7,12 +7,8 @@
 #define new DEBUG_NEW
 #endif
 
-<<<<<<< HEAD
-//澶勭悊镄勫崟瀛愬疄渚?Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
-=======
 //处理的单子实例
 Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 //
 Illusion_Read_Config::Illusion_Read_Config()
@@ -51,24 +47,16 @@ bool Illusion_Read_Config::initialize(bool need_open_excel,
 {
     config_path_ = config_path;
 
-<<<<<<< HEAD
-    //db3镄勮矾寰勬病链夊彲浠ュ垱寤?    sqlitedb_pah_ = config_path_;
-=======
     //db3的路径没有可以创建
     sqlitedb_pah_ = config_path_;
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     ZCE_LIB::path_string_cat(sqlitedb_pah_, "db3");
     if (false == ZCE_LIB::is_directory(sqlitedb_pah_.c_str()))
     {
         ZCE_LIB::mkdir_recurse(sqlitedb_pah_.c_str());
     }
 
-<<<<<<< HEAD
-    //log镄勮矾寰勬病链夊彲浠ュ垱寤?    outlog_dir_path_ = config_path_;
-=======
     //log的路径没有可以创建
     outlog_dir_path_ = config_path_;
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     ZCE_LIB::path_string_cat(outlog_dir_path_, "log");
     if (false == ZCE_LIB::is_directory(outlog_dir_path_.c_str()))
     {
@@ -101,9 +89,6 @@ void Illusion_Read_Config::finalize()
     return;
 }
 
-<<<<<<< HEAD
-//娓呯悊镓
-=======
 //清理所有的读取数据
 void Illusion_Read_Config::clear()
 {
@@ -813,4 +798,3 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
 
     return 0;
 }
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

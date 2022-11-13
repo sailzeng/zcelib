@@ -1,13 +1,10 @@
-锘?include "stdafx.h"
+#include "stdafx.h"
 #include "illusion_coding_convert.h"
 #include "illusion_protobuf_reflect.h"
 
 
 
 //======================================================================================
-<<<<<<< HEAD
-//鍒嗘瀽镄勯敊璇
-=======
 //分析的错误信息收集装置，
 ZCE_Error_Collector::ZCE_Error_Collector()
 {
@@ -1032,4 +1029,3 @@ void Illusion_Protobuf_Reflect::message_set_default(google::protobuf::Message *m
     }
     return;
 }
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

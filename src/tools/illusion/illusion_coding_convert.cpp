@@ -1,4 +1,5 @@
-锘?
+
+
 #include "stdafx.h"
 
 #include "illusion_coding_convert.h"
@@ -7,12 +8,8 @@
 #define new DEBUG_NEW
 #endif
 
-<<<<<<< HEAD
-//澶勭悊镄勫崟瀛愬疄渚?Coding_Convert *Coding_Convert::instance_ = NULL;
-=======
 //处理的单子实例
 Coding_Convert *Coding_Convert::instance_ = NULL;
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 //
 Coding_Convert::Coding_Convert()
@@ -65,20 +62,13 @@ void Coding_Convert::clean_instance()
     }
 }
 
-<<<<<<< HEAD
-///璁剧疆
-=======
 ///设置
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 void Coding_Convert::set_bytes_coding(CVT_CODING cvt_coding)
 {
     cur_cvt_coding_ = cvt_coding;
 }
 
 
-<<<<<<< HEAD
-//镙规嵁褰揿墠榛樿
-=======
 //根据当前默认的字符编码方式，转换为UTF8
 int Coding_Convert::default_to_utf8(const CString &src, std::string &dst)
 {
@@ -300,4 +290,3 @@ int Coding_Convert::bytescoding_to_mbcs(const std::string &src, std::string &dst
     }
     return 0;
 }
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

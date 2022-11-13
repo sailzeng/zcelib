@@ -1,0 +1,160 @@
+/*!
+* @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
+* @filename   soar/svrd/timer_base.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date       Monday, September 08, 2014
+* @brief
+*
+*
+* @details    所以你按赞因为你孤单,所以你按赞好像你存在
+*
+*
+*
+* @note
+*      赞
+*      演唱：陶晶莹
+*      有上山下海有侧拍自拍
+*      有宠物有小孩
+*      有粉专社团最爱
+*      有奇闻怪谭有上帝有撒旦
+*      所以你分享因为你感慨
+*      所以你打卡好像你精彩
+*      有男人女人
+*      有家人敌人有些话不能说
+*      有嘴炮依然臭跩
+*      有假掰瞎掰有的没的动态
+*      所以你按赞因为你孤单
+*      所以你按赞好像你存在
+*      所以我按赞
+*
+*      有人晒恩爱有人耍白烂
+*      有小菜有大餐
+*      有前男友前女友
+*      有加了没有有故事有片段
+*      所以你分享因为你感慨
+*      所以你打卡好像你精彩
+*      有潜水偷看有大惊小怪
+*      有黑特有公关
+*      有摸不到的云端
+*
+*      所以你按赞因为你孤单
+*      所以你按赞好像你存在
+*      所以我按赞
+*
+*      游乐园幻化成数位源
+*      在你的屏幕前取代了全世界
+*      刷了又刷不重要的近况
+*      夺走你的现实到底有多疯狂
+*      所以你按赞因为你孤单
+*      所以你按赞好像你存在
+*      所以我按赞
+*
+*/
+
+#pragma once
+
+namespace soar
+{
+class stat_monitor;
+class svrd_cfg_base;
+/*!
+* @brief      服务器框架的定时器处理类
+*             可以从其得到当前的时钟
+* @note
+*/
+class server_timer : public zce::timer_handler
+{
+    friend class app_buspipe;
+public:
+
+    ///构造函数,因为框架的设计构造的时候不初始化timer queue，
+    server_timer();
+    ///析构函数
+    ~server_timer();
+
+    ///取得当前的时间，用于对时间精度要求不高的场合
+    static zce::time_value gettimeofday()
+    {
+        return now_time_;
+    }
+
+protected:
+
+    // 检查监控数据
+    void check_monitor(const zce::time_value& now_time);
+
+    // 系统及进程状态采样
+    void report_status();
+
+protected:
+
+    /*!
+    * @brief      初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
+    * @return     virtual int
+    * @param      queue
+    */
+    virtual int initialize(zce::timer_queue* queue);
+
+    /*!
+     * @brief 定时处理回到数据，
+     * @param[in] now_time 定时器触发的世界，也就是当前的时间
+     * @param[in] timer_id 触发的定时器ID，ACE当年传递的是一个指针，我还是改成了timer_id
+     * @return
+    */
+    virtual int timer_timeout(const zce::time_value& now_time,
+                              int timer_id);
+
+    ///定时器关闭
+    virtual int timer_close();
+
+    ///设置心跳定时器的进度，默认是0.5s一次，如果觉得不够，在initialize前重新设置
+    ///精度USEC
+    void set_heart_precision(const zce::time_value& precision);
+
+    /*!
+    * @brief      增加一个APP的定时器
+    * @param[in]  interval 增加的定时器的间隔
+    */
+    void add_app_timer(const zce::time_value& interval);
+
+protected:
+
+    ///APP Timer的最大数量，
+    static const size_t MAX_APP_TIMER_NUMBER = 16;
+
+    ///默认心跳的精度
+    static const time_t DEF_TIMER_INTERVAL_USEC = 500000;
+
+protected:
+
+    ///心跳的精度，
+    zce::time_value heart_precision_ = zce::time_value(0, DEF_TIMER_INTERVAL_USEC);
+
+    ///心跳计数器，heartbeat_counter_不从0开始计数是避免第一次模除的时候就发生事情
+    uint64_t  heartbeat_counter_ = 1;
+
+    ///从开始心跳到现在的毫秒数，这个数值是通过heartbeat_counter_和精度得到的，
+    ///并不准确，用于各种初略计算
+    uint64_t  heart_total_mesc_ = 0;
+
+    time_t last_check_ = 0;
+
+    //! Timer ID
+    int  server_timer_id_ = -1;
+
+    // 监控的实例
+    soar::stat_monitor* stat_monitor_ = nullptr;
+
+    ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
+    size_t zan_timer_num_ = 0;
+    ///
+    zce::time_value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
+    ///
+    int zan_timer_act_[MAX_APP_TIMER_NUMBER] = { 0 };
+
+protected:
+    ///当前时间
+    static zce::time_value now_time_;
+};
+}

@@ -1,4 +1,4 @@
-锘塊敇?pragma once
+#pragma once
 
 #include "illusion_protobuf_reflect.h"
 
@@ -11,9 +11,6 @@ public:
 
     struct TABLE_CONFIG
     {
-<<<<<<< HEAD
-        ///鐞涖劍鐗擱崥宀栃?        CString excel_table_name_;
-=======
         ///表格名称
         CString excel_table_name_;
 
@@ -192,6 +189,4 @@ protected:
 
 };
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
-        ///鐞涖劍鐗擱弫鐗堝祦嫻犲?s

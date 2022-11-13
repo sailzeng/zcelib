@@ -1,4 +1,5 @@
-锘塊敇?// stdafx.h : include file for standard system include files,
+
+// stdafx.h : include file for standard system include files,
 // or project specific include files that are used frequently,
 // but are changed infrequently
 
@@ -8,9 +9,6 @@
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
 
-<<<<<<< HEAD
-// 閸︹晸INDOWS娑撳珨鎷癙OSIX闀欏洤鍡抽崗鐓?
-=======
 // 在WINDOWS下和POSIX标准兼容的宏，VS2003以下版本如何，我没有测试，2003以后，Windows对于很多代码宏会使用"_"前缀，
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_NONSTDC_NO_WARNINGS  1
@@ -137,4 +135,3 @@ using namespace std;
 #endif
 
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

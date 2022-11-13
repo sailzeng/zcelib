@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -19,38 +11,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ogre_accept_handler.cpp" />
-    <ClCompile Include="ogre_application.cpp" />
-    <ClCompile Include="ogre_app_timer.cpp" />
-    <ClCompile Include="ogre_auto_connect.cpp" />
-    <ClCompile Include="ogre_buf_storage.cpp" />
-    <ClCompile Include="ogre_comm_manager.cpp" />
-    <ClCompile Include="ogre_configure.cpp" />
-    <ClCompile Include="ogre_ip_restrict.cpp" />
-    <ClCompile Include="ogre_main.cpp" />
-    <ClCompile Include="ogre_predefine.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    <ClCompile Include="ogre\svc_accept.cpp" />
+    <ClCompile Include="ogre\application.cpp" />
+    <ClCompile Include="ogre\app_timer.cpp" />
+    <ClCompile Include="ogre\auto_connect.cpp" />
+    <ClCompile Include="ogre\buf_storage.cpp" />
+    <ClCompile Include="ogre\comm_manager.cpp" />
+    <ClCompile Include="ogre\configure.cpp" />
+    <ClCompile Include="ogre\ip_restrict.cpp" />
+    <ClCompile Include="ogre\main.cpp" />
+    <ClCompile Include="ogre\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ogre/predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ogre/predefine.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ogre_tcppeer_id_set.cpp" />
-    <ClCompile Include="ogre_tcp_ctrl_handler.cpp" />
-    <ClCompile Include="ogre_udp_ctrl_handler.cpp" />
+    <ClCompile Include="ogre\tcppeer_set.cpp" />
+    <ClCompile Include="ogre\svc_tcp.cpp" />
+    <ClCompile Include="ogre\svc_udp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ogre_accept_handler.h" />
-    <ClInclude Include="ogre_application.h" />
-    <ClInclude Include="ogre_app_timer.h" />
-    <ClInclude Include="ogre_auto_connect.h" />
-    <ClInclude Include="ogre_buf_storage.h" />
-    <ClInclude Include="ogre_comm_manager.h" />
-    <ClInclude Include="ogre_configure.h" />
-    <ClInclude Include="ogre_ip_restrict.h" />
-    <ClInclude Include="ogre_predefine.h" />
-    <ClInclude Include="ogre_tcppeer_id_set.h" />
-    <ClInclude Include="ogre_tcp_ctrl_handler.h" />
-    <ClInclude Include="ogre_udp_ctrl_handler.h" />
+    <ClInclude Include="ogre\svc_accept.h" />
+    <ClInclude Include="ogre\application.h" />
+    <ClInclude Include="ogre\app_timer.h" />
+    <ClInclude Include="ogre\auto_connect.h" />
+    <ClInclude Include="ogre\buf_storage.h" />
+    <ClInclude Include="ogre\comm_manager.h" />
+    <ClInclude Include="ogre\configure.h" />
+    <ClInclude Include="ogre\ip_restrict.h" />
+    <ClInclude Include="ogre\predefine.h" />
+    <ClInclude Include="ogre\tcppeer_set.h" />
+    <ClInclude Include="ogre\svc_tcp.h" />
+    <ClInclude Include="ogre\svc_udp.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\commlib\soarlib\soarlib.vcxproj">
@@ -68,23 +60,10 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -97,111 +76,50 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
-    <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
-    <OutDir>$(SolutionDir)../bin/win/$(Platform)-$(Configuration)/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
+    <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <LibraryPath>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Platform)-$(Configuration)/;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</AdditionalLibraryDirectories>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;.</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>ogre/predefine.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</AdditionalLibraryDirectories>
-    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -211,19 +129,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;.</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>ogre/predefine.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
-锘?// illusion.cpp : Defines the class behaviors for the application.
+
+// illusion.cpp : Defines the class behaviors for the application.
 //
 
 
@@ -24,12 +25,6 @@ Illusion_Application::~Illusion_Application()
 }
 
 
-<<<<<<< HEAD
-/// app镄勫紑濮嬭繍琛?int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
-{
-    int ret = 0;
-    //浣跨敤UTF8浠ｇ爜涔熻緭鍑猴紝娴嬭瘯鍙戠幇杩樻槸链夊緢澶氶棶棰桡紝锲犱负镊
-=======
 /// app的开始运行
 int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
 {
@@ -258,4 +253,3 @@ int main(int argc, const char *argv[])
     the_app.on_exit();
     return 0;
 }
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

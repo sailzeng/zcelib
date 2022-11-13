@@ -1,4 +1,4 @@
-锘塊敇?*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_protobuf_reflect.h
 * @author     Sailzeng <sailerzeng@gmail.com>
@@ -12,9 +12,6 @@
 *
 *
 * @note
-<<<<<<< HEAD
-* 閵嗗﹤鍙ф禍搴ㄥ劀瀹哥偟孌戠拋鏉跨箓閵?閺夊骸緇?* 閸忓厖綈
-=======
 * 《关于郑州的记忆》 李志
 * 关于郑州我知道的不多，为了爱情曾经去过那里
 * 多少次在火车上路过这城市，一个人悄悄地想起她
@@ -166,4 +163,3 @@ protected:
 #endif //# _ILLUSION_PROTOBUF_REFLECT_H_
 
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

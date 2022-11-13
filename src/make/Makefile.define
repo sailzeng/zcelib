@@ -122,8 +122,13 @@ CC  := ccache $(CC)
 CXX := ccache $(CXX)
 endif
 
+
 #告警标志
-WARNFLAGS += -W -Wall -Wpointer-arith -Winline -Wunreachable-code -Wshadow -Wcast-align
+# -Wextra = -W
+# -Wchkp 警告由指针界限检查器 -fcheck-pointer-bounds,新版本已经废弃了
+# -Winline 我去掉了。因为使用了C++ default 后，GCC有不少告警
+# -Wpointer-arith 对函数指针或者void *类型的指针进行算术操作时给出警告。也很有用。
+WARNFLAGS += -Wextra -Wall -Wpointer-arith -Wunreachable-code -Wshadow -Wcast-align -Wnon-virtual-dtor -Woverloaded-virtual
 
 #这个告警有胆量的可以考虑一下，我第一次挑战以失败告终
 ifeq ($(effcpp),1)
@@ -140,7 +145,7 @@ endif
 
 #编译选项
 CFLAGS += $(WARNFLAGS) -MMD 
-CCFLAGS += $(WARNFLAGS) -std=c++17 -MMD
+CCFLAGS += $(WARNFLAGS) -std=c++20 -MMD -fcoroutines
 
 #注意这个地方,-MMD是这样一个选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
 
@@ -151,12 +156,12 @@ LDFLAGS  += -m32
 endif
 ifeq ($(buildbits),64)
 CFLAGS += -m64
-CCFLAGS += -m32
+CCFLAGS += -m64
 LDFLAGS  += -m64
 endif
 
 #ARFLAGS好像外部有定义，诡异
-ARFLAGS   = rsuv
+ARFLAGS   = rsv
 
 
 #-pipe用于加快编译速度，如果pipes被设置1打开-pipe,
@@ -224,13 +229,13 @@ endif
 endif
 
 ifeq ($(OS_BITS),64)
-VERSIONTYPE := x64_neutral
+VERSIONTYPE := neutral
 PLATFROM := x64
 ifeq ($(debug),1)
-  VERSIONTYPE := x64_debug
+  VERSIONTYPE := debug
 endif
 ifeq ($(release),1)
-  VERSIONTYPE := x64_release
+  VERSIONTYPE := release
 endif
 endif
 
@@ -260,10 +265,10 @@ ifeq ($(optimize),1)
   SOFLAGS += -Wl, $(OCCFLAGS)
 endif
 
-SYS_LIBARYS += -ldl
+LIBARYS += -ldl
 
 ifeq ($(threads),1)
-  SYS_LIBARYS += -lpthread -lrt
+  LIBARYS += -lpthread -lrt
 endif
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -308,6 +313,15 @@ OUTFILE := $(PATH_BIN)/$(PRGNAME)
 endif
 
 #--------------------------------------------------------------------------------------------------------------------
+#如果你使用预定头文件,请定义PCH_FILE
+#对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
+ifneq ($(PCH_FILE),) 
+PCH_DIR = ./$(PCH_FILE).gch
+PCH_GCH = $(PCH_DIR)/$(notdir $(PCH_FILE)).$(VERSIONTYPE).gch
+PCH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(PCH_FILE).d
+endif
+
+#--------------------------------------------------------------------------------------------------------------------
 
 PATH_THIRDPARTY_INC  :=$(PATH_THIRDPARTY)/include
 
@@ -327,7 +341,7 @@ ifeq ($(OS_BITS),32)
 PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/x86
 endif
 ifeq ($(OS_BITS),64)
-PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/x64
+PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/
 endif
 
 LIB_DEV_OUTER=-L$(PATH_THIRDPARTY_LIB) -lmysqlclient -lz -lsqlite -llua -lprotobuf-lite
@@ -340,19 +354,17 @@ LIB_ZCELIB =-L$(PATH_LIB) -lzcelib
 
 
 INC_SOARLIB =-I$(PATH_SRC)/commlib/soarlib
-LIB_SOARLIB =-L$(PATH_LIB) -lsoarlib
+LIB_SOARLIB =-lsoarlib
 
 
 INC_DEV_INNER := $(INC_ZCELIB) $(INC_SOARLIB)
-#注意顺序，ZCELIB放后面，
-LIB_DEV_INNER := $(LIB_SOARLIB) $(LIB_ZCELIB) 
+LIB_DEV_INNER := $(LIB_ZCELIB) $(LIB_SOARLIB)
 
 #--------------------------------------------------------------------------------------------------------------------
 #如果你有特殊的需求，你可以在你的Makefile里面定义INCLDIRS 和 LIBARYS
 
-INCLDIRS := $(INC_DEV_INNER) $(INC_DEV_OUTER)
-LIBARYS  := $(LIB_DEV_INNER) $(LIB_DEV_OUTER) $(SYS_LIBARYS)
-
+INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
+LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
 CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
@@ -360,8 +372,8 @@ CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
 #-Winvalid-pch是检查pch文件是否有效的。但因为我们使用了多个gch的方案，暂时不用这个参数了。
 #主要可以帮助你定位bug
-COMPILE.c       := $(CC)  $(CFLAGS)  $(CPPFLAGS) -c
-COMPILE.cc      := $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+COMPILE.c       := $(CC)  $(CFLAGS)  $(CPPFLAGS) -c 
+COMPILE.cc      := $(CXX) $(CCFLAGS) $(CPPFLAGS) -c 
 
 PRECOMPILE.c    := $(CC)  $(CFLAGS)  $(CPPFLAGS) -x c++-header -c
 PRECOMPILE.cc   := $(CXX) $(CCFLAGS) $(CPPFLAGS) -x c++-header -c 

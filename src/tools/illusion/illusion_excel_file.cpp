@@ -1,4 +1,5 @@
-锘?#include "stdafx.h"
+
+#include "stdafx.h"
 #include "illusion_excel_file.h"
 
 #ifdef _DEBUG
@@ -26,9 +27,6 @@ Illusion_ExcelFile::~Illusion_ExcelFile()
 }
 
 
-<<<<<<< HEAD
-//鍒濆
-=======
 //初始化EXCEL文件，
 BOOL Illusion_ExcelFile::init_excel()
 {
@@ -498,4 +496,3 @@ void Illusion_ExcelFile::preload_sheet()
     ole_safe_array_.Attach(ret_ary);
 }
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
