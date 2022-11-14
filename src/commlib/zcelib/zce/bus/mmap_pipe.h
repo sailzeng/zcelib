@@ -74,8 +74,6 @@ public:
 
         for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
         {
-            bus_pipe::terminate(bus_pipe_pointer_[i]);
-
             bus_head_.size_of_pipe_[i] = 0;
             bus_head_.size_of_room_[i] = 0;
         }
@@ -117,7 +115,7 @@ public:
     inline int push_back_bus(size_t pipe_id, const bus_node* node)
     {
         //取出一个帧
-        bool bret = bus_pipe_pointer_[pipe_id]->push_end(node);
+        bool bret = bus_pipe_pointer_[pipe_id].push_end(node);
 
         //
         if (!bret)
@@ -127,8 +125,8 @@ public:
                     "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
                     pipe_id,
                     node->size_of_node_,
-                    bus_pipe_pointer_[pipe_id]->free(),
-                    bus_pipe_pointer_[pipe_id]->capacity()
+                    bus_pipe_pointer_[pipe_id].free(),
+                    bus_pipe_pointer_[pipe_id].capacity()
             );
             return -1;
         }
@@ -145,13 +143,13 @@ public:
     */
     inline int pop_front_bus(size_t pipe_id, bus_node* node)
     {
-        if (bus_pipe_pointer_[pipe_id]->empty())
+        if (bus_pipe_pointer_[pipe_id].empty())
         {
             return -1;
         }
 
         //取出一个帧
-        bus_pipe_pointer_[pipe_id]->pop_front(node);
+        bus_pipe_pointer_[pipe_id].pop_front(node);
 
         return 0;
     }
@@ -165,13 +163,13 @@ public:
     */
     inline int read_front_bus(size_t pipe_id, bus_node*& node)
     {
-        if (bus_pipe_pointer_[pipe_id]->empty())
+        if (bus_pipe_pointer_[pipe_id].empty())
         {
             return -1;
         }
 
         //取出一个帧
-        bus_pipe_pointer_[pipe_id]->read_front(node);
+        bus_pipe_pointer_[pipe_id].read_front(node);
 
         return 0;
     }
@@ -179,45 +177,47 @@ public:
     //抛弃一个帧
     inline int pop_front_bus(size_t pipe_id)
     {
-        if (bus_pipe_pointer_[pipe_id]->empty())
+        if (bus_pipe_pointer_[pipe_id].empty())
         {
             return -1;
         }
 
         //取出一个帧
-        bus_pipe_pointer_[pipe_id]->discard_frond();
+        bus_pipe_pointer_[pipe_id].discard_frond();
         return 0;
     }
 
     //取管道头的帧长
     inline int get_front_nodesize(size_t pipe_id, size_t& note_size)
     {
-        if (bus_pipe_pointer_[pipe_id]->empty())
+        if (bus_pipe_pointer_[pipe_id].empty())
         {
             return -1;
         }
 
-        note_size = bus_pipe_pointer_[pipe_id]->get_front_len();
+        note_size = bus_pipe_pointer_[pipe_id].get_front_len();
         return 0;
     }
 
     //管道为满
     inline bool is_full_bus(size_t pipe_id)
     {
-        return bus_pipe_pointer_[pipe_id]->full();
+        return bus_pipe_pointer_[pipe_id].full();
     }
 
     //管道是否为空
     inline bool is_empty_bus(size_t pipe_id)
     {
-        return bus_pipe_pointer_[pipe_id]->empty();
+        return bus_pipe_pointer_[pipe_id].empty();
     }
 
     //管道的空余空间,
-    inline void get_bus_freesize(size_t pipe_id, size_t& pipe_size, size_t& free)
+    inline void get_bus_freesize(size_t pipe_id,
+                                 size_t& pipe_size,
+                                 size_t& free)
     {
         pipe_size = bus_head_.size_of_pipe_[pipe_id];
-        free = bus_pipe_pointer_[pipe_id]->free();
+        free = bus_pipe_pointer_[pipe_id].free();
         return;
     }
     //-----------------------------------------------------------------
@@ -233,7 +233,7 @@ protected:
     BUS_PIPE_HEAD<MAX_PIPE>      bus_head_;
 
     ///N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    bus_pipe* bus_pipe_pointer_[MAX_PIPE];
+    bus_pipe bus_pipe_pointer_[MAX_PIPE];
 
     ///MMAP内存文件，
     zce::shm_mmap      mmap_file_;
@@ -422,14 +422,13 @@ int mmap_buspipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
         char* pt_pipe = static_cast<char*>(mmap_file_.addr()) + file_offset;
 
         //初始化内存
-        bus_pipe_pointer_[i] = bus_pipe::initialize(bus_head_.size_of_pipe_[i],
+        auto succ = bus_pipe_pointer_[i].initialize(bus_head_.size_of_pipe_[i],
                                                     max_frame_len,
                                                     pt_pipe,
-                                                    if_restore
-        );
+                                                    if_restore);
 
         //管道创建自己也会检查是否能恢复
-        if (bus_pipe_pointer_[i] == nullptr)
+        if (succ)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] mmap_buspipe::initialize pipe[%u] size[%u] room[%u] fail.",
                     i,
@@ -437,8 +436,6 @@ int mmap_buspipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
                     bus_head_.size_of_room_[i]);
             return -1;
         }
-
-        ZCE_ASSERT(bus_pipe_pointer_[i] != nullptr);
 
         size_t sz_room = bus_pipe::alloc_size(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;

@@ -54,16 +54,16 @@ template <class T> class shm_list;
 template <class T> class _shm_list_iterator
 {
 public:
-    typedef shmc_size_type size_type;
-    typedef ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
+    using size_type = shmc_size_type;
+    using difference_type = ptrdiff_t;
+    using value_type = T;
+    using pointer = T*;
+    using reference = T&;
     //迭代器萃取器所有的东东
-    typedef std::bidirectional_iterator_tag iterator_category;
+    using iterator_category = std::bidirectional_iterator_tag;
 private:
-    typedef _shm_list_iterator<T> iterator;
-    typedef shm_list<T> shm_list_t;
+    using iterator = _shm_list_iterator<T>;
+    using shm_list_t = shm_list<T>;
 public:
 
     /*!
@@ -175,16 +175,16 @@ class shm_list
     friend class _shm_list_iterator<T>;
 private:
     //定义自己
-    typedef shm_list<T> self;
+    using self = shm_list<T>;
 public:
-    typedef _shm_list_iterator<T> iterator;
-    typedef const iterator const_iterator;
-    typedef iterator::iterator_category iterator_category;
-    typedef T value_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef shmc_size_type size_type;
+    using iterator = _shm_list_iterator<T>;
+    using const_iterator = const iterator;
+    using iterator_category = iterator::iterator_category;
+    using value_type = T;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using size_type = shmc_size_type;
 
 protected:
     /*!

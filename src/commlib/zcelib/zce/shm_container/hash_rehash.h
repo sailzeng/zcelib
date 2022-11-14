@@ -82,13 +82,13 @@ private:
     //定义迭代器
     typedef _ht_rehash_iter < T, Key, Hash, Extract, KeyEqual, Washout > iterator;
 public:
-    typedef shmc_size_type size_type;
-    typedef ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
+    using size_type = shmc_size_type;
+    using difference_type = ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
     //迭代器萃取器所有的东东
-    typedef std::bidirectional_iterator_tag iterator_category;
+    using iterator_category = std::bidirectional_iterator_tag;
 public:
     _ht_rehash_iter() = default;
     ~_ht_rehash_iter() = default;
@@ -196,18 +196,18 @@ class shm_rehash_hashtable
     friend class _ht_rehash_iter <T, Key, Hash, Extract, KeyEqual, Washout >;
 private:
     //定义自己
-    typedef shm_rehash_hashtable <T, Key, Hash, Extract, KeyEqual, Washout > self;
+    using self = shm_rehash_hashtable <T, Key, Hash, Extract, KeyEqual, Washout >;
 public:
     //定义typedef
-    typedef T value_type;
-    typedef Key key_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef _ht_rehash_iter <T, Key, Hash, Extract, KeyEqual, Washout> iterator;
-    typedef const iterator const_iterator;
-    typedef iterator::iterator_category iterator_category;
-    typedef shmc_size_type size_type;
+    using value_type = T;
+    using key_type = Key;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using iterator = _ht_rehash_iter <T, Key, Hash, Extract, KeyEqual, Washout>;
+    using const_iterator = const iterator;
+    using iterator_category = iterator::iterator_category;
+    using size_type = shmc_size_type;
 
 protected:
 

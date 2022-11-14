@@ -29,15 +29,15 @@ private:
     typedef shm_vector<T> self;
 public:
 
-    typedef T value_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef shmc_size_type size_type;
-    typedef T* iterator;
-    typedef const iterator const_iterator;
+    using value_type = T;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using size_type = shmc_size_type;
+    using iterator = T*;
+    using const_iterator = const iterator;
     //随机访问的迭代器tag
-    typedef std::random_access_iterator_tag iterator_category;
+    using iterator_category = std::random_access_iterator_tag;
 
 protected:
 

@@ -14,10 +14,14 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
     char* tmproom = new char[szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    kfifo_32_t* pmmap =
-        kfifo_32_t::initialize(dequesize, 2048, tmproom, false);
+    kfifo_32_t pmmap;
+    auto succ = pmmap.initialize(dequesize, 2048, tmproom, false);
+    if (succ)
+    {
+        return -1;
+    }
 
-    if (pmmap->empty())
+    if (pmmap.empty())
     {
         std::cout << "empty" << std::endl;
     }
@@ -34,19 +38,19 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
     test_abc.data[251] = 0;
 
     auto* pnode = reinterpret_cast<kfifo_32_t::node*>(&test_abc);
-    pmmap->push_end(pnode);
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
-    pmmap->push_end(pnode);
-    pmmap->push_end(pnode);
-    pmmap->push_end(pnode);
+    pmmap.push_end(pnode);
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
+    pmmap.push_end(pnode);
+    pmmap.push_end(pnode);
+    pmmap.push_end(pnode);
 
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
 
     kfifo_32_t::node* pnode1 = kfifo_32_t::node::new_node(1024);
-    pmmap->pop_front(pnode1);
+    pmmap.pop_front(pnode1);
     std::cout << "pnode1 sz:" << (int)pnode1->size_of_node_ << std::endl;
     std::cout << "pnode1 data:" << pnode1->chunk_data_ << std::endl;
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
 
     struct def
     {
@@ -57,28 +61,28 @@ int test_dequechunk(int /*argc*/, char* /*argv*/[])
     memset(test_def.data, '2', 2);
     test_def.data[2] = 'B';
     test_def.data[3] = 0;
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
     pnode = reinterpret_cast<kfifo_32_t::node*>(&test_def);
-    pmmap->push_end(pnode);
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
-    pmmap->push_end(pnode);
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
+    pmmap.push_end(pnode);
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
+    pmmap.push_end(pnode);
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
 
-    pmmap->pop_front(pnode1);
-    pmmap->pop_front(pnode1);
-    pmmap->pop_front(pnode1);
+    pmmap.pop_front(pnode1);
+    pmmap.pop_front(pnode1);
+    pmmap.pop_front(pnode1);
 
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
     pnode1 = kfifo_32_t::node::new_node(1024);
-    pmmap->pop_front(pnode1);
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
-    pmmap->pop_front(pnode1);
+    pmmap.pop_front(pnode1);
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
+    pmmap.pop_front(pnode1);
     std::cout << "pnode1 sz:" << (int)pnode1->size_of_node_ << std::endl;
     std::cout << "pnode1 data:" << pnode1->chunk_data_ << std::endl;
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
 
-    std::cout << "freesize:" << (int)pmmap->free() << std::endl;
-    bool bsucc = pmmap->pop_front(pnode1);
+    std::cout << "freesize:" << (int)pmmap.free() << std::endl;
+    bool bsucc = pmmap.pop_front(pnode1);
     if (bsucc == false)
     {
         std::cout << "pop_frond return false!" << std::endl;

@@ -48,11 +48,11 @@ class _lordrings_iterator
     typedef _lordrings_iterator<T > iterator;
 public:
     //迭代器萃取器所有的东东
-    typedef ptrdiff_t difference_type;
+    using difference_type = ptrdiff_t;
     typedef T *pointer;
     typedef T &reference;
-    typedef T value_type;
-    typedef std::random_access_iterator_tag iterator_category;
+    using value_type = T;
+    using iterator_category = std::random_access_iterator_tag;
 
 public:
     ///构造函数
@@ -170,12 +170,12 @@ class lord_rings
 public:
     //定义迭代器
     typedef _lordrings_iterator<T> iterator;
-    typedef const iterator const_iterator;
-    typedef iterator::iterator_category iterator_category;
-    typedef T value_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
+    using const_iterator = const iterator;
+    using iterator_category = iterator::iterator_category ;
+    using value_type = T;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
     typedef std::size_t size_type;
 
     ///构造函数，后面必须调用,initialize

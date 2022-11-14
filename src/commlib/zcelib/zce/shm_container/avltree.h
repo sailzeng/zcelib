@@ -40,14 +40,13 @@ template < class T,
     class Compare >
 class _avl_tree_iterator
 {
-    typedef _avl_tree_iterator<T, Key, Extract, Compare> iterator;
-
-    typedef shm_avltree<T, Key, Extract, Compare> avl_tree_t;
-
+private:
+    using iterator = _avl_tree_iterator<T, Key, Extract, Compare>;
+    using avl_tree_t = shm_avltree<T, Key, Extract, Compare>;
+public:
     //迭代器萃取器所有的东东
-    typedef shmc_size_type size_type;
-    typedef std::bidirectional_iterator_tag iterator_category;
-
+    using size_type = shmc_size_type;
+    using iterator_category = std::bidirectional_iterator_tag;
 public:
     //构造函数
     _avl_tree_iterator(size_type seq, avl_tree_t* instance)
@@ -179,7 +178,6 @@ public:
                 serial_ = y;
                 y = (avl_tree_inst_->index_base_ + y)->parent_;
             }
-
             serial_ = y;
         }
     }
@@ -210,16 +208,16 @@ class shm_avltree
     friend class _avl_tree_iterator<T, Key, Extract, Compare>;
 private:
     //定义自己
-    typedef shm_avltree < T, Key, Extract, Compare > self;
+    using self = shm_avltree < T, Key, Extract, Compare >;
 public:
-    typedef T value_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef Key key_type;
-    typedef _avl_tree_iterator < T, Key, Extract, Compare > iterator;
-    typedef const iterator const_iterator;
-    typedef shmc_size_type size_type;
+    using value_type = T;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using key_type = Key;
+    using iterator = _avl_tree_iterator < T, Key, Extract, Compare >;
+    using const_iterator = const iterator;
+    using size_type = shmc_size_type;
 
 protected:
     ///AVL TREE的头部数据区
@@ -1498,31 +1496,8 @@ protected:
 };
 
 //用AVL Tree实现SET，不区分multiset和set，通过不通的insert自己区分
-template < class T,
-    class Compare = std::less<T> >
-class shm_avlset :
-    public shm_avltree< T, T, shm_identity<T>, Compare >
-{
-private:
-    typedef shm_avlset<T, Compare > self;
-    typedef shm_avltree<T, T, shm_identity<T>, Compare> avl_tree_t;
-    typedef shmc_size_type size_type;
-protected:
-    shm_avlset() = default;
-    shm_avlset(const shm_avlset& others) = delete;
-    const self& operator=(const self& others) = delete;
-public:
-    ~shm_avlset() = default;
-
-public:
-
-    static self*
-        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
-    {
-        return reinterpret_cast<self *>(
-            avl_tree_t::initialize(numnode, pmmap, if_restore));
-    }
-};
+template<class T, class Compare >
+using shm_avlset = zce::shm_avltree<T, T, shm_identity<T>, Compare>;
 
 //用AVL Tree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template < class Key,
@@ -1533,23 +1508,18 @@ class shm_avlmap :
     public shm_avltree< std::pair <Key, T>, Key, Extract, Compare  >
 {
 private:
-    typedef shm_avlmap<Key, T, Extract, Compare > self;
-    typedef shm_avltree<std::pair <Key, T>, Key, Extract, Compare> avl_tree_t;
-    typedef shmc_size_type size_type;
-protected:
-    shm_avlmap() = default;
-    shm_avlmap(const shm_avlmap& others) = delete;
-    const self& operator=(const self& others) = delete;
-public:
-    ~shm_avlmap() = default;
+    using self = shm_avlmap<Key, T, Extract, Compare >;
+    using avl_tree_t = shm_avltree<std::pair <Key, T>, Key, Extract, Compare>;
 
 public:
-    static self*
-        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
-    {
-        return reinterpret_cast <self *> (
-            avl_tree_t::initialize(numnode, pmmap, if_restore));
-    }
+    shm_avlmap() = default;
+    ~shm_avlmap() = default;
+
+    shm_avlmap(const shm_avlmap& others) = delete;
+    const self& operator=(const self& others) = delete;
+
+public:
+
     //[]操作符号有优点和缺点，谨慎使用
     T& operator[](const Key& key)
     {

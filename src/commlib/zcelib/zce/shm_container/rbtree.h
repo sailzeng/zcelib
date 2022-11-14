@@ -37,16 +37,16 @@ template<class T, class Key, class Extract, class Compare> class rb_tree;
 template <class T, class Key, class Extract, class Compare> class _rb_tree_iterator
 {
 public:
-    typedef shmc_size_type size_type;
-    typedef ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
+    using size_type = shmc_size_type;
+    using difference_type = ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
     //双向访问的迭代器萃取
-    typedef std::bidirectional_iterator_tag iterator_category;
+    using iterator_category = std::bidirectional_iterator_tag;
 protected:
-    typedef _rb_tree_iterator<T, Key, Extract, Compare> iterator;
-    typedef rb_tree<T, Key, Extract, Compare> shm_rb_tree_t;
+    using iterator = _rb_tree_iterator<T, Key, Extract, Compare>;
+    using shm_rb_tree_t = rb_tree<T, Key, Extract, Compare>;
 
 public:
     _rb_tree_iterator(size_type seq, shm_rb_tree_t* instance)
@@ -219,17 +219,17 @@ class rb_tree
     friend class _rb_tree_iterator<T, Key, Extract, Compare>;
     //定义typedef
 private:
-    typedef rb_tree<T, Key, Extract, Compare> self;
+    using self = rb_tree<T, Key, Extract, Compare>;
 public:
-    typedef _rb_tree_iterator<T, Key, Extract, Compare> iterator;
-    typedef const iterator const_iterator;
-    typedef iterator::iterator_category iterator_category;
-    typedef T value_type;
-    typedef Key key_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef shmc_size_type size_type;
+    using iterator = _rb_tree_iterator<T, Key, Extract, Compare>;
+    using const_iterator = const iterator;
+    using iterator_category = iterator::iterator_category;
+    using value_type = T;
+    using key_type = Key;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using size_type = shmc_size_type;
 
     //RB TREE的头部数据区
     class _shm_rb_tree_head
@@ -1261,28 +1261,8 @@ protected:
 };
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分
-template<class T, class Compare = std::less<T> >
-class shm_set :
-    public rb_tree< T, T, shm_identity<T>, Compare >
-{
-private:
-    typedef shm_set<T, Compare > self;
-    typedef rb_tree< T, T, shm_identity<T>, Compare> rb_tree_t;
-    typedef shmc_size_type size_type;
-protected:
-    shm_set() = default;
-    shm_set(const shm_set& others) = delete;
-    const self& operator=(const self& others) = delete;
-public:
-    ~shm_set() = default;
-public:
-    static shm_set*
-        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
-    {
-        return reinterpret_cast<self *>(
-            rb_tree_t::initialize(numnode, pmmap, if_restore));
-    }
-};
+template<class T, class Compare >
+using shm_set = zce::rb_tree<T, T, shm_identity<T>, Compare>;
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template<class Key, class T, class Extract = shm_select1st <std::pair <Key, T> >, class Compare = std::less<T>  >
@@ -1290,22 +1270,14 @@ class shm_map :
     public rb_tree< std::pair <Key, T>, Key, Extract, Compare  >
 {
 private:
-    typedef shm_map<Key, T, Extract, Compare > self;
-    typedef rb_tree< std::pair <Key, T>, Key, Extract, Compare> rb_tree_t;
-    typedef shmc_size_type size_type;
-protected:
+    using self = shm_map<Key, T, Extract, Compare >;
+    using rb_tree_t = rb_tree< std::pair <Key, T>, Key, Extract, Compare>;
+public:
     shm_map() = default;
+    ~shm_map() = default;
     shm_map(const shm_map& others) = delete;
     const self& operator=(const self& others) = delete;
-public:
-    ~shm_map() = default;
 
-    static shm_map*
-        initialize(size_type& numnode, char* pmmap, bool if_restore = false)
-    {
-        return reinterpret_cast<self *>(
-            rb_tree_t::initialize(numnode, pmmap, if_restore));
-    }
     //[]操作符号有优点和缺点，谨慎使用
     T& operator[](const Key& key)
     {

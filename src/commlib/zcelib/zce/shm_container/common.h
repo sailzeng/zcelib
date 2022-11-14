@@ -330,7 +330,7 @@ constexpr auto shm_select = [](auto&& x) noexcept -> decltype(auto)
 ///放到这儿是因为HASH—EXPIRE和LIST都用了这个结构,
 class _shm_list_index
 {
-    typedef shmc_size_type size_type;
+    using size_type = shmc_size_type ;
 public:
     _shm_list_index() = default;
     ~_shm_list_index() = default;

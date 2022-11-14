@@ -32,20 +32,20 @@ template < class T,
     class Washout >
 class _ht_expire_iterator
 {
-protected:
+private:
     //HASH TABLE的定义
-    typedef shm_expire_hashtable <T, Key, Hash, Extract, keyEqual, Washout> expire_hashtable_t;
+    using expire_hashtable_t = shm_expire_hashtable <T, Key, Hash, Extract, keyEqual, Washout>;
     //定义迭代器
-    typedef _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout> iterator;
+    using iterator = _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout>;
 
 public:
-    typedef shmc_size_type size_type;
-    typedef ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
+    using size_type = shmc_size_type;
+    using difference_type = ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
     //迭代器萃取器所有的东东
-    typedef std::bidirectional_iterator_tag iterator_category;
+    using iterator_category = std::bidirectional_iterator_tag;
 public:
     _ht_expire_iterator() = default;
     ~_ht_expire_iterator() = default;
@@ -176,18 +176,18 @@ class shm_expire_hashtable
     friend class _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout >;
 private:
     //定义自己
-    typedef shm_expire_hashtable < T, Key, Hash, Extract, keyEqual, Washout > self;
+    using self = shm_expire_hashtable < T, Key, Hash, Extract, keyEqual, Washout >;
 public:
     //定义迭代器
-    typedef _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout > iterator;
-    typedef const iterator const_iterator;
-    typedef iterator::iterator_category iterator_category;
-    typedef T value_type;
-    typedef Key key_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef shmc_size_type size_type;
+    using iterator = _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout >;
+    using const_iterator = const iterator;
+    using iterator_category = iterator::iterator_category;
+    using value_type = T;
+    using key_type = Key;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using size_type = shmc_size_type;
 
 public:
     //protected 构造函数，避免你用
@@ -1198,52 +1198,11 @@ protected:
     T* value_base_ = nullptr;
 };
 
-/************************************************************************************************************
-template           : shm_expire_hashset
-************************************************************************************************************/
-template < class T,
-    class Hash = std::hash<T>,
-    class keyEqual = std::equal_to<T>,
-    class Washout = default_washout<T> >
-class shm_expire_hashset :
-    public shm_expire_hashtable < T,
-    T,
-    Hash,
-    shm_identity<T>,
-    keyEqual,
-    Washout >
-{
-private:
-    typedef shm_expire_hashset<T, Hash, keyEqual, Washout> self;
-    typedef shm_expire_hashtable<T, T, Hash, shm_identity<T>, keyEqual, Washout> shm_expire_hashtable_t;
-    typedef shmc_size_type size_type;
-protected:
-    //如果在共享内存使用,没有new,所以统一用initialize 初始化
-    //这个函数,不给你用,就是不给你用
-    shm_expire_hashset() = default;
-    shm_expire_hashset(const shm_expire_hashset& others) = delete;
-    const self& operator=(const self& others) = delete;
-public:
-    ~shm_expire_hashset() = default;
+// 用shm_expire_hashtable构建一个shm_expire_hashset
+template<class T, class Hash, class keyEqual, class Washout >
+using shm_expire_hashset = zce::shm_expire_hashtable<T, T, Hash, shm_identity<T>, keyEqual, Washout>;
 
-public:
-    static self*
-        initialize(size_type num_node,
-                   size_type& real_num,
-                   char* mem_addr,
-                   bool if_restore = false)
-    {
-        return reinterpret_cast<self*>(shm_expire_hashtable_t::initialize(
-            num_node,
-            real_num,
-            mem_addr,
-            if_restore));
-    }
-};
-
-/************************************************************************************************************
-template           : shm_expire_hashmap
-************************************************************************************************************/
+// 用shm_expire_hashtable构建一个shm_expire_hashmap
 template < class Key,
     class T,
     class Hash = std::hash<Key>,
@@ -1259,9 +1218,10 @@ class shm_expire_hashmap :
     Washout >
 {
 private:
-    typedef shm_expire_hashmap<Key, T, Hash, Extract, keyEqual, Washout > self;
-    typedef shm_expire_hashtable< std::pair <Key, T>, Key, Hash, Extract, keyEqual, Washout > shm_expire_hashtable_t;
-    typedef shmc_size_type size_type;
+    using self = shm_expire_hashmap<Key, T, Hash, Extract, keyEqual, Washout >;
+    using shm_expire_hashtable_t = shm_expire_hashtable< std::pair <Key, T>, Key, Hash, Extract, keyEqual, Washout>;
+public:
+    using size_type = shmc_size_type;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
 
@@ -1272,20 +1232,8 @@ protected:
     const self& operator=(const self& others) = delete;
 public:
     ~shm_expire_hashmap() = default;
-
 public:
-    static self* initialize(size_type num_node,
-                            size_type& real_num,
-                            char* mem_addr,
-                            bool if_restore = false)
-    {
-        return reinterpret_cast<self*>(
-            shm_expire_hashtable_t::initialize(
-            num_node,
-            real_num,
-            mem_addr,
-            if_restore));
-    }
+
     //[]操作符号有优点和缺点，
     T& operator[](const Key& key)
     {

@@ -26,15 +26,15 @@ template <class T> class shm_array
 {
     //定义typedef
 private:
-    typedef shm_array<T> self;
+    using self = shm_array<T>;
 public:
-    typedef T* iterator;
-    typedef const iterator const_iterator;
-    typedef T value_type;
-    typedef shmc_size_type size_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
+    using iterator = T*;
+    using const_iterator = const iterator;
+    using value_type = T;
+    using size_type = shmc_size_type;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
 
 protected:
     ///共享内存vector头部数据区

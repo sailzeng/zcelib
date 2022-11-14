@@ -52,18 +52,18 @@ template <class T, class Key, class Hash, class Extract, class keyEqual>
 class _shm_ht_iterator
 {
 public:
-    typedef shmc_size_type size_type;
-    typedef ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
+    using size_type = shmc_size_type;
+    using difference_type = ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
     //迭代器萃取器所有的东东
-    typedef std::bidirectional_iterator_tag iterator_category;
+    using iterator_category = std::bidirectional_iterator_tag;
 private:
     ///迭代器定义，方便下面的使用
-    typedef _shm_ht_iterator<T, Key, Hash, Extract, keyEqual> iterator;
+    using iterator = _shm_ht_iterator<T, Key, Hash, Extract, keyEqual>;
     ///hash_type定义，方便使用
-    typedef shm_hashtable<T, Key, Hash, Extract, keyEqual> shm_hashtable_t;
+    using shm_hashtable_t = shm_hashtable<T, Key, Hash, Extract, keyEqual>;
 
 public:
     ///默认构造函数
@@ -169,18 +169,18 @@ class shm_hashtable
     friend class _shm_ht_iterator<T, Key, Hash, Extract, keyEqual>;
 private:
     //定义自己
-    typedef shm_hashtable<T, Key, Hash, Extract, keyEqual> self;
+    using self = shm_hashtable<T, Key, Hash, Extract, keyEqual>;
 public:
     //定义迭代器
-    typedef _shm_ht_iterator<T, Key, Hash, Extract, keyEqual> iterator;
-    typedef const iterator const_iterator;
-    typedef iterator::iterator_category iterator_category;
-    typedef T value_type;
-    typedef Key key_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* pointer;
-    typedef shmc_size_type size_type;
+    using iterator = _shm_ht_iterator<T, Key, Hash, Extract, keyEqual>;
+    using const_iterator = const iterator;
+    using iterator_category = iterator::iterator_category;
+    using value_type = T;
+    using key_type = Key;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using size_type = shmc_size_type;
 
 public:
     shm_hashtable() = default;
@@ -225,7 +225,7 @@ protected:
         size_type            sz_useindex_ = 0;
 
         ///FREE NODE的头指针
-        size_type             free_headnode_ = 0;
+        size_type            free_headnode_ = 0;
     };
 
     //分配一个NODE,将其从FREELIST中取出
@@ -868,37 +868,11 @@ protected:
     size_type* next_index_ = nullptr;
 };
 
-template<class T, class Hash = shm_hash<T>, class keyEqual = std::equal_to<T> >
-class shm_hashset :
-    public shm_hashtable< T, T, Hash, shm_identity<T>, keyEqual>
-{
-private:
-    typedef shm_hashset< T, Hash, keyEqual> self;
-    typedef shm_hashtable< T, T, Hash, shm_identity<T>, keyEqual> shm_hashtable_t;
-    typedef shmc_size_type size_type;
-protected:
-    shm_hashset() = default;
-    shm_hashset(const shm_hashset& others) = delete;
-    const self& operator=(const self& others) = delete;
-public:
-    ~shm_hashset() = default;
+// 用shm_hashtable构建一个shm_hashset
+template<class T, class Hash, class keyEqual, class Washout >
+using shm_hashset = zce::shm_hashtable<T, T, Hash, shm_identity<T>, keyEqual>;
 
-public:
-    static self*
-        initialize(size_type req_num,
-                   size_type& real_num,
-                   char* mem_addr,
-                   bool if_restore = false)
-    {
-        return reinterpret_cast<self *>(
-            shm_hashtable_t::initialize(req_num,
-            real_num,
-            mem_addr,
-            if_restore));
-    }
-};
-
-//HASH MAP
+// 用shm_hashtable构建一个shm_hashmap
 template<class Key, class T, class Hash = shm_hash<Key>,
     class keyEqual = std::equal_to<Key> >
 class shm_hashmap :
@@ -906,9 +880,9 @@ class shm_hashmap :
     shm_select1st <std::pair <Key, T> >, keyEqual  >
 {
 private:
-    typedef shm_hashmap< Key, T, Hash, keyEqual> self;
-    typedef shm_hashtable<T, Key, Hash, shm_select1st<std::pair <Key, T> >, keyEqual> shm_hashtable_t;
-    typedef shmc_size_type size_type;
+    using self = shm_hashmap< Key, T, Hash, keyEqual>;
+    using shm_hashtable_t = shm_hashtable<T, Key, Hash, shm_select1st<std::pair <Key, T> >, keyEqual>;
+    using size_type = shmc_size_type;
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
@@ -919,18 +893,7 @@ public:
     ~shm_hashmap() = default;
 
 public:
-    static self*
-        initialize(size_type req_num,
-                   size_type& real_num,
-                   char* mem_addr,
-                   bool if_restore = false)
-    {
-        return reinterpret_cast<self *>(
-            shm_hashtable_t::initialize(req_num,
-            real_num,
-            mem_addr,
-            if_restore));
-    }
+
     //[]操作符号有优点和缺点，
     T& operator[](const Key& key)
     {
@@ -942,7 +905,7 @@ template < class T, class Key, class Hash, class keyEqual >
 using static_hashtable = zce::shm_hashtable<T, Key, Hash, keyEqual>;
 
 template<class T, class Hash, class keyEqual >
-using static_hashset = zce::shm_hashset<T, Hash, keyEqual>;
+using static_hashset = zce::shm_hashtable<T, T, Hash, shm_identity<T>, keyEqual>;
 
 template<class Key, class T, class Hash, class keyEqual>
 using static_hashmap = zce::shm_hashmap<Key, T, Hash, keyEqual>;

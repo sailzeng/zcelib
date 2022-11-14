@@ -144,9 +144,9 @@ protected:
         std::atomic<size_t>  deque_end_ = 0;
     };
 
-protected:
+public:
 
-    ///构造函数，用protected保护，避免你用了
+    ///构造函数，避免你用了
     kfifo() = default;
     ///析构函数
     ~kfifo() = default;
@@ -186,22 +186,22 @@ public:
 
     /*!
     * @brief      根据参数初始化
-    * @return     shm_kfifo * 返回的初始化的指针，需要销毁，你用delete就可以，或者调用
+    * @return     bool
     * @param      size_of_deque    deque的长度，(就是 alloc_size 的参数，不是返回值呀)
     * @param      max_len_node     放入的note最大长度，我会帮你检查一下
     * @param      mmap_ptr         内存的指针，共享内存也可以，普通内存也可以
     * @param      if_restore       是否是进行恢复操作，如果是，会保留原来的数据，如果不是，会调用clear清理
     */
-    static kfifo* initialize(size_t size_of_deque,
-                             size_t max_len_node,
-                             char* mmap_ptr,
-                             bool if_restore = false,
-                             bool multi_thread = false)
+    bool initialize(size_t size_of_deque,
+                    size_t max_len_node,
+                    char* mmap_ptr,
+                    bool if_restore = false,
+                    bool multi_thread = false)
     {
         //必须大于间隔长度
         if (size_of_deque <= sizeof(T) + JUDGE_FULL_INTERVAL)
         {
-            return nullptr;
+            return false;
         }
 
         //
@@ -215,7 +215,7 @@ public:
                 || dequechunk_head->size_of_cycle_ != size_of_deque + JUDGE_FULL_INTERVAL
                 || dequechunk_head->max_len_node_ != max_len_node)
             {
-                return nullptr;
+                return false;
             }
         }
 
@@ -223,31 +223,20 @@ public:
         dequechunk_head->size_of_cycle_ = size_of_deque + JUDGE_FULL_INTERVAL;
         dequechunk_head->max_len_node_ = max_len_node;
 
-        kfifo* k = new kfifo();
-
         //得到空间大小
-        k->shm_base_ = mmap_ptr;
-        k->kfifo_head_ = dequechunk_head;
-        k->kfifo_data_ = mmap_ptr + sizeof(kfifo_head);
+        shm_base_ = mmap_ptr;
+        kfifo_head_ = dequechunk_head;
+        kfifo_data_ = mmap_ptr + sizeof(kfifo_head);
         if (if_restore == false)
         {
-            k->clear();
+            clear();
         }
+        //restore没事情可做
         if (multi_thread == false)
         {
-            k->spin_lock_ = std::move(std::make_unique<zce::spin_lock>());
+            spin_lock_ = std::move(std::make_unique<zce::spin_lock>());
         }
-        return k;
-    }
-
-    /*!
-    @brief      销毁初始化 initialize 得到的指针
-    @param      deque_ptr  销毁的指针，
-    */
-    static void terminate(kfifo* kfifo_ptr)
-    {
-        delete kfifo_ptr;
-        kfifo_ptr = nullptr;
+        return true;
     }
 
     ///清理成没有使用过的状态
