@@ -429,8 +429,8 @@ void zce::free_scandir_result(int list_number,
 }
 
 //用于目录排序比较
-int zce::scandir_namesort(const struct dirent** left, c
-                          onst struct dirent** right)
+int zce::scandir_namesort(const struct dirent** left,
+                          const struct dirent** right)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::strcmp((*(left))->d_name, (*(right))->d_name);
