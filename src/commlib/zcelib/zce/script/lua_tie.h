@@ -11,7 +11,7 @@
 *             终于有了机会折腾一下.
 *             目前支持LUA 5.1
 * @details
-*             LUA 5.1 有Luajit的支持，最后有人气
+*             LUA 5.1 有Luajit的支持，最有人气
 *             LUA 5.2 去掉了module
 *                     去掉了对LUA_GLOBALSINDEX的支持，使用lua_setglobal，lua_getglobal
 *                     去掉了LUA_ENVIRONINDEX and functions lua_getfenv/lua_setfenv

@@ -154,14 +154,103 @@ bool awaiter_aio::timer_out_ready()
 }
 
 //============================================================================
+//协程co_await打开某个文件，
+awaiter_aio co_fs_open(zce::aio::worker* worker,
+                       const char* path,
+                       int flags,
+                       int mode)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_OPEN;
+    aio_atom->path_ = path;
+    aio_atom->flags_ = flags;
+    aio_atom->mode_ = mode;
+    return awaiter_aio(worker, aio_atom);
+}
 
-//AIO 协程的co_await 函数
-awaiter_aio co_read_file(zce::aio::worker* worker,
-                         const char* path,
-                         char* read_bufs,
-                         size_t nbufs,
-                         size_t *result_len,
-                         ssize_t offset)
+// 协程co_await的AIO close 函数
+awaiter_aio co_fs_close(zce::aio::worker* worker,
+                        ZCE_HANDLE handle)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_CLOSE;
+    aio_atom->handle_ = handle;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//!协程co_await移动文件的当前位置,
+awaiter_aio co_fs_lseek(zce::aio::worker* worker,
+                        ZCE_HANDLE handle,
+                        off_t offset,
+                        int whence)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_LSEEK;
+    aio_atom->handle_ = handle;
+    aio_atom->offset_ = offset;
+    aio_atom->whence_ = whence;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//!协程co_await读取文件内容
+awaiter_aio co_fs_read(zce::aio::worker* worker,
+                       ZCE_HANDLE handle,
+                       char* read_bufs,
+                       size_t nbufs,
+                       size_t *result_len,
+                       ssize_t offset,
+                       int whence)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_READ;
+    aio_atom->handle_ = handle;
+    aio_atom->read_bufs_ = read_bufs;
+    aio_atom->bufs_len_ = nbufs;
+    aio_atom->result_len_ = result_len;
+    aio_atom->offset_ = offset;
+    aio_atom->whence_ = whence;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//!协程co_await写入文件内容
+awaiter_aio co_fs_write(zce::aio::worker* worker,
+                        ZCE_HANDLE handle,
+                        const char* write_bufs,
+                        size_t nbufs,
+                        size_t *result_len,
+                        ssize_t offset,
+                        int whence)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_WRITE;
+    aio_atom->handle_ = handle;
+    aio_atom->write_bufs_ = write_bufs;
+    aio_atom->bufs_len_ = nbufs;
+    aio_atom->result_len_ = result_len;
+    aio_atom->offset_ = offset;
+    aio_atom->whence_ = whence;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//!异步截断文件
+awaiter_aio co_fs_ftruncate(zce::aio::worker* worker,
+                            ZCE_HANDLE handle,
+                            size_t offset)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_FTRUNCATE;
+    aio_atom->handle_ = handle;
+    aio_atom->offset_ = offset;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//AIO 协程co_await的readfile 函数
+awaiter_aio co_fs_readfile(zce::aio::worker* worker,
+                           const char* path,
+                           char* read_bufs,
+                           size_t nbufs,
+                           size_t *result_len,
+                           ssize_t offset)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
     aio_atom->aio_type_ = AIO_TYPE::FS_READFILE;
@@ -173,12 +262,13 @@ awaiter_aio co_read_file(zce::aio::worker* worker,
     return awaiter_aio(worker, aio_atom);
 }
 
-awaiter_aio co_write_file(zce::aio::worker* worker,
-                          const char* path,
-                          const char* write_bufs,
-                          size_t nbufs,
-                          size_t *result_len,
-                          ssize_t offset)
+//! 协程的writefile
+awaiter_aio co_fs_writefile(zce::aio::worker* worker,
+                            const char* path,
+                            const char* write_bufs,
+                            size_t nbufs,
+                            size_t *result_len,
+                            ssize_t offset)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
     aio_atom->aio_type_ = AIO_TYPE::FS_WRITEFILE;
@@ -187,6 +277,40 @@ awaiter_aio co_write_file(zce::aio::worker* worker,
     aio_atom->bufs_len_ = nbufs;
     aio_atom->offset_ = offset;
     aio_atom->result_len_ = result_len;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//协程co_await异步删除文件
+awaiter_aio co_fs_unlink(zce::aio::worker* worker,
+                         const char* path)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_UNLINK;
+    aio_atom->path_ = path;
+    return awaiter_aio(worker, aio_atom);
+}
+
+// 协程co_await异步文件重命名
+awaiter_aio co_fs_rename(zce::aio::worker* worker,
+                         const char* path,
+                         const char* new_path)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_RENAME;
+    aio_atom->path_ = path;
+    aio_atom->new_path_ = new_path;
+    return awaiter_aio(worker, aio_atom);
+}
+
+//协程co_await异步获取stat
+awaiter_aio co_fs_stat(zce::aio::worker* worker,
+                       const char* path,
+                       struct stat* file_stat)
+{
+    auto aio_atom = worker->alloc_handle<FS_ATOM>();
+    aio_atom->aio_type_ = AIO_TYPE::FS_STAT;
+    aio_atom->path_ = path;
+    aio_atom->file_stat_ = file_stat;
     return awaiter_aio(worker, aio_atom);
 }
 

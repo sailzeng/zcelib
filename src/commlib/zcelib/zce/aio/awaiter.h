@@ -94,20 +94,73 @@ protected:
 //========================================================================================
 //AIO 协程的co_await 函数
 
+//!协程打开文件
+awaiter_aio co_fs_open(zce::aio::worker* worker,
+                       const char* path,
+                       int flags,
+                       int mode = ZCE_DEFAULT_FILE_PERMS);
+
+//!协程关闭文件，
+awaiter_aio co_fs_close(zce::aio::worker* worker,
+                        ZCE_HANDLE handle);
+
+//!协程co_await移动文件的当前位置,
+awaiter_aio co_fs_lseek(zce::aio::worker* worker,
+                        ZCE_HANDLE handle,
+                        off_t offset,
+                        int whence);
+
+//!协程co_await读取文件内容
+awaiter_aio co_fs_read(zce::aio::worker* worker,
+                       ZCE_HANDLE handle,
+                       char* read_bufs,
+                       size_t nbufs,
+                       size_t *result_len,
+                       ssize_t offset = 0,
+                       int whence = SEEK_CUR);
+
+//!协程co_await写入文件内容
+awaiter_aio co_fs_write(zce::aio::worker* worker,
+                        ZCE_HANDLE handle,
+                        const char* write_bufs,
+                        size_t nbufs,
+                        size_t *result_len,
+                        ssize_t offset = 0,
+                        int whence = SEEK_CUR);
+
+//!异步截断文件
+awaiter_aio co_fs_ftruncate(zce::aio::worker* worker,
+                            ZCE_HANDLE handle,
+                            size_t offset);
+
 //!协程co_await AIO读取文件
-awaiter_aio co_read_file(zce::aio::worker* worker,
-                         const char* path,
-                         char* read_bufs,
-                         size_t nbufs,
-                         size_t *result_len,
-                         ssize_t offset = 0);
+awaiter_aio co_fs_readfile(zce::aio::worker* worker,
+                           const char* path,
+                           char* read_bufs,
+                           size_t nbufs,
+                           size_t *result_len,
+                           ssize_t offset = 0);
 //!协程co_await AIO写入文件
-awaiter_aio co_write_file(zce::aio::worker* worker,
-                          const char* path,
-                          const char* write_bufs,
-                          size_t nbufs,
-                          size_t *result_len,
-                          ssize_t offset = 0);
+awaiter_aio co_fs_writefile(zce::aio::worker* worker,
+                            const char* path,
+                            const char* write_bufs,
+                            size_t nbufs,
+                            size_t *result_len,
+                            ssize_t offset = 0);
+
+//!协程co_await异步删除文件
+awaiter_aio co_fs_unlink(zce::aio::worker* worker,
+                         const char* path);
+
+//! 协程co_await异步文件重命名
+awaiter_aio co_fs_rename(zce::aio::worker* worker,
+                         const char* path,
+                         const char* new_path);
+
+//!协程co_await异步获取stat
+awaiter_aio co_fs_stat(zce::aio::worker* worker,
+                       const char* path,
+                       struct stat* file_stat);
 
 //========================================================================================
 //!协程co_await 链接数据

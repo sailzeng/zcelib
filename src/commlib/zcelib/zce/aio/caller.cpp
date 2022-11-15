@@ -169,12 +169,12 @@ int fs_ftruncate(zce::aio::worker* worker,
 }
 
 //!异步打开文件，读取文件内容，然后关闭
-int fs_read_file(zce::aio::worker* worker,
-                 const char* path,
-                 char* read_bufs,
-                 size_t nbufs,
-                 std::function<void(AIO_ATOM*)> call_back,
-                 ssize_t offset)
+int fs_readfile(zce::aio::worker* worker,
+                const char* path,
+                char* read_bufs,
+                size_t nbufs,
+                std::function<void(AIO_ATOM*)> call_back,
+                ssize_t offset)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
     aio_atom->aio_type_ = AIO_TYPE::FS_READFILE;
@@ -192,12 +192,12 @@ int fs_read_file(zce::aio::worker* worker,
 }
 
 //!异步打开文件，写入文件内容，然后关闭
-int fs_write_file(zce::aio::worker* worker,
-                  const char* path,
-                  const char* write_bufs,
-                  size_t nbufs,
-                  std::function<void(AIO_ATOM*)> call_back,
-                  ssize_t offset)
+int fs_writefile(zce::aio::worker* worker,
+                 const char* path,
+                 const char* write_bufs,
+                 size_t nbufs,
+                 std::function<void(AIO_ATOM*)> call_back,
+                 ssize_t offset)
 {
     auto aio_atom = worker->alloc_handle<FS_ATOM>();
     aio_atom->aio_type_ = AIO_TYPE::FS_WRITEFILE;
@@ -231,7 +231,7 @@ int fs_unlink(zce::aio::worker* worker,
     return 0;
 }
 
-//!
+//! 文件重命名
 int fs_rename(zce::aio::worker* worker,
               const char* path,
               const char* new_path,

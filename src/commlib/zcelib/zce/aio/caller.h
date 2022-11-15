@@ -236,20 +236,20 @@ int fs_ftruncate(zce::aio::worker* worker,
                  std::function<void(AIO_ATOM*)> call_back);
 
 //!异步打开文件，读取文件内容，然后关闭
-int fs_read_file(zce::aio::worker* worker,
+int fs_readfile(zce::aio::worker* worker,
+                const char* path,
+                char* read_bufs,
+                size_t nbufs,
+                std::function<void(AIO_ATOM*)> call_back,
+                ssize_t offset = 0);
+
+//!异步打开文件，写入文件内容，然后关闭
+int fs_writefile(zce::aio::worker* worker,
                  const char* path,
-                 char* read_bufs,
+                 const char* write_bufs,
                  size_t nbufs,
                  std::function<void(AIO_ATOM*)> call_back,
                  ssize_t offset = 0);
-
-//!异步打开文件，写入文件内容，然后关闭
-int fs_write_file(zce::aio::worker* worker,
-                  const char* path,
-                  const char* write_bufs,
-                  size_t nbufs,
-                  std::function<void(AIO_ATOM*)> call_back,
-                  ssize_t offset = 0);
 
 //!异步删除文件
 int fs_unlink(zce::aio::worker* worker,
@@ -550,7 +550,7 @@ int er_send(zce::aio::worker* worker,
             bool *alread_do,
             std::function<void(AIO_ATOM*)> call_back);
 
-//!事件模式等待进行recv数据，
+//!事件模式等待进行recvfrom数据，
 int er_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* rcv_buf,
@@ -560,6 +560,8 @@ int er_recvfrom(zce::aio::worker* worker,
                 socklen_t* from_len,
                 bool *alread_do,
                 std::function<void(AIO_ATOM*)> call_back);
+
+//!sendto,直接上手干活，无需等待，不做什么事件
 
 //=========================================================================
 //!
@@ -583,4 +585,7 @@ int tmo_schedule(zce::aio::worker* worker,
                  int *timer_id,
                  zce::time_value *trigger_tv_,
                  std::function<void(AIO_ATOM*)> call_back);
+
+int tmo_cancel(zce::aio::worker* worker,
+               int timer_id);
 }//namespace zce::aio
