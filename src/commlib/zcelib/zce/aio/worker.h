@@ -69,6 +69,9 @@ public:
                        int &time_id,
                        const zce::time_value& delay_time);
 
+    //!
+    int cacel_timer(int time_id);
+
     //! 处理应答
     void process_response(zce::time_value* wait_time,
                           size_t& num_rsp,

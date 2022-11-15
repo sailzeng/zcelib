@@ -155,10 +155,10 @@ int addr_in6::getaddrinfo(const char* nodename,
                           uint16_t port_number)
 {
     in6_addr_.sin6_port = ntohs(port_number);
-    return zce::getaddrinfo_to_addr(nodename,
-                                    nullptr,
-                                    sockaddr_ptr_,
-                                    sizeof(sockaddr_in6));
+    return zce::getaddrinfo_addr(nodename,
+                                 nullptr,
+                                 sockaddr_ptr_,
+                                 sizeof(sockaddr_in6));
 }
 
 //这个IPV6的地址是否是IPV4的地址映射的

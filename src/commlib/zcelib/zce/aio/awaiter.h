@@ -321,5 +321,6 @@ awaiter_aio  co_timeout_schedule(zce::aio::worker* worker,
                                  zce::time_value* trigger_tv);
 
 //!
-awaiter_aio  co_cancel_timeout(int timer_id);
+int  co_cancel_timeout(zce::aio::worker* worker,
+                       int timer_id);
 }

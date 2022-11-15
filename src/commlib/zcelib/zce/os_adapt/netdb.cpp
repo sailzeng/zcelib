@@ -357,10 +357,10 @@ int getaddrinfo_addrary(const char* hostname,
                                &ary_addr6);
 }
 
-int getaddrinfo_to_addr(const char* nodename,
-                        const char* service,
-                        sockaddr* addr,
-                        socklen_t addr_len)
+int getaddrinfo_addr(const char* nodename,
+                     const char* service,
+                     sockaddr* addr,
+                     socklen_t addr_len)
 {
     int ret = 0;
     addrinfo hints, * result = nullptr;

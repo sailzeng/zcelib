@@ -1091,4 +1091,10 @@ int tmo_schedule(zce::aio::worker* worker,
 
     return 0;
 }
+
+int tmo_cancel(zce::aio::worker* worker,
+               int timer_id)
+{
+    return worker->cacel_timer(timer_id);
+}
 }

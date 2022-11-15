@@ -217,12 +217,6 @@ bool dirent_selector_1(const dirent& entry,
                        bool select_dir,
                        bool select_file)
 {
-    if (prefix_name)
-    {
-    }
-    if (ext_name)
-    {
-    }
     //目录
     if (entry.d_type == DT_DIR && select_dir == false)
     {
@@ -252,7 +246,7 @@ bool dirent_selector_1(const dirent& entry,
         {
             return false;
         }
-    }
+        }
 
     //比较后缀文件
     if (ext_name)
@@ -268,9 +262,9 @@ bool dirent_selector_1(const dirent& entry,
         {
             return false;
         }
-    }
+        }
     return true;
-}
+    }
 
 //读取某个前缀，后缀的文件名称
 int readdir_direntary(const char* dirname,
@@ -495,7 +489,7 @@ const char* basename(const char* path_name,
     if (0 == temp)
     {
         return ::strncpy(file_name, path_name, buf_len);
-    }
+}
     else
     {
         return ::strncpy(file_name, temp + 1, buf_len);
@@ -532,7 +526,7 @@ const char* dirname(const char* path_name,
     if (temp == 0)
     {
         return ::strncpy(dir_name, ZCE_CURRENT_DIRECTORY_STR, buf_len);
-    }
+}
     else
     {
         size_t len = temp - path_name + 1;
@@ -541,7 +535,7 @@ const char* dirname(const char* path_name,
                          path_name,
                          len);
     }
-}
+    }
 
 //得到当前目录
 char* getcwd(char* buffer, int maxlen)

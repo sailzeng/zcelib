@@ -183,10 +183,10 @@ int getaddrinfo_addrary(const char* hostname,
 * @param[out] addr     返回的地址
 * @param[in]  addr_len 地址的长度
 */
-int getaddrinfo_to_addr(const char* hostname,
-                        const char* service,
-                        sockaddr* addr,
-                        socklen_t addr_len);
+int getaddrinfo_addr(const char* hostname,
+                     const char* service,
+                     sockaddr* addr,
+                     socklen_t addr_len);
 
 /*!
 * @brief      通过IP地址信息，反查域名.服务名，（可能）可以重入函数（要看底层实现），

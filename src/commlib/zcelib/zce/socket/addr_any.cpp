@@ -98,10 +98,10 @@ int addr_any::getaddrinfo(const char* node_name,
     if (sockaddr_ptr_->sa_family == AF_INET)
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
-        ret = zce::getaddrinfo_to_addr(node_name,
-                                       nullptr,
-                                       sockaddr_ptr_,
-                                       sizeof(::sockaddr_in));
+        ret = zce::getaddrinfo_addr(node_name,
+                                    nullptr,
+                                    sockaddr_ptr_,
+                                    sizeof(::sockaddr_in));
         if (ret != 0)
         {
             return ret;
@@ -113,10 +113,10 @@ int addr_any::getaddrinfo(const char* node_name,
     else if (sockaddr_ptr_->sa_family == AF_INET6)
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
-        ret = zce::getaddrinfo_to_addr(node_name,
-                                       nullptr,
-                                       sockaddr_ptr_,
-                                       sizeof(::sockaddr_in6));
+        ret = zce::getaddrinfo_addr(node_name,
+                                    nullptr,
+                                    sockaddr_ptr_,
+                                    sizeof(::sockaddr_in6));
         if (ret != 0)
         {
             return ret;
@@ -141,10 +141,10 @@ int addr_any::getaddrinfo(int family,
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in4_addr_);
         sockaddr_size_ = sizeof(::sockaddr_in);
-        ret = zce::getaddrinfo_to_addr(node_name,
-                                       nullptr,
-                                       sockaddr_ptr_,
-                                       sizeof(::sockaddr_in));
+        ret = zce::getaddrinfo_addr(node_name,
+                                    nullptr,
+                                    sockaddr_ptr_,
+                                    sizeof(::sockaddr_in));
         in4_addr_.sin_family = AF_INET;
         in4_addr_.sin_port = ntohs(port_number);
         if (ret != 0)
@@ -157,10 +157,10 @@ int addr_any::getaddrinfo(int family,
     {
         sockaddr_ptr_ = reinterpret_cast<sockaddr*>(&in6_addr_);
         sockaddr_size_ = sizeof(::sockaddr_in6);
-        ret = zce::getaddrinfo_to_addr(node_name,
-                                       nullptr,
-                                       sockaddr_ptr_,
-                                       sizeof(::sockaddr_in6));
+        ret = zce::getaddrinfo_addr(node_name,
+                                    nullptr,
+                                    sockaddr_ptr_,
+                                    sizeof(::sockaddr_in6));
         if (ret != 0)
         {
             return ret;

@@ -121,7 +121,7 @@ int readdir_direntary(const char* dirname,
                       bool select_file,
                       std::vector<dirent>& dirent_ary);
 
-///
+///* @param[in]  selector 选择器，
 int readdir_direntary(const char* dirname,
                       std::function<bool(const dirent&)> selector,
                       std::vector<dirent>& dirent_ary);

@@ -164,10 +164,10 @@ int addr_in::getaddrinfo(const char* nodename,
                          uint16_t port_number)
 {
     in4_addr_.sin_port = ntohs(port_number);
-    return zce::getaddrinfo_to_addr(nodename,
-                                    nullptr,
-                                    sockaddr_ptr_,
-                                    sizeof(addr_in));
+    return zce::getaddrinfo_addr(nodename,
+                                 nullptr,
+                                 sockaddr_ptr_,
+                                 sizeof(addr_in));
 }
 
 //返回addr_in

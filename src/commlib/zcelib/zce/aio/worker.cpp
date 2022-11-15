@@ -301,7 +301,7 @@ void worker::thread_host(zce::aio::HOST_ATOM* atom)
             atom->ary_addr6_);
         break;
     case AIO_TYPE::HOST_GETADDRINFO_ONE:
-        atom->result_ = zce::getaddrinfo_to_addr(
+        atom->result_ = zce::getaddrinfo_addr(
             atom->hostname_,
             atom->service_,
             atom->addr_,
@@ -420,6 +420,11 @@ int worker::schedule_timer(timeout_callback_t call_fun,
                                  time_id,
                                  delay_time);
     return 0;
+}
+
+int worker::cacel_timer(int time_id)
+{
+    return timer_queue_->cancel_timer(time_id);
 }
 
 int worker::reg_event(ZCE_HANDLE handle,

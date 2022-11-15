@@ -103,10 +103,10 @@ int ping::initialize(int svr_family,
     {
         assert(false);
     }
-    ret = getaddrinfo_to_addr(ping_svr,
-                              nullptr,
-                              (sockaddr*)&ping_addr_,
-                              addr_len_);
+    ret = getaddrinfo_addr(ping_svr,
+                           nullptr,
+                           (sockaddr*)&ping_addr_,
+                           addr_len_);
     if (ret != 0)
     {
         return ret;

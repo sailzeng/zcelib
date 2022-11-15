@@ -919,10 +919,10 @@ int connect_timeout(ZCE_SOCKET handle,
     //如果有Hostname，会进行DNS解析，得到连接的IP地址
     if (host_name)
     {
-        ret = zce::getaddrinfo_to_addr(host_name,
-                                       nullptr,
-                                       host_addr,
-                                       addr_len);
+        ret = zce::getaddrinfo_addr(host_name,
+                                    nullptr,
+                                    host_addr,
+                                    addr_len);
         if (ret != 0)
         {
             return ret;
@@ -2097,7 +2097,7 @@ int select(
         select_tv
     );
 #endif
-    }
+}
 
 //这个函数是为了方便平台代码编写写的一个函数，会利用不同平台的fd_set实现加快速度，
 //当然这样么有任何通用性，sorry，追求性能了。
