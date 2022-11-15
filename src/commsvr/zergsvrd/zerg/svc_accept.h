@@ -54,6 +54,6 @@ protected:
     zce::skt::addr_in       accept_bind_addr_;
 
     ///IP限制管理器
-    zerg::IPRestrict_Mgr*   ip_restrict_;
+    zerg::ip_restrict*   ip_restrict_;
 };
 }

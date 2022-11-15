@@ -150,6 +150,7 @@
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
+    <ClCompile Include="zce\os_adapt\netdb.cpp" />
     <ClCompile Include="zce\pool\chunk_pool.cpp" />
     <ClCompile Include="zce\rudp\client.cpp" />
     <ClCompile Include="zce\rudp\base.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="zce\net\dns_resolve.h" />
     <ClInclude Include="zce\net\ping.h" />
     <ClInclude Include="zce\net\sock5_client.h" />
+    <ClInclude Include="zce\os_adapt\netdb.h" />
     <ClInclude Include="zce\pool\chunk_pool.h" />
     <ClInclude Include="zce\pool\dataptr_pool.h" />
     <ClInclude Include="zce\pool\object_pool.h" />

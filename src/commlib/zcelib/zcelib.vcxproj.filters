@@ -359,6 +359,9 @@
     <ClCompile Include="zce\string\extend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\os_adapt\netdb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -830,6 +833,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\scope_guard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\os_adapt\netdb.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

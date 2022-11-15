@@ -12,7 +12,7 @@ public:
     //构造函数，默认初始化为in的地址，使用是要记得改变
     addr_any();
     //构造函数，根据family确定初始化的类型
-    addr_any(int family);
+    explicit addr_any(int family);
     //析构函数,内部有virtual函数
     virtual ~addr_any(void);
 

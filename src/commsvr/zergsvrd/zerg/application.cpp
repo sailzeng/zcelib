@@ -32,7 +32,7 @@ int zerg_app::app_start(int argc, const char* argv[])
         return ret;
     }
     zerg_config* config = reinterpret_cast<zerg_config*>(config_base_);
-    ret = zerg::IPRestrict_Mgr::instance()->get_config(config);
+    ret = zerg::ip_restrict::instance()->get_config(config);
     if (0 != ret)
     {
         return ret;
@@ -119,7 +119,7 @@ int zerg_app::app_exit()
     zerg::comm_manager::clear_inst();
 
     //清理单子
-    zerg::IPRestrict_Mgr::clear_inst();
+    zerg::ip_restrict::clear_inst();
 
     //最后调用基类的退出函数
     soar::app_buspipe::app_exit();

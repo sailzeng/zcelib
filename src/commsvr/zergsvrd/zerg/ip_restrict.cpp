@@ -5,21 +5,21 @@
 namespace zerg
 {
 //实例
-IPRestrict_Mgr* IPRestrict_Mgr::instance_ = nullptr;
+ip_restrict* ip_restrict::instance_ = nullptr;
 
 /****************************************************************************************************
 class  IPRestrict_Mgr 处理通讯中间的IP限制问题
 ****************************************************************************************************/
-IPRestrict_Mgr::IPRestrict_Mgr()
+ip_restrict::ip_restrict()
 {
 }
 //自己清理的类型，统一关闭在close_handle,这个地方不用关闭
-IPRestrict_Mgr::~IPRestrict_Mgr()
+ip_restrict::~ip_restrict()
 {
 }
 
 //从配置文件中得到相关的配置
-int IPRestrict_Mgr::get_config(const zerg_config* config)
+int ip_restrict::get_config(const zerg_config* config)
 {
     int ret = 0;
     //unsigned int tmp_uint= 0;
@@ -64,7 +64,7 @@ int IPRestrict_Mgr::get_config(const zerg_config* config)
     return 0;
 }
 
-int IPRestrict_Mgr::check_iprestrict(const zce::skt::addr_in& remoteaddress)
+int ip_restrict::check_iprestrict(const zce::skt::addr_in& remoteaddress)
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -99,19 +99,19 @@ int IPRestrict_Mgr::check_iprestrict(const zce::skt::addr_in& remoteaddress)
 }
 
 //单子实例函数
-IPRestrict_Mgr* IPRestrict_Mgr::instance()
+ip_restrict* ip_restrict::instance()
 {
     //如果没有初始化
     if (instance_ == nullptr)
     {
-        instance_ = new IPRestrict_Mgr();
+        instance_ = new ip_restrict();
     }
 
     return instance_;
 }
 
 //清理实例
-void IPRestrict_Mgr::clear_inst()
+void ip_restrict::clear_inst()
 {
     if (instance_)
     {

@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/os_adapt/netdb.h"
 #include "zce/socket/addr_base.h"
 #include "zce/socket/addr_in.h"
 #include "zce/socket/addr_in6.h"

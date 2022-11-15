@@ -94,6 +94,6 @@ protected:
     ///数据缓冲区，UDP只有一个
     zce::queue_buffer* dgram_databuf_;
     ///IP限制管理器
-    zerg::IPRestrict_Mgr* ip_restrict_;
+    zerg::ip_restrict* ip_restrict_;
 };
 }

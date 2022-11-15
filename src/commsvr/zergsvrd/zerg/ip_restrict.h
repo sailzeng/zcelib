@@ -9,14 +9,14 @@ namespace zerg
 *
 * @note
 */
-class IPRestrict_Mgr
+class ip_restrict
 {
     typedef std::unordered_set<unsigned int> Set_Of_IPAddress;
 
 protected:
     //
-    IPRestrict_Mgr();
-    ~IPRestrict_Mgr();
+    ip_restrict();
+    ~ip_restrict();
 
 public:
 
@@ -28,13 +28,13 @@ public:
 public:
 
     ///单子实例函数
-    static IPRestrict_Mgr* instance();
+    static ip_restrict* instance();
     ///清理单子实例
     static void clear_inst();
 
 protected:
     ///单子实例
-    static IPRestrict_Mgr* instance_;
+    static ip_restrict* instance_;
 
 protected:
 

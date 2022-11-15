@@ -26,7 +26,7 @@ svc_udp::svc_udp(const soar::SERVICES_ID& my_svcinfo,
     my_svc_info_(my_svcinfo),
     sessionkey_verify_(sessionkey_verify),
     dgram_databuf_(nullptr),
-    ip_restrict_(zerg::IPRestrict_Mgr::instance())
+    ip_restrict_(zerg::ip_restrict::instance())
 {
     //
     ary_udpsvc_handler_.push_back(this);
