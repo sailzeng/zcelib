@@ -1,12 +1,13 @@
 #include "zce/predefine.h"
+#include "zce/os_adapt/netdb.h"
 #include "zce/socket/addr_any.h"
 
 namespace zce::skt
 {
 //默认初始化位IPV4的地址
 addr_any::addr_any() :
-    zce::skt::addr_base(reinterpret_cast<::sockaddr*>(&in4_addr_),
-                        sizeof(::sockaddr_in))
+    addr_base(reinterpret_cast<::sockaddr*>(&in4_addr_),
+              sizeof(::sockaddr_in))
 {
     //把最长的清0
     ::memset(&in6_addr_, 0, sizeof(in6_addr_));
@@ -15,7 +16,9 @@ addr_any::addr_any() :
 }
 
 //构造函数，根据family确定初始化的类型
-addr_any::addr_any(int family)
+addr_any::addr_any(int family) :
+    addr_base(reinterpret_cast<::sockaddr*>(&in4_addr_),
+              sizeof(::sockaddr_in))
 {
     //把最长的清0
     ::memset(&in6_addr_, 0, sizeof(in6_addr_));

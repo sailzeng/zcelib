@@ -19,21 +19,21 @@ int test_host_name_fun(int, char*[])
 
     ary_addr_num = 16;
     ary_addr6_num = 16;
-    ret = zce::getaddrinfo_to_addrary("www.google.com.hk",
-                                      "80",
-                                      &ary_addr_num,
-                                      ary_sock_addr,
-                                      &ary_addr6_num,
-                                      ary_sock_addr6);
+    ret = zce::getaddrinfo_addrary("www.google.com.hk",
+                                   "80",
+                                   &ary_addr_num,
+                                   ary_sock_addr,
+                                   &ary_addr6_num,
+                                   ary_sock_addr6);
 
     ary_addr_num = 16;
     ary_addr6_num = 16;
-    ret = zce::getaddrinfo_to_addrary("www.google.com.hk",
-                                      "80",
-                                      &ary_addr_num,
-                                      ary_sock_addr,
-                                      &ary_addr6_num,
-                                      ary_sock_addr6);
+    ret = zce::getaddrinfo_addrary("www.google.com.hk",
+                                   "80",
+                                   &ary_addr_num,
+                                   ary_sock_addr,
+                                   &ary_addr6_num,
+                                   ary_sock_addr6);
 
     char domain_name[256 + 1];
     domain_name[256] = '\0';

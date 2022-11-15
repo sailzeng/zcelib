@@ -4,6 +4,7 @@
 #include "zce/os_adapt/dirent.h"
 #include "zce/os_adapt/socket.h"
 #include "zce/os_adapt/time.h"
+#include "zce/os_adapt/netdb.h"
 #include "zce/mysql/execute.h"
 #include "zce/aio/worker.h"
 
@@ -291,7 +292,7 @@ void worker::thread_host(zce::aio::HOST_ATOM* atom)
     switch (atom->aio_type_)
     {
     case AIO_TYPE::HOST_GETADDRINFO_ARY:
-        atom->result_ = zce::getaddrinfo_to_addrary(
+        atom->result_ = zce::getaddrinfo_addrary(
             atom->hostname_,
             atom->service_,
             atom->ary_addr_num_,

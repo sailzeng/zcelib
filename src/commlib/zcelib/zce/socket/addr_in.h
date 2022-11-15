@@ -17,7 +17,7 @@ public:
     addr_in(void);
 
     ///根据addr_in构造，
-    addr_in(const sockaddr_in* addr);
+    explicit addr_in(const sockaddr_in* addr);
 
     ///根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号初始化构造
     addr_in(const char* ip_addr_str,

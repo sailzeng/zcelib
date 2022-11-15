@@ -3,6 +3,7 @@
 #include "zce/time/time_value.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/socket.h"
+#include "zce/os_adapt/netdb.h"
 #include "zce/net/ping.h"
 
 //==============================================================================================

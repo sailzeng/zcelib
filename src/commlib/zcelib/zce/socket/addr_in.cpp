@@ -1,7 +1,8 @@
 #include "zce/predefine.h"
-#include "zce/os_adapt/socket.h"
-#include "zce/socket/addr_base.h"
 #include "zce/logger/logging.h"
+#include "zce/os_adapt/socket.h"
+#include "zce/os_adapt/netdb.h"
+#include "zce/socket/addr_base.h"
 #include "zce/socket/addr_in.h"
 
 namespace zce::skt

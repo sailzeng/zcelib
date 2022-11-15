@@ -11,36 +11,6 @@
 *
 * @note
 *
-* 祝酒歌
-* 美酒飘香啊歌声飞
-* 朋友啊请你干一杯请你干一杯
-* 胜利的十月永难忘
-* 杯中洒满幸福泪
-* 来来来来来
-* 十月里响春雷
-* 八亿神州举金杯
-* 舒心的酒啊浓又美
-* 千杯万盏也不醉
-* 手捧美酒啊望北京
-* 豪情啊胜过长江水胜过长江水
-* 祖国前程似锦绣
-* 万里山河尽朝晖
-* 来来来来来
-* 瞻未来无限美
-* 人人胸中春风吹
-* 美酒浇旺心头火
-* 燃得斗志永不退
-* 今天啊畅饮胜利酒
-* 明日啊上阵劲百倍
-* 为了实现四个现代化
-* 甘洒热血和汗水
-* 来来来来来
-* 征途上战鼓擂
-* 条条战线捷报飞
-* 待到理想化宏图
-* 再重摆美酒再相会
-* 来来来来来
-* 再重摆美酒再相会
 */
 
 #pragma once
@@ -372,6 +342,7 @@ struct HOST_ATOM :public AIO_ATOM
 //!host 函数，用于获取地址，AIO_Atom 可以转化为Host_Atom使用
 
 //!获得host对应的多个地址信息，包括IPV4，IPV6，类似getaddrinfo_ary，
+//! 参数信息请参考getaddrinfo_addrary，ary_addr是数组，只按规定长度传递
 int host_getaddr_ary(zce::aio::worker* worker,
                      const char* hostname,
                      const char* service,
@@ -582,5 +553,5 @@ int tmo_schedule(zce::aio::worker* worker,
                  const zce::time_value& timeout_tv,
                  int *timer_id,
                  zce::time_value *trigger_tv_,
-                 std::function<void(AIO_ATOM*)> call_back);
+                 std::function<void(TIMER_ATOM*)> call_back);
 }//namespace zce::aio

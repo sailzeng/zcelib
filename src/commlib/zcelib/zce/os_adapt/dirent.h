@@ -23,37 +23,39 @@
 struct dirent
 {
     /// inode number,WIN32下没用
-    ino_t          d_ino;
+    ino_t          d_ino = 0;
     /// offset to the next dirent,WIN32下没用
-    off_t          d_off;
+    off_t          d_off = 0;
 
     //长度记录
-    unsigned short d_reclen;
+    unsigned short d_reclen = 0;
 
     ///文件类型,LINUX在2.6.XX后面的版本才支持这个选项
-    unsigned char  d_type;
+    unsigned char  d_type = 0;
 
-    //文件名称
-    char           d_name[PATH_MAX + 1];
+    //!文件名称,
+    //!这个地方注意一下，d_name在POSIX里面是d_name[1],LINUX下是d_name[256]
+    //!所以必须用有些代码dirent 一定要 malloc
+    char           d_name[PATH_MAX];
 };
 
 ///readdir等函数操作的句柄
 struct DIR
 {
     ///目录的名字
-    char              directory_name_[PATH_MAX + 1];
+    char              directory_name_[PATH_MAX];
 
     ///当前处理的句柄
-    HANDLE            current_handle_;
+    HANDLE            current_handle_ = ZCE_INVALID_HANDLE;
 
     ///返回的dirent_结果
-    dirent* dirent_;
+    dirent* dirent_ = nullptr;
 
     /// The struct for intermediate results.
     WIN32_FIND_DATAA  fdata_;
 
     ///是否已经进行了第一次读取，Windows 下读取函数第一次和后面不一样
-    int               already_first_read_;
+    int               already_first_read_ = 0;
 };
 
 #endif
@@ -93,30 +95,32 @@ struct dirent* readdir(DIR* dir_handle);
 * @brief      read dir 可以重入版本，
 * @return     int ==0 标识成功
 * @param[in]  dir_handle 读取目录DIR句柄，
-* @param[out] entry 返回的读取到的目录项目,entry必须是外部已经分配好的变量
+* @param[out] entry  返回的读取到的目录项目,entry必须是外部已经分配好的变量
 * @param[out] result 读取到的目录项目指针，如果是已经读取到了最后，*result将被置为nullptr
 *                    如果读取到了项目，result指向entry
+* @note       这个函数已经不推荐使用了      https://blog.csdn.net/gqtcgq/article/details/50359124
 */
+[[deprecated]]
 int readdir_r(DIR* dir_handle,
               dirent* entry,
               dirent** result);
 
 /*!
 * @brief      根据前缀和后缀，读取目录下面的各种文件，
-* @return     int == 0 表示成功
-* @param[in]  dirname 读取目录
+* @return     int == 0    表示成功
+* @param[in]  dirname     读取目录
 * @param[in]  prefix_name 前缀名称，可以为nullptr，也可以就是某个文件名称
-* @param[in]  ext_name 后缀名称，可以为nullptr，为nullptr表示不检查
-* @param[in]  select_dir 选择目录
+* @param[in]  ext_name    后缀名称，可以为nullptr，为nullptr表示不检查
+* @param[in]  select_dir  选择目录
 * @param[in]  select_file 选择文件
-* @param[out] file_name_ary 文件名称队列
+* @param[out] dirent_ary  文件名称队列
 */
-int readdir_nameary(const char* dirname,
-                    const char* prefix_name,
-                    const char* ext_name,
-                    bool select_dir,
-                    bool select_file,
-                    std::vector<std::string>& file_name_ary);
+int readdir_direntary(const char* dirname,
+                      const char* prefix_name,
+                      const char* ext_name,
+                      bool select_dir,
+                      bool select_file,
+                      std::vector<dirent>& dirent_ary);
 
 /*!
 * @brief      扫描一个目录里面的目录项目，就一个函数，看上去简单，而且可以利用选择器等工具加快开发速度，但要注意结果释放
@@ -137,7 +141,8 @@ int scandir(const char* dirname,
 * @param      list_number scandir 函数的成功返回值,>0
 * @param      namelist    scandir 函数返回的namelist参数
 */
-void free_scandir_result(int list_number, struct dirent** namelist);
+void free_scandir_result(int list_number,
+                         struct dirent** namelist);
 
 /*!
 * @brief      用于目录排序的比较，就是那个comparator参数函数指针的参数
@@ -255,6 +260,6 @@ inline std::string& path_string_cat(std::string& dst,
     dst += src;
     return dst;
 }
-};
+}
 
 #endif //ZCE_LIB_OS_ADAPT_DIRENT_H_

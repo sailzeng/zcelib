@@ -11,7 +11,7 @@ svc_accept::svc_accept(const soar::SERVICES_ID& svcid,
     zce::event_handler(zce::reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
-    ip_restrict_(zerg::IPRestrict_Mgr::instance())
+    ip_restrict_(zerg::ip_restrict::instance())
 {
 }
 

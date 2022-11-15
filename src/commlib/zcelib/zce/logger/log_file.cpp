@@ -88,13 +88,13 @@ int log_file::initialize(int output_way,
             LOGFILE_DEVIDE::BY_TIME_NAME_MILLISECOND == div_log_file_)
         {
             int ret = 0;
-            std::vector<std::string> file_name_ary;
-            ret = readdir_nameary(log_file_dir_.c_str(),
-                                  log_file_prefix_.c_str(),
-                                  STR_LOG_POSTFIX,
-                                  false,
-                                  true,
-                                  file_name_ary);
+            std::vector<dirent> dirent_ary;
+            ret = readdir_direntary(log_file_dir_.c_str(),
+                                    log_file_prefix_.c_str(),
+                                    STR_LOG_POSTFIX,
+                                    false,
+                                    true,
+                                    dirent_ary);
             if (ret != 0)
             {
                 ZPRINT(RS_ALERT, "readdir %s | %s fail. err=%d|%s\n",
@@ -104,10 +104,13 @@ int log_file::initialize(int output_way,
                        strerror(errno));
             }
 
-            std::sort(file_name_ary.begin(), file_name_ary.end());
-            for (auto file_name : file_name_ary)
+            std::sort(dirent_ary.begin(),
+                      dirent_ary.end(),
+                      [](const dirent &a, const dirent & b) {
+                return (strcmp(a.d_name, b.d_name) < 0) ? true : false;  });
+            for (auto dirent_my : dirent_ary)
             {
-                std::string old_log = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + file_name;
+                std::string old_log = log_file_dir_ + ZCE_DIRECTORY_SEPARATOR_STR + dirent_my.d_name;
                 time_logfile_list_.push_back(old_log);
             }
         }

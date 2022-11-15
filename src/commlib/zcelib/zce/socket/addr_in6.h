@@ -15,15 +15,15 @@ public:
     addr_in6(void);
 
     //根据sockaddr_in构造，
-    addr_in6(const ::sockaddr_in6* addr);
+    explicit addr_in6(const ::sockaddr_in6* addr);
 
     //根据端口号，和IP地址字符串构造,ipv6_addr_str应该有<40个字节的长度
     addr_in6(const char* ipv6_addr_str,
              uint16_t port_number);
 
-    //根据端口号，和IP地址信息构造
+    //根据端口号，和IP地址值内部的s6_addr构造
     addr_in6(uint16_t port_number,
-             const char ipv6_addr_val[16]);
+             const char s6_addr_val[16]);
 
     //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
     addr_in6(const addr_in6& others);
@@ -40,10 +40,11 @@ public:
 
     //DNS相关函数，
     //取得IP地址相关的域名信息,调用的是getnameinfo
-    virtual int getnameinfo(char* host_name, size_t name_len) const override;
+    virtual int getnameinfo(char* host_name,
+                            size_t name_len) const override;
 
     ///设置端口好，
-    virtual inline void set_port(uint16_t)override;
+    virtual inline void set_port(uint16_t) override;
     ///取得端口号
     virtual inline uint16_t get_port(void) const override;
 
@@ -55,13 +56,13 @@ public:
     */
     int set(const char* ip_addr_str);
 
-    //根据地址名字，端口号设置
-    int set(const char ip_addr_str[],
+    //根据地址的字符串，端口号设置
+    int set(const char *ip_addr_str,
             uint16_t port_number);
 
-    //根据地址IP，端口号设置
+    //根据地址IP的值(内部字段s6_addr)，端口号设置
     int set(uint16_t port_number,
-            const char ipv6_addr_val[16]);
+            const char s6_addr_val[16]);
 
     ///检查端口号是否是一个安全端口
     bool check_safeport();
