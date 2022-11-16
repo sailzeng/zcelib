@@ -12,7 +12,7 @@ namespace zce
 //关闭的时候用_open_osfhandle转换回来就OK了，但其实发现土鳖的是我，
 //我完全错误理解了_open_osfhandle函数，这也可能解释了原来pascal原来遇到的问题close触发断言的问题。
 //一切都不是RP问题，还是写错了代码。感谢derrickhu和sasukeliu两位，一个隐藏的比较深刻的bug
-
+//_open_osfhandle其实是用生成一个int 描述符和HANDLE关联。
 //为什么要提供这个API呢，因为WINDOWS平台大部分都是采用HANDLE处理的
 
 ZCE_HANDLE open(const char* filename,

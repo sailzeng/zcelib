@@ -1,4 +1,5 @@
 #include "predefine.h"
+#include "zealot_main.h"
 
 #include <zce/util/random.h>
 #include <zce/rudp/client.h>
