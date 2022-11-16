@@ -496,9 +496,9 @@ public:
     * @return     std::size_t 返回值为需要分配的空间大小,因为空间可能超过4G(32bit),所以这儿用size_t
     * @param[in]  req_num     表示所需要的节点个数，
     * @param[out] real_num    最后实际分配的节点数量，注意返回的是实际INDEX长度,会增加一些
-    * @param[out] prime_ary   返回的，质数数组，用于多次REHASH处理
     * @param[in]  if_expire   是否使用超时处理
-    * @param[in]  row_prime_ary 质数数值的列数量,放在最后一个地方，是为了方便默认值
+    * @param[in]  row_prime_ary 质数数值的列数量,
+    * @param[out] prime_ary   返回的，质数数组，用于多次REHASH处理
     * @note       内存区的构成为 define区,index区,data区,返回所需要的长度,
     */
     static std::size_t alloc_size(size_type req_num,
