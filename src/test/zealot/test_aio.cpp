@@ -32,21 +32,21 @@ int test_aio1(int /*argc*/, char* /*argv*/[])
     {
         return ret;
     }
-    ret = zce::aio::fs_write_file(&aio_worker,
-                                  "E:/TEST001/aio_test_001.txt",
-                                  "01234567890123456789",
-                                  20,
-                                  on_writefile);
+    ret = zce::aio::fs_writefile(&aio_worker,
+                                 "E:/TEST001/aio_test_001.txt",
+                                 "01234567890123456789",
+                                 20,
+                                 on_writefile);
     if (ret)
     {
         return ret;
     }
     char read_buf[1024];
-    ret = zce::aio::fs_read_file(&aio_worker,
-                                 "E:/TEST001/aio_test_002.txt",
-                                 read_buf,
-                                 1024,
-                                 on_readfile);
+    ret = zce::aio::fs_readfile(&aio_worker,
+                                "E:/TEST001/aio_test_002.txt",
+                                read_buf,
+                                1024,
+                                on_readfile);
     if (ret)
     {
         return ret;
@@ -159,11 +159,11 @@ coro_ret<int> coroutine_aio(zce::aio::worker* worker)
     char read_buf[1024];
     std::cout << "Coroutine co_await co_read_file" << std::endl;
     size_t read_size = 0;
-    auto r_ret = co_await zce::aio::co_read_file(worker,
-                                                 "E:/TEST001/aio_test_002.txt",
-                                                 read_buf,
-                                                 1024,
-                                                 &read_size);
+    auto r_ret = co_await zce::aio::co_fs_readfile(worker,
+                                                   "E:/TEST001/aio_test_002.txt",
+                                                   read_buf,
+                                                   1024,
+                                                   &read_size);
 
     std::cout << "co_read_file,reuslt:" << r_ret << " count:" << read_size << std::endl;
     if (r_ret == 0 && read_size > 0)
@@ -178,11 +178,11 @@ coro_ret<int> coroutine_aio(zce::aio::worker* worker)
 
     size_t write_size = 0;
     std::cout << "Coroutine co_await co_write_file" << std::endl;
-    auto w_ret = co_await zce::aio::co_write_file(worker,
-                                                  "E:/TEST001/aio_test_001.txt",
-                                                  "01234567890123456789",
-                                                  20,
-                                                  &write_size);
+    auto w_ret = co_await zce::aio::co_fs_writefile(worker,
+                                                    "E:/TEST001/aio_test_001.txt",
+                                                    "01234567890123456789",
+                                                    20,
+                                                    &write_size);
     std::cout << "co_write_file,reuslt:" << w_ret << " count:" << write_size << std::endl;
     char tm_stt[128];
     size_t sz_buf = 0;

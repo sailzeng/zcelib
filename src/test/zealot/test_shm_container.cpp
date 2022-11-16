@@ -1518,7 +1518,8 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     size_t safe_node_number = req_node_number;
     size_t real_node_number = 0;
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
-    size_t safe_len_smem = SMEM_HASH_SAFE_INT::alloc_size(safe_node_number, real_node_number, prime_ary, false);
+    size_t safe_len_smem = SMEM_HASH_SAFE_INT::alloc_size(safe_node_number, real_node_number, false, zce::MAX_PRIMES_LIST_NUM,
+                                                          prime_ary);
 
     std::cout << "Hash safe table nobe nubmer " << real_node_number << std::endl;
     std::cout << "Hash safe table room size " << safe_len_smem << std::endl;
@@ -1646,7 +1647,11 @@ int test_hash_safe(int /*argc*/, char* /*argv*/[])
     size_t node_real_number = 0;
 
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
-    size_t len_smem = SMEM_HASH_SAFE_INT::alloc_size(node_number, node_real_number, prime_ary, false);
+    size_t len_smem = SMEM_HASH_SAFE_INT::alloc_size(node_number,
+                                                     node_real_number,
+                                                     false,
+                                                     zce::MAX_PRIMES_LIST_NUM,
+                                                     prime_ary);
 
     std::cout << "Hash table nobe nubmer " << node_real_number << std::endl;
     std::cout << "Hash table room size " << len_smem << std::endl;
@@ -1706,7 +1711,11 @@ int test_hash_safe2(int /*argc*/, char* /*argv*/[])
     size_t node_number = node_req_number;
     size_t node_real_number = 0;
     size_t prime_ary[zce::MAX_PRIMES_LIST_NUM];
-    size_t len_smem = SMEM_HASH_SAFE_INT::alloc_size(node_number, node_real_number, prime_ary, false);
+    size_t len_smem = SMEM_HASH_SAFE_INT::alloc_size(node_number,
+                                                     node_real_number,
+                                                     false,
+                                                     zce::MAX_PRIMES_LIST_NUM,
+                                                     prime_ary);
 
     std::cout << "Hash table nobe nubmer " << node_real_number << std::endl;
     std::cout << "Hash table room size " << len_smem << std::endl;

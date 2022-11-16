@@ -73,22 +73,12 @@ ssize_t read(ZCE_HANDLE file_handle,
 * @param      file_handle 文件句柄
 * @param      buf 读取的buffer参数
 * @param      count buffer的长度，WINDOWS下，长度无法突破32位的，当然有人需要写入4G数据吗？
-* @note       注意Windows下默认调用的WriteFile还是有缓冲的，我为了和POSIX统一，还是用了FlushFileBuffers
+* @note       注意Windows下默认调用的WriteFile还是有缓冲的，我为了和POSIX统一，
+*             还是用了FlushFileBuffers
 */
 ssize_t write(ZCE_HANDLE file_handle,
               const void* buf,
               size_t count) noexcept;
-
-/*!
-* @brief      在文件内进行偏移
-* @return     off_t 返回从起始位置到偏移位置的长度，返回-1表示错误
-* @param      file_handle
-* @param      offset 偏移量
-* @param      whence 根据参数whence来移动读写位置的位移数
-*/
-off_t lseek(ZCE_HANDLE file_handle,
-            off_t offset,
-            int whence) noexcept;
 
 //! @brief      读取文件，从起始文件的偏移量的文职开始读取
 //! @param      offset 偏移量，
@@ -110,7 +100,18 @@ int write(ZCE_HANDLE file_handle,
           off_t offset,
           int whence = SEEK_CUR) noexcept;
 
-//!
+/*!
+* @brief      在文件内进行偏移
+* @return     off_t 返回从起始位置到偏移位置的长度，返回-1表示错误
+* @param      file_handle
+* @param      offset 偏移量
+* @param      whence 根据参数whence来移动读写位置的位移数
+*/
+off_t lseek(ZCE_HANDLE file_handle,
+            off_t offset,
+            int whence) noexcept;
+
+//!在文件内进行偏移，返回ret标识结果，偏移作为参数返回
 int lseek(ZCE_HANDLE file_handle,
           off_t offset,
           int whence,

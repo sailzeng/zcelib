@@ -91,6 +91,9 @@
     <ClInclude Include="predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zealot_main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="makefile">

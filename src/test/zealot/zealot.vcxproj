@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="predefine.h" />
+    <ClInclude Include="zealot_main.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\bin\test.lua\lua_test_01.lua" />

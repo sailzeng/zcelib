@@ -592,9 +592,9 @@ public:
         size_type prime_ary[MAX_PRIMES_LIST_NUM];
         std::size_t sz_alloc = alloc_size(req_num,
                                           real_num,
-                                          prime_ary,
                                           if_expire,
-                                          row_prime_ary);
+                                          row_prime_ary,
+                                          prime_ary);
 
         return initialize_i(row_prime_ary,
                             prime_ary,

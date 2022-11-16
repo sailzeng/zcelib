@@ -1,4 +1,5 @@
 #include "predefine.h"
+#include "zealot_main.h"
 
 int test_bytes_ntoh(int /*argc*/, char* /*argv*/[])
 {
