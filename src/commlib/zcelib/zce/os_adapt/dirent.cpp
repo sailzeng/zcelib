@@ -3,6 +3,7 @@
 #include "zce/os_adapt/define.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/dirent.h"
+#include "zce/util/scope_guard.h"
 
 namespace zce
 {
@@ -186,8 +187,8 @@ int readdir_direntary(const char* dirname,
                       std::function<bool(const dirent&)> selector,
                       std::vector<dirent>& dirent_ary)
 {
-    DIR* dir_hdl = zce::opendir(dirname);
-    if (dir_hdl == nullptr)
+    auto_dir dir_hdl(zce::opendir(dirname));
+    if (dir_hdl.get() == nullptr)
     {
         return -1;
     }
@@ -196,7 +197,7 @@ int readdir_direntary(const char* dirname,
     dirent dir_tmp, * dir_p = nullptr;
     for (;;)
     {
-        dir_p = zce::readdir(dir_hdl);
+        dir_p = zce::readdir(dir_hdl.get());
         if (dir_p == nullptr)
         {
             break;
@@ -207,7 +208,6 @@ int readdir_direntary(const char* dirname,
             dirent_ary.push_back(dir_tmp);
         }
     }
-    zce::closedir(dir_hdl);
     return 0;
 }
 
@@ -215,12 +215,23 @@ bool dirent_selector_1(const dirent& entry,
                        const char* prefix_name,
                        const char* ext_name,
                        bool select_dir,
-                       bool select_file)
+                       bool select_file,
+                       bool skip_dotdir)
 {
     //目录
-    if (entry.d_type == DT_DIR && select_dir == false)
+    if (entry.d_type == DT_DIR)
     {
-        return false;
+        if (select_dir == false)
+        {
+            return false;
+        }
+        if (skip_dotdir)
+        {
+            if (strcmp(".", entry.d_name) == 0 || strcmp("..", entry.d_name) == 0)
+            {
+                return false;
+            }
+        }
     }
     //文件
     else if (entry.d_type == DT_REG && select_file == false)
@@ -246,7 +257,7 @@ bool dirent_selector_1(const dirent& entry,
         {
             return false;
         }
-        }
+    }
 
     //比较后缀文件
     if (ext_name)
@@ -262,9 +273,9 @@ bool dirent_selector_1(const dirent& entry,
         {
             return false;
         }
-        }
-    return true;
     }
+    return true;
+}
 
 //读取某个前缀，后缀的文件名称
 int readdir_direntary(const char* dirname,
@@ -272,17 +283,19 @@ int readdir_direntary(const char* dirname,
                       const char* ext_name,
                       bool select_dir,
                       bool select_file,
+                      bool skip_dotdir,
                       std::vector<dirent>& dirent_ary)
 {
-    std::function<bool(const dirent&)> func =
+    std::function<bool(const dirent&)> select_fun =
         std::bind(dirent_selector_1,
                   std::placeholders::_1,
                   prefix_name,
                   ext_name,
                   select_dir,
-                  select_file);
+                  select_file,
+                  skip_dotdir);
     return readdir_direntary(dirname,
-                             func,
+                             select_fun,
                              dirent_ary);
 }
 
@@ -299,10 +312,11 @@ int scandir(const char* dirname,
     //Windows下使用opendir等函数实现，
 #if defined (ZCE_OS_WINDOWS)
 
-    assert(namelist);
+    ZCE_ASSERT(namelist);
+    int once_nfiles = 0;
 
-    DIR* dir_handle = zce::opendir(dirname);
-    if (dir_handle == nullptr)
+    auto_dir dir_hdl(zce::opendir(dirname));
+    if (dir_hdl.get() == nullptr)
     {
         return -1;
     }
@@ -310,12 +324,10 @@ int scandir(const char* dirname,
     dirent** vector_dir = nullptr;
     dirent dir_tmp, * dir_p = nullptr;
 
-    int once_nfiles = 0;
-
     //找到合适的文件个数,
     for (;;)
     {
-        dir_p = zce::readdir(dir_handle);
+        dir_p = zce::readdir(dir_hdl.get());
         if (dir_p == nullptr)
         {
             break;
@@ -335,8 +347,6 @@ int scandir(const char* dirname,
         }
     }
 
-    //关闭DIR
-    zce::closedir(dir_handle);
     //如果一个合适的都没有，之间返回
     if (0 == once_nfiles)
     {
@@ -344,8 +354,8 @@ int scandir(const char* dirname,
     }
 
     //再打开一次使用
-    dir_handle = zce::opendir(dirname);
-    if (dir_handle == 0)
+    dir_hdl.reset(zce::opendir(dirname));
+    if (dir_hdl.get() == 0)
     {
         return -1;
     }
@@ -363,7 +373,7 @@ int scandir(const char* dirname,
     bool occur_fail = false;
     for (twice_nfiles = 0; twice_nfiles < once_nfiles; )
     {
-        dir_p = zce::readdir(dir_handle);
+        dir_p = zce::readdir(dir_hdl.get());
         //如果没有发现文件了
         if (dir_p == nullptr)
         {
@@ -388,9 +398,8 @@ int scandir(const char* dirname,
         }
         ++twice_nfiles;
     }
+    //dir_hdl 自动关闭DIR
 
-    //关闭DIR
-    zce::closedir(dir_handle);
     //如果出现了错误，释放分配的内存
     if (occur_fail && vector_dir)
     {
@@ -489,7 +498,7 @@ const char* basename(const char* path_name,
     if (0 == temp)
     {
         return ::strncpy(file_name, path_name, buf_len);
-}
+    }
     else
     {
         return ::strncpy(file_name, temp + 1, buf_len);
@@ -526,7 +535,7 @@ const char* dirname(const char* path_name,
     if (temp == 0)
     {
         return ::strncpy(dir_name, ZCE_CURRENT_DIRECTORY_STR, buf_len);
-}
+    }
     else
     {
         size_t len = temp - path_name + 1;
@@ -535,7 +544,7 @@ const char* dirname(const char* path_name,
                          path_name,
                          len);
     }
-    }
+}
 
 //得到当前目录
 char* getcwd(char* buffer, int maxlen)
@@ -619,5 +628,45 @@ int rmdir(const char* pathname)
 #elif defined (ZCE_OS_LINUX)
     return ::rmdir(pathname);
 #endif
+}
+
+//!递归删除目录
+int rmdir_recurse(const char* pathname)
+{
+    auto_dir dir_hdl(zce::opendir(pathname));
+    if (dir_hdl.get() == nullptr)
+    {
+        return -1;
+    }
+
+    //循环所有文件，检测扩展名称
+    dirent *dp = nullptr;
+    for (;;)
+    {
+        dp = zce::readdir(dir_hdl.get());
+        if (dp == nullptr)
+        {
+            break;
+        }
+        if (strcmp(".", dp->d_name) == 0 || strcmp("..", dp->d_name) == 0)
+        {
+            continue;
+        }
+        char del_obj[PATH_MAX];
+        path_str_splice(del_obj, PATH_MAX - 1, pathname, dp->d_name);
+        del_obj[PATH_MAX - 1] = '\0';
+        if (dp->d_type == DT_DIR)
+        {
+            // 递归调用
+            rmdir_recurse(del_obj);
+        }
+        //文件
+        else if (dp->d_type == DT_REG)
+        {
+            unlink(del_obj);
+        }
+    }
+    rmdir(pathname);
+    return 0;
 }
 }

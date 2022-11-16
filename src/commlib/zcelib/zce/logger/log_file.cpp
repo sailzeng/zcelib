@@ -94,6 +94,7 @@ int log_file::initialize(int output_way,
                                     STR_LOG_POSTFIX,
                                     false,
                                     true,
+                                    true,
                                     dirent_ary);
             if (ret != 0)
             {

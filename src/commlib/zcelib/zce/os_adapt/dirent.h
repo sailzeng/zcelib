@@ -112,6 +112,7 @@ int readdir_r(DIR* dir_handle,
 * @param[in]  ext_name    后缀名称，可以为nullptr，为nullptr表示不检查
 * @param[in]  select_dir  选择目录
 * @param[in]  select_file 选择文件
+* @param[in]  skip_dotdir 不选择. 或者 .. 文件
 * @param[out] dirent_ary  文件名称队列
 */
 int readdir_direntary(const char* dirname,
@@ -119,6 +120,7 @@ int readdir_direntary(const char* dirname,
                       const char* ext_name,
                       bool select_dir,
                       bool select_file,
+                      bool skip_dotdir,
                       std::vector<dirent>& dirent_ary);
 
 ///* @param[in]  selector 选择器，
@@ -220,29 +222,44 @@ int mkdir_recurse(const char* pathname,
 */
 int rmdir(const char* pathname);
 
-/*!
-* @brief      路径拼接
-* @return     const char*
-* @param      dst
-* @param      src
-* @note
-*/
-inline const char* path_str_cat(char* dst,
-                                const char* src)
+//!递归删除目录,危险函数，
+int rmdir_recurse(const char* pathname);
+
+//路径拼接
+inline const char* path_str_splice(char* dst,
+                                   size_t dst_len,
+                                   const char* path1,
+                                   const char* path2)
 {
-    size_t dst_len = ::strlen(dst);
-    if (dst_len > 0)
+    size_t path1_len = strlen(path1);
+    if (path1_len > 0)
     {
-        if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+        if (ZCE_IS_DIRECTORY_SEPARATOR(path1[path1_len - 1]) == false)
         {
-            ::strcat(dst, ZCE_DIRECTORY_SEPARATOR_STR);
+            snprintf(dst,
+                     dst_len,
+                     "%s%s%s",
+                     path1,
+                     ZCE_DIRECTORY_SEPARATOR_STR,
+                     path2);
+        }
+        else
+        {
+            snprintf(dst,
+                     dst_len,
+                     "%s%s",
+                     path1,
+                     path2);
         }
     }
     else
     {
-        ::strcat(dst, ZCE_CURRENT_DIRECTORY_STR);
+        snprintf(dst,
+                 dst_len,
+                 "%s%s",
+                 ZCE_CURRENT_DIRECTORY_STR,
+                 path2);
     }
-    ::strcat(dst, src);
     return dst;
 }
 

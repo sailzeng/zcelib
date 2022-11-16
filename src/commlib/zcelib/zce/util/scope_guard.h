@@ -2,6 +2,7 @@
 
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/socket.h"
+#include "zce/os_adapt/dirent.h"
 
 namespace zce
 {
@@ -102,6 +103,14 @@ public:
     {
     }
 
+    inline scope_guard_t(DIR* value,
+                         decltype(zce::closedir)* exister = zce::closedir) :
+        value_(value),
+        exister_(exister),
+        dismissed_(false)
+    {
+    }
+
     //不能写::FILE *,FILE *,冲突。
 
     inline ~scope_guard_t() noexcept
@@ -110,6 +119,15 @@ public:
         {
             exister_(value_);
         }
+    }
+
+    inline void reset(const T& value) noexcept
+    {
+        if (!dismissed_)
+        {
+            exister_(value_);
+        }
+        value_ = value;
     }
 
     T get()
@@ -143,6 +161,9 @@ scope_guard_t<FILE*, decltype(::fclose)*>;
 
 using auto_stdfile =
 scope_guard_t<std::FILE *, decltype(std::fclose)*>;
+
+using auto_dir =
+scope_guard_t<DIR *, decltype(zce::closedir)*>;
 
 //! 下面使用unique_ptr怎么写的教程，
 //! 这样使用 zce::auto_file fd(::fopen("xxx"),::fclose);,::fclose必须写
