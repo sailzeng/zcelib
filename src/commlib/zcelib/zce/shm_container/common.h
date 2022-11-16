@@ -79,22 +79,24 @@
 *             放入这些容器，最好还是POD结构，或者没有虚表的结构，注意一下几点
 *             1.虚表的指针不可能在多进程间共享。
 *             2.最好不要有指针数据，除非你自己能确保他们安全，
-*             3.如果非要使用虚表，所有的数据在恢复的时候，最好重新new一次，恢复虚表指针，
+*             3.如果非要使用虚表，所有的数据在恢复的时候，目前的restore会自动placementnew
+*             一次，尝试恢复虚表指针，如果你还有其他恢复操作，请自己写。
 *
 *             第二点：
 *             zcelib共享内存封装接口参数bool if_restore 的解释说明。
 *             本来以为是一个比较简单的问题，但昨天佐助来问相关问题，我还是解释一下，
 *             bool if_restore == false
 *             表示不进行恢复操作，彻底重建
-*             对于几个共享内存的类，如果文件已经存在会将共享内存文件TRUNC（晴空），然后进行
+*             对于几个共享内存的类，如果文件已经存在会将共享内存文件TRUNC（清空），然后进行
 *             共享内存重建。如果是对于几个使用（共享）内存的模版的类，会重新对内存的数据进行
 *             初始化操作。
 *             bool if_restore == true
 *             表示进行恢复操作，保持原来共享内存（包括映射文件），内存内部数据的现状。
 *             对于几个共享内存的类，如果文件已经存在，不会对文件进行任何操作。（当然还是会进行
 *             大小的检查的。如果检查失败会返回失败）。当然如果文件不存在，会重新创建文件。
-*             如果是几个使用（共享）内存的模版类，不会对内存进行任何操作，知会检查各种头部数据
-*             是否一致（检查失败也会返回错误）。
+*             如果是几个使用（共享）内存的模版类，不会对数据进行任何改变，只会检查各种头部数据
+*             是否一致（检查失败也会返回错误）,同时对已经放入的对象进行placement new。因为
+*             有的对象有虚指针。
 *             通过上面的描述大家应该明白了。
 *             大部分时候，你都可以用 if_restore == true 这种方式（坏消息是我把很多函数的默
 *             认参数搞成了false，为了安全）。
@@ -108,6 +110,8 @@
 *             我本来考虑在某些情况下，用uint32_t代替size_t，但我自己思考了一下，如果用100万
 *             的节点，如果采用hashtable,浪费的空间也就是12个字节*100万，=12M，算了，不考虑
 *             那么多了.用64位的系统不就是为了大内存吗？
+*             后面为了统一，采用了一个shmc_size_type的定义，其他用size_type定义了。如果有
+*             特殊需要可以将shmc_size_type定义为uint32_t;
 *
 */
 
@@ -133,10 +137,14 @@ const shmc_size_type SHMC_INVALID_POINT = static_cast<shmc_size_type>(-1);
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
 //STL采用的方式一个查表的方式
 //我原来的算法就是采用STL的算法改进的，
-void hash_prime(const size_t node_num, size_t& real_num);
+void hash_prime(shmc_size_type node_num,
+                shmc_size_type& real_num);
 
 //返回大于N的一个质数,,
-void hash_prime_ary(const size_t node_num, size_t& real_num, size_t row, size_t prime_ary[]);
+void hash_prime_ary(shmc_size_type node_num,
+                    shmc_size_type& real_num,
+                    std::size_t row,
+                    shmc_size_type prime_ary[]);
 
 #define SHM_INDEX_T_LENGTH 32
 
@@ -330,7 +338,7 @@ constexpr auto shm_select = [](auto&& x) noexcept -> decltype(auto)
 ///放到这儿是因为HASH—EXPIRE和LIST都用了这个结构,
 class _shm_list_index
 {
-    using size_type = shmc_size_type ;
+    using size_type = shmc_size_type;
 public:
     _shm_list_index() = default;
     ~_shm_list_index() = default;

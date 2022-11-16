@@ -503,9 +503,9 @@ public:
     */
     static std::size_t alloc_size(size_type req_num,
                                   size_type& real_num,
-                                  size_type prime_ary[],
                                   bool if_expire,
-                                  size_type row_prime_ary = DEF_PRIMES_LIST_NUM)
+                                  std::size_t row_prime_ary,
+                                  size_type prime_ary[])
     {
         ZCE_ASSERT(row_prime_ary >= MIN_PRIMES_LIST_NUM && row_prime_ary <= MAX_PRIMES_LIST_NUM);
 
@@ -532,7 +532,7 @@ public:
     * @param[out] real_num     返回参数,总节点个数,
     * @note
     */
-    static std::size_t alloc_size(size_type row_prime_ary,
+    static std::size_t alloc_size(std::size_t row_prime_ary,
                                   const size_type prime_ary[],
                                   bool if_expire,
                                   size_type& real_num)

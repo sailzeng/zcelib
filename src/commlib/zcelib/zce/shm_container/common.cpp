@@ -58,7 +58,8 @@ static size_t zoomin_nodenum(size_t node_num)
 }
 
 //
-void hash_prime(const size_t node_num, size_t& real_num)
+void hash_prime(shmc_size_type node_num,
+                shmc_size_type& real_num)
 {
     real_num = 0;
     //做一定的放大处理
@@ -68,7 +69,10 @@ void hash_prime(const size_t node_num, size_t& real_num)
 }
 
 //
-void hash_prime_ary(const size_t num_node, size_t& real_num, size_t row, size_t prime_ary[])
+void hash_prime_ary(shmc_size_type num_node,
+                    shmc_size_type& real_num,
+                    std::size_t row,
+                    shmc_size_type prime_ary[])
 {
     //做一定的放大处理
     size_t zoomout_num = zce::zoomin_nodenum(num_node);
