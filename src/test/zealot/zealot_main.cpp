@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     ZCE_UNUSED_ARG(argv);
 
     zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
-                                            "E:\\My.Log\\TEST_2",
+                                            "D:\\My.Log\\TEST_2",
                                             zce::log_file::DEFAULT_LOG_SIZE,
                                             true,
                                             false,

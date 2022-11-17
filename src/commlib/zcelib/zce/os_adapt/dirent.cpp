@@ -184,7 +184,7 @@ int readdir_r(DIR* dir_handle,
 }
 
 int readdir_direntary(const char* dirname,
-                      std::function<bool(const dirent&)> selector,
+                      std::function<bool(const dirent&)> *selector,
                       std::vector<dirent>& dirent_ary)
 {
     auto_dir dir_hdl(zce::opendir(dirname));
@@ -194,7 +194,7 @@ int readdir_direntary(const char* dirname,
     }
 
     //循环所有文件，检测扩展名称
-    dirent dir_tmp, * dir_p = nullptr;
+    dirent * dir_p = nullptr;
     for (;;)
     {
         dir_p = zce::readdir(dir_hdl.get());
@@ -202,10 +202,17 @@ int readdir_direntary(const char* dirname,
         {
             break;
         }
-        dir_tmp = *dir_p;
-        if (true == selector(dir_tmp))
+        if (selector)
         {
-            dirent_ary.push_back(dir_tmp);
+            if (true == (*selector)(*dir_p))
+            {
+                dirent_ary.push_back(*dir_p);
+            }
+        }
+        //没有选择器，
+        else
+        {
+            dirent_ary.push_back(*dir_p);
         }
     }
     return 0;
@@ -295,7 +302,7 @@ int readdir_direntary(const char* dirname,
                   select_file,
                   skip_dotdir);
     return readdir_direntary(dirname,
-                             select_fun,
+                             &select_fun,
                              dirent_ary);
 }
 
@@ -322,7 +329,7 @@ int scandir(const char* dirname,
     }
 
     dirent** vector_dir = nullptr;
-    dirent dir_tmp, * dir_p = nullptr;
+    dirent* dir_p = nullptr;
 
     //找到合适的文件个数,
     for (;;)
@@ -332,7 +339,6 @@ int scandir(const char* dirname,
         {
             break;
         }
-        dir_tmp = *dir_p;
         //如果有选择器
         if (selector)
         {
@@ -379,7 +385,6 @@ int scandir(const char* dirname,
         {
             break;
         }
-        dir_tmp = *dir_p;
         //如果有选择器函数指针，而且能选上
         if (selector && (*selector)(dir_p) == 0)
         {
@@ -389,7 +394,7 @@ int scandir(const char* dirname,
         vector_dir[twice_nfiles] = (dirent*)::malloc(sizeof(dirent));
         if (vector_dir[twice_nfiles])
         {
-            ::memcpy(vector_dir[twice_nfiles], &dir_tmp, sizeof(dirent));
+            ::memcpy(vector_dir[twice_nfiles], dir_p, sizeof(dirent));
         }
         else
         {

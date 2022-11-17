@@ -104,6 +104,11 @@ int readdir_r(DIR* dir_handle,
               dirent* entry,
               dirent** result);
 
+///* @param[in]  selector 选择器，
+int readdir_direntary(const char* dirname,
+                      std::function<bool(const dirent&)> *selector,
+                      std::vector<dirent>& dirent_ary);
+
 /*!
 * @brief      根据前缀和后缀，读取目录下面的各种文件，
 * @return     int == 0    表示成功
@@ -121,11 +126,6 @@ int readdir_direntary(const char* dirname,
                       bool select_dir,
                       bool select_file,
                       bool skip_dotdir,
-                      std::vector<dirent>& dirent_ary);
-
-///* @param[in]  selector 选择器，
-int readdir_direntary(const char* dirname,
-                      std::function<bool(const dirent&)> selector,
                       std::vector<dirent>& dirent_ary);
 
 /*!

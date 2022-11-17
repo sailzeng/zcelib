@@ -78,16 +78,39 @@ int test_osadapt_perf(int  /*argc*/, char* /*argv*/[])
 
 #include "predefine.h"
 
-//选取所有的.h文件
+//选取所有的.h .c .cpp .hpp .cxx文件
 int hfile_selector(const struct dirent* dir_info)
 {
+    if (dir_info->d_type != DT_REG)
+    {
+        return 0;
+    }
     size_t name_len = strlen(dir_info->d_name);
     if (name_len <= 2)
     {
         return 0;
     }
-    if ((dir_info->d_name[name_len - 1] == 'h' || dir_info->d_name[name_len - 1] == 'H')
-        && dir_info->d_name[name_len - 2] == '.')
+    if (zce::strcasecmp(dir_info->d_name + name_len - 2, ".h") == 0)
+    {
+        return 1;
+    }
+    if (zce::strcasecmp(dir_info->d_name + name_len - 2, ".c") == 0)
+    {
+        return 1;
+    }
+    if (name_len <= 4)
+    {
+        return 0;
+    }
+    if (zce::strcasecmp(dir_info->d_name + name_len - 4, ".cpp") == 0)
+    {
+        return 1;
+    }
+    if (zce::strcasecmp(dir_info->d_name + name_len - 4, ".cxx") == 0)
+    {
+        return 1;
+    }
+    if (zce::strcasecmp(dir_info->d_name + name_len - 4, ".hpp") == 0)
     {
         return 1;
     }
@@ -96,9 +119,10 @@ int hfile_selector(const struct dirent* dir_info)
 
 int test_scandir(int /*argc*/, char /*argv*/*[])
 {
+    const char* TEST_PATH = "D:\\Courage\\v8\\v8\\include";
     zce::clear_last_error();
     struct  dirent** namelist = nullptr;
-    int number_file = zce::scandir("E:\\Courage\\readline-5.2",
+    int number_file = zce::scandir(TEST_PATH,
                                    &namelist,
                                    hfile_selector,
                                    zce::scandir_namesort);
@@ -114,14 +138,33 @@ int test_scandir(int /*argc*/, char /*argv*/*[])
         std::cout << "file name " << i << ":" << namelist[i]->d_name << std::endl;
     }
 
-    zce::free_scandir_result(number_file, namelist);
+    zce::free_scandir_result(number_file,
+                             namelist);
 
-    //for (int i = 0; i < number_file; ++i)
-    //{
-    //    ::free (namelist[i]);
-    //}
-    //::free (namelist);
+    std::vector<dirent> dirent_ary;
+    //selector没起作用
+    //std::function<bool(const dirent&)> selector;
+    int ret = 0;
+    ret = zce::readdir_direntary(TEST_PATH,
+                                 nullptr,
+                                 dirent_ary);
+    for (int i = 0; i < dirent_ary.size(); i++)
+    {
+        std::cout << "file name " << i << ":" << dirent_ary[i].d_name << std::endl;
+    }
 
+    dirent_ary.clear();
+    ret = zce::readdir_direntary(TEST_PATH,
+                                 nullptr,
+                                 nullptr,
+                                 true,
+                                 false,
+                                 true,
+                                 dirent_ary);
+    for (int i = 0; i < dirent_ary.size(); i++)
+    {
+        std::cout << "file name " << i << ":" << dirent_ary[i].d_name << std::endl;
+    }
     return 0;
 }
 
