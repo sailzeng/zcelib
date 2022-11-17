@@ -115,10 +115,11 @@ protected:
     static constexpr size_t MAX_NAME_LEN = 255;
 
 protected:
+
     //!发送缓冲区
-    char               *send_packet_ = nullptr;
+    std::unique_ptr<char[]> send_packet_{ new char[DNS_PACKET_MAX_LEN] };
     //!接收缓冲区
-    char               *recv_packet_ = nullptr;
+    std::unique_ptr<char[]> recv_packet_{ new char[DNS_PACKET_MAX_LEN] };
 
     //!DNS 服务器地址
     zce::skt::addr_any  dns_server_addr_;

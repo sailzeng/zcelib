@@ -27,7 +27,7 @@ namespace zce
 *
 * @note       对象不可拷贝复制，
 */
-class thread_task : public zce::non_copyable
+class thread_task
 {
 public:
 
@@ -35,6 +35,8 @@ public:
     thread_task() = default;
     virtual ~thread_task() = default;
 
+    thread_task(const thread_task &) = delete;
+    thread_task& operator=(const thread_task&) = delete;
 public:
 
     /*!

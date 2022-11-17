@@ -13,11 +13,7 @@
 namespace zce
 {
 //构造函数
-shm_systemv::shm_systemv() :
-    sysv_key_(0),
-    sysv_shmid_(ZCE_INVALID_HANDLE),
-    shm_size_(0),
-    shm_addr_(nullptr)
+shm_systemv::shm_systemv()
 {
 }
 

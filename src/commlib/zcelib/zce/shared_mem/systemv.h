@@ -9,7 +9,7 @@ namespace zce
 *             没有映射文件
 * note
 */
-class shm_systemv : public zce::non_copyable
+class shm_systemv
 {
 public:
     //构造函数
@@ -47,15 +47,15 @@ public:
 protected:
 
     //key_t，共享内存的唯一标识。看作是个整数把。
-    key_t               sysv_key_;
+    key_t         sysv_key_ = 0;
 
     // 映射的文件句柄
-    ZCE_HANDLE          sysv_shmid_;
+    ZCE_HANDLE    sysv_shmid_ = ZCE_INVALID_HANDLE;
 
     //映射的共享内存大小
-    std::size_t         shm_size_;
+    std::size_t   shm_size_ = 0;
 
     //映射的内存地址
-    void* shm_addr_;
+    void*         shm_addr_ = nullptr;
 };
 }

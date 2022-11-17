@@ -123,16 +123,16 @@ public:
     @param[in]  max_size_log_file  日志文件的最大尺寸
     @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
     */
-    int initialize(int output_way,
-                   LOGFILE_DEVIDE div_log_file,
-                   const char* log_file_prefix,
-                   bool trunc_old,
-                   bool thread_output_file,
-                   size_t max_size_log_file,
-                   size_t reserve_file_num) noexcept;
+    int open(int output_way,
+             LOGFILE_DEVIDE div_log_file,
+             const char* log_file_prefix,
+             bool trunc_old,
+             bool thread_output_file,
+             size_t max_size_log_file,
+             size_t reserve_file_num) noexcept;
 
     //!日志销毁
-    void terminate();
+    void close();
 
     void fileout_log_info(const timeval& now_time,
                           char* log_tmp_buffer,

@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
 
-    zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+    zce::log_msg::instance()->open_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                             "D:\\My.Log\\TEST_2",
                                             zce::log_file::DEFAULT_LOG_SIZE,
                                             true,
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     test_scandir(argc, argv);
 
     //!需要关闭日志
-    zce::log_msg::instance()->terminate();
+    zce::log_msg::instance()->close();
     zce::log_msg::clear_inst();
     return 0;
 #if 0

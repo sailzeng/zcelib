@@ -49,7 +49,7 @@ int test_rudp(int argc, char* argv[])
 
     if (argc > 1)
     {
-        zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+        zce::log_msg::instance()->open_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                                 "E:\\My.Log\\core",
                                                 0,
                                                 true,
@@ -63,7 +63,7 @@ int test_rudp(int argc, char* argv[])
     }
     else
     {
-        zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
+        zce::log_msg::instance()->open_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                                 "E:\\My.Log\\CLIENT",
                                                 0,
                                                 true,

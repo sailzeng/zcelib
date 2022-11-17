@@ -74,7 +74,7 @@ public:
     * @param[in]  output_way         日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT
     * @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int init_time_log(LOGFILE_DEVIDE div_log_file,
+    int open_time_log(LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
                       size_t reserve_file_num = log_file::DEFAULT_RESERVE_FILENUM,
                       bool multithread_log = false,
@@ -97,7 +97,7 @@ public:
     @param[in]  output_way         日志输出的方式，参考 @ref LOG_OUTPUT
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int init_size_log(const char* log_file_prefix,
+    int open_size_log(const char* log_file_prefix,
                       size_t max_size_log_file = log_file::DEFAULT_LOG_SIZE,
                       size_t reserve_file_num = log_file::DEFAULT_RESERVE_FILENUM,
                       bool multithread_log = false,
@@ -115,7 +115,7 @@ public:
     @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
     @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int init_stdout(bool use_err_out = true,
+    int open_stdout(bool use_err_out = true,
                     bool auto_new_line = true,
                     bool multithread_log = false,
                     int head_record = (int)LOG_HEAD::CURRENTTIME | (int)LOG_HEAD::LOGLEVEL) noexcept;
@@ -126,7 +126,7 @@ public:
      * @param[in]   div_log_file   分割日志的方式，时间，大小等
      * @return
     */
-    int init_log(int output_way,
+    int open_log(int output_way,
                  LOGFILE_DEVIDE div_log_file,
                  const char* log_file_prefix,
                  bool multithread_log,
@@ -140,7 +140,7 @@ public:
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
     */
-    void terminate();
+    void close();
 
     /*!
     @brief      设置默认输出的信息类型

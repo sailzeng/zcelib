@@ -66,7 +66,7 @@ protected:
     virtual int reload_config();
 
     ///初始化日志模块
-    int init_log();
+    int open_log();
 
 public:
 

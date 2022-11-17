@@ -37,7 +37,7 @@ log_file::log_file()
 log_file::~log_file()
 {
     //注销
-    terminate();
+    close();
     delete buf_pool_;
     buf_pool_ = nullptr;
     delete msg_queue_;
@@ -45,13 +45,13 @@ log_file::~log_file()
 }
 
 //初始化函数,参数最齐全的一个
-int log_file::initialize(int output_way,
-                         LOGFILE_DEVIDE div_log_file,
-                         const char* log_file_prefix,
-                         bool trunc_old,
-                         bool thread_outfile,
-                         size_t max_size_log_file,
-                         size_t reserve_file_num) noexcept
+int log_file::open(int output_way,
+                   LOGFILE_DEVIDE div_log_file,
+                   const char* log_file_prefix,
+                   bool trunc_old,
+                   bool thread_outfile,
+                   size_t max_size_log_file,
+                   size_t reserve_file_num) noexcept
 {
     div_log_file_ = div_log_file;
 
@@ -133,7 +133,7 @@ int log_file::initialize(int output_way,
 }
 
 //关闭日志，注意关闭后，必须重新初始化
-void log_file::terminate()
+void log_file::close()
 {
     if (log_file_handle_.is_open())
     {

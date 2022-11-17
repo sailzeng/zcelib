@@ -52,6 +52,9 @@ public:
     thread_wait_manager();
     ~thread_wait_manager();
 
+    thread_wait_manager(const thread_wait_manager &) = delete;
+    thread_wait_manager& operator=(const thread_wait_manager&) = delete;
+
     //如果需要管理处理，要自己登记，
     void record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id = 0);
     //登记一个要进行等待处理等待线程

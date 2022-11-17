@@ -116,7 +116,7 @@ int app_buspipe::app_start(int argc, const char* argv[])
     // 初始化日志用滚动的方式可以保留的天数多点
     std::string init_log_name(config_base_->log_file_prefix_.c_str());
     init_log_name += "_init";
-    zce::log_msg::instance()->init_size_log(
+    zce::log_msg::instance()->open_size_log(
         init_log_name.c_str(),
         10 * 1024 * 1024,
         3,
@@ -188,7 +188,7 @@ int app_buspipe::app_start(int argc, const char* argv[])
     }
 
     // 初始化日志
-    ret = init_log();
+    ret = open_log();
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[framework] init log fail. ret=%d", ret);
@@ -197,7 +197,7 @@ int app_buspipe::app_start(int argc, const char* argv[])
 
     ZCE_LOG(RS_INFO, "======================================================================================================");
     ZCE_LOG(RS_INFO, "======================================================================================================");
-    ZCE_LOG(RS_INFO, "[framework] %s read_cfgfile success and init_log success.", app_base_name_.c_str());
+    ZCE_LOG(RS_INFO, "[framework] %s read_cfgfile success and open_log success.", app_base_name_.c_str());
 
     self_svc_info_ = config_base_->self_svc_info_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
@@ -321,7 +321,7 @@ zce::LOG_PRIORITY app_buspipe::get_log_priority()
 }
 
 //日志初始化
-int app_buspipe::init_log()
+int app_buspipe::open_log()
 {
     int ret = 0;
 
@@ -331,7 +331,7 @@ int app_buspipe::init_log()
 
     // 初始化日志
     ret = zce::log_msg::instance()->
-        init_log(config_base_->log_config_.log_output_,
+        open_log(config_base_->log_config_.log_output_,
                  config_base_->log_config_.log_div_type_,
                  config_base_->log_file_prefix_.c_str(),
                  true,

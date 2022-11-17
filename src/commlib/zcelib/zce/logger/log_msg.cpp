@@ -12,7 +12,7 @@ thread_local std::unique_ptr<char[]> log_msg::log_buffer_(new char[log_file::SIZ
 log_msg* log_msg::log_instance_ = nullptr;
 
 //初始化函数,用于时间分割日志的构造
-int log_msg::init_time_log(LOGFILE_DEVIDE div_log_file,
+int log_msg::open_time_log(LOGFILE_DEVIDE div_log_file,
                            const char* log_file_prefix,
                            size_t reserve_file_num,
                            bool multithread_log,
@@ -29,17 +29,17 @@ int log_msg::init_time_log(LOGFILE_DEVIDE div_log_file,
     permit_outlevel_ = RS_DEBUG;
     assert(LOGFILE_DEVIDE::BY_TIME_HOUR <= div_log_file &&
            LOGFILE_DEVIDE::BY_TIME_YEAR >= div_log_file);
-    return log_file_.initialize(output_way,
-                                div_log_file,
-                                log_file_prefix,
-                                trunc_old,
-                                thread_output_file,
-                                0,
-                                reserve_file_num);
+    return log_file_.open(output_way,
+                          div_log_file,
+                          log_file_prefix,
+                          trunc_old,
+                          thread_output_file,
+                          0,
+                          reserve_file_num);
 }
 
 //初始化函数,用于尺寸分割日志的构造 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
-int log_msg::init_size_log(const char* log_file_prefix,
+int log_msg::open_size_log(const char* log_file_prefix,
                            size_t max_size_log_file,
                            size_t reserve_file_num,
                            bool multithread_log,
@@ -60,16 +60,16 @@ int log_msg::init_size_log(const char* log_file_prefix,
     {
         div_log_file = LOGFILE_DEVIDE::NONE;
     }
-    return log_file_.initialize(output_way,
-                                div_log_file,
-                                log_file_prefix,
-                                trunc_old,
-                                thread_output_file,
-                                max_size_log_file,
-                                reserve_file_num);
+    return log_file_.open(output_way,
+                          div_log_file,
+                          log_file_prefix,
+                          trunc_old,
+                          thread_output_file,
+                          max_size_log_file,
+                          reserve_file_num);
 }
 
-int log_msg::init_log(int output_way,
+int log_msg::open_log(int output_way,
                       LOGFILE_DEVIDE div_log_file,
                       const char* log_file_prefix,
                       bool multithread_log,
@@ -87,19 +87,19 @@ int log_msg::init_log(int output_way,
     permit_outlevel_ = RS_DEBUG;
     if (output_way_ & static_cast<int>(LOG_OUTPUT::LOGFILE))
     {
-        return log_file_.initialize(output_way,
-                                    div_log_file,
-                                    log_file_prefix,
-                                    trunc_old,
-                                    thread_output_file,
-                                    max_size_log_file,
-                                    reserve_file_num);
+        return log_file_.open(output_way,
+                              div_log_file,
+                              log_file_prefix,
+                              trunc_old,
+                              thread_output_file,
+                              max_size_log_file,
+                              reserve_file_num);
     }
     return 0;
 }
 
 //初始化函数，用于标准输出
-int log_msg::init_stdout(bool use_err_out,
+int log_msg::open_stdout(bool use_err_out,
                          bool multithread_log,
                          bool auto_new_line,
                          int head_record) noexcept
@@ -117,20 +117,20 @@ int log_msg::init_stdout(bool use_err_out,
     head_record_ = head_record;
     auto_new_line_ = auto_new_line;
     multithread_log_ = multithread_log;
-    return log_file_.initialize(output_way,
-                                LOGFILE_DEVIDE::NONE,
-                                "",
-                                false,
-                                false,
-                                0,
-                                0);
+    return log_file_.open(output_way,
+                          LOGFILE_DEVIDE::NONE,
+                          "",
+                          false,
+                          false,
+                          0,
+                          0);
 }
 
-void log_msg::terminate()
+void log_msg::close()
 {
     allow_output_log_ = false;
     permit_outlevel_ = RS_DEBUG;
-    log_file_.terminate();
+    log_file_.close();
 }
 
 //打开日志输出开关

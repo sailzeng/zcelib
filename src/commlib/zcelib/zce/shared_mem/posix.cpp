@@ -16,10 +16,7 @@
 namespace zce
 {
 //构造函数
-shm_posix::shm_posix() :
-    mmap_addr_(nullptr),
-    mmap_handle_(ZCE_INVALID_HANDLE),
-    shm_size_(0)
+shm_posix::shm_posix()
 {
 }
 

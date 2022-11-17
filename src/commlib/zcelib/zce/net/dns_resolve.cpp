@@ -82,21 +82,10 @@ namespace zce
 
 dns_resolve::dns_resolve()
 {
-    send_packet_ = new char[DNS_PACKET_MAX_LEN];
-    recv_packet_ = new char[DNS_PACKET_MAX_LEN];
 }
+
 dns_resolve::~dns_resolve()
 {
-    if (send_packet_)
-    {
-        delete send_packet_;
-        send_packet_ = nullptr;
-    }
-    if (recv_packet_)
-    {
-        delete recv_packet_;
-        recv_packet_ = nullptr;
-    }
 }
 
 int dns_resolve::initialize(sockaddr *dns_svr_addr,
@@ -142,7 +131,7 @@ int dns_resolve::query(const char *query_name,
                        uint16_t *tid)
 {
     size_t len = DNS_PACKET_MAX_LEN;
-    int ret = dns_resolve::pack_request(send_packet_,
+    int ret = dns_resolve::pack_request(send_packet_.get(),
                                         &len,
                                         query_name,
                                         query_type,
@@ -152,7 +141,7 @@ int dns_resolve::query(const char *query_name,
         ZCE_LOG(RS_ERROR, "pack_request error ,error code = %d", ret);
         return ret;
     }
-    ssize_t snd_len = dns_socket_.sendto(send_packet_,
+    ssize_t snd_len = dns_socket_.sendto(send_packet_.get(),
                                          len,
                                          0,
                                          &dns_server_addr_);
@@ -175,14 +164,14 @@ int dns_resolve::answer(uint16_t *tid,
     int ret = 0;
     if (timeout_tv)
     {
-        rcv_len = dns_socket_.recvfrom_timeout(recv_packet_,
+        rcv_len = dns_socket_.recvfrom_timeout(recv_packet_.get(),
                                                len,
                                                &recv_addr,
                                                *timeout_tv);
     }
     else
     {
-        rcv_len = dns_socket_.recvfrom(recv_packet_,
+        rcv_len = dns_socket_.recvfrom(recv_packet_.get(),
                                        len,
                                        0,
                                        &recv_addr);
@@ -196,7 +185,7 @@ int dns_resolve::answer(uint16_t *tid,
     {
         return -1;
     }
-    ret = parse_response(recv_packet_,
+    ret = parse_response(recv_packet_.get(),
                          rcv_len,
                          tid,
                          family,

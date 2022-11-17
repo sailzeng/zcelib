@@ -1,6 +1,5 @@
 #pragma once
 
-#include "zce/util/non_copyable.h"
 #include "zce/os_adapt/define.h"
 
 /*!
@@ -10,7 +9,7 @@
 */
 namespace zce
 {
-class shm_posix : public zce::non_copyable
+class shm_posix
 {
 public:
     //构造函数
@@ -56,15 +55,15 @@ public:
 protected:
 
     //映射文件的名称
-    std::string         shm_name_;
+    std::string  shm_name_;
 
     //映射的内存地址
-    void* mmap_addr_;
+    void*        mmap_addr_ = nullptr;
 
     // 映射的文件句柄
-    ZCE_HANDLE          mmap_handle_;
+    ZCE_HANDLE   mmap_handle_ = ZCE_INVALID_HANDLE;
 
     //映射的共享内存大小
-    std::size_t         shm_size_;
+    std::size_t  shm_size_ = 0;
 };
 }

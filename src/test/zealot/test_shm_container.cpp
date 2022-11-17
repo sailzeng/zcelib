@@ -1489,7 +1489,7 @@ int test_lux_data_manager(int argc, char* /*argv*/[])
     Lux_Data_Manager::instance()->clear_inst();
 
     //
-    zce::log_msg::instance()->init_time_log(LOGFILE_DEVIDE::BY_TIME_DAY, "C:\\123");
+    zce::log_msg::instance()->open_time_log(LOGFILE_DEVIDE::BY_TIME_DAY, "C:\\123");
 
     ZCE_LOG(RS_ERROR, "ni shi yi zhi da wu gui.\n");
     ZCE_LOG(RS_ERROR, "ni shi yi zhi da wu gui.\n");

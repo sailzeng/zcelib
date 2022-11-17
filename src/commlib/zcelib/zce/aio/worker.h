@@ -36,12 +36,12 @@ public:
     worker() = default;
     ~worker();
 
-    //!初始化
+    //! 初始化
     int initialize(size_t work_thread_num,
                    size_t work_queue_len,
                    size_t max_event_num);
 
-    //!销毁
+    //! 销毁
     void terminate();
 
     //! 根据AIO_TYPE，请求一个AIO_Atom
@@ -64,12 +64,12 @@ public:
                   RECTOR_EVENT event_todo,
                   event_callback_t call_back);
 
-    //!
+    //! 计划定时器
     int schedule_timer(timeout_callback_t call_fun,
                        int &time_id,
                        const zce::time_value& delay_time);
 
-    //!
+    //! 取消定时器
     int cacel_timer(int time_id);
 
     //! 处理应答

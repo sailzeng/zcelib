@@ -39,8 +39,7 @@ public:
              const void* want_address = nullptr,
              int mmap_prot = PROT_READ | PROT_WRITE,
              int mmap_flags = MAP_SHARED,
-             std::size_t offset = 0
-    );
+             std::size_t offset = 0);
 
     //打开文件，进行映射, 简单，推荐使用这个函数
     int open(const char* file_name,
@@ -49,8 +48,7 @@ public:
              bool read_only = false,
              bool share_file = true,
              const void* want_address = nullptr,
-             std::size_t  offset = 0
-    );
+             std::size_t  offset = 0);
 
     //关闭文件
     int close();
@@ -75,15 +73,15 @@ public:
 protected:
 
     //映射文件的名称
-    std::string         mmap_file_name_;
+    std::string   mmap_file_name_;
 
     //映射的内存地址
-    void* mmap_addr_;
+    void*         mmap_addr_ = nullptr;
 
     // 映射的文件句柄
-    ZCE_HANDLE          mmap_handle_;
+    ZCE_HANDLE    mmap_handle_ = ZCE_INVALID_HANDLE;
 
     //映射的共享内存大小
-    std::size_t         shm_size_;
+    std::size_t   shm_size_ = 0;
 };
 } //namespace zce

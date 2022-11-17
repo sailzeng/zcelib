@@ -208,16 +208,16 @@ public:
 protected:
 
     //!SQLite的DB句柄
-    sqlite_hdl* sqlite_handler_;
+    sqlite_hdl* sqlite_handler_ = nullptr;
 
     //!SQLite原声的STMT的句柄
-    sqlite3_stmt* prepared_statement_;
+    sqlite3_stmt* prepared_statement_ = nullptr;
 
     //!当前取结果的列,用于>>函数,从0开始
-    int current_col_;
+    int current_col_ = 0;
 
     //!当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
-    int current_bind_;
+    int current_bind_ = 1;
 };
 }
 
