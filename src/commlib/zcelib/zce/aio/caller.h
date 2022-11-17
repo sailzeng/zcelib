@@ -554,8 +554,8 @@ struct TIMER_ATOM :public AIO_ATOM
 int tmo_schedule(zce::aio::worker* worker,
                  const zce::time_value& timeout_tv,
                  int *timer_id,
-                 zce::time_value *trigger_tv_,
-                 std::function<void(TIMER_ATOM*)> call_back);
+                 zce::time_value *trigger_tv,
+                 std::function<void(AIO_ATOM*)> call_back);
 
 int tmo_cancel(zce::aio::worker* worker,
                int timer_id);

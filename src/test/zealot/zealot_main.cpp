@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     //}
 
     ////test_aio1(argc, argv);
-    test_aio3(argc, argv);
+    test_scandir(argc, argv);
 
     //!需要关闭日志
     zce::log_msg::instance()->terminate();

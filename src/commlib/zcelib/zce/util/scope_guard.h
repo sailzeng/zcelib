@@ -49,6 +49,8 @@ private:
     bool dismissed_;
 };
 
+//范围guard类，
+//!写到后面，发现重载的数量
 template <class T, class Exister>
 class scope_guard_t
 {
@@ -146,7 +148,8 @@ private:
 };
 
 //!辅助类，利用析构关闭ZCE_HANDLE,ZCE_HANDLE 不能用unique_ptr
-//!自动释放的ZCE_HANDLE
+
+//! 自动释放的ZCE_HANDLE
 //! 这样使用 zce::auto_file fd(::fopen("xxx"));
 using auto_handle =
 scope_guard_t<ZCE_HANDLE, decltype(zce::close)*>;

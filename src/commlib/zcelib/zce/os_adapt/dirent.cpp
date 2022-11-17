@@ -633,7 +633,7 @@ int rmdir(const char* pathname)
 //!递归删除目录
 int rmdir_recurse(const char* pathname)
 {
-    auto_dir dir_hdl(zce::opendir(pathname));
+    zce::auto_dir dir_hdl(zce::opendir(pathname));
     if (dir_hdl.get() == nullptr)
     {
         return -1;
