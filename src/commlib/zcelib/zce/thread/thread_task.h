@@ -14,7 +14,7 @@
 *
 * @note
 *
-* 
+*
 * 曾经我也想过一了百了  (中岛美嘉)
 * 就因为看着海鸥在码头上悲鸣
 * 随波逐流浮沉的海鸟啊
@@ -71,10 +71,12 @@
 
 namespace zce
 {
+//!需要继承的处理的函数,理论上重载这一个函数就OK
+
 /*!
 * @brief      用自己封装的pthread函数构建的TASK类型，每个线程一个对象
-*
-* @note       对象不可拷贝复制，
+*             为什么保留这个类，这个类实现的线程可以设置堆栈大小，
+* @note       对象不可拷贝复制，只能移动拷贝
 */
 class thread_task
 {
@@ -87,73 +89,80 @@ public:
     thread_task(const thread_task &) = delete;
     thread_task& operator=(const thread_task&) = delete;
 
-    //!需要继承的处理的函数,理论上重载这一个函数就OK
+    //有移动构造
+    thread_task(thread_task &&);
+    thread_task& operator=(thread_task&&);
+
+protected:
+
+    //_invoker_helper 是一个辅助的调用类，因为activate有不同的函数，
+    //必须进行不同的适配
     template <class Fn>
-    class thread_invoker
+    class _invoker_helper
     {
     public:
-        thread_invoker(std::function<Fn> &func,
+        _invoker_helper() = default;
+        ~_invoker_helper() = default;
+
+        int operator()(Fn &func,
                        int detachstate,
                        size_t stacksize,
-                       ZCE_THREAD_ID *threadid,
-                       int &ret_int)
+                       ZCE_THREAD_ID *threadid)
         {
-            ret_int = zce::pthread_createex(thread_invoker::svc_fuc,
+            int ret = zce::pthread_createex(_invoker_helper::svc_fuc,
                                             (void *)(&func),
                                             threadid,
                                             detachstate,
                                             stacksize,
                                             0);
+            return ret;
         }
 
-        static void svc_fuc(void *func)
+        static void svc_fuc(void *vfunc)
         {
-            std::function<Fn> *func_call =
-                (std::function<Fn> *)(func);
-            (*func_call)();
+            Fn *func = (Fn *)(vfunc);
+            (*func)();
             zce::pthread_exit();
         }
-
-        std::function<Fn> fn_;
     };
 
 public:
-    //
-    //typedef std::function<Fn> func_t;
-    
-    //!
-    template <class Fn, class... Args>
-    int activate(Fn&& fn, Args&&... args)
+
+    //!激活一个线程,根据args参数，执行fp函数，
+    template <class Call, class... Args >
+    int activate(Call &&fp, Args&&... args)
     {
         int ret = 0;
-        std::function<Fn> svc_func =
-            std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...);
+        auto svc_func =
+            std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
         group_id_ = INVALID_GROUP_ID;
-        thread_invoker(svc_func,
-                       PTHREAD_CREATE_JOINABLE,
-                       0,
-                       &thread_id_,
-                       ret);
+
+        thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
+                                                          PTHREAD_CREATE_JOINABLE,
+                                                          0,
+                                                          &thread_id_,
+                                                          &ret);
         return ret;
     }
 
-    //!
-    //template <class Fn, class... Args>
-    //int activate(int detachstate,
-    //             Fn&& fn,
-    //             Args&&... args)
-    //{
-    //    int ret = 0;
-    //    std::function<Fn> svc_func = std::bind(
-    //        std::forward<Fn>(fn), std::forward<Args>(args)...);
-    //    group_id_ = INVALID_GROUP_ID;
-    //    thread_invoker(svc_func,
-    //                   detachstate,
-    //                   0,
-    //                   &thread_id_,
-    //                   ret);
-    //    return ret;
-    //}
+    //!激活一个线程,根据args参数，执行fp函数，
+    //! detachstate 为PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
+    template <class Call, class... Args >
+    int activate(int detachstate,
+                 Call &&fp,
+                 Args&&... args)
+    {
+        int ret = 0;
+        auto svc_func =
+            std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
+        group_id_ = INVALID_GROUP_ID;
+        thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
+                                                          detachstate,
+                                                          0,
+                                                          &thread_id_,
+                                                          &ret);
+        return ret;
+    }
 
     /*!
     * @brief      激活一个线程，激活后，线程开始运行
@@ -162,28 +171,29 @@ public:
     * @param[out] threadid 返回的线程ID，
     * @param[in]  detachstate 产生分离的线程还是JOIN的线程 PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
     * @param[in]  stacksize 堆栈大小 为0表示默认，如果你需要使用很多线程，清调整这个大小，WIN 一般是1M，LINUX一般是10M(8M)
-    * @param[in]  priority  优先级，为0表示默认
-    * @note
+    * @note       线程优先级这类，我暂时没有实现，各种平台差异很大
     */
-    //template <class Fn, class... Args>
-    //int activate(int group_id,
-    //             int detachstate,
-    //             size_t stacksize,
-    //             int priority,
-    //             Fn&& fn,
-    //             Args&&... args)
-    //{
-    //    int ret = 0;
-    //    std::function<Fn> svc_func = std::bind(
-    //        std::forward<Fn>(fn), std::forward<Args>(args)...);
-    //    group_id_ = group_id;
-    //    thread_invoker(svc_func,
-    //                   detachstate,
-    //                   stacksize,
-    //                   &thread_id_,
-    //                   ret);
-    //    return ret;
-    //}
+    template <class Call, class... Args >
+    int activate(int group_id,
+                 int detachstate,
+                 size_t stacksize,
+                 Call &&fp,
+                 Args&&... args)
+    {
+        int ret = 0;
+        auto svc_func =
+            std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
+        group_id_ = group_id;
+        thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
+                                                          detachstate,
+                                                          stacksize,
+                                                          &thread_id_,
+                                                          &ret);
+        return ret;
+    }
+
+    //!@note 说明下一下，写activate曾经想用模板函数直接完成，但是没有找到
+    //!      调用一个static 模板函数指针的方法，
 
     //!线程结束后的返回值int 类型
     int thread_return();
@@ -203,7 +213,32 @@ public:
     //!线程让出CPU的时间
     int yield();
 
-public:
+protected:
+
+    template <class Fn>
+    static void __invoker_helper(Fn &func,
+                                 int detachstate,
+                                 size_t stacksize,
+                                 ZCE_THREAD_ID *threadid,
+                                 int *int_ret)
+    {
+        //注意这儿，注意这儿，static 函数的模板函数调用，要加template
+        *int_ret = zce::pthread_createex(thread_task::template __svc_fuc<Fn>,
+                                         (void *)(&func),
+                                         threadid,
+                                         detachstate,
+                                         stacksize,
+                                         0);
+    }
+
+    //包装的线程执行函数
+    template <class Fn>
+    static void __svc_fuc(void *vfunc)
+    {
+        Fn *func = (Fn *)(vfunc);
+        (*func)();
+        zce::pthread_exit();
+    }
 
 public:
 
