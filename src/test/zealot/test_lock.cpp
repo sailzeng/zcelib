@@ -9,14 +9,14 @@ int g_daomei_foo = 0;
 
 size_t TEST_NUMBER = 10000000;
 
-class Task_Read : public zce::thread_task
+class Task_Read
 {
 public:
 
     Task_Read()
     {
     }
-    virtual int svc()
+    int svc()
     {
         int abc = 0;
         for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -33,14 +33,14 @@ protected:
     size_t number_prc_ = 0;
 };
 
-class Task_Write : public zce::thread_task
+class Task_Write
 {
 public:
     Task_Write()
     {
     }
 
-    virtual int svc()
+    int svc()
     {
         for (size_t i = 0; i < TEST_NUMBER; ++i)
         {
@@ -66,18 +66,17 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
     Task_Write b1;
     Task_Write b2;
 
-    ZCE_THREAD_ID threadid_a1, threadid_a2, threadid_b1, threadid_b2;
+    zce::thread_task t_a1, t_a2, t_b1, t_b2;
+    t_a1.activate(&Task_Read::svc, &a1);
+    t_a2.activate(&Task_Read::svc, &a2);
 
-    a1.activate(1, &threadid_a1);
-    a2.activate(1, &threadid_a2);
+    t_b1.activate(&Task_Write::svc, &b1);
+    t_b2.activate(&Task_Write::svc, &b2);
 
-    b1.activate(2, &threadid_b1);
-    b2.activate(2, &threadid_b2);
-
-    a1.wait_join();
-    a2.wait_join();
-    b1.wait_join();
-    b2.wait_join();
+    t_a1.wait_join();
+    t_a2.wait_join();
+    t_b1.wait_join();
+    t_b2.wait_join();
 
     printf("At last g_daomei_foo = %d\n", g_daomei_foo);
 
@@ -86,14 +85,14 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
 
 zce::thread_rw_mutex rw_lock;
 
-class Task_Read_1 : public zce::thread_task
+class Task_Read_1
 {
 public:
 
     Task_Read_1()
     {
     }
-    virtual int svc()
+    int svc()
     {
         int abc = 0;
         for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -110,14 +109,14 @@ protected:
     size_t number_prc_ = 0;
 };
 
-class Task_Write_1 : public zce::thread_task
+class Task_Write_1
 {
 public:
     Task_Write_1()
     {
     }
 
-    virtual int svc()
+    int svc()
     {
         for (size_t i = 0; i < TEST_NUMBER; ++i)
         {
@@ -143,18 +142,18 @@ int test_rw_lock2(int /*argc*/, char* /*argv*/[])
     Task_Write_1 b1;
     Task_Write_1 b2;
 
-    ZCE_THREAD_ID threadid_a1, threadid_a2, threadid_b1, threadid_b2;
+    zce::thread_task t_a1, t_a2, t_b1, t_b2;
 
-    a1.activate(1, &threadid_a1);
-    a2.activate(1, &threadid_a2);
+    t_a1.activate(&Task_Read_1::svc, &a1);
+    t_a2.activate(&Task_Read_1::svc, &a2);
 
-    b1.activate(2, &threadid_b1);
-    b2.activate(2, &threadid_b2);
+    //t_b1.activate(&Task_Write_1::svc, &b1);
+    //t_b2.activate(&Task_Write_1::svc, &b2);
 
-    a1.wait_join();
-    a2.wait_join();
-    b1.wait_join();
-    b2.wait_join();
+    t_a1.wait_join();
+    t_a2.wait_join();
+    t_b1.wait_join();
+    t_b2.wait_join();
 
     printf("At last g_daomei_foo = %d\n", g_daomei_foo);
 

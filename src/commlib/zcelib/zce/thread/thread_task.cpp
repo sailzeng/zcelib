@@ -1,54 +1,11 @@
 #include "zce/predefine.h"
-#include "zce/os_adapt/thread.h"
 #include "zce/thread/thread_task.h"
 
 namespace zce
 {
 /************************************************************************************************************
-Class           : Thread_Task
+Class           : thread_task
 ************************************************************************************************************/
-
-//
-void thread_task::svc_run(void* args)
-{
-    thread_task* t = (thread_task*)args;
-
-    // Call the Task's svc() hook method.
-    t->svc_fuc();
-    //保存返回的结果
-    //t->thread_return_ = svc_status;
-
-    zce::pthread_exit();
-
-    return;
-}
-
-//创建一个线程
-int thread_task::activate(int group_id,
-                          ZCE_THREAD_ID* threadid,
-                          int detachstate,
-                          size_t stacksize,
-                          int threadpriority)
-{
-    int ret = 0;
-    //创建线程
-    ret = zce::pthread_createex(thread_task::svc_run,
-                                static_cast<void*> (this),
-                                threadid,
-                                detachstate,
-                                stacksize,
-                                threadpriority
-    );
-
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    group_id_ = group_id;
-    thread_id_ = *threadid;
-    return 0;
-}
 
 //线程结束后的返回值int 类型
 int thread_task::thread_return()

@@ -2,8 +2,6 @@
 #include "zce/os_adapt/define.h"
 #include "zce/os_adapt/thread.h"
 
-//为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
-
 //----------------------------------------------------------------------------------------
 //
 int zce::pthread_attr_init(pthread_attr_t* attr)

@@ -19,14 +19,14 @@ zce::msglist_sema <int >  message_queue_(100);
 
 zce::thread_mutex  io_mutex;
 
-class Task_Producer : public zce::thread_task
+class Task_Producer
 {
 public:
     Task_Producer()
     {
         number_prc_ = 2000;
     }
-    virtual int svc()
+    int svc()
     {
         for (size_t i = 0; i < number_prc_; ++i)
         {
@@ -46,7 +46,7 @@ protected:
     size_t number_prc_;
 };
 
-class Task_Consumer : public zce::thread_task
+class Task_Consumer
 {
 public:
     Task_Consumer()
@@ -54,7 +54,7 @@ public:
         number_prc_ = 1000;
     }
 
-    virtual int svc()
+    int svc()
     {
         int x = 0;
         zce::sleep(1);
@@ -83,16 +83,15 @@ int test_msgqueue_condi(int /*argc*/, char* /*argv*/[])
     Task_Consumer b1;
     Task_Consumer b2;
 
-    ZCE_THREAD_ID threadid_a1, threadid_b1, threadid_b2;
+    zce::thread_task t1, t2, t3;
+    t1.activate(&Task_Producer::svc, &a1);
 
-    a1.activate(1, &threadid_a1);
+    t2.activate(&Task_Consumer::svc, &b1);
+    t2.activate(&Task_Consumer::svc, &b2);
 
-    b1.activate(2, &threadid_b1);
-    b2.activate(2, &threadid_b2);
-
-    a1.wait_join();
-    b1.wait_join();
-    b2.wait_join();
+    t1.wait_join();
+    t2.wait_join();
+    t3.wait_join();
 
     return 0;
 }

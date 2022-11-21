@@ -14,9 +14,60 @@
 *
 * @note
 *
+* 
+* 曾经我也想过一了百了  (中岛美嘉)
+* 就因为看着海鸥在码头上悲鸣
+* 随波逐流浮沉的海鸟啊
+* 也将我的过去啄食 展翅飞去吧
+* 曾经我也想过一了百了
+* 因为生日那天杏花绽放
+* 在那筛落阳光的树荫下小睡
+* 大概就会像未能转生的虫 就此适应于土里长眠了吧
+* 薄荷糖 渔港的灯塔
+* 生锈的拱桥 被丢弃的自行车
+* 杵立在木造车站的暖炉前
+* 心却哪儿都不能就此启程
+* 今日和昨日相同
+* 想要更好的明天 今天就须有所行动
+* 我知道 我都知道 但是
+* 曾经我也想过一了百了
+* 因为心早就被掏空
+* 心不能被填满的哭泣着
+* 因为我仍渴望着什麼
+* 曾经我也想过一了百了
+* 因为那松开的鞋带
+* 我无法好好将它系紧
+* 如同不懂得系紧某人一般
+* 曾经我也想过一了百了
+* 因为少年凝视着我
+* 跪着在床上谢罪吧
+* 向过去的我说声抱歉
+* 电脑透出淡淡的光
+* 楼上房间传来的动静
+* 门口对讲机的声音
+* 困在鸟笼中的少年捂住耳朵
+* 与无形的敌人战斗着
+* 他是三坪房间里的唐吉诃德
+* 最后的结局 却是抖丑陋不堪
+* 曾经我也想过一了百了
+* 因为有人说我是冷漠的人
+* 想要被爱的哭泣着
+* 是因为终于尝到人间温暖
+* 曾经我也想过一了百了
+* 你美丽的笑着
+* 满脑子想着自我了结
+* 终究因为活着这事太过于刻骨
+* 曾经我也想过一了百了
+* 我还没有遇见你
+* 因为有像你一样的人存在
+* 我稍稍喜欢上这个世界了
+* 因为有像你一样的人存在
+* 我开始稍稍期待着这个世界
 */
 
 #pragma once
+
+#include "zce/os_adapt/thread.h"
 
 namespace zce
 {
@@ -35,33 +86,74 @@ public:
 
     thread_task(const thread_task &) = delete;
     thread_task& operator=(const thread_task&) = delete;
-public:
 
+    //!需要继承的处理的函数,理论上重载这一个函数就OK
+    template <class Fn>
     class thread_invoker
     {
+    public:
+        thread_invoker(std::function<Fn> &func,
+                       int detachstate,
+                       size_t stacksize,
+                       ZCE_THREAD_ID *threadid,
+                       int &ret_int)
+        {
+            ret_int = zce::pthread_createex(thread_invoker::svc_fuc,
+                                            (void *)(&func),
+                                            threadid,
+                                            detachstate,
+                                            stacksize,
+                                            0);
+        }
+
+        static void svc_fuc(void *func)
+        {
+            std::function<Fn> *func_call =
+                (std::function<Fn> *)(func);
+            (*func_call)();
+            zce::pthread_exit();
+        }
+
+        std::function<Fn> fn_;
     };
 
+public:
+    //
+    //typedef std::function<Fn> func_t;
+    
+    //!
     template <class Fn, class... Args>
-    static void thread_invoker(std::function<Fn(Args...)> &func,
-                               int detachstate,
-                               size_t stacksize,
-                               ZCE_THREAD_ID *threadid,
-                               int &ret_int)
+    int activate(Fn&& fn, Args&&... args)
     {
-        ret_int = zce::pthread_createex(thread_task::svc_fuc,
-                                        &func,
-                                        threadid,
-                                        PTHREAD_CREATE_JOINABLE,
-                                        0,
-                                        0);
+        int ret = 0;
+        std::function<Fn> svc_func =
+            std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...);
+        group_id_ = INVALID_GROUP_ID;
+        thread_invoker(svc_func,
+                       PTHREAD_CREATE_JOINABLE,
+                       0,
+                       &thread_id_,
+                       ret);
+        return ret;
     }
 
-    template <class Fn, class... Args>
-    static void svc_fuc(void *func)
-    {
-        std::function<Fn(Args...)> *func_call = (std::function<Fn(Args...)> *)func;
-        func_call->();
-    }
+    //!
+    //template <class Fn, class... Args>
+    //int activate(int detachstate,
+    //             Fn&& fn,
+    //             Args&&... args)
+    //{
+    //    int ret = 0;
+    //    std::function<Fn> svc_func = std::bind(
+    //        std::forward<Fn>(fn), std::forward<Args>(args)...);
+    //    group_id_ = INVALID_GROUP_ID;
+    //    thread_invoker(svc_func,
+    //                   detachstate,
+    //                   0,
+    //                   &thread_id_,
+    //                   ret);
+    //    return ret;
+    //}
 
     /*!
     * @brief      激活一个线程，激活后，线程开始运行
@@ -70,53 +162,28 @@ public:
     * @param[out] threadid 返回的线程ID，
     * @param[in]  detachstate 产生分离的线程还是JOIN的线程 PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
     * @param[in]  stacksize 堆栈大小 为0表示默认，如果你需要使用很多线程，清调整这个大小，WIN 一般是1M，LINUX一般是10M(8M)
-    * @param[in]  threadpriority 优先级，为0表示默认
+    * @param[in]  priority  优先级，为0表示默认
     * @note
     */
-    int activate(int group_id,
-                 ZCE_THREAD_ID* threadid,
-                 int detachstate = PTHREAD_CREATE_JOINABLE,
-                 size_t stacksize = 0,
-                 int threadpriority = 0);
-
-    template <class Fn, class... Args>
-    int activate(Fn&& fn, Args&&... args)
-    {
-        int ret = 0;
-        std::function<Fn(Args...)> svc_func = std::bind(
-            std::forward(fn), std::forward<Args>(args)...);
-        thread_invoker(svc_func, &thread_id_, ret);
-        group_id_ = INVALID_GROUP_ID;
-        return ret;
-    }
-
-    template <class Fn, class... Args>
-    int activate(int detachstate,
-                 Fn&& fn,
-                 Args&&... args)
-    {
-        int ret = 0;
-        std::function<Fn(Args...)> svc_func = std::bind(
-            std::forward(fn), std::forward<Args>(args)...);
-        thread_invoker(svc_func, &thread_id_, ret);
-        group_id_ = INVALID_GROUP_ID;
-        return ret;
-    }
-
-    template <class Fn, class... Args>
-    int activate(int detachstate,
-                 size_t stacksize,
-                 int threadpriority,
-                 Fn&& fn,
-                 Args&&... args)
-    {
-        int ret = 0;
-        std::function<Fn(Args...)> svc_func = std::bind(
-            std::forward(fn), std::forward<Args>(args)...);
-        thread_invoker(svc_func, &thread_id_, ret);
-        group_id_ = INVALID_GROUP_ID;
-        return ret;
-    }
+    //template <class Fn, class... Args>
+    //int activate(int group_id,
+    //             int detachstate,
+    //             size_t stacksize,
+    //             int priority,
+    //             Fn&& fn,
+    //             Args&&... args)
+    //{
+    //    int ret = 0;
+    //    std::function<Fn> svc_func = std::bind(
+    //        std::forward<Fn>(fn), std::forward<Args>(args)...);
+    //    group_id_ = group_id;
+    //    thread_invoker(svc_func,
+    //                   detachstate,
+    //                   stacksize,
+    //                   &thread_id_,
+    //                   ret);
+    //    return ret;
+    //}
 
     //!线程结束后的返回值int 类型
     int thread_return();
@@ -136,15 +203,7 @@ public:
     //!线程让出CPU的时间
     int yield();
 
-protected:
-
-    //!需要继承的处理的函数,理论上重载这一个函数就OK
-    int svc_fuc(void);
-
-protected:
-
-    //!静态函数，也就是要执行的函数，里面调用svc
-    static void svc_run(void* args);
+public:
 
 public:
 

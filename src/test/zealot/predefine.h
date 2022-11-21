@@ -112,6 +112,7 @@
 
 #include <thread>
 #include <mutex>
+#include <functional>
 
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
