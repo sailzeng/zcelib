@@ -35,7 +35,7 @@ struct _ZERG_FRAME_OPTION
 {
 public:
 
-#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
     //frame_option_的头24个BIT作为选项字段,
     uint32_t     option_ : 20;
     //保留4个bit，

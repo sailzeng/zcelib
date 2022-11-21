@@ -14,8 +14,8 @@
 namespace zce
 {
 //构造函数,从很细小的地方就可以看出SQLITE的设计有不足，一个INDEX从1开始，1个从0
-sqlite_stmt::sqlite_stmt(sqlite_hdl* sqlite3_handler) :
-    sqlite_handler_(sqlite3_handler)
+sqlite_stmt::sqlite_stmt(sqlite_handle* sqlite3_handler) :
+    sqlite_hdl_(sqlite3_handler)
 {
     assert(sqlite3_handler != nullptr &&
            sqlite3_handler->get_sqlite_handler() != nullptr);
@@ -64,7 +64,7 @@ int sqlite_stmt::prepare(const char* sql_string)
         terminate();
     }
 
-    int ret = ::sqlite3_prepare_v2(sqlite_handler_->get_sqlite_handler(),
+    int ret = ::sqlite3_prepare_v2(sqlite_hdl_->get_sqlite_handler(),
                                    sql_string,
                                    -1,                                      //注意这个参数，必须小于0
                                    &prepared_statement_,

@@ -88,7 +88,7 @@ int closedir(DIR* dir_handle);
 *             下来，由于返回值是参数dir_handle的一部分数据，所以如果两次调用后，前面一次
 *             的结构就失效了。
 */
-struct dirent* readdir(DIR* dir_handle);
+struct ::dirent* readdir(DIR* dir_handle);
 
 /*!
 * @brief      read dir 可以重入版本，
@@ -99,15 +99,14 @@ struct dirent* readdir(DIR* dir_handle);
 *                    如果读取到了项目，result指向entry
 * @note       这个函数已经不推荐使用了      https://blog.csdn.net/gqtcgq/article/details/50359124
 */
-[[deprecated]]
 int readdir_r(DIR* dir_handle,
-              dirent* entry,
-              dirent** result);
+              ::dirent* entry,
+              ::dirent** result);
 
 ///* @param[in]  selector 选择器，
 int readdir_direntary(const char* dirname,
-                      std::function<bool(const dirent&)> *selector,
-                      std::vector<dirent>& dirent_ary);
+                      std::function<bool(const ::dirent&)> *selector,
+                      std::vector<::dirent>& dirent_ary);
 
 /*!
 * @brief      根据前缀和后缀，读取目录下面的各种文件，
@@ -117,7 +116,7 @@ int readdir_direntary(const char* dirname,
 * @param[in]  ext_name    后缀名称，可以为nullptr，为nullptr表示不检查
 * @param[in]  select_dir  选择目录
 * @param[in]  select_file 选择文件
-* @param[in]  skip_dotdir 不选择. 或者 .. 文件
+* @param[in]  skip_dotdir 是否跨过（不选择） . 或者 .. 文件
 * @param[out] dirent_ary  文件名称队列
 */
 int readdir_direntary(const char* dirname,
@@ -126,7 +125,7 @@ int readdir_direntary(const char* dirname,
                       bool select_dir,
                       bool select_file,
                       bool skip_dotdir,
-                      std::vector<dirent>& dirent_ary);
+                      std::vector<::dirent>& dirent_ary);
 
 /*!
 * @brief      扫描一个目录里面的目录项目，就一个函数，看上去简单，而且可以利用选择器等工具加快开发速度，但要注意结果释放
@@ -138,9 +137,9 @@ int readdir_direntary(const char* dirname,
 * @note       namelist 返回的数据一定释放，而且是2次释放，可以用free_scandir_list函数释放
 */
 int scandir(const char* dirname,
-            dirent*** namelist,
-            int (*selector)(const struct dirent*),
-            int (*comparator)(const struct dirent**, const struct dirent**));
+            ::dirent*** namelist,
+            int (*selector)(const struct ::dirent*),
+            int (*comparator)(const struct ::dirent**, const struct ::dirent**));
 
 /*!
 * @brief      释放scandir 返回参数的里面的各种分配数据，非标准函数
@@ -148,7 +147,7 @@ int scandir(const char* dirname,
 * @param      namelist    scandir 函数返回的namelist参数
 */
 void free_scandir_result(int list_number,
-                         struct dirent** namelist);
+                         struct ::dirent** namelist);
 
 /*!
 * @brief      用于目录排序的比较，就是那个comparator参数函数指针的参数
@@ -156,28 +155,36 @@ void free_scandir_result(int list_number,
 * @param      left  比较的目录项目
 * @param      right 比较的目录项目
 */
-int scandir_namesort(const struct dirent** left,
-                     const struct dirent** right);
+int scandir_namesort(const struct ::dirent** left,
+                     const struct ::dirent** right);
 
 /*!
 * @brief      从一个路径得到文件的名称，应该是非标准函数
 * @return     const char*    返回文件的名称字符串，返回的其实就是filename参数的BUFFER
 * @param[in]  pathname  路径字符串
-* @param[out] filename  返回的文件名称字符串的存放buf
+* @param[out] file_name 返回的文件名称字符串的存放buf
 * @param[in]  buf_len   filename参数BUFFER的长度
 * @note
 */
-const char* basename(const char* pathname, char* filename, size_t buf_len);
+const char* basename(const char* pathname,
+                     char* file_name,
+                     size_t buf_len);
+
+//路径拼接
+const char* path_splice(char* dst,
+                        size_t dst_len,
+                        const char* path1,
+                        const char* path2);
 
 /*!
 * @brief      从一个路径中间得到目录名称
 * @return     const char*    返回的目录字符串，返回的就是dir_name参数的BUFFER
-* @param[in]  path_name  路径字符串
+* @param[in]  pathname  路径字符串
 * @param[out] dir_name  存放目录字符串的BUFFER
 * @param[in]  buf_len    dir_name参数BUFFER的长度
 * @note       目录名称的末尾没有带分隔符
 */
-const char* dirname(const char* path_name,
+const char* dirname(const char* pathname,
                     char* dir_name,
                     size_t buf_len);
 
@@ -211,8 +218,8 @@ int mkdir(const char* pathname,
 * @param      pathname 路径字符串，
 * @param      mode 目录的共享模式，WINDOWS下，此参数无效,
 */
-int mkdir_recurse(const char* pathname,
-                  mode_t mode = ZCE_DEFAULT_DIR_PERMS);
+int mkdir_all(const char* pathname,
+              mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
 * @brief      删除某个目录
@@ -222,63 +229,12 @@ int mkdir_recurse(const char* pathname,
 */
 int rmdir(const char* pathname);
 
-//!递归删除目录,危险函数，
-int rmdir_recurse(const char* pathname);
+/*!
+* @brief      删除文件
+* @return     int == 0标识成功，
+* @param      pathname 文件名称
+*/
+int remove(const char* pathname);
 
-//路径拼接
-inline const char* path_str_splice(char* dst,
-                                   size_t dst_len,
-                                   const char* path1,
-                                   const char* path2)
-{
-    size_t path1_len = strlen(path1);
-    if (path1_len > 0)
-    {
-        if (ZCE_IS_DIRECTORY_SEPARATOR(path1[path1_len - 1]) == false)
-        {
-            snprintf(dst,
-                     dst_len,
-                     "%s%s%s",
-                     path1,
-                     ZCE_DIRECTORY_SEPARATOR_STR,
-                     path2);
-        }
-        else
-        {
-            snprintf(dst,
-                     dst_len,
-                     "%s%s",
-                     path1,
-                     path2);
-        }
-    }
-    else
-    {
-        snprintf(dst,
-                 dst_len,
-                 "%s%s",
-                 ZCE_CURRENT_DIRECTORY_STR,
-                 path2);
-    }
-    return dst;
-}
-
-inline std::string& path_string_cat(std::string& dst,
-                                    const std::string& src)
-{
-    size_t dst_len = dst.length();
-    if (dst_len > 0)
-    {
-        if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
-        {
-            dst += ZCE_DIRECTORY_SEPARATOR_STR;
-        }
-    }
-    else
-    {
-        dst = ZCE_CURRENT_DIRECTORY_STR;
-    }
-    dst += src;
-    return dst;
-}
+int remove_all(const char* pathname);
 }

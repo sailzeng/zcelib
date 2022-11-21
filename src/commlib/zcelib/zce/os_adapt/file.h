@@ -161,12 +161,12 @@ int filelen(const char* filename,
 */
 ZCE_HANDLE mkstemp(char* template_name);
 
-//得到文件的stat信息，你可以这就是stat，只是在WINDOWS下stat64,主要是为了长文件考虑的
+//!得到文件的stat信息，你可以这就是stat，只是在WINDOWS下stat64,主要是为了长文件考虑的
 int stat(const char* path, struct stat* buf);
-//通过文件句柄得到文件stat
+//!通过文件句柄得到文件stat
 int fstat(ZCE_HANDLE file_handle, struct stat* buf);
 
-///路径是否是一个目录，如果是返回true，如果不是返回false
+//!路径是否是一个目录，如果是返回true，如果不是返回false
 bool is_directory(const char* path_name);
 
 /*!

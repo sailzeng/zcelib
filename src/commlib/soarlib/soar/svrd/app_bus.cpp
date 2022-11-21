@@ -267,8 +267,8 @@ int app_buspipe::app_start(int argc, const char* argv[])
 int app_buspipe::app_exit()
 {
     //可能要增加多线程的等待
-    zce::thread_wait_manager::instance()->wait_all();
-    zce::thread_wait_manager::clear_inst();
+    zce::thread_task_wait::instance()->wait_all();
+    zce::thread_task_wait::clear_inst();
 
     soar::stat_monitor::clear_inst();
 

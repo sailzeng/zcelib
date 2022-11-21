@@ -92,30 +92,34 @@ public:
     * @return     int           压缩数据格式错误
     * @param      original_buf  压缩的数据buffer
     * @param      original_size 返回参数，原文的尺寸
+    * @param      need_decompress_size 返回参数，需要的解压buf尺寸,会增加一些
+    *             有一些写入操作会激进,比如一次拷贝8字节等。
     */
     static int get_original_size(const unsigned char* compressed_buf,
-                                 size_t* original_size)
+                                 size_t* original_size,
+                                 size_t* decompress_buf_size)
     {
         uint32_t srclen_type = *compressed_buf & 0x7;
-        size_t need_srclen = 0;
+        size_t original_len = 0;
         if (srclen_type == 0x1)
         {
-            need_srclen = *(compressed_buf + 1);
+            original_len = *(compressed_buf + 1);
         }
         else if (srclen_type == 0x2)
         {
-            need_srclen = ZBYTE_TO_LEUINT16((compressed_buf + 1));
+            original_len = ZBYTE_TO_LEUINT16((compressed_buf + 1));
         }
         else if (srclen_type == 0x4)
         {
-            need_srclen = ZBYTE_TO_LEUINT32((compressed_buf + 1));
+            original_len = ZBYTE_TO_LEUINT32((compressed_buf + 1));
         }
         //不可能出现这种情况
         else
         {
             return -1;
         }
-        *original_size = need_srclen;
+        *original_size = original_len;
+        *decompress_buf_size = original_len + 32;
         return 0;
     }
 
@@ -217,7 +221,7 @@ public:
     * @return     int             ==0，表示成功，否则失败，失败原因包括压缩数据错误，空间不够等，
     * @param      compressed_buf  被压缩的数据
     * @param      compressed_size 被压缩的数据的尺寸
-    * @param      original_buf    原文
+    * @param      original_buf    原文，注意解压的原文大小比实际原文要大32个字节防止写溢出
     * @param      original_size   原文的大小
     */
     int decompress(const unsigned char* compressed_buf,

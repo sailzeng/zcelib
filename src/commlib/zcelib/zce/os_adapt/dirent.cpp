@@ -74,7 +74,7 @@ int closedir(DIR* dir_handle)
 }
 
 //
-dirent* readdir(DIR* dir_handle)
+::dirent* readdir(DIR* dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -147,8 +147,8 @@ dirent* readdir(DIR* dir_handle)
 
 //read dir 可以重入版本，
 int readdir_r(DIR* dir_handle,
-              dirent* entry,
-              dirent** result)
+              ::dirent* entry,
+              ::dirent** result)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -184,8 +184,8 @@ int readdir_r(DIR* dir_handle,
 }
 
 int readdir_direntary(const char* dirname,
-                      std::function<bool(const dirent&)> *selector,
-                      std::vector<dirent>& dirent_ary)
+                      std::function<bool(const ::dirent&)> *selector,
+                      std::vector<::dirent>& dirent_ary)
 {
     auto_dir dir_hdl(zce::opendir(dirname));
     if (dir_hdl.get() == nullptr)
@@ -218,7 +218,7 @@ int readdir_direntary(const char* dirname,
     return 0;
 }
 
-bool dirent_selector_1(const dirent& entry,
+bool dirent_selector_1(const ::dirent& entry,
                        const char* prefix_name,
                        const char* ext_name,
                        bool select_dir,
@@ -291,9 +291,9 @@ int readdir_direntary(const char* dirname,
                       bool select_dir,
                       bool select_file,
                       bool skip_dotdir,
-                      std::vector<dirent>& dirent_ary)
+                      std::vector<::dirent>& dirent_ary)
 {
-    std::function<bool(const dirent&)> select_fun =
+    std::function<bool(const ::dirent&)> select_fun =
         std::bind(dirent_selector_1,
                   std::placeholders::_1,
                   prefix_name,
@@ -312,9 +312,9 @@ int readdir_direntary(const char* dirname,
 //选择器的函数指针
 //比较函数排序函数的指针
 int scandir(const char* dirname,
-            struct dirent*** namelist,
-            int (*selector)(const struct dirent*),
-            int (*comparator)(const struct dirent**, const struct dirent**))
+            struct ::dirent*** namelist,
+            int (*selector)(const struct ::dirent*),
+            int (*comparator)(const struct ::dirent**, const struct ::dirent**))
 {
     //Windows下使用opendir等函数实现，
 #if defined (ZCE_OS_WINDOWS)
@@ -328,8 +328,8 @@ int scandir(const char* dirname,
         return -1;
     }
 
-    dirent** vector_dir = nullptr;
-    dirent* dir_p = nullptr;
+    ::dirent** vector_dir = nullptr;
+    ::dirent* dir_p = nullptr;
 
     //找到合适的文件个数,
     for (;;)
@@ -391,10 +391,10 @@ int scandir(const char* dirname,
             continue;
         }
 
-        vector_dir[twice_nfiles] = (dirent*)::malloc(sizeof(dirent));
+        vector_dir[twice_nfiles] = (::dirent*)::malloc(sizeof(::dirent));
         if (vector_dir[twice_nfiles])
         {
-            ::memcpy(vector_dir[twice_nfiles], dir_p, sizeof(dirent));
+            ::memcpy(vector_dir[twice_nfiles], dir_p, sizeof(::dirent));
         }
         else
         {
@@ -472,7 +472,7 @@ int scandir_namesort(const struct dirent** left,
 #endif
 }
 
-const char* basename(const char* path_name,
+const char* basename(const char* pathname,
                      char* file_name,
                      size_t buf_len)
 {
@@ -482,8 +482,8 @@ const char* basename(const char* path_name,
 #if defined (ZCE_OS_WINDOWS)
 
     //因为Windows平台支持两种分隔符号，这个地方必须特殊处理一下
-    const char* temp1 = ::strrchr(path_name, WIN_DIRECTORY_SEPARATOR_CHAR1);
-    const char* temp2 = ::strrchr(path_name, WIN_DIRECTORY_SEPARATOR_CHAR2);
+    const char* temp1 = ::strrchr(pathname, WIN_DIRECTORY_SEPARATOR_CHAR1);
+    const char* temp2 = ::strrchr(pathname, WIN_DIRECTORY_SEPARATOR_CHAR2);
 
     //选择最后的那个作为分割点
     if (temp1 > temp2)
@@ -496,13 +496,13 @@ const char* basename(const char* path_name,
     }
 
 #elif defined (ZCE_OS_LINUX)
-    temp = ::strrchr(path_name, LINUX_DIRECTORY_SEPARATOR_CHAR);
+    temp = ::strrchr(pathname, LINUX_DIRECTORY_SEPARATOR_CHAR);
 #endif
 
     //如果没有发现分割符号，用整个文件名称作为base name
     if (0 == temp)
     {
-        return ::strncpy(file_name, path_name, buf_len);
+        return ::strncpy(file_name, pathname, buf_len);
     }
     else
     {
@@ -510,7 +510,7 @@ const char* basename(const char* path_name,
     }
 }
 
-const char* dirname(const char* path_name,
+const char* dirname(const char* pathname,
                     char* dir_name,
                     size_t buf_len)
 {
@@ -520,8 +520,8 @@ const char* dirname(const char* path_name,
 #if defined (ZCE_OS_WINDOWS)
 
     //WINDOWS平台两个分隔符都可能出现，
-    const char* temp1 = ::strrchr(path_name, WIN_DIRECTORY_SEPARATOR_CHAR1);
-    const char* temp2 = ::strrchr(path_name, WIN_DIRECTORY_SEPARATOR_CHAR2);
+    const char* temp1 = ::strrchr(pathname, WIN_DIRECTORY_SEPARATOR_CHAR1);
+    const char* temp2 = ::strrchr(pathname, WIN_DIRECTORY_SEPARATOR_CHAR2);
 
     if (temp1 > temp2)
     {
@@ -533,7 +533,7 @@ const char* dirname(const char* path_name,
     }
 
 #elif defined (ZCE_OS_LINUX)
-    temp = ::strrchr(path_name, LINUX_DIRECTORY_SEPARATOR_CHAR);
+    temp = ::strrchr(pathname, LINUX_DIRECTORY_SEPARATOR_CHAR);
 #endif
 
     //如果没有目录名称，复制当前目录路径返回给你，这样可以避免一些麻烦。
@@ -543,10 +543,10 @@ const char* dirname(const char* path_name,
     }
     else
     {
-        size_t len = temp - path_name + 1;
+        size_t len = temp - pathname + 1;
         dir_name[len] = 0;
         return ::strncpy(dir_name,
-                         path_name,
+                         pathname,
                          len);
     }
 }
@@ -584,7 +584,7 @@ int zce::mkdir(const char* pathname, mode_t mode)
 }
 
 //递归的建立目录，非标准函数，如果想一次建立多层目录，用这个函数
-int mkdir_recurse(const char* pathname, mode_t mode)
+int mkdir_all(const char* pathname, mode_t mode)
 {
     char thread_dir[PATH_MAX + 1];
     memset(thread_dir, 0, sizeof(thread_dir));
@@ -635,43 +635,103 @@ int rmdir(const char* pathname)
 #endif
 }
 
-//!递归删除目录
-int rmdir_recurse(const char* pathname)
+int remove(const char* pathname)
 {
-    zce::auto_dir dir_hdl(zce::opendir(pathname));
-    if (dir_hdl.get() == nullptr)
-    {
-        return -1;
-    }
+#if defined (ZCE_OS_WINDOWS)
+    return ::remove(pathname);
+#elif defined (ZCE_OS_LINUX)
+    return ::remove(pathname);
+#endif
+}
 
-    //循环所有文件，检测扩展名称
-    dirent *dp = nullptr;
-    for (;;)
+//!递归删除目录
+int remove_all(const char* pathname)
+{
+    struct stat buf;
+    int ret = zce::stat(pathname, &buf);
+    if (ret != 0)
     {
-        dp = zce::readdir(dir_hdl.get());
-        if (dp == nullptr)
+        return ret;
+    }
+    if (buf.st_mode == S_IFDIR)
+    {
+        zce::remove(pathname);
+    }
+    else if (buf.st_mode == S_IFDIR)
+    {
+        zce::auto_dir dir_hdl(zce::opendir(pathname));
+        if (dir_hdl.get() == nullptr)
         {
-            break;
+            return -1;
         }
-        if (strcmp(".", dp->d_name) == 0 || strcmp("..", dp->d_name) == 0)
+
+        //循环所有文件，检测扩展名称
+        ::dirent *dp = nullptr;
+        for (;;)
         {
-            continue;
+            dp = zce::readdir(dir_hdl.get());
+            if (dp == nullptr)
+            {
+                break;
+            }
+            if (strcmp(".", dp->d_name) == 0 || strcmp("..", dp->d_name) == 0)
+            {
+                continue;
+            }
+            char del_obj[PATH_MAX];
+            path_splice(del_obj, PATH_MAX - 1, pathname, dp->d_name);
+            del_obj[PATH_MAX - 1] = '\0';
+            if (dp->d_type == DT_DIR)
+            {
+                // 递归调用
+                zce::remove_all(del_obj);
+            }
+            //文件
+            else if (dp->d_type == DT_REG)
+            {
+                zce::remove(del_obj);
+            }
         }
-        char del_obj[PATH_MAX];
-        path_str_splice(del_obj, PATH_MAX - 1, pathname, dp->d_name);
-        del_obj[PATH_MAX - 1] = '\0';
-        if (dp->d_type == DT_DIR)
+        zce::rmdir(pathname);
+    }
+    return 0;
+}
+
+//路径拼接
+const char* path_splice(char* dst,
+                        size_t dst_len,
+                        const char* path1,
+                        const char* path2)
+{
+    size_t path1_len = strlen(path1);
+    if (path1_len > 0)
+    {
+        if (ZCE_IS_DIRECTORY_SEPARATOR(path1[path1_len - 1]) == false)
         {
-            // 递归调用
-            rmdir_recurse(del_obj);
+            snprintf(dst,
+                     dst_len,
+                     "%s%s%s",
+                     path1,
+                     ZCE_DIRECTORY_SEPARATOR_STR,
+                     path2);
         }
-        //文件
-        else if (dp->d_type == DT_REG)
+        else
         {
-            unlink(del_obj);
+            snprintf(dst,
+                     dst_len,
+                     "%s%s",
+                     path1,
+                     path2);
         }
     }
-    rmdir(pathname);
-    return 0;
+    else
+    {
+        snprintf(dst,
+                 dst_len,
+                 "%s%s",
+                 ZCE_CURRENT_DIRECTORY_STR,
+                 path2);
+    }
+    return dst;
 }
 }

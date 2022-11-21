@@ -43,14 +43,19 @@ int pthread_attr_destroy(pthread_attr_t* attr);
 * @brief      非标准函数，设置线程属性变量属性，你可以设置，线程的的分离，JOIN属性，堆栈大小，线程的调度优先级
 * @return     int                0成功，-1失败
 * @param[out] attr
-* @param[in]  detachstate    分离的属性 PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
-* @param[in]  stacksize      堆栈的大小
-* @param[in]  threadpriority 线程优先级，（0是默认值），不太建议你用这个东东，
+* @param[in]  detachstate  分离的属性 PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
+* @param[in]  stacksize    堆栈的大小
+* @param[in]  policy       调度策略，SCHED_FIFO or SCHED_RR 不建议您使用这个值，（0是默认值）
+* @param[in]  priority     线程优先级，不建议你用这个东东，（0是默认值）
+*                          Linux，下 1-99，SCHED_FIFO 和 SCHED_RR 有优先级，看调度
+*                          调整优先级要先设置，PTHREAD_EXPLICIT_SCHED
+*                          Windows 下，-15 到，15
 * @note       WINDOWS 和LINUX共有的属性并不多
 */
 int pthread_attr_setex(pthread_attr_t* attr,
                        int detachstate = PTHREAD_CREATE_DETACHED,
                        size_t stacksize = 0,
+                       int policy = 0,
                        int threadpriority = 0
 );
 

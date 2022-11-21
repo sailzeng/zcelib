@@ -182,7 +182,7 @@ void log_file::make_configure(void) noexcept
     log_file_dir_ = dir_name;
 
     // 如果目录不存在，则创建
-    if (mkdir_recurse(log_file_dir_.c_str()) != 0)
+    if (zce::mkdir_all(log_file_dir_.c_str()) != 0)
     {
         // 创建失败，
         ZPRINT(RS_ALERT, "mkdir %s fail. err=%d|%s\n",

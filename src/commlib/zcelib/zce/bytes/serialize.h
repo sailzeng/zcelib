@@ -492,17 +492,17 @@ public:
 protected:
 
     ///状态是否正确，如果写入位置超出缓冲区的结尾，会置为false
-    bool is_good_;
+    bool is_good_ = true;
 
     ///读取流的BUFFER
-    const char* read_buf_;
+    const char* read_buf_ = nullptr;
     ///BUF的长度
-    size_t buf_len_;
+    size_t buf_len_ = 0;
 
     ///BUFFER结束的位置
-    const char* end_pos_;
+    const char* end_pos_ = nullptr;
     ///当前读取的位置
-    const char* read_pos_;
+    const char* read_pos_ = nullptr;
 };
 
 //辅助类，save_help 函数

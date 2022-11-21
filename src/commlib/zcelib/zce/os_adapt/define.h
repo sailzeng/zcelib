@@ -390,8 +390,8 @@ struct pthread_attr_t
     int             detachstate;
     //
     int             inheritsched;
-    //调度策略其实没法使用,我的代码不会用于REAL TIME系统
-    //int           schedpolicy;
+    //[[no use]]调度策略其实没法使用,我的代码不会用于REAL TIME系统
+    int             schedpolicy;
     //调度的优先级
     sched_param     schedparam;
     //堆栈的地址，在WINDOWS下没法用

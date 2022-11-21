@@ -9,7 +9,7 @@ struct _DNS_FLAG
 {
 public:
 
-#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
 
     //返回码字段，表示响应的差错状态。当值为 0 时，表示查询成功;
     //当值为 1 时，表示报文格式错误(Format error)，服务器不能理解请求的报文;

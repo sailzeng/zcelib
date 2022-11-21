@@ -33,7 +33,7 @@ typedef zce::lockfree::kfifo<uint32_t>::node bus_node;
 
 //MMAP的管道，你要初始化几条就初始化几条
 template<size_t MAX_PIPE>
-class mmap_buspipe : public zce::non_copyable
+class mmap_buspipe
 {
 protected:
 
@@ -78,6 +78,9 @@ public:
             bus_head_.size_of_room_[i] = 0;
         }
     }
+
+    mmap_buspipe(const mmap_buspipe &) = delete;
+    mmap_buspipe& operator=(const mmap_buspipe&) = delete;
 
 public:
 
@@ -319,7 +322,8 @@ int mmap_buspipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
         if (pipe_head->size_of_sizet_ != bus_head_.size_of_sizet_
             || pipe_head->number_of_pipe_ != bus_head_.number_of_pipe_)
         {
-            ZCE_LOG(RS_ERROR, "[zcelib] mmap_buspipe::initialize pipe fail. BUS_PIPE_HEAD old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
+            ZCE_LOG(RS_ERROR, "[zcelib] mmap_buspipe::initialize pipe fail. BUS_PIPE_HEAD "
+                    "old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
                     pipe_head->size_of_sizet_,
                     pipe_head->number_of_pipe_,
                     bus_head_.size_of_sizet_,
@@ -332,7 +336,8 @@ int mmap_buspipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
             if (pipe_head->size_of_pipe_[i] != bus_head_.size_of_pipe_[i]
                 || pipe_head->size_of_room_[i] != bus_head_.size_of_room_[i])
             {
-                ZCE_LOG(RS_ERROR, "[zcelib] mmap_buspipe::initialize pipe fail. BUS_PIPE_HEAD <%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
+                ZCE_LOG(RS_ERROR, "[zcelib] mmap_buspipe::initialize pipe fail. BUS_PIPE_HEAD "
+                        "<%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
                         i,
                         pipe_head->size_of_pipe_[i],
                         pipe_head->size_of_room_[i],

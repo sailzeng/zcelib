@@ -81,8 +81,8 @@ int zce::pthread_attr_getex(const pthread_attr_t* attr,
 int zce::pthread_attr_setex(pthread_attr_t* attr,
                             int detachstate,
                             size_t stacksize,
-                            int threadpriority
-)
+                            int policy,
+                            int priority)
 {
 #if defined (ZCE_OS_WINDOWS)
     assert(PTHREAD_CREATE_JOINABLE == detachstate || PTHREAD_CREATE_DETACHED == detachstate);
@@ -90,8 +90,8 @@ int zce::pthread_attr_setex(pthread_attr_t* attr,
     attr->stacksize = stacksize;
     //修改调度策略继承方式
     attr->inheritsched = PTHREAD_EXPLICIT_SCHED;
-    attr->schedparam.sched_priority = threadpriority;
-
+    attr->schedparam.sched_priority = priority;
+    attr->schedpolicy = policy;
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
@@ -103,22 +103,52 @@ int zce::pthread_attr_setex(pthread_attr_t* attr,
         return ret;
     }
 
-    //注意这儿，要先设置是否遵守不从夫进程得到调度方案
-    ret = ::pthread_attr_setinheritsched(attr, PTHREAD_EXPLICIT_SCHED);
-
-    if (ret != 0)
+    if (policy > 0)
     {
-        return ret;
+        int ret = pthread_attr_setschedpolicy(attr, policy);
+        if (ret != 0)
+        {
+            return ret;
+        }
     }
 
-    sched_param param;
-    param.sched_priority = threadpriority;
-    ret = ::pthread_attr_setschedparam(attr, &param);
-
-    if (ret != 0)
+    //如果有线程优先级，设置
+    if (priority > 0)
     {
-        return ret;
+        //注意这儿，要先设置是否遵守不从夫进程得到调度方案
+        ret = ::pthread_attr_setinheritsched(attr, PTHREAD_EXPLICIT_SCHED);
+        if (ret != 0)
+        {
+            return ret;
+        }
+        int max_priority = 0, min_priority = 0;
+        ret = ::sched_get_priority_max(max_priority);
+        if (ret != 0)
+        {
+            return ret;
+        }
+        if (priority > max_priority)
+        {
+            priority = max_priority;
+        }
+        ret = ::sched_get_priority_min(min_priority);
+        if (ret != 0)
+        {
+            return ret;
+        }
+        if (priority < min_priority)
+        {
+            priority = min_priority;
+        }
+        sched_param param;
+        param.sched_priority = priority;
+        ret = ::pthread_attr_setschedparam(attr, &param);
+        if (ret != 0)
+        {
+            return ret;
+        }
     }
+
     // 加个判断如果小于最小值，则赋为最小值
     if (stacksize < (size_t)PTHREAD_STACK_MIN)
     {
@@ -245,8 +275,7 @@ int zce::pthread_createex(void (*start_routine)(void*),
                           ZCE_THREAD_ID* threadid,
                           int detachstate,
                           size_t stacksize,
-                          int threadpriority
-)
+                          int threadpriority)
 {
     int ret = 0;
     pthread_attr_t attr;
@@ -412,8 +441,7 @@ int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN* ret_val)
     //OpenThread是一个WIN SERVER 2000后才有的函数 VC6应该没有
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
-                                             threadid
-    );
+                                             threadid);
     if (thr_handle == nullptr)
     {
         return -1;
@@ -460,8 +488,7 @@ int zce::pthread_cancel(ZCE_THREAD_ID threadid)
     //OpenThread是一个WIN SERVER 2000后才有的函数 VC6应该没有
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
-                                             threadid
-    );
+                                             threadid);
     if (thr_handle == nullptr)
     {
         errno = GetLastError();

@@ -456,17 +456,17 @@ ZCE_HANDLE mkstemp(char* template_name)
 
 //通过文件名称得到文件的stat信息，你可以认为zce_os_stat就是stat，只是在WINDOWS下stat64,
 //主要是为了长文件考虑的
-int zce::stat(const char* path, struct stat* file_stat)
+int zce::stat(const char* path, struct stat* buf)
 {
 #if defined (ZCE_OS_WINDOWS)
-    return ::stat(path, file_stat);
+    return ::stat(path, buf);
 #elif defined (ZCE_OS_LINUX)
-    return ::stat(path, file_stat);
+    return ::stat(path, buf);
 #endif
 }
 
 //通过文件的句柄得到文件的stat信息
-int fstat(ZCE_HANDLE file_handle, struct stat* file_stat)
+int fstat(ZCE_HANDLE file_handle, struct stat* buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -493,28 +493,28 @@ int fstat(ZCE_HANDLE file_handle, struct stat* file_stat)
 
     //_S_IFDIR,
 
-    memset(file_stat, 0, sizeof(struct stat));
-    file_stat->st_uid = 0;
-    file_stat->st_gid = 0;
-    file_stat->st_size = static_cast<_off_t>(file_size.QuadPart);
+    memset(buf, 0, sizeof(struct stat));
+    buf->st_uid = 0;
+    buf->st_gid = 0;
+    buf->st_size = static_cast<_off_t>(file_size.QuadPart);
 
     //得到几个时间
     //注意st_ctime这儿呀，这儿的LINUX下和Windows是有些不一样的，
     //st_ctime在LINUX下是状态最后改变时间，而在WINDOWS下是创建时间
-    file_stat->st_ctime = tv_ct_time.tv_sec;
-    file_stat->st_mtime = tv_wt_time.tv_sec;
-    file_stat->st_atime = tv_ac_time.tv_sec;
+    buf->st_ctime = tv_ct_time.tv_sec;
+    buf->st_mtime = tv_wt_time.tv_sec;
+    buf->st_atime = tv_ac_time.tv_sec;
 
     //检查是文件还是目录
-    file_stat->st_mode = 0;
+    buf->st_mode = 0;
 
     if (file_info.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)
     {
-        file_stat->st_mode = S_IFREG;
+        buf->st_mode = S_IFREG;
 
         if (file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
-            file_stat->st_mode = S_IFDIR;
+            buf->st_mode = S_IFDIR;
         }
     }
 

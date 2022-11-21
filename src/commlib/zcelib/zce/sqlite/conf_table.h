@@ -224,7 +224,7 @@ public:
     //! SQL语句
     char* sql_string_ = nullptr;
     //!
-    zce::sqlite_hdl* sqlite_handler_;
+    zce::sqlite_handle* sqlite_hdl_;
 };
 } //namespace zce
 

@@ -26,7 +26,7 @@
 #endif
 
 //定义一组ntol ntos,nothll等，主要问题是64的转换，不是所有系统都有，
-#if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN)
+#if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE)
 # define ZCE_HTONS(x)  ZCE_SWAP_UINT16 (x)
 # define ZCE_NTOHS(x)  ZCE_SWAP_UINT16 (x)
 # define ZCE_HTONL(x)  ZCE_SWAP_UINT32 (x)
@@ -40,7 +40,7 @@
 # define ZCE_NTOHL(x)  (x)
 # define ZCE_HTONLL(x) (x)
 # define ZCE_NTOHLL(x) (x)
-#endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
+#endif /* end if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE) */
 
 //这样写是为了避免BUS ERROR问题，但我自己也不能100%肯定这个方法能解决BUS ERROR，
 //因为我没有环境进行相关的测试。
@@ -168,7 +168,7 @@ struct ZDOUBLE_STRUCT
 //在默认编码的问题上，我还是倾向了小头，一方面我的代码估计99.99%都是跑在X86架构之下，另一方面
 //小头的是从低到高，和字节顺序一致，处理上也方便一点。
 
-#if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN)
+#if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE)
 
 ///从一个(char *)指针内读取小头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上不发生改变
 # define ZBYTE_TO_LEUINT16(ptr)    ZBYTE_TO_UINT16(ptr)
@@ -245,7 +245,7 @@ struct ZDOUBLE_STRUCT
 # define ZBEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
 # define ZBEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
 
-#endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
+#endif /* end if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE) */
 
 //带有旋转的移位操作，不同位数表示是针对短整，整数，64位长整的操作，
 //注意n不要传入一个无意义的值，比如32位的ZCE_ROTL32，n要小于31，否则

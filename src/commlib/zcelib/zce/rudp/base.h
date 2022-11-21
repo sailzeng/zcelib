@@ -57,7 +57,7 @@ protected:
     struct U32_ONE
     {
     public:
-#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
         //帧的长度，包括头部，最长4096一个包，但其实最大长度会按MTU TYPE进行控制
         uint32_t len_ : 12;
         //标志为，参考FLAG

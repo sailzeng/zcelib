@@ -6,7 +6,7 @@
 
 namespace zce
 {
-class sqlite_hdl;
+class sqlite_handle;
 /*!
 * @brief      get_table 函数返回的结果参数
 *             其实就是sqlite3_get_table 的结果参数的封装
@@ -14,7 +14,7 @@ class sqlite_hdl;
 */
 class sqlite_result
 {
-    friend class zce::sqlite_hdl;
+    friend class zce::sqlite_handle;
 
 public:
 

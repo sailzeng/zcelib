@@ -124,7 +124,7 @@ struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信�
 config_table::config_table()
 {
     sql_string_ = new char[MAX_SQLSTRING_LEN];
-    sqlite_handler_ = new zce::sqlite_hdl();
+    sqlite_hdl_ = new zce::sqlite_handle();
 }
 
 config_table::~config_table()
@@ -135,11 +135,11 @@ config_table::~config_table()
         sql_string_ = nullptr;
     }
 
-    sqlite_handler_->close_database();
-    if (sqlite_handler_)
+    sqlite_hdl_->close_db();
+    if (sqlite_hdl_)
     {
-        delete sqlite_handler_;
-        sqlite_handler_ = nullptr;
+        delete sqlite_hdl_;
+        sqlite_hdl_ = nullptr;
     }
 }
 
@@ -148,7 +148,7 @@ int config_table::open_dbfile(const char* db_file,
                               bool read_only,
                               bool create_db)
 {
-    int ret = sqlite_handler_->open_database(db_file, read_only, create_db);
+    int ret = sqlite_hdl_->open_db(db_file, read_only, create_db);
     if (ret != 0)
     {
         return ret;
@@ -158,7 +158,7 @@ int config_table::open_dbfile(const char* db_file,
 
 void config_table::close_dbfile()
 {
-    sqlite_handler_->close_database();
+    sqlite_hdl_->close_db();
 }
 
 //创建TABLE SQL语句
@@ -362,7 +362,7 @@ int config_table::create_table(unsigned int table_id)
     sql_create_table(table_id);
 
     int ret = 0;
-    ret = sqlite_handler_->exe(sql_string_);
+    ret = sqlite_hdl_->exe(sql_string_);
     if (ret != 0)
     {
         return ret;
@@ -377,7 +377,7 @@ int config_table::replace_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite_stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
     int ret = 0;
 
     ret = stmt_handler.prepare(sql_string_);
@@ -408,10 +408,10 @@ int config_table::replace_array(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite_stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
     int ret = 0;
 
-    ret = sqlite_handler_->begin_transaction();
+    ret = sqlite_hdl_->begin_transaction();
     if (ret != 0)
     {
         return ret;
@@ -443,7 +443,7 @@ int config_table::replace_array(unsigned int table_id,
         stmt_handler.reset();
     }
 
-    ret = sqlite_handler_->commit_transction();
+    ret = sqlite_hdl_->commit_transction();
     if (ret != 0)
     {
         return ret;
@@ -458,7 +458,7 @@ int config_table::select_one(unsigned int table_id,
     sql_select_one(table_id,
                    conf_data->index_1_,
                    conf_data->index_2_);
-    zce::sqlite_stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -492,7 +492,7 @@ int config_table::delete_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_delete_one(table_id, index_1, index_2);
-    zce::sqlite_stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -515,7 +515,7 @@ int config_table::counter(unsigned int table_id,
                           unsigned int* rec_count)
 {
     sql_counter(table_id, startno, numquery);
-    zce::sqlite_stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -563,7 +563,7 @@ int config_table::select_array(unsigned int table_id,
     ary_ai_iijma->resize(num_counter);
 
     sql_select_array(table_id, startno, numquery);
-    zce::sqlite_stmt stmt_handler(sqlite_handler_);
+    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
 
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)

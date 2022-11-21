@@ -198,7 +198,7 @@ public:
     {
         //根据算法的大小头要求，以及当前CPU的大小头，进行运算
         bool if_le = little_endian;
-#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
         //如果环境是是小头，而且算法编码要求小头的，直接使用指针
         if (if_le)
         {
@@ -288,7 +288,7 @@ public:
 
         //注意MD5算法要求的64bit的长度是小头LITTLE-ENDIAN编码，注意下面的比较是!=
         bool if_le = little_endian;
-#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
         if (!if_le)
         {
             data_len = ZCE_SWAP_UINT64(data_len);

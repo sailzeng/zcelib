@@ -64,7 +64,7 @@ void hash_md5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
     d = state[3];
 
     //MD5的代码用的会比较多，追求极致速度了，
-#if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
     //小头序下,假设是x86,x64，不考虑对齐的麻烦，直接上，
     //当然如果不是对其环境,理论上转换一次对齐也许更快
     x = block;

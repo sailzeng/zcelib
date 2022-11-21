@@ -80,7 +80,7 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    sqlite_stmt(sqlite_hdl* sqlite3_handler);
+    sqlite_stmt(sqlite_handle* sqlite3_handler);
     /*!
     * @brief      析构函数
     */
@@ -124,12 +124,12 @@ public:
     //!错误语句Str
     inline const char* error_message()
     {
-        return sqlite_handler_->error_message();
+        return sqlite_hdl_->error_message();
     }
     //!DB返回的错误ID
     inline  unsigned int error_code()
     {
-        return sqlite_handler_->error_code();
+        return sqlite_hdl_->error_code();
     }
 
     /*!
@@ -208,7 +208,7 @@ public:
 protected:
 
     //!SQLite的DB句柄
-    sqlite_hdl* sqlite_handler_ = nullptr;
+    sqlite_handle* sqlite_hdl_ = nullptr;
 
     //!SQLite原声的STMT的句柄
     sqlite3_stmt* prepared_statement_ = nullptr;

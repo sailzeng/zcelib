@@ -350,6 +350,7 @@
 #include <mutex>
 #include <semaphore>
 #include <condition_variable>
+#include <bit>
 
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( pop )
@@ -500,11 +501,32 @@ extern "C"
 #pragma GCC diagnostic pop
 #endif
 
+//外部头文件，都放在这前面呀，否则预编译头文件就不起作用了
+//这个红用于定义告诉编译器，后面的代码就不做预处理了，主要用于加快代码编译，但LINUX目前还不支持
+
+#if defined ZCE_OS_WINDOWS
+#pragma hdrstop
+#endif //#if defined ZCE_OS_WINDOWS
+
 //==================================================================================================
 //字节序的小头和大头的问题
-#define ZCE_LITTLE_ENDIAN  0x1234
-#define ZCE_BIG_ENDIAN     0x4321
+#define ZCE_ENDIAN_LITTLE  0x1234
+#define ZCE_ENDIAN_BIG     0x4321
+#define ZCE_ENDIAN_MIXED   0x3412
 
+#if ZCE_SUPPORT_CPP20 == 1
+
+constexpr std::endian __MY_ENDIAN = std::endian::native;
+constexpr std::endian __LITTE_ENDIAN = std::endian::little;
+
+#if __MY_ENDIAN == __LITTE_ENDIAN
+#define ZCE_ENDIAN_ORDER    ZCE_ENDIAN_LITTLE
+#elif __MY_ENDIAN == __BIG_ENDIAN
+#define ZCE_ENDIAN_ORDER    ZCE_ENDIAN_BIG
+#else
+#define ZCE_ENDIAN_ORDER    ZCE_ENDIAN_MIXED
+#endif
+#else
 //目前部分代码是考虑了小头党和大头党的问题，不知道有生之年这套代码是否还会为大头党服务一次？
 //主要是hash和加密部分的代码，是考虑过字节序兼容性问题的。
 // Little Endian or Big Endian ?
@@ -513,30 +535,23 @@ extern "C"
 #  include <endian.h>
 #endif
 
-#ifndef ZCE_BYTES_ORDER
+#ifndef ZCE_ENDIAN_ORDER
 #if ( (defined(__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)) || defined(__BIG_ENDIAN__) || defined(__BIG_ENDIAN) || defined(_BIG_ENDIAN) ) && !(defined(__LITTLE_ENDIAN__) || defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN))
-#  define ZCE_BYTES_ORDER ZCE_BIG_ENDIAN
+#  define ZCE_ENDIAN_ORDER ZCE_ENDIAN_BIG
 #elif defined(__sparc) || defined(__sparc__) \
     || defined(__ppc__) || defined(_POWER) || defined(__powerpc__) || defined(_ARCH_PPC) || defined(__PPC__) || defined(__PPC) || defined(PPC) \
     || defined(__powerpc__) || defined(__powerpc) || defined(powerpc) \
     || defined(__hpux)  || defined(__hppa)  || defined(_MIPSEB) || defined(__s390__)
-#  define  ZCE_BYTES_ORDER ZCE_BIG_ENDIAN
+#  define  ZCE_ENDIAN_ORDER ZCE_ENDIAN_BIG
 #else
 // Little Endian assumed. PDP Endian and other very rare endian format are unsupported.
 //其实除了大头党和小头党以外，还有其他派别，人类真复杂。
-#define ZCE_BYTES_ORDER    ZCE_LITTLE_ENDIAN
+#define ZCE_ENDIAN_ORDER    ZCE_ENDIAN_LITTLE
 #endif
-#endif  //#ifndef ZCE_BYTES_ORDER
-
+#endif  //#ifndef ZCE_ENDIAN_ORDER
+#endif
 //==================================================================================================
 //各种宏定义，编译定义，一些比较常用的宏，帮助你节省一些代码
-
-//外部头文件，都放在这前面呀，否则预编译头文件就不起作用了
-//这个红用于定义告诉编译器，后面的代码就不做预处理了，主要用于加快代码编译，但LINUX目前还不支持
-
-#if defined ZCE_OS_WINDOWS
-#pragma hdrstop
-#endif //#if defined ZCE_OS_WINDOWS
 
 //我是抄ACE_UNUSED_ARG的呀。我承认呀。windows下也许也可以考虑定义成__noop呀，
 #if !defined (ZCE_UNUSED_ARG)
@@ -578,7 +593,7 @@ extern "C"
 #define __ZCE_FUNC__   __FUNCTION__
 #endif
 
-//
+//!LIKELY分支优先处理，可以使用[[likely]] [[unlikely]]这种方法了
 #if defined(ZCE_OS_LINUX) && defined(__GNUC__)
 #define ZCE_LIKELY(x)      __builtin_expect (x, 1)
 #define ZCE_UNLIKELY(x)    __builtin_expect (x, 0)

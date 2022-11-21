@@ -2,9 +2,9 @@
 
 int test_sqlite_handle(int /*argc*/, char* /*argv */[])
 {
-    zce::sqlite_hdl hdl;
+    zce::sqlite_handle hdl;
     int ret = 0;
-    ret = hdl.open_database("E:\\134.db", false, true);
+    ret = hdl.open_db("E:\\134.db", false, true);
     if (ret != 0)
     {
         return -1;
@@ -40,16 +40,16 @@ int test_sqlite_handle(int /*argc*/, char* /*argv */[])
             << " address=" << address
             << " salary=" << salary << std::endl;
     }
-    hdl.close_database();
+    hdl.close_db();
 
     return 0;
 }
 
 int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
 {
-    zce::sqlite_hdl hdl;
+    zce::sqlite_handle hdl;
     int ret = 0;
-    ret = hdl.open_database("E:\\134.db", false, true);
+    ret = hdl.open_db("E:\\134.db", false, true);
     if (ret != 0)
     {
         return -1;

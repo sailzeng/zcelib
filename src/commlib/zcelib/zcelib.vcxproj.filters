@@ -239,9 +239,6 @@
     <ClCompile Include="zce\thread\thread_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\thread\thread_wait_mgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\uuid\generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -662,9 +659,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\thread\thread_task.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\thread\thread_wait_mgr.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\uuid\generator.h">
