@@ -61,14 +61,16 @@ public:
     //注意这儿的读写锁标识读写锁方式，而不是读写操作
 
     //读取锁
-    void lock_read();
+    void lock_shared();
     //尝试读取锁
-    bool try_lock_read();
+    bool try_lock_shared();
+
+    void unlock_shared();
 
     //写锁定
-    void lock_write();
+    void lock();
     //尝试读取锁
-    bool try_lock_write();
+    bool try_lock();
 
     //解锁,如果是读写锁也只需要这一个函数
     void unlock();

@@ -27,7 +27,7 @@ class time_value;
 *             Windows下是用临界区实现的，所以嘛，同时注意临界区是可递归的
 *             因为临界区没有超时处理能录，这个封装也就不提供了。（临界区本来也不应该有超时）
 */
-class thread_mutex : public zce::lock_base
+class thread_mutex
 {
 public:
     ///线程锁的GUARD
@@ -38,16 +38,16 @@ public:
     //构造函数
     thread_mutex();
     ///析构函数
-    virtual ~thread_mutex(void);
+    ~thread_mutex(void);
 
     ///锁定
-    virtual void lock() noexcept;
+    void lock() noexcept;
 
     ///尝试锁定
-    virtual bool try_lock() noexcept;
+    bool try_lock() noexcept;
 
     ///解锁,
-    virtual void unlock() noexcept;
+    void unlock() noexcept;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();
@@ -61,7 +61,7 @@ protected:
 * @brief      线程递归锁，Windows下用Mutex，Linux用pthread_mutex
 *             相对而言，推荐使用递归锁,
 */
-class thread_recursive_mutex : public zce::lock_base
+class thread_recursive_mutex
 {
 public:
 
@@ -75,19 +75,19 @@ public:
     virtual ~thread_recursive_mutex(void);
 
     ///锁定
-    void lock()  noexcept override;
+    void lock()  noexcept;
 
     ///尝试锁定
-    bool try_lock()  noexcept override;
+    bool try_lock()  noexcept;
 
     ///解锁,
-    void unlock()  noexcept override;
+    void unlock()  noexcept;
 
     ///绝对时间超时的的锁定，超时后解锁
-    bool try_lock_until(const zce::time_value& abs_time)  noexcept override;
+    bool try_lock_until(const zce::time_value& abs_time)  noexcept;
 
     ///相对时间的超时锁定，超时后，解锁
-    bool try_lock_for(const zce::time_value& relative_time)  noexcept override;
+    bool try_lock_for(const zce::time_value& relative_time)  noexcept;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();

@@ -88,7 +88,7 @@ ZCE_HANDLE file_lock::get_file_handle()
 }
 
 //读取锁
-void file_lock::lock_read()
+void file_lock::lock_shared()
 {
     int ret = 0;
     ret = zce::fcntl_rdlock(&file_lock_, SEEK_SET, 0, file_len_);
@@ -102,7 +102,7 @@ void file_lock::lock_read()
     return;
 }
 //尝试读取锁
-bool file_lock::try_lock_read()
+bool file_lock::try_lock_shared()
 {
     int ret = 0;
 
@@ -112,12 +112,16 @@ bool file_lock::try_lock_read()
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::flock LOCK_SH|LOCK_NB", ret);
         return false;
     }
-
     return true;
 }
 
+void file_lock::unlock_shared()
+{
+    return unlock();
+}
+
 //写锁定
-void file_lock::lock_write()
+void file_lock::lock()
 {
     int ret = 0;
     ret = zce::fcntl_wrlock(&file_lock_, SEEK_SET, 0, file_len_);
@@ -128,7 +132,7 @@ void file_lock::lock_write()
     }
 }
 //尝试读取锁
-bool file_lock::try_lock_write()
+bool file_lock::try_lock()
 {
     int ret = 0;
 

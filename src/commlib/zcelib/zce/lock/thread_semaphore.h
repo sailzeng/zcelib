@@ -18,7 +18,7 @@ namespace zce
 /*!
 @brief      线程的信号灯封装，使用的是无名的信号灯，
 */
-class thread_semaphore : public zce::semaphore_base
+class thread_semaphore
 {
 public:
     //线程锁的GUARD
@@ -32,19 +32,19 @@ public:
     virtual ~thread_semaphore(void);
 
     //锁定
-    void acquire() noexcept override;
+    void acquire() noexcept;
 
     //尝试锁定
-    bool try_acquire() noexcept override;
+    bool try_acquire() noexcept;
 
     //解锁,
-    void release() noexcept override;
+    void release() noexcept;
 
     //绝对时间超时的的锁定，超时后解锁
-    bool try_acquire_until(const zce::time_value& abs_time) noexcept override;
+    bool try_acquire_until(const zce::time_value& abs_time) noexcept;
 
     //相对时间的超时锁定，超时后，解锁
-    bool try_acquire_for(const zce::time_value& relative_time) noexcept override;
+    bool try_acquire_for(const zce::time_value& relative_time) noexcept;
 
 protected:
     //线程锁

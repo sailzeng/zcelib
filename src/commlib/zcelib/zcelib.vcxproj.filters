@@ -529,9 +529,6 @@
     <ClInclude Include="zce\lock\thread_condi.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\lock\synch_traits.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\lock\lock_guard.h">
       <Filter>Source Files</Filter>
     </ClInclude>

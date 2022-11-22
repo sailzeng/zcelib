@@ -30,9 +30,9 @@ class fsmtask_manger : public fsm_manager
 protected:
 
     //zce::msgrings_sema底层实现用的Deque
-    typedef zce::msgrings_sema<soar::zerg_frame*>  APPFRAME_MESSAGE_QUEUE;
+    typedef zce::msgrings_sema<soar::zerg_frame*>  APPFRAME_MSGQUEUE;
     //APPFRAME的分配器
-    typedef zergframe_mallocor<typename zce::MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
+    typedef zergframe_mallocor<typename zce::thread_mutex>     APPFRAME_MALLOCOR;
 
     //FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，这个数量级别已经不少了
     static const size_t FRAME_QUEUE_WATER_MARK = 102400;
@@ -172,7 +172,6 @@ public:
         //相信这个锁不会占据主循环
         ret = enqueue_sendqueue(rsp_msg, false);
         DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO SEND QUEUE FRAME", rsp_msg);
-
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Wait %d seconds to enqueue_sendqueue but fail. \
@@ -228,10 +227,10 @@ public:
 protected:
 
     //发送的MSG QUEUE
-    APPFRAME_MESSAGE_QUEUE* send_msg_queue_ = nullptr;
+    std::unique_ptr<APPFRAME_MSGQUEUE> send_msg_queue_{ new APPFRAME_MSGQUEUE(FRAME_QUEUE_WATER_MARK) };
 
     //接受的MSG QUEUE
-    APPFRAME_MESSAGE_QUEUE* recv_msg_queue_ = nullptr;
+    std::unique_ptr<APPFRAME_MSGQUEUE> recv_msg_queue_{ new APPFRAME_MSGQUEUE(FRAME_QUEUE_WATER_MARK) };
 
     //APPFRAME的内存分配池子
     APPFRAME_MALLOCOR* frame_mallocor_ = nullptr;

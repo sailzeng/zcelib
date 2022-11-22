@@ -21,7 +21,7 @@ namespace zce
 {
 //线程的条件变量类,为了方便用了模版类，但请你直接用两个typedef
 //!使用线程MUTEX
-class thread_condition : public zce::condition_base
+class thread_condition
 {
 public:
 
@@ -32,21 +32,21 @@ public:
     virtual ~thread_condition(void);
 
     //!等待
-    virtual void wait(thread_mutex* external_mutex) noexcept override;
+    virtual void wait(thread_mutex* external_mutex) noexcept;
 
     //!绝对时间超时的的等待，超时后解锁
     virtual bool wait_until(thread_mutex* external_mutex,
-                            const zce::time_value& abs_time) noexcept override;
+                            const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
     virtual bool wait_for(thread_mutex* external_mutex,
-                          const zce::time_value& relative_time) noexcept override;
+                          const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.
-    void notify_one(void) noexcept override;
+    void notify_one(void) noexcept;
 
     //!给所有的等待线程广播信号 Signal *all* waiting threads.
-    void notify_all(void) noexcept override;
+    void notify_all(void) noexcept;
 
 protected:
 
@@ -55,7 +55,7 @@ protected:
 };
 
 //!使用可递归的MUTEX的类
-class thread_recursive_condition : public zce::condition_rmutex_base
+class thread_recursive_condition
 {
 public:
 
@@ -65,21 +65,21 @@ public:
     virtual ~thread_recursive_condition(void);
 
     //!等待
-    virtual void wait(thread_recursive_mutex* external_mutex) noexcept override;
+    virtual void wait(thread_recursive_mutex* external_mutex) noexcept;
 
     //!绝对时间超时的的等待，超时后解锁
     virtual bool wait_until(thread_recursive_mutex* external_mutex,
-                            const zce::time_value& abs_time) noexcept override;
+                            const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
     virtual bool wait_for(thread_recursive_mutex* external_mutex,
-                          const zce::time_value& relative_time) noexcept override;
+                          const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.
-    void notify_one(void) noexcept override;
+    void notify_one(void) noexcept;
 
     //!给所有的等待线程广播信号 Signal *all* waiting threads.
-    void notify_all(void) noexcept override;
+    void notify_all(void) noexcept;
 
 protected:
 

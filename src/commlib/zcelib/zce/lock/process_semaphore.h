@@ -19,7 +19,7 @@ namespace zce
 *             LINUX下用有名信号灯，
 *             WINDOWS下用带名称的信号灯，
 */
-class process_semaphore : public zce::semaphore_base
+class process_semaphore
 {
 public:
 
@@ -38,13 +38,13 @@ public:
     virtual ~process_semaphore(void);
 
     ///锁定
-    void acquire() noexcept override;
+    void acquire() noexcept;
 
     ///尝试锁定
-    bool try_acquire() noexcept override;
+    bool try_acquire() noexcept;
 
     //解锁,
-    void release() noexcept override;
+    void release() noexcept;
 
     /*!
     * @brief      绝对时间超时的的锁定，超时后解锁
@@ -52,7 +52,7 @@ public:
     * @param      abs_time  超时的绝对时间
     */
     bool try_acquire_until(
-        const zce::time_value& abs_time) noexcept override;
+        const zce::time_value& abs_time) noexcept;
 
     /*!
     * @brief      相对时间的超时锁定，超时后，解锁
@@ -60,7 +60,7 @@ public:
     * @param      relative_time  超时的绝对时间
     */
     bool try_acquire_for(
-        const zce::time_value& relative_time) noexcept override;
+        const zce::time_value& relative_time) noexcept;
 
 protected:
 

@@ -22,7 +22,7 @@ namespace zce
 *             在LINUX下，还是用pthread_mutex实现的，但是用共享内存存放，名字用于共享
 *             内存名字
 */
-class process_mutex : public zce::lock_base
+class process_mutex
 {
 public:
 
@@ -33,22 +33,22 @@ public:
     ///构造函数
     process_mutex(const char* mutex_name, bool recursive = true);
     ///析构函数
-    virtual ~process_mutex(void);
+    ~process_mutex(void);
 
     ///锁定
-    void lock() noexcept override;
+    void lock() noexcept;
 
     ///尝试锁定
-    bool try_lock() noexcept override;
+    bool try_lock() noexcept;
 
     ///解锁,
-    void unlock() noexcept override;
+    void unlock() noexcept;
 
     ///绝对时间超时的的锁定，超时后解锁
-    bool try_lock_until(const zce::time_value& abs_time) noexcept override;
+    bool try_lock_until(const zce::time_value& abs_time) noexcept;
 
     ///相对时间的超时锁定，超时后，解锁
-    bool try_lock_for(const zce::time_value& relative_time) noexcept override;
+    bool try_lock_for(const zce::time_value& relative_time) noexcept;
 
     ///取出内部的锁的指针
     pthread_mutex_t* get_lock();

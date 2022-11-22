@@ -18,24 +18,24 @@ namespace zce
 {
 /*!
 * @brief      锁GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型，可以是Null_Mutex，Process_Mutex，
+* @tparam     LOCK 锁的类型，可以是Null_Mutex，Process_Mutex，
 *             Thread_Light_Mutex，Thread_Recursive_Mutex
 *             process_semaphore,thread_nonr_mutex,等
 */
-template <typename zce_lock>
+template <typename LOCK>
 class lock_guard
 {
 public:
 
     ///构造，得到锁，进行锁定
-    lock_guard(zce_lock& lock) :
+    lock_guard(LOCK& lock) :
         lock_(&lock)
     {
         lock_->lock();
     }
 
     //构造，得到锁，根据要求决定是否进行锁定操作
-    lock_guard(zce_lock& lock, bool block) :
+    lock_guard(LOCK& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -74,26 +74,26 @@ public:
 protected:
 
     ///用来GUARD保护的锁
-    zce_lock* lock_;
+    LOCK* lock_;
 };
 
 /*!
 * @brief      读写锁的共享锁（读取）锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
+* @tparam     RWLOCK 锁的类型,可以是，null_lock, file_lock thread_rw_mutex
 */
-template <class zce_lock>
+template <class RWLOCK>
 class shared_guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    shared_guard(zce_lock& lock) :
+    shared_guard(RWLOCK& lock) :
         lock_(&lock)
     {
         lock_->lock_shared();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    shared_guard(zce_lock& lock, bool block) :
+    shared_guard(RWLOCK& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -131,26 +131,26 @@ public:
 protected:
 
     ///用来GUARD保护的锁
-    zce_lock* lock_;
+    RWLOCK* lock_;
 };
 
 /*!
 * @brief      读写锁中的写锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock thread_rw_mutex
+* @tparam     RWLOCK 锁的类型,可以是 null_lock file_lock thread_rw_mutex
 */
-template <class zce_lock>
+template <class RWLOCK>
 class unique_guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    unique_guard(zce_lock& lock) :
+    unique_guard(RWLOCK& lock) :
         lock_(&lock)
     {
         lock_->lock_write();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    unique_guard(zce_lock& lock, bool block) :
+    unique_guard(RWLOCK& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -188,26 +188,26 @@ public:
 protected:
 
     ///用来GUARD保护的锁
-    zce_lock* lock_;
+    RWLOCK* lock_;
 };
 
 /*!
 * @brief      读写锁的共享锁（读取）锁定的GUARD，利用构造和修改进行自动加锁，自动解锁操作方法
-* @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock thread_rw_mutex
+* @tparam     ZCE_LOCK 锁的类型,可以是，null_lock, ZCE_File_Lock thread_rw_mutex
 */
-template <class zce_sema>
+template <class SEMA>
 class semaphore_guard
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    semaphore_guard(zce_sema& lock) :
+    semaphore_guard(SEMA& lock) :
         lock_(&lock)
     {
         lock_->acquire();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    semaphore_guard(zce_sema& lock, bool block) :
+    semaphore_guard(SEMA& lock, bool block) :
         lock_(&lock)
     {
         if (block)
@@ -244,7 +244,7 @@ public:
 protected:
 
     ///用来GUARD保护的锁
-    zce_sema* lock_;
+    SEMA* lock_;
 };
 
 /*!
@@ -255,13 +255,13 @@ protected:
 *             1.利用多态处理，可以表现为不同的行为
 *             2.如果传递一个空指针，行为类似空锁
 */
-template <class zce_lock>
+template <class LOCKP>
 class lock_ptr_guard
 {
 public:
 
     //构造，得到锁，进行锁定
-    lock_ptr_guard(zce_lock* lock_ptr) :
+    lock_ptr_guard(LOCKP* lock_ptr) :
         lock_ptr_(lock_ptr)
     {
         if (lock_ptr_)
@@ -271,7 +271,7 @@ public:
     }
 
     ///构造，得到锁，根据要求决定是否进行锁定操作
-    lock_ptr_guard(zce_lock* lock_ptr, bool block) :
+    lock_ptr_guard(LOCKP* lock_ptr, bool block) :
         lock_ptr_(lock_ptr)
     {
         if (block && lock_ptr_)
@@ -327,6 +327,6 @@ public:
 protected:
 
     ///用来GUARD保护的锁,利用C++特性实现锁差异
-    zce_lock* lock_ptr_;
+    LOCKP* lock_ptr_;
 };
 }

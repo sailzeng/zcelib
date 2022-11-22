@@ -406,7 +406,7 @@ protected:
 protected:
 
     //多态的锁,
-    zce::lock_base* stat_lock_;
+    std::mutex* stat_lock_ = nullptr;
 
     //MMAP内存影射的数据文件
     zce::shm_posix        stat_file_;

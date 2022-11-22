@@ -120,9 +120,6 @@ int server_status::initialize(const char* stat_filename,
 
     stat_file_head_ = static_cast<ZCE_STATUS_HEAD*>(stat_file_.addr());
 
-    //如果在这儿出现断言，就是你代码使用错误了.
-    ZCE_ASSERT(nullptr == stat_lock_);
-
     // 统计数据区初始化
     char* stat_ptr = static_cast<char*>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);
     auto succ = false;
@@ -209,11 +206,7 @@ void server_status::multi_thread_guard(bool multi_thread)
     //利用多态决定锁的行为
     if (multi_thread)
     {
-        stat_lock_ = new thread_mutex();
-    }
-    else
-    {
-        stat_lock_ = new zce::null_lock();
+        stat_lock_ = new std::mutex();
     }
 }
 

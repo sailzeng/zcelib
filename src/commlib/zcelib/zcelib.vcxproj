@@ -329,7 +329,6 @@
     <ClInclude Include="zce\lock\process_mutex.h" />
     <ClInclude Include="zce\lock\process_semaphore.h" />
     <ClInclude Include="zce\lock\record_lock.h" />
-    <ClInclude Include="zce\lock\synch_traits.h" />
     <ClInclude Include="zce\lock\thread_condi.h" />
     <ClInclude Include="zce\lock\thread_mutex.h" />
     <ClInclude Include="zce\lock\thread_rw_mutex.h" />

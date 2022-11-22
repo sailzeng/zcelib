@@ -19,10 +19,8 @@
 #pragma once
 
 #include "zce/predefine.h"
-#include "zce/lock/synch_traits.h"
 #include "zce/util/non_copyable.h"
 #include "zce/lock/thread_mutex.h"
-#include "zce/lock/synch_traits.h"
 #include "zce/lock/thread_semaphore.h"
 #include "zce/comm/common.h"
 

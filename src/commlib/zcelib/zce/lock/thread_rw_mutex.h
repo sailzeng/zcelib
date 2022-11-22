@@ -33,7 +33,7 @@ namespace zce
 @brief      线程的读写锁
 
 */
-class thread_rw_mutex : public zce::lock_base
+class thread_rw_mutex
 {
 public:
     //!读锁的GUARD
@@ -52,22 +52,22 @@ public:
     //尝试读取锁
     virtual bool try_lock_shared() noexcept;
     //!绝对时间
-    bool try_lock_shared_until(const zce::time_value& abs_time) noexcept override;
+    bool try_lock_shared_until(const zce::time_value& abs_time) noexcept;
     //!相对时间
-    bool try_lock_shared_for(const zce::time_value& relative_time) noexcept override;
+    bool try_lock_shared_for(const zce::time_value& relative_time) noexcept;
     //!解读锁
-    void unlock_shared() noexcept override;
+    void unlock_shared() noexcept;
 
     //!写锁定
     void lock() noexcept;
     //!尝试读取锁
     bool try_lock() noexcept;
     //!写锁定超时，绝对时间
-    bool try_lock_until(const zce::time_value& abs_time) noexcept override;
+    bool try_lock_until(const zce::time_value& abs_time) noexcept;
     //!写锁定超时，相对时间
-    bool try_lock_for(const zce::time_value& relative_time) noexcept override;
+    bool try_lock_for(const zce::time_value& relative_time) noexcept;
     //!解写锁
-    void unlock() noexcept override;
+    void unlock() noexcept;
 
     //!取出内部的锁的指针
     pthread_rwlock_t* get_lock();
@@ -85,7 +85,7 @@ protected:
             主要是为了适配Windows SVR 2008以后的读写锁实现，
             如果环境允许，推荐使用这个，速度比模拟的估计快很多，
 */
-class thread_win_rw_mutex : public zce::lock_base
+class thread_win_rw_mutex
 {
 public:
     //!读锁的GUARD
@@ -100,18 +100,18 @@ public:
 
 public:
     //!读取锁
-    void lock_shared() noexcept override;
+    void lock_shared() noexcept;
     //!尝试读取锁
-    bool try_lock_shared() noexcept override;
+    bool try_lock_shared() noexcept;
     //!解读锁
-    void unlock_shared() noexcept override;
+    void unlock_shared() noexcept;
 
     //!写锁定
-    void lock() noexcept override;
+    void lock() noexcept;
     //!尝试读取锁
-    bool try_lock() noexcept override;
+    bool try_lock() noexcept;
     //!解写锁
-    void unlock() noexcept override;
+    void unlock() noexcept;
 
     //!取出内部的锁的指针
     SRWLOCK* get_lock();

@@ -13,20 +13,6 @@ fsmtask_manger::fsmtask_manger()
 //析构函数
 fsmtask_manger::~fsmtask_manger()
 {
-    //删除MSG QUEUE
-    if (send_msg_queue_)
-    {
-        delete send_msg_queue_;
-        send_msg_queue_ = nullptr;
-    }
-
-    //
-    if (recv_msg_queue_)
-    {
-        delete recv_msg_queue_;
-        recv_msg_queue_ = nullptr;
-    }
-
     if (frame_mallocor_)
     {
         delete frame_mallocor_;
@@ -72,8 +58,6 @@ void fsmtask_manger::initialize(size_t  szregtrans,
     frame_mallocor_ = frame_mallocor;
 
     enqueue_timeout_ = enqueue_timeout;
-    send_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
-    recv_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
 }
 
 //激活N个线程，
@@ -118,7 +102,8 @@ int fsmtask_manger::active_notify_task(fsmtask_taskbase* clone_task,
                                         task_list_[i]);
         if (ret != 0)
         {
-            ZCE_LOG(RS_ALERT, "[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
+            ZCE_LOG(RS_ALERT, "[framework] Activate Thread fail.Please "
+                    "check system config.id [%u] Stack size [%u].",
                     static_cast<unsigned int>(i),
                     static_cast<unsigned int>(task_stack_size));
             return -1;
@@ -172,7 +157,8 @@ int fsmtask_manger::process_recvqueue_frame(size_t& proc_frame, size_t& create_t
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
             //if ( zce::last_error() != EAGAIN )
             //{
-            //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
+            //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u","
+            // "ret,zce::last_error());
             //  return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
             //}
             return 0;
@@ -252,80 +238,81 @@ int fsmtask_manger::enqueue_sendqueue(soar::zerg_frame* post_frame, bool alloc_f
 }
 
 ////从recv的消息队列中去一个数据出来，进行超时等待
-//int fsmtask_manger::dequeue_recvqueue(soar::zerg_frame *&get_frame,zce::time_value &tv)
-//{
-//    int ret = recv_msg_queue_->dequeue(get_frame,tv);
-//    auto monitor = soar::stat_monitor::instance();
-//    //返回值小于0表示失败
-//    if (ret < 0)
-//    {
-//        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-//        //if ( zce::last_error() != ETIME )
-//        //{
-//        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
-//        //}
-//        return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
-//    }
-//    soar::stat_monitor::instance()->
-//        add_one(COMM_STAT_TASK_QUEUE_RECV_COUNT,
-//                      self_svc_info_.business_id_,
-//                      get_frame->command_);
-//    return 0;
-//}
+int fsmtask_manger::dequeue_recvqueue(soar::zerg_frame *&get_frame,
+                                      zce::time_value &tv)
+{
+    int ret = recv_msg_queue_->dequeue_wait(get_frame, tv);
+    //返回值小于0表示失败
+    if (ret < 0)
+    {
+        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
+        //if ( zce::last_error() != ETIME )
+        //{
+        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
+        //}
+        return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
+    }
+    soar::stat_monitor::instance()->
+        add_one(COMM_STAT_TASK_QUEUE_RECV_COUNT,
+                self_svc_info_.business_id_,
+                get_frame->command_);
+    return 0;
+}
 
 ////从recv的消息队列中去一个数据出来，不进行超时等待
-//int fsmtask_manger::trydequeue_recvqueue(soar::zerg_frame *&get_frame)
-//{
-//    int ret = recv_msg_queue_->try_dequeue(get_frame);
-//    //返回值小于0表示失败
-//    if (ret < 0)
-//    {
-//        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-//        //if ( zce::last_error() != EAGAIN )
-//        //{
-//        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
-//        //}
-//        return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
-//    }
-//    soar::stat_monitor::instance()->
-//        add_one(COMM_STAT_TASK_QUEUE_RECV_COUNT,
-//                      self_svc_info_.business_id_,
-//                      get_frame->command_);
-//    return 0;
-//}
-//
-////从send的消息队列中去一个数据出来，进行超时等待
-//int fsmtask_manger::dequeue_sendqueue(soar::zerg_frame *&get_frame,zce::time_value &tv)
-//{
-//    int ret = 0;
-//    ret = send_msg_queue_->dequeue(get_frame,tv);
-//    if (ret < 0)
-//    {
-//        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-//        //if ( zce::last_error() != ETIME )
-//        //{
-//        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
-//        //}
-//        return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
-//    }
-//
-//    return 0;
-//}
-//
-////从send的消息队列中去一个数据出来，不进行超时等待
-//int fsmtask_manger::trydequeue_sendqueue(soar::zerg_frame *&get_frame)
-//{
-//    int ret = 0;
-//    ret = send_msg_queue_->try_dequeue(get_frame);
-//    if (ret < 0)
-//    {
-//        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-//        //if ( zce::last_error() != EAGAIN )
-//        //{
-//        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
-//        //}
-//        return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
-//    }
-//    return 0;
-//}
+int fsmtask_manger::trydequeue_recvqueue(soar::zerg_frame *&get_frame)
+{
+    int ret = recv_msg_queue_->try_dequeue(get_frame);
+    //返回值小于0表示失败
+    if (ret < 0)
+    {
+        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
+        //if ( zce::last_error() != EAGAIN )
+        //{
+        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
+        //}
+        return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
+    }
+    soar::stat_monitor::instance()->
+        add_one(COMM_STAT_TASK_QUEUE_RECV_COUNT,
+                self_svc_info_.business_id_,
+                get_frame->command_);
+    return 0;
+}
+
+//从send的消息队列中去一个数据出来，进行超时等待
+int fsmtask_manger::dequeue_sendqueue(soar::zerg_frame *&get_frame,
+                                      zce::time_value &tv)
+{
+    int ret = 0;
+    ret = send_msg_queue_->dequeue_wait(get_frame, tv);
+    if (ret < 0)
+    {
+        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
+        //if ( zce::last_error() != ETIME )
+        //{
+        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
+        //}
+        return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
+    }
+
+    return 0;
+}
+
+//从send的消息队列中去一个数据出来，不进行超时等待
+int fsmtask_manger::trydequeue_sendqueue(soar::zerg_frame *&get_frame)
+{
+    int ret = 0;
+    ret = send_msg_queue_->try_dequeue(get_frame);
+    if (ret < 0)
+    {
+        //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
+        //if ( zce::last_error() != EAGAIN )
+        //{
+        //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
+        //}
+        return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
+    }
+    return 0;
+}
 }

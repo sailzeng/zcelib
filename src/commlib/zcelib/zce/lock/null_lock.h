@@ -31,7 +31,7 @@ class time_value;
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
 */
-class null_lock : public zce::lock_base
+class null_lock
 {
 public:
     //nullptr锁的GUARD
@@ -43,66 +43,89 @@ public:
     ///构造函数
     null_lock() = default;
     ///析构函数
-    virtual ~null_lock(void) = default;
+    ~null_lock(void) = default;
 
 public:
     ///锁定
-    void lock() noexcept override
+    void lock() noexcept
     {
     }
     ///尝试锁定
-    bool try_lock() noexcept override
+    bool try_lock() noexcept
     {
         return true;
     }
     ///解锁,
-    void unlock() noexcept override
+    void unlock() noexcept
     {
     }
     ///尝试锁定，等待到超时时间点（绝对时间）后解锁，返回是否锁定
-    bool try_lock_until(const zce::time_value&) noexcept override
+    bool try_lock_until(const zce::time_value&) noexcept
     {
         return true;
     }
     ///相对时间
-    bool try_lock_for(const zce::time_value&) noexcept override
+    bool try_lock_for(const zce::time_value&) noexcept
     {
         return true;
     }
     //相对与BOOST的shared的共享-独占锁的叫法，我还是倾向读写锁
 
     ///读取锁
-    void lock_shared() noexcept override
+    void lock_shared() noexcept
     {
     }
     ///解锁读取锁
-    void unlock_shared() noexcept override
+    void unlock_shared() noexcept
     {
     }
     ///尝试读取锁
-    bool try_lock_shared() noexcept override
+    bool try_lock_shared() noexcept
     {
         return true;
     }
     ///绝对时间超时的读取锁，
     bool try_lock_shared_until(
-        const zce::time_value& /*abs_time*/) noexcept override
+        const zce::time_value& /*abs_time*/) noexcept
     {
         return true;
     }
     ///相对时间超时的读取锁，
     bool try_lock_shared_for(
-        const zce::time_value& /*relative_time*/) noexcept override
+        const zce::time_value& /*relative_time*/) noexcept
+    {
+        return true;
+    }
+
+    //!
+    void acquire() noexcept
+    {
+    }
+    //!
+    bool try_acquire() noexcept
+    {
+        return true;
+    }
+    //!
+    void release() noexcept
+    {
+    }
+    //!
+    bool try_acquire_until(
+        const zce::time_value& /*abs_time*/) noexcept
+    {
+        return true;
+    }
+    //!
+    bool try_acquire_for(
+        const zce::time_value& /*relative_time*/) noexcept
     {
         return true;
     }
 };
 
-//!为了C++标准定义一个
-typedef null_lock null_lock;
-
 //=====================================================================
-class null_semaphore : public semaphore_base
+class null_semaphore
 {
     ///信号灯的GUARD
     typedef zce::semaphore_guard<null_semaphore> LOCK_GUARD;
@@ -113,29 +136,54 @@ public:
     virtual ~null_semaphore(void) = default;
 
     //!
-    void acquire() noexcept override
+    void acquire() noexcept
     {
     }
     //!
-    bool try_acquire() noexcept override
+    bool try_acquire() noexcept
     {
         return true;
     }
     //!
-    void release() noexcept override
+    void release() noexcept
     {
     }
     //!
     bool try_acquire_until(
-        const zce::time_value& /*abs_time*/) noexcept override
+        const zce::time_value& /*abs_time*/) noexcept
     {
         return true;
     }
     //!
     bool try_acquire_for(
-        const zce::time_value& /*relative_time*/) noexcept override
+        const zce::time_value& /*relative_time*/) noexcept
     {
         return true;
+    }
+
+    //!等待
+    void wait(thread_mutex* /*external_mutex*/) noexcept
+    {
+    }
+    //!绝对时间超时的的等待，超时后解锁
+    bool wait_until(thread_mutex* /*external_mutex*/,
+                    const zce::time_value& /*abs_time*/) noexcept
+    {
+        return true;
+    }
+    //!相对时间的超时锁定等待，超时后，解锁
+    bool wait_for(thread_mutex* /*external_mutex*/,
+                  const zce::time_value& /*relative_time*/) noexcept
+    {
+        return true;
+    }
+    //!给一个等待线程发送信号 Signal one waiting thread.
+    void notify_one(void) noexcept
+    {
+    }
+    //!给所有的等待线程广播信号 Signal *all* waiting threads.
+    void notify_all(void) noexcept
+    {
     }
 };
 //=====================================================================
@@ -143,37 +191,37 @@ public:
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
 */
-class null_condition : public condition_base
+class null_condition
 {
 public:
     //
     null_condition() = default;
-    virtual ~null_condition() = default;
+    ~null_condition() = default;
 
 private:
 
     //!等待
-    void wait(thread_mutex* /*external_mutex*/) noexcept override
+    void wait(thread_mutex* /*external_mutex*/) noexcept
     {
     }
     //!绝对时间超时的的等待，超时后解锁
     bool wait_until(thread_mutex* /*external_mutex*/,
-                    const zce::time_value& /*abs_time*/) noexcept override
+                    const zce::time_value& /*abs_time*/) noexcept
     {
         return true;
     }
     //!相对时间的超时锁定等待，超时后，解锁
     bool wait_for(thread_mutex* /*external_mutex*/,
-                  const zce::time_value& /*relative_time*/) noexcept override
+                  const zce::time_value& /*relative_time*/) noexcept
     {
         return true;
     }
     //!给一个等待线程发送信号 Signal one waiting thread.
-    void notify_one(void) noexcept override
+    void notify_one(void) noexcept
     {
     }
     //!给所有的等待线程广播信号 Signal *all* waiting threads.
-    void notify_all(void) noexcept override
+    void notify_all(void) noexcept
     {
     }
 };
