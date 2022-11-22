@@ -31,8 +31,6 @@ protected:
 
     //zce::msgrings_sema底层实现用的Deque
     typedef zce::msgrings_sema<soar::zerg_frame*>  APPFRAME_MSGQUEUE;
-    //APPFRAME的分配器
-    typedef zergframe_mallocor<typename zce::thread_mutex>     APPFRAME_MALLOCOR;
 
     //FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，这个数量级别已经不少了
     static const size_t FRAME_QUEUE_WATER_MARK = 102400;

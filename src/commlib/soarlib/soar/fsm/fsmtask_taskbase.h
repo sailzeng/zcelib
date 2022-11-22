@@ -185,6 +185,6 @@ protected:
     bool                task_run_;
 
     //QQPET APPFRAME
-    soar::zerg_frame* task_frame_buf_;
+    soar::zerg_frame*   task_frame_buf_;
 };
 }

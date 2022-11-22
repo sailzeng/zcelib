@@ -96,7 +96,7 @@ public:
 public:
     //构造函数
     thread_win_rw_mutex();
-    virtual ~thread_win_rw_mutex();
+    ~thread_win_rw_mutex();
 
 public:
     //!读取锁

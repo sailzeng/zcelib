@@ -57,11 +57,11 @@ int fsm_manager::initialize(zce::timer_queue* timer_queue,
     //如果明确要求初始化内部的QUEUE,
     if (init_inner_queue)
     {
-        inner_frame_mallocor_ = new Inner_Frame_Mallocor();
-        inner_frame_mallocor_->initialize(INIT_FRAME_MALLOC_NUMBER);
+        inner_frame_mallocor_ = new APPFRAME_MALLOCOR();
+        inner_frame_mallocor_->initialize(false,
+                                          INIT_FRAME_MALLOC_NUMBER);
 
         message_queue_ = new Inner_Frame_Queue(MAX_QUEUE_NODE_NUMBER);
-        //inner_message_queue_->open(,INNER_QUEUE_WATER_MARK);
     }
     if (init_lock_pool)
     {

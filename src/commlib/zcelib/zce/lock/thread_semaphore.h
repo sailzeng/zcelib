@@ -29,7 +29,7 @@ public:
     //构造函数,默认创建匿名信号灯，线程下一般用匿名信号灯就足够了,sem_name一般用nullptr就足够了
     //匿名信号灯==无名信号灯
     thread_semaphore(unsigned int init_value);
-    virtual ~thread_semaphore(void);
+    ~thread_semaphore(void);
 
     //锁定
     void acquire() noexcept;

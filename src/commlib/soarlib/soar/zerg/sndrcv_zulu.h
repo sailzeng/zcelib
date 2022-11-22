@@ -23,17 +23,6 @@ namespace soar
 {
 class zulu_sendrecv : public sendrecv_msg_base
 {
-protected:
-
-    //ZULU 是否链接
-    bool                  zulu_connected_;
-
-    //ZULU链接的IP地址
-    zce::skt::addr_in     zulu_svc_ip_;
-
-    //使用的SOCKET包装
-    zce::skt::stream      zulu_stream_;
-
 public:
 
     //构造函数和析构函数
@@ -119,6 +108,17 @@ public:
                       bool error_continue = true,
                       uint32_t backfill_fsm_id = 0,
                       uint16_t app_id = 0);
+
+protected:
+
+    //ZULU 是否链接
+    bool                  zulu_connected_;
+
+    //ZULU链接的IP地址
+    zce::skt::addr_in     zulu_svc_ip_;
+
+    //使用的SOCKET包装
+    zce::skt::stream      zulu_stream_;
 };
 
 //阻塞的接收一个APPFRAME数据

@@ -20,7 +20,8 @@
 
 #include "soar/zerg/frame_zerg.h"
 
-template <typename LOCK >
+namespace soar
+{
 class zergframe_mallocor
 {
 public:
@@ -38,7 +39,8 @@ public:
     * @param      max_frame_len 最大的FRAME的长度，跟进这个分配后面的
     * @note
     */
-    void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
+    void initialize(bool multi_thread,
+                    size_t init_num = NUM_OF_ONCE_INIT_FRAME,
                     size_t max_frame_len = soar::zerg_frame::MAX_LEN_OF_FRAME);
 
     /*!
@@ -79,7 +81,8 @@ protected:
     * @param      list_no  LiST的下标
     * @param      extend_num 扩展的数量
     */
-    void extend_list_capacity(size_t list_no, size_t extend_num);
+    void extend_list_capacity(size_t list_no,
+                              size_t extend_num);
 
     /*!
     * @brief
@@ -118,226 +121,21 @@ protected:
     //GCC的版本如果小于4，会不支持模板中的static数组成员的长度用const static成员定义。
     //理论上可以用#if (__GNUC__ < 4)屏蔽，但是实在太忙法。下面的数组长度NUM_OF_FRAMELIST
     //如果你更改是要定义。
-    size_t           size_appframe_[NUM_OF_FRAMELIST];
+    size_t           size_appframe_[NUM_OF_FRAMELIST] = { 0 };
 
     //FRAME的内存池子
     APPFRAME_POOL    frame_pool_;
+
     //池子的锁
-    LOCK             zce_lock_;
+    std::mutex      *my_lock_ = nullptr;
 };
-
-//初始化
-template <typename LOCK >
-void zergframe_mallocor<LOCK>::initialize(size_t init_num,
-                                          size_t max_frame_len)
-{
-    ZCE_ASSERT(max_frame_len > 2048 && init_num > 8);
-
-    ZCE_LOG(RS_INFO, "[framework] zergframe_mallocor::initialize init num=%u,max_frame_len=%u.",
-            init_num,
-            max_frame_len);
-
-    //得到分配
-    size_t sz_frame = max_frame_len;
-
-    for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
-    {
-        size_appframe_[NUM_OF_FRAMELIST - i - 1] = sz_frame;
-        sz_frame = sz_frame / 2;
-    }
-
-    frame_pool_.resize(NUM_OF_FRAMELIST);
-
-    for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
-    {
-        extend_list_capacity(i, init_num);
-    }
 }
 
-//最大可以分配的FRAME的长度
-template <typename LOCK >
-size_t zergframe_mallocor<LOCK>::get_max_framelen()
-{
-    return size_appframe_[NUM_OF_FRAMELIST - 1];
-}
+//APPFRAME的分配器
+typedef soar::zergframe_mallocor   APPFRAME_MALLOCOR;
 
-//根据要求的的FRAME尺寸大小，分配一个FRAME
-template <typename LOCK >
-inline size_t zergframe_mallocor<LOCK>::get_roundup(size_t sz_frame)
-{
-    //也许循环找还快
-    for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
-    {
-        if (sz_frame <= size_appframe_[i])
-        {
-            return i;
-        }
-    }
-
-    //死了好
-    ZCE_ASSERT(false);
-    return static_cast<size_t>(-1);
-}
-
-//构造函数
-template <typename LOCK >
-zergframe_mallocor<LOCK>::zergframe_mallocor()
-{
-    memset(size_appframe_, 0, sizeof(size_appframe_));
-}
-
-//析构函数
-template <typename LOCK >
-zergframe_mallocor<LOCK>::~zergframe_mallocor()
-{
-    //
-    ZCE_LOG(RS_INFO, "[framework] zergframe_mallocor::~zergframe_mallocor.");
-
-    //最后应该size == capacity , free==0
-    for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
-    {
-        //如果内存全部归还
-        if (frame_pool_[i].free() == 0)
-        {
-            //
-            ZCE_LOG(RS_INFO, "[framework] List %u(frame size:%u):,free node:%u,"
-                    "capacity node:%u,list node:%u.Ok.",
-                    i,
-                    size_appframe_[i],
-                    frame_pool_[i].free(),
-                    frame_pool_[i].capacity(),
-                    frame_pool_[i].size());
-        }
-        //如果他在内存
-        else
-        {
-            //
-            ZCE_LOG(RS_ERROR, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,"
-                    "list node:%u.Have memory leak.Please check your code.",
-                    i,
-                    size_appframe_[i],
-                    frame_pool_[i].free(),
-                    frame_pool_[i].capacity(),
-                    frame_pool_[i].size());
-        }
-
-        //释放掉分配的空间
-        size_t frame_pool_len = frame_pool_[i].size();
-
-        for (size_t j = 0; j < frame_pool_len; ++j)
-        {
-            soar::zerg_frame* proc_frame = nullptr;
-            frame_pool_[i].pop_front(proc_frame);
-            soar::zerg_frame::delete_frame(proc_frame);
-        }
-    }
-}
-
-//根据需要长度，从池子分配一个APPFRAME
-template <typename LOCK >
-soar::zerg_frame* zergframe_mallocor<LOCK>::alloc_appframe(size_t frame_len)
-{
-    typename LOCK::LOCK_GUARD tmp_guard(zce_lock_);
-    size_t hk = get_roundup(frame_len);
-
-    //
-    if (frame_pool_[hk].size() <= 0)
-    {
-        extend_list_capacity(hk, NUM_OF_ONCE_INIT_FRAME);
-    }
-
-    //
-    soar::zerg_frame* new_frame = nullptr;
-    frame_pool_[hk].pop_front(new_frame);
-    new_frame->init_head(static_cast<unsigned int>(frame_len));
-
-    return new_frame;
-}
-
-//克隆一个APPFAME
-//这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
-template <typename LOCK >
-void zergframe_mallocor<LOCK>::clone_appframe(const soar::zerg_frame* model_freame,
-                                              soar::zerg_frame*& cloned_frame)
-{
-    //
-    size_t frame_len = model_freame->length_;
-    cloned_frame = alloc_appframe(frame_len);
-    model_freame->clone(cloned_frame);
-}
-
-//释放一个APPFRAME到池子
-template <typename LOCK >
-void zergframe_mallocor<LOCK>::free_appframe(soar::zerg_frame* proc_frame)
-{
-    ZCE_ASSERT(proc_frame);
-    typename LOCK::LOCK_GUARD tmp_guard(zce_lock_);
-    size_t hk = get_roundup(proc_frame->length_);
-    frame_pool_[hk].push_back(proc_frame);
-}
-
-//调整池子的容量
-template <typename LOCK >
-void zergframe_mallocor<LOCK>::adjust_pool_capacity()
-{
-    typename LOCK::LOCK_GUARD tmp_guard(zce_lock_);
-
-    for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
-    {
-        //如果剩余的容量
-        if (frame_pool_[i].size() > 2 * NUM_OF_ALLOW_LIST_IDLE_FRAME)
-        {
-            size_t free_sz = frame_pool_[i].size() - 2 * NUM_OF_ALLOW_LIST_IDLE_FRAME;
-
-            for (size_t j = 0; j < free_sz; ++j)
-            {
-                soar::zerg_frame* new_frame = nullptr;
-                frame_pool_[i].pop_front(new_frame);
-                delete new_frame;
-            }
-        }
-    }
-}
-
-//扩展LIST的容量
-template <typename LOCK >
-void zergframe_mallocor<LOCK>::extend_list_capacity(size_t list_no, size_t extend_num)
-{
-    size_t old_capacity = frame_pool_[list_no].capacity();
-    frame_pool_[list_no].reserve(old_capacity + extend_num);
-
-    for (size_t j = 0; j < extend_num; ++j)
-    {
-        soar::zerg_frame* proc_frame = soar::zerg_frame::new_frame(size_appframe_[list_no] + 1);
-        frame_pool_[list_no].push_back(proc_frame);
-    }
-}
-
-//得到SINGLETON的实例
-template <typename LOCK >
-zergframe_mallocor<LOCK>* zergframe_mallocor<LOCK>::instance()
-{
-    if (instance_ == nullptr)
-    {
-        instance_ = new zergframe_mallocor();
-    }
-
-    return instance_;
-}
-
-//清理SINGLETON的实例
-template <typename LOCK >
-void zergframe_mallocor<LOCK>::clear_inst()
-{
-    if (instance_)
-    {
-        delete instance_;
-        instance_ = nullptr;
-    }
-}
-
-//
-typedef zergframe_mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
-typedef zergframe_mallocor<zce::thread_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
+////
+//typedef zergframe_mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
+//typedef zergframe_mallocor<zce::thread_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

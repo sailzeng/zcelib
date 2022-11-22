@@ -50,17 +50,6 @@ namespace soar
 {
 class lolo_sendrecv : public sendrecv_msg_base
 {
-protected:
-
-    //ZULU链接的IP地址
-    zce::skt::addr_in       lolo_svc_ip_;
-
-    //收到数据的对端地址，99.99999的情况和上面一样
-    zce::skt::addr_in       lolo_recvdata_ip_;
-
-    //使用的SOCKET包装
-    zce::skt::datagram      lolo_datagram_;
-
 public:
     //
     lolo_sendrecv();
@@ -100,6 +89,17 @@ public:
                       T2& recv_info,
                       uint32_t backfill_fsm_id = 0,
                       uint16_t business_id = 0);
+
+protected:
+
+    //ZULU链接的IP地址
+    zce::skt::addr_in       lolo_svc_ip_;
+
+    //收到数据的对端地址，99.99999的情况和上面一样
+    zce::skt::addr_in       lolo_recvdata_ip_;
+
+    //使用的SOCKET包装
+    zce::skt::datagram      lolo_datagram_;
 };
 
 //收数据
@@ -154,7 +154,8 @@ int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
 
     if (data_len < 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework] UDP Receive soar::zerg_frame head len error ,frame len:%d,error[%u|%s].",
+        ZCE_LOG(RS_ERROR, "[framework] UDP Receive soar::zerg_frame head len error"
+                " ,frame len:%d,error[%u|%s].",
                 msg_recv_frame_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -167,7 +168,8 @@ int lolo_sendrecv::receive_svc_msg(uint32_t cmd,
         return 0;
     }
 
-    //ZCE_LOG(RS_DEBUG,"[framework] Recv %u BYTES  Frame From Svr Succ. ",tibetan_recv_appframe_->frame_length_);
+    //ZCE_LOG(RS_DEBUG,"[framework] Recv %u BYTES  Frame From Svr Succ. ",
+    //tibetan_recv_appframe_->frame_length_);
 
     if (data_len > 0)
     {

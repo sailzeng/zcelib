@@ -63,23 +63,23 @@ protected:
     SERVICES_ID msg_proxy_service_;
 
     //缓冲区的帧的长度,你可以设置接受数据的大小，如果都是64K,太多可能影响你最后的总容量,但目前感觉问题不大
-    size_t       test_frame_len_ = 0;
+    size_t      test_frame_len_ = 0;
 
     //事务ID发生器，就是一个计数器
-    uint32_t     trans_id_builder_ = 0;
+    uint32_t    trans_id_builder_ = 0;
 
     //为了多线程将原来的test_appframe_改为了2个，一个接受一个发送，这样在多线程处理的情况下，
     //就不会出现共用一个BUFFER的事情
 
     //发送缓冲区的帧
-    zerg_frame*   msg_send_frame_ = nullptr;
+    zerg_frame* msg_send_frame_ = nullptr;
     //接收缓冲区
-    zerg_frame*   msg_recv_frame_ = nullptr;
+    zerg_frame* msg_recv_frame_ = nullptr;
 
     //收到的事务ID
-    uint32_t      recv_trans_id_ = 0;
+    uint32_t    recv_trans_id_ = 0;
 
     //回填的事务ID
-    uint32_t      backfill_trans_id_ = 0;
+    uint32_t    backfill_trans_id_ = 0;
 };
 }

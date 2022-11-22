@@ -72,7 +72,7 @@ public:
 
     ///构造函数
     thread_recursive_mutex();
-    virtual ~thread_recursive_mutex(void);
+    ~thread_recursive_mutex(void);
 
     ///锁定
     void lock()  noexcept;

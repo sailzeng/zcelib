@@ -29,7 +29,7 @@ int svrdapp_fsmtask::app_start(int argc, const char* argv[])
         return ret;
     }
 
-    THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
+    soar::zergframe_mallocor::instance()->initialize(true);
 
     svrd_cfg_fsm* svd_config = dynamic_cast<svrd_cfg_fsm*>(config_base_);
     soar::fsmtask_manger* trans_mgr = new soar::fsmtask_manger();
@@ -45,7 +45,7 @@ int svrdapp_fsmtask::app_start(int argc, const char* argv[])
         enqueue_timeout,
         zce::timer_queue::instance(),
         soar::svrd_buspipe::instance(),
-        THREADMUTEX_APPFRAME_MALLOCOR::instance());
+        APPFRAME_MALLOCOR::instance());
 
     ret = register_notifytrans_cmd();
 

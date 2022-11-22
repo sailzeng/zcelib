@@ -29,18 +29,18 @@ public:
     thread_condition();
 
     //!析构函数
-    virtual ~thread_condition(void);
+    ~thread_condition(void);
 
     //!等待
-    virtual void wait(thread_mutex* external_mutex) noexcept;
+    void wait(thread_mutex* external_mutex) noexcept;
 
     //!绝对时间超时的的等待，超时后解锁
-    virtual bool wait_until(thread_mutex* external_mutex,
-                            const zce::time_value& abs_time) noexcept;
+    bool wait_until(thread_mutex* external_mutex,
+                    const zce::time_value& abs_time) noexcept;
 
     //!相对时间的超时锁定等待，超时后，解锁
-    virtual bool wait_for(thread_mutex* external_mutex,
-                          const zce::time_value& relative_time) noexcept;
+    bool wait_for(thread_mutex* external_mutex,
+                  const zce::time_value& relative_time) noexcept;
 
     //!给一个等待线程发送信号 Signal one waiting thread.
     void notify_one(void) noexcept;
@@ -62,7 +62,7 @@ public:
     //!构造函数
     thread_recursive_condition();
     //!析构函数
-    virtual ~thread_recursive_condition(void);
+    ~thread_recursive_condition(void);
 
     //!等待
     virtual void wait(thread_recursive_mutex* external_mutex) noexcept;

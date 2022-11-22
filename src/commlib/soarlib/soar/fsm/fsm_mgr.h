@@ -89,8 +89,7 @@ protected:
 
     ///内部的APPFRAME的消息队列，
     typedef zce::msgring_condi<soar::zerg_frame*> Inner_Frame_Queue;
-    ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
-    typedef zergframe_mallocor<zce::null_lock> Inner_Frame_Mallocor;
+
     //内部的锁的数量
     typedef std::unordered_set<ONLYONE_LOCK, HASH_OF_LOCK, EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
 
@@ -286,7 +285,7 @@ protected:
     soar::zerg_frame* process_frame_ = nullptr;
 
     //内部FRAME分配器
-    Inner_Frame_Mallocor* inner_frame_mallocor_ = nullptr;
+    APPFRAME_MALLOCOR* inner_frame_mallocor_ = nullptr;
     //内部FRAME的队列
     Inner_Frame_Queue* message_queue_ = nullptr;
 
