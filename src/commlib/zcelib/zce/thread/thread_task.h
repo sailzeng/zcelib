@@ -83,15 +83,15 @@ class thread_task
 public:
 
     ///构造函数,析构函数
-    thread_task() = default;
-    ~thread_task() = default;
+    thread_task();
+    ~thread_task();
 
     thread_task(const thread_task &) = delete;
     thread_task& operator=(const thread_task&) = delete;
 
     //有移动构造
-    thread_task(thread_task &&);
-    thread_task& operator=(thread_task&&);
+    thread_task(thread_task &&) noexcept;
+    thread_task& operator=(thread_task&&) noexcept;
 
 protected:
 
@@ -109,12 +109,10 @@ protected:
                        size_t stacksize,
                        ZCE_THREAD_ID *threadid)
         {
-            int ret = zce::pthread_createex(_invoker_helper::svc_fuc,
-                                            (void *)(&func),
-                                            threadid,
-                                            detachstate,
-                                            stacksize,
-                                            0);
+            int ret = zce::pthread_create(threadid,
+                                          &thread_attr_,
+                                          _invoker_helper::svc_fuc,
+                                          (void *)(&func));
             return ret;
         }
 
@@ -122,11 +120,26 @@ protected:
         {
             Fn *func = (Fn *)(vfunc);
             (*func)();
-            zce::pthread_exit();
+            void *no_use = nullptr;
+            zce::pthread_exit(no_use);
         }
     };
 
 public:
+
+    /*!
+    * @brief      激活一个线程，激活后，线程开始运行
+    * @return     int ==0标识成功，非0失败
+    * @param[in]  group_id 线程管理器可以对相同GROUP ID的线程进行一些操作
+    * @param[in]  detachstate 产生分离的线程还是JOIN的线程 PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
+    * @param[in]  stacksize 堆栈大小 为0表示默认，如果你需要使用很多线程，清调整这个大小，WIN 一般是1M，LINUX一般是10M(8M)
+    * @note       线程优先级这类，我暂时没有实现，各种平台差异很大
+    */
+    int attr_init(int detachstate,
+                  size_t stacksize = 0,
+                  int group_id = INVALID_GROUP_ID,
+                  int policy = 0,
+                  int priority = 0);
 
     //!激活一个线程,根据args参数，执行fp函数，
     template <class Call, class... Args >
@@ -138,65 +151,10 @@ public:
         group_id_ = INVALID_GROUP_ID;
 
         thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
-                                                          PTHREAD_CREATE_JOINABLE,
-                                                          0,
                                                           &thread_id_,
                                                           &ret);
         return ret;
     }
-
-    //!激活一个线程,根据args参数，执行fp函数，
-    //! detachstate 为PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
-    template <class Call, class... Args >
-    int activate(int detachstate,
-                 Call &&fp,
-                 Args&&... args)
-    {
-        int ret = 0;
-        auto svc_func =
-            std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
-        group_id_ = INVALID_GROUP_ID;
-        thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
-                                                          detachstate,
-                                                          0,
-                                                          &thread_id_,
-                                                          &ret);
-        return ret;
-    }
-
-    /*!
-    * @brief      激活一个线程，激活后，线程开始运行
-    * @return     int ==0标识成功，非0失败
-    * @param[in]  group_id 线程管理器可以对相同GROUP ID的线程进行一些操作
-    * @param[out] threadid 返回的线程ID，
-    * @param[in]  detachstate 产生分离的线程还是JOIN的线程 PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
-    * @param[in]  stacksize 堆栈大小 为0表示默认，如果你需要使用很多线程，清调整这个大小，WIN 一般是1M，LINUX一般是10M(8M)
-    * @note       线程优先级这类，我暂时没有实现，各种平台差异很大
-    */
-    template <class Call, class... Args >
-    int activate(int group_id,
-                 int detachstate,
-                 size_t stacksize,
-                 Call &&fp,
-                 Args&&... args)
-    {
-        int ret = 0;
-        auto svc_func =
-            std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
-        group_id_ = group_id;
-        thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
-                                                          detachstate,
-                                                          stacksize,
-                                                          &thread_id_,
-                                                          &ret);
-        return ret;
-    }
-
-    //!@note 说明下一下，写activate曾经想用模板函数直接完成，但是没有找到
-    //!      调用一个static 模板函数指针的方法，
-
-    //!线程结束后的返回值int 类型
-    int thread_return();
 
     //!得到group id
     int group_id() const;
@@ -216,28 +174,28 @@ public:
 protected:
 
     template <class Fn>
-    static void __invoker_helper(Fn &func,
-                                 int detachstate,
-                                 size_t stacksize,
-                                 ZCE_THREAD_ID *threadid,
-                                 int *int_ret)
+    void __invoker_helper(Fn &func,
+                          ZCE_THREAD_ID *threadid,
+                          int *int_ret)
     {
+        ;
         //注意这儿，注意这儿，static 函数的模板函数调用，要加template
-        *int_ret = zce::pthread_createex(thread_task::template __svc_fuc<Fn>,
-                                         (void *)(&func),
-                                         threadid,
-                                         detachstate,
-                                         stacksize,
-                                         0);
+        *int_ret = zce::pthread_create(threadid,
+                                       &thread_attr_,
+                                       thread_task::template __svc_fuc<Fn>,
+                                       (void *)(new Fn(std::move(func))));
     }
 
     //包装的线程执行函数
     template <class Fn>
-    static void __svc_fuc(void *vfunc)
+    static void * __svc_fuc(void *vfunc)
     {
-        Fn *func = (Fn *)(vfunc);
-        (*func)();
-        zce::pthread_exit();
+        //vfunc是new的，
+        std::unique_ptr<Fn> func((Fn *)(vfunc));
+        (*func.get())();
+        void *no_use = nullptr;
+        zce::pthread_exit(no_use);
+        return no_use;
     }
 
 public:
@@ -248,13 +206,13 @@ public:
 protected:
 
     //!线程的GROUP ID,
-    int                     group_id_ = INVALID_GROUP_ID;
+    int               group_id_ = INVALID_GROUP_ID;
+
+    //!线程属性
+    pthread_attr_t    thread_attr_;
 
     //!线程的ID
-    ZCE_THREAD_ID           thread_id_ = 0;
-
-    //!线程的返回值
-    int                     thread_return_ = -1;
+    ZCE_THREAD_ID     thread_id_ = 0;
 };
 
 //========================================================================================

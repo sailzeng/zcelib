@@ -242,6 +242,8 @@ protected:
     fsmtask_taskbase* clone_task_ = nullptr;
     //
     fsmtask_taskbase** task_list_ = nullptr;
+    //thread_task 线程对象，可以比较容易的切成
+    zce::thread_task** thread_list_ = nullptr;
 
     // push数据进队列时，如果队列满了的最多等待时间
     zce::time_value     enqueue_timeout_;

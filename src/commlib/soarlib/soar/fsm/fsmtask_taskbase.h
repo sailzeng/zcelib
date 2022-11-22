@@ -7,7 +7,8 @@ namespace soar
 {
 class zerg_frame;
 
-class fsmtask_taskbase : public zce::thread_task
+//
+class fsmtask_taskbase
 {
     //给一个友缘
     friend class fsmtask_manger;
@@ -156,7 +157,7 @@ protected:
 
 protected:
     //
-    virtual int svc(void);
+    int task_run(void);
 
 protected:
 
@@ -169,7 +170,7 @@ protected:
 protected:
 
     //Trans 管理器
-    fsmtask_manger* fsmtask_mgr_;
+    fsmtask_manger*     fsmtask_mgr_;
 
     //一次最大从MGR发送队列中取出的frame数量，
     size_t              once_max_get_sendqueue_;

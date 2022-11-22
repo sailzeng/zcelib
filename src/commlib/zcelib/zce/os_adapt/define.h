@@ -379,27 +379,6 @@ struct msghdr
     int           msg_flags;
 };
 
-struct sched_param
-{
-    int sched_priority;
-};
-//pthread 的属性结构,其实真实的pthread_attr_t不是这样，我这儿简化了很多地方
-struct pthread_attr_t
-{
-    //
-    int             detachstate;
-    //
-    int             inheritsched;
-    //[[no use]]调度策略其实没法使用,我的代码不会用于REAL TIME系统
-    int             schedpolicy;
-    //调度的优先级
-    sched_param     schedparam;
-    //堆栈的地址，在WINDOWS下没法用
-    //void *        stackaddr
-    //堆栈的尺寸
-    size_t          stacksize;
-};
-
 #ifndef PTHREAD_CREATE_DETACHED
 #define PTHREAD_CREATE_DETACHED 1
 #endif
@@ -413,12 +392,33 @@ struct pthread_attr_t
 #define PTHREAD_EXPLICIT_SCHED  4
 #endif
 
+struct sched_param
+{
+    int sched_priority = 0;
+};
+//pthread 的属性结构,其实真实的pthread_attr_t不是这样，我这儿简化了很多地方
+struct pthread_attr_t
+{
+    //
+    int             detachstate = PTHREAD_CREATE_JOINABLE;
+    //
+    int             inheritsched = PTHREAD_INHERIT_SCHED;
+    //[[no use]]调度策略其实没法使用,我的代码不会用于REAL TIME系统
+    int             schedpolicy = 0;
+    //调度的优先级
+    sched_param     schedparam;
+    //堆栈的地址，在WINDOWS下没法用
+    //void *        stackaddr
+    //堆栈的尺寸
+    size_t          stacksize = 0;
+};
+
 //线程ID
 typedef unsigned int ZCE_THREAD_ID;
 //线程的句柄
 typedef HANDLE       ZCE_THREAD_HANDLE;
 //
-typedef unsigned int ZCE_THR_FUNC_RETURN;
+typedef unsigned int zce_thrfun_ret_t;
 
 //
 typedef DWORD        pid_t;
@@ -805,7 +805,7 @@ typedef pthread_t   ZCE_THREAD_ID;
 //
 typedef pthread_t   ZCE_THREAD_HANDLE;
 //
-typedef void* ZCE_THR_FUNC_RETURN;
+typedef void* zce_thrfun_ret_t;
 
 typedef int   ZCE_HANDLE;
 

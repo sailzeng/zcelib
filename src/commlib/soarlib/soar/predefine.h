@@ -105,7 +105,6 @@
 #include <zce/event/reactor_select.h>
 #include <zce/event/reactor_epoll.h>
 #include <zce/thread/thread_task.h>
-#include <zce/thread/thread_wait_mgr.h>
 #include <zce/shm_container/hash_table.h>
 #include <zce/thread/msgque_condi.h>
 #include <zce/server/mml_command.h>

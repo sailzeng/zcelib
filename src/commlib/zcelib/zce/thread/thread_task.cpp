@@ -6,12 +6,47 @@ namespace zce
 /************************************************************************************************************
 Class           : thread_task
 ************************************************************************************************************/
+thread_task::thread_task()
+{
+    zce::pthread_attr_init(&thread_attr_);
+}
+thread_task::~thread_task()
+{
+    zce::pthread_attr_destroy(&thread_attr_);
+}
+
+thread_task::thread_task(thread_task &&other) noexcept
+{
+    this->thread_id_ = other.thread_id_;
+    this->group_id_ = other.group_id_;
+    this->thread_attr_ = other.thread_attr_;
+    other.thread_id_ = 0;
+    other.group_id_ = INVALID_GROUP_ID;
+}
+thread_task& thread_task::operator=(thread_task&&other) noexcept
+{
+    this->thread_id_ = other.thread_id_;
+    this->group_id_ = other.group_id_;
+    this->thread_attr_ = other.thread_attr_;
+    other.thread_id_ = 0;
+    other.group_id_ = INVALID_GROUP_ID;
+    return *this;
+}
+
 //有移动构造
 
-//线程结束后的返回值int 类型
-int thread_task::thread_return()
+int thread_task::attr_init(int detachstate,
+                           size_t stacksize,
+                           int group_id,
+                           int policy,
+                           int priority)
 {
-    return thread_return_;
+    group_id_ = group_id;
+    return zce::pthread_attr_setex(&thread_attr_,
+                                   detachstate,
+                                   stacksize,
+                                   policy,
+                                   priority);
 }
 
 //得到group id
@@ -34,7 +69,8 @@ int thread_task::detach()
 //
 int thread_task::wait_join()
 {
-    return zce::pthread_join(thread_id_);
+    void *no_use = nullptr;
+    return zce::pthread_join(thread_id_, no_use);
 }
 
 //让出CPU时间
@@ -83,7 +119,9 @@ void thread_task_wait::wait_all()
     {
         MANAGE_WAIT_INFO wait_thread = *wait_thread_list_.begin();
         //等待这个线程退出
-        zce::pthread_join(wait_thread.wait_thr_id_);
+        void *no_use = nullptr;
+        zce::pthread_join(wait_thread.wait_thr_id_,
+                          no_use);
         //
         wait_thread_list_.pop_front();
     }
@@ -101,7 +139,9 @@ void thread_task_wait::wait_group(int group_id)
         {
             MANAGE_WAIT_INFO wait_thread = *iter_temp;
             //等待这个线程退出
-            zce::pthread_join(wait_thread.wait_thr_id_);
+            void *no_use = nullptr;
+            zce::pthread_join(wait_thread.wait_thr_id_,
+                              no_use);
 
             //先保存原来的迭代器作为要删除的迭代器
             iter_temp = wait_thread_list_.erase(iter_temp);

@@ -57,7 +57,7 @@ void fsmtask_taskbase::stop_task_run()
     task_run_ = false;
 }
 
-int fsmtask_taskbase::svc(void)
+int fsmtask_taskbase::task_run(void)
 {
     ZCE_LOG(RS_INFO, "[framework] Task stop start run. thread id = %u", zce::pthread_self());
 

@@ -327,7 +327,7 @@ int app_buspipe::open_log()
 
     ZCE_LOG(RS_DEBUG, "log instance initialize .");
     //关闭原来的日志输出方法
-    zce::log_msg::instance()->terminate();
+    zce::log_msg::instance()->close();
 
     // 初始化日志
     ret = zce::log_msg::instance()->

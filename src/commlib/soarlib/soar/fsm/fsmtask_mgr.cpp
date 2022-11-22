@@ -40,10 +40,14 @@ fsmtask_manger::~fsmtask_manger()
         {
             delete task_list_[i];
             task_list_[i] = nullptr;
+            delete thread_list_[i];
+            thread_list_[i] = nullptr;
         }
 
         delete[]task_list_;
         task_list_ = nullptr;
+        delete[]thread_list_;
+        thread_list_ = nullptr;
     }
 }
 
@@ -85,33 +89,33 @@ int fsmtask_manger::active_notify_task(fsmtask_taskbase* clone_task,
     clone_task_ = clone_task;
 
     task_list_ = new fsmtask_taskbase * [task_number_];
-
+    thread_list_ = new zce::thread_task * [task_number_];
     //初始化
-    for (size_t i = 0; i < task_number_; ++i)
-    {
-        task_list_[i] = clone_task_->task_clone();
-        ret = task_list_[i]->initialize(this);
-
-        //任何一个不成功，都返回错误
-        if (ret != 0)
-        {
-            return ret;
-        }
-    }
-
-    //每个对象启动一个线程实例，这样是偷懒但是，可以很容易实现线程池子
     for (size_t i = 0; i < task_number_; ++i)
     {
         //使用一个特殊的日期做完GROUP ID
         const size_t ACTIVATE_TASK_GROUP = 2011105;
 
-        //注意下面的参数1active
-        ZCE_THREAD_ID threadid;
-        ret = task_list_[i]->activate(ACTIVATE_TASK_GROUP,
-                                      &threadid,
-                                      PTHREAD_CREATE_JOINABLE,
-                                      task_stack_size);
+        task_list_[i] = clone_task_->task_clone();
+        ret = task_list_[i]->initialize(this);
+        //任何一个不成功，都返回错误
+        if (ret != 0)
+        {
+            return ret;
+        }
+        thread_list_[i] = new zce::thread_task();
+        thread_list_[i]->attr_init(PTHREAD_CREATE_JOINABLE,
+                                   task_stack_size,
+                                   ACTIVATE_TASK_GROUP);
+    }
 
+    //每个对象启动一个线程实例，这样是偷懒但是，可以很容易实现线程池子
+    for (size_t i = 0; i < task_number_; ++i)
+    {
+        //注意下面的参数1active
+
+        ret = thread_list_[i]->activate(&fsmtask_taskbase::task_run,
+                                        task_list_[i]);
         if (ret != 0)
         {
             ZCE_LOG(RS_ALERT, "[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
@@ -136,7 +140,7 @@ int fsmtask_manger::stop_notify_task()
     //等待所有的线程退出
     for (size_t i = 0; i < task_number_; ++i)
     {
-        task_list_[i]->wait_join();
+        thread_list_[i]->wait_join();
     }
 
     //通知退出线程的TASK，进行结束处理
