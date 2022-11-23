@@ -12,7 +12,7 @@
     <Filter Include="Lua Files">
       <UniqueIdentifier>{a4e005d7-1e81-4a7c-9940-5fc2e3a75c9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Config Files">
+    <Filter Include="Lua Files\Config Files">
       <UniqueIdentifier>{e00d02de-44e2-4a0e-83b3-9bfdef8aae80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -100,7 +100,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="conf\test_0001.ini">
-      <Filter>Config Files</Filter>
+      <Filter>Lua Files\Config Files</Filter>
     </None>
     <None Include="..\..\..\bin\test.lua\lua_test_01.lua">
       <Filter>Lua Files</Filter>
@@ -132,7 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="conf\test_0002.xml">
-      <Filter>Config Files</Filter>
+      <Filter>Lua Files\Config Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

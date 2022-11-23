@@ -231,7 +231,7 @@ int client::receive_timeout(zce::time_value* timeout_tv,
 }
 
 //! 异步（非阻塞）连接，返回0并不表示真正成功，还没有对方确认
-int client::connect(bool link_test_mtu)
+int client::link(bool link_test_mtu)
 {
     int ret = 0;
     if (link_test_mtu)
@@ -254,11 +254,11 @@ int client::connect(bool link_test_mtu)
 }
 
 //! 同步连接，等待@timeout_tv的时间，
-int client::connect_timeout(zce::time_value* timeout_tv,
-                            bool link_test_mtu)
+int client::link_timeout(zce::time_value* timeout_tv,
+                         bool link_test_mtu)
 {
     int ret = 0;
-    ret = connect(link_test_mtu);
+    ret = link(link_test_mtu);
     if (ret != 0)
     {
         return ret;

@@ -48,6 +48,9 @@ public:
 
     void set(const ::sockaddr* sa, socklen_t sa_len);
 
+    sockaddr_in *get_in();
+    sockaddr_in6 *get_in6();
+
     void set_family(int family);
 
     int get_family() const;
@@ -102,8 +105,8 @@ inline ZCE_SOCKET socket(int family,
 * @return     int == 0表示成功
 * @param[out] handle      返回的socket 句柄
 * @param[in]  type        SOCK_DGRAM,SOCK_STREAM
-* @param[in]  nonblock    是否阻塞
 * @param[in]  family      AF_INET ,AF_INET6
+* @param[in]  nonblock    是否阻塞
 * @param[in]  reuse_addr  是否重用地址
 * @note       family      protocol参数参考socket函数
 */
@@ -386,12 +389,11 @@ bool is_ready_fds(int no_fds,
 *             但今天刘侃反馈说LINUX下的select 的timeout_tv不是const的，看了一下，真不是，
 *             于是我面临两个选择，向谁看起的问题，最后考虑还是想LINUX看齐吧。
 */
-int select(
-    int nfds,
-    fd_set* readfds,
-    fd_set* writefds,
-    fd_set* exceptfds,
-    zce::time_value* timeout_tv);
+int select(int nfds,
+           fd_set* readfds,
+           fd_set* writefds,
+           fd_set* exceptfds,
+           zce::time_value* timeout_tv);
 
 /*!
 * @brief         非标准函数，(在一个时间段内)看handle准备好用于干嘛没有，内部用select触发，用于某些对单个端口的单个事件处理，
@@ -495,7 +497,6 @@ inline ssize_t sendto(ZCE_SOCKET handle,
 * @param      addr        地址
 * @param      addr_len    地址长度
 * @param      timeout_tv  超时时间
-* @note
 */
 int connect_timeout(ZCE_SOCKET handle,
                     const sockaddr* addr,
@@ -507,7 +508,7 @@ int connect_timeout(ZCE_SOCKET handle,
 * @return     int 0成功，非0表示失败，以及错误ID
 * @param      handle      操作的句柄
 * @param      hostname    可以是域名，也可以是数值地址格式，会优先尝试用数值地址格式解析
-* @param      host_port   端口号
+* @param      host_port   端口号，端口号只在hostname有用时有效
 * @param      host_addr   输入输出参数，如果不输入hostname，可以作为直连地址，如果输入了hostname，返回解析的地址
 * @param      addr_len    地址长度
 * @param      timeout_tv  超时时间

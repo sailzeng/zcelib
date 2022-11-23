@@ -51,11 +51,11 @@ public:
                         size_t *recv_size);
 
     //! 异步（非阻塞）连接，返回0并不表示真正成功，还没有对方确认
-    int connect(bool link_test_mtu = false);
+    int link(bool link_test_mtu = false);
 
     //! 同步连接，等待@timeout_tv的时间，
-    int connect_timeout(zce::time_value* timeout_tv,
-                        bool link_test_mtu = false);
+    int link_timeout(zce::time_value* timeout_tv,
+                     bool link_test_mtu = false);
 
     //!超时处理，每10ms调用一次
     void time_out();

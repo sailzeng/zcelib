@@ -289,7 +289,7 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[])
         return ret;
     }
     zce::time_value tv(3, 0);
-    ret = client.connect_timeout(&tv);
+    ret = client.link_timeout(&tv);
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "connect fail.");

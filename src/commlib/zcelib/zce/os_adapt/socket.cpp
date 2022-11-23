@@ -9,7 +9,7 @@
 
 namespace zce
 {
-//===============================================
+//===========================================================================
 //sockaddr_ip，兼容sockaddr_in sockaddr_in6的地址信息
 
 sockaddr_any::sockaddr_any()
@@ -97,6 +97,15 @@ sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in6& sa)
     return *this;
 }
 
+sockaddr_in *sockaddr_any::get_in()
+{
+    return &in_;
+}
+sockaddr_in6 *sockaddr_any::get_in6()
+{
+    return &in6_;
+}
+
 void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
 {
     if (sa_len == sizeof(::sockaddr_in))
@@ -150,7 +159,7 @@ size_t sockaddr_ip_hash::operator()(const zce::sockaddr_any& s) const
     return 0;
 }
 
-//===============================================
+//===========================================================================
 
 //初始化Socket，
 int socket_init(int version_high, int version_low)
