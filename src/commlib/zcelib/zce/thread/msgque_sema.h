@@ -44,6 +44,8 @@ public:
         sem_full_(queue_max_size),
         sem_empty_(0)
     {
+        static_assert(queue_max_size > SEMAPHORE_MAXVALUE,
+                      "queue_max_size least maxvalue must less SEMAPHORE_MAXVALUE");
     }
 
     ~msgqueue_sema() = default;
@@ -281,7 +283,9 @@ protected:
 
         return true;
     }
-
+protected:
+    //信号灯的最大值
+    static constexpr std::ptrdiff_t SEMAPHORE_MAXVALUE = 0xFFFFFF;
 protected:
     //!
     size_t                  queue_max_size_;
@@ -289,13 +293,13 @@ protected:
     size_t                  queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    std::recursive_mutex                 queue_lock_;
+    std::recursive_mutex    queue_lock_;
 
     //信号灯，满的信号灯
-    std::counting_semaphore<0xFFFFFFF>   sem_full_;
+    std::counting_semaphore<SEMAPHORE_MAXVALUE>   sem_full_;
 
     //信号灯，空的信号灯，当数据
-    std::counting_semaphore<0xFFFFFFF>   sem_empty_;
+    std::counting_semaphore<SEMAPHORE_MAXVALUE>   sem_empty_;
 
     //容器类型，可以是list,dequeue,
     C                       message_queue_;

@@ -14,7 +14,7 @@ Class           : Thread_Spin_Mutex
 ************************************************************************************************************/
 
 //构造函数
-thread_spin_Mutex::thread_spin_Mutex() noexcept
+thread_spin_mutex::thread_spin_mutex() noexcept
 {
     int ret = 0;
 
@@ -28,7 +28,7 @@ thread_spin_Mutex::thread_spin_Mutex() noexcept
 }
 
 //销毁互斥量
-thread_spin_Mutex::~thread_spin_Mutex(void)
+thread_spin_mutex::~thread_spin_mutex(void)
 {
     int ret = 0;
     ret = zce::pthread_spin_destroy(&lock_);
@@ -41,7 +41,7 @@ thread_spin_Mutex::~thread_spin_Mutex(void)
 }
 
 //锁定
-void thread_spin_Mutex::lock() noexcept
+void thread_spin_mutex::lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_spin_lock(&lock_);
@@ -54,7 +54,7 @@ void thread_spin_Mutex::lock() noexcept
 }
 
 //尝试锁定
-bool thread_spin_Mutex::try_lock() noexcept
+bool thread_spin_mutex::try_lock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_spin_trylock(&lock_);
@@ -68,7 +68,7 @@ bool thread_spin_Mutex::try_lock() noexcept
 }
 
 //解锁,
-void thread_spin_Mutex::unlock() noexcept
+void thread_spin_mutex::unlock() noexcept
 {
     int ret = 0;
     ret = zce::pthread_spin_unlock(&lock_);
@@ -81,7 +81,7 @@ void thread_spin_Mutex::unlock() noexcept
 }
 
 //取出内部的锁的指针
-pthread_spinlock_t* thread_spin_Mutex::get_lock()
+pthread_spinlock_t* thread_spin_mutex::get_lock()
 {
     return &lock_;
 }
