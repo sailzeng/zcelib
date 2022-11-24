@@ -129,14 +129,14 @@ public:
     int open(int family);
 
     /**
-     * @brief Socks5，的UDP穿透的发送数据
-     * @param dst_name
-     * @param dst_port
-     * @param dst_addr
-     * @param addr_len
-     * @param snd_buf
-     * @param buf_len
-     * @param fragments  是否进行分片，因为穿透会有一些前缀，可能会超过报告
+     * @brief Socks5，的UDP穿透的发送数据，会附带一个头部，还可能分包
+     * @param dst_name   目的地域名
+     * @param dst_port   域名对应的端口
+     * @param dst_addr   目的地址
+     * @param addr_len   目的地址长度
+     * @param snd_buf    发送的buf
+     * @param buf_len    发送的buf 长度
+     * @param fragments  是否进行分片，因为穿透会有一些前缀，可能一个包无法包装，
      * @return
     */
     int send(const char* dst_name,
@@ -172,6 +172,10 @@ protected:
     zce::sockaddr_any local_addr_;
     //! socks5 代理服务器返回的绑定地址，穿透请求通过这个端口服务
     zce::sockaddr_any bind_addr_;
+
+    //是否一句建立了穿透
+    bool associate_ = false;
+
     //! 发送接收的数据缓存
     std::unique_ptr<char[]> snd_rcv_buf_{ new char[SR_BUF_LEN] };
 };

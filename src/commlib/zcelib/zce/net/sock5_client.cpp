@@ -364,6 +364,7 @@ int client::init_udp_associate(udp_associate &ua,
     {
         return ret;
     }
+    ua.associate_ = true;
     return 0;
 }
 
@@ -400,6 +401,10 @@ int udp_associate::send(const char* host_name,
                         size_t buf_len,
                         bool fragments)
 {
+    if (!associate_)
+    {
+        return -1;
+    }
     if (buf_len > UDP_MAX_DGRAM)
     {
         return -1;
@@ -471,6 +476,10 @@ int udp_associate::recv(sockaddr* dst_addr,
                         zce::time_value& timeout_tv,
                         bool fragments)
 {
+    if (!associate_)
+    {
+        return -1;
+    }
     int ret = 0;
     char *buffer = snd_rcv_buf_.get();
     size_t use_len = 0, read_len = 0, rcv_len = 0;

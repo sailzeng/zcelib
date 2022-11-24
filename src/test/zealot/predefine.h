@@ -96,6 +96,7 @@
 
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>
+#include <zce/net/sock5_client.h>
 
 #include <zce/buffer/cycle_buffer.h>
 #include <zce/buffer/queue_buffer.h>

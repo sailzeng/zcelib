@@ -44,8 +44,8 @@ public:
         sem_full_(queue_max_size),
         sem_empty_(0)
     {
-        static_assert(queue_max_size > SEMAPHORE_MAXVALUE,
-                      "queue_max_size least maxvalue must less SEMAPHORE_MAXVALUE");
+        //"queue_max_size least maxvalue must less SEMAPHORE_MAXVALUE"
+        assert(queue_max_size < SEMAPHORE_MAXVALUE);
     }
 
     ~msgqueue_sema() = default;
