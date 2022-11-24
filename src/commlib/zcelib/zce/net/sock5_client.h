@@ -9,14 +9,16 @@
 *
 *
 *
-* @note
-*
+* @note       Socks5的文档，
+*             https://www.rfc-editor.org/rfc/rfc1928
+*             中文翻译，能看看吧。
+*             https://www.quarkay.com/code/383/socks5-protocol-rfc-chinese-traslation
 */
 
 #pragma once
 //=================================================================================
-//socks 5 代理部分
 
+//socks 5 代理部分
 namespace zce::socks5
 {
 class udp_associate;
