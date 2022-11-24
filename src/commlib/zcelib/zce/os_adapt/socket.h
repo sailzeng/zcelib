@@ -48,6 +48,7 @@ public:
 
     void set(const ::sockaddr* sa, socklen_t sa_len);
 
+    sockaddr *get();
     sockaddr_in *get_in();
     sockaddr_in6 *get_in6();
 
@@ -533,14 +534,14 @@ int accept_timeout(ZCE_SOCKET handle,
 *             recvn_timeout 和 recvn_n 的区别是recvn_n 如果超时参数为nullptr，可能立即返回或者一致阻塞等待
 *             内部超时用select 实现
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
-* @param      only_once  只收取一次数据，收取后就返回，不等待一定要收取到len的数据
+* @param      up_to_len  收取的数据必须达到len才返回，否则第一次收到数据就返回
 */
 ssize_t recvn_timeout(ZCE_SOCKET handle,
                       void* buf,
                       size_t len,
                       zce::time_value& timeout_tv,
                       int flags = 0,
-                      bool only_once = false);
+                      bool up_to_len = false);
 
 /*!
 * @brief      TCP发送数据，发送len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref sendv_n
@@ -962,7 +963,7 @@ inline ZCE_SOCKET zce::socket(int family,
                 errno = ::WSAGetLastError();
                 //干点啥呢，不干啥，可能更好？
             }
-        }
+}
 #endif
     }
 #endif //

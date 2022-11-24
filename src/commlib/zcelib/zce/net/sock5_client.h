@@ -23,9 +23,10 @@ class udp_associate;
 
 class base
 {
+public:
     static int hostaddr_to_buf(const char* host_name,
-                               const sockaddr* host_addr,
                                uint16_t host_port,
+                               const sockaddr* host_addr,
                                socklen_t addr_len,
                                char *buf,
                                size_t &buf_len);
@@ -38,7 +39,7 @@ class base
                                socklen_t addr_len);
 };
 
-class client
+class client :public base
 {
 public:
     //!
@@ -61,17 +62,20 @@ public:
     /*!
     * @brief      SOCKS5代理初始化，进行用户验证等
     * @return     int  返回0标识成功
-    * @param      host_name  跳转的域名，域名和地址只选一个，优先域名，为nullptr
-    * @param      host_addr  跳转的地址
-    * @param      addr_len   跳转的地址的长度
-    * @param      host_port  跳转的端口
+    * @param      host_name  目标（通过代理跳转）的域名，域名和地址只选一个，优先域名，为nullptr
+    * @param      host_port  目标端口
+    * @param      host_addr  目标的地址,和host_name互斥
+    * @param      addr_len   目标地址的长度，
+    * @param      bind_addr  socks5服务器提供的绑定地址，通过这个地址和目标同学
     * @param      timeout_tv 超时时间
     */
-    int tcp_connect(const char* host_name,
-                    const sockaddr* host_addr,
-                    uint16_t host_port,
-                    socklen_t addr_len,
-                    zce::time_value& timeout_tv);
+    int socks5_cmd(char cmd,
+                   const char* host_name,
+                   uint16_t host_port,
+                   const sockaddr* host_addr,
+                   socklen_t addr_len,
+                   sockaddr* bind_addr,
+                   zce::time_value& timeout_tv);
 
     /*!
      * @brief socks5代理，UDP穿透的初始化
@@ -85,18 +89,18 @@ public:
 
 protected:
     //！
-    static const size_t BUF_LEN = 1024;
+    static const size_t CMD_BUF_LEN = 1024;
 protected:
 
     //连接SOCKS5服务器的Socket句柄,必须先连接 connect
     ZCE_SOCKET socks5_hdl_ = INVALID_SOCKET;
     //
-    std::unique_ptr<unsigned char[]>cmd_buffer_{ new unsigned char[BUF_LEN] };
+    std::unique_ptr<char[]>cmd_buffer_{ new char[CMD_BUF_LEN] };
 };
 
 //=================================================================================
 //!UDP 穿透，Socks5
-class udp_associate
+class udp_associate :public base
 {
     friend class zce::socks5::client;
 public:
@@ -104,11 +108,12 @@ public:
     udp_associate() = default;
     ~udp_associate() = default;
     //!
-    int open(const sockaddr* local_addr,
-             socklen_t addr_len);
+    int open(int family);
     //!
     int send(const char* host_name,
+             uint16_t host_port,
              const sockaddr* host_addr,
+             socklen_t addr_len,
              const char *snd_buf,
              size_t buf_len);
     //!
@@ -117,7 +122,10 @@ public:
              size_t buf_len);
 protected:
 
+    static const size_t UDP_MAX_DGRAM = 64 * 1024;
+
     static const size_t SR_BUF_LEN = 64 * 1024;
+
 protected:
     //!
     ZCE_SOCKET associate_hdl_ = INVALID_SOCKET;
@@ -126,8 +134,8 @@ protected:
     //
     zce::sockaddr_any local_addr_;
     //
-    zce::sockaddr_any socks_bind_;
+    zce::sockaddr_any bind_addr_;
     //
-    std::unique_ptr<unsigned char[]> snd_rcv_buf_{ new unsigned char[SR_BUF_LEN] };
+    std::unique_ptr<char[]> snd_rcv_buf_{ new char[SR_BUF_LEN] };
 };
 }

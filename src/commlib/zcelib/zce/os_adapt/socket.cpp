@@ -97,6 +97,11 @@ sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in6& sa)
     return *this;
 }
 
+sockaddr *sockaddr_any::get()
+{
+    return (sockaddr *)(&in_);
+}
+
 sockaddr_in *sockaddr_any::get_in()
 {
     return &in_;
@@ -991,7 +996,7 @@ ssize_t recvn_timeout(ZCE_SOCKET handle,
                       size_t len,
                       zce::time_value& timeout_tv,
                       int flags,
-                      bool only_once)
+                      bool up_to_len)
 {
     ssize_t result = 0;
     bool error_occur = false;
@@ -1044,12 +1049,12 @@ ssize_t recvn_timeout(ZCE_SOCKET handle,
         if (onetime_recv > 0)
         {
             //如果只收取一次数据
-            if (only_once)
+            bytes_recv += onetime_recv;
+            if (up_to_len)
             {
-                bytes_recv += onetime_recv;
-                break;
+                continue;
             }
-            continue;
+            break;
         }
         //如果出现错误,== 0一般是是端口断开，==-1表示
         else

@@ -329,8 +329,8 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
         atom->result_ = zce::connect_timeout(
             atom->handle_,
             atom->host_name_,
-            atom->host_addr_,
             atom->host_port_,
+            atom->host_addr_,
             atom->addr_len_,
             *atom->timeout_tv_);
         break;
@@ -357,7 +357,7 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
             atom->len_,
             *atom->timeout_tv_,
             atom->flags_,
-            true);
+            false);
         if (len > 0)
         {
             atom->result_ = 0;
