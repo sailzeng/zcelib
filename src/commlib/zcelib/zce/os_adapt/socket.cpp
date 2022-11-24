@@ -97,18 +97,34 @@ sockaddr_any& sockaddr_any::operator = (const ::sockaddr_in6& sa)
     return *this;
 }
 
-sockaddr *sockaddr_any::get()
+socklen_t sockaddr_any::socklen()
+{
+    if (in_.sin_family == AF_INET)
+    {
+        return sizeof(::sockaddr_in);
+    }
+    else if (in_.sin_family == AF_INET6)
+    {
+        return sizeof(::sockaddr_in6);
+    }
+    else
+    {
+        assert(false);
+        return 0;
+    }
+}
+
+sockaddr_any::operator sockaddr *()
 {
     return (sockaddr *)(&in_);
 }
-
-sockaddr_in *sockaddr_any::get_in()
+sockaddr_any::operator sockaddr_in *()
 {
-    return &in_;
+    return (&in_);
 }
-sockaddr_in6 *sockaddr_any::get_in6()
+sockaddr_any::operator sockaddr_in6 *()
 {
-    return &in6_;
+    return (&in6_);
 }
 
 void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
@@ -130,6 +146,23 @@ void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
         assert(false);
     }
 }
+
+//!
+void sockaddr_any::get(::sockaddr* sa, socklen_t *sa_len)
+{
+    if (in_.sin_family == AF_INET)
+    {
+        ::memcpy(sa, &in_, sizeof(::sockaddr_in));
+    }
+    else if (in_.sin_family == AF_INET6)
+    {
+        ::memcpy(sa, &in6_, sizeof(::sockaddr_in6));
+    }
+    else
+    {
+        assert(false);
+    }
+    }
 
 void sockaddr_any::set_family(int family)
 {
@@ -185,7 +218,7 @@ int socket_init(int version_high, int version_low)
                   errno);
         WSACleanup();
         return -1;
-    }
+}
     return 0;
 #else
     ZCE_UNUSED_ARG(version_high);
@@ -616,7 +649,7 @@ int sock_enable(ZCE_SOCKET handle, int flags)
 
     return 0;
 #endif
-}
+    }
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
 int sock_disable(ZCE_SOCKET handle, int flags)
@@ -663,7 +696,7 @@ int sock_disable(ZCE_SOCKET handle, int flags)
 
     return 0;
 #endif
-}
+    }
 
 //如果使用大量的端口,select 是不合适的，需要使用EPOLL,此时可以打开下面的注释
 #define HANDLEREADY_USE_EPOLL
@@ -859,7 +892,7 @@ int handle_ready(ZCE_SOCKET handle,
     }
     return event_happen;
 #endif
-}
+    }
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning(default : 4127)
@@ -1649,11 +1682,11 @@ int inet_pton(int family,
         for (size_t k = 0; k < backword_num; ++k)
         {
             in_val6->u.Word[NUM_FIELDS_AF_INET6 - backword_num + k] = htons(back_word[k]);
-        }
+}
 
         //返回1标识成功
         return (1);
-    }
+}
     //不支持
     else
     {
@@ -1738,7 +1771,7 @@ const char* inet_ntop(int family,
         }
 
         return strptr;
-    }
+        }
     else
     {
         errno = EAFNOSUPPORT;
@@ -2111,7 +2144,7 @@ int select(
         select_tv
     );
 #endif
-}
+    }
 
 //这个函数是为了方便平台代码编写写的一个函数，会利用不同平台的fd_set实现加快速度，
 //当然这样么有任何通用性，sorry，追求性能了。
@@ -2125,7 +2158,7 @@ bool is_ready_fds(int no_fds,
     {
         *ready_fd = out_fds->fd_array[no_fds];
         return true;
-    }
+}
 
     return false;
 #elif defined (ZCE_OS_LINUX)

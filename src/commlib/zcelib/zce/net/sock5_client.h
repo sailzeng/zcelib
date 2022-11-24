@@ -24,21 +24,37 @@ class udp_associate;
 class base
 {
 public:
+
+    /*!
+     * @brief 把host地址转换到buf中
+     * @param host_name  域名
+     * @param host_port  域名端口
+     * @param host_addr  地址（包括地址和端口）
+     * @param addr_len   地址长度，表面是sockaddr_in,sockaddr_in6
+     * @param buf        buf
+     * @param buf_len    buf的长度
+     * @param use_len    buf的使用的长度
+     * @return 0 成功，
+    */
     static int hostaddr_to_buf(const char* host_name,
                                uint16_t host_port,
                                const sockaddr* host_addr,
                                socklen_t addr_len,
                                char *buf,
-                               size_t &buf_len);
+                               size_t buf_len,
+                               size_t &use_len);
 
+    //!把buf你们的信息填写到host中
     static int buf_to_hostaddr(const char *buf,
                                size_t buf_len,
+                               size_t &use_len,
                                char* host_name,
                                uint16_t *host_port,
                                sockaddr* host_addr,
                                socklen_t addr_len);
 };
 
+//!socks的客户端
 class client :public base
 {
 public:
@@ -67,7 +83,9 @@ public:
     * @param      host_addr  目标的地址,和host_name互斥
     * @param      addr_len   目标地址的长度，
     * @param      bind_addr  socks5服务器提供的绑定地址，通过这个地址和目标同学
-    * @param      timeout_tv 超时时间
+    * @param      timeout_tv 超时时间、
+    * @note       对于UDP 穿透，模板地址其实是自己的地址0+端口
+    *             对于TCP，Connect，之后使用bind_addr进行通信
     */
     int socks5_cmd(char cmd,
                    const char* host_name,
@@ -109,33 +127,52 @@ public:
     ~udp_associate() = default;
     //!
     int open(int family);
-    //!
-    int send(const char* host_name,
-             uint16_t host_port,
-             const sockaddr* host_addr,
+
+    /**
+     * @brief Socks5，的UDP穿透的发送数据
+     * @param dst_name
+     * @param dst_port
+     * @param dst_addr
+     * @param addr_len
+     * @param snd_buf
+     * @param buf_len
+     * @param fragments  是否进行分片，因为穿透会有一些前缀，可能会超过报告
+     * @return
+    */
+    int send(const char* dst_name,
+             uint16_t dst_port,
+             const sockaddr* dst_addr,
              socklen_t addr_len,
              const char *snd_buf,
-             size_t buf_len);
-    //!
-    int recv(sockaddr* host_addr,
+             size_t buf_len,
+             bool fragments);
+
+    //! Socks5，的UDP穿透的接收数据
+    int recv(sockaddr* dst_addr,
+             socklen_t addr_len,
              char *rcv_buf,
-             size_t buf_len);
+             size_t buf_len,
+             zce::time_value& timeout_tv,
+             bool fragments);
 protected:
 
+    //! UDP 包的最大长度
     static const size_t UDP_MAX_DGRAM = 64 * 1024;
-
+    //! 发送接受的BUFFER
     static const size_t SR_BUF_LEN = 64 * 1024;
+    //! 一个包的容量
+    static const size_t ONE_DGRAM_CAPACITY = SR_BUF_LEN - 262;
 
 protected:
-    //!
+    //! 穿透的UDP句柄
     ZCE_SOCKET associate_hdl_ = INVALID_SOCKET;
-    //!
+    //! 地址簇
     int family_ = 0;
-    //
+    //! 本地地址，通知给socks5 代理服务器
     zce::sockaddr_any local_addr_;
-    //
+    //! socks5 代理服务器返回的绑定地址，穿透请求通过这个端口服务
     zce::sockaddr_any bind_addr_;
-    //
+    //! 发送接收的数据缓存
     std::unique_ptr<char[]> snd_rcv_buf_{ new char[SR_BUF_LEN] };
 };
 }

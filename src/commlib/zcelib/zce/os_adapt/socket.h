@@ -46,11 +46,18 @@ public:
     sockaddr_any& operator = (const ::sockaddr_in& addr_in);
     sockaddr_any& operator = (const ::sockaddr_in6& addr_in6);
 
+    //!
     void set(const ::sockaddr* sa, socklen_t sa_len);
+    //!
+    void get(::sockaddr* sa, socklen_t *sa_len);
 
-    sockaddr *get();
-    sockaddr_in *get_in();
-    sockaddr_in6 *get_in6();
+    //!通过family得到相应的socklen_t
+    socklen_t socklen();
+
+    //!得到sockaddr* 等
+    operator sockaddr *();
+    operator sockaddr_in *();
+    operator sockaddr_in6 *();
 
     void set_family(int family);
 
@@ -963,7 +970,7 @@ inline ZCE_SOCKET zce::socket(int family,
                 errno = ::WSAGetLastError();
                 //干点啥呢，不干啥，可能更好？
             }
-}
+        }
 #endif
     }
 #endif //
