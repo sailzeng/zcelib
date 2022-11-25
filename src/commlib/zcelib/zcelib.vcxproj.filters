@@ -829,6 +829,9 @@
     <ClInclude Include="zce\os_adapt\netdb.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\container\bit_lock.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
