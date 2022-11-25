@@ -80,7 +80,7 @@ struct sem_t
 #  define SEM_FAILED ((sem_t *) -1)
 #endif
 
-typedef struct
+struct pthread_mutexattr_t
 {
     // Either PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
     int lock_shared_;
@@ -89,7 +89,7 @@ typedef struct
 
     //互斥量的名字，如果是多进程的互斥量，就必须有名字
     char mutex_name_[PATH_MAX + 1];
-} pthread_mutexattr_t;
+};
 
 ///
 struct pthread_mutex_t
@@ -164,11 +164,11 @@ struct pthread_cond_t
 //读写锁的代码来自UNP V2
 
 ///读写锁的属性结构，
-typedef struct
+struct pthread_rwlockattr_t
 {
     //
     bool            priority_to_write_;
-} pthread_rwlockattr_t;
+};
 
 ///读写锁的对象结构，利用互斥量，条件变量实现的读写锁
 struct pthread_rwlock_t

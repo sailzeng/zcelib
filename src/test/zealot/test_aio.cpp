@@ -193,7 +193,8 @@ coro_ret<int> coroutine_aio(zce::aio::worker* worker)
                                                           tmo_tv,
                                                           &time_id,
                                                           &tigger_tv);
-    std::cout << "co_write_file,reuslt:" << tmo_ret << " count:" << tigger_tv.to_str(tm_stt, 128, sz_buf) << std::endl;
+    std::cout << "co_write_file,reuslt:" << tmo_ret << " count:" <<
+        tigger_tv.to_str(tm_stt, 128, sz_buf) << std::endl;
 
     co_return 0;
 }
