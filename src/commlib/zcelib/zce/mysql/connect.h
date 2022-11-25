@@ -32,6 +32,9 @@ public:
     connect();
     ~connect();
 
+    connect(connect &&) noexcept;
+    connect& operator=(connect&&) noexcept;
+
     //避免拷贝
     connect(const connect &) = delete;
     connect& operator=(const connect&) = delete;

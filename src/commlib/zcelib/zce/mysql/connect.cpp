@@ -21,6 +21,20 @@ connect::~connect()
     disconnect();
 }
 
+connect::connect(connect&& others) noexcept
+{
+    this->mysql_handle_ = others.mysql_handle_;
+    this->if_connected_ = others.if_connected_;
+    others.if_connected_ = false;
+}
+connect& connect::operator=(connect&& others) noexcept
+{
+    this->mysql_handle_ = others.mysql_handle_;
+    this->if_connected_ = others.if_connected_;
+    others.if_connected_ = false;
+    return *this;
+}
+
 //如果使用选项文件进行连接
 int connect::connect_by_optionfile(const char* optfile, const char* group)
 {
