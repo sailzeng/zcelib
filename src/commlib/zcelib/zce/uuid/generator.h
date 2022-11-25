@@ -100,7 +100,7 @@ public:
     operator uint64_t();
 
     /// 转换为字符串
-    const char* to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
+    void to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
 
 public:
 
@@ -257,7 +257,7 @@ public:
     bool operator == (const UUID128& others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
-    const char* to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
+    void to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
 
 public:
     ///UUID的字符串表示的长度

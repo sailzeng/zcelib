@@ -60,7 +60,7 @@ public:
                  bool check_valid = false);
 
     ///转换string
-    const char* to_str(char* str_buffer, size_t buf_len);
+    void to_str(char* str_buffer, size_t buf_len);
 
     ///设置
     void set_svcid(uint16_t svrtype, uint16_t svrid);

@@ -360,7 +360,8 @@ int client::socks5_cmd(char cmd,
     size_t out_len = 0;
     ZCE_LOG(RS_INFO, "Socks 5 cmd %u Succ! Bind address %s.",
             cmd,
-            zce::to_str(bind_addr, addr_str, 64, out_len));
+            "");
+    //zce::to_str(bind_addr, addr_str, 64, out_len));
     return 0;
 }
 

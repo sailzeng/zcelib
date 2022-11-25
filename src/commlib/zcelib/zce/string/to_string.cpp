@@ -11,10 +11,10 @@
 //-----------------------------------------------------------------------------------------------------
 namespace zce
 {
-const char * to_str(const ::sockaddr_in& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const ::sockaddr_in& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
                                                 buffer,
@@ -25,7 +25,6 @@ const char * to_str(const ::sockaddr_in& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const ::sockaddr_in& out_data,
@@ -43,10 +42,10 @@ void to_string(const ::sockaddr_in& out_data,
 }
 
 ///IPV6的socket地址
-const char * to_str(const ::sockaddr_in6& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const ::sockaddr_in6& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(&out_data),
                                                 buffer,
@@ -56,7 +55,6 @@ const char * to_str(const ::sockaddr_in6& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const ::sockaddr_in6& out_data,
@@ -74,10 +72,10 @@ void to_string(const ::sockaddr_in6& out_data,
 }
 
 //zce::sockaddr_any  万能的处理sockaddr_in，sockaddr_in6的类
-const char * to_str(const zce::sockaddr_any& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const zce::sockaddr_any& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::sockaddr_ntop_ex((const sockaddr*)(out_data),
                                                 buffer,
@@ -87,7 +85,6 @@ const char * to_str(const zce::sockaddr_any& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const zce::sockaddr_any& out_data,
@@ -105,10 +102,10 @@ void to_string(const zce::sockaddr_any& out_data,
 }
 
 //!sockaddr *的指针类型
-const char * to_str(const ::sockaddr* out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const ::sockaddr* out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::sockaddr_ntop_ex(out_data,
                                                 buffer,
@@ -120,7 +117,6 @@ const char * to_str(const ::sockaddr* out_data,
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
     buffer[use_len] = '\0';
-    return buffer;
 }
 
 void to_string(const ::sockaddr* out_data,
@@ -138,10 +134,10 @@ void to_string(const ::sockaddr* out_data,
 }
 
 ///辅助IPV4的socket地址字符串
-const char * to_str(const ::in_addr& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const ::in_addr& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::inet_ntop(AF_INET,
                                          (void*)(&out_data),
@@ -155,7 +151,6 @@ const char * to_str(const ::in_addr& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const ::in_addr& out_data,
@@ -172,10 +167,10 @@ void to_string(const ::in_addr& out_data,
 }
 
 ///辅助输出IPV6的socket地址字符串
-const char * to_str(const ::in6_addr& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const ::in6_addr& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::inet_ntop(AF_INET6,
                                          (void*)(&out_data),
@@ -190,7 +185,6 @@ const char * to_str(const ::in6_addr& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const ::in6_addr& out_data,
@@ -207,10 +201,10 @@ void to_string(const ::in6_addr& out_data,
 }
 
 ///输出zce::Time_Value的时间
-const char * to_str(const zce::time_value& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const zce::time_value& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -224,7 +218,6 @@ const char * to_str(const zce::time_value& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const zce::time_value& out_data,
@@ -241,10 +234,10 @@ void to_string(const zce::time_value& out_data,
 }
 
 ///输出zce::skt::addr_in的字符串
-const char * to_str(const zce::skt::addr_in& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const zce::skt::addr_in& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -255,7 +248,6 @@ const char * to_str(const zce::skt::addr_in& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const zce::skt::addr_in& out_data,
@@ -272,10 +264,10 @@ void to_string(const zce::skt::addr_in& out_data,
 }
 
 ///辅助输出zce::skt::addr_in6的字符串
-const char * to_str(const zce::skt::addr_in6& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const zce::skt::addr_in6& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -286,7 +278,6 @@ const char * to_str(const zce::skt::addr_in6& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const zce::skt::addr_in6& out_data,
@@ -303,10 +294,10 @@ void to_string(const zce::skt::addr_in6& out_data,
 }
 
 ///辅助输出ZCE_UUID64的字符串
-const char * to_str(const UUID64& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const UUID64& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -321,7 +312,6 @@ const char * to_str(const UUID64& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const UUID64& out_data,
@@ -338,10 +328,10 @@ void to_string(const UUID64& out_data,
 }
 
 ///辅助输出ZCE_UUID128的字符串
-const char * to_str(const UUID128& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(const UUID128& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -350,7 +340,6 @@ const char * to_str(const UUID128& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(const UUID128& out_data,
@@ -367,10 +356,10 @@ void to_string(const UUID128& out_data,
 }
 
 ///输出Time时间
-const char * to_str(timeval& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+void to_str(timeval& out_data,
+            char* buffer,
+            size_t max_len,
+            size_t& use_len)
 {
     const char* ret_str = zce::timestamp(&out_data,
                                          buffer,
@@ -384,7 +373,6 @@ const char * to_str(timeval& out_data,
     {
         zce::to_str("<ERROR>", buffer, max_len, use_len);
     }
-    return buffer;
 }
 
 void to_string(timeval& out_data,
