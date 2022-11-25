@@ -81,7 +81,7 @@ public:
     ///检查端口号是否是一个安全端口
     bool check_safeport();
 
-    //端口的打印输出使用to_string函数
+    //端口的打印输出使用to_string函数，在基类zce::skt::addr_in
 
     //取得IP地址，本地序列
     inline uint32_t get_ip_address(void) const;

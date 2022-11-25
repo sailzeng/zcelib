@@ -83,7 +83,7 @@ void _string_format_outdata(std::string& foo_string,
         //检查后面字符是否是%，用于判断是否是转义
         if (*(id_pos + LEN_OF_FMT_IDENTIFY) != zce::SNRPINTF_FMT_ESCAPE_CHAR)
         {
-            zce::to_string(out_data, foo_string);
+            zce::embed_string(out_data, foo_string);
             foo_fmt_spec += LEN_OF_FMT_IDENTIFY;
             break;
         }
@@ -176,7 +176,7 @@ void _sformat_outdata(char*& foo_buffer,
         //检查后面字符是否是?，用于判断是否是转义
         if (*(id_pos + LEN_OF_FMT_IDENTIFY) != zce::SNRPINTF_FMT_ESCAPE_CHAR)
         {
-            zce::to_str(out_data, foo_buffer, foo_max_len, use_len);
+            zce::embed_str(out_data, foo_buffer, foo_max_len, use_len);
             foo_buffer += use_len;
             foo_max_len -= use_len;
             foo_use_len += use_len;
@@ -273,7 +273,7 @@ void _splice_outdata(char*& foo_buffer,
     //如果还有空间容纳字符
     if (foo_max_len > 0)
     {
-        zce::to_str(out_data, foo_buffer, foo_max_len, use_len);
+        zce::embed_str(out_data, foo_buffer, foo_max_len, use_len);
         foo_buffer += use_len;
         foo_max_len -= use_len;
         foo_use_len += use_len;
@@ -347,7 +347,7 @@ void _string_splice_data(std::string& foo_string,
                          char separator_char,
                          T&& out_data)
 {
-    zce::to_string(foo_string, out_data);
+    zce::embed_string(foo_string, out_data);
     if (separator_char != '\0')
     {
         foo_string.append(1, separator_char);

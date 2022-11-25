@@ -84,7 +84,7 @@ void svc_udp::read_event()
     ret = read_data_fromudp(szrevc, remote_addr);
 
     ZCE_LOG_DEBUG(RS_DEBUG, "UDP Read Event[%s].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
-                  remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                  remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                   ret,
                   szrevc);
 
@@ -145,7 +145,7 @@ int svc_udp::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote_addr)
 
             //记录错误,返回错误
             ZCE_LOG(RS_ERROR, "UDP Read error [%s],receive data error peer:%u zce::last_error()=%d|%s.\n",
-                    remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                    remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                     dgram_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -169,7 +169,7 @@ int svc_udp::read_data_fromudp(size_t& szrevc, zce::skt::addr_in& remote_addr)
     if (recvret == 0)
     {
         ZCE_LOG(RS_ERROR, "UDP Read error [%s].UDP Peer recv return 0, I don't know how to process.?\n",
-                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -241,7 +241,7 @@ int svc_udp::send_alldata_to_udp(soar::ogre4a_frame* send_frame)
     if (szsend <= 0)
     {
         ZCE_LOG(RS_ERROR, "UDP send error[%s]. Send data error peer:%u zce::last_error()=%d|%s.\n",
-                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 ary_upd_peer_[i]->get_handle(),
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -249,7 +249,7 @@ int svc_udp::send_alldata_to_udp(soar::ogre4a_frame* send_frame)
     }
 
     ZCE_LOG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s]  Socket %u bytes data Succ.\n",
-                  remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                  remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                   szsend);
     return 0;
 }

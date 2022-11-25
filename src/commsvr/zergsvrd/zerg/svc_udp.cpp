@@ -60,7 +60,7 @@ int svc_udp::init_udp_services()
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
-                udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                udp_bind_addr_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         close_handle();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
@@ -79,13 +79,13 @@ int svc_udp::init_udp_services()
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
-                udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                udp_bind_addr_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         close_handle();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
     ZCE_LOG(RS_INFO, "[zergsvr] init_udp_services ,UDP bind ip address [%s] success.",
-            udp_bind_addr_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            udp_bind_addr_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
     return 0;
 }
 
@@ -174,7 +174,7 @@ int svc_udp::read_data_from_udp(size_t& size_revc)
 
             //记录错误,返回错误
             ZCE_LOG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s] peer:%u zce::last_error()=%d|%s.",
-                    remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                    remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                     dgram_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -197,7 +197,7 @@ int svc_udp::read_data_from_udp(size_t& size_revc)
     if (recvret == 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] UDP Peer IP [%s] recv return 0, I don't know how to process.?",
-                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         return 0;
     }
 
@@ -234,7 +234,7 @@ int svc_udp::read_data_from_udp(size_t& size_revc)
     size_revc = recvret;
 
     ZCE_LOG(RS_DEBUG, "[zergsvr] UDP recviese data success. peer IP [%s] handle:%u .recv len :%u.",
-            remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
             dgram_peer_.get_handle(),
             size_revc);
 
@@ -266,7 +266,7 @@ int svc_udp::write_data_to_udp(soar::zerg_frame* send_frame)
     if (szsend <= 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] UDP send data error. peer IP [%s] handle:%u zce::last_error()=%d|%s.",
-                remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 dgram_peer_.get_handle(),
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -274,7 +274,7 @@ int svc_udp::write_data_to_udp(soar::zerg_frame* send_frame)
     }
 
     ZCE_LOG(RS_DEBUG, "[zergsvr] UDP send data success. peer IP [%s] handle:%u send len :%u.",
-            remote_addr.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            remote_addr.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
             dgram_peer_.get_handle(),
             send_len);
     //

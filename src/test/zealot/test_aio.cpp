@@ -193,7 +193,7 @@ coro_ret<int> coroutine_aio(zce::aio::worker* worker)
                                                           tmo_tv,
                                                           &time_id,
                                                           &tigger_tv);
-    std::cout << "co_write_file,reuslt:" << tmo_ret << " count:" << tigger_tv.to_string(tm_stt, 128, sz_buf) << std::endl;
+    std::cout << "co_write_file,reuslt:" << tmo_ret << " count:" << tigger_tv.to_str(tm_stt, 128, sz_buf) << std::endl;
 
     co_return 0;
 }
@@ -237,7 +237,7 @@ void on_timeout(zce::aio::AIO_ATOM* ahdl)
     auto tom = (zce::aio::TIMER_ATOM*)(ahdl);
     char tv_str[128];
     size_t use_len = 0;
-    std::cout << "on_timeout:" << tom->timer_id_ << " timevalue:" << tom->trigger_tv_->to_string(tv_str, 128, use_len) << std::endl;
+    std::cout << "on_timeout:" << tom->timer_id_ << " timevalue:" << tom->trigger_tv_->to_str(tv_str, 128, use_len) << std::endl;
 }
 
 int test_aio4(int /*argc*/, char* /*argv*/[])

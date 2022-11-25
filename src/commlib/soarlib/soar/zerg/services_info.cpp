@@ -59,7 +59,7 @@ const char* SERVICES_INFO::to_str(char* str_buffer, size_t buf_len)
              buf_len,
              "%16s|%24s|%6hu|%6hu",
              svc_id_.to_str(str_svc_id, sizeof(str_svc_id) - 1),
-             ip_address_.to_string(str_inet_add, sizeof(str_inet_add) - 1, use_buf),
+             ip_address_.to_str(str_inet_add, sizeof(str_inet_add) - 1, use_buf),
              idc_no_,
              business_id_
     );

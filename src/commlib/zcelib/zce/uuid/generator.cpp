@@ -5,11 +5,11 @@
 namespace zce
 {
 /************************************************************************************************************
-Class           : UUID64
+Class           : uuid64
 ************************************************************************************************************/
 
 // < 运算符
-bool UUID64::operator < (const UUID64& others) const
+bool uuid64::operator < (const uuid64& others) const
 {
     if (this->u_uint64_ < others.u_uint64_)
     {
@@ -20,7 +20,7 @@ bool UUID64::operator < (const UUID64& others) const
 }
 
 // == 运算符
-bool UUID64::operator == (const UUID64& others) const
+bool uuid64::operator == (const uuid64& others) const
 {
     if (this->u_uint64_ == others.u_uint64_)
     {
@@ -31,7 +31,7 @@ bool UUID64::operator == (const UUID64& others) const
 }
 
 //转换为字符串
-const char* UUID64::to_string(char* buffer, size_t buf_len, size_t& use_buf) const
+const char* uuid64::to_str(char* buffer, size_t buf_len, size_t& use_buf) const
 {
     //如果传递的BUFFER空间不够，直接返回nullptr
     if (buf_len < LEN_OF_ZCE_UUID64_STR + 1)
@@ -49,7 +49,7 @@ const char* UUID64::to_string(char* buffer, size_t buf_len, size_t& use_buf) con
 }
 
 // 转移成一个uint64_t的结构
-UUID64::operator uint64_t ()
+uuid64::operator uint64_t ()
 {
     return this->u_uint64_;
 }
@@ -79,13 +79,13 @@ void uuid64_gen::random_seed(uint32_t seed)
     mt_11213b_random_.srand(seed);
 }
 
-//产生一个UUID64
-UUID64 uuid64_gen::random_gen()
+//产生一个uuid64
+uuid64 uuid64_gen::random_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::RANDOM == generator_type_);
 
     //分别用2个随机数发生器得到随机数
-    UUID64 uuid64_ret;
+    uuid64 uuid64_ret;
 
     uuid64_ret.u_2uint32_[0] = mt_19937_random_.rand();
     uuid64_ret.u_2uint32_[1] = mt_11213b_random_.rand();
@@ -102,8 +102,8 @@ void uuid64_gen::time_radix(uint16_t identity, uint32_t radix)
     time_radix_seed_.u_16_48_.data2_ = static_cast<uint64_t>(radix) * 0x10;
 }
 
-//以时间为基数产生UUID64
-UUID64 uuid64_gen::timeradix_gen()
+//以时间为基数产生uuid64
+uuid64 uuid64_gen::timeradix_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::TIME == generator_type_);
 
@@ -112,9 +112,9 @@ UUID64 uuid64_gen::timeradix_gen()
 }
 
 /************************************************************************************************************
-Class           : UUID128
+Class           : uuid128
 ************************************************************************************************************/
-UUID128::UUID128()
+uuid128::uuid128()
 {
     u_4uint32_[0] = 0;
     u_4uint32_[1] = 0;
@@ -122,12 +122,12 @@ UUID128::UUID128()
     u_4uint32_[3] = 0;
 }
 
-UUID128::~UUID128()
+uuid128::~uuid128()
 {
 }
 
 // < 运算符
-bool UUID128::operator < (const UUID128& others) const
+bool uuid128::operator < (const uuid128& others) const
 {
     if (u_4uint32_[3] < others.u_4uint32_[3])
     {
@@ -173,7 +173,7 @@ bool UUID128::operator < (const UUID128& others) const
 }
 
 // == 运算符
-bool UUID128::operator == (const UUID128& others) const
+bool uuid128::operator == (const uuid128& others) const
 {
 #if defined ZCE_OS32
     if (this->u_4uint32_[0] == others.u_4uint32_[0] &&
@@ -194,7 +194,9 @@ bool UUID128::operator == (const UUID128& others) const
 }
 
 //转换为字符串,这儿采用的格式是标准的8-4-4-4-12，而不是GUID的8-4-4-16的格式
-const char* UUID128::to_string(char* buffer, size_t buf_len, size_t& use_buf) const
+const char* uuid128::to_str(char* buffer,
+                            size_t buf_len,
+                            size_t& use_buf) const
 {
     //如果传递的BUFFER空间不够，干脆什么都不做,直接返回nullptr,长度要考虑'\0'
     if (buf_len < LEN_OF_ZCE_UUID128_STR + 1)
@@ -251,13 +253,13 @@ void uuid128_gen::random_seed(uint32_t seed)
     mt_11213b_random_.srand(seed);
 }
 
-//产生一个UUID64
-UUID128 uuid128_gen::random_gen()
+//产生一个uuid64
+uuid128 uuid128_gen::random_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::RANDOM == generator_type_);
 
     //分别用2个随机数发生器得到随机数
-    UUID128 uuid64_ret;
+    uuid128 uuid64_ret;
 
     uuid64_ret.u_4uint32_[0] = mt_19937_random_.rand();
     uuid64_ret.u_4uint32_[1] = mt_19937_random_.rand();
@@ -276,8 +278,8 @@ void uuid128_gen::time_radix(uint32_t identity, uint32_t radix)
     time_radix_seed_.u_32_32_64_.data1_ = radix;
 }
 
-//以时间为基数产生UUID64
-UUID128 uuid128_gen::timeradix_gen()
+//以时间为基数产生uuid64
+uuid128 uuid128_gen::timeradix_gen()
 {
     ZCE_ASSERT(UUID_GENERATOR::TIME == generator_type_);
 

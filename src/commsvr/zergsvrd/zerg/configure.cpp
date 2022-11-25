@@ -125,7 +125,7 @@ int zerg_config::get_svcinfo_by_svcid(const soar::SERVICES_ID& svc_id,
     ZCE_LOG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s].",
             svc_id.services_type_,
             svc_id.services_id_,
-            svc_info.ip_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            svc_info.ip_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
 
     return ret;
 }

@@ -40,7 +40,7 @@ int svc_accept::create_listen()
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] Bind Listen IP|Port :[%s|%u] Fail.Error: %d|%s.",
-                accept_bind_addr_.to_string(str_ip_addr, IP_ADDR_LEN, use_len),
+                accept_bind_addr_.to_str(str_ip_addr, IP_ADDR_LEN, use_len),
                 zce::last_error(),
                 strerror(zce::last_error()));
         return SOAR_RET::ERR_ZERG_INIT_LISTEN_PORT_FAIL;
@@ -49,7 +49,7 @@ int svc_accept::create_listen()
     peer_acceptor_.sock_enable(O_NONBLOCK);
 
     ZCE_LOG(RS_INFO, "[zergsvr] Bind Listen IP|Port : [%s] Success.",
-            accept_bind_addr_.to_string(str_ip_addr, IP_ADDR_LEN, use_len),
+            accept_bind_addr_.to_str(str_ip_addr, IP_ADDR_LEN, use_len),
             accept_bind_addr_.get_port());
 
     //被Accept的端口会继承这些选项
@@ -121,8 +121,8 @@ void svc_accept::accept_event()
         int accept_error = zce::last_error();
         ZCE_LOG(RS_ERROR, "[zergsvr] Local peer[%s] Accept remote [%s] handler fail!"
                 " peer_acceptor_.accept ret =%d  errno=%d|%s ",
-                accept_bind_addr_.to_string(str_local_addr, IP_ADDR_LEN, use_len),
-                remote_address.to_string(str_remote_addr, IP_ADDR_LEN, use_len),
+                accept_bind_addr_.to_str(str_local_addr, IP_ADDR_LEN, use_len),
+                remote_address.to_str(str_remote_addr, IP_ADDR_LEN, use_len),
                 ret,
                 accept_error,
                 strerror(accept_error));

@@ -60,15 +60,15 @@ enum class UUID_GENERATOR
 };
 
 /************************************************************************************************************
-Class           : UUID64
+Class           : uuid64
 ************************************************************************************************************/
 
 #pragma pack(push,1)
 
 /*!
-* @brief      UUID64的一种表示方法
+* @brief      uuid64的一种表示方法
 *             UUID64_16_48 用1个16bit的数值+48位的数值
-*             表示UUID64，可以用于一些特殊场合产生唯一表示，
+*             表示uuid64，可以用于一些特殊场合产生唯一表示，
 */
 struct UUID64_16_48
 {
@@ -83,24 +83,24 @@ struct UUID64_16_48
 *             @li 2个32位的整数
 *
 */
-class UUID64
+class uuid64
 {
 public:
     ///构造函数
-    UUID64() = default;
+    uuid64() = default;
     ///析构函数
-    ~UUID64() = default;
+    ~uuid64() = default;
 
     /// < 运算符重载
-    bool operator < (const UUID64& others) const;
+    bool operator < (const uuid64& others) const;
     /// == 运算符
-    bool operator == (const UUID64& others) const;
+    bool operator == (const uuid64& others) const;
 
     /// 转移成一个uint64_t的结构
     operator uint64_t();
 
     /// 转换为字符串
-    void to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
+    const char* to_str(char* buffer, size_t buf_len, size_t& use_buf) const;
 
 public:
 
@@ -128,7 +128,7 @@ Class           : uuid64_gen
 ************************************************************************************************************/
 
 /*!
-* @brief      UUID64的产生器，提供随机数产生，以时间为基数产生随机数的方法
+* @brief      uuid64的产生器，提供随机数产生，以时间为基数产生随机数的方法
 *             @li 随机数产生，产生一个随机的uint64_t的数字,当然大家方向这个重复律很低
 *             @li 以时间为基数的产生长发，16位数值你自己定义，后面48位整数，以时间为基数
 *                 ，然后后面每次产生就累计一次，这种方法适合小规模的分布，16位表示分布的
@@ -160,10 +160,10 @@ public:
     */
     void random_seed(uint32_t seed);
     /*!
-    @brief      通过随机数产生一个UUID64
-    @return     UUID64 产生的UUID
+    @brief      通过随机数产生一个uuid64
+    @return     uuid64 产生的UUID
     */
-    UUID64 random_gen();
+    uuid64 random_gen();
 
     /*!
     * @brief      以时间为基数的初始化，radix一般可以用当前时间time_t
@@ -175,10 +175,10 @@ public:
                     uint32_t radix = static_cast<uint32_t> (time(nullptr)));
 
     /*!
-    * @brief      以时间为基数产生UUID64
-    * @return     UUID64 产生的UUID64
+    * @brief      以时间为基数产生uuid64
+    * @return     uuid64 产生的uuid64
     */
-    UUID64 timeradix_gen();
+    uuid64 timeradix_gen();
 
 protected:
 
@@ -196,14 +196,14 @@ protected:
     zce::random_mt11213b  mt_11213b_random_;
 
     ///以时间作为基数的UUID种子
-    UUID64                time_radix_seed_;
+    uuid64                time_radix_seed_;
 };
 
 //! @brief 实例
 typedef zce::singleton<uuid64_gen> uuid64_gen_inst;
 
 /************************************************************************************************************
-Class           : UUID128
+Class           : uuid128
 ************************************************************************************************************/
 ///32bit整数+32整数+64位整数的表示方法
 struct UUID128_32_32_64
@@ -234,7 +234,7 @@ struct UUID128_32_16_16_64
 };
 
 /*!
-* @brief      UUID128，128位的唯一标识，
+* @brief      uuid128，128位的唯一标识，
 *             有5中表示方法，
 *             @li 16个字节
 *             @li 4个32为的整数
@@ -243,21 +243,21 @@ struct UUID128_32_16_16_64
 *             @li 32位整数+16位整数+16位整数+64位整数，微软的UUID表示方法，GUID，
 *
 */
-class UUID128
+class uuid128
 {
 public:
     ///构造函数
-    UUID128();
+    uuid128();
     ///析构函数
-    ~UUID128();
+    ~uuid128();
 
     /// < 运算符重载
-    bool operator < (const UUID128& others) const;
+    bool operator < (const uuid128& others) const;
     /// == 运算符
-    bool operator == (const UUID128& others) const;
+    bool operator == (const uuid128& others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
-    void to_string(char* buffer, size_t buf_len, size_t& use_buf) const;
+    const char* to_str(char* buffer, size_t buf_len, size_t& use_buf) const;
 
 public:
     ///UUID的字符串表示的长度
@@ -308,10 +308,10 @@ public:
     */
     void random_seed(uint32_t seed);
     /*!
-    * @brief      产生一个UUID128，
-    * @return     UUID128
+    * @brief      产生一个uuid128，
+    * @return     uuid128
     */
-    UUID128 random_gen();
+    uuid128 random_gen();
 
     /*!
     * @brief      以时间为基数的初始化，radix一般可以用当前时间time_t（当然也可以不用，你用另外一个标识）
@@ -322,10 +322,10 @@ public:
                     uint32_t radix = static_cast<uint32_t> (time(nullptr)));
 
     /*!
-    * @brief      以时间为基数产生UUID64
-    * @return     UUID128
+    * @brief      以时间为基数产生uuid64
+    * @return     uuid128
     */
-    UUID128 timeradix_gen();
+    uuid128 timeradix_gen();
 
 protected:
 
@@ -338,7 +338,7 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///以时间作为基数的UUID种子
-    UUID128                   time_radix_seed_;
+    uuid128                   time_radix_seed_;
 };
 
 //! @brief 实例

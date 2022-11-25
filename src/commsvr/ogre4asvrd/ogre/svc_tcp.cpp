@@ -93,8 +93,8 @@ void svc_tcp::init_tcp_svc_handler(zce::skt::stream&& sockstream,
     char local_addr[IP_ADDR_LEN + 1], remote_addr[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     ZCE_LOG(RS_INFO, "Listen peer [%s] accept Socket IP Address: [%s] success,.\n",
-            local_address_.to_string(local_addr, IP_ADDR_LEN, use_len),
-            remote_address_.to_string(remote_addr, IP_ADDR_LEN, use_len)
+            local_address_.to_str(local_addr, IP_ADDR_LEN, use_len),
+            remote_address_.to_str(remote_addr, IP_ADDR_LEN, use_len)
     );
 
     ++num_accept_peer_;
@@ -243,7 +243,7 @@ void svc_tcp::read_event()
     size_t use_len = 0;
     int ret = read_data_from_peer(szrecv);
     ZCE_LOG(RS_DEBUG, "Read event,[%s] ,TCP handle input event triggered. ret:%d,szrecv:%u.\n",
-            remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+            remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
             ret,
             szrecv);
     //这儿任何错误都关闭,
@@ -266,7 +266,7 @@ void svc_tcp::read_event()
         if (0 != ret)
         {
             ZCE_LOG(RS_ERROR, "Read data error [%s].Judge whole fale error ret=%u.\n",
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                    remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                     ret);
             return close_handle();
         }
@@ -276,7 +276,7 @@ void svc_tcp::read_event()
         {
             //将数据放入接收的管道,不检测错误,因为错误会记录日志,而且有错误，也无法处理
             ZCE_LOG_DEBUG(RS_DEBUG, "Read a whole data [%s] recv buffer len:%u, Frame len:%u.\n",
-                          remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                          remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                           rcv_buffer_->ogre_frame_len_ - soar::ogre4a_frame::LEN_OF_OGRE_FRAME_HEAD,
                           size_frame);
 
@@ -351,7 +351,7 @@ int svc_tcp::timer_timeout(const zce::time_value&/*time*/, int timer_id)
         else
         {
             ZCE_LOG(RS_ERROR, "Timeout event,[%s] connect or Recive expire,want to close handle. recieve_counter=%u\n",
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                    remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                     receive_times_);
             //原来是在这个地方reutrn -1,现在发现return -1是一个很消耗的事情,(定时器的取消会使用指针的方式,会遍历所有的数据)
             //所以在这儿直接调用event_close
@@ -422,7 +422,7 @@ void svc_tcp::close_handle()
     if (handler_mode_ == HANDLER_MODE_CONNECT)
     {
         ZCE_LOG(RS_ERROR, "Close event,[%s] connect peer socket close .\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
 
         //将指针归还到池子中间去
         pool_of_cnthdl_.push_back(this);
@@ -431,7 +431,7 @@ void svc_tcp::close_handle()
     else if (handler_mode_ == HANDLER_MODE_ACCEPTED)
     {
         ZCE_LOG(RS_INFO, "Close event,[%s] accept peer socket close.\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
 
         //将指针归还到池子中间去
         pool_of_acpthdl_.push_back(this);
@@ -471,8 +471,8 @@ int svc_tcp::process_connect_register()
     char local_addr[IP_ADDR_LEN + 1], remote_addr[IP_ADDR_LEN];
     size_t use_len = 0;
     ZCE_LOG(RS_INFO, "Local peer[%s] auto connect [%s] success,.\n",
-            local_address_.to_string(local_addr, IP_ADDR_LEN, use_len),
-            remote_address_.to_string(remote_addr, IP_ADDR_LEN, use_len));
+            local_address_.to_str(local_addr, IP_ADDR_LEN, use_len),
+            remote_address_.to_str(remote_addr, IP_ADDR_LEN, use_len));
     return 0;
 }
 
@@ -509,7 +509,7 @@ int svc_tcp::read_data_from_peer(size_t& szrevc)
     else
     {
         ZCE_LOG(RS_ERROR, "Read error[%s],Buffer size is not enought or this is a error (attack) data.\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
@@ -529,7 +529,7 @@ int svc_tcp::read_data_from_peer(size_t& szrevc)
 
             //记录错误,返回错误
             ZCE_LOG(RS_ERROR, "Read error,[%s] receive data error peer:%u zce::last_error()=%d|%s.\n",
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                    remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                     socket_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -571,7 +571,7 @@ int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
     if (snd_buffer_deque_.empty() == true)
     {
         ZCE_LOG(RS_ERROR, "Write error,[%s] goto write_event|write_data_to_peer ,but not data to send. Please check you code.\n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         reactor()->cancel_wakeup(this, zce::WRITE_MASK);
         return 0;
     }
@@ -589,7 +589,7 @@ int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
         szsend = 0;
         //后面应该会打印方的IP，这儿不重复
         ZCE_LOG(RS_ERROR, "Write error[%s],send data error. peer:%d errno=%u|%s \n",
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 socket_peer_.get_handle(),
                 last_error,
                 strerror(last_error));
@@ -613,7 +613,7 @@ int svc_tcp::write_data_to_peer(size_t& szsend, bool& if_full)
     {
         if_full = true;
         ZCE_LOG_DEBUG(RS_DEBUG, "Send a whole frame To  IP|Port :%s FrameLen:%u.\n",
-                      remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                      remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                       send_bytes_);
         send_bytes_ = 0;
     }
@@ -692,7 +692,7 @@ int svc_tcp::write_all_data_to_peer()
             ZCE_LOG(RS_INFO, "Send to peer handle[%u] IP|Port :[%s] complete ,want to close peer on"
                     " account of frame option.\n",
                     socket_peer_.get_handle(),
-                    remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                    remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
             //让上层去关闭，要小心，小心，很麻烦，很多生命周期的问题,因为有两个地方调用这个函数
             return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
         }
@@ -742,7 +742,7 @@ int svc_tcp::process_senderror(soar::ogre4a_frame* inner_frame)
                 "address[%s],peer status[%u]. \n",
                 socket_peer_.get_handle(),
                 inner_frame->ogre_frame_len_,
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 peer_status_
         );
     }
@@ -978,7 +978,7 @@ int svc_tcp::put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame)
     {
         ZCE_LOG(RS_INFO, "This Peer handle[%u] IP|Port :[%s] complete ,will close when all frame send complete ,because send frame has option ogre4a_frame::OGREDESC_SNDPRC_CLOSE_PEER.\n",
                 socket_peer_.get_handle(),
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         if_force_close_ = true;
     }
 
@@ -991,7 +991,7 @@ int svc_tcp::put_frame_to_sendlist(soar::ogre4a_frame* ogre_frame)
         ZCE_LOG(RS_ERROR, "Peer handle [%u] IP|Port[%s] send buffer cycle deque is "
                 "full,this data must throw away,Send deque capacity =%u,may be extend it.\n",
                 socket_peer_.get_handle(),
-                remote_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                remote_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 snd_buffer_deque_.capacity());
 
         //回收帧

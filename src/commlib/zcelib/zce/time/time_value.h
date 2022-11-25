@@ -267,12 +267,11 @@ public:
     * @param[in]  datetime_strlen 字符串的长度
     * @param[in]   fromat_type    时间格式，参考@ref TIME_STR_FORMAT 枚举，默认输出ISO格式的本地时间，精度到USEC。
     */
-    void to_string(char* str_date_time,
-                   size_t datetime_strlen,
-                   size_t& use_buf,
-                   bool uct_time = false,
-                   zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC
-    )  const;
+    const char *to_str(char* buffer,
+                       size_t buf_len,
+                       size_t& use_buf,
+                       bool uct_time = false,
+                       zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC)  const;
 
     /*!
     * @brief      根据你的格式化要求,将字符串，转换为事件

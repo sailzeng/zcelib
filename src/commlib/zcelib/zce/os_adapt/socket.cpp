@@ -239,7 +239,7 @@ int socket_init(int version_high, int version_low)
     ZCE_UNUSED_ARG(version_low);
     return 0;
 #endif
-    }
+}
 
 //关闭Socket的支持
 int socket_terminate(void)
@@ -663,7 +663,7 @@ int sock_enable(ZCE_SOCKET handle, int flags)
 
     return 0;
 #endif
-    }
+}
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
 int sock_disable(ZCE_SOCKET handle, int flags)
@@ -902,8 +902,8 @@ int handle_ready(ZCE_SOCKET handle,
         if (once_events_ary[1].events & EPOLLIN)
         {
             return -1;
-}
-}
+        }
+    }
     return event_happen;
 #endif
 }
@@ -1725,6 +1725,7 @@ const char* inet_ntop(int family,
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     return ::inet_ntop(family, addrptr, strptr, len);
 #else
+    addrptr[0] = '\0';
     //根据不同的协议簇进行不同的处理
     if (AF_INET == family)
     {
@@ -1828,8 +1829,8 @@ const char* sockaddr_ntop(const sockaddr* sock_addr,
 
 //输出IP地址信息以及端口信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>21.IPV6至少长度>45
 const char* sockaddr_ntop_ex(const sockaddr* sock_addr,
-                             char* str_ptr,
-                             size_t str_len,
+                             char* buffer,
+                             size_t buf_len,
                              size_t& use_len,
                              bool out_port_info)
 {
@@ -1843,8 +1844,8 @@ const char* sockaddr_ntop_ex(const sockaddr* sock_addr,
         addr_port = ntohs(sockadd_ipv4->sin_port);
         ret_str = zce::inet_ntop(AF_INET,
                                  (void*)(&(sockadd_ipv4->sin_addr)),
-                                 str_ptr,
-                                 str_len);
+                                 buffer,
+                                 buf_len);
     }
     else if (sock_addr->sa_family == AF_INET6)
     {
@@ -1852,33 +1853,35 @@ const char* sockaddr_ntop_ex(const sockaddr* sock_addr,
         addr_port = ntohs(sockadd_ipv6->sin6_port);
         ret_str = zce::inet_ntop(AF_INET6,
                                  (void*)(&(sockadd_ipv6->sin6_addr)),
-                                 str_ptr, str_len);
+                                 buffer, buf_len);
     }
     else
     {
         errno = EAFNOSUPPORT;
-        return nullptr;
+        strncpy(buffer, "<error>", buf_len);
+        return buffer;
     }
 
     //如果返回错误
     if (nullptr == ret_str)
     {
-        return nullptr;
+        strncpy(buffer, "<error>", buf_len);
+        return buffer;
     }
 
-    use_len += strlen(str_ptr);
-    if (out_port_info)
+    use_len += strlen(buffer);
+    if (out_port_info && buf_len - use_len > 7)
     {
         //前面已经检查过了，这儿不判断返回了
-        int port_len = snprintf(str_ptr + use_len, str_len - use_len, "#%u", addr_port);
-        if (port_len <= 0 || port_len + use_len > str_len)
+        int port_len = snprintf(buffer + use_len, buf_len - use_len, "#%u", addr_port);
+        if (port_len <= 0)
         {
-            return nullptr;
+            return buffer;
         }
         use_len += port_len;
     }
 
-    return str_ptr;
+    return buffer;
 }
 
 /*

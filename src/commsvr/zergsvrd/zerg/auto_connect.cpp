@@ -61,7 +61,7 @@ int auto_connector::get_config(const zerg::zerg_config* config)
         ZCE_LOG(RS_INFO, "[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s].",
                 svc_route.svc_id_.services_type_,
                 svc_route.svc_id_.services_id_,
-                svc_route.ip_address_.to_string(ip_addr_str, IP_ADDR_LEN, use_len)
+                svc_route.ip_address_.to_str(ip_addr_str, IP_ADDR_LEN, use_len)
         );
 
         auto map_iter = type_to_idary_map_.find(svc_route.svc_id_.services_type_);
@@ -165,7 +165,7 @@ int auto_connector::connect_one_server(const soar::SERVICES_ID& svc_id,
     ZCE_LOG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s] .",
             svc_id.services_type_,
             svc_id.services_id_,
-            inetaddr.to_string(ip_addr_str, IP_ADDR_LEN, use_len)
+            inetaddr.to_str(ip_addr_str, IP_ADDR_LEN, use_len)
     );
 
     zce::skt::stream sockstream;

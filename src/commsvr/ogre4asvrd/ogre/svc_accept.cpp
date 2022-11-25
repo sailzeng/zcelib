@@ -61,14 +61,14 @@ int svc_accept::create_listenpeer()
     {
         int last_err = zce::last_error();
         ZCE_LOG(RS_ERROR, "Bind Listen IP|Port :[%s] Fail.Error: %u|%s.\n",
-                peer_module_info_.peer_info_.peer_socketin_.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                peer_module_info_.peer_info_.peer_socketin_.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 last_err,
                 strerror(last_err));
         return SOAR_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
     }
 
     ZCE_LOG(RS_INFO, "Bind listen IP|Port : [%s|%u] Success.\n",
-            peer_module_info_.peer_info_.peer_socketin_.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+            peer_module_info_.peer_info_.peer_socketin_.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void*>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void*>(&sndbuflen), &opvallen);
@@ -115,7 +115,7 @@ void svc_accept::accept_event()
         //记录错误
         int accept_error = zce::last_error();
         ZCE_LOG(RS_ERROR, "Accept [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
-                remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len),
+                remoteaddress.to_str(ip_addr_str, IP_ADDR_LEN, use_len),
                 ret,
                 accept_error,
                 strerror(accept_error));

@@ -212,8 +212,8 @@ int active_svc_set::add_services_peerinfo(const soar::SERVICES_ID& svc_id,
         ZCE_LOG(RS_ERROR, "[zergsvr] add_services_peerinfo:%u|%u fail.Find old IP:[%s],new IP[%s],no replace old.",
                 svc_id.services_type_,
                 svc_id.services_id_,
-                old_svchdl->get_peer().to_string(old_addr, TMP_ADDR_LEN, use_len),
-                new_svchdl->get_peer().to_string(new_addr, TMP_ADDR_LEN, use_len)
+                old_svchdl->get_peer().to_str(old_addr, TMP_ADDR_LEN, use_len),
+                new_svchdl->get_peer().to_str(new_addr, TMP_ADDR_LEN, use_len)
         );
         return SOAR_RET::ERR_ZERG_SERVER_ALREADY_LONGIN;
     }
@@ -261,8 +261,8 @@ int active_svc_set::replace_services_peerInfo(const soar::SERVICES_ID& svc_id,
         ZCE_LOG(RS_INFO, "[zergsvr] replace_services_peerInfo:%u|%u ,Find old IP[%s],new IP [%s],replace old.",
                 svc_id.services_type_,
                 svc_id.services_id_,
-                old_svchdl->get_peer().to_string(old_addr, TMP_ADDR_LEN, use_len),
-                new_svchdl->get_peer().to_string(new_addr, TMP_ADDR_LEN, use_len)
+                old_svchdl->get_peer().to_str(old_addr, TMP_ADDR_LEN, use_len),
+                new_svchdl->get_peer().to_str(new_addr, TMP_ADDR_LEN, use_len)
         );
     }
 

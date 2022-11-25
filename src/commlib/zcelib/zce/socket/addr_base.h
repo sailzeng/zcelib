@@ -51,10 +51,10 @@ public:
     bool operator != (const addr_base& others) const;
 
     //转换成字符串,同时输出字符串的长度
-    inline const char* to_string(char* buffer,
-                                 size_t buf_len,
-                                 size_t& use_buf,
-                                 bool out_port_info = true) const;
+    inline const char* to_str(char* buffer,
+                              size_t buf_len,
+                              size_t& use_buf,
+                              bool out_port_info = true) const;
 
     ///检查地址是否是一个内网地址
     bool is_internal();
@@ -89,10 +89,10 @@ inline int addr_base::get_family(void) const
     return sockaddr_ptr_->sa_family;
 }
 
-inline const char* addr_base::to_string(char* buffer,
-                                        size_t buf_len,
-                                        size_t& use_buf,
-                                        bool out_port_info) const
+inline const char* addr_base::to_str(char* buffer,
+                                     size_t buf_len,
+                                     size_t& use_buf,
+                                     bool out_port_info) const
 {
     return zce::sockaddr_ntop_ex(sockaddr_ptr_,
                                  buffer,

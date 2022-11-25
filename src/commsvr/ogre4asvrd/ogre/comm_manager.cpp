@@ -34,7 +34,7 @@ int comm_manager::check_safe_port(zce::skt::addr_in& inetadd)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
             ZCE_LOG(RS_ERROR, "Unsafe port [%s],if you need to open this port,please close insurance. \n",
-                    inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                    inetadd.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
@@ -42,7 +42,7 @@ int comm_manager::check_safe_port(zce::skt::addr_in& inetadd)
         {
             //给出警告
             ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
-                    inetadd.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                    inetadd.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
         }
     }
     //

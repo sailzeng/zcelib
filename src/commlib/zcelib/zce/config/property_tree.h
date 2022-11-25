@@ -173,7 +173,7 @@ public:
                   const val_type& val)
     {
         std::string val_str;
-        zce::to_string(val, val_str);
+        zce::embed_string(val, val_str);
         this->leaf_node_.insert(std::make_pair(key_str, val_str));
     }
 

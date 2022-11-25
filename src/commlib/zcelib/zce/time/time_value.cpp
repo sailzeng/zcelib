@@ -369,11 +369,11 @@ time_value::operator timeval* ()
 }
 
 //将时间打印出来
-const char* time_value::to_string(char* str_date_time,
-                                  size_t datetime_strlen,
-                                  size_t& use_buf,
-                                  bool utc_time,
-                                  zce::TIME_STR_FORMAT fmt) const
+const char* time_value::to_str(char* str_date_time,
+                               size_t datetime_strlen,
+                               size_t& use_buf,
+                               bool utc_time,
+                               zce::TIME_STR_FORMAT fmt) const
 {
     return zce::timeval_to_str(&(this->zce_time_value_),
                                str_date_time,

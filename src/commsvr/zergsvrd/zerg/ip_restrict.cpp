@@ -77,7 +77,7 @@ int ip_restrict::check_iprestrict(const zce::skt::addr_in& remoteaddress)
         if (iter == allow_ip_set_.end())
         {
             ZCE_LOG(RS_INFO, "[zergsvr] A NO Allowed IP|Port : [%s] connect me.",
-                    remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                    remoteaddress.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }
     }
@@ -90,7 +90,7 @@ int ip_restrict::check_iprestrict(const zce::skt::addr_in& remoteaddress)
         if (iter != reject_ip_set_.end())
         {
             ZCE_LOG(RS_INFO, "[zergsvr] Reject IP|Port : %s connect me.",
-                    remoteaddress.to_string(ip_addr_str, IP_ADDR_LEN, use_len));
+                    remoteaddress.to_str(ip_addr_str, IP_ADDR_LEN, use_len));
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }
     }

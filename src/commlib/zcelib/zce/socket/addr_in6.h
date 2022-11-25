@@ -70,7 +70,7 @@ public:
     //不可冲入的非安全函数
     inline const char* get_host_name(void) const;
 
-    //端口的打印输出使用to_string函数。取得以:冒号的IP地址信息STRING
+    //端口的打印输出使用to_str函数,在基类zce::skt::addr_in。取得以:冒号的IP地址信息STRING
 
     //取得IP地址,你要保证ipv6_addr_val有16个字节
     const char* get_ip_address(char* ipv6_addr_val) const;

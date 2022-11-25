@@ -1,13 +1,13 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/string/to_string.h
+* @filename   zce/string/embed_string.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年5月2日
 * @brief      字符串的输出辅助工具，包括Adapt等，保持相同的输出函数，
 *             这样在使用模版的时候就很方便了。
 *             也提供了一组宏帮助输出。
-*             to_str 函数为模板函数提供统一的入口，
+*             embed_str 函数为模板函数提供统一的入口，
 *             XXXXX_Out_Helper 这些类一般是为了帮助提供格式化输出，
 *
 * @details    基本的数据类型，zce里面的基础数据类型，都有了输出，
@@ -26,8 +26,8 @@
 namespace zce
 {
 class time_value;
-class UUID64;
-class UUID128;
+class uuid64;
+class uuid128;
 class sockaddr_any;
 
 namespace skt
@@ -40,10 +40,10 @@ class addr_in6;
 
 //=================================================================================================
 ///辅助输出一个bool 布尔值
-inline char* to_str(const bool& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+inline char* embed_str(const bool& out_data,
+                       char* buffer,
+                       size_t max_len,
+                       size_t& use_len)
 {
     if (out_data)
     {
@@ -60,8 +60,8 @@ inline char* to_str(const bool& out_data,
     return buffer;
 }
 
-inline void to_string(const bool& out_data,
-                      std::string& stdstr)
+inline void embed_string(const bool& out_data,
+                         std::string& stdstr)
 {
     if (out_data)
     {
@@ -75,10 +75,10 @@ inline void to_string(const bool& out_data,
 
 //=================================================================================================
 ///辅助输出一个CHAR
-inline char* to_str(const char& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len)
+inline char* embed_str(const char& out_data,
+                       char* buffer,
+                       size_t max_len,
+                       size_t& use_len)
 {
     const size_t CHAR_NEEN_ROOM = 1;
 
@@ -96,18 +96,18 @@ inline char* to_str(const char& out_data,
     return buffer;
 }
 
-inline void to_string(const char& out_data,
-                      std::string& stdstr)
+inline void embed_string(const char& out_data,
+                         std::string& stdstr)
 {
     stdstr.append(1, out_data);
 }
 
 //=================================================================================================
 ///辅助输出无符号CHAR
-inline void to_str(const unsigned char& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const unsigned char& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     const size_t CHAR_NEEN_ROOM = 1;
     //只输出一个字符
@@ -123,18 +123,18 @@ inline void to_str(const unsigned char& out_data,
     }
 }
 
-inline void to_string(const unsigned char& out_data,
-                      std::string& stdstr)
+inline void embed_string(const unsigned char& out_data,
+                         std::string& stdstr)
 {
     stdstr.append(1, out_data);
 }
 
 //=================================================================================================
 ///辅助输出短整数的字符串
-inline void to_str(const short& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const short& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -147,8 +147,8 @@ inline void to_str(const short& out_data,
                    0);
 }
 
-inline void to_string(const short& out_data,
-                      std::string& stdstr)
+inline void embed_string(const short& out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -161,10 +161,10 @@ inline void to_string(const short& out_data,
 
 //=================================================================================================
 ///辅助输出无符号短整数
-inline void to_str(const unsigned short out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const unsigned short out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -177,8 +177,8 @@ inline void to_str(const unsigned short out_data,
                    zce::FMT_UNSIGNED);
 }
 
-inline void to_string(const unsigned short out_data,
-                      std::string& stdstr)
+inline void embed_string(const unsigned short out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -191,10 +191,10 @@ inline void to_string(const unsigned short out_data,
 
 //=================================================================================================
 ///辅助输出int整数
-inline void to_str(const int out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const int out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -207,8 +207,8 @@ inline void to_str(const int out_data,
                    0);
 }
 
-inline void to_string(const int out_data,
-                      std::string& stdstr)
+inline void embed_string(const int out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -221,10 +221,10 @@ inline void to_string(const int out_data,
 
 //=================================================================================================
 ///无符号int整数
-inline void to_str(const unsigned int out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const unsigned int out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -237,8 +237,8 @@ inline void to_str(const unsigned int out_data,
                    zce::FMT_UNSIGNED);
 }
 
-inline void to_string(const unsigned int out_data,
-                      std::string& stdstr)
+inline void embed_string(const unsigned int out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -251,10 +251,10 @@ inline void to_string(const unsigned int out_data,
 
 //=================================================================================================
 ///符号long整数
-inline void to_str(char* buffer,
-                   size_t max_len,
-                   size_t& use_len,
-                   const long out_data)
+inline void embed_str(char* buffer,
+                      size_t max_len,
+                      size_t& use_len,
+                      const long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -267,8 +267,8 @@ inline void to_str(char* buffer,
                    0);
 }
 
-inline void to_string(std::string& stdstr,
-                      const long out_data)
+inline void embed_string(std::string& stdstr,
+                         const long out_data)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -281,10 +281,10 @@ inline void to_string(std::string& stdstr,
 
 //=================================================================================================
 ///辅助输出无符号long整数
-inline void to_str(const unsigned long out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const unsigned long out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -297,8 +297,8 @@ inline void to_str(const unsigned long out_data,
                    zce::FMT_UNSIGNED);
 }
 
-inline void to_string(const unsigned long out_data,
-                      std::string& stdstr)
+inline void embed_string(const unsigned long out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -311,10 +311,10 @@ inline void to_string(const unsigned long out_data,
 
 //=================================================================================================
 ///辅助输出有符号long long整数
-inline void to_str(const long long out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const long long out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -327,8 +327,8 @@ inline void to_str(const long long out_data,
                    0);
 }
 
-inline void to_string(const long long out_data,
-                      std::string& stdstr)
+inline void embed_string(const long long out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -341,10 +341,10 @@ inline void to_string(const long long out_data,
 
 //=================================================================================================
 ///辅助输出无符号long long整数
-inline void to_str(const unsigned long long out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const unsigned long long out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(buffer,
@@ -357,8 +357,8 @@ inline void to_str(const unsigned long long out_data,
                    zce::FMT_UNSIGNED);
 }
 
-inline void to_string(const unsigned long long out_data,
-                      std::string& stdstr)
+inline void embed_string(const unsigned long long out_data,
+                         std::string& stdstr)
 {
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
@@ -371,10 +371,10 @@ inline void to_string(const unsigned long long out_data,
 
 //=================================================================================================
 ///辅助输出float单精度浮点
-inline void to_str(const float out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const float out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     double cvt_out_data = out_data;
     zce::fmt_double(buffer,
@@ -383,8 +383,8 @@ inline void to_str(const float out_data,
                     cvt_out_data);
 }
 
-inline void to_string(const float out_data,
-                      std::string& stdstr)
+inline void embed_string(const float out_data,
+                         std::string& stdstr)
 {
     double cvt_out_data = out_data;
     zce::fmt_double(stdstr,
@@ -393,10 +393,10 @@ inline void to_string(const float out_data,
 
 //=================================================================================================
 ///辅助输出double双精度浮点
-inline void to_str(const double out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const double out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     zce::fmt_double(buffer,
                     max_len,
@@ -404,8 +404,8 @@ inline void to_str(const double out_data,
                     out_data);
 }
 
-inline void to_string(const double out_data,
-                      std::string& stdstr)
+inline void embed_string(const double out_data,
+                         std::string& stdstr)
 {
     zce::fmt_double(stdstr,
                     out_data);
@@ -413,10 +413,10 @@ inline void to_string(const double out_data,
 
 //=================================================================================================
 ///辅助输出const char字符串输出辅助函数
-inline void to_str(const char* out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const char* out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     const char* cvt_out_data = out_data;
     size_t str_len = strlen(cvt_out_data);
@@ -427,17 +427,17 @@ inline void to_str(const char* out_data,
                  str_len);
 }
 
-inline void to_string(const char* out_data,
-                      std::string& stdstr)
+inline void embed_string(const char* out_data,
+                         std::string& stdstr)
 {
     stdstr.append(out_data);
 }
 
 ///辅助输出std::string字符串输出
-inline void to_str(const std::string& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const std::string& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     zce::fmt_str(buffer,
                  max_len,
@@ -446,17 +446,17 @@ inline void to_str(const std::string& out_data,
                  out_data.length());
 }
 
-inline void to_string(const std::string& out_data,
-                      std::string& stdstr)
+inline void embed_string(const std::string& out_data,
+                         std::string& stdstr)
 {
     stdstr.append(out_data);
 }
 
 ///辅助输出void *指针地址输出
-inline void to_str(const void* out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const void* out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     ptrdiff_t save_point = (const char*)out_data - (const char*)0;
     zce::fmt_int64(buffer,
@@ -469,8 +469,8 @@ inline void to_str(const void* out_data,
                    zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
 }
 
-inline void to_string(const void* out_data,
-                      std::string& stdstr)
+inline void embed_string(const void* out_data,
+                         std::string& stdstr)
 {
     ptrdiff_t save_point = (const char*)out_data - (const char*)0;
     zce::fmt_int64(stdstr,
@@ -482,119 +482,6 @@ inline void to_string(const void* out_data,
 }
 
 //=================================================================================================
-//一些C语言的结构的字符串输出
-
-///输出Time时间
-inline void to_str(::timeval& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len);
-
-inline void to_string(::timeval& out_data,
-                      std::string& stdstr);
-
-///IPV4的socket地址
-void to_str(const ::sockaddr_in& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const ::sockaddr_in& out_data,
-               std::string& stdstr);
-
-///IPV6的socket地址
-void to_str(const ::sockaddr_in6& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const ::sockaddr_in6& out_data,
-               std::string& stdstr);
-
-//zce::sockaddr_any  万能的处理sockaddr_in，sockaddr_in6的类
-void to_str(const zce::sockaddr_any& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const zce::sockaddr_any& out_data,
-               std::string& stdstr);
-
-///sockaddr *的指针类型
-void to_str(const ::sockaddr* out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const ::sockaddr* out_data,
-               std::string& stdstr);
-
-///辅助IPV4的socket地址字符串
-void to_str(const ::in_addr& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const ::in_addr& out_data,
-               std::string& stdstr);
-
-///辅助输出IPV6的socket地址字符串
-void to_str(const ::in6_addr& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const ::in6_addr& out_data,
-               std::string& stdstr);
-
-//=================================================================================================
-//一些ZCELIB常用的结构的字符串输出
-
-///输出zce::Time_Value的时间
-inline void to_str(const zce::time_value& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len);
-
-inline void to_string(const zce::time_value& out_data,
-                      std::string& stdstr);
-
-///输出zce::skt::addr_in的字符串
-inline void to_str(const zce::skt::addr_in& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len);
-
-void to_string(const zce::skt::addr_in& out_data,
-               std::string& stdstr);
-
-///辅助输出zce::skt::addr_in6的字符串
-void to_str(const zce::skt::addr_in6& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const zce::skt::addr_in6& out_data,
-               std::string& stdstr);
-
-///辅助输出ZCE_UUID64的字符串
-void to_str(const UUID64& out_data,
-            char* buffer,
-            size_t max_len,
-            size_t& use_len);
-
-void to_string(const UUID64& out_data,
-               std::string& stdstr);
-
-///辅助输出ZCE_UUID128的字符串
-const char*  to_str(const UUID128& out_data,
-                    char* buffer,
-                    size_t max_len,
-                    size_t& use_len);
-
-void to_string(const UUID128& out_data,
-               std::string& stdstr);
-//-----------------------------------------------------------------------------------------------
 //特殊的格式输出方式
 
 ///INT格式化输出辅助类，可以帮助进行一些格式化输出
@@ -668,10 +555,10 @@ public:
 }
 
 //INT格式化输出辅助
-inline void to_str(const zce::aidout::o_int& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const zce::aidout::o_int& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     zce::fmt_int64(buffer,
                    max_len,
@@ -683,8 +570,8 @@ inline void to_str(const zce::aidout::o_int& out_data,
                    out_data.flags_);
 }
 
-inline void to_string(const zce::aidout::o_int& out_data,
-                      std::string& stdstr)
+inline void embed_string(const zce::aidout::o_int& out_data,
+                         std::string& stdstr)
 {
     zce::fmt_int64(stdstr,
                    out_data.out_data_,
@@ -735,10 +622,10 @@ public:
 #endif
 
 ///DOUBLE格式化输出辅助
-inline void to_str(const zce::aidout::o_double& out_data,
-                   char* buffer,
-                   size_t max_len,
-                   size_t& use_len)
+inline void embed_str(const zce::aidout::o_double& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     zce::fmt_double(buffer,
                     max_len,
@@ -749,8 +636,8 @@ inline void to_str(const zce::aidout::o_double& out_data,
                     out_data.flags_);
 }
 
-inline void to_string(const zce::aidout::o_double& out_data,
-                      std::string& stdstr)
+inline void embed_string(const zce::aidout::o_double& out_data,
+                         std::string& stdstr)
 {
     zce::fmt_double(stdstr,
                     out_data.out_data_,
@@ -821,10 +708,10 @@ public:
 }
 
 ///const char *字符串输出辅助函数
-inline const char *to_str(const zce::aidout::o_string& out_data,
-                          char* buffer,
-                          size_t max_len,
-                          size_t& use_len)
+inline void embed_str(const zce::aidout::o_string& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len)
 {
     zce::fmt_str(buffer,
                  max_len,
@@ -836,8 +723,8 @@ inline const char *to_str(const zce::aidout::o_string& out_data,
                  out_data.flags_);
 }
 
-inline void to_string(const zce::aidout::o_string& out_data,
-                      std::string& stdstr)
+inline void embed_string(const zce::aidout::o_string& out_data,
+                         std::string& stdstr)
 {
     zce::fmt_str(stdstr,
                  out_data.out_str_ptr_,
@@ -846,4 +733,166 @@ inline void to_string(const zce::aidout::o_string& out_data,
                  out_data.precision_,
                  out_data.flags_);
 }
+
+//=================================================================================================
+//一些C语言的结构的字符串输出
+
+///输出Time时间
+inline const char* to_str(::timeval& out_data,
+                          char* buffer,
+                          size_t buf_len);
+
+inline void embed_str(::timeval& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len);
+
+inline void embed_string(::timeval& out_data,
+                         std::string& stdstr);
+
+///IPV4的socket地址
+const char * to_str(::sockaddr_in& out_data,
+                    char* buffer,
+                    size_t buf_len);
+
+void embed_str(const ::sockaddr_in& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const ::sockaddr_in& out_data,
+                  std::string& stdstr);
+
+///IPV6的socket地址
+const char *to_str(::sockaddr_in6& out_data,
+                   char* buffer,
+                   size_t max_len);
+
+void embed_str(const ::sockaddr_in6& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const ::sockaddr_in6& out_data,
+                  std::string& stdstr);
+
+///sockaddr *的指针类型
+const char *to_str(const ::sockaddr* out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const ::sockaddr* out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const ::sockaddr* out_data,
+                  std::string& stdstr);
+
+///辅助IPV4的socket地址字符串
+const char *to_str(const ::in_addr* out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const ::in_addr& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const ::in_addr& out_data,
+                  std::string& stdstr);
+
+///辅助输出IPV6的socket地址字符串
+const char *to_str(const ::in6_addr* out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const ::in6_addr& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const ::in6_addr& out_data,
+                  std::string& stdstr);
+
+//=================================================================================================
+//一些zce常用的结构的字符串输出
+
+///输出zce::time_value的时间
+const char *to_str(const zce::time_value& out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+inline void embed_str(const zce::time_value& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len);
+
+inline void embed_string(const zce::time_value& out_data,
+                         std::string& stdstr);
+
+//zce::sockaddr_any  万能的处理sockaddr_in，sockaddr_in6的类
+const char *to_str(zce::sockaddr_any& out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const zce::sockaddr_any& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const zce::sockaddr_any& out_data,
+                  std::string& stdstr);
+
+///输出zce::skt::addr_in的字符串
+const char *to_str(zce::skt::addr_in& out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+inline void embed_str(const zce::skt::addr_in& out_data,
+                      char* buffer,
+                      size_t max_len,
+                      size_t& use_len);
+
+void embed_string(const zce::skt::addr_in& out_data,
+                  std::string& stdstr);
+
+///辅助输出zce::skt::addr_in6的字符串
+const char *to_str(zce::skt::addr_in6& out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const zce::skt::addr_in6& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const zce::skt::addr_in6& out_data,
+                  std::string& stdstr);
+
+///辅助输出uuid64的字符串
+const char *to_str(zce::uuid64& out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const zce::uuid64& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const zce::uuid64& out_data,
+                  std::string& stdstr);
+
+///辅助输出uuid128的字符串
+const char *to_str(zce::uuid128& out_data,
+                   char* buffer,
+                   size_t buf_len);
+
+void embed_str(const uuid128& out_data,
+               char* buffer,
+               size_t max_len,
+               size_t& use_len);
+
+void embed_string(const uuid128& out_data,
+                  std::string& stdstr);
 }//zce
