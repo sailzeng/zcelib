@@ -126,6 +126,18 @@ sockaddr_any::operator sockaddr_in6 *()
 {
     return (&in6_);
 }
+sockaddr_any::operator const sockaddr *() const
+{
+    return (const sockaddr *)(&in_);
+}
+sockaddr_any::operator const sockaddr_in *()const
+{
+    return (&in_);
+}
+sockaddr_any::operator const sockaddr_in6 *() const
+{
+    return (&in6_);
+}
 
 void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
 {
@@ -148,7 +160,7 @@ void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
 }
 
 //!
-void sockaddr_any::get(::sockaddr* sa, socklen_t *sa_len)
+void sockaddr_any::get(::sockaddr* sa, socklen_t *sa_len) const
 {
     if (in_.sin_family == AF_INET)
     {
@@ -227,7 +239,7 @@ int socket_init(int version_high, int version_low)
     ZCE_UNUSED_ARG(version_low);
     return 0;
 #endif
-}
+    }
 
 //关闭Socket的支持
 int socket_terminate(void)
@@ -651,7 +663,7 @@ int sock_enable(ZCE_SOCKET handle, int flags)
 
     return 0;
 #endif
-}
+    }
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
 int sock_disable(ZCE_SOCKET handle, int flags)
@@ -890,8 +902,8 @@ int handle_ready(ZCE_SOCKET handle,
         if (once_events_ary[1].events & EPOLLIN)
         {
             return -1;
-        }
-    }
+}
+}
     return event_happen;
 #endif
 }

@@ -30,7 +30,7 @@ class time_value;
 //! sockaddr_any用于通用的存放sockaddr_in or sockaddr_in6的地址，
 //! 用于一些可能是IPV4，也可能是IPV6的地方
 //! sockaddr_storage 太长了，128个字节，搞个简单的少占用一点空间
-struct sockaddr_any
+class sockaddr_any
 {
 public:
     sockaddr_any();
@@ -49,7 +49,7 @@ public:
     //!
     void set(const ::sockaddr* sa, socklen_t sa_len);
     //!
-    void get(::sockaddr* sa, socklen_t *sa_len);
+    void get(::sockaddr* sa, socklen_t *sa_len) const;
 
     //!通过family得到相应的socklen_t
     socklen_t socklen();
@@ -58,6 +58,10 @@ public:
     operator sockaddr *();
     operator sockaddr_in *();
     operator sockaddr_in6 *();
+
+    operator const sockaddr *() const;
+    operator const sockaddr_in *() const;
+    operator const sockaddr_in6 *() const;
 
     void set_family(int family);
 

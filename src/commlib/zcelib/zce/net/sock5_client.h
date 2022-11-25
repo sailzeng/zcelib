@@ -21,6 +21,10 @@
 //socks 5 代理部分
 namespace zce::socks5
 {
+const char CMD_CONNECT = 0x1;
+const char CMD_BIND = 0x2;              //不支持
+const char CMD_UDP = 0x3;
+
 class udp_associate;
 
 class base
@@ -80,6 +84,7 @@ public:
     /*!
     * @brief      SOCKS5代理初始化，进行用户验证等
     * @return     int  返回0标识成功
+    * @param      cmd        CMD_CONNECT or CMD_UDP
     * @param      host_name  目标（通过代理跳转）的域名，域名和地址只选一个，优先域名，为nullptr
     * @param      host_port  目标端口
     * @param      host_addr  目标的地址,和host_name互斥
@@ -127,7 +132,8 @@ public:
     //!
     udp_associate() = default;
     ~udp_associate() = default;
-    //!
+
+    //! AF_INET or AF_INET6
     int open(int family);
 
     /**

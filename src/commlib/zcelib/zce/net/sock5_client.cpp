@@ -11,10 +11,6 @@ const char SOCKS5_METHODS_NOAUTH = 0x0;
 const char SOCKS5_METHODS_AUTH_GSSAPI = 0x1;   //不支持
 const char SOCKS5_METHODS_AUTH_PASSWORD = 0x2;
 
-const char SOCKS5_CMD_CONNECT = 0x1;
-const char SOCKS5_CMD_BIND = 0x2;              //不支持
-const char SOCKS5_CMD_UDP = 0x3;
-
 const char SOCKS5_ATYP_IPV4 = 0x1;
 const char SOCKS5_ATYP_HOSTNAME = 0x3;
 const char SOCKS5_ATYP_IPV6 = 0x4;
@@ -114,6 +110,8 @@ int base::buf_to_hostaddr(const char *buf,
             return -1;
         }
         sockaddr_in* addr_in = (sockaddr_in*)(host_addr);
+        memset(addr_in, 0, sizeof(sockaddr_in));
+        addr_in->sin_family = AF_INET;
         memcpy(&(addr_in->sin_addr), buf + read_len, 4);
         read_len += 4;
         memcpy(&(addr_in->sin_port), buf + read_len, 2); //不转码，两边都要网络序
@@ -128,6 +126,8 @@ int base::buf_to_hostaddr(const char *buf,
             return -1;
         }
         sockaddr_in6* addr_in6 = (sockaddr_in6*)(host_addr);
+        memset(addr_in6, 0, sizeof(sockaddr_in6));
+        addr_in6->sin6_family = AF_INET6;
         memcpy(&(addr_in6->sin6_addr), buf + read_len, 16);
         read_len += 16;
         memcpy(&(addr_in6->sin6_port), buf + read_len, 2);
@@ -192,10 +192,11 @@ int client::initialize(const sockaddr* socks5_addr,
                                timeout_tv);
     if (ret != 0)
     {
+        ZCE_LOG(RS_ERROR, "Socks5 client connect proxy fail, !");
         return -1;
     }
-    ssize_t send_len = 0, recv_len = 0;
-    ssize_t snd_ret = 0;
+    ssize_t send_len = 0;
+    ssize_t snd_ret = 0, recv_ret = 0;
     char *buffer = cmd_buffer_.get();
     buffer[0] = SOCKS5_VER;
     //支持不验证和验证两种方式
@@ -204,23 +205,27 @@ int client::initialize(const sockaddr* socks5_addr,
     buffer[3] = 0x2; //需要验证
     send_len = 4;
 
-    send_len = zce::sendn_timeout(socks5_hdl_, buffer, send_len, timeout_tv);
+    snd_ret = zce::sendn_timeout(socks5_hdl_, buffer, send_len, timeout_tv);
     if (snd_ret <= 0)
     {
+        ZCE_LOG(RS_ERROR, "Socks5 establish client send to proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
     }
     //协议规定返回两个字节,第一个是版本号5,第二个是方式
-    recv_len = zce::recvn_timeout(socks5_hdl_, buffer, 2, timeout_tv, 0, false);
-    if (recv_len != 2)
+    recv_ret = zce::recvn_timeout(socks5_hdl_, buffer, 2, timeout_tv, 0, false);
+    if (recv_ret != 2)
     {
+        ZCE_LOG(RS_ERROR, "Socks5 establish client recv from proxy fail, recv_ret =%zd!", recv_ret);
         return -1;
     }
     bool need_auth = false;
     if (SOCKS5_VER != buffer[0])
     {
+        ZCE_LOG(RS_ERROR, "Socks5 establish result not success.");
+        errno = EPROTO;
         return -1;
     }
-
+    ZCE_LOG(RS_INFO, "Socks5 establish success method %d.", buffer[1]);
     //支持不验证和验证两种方式
     if (SOCKS5_METHODS_NOAUTH == buffer[1])
     {
@@ -232,6 +237,7 @@ int client::initialize(const sockaddr* socks5_addr,
     }
     else
     {
+        errno = EINVAL;
         return -1;
     }
 
@@ -240,13 +246,15 @@ int client::initialize(const sockaddr* socks5_addr,
     {
         if (!username || !password)
         {
-            return EINVAL;
+            errno = EINVAL;
+            return -1;
         }
         size_t user_len = strlen(username);
         size_t pass_len = strlen(password);
         if (pass_len > MAX_HOSTNAME_LEN || user_len > MAX_HOSTNAME_LEN)
         {
-            return EINVAL;
+            errno = EINVAL;
+            return -1;
         }
 
         //组织验证协议
@@ -259,19 +267,24 @@ int client::initialize(const sockaddr* socks5_addr,
         snd_ret = zce::sendn_timeout(socks5_hdl_, buffer, send_len, timeout_tv);
         if (snd_ret <= 0)
         {
+            ZCE_LOG(RS_ERROR, "Socks5 authenticate client send to proxy fail, snd_ret =%zd!", snd_ret);
             return -1;
         }
-        recv_len = zce::recvn_timeout(socks5_hdl_, buffer, 2, timeout_tv, 0, false);
-        if (recv_len != 2)
+        recv_ret = zce::recvn_timeout(socks5_hdl_, buffer, 2, timeout_tv, 0, false);
+        if (recv_ret != 2)
         {
+            ZCE_LOG(RS_ERROR, "Socks5 authenticate client recv fom proxy fail, recv_ret =%zd!", recv_ret);
             return -1;
         }
         //验证失败
         if (buffer[0] != SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
         {
+            ZCE_LOG(RS_ERROR, "Socks5 authenticate result not success.");
+            errno = EINVAL;
             return -1;
         }
     }
+    ZCE_LOG(RS_INFO, "Socks5 authenticate success.");
     return 0;
 }
 
@@ -285,7 +298,7 @@ int client::socks5_cmd(char cmd,
                        zce::time_value& timeout_tv)
 {
     ZCE_ASSERT(host_name || host_addr);
-    ZCE_ASSERT(cmd == SOCKS5_CMD_CONNECT || cmd == SOCKS5_CMD_UDP);
+    ZCE_ASSERT(cmd == CMD_CONNECT || cmd == CMD_UDP);
 
     int ret = 0;
     char *buffer = cmd_buffer_.get();
@@ -311,15 +324,15 @@ int client::socks5_cmd(char cmd,
     ssize_t snd_ret = zce::sendn_timeout(socks5_hdl_, buffer, send_len, timeout_tv);
     if (snd_ret <= 0)
     {
-        ZCE_LOG(RS_ERROR, "Socks 5 proxy send to client proxy fail, snd_ret =%zd!", snd_ret);
+        ZCE_LOG(RS_ERROR, "Socks5 cmd request send to proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
     }
 
-    recv_len = zce::recvn_timeout(socks5_hdl_, buffer, 2, timeout_tv, 0, false);  //收取一个包足够了
+    recv_len = zce::recvn_timeout(socks5_hdl_, buffer, CMD_BUF_LEN, timeout_tv, 0, false);  //收取一个包足够了
     if (recv_len < 3)
     {
         errno = EPROTO;
-        ZCE_LOG(RS_ERROR, "Socks 5 recv send to client proxy fail, recv_len =%zd!", recv_len);
+        ZCE_LOG(RS_ERROR, "Socks5 cmd request recv from client proxy fail, recv_len =%zd!", recv_len);
         return -1;
     }
     size_t use_len = 0;
@@ -343,7 +356,11 @@ int client::socks5_cmd(char cmd,
     {
         return ret;
     }
-    ZCE_LOG(RS_DEBUG, "Socks 5 cmd %u!", cmd);
+    char addr_str[64];
+    size_t out_len = 0;
+    ZCE_LOG(RS_INFO, "Socks 5 cmd %u Succ! Bind address %s.",
+            cmd,
+            zce::to_str(bind_addr, addr_str, 64, out_len));
     return 0;
 }
 
@@ -353,7 +370,7 @@ int client::init_udp_associate(udp_associate &ua,
 {
     int ret = 0;
     //UDP传统发送的是本地地址 0
-    ret = socks5_cmd(SOCKS5_CMD_UDP,
+    ret = socks5_cmd(zce::socks5::CMD_UDP,
                      nullptr,
                      0,
                      (sockaddr *)ua.local_addr_,

@@ -63,13 +63,34 @@ int test_socks5([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     zce::socks5::client sc;
     sockaddr_in socks5_in;
     zce::set_sockaddr_in(&socks5_in,
-                         "185.186.143.225",
-                         1080);
+                         "184.178.172.28",
+                         15294);
     zce::time_value tv(5, 0);
     ret = sc.initialize((sockaddr *)&socks5_in,
                         sizeof(sockaddr_in),
                         nullptr,
                         nullptr,
                         tv);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    tv.set(5, 0);
+    sockaddr_in want_to;
+    zce::set_sockaddr_in(&want_to,
+                         "39.156.66.10",
+                         443);
+    sockaddr_in bind_addr;
+    ret = sc.socks5_cmd(zce::socks5::CMD_CONNECT,
+                        nullptr,
+                        0,
+                        (sockaddr *)&want_to,
+                        sizeof(sockaddr_in),
+                        (sockaddr *)&bind_addr,
+                        tv);
+    if (ret != 0)
+    {
+        return ret;
+    }
     return 0;
 }
