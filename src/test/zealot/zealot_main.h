@@ -133,7 +133,8 @@ int test_rudp_client(int /*argc*/, char* /*argv*/[]);
 
 int test_dns_resolve(int argc, char* argv[]);
 int test_ping(int argc, char* argv[]);
-int test_socks5(int argc, char* argv[]);
+int test_socks5_connect(int argc, char* argv[]);
+int test_socks5_udp_associate(int argc, char* argv[]);
 
 //
 int test_aio1(int argc, char* argv[]);

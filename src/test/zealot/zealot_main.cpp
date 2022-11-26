@@ -23,7 +23,6 @@ int main(int argc, char* argv[])
                                             static_cast<int>(zce::LOG_HEAD::LOGLEVEL));
     int ret = 0;
     ZCE_TRACE_FILELINE(RS_DEBUG);
-    ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
 
     //for (size_t i = 0; i < 100; ++i)
     //{
@@ -31,7 +30,9 @@ int main(int argc, char* argv[])
     //}
 
     ////test_aio1(argc, argv);
-    test_socks5(argc, argv);
+    ret = test_socks5_connect(argc, argv);
+
+    ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 
     //!需要关闭日志
     zce::log_msg::instance()->close();

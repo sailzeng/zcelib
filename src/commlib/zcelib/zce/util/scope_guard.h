@@ -85,6 +85,12 @@ public:
         }
     }
 
+    inline T exchange(const T& new_val) noexcept
+    {
+        T old = value_;
+        value_ = new_val;
+        return old;
+    }
     inline void reset(const T& value) noexcept
     {
         if (!dismissed_)

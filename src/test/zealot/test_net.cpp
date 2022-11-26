@@ -57,19 +57,25 @@ int test_ping([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     return 0;
 }
 
-int test_socks5([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
+//const char *SOCKS_SERVER_IP = "192.111.130.2";
+//const uint16_t SOCKS_SERVER_PORT = 4145;
+
+const char *SOCKS_SERVER_IP = "192.168.56.103";
+const uint16_t SOCKS_SERVER_PORT = 1080;
+
+int test_socks5_connect([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     int ret = 0;
-    zce::socks5::client sc;
+    zce::socks5::tcp_connect tc;
     sockaddr_in socks5_in;
     zce::set_sockaddr_in(&socks5_in,
-                         "184.178.172.28",
-                         15294);
+                         SOCKS_SERVER_IP,
+                         SOCKS_SERVER_PORT);
     zce::time_value tv(5, 0);
-    ret = sc.initialize((sockaddr *)&socks5_in,
+    ret = tc.initialize((sockaddr *)&socks5_in,
                         sizeof(sockaddr_in),
-                        nullptr,
-                        nullptr,
+                        "socks5",
+                        "123456",
                         tv);
     if (ret != 0)
     {
@@ -80,14 +86,41 @@ int test_socks5([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     zce::set_sockaddr_in(&want_to,
                          "39.156.66.10",
                          443);
-    sockaddr_in bind_addr;
-    ret = sc.socks5_cmd(zce::socks5::CMD_CONNECT,
-                        nullptr,
-                        0,
-                        (sockaddr *)&want_to,
+    ret = tc.tcp_connect_cmd(nullptr,
+                             0,
+                             (sockaddr *)&want_to,
+                             sizeof(sockaddr_in),
+                             tv);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
+
+//https://lixingcong.github.io/2018/05/25/dante-socks5/
+int test_socks5_udp_associate([[maybe_unused]] int argc,
+                              [[maybe_unused]] char* argv[])
+{
+    int ret = 0;
+    zce::socks5::udp_associate ua;
+    sockaddr_in socks5_in;
+    zce::set_sockaddr_in(&socks5_in,
+                         SOCKS_SERVER_IP,
+                         SOCKS_SERVER_PORT);
+    zce::time_value tv(5, 0);
+    ret = ua.initialize((sockaddr *)&socks5_in,
                         sizeof(sockaddr_in),
-                        (sockaddr *)&bind_addr,
+                        nullptr,
+                        nullptr,
                         tv);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    tv.set(5, 0);
+    ret = ua.udp_associate_cmd(tv);
     if (ret != 0)
     {
         return ret;

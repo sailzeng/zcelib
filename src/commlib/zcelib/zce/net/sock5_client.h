@@ -11,11 +11,18 @@
 *
 * @note       Socks5的文档，
 *             https://www.rfc-editor.org/rfc/rfc1928
+*             https://www.rfc-editor.org/rfc/rfc1929
 *             中文翻译，能看看吧。
 *             https://www.quarkay.com/code/383/socks5-protocol-rfc-chinese-traslation
+*             danted 服务器的配置
+*             https://www.keepnight.com/archives/657/
+*             https://lixingcong.github.io/2018/05/25/dante-socks5/
 */
 
 #pragma once
+
+#include "zce/util/scope_guard.h"
+
 //=================================================================================
 
 //socks 5 代理部分
@@ -24,8 +31,6 @@ namespace zce::socks5
 const char CMD_CONNECT = 0x1;
 const char CMD_BIND = 0x2;              //不支持
 const char CMD_UDP = 0x3;
-
-class udp_associate;
 
 class base
 {
@@ -63,10 +68,11 @@ public:
 //!socks的客户端
 class client :public base
 {
-public:
+protected:
     //!
     client() = default;
     ~client() = default;
+public:
     /*!
     * @brief      SOCKS5代理初始化，进行用户验证等
     * @return     int 返回0标识成功
@@ -81,6 +87,7 @@ public:
                    const char* password,
                    zce::time_value& timeout_tv);
 
+protected:
     /*!
     * @brief      SOCKS5代理初始化，进行用户验证等
     * @return     int  返回0标识成功
@@ -102,39 +109,70 @@ public:
                    sockaddr* bind_addr,
                    zce::time_value& timeout_tv);
 
-    /*!
-     * @brief socks5代理，UDP穿透的初始化
-     * @param ua
-     * @param timeout_tv
-     * @return
-     * @note  https://codeantenna.com/a/jTZOi7GrY2
-    */
-    int init_udp_associate(udp_associate &ua,
-                           zce::time_value& timeout_tv);
-
 protected:
     //！
     static const size_t CMD_BUF_LEN = 1024;
 protected:
 
     //连接SOCKS5服务器的Socket句柄,必须先连接 connect
-    ZCE_SOCKET socks5_hdl_ = INVALID_SOCKET;
-    //
+    zce::auto_socket socks5_hdl_ = INVALID_SOCKET;
+    //!socks5代理的地址
+    zce::sockaddr_any socks5_addr_;
+    //!命令传送的buf
     std::unique_ptr<char[]>cmd_buffer_{ new char[CMD_BUF_LEN] };
 };
 
 //=================================================================================
-//!UDP 穿透，Socks5
-class udp_associate :public base
+//
+class tcp_connect :public client
 {
-    friend class zce::socks5::client;
+public:
+    //!
+    tcp_connect() = default;
+    ~tcp_connect() = default;
+
+    /*!
+     * @brief socks5代理，TCP Connected
+     * @param timeout_tv
+     * @return
+     * @note      在initialize后调用
+     *            https://codeantenna.com/a/jTZOi7GrY2
+    */
+    int tcp_connect_cmd(const char* host_name,
+                        uint16_t host_port,
+                        const sockaddr* host_addr,
+                        socklen_t addr_len,
+                        zce::time_value& timeout_tv);
+
+    //!取的TCP Connect的句柄
+    ZCE_SOCKET get_handle();
+    //将handle交换出去，自己不析构处理
+    ZCE_SOCKET exchange();
+
+protected:
+    //是否成功链接
+    bool connected_ = false;
+    //! socks5 代理服务链接目标服务器后绑定的IP地址，对TCP其实没啥用。
+    zce::sockaddr_any bind_addr_;
+};
+
+//=================================================================================
+//!UDP 穿透，Socks5
+class udp_associate :public client
+{
 public:
     //!
     udp_associate() = default;
     ~udp_associate() = default;
 
-    //! AF_INET or AF_INET6
-    int open(int family);
+    /*!
+     * @brief socks5代理，UDP穿透的初始化
+     * @param timeout_tv
+     * @return
+     * @note      在initialize后调用
+     *            https://codeantenna.com/a/jTZOi7GrY2
+    */
+    int udp_associate_cmd(zce::time_value& timeout_tv);
 
     /**
      * @brief Socks5，的UDP穿透的发送数据，会附带一个头部，还可能分包
@@ -162,6 +200,11 @@ public:
              size_t buf_len,
              zce::time_value& timeout_tv,
              bool fragments);
+
+    //!取得UDP associate的句柄
+    ZCE_SOCKET get_handle();
+    //将handle交换出去，自己不析构处理
+    ZCE_SOCKET exchange();
 protected:
 
     //! UDP 包的最大长度
@@ -173,11 +216,7 @@ protected:
 
 protected:
     //! 穿透的UDP句柄
-    ZCE_SOCKET associate_hdl_ = INVALID_SOCKET;
-    //! 地址簇
-    int family_ = 0;
-    //! 本地地址，通知给socks5 代理服务器
-    zce::sockaddr_any local_addr_;
+    zce::auto_socket associate_hdl_ = INVALID_SOCKET;
     //! socks5 代理服务器返回的绑定地址，穿透请求通过这个端口服务
     zce::sockaddr_any bind_addr_;
 

@@ -51,6 +51,11 @@ public:
     //!
     void get(::sockaddr* sa, socklen_t *sa_len) const;
 
+    //!清0整个结构,包括地址和端口，
+    void zero();
+    //!检测地址是不是全0，in_.sin_addr 或者in6_.sin6_addr
+    bool is_zero_addr();
+
     //!通过family得到相应的socklen_t
     socklen_t socklen();
 
@@ -63,9 +68,15 @@ public:
     operator const sockaddr_in *() const;
     operator const sockaddr_in6 *() const;
 
+    //设置地址族family
     void set_family(int family);
-
+    //获取地址族family
     int get_family() const;
+
+    //根据family设置port
+    void set_port(uint16_t port);
+    //根据family获取port
+    uint16_t get_port() const;
 
     union
     {
@@ -1099,7 +1110,7 @@ inline int zce::getpeername(ZCE_SOCKET handle,
 #endif
 }
 
-//取得对端的地址信息
+//取得本端的地址信息
 inline int zce::getsockname(ZCE_SOCKET handle,
                             sockaddr* addr,
                             socklen_t* addr_len)

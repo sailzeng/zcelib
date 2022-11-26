@@ -178,6 +178,80 @@ void sockaddr_any::get(::sockaddr* sa, socklen_t *sa_len) const
     }
 }
 
+void sockaddr_any::zero()
+{
+    if (in_.sin_family == AF_INET)
+    {
+        ::memset(&in_, 0, sizeof(in_));
+    }
+    else if (in_.sin_family == AF_INET6)
+    {
+        ::memset(&in6_, 0, sizeof(in6_));
+    }
+    else
+    {
+        assert(false);
+    }
+}
+
+bool sockaddr_any::is_zero_addr()
+{
+    if (in_.sin_family == AF_INET)
+    {
+        if (::memcmp(&in_.sin_addr, "\0\0\0\0", sizeof(in_.sin_addr)))
+        {
+            return true;
+        }
+    }
+    else if (in_.sin_family == AF_INET6)
+    {
+        if (::memcmp(&in6_.sin6_addr,
+            "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", sizeof(in6_.sin6_addr)))
+        {
+            return true;
+        }
+    }
+    else
+    {
+        assert(false);
+    }
+    return false;
+}
+
+//根据family设置port
+void sockaddr_any::set_port(uint16_t port)
+{
+    if (in_.sin_family == AF_INET)
+    {
+        in_.sin_port = port;
+    }
+    else if (in_.sin_family == AF_INET6)
+    {
+        in6_.sin6_port = port;
+    }
+    else
+    {
+        assert(false);
+    }
+}
+//根据family获取port
+uint16_t sockaddr_any::get_port() const
+{
+    if (in_.sin_family == AF_INET)
+    {
+        return in_.sin_port;
+    }
+    else if (in_.sin_family == AF_INET6)
+    {
+        return in6_.sin6_port;
+    }
+    else
+    {
+        assert(false);
+        return 0;
+    }
+}
+
 void sockaddr_any::set_family(int family)
 {
 #if defined (ZCE_OS_WINDOWS)
