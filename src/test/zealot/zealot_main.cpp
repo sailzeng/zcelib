@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     //}
 
     ////test_aio1(argc, argv);
-    ret = test_socks5_connect(argc, argv);
+    ret = test_bit_lock(argc, argv);
 
     ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 

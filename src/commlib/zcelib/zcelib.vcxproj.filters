@@ -359,6 +359,9 @@
     <ClCompile Include="zce\os_adapt\netdb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\lock\bit_lock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -829,7 +832,7 @@
     <ClInclude Include="zce\os_adapt\netdb.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\container\bit_lock.h">
+    <ClInclude Include="zce\lock\bit_lock.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

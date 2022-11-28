@@ -46,6 +46,8 @@
 #include <zce/lock/thread_mutex.h>
 #include <zce/lock/thread_rw_mutex.h>
 #include <zce/lock/lock_guard.h>
+#include <zce/lock/bit_lock.h>
+
 #include <zce/thread/msgque_condi.h>
 #include <zce/thread/msgque_sema.h>
 #include <zce/thread/thread_task.h>

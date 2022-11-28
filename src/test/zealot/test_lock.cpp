@@ -159,3 +159,21 @@ int test_rw_lock2(int /*argc*/, char* /*argv*/[])
 
     return 0;
 }
+
+int test_bit_lock(int /*argc*/, char* /*argv*/[])
+{
+    zce::bit_lock bl;
+    int ret = bl.open(10240);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    bool bret = bl.try_lock(1024);
+    std::cout << std::boolalpha;
+    std::cout << "bret:" << bret << std::endl;
+    bret = bl.try_lock(1024);
+    std::cout << "bret:" << bret << std::endl;
+    bret = bl.unlock(1024);
+    std::cout << "bret:" << bret << std::endl;
+    return 0;
+}

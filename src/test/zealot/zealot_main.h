@@ -32,6 +32,7 @@ int test_host_name_fun(int, char*[]);
 
 int test_rw_lock1(int argc, char* argv[]);
 int test_rw_lock2(int argc, char* argv[]);
+int test_bit_lock(int /*argc*/, char* /*argv*/[]);
 
 int test_fmt_splice(int argc, char* argv[]);
 int test_cpp_log_out(int argc, char* argv[]);

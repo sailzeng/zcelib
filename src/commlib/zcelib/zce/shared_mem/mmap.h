@@ -31,7 +31,7 @@ public:
     shm_mmap(const shm_mmap &) = delete;
     shm_mmap& operator=(const shm_mmap&) = delete;
 public:
-    //打开文件，进行映射
+    //!打开文件，进行映射
     int open(const char* file_name,
              std::size_t shm_size,
              int file_open_mode = O_CREAT | O_RDWR,
@@ -41,7 +41,7 @@ public:
              int mmap_flags = MAP_SHARED,
              std::size_t offset = 0);
 
-    //打开文件，进行映射, 简单，推荐使用这个函数
+    //!打开文件，进行映射, 简单，推荐使用这个函数
     int open(const char* file_name,
              std::size_t shm_size,
              bool if_restore,

@@ -14,6 +14,8 @@
 *             https://www.rfc-editor.org/rfc/rfc1929
 *             中文翻译，能看看吧。
 *             https://www.quarkay.com/code/383/socks5-protocol-rfc-chinese-traslation
+*
+*             https://wiyi.org/socks5-protocol-in-deep.html
 *             danted 服务器的配置
 *             https://www.keepnight.com/archives/657/
 *             https://lixingcong.github.io/2018/05/25/dante-socks5/
@@ -209,7 +211,7 @@ protected:
 
     //! UDP 包的最大长度
     static const size_t UDP_MAX_DGRAM = 64 * 1024;
-    //! 发送接受的BUFFER
+    //! 发送接受的BUFFER，可以考虑缩小，这样会增加分片
     static const size_t SR_BUF_LEN = 64 * 1024;
     //! 一个包的容量
     static const size_t ONE_DGRAM_CAPACITY = SR_BUF_LEN - 262;
