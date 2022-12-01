@@ -29,11 +29,6 @@ public:
     //
     bool try_lock(std::size_t pos);
 
-    //!
-    //constexpr bool operator[](std::size_t pos) const;
-    //!
-    //reference operator[](std::size_t pos);
-
 protected:
     //!
     std::size_t bits_size_ = 0;

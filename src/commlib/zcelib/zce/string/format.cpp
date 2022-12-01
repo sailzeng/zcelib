@@ -115,7 +115,6 @@ void zce::fmt_double(char* buffer,
 
     //要填补的空格长度
     int space_pad_len = static_cast<int>(width - out_str_len);
-
     //如果要右对齐,
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
