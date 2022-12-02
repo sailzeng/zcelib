@@ -1,3 +1,16 @@
+/*!
+* @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
+* @filename   zce/event/handle_base.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date       2022年11月29日
+* @brief      bit lock ，用于大量的spin lock的地方。
+*
+* @details
+*
+* @note
+*
+*/
 #pragma once
 
 #include "zce/shared_mem/mmap.h"
