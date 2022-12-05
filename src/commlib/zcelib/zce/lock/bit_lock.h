@@ -3,8 +3,8 @@
 * @filename   zce/event/handle_base.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2022Äê11ÔÂ29ÈÕ
-* @brief      bit lock £¬ÓÃÓÚ´óÁ¿µÄspin lockµÄµØ·½¡£
+* @date       2022å¹´11æœˆ29æ—¥
+* @brief      bit lock ï¼Œç”¨äºå¤§é‡çš„spin lockçš„åœ°æ–¹ã€‚
 *
 * @details
 *
