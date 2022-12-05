@@ -18,8 +18,8 @@
 *             用FOO_FMT_STRING_USE_VARIADIC
 *             速度测试比较（都是是REALSE版本）
 *             Windows 下：
-*             variadic版本sformat_n    : 0.509 sec .
-*             重载版本sformat_n         : 0.448 sec .
+*             variadic版本sformat_n     : 0.509 sec .
+*             重载版本sformat_n          : 0.448 sec .
 *             snprintf                 : 1.705 sec .
 *             iostream                 : 2.477 sec .
 *             Linux 下：(同一台机器，但是是虚拟机,VirtualBox)
