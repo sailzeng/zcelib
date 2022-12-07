@@ -138,16 +138,10 @@ class bignumber
 
 #define DIGIT_2MSB(x)               (uint32_t)(((x) >> (BN_UNIT_BITS - 2)) & 0x03)
 
-    void bn_mul(bn_t *a, bn_t *b, bn_t *c, uint32_t digits);
-    void bn_div(bn_t *a, bn_t *b, bn_t *c, uint32_t cdigits, bn_t *d, uint32_t ddigits);        // a = b / c, d = b % c
-
-    void bn_mod(bn_t *a, bn_t *b, uint32_t bdigits, bn_t *c, uint32_t cdigits);                 // a = b mod c
-    void bn_mod_mul(bn_t *a, bn_t *b, bn_t *c, bn_t *d, uint32_t digits);                       // a = b * c mod d
-    void bn_mod_exp(bn_t *a, bn_t *b, bn_t *c, uint32_t cdigits, bn_t *d, uint32_t ddigits);    // a = b ^ c mod d
-
-    static bn_t bn_sub_digit_mul(bn_t *a, bn_t *b, bn_t c, bn_t *d, uint32_t digits);
-    static bn_t bn_add_digit_mul(bn_t *a, bn_t *b, bn_t c, bn_t *d, uint32_t digits);
-    static uint32_t bn_digit_bits(bn_t a);
+    //
+    static const size_t LEN_OF_U32_ARY = B / 32;
+    static const size_t LEN_OF_U8_ARY = B / 8;
+    static const size_t BN_UNIT_BITS = 32;
 
     int decode(const char *hexarr, size_t arr_szie)
     {
@@ -164,7 +158,7 @@ class bignumber
     }
 
     /// *this = other
-    self &operator = (const self &other)
+    bignumber &operator = (const bignumber &other)
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
@@ -172,7 +166,7 @@ class bignumber
         }
     }
 
-    bool operator== (const self &other) const
+    bool operator== (const bignumber &other) const
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
@@ -184,42 +178,46 @@ class bignumber
         return true;
     }
 
-    bool operator!= (const self &other) const
+    bool operator!= (const bignumber &other) const
     {
         return !(*this == other);
     }
 
-    bool operator< (const self &other) const
+    bool operator< (const bignumber &other) const
     {
         return cmp(other) < 0 ? true : false;
     }
-    bool operator<= (const self &other) const
+    bool operator<= (const bignumber &other) const
     {
         return cmp(other) <= 0 ? true : false;
     }
 
-    self operator+ (const self &other) const
+    bignumber operator+ (const bignumber &other) const
     {
         uint32_t carry = 0;
-        return add(other, carry);
+        bignumber result;
+        add(other, result, carry);
+        return result;
     }
 
-    self operator- (const self &other) const
+    bignumber operator- (const bignumber &other) const
     {
         uint32_t borrow = 0;
-        return sub(other, borrow);
+        bignumber result;
+        sub(other, result, borrow);
+        return result;
     }
 
-    /// returns sign of a - b
-    int cmp(const self &other)
+    /// returns sign of a(*this) - b
+    int cmp(const bignumber &b)
     {
         for (size_t i = LEN_OF_U32_ARY - 1; i >= 0; --i)
         {
-            if (bn_[i] > other.bn_[i])
+            if (bn_[i] > b.bn_[i])
             {
                 return 1;
             }
-            if (bn_[i] < other.bn_[i])
+            if (bn_[i] < b.bn_[i])
             {
                 return -1;
             }
@@ -236,19 +234,18 @@ class bignumber
         }
     }
 
-    /// return  *this + other
-    self add(const self &other, uint32_t &carry)
+    /// c = a(this) + b
+    void add(const bignumber &b, bignumber &c, uint32_t &carry)
     {
-        bignumber a;
-        uint32_t ai;
+        uint32_t ai = 0;
         carry = 0;
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
             if ((ai = bn_[i] + carry) < carry) //carry == 1 ,bn_[i]= 0xFFFFFFFF
             {
-                ai = other.bn_[i];
+                ai = b.bn_[i];
             }
-            else if ((ai += other.bn_[i]) < other.bn_[i])
+            else if ((ai += b.bn_[i]) < b.bn_[i])
             {
                 carry = 1;
             }
@@ -256,24 +253,23 @@ class bignumber
             {
                 carry = 0;
             }
-            a[i] = ai;
+            c.bn_[i] = ai;
         }
-        return a;
+        return;
     }
 
-    /// return a =（*this - other)
-    self sub(const self &other, uint32_t &borrow)
+    /// c = a(this) - b
+    void sub(const bignumber &b, bignumber &c, uint32_t &borrow)
     {
-        bignumber a;
         uint32_t ai;
         borrow = 0;
         for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
         {
             if ((ai = bn_[i] - borrow) > (BN_MAX_DIGIT - borrow))
             {
-                ai = BN_MAX_DIGIT - other.bn_[i];
+                ai = BN_MAX_DIGIT - b.bn_[i];
             }
-            else if ((ai -= other.bn_[i]) > (BN_MAX_DIGIT - other.bn_[i]))
+            else if ((ai -= b.bn_[i]) > (BN_MAX_DIGIT - b.bn_[i]))
             {
                 borrow = 1;
             }
@@ -281,63 +277,62 @@ class bignumber
             {
                 borrow = 0;
             }
-            a[i] = ai;
+            c.bn_[i] = ai;
         }
-        return a;
+        return;
     }
 
-    // a = b << c (a = b * 2^c)
-    self shift_l(size_t c, uint32_t &carry, bool roll)
+    // c = a(this) << b (c = a * 2^b)
+    void shift_l(size_t b, bignumber &c, uint32_t &carry, bool roll) const
     {
-        self a;
-        assert(c <= BN_UNIT_BITS);
-        if (c > BN_UNIT_BITS)
+        assert(b <= BN_UNIT_BITS);
+        if (b > BN_UNIT_BITS)
         {
-            return a;
+            return;
         }
-        uint32_t t = BN_UNIT_BITS - c, bi = 0;
+        uint32_t t = BN_UNIT_BITS - b, bi = 0;
         carry = 0;
         for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
         {
             bi = bn_[i];
-            a.bn_[i] = (bi << c) | carry;
-            carry = c ? (bi >> t) : 0;
+            c.bn_[i] = (bi << b) | carry;
+            carry = b ? (bi >> t) : 0;
         }
         if (roll)
         {
-            a.bn_[0] |= carry;
+            c.bn_[0] |= carry;
         }
-        return a;
+        return;
     }
-    // a = b >> c (a = b / 2^c)
-    self shift_r(size_t c, uint32_t &carry, bool roll)
+    // c = a(this) >> b (c = a / 2^b)
+    void shift_r(size_t b, bignumber &c, uint32_t &carry, bool roll) const
     {
-        self a;
-        assert(c <= BN_UNIT_BITS);
-        if (c > BN_UNIT_BITS)
+        assert(b <= BN_UNIT_BITS);
+        if (b > BN_UNIT_BITS)
         {
-            return a;
+            return;
         }
 
-        uint32_t t = BN_UNIT_BITS - c, bi = 0;
+        uint32_t t = BN_UNIT_BITS - b, bi = 0;
         carry = 0;
         for (size_t i = BN_UNIT_BITS - 1; i >= 0; i--)
         {
             bi = bn_[i];
-            a.bn_[i] = (bi >> c) | carry;
-            carry = c ? (bi << t) : 0;
+            c.bn_[i] = (bi >> b) | carry;
+            carry = b ? (bi << t) : 0;
         }
         if (roll)
         {
-            a.bn_[BN_UNIT_BITS - 1] |= carry;
+            c.bn_[BN_UNIT_BITS - 1] |= carry;
         }
-        return a;
+        return;
     }
 
     // returns significant length of a in digits
-    size_t digits()
+    size_t digits() const
     {
-        for (size_t i = BN_UNIT_BITS - 1; i >= 0; --i)
+        size_t i = BN_UNIT_BITS - 1;
+        for (; i >= 0; --i)
         {
             if (bn_[i])
             {
@@ -347,21 +342,20 @@ class bignumber
         return (i + 1);
     }
 
-    static bn_t add_digit_mul(bn_t *a, bn_t *b, bn_t c, bn_t *d, size_t digits)
+    static uint32_t add_digit_mul(uint32_t *a, uint32_t b, const bignumber &c, size_t digits)
     {
-        dbn_t result;
-        bn_t carry, rh, rl;
-
-        if (c == 0)
+        uint64_t result = 0;
+        uint32_t carry = 0, rh = 0, rl = 0;
+        if (b == 0)
+        {
             return 0;
-
-        carry = 0;
+        }
         for (size_t i = 0; i < digits; i++)
         {
-            result = (dbn_t)c * d[i];
+            result = (uint64_t)b * c.bn_[i];
             rl = result & BN_MAX_DIGIT;
             rh = (result >> BN_UNIT_BITS) & BN_MAX_DIGIT;
-            if ((a[i] = b[i] + carry) < carry)
+            if ((a[i] = a[i] + carry) < carry)
             {
                 carry = 1;
             }
@@ -379,44 +373,72 @@ class bignumber
         return carry;
     }
 
-    // a = b * c
-    self mul(bn_t *b, bn_t *c)
+    // c = a(this) * b
+    void mul(const bignumber &b, uint32_t c[LEN_OF_U32_ARY * 2]) const
     {
-        uint32_t t[2 * BN_MAX_DIGITS] = {};
+        memset(c, 0, LEN_OF_U32_ARY * 2 * 4);
+        size_t adigits = this->digits();
+        size_t bdigits = b.digits();
 
-        size_t bdigits = this->digits();
-        size_t cdigits = b.digits();
-
-        for (size_t i = 0; i < bdigits; i++)
+        for (size_t i = 0; i < adigits; i++)
         {
-            t[i + cdigits] += add_digit_mul(&t[i], &t[i], bn_[i], c, cdigits);
+            c[i + bdigits] += add_digit_mul(&c[i], bn_[i], b, bdigits);
         }
-
-        bn_assign(a, t, 2 * digits);
-
-        // Clear potentially sensitive information
-        // memset((uint8_t *)t, 0, sizeof(t));
-        return a;
+        return;
     }
 
-    void bn_div(bn_t *a, bn_t *b, bn_t *c, uint32_t cdigits, bn_t *d, uint32_t ddigits)
+    static bn_t sub_digit_mul(bn_t *a, bn_t *b, bn_t c, bn_t *d, uint32_t digits)
     {
-        dbn_t tmp;
+        dbn_t result;
+        bn_t borrow, rh, rl;
+        uint32_t i;
+
+        if (c == 0)
+            return 0;
+
+        borrow = 0;
+        for (i = 0; i < digits; i++)
+        {
+            result = (dbn_t)c * d[i];
+            rl = result & BN_MAX_DIGIT;
+            rh = (result >> BN_UNIT_BITS) & BN_MAX_DIGIT;
+            if ((a[i] = b[i] - borrow) > (BN_MAX_DIGIT - borrow))
+            {
+                borrow = 1;
+            }
+            else
+            {
+                borrow = 0;
+            }
+            if ((a[i] -= rl) > (BN_MAX_DIGIT - rl))
+            {
+                borrow++;
+            }
+            borrow += rh;
+        }
+
+        return borrow;
+    }
+
+    // c = a(this) / b, d = a(this) % b
+    void div(const bignumber &b, bignumber &c, bignumber &d, uint32_t ddigits)
+    {
+        uint64_t tmp;
         bn_t ai, t, cc[2 * BN_MAX_DIGITS + 1], dd[BN_MAX_DIGITS];
         int i;
         uint32_t dddigits, shift;
 
-        dddigits = bn_digits(d, ddigits);
+        dddigits = d.digits();
         if (dddigits == 0)
             return;
 
         shift = BN_UNIT_BITS - bn_digit_bits(d[dddigits - 1]);
         bn_assign_zero(cc, dddigits);
-        cc[cdigits] = bn_shift_l(cc, c, shift, cdigits);
+        cc[cdigits] = bn_shift_l(cc, b, shift, cdigits);
         bn_shift_l(dd, d, shift, dddigits);
         t = dd[dddigits - 1];
 
-        bn_assign_zero(a, cdigits);
+        bn_assign_zero(c, cdigits);
         i = cdigits - dddigits;
         for (; i >= 0; i--)
         {
@@ -438,28 +460,29 @@ class bignumber
                 ai++;
                 cc[i + dddigits] -= bn_sub(&cc[i], &cc[i], dd, dddigits);
             }
-            a[i] = ai;
+            c[i] = ai;
             // printf("ai[%d]: %08X\n", i, ai);
         }
 
-        bn_assign_zero(b, ddigits);
-        bn_shift_r(b, cc, shift, dddigits);
+        this->zero();
+        bn_shift_r(this, cc, shift, dddigits);
 
         // Clear potentially sensitive information
         memset((uint8_t *)cc, 0, sizeof(cc));
         memset((uint8_t *)dd, 0, sizeof(dd));
     }
 
-    void bn_mod(bn_t *a, bn_t *b, uint32_t bdigits, bn_t *c, uint32_t cdigits)
+    // c = a(this) mod b
+    void mod(const bignumber *b, bignumber &c)
     {
         bn_t t[2 * BN_MAX_DIGITS] = { 0 };
 
-        bn_div(t, a, b, bdigits, c, cdigits);
+        div(t, c, this, bdigits, b, cdigits);
 
         // Clear potentially sensitive information
         memset((uint8_t *)t, 0, sizeof(t));
     }
-
+    // a = b * c mod d
     void bn_mod_mul(bn_t *a, bn_t *b, bn_t *c, bn_t *d, uint32_t digits)
     {
         bn_t t[2 * BN_MAX_DIGITS];
@@ -470,7 +493,7 @@ class bignumber
         // Clear potentially sensitive information
         memset((uint8_t *)t, 0, sizeof(t));
     }
-
+    // a = b ^ c mod d
     void bn_mod_exp(bn_t *a, bn_t *b, bn_t *c, uint32_t cdigits, bn_t *d, uint32_t ddigits)
     {
         bn_t bpower[3][BN_MAX_DIGITS], ci, t[BN_MAX_DIGITS];
@@ -518,39 +541,6 @@ class bignumber
         memset((uint8_t *)t, 0, sizeof(t));
     }
 
-    static bn_t bn_sub_digit_mul(bn_t *a, bn_t *b, bn_t c, bn_t *d, uint32_t digits)
-    {
-        dbn_t result;
-        bn_t borrow, rh, rl;
-        uint32_t i;
-
-        if (c == 0)
-            return 0;
-
-        borrow = 0;
-        for (i = 0; i < digits; i++)
-        {
-            result = (dbn_t)c * d[i];
-            rl = result & BN_MAX_DIGIT;
-            rh = (result >> BN_UNIT_BITS) & BN_MAX_DIGIT;
-            if ((a[i] = b[i] - borrow) > (BN_MAX_DIGIT - borrow))
-            {
-                borrow = 1;
-            }
-            else
-            {
-                borrow = 0;
-            }
-            if ((a[i] -= rl) > (BN_MAX_DIGIT - rl))
-            {
-                borrow++;
-            }
-            borrow += rh;
-        }
-
-        return borrow;
-    }
-
     static uint32_t bn_digit_bits(bn_t a)
     {
         uint32_t i;
@@ -564,10 +554,7 @@ class bignumber
     }
 
 protected:
-    //
-    static const size_t LEN_OF_U32_ARY = B / 32;
-    static const size_t LEN_OF_UINT8_ARY = B / 8;
-    static const size_t BN_UNIT_BITS = 32;
+
     //
     //
     //
