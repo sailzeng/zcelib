@@ -1,5 +1,5 @@
 #include "zce/predefine.h"
-#include "zce/util/random.h"
+#include "zce/math/random.h"
 
 namespace zce
 {

@@ -128,7 +128,7 @@
 #define ZCE_LIB_BYTES_ENCRYPT_H_
 
 #include "zce/bytes/bytes_common.h"
-#include "zce/util/random.h"
+#include "zce/math/random.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/string.h"
 

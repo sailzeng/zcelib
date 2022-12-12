@@ -140,7 +140,7 @@
     <ClCompile Include="zce\mysql\execute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\util\random.cpp">
+    <ClCompile Include="zce\math\random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\lock\file_lock.cpp">
@@ -502,7 +502,7 @@
     <ClInclude Include="zce\util\non_copyable.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\util\random.h">
+    <ClInclude Include="zce\math\random.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\singleton.h">
@@ -833,6 +833,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\lock\bit_lock.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\math\big_uint.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

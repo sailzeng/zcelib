@@ -1,8 +1,4 @@
 #include "predefine.h"
-#include <zce/lockfree/kfifo.h>
-#include <zce/lockfree/ring.h>
-#include <zce/lockfree/queue.h>
-#include <zce/lockfree/ptr_ring.h>
 
 int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {

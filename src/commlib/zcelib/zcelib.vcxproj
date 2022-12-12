@@ -163,7 +163,7 @@
     <ClCompile Include="zce\string\extend.cpp" />
     <ClCompile Include="zce\string\from_string.cpp" />
     <ClCompile Include="zce\buffer\cycle_buffer.cpp" />
-    <ClCompile Include="zce\util\random.cpp" />
+    <ClCompile Include="zce\math\random.cpp" />
     <ClCompile Include="zce\bus\twoway_pipe.cpp" />
     <ClCompile Include="zce\bytes\compress.cpp" />
     <ClCompile Include="zce\bytes\base_encode.cpp" />
@@ -275,6 +275,7 @@
     <ClInclude Include="zce\logger\log_msg.h" />
     <ClInclude Include="zce\logger\log_print.h" />
     <ClInclude Include="zce\logger\log_comm.h" />
+    <ClInclude Include="zce\math\big_uint.h" />
     <ClInclude Include="zce\net\dns_resolve.h" />
     <ClInclude Include="zce\net\ping.h" />
     <ClInclude Include="zce\net\sock5_client.h" />
@@ -299,7 +300,7 @@
     <ClInclude Include="zce\container\lord_rings.h" />
     <ClInclude Include="zce\util\mpl.h" />
     <ClInclude Include="zce\util\non_copyable.h" />
-    <ClInclude Include="zce\util\random.h" />
+    <ClInclude Include="zce\math\random.h" />
     <ClInclude Include="zce\util\scope_guard.h" />
     <ClInclude Include="zce\util\singleton.h" />
     <ClInclude Include="zce\util\id_to_string.h" />
