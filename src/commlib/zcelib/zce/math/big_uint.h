@@ -358,6 +358,61 @@ public:
         }
     }
 
+    // a(this) << b
+    void shift_bits_l(size_t b)
+    {
+        assert(b <= BN_UNIT_BITS * LEN_OF_U32_ARY);
+        if (b > BN_UNIT_BITS * LEN_OF_U32_ARY)
+        {
+            return;
+        }
+        uint32_t b1 = b / BN_UNIT_BITS;
+        if (b1)
+        {
+            shift_digits_l(b1);
+        }
+        uint32_t b2 = b % BN_UNIT_BITS;
+        if (b2)
+        {
+            uint32_t t = BN_UNIT_BITS - b2, ai = 0;
+            uint32_t carry = 0;
+            for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
+            {
+                ai = bn_[i];
+                bn_[i] = (ai << b2) | carry;
+                carry = b2 ? (ai >> t) : 0;
+            }
+        }
+        return;
+    }
+    // a >> b
+    void shift_bits_r(size_t b)
+    {
+        assert(b <= BN_UNIT_BITS * LEN_OF_U32_ARY);
+        if (b > BN_UNIT_BITS * LEN_OF_U32_ARY)
+        {
+            return;
+        }
+        uint32_t b1 = b / BN_UNIT_BITS;
+        if (b1)
+        {
+            shift_digits_r(b1);
+        }
+        uint32_t b2 = b % BN_UNIT_BITS;
+        if (b2)
+        {
+            uint32_t t = BN_UNIT_BITS - b2, ai = 0;
+            uint32_t carry = 0;
+            for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
+            {
+                ai = bn_[i];
+                bn_[i] = (ai >> b2) | carry;
+                carry = b2 ? (ai << t) : 0;
+            }
+        }
+        return;
+    }
+
     // returns valid significant length of a in digits
     size_t valid_digits() const
     {
@@ -607,9 +662,22 @@ public:
                 break;
             }
         }
-        t >>= s;
+        if (s)
+        {
+            t.shift_bits_r(s);
+        }
+        const uint32_t prime[64] = {
+            2,	3,	5,	7,	11,	13,	17,	19,
+            23,	29,	31,	37,	41,	43,	47,	53,
+            59,	61,	67, 71,	73,	79,	83,	89,
+            97,	101,103,107,109,113,127,131,
+            137,139,149,151,157,163,167,173,
+            179,181,191,193,197,199,211,223,
+            227,229,233,239,241,251,257,263,
+            269,271,277,281,283,293,307,311,
+        };
         big_uint k, a, b;
-        for (size_t i = 0; i < 10 && prime[i] < x; i++) //随便选一个素数进行测试
+        for (size_t i = 0; i < 64; i++) //随便选一个素数进行测试
         {
             a = prime[i];
             mod_exp(b, a, t, x);   //先算出a^t
