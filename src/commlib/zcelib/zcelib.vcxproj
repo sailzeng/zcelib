@@ -126,6 +126,7 @@
     <None Include="zce\version.h.in" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="zce\encrypt\asymmetric.cpp" />
     <ClCompile Include="zce\aio\caller.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ShowIncludes>
@@ -148,6 +149,7 @@
     <ClCompile Include="zce\logger\log_print.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
     </ClCompile>
+    <ClCompile Include="zce\math\big_uint.cpp" />
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
@@ -256,6 +258,7 @@
     <ClCompile Include="zce\uuid\generator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="zce\encrypt\asymmetric.h" />
     <ClInclude Include="zce\aio\caller.h" />
     <ClInclude Include="zce\aio\awaiter.h" />
     <ClInclude Include="zce\aio\worker.h" />

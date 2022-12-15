@@ -78,7 +78,30 @@ void random_base::get_string(RAND_STRING str_type,
                 rand_str[i] = 'A' + static_cast<char>(rand_data);
             }
             break;
-
+            //BASE64的字符
+        case RAND_STRING::NUMBER_BASE64:
+            rand_data = rand_data % 64;
+            if (rand_data < 10)
+            {
+                rand_str[i] = '0' + static_cast<char>(rand_data);
+            }
+            else if (rand_data < 36)
+            {
+                rand_str[i] = 'a' + static_cast<char>(rand_data);
+            }
+            else if (rand_data < 62)
+            {
+                rand_str[i] = 'A' + static_cast<char>(rand_data);
+            }
+            else if (rand_data == 62)
+            {
+                rand_str[i] = '+';
+            }
+            else if (rand_data == 63)
+            {
+                rand_str[i] = '/';
+            }
+            break;
             ///产生0-127的ASCII(非扩展)字符串
         case RAND_STRING::ASCII:
             rand_str[i] = static_cast<char>(rand_data & 0x7F);

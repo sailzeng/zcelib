@@ -13,13 +13,24 @@
 
 #pragma once
 
+#include "zce/os_adapt/math.h"
+#include "zce/math/random.h"
+#include "zce/bytes/base_encode.h"
+
 namespace zce
 {
+class min_prime_table
+{
+public:
+    static const size_t TABLE_LEN = 64;
+    static const uint32_t PRIME_TABLE[TABLE_LEN];
+};
+
 //! B是bignumber的bit为数，必须为32的倍数
 //! 必须要考虑溢出风险，比如128bits * 128 bits的数字需要256bits保存，
 //! 如果您希望使用2048bit的big number，那么您要使用4096的长度，
 template <std::size_t B>
-class big_uint
+class big_uint : public min_prime_table
 {
 public:
 
@@ -84,11 +95,11 @@ public:
     }
     bool operator< (const big_uint &other) const
     {
-        return cmp(other) < 0 ? true : false;
+        return cmp(*this, other) < 0 ? true : false;
     }
     bool operator<= (const big_uint &other) const
     {
-        return cmp(other) <= 0 ? true : false;
+        return cmp(*this, other) <= 0 ? true : false;
     }
 
     big_uint operator+ (const big_uint &other) const
@@ -98,39 +109,39 @@ public:
         add(result, *this, other, carry);
         return result;
     }
-    big_uint operator- (const big_uint &other)
+    big_uint operator- (const big_uint &other) const
     {
         uint32_t borrow = 0;
         big_uint result;
         sub(result, *this, other, borrow);
         return result;
     }
-    big_uint operator* (const big_uint &other)
+    big_uint operator* (const big_uint &other) const
     {
         big_uint result;
         mul(result, *this, other);
         return result;
     }
-    big_uint operator/ (const big_uint &other)
+    big_uint operator/ (const big_uint &other) const
     {
         big_uint result;
         div(result, *this, other);
         return result;
     }
-    big_uint operator% (const big_uint &other)
+    big_uint operator% (const big_uint &other) const
     {
         big_uint result;
         mod(result, *this, other);
         return result;
     }
 
-    big_uint &operator+= (const big_uint &other)
+    big_uint operator+= (const big_uint &other)
     {
         uint32_t carry = 0;
         add(*this, *this, other, carry);
         return *this;
     }
-    big_uint &operator-= (const big_uint &other) const
+    big_uint operator-= (const big_uint &other)
     {
         uint32_t borrow = 0;
         sub(*this, *this, other, borrow);
@@ -149,16 +160,6 @@ public:
     big_uint operator%= (const big_uint &other)
     {
         mod(*this, *this, other);
-        return *this;
-    }
-    big_uint operator>>= (size_t c)
-    {
-        this->shift_digits_r(c);
-        return *this;
-    }
-    big_uint operator<<= (size_t c)
-    {
-        this->shift_digits_l(c);
         return *this;
     }
 
@@ -236,6 +237,7 @@ public:
     // return a - b
     static int cmp(const big_uint &a, const big_uint &b)
     {
+        //考虑大小端，还是不用memcmp了，
         for (ssize_t i = LEN_OF_U32_ARY - 1; i >= 0; --i)
         {
             if (a.bn_[i] > b.bn_[i])
@@ -278,12 +280,23 @@ public:
         return;
     }
     // add one unit
-    static void add_unit(big_uint &a,
-                         const big_uint &b,
-                         uint32_t c)
+    void add_unit(uint32_t c)
     {
-        big_uint cc = c;
-        add(a, b, cc);
+        uint64_t result = 0;
+        uint32_t cc = c;
+        for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
+        {
+            result = cc + bn_[i];
+            bn_[i] = result & BN_UNIT_MAX_NUM;
+            if (result > (uint64_t)BN_UNIT_MAX_NUM)
+            {
+                cc = 1;
+            }
+            else
+            {
+                break;
+            }
+        }
     }
     /// a = b - c
     static void sub(big_uint &a,
@@ -366,7 +379,7 @@ public:
         {
             return;
         }
-        uint32_t b1 = b / BN_UNIT_BITS;
+        uint32_t b1 = (uint32_t)(b / BN_UNIT_BITS);
         if (b1)
         {
             shift_digits_l(b1);
@@ -376,7 +389,7 @@ public:
         {
             uint32_t t = BN_UNIT_BITS - b2, ai = 0;
             uint32_t carry = 0;
-            for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
+            for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
             {
                 ai = bn_[i];
                 bn_[i] = (ai << b2) | carry;
@@ -393,7 +406,7 @@ public:
         {
             return;
         }
-        uint32_t b1 = b / BN_UNIT_BITS;
+        uint32_t b1 = (uint32_t)b / BN_UNIT_BITS;
         if (b1)
         {
             shift_digits_r(b1);
@@ -403,7 +416,7 @@ public:
         {
             uint32_t t = BN_UNIT_BITS - b2, ai = 0;
             uint32_t carry = 0;
-            for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
+            for (ssize_t i = LEN_OF_U32_ARY - 1; i >= 0; --i)
             {
                 ai = bn_[i];
                 bn_[i] = (ai >> b2) | carry;
@@ -425,6 +438,41 @@ public:
             }
         }
         return (i + 1);
+    }
+
+    //从低位lsb到高位msb，第一个二进制1 是第几位bit(仍然从0位开始计数)
+    size_t scanbit_msb2lsb() const
+    {
+        size_t vd = valid_digits();
+        if (vd == 0)
+        {
+            return 0;
+        }
+        return (vd - 1) * BN_UNIT_BITS + zce::scanbit_msb2lsb32(bn_[vd - 1]);
+    }
+
+    //！从低位lsb到高位msb数，第一个二进制1是第几个bit，如果为值为0，返回0
+    size_t scanbit_lsb2msb()
+    {
+        size_t s = 0;
+        size_t vd = valid_digits();
+        for (size_t i = 0; i < vd; ++i)
+        {
+            uint32_t ai = bn_[i];
+            for (size_t v = 0; v < BN_UNIT_BITS; ++v)
+            {
+                if (!(ai & 0x1))
+                {
+                    s++;
+                    ai >>= 1;
+                }
+                else
+                {
+                    return s;
+                }
+            }
+        }
+        return 0;
     }
 
     // mul one unit
@@ -491,7 +539,7 @@ public:
             return;
         }
         a.zero();
-        if (cdigits == 0 && cdigits < ddigits)
+        if (cdigits == 0 || cdigits < ddigits)
         {
             b = c;
             return;
@@ -499,7 +547,7 @@ public:
 
         big_uint cc = c, dd = d;
 
-        uint32_t td = dd.bn_[ddigits - 1];
+        uint64_t td = dd.bn_[ddigits - 1];
         uint64_t tc = 0;
 
         uint32_t ai = 0;
@@ -513,13 +561,14 @@ public:
             {
                 tc += (uint64_t)cc.bn_[i + ddigits] << 32;
             }
-            if (tc > td)
+            if (tc >= td)
             {
-                uint64_t di = tc / td;
-                assert(di <= BN_UNIT_MAX_NUM);
+                uint64_t di = tc / (td + 1);
+                assert((di & 0xFFFFFFFF00000000) == 0);
                 ai = (uint32_t)di;
                 big_uint t;
                 mul_unit(t, dd, (uint32_t)di);
+
                 uint32_t borrow = 0;
                 sub(cc, cc, t, borrow);
                 while (cmp(cc, dd) >= 0)
@@ -538,39 +587,63 @@ public:
         b = cc;
     }
 
-    void mod(big_uint &a,
-             const big_uint &b,
-             const big_uint &c)
+    static void mod(big_uint &a,
+                    const big_uint &b,
+                    const big_uint &c)
     {
         big_uint t;
         return div_i(t, a, b, c);
     }
 
-    void div(big_uint &a,
-             const big_uint &b,
-             const big_uint &c)
+    static void div(big_uint &a,
+                    const big_uint &b,
+                    const big_uint &c)
     {
         big_uint t;
         return div_i(a, t, b, c);
     }
     // a = b * c mod d
-    void mod_mul(big_uint &a,
-                 const big_uint &b,
-                 const big_uint &c,
-                 const big_uint *d)
+    static void mod_mul2(big_uint &a,
+                         const big_uint &b,
+                         const big_uint &c,
+                         const big_uint &d)
     {
         big_uint t;
         mul(t, b, c);
         mod(a, t, d);
     }
 
+    static void  mod_mul(big_uint &a,
+                         const big_uint &b,
+                         const big_uint &c,
+                         const big_uint &d)
+    {
+        big_uint rt;
+        size_t cdigits = c.valid_digits();
+        big_uint bb = b;
+        for (size_t i = 0; i < cdigits; ++i)
+        {
+            uint32_t ci = c.bn_[i];
+            while (ci)
+            {
+                if (ci & 1)
+                {
+                    rt = (rt + bb) % d;
+                }
+                bb = (bb + bb) % d;
+                ci >>= 1;
+            }
+        }
+        a = rt;
+    }
+
     // https://labuladong.github.io/algo/4/32/117/
     // 蒙哥马利算法进行超大数字模幂运算
     // 模幂运算(为啥不叫幂模预算) a = b ^ c mod d , exp = exponentiation
-    void mod_exp(big_uint &a,
-                 const big_uint &b,
-                 const big_uint &c,
-                 const big_uint &d)
+    static void mod_exp(big_uint &a,
+                        const big_uint &b,
+                        const big_uint &c,
+                        const big_uint &d)
     {
         size_t cdigits = c.valid_digits();
         size_t ddigits = d.valid_digits();
@@ -603,97 +676,122 @@ public:
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
-            printf("%08x,", bn_[i]);
+            printf("0x%08X,", bn_[i]);
         }
         printf("\n");
     }
 
-    //
-    void random_fill(zce::random_mt19937 &randomer, size_t digits)
+    //!生成一个随机数,普通填充，用一些32位数填充，但不够紧密，不能用于质数选择
+    template <class random_engine>
+    void random_fill(random_engine &engine, size_t digits)
     {
         for (size_t i = 0; i < digits && i < LEN_OF_U32_ARY; ++i)
         {
-            bn_[i] = randomer.get_uint32();
+            bn_[i] = engine();
         }
+    }
+
+    //!生成一个随机数，紧密填充，
+    template <class random_engine>
+    void random_tight(random_engine &engine, size_t digits)
+    {
+        for (size_t i = 0; i < digits && i < LEN_OF_U32_ARY; ++i)
+        {
+            for (size_t j = 0; j < 8; ++j)
+            {
+                bn_[i] <<= 4;
+                bn_[i] |= engine() & 0xF;
+            }
+        }
+    }
+
+    //根据当前的数字制造一个素数
+    //! RE random_engine
+    template <class RANDOM_ENGINE>
+    void create_prime(RANDOM_ENGINE &engine, size_t digits, size_t rounds)
+    {
+        size_t test_count = 0;
+        random_tight(engine, digits);
+        print();
+        while (true)
+        {
+            uint32_t m = bn_[0] % 10;
+            switch (m)
+            {
+            case 0:
+            case 2:
+            case 6:
+            case 8:
+                add_unit(1);
+                break;
+            case 1:
+            case 5:
+            case 7:
+            case 9:
+                add_unit(2);
+                break;
+            case 3:
+                add_unit(4);
+                break;
+            case 4:
+                add_unit(3);
+                break;
+            }
+            if (isprime(engine, rounds))
+            {
+                break;
+            }
+            test_count++;
+            if (test_count % 50000 == 0)
+            {
+                printf("test continue %zu times.\n", test_count);
+                print();
+            }
+        }
+        printf("test finished %zu times.\n", test_count);
     }
 
     //! 如何判断一个数字是质数的方法
     //! https://blog.nowcoder.net/n/c0181f2b9aca4947ae40e8681fba4273?from=nowcoder_improve
+    //! https://www.zhihu.com/question/293656940/answer/512820832
     //! Miller-Rabin素性测试取是否是超大素数
-    bool miller_rabin_isprime(const big_uint &x)
+    //! https://www.cnblogs.com/RioTian/p/13927952.html
+    //! https://blog.csdn.net/ECNU_LZJ/article/details/72675595
+    //! https://zhuanlan.zhihu.com/p/349360074
+    //! https://bindog.github.io/blog/2014/07/19/how-to-generate-big-primes/?
+    //! https://blog.nowcoder.net/n/c0181f2b9aca4947ae40e8681fba4273?from=nowcoder_improve
+    template <class RANDOM_ENGINE>
+    bool isprime(RANDOM_ENGINE &engine, size_t rounds) const
     {
-        const big_uint BIG_UINT_1 = 1;
-        const big_uint BIG_UINT_2 = 2;
-
-        if (x == BIG_UINT_2)
+        assert(rounds > 0);
+        static const big_uint BIG_UINT_1 = 1;
+        static const big_uint BIG_UINT_2 = 2;
+        //2是素数
+        if (*this == BIG_UINT_2)
         {
-            return true; //2是素数
+            return true;
         }
-        size_t xdigits = x.valid_digits();
-        if (xdigits > 1)
+        size_t vd = valid_digits();
+        //只对大质数进行判断
+        assert(vd > 1);
+        if (vd <= 1)
         {
             return false;
         }
-        if (x < BIG_UINT_2 || !(x.bn_[0] & 0x1))
+        if (*this < BIG_UINT_2 || !(bn_[0] & 0x1))
         {
             return false; //如果x是偶数或者是0，1，那它不是素数
         }
-        size_t s = 0;
-        big_uint t = x - BIG_UINT_1;
 
-        //将x-1分解成(2^s)*t的样子
-        for (size_t i = 0; i < xdigits; ++i)
+        big_uint a;
+        for (size_t i = 0; i < rounds; i++) //随便选一个素数进行测试
         {
-            uint32_t ti = t[i];
-            for (size_t v = 0; v < BN_UNIT_BITS; ++v)
+            a = engine();
+            if (miller_rabin2(a))
             {
-                if (!(ti & 0x1))
-                {
-                    s++;
-                    ti >> 1;
-                }
-                else
-                {
-                    break;
-                }
+                continue;
             }
-            if (ti & 0x1)
-            {
-                break;
-            }
-        }
-        if (s)
-        {
-            t.shift_bits_r(s);
-        }
-        const uint32_t prime[64] = {
-            2,	3,	5,	7,	11,	13,	17,	19,
-            23,	29,	31,	37,	41,	43,	47,	53,
-            59,	61,	67, 71,	73,	79,	83,	89,
-            97,	101,103,107,109,113,127,131,
-            137,139,149,151,157,163,167,173,
-            179,181,191,193,197,199,211,223,
-            227,229,233,239,241,251,257,263,
-            269,271,277,281,283,293,307,311,
-        };
-        big_uint k, a, b;
-        for (size_t i = 0; i < 64; i++) //随便选一个素数进行测试
-        {
-            a = prime[i];
-            mod_exp(b, a, t, x);   //先算出a^t
-            //然后进行s次平方
-            for (size_t j = 1; j <= s; j++)
-            {
-                //求b的平方
-                mod_mul(k, b, b, x);
-                if (k == BIG_UINT_1 && b != BIG_UINT_1 && b != x - BIG_UINT_1)
-                {
-                    return false;
-                }
-                b = k;
-            }
-            //用费马小定理判断
-            if (b != BIG_UINT_1)
+            else
             {
                 return false;
             }
@@ -702,6 +800,71 @@ public:
         return true;
     }
 
+    //
+    bool miller_rabin(const big_uint &a) const
+    {
+        static const big_uint BIG_UINT_1 = 1;
+        big_uint d = *this - BIG_UINT_1;
+        big_uint dd = d, v;
+        while (d != BIG_UINT_1)
+        {
+            mod_exp(v, a, d, *this);
+            if (v == 1)
+            {
+                if (d.bn_[0] & 0x1)
+                {
+                    return true;
+                }
+                d.shift_bits_r(1);
+                mod_exp(v, a, d, *this);
+                if (v == dd)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //
+    bool miller_rabin2(const big_uint &a) const
+    {
+        static const big_uint BIG_UINT_1 = 1;
+        big_uint t = *this - BIG_UINT_1;
+        big_uint tt = t;
+        //将x-1分解成(2^s)*t的样子
+
+        size_t s = t.scanbit_lsb2msb();
+        if (s)
+        {
+            t.shift_bits_r(s);
+        }
+
+        big_uint k, b;
+
+        mod_exp(b, a, t, *this);   //先算出a^t
+        //然后进行s次平方
+        for (size_t j = 1; j <= s; j++)
+        {
+            //求b的平方
+            mod_mul(k, b, b, *this);
+            if (k == BIG_UINT_1 && b != BIG_UINT_1 && b != tt)
+            {
+                return false;
+            }
+            b = k;
+        }
+        //用费马小定理判断
+        if (b != BIG_UINT_1)
+        {
+            return false;
+        }
+        return true;
+    }
 protected:
     //! 每个存储单元都是32bit
     static const size_t BN_UNIT_BITS = 32;

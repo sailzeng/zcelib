@@ -102,6 +102,8 @@ public:
         NUMBER_UPPER,
         ///产生数字+小写+大写字符串，字符0-9，a-z,A-Z
         NUMBER_LOWER_UPPER,
+        ///产生BASE64编码字符串,字符+,/,0-9，a-z,A-Z,
+        NUMBER_BASE64,
         ///产生0-127的ASCII(非扩展)字符串
         ASCII,
         ///产生0-255二进制字符串
@@ -125,7 +127,7 @@ public:
     @brief      放弃若干个随机数，当为了防止对方猜测时，可以使用
     @param      discard_num 放弃的次数
     */
-    virtual void discard(size_t discard_num)
+    void discard(size_t discard_num = 1)
     {
         for (size_t i = 0; i < discard_num; ++i)
         {
@@ -138,10 +140,15 @@ public:
     virtual uint32_t rand() = 0;
     ///你必须实现的函数,如何处理随机数种子
     virtual void srand(uint32_t seed) = 0;
+    ///和C++11引擎类似，提供这个函数，生产最基本的uint32
+    uint32_t operator()()
+    {
+        return rand();
+    }
 
     ///产生一个0~0xFFFFFFFF的随机数值，一些随机数函数产生的范围都并不是整数范围，
     ///如果是这种情况要进行转换
-    inline virtual uint32_t get_uint32()
+    inline uint32_t get_uint32()
     {
         return rand();
     }
@@ -149,7 +156,7 @@ public:
     ///得到一个64bit的数字,将两个数字uin32_t合并,
     ///这些算法写的比较简单，相对而言，Boost在这方面的处理要复杂很多，他一方面要考虑通用性，一方面……
     ///我的认知是这样的，如果这个随机数的发生器的产生的数字是足够随机的，那么应该满足我们的需求，
-    inline virtual uint64_t get_uint64()
+    inline uint64_t get_uint64()
     {
         uint64_t x1 = get_uint32();
         uint64_t x2 = get_uint32();
@@ -157,17 +164,17 @@ public:
     }
 
     ///得到一个double随机数,其实就是根据32bit拼接一个double（绝对C语言写法），BOOST的实现相对复杂很多
-    inline virtual double get_double()
-    {
-        double x = 0.0;
-        uint64_t x_64 = get_uint64();
-        //这TMD绝对是个C语言的写法。但假如每一位都是足够随机的，那么……这个吼吼
-        memcpy(&x, &x_64, sizeof(double));
-        return x;
-    }
+    //inline virtual double get_double()
+    //{
+    //    double x = 0.0;
+    //    uint64_t x_64 = get_uint64();
+    //    //这TMD绝对是个C语言的写法。但假如每一位都是足够随机的，那么……这个吼吼
+    //    memcpy(&x, &x_64, sizeof(double));
+    //    return x;
+    //}
 
     ///得到[0-1)之间浮点数，用于某些概率控制
-    inline virtual double get_double01()
+    inline double get_double01()
     {
         return double(get_uint32()) / (double((std::numeric_limits<uint32_t>::max)()) + 1);
     }
@@ -178,7 +185,7 @@ public:
     * @param[out] rand_str  返回的生成随机数字符串
     * @param[in]  str_len   要求生成的字符串的长度
     */
-    virtual void get_string(RAND_STRING str_type, char* rand_str, size_t str_len);
+    void get_string(RAND_STRING str_type, char* rand_str, size_t str_len);
 
 protected:
 
@@ -572,10 +579,11 @@ typedef random_mt<351,
     15,
     0xFFE50000,
     17>  random_mt11213b;
-///@brief mt19937大概是现在大家最推荐的算法
+///@brief mt19937大概是现在大家最推荐的算法，
 ///这儿要介绍一下的是我们一般默认使用的算法mt19937的算法，
 ///这种算法速度快，而且循环周期长2^19937，在不那么大（2^623,你有需要创建比这个大的数值？）的数值中平均分布能力好，
 ///所以是群众们的最爱，所以大家默认选择这算法，
+/// 我的代码居然和C++的实现在实现方式，模板参数很接近。喔喔喔。
 typedef random_mt<624,
     397,
     0x80000000,

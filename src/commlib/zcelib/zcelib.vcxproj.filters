@@ -362,6 +362,12 @@
     <ClCompile Include="zce\lock\bit_lock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\encrypt\asymmetric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\math\big_uint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -836,6 +842,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\math\big_uint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\encrypt\asymmetric.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

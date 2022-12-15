@@ -27,6 +27,7 @@ int test_osadapt_perf(int argc, char* argv[]);
 
 int test_big_uint64(int /*argc*/, char* /*argv*/[]);
 int test_big_uint128(int /*argc*/, char* /*argv*/[]);
+int test_big_uint1024(int /*argc*/, char* /*argv*/[]);
 
 int test_nonr_thread_mutex(int argc, char* argv[]);
 int test_msgqueue_condi(int argc, char* argv[]);

@@ -55,8 +55,8 @@ inline bool is_prime(const size_t n)
 size_t nearest_prime(const size_t n);
 
 /*!
-* @brief      检查从LSB（最小位），to MSB（最大位），到一个被设置为1的位置，前面有多少个0
-* @return     int  返回的是1前面的0的个数
+* @brief      检查从LSB（最小位），to MSB（最大位），到一个被设置为1的位置，
+* @return     int  返回的是这个1的位置序号
 * @param      mask 处理的的32位数据，mask 不能是0
 */
 inline int scanbit_lsb2msb32(uint32_t mask)
@@ -71,9 +71,10 @@ inline int scanbit_lsb2msb32(uint32_t mask)
 }
 
 /*!
-* @brief      检查从MSB（最大位），to LSB（最小位），发现第一个被设置为1的位置，前面有多少个0
-* @return     int    返回的是1前面的0的个数
-* @param      mask   处理的的32位数据，mask 不能是0，否则结果没有定义
+* @brief      检查从MSB（最大位），to LSB（最小位），第一个被设置为1的位置序号，
+* @return     int    返回的是这个1的位置序号，（仍然是从低位0开始的编码，切序号从0开始）
+* @param      mask   处理的的32位数据，mask 不能是0，否则结果没有定义(好像新的说还是0)
+* @note       注意序号还是从0bit开始的，举例，scanbit_msb2lsb32(mak=12) 返回3
 */
 inline int scanbit_msb2lsb32(uint32_t mask)
 {
@@ -91,8 +92,8 @@ inline int scanbit_msb2lsb32(uint32_t mask)
 #if defined ZCE_OS64
 
 /*!
-* @brief      检查从LSB（最小位），to MSB（最大位），到一个被设置为1的位置，前面有多少个0
-* @return     int  返回的是1前面的0的个数
+* @brief      检查从LSB（最小位），to MSB（最大位），第一个被设置为1的位置序号，
+* @return     int  返回的是这个1的位置序号
 * @param      mask 处理的的64位数据，mask 不能是0
 */
 inline int scanbit_lsb2msb64(uint64_t mask)
@@ -107,8 +108,8 @@ inline int scanbit_lsb2msb64(uint64_t mask)
 }
 
 /*!
-* @brief      检查从MSB（最大位），to LSB（最小位），发现第一个被设置为1的位置，前面有多少个0
-* @return     int    返回的是1前面的0的个数
+* @brief      检查从MSB（最大位），to LSB（最小位），第一个被设置为1的位置序号，
+* @return     int    返回的是这个1的位置序号（仍然是从低位0开始的编码，切序号从0开始）
 * @param      mask   处理的的64位数据，mask 不能是0，否则结果没有定义
 */
 inline int scanbit_msb2lsb64(uint64_t mask)
