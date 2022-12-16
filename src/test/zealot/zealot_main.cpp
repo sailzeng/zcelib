@@ -23,16 +23,15 @@ int main(int argc, char* argv[])
                                             static_cast<int>(zce::LOG_HEAD::LOGLEVEL));
     int ret = 0;
     ZCE_TRACE_FILELINE(RS_DEBUG);
+    ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 
     //for (size_t i = 0; i < 100; ++i)
     //{
     //    ZCE_LOG(RS_INFO, "Hallelujah");
     //}
-
     ////test_aio1(argc, argv);
-    ret = test_big_uint64(argc, argv);
 
-    ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
+    ret = test_big_uint1024(argc, argv);
 
     //!需要关闭日志
     zce::log_msg::instance()->close();

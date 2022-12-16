@@ -149,7 +149,6 @@
     <ClCompile Include="zce\logger\log_print.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
     </ClCompile>
-    <ClCompile Include="zce\math\big_uint.cpp" />
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />

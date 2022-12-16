@@ -29,7 +29,7 @@ int test_big_uint64(int /*argc*/, char* /*argv*/[])
     a.print();
     b.print();
     c.print();
-    //c = a / b;
+    c = a / b;
     if (c != c1)
     {
         return 0;
@@ -52,43 +52,40 @@ int test_big_uint64(int /*argc*/, char* /*argv*/[])
     x = 100;
     y = 100;
     z = 33;
-    zce::big_uint<256>::mod_mul(w, x, y, z);
-    w.print();
-    zce::big_uint<256>::mod_mul2(w, x, y, z);
+    w = zce::big_uint<256>::mod_mul(x, y, z);
     w.print();
 
     x = 3;
     y = 32;
     z = 6123;
-    zce::big_uint<256>::mod_exp(w, x, y, z);
+    w = zce::big_uint<256>::mod_exp(x, y, z);
     w.print();
 
     x = 5612001;
     y = 365123;
     z = 31346;
-    zce::big_uint<256>::mod_mul(w, x, y, z);
-    w.print();
-    zce::big_uint<256>::mod_mul2(w, x, y, z);
+    w = zce::big_uint<256>::mod_mul(x, y, z);
     w.print();
 
     x = 199;
     y = 100;
     z.assign(4, 0xFF01, 0xFF0201, 0xABC, 0x113);
-    zce::big_uint<256>::mod_exp(w, x, y, z);
+    w = zce::big_uint<256>::mod_exp(x, y, z);
     w.print();
 
     a.assign(2, 0x0, 0x0012);
     a.print();
-    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb() << std::endl;
-    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb() << std::endl;
+    size_t bits = 0;
+    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(bits) << ":" << bits << std::endl;
+    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(bits) << ":" << bits << std::endl;
     a.assign(1, 12);
     a.print();
-    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb() << std::endl;
-    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb() << std::endl;
+    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(bits) << ":" << bits << std::endl;
+    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(bits) << ":" << bits << std::endl;
     a.assign(2, 0, 12);
     a.print();
-    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb() << std::endl;
-    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb() << std::endl;
+    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(bits) << ":" << bits << std::endl;
+    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(bits) << ":" << bits << std::endl;
 
     x.assign(1, 0x00FFFF00);
     x.print();
@@ -198,37 +195,68 @@ int test_big_uint1024(int /*argc*/, char* /*argv*/[])
 {
     zce::random_mt19937   mt19937_gen((unsigned int)time(NULL));
 
+    zce::big_uint<256> a, b, c, d;
     zce::big_uint<256> w, x, y, z;
+
+    c.assign(4, 0x3F787645, 0xAE9E2035, 0xEB9E13DC, 0x97FF30F1);
+    a.assign((uint32_t)0x32341342);
+    b = c - 1;
+    d = zce::big_uint<256>::mod_exp(a, b, c);
+    d.print();
+
+    c.miller_rabin(a);
+
     x.assign(2, 0xFFFFFFFE, 0x1FFFFFFF);
     y.assign(2, 0xFFFFFFFE, 0x1FFFFFFF);
     z.assign(2, 0xFFFFFFFF, 0x1FFFFFFF);
-    zce::big_uint<256>::mod_mul(w, x, y, z);
+    w = zce::big_uint<256>::mod_mul(x, y, z);
 
-    zce::big_uint<512> b;
     b.assign(2, 0xFFFFFFFF, 0x1FFFFFFF);
     if (b.isprime(mt19937_gen, 10))
     {
         std::cout << "miller rabin" << std::endl;
     }
 
-    b.assign(8, 0xC24D5967, 0x3053762E, 0x3D022E2B, 0x8BDA3736, 0x8EC2CC3C, 0x91012E0A, 0x72E5F014, 0x130E0AD0);
+    c.assign(1, 97);
+    a.assign((uint32_t)13);
+    b = c - 1;
+    d = zce::big_uint<256>::mod_exp(a, b, c);
+
+    c.assign(2, 0xAAAAAAAB, 0x2AA);
+    a.assign((uint32_t)13);
+    b = c - 1;
+    d = zce::big_uint<256>::mod_exp(a, b, c);
+
     if (b.isprime(mt19937_gen, 10))
     {
         std::cout << "miller rabin" << std::endl;
     }
 
-    b.assign(8, 0x69908501, 0x2FDECE36, 0x149C940, 0x299D761A, 0xF9D81C99, 0xE35D04D6, 0xE1821D4E, 0xFC342782);
-    if (b.isprime(mt19937_gen, 10))
+    zce::hr_progress_timer hr_timer;
+    double usetime = 0.0;
+    size_t counter = 0;
     {
-        std::cout << "miller rabin test is prime" << std::endl;
+        hr_timer.restart();
+        zce::big_uint<1024> v;
+        v.create_prime(mt19937_gen, 8, 10, counter);
+        v.print();
+        std::cout << "Test couter" << counter << std::endl;
+        hr_timer.end();
+        usetime = hr_timer.elapsed_usec();
+        std::cout << "usetime" << usetime << " us" << std::endl;
     }
 
-    srand((unsigned int)time(NULL));
+    {
+        hr_timer.restart();
+        zce::big_uint<2048> v;
+        v.create_prime(mt19937_gen, 32, 10, counter);
+        v.print();
+        std::cout << "Test couter" << counter << std::endl;
+        hr_timer.end();
+        usetime = hr_timer.elapsed_usec();
+        std::cout << "usetime" << usetime << " us" << std::endl;
+    }
 
-    zce::big_uint<512> a;
-
-    a.create_prime(mt19937_gen, 8, 10);
-    a.print();
     return 0;
 }
 
