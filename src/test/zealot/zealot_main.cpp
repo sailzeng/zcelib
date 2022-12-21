@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     //}
     ////test_aio1(argc, argv);
 
-    ret = test_big_uint1024(argc, argv);
+    ret = test_big_uint64(argc, argv);
 
     //!需要关闭日志
     zce::log_msg::instance()->close();

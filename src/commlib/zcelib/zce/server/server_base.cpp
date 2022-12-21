@@ -394,7 +394,7 @@ int server_base::create_app_name(const char* argv_0)
 
     if (debug_name_len <= DEBUG_SUFFIX_LEN)
     {
-        ZCE_LOG(RS_ERROR, "[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
+        ZCE_LOG(RS_ERROR, "[framework] Exe file name is not debug d_ suffix?str_base_name[%s].", str_base_name);
         return -1;
     }
     if (0 == strcasecmp(str_base_name + debug_name_len - DEBUG_SUFFIX_LEN, "_D"))

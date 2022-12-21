@@ -4,7 +4,7 @@ int test_big_uint64(int /*argc*/, char* /*argv*/[])
 {
     zce::big_uint<64> a;
     zce::big_uint<64> b;
-    zce::big_uint<64> c;
+    zce::big_uint<64> c, d;
 
     c.assign(2, 0x1, 0x2);
     b.assign(2, 0x2, 0x1);
@@ -117,6 +117,14 @@ int test_big_uint64(int /*argc*/, char* /*argv*/[])
     x.print();
     x.shift_bits_r(236);
     x.print();
+
+    std::cout << "252x+198y=18" << std::endl;
+    //252x+198y=18
+    a = 252;
+    b = 198;
+    zce::big_uint<64>::ext_euc(a, b, c, d);
+    c.print();
+    d.print();
     return 0;
 }
 
@@ -238,7 +246,7 @@ int test_big_uint1024(int /*argc*/, char* /*argv*/[])
     {
         hr_timer.restart();
         zce::big_uint<1024> v;
-        v.create_prime(mt19937_gen, 8, 10, counter);
+        v.create_prime(mt19937_gen, 256, 10, counter);
         v.print();
         std::cout << "Test couter" << counter << std::endl;
         hr_timer.end();
@@ -249,7 +257,7 @@ int test_big_uint1024(int /*argc*/, char* /*argv*/[])
     {
         hr_timer.restart();
         zce::big_uint<2048> v;
-        v.create_prime(mt19937_gen, 32, 10, counter);
+        v.create_prime(mt19937_gen, 1024, 10, counter);
         v.print();
         std::cout << "Test couter" << counter << std::endl;
         hr_timer.end();

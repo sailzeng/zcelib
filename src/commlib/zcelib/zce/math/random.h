@@ -267,7 +267,6 @@ public:
         {
             x = 0x80000000 | x;
         }
-
         return x;
     }
 

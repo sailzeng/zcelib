@@ -149,12 +149,19 @@ public:
         shift_bits_r(b);
         return *this;
     }
-    big_uint operator<<= (size_t b)
+    big_uint operator <<= (size_t b)
     {
         shift_bits_l(b);
         return *this;
     }
-
+    operator char* ()
+    {
+        return (char *)bn_;
+    }
+    operator const char* () const
+    {
+        return (const char *)bn_;
+    }
     //
     int decode(const char *hexarr, size_t arr_szie)
     {
@@ -222,6 +229,23 @@ public:
             this->bn_[i] = 0;
         }
     }
+
+    //!赋值函数,将一个buffer强行复制到bn_里面，加解密能用上
+    void putin(const char *buf)
+    {
+        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
+        {
+            bn_[i] = ZINDEX_TO_LEUINT32(buf, i);
+        }
+    }
+    void takeout(char *buf) const
+    {
+        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
+        {
+            ZLEUINT32_TO_INDEX(buf, i, bn_[i]);
+        }
+    }
+
     // a(*this) = 0
     void zero()
     {
@@ -649,24 +673,40 @@ public:
         big_uint t;
         return div_i(b, c, t);
     }
+
+    //!https://blog.csdn.net/u014634338/article/details/40210435
+    static void ext_euc(big_uint a, big_uint b, big_uint &x, big_uint &y)
+    {
+        big_uint xi_1, yi_1, xi_2, yi_2;
+        xi_2 = 1, yi_2 = 0;
+        xi_1 = 0, yi_1 = 1;
+        x = 0, y = 1;
+        big_uint r = a % b;
+        big_uint q = a / b;
+        while (!r.is_zero())
+        {
+            x = xi_2 - q * xi_1;
+            y = yi_2 - q * yi_1;
+
+            xi_2 = xi_1;
+            yi_2 = yi_1;
+
+            xi_1 = x, yi_1 = y;
+            a = b;
+            b = r;
+            r = a % b;
+            q = a / b;
+        }
+        return;
+    }
+
     // return a = b * c mod d 幂乘
     static big_uint mod_mul(const big_uint &b,
                             const big_uint &c,
                             const big_uint &d)
     {
-        big_uint t;
-        t = mul(b, c);
-        return mod(t, d);
-    }
-
-    // https://labuladong.github.io/algo/4/32/117/
-    // 蒙哥马利算法进行超大数字模幂运算
-    // 模幂运算(为啥不叫幂模预算) a = b ^ c mod d , exp = exponentiation
-    static big_uint mod_exp2(const big_uint &b,
-                             const big_uint &c,
-                             const big_uint &d)
-    {
-        big_uint a, t = 1;
+        //big_uint t; t = mul(b, c); return mod(t, d);
+        big_uint a, bb = b;
         size_t cvb = 0;
         bool cvu = c.scanbit_msb2lsb(cvb);
         size_t dvu = d.valid_units();
@@ -675,19 +715,24 @@ public:
         {
             return a;
         }
-
-        for (ssize_t i = cvb; i >= 0; --i)
+        //注意这儿，因为bit位为0也是要做事的，所以要循环所有的数位，原来就错在这儿
+        for (size_t i = 0; i <= cvb; ++i)
         {
-            t = mod_mul(t, t, d);
             if (c.get_bit(i))
             {
-                t = mod_mul(t, b, d);
+                a = (a + b) % d;
             }
+            b.shift_bits_l(1);
+            b %= d;
         }
-        a = t;
+        a;
         return a;
     }
 
+    // https://labuladong.github.io/algo/4/32/117/
+    // https://www.desgard.com/algo/docs/part2/ch01/2-quick-pow-mod/
+    // 蒙哥马利算法进行超大数字模幂运算
+    // 模幂运算(为啥不叫幂模预算) a = b ^ c mod d , exp = exponentiation
     static big_uint mod_exp(const big_uint &b,
                             const big_uint &c,
                             const big_uint &d)
@@ -701,7 +746,7 @@ public:
         {
             return a;
         }
-
+        //注意这儿，因为bit位为0也是要做事的，所以要循环所有的数位，原来就错在这儿
         for (size_t i = 0; i <= cvb; ++i)
         {
             if (c.get_bit(i))
@@ -716,7 +761,8 @@ public:
 
     void print()
     {
-        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
+        size_t digits = valid_units();
+        for (size_t i = 0; i < digits; ++i)
         {
             printf("0x%08X,", bn_[i]);
         }
@@ -725,8 +771,10 @@ public:
 
     //!生成一个随机数,普通填充，用一些32位数填充，但不够紧密，不能用于质数选择
     template <class random_engine>
-    void random_fill(random_engine &engine, size_t digits)
+    void random_fill(random_engine &engine, size_t bits)
     {
+        assert(bits % BN_UNIT_BITS == 0);
+        size_t digits = bits / BN_UNIT_BITS;
         for (size_t i = 0; i < digits && i < LEN_OF_U32_ARY; ++i)
         {
             bn_[i] = engine();
@@ -735,8 +783,10 @@ public:
 
     //!生成一个随机数，紧密填充，
     template <class random_engine>
-    void random_tight(random_engine &engine, size_t digits)
+    void random_tight(random_engine &engine, size_t bits)
     {
+        assert(bits % BN_UNIT_BITS == 0);
+        size_t digits = bits / BN_UNIT_BITS;
         for (size_t i = 0; i < digits && i < LEN_OF_U32_ARY; ++i)
         {
             for (size_t j = 0; j < 8; ++j)
@@ -754,18 +804,18 @@ public:
      * @brief 创造一个质数，选择一个随机数，然后累加进行预算
      * @tparam RANDOM_ENGINE 随机数引擎
      * @param engine 随机数引擎
-     * @param digits 质数的 unit 数量，就是所少个uint32_t
+     * @param bits   质数的 bits 数量，必须是32的倍数
      * @param rounds 使用 miller_rabin 判断的质数轮数，轮数越多，概率越高
      * @param counter 测试的数字数量，
     */
     template <class RANDOM_ENGINE>
     void create_prime(RANDOM_ENGINE &engine,
-                      size_t digits,
+                      size_t bits,
                       size_t rounds,
                       size_t &counter)
     {
         counter = 0;
-        random_tight(engine, digits);
+        random_tight(engine, bits);
         print();
         while (true)
         {
@@ -880,6 +930,8 @@ protected:
     static const size_t BN_UNIT_BITS = 32;
     //! 数组的长度是32
     static const size_t LEN_OF_U32_ARY = B / 32;
+    //
+    static const size_t LEN_OF_BYTES = B / 8;
     //! 每个单元的最大长度
     static const size_t BN_UNIT_MAX_NUM = 0xFFFFFFFF;
 

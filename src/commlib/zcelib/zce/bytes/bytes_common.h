@@ -170,22 +170,25 @@ struct ZDOUBLE_STRUCT
 
 #if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE)
 
-///从一个(char *)指针内读取小头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上不发生改变
+///从一个(char *)ptr指针内读取小头字节序的uint16_t(32,or64)，在小头字节序的机器上不发生改变
 # define ZBYTE_TO_LEUINT16(ptr)    ZBYTE_TO_UINT16(ptr)
 # define ZBYTE_TO_LEUINT32(ptr)    ZBYTE_TO_UINT32(ptr)
 # define ZBYTE_TO_LEUINT64(ptr)    ZBYTE_TO_UINT64(ptr)
 
-///从一个(char *)指针内读取小头字节序的uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
+///从一个(char *)ptr指针内读取小头字节序的uint16_t(32,or64)， 的数组内的ary_index单元，
+///注意数组下标是相对于对于整形的下标，(而不是相对于字符型ptr的下标)
 # define ZINDEX_TO_LEUINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
 # define ZINDEX_TO_LEUINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
 # define ZINDEX_TO_LEUINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
 
-///向一个(char *)指针内写入一个小头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上不发生改变
+///向一个(char *)ptr指针内写入一个小头字节序的uint16_t(32,or64) wr_data，
+///在小头字节序的机器上不发生改变
 # define ZLEUINT16_TO_BYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
 # define ZLEUINT32_TO_BYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
 # define ZLEUINT64_TO_BYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
 
-//向一个(char *)指针内写入一个小头字节序的uuint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
+///向一个(char *)ptr指针内写入一个小头字节序的uint16_t(32,or64)wr_data
+///注意数组下标是相对于对于整形的下标，(而不是相对于字符型ptr的下标)
 # define ZLEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
 # define ZLEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
 # define ZLEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)

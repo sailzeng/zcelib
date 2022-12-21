@@ -197,7 +197,7 @@ public:
         @brief      ECB的加密，加密一个块，块的长度就是算法BLOCK_SIZE
         @param      key         加密的密钥
         @param      key_len     加密的密钥长度
-        @param      src_buf     原文
+        @param      plain_buf     原文
         @param      cipher_buf  生成的密文
         @note       注意，这个只对一个块进行加密，如果你希望连续对多个块进行加密，
                     优先选择cbc的方式，如果非要如此，请再封装一个函数，直接用这个
@@ -206,14 +206,14 @@ public:
         */
     inline static void ecb_encrypt(const unsigned char* key,
                                    size_t key_len,
-                                   const unsigned char* src_buf,
+                                   const unsigned char* plain_buf,
                                    unsigned char* cipher_buf)
     {
         //计算得到sub key
         typename ENCRYPT_STRATEGY::SUBKEY_STRUCT sub_key;
         key_setup(key, key_len, &sub_key, true);
 
-        ENCRYPT_STRATEGY::ecb_encrypt(&sub_key, src_buf, cipher_buf);
+        ENCRYPT_STRATEGY::ecb_encrypt(&sub_key, plain_buf, cipher_buf);
     }
 
     /*!
@@ -221,19 +221,19 @@ public:
     @param      key         加密的密钥
     @param      key_len     密钥的长度
     @param      cipher_buf  密文
-    @param      src_buf     生成的原文
+    @param      plain_buf     生成的原文
     @note       见ecb_encrypt 函数
     */
     inline  static void ecb_decrypt(const unsigned char* key,
                                     size_t key_len,
                                     const unsigned char* cipher_buf,
-                                    unsigned char* src_buf)
+                                    unsigned char* plain_buf)
     {
         //计算得到sub key
         typename ENCRYPT_STRATEGY::SUBKEY_STRUCT sub_key;
         key_setup(key, key_len, &sub_key, false);
 
-        ENCRYPT_STRATEGY::ecb_decrypt(&sub_key, cipher_buf, src_buf);
+        ENCRYPT_STRATEGY::ecb_decrypt(&sub_key, cipher_buf, plain_buf);
     }
 
 public:
@@ -245,9 +245,9 @@ public:
     @return     size_t     返回密文BUFFER所需要长度
     @param[in]  source_len 原文长度
     */
-    inline static size_t cbc_cipher_buflen(size_t src_len)
+    inline static size_t cbc_cipher_buflen(size_t plain_len)
     {
-        return ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2) * ENCRYPT_STRATEGY::BLOCK_SIZE;
+        return ((plain_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2) * ENCRYPT_STRATEGY::BLOCK_SIZE;
     }
 
     /*!
@@ -256,7 +256,7 @@ public:
     @param[in]  cipher_len
     @note
     */
-    inline static size_t cbc_source_buflen(size_t cipher_len)
+    inline static size_t cbc_plain_buflen(size_t cipher_len)
     {
         return cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
     }
@@ -299,38 +299,38 @@ public:
     @return     int         返回0标识加密成功，-1标识失败，一般而言失败表示参数错误
     @param[in]     key         密钥
     @param[in]     key_len     密钥长度
-    @param[in]     src_buf     原文
-    @param[in]     src_len     原文长度
+    @param[in]     plain_buf     原文
+    @param[in]     plain_len     原文长度
     @param[out]    cipher_buf  密文的BUFFER
     @param[in,out] cipher_len  密文长度，入参标识密文BUFFER的长度，返回时，返回密文的实际长度
     @param[in]     iv          initialization vector,初始化的向量，为nullptr表示你不关心，我会用随机数帮你填充，
     */
     static int cbc_encrypt(const unsigned char* key,
                            size_t key_len,
-                           const unsigned char* src_buf,
-                           size_t src_len,
+                           const unsigned char* plain_buf,
+                           size_t plain_len,
                            unsigned char* cipher_buf,
                            size_t* cipher_len,
                            const uint32_t* iv = nullptr)
     {
         //检查参数，如果不合适断言或者返回错误
         ZCE_ASSERT(key
-                   && src_buf
+                   && plain_buf
                    && cipher_buf
                    && key_len > 0
-                   && src_len > 0);
+                   && plain_len > 0);
         if (key == nullptr
-            || src_buf == nullptr
+            || plain_buf == nullptr
             || cipher_buf == nullptr
             || key_len <= 0
-            || src_len <= 0)
+            || plain_len <= 0)
         {
             ZCE_LOG(RS_ERROR, "Fun[%s] key[%p][%lu] soucre[%p][%lu] cipher[%p][%lu]",
                     __ZCE_FUNC__,
                     key,
                     key_len,
-                    src_buf,
-                    src_len,
+                    plain_buf,
+                    plain_len,
                     cipher_buf,
                     *cipher_len
             );
@@ -342,8 +342,8 @@ public:
         key_setup(key, key_len, &sub_key, true);
 
         return cbc_encrypt_skey(&sub_key,
-                                src_buf,
-                                src_len,
+                                plain_buf,
+                                plain_len,
                                 cipher_buf,
                                 cipher_len,
                                 iv);
@@ -357,33 +357,33 @@ public:
     @note       其他参数亲请参考cbc_encrypt
     */
     static int cbc_encrypt_skey(const typename ENCRYPT_STRATEGY::SUBKEY_STRUCT* sub_key,
-                                const unsigned char* src_buf,
-                                size_t src_len,
+                                const unsigned char* plain_buf,
+                                size_t plain_len,
                                 unsigned char* cipher_buf,
                                 size_t* cipher_len,
                                 const uint32_t* iv = nullptr)
     {
         //加密BUF所需要的长度，
-        size_t cphbuf_need_len = ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2)
+        size_t cphbuf_need_len = ((plain_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2)
             * ENCRYPT_STRATEGY::BLOCK_SIZE;
 
         //检查参数，如果不合适断言或者返回错误
         ZCE_ASSERT(sub_key
-                   && src_buf
+                   && plain_buf
                    && cipher_buf
-                   && src_len > 0
+                   && plain_len > 0
                    && *cipher_len >= cphbuf_need_len);
         if (sub_key == nullptr
-            || src_buf == nullptr
+            || plain_buf == nullptr
             || cipher_buf == nullptr
-            || src_len <= 0
+            || plain_len <= 0
             || *cipher_len < cphbuf_need_len)
         {
             ZCE_LOG(RS_ERROR, "Fun[%s] sub_key [%p] soucre[%p][%lu] cipher[%p][%lu], cipher buffer need len[%lu]. ",
                     __ZCE_FUNC__,
                     sub_key,
-                    src_buf,
-                    src_len,
+                    plain_buf,
+                    plain_len,
                     cipher_buf,
                     *cipher_len,
                     cphbuf_need_len
@@ -415,10 +415,10 @@ public:
         }
         const unsigned char* xor_ptr = write_ptr;
         write_ptr += ENCRYPT_STRATEGY::BLOCK_SIZE;
-        const unsigned char* read_ptr = src_buf;
+        const unsigned char* read_ptr = plain_buf;
 
         //
-        size_t remain_len = src_len;
+        size_t remain_len = plain_len;
         while (remain_len > ENCRYPT_STRATEGY::BLOCK_SIZE)
         {
             //先异或，如果是64bit的的代码，做出优化处理
@@ -436,7 +436,7 @@ public:
         //最后一些数据，可能要在处理成2个BLOCK
         if (remain_len > 0)
         {
-            memcpy(last_prc_block, src_buf + src_len - remain_len, remain_len);
+            memcpy(last_prc_block, plain_buf + plain_len - remain_len, remain_len);
         }
 
         //尾部放4个字节的0，用于校验验证，这种方法的有效性应该接近CRC32
@@ -487,15 +487,15 @@ public:
     @param[in]     key_len     密钥长度
     @param[in]     cipher_buf  密文
     @param[in]     cipher_len  密文的长度
-    @param[out]    src_buf     解密原文的BUFFER
-    @param[in,out] src_len     输入参数是表示原文BUFFER的长度，返回时表示原文的长度
+    @param[out]    plain_buf   解密原文的BUFFER
+    @param[in,out] plain_len   输入参数是表示原文BUFFER的长度，返回时表示原文的长度
     */
     static int cbc_decrypt(const unsigned char* key,
                            size_t key_len,
                            const unsigned char* cipher_buf,
                            size_t cipher_len,
-                           unsigned char* src_buf,
-                           size_t* src_len,
+                           unsigned char* plain_buf,
+                           size_t* plain_len,
                            uint32_t* iv = nullptr)
     {
         //
@@ -503,19 +503,19 @@ public:
 
         //检查参数，如果不合适断言或者返回错误
         ZCE_ASSERT(key
-                   && src_buf
+                   && plain_buf
                    && cipher_buf
                    && key_len > 0
                    && cipher_len >= ENCRYPT_STRATEGY::BLOCK_SIZE * 2
                    && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-                   && *src_len >= srcbuf_need_len);
+                   && *plain_len >= srcbuf_need_len);
         if (key == nullptr
-            || src_buf == nullptr
+            || plain_buf == nullptr
             || cipher_buf == nullptr
             || key_len <= 0
             || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
             || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-            || *src_len < srcbuf_need_len)
+            || *plain_len < srcbuf_need_len)
         {
             ZCE_LOG(RS_ERROR, "Fun[%s] key[%p][%lu] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
                     __ZCE_FUNC__,
@@ -523,8 +523,8 @@ public:
                     key_len,
                     cipher_buf,
                     cipher_len,
-                    src_buf,
-                    *src_len,
+                    plain_buf,
+                    *plain_len,
                     srcbuf_need_len
             );
             return -1;
@@ -537,8 +537,8 @@ public:
         return cbc_decrypt_skey(&sub_key,
                                 cipher_buf,
                                 cipher_len,
-                                src_buf,
-                                src_len,
+                                plain_buf,
+                                plain_len,
                                 iv);
     }
 
@@ -551,8 +551,8 @@ public:
     static int cbc_decrypt_skey(const typename ENCRYPT_STRATEGY::SUBKEY_STRUCT* sub_key,
                                 const unsigned char* cipher_buf,
                                 size_t cipher_len,
-                                unsigned char* src_buf,
-                                size_t* src_len,
+                                unsigned char* plain_buf,
+                                size_t* plain_len,
                                 uint32_t* iv = nullptr)
     {
         //
@@ -560,31 +560,31 @@ public:
 
         //检查参数，如果不合适断言或者返回错误
         ZCE_ASSERT(sub_key
-                   && src_buf
+                   && plain_buf
                    && cipher_buf
                    && cipher_len >= ENCRYPT_STRATEGY::BLOCK_SIZE * 2
                    && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-                   && *src_len >= srcbuf_need_len);
+                   && *plain_len >= srcbuf_need_len);
         if (sub_key == nullptr
-            || src_buf == nullptr
+            || plain_buf == nullptr
             || cipher_buf == nullptr
             || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
             || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-            || *src_len < srcbuf_need_len)
+            || *plain_len < srcbuf_need_len)
         {
             ZCE_LOG(RS_ERROR, "Fun[%s] sub_key[%p] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
                     __ZCE_FUNC__,
                     sub_key,
                     cipher_buf,
                     cipher_len,
-                    src_buf,
-                    *src_len,
+                    plain_buf,
+                    *plain_len,
                     srcbuf_need_len
             );
             return -1;
         }
 
-        unsigned char* write_ptr = src_buf;
+        unsigned char* write_ptr = plain_buf;
         const unsigned char* xor_ptr = cipher_buf;
         const unsigned char* read_ptr = (cipher_buf + ENCRYPT_STRATEGY::BLOCK_SIZE);
         size_t remain_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -608,14 +608,14 @@ public:
         }
 
         //看最后pid了几个字节,而且这些pid的字节应该都是这个值。
-        size_t pid_len = src_buf[srcbuf_need_len - 1];
+        size_t pid_len = plain_buf[srcbuf_need_len - 1];
         if (pid_len > ENCRYPT_STRATEGY::BLOCK_SIZE)
         {
             return -1;
         }
         for (size_t i = 1; i <= pid_len; ++i)
         {
-            if (pid_len != src_buf[srcbuf_need_len - i])
+            if (pid_len != plain_buf[srcbuf_need_len - i])
             {
                 ZCE_LOG(RS_ERROR, "Fun[%s] pid data fill error.", __ZCE_FUNC__);
                 return -1;
@@ -625,7 +625,7 @@ public:
         //检查0校验
         for (size_t j = 1; j <= sizeof(uint32_t); ++j)
         {
-            if ('\0' != src_buf[srcbuf_need_len - pid_len - j])
+            if ('\0' != plain_buf[srcbuf_need_len - pid_len - j])
             {
                 ZCE_LOG(RS_ERROR, "Fun[%s] zero data verify error.", __ZCE_FUNC__);
                 return -1;
@@ -633,7 +633,7 @@ public:
         }
 
         //原文实际长度
-        *src_len = srcbuf_need_len - pid_len - sizeof(uint32_t);
+        *plain_len = srcbuf_need_len - pid_len - sizeof(uint32_t);
         return 0;
     }
 
