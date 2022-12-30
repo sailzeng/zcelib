@@ -328,6 +328,18 @@ public:
 };
 
 //=====================================================================================================
+//MD4的处理策略类，主要是实现算法，不用直接使用，
+class hash_md4 : public zce::hashfun_block64<16, true, hash_md4>
+{
+public:
+
+    static void initialize(context* ctx);
+
+    static void process_block(uint32_t state[HASH_RESULT_SIZE / 4],
+                              const uint32_t block[PROCESS_BLOCK_SIZE / 4]);
+};
+
+//=====================================================================================================
 //MD5的处理策略类，主要是实现算法，不用直接使用，
 //本来是希望用protected和friends 友元避免外部能感知这些函数的，但友元对对模版的支持还不够，我只能public了
 class hash_md5 : public zce::hashfun_block64<16, true, hash_md5>

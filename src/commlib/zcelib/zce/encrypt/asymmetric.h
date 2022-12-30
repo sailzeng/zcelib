@@ -8,8 +8,12 @@ enum class RSA_PADDING
 {
     //! NOPADDING，理论上只能对文本加密，因为最后一个BLOCK padding的是0，
     //! 如果您的明文中也有0x0，又正好在最后一个分组，会导致识别错误。
+    //!
     NOPADDING,
+    //!
     PKCS1PADDING,
+    //! 最优非对称加密填充（英语：Optimal Asymmetric Encryption Padding，缩写：OAEP）
+    //! https://www.rfc-editor.org/rfc/rfc2437
     OAEPPADDING
 };
 
@@ -130,6 +134,12 @@ public:
                         unsigned char* plain_buf,
                         size_t* plain_len)
     {
+        return decrypt_i(padding,
+                         KEY_TYPE::KEY_PRIVATE,
+                         plain_buf,
+                         plain_len,
+                         cipher_buf,
+                         cipher_len);
     }
     int public_decrypt(RSA_PADDING padding,
                        const unsigned char* cipher_buf,
@@ -137,10 +147,16 @@ public:
                        unsigned char* plain_buf,
                        size_t* plain_len)
     {
+        return decrypt_i(padding,
+                         KEY_TYPE::KEY_PUBLIC,
+                         plain_buf,
+                         plain_len,
+                         cipher_buf,
+                         cipher_len);
     }
 
 protected:
-    //!
+    //! 加密内部实现
     int encrypt_i(RSA_PADDING padding,
                   KEY_TYPE kt,
                   const unsigned char* plain_buf,
@@ -163,7 +179,7 @@ protected:
             else if (padding == RSA_PADDING::PKCS1PADDING)
             {
                 encrypt_ecb_pkcs1padding(kt, read_ptr, remain_len, write_ptr);
-                read_block_size = PKCS1_BLOCK_SIZE;
+                read_block_size = PKCS1_VALID_SIZE;
             }
             else if (padding == RSA_PADDING::OAEPPADDING)
             {
@@ -230,7 +246,7 @@ protected:
             key = &e_;
             block_in[1] = 0x2;
         }
-        if (remain_len >= PKCS1_BLOCK_SIZE)
+        if (remain_len >= PKCS1_VALID_SIZE)
         {
             padding_len = 8;
         }
@@ -271,7 +287,7 @@ protected:
     {
     }
 
-    //!
+    //! 解密
     int decrypt_i(RSA_PADDING padding,
                   KEY_TYPE kt,
                   const unsigned char* cipher_buf,
@@ -309,7 +325,7 @@ protected:
         }
         return 0;
     }
-    //!
+    //! nopadding编码，对一个数据快解密
     void decrypt_ecb_nopadding(KEY_TYPE kt,
                                const unsigned char* read_ptr,
                                ssize_t remain_len,
@@ -350,7 +366,7 @@ protected:
             ::memcpy(write_ptr, block_out + i, write_len);
         }
     }
-    //!
+    //! pkcs1padding编码，对一个数据快解密
     void decrypt_ecb_pkcs1padding(KEY_TYPE kt,
                                   const unsigned char* read_ptr,
                                   ssize_t remain_len,
@@ -375,8 +391,8 @@ protected:
         {
             ::memcpy(write_ptr,
                      block_out + PKCS1_HEAD_SIZE,
-                     PKCS1_BLOCK_SIZE);
-            write_len = PKCS1_BLOCK_SIZE;
+                     PKCS1_VALID_SIZE);
+            write_len = PKCS1_VALID_SIZE;
         }
         else
         {
@@ -396,6 +412,7 @@ protected:
             ::memcpy(write_ptr, block_out + i + 1, write_len);
         }
     }
+    //! oaeppadding编码，对一个数据快解密
     void decrypt_ecb_oaeppadding(KEY_TYPE kt,
                                  const unsigned char* read_ptr,
                                  ssize_t remain_len,
@@ -405,18 +422,25 @@ protected:
     }
 public:
 
-    //算法一次处理一个BLOCK的长度
+    //! 算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = L / 8;
-    //
+
+    //! PKCS1的头部是11个字节
     const static size_t PKCS1_HEAD_SIZE = 11;
-    //
-    const static size_t PKCS1_BLOCK_SIZE = BLOCK_SIZE - PKCS1_HEAD_SIZE;
-    //算法质数的长度
+    //! PKCS1的有效长度
+    const static size_t PKCS1_VALID_SIZE = BLOCK_SIZE - PKCS1_HEAD_SIZE;
+
+    //! OAEP头部的长度，sHA1用20个字节，20*2+2，不是有点浪费呀。
+    const static size_t OAEP_HEAD_SIZE = 42;
+    //! OAEP最大负载长度
+    const static size_t OAEP_VALID_SIZE = BLOCK_SIZE - OAEP_HEAD_SIZE;
+
+    //! 算法质数的长度
     const static size_t KEY_SIZE = L / 8;
-    //算法KEY的长度
+    //! 算法KEY的长度
     const static size_t KEY_BITS = L / 8;
 
-    //算法生成2个质数的长度
+    //! 算法生成2个质数的长度
     const static size_t PRIME_SIZE = L / 8 / 2;
 
 protected:
@@ -430,7 +454,7 @@ protected:
     bignumber ol_;
 };
 
-typedef rsa<512> rsa512;
+typedef rsa<512>  rsa512;
 typedef rsa<1024> rsa1024;
 typedef rsa<2048> rsa2048;
 }

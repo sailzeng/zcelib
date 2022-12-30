@@ -3,11 +3,126 @@
 #include "zce/os_adapt/string.h"
 #include "zce/bytes/hash_value.h"
 
+namespace zce
+{
+//================================================================================================
+//MD4的算法
+
+//初始化MD4的context，内容
+void hash_md4::initialize(context* ctx)
+{
+    ctx->length_ = 0;
+    ctx->unprocessed_ = 0;
+
+    /* initialize state */
+    ctx->hash_[0] = 0x67452301;
+    ctx->hash_[1] = 0xefcdab89;
+    ctx->hash_[2] = 0x98badcfe;
+    ctx->hash_[3] = 0x10325476;
+}
+
+#define MD4_F(x, y, z) ((((y) ^ (z)) & (x)) ^ (z))
+#define MD4_G(x, y, z) (((x) & (y)) | ((x) & (z)) | ((y) & (z)))
+#define MD4_H(x, y, z) ((x) ^ (y) ^ (z))
+
+/* transformations for rounds 1, 2, and 3. */
+#define MD4_ROUND1(a, b, c, d, x, s) { \
+	(a) += MD4_F((b), (c), (d)) + (x); \
+	(a) = ZCE_ROTL32((a), (s)); \
+}
+#define MD4_ROUND2(a, b, c, d, x, s) { \
+	(a) += MD4_G((b), (c), (d)) + (x) + 0x5a827999; \
+	(a) = ZCE_ROTL32((a), (s)); \
+}
+#define MD4_ROUND3(a, b, c, d, x, s) { \
+	(a) += MD4_H((b), (c), (d)) + (x) + 0x6ed9eba1; \
+	(a) = ZCE_ROTL32((a), (s)); \
+}
+
+void hash_md4::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
+                             const uint32_t block[PROCESS_BLOCK_SIZE / 4])
+{
+    uint32_t a, b, c, d;
+    const uint32_t* x = nullptr;
+    a = state[0];
+    b = state[1];
+    c = state[2];
+    d = state[3];
+
+    //MD5的代码用的会比较多，追求极致速度了，
+#if ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE
+    //小头序下,假设是x86,x64，不考虑对齐的麻烦，直接上，
+    //当然如果不是对其环境,理论上转换一次对齐也许更快
+    x = block;
+#else
+    //注意下面的转换同时也避免了对齐偏移的拷贝问题
+    uint32_t  wblock[PROCESS_BLOCK_SIZE / 4];
+    endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
+    x = wblock;
+#endif
+
+    MD4_ROUND1(a, b, c, d, x[0], 3);
+    MD4_ROUND1(d, a, b, c, x[1], 7);
+    MD4_ROUND1(c, d, a, b, x[2], 11);
+    MD4_ROUND1(b, c, d, a, x[3], 19);
+    MD4_ROUND1(a, b, c, d, x[4], 3);
+    MD4_ROUND1(d, a, b, c, x[5], 7);
+    MD4_ROUND1(c, d, a, b, x[6], 11);
+    MD4_ROUND1(b, c, d, a, x[7], 19);
+    MD4_ROUND1(a, b, c, d, x[8], 3);
+    MD4_ROUND1(d, a, b, c, x[9], 7);
+    MD4_ROUND1(c, d, a, b, x[10], 11);
+    MD4_ROUND1(b, c, d, a, x[11], 19);
+    MD4_ROUND1(a, b, c, d, x[12], 3);
+    MD4_ROUND1(d, a, b, c, x[13], 7);
+    MD4_ROUND1(c, d, a, b, x[14], 11);
+    MD4_ROUND1(b, c, d, a, x[15], 19);
+
+    MD4_ROUND2(a, b, c, d, x[0], 3);
+    MD4_ROUND2(d, a, b, c, x[4], 5);
+    MD4_ROUND2(c, d, a, b, x[8], 9);
+    MD4_ROUND2(b, c, d, a, x[12], 13);
+    MD4_ROUND2(a, b, c, d, x[1], 3);
+    MD4_ROUND2(d, a, b, c, x[5], 5);
+    MD4_ROUND2(c, d, a, b, x[9], 9);
+    MD4_ROUND2(b, c, d, a, x[13], 13);
+    MD4_ROUND2(a, b, c, d, x[2], 3);
+    MD4_ROUND2(d, a, b, c, x[6], 5);
+    MD4_ROUND2(c, d, a, b, x[10], 9);
+    MD4_ROUND2(b, c, d, a, x[14], 13);
+    MD4_ROUND2(a, b, c, d, x[3], 3);
+    MD4_ROUND2(d, a, b, c, x[7], 5);
+    MD4_ROUND2(c, d, a, b, x[11], 9);
+    MD4_ROUND2(b, c, d, a, x[15], 13);
+
+    MD4_ROUND3(a, b, c, d, x[0], 3);
+    MD4_ROUND3(d, a, b, c, x[8], 9);
+    MD4_ROUND3(c, d, a, b, x[4], 11);
+    MD4_ROUND3(b, c, d, a, x[12], 15);
+    MD4_ROUND3(a, b, c, d, x[2], 3);
+    MD4_ROUND3(d, a, b, c, x[10], 9);
+    MD4_ROUND3(c, d, a, b, x[6], 11);
+    MD4_ROUND3(b, c, d, a, x[14], 15);
+    MD4_ROUND3(a, b, c, d, x[1], 3);
+    MD4_ROUND3(d, a, b, c, x[9], 9);
+    MD4_ROUND3(c, d, a, b, x[5], 11);
+    MD4_ROUND3(b, c, d, a, x[13], 15);
+    MD4_ROUND3(a, b, c, d, x[3], 3);
+    MD4_ROUND3(d, a, b, c, x[11], 9);
+    MD4_ROUND3(c, d, a, b, x[7], 11);
+    MD4_ROUND3(b, c, d, a, x[15], 15);
+
+    state[0] += a;
+    state[1] += b;
+    state[2] += c;
+    state[3] += d;
+
+    return;
+}
+
 //================================================================================================
 //MD5的算法
 
-namespace zce
-{
 //初始化MD5的context，内容
 void hash_md5::initialize(context* ctx)
 {
@@ -189,7 +304,7 @@ void hash_sha1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 
     for (t = 0; t < 20; t++)
     {
-        /* the following is faster than ((B & C) | ((~B) & D)) */
+        /* the following is faster than ((b & c) | ((~b) & d)) */
         temp = ZCE_ROTL32(a, 5) + (((c ^ d) & b) ^ d)
             + e + wblock[t] + 0x5A827999;
         e = d;
