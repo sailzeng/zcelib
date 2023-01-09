@@ -1,7 +1,4 @@
-#ifndef ZCE_BYTES_BASE_H_
-#define ZCE_BYTES_BASE_H_
-
-#include "zce/predefine.h"
+#pragma once
 
 //==================================================================================================
 
@@ -471,4 +468,14 @@ union ZDOUBLE_UNION
 #define ZCE_U64_OR_3(v_a,v_b,v_c) (static_cast<uint64_t>(v_a) | static_cast<uint64_t>(v_b) | static_cast<uint64_t>(v_c))
 #endif
 
-#endif
+namespace zce
+{
+void bytes_xor(char* a,
+               const char* b,
+               const char * c,
+               size_t len);
+
+void bytes_xor(const char* a,
+               const char* b,
+               size_t len);
+}

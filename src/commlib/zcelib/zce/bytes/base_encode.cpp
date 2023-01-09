@@ -190,7 +190,7 @@ int zce::base16_encode(const char* in,
     return 0;
 }
 
-//BASE64的解码
+//BASE16的解码
 int zce::base16_decode(const char* in,
                        size_t in_len,
                        char* out,
