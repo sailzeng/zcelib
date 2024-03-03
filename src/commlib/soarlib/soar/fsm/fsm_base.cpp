@@ -13,7 +13,7 @@ namespace soar
 fsm_base::fsm_base(fsm_manager* pmngr,
                    uint32_t create_cmd,
                    bool trans_locker) :
-    zce::async_fsm(pmngr, create_cmd),
+    zce::async::fsm(pmngr, create_cmd),
     trans_manager_(pmngr),
     trans_locker_(trans_locker)
 {

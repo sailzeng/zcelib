@@ -18,31 +18,31 @@
 #ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
 #define ZCE_LIB_ASYNC_FRAMEWORK_FSM_
 
-#include "zce/async/async_base.h"
+#include "zce/async/actor.h"
 
 //====================================================================================
 
-namespace zce
+namespace zce::async
 {
 /*!
 * @brief      状态机对象
 */
-class async_fsm : public async_object
+class fsm : public actor
 {
-    friend class async_fsmmgr;
+    friend class fsmmgr;
 
 public:
     /*!
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    async_fsm(zce::async_obj_mgr* async_mgr,
-              uint32_t create_cmd);
+    fsm(zce::async::manager* async_mgr,
+        uint32_t create_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~async_fsm();
+    ~fsm();
 
     /*!
     * @brief      状态机运行处理，继承zce::Async_Object的函数，此函数仅仅用于作为例子进行参考，
@@ -82,13 +82,13 @@ protected:
 * @brief      状态机主控管理类
 *
 */
-class async_fsmmgr : public zce::async_obj_mgr
+class fsmmgr : public zce::async::manager
 {
 public:
 
     //
-    async_fsmmgr();
-    virtual ~async_fsmmgr();
+    fsmmgr();
+    virtual ~fsmmgr();
 
 protected:
 

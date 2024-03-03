@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zce/async/async_base.h"
+#include "zce/async/actor.h"
 #include "zce/script/lua_tie.h"
 
 //====================================================================================
@@ -10,7 +10,7 @@ namespace zce
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class async_luathead : public zce::async_object
+class async_luathead : public zce::async::actor
 {
     friend class async_luathead_mgr;
 
@@ -19,7 +19,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    async_luathead(zce::async_obj_mgr* async_mgr,
+    async_luathead(zce::async::manager* async_mgr,
                    uint32_t reg_cmd);
 protected:
     /*!
@@ -73,7 +73,7 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class async_luathead_mgr : public zce::async_obj_mgr
+class async_luathead_mgr : public zce::async::manager
 {
 public:
 

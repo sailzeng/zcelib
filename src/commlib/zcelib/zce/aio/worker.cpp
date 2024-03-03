@@ -38,7 +38,7 @@ int worker::initialize(size_t work_thread_num,
     aio_obj_pool_.initialize<zce::aio::SOCKET_TIMEOUT_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::EVENT_ATOM>(128, 256);
     aio_obj_pool_.initialize<zce::aio::TIMER_ATOM>(128, 256);
-    reactor_ = new reactor_mini();
+    reactor_ = new reactor();
     ret = reactor_->initialize(max_event_num, 1024, true);
     if (ret != 0)
     {

@@ -7,9 +7,9 @@ namespace zce
 {
 //========================================================================================
 
-async_luathead::async_luathead(zce::async_obj_mgr* async_mgr,
+async_luathead::async_luathead(zce::async::manager* async_mgr,
                                uint32_t reg_cmd) :
-    zce::async_object(async_mgr, reg_cmd)
+    zce::async::actor(async_mgr, reg_cmd)
 {
 }
 
@@ -20,7 +20,7 @@ async_luathead::~async_luathead()
 //初始化协程的对象
 int async_luathead::initialize()
 {
-    zce::async_object::initialize();
+    zce::async::actor::initialize();
     auto luathread_mgr = static_cast <async_luathead_mgr*>(async_mgr_);
     mgr_lua_tie_ = luathread_mgr->mgr_lua_tie();
     mgr_lua_tie_->new_thread(&lua_thread_);
@@ -32,7 +32,7 @@ int async_luathead::initialize()
 //清理协程对象
 void async_luathead::terminate()
 {
-    zce::async_object::terminate();
+    zce::async::actor::terminate();
     mgr_lua_tie_->del_thread(&lua_thread_);
     return;
 }
@@ -95,7 +95,7 @@ void async_luathead::on_timeout(const zce::time_value& /*now_time*/,
 
 //携程主控管理类
 async_luathead_mgr::async_luathead_mgr() :
-    zce::async_obj_mgr()
+    zce::async::manager()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;

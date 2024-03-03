@@ -203,12 +203,13 @@ int test_big_uint1024(int /*argc*/, char* /*argv*/[])
 {
     zce::random_mt19937   mt19937_gen((unsigned int)time(NULL));
 
-    zce::big_uint<256> a, b, c, d;
+    zce::big_uint<256> a, b, c, d, e;
     zce::big_uint<256> w, x, y, z;
 
     c.assign(4, 0x3F787645, 0xAE9E2035, 0xEB9E13DC, 0x97FF30F1);
     a.assign((uint32_t)0x32341342);
-    b = c - 1;
+    e.assign((uint32_t)1);
+    b = c - e;
     d = zce::big_uint<256>::mod_exp(a, b, c);
     d.print();
 
@@ -227,12 +228,12 @@ int test_big_uint1024(int /*argc*/, char* /*argv*/[])
 
     c.assign(1, 97);
     a.assign((uint32_t)13);
-    b = c - 1;
+    b = c - e;
     d = zce::big_uint<256>::mod_exp(a, b, c);
 
     c.assign(2, 0xAAAAAAAB, 0x2AA);
     a.assign((uint32_t)13);
-    b = c - 1;
+    b = c - e;
     d = zce::big_uint<256>::mod_exp(a, b, c);
 
     if (b.isprime(mt19937_gen, 10))
@@ -546,7 +547,7 @@ int test_random_distribution(zce::random_base* rand_gen)
             conflict_count++;
         }
 
-        coverage_chart[u32_data % TEST_SIZE] ++;
+        coverage_chart[u32_data % TEST_SIZE]++;
     }
 
     std::cout << typeid(rand_gen).name() << " non repeat :" << TEST_SIZE - conflict_count << " conflict count :" << conflict_count << std::endl;
@@ -582,7 +583,7 @@ int test_random_distribution2()
 
         if (coverage_chart[u32_data % TEST_SIZE] == 0)
         {
-            coverage_chart[u32_data % TEST_SIZE] ++;
+            coverage_chart[u32_data % TEST_SIZE]++;
             ++non_repeat_size;
 
             if (non_repeat_size >= TEST_SIZE)
@@ -671,7 +672,7 @@ int test_random_variance(const char* rand_fun_name,
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         u32_data = rand_gen->rand();
-        coverage_chart[u32_data % TEST_SIZE] ++;
+        coverage_chart[u32_data % TEST_SIZE]++;
     }
 
     for (size_t j = 0; j < TEST_SIZE; ++j)
@@ -716,7 +717,7 @@ int test_random_variance_t()
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         u32_data = rand_gen.rand();
-        coverage_chart[u32_data % TEST_SIZE] ++;
+        coverage_chart[u32_data % TEST_SIZE]++;
     }
 
     for (size_t j = 0; j < TEST_SIZE; ++j)
@@ -762,7 +763,7 @@ int test_die_variance_t()
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         u32_data = rand_gen.rand();
-        coverage_chart[u32_data % TEST_SIZE] ++;
+        coverage_chart[u32_data % TEST_SIZE]++;
     }
 
     for (size_t j = 0; j < TEST_SIZE; ++j)
@@ -787,7 +788,7 @@ int test_die_variance_t()
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         u32_data = (rand_gen.rand() % 10000) / 1000;
-        coverage_chart[u32_data] ++;
+        coverage_chart[u32_data]++;
     }
 
     for (size_t j = 0; j < TEST_SIZE; ++j)

@@ -2,16 +2,17 @@
 
 #include "zce/os_adapt/define.h"
 
-namespace zce
+namespace zce::aio
 {
-typedef std::function <int(ZCE_HANDLE socket, RECTOR_EVENT event,
+typedef
+std::function <int(ZCE_HANDLE socket, RECTOR_EVENT event,
     bool connect_succ)> event_callback_t;
 
 /*!
 * @brief      MINI反应器
 *
 */
-class reactor_mini
+class reactor
 {
 protected:
 
@@ -68,11 +69,10 @@ protected:
 public:
 
     /*!
-    * @brief
+    * @brief 构造函数
     */
-    //构造函数
-    reactor_mini() = default;
-    virtual ~reactor_mini() = default;
+    reactor();
+    ~reactor() = default;
 
     /*!
     * @brief      当前反应器容器的句柄数量
@@ -144,22 +144,6 @@ protected:
     void process_ready_event(epoll_event* ep_event);
 #endif
 
-public:
-
-    /*!
-    * @brief      获取单子函数
-    * @return     reactor* 反应器的指针
-    */
-    static reactor_mini* instance();
-    ///清理单子函数
-    static void clear_inst();
-    ///设置单子的函数
-    static void instance(reactor_mini* inst);
-
-protected:
-    ///单子实例指针
-    static reactor_mini* instance_;
-
 protected:
 
     ///存放ZCE_SOCKET对应zce::event_handler *的MAP,方便事件触发的时候，调用zce::event_handler *的函数
@@ -169,7 +153,7 @@ protected:
     size_t       max_event_number_ = 1024;
 
     ///一次触发最大处理的句柄数量
-    size_t       once_max_events_;
+    size_t       once_max_events_ = 512;
 
     ///
     bool         trigger_auto_close_ = true;
@@ -193,14 +177,14 @@ protected:
 
 #elif defined (ZCE_OS_LINUX)
 
-        ///EPOLL自己的文件句柄，最后要关闭之
-    int          epoll_fd_;
+    ///EPOLL自己的文件句柄，最后要关闭之
+    int          epoll_fd_ = INVALID_HANDLE_VALUE;
 
     ///是否使用边界触发，边界触发在代码编写中需要更加啊小心一些
-    bool         edge_triggered_;
+    bool         edge_triggered_ = true;
 
     ///一次触发最大处理的epoll_event数组
-    epoll_event* once_events_ary_;
+    epoll_event* once_events_ary_ = nullptr;
 
 #endif
 };

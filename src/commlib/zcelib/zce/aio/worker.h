@@ -22,8 +22,8 @@
 
 #include "zce/pool/shareptr_pool.h"
 #include "zce/thread/msgque_condi.h"
-#include "zce/event/reactor_mini.h"
 #include "zce/timer/queue_wheel.h"
+#include "zce/aio/reactor.h"
 #include "zce/aio/caller.h"
 
 namespace zce::aio
@@ -106,7 +106,7 @@ protected:
     //! 线程是否继续干活
     bool worker_running_ = true;
 
-    zce::reactor_mini *reactor_ = nullptr;
+    zce::aio::reactor *reactor_ = nullptr;
 
     zce::timer_wheel *timer_queue_ = nullptr;
 

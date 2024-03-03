@@ -52,7 +52,7 @@ class zerg_frame;
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-class  fsm_manager : public zce::async_fsmmgr
+class  fsm_manager : public zce::async::fsmmgr
 {
     //声明友元
     friend class fsm_base;

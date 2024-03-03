@@ -31,6 +31,7 @@ enum class SELECT_EVENT
     SE_EXCEPTION,
 };
 
+//! message queue wait model,
 enum MQW_WAIT_MODEL
 {
     //不用等待，尝试一下

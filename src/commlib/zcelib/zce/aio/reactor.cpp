@@ -2,29 +2,43 @@
 #include "zce/time/time_value.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/socket.h"
-#include "zce/event/reactor_mini.h"
+#include "zce/aio/reactor.h"
 
-namespace zce
+namespace zce::aio
 {
-//
-reactor_mini* reactor_mini::instance_ = nullptr;
+reactor::reactor()
+{
+#if defined (ZCE_OS_WINDOWS)
+    //清0
+    FD_ZERO(&read_fd_set_);
+    FD_ZERO(&write_fd_set_);
+    FD_ZERO(&exception_fd_set_);
+
+    FD_ZERO(&para_read_fd_set_);
+    FD_ZERO(&para_write_fd_set_);
+    FD_ZERO(&para_exception_fd_set_);
+
+#elif defined (ZCE_OS_LINUX)
+
+#endif
+}
 
 //当前反应器容器的句柄数量
-size_t reactor_mini::size()
+size_t reactor::size()
 {
     return event_set_.size();
 }
 
 //当前反应器保留的最大句柄数量，容量
-size_t reactor_mini::max_size()
+size_t reactor::max_size()
 {
     return max_event_number_;
 }
 
 //
-int reactor_mini::initialize(size_t max_event_number,
-                             size_t once_max_events,
-                             bool trigger_auto_close)
+int reactor::initialize(size_t max_event_number,
+                        size_t once_max_events,
+                        bool trigger_auto_close)
 {
     max_event_number_ = max_event_number;
     once_max_events_ = once_max_events;
@@ -49,7 +63,7 @@ int reactor_mini::initialize(size_t max_event_number,
 }
 
 //关闭反应器，将所有注册的EVENT HANDLER 注销掉
-int reactor_mini::close()
+int reactor::close()
 {
     //由于是HASH MAP速度有点慢
     event_call_set_t::iterator iter_temp = event_set_.begin();
@@ -77,9 +91,9 @@ int reactor_mini::close()
 }
 
 //注册一个zce::Event_Handler到反应器
-int reactor_mini::register_event(ZCE_HANDLE handle,
-                                 RECTOR_EVENT event_todo,
-                                 event_callback_t call_back)
+int reactor::register_event(ZCE_HANDLE handle,
+                            RECTOR_EVENT event_todo,
+                            event_callback_t call_back)
 {
     //如果已经大于最大数量，返回错误
     if (event_set_.size() >= max_event_number_)
@@ -156,12 +170,11 @@ int reactor_mini::register_event(ZCE_HANDLE handle,
     return 0;
 }
 
-//从反应器注销一个zce::Event_Handler，同事取消他所有的mask
-//event_mask其实只判断里面的DONT_CALL
-int reactor_mini::remove_event(ZCE_HANDLE handle,
-                               RECTOR_EVENT event_todo)
+//从反应器注销一个ZCE_HANDLE 和 其注册的事件RECTOR_EVENT
+int reactor::remove_event(ZCE_HANDLE handle,
+                          RECTOR_EVENT event_todo)
 {
-    //remove_handler可能会出现两次调用的情况，我推荐你直接调用event_close
+    //remove_event 可能会出现两次调用的情况，
     event_call_set_t::const_iterator find_iter;
     size_t hdl_event_num = 0;
     if (!find_event(handle, event_todo, find_iter, hdl_event_num))
@@ -227,10 +240,10 @@ int reactor_mini::remove_event(ZCE_HANDLE handle,
 }
 
 //通过句柄查询event handler，如果存在返回0
-bool reactor_mini::find_event(ZCE_HANDLE handle,
-                              RECTOR_EVENT event_todo,
-                              event_call_set_t::const_iterator &find_iter,
-                              size_t &hdl_event_num) const
+bool reactor::find_event(ZCE_HANDLE handle,
+                         RECTOR_EVENT event_todo,
+                         event_call_set_t::const_iterator &find_iter,
+                         size_t &hdl_event_num) const
 {
     auto iter_end = event_set_.cend();
     find_iter = iter_end;
@@ -259,9 +272,9 @@ bool reactor_mini::find_event(ZCE_HANDLE handle,
     return found;
 }
 
-//
-int reactor_mini::tiggers_events(zce::time_value* time_out,
-                                 size_t& size_event)
+//触发事件处理
+int reactor::tiggers_events(zce::time_value* time_out,
+                            size_t& size_event)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -335,8 +348,8 @@ int reactor_mini::tiggers_events(zce::time_value* time_out,
 
 #if defined ZCE_OS_WINDOWS
 //处理ready的FD，调用相应的虚函数
-void reactor_mini::process_ready(const fd_set* out_fds,
-                                 SELECT_EVENT proc_event)
+void reactor::process_ready(const fd_set* out_fds,
+                            SELECT_EVENT proc_event)
 {
     int max_process = max_fd_plus_one_;
 
@@ -437,9 +450,9 @@ void reactor_mini::process_ready(const fd_set* out_fds,
 #elif defined (ZCE_OS_LINUX)
 
 //将mask转换为epoll_event结构
-void reactor_mini::make_epoll_event(epoll_event* ep_event,
-                                    ZCE_HANDLE handle,
-                                    RECTOR_EVENT event_todo) const
+void reactor::make_epoll_event(epoll_event* ep_event,
+                               ZCE_HANDLE handle,
+                               RECTOR_EVENT event_todo) const
 {
     ep_event->events = 0;
     ep_event->data.fd = handle;
@@ -472,7 +485,7 @@ void reactor_mini::make_epoll_event(epoll_event* ep_event,
     }
 }
 
-void reactor_mini::process_ready_event(struct epoll_event* ep_event)
+void reactor::process_ready_event(struct epoll_event* ep_event)
 {
     ZCE_HANDLE handle = (ZCE_HANDLE)ep_event->data.fd;
     EVENT_CALL ec((ZCE_HANDLE)handle);
@@ -574,31 +587,4 @@ void reactor_mini::process_ready_event(struct epoll_event* ep_event)
 }
 
 #endif
-
-//得到唯一的单子实例
-reactor_mini* reactor_mini::instance()
-{
-    //这个地方和其他单子函数不同，要先赋值
-    return instance_;
-}
-
-//赋值唯一的单子实例
-void reactor_mini::instance(reactor_mini* inst)
-{
-    clear_inst();
-    instance_ = inst;
-    return;
-}
-
-//清除单子实例
-void reactor_mini::clear_inst()
-{
-    if (instance_)
-    {
-        delete instance_;
-    }
-
-    instance_ = nullptr;
-    return;
-}
 }

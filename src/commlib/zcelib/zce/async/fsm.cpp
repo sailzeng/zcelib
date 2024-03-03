@@ -3,23 +3,23 @@
 #include "zce/os_adapt/error.h"
 #include "zce/logger/logging.h"
 
-namespace zce
+namespace zce::async
 {
 //=====================================================================================
 //状态机的异步对象
-async_fsm::async_fsm(zce::async_obj_mgr* async_mgr,
-                     uint32_t create_cmd) :
-    async_object(async_mgr, create_cmd),
+fsm::fsm(zce::async::manager* async_mgr,
+         uint32_t create_cmd) :
+    actor(async_mgr, create_cmd),
     fsm_stage_(0)
 {
 }
 
-async_fsm::~async_fsm()
+fsm::~fsm()
 {
 }
 
 //状态机运行的代码，这只是一个参考示例
-void async_fsm::on_run(bool first_run, bool& running)
+void fsm::on_run(bool first_run, bool& running)
 {
     enum
     {
@@ -64,8 +64,8 @@ void async_fsm::on_run(bool first_run, bool& running)
 }
 
 //超时处理
-void async_fsm::on_timeout(const zce::time_value& now_time,
-                           bool& continue_run)
+void fsm::on_timeout(const zce::time_value& now_time,
+                     bool& continue_run)
 {
     char time_string[64 + 1];
     ZCE_LOG(RS_INFO, "Time out event ,fun[%s] ,now time[%s].",
@@ -76,13 +76,13 @@ void async_fsm::on_timeout(const zce::time_value& now_time,
 }
 
 //设置的状态机阶段
-void async_fsm::set_stage(int stage)
+void fsm::set_stage(int stage)
 {
     fsm_stage_ = stage;
 }
 
 //取得的状态机阶段
-int async_fsm::get_stage() const
+int fsm::get_stage() const
 {
     return fsm_stage_;
 }
@@ -90,14 +90,14 @@ int async_fsm::get_stage() const
 //=====================================================================================
 
 //状态机主控管理类
-async_fsmmgr::async_fsmmgr() :
-    zce::async_obj_mgr()
+fsmmgr::fsmmgr() :
+    zce::async::manager()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;
 }
 
-async_fsmmgr::~async_fsmmgr()
+fsmmgr::~fsmmgr()
 {
 }
 } //namespace zce

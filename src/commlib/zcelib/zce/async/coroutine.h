@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zce/async/async_base.h"
+#include "zce/async/actor.h"
 
 namespace zce
 {
@@ -95,11 +95,11 @@ struct coro_ret
 };
 /*!
 * @brief      协程对象
-*             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
+*
 */
-class async_coroutine : public zce::async_object
+class coro : public zce::async::actor
 {
-    friend class async_coroutine_mgr;
+    friend class coromgr;
 
     //
     enum class COROUTINE_STATE
@@ -119,13 +119,13 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    async_coroutine(zce::async_obj_mgr* async_mgr,
-                    uint32_t reg_cmd);
+    coro(zce::async::manager* async_mgr,
+         uint32_t reg_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~async_coroutine();
+    ~coro();
 
 public:
 
@@ -181,12 +181,12 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class async_coroutine_mgr : public zce::async_obj_mgr
+class coromgr : public zce::async::manager
 {
 public:
     //
-    async_coroutine_mgr();
-    virtual ~async_coroutine_mgr();
+    coromgr();
+    virtual ~coromgr();
 
 protected:
 

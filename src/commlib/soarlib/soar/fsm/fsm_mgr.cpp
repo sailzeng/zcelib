@@ -36,9 +36,9 @@ int fsm_manager::initialize(zce::timer_queue* timer_queue,
     ZCE_ASSERT(zerg_mmap_pipe != nullptr);
 
     int ret = 0;
-    ret = async_fsmmgr::initialize(timer_queue,
-                                   reg_fsm_num,
-                                   running_fsm_num);
+    ret = fsmmgr::initialize(timer_queue,
+                             reg_fsm_num,
+                             running_fsm_num);
     if (ret != 0)
     {
         return ret;
@@ -103,7 +103,7 @@ void fsm_manager::terminate()
         fake_recv_buffer_ = nullptr;
     }
 
-    async_fsmmgr::terminate();
+    fsmmgr::terminate();
 
     ZCE_TRACE_FILELINE(RS_INFO);
 }

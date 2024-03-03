@@ -29,7 +29,7 @@ namespace soar
 class zerg_frame;
 class svrd_buspipe;
 
-class  fsm_base : public zce::async_fsm
+class  fsm_base : public zce::async::fsm
 {
     friend class fsm_manager;
 

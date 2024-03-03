@@ -722,8 +722,8 @@ public:
             {
                 a = (a + b) % d;
             }
-            b.shift_bits_l(1);
-            b %= d;
+            bb.shift_bits_l(1);
+            bb %= d;
         }
         a;
         return a;
@@ -806,7 +806,7 @@ public:
      * @param engine 随机数引擎
      * @param bits   质数的 bits 数量，必须是32的倍数
      * @param rounds 使用 miller_rabin 判断的质数轮数，轮数越多，概率越高
-     * @param counter 测试的数字数量，
+     * @param [out] counter 测试的数字数量，
     */
     template <class RANDOM_ENGINE>
     void create_prime(RANDOM_ENGINE &engine,

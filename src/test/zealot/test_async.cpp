@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-class FSM_1 : public zce::async_fsm
+class FSM_1 : public zce::async::fsm
 {
 private:
     enum
@@ -14,8 +14,8 @@ private:
     };
 public:
 
-    FSM_1(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
-        async_fsm(async_mgr, create_cmd)
+    FSM_1(zce::async::manager* async_mgr, unsigned int create_cmd) :
+        fsm(async_mgr, create_cmd)
     {
     }
 
@@ -25,9 +25,9 @@ protected:
     }
 
 public:
-    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
+    zce::async::actor* clone(zce::async::manager* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::async_object*>(new FSM_1(async_mgr, create_cmd));
+        return dynamic_cast<zce::async::actor*>(new FSM_1(async_mgr, create_cmd));
     }
 
     virtual void on_run(bool first_run, bool& continue_run)
@@ -66,7 +66,7 @@ public:
     }
 };
 
-class FSM_2 : public zce::async_fsm
+class FSM_2 : public zce::async::fsm
 {
 private:
     enum
@@ -80,8 +80,8 @@ private:
     };
 
 public:
-    FSM_2(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
-        async_fsm(async_mgr, create_cmd)
+    FSM_2(zce::async::manager* async_mgr, unsigned int create_cmd) :
+        fsm(async_mgr, create_cmd)
     {
     }
 protected:
@@ -89,9 +89,9 @@ protected:
     {
     }
 public:
-    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
+    zce::async::actor* clone(zce::async::manager* async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<zce::async_object*>(new FSM_2(async_mgr, create_cmd));
+        return dynamic_cast<zce::async::actor*>(new FSM_2(async_mgr, create_cmd));
     }
 
     virtual void on_run(bool first_run, bool& continue_run)
@@ -139,7 +139,7 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     const unsigned int CMD_3 = 10003;
 
     zce::timer_queue* time_queue = new zce::timer_wheel();
-    zce::async_fsmmgr* mgr = new zce::async_fsmmgr();
+    zce::async::fsmmgr* mgr = new zce::async::fsmmgr();
     mgr->initialize(time_queue, 100, 200);
     mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
     mgr->register_asyncobj(CMD_2, new FSM_2(mgr, CMD_2));
@@ -169,17 +169,17 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-//class Coroutine_1 : public zce::async_coroutine
+//class Coroutine_1 : public zce::coro
 //{
 //public:
-//    Coroutine_1(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
-//        zce::async_coroutine(async_mgr, create_cmd)
+//    Coroutine_1(zce::manager* async_mgr, unsigned int create_cmd) :
+//        zce::coro(async_mgr, create_cmd)
 //    {
 //    }
 //
-//    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
+//    zce::actor* clone(zce::manager* async_mgr, unsigned int create_cmd)
 //    {
-//        return dynamic_cast<zce::async_object*>(new Coroutine_1(async_mgr, create_cmd));
+//        return dynamic_cast<zce::actor*>(new Coroutine_1(async_mgr, create_cmd));
 //    }
 //
 //    ///协程运行,你要重载的函数
@@ -195,17 +195,17 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
 //    }
 //};
 //
-//class Coroutine_2 : public zce::async_coroutine
+//class Coroutine_2 : public zce::coro
 //{
 //public:
-//    Coroutine_2(zce::async_obj_mgr* async_mgr, unsigned int create_cmd) :
-//        zce::async_coroutine(async_mgr, create_cmd)
+//    Coroutine_2(zce::manager* async_mgr, unsigned int create_cmd) :
+//        zce::coro(async_mgr, create_cmd)
 //    {
 //    }
 //
-//    zce::async_object* clone(zce::async_obj_mgr* async_mgr, unsigned int create_cmd)
+//    zce::actor* clone(zce::manager* async_mgr, unsigned int create_cmd)
 //    {
-//        return dynamic_cast<zce::async_object*>(new Coroutine_2(async_mgr, create_cmd));
+//        return dynamic_cast<zce::actor*>(new Coroutine_2(async_mgr, create_cmd));
 //    }
 //
 //    virtual void coroutine_run()
@@ -229,7 +229,7 @@ int test_async_fsm(int  /*argc*/, char* /*argv*/[])
 //    //const unsigned int CMD_3 = 10003;
 //
 //    zce::Timer_Queue* time_queue = new zce::Timer_Wheel();
-//    zce::async_coroutine_mgr* mgr = new zce::async_coroutine_mgr();
+//    zce::coromgr* mgr = new zce::coromgr();
 //    mgr->initialize(time_queue, 100, 2000);
 //    mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));
 //    mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));

@@ -7,20 +7,20 @@ namespace zce
 {
 //========================================================================================
 
-async_coroutine::async_coroutine(zce::async_obj_mgr* async_mgr,
-                                 uint32_t reg_cmd) :
-    zce::async_object(async_mgr, reg_cmd)
+coro::coro(zce::async::manager* async_mgr,
+           uint32_t reg_cmd) :
+    zce::async::actor(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
 }
 
-async_coroutine::~async_coroutine()
+coro::~coro()
 {
 }
 
 //调用协程
-void async_coroutine::on_run(bool first_run,
-                             bool& continue_run)
+void coro::on_run(bool first_run,
+                  bool& continue_run)
 {
     continue_run = true;
     int ret = 0;
@@ -53,8 +53,8 @@ void async_coroutine::on_run(bool first_run,
 }
 
 //调用协程
-void async_coroutine::on_timeout(const zce::time_value& /*now_time*/,
-                                 bool& continued)
+void coro::on_timeout(const zce::time_value& /*now_time*/,
+                      bool& continued)
 {
     continued = false;
     coroutine_state_ = COROUTINE_STATE::TIMEOUT;
@@ -76,7 +76,7 @@ void async_coroutine::on_timeout(const zce::time_value& /*now_time*/,
 }
 
 //等待time_out 时间后超时，设置定时器后，
-int async_coroutine::waitfor_timeout(const zce::time_value& time_out)
+int coro::waitfor_timeout(const zce::time_value& time_out)
 {
     int ret = 0;
     ret = set_timeout(time_out);
@@ -90,14 +90,14 @@ int async_coroutine::waitfor_timeout(const zce::time_value& time_out)
 //=====================================================================================
 
 //携程主控管理类
-async_coroutine_mgr::async_coroutine_mgr() :
-    zce::async_obj_mgr()
+coromgr::coromgr() :
+    zce::async::manager()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;
 }
 
-async_coroutine_mgr::~async_coroutine_mgr()
+coromgr::~coromgr()
 {
 }
 }

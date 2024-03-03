@@ -215,7 +215,7 @@
     <ClCompile Include="zce\socket\connector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\async\async_base.cpp">
+    <ClCompile Include="zce\async\actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\async\coroutine.cpp">
@@ -347,9 +347,6 @@
     <ClCompile Include="zce\buffer\queue_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\event\reactor_mini.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\pool\chunk_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -366,6 +363,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\bytes\bytes_common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\aio\reactor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -622,7 +622,7 @@
     <ClInclude Include="zce\socket\connector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\async\async_base.h">
+    <ClInclude Include="zce\async\actor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\async\coroutine.h">
@@ -808,9 +808,6 @@
     <ClInclude Include="zce\buffer\queue_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\event\reactor_mini.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\pool\dataptr_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -845,6 +842,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\encrypt\asymmetric.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\aio\reactor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
