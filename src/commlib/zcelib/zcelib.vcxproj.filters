@@ -98,9 +98,6 @@
     <ClCompile Include="zce\time\progress_timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\command.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\mysql\connect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -455,9 +452,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\time\progress_timer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\mysql\command.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\mysql\connect.h">
@@ -845,6 +839,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\aio\reactor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\db\database.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\db\db_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

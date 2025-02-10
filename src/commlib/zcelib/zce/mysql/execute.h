@@ -19,7 +19,6 @@
 #if defined ZCE_USE_MYSQL
 
 #include "zce/mysql/connect.h"
-#include "zce/mysql/command.h"
 
 namespace zce::mysql
 {
@@ -63,13 +62,11 @@ public:
     /*!
     * @brief      用于非SELECT语句(INSERT,UPDATE)，
     * @return     int
-    * @param      sql
-    * @param      sql_len SQL语句长度
-    * @param      num_affect 返回的收到影响的记录条数
+    * @param      sql SQL语句
+    * @param      num_affect  返回参数,返回的查询的记录个数
     * @param      insert_id  返回的插入的LAST_INSERT_ID
     */
-    int query(const char* sql,
-              size_t sql_len,
+    int query(std::string_view sql,
               uint64_t& num_affect,
               uint64_t& insert_id);
 
@@ -77,13 +74,11 @@ public:
     * @brief      执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
     * @return     int
     * @param      sql  SQL语句
-    * @param      sql_len
     * @param      num_affect  返回参数,返回的查询的记录个数
     * @param      db_result  返回参数,查询的结果集合
     * @note       几个query函数连接周期不会关闭链接,zce::mysql::Connect对象再析构时断链接
     */
-    int query(const char* sql,
-              size_t sql_len,
+    int query(std::string_view sql,
               uint64_t& num_affect,
               zce::mysql::result& db_result);
 
@@ -91,12 +86,10 @@ public:
     * @brief      用于SELECT语句,用于use_result得到结果集合的方法
     * @return     int
     * @param      sql SQL语句
-    * @param      sql_len SQL语句长度
     * @param      db_result 返回的结果结合
     * @note       用于结果集太多,会占用太多内存的的处理,需要一个个取结果,不推荐使用,
     */
-    int query(const char* sql,
-              size_t sql_len,
+    int query(std::string_view sql,
               zce::mysql::result& db_result);
 
     ///得到MYSQL定义的错误返回
@@ -107,9 +100,6 @@ public:
     const char* error_message();
     ///DB返回的错误ID
     unsigned int error_id();
-
-    ///得到DB访问的语句
-    const char* get_query_sql(void);
 
     ///得到Real Escape String ,Real表示根据当前的MYSQL Connet的字符集,得到Escape String
     ///Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
@@ -134,9 +124,6 @@ protected:
 
     ///MYSQL数据库连接对象
     ::zce::mysql::connect db_connect_;
-
-    ///MYSQL命令执行对象
-    zce::mysql::command db_command_;
 };
 } //namespace
 
@@ -154,22 +141,19 @@ void disconnect(zce::mysql::connect* db_connect);
 
 //!查询，非SELECT语句
 int query(zce::mysql::connect* db_connect,
-          const char* sql,
-          size_t sql_len,
+          std::string_view sql,
           uint64_t* num_affect,
           uint64_t* insert_id);
 
 //!查询，SELECT语句
 int query(zce::mysql::connect* db_connect,
-          const char* sql,
-          size_t sql_len,
+          std::string_view sql,
           uint64_t* num_affect,
           zce::mysql::result* db_result);
 
 //!查询,SELECT语句，用USE result的方式进行查询
 int query(zce::mysql::connect* db_connect,
-          const char* sql,
-          size_t sql_len,
+          std::string_view sql,
           zce::mysql::result* db_result);
 } //namespace zce::mysql::exe
 

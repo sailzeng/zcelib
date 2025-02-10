@@ -15,8 +15,7 @@
 *
 */
 
-#ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
-#define ZCE_LIB_ASYNC_FRAMEWORK_FSM_
+#pragma once
 
 #include "zce/async/actor.h"
 
@@ -29,7 +28,7 @@ namespace zce::async
 */
 class fsm : public actor
 {
-    friend class fsmmgr;
+    friend class fsm_mgr;
 
 public:
     /*!
@@ -37,7 +36,7 @@ public:
     * @param      async_mgr ,协程异步管理器的指针
     */
     fsm(zce::async::manager* async_mgr,
-        uint32_t create_cmd);
+         uint32_t create_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -56,7 +55,7 @@ protected:
     * @param[out] continue_run 异步对象是否继续运行,
     */
     virtual void on_timeout(const zce::time_value& now_time,
-                            bool& running) override;
+                            bool& continue_run) override;
 
     /*!
     * @brief      设置的状态机阶段，
@@ -82,13 +81,13 @@ protected:
 * @brief      状态机主控管理类
 *
 */
-class fsmmgr : public zce::async::manager
+class fsm_mgr : public zce::async::manager
 {
 public:
 
     //
-    fsmmgr();
-    virtual ~fsmmgr();
+    fsm_mgr();
+    virtual ~fsm_mgr();
 
 protected:
 
@@ -98,5 +97,3 @@ protected:
     static const size_t FSM_POOL_EXTEND_SIZE = 256;
 };
 }
-
-#endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_

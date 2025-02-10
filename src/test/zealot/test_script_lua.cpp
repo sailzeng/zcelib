@@ -21,7 +21,7 @@ int add3_fun(int a, int b, int c)
 //测试两边函数的互相调用
 int test_lua_script1(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
 
     lua_tie.reg_gfunc("add2_fun", add2_fun);
@@ -54,7 +54,7 @@ int test_lua_script2(int, char*[])
         g_array[k] = static_cast<int>(k + 1);
     }
 
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
 
     //绑定引用和指针之前，要注册这个类
@@ -168,7 +168,7 @@ public:
 
 int test_lua_script3(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
     lua_tie.reg_class<T3A>("T3A", false);
     lua_tie.class_mem_var<T3A>("a_", &T3A::a_);
@@ -250,7 +250,7 @@ int test_lua_script3(int, char*[])
 
 int test_lua_script4(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
 
     //
@@ -292,7 +292,7 @@ enum TO_LUA_ENUM
 //展现table的几种使用方式
 int test_lua_script5(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
     int array_a[100];
     for (size_t i = 0; i < 100; ++i)
@@ -395,7 +395,7 @@ public:
 //测试Lua Thread 协程
 int test_lua_script6(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
 
     //请注意这个地方，注册函数用的是reg_yeild_gfun，这样thread_func执行
@@ -407,7 +407,7 @@ int test_lua_script6(int, char*[])
         mem_yield_fun("thread_men_fun", &Test_Thread_Class::thread_men_fun).
         mem_yield_fun("thread_men_fun2", &Test_Thread_Class::thread_men_fun2);
 
-    zce::Lua_Thread thread_hdl;
+    zce::lua_thread thread_hdl;
     int ret = lua_tie.new_thread(&thread_hdl);
     if (ret != 0)
     {
@@ -499,7 +499,7 @@ const size_t LUA_TEST_COUNT = 10240;
 
 int test_lua_script7(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
 
     Woo_Struct obj_x, obj_y;
@@ -600,7 +600,7 @@ int test_lua_script8(int, char*[])
 {
     Woo_Struct obj_x, obj_y, obj_result;
 
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
     lua_tie.reg_class<Woo_Struct>("Woo_Struct").
         mem_var("a_", &Woo_Struct::a_).
@@ -774,7 +774,7 @@ T9C g_t9c(888999);
 
 int test_lua_script9(int, char*[])
 {
-    zce::Lua_Tie lua_tie;
+    zce::lua_tie lua_tie;
     lua_tie.open(true, true);
     //注册T9B
     lua_tie.reg_class<T9B>("T9B").

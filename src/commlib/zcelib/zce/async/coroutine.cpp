@@ -27,7 +27,7 @@ void coro::on_run(bool first_run,
     if (first_run)
     {
         ret = coroutine_ret_.get();
-        coroutine_ret_ = coroutine_run();
+        coroutine_ret_ = coro_run();
         if (ret != 0)
         {
             ZCE_TRACE_FAIL_RETURN(RS_ERROR, "coroutine_run return fail.",
@@ -54,31 +54,24 @@ void coro::on_run(bool first_run,
 
 //调用协程
 void coro::on_timeout(const zce::time_value& /*now_time*/,
-                      bool& continued)
+                      bool& continue_run)
 {
-    continued = false;
-    coroutine_state_ = COROUTINE_STATE::TIMEOUT;
-    //resume_coroutine();
-
+    occur_timeout_ = true;
+    continue_run = true;
     //根据调用返回的函数记录的状态值得到当前的状态
-    if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
+    bool done = coroutine_ret_.move_next();
+    if (done)
     {
-        continued = true;
+        continue_run = false;
     }
-    else if (coroutine_state_ == COROUTINE_STATE::EXIT)
-    {
-        continued = false;
-    }
-    else
-    {
-        ZCE_ASSERT_ALL(false);
-    }
+    return;
 }
 
 //等待time_out 时间后超时，设置定时器后，
 int coro::waitfor_timeout(const zce::time_value& time_out)
 {
     int ret = 0;
+    occur_timeout_ = false;
     ret = set_timeout(time_out);
     if (0 != ret)
     {
@@ -87,17 +80,26 @@ int coro::waitfor_timeout(const zce::time_value& time_out)
     return 0;
 }
 
+int coro::initialize()
+{
+    occur_timeout_ = false;
+    return 0;
+}
+void coro::terminate()
+{
+    return;
+}
 //=====================================================================================
 
 //携程主控管理类
-coromgr::coromgr() :
+coro_mgr::coro_mgr() :
     zce::async::manager()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;
 }
 
-coromgr::~coromgr()
+coro_mgr::~coro_mgr()
 {
 }
 }

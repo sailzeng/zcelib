@@ -252,8 +252,131 @@ unsigned int connect::real_escape_string(char* tostr,
                                       fromlen);
 }
 
-//这些函数都是4.1后的版本功能
-#if MYSQL_VERSION_ID > 40100
+//int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
+//执行SQL语句，功能全集，不对外使用
+int connect::query_i(uint64_t* num_affect,
+                     uint64_t* last_id,
+                     zce::mysql::result* sql_result,
+                     bool bstore)
+{
+    //如果没有设置连接或者没有设置命令
+    if (sql_cmd_.empty())
+    {
+        return -1;
+    }
+
+    //执行SQL命令
+    int tmpret = ::mysql_real_query(&mysql_handle_,
+                                    sql_cmd_.c_str(),
+                                    (unsigned long)sql_cmd_.length());
+    if (tmpret != 0)
+    {
+        return tmpret;
+    }
+
+    //如果用户要求转储结果集
+    if (sql_result)
+    {
+        MYSQL_RES* tmp_res = nullptr;
+        if (bstore)
+        {
+            //转储结果
+            tmp_res = ::mysql_store_result(&mysql_handle_);
+        }
+        else
+        {
+            //转储结果
+            tmp_res = ::mysql_use_result(&mysql_handle_);
+        }
+
+        //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
+        //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回nullptr? "
+        //如果是INSERT语句，那么mysql_store_result就是返回nullptr，mysql_field_count也应该等于0，
+        //如果MYSQL内部发生某个错误，那么mysql_store_result 返回nullptr，但mysql_field_count 会大于0，此时是个错误
+        if (tmp_res == nullptr && mysql_field_count(&mysql_handle_) > 0)
+        {
+            return -1;
+        }
+
+        //得到结果集,查询结果集信息
+        sql_result->set_mysql_result(tmp_res);
+    }
+
+    //执行SQL命令影响了多少行,mysql_affected_rows 必须在转储结果集后,所以你要注意输入的参数
+    if (num_affect)
+    {
+        *num_affect = (uint64_t) ::mysql_affected_rows(&mysql_handle_);
+    }
+
+    if (last_id)
+    {
+        *last_id = (uint64_t) ::mysql_insert_id(&mysql_handle_);
+    }
+
+    //成功
+    return 0;
+}
+
+//执行SQL语句,不用输出结果集合的那种,非SELECT语句
+//num_affect 为返回参数,告诉你修改了几行
+int connect::query(uint64_t& num_affect, uint64_t& last_id)
+{
+    return query_i(&num_affect, &last_id, nullptr, false);
+}
+
+//执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
+//num_affect 为返回参数,告诉你修改了几行,SELECT了几行
+int connect::query(uint64_t& num_affect, zce::mysql::result& sql_result)
+{
+    return query_i(&num_affect, nullptr, &sql_result, true);
+}
+
+//执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
+//用于结果集太多的处理,如果一次转储结果集会占用太多内存的处理,可以考虑用它,
+//但不推荐使用,一次取一行,交互太多
+int connect::query(zce::mysql::result& sql_result)
+{
+    return query_i(nullptr, nullptr, &sql_result, false);
+}
+
+//用于 multiple-statement executions 中得到多个
+//如果
+int connect::fetch_next_result(zce::mysql::result& sqlresult, bool bstore)
+{
+    int tmpret = ::mysql_next_result(&mysql_handle_);
+
+    //tmpret == -1表示没有结果集,其他<0的值表示错误
+    if (tmpret < 0)
+    {
+        return -1;
+    }
+
+    MYSQL_RES* tmp_res = nullptr;
+
+    if (bstore)
+    {
+        //转储结果
+        tmp_res = ::mysql_store_result(&mysql_handle_);
+    }
+    else
+    {
+        //转储结果
+        tmp_res = ::mysql_use_result(&mysql_handle_);
+    }
+
+    //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
+    //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回nullptr? "
+    if (tmp_res == nullptr && ::mysql_field_count(&mysql_handle_) > 0)
+    {
+        return -1;
+    }
+
+    //得到结果集,查询结果集信息
+    sqlresult.set_mysql_result(tmp_res);
+
+    //成功
+    return 0;
+}
 
 //设置是否自动提交
 int connect::set_auto_commit(bool bauto)
@@ -299,8 +422,6 @@ int connect::trans_rollback()
 
     return 0;
 }
-
-#endif // MYSQL_VERSION_ID > 40100
 }
 
 //如果你要用MYSQL的库

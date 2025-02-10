@@ -925,14 +925,14 @@ template<typename class_type> class Candy_Tie_Class;
 * @note       因为协程和Tie都应该会使用到这部分。所以独立
 *             作为基类
 */
-class Lua_Base
+class lua_base
 {
 protected:
 
     ///构造函数
-    explicit Lua_Base(lua_State* lua_state);
+    explicit lua_base(lua_State* lua_state);
     ///析构函数
-    virtual ~Lua_Base();
+    virtual ~lua_base();
 
 public:
 
@@ -1847,7 +1847,7 @@ protected:
 
 //=======================================================================================================
 
-class Lua_Base;
+class lua_base;
 
 /*!
 * @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法
@@ -1855,14 +1855,14 @@ class Lua_Base;
 *             tie.reg_class<TA>("TA",false).mem_var(...).mem_var(...)
 *             当然缺点也会有，因为这样的操作没有返回值，所以即使有错误也无法反馈
 * @tparam     class_type 绑定的类的名称
-* @note       具体函数的解释请参考zce::Lua_Tie
+* @note       具体函数的解释请参考zce::lua_tie
 */
 template <typename class_type>
 class Candy_Tie_Class
 {
 public:
     ///构造函数
-    Candy_Tie_Class(Lua_Base* lua_tie,
+    Candy_Tie_Class(lua_base* lua_tie,
                     bool read_only) :
         lua_tie_(lua_tie),
         read_only_(read_only)
@@ -1929,7 +1929,7 @@ public:
 
 protected:
     ///Lua的解释器的状态
-    Lua_Base* lua_tie_ = nullptr;
+    lua_base* lua_tie_ = nullptr;
 
     ///这个类是否是只读的方式
     bool      read_only_ = false;
@@ -1944,15 +1944,15 @@ protected:
 *             我的代码里面也有真正的thread相关的东东，避免误解，统一使用Lua Thread这样的命名
 *             另外，我比较吃不准的是是直接使用lua_State 还是用现场更好。对外其实差别不大
 */
-class Lua_Thread : public Lua_Base
+class lua_thread : public lua_base
 {
 public:
 
-    Lua_Thread();
+    lua_thread();
 
     ///析构代码，Lua Thread的代码不会自己释放自己，Lua Thread在
     ///堆栈被清空的时候，会被GC回收掉。所以，析构函数什么也不做。
-    ~Lua_Thread();
+    ~lua_thread();
 
     ///设置线程相关的数据
     void set_thread(lua_State* lua_thread, int thread_stackidx);
@@ -1979,12 +1979,12 @@ protected:
 *             同时还可以使用线程等功能
 * @note
 */
-class Lua_Tie : public Lua_Base
+class lua_tie : public lua_base
 {
 public:
 
-    Lua_Tie();
-    ~Lua_Tie();
+    lua_tie();
+    ~lua_tie();
 
     /*!
     * @brief      打开lua state
@@ -1998,13 +1998,13 @@ public:
     void close();
 
     ///开启一个新的lua thread
-    int new_thread(Lua_Thread* lua_thread);
+    int new_thread(lua_thread* lua_thread);
 
     ///关闭，回收一个lua thread
-    void del_thread(Lua_Thread* lua_thread);
+    void del_thread(lua_thread* lua_thread);
 
     ///恢复一个线程的运行
-    int resume_thread(Lua_Thread* lua_thread, int narg);
+    int resume_thread(lua_thread* lua_thread, int narg);
 };
 }
 

@@ -190,10 +190,6 @@
     <ClCompile Include="zce\lock\thread_rw_mutex.cpp" />
     <ClCompile Include="zce\lock\thread_semaphore.cpp" />
     <ClCompile Include="zce\lock\thread_spin.cpp" />
-    <ClCompile Include="zce\mysql\command.cpp">
-      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(RecursiveDir)</AssemblerListingLocation>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(RecursiveDir)</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="zce\mysql\connect.cpp" />
     <ClCompile Include="zce\mysql\field.cpp" />
     <ClCompile Include="zce\mysql\execute.cpp" />
@@ -259,6 +255,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\aio\reactor.h" />
+    <ClInclude Include="zce\db\database.h" />
+    <ClInclude Include="zce\db\db_base.h" />
     <ClInclude Include="zce\encrypt\asymmetric.h" />
     <ClInclude Include="zce\aio\caller.h" />
     <ClInclude Include="zce\aio\awaiter.h" />
@@ -342,7 +340,6 @@
     <ClInclude Include="zce\lock\thread_spin.h" />
     <ClInclude Include="zce\log\logging.h" />
     <ClInclude Include="zce\log\priority.h" />
-    <ClInclude Include="zce\mysql\command.h" />
     <ClInclude Include="zce\mysql\connect.h" />
     <ClInclude Include="zce\mysql\field.h" />
     <ClInclude Include="zce\mysql\execute.h" />

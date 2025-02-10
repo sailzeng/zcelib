@@ -8,7 +8,7 @@ namespace zce::async
 //=====================================================================================
 //状态机的异步对象
 fsm::fsm(zce::async::manager* async_mgr,
-         uint32_t create_cmd) :
+           uint32_t create_cmd) :
     actor(async_mgr, create_cmd),
     fsm_stage_(0)
 {
@@ -65,7 +65,7 @@ void fsm::on_run(bool first_run, bool& running)
 
 //超时处理
 void fsm::on_timeout(const zce::time_value& now_time,
-                     bool& continue_run)
+                      bool& continue_run)
 {
     char time_string[64 + 1];
     ZCE_LOG(RS_INFO, "Time out event ,fun[%s] ,now time[%s].",
@@ -90,14 +90,14 @@ int fsm::get_stage() const
 //=====================================================================================
 
 //状态机主控管理类
-fsmmgr::fsmmgr() :
+fsm_mgr::fsm_mgr() :
     zce::async::manager()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;
 }
 
-fsmmgr::~fsmmgr()
+fsm_mgr::~fsm_mgr()
 {
 }
 } //namespace zce

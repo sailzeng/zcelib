@@ -15,8 +15,7 @@
 *
 */
 
-#ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_
-#define ZCE_LIB_ASYNC_FRAMEWORK_BASE_
+#pragma once
 
 #include "zce/container/lord_rings.h"
 #include "zce/os_adapt/coroutine.h"
@@ -341,5 +340,3 @@ protected:
     size_t max_load_async_ = 0;
 };
 }
-
-#endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_

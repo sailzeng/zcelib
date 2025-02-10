@@ -266,21 +266,25 @@ void worker::thread_mysql(zce::aio::MYSQL_ATOM* atom)
             atom->db_connect_);
         break;
     case AIO_TYPE::MYSQL_QUERY_NOSELECT:
+    {
+        std::string_view sql_view(atom->sql_, atom->sql_len_);
         atom->result_ = zce::mysql::exe::query(
             atom->db_connect_,
-            atom->sql_,
-            atom->sql_len_,
+            sql_view,
             atom->num_affect_,
             atom->insert_id_);
         break;
+    }
     case AIO_TYPE::MYSQL_QUERY_SELECT:
+    {
+        std::string_view sql_view(atom->sql_, atom->sql_len_);
         atom->result_ = zce::mysql::exe::query(
             atom->db_connect_,
-            atom->sql_,
-            atom->sql_len_,
+            sql_view,
             atom->num_affect_,
             atom->db_result_);
         break;
+    }
     default:
         break;
     }

@@ -3,22 +3,22 @@
 #include "zce/logger/logging.h"
 #include "zce/async/lua_thread.h"
 
-namespace zce
+namespace zce::async
 {
 //========================================================================================
 
-async_luathead::async_luathead(zce::async::manager* async_mgr,
-                               uint32_t reg_cmd) :
+lthrd::lthrd(zce::async::manager* async_mgr,
+                     uint32_t reg_cmd) :
     zce::async::actor(async_mgr, reg_cmd)
 {
 }
 
-async_luathead::~async_luathead()
+lthrd::~lthrd()
 {
 }
 
 //初始化协程的对象
-int async_luathead::initialize()
+int lthrd::initialize()
 {
     zce::async::actor::initialize();
     auto luathread_mgr = static_cast <async_luathead_mgr*>(async_mgr_);
@@ -30,7 +30,7 @@ int async_luathead::initialize()
 }
 
 //清理协程对象
-void async_luathead::terminate()
+void lthrd::terminate()
 {
     zce::async::actor::terminate();
     mgr_lua_tie_->del_thread(&lua_thread_);
@@ -38,7 +38,7 @@ void async_luathead::terminate()
 }
 
 //调用协程
-void async_luathead::on_run(bool first_run, bool& continue_run)
+void lthrd::on_run(bool first_run, bool& continue_run)
 {
     continue_run = true;
     if (first_run)
@@ -69,8 +69,8 @@ void async_luathead::on_run(bool first_run, bool& continue_run)
 }
 
 //调用协程
-void async_luathead::on_timeout(const zce::time_value& /*now_time*/,
-                                bool& running)
+void lthrd::on_timeout(const zce::time_value& /*now_time*/,
+                           bool& running)
 {
     running = false;
     //int state = COROUTINE_STATE::TIMEOUT;

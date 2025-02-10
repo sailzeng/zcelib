@@ -66,9 +66,6 @@ int execute::connect()
             );
             return -1;
         }
-
-        //
-        db_command_.set_connect(&db_connect_);
     }
 
     return  0;
@@ -84,8 +81,7 @@ void execute::disconnect()
 }
 
 //用于非SELECT语句(INSERT,UPDATE)，
-int execute::query(const char* sql,
-                   size_t sql_len,
+int execute::query(std::string_view sql,
                    uint64_t& num_affect,
                    uint64_t& insert_id)
 {
@@ -103,10 +99,10 @@ int execute::query(const char* sql,
     }
 
     //
-    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql_len, sql);
-    db_command_.set_sql_command(sql, sql_len);
+    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql.size(), sql.data());
+    db_connect_.set_sql(sql);
 
-    ret = db_command_.query(num_affect, insert_id);
+    ret = db_connect_.query(num_affect, insert_id);
 
     //如果错误
     if (ret != 0)
@@ -122,8 +118,7 @@ int execute::query(const char* sql,
 }
 
 //执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
-int execute::query(const char* sql,
-                   size_t sql_len,
+int execute::query(std::string_view sql,
                    uint64_t& num_affect,
                    zce::mysql::result& db_result)
 {
@@ -139,10 +134,10 @@ int execute::query(const char* sql,
         db_connect_.ping();
     }
 
-    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
-    db_command_.set_sql_command(sql, sql_len);
+    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
+    db_connect_.set_sql(sql);
 
-    ret = db_command_.query(num_affect, db_result);
+    ret = db_connect_.query(num_affect, db_result);
 
     //如果错误
     if (ret != 0)
@@ -158,8 +153,7 @@ int execute::query(const char* sql,
 }
 
 //
-int execute::query(const char* sql,
-                   size_t sql_len,
+int execute::query(std::string_view sql,
                    zce::mysql::result& db_result)
 {
     int ret = 0;
@@ -175,10 +169,10 @@ int execute::query(const char* sql,
         db_connect_.ping();
     }
 
-    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
-    db_command_.set_sql_command(sql, sql_len);
+    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
+    db_connect_.set_sql(sql);
 
-    ret = db_command_.query(db_result);
+    ret = db_connect_.query(db_result);
 
     //如果错误
     if (ret != 0)
@@ -200,12 +194,6 @@ unsigned int execute::error_message(char* szerr, size_t buflen)
              db_connect_.error_no(),
              db_connect_.error_message());
     return db_connect_.error_no();
-}
-
-//得到DB访问的语句
-const char* execute::get_query_sql(void)
-{
-    return db_command_.get_sql_command();
 }
 
 //得到错误信息语句
@@ -275,8 +263,7 @@ void disconnect(zce::mysql::connect* db_connect)
 
 //!查询，
 int query(zce::mysql::connect* db_connect,
-          const char* sql,
-          size_t sqllen,
+          std::string_view sql,
           uint64_t* num_affect,
           uint64_t* insert_id)
 {
@@ -291,11 +278,9 @@ int query(zce::mysql::connect* db_connect,
         db_connect->ping();
     }
 
-    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
-    zce::mysql::command db_command;
-    db_command.set_connect(db_connect);
-    db_command.set_sql_command(sql, sqllen);
-    int ret = db_command.query(*num_affect, *insert_id);
+    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql.size(), sql.data());
+
+    int ret = db_connect->query(*num_affect, *insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -312,8 +297,7 @@ int query(zce::mysql::connect* db_connect,
 
 //!
 int query(zce::mysql::connect* db_connect,
-          const char* sql,
-          size_t sql_len,
+          std::string_view sql,
           uint64_t* num_affect,
           zce::mysql::result* db_result)
 {
@@ -329,11 +313,8 @@ int query(zce::mysql::connect* db_connect,
         db_connect->ping();
     }
 
-    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
-    zce::mysql::command db_command;
-    db_command.set_connect(db_connect);
-    db_command.set_sql_command(sql, sql_len);
-    ret = db_command.query(*num_affect, *db_result);
+    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
+    ret = db_connect->query(*num_affect, *db_result);
     //如果错误
     if (ret != 0)
     {
@@ -350,8 +331,7 @@ int query(zce::mysql::connect* db_connect,
 
 //!
 int query(zce::mysql::connect* db_connect,
-          const char* sql,
-          size_t sql_len,
+          std::string_view sql,
           zce::mysql::result* db_result)
 {
     int ret = 0;
@@ -366,11 +346,8 @@ int query(zce::mysql::connect* db_connect,
         db_connect->ping();
     }
 
-    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql_len, sql);
-    zce::mysql::command db_command;
-    db_command.set_connect(db_connect);
-    db_command.set_sql_command(sql, sql_len);
-    ret = db_command.query(*db_result);
+    ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
+    ret = db_connect->query(*db_result);
 
     //如果错误
     if (ret != 0)

@@ -4,13 +4,13 @@
 #include "zce/script/lua_tie.h"
 
 //====================================================================================
-namespace zce
+namespace zce::async
 {
 /*!
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class async_luathead : public zce::async::actor
+class lthrd : public zce::async::actor
 {
     friend class async_luathead_mgr;
 
@@ -19,13 +19,13 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    async_luathead(zce::async::manager* async_mgr,
-                   uint32_t reg_cmd);
+    lthrd(zce::async::manager* async_mgr,
+              uint32_t reg_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~async_luathead();
+    ~lthrd();
 
 public:
 
@@ -61,10 +61,10 @@ protected:
 protected:
 
     ///
-    zce::Lua_Tie* mgr_lua_tie_ = nullptr;
+    zce::lua_tie* mgr_lua_tie_ = nullptr;
 
     ///Lua协程对象
-    zce::Lua_Thread lua_thread_;
+    zce::lua_thread lua_thread_;
 };
 
 //====================================================================================
@@ -81,7 +81,7 @@ public:
     async_luathead_mgr();
     virtual ~async_luathead_mgr();
 
-    inline zce::Lua_Tie* mgr_lua_tie()
+    inline zce::lua_tie* mgr_lua_tie()
     {
         return &mgr_lua_tie_;
     }
@@ -93,6 +93,6 @@ protected:
     static const size_t COROUTINE_POOL_EXTEND_SIZE = 128;
 
     //管理器的lua state
-    zce::Lua_Tie  mgr_lua_tie_;
+    zce::lua_tie  mgr_lua_tie_;
 };
 }

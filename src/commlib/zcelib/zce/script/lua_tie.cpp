@@ -858,7 +858,7 @@ namespace zce
 {
 #if LUA_VERSION_NUM < 503
 
-void Lua_Base::reg_int64()
+void lua_base::reg_int64()
 {
     const char* int64_name = "int64_t";
     zce::luatie::class_name<int64_t>::name(int64_name);
@@ -914,7 +914,7 @@ void Lua_Base::reg_int64()
     lua_setglobal(lua_state_, int64_name);
 }
 
-void Lua_Base::reg_uint64()
+void lua_base::reg_uint64()
 {
     const char* uint64_name = "uint64_t";
     zce::luatie::class_name<uint64_t>::name(uint64_name);
@@ -972,7 +972,7 @@ void Lua_Base::reg_uint64()
 #endif
 
 //注册std::string
-void Lua_Base::reg_stdstring()
+void lua_base::reg_stdstring()
 {
     const char* stdstring_name = "stdstring";
     zce::luatie::class_name<std::string>::name(stdstring_name);
@@ -1022,17 +1022,17 @@ void Lua_Base::reg_stdstring()
 }
 
 //=======================================================================================================
-Lua_Base::Lua_Base(lua_State* lua_state) :
+lua_base::lua_base(lua_State* lua_state) :
     lua_state_(lua_state)
 {
 }
 
-Lua_Base::~Lua_Base()
+lua_base::~lua_base()
 {
 }
 
 // 执行一个LUA的buffer
-int Lua_Base::do_buffer(const char* buff, size_t len)
+int lua_base::do_buffer(const char* buff, size_t len)
 {
     int ret = 0;
 
@@ -1062,7 +1062,7 @@ int Lua_Base::do_buffer(const char* buff, size_t len)
 }
 
 // 执行一个LUA的文件
-int Lua_Base::do_file(const char* filename)
+int lua_base::do_file(const char* filename)
 {
     int ret = 0;
 
@@ -1092,42 +1092,42 @@ int Lua_Base::do_file(const char* filename)
 }
 
 ///dump C调用lua的堆栈，
-void Lua_Base::enum_stack()
+void lua_base::enum_stack()
 {
     zce::luatie::enum_clua_stack(lua_state_);
 }
 ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
-void Lua_Base::dump_stack()
+void lua_base::dump_stack()
 {
     zce::luatie::dump_luacall_stack(lua_state_);
 }
 
 //=======================================================================================================
 //Lua Thread 的封装
-Lua_Thread::Lua_Thread() :
-    Lua_Base(nullptr)
+lua_thread::lua_thread() :
+    lua_base(nullptr)
 {
 }
 
-Lua_Thread::~Lua_Thread()
+lua_thread::~lua_thread()
 {
 }
 
 //设置线程相关的数据
-void Lua_Thread::set_thread(lua_State* lua_thread, int thread_stackidx)
+void lua_thread::set_thread(lua_State* lua_thread, int thread_stackidx)
 {
     lua_state_ = lua_thread;
     luathread_stackidx_ = thread_stackidx;
 }
 
 //取得线程在创建者堆栈的位置索引
-int Lua_Thread::get_thread_stackidx()
+int lua_thread::get_thread_stackidx()
 {
     return luathread_stackidx_;
 }
 
 //恢复线程运行,501版本后，LUA为了处理多次循环调用，搞了这个API，
-int Lua_Thread::resume(int narg)
+int lua_thread::resume(int narg)
 {
 #if LUA_VERSION_NUM == 501
     return ::lua_resume(lua_state_, narg);
@@ -1139,24 +1139,24 @@ int Lua_Thread::resume(int narg)
 }
 
 //挂起线程运行
-int Lua_Thread::yield(int nresults)
+int lua_thread::yield(int nresults)
 {
     return ::lua_yield(lua_state_, nresults);
 }
 
 //=======================================================================================================
-Lua_Tie::Lua_Tie() :
-    Lua_Base(nullptr)
+lua_tie::lua_tie() :
+    lua_base(nullptr)
 {
 }
 
-Lua_Tie::~Lua_Tie()
+lua_tie::~lua_tie()
 {
     close();
 }
 
 //打开lua state
-int Lua_Tie::open(bool open_libs,
+int lua_tie::open(bool open_libs,
                   bool reg_common_use)
 {
     //如果错误
@@ -1189,7 +1189,7 @@ int Lua_Tie::open(bool open_libs,
 }
 
 //关闭lua state
-void Lua_Tie::close()
+void lua_tie::close()
 {
     if (lua_state_)
     {
@@ -1199,7 +1199,7 @@ void Lua_Tie::close()
 }
 
 //开启一个新的lua thread
-int Lua_Tie::new_thread(Lua_Thread* lua_thread)
+int lua_tie::new_thread(lua_thread* lua_thread)
 {
     lua_State* tread_state = lua_newthread(lua_state_);
     if (!tread_state)
@@ -1211,7 +1211,7 @@ int Lua_Tie::new_thread(Lua_Thread* lua_thread)
 }
 
 //取得线程在创建者堆栈的位置索引
-void Lua_Tie::del_thread(Lua_Thread* lua_thread)
+void lua_tie::del_thread(lua_thread* lua_thread)
 {
     ///Lua Thread的代码不会自己释放自己，Lua Thread在堆栈被清空的时候，会被GC回收掉
     int idx = lua_thread->get_thread_stackidx();
@@ -1222,7 +1222,7 @@ void Lua_Tie::del_thread(Lua_Thread* lua_thread)
 }
 
 //恢复一个线程的运行
-int Lua_Tie::resume_thread(Lua_Thread* lua_thread,
+int lua_tie::resume_thread(lua_thread* lua_thread,
                            int narg)
 {
     return lua_thread->resume(narg);

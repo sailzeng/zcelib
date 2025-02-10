@@ -6,7 +6,7 @@ namespace zce
 {
 //====================================================================================
 
-struct coro_ret
+struct aco_ret
 {
     struct promise_type;
     using handle_type = std::coroutine_handle<promise_type>;
@@ -18,7 +18,7 @@ struct coro_ret
 
         auto get_return_object()
         {
-            return coro_ret{ handle_type::from_promise(*this) };
+            return aco_ret{ handle_type::from_promise(*this) };
         }
         //注意这个函数,如果返回std::suspend_never{}，就不挂起，
         //返回std::suspend_always{} 挂起
@@ -49,26 +49,26 @@ struct coro_ret
         //返回值
         int return_data_;
     };
-    coro_ret()
+    aco_ret()
     {
     }
-    coro_ret(handle_type h)
+    aco_ret(handle_type h)
         : coro_handle_(h)
     {
     }
-    coro_ret(const coro_ret&) = delete;
-    coro_ret(coro_ret&& s)
+    aco_ret(const aco_ret&) = delete;
+    aco_ret(aco_ret&& s) noexcept
         : coro_handle_(s.coro_handle_)
     {
         s.coro_handle_ = nullptr;
     }
-    ~coro_ret()
+    ~aco_ret()
     {
         if (coro_handle_)
             coro_handle_.destroy();
     }
-    coro_ret& operator=(const coro_ret&) = delete;
-    coro_ret& operator=(coro_ret&& s)
+    aco_ret& operator=(const aco_ret&) = delete;
+    aco_ret& operator=(aco_ret&& s) noexcept
     {
         coro_handle_ = s.coro_handle_;
         s.coro_handle_ = nullptr;
@@ -99,20 +99,7 @@ struct coro_ret
 */
 class coro : public zce::async::actor
 {
-    friend class coromgr;
-
-    //
-    enum class COROUTINE_STATE
-    {
-        //
-        INVALID = 0x0,
-        //携程传递给管理器的状态值，
-        CONTINUE = 0x10001,
-        EXIT = 0x10002,
-
-        //超时后，管理器通知携程的状态值
-        TIMEOUT = 0x20002,
-    };
+    friend class coro_mgr;
 
 public:
     /*!
@@ -137,14 +124,13 @@ public:
 
     /*!
     * @brief      结束销毁函数，在析构前的调用
-    * @return     int
     */
     virtual void terminate();
 
 protected:
 
     //!协程运行,你要重载的函数
-    virtual coro_ret coroutine_run() = 0;
+    virtual aco_ret coro_run() = 0;
 
     /*!
     * @brief      等待time_out 时间后超时，设置定时器后，切换协程到main
@@ -166,13 +152,13 @@ protected:
     * @param[out] continued 异步对象是否继续运行,
     */
     virtual void on_timeout(const zce::time_value& now_time,
-                            bool& continued) override;
+                            bool& continue_run) override;
 
 protected:
     //!
-    coro_ret         coroutine_ret_;
-    //!协程的状态
-    COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
+    aco_ret  coroutine_ret_;
+    //!
+    bool    occur_timeout_ = false;
 };
 
 //====================================================================================
@@ -181,12 +167,12 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class coromgr : public zce::async::manager
+class coro_mgr : public zce::async::manager
 {
 public:
     //
-    coromgr();
-    virtual ~coromgr();
+    coro_mgr();
+    virtual ~coro_mgr();
 
 protected:
 

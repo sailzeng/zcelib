@@ -131,7 +131,9 @@ int sqlite_stmt::bind(int bind_index, short val)
     int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]", 
+                error_code(), 
+                error_message());
         return ret;
     }
 

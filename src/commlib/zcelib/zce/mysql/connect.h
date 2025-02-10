@@ -17,14 +17,40 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-#include "zce/util/non_copyable.h"
+#include "zce/mysql/result.h"
 
 namespace zce::mysql
 {
+///连接器基类
+class connect_base
+{
+public:
+
+    void set_sql(std::string_view sql_cmd)
+    {
+        sql_cmd_ = sql_cmd;
+    }
+
+    template<typename... Args>
+    void format_sql(std::string_view rt_fmt_str, Args&&... args)
+    {
+        sql_cmd_ = std::vformat(rt_fmt_str, std::make_format_args(args...));
+    }
+
+    void get_sql(std::string &sql_cmd) const
+    {
+        sql_cmd = sql_cmd_;
+    }
+
+protected:
+    ///SQL
+    std::string sql_cmd_;
+};
+
 /*!
 * @brief      MYSQL的连接器
 */
-class connect
+class connect :public connect_base
 {
 public:
 
@@ -119,13 +145,13 @@ public:
     * @brief      返回错误消息
     * @return     const char* 返回错误描述消息
     */
-    inline const char* error_message();
+    const char* error_message();
 
     /*!
     * @brief      返回错误号
     * @return     unsigned int 返回的错误ID
     */
-    inline unsigned int error_no();
+    unsigned int error_no();
 
     /*!
     * @brief      得到MYSQL的句柄
@@ -133,8 +159,42 @@ public:
     */
     inline MYSQL* get_mysql_handle();
 
-    //这些函数都是4.1后的版本功能
-#if MYSQL_VERSION_ID > 40100
+    /*!
+    * @brief      执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
+    * @return     int         0成功，-1失败
+    * @param      num_affect  查询得到的条数
+    * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
+    */
+    int query(uint64_t& num_affect, uint64_t& last_id);
+
+    /*!
+    * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
+    * @return     int         0成功，-1失败
+    * @param      num_affect  查询得到的条数
+    * @param      sqlresult   返回的结果集合
+    */
+    int query(uint64_t& num_affect, zce::mysql::result& sql_result);
+
+    /*!
+    * @brief      执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
+    *             用于结果集太多的处理,一次处理会占用太多内存的的处理,不推荐使用,
+    * @return     int
+    * @param      sqlresult 返回的结果集合
+    */
+    int query(zce::mysql::result& sqlresult);
+
+    /*!
+* @brief      设置Command的zce::mysql::connect
+* @return     int  0成功，-1失败
+* @param      conn 链接对象，必须已经链接成功喔
+*/
+    int set_connect(zce::mysql::connect* conn);
+
+    /*!
+    * @brief      得到此Command的zce::mysql::Connect对象
+    * @return     zce::mysql::connect*
+    */
+    zce::mysql::connect* get_connect();
 
     /*!
     * @brief      设置是否自动提交
@@ -155,7 +215,14 @@ public:
     */
     int trans_rollback();
 
-#endif
+    /*!
+    * @brief      如果一次执行多行SQL语句，这个方法用于取回结果集合
+    * @return     int       0表示成功，否则标识失败
+    * @param[out] sqlresult 返回的MySQL结果集合
+    * @param[out] bstore    使用mysql_store_result取回结果集合，还是mysql_use_result
+    */
+    int fetch_next_result(zce::mysql::result& sqlresult,
+                          bool bstore = true);
 
     /*!
     * @brief      编码转换，得到Real Escape String ,Real表示根据
@@ -194,6 +261,18 @@ protected:
                   unsigned int timeout = 0,
                   bool bmultisql = false);
 
+    /*!
+    * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
+    * @return     int         int  0成功，-1失败
+    * @param[out] num_affect  影响的数据条数，或者返回结果的条数
+    * @param[out] lastid      最后的插入ID是什么，
+    * @param[out] sqlresult   SQL执行后的结果集合
+    * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
+    */
+    int query_i(uint64_t* num_affect,
+                uint64_t* last_id,
+                zce::mysql::result* sqlresult,
+                bool bstore);
 public:
 
     /*!
@@ -210,10 +289,11 @@ public:
                                       unsigned int fromlen);
 
 private:
-    //MYSQL的句柄
+
+    ///MYSQL的句柄
     MYSQL     mysql_handle_;
 
-    //是否连接MYSQL数据库
+    ///是否连接MYSQL数据库
     bool      if_connected_ = false;
 };
 
@@ -239,6 +319,5 @@ inline unsigned int zce::mysql::connect::error_no()
 {
     return mysql_errno(&mysql_handle_);
 }
-
-#endif //#if defined ZCE_USE_MYSQL
 }
+#endif //#if defined ZCE_USE_MYSQL
