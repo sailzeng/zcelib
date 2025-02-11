@@ -190,12 +190,12 @@
     <ClCompile Include="zce\lock\thread_rw_mutex.cpp" />
     <ClCompile Include="zce\lock\thread_semaphore.cpp" />
     <ClCompile Include="zce\lock\thread_spin.cpp" />
-    <ClCompile Include="zce\mysql\connect.cpp" />
-    <ClCompile Include="zce\mysql\field.cpp" />
-    <ClCompile Include="zce\mysql\execute.cpp" />
-    <ClCompile Include="zce\mysql\result.cpp" />
-    <ClCompile Include="zce\mysql\stmt_bind.cpp" />
-    <ClCompile Include="zce\mysql\stmt_cmd.cpp" />
+    <ClCompile Include="zce\db\mysql\connect.cpp" />
+    <ClCompile Include="zce\db\mysql\field.cpp" />
+    <ClCompile Include="zce\db\mysql\execute.cpp" />
+    <ClCompile Include="zce\db\mysql\result.cpp" />
+    <ClCompile Include="zce\db\mysql\stmt_bind.cpp" />
+    <ClCompile Include="zce\db\mysql\stmt_cmd.cpp" />
     <ClCompile Include="zce\net\http_client.cpp" />
     <ClCompile Include="zce\os_adapt\backtrace.cpp" />
     <ClCompile Include="zce\os_adapt\condi.cpp" />
@@ -256,7 +256,7 @@
   <ItemGroup>
     <ClInclude Include="zce\aio\reactor.h" />
     <ClInclude Include="zce\db\database.h" />
-    <ClInclude Include="zce\db\db_base.h" />
+    <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\encrypt\asymmetric.h" />
     <ClInclude Include="zce\aio\caller.h" />
     <ClInclude Include="zce\aio\awaiter.h" />
@@ -340,12 +340,12 @@
     <ClInclude Include="zce\lock\thread_spin.h" />
     <ClInclude Include="zce\log\logging.h" />
     <ClInclude Include="zce\log\priority.h" />
-    <ClInclude Include="zce\mysql\connect.h" />
-    <ClInclude Include="zce\mysql\field.h" />
-    <ClInclude Include="zce\mysql\execute.h" />
-    <ClInclude Include="zce\mysql\result.h" />
-    <ClInclude Include="zce\mysql\stmt_bind.h" />
-    <ClInclude Include="zce\mysql\stmt_cmd.h" />
+    <ClInclude Include="zce\db\mysql\connect.h" />
+    <ClInclude Include="zce\db\mysql\field.h" />
+    <ClInclude Include="zce\db\mysql\execute.h" />
+    <ClInclude Include="zce\db\mysql\result.h" />
+    <ClInclude Include="zce\db\mysql\stmt_bind.h" />
+    <ClInclude Include="zce\db\mysql\stmt_cmd.h" />
     <ClInclude Include="zce\net\http_client.h" />
     <ClInclude Include="zce\os_adapt\backtrace.h" />
     <ClInclude Include="zce\os_adapt\condi.h" />

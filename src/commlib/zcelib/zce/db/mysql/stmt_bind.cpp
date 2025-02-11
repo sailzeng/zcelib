@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/mysql/stmt_bind.h"
+#include "zce/db/mysql/stmt_bind.h"
 
 //这些函数都是4.1.2后的版本功能
 #if MYSQL_VERSION_ID >= 40100

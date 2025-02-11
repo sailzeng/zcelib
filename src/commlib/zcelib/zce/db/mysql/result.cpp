@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/mysql/result.h"
+#include "zce/db/mysql/result.h"
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL

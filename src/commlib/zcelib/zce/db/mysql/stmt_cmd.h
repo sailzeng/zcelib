@@ -17,7 +17,7 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-#include "zce/mysql/connect.h"
+#include "zce/db/mysql/connect.h"
 
 //STMT函数都是4.1.2后的版本功能
 #if MYSQL_VERSION_ID >= 40100

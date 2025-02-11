@@ -98,19 +98,19 @@
     <ClCompile Include="zce\time\progress_timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\connect.cpp">
+    <ClCompile Include="zce\db\mysql\connect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\field.cpp">
+    <ClCompile Include="zce\db\mysql\field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\stmt_cmd.cpp">
+    <ClCompile Include="zce\db\mysql\stmt_cmd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\result.cpp">
+    <ClCompile Include="zce\db\mysql\result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\stmt_bind.cpp">
+    <ClCompile Include="zce\db\mysql\stmt_bind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\timer\timer_handler.cpp">
@@ -134,7 +134,7 @@
     <ClCompile Include="zce\shared_mem\systemv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\mysql\execute.cpp">
+    <ClCompile Include="zce\db\mysql\execute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\math\random.cpp">
@@ -454,19 +454,19 @@
     <ClInclude Include="zce\time\progress_timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\mysql\connect.h">
+    <ClInclude Include="zce\db\mysql\connect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\mysql\field.h">
+    <ClInclude Include="zce\db\mysql\field.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\mysql\stmt_cmd.h">
+    <ClInclude Include="zce\db\mysql\stmt_cmd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\mysql\result.h">
+    <ClInclude Include="zce\db\mysql\result.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\mysql\stmt_bind.h">
+    <ClInclude Include="zce\db\mysql\stmt_bind.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\log\priority.h">
@@ -493,7 +493,7 @@
     <ClInclude Include="zce\shared_mem\systemv.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\mysql\execute.h">
+    <ClInclude Include="zce\db\mysql\execute.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\mpl.h">
@@ -844,7 +844,7 @@
     <ClInclude Include="zce\db\database.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\db\db_base.h">
+    <ClInclude Include="zce\db\base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,12 +13,10 @@
 */
 #pragma once
 
-#include "zce/util/non_copyable.h"
-
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-#include "zce/mysql/connect.h"
+#include "zce/db/mysql/connect.h"
 
 namespace zce::mysql
 {
