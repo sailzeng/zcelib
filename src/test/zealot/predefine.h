@@ -61,8 +61,7 @@
 #include <zce/string/format.h>
 #include <zce/string/extend.h>
 
-#include <zce/mysql/connect.h>
-#include <zce/mysql/command.h>
+#include <zce/db/mysql/connect.h>
 #include <zce/util/id_to_string.h>
 #include <zce/util/mpl.h>
 

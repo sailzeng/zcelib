@@ -5,6 +5,8 @@
 * @version
 * @date       2013年1月14日
 * @brief      线程的信号灯封装
+*
+*             推荐使用 std::counting_semaphore
 */
 
 #pragma once

@@ -255,6 +255,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\aio\reactor.h" />
+    <ClInclude Include="zce\buffer\buf_view.h" />
+    <ClInclude Include="zce\buffer\varlen_buf.h" />
     <ClInclude Include="zce\db\database.h" />
     <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\encrypt\asymmetric.h" />

@@ -6,7 +6,8 @@
 * @date       2013年2月1日
 * @brief
 *
-* @details
+* @details    条件变量
+*             推荐使用 std::condition_variable
 *
 * @note
 *

@@ -127,7 +127,7 @@ public:
                     "[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
                     "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
                     pipe_id,
-                    node->size_of_node_,
+                    node->size_of_buf_,
                     bus_pipe_pointer_[pipe_id].free(),
                     bus_pipe_pointer_[pipe_id].capacity()
             );
@@ -358,7 +358,6 @@ int mmap_buspipe<MAX_PIPE>::initialize(const char* bus_mmap_name,
     {
         return ret;
     }
-
     return 0;
 }
 

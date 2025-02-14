@@ -847,6 +847,12 @@
     <ClInclude Include="zce\db\base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\buffer\varlen_buf.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\buffer\buf_view.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

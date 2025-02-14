@@ -40,7 +40,7 @@ protected:
         ///NODE链表的起始桶索引
         std::size_t     chunk_index_;
         ///NODE的实际尺寸
-        std::size_t     size_of_node_;
+        std::size_t     size_of_buf_;
     };
 
     /*!
@@ -74,7 +74,7 @@ protected:
         std::size_t          usable_of_chunk_ = 0;
 
         ///chunk尺寸
-        std::size_t          size_of_chunk_ = 0;
+        std::size_t          size_of_buf_ = 0;
 
         ///FREE NODE的起始节点
         std::size_t          free_node_head_ = 0;

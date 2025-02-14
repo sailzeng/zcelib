@@ -11,6 +11,8 @@
 *             thread_nonr_mutex 不可以递归的线程锁 WINDODOWS用信号灯模拟的MUTEX，不可以递归，有超时处理
 *
 *             如果是类似临界区的需求，而且希望更快，可以考虑SPIN LOCK，
+*
+*             推荐使用std::mutex, std::recursive_mutex,std::shared_mutex
 */
 
 #pragma once

@@ -16,63 +16,17 @@
 
 #pragma once
 
+#include "zce/buffer/varlen_buf.h"
+
 namespace zce
 {
-template<typename T>
-concept integral_t = std::is_integral<T>::value;
-
 template <typename T> requires integral_t<T>
 class cycbuf_rings
 {
 public:
 
-    class node
-    {
-    protected:
-        node() = delete;
-        node& operator=(const node & others) = delete;
-        ~node() = delete;
-    public:
-        ///*!
-        //@brief      重载了new操作，用于得到一个变长得到架构
-        //@return     void* operator
-        //@param      size_t    new的默认参数
-        //@param      node_len   node节点的长度
-        //*
-        static node* new_node(size_t node_len)
-        {
-            static_assert(std::is_integral<T>::value, "Not integral!");
-            assert(node_len > sizeof(T) &&
-                   node_len <= static_cast<size_t>(std::numeric_limits<int>::max()));
-            if (node_len <= sizeof(T) ||
-                node_len > static_cast<size_t>(std::numeric_limits<int>::max()))
-            {
-                return nullptr;
-            }
-            char* ptr = ::new char[node_len];
+    typedef varlen_buf<T> node;
 
-#ifdef  DEBUG
-            memset(ptr, 0, node_len);
-#endif
-            //
-            ((node*)ptr)->size_of_node_ = (T)node_len;
-            return ((node*)ptr);
-        }
-
-        ///养成好习惯,写new,就写delete.
-        static void delete_node(node* node)
-        {
-            char* ptr = (char*)node;
-            delete[] ptr;
-        }
-
-        /// 整个Node的长度,包括size_of_node_ + node_data_数据,
-        /// 这里使用size_t,long在64位下会有问题
-        T    size_of_node_;
-
-        /// 数据区的数据，变长的数据
-        char            node_data_[1];
-    };
 public:
 
     ///头部的长度，
@@ -166,14 +120,14 @@ public:
     bool push_end(const node* n)
     {
         //粗略的检查,如果长度不合格,返回不成功
-        if (n->size_of_node_ < sizeof(T) ||
-            n->size_of_node_ > max_len_node_)
+        if (n->size_of_buf_ < sizeof(T) ||
+            n->size_of_buf_ > max_len_node_)
         {
             return false;
         }
 
         //检查队列的空间是否够用
-        if (free() < n->size_of_node_)
+        if (free() < n->size_of_buf_)
         {
             return false;
         }
@@ -182,10 +136,10 @@ public:
         char* pend = cycbuf_data_ + cycbuf_end_;
 
         //如果绕圈
-        if (pend + n->size_of_node_ > cycbuf_data_ + size_of_cycle_)
+        if (pend + n->size_of_buf_ > cycbuf_data_ + size_of_cycle_)
         {
             size_t first = size_of_cycle_ - cycbuf_end_;
-            size_t second = n->size_of_node_ - first;
+            size_t second = n->size_of_buf_ - first;
             memcpy(pend, reinterpret_cast<const char*>(n), first);
             memcpy(cycbuf_data_, reinterpret_cast<const char*>(n) + first, second);
             cycbuf_end_ = second;
@@ -193,8 +147,8 @@ public:
         //如果可以一次拷贝完成
         else
         {
-            memcpy(pend, reinterpret_cast<const char*>(n), n->size_of_node_);
-            cycbuf_end_ += n->size_of_node_;
+            memcpy(pend, reinterpret_cast<const char*>(n), n->size_of_buf_);
+            cycbuf_end_ += n->size_of_buf_;
         }
 
         return true;
@@ -228,7 +182,7 @@ public:
         else
         {
             memcpy(reinterpret_cast<char*>(n), pbegin, node_len);
-            cycbuf_begin_ += n->size_of_node_;
+            cycbuf_begin_ += n->size_of_buf_;
             assert(cycbuf_begin_ <= size_of_cycle_);
         }
 

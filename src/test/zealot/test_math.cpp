@@ -1042,7 +1042,7 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
         bool ok = a1.pop_front(ptr2);
         if (ok)
         {
-            size_t node_len = ptr2->size_of_node_;
+            size_t node_len = ptr2->size_of_buf_;
             ZPP_LOG(RS_DEBUG, "pop_front success,no={} node len ={} ring free={}", i, node_len, a1.free());
         }
         else
@@ -1069,7 +1069,7 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
         for (size_t k = 0; k < pop_num; ++k)
         {
             bool ok = a1.pop_front(ptr_2);
-            node_len = ok ? 0 : ptr_2->size_of_node_;
+            node_len = ok ? 0 : ptr_2->size_of_buf_;
             ZPP_LOG(RS_DEBUG, "pop_front {},no={}{} ring free ={}", ok, i, k, a1.free());
         }
     }

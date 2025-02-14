@@ -55,7 +55,6 @@ public:
         {
             return true;
         }
-
         return false;
     }
 
@@ -455,7 +454,7 @@ protected:
     //放入一个数据，根据参数确定是否等待一个相对时间
     bool enqueue_interior(const T& value,
                           MQW_WAIT_MODEL wait_model,
-                          const timeval& wait_time)
+                          const zce::time_value& wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
         //而条件触发其实内部是解开了保护的
@@ -551,19 +550,19 @@ protected:
 protected:
 
     //QUEUE的最大尺寸
-    std::size_t                  queue_max_size_;
+    std::size_t            queue_max_size_;
 
     //由于LIST的size()函数比较耗时，所以这儿还是用了几个计数器
-    std::size_t                  queue_cur_size_;
+    std::size_t            queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
     zce::thread_mutex      queue_lock_;
 
     //插入保护的条件变量
-    zce::thread_condition        cond_enqueue_;
+    zce::thread_condition  cond_enqueue_;
 
     //取出进行保护的条件变量
-    zce::thread_condition        cond_dequeue_;
+    zce::thread_condition  cond_dequeue_;
 
     //容器类型，可以是list,dequeue,
     C              message_queue_;
@@ -577,7 +576,6 @@ protected:
 * @tparam     T 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
-
 template <typename T>
 using MsgList_Condi = MsgQueue_Condi<T, std::list<T>>;
 

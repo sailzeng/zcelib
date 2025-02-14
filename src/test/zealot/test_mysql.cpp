@@ -35,9 +35,6 @@ const char* DB_BENCHMARK_PASSWORD = "";
 //MYSQL数据库连接对象
 static zce::mysql::connect g_db_connect;
 
-//MYSQL命令执行对象
-static zce::mysql::command g_db_command;
-
 int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_id, char* szErr)
 {
     int ret = 0;
@@ -54,8 +51,6 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
             sprintf(szErr, "[%d]:%s", g_db_connect.error_no(), g_db_connect.error_message());
             return RETURN_DB_ERROR;
         }
-        //
-        g_db_command.set_connect(&g_db_connect);
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
@@ -63,8 +58,8 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
         g_db_connect.ping();
     }
 
-    g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.query(num_affect, insert_id);
+    g_db_connect.set_sql(sql);
+    ret = g_db_connect.query(num_affect, insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -96,15 +91,14 @@ int benchmark_db_query(const char* sql,
             return RETURN_DB_ERROR;
         }
         //
-        g_db_command.set_connect(&g_db_connect);
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
     {
         g_db_connect.ping();
     }
-    g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.query(num_affect, db_result);
+    g_db_connect.set_sql(sql);
+    ret = g_db_connect.query(num_affect, db_result);
     //如果错误
     if (ret != 0)
     {
@@ -134,8 +128,6 @@ int benchmark_db_query(const char* sql,
             sprintf(szErr, "[%d]:%s", g_db_connect.error_no(), g_db_connect.error_message());
             return RETURN_DB_ERROR;
         }
-        //
-        g_db_command.set_connect(&g_db_connect);
     }
     //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
     else
@@ -143,8 +135,8 @@ int benchmark_db_query(const char* sql,
         g_db_connect.ping();
     }
 
-    g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.query(db_result);
+    g_db_connect.set_sql(sql);
+    ret = g_db_connect.query(db_result);
     //如果错误
     if (ret != 0)
     {

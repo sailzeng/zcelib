@@ -17,6 +17,7 @@
 #pragma once
 
 #include "zce/lock/spin_lock.h"
+#include "zce/buffer/varlen_buf.h"
 
 namespace zce::lockfree
 {
@@ -41,71 +42,7 @@ class kfifo
 {
 public:
 
-    /*!
-    * @brief      可以放如deque的node结构，变长，前面若干个字节表示长度，
-    *             长度用模版参数 T 控制
-    *             外部使用时，只要你BUFFER最开始标识长度和INTEGRAL_T一致，
-    *             就可以强转成指针使用
-    *
-    */
-    class node
-    {
-    protected:
-        node() = delete;
-        node& operator=(const node & others) = delete;
-        ~node() = delete;
-    public:
-
-        ///*!
-        //@brief      重载了new操作，用于得到一个变长得到架构
-        //@return     void* operator
-        //@param      size_t    new的默认参数
-        //@param      node_len   node节点的长度
-        //*
-        static node* new_node(size_t node_len)
-        {
-            static_assert(std::is_integral<T>::value, "Not integral!");
-            assert(node_len > sizeof(T) &&
-                   node_len <= static_cast<size_t>(std::numeric_limits<int>::max()));
-            if (node_len <= sizeof(T) ||
-                node_len > static_cast<size_t>(std::numeric_limits<int>::max()))
-
-            {
-                return nullptr;
-            }
-            char* ptr = ::new char[node_len];
-
-#ifdef  DEBUG
-            //检查帧的哪个地方出现问题，还是这样好一点
-            memset(ptr, 0, node_len);
-#endif
-            //
-            ((node*)ptr)->size_of_node_ = (T)node_len;
-
-            return ((node*)ptr);
-        }
-
-        ///养成好习惯,写new,就写delete.
-        static void delete_node(node * node)
-        {
-            char* ptr = (char*)node;
-            delete[] ptr;
-        }
-    public:
-
-        ///头部的长度，
-        static const size_t NODE_HEAD_LEN = sizeof(T);
-
-        ///最小的CHUNK NODE长度，NODE_HEAD_LEN+1
-        static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = NODE_HEAD_LEN + 1;
-
-        /// 整个Node的长度,包括size_of_node_ + chunkdata, 你可以用模版描述这个长度是多少
-        /// 这里使用size_t,long在64位下会有问题
-        T    size_of_node_;
-
-        /// 数据区的数据，变长的数据,1只是占位符号
-        char          chunk_data_[1];
-    };
+    typedef varlen_buf<T> node;
 
 protected:
     /*!
@@ -255,14 +192,14 @@ public:
     bool push_end(const node* i)
     {
         //粗略的检查,如果长度不合格,返回不成功
-        if (i->size_of_node_ < node::MIN_SIZE_DEQUE_CHUNK_NODE ||
-            i->size_of_node_ > kfifo_head_->max_len_node_)
+        if (i->size_of_buf_ < node::MIN_SIZE_BUF_NODE ||
+            i->size_of_buf_ > kfifo_head_->max_len_node_)
         {
             return false;
         }
 
         //检查队列的空间是否够用
-        if (free() < i->size_of_node_)
+        if (free() < i->size_of_buf_)
         {
             return false;
         }
@@ -271,10 +208,10 @@ public:
         char* pend = kfifo_data_ + kfifo_head_->deque_end_;
 
         //如果绕圈
-        if (pend + i->size_of_node_ > kfifo_data_ + kfifo_head_->size_of_cycle_)
+        if (pend + i->size_of_buf_ > kfifo_data_ + kfifo_head_->size_of_cycle_)
         {
             size_t first = kfifo_head_->size_of_cycle_ - kfifo_head_->deque_end_;
-            size_t second = i->size_of_node_ - first;
+            size_t second = i->size_of_buf_ - first;
             memcpy(pend, reinterpret_cast<const char*>(i), first);
             memcpy(kfifo_data_, reinterpret_cast<const char*>(i) + first, second);
             kfifo_head_->deque_end_ = second;
@@ -282,8 +219,8 @@ public:
         //如果可以一次拷贝完成
         else
         {
-            memcpy(pend, reinterpret_cast<const char*>(i), i->size_of_node_);
-            kfifo_head_->deque_end_ += i->size_of_node_;
+            memcpy(pend, reinterpret_cast<const char*>(i), i->size_of_buf_);
+            kfifo_head_->deque_end_ += i->size_of_buf_;
         }
 
         return true;
@@ -323,7 +260,7 @@ public:
         else
         {
             memcpy(reinterpret_cast<char*>(i), pbegin, tmplen);
-            kfifo_head_->deque_begin_ += i->size_of_node_;
+            kfifo_head_->deque_begin_ += i->size_of_buf_;
             assert(kfifo_head_->deque_begin_ <= kfifo_head_->size_of_cycle_);
         }
 

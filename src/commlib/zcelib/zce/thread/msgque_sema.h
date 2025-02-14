@@ -4,7 +4,7 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年6月17日
-* @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
+* @brief      用信号量（灯）+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
 *
 *
 * @details
@@ -295,10 +295,10 @@ protected:
     //队列的LOCK,用于读写操作的同步控制
     std::recursive_mutex    queue_lock_;
 
-    //信号灯，满的信号灯
+    //信号灯（量），满的信号灯
     std::counting_semaphore<SEMAPHORE_MAXVALUE>   sem_full_;
 
-    //信号灯，空的信号灯，当数据
+    //信号灯（量），空的信号灯，当数据
     std::counting_semaphore<SEMAPHORE_MAXVALUE>   sem_empty_;
 
     //容器类型，可以是list,dequeue,
@@ -541,22 +541,22 @@ protected:
 protected:
 
     //QUEUE的最大尺寸
-    size_t                           queue_max_size_;
+    size_t                   queue_max_size_;
 
     //由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
-    size_t                           queue_cur_size_;
+    size_t                   queue_cur_size_;
 
     //队列的LOCK,用于读写操作的同步控制
-    zce::thread_mutex          queue_lock_;
+    zce::thread_mutex        queue_lock_;
 
     //信号灯，满的信号灯
-    zce::thread_semaphore            sem_full_;
+    zce::thread_semaphore    sem_full_;
 
     //信号灯，空的信号灯，当数据
-    zce::thread_semaphore            sem_empty_;
+    zce::thread_semaphore    sem_empty_;
 
     //容器类型，可以是list,dequeue,
-    C                                message_queue_;
+    C                        message_queue_;
 };
 
 /*!

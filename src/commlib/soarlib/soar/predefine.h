@@ -65,9 +65,8 @@
 #include <zce/logger/logging.h>
 #include <zce/util/id_to_string.h>
 #include <zce/time/time_value.h>
-#include <zce/mysql/connect.h>
-#include <zce/mysql/command.h>
-#include <zce/mysql/execute.h>
+#include <zce/db/mysql/connect.h>
+#include <zce/db/mysql/execute.h>
 #include <zce/lockfree/kfifo.h>
 #include <zce/server/server_base.h>
 #include <zce/util/non_copyable.h>

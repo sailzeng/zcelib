@@ -5,9 +5,11 @@
 * @date       2021年5月
 * @brief
 *             queue_buffer :
-*             一个只能向尾部添加数据的BUFFER，
-*             数据能多次放入，但取出数据要全部取出。
+*             一个只能向尾部添加数据的BUFFER QUEUE，
+*             数据能多次放入，数据也可以一次或者多次取出。
+*             queue_buffer 内部的数据没有环形存储。
 *             读取数据可以直接使用point指针。
+*
 * @details
 *
 * @note
