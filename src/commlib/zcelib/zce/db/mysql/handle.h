@@ -23,22 +23,22 @@
 namespace zce::mysql
 {
 /*!
-* @brief      MYSQL的连接器
+* @brief      MYSQL的Handle,负责连接，命令执行等
 */
-class connect :public zce::db::connect_base
+class handle :public zce::db::handle_base
 {
 public:
 
     //构造函数,析构函数
-    connect();
-    ~connect();
+    handle();
+    ~handle();
 
-    connect(connect &&) noexcept;
-    connect& operator=(connect&&) noexcept;
+    handle(handle &&) noexcept;
+    handle& operator=(handle&&) noexcept;
 
     //避免拷贝
-    connect(const connect &) = delete;
-    connect& operator=(const connect&) = delete;
+    handle(const handle &) = delete;
+    handle& operator=(const handle&) = delete;
 
     /*!
     * @brief      连接数据服务器,通过IP地址，主机名称
@@ -88,12 +88,6 @@ public:
     * @brief      断开数据服务器
     */
     void disconnect();
-
-    /*!
-    * @brief      是否连接
-    * @return     bool  是否连接
-    */
-    inline bool is_connected();
 
     /*!
     * @brief      选择一个默认数据库
@@ -157,19 +151,6 @@ public:
     * @param      sqlresult 返回的结果集合
     */
     int query(zce::mysql::result& sqlresult);
-
-    /*!
-* @brief      设置Command的zce::mysql::connect
-* @return     int  0成功，-1失败
-* @param      conn 链接对象，必须已经链接成功喔
-*/
-    int set_connect(zce::mysql::connect* conn);
-
-    /*!
-    * @brief      得到此Command的zce::mysql::Connect对象
-    * @return     zce::mysql::connect*
-    */
-    zce::mysql::connect* get_connect();
 
     /*!
     * @brief      设置是否自动提交
@@ -267,30 +248,22 @@ private:
 
     ///MYSQL的句柄
     MYSQL     mysql_handle_;
-
-    ///是否连接MYSQL数据库
-    bool      if_connected_ = false;
 };
 
 //得到MYSQL的句柄
-inline MYSQL* zce::mysql::connect::get_mysql_handle()
+inline MYSQL* zce::mysql::handle::get_mysql_handle()
 {
     return &mysql_handle_;
 }
-//检查状态是否连接
-inline bool zce::mysql::connect::is_connected()
-{
-    return if_connected_;
-}
 
 //得到错误信息
-inline const char* zce::mysql::connect::error_message()
+inline const char* zce::mysql::handle::error_message()
 {
     return mysql_error(&mysql_handle_);
 }
 
 //得到错误的ID
-inline unsigned int zce::mysql::connect::error_no()
+inline unsigned int zce::mysql::handle::error_no()
 {
     return mysql_errno(&mysql_handle_);
 }

@@ -1,13 +1,13 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/db/mysql/connect.h"
+#include "zce/db/mysql/handle.h"
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
 namespace zce::mysql
 {
-connect::connect()
+handle::handle()
 {
     //现在都在conect的时候进行初始化了。对应在disconnect 的时候close
     ::mysql_init(&mysql_handle_);
@@ -15,19 +15,19 @@ connect::connect()
     if_connected_ = false;
 }
 
-connect::~connect()
+handle::~handle()
 {
-    // disconnect if if_connected_ to connect
+    // disconnect if if_connected_ to handle
     disconnect();
 }
 
-connect::connect(connect&& others) noexcept
+handle::handle(handle&& others) noexcept
 {
     this->mysql_handle_ = others.mysql_handle_;
     this->if_connected_ = others.if_connected_;
     others.if_connected_ = false;
 }
-connect& connect::operator=(connect&& others) noexcept
+handle& handle::operator=(handle&& others) noexcept
 {
     this->mysql_handle_ = others.mysql_handle_;
     this->if_connected_ = others.if_connected_;
@@ -36,7 +36,7 @@ connect& connect::operator=(connect&& others) noexcept
 }
 
 //如果使用选项文件进行连接
-int connect::connect_by_optionfile(const char* optfile, const char* group)
+int handle::connect_by_optionfile(const char* optfile, const char* group)
 {
     //如果已经连接,关闭原来的连接
     if (if_connected_ == true)
@@ -76,14 +76,14 @@ int connect::connect_by_optionfile(const char* optfile, const char* group)
 }
 
 //连接数据服务器
-int connect::connect_i(const char* host_name,
-                       const char* socket_file,
-                       const char* user,
-                       const char* pwd,
-                       const char* db,
-                       const unsigned int port,
-                       const unsigned int timeout,
-                       bool if_multi_sql)
+int handle::connect_i(const char* host_name,
+                      const char* socket_file,
+                      const char* user,
+                      const char* pwd,
+                      const char* db,
+                      const unsigned int port,
+                      const unsigned int timeout,
+                      bool if_multi_sql)
 {
     //如果已经连接,关闭原来的连接
     if (if_connected_ == true)
@@ -163,30 +163,30 @@ int connect::connect_i(const char* host_name,
 }
 
 //连接数据服务器,通过IP地址，主机名称
-int connect::connect_by_host(const char* host_name,
-                             const char* user,
-                             const char* pwd,
-                             const char* db,
-                             const unsigned int port,
-                             unsigned int timeout,
-                             bool if_multi_sql)
+int handle::connect_by_host(const char* host_name,
+                            const char* user,
+                            const char* pwd,
+                            const char* db,
+                            const unsigned int port,
+                            unsigned int timeout,
+                            bool if_multi_sql)
 {
     return connect_i(host_name, nullptr, user, pwd, db, port, timeout, if_multi_sql);
 }
 
 //连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
-int connect::connect_by_socketfile(const char* socket_file,
-                                   const char* user,
-                                   const char* pwd,
-                                   const char* db,
-                                   unsigned int timeout,
-                                   bool if_multi_sql)
+int handle::connect_by_socketfile(const char* socket_file,
+                                  const char* user,
+                                  const char* pwd,
+                                  const char* db,
+                                  unsigned int timeout,
+                                  bool if_multi_sql)
 {
     return connect_i(nullptr, socket_file, user, pwd, db, 0, timeout, if_multi_sql);
 }
 
 //断开数据库服务器连接
-void connect::disconnect()
+void handle::disconnect()
 {
     //没有连接
     if (if_connected_ == false)
@@ -199,7 +199,7 @@ void connect::disconnect()
 }
 
 //选择一个默认数据库,参数是数据库的名称
-int connect::select_database(const char* db)
+int handle::select_database(const char* db)
 {
     int ret = ::mysql_select_db(&mysql_handle_, db);
 
@@ -213,7 +213,7 @@ int connect::select_database(const char* db)
 }
 
 //如果连接断开，重新连接，低成本的好方法,否则什么都不做，
-int connect::ping()
+int handle::ping()
 {
     int ret = ::mysql_ping(&mysql_handle_);
 
@@ -227,24 +227,24 @@ int connect::ping()
 }
 
 //得到当前数据服务器的状态
-const char* connect::get_mysql_status()
+const char* handle::get_mysql_status()
 {
     return ::mysql_stat(&mysql_handle_);
 }
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
-unsigned int connect::escape_string(char* tostr,
-                                    const char* fromstr,
-                                    unsigned int fromlen)
+unsigned int handle::escape_string(char* tostr,
+                                   const char* fromstr,
+                                   unsigned int fromlen)
 {
     return ::mysql_escape_string(tostr,
                                  fromstr,
                                  fromlen);
 }
 
-unsigned int connect::real_escape_string(char* tostr,
-                                         const char* fromstr,
-                                         unsigned int fromlen)
+unsigned int handle::real_escape_string(char* tostr,
+                                        const char* fromstr,
+                                        unsigned int fromlen)
 {
     return ::mysql_real_escape_string(&mysql_handle_,
                                       tostr,
@@ -254,10 +254,10 @@ unsigned int connect::real_escape_string(char* tostr,
 
 //int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
 //执行SQL语句，功能全集，不对外使用
-int connect::query_i(uint64_t* num_affect,
-                     uint64_t* last_id,
-                     zce::mysql::result* sql_result,
-                     bool bstore)
+int handle::query_i(uint64_t* num_affect,
+                    uint64_t* last_id,
+                    zce::mysql::result* sql_result,
+                    bool bstore)
 {
     //如果没有设置连接或者没有设置命令
     if (sql_cmd_.empty())
@@ -319,14 +319,14 @@ int connect::query_i(uint64_t* num_affect,
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
-int connect::query(uint64_t& num_affect, uint64_t& last_id)
+int handle::query(uint64_t& num_affect, uint64_t& last_id)
 {
     return query_i(&num_affect, &last_id, nullptr, false);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
-int connect::query(uint64_t& num_affect, zce::mysql::result& sql_result)
+int handle::query(uint64_t& num_affect, zce::mysql::result& sql_result)
 {
     return query_i(&num_affect, nullptr, &sql_result, true);
 }
@@ -334,14 +334,14 @@ int connect::query(uint64_t& num_affect, zce::mysql::result& sql_result)
 //执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
 //用于结果集太多的处理,如果一次转储结果集会占用太多内存的处理,可以考虑用它,
 //但不推荐使用,一次取一行,交互太多
-int connect::query(zce::mysql::result& sql_result)
+int handle::query(zce::mysql::result& sql_result)
 {
     return query_i(nullptr, nullptr, &sql_result, false);
 }
 
 //用于 multiple-statement executions 中得到多个
 //如果
-int connect::fetch_next_result(zce::mysql::result& sqlresult, bool bstore)
+int handle::fetch_next_result(zce::mysql::result& sqlresult, bool bstore)
 {
     int tmpret = ::mysql_next_result(&mysql_handle_);
 
@@ -379,7 +379,7 @@ int connect::fetch_next_result(zce::mysql::result& sqlresult, bool bstore)
 }
 
 //设置是否自动提交
-int connect::set_auto_commit(bool bauto)
+int handle::set_auto_commit(bool bauto)
 {
     //my_bool其实是char
     my_bool mode = (bauto == true) ? 1 : 0;
@@ -396,7 +396,7 @@ int connect::set_auto_commit(bool bauto)
 }
 
 //提交事务Commit Transaction
-int connect::trans_commit()
+int handle::trans_commit()
 {
     int ret = ::mysql_commit(&mysql_handle_);
 
@@ -410,7 +410,7 @@ int connect::trans_commit()
 }
 
 //回滚事务Rollback Transaction
-int connect::trans_rollback()
+int handle::trans_rollback()
 {
     int ret = ::mysql_rollback(&mysql_handle_);
 

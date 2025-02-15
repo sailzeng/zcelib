@@ -4,8 +4,8 @@
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 #include "zce/logger/logging.h"
-#include "zce/sqlite/sqlite_hdl.h"
-#include "zce/sqlite/sqlite_stmt.h"
+#include "zce/db/sqlite/sqlite_hdl.h"
+#include "zce/db/sqlite/sqlite_stmt.h"
 
 /*
 * sqlite_stmt
@@ -131,8 +131,8 @@ int sqlite_stmt::bind(int bind_index, short val)
     int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]", 
-                error_code(), 
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
+                error_code(),
                 error_message());
         return ret;
     }

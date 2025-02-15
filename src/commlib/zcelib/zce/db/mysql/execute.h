@@ -16,7 +16,7 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-#include "zce/db/mysql/connect.h"
+#include "zce/db/mysql/handle.h"
 
 namespace zce::mysql
 {
@@ -121,36 +121,36 @@ protected:
     std::string       db_password_;
 
     ///MYSQL数据库连接对象
-    ::zce::mysql::connect db_connect_;
+    ::zce::mysql::handle db_connect_;
 };
 } //namespace
 
 namespace zce::mysql::exe
 {
 //!链接MYSQL数据库
-int connect(zce::mysql::connect* db_connect,
+int connect(zce::mysql::handle* db_connect,
             const char* host_name,
             const char* user,
             const char* pwd,
             unsigned int port = MYSQL_PORT);
 
 //!断开链接
-void disconnect(zce::mysql::connect* db_connect);
+void disconnect(zce::mysql::handle* db_connect);
 
 //!查询，非SELECT语句
-int query(zce::mysql::connect* db_connect,
+int query(zce::mysql::handle* db_connect,
           std::string_view sql,
           uint64_t* num_affect,
           uint64_t* insert_id);
 
 //!查询，SELECT语句
-int query(zce::mysql::connect* db_connect,
+int query(zce::mysql::handle* db_connect,
           std::string_view sql,
           uint64_t* num_affect,
           zce::mysql::result* db_result);
 
 //!查询,SELECT语句，用USE result的方式进行查询
-int query(zce::mysql::connect* db_connect,
+int query(zce::mysql::handle* db_connect,
           std::string_view sql,
           zce::mysql::result* db_result);
 } //namespace zce::mysql::exe

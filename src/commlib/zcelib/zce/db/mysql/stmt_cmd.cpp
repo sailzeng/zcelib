@@ -19,7 +19,7 @@ stmt_cmd::stmt_cmd() :
 }
 
 //指定一个connect
-stmt_cmd::stmt_cmd(zce::mysql::connect* conn) :
+stmt_cmd::stmt_cmd(zce::mysql::handle* conn) :
     mysql_connect_(nullptr),
     mysql_stmt_(nullptr),
     is_bind_result_(false)
@@ -47,7 +47,7 @@ stmt_cmd::~stmt_cmd()
 }
 
 //
-int stmt_cmd::set_connect(zce::mysql::connect* conn)
+int stmt_cmd::set_connect(zce::mysql::handle* conn)
 {
     //检查参数
     if (conn != nullptr && conn->is_connected())

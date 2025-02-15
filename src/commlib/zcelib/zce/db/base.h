@@ -3,7 +3,7 @@
 namespace zce::db
 {
 ///连接器基类
-class connect_base
+class handle_base
 {
 public:
 
@@ -23,9 +23,17 @@ public:
         sql_cmd = sql_cmd_;
     }
 
+    virtual bool is_connected()
+    {
+        return if_connected_;
+    }
+
 protected:
-    ///SQL
+    ///SQL 命令
     std::string sql_cmd_;
+
+    ///是否连接MYSQL数据库
+    bool      if_connected_ = false;
 };
 
 ///查询结果基类

@@ -16,7 +16,7 @@
 */
 #pragma once
 
-#include "zce/sqlite/sqlite_hdl.h"
+#include "zce/db/sqlite/sqlite_hdl.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000

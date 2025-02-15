@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/sqlite/conf_table.h"
+#include "zce/db/conf_table.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000

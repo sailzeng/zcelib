@@ -1,7 +1,7 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/sqlite/sqlite_hdl.h"
-#include "zce/sqlite/sqlite_result.h"
+#include "zce/db/sqlite/sqlite_hdl.h"
+#include "zce/db/sqlite/sqlite_result.h"
 
 //对于SQLITE的最低版本限制
 #if SQLITE_VERSION_NUMBER >= 3005000

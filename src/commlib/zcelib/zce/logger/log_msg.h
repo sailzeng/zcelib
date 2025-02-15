@@ -325,7 +325,7 @@ public:
 
         sz_buf_len -= sz_use_len;
 
-        //得到打印信息,sformat_n 为自己内部的函数，str_format使用{}作为输出控制符
+        //得到打印信息,format_to_n 为CPP 20  函数，
         const auto result = std::format_to_n(log_buf + sz_use_len,
                                              sz_buf_len,
                                              str_format,

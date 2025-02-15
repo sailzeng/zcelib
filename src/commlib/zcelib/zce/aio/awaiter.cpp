@@ -353,7 +353,7 @@ awaiter_aio co_dir_rmdir(zce::aio::worker* worker,
 //============================================================================
 //!链接数据
 awaiter_aio co_mysql_connect(zce::aio::worker* worker,
-                             zce::mysql::connect* db_connect,
+                             zce::mysql::handle* db_connect,
                              const char* host_name,
                              const char* user,
                              const char* pwd,
@@ -372,7 +372,7 @@ awaiter_aio co_mysql_connect(zce::aio::worker* worker,
 
 //!断开数据库链接
 awaiter_aio co_mysql_disconnect(zce::aio::worker* worker,
-                                zce::mysql::connect* db_connect)
+                                zce::mysql::handle* db_connect)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
     aio_atom->aio_type_ = AIO_TYPE::MYSQL_DISCONNECT;
@@ -382,7 +382,7 @@ awaiter_aio co_mysql_disconnect(zce::aio::worker* worker,
 
 //!查询，非SELECT语句
 awaiter_aio co_mysql_query(zce::aio::worker* worker,
-                           zce::mysql::connect* db_connect,
+                           zce::mysql::handle* db_connect,
                            const char* sql,
                            size_t sql_len,
                            uint64_t* num_affect,
@@ -401,7 +401,7 @@ awaiter_aio co_mysql_query(zce::aio::worker* worker,
 
 //!查询，SELECT语句
 awaiter_aio co_mysql_query(zce::aio::worker* worker,
-                           zce::mysql::connect* db_connect,
+                           zce::mysql::handle* db_connect,
                            const char* sql,
                            size_t sql_len,
                            uint64_t* num_affect,

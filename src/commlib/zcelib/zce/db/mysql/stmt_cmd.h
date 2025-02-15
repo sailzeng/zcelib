@@ -17,7 +17,7 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-#include "zce/db/mysql/connect.h"
+#include "zce/db/mysql/handle.h"
 
 //STMT函数都是4.1.2后的版本功能
 #if MYSQL_VERSION_ID >= 40100
@@ -38,7 +38,7 @@ public:
     //
     stmt_cmd();
     //指定一个connect
-    stmt_cmd(zce::mysql::connect*);
+    stmt_cmd(zce::mysql::handle*);
     //
     ~stmt_cmd();
 
@@ -47,10 +47,10 @@ public:
     * @return     int
     * @param      zce::mysql::connect* 设置的链接
     */
-    int set_connect(zce::mysql::connect*);
+    int set_connect(zce::mysql::handle*);
 
     //!得到此Command的zce::mysql::Connect对象
-    inline zce::mysql::connect* get_connect();
+    inline zce::mysql::handle* get_connect();
 
     inline MYSQL_STMT* get_stmt_handle();
 
@@ -134,7 +134,7 @@ protected:
 protected:
 
     ///联接
-    zce::mysql::connect* mysql_connect_;
+    zce::mysql::handle* mysql_connect_;
 
     ///STMT SQL 命令
     std::string         stmt_command_;
@@ -147,7 +147,7 @@ protected:
 };
 
 //得到connect 的句柄
-inline zce::mysql::connect* stmt_cmd::get_connect()
+inline zce::mysql::handle* stmt_cmd::get_connect()
 {
     return mysql_connect_;
 }

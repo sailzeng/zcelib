@@ -1,6 +1,6 @@
 //=========================================================================================
 #include "zce/predefine.h"
-#include "zce/sqlite/sqlite_result.h"
+#include "zce/db/sqlite/sqlite_result.h"
 
 #if SQLITE_VERSION_NUMBER >= 3005000
 

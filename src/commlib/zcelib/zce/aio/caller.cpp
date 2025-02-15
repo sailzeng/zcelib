@@ -352,7 +352,7 @@ void MYSQL_ATOM::clear()
 
 //!链接数据
 int mysql_connect(zce::aio::worker* worker,
-                  zce::mysql::connect* db_connect,
+                  zce::mysql::handle* db_connect,
                   const char* host_name,
                   const char* user,
                   const char* pwd,
@@ -377,7 +377,7 @@ int mysql_connect(zce::aio::worker* worker,
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::worker* worker,
-                     zce::mysql::connect* db_connect,
+                     zce::mysql::handle* db_connect,
                      std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
@@ -394,7 +394,7 @@ int mysql_disconnect(zce::aio::worker* worker,
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::connect* db_connect,
+                zce::mysql::handle* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -420,7 +420,7 @@ int mysql_query(zce::aio::worker* worker,
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::connect* db_connect,
+                zce::mysql::handle* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,

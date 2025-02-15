@@ -17,6 +17,7 @@
 
 #include "zce/event/handle_base.h"
 #include "zce/time/time_value.h"
+#include "zce/db/mysql/handle.h"
 #include "zce/comm/common.h"
 
 //前向声明
@@ -277,7 +278,7 @@ struct MYSQL_ATOM :public AIO_ATOM
     //!
     void clear() override;
 
-    zce::mysql::connect* db_connect_ = nullptr;
+    zce::mysql::handle* db_connect_ = nullptr;
     const char* host_name_ = nullptr;
     const char* user_ = nullptr;
     const char* pwd_ = nullptr;
@@ -291,7 +292,7 @@ struct MYSQL_ATOM :public AIO_ATOM
 
 //!链接数据
 int mysql_connect(zce::aio::worker* worker,
-                  zce::mysql::connect* db_connect,
+                  zce::mysql::handle* db_connect,
                   const char* host_name,
                   const char* user,
                   const char* pwd,
@@ -300,12 +301,12 @@ int mysql_connect(zce::aio::worker* worker,
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::worker* worker,
-                     zce::mysql::connect* db_connect,
+                     zce::mysql::handle* db_connect,
                      std::function<void(AIO_ATOM*)> call_back);
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::connect* db_connect,
+                zce::mysql::handle* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -314,7 +315,7 @@ int mysql_query(zce::aio::worker* worker,
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::connect* db_connect,
+                zce::mysql::handle* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,

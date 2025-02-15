@@ -221,7 +221,7 @@ unsigned int execute::make_real_escape_string(char* tostr,
 
 namespace zce::mysql::exe
 {
-int connect(zce::mysql::connect* db_connect,
+int connect(zce::mysql::handle* db_connect,
             const char* host_name,
             const char* user,
             const char* pwd,
@@ -253,7 +253,7 @@ int connect(zce::mysql::connect* db_connect,
 }
 
 //!断开链接
-void disconnect(zce::mysql::connect* db_connect)
+void disconnect(zce::mysql::handle* db_connect)
 {
     if (db_connect->is_connected() == true)
     {
@@ -262,7 +262,7 @@ void disconnect(zce::mysql::connect* db_connect)
 }
 
 //!查询，
-int query(zce::mysql::connect* db_connect,
+int query(zce::mysql::handle* db_connect,
           std::string_view sql,
           uint64_t* num_affect,
           uint64_t* insert_id)
@@ -296,7 +296,7 @@ int query(zce::mysql::connect* db_connect,
 }
 
 //!
-int query(zce::mysql::connect* db_connect,
+int query(zce::mysql::handle* db_connect,
           std::string_view sql,
           uint64_t* num_affect,
           zce::mysql::result* db_result)
@@ -330,7 +330,7 @@ int query(zce::mysql::connect* db_connect,
 }
 
 //!
-int query(zce::mysql::connect* db_connect,
+int query(zce::mysql::handle* db_connect,
           std::string_view sql,
           zce::mysql::result* db_result)
 {
