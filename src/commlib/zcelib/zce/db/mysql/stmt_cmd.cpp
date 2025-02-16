@@ -5,7 +5,7 @@
 #include "zce/db/mysql/result.h"
 
 //这些函数都是4.1.2后的版本功能
-#if MYSQL_VERSION_ID >= 40100
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 namespace zce::mysql
 {
@@ -259,4 +259,4 @@ void stmt_cmd::result_2_metadata(zce::mysql::result* tmpres) const
 }
 }
 
-#endif //MYSQL_VERSION_ID >= 40100
+#endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

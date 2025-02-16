@@ -2,8 +2,7 @@
 #include "zce/logger/logging.h"
 #include "zce/db/mysql/stmt_bind.h"
 
-//这些函数都是4.1.2后的版本功能
-#if MYSQL_VERSION_ID >= 40100
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 namespace zce::mysql
 {
@@ -242,4 +241,4 @@ void stmt_bind::bind(size_t bind_col, stmt_bind::NULL_Param& val)
 }
 }
 
-#endif //MYSQL_VERSION_ID >= 40100
+#endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

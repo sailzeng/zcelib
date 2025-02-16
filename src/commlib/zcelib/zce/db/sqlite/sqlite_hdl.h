@@ -27,8 +27,7 @@
 */
 #pragma once
 
-//目前版本限制只加这一个
-#if SQLITE_VERSION_NUMBER >= 3005000
+#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
 namespace zce
 {
@@ -105,4 +104,4 @@ protected:
 };
 }
 
-#endif //SQLITE_VERSION_NUMBER >= 3005000
+#endif

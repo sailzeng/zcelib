@@ -3,14 +3,12 @@
 #include "zce/db/mysql/handle.h"
 
 //如果你要用MYSQL的库
-#if defined ZCE_USE_MYSQL
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 namespace zce::mysql
 {
 handle::handle()
 {
-    //现在都在conect的时候进行初始化了。对应在disconnect 的时候close
-    ::mysql_init(&mysql_handle_);
     //置开始状态
     if_connected_ = false;
 }
@@ -19,20 +17,6 @@ handle::~handle()
 {
     // disconnect if if_connected_ to handle
     disconnect();
-}
-
-handle::handle(handle&& others) noexcept
-{
-    this->mysql_handle_ = others.mysql_handle_;
-    this->if_connected_ = others.if_connected_;
-    others.if_connected_ = false;
-}
-handle& handle::operator=(handle&& others) noexcept
-{
-    this->mysql_handle_ = others.mysql_handle_;
-    this->if_connected_ = others.if_connected_;
-    others.if_connected_ = false;
-    return *this;
 }
 
 //如果使用选项文件进行连接
@@ -92,17 +76,16 @@ int handle::connect_i(const char* host_name,
     }
 
     //初始化MYSQL句柄
-    mysql_init(&mysql_handle_);
-
+    ::mysql_init(&mysql_handle_);
     //设置连接的timeout
     if (timeout != 0)
     {
-        mysql_options(&mysql_handle_, MYSQL_OPT_CONNECT_TIMEOUT, (char*)(&timeout));
+        ::mysql_options(&mysql_handle_, MYSQL_OPT_CONNECT_TIMEOUT, (char*)(&timeout));
     }
 
     //50013,版本后，提供了这个选项，而原来的版本，这个选项是默认打开的。
 #if MYSQL_VERSION_ID >= 50013
-    mysql_options(&mysql_handle_, MYSQL_OPT_RECONNECT, "1");
+    ::mysql_options(&mysql_handle_, MYSQL_OPT_RECONNECT, "1");
 #endif
 
     unsigned long client_flag = 0;
@@ -157,6 +140,22 @@ int handle::connect_i(const char* host_name,
         return -1;
     }
 
+    if (mysql_stmt_ != nullptr)
+    {
+        int tmpret = ::mysql_stmt_close(mysql_stmt_);
+        if (tmpret != 0)
+        {
+            return tmpret;
+        }
+        mysql_stmt_ = nullptr;
+    }
+    mysql_stmt_ = ::mysql_stmt_init(&mysql_handle_);
+    if (nullptr == mysql_stmt_)
+    {
+        return -1;
+    }
+
+    return 0;
     if_connected_ = true;
     //返回成功 0=0
     return 0;
@@ -193,7 +192,12 @@ void handle::disconnect()
     {
         return;
     }
-
+    if (nullptr != mysql_stmt_)
+    {
+        int tmpret = ::mysql_stmt_free_result(mysql_stmt_);
+        tmpret = ::mysql_stmt_close(mysql_stmt_);
+        ZCE_UNUSED_ARG(tmpret);
+    }
     ::mysql_close(&mysql_handle_);
     if_connected_ = false;
 }
@@ -425,4 +429,4 @@ int handle::trans_rollback()
 }
 
 //如果你要用MYSQL的库
-#endif //#if defined ZCE_USE_MYSQL
+#endif 

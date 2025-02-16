@@ -1,7 +1,7 @@
 #include "zce/predefine.h"
 
 //对于SQLITE的最低版本限制
-#if SQLITE_VERSION_NUMBER >= 3005000
+#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
 #include "zce/logger/logging.h"
 #include "zce/db/sqlite/sqlite_hdl.h"
@@ -477,4 +477,4 @@ void sqlite_stmt::column(int result_col, std::string& val)
 }
 }
 
-#endif //#if SQLITE_VERSION_NUMBER >= 3005000
+#endif //#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1

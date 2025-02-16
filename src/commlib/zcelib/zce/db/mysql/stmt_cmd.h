@@ -15,12 +15,9 @@
 #pragma once
 
 //如果你要用MYSQL的库
-#if defined ZCE_USE_MYSQL
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 #include "zce/db/mysql/handle.h"
-
-//STMT函数都是4.1.2后的版本功能
-#if MYSQL_VERSION_ID >= 40100
 
 /*********************************************************************************
 class stmt_cmd
@@ -134,13 +131,13 @@ protected:
 protected:
 
     ///联接
-    zce::mysql::handle* mysql_connect_;
+    zce::mysql::handle* mysql_connect_ = nullptr;
 
     ///STMT SQL 命令
     std::string         stmt_command_;
 
     ///STMT 的Handle
-    MYSQL_STMT* mysql_stmt_;
+    MYSQL_STMT* mysql_stmt_ = nullptr;
 
     ///是否绑定结果了
     bool                is_bind_result_;
@@ -181,7 +178,6 @@ inline unsigned int stmt_cmd::result_fields_num() const
 {
     return static_cast <unsigned int>(mysql_stmt_field_count(mysql_stmt_));
 }
-#endif //MYSQL_VERSION_ID >= 40100
 }
 //如果你要用MYSQL的库
-#endif //#if defined ZCE_USE_MYSQL
+#endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

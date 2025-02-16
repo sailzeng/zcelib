@@ -1,6 +1,6 @@
 #pragma once
 
-#if SQLITE_VERSION_NUMBER >= 3005000
+#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
 #include "zce/string/from_string.h"
 
@@ -81,4 +81,4 @@ protected:
 };
 }
 
-#endif //SQLITE_VERSION_NUMBER >= 3005000
+#endif //#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1

@@ -15,7 +15,7 @@
 #pragma once
 
 //如果你要用MYSQL的库
-#if defined ZCE_USE_MYSQL
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 #include "zce/db/base.h"
 #include "zce/db/mysql/result.h"
@@ -33,10 +33,9 @@ public:
     handle();
     ~handle();
 
-    handle(handle &&) noexcept;
-    handle& operator=(handle&&) noexcept;
-
     //避免拷贝
+    handle(handle &&) noexcept = delete;
+    handle& operator=(handle&&) noexcept = delete;
     handle(const handle &) = delete;
     handle& operator=(const handle&) = delete;
 
@@ -114,19 +113,28 @@ public:
     * @brief      返回错误消息
     * @return     const char* 返回错误描述消息
     */
-    const char* error_message();
+    const char* error_message()
+    {
+        return mysql_error(&mysql_handle_);
+    }
 
     /*!
     * @brief      返回错误号
     * @return     unsigned int 返回的错误ID
     */
-    unsigned int error_no();
+    unsigned int error_no()
+    {
+        return mysql_errno(&mysql_handle_);
+    }
 
     /*!
     * @brief      得到MYSQL的句柄
     * @return     MYSQL* 返回的MYSQL句柄
     */
-    inline MYSQL* get_mysql_handle();
+    inline MYSQL* get_mysql_handle()
+    {
+        return &mysql_handle_;
+    }
 
     /*!
     * @brief      执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
@@ -247,25 +255,10 @@ public:
 private:
 
     ///MYSQL的句柄
-    MYSQL     mysql_handle_;
+    MYSQL       mysql_handle_;
+
+    ///STMT 的Handle
+    MYSQL_STMT* mysql_stmt_ = nullptr;
 };
-
-//得到MYSQL的句柄
-inline MYSQL* zce::mysql::handle::get_mysql_handle()
-{
-    return &mysql_handle_;
 }
-
-//得到错误信息
-inline const char* zce::mysql::handle::error_message()
-{
-    return mysql_error(&mysql_handle_);
-}
-
-//得到错误的ID
-inline unsigned int zce::mysql::handle::error_no()
-{
-    return mysql_errno(&mysql_handle_);
-}
-}
-#endif //#if defined ZCE_USE_MYSQL
+#endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

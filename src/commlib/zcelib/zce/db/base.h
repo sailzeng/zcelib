@@ -33,7 +33,7 @@ protected:
     std::string sql_cmd_;
 
     ///是否连接MYSQL数据库
-    bool      if_connected_ = false;
+    bool        if_connected_ = false;
 };
 
 ///查询结果基类

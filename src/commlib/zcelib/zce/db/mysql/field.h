@@ -12,8 +12,7 @@
 
 #pragma once
 
-//如果你要用MYSQL的库
-#if defined ZCE_USE_MYSQL
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
@@ -159,4 +158,4 @@ inline field::operator std::string() const
 #endif
 }
 
-#endif
+#endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

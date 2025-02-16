@@ -2,7 +2,7 @@
 #include "zce/predefine.h"
 #include "zce/db/sqlite/sqlite_result.h"
 
-#if SQLITE_VERSION_NUMBER >= 3005000
+#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
 namespace zce
 {
@@ -40,4 +40,4 @@ void sqlite_result::free_result()
 }
 }
 
-#endif //#if SQLITE_VERSION_NUMBER >= 3005000
+#endif //#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1

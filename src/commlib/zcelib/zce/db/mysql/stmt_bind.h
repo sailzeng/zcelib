@@ -15,7 +15,7 @@
 #pragma once
 
 //如果你要用MYSQL的库
-#if defined ZCE_USE_MYSQL
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
 #pragma warning ( disable : 26812)
@@ -255,10 +255,10 @@ public:
 protected:
 
     ///绑定的变量个数
-    size_t           num_bind_;
+    size_t      num_bind_;
 
     ///当前使用的绑定参数序号,用于<<
-    size_t            current_bind_;
+    size_t      current_bind_;
 
     ///BIND MySQL的封装方式让我不能用vector,
     MYSQL_BIND* stmt_bind_;
@@ -269,4 +269,4 @@ protected:
 #endif
 }
 
-#endif //#if defined ZCE_USE_MYSQL
+#endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
