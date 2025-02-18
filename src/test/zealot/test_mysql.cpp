@@ -33,7 +33,7 @@ const char* DB_BENCHMARK_USER = "root";
 const char* DB_BENCHMARK_PASSWORD = "";
 
 //MYSQL数据库连接对象
-static zce::mysql::connect g_db_connect;
+static zce::mysql::handle g_db_connect;
 
 int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_id, char* szErr)
 {

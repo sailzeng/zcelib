@@ -7,6 +7,17 @@ class handle_base
 {
 public:
 
+    handle_base()
+    {
+        sql_cmd_.reserve(SQL_INIT_BUFSIZE);
+    }
+    ~handle_base() = default;
+
+    void reserve_sql_len(size_t reserve_len)
+    {
+        sql_cmd_.reserve(reserve_len);
+    }
+
     void set_sql(std::string_view sql_cmd)
     {
         sql_cmd_ = sql_cmd;
@@ -27,6 +38,10 @@ public:
     {
         return if_connected_;
     }
+
+protected:
+    //!命令缓冲buf的大小
+    static const size_t SQL_INIT_BUFSIZE = 8 * 1024;
 
 protected:
     ///SQL 命令

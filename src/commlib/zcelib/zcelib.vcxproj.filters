@@ -104,9 +104,6 @@
     <ClCompile Include="zce\db\mysql\field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\db\mysql\stmt_cmd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\db\mysql\result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -458,9 +455,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\mysql\field.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\db\mysql\stmt_cmd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\mysql\result.h">

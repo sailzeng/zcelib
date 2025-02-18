@@ -22,6 +22,9 @@
 
 namespace zce::mysql
 {
+class stmt_bind;
+class result;
+
 /*!
 * @brief      MYSQL的Handle,负责连接，命令执行等
 */
@@ -81,7 +84,8 @@ public:
     * @param      optfile
     * @param      group
     */
-    int connect_by_optionfile(const char* optfile, const char* group);
+    int connect_by_optionfile(const char* optfile,
+                              const char* group);
 
     /*!
     * @brief      断开数据服务器
@@ -127,13 +131,15 @@ public:
         return mysql_errno(&mysql_handle_);
     }
 
-    /*!
-    * @brief      得到MYSQL的句柄
-    * @return     MYSQL* 返回的MYSQL句柄
-    */
+    //!得到MYSQL的句柄
     inline MYSQL* get_mysql_handle()
     {
         return &mysql_handle_;
+    }
+    //!得到STMT的句柄
+    inline MYSQL_STMT* get_stmt_handle()
+    {
+        return stmt_;
     }
 
     /*!
@@ -142,7 +148,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
     */
-    int query(uint64_t& num_affect, uint64_t& last_id);
+    int query(size_t& num_affect, uint64_t& last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -150,15 +156,15 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      sqlresult   返回的结果集合
     */
-    int query(uint64_t& num_affect, zce::mysql::result& sql_result);
+    int query(size_t& num_affect, zce::mysql::result& res);
 
     /*!
-    * @brief      执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
-    *             用于结果集太多的处理,一次处理会占用太多内存的的处理,不推荐使用,
+    * @brief      再取一次结果，USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
+    *             用于结果集太多的处理,一次处理会占用太多内存的的处理,否则不推荐使用
     * @return     int
     * @param      sqlresult 返回的结果集合
     */
-    int query(zce::mysql::result& sqlresult);
+    int query(zce::mysql::result& res);
 
     /*!
     * @brief      设置是否自动提交
@@ -182,10 +188,10 @@ public:
     /*!
     * @brief      如果一次执行多行SQL语句，这个方法用于取回结果集合
     * @return     int       0表示成功，否则标识失败
-    * @param[out] sqlresult 返回的MySQL结果集合
+    * @param[out] res 返回的MySQL结果集合
     * @param[out] bstore    使用mysql_store_result取回结果集合，还是mysql_use_result
     */
-    int fetch_next_result(zce::mysql::result& sqlresult,
+    int fetch_next_result(zce::mysql::result& res,
                           bool bstore = true);
 
     /*!
@@ -202,28 +208,71 @@ public:
                                     const char* fromstr,
                                     unsigned int fromlen);
 
+    /*!
+    * @brief      执行SQL语句,不用输出结果集合的那种
+    * @return     int
+    * @param      num_affect  返回的影响记录条数
+    * @param      lastid      返回的LASTID
+    */
+    int stmt_query(size_t& num_affect, size_t& lastid);
+
+    /*!
+    * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,
+    *             注意这个函数条用的是mysql_stmt_store_result.
+    * @return     int
+    * @param      num_affect 返回的影响记录条数
+    */
+    int stmt_query(size_t& num_affect);
+
+    /*!
+    * @brief      预处理SQL,并且分析绑定的变量
+    * @return     int
+    * @param      bind_param    绑定的参数
+    * @param      bind_result   绑定的结果
+    * @note
+    */
+    int stmt_prepare_bind(stmt_bind* bind_param,
+                          stmt_bind* bind_result);
+
+    //
+    void stmt_param_2_metadata(result* res) const
+    {
+        MYSQL_RES* myres = ::mysql_stmt_param_metadata(stmt_);
+        res->set_mysql_result(myres);
+        return;
+    }
+
+    //
+    void stmt_result_2_metadata(result* res) const
+    {
+        MYSQL_RES* myres = ::mysql_stmt_result_metadata(stmt_);
+        res->set_mysql_result(myres);
+        return;
+    }
 protected:
 
+    enum class CONNECT_BY
+    {
+        HOST,
+        SOCKET_FILE,
+        OPTION_FILE
+    };
     /*!
     * @brief      连接数据库服务器，内部函数,具体的实现在此，
     * @return     int
-    * @param      host_name
-    * @param      socket_file  UNIX SOCKET文件名称或者命名管道名称
-    * @param      user  用户,默认为mysql
-    * @param      pwd  用户密码,默认为""
-    * @param      db 使用的默认数据库,默认为空表示不选择
-    * @param      port  端口,默认为MYSQL_PORT
-    * @param      timeout  连接数据库的超时时间，默认为0,表示不设置
-    * @param      bmultisql 是否使用多语句同时执行的方式,默认为false,可能在事物等处理上有些效果
+    * @param      by 连接方式
     */
-    int connect_i(const char* host_name,
+    int connect_i(CONNECT_BY by,
+                  const char* host_name,
                   const char* socket_file,
                   const char* user = "mysql",
                   const char* pwd = "",
                   const char* db = nullptr,
                   const unsigned int port = MYSQL_PORT,
                   unsigned int timeout = 0,
-                  bool bmultisql = false);
+                  bool bmultisql = false,
+                  const char* optfile = nullptr,
+                  const char* group = nullptr);
 
     /*!
     * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
@@ -233,10 +282,14 @@ protected:
     * @param[out] sqlresult   SQL执行后的结果集合
     * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
     */
-    int query_i(uint64_t* num_affect,
-                uint64_t* last_id,
+    int query_i(size_t* num_affect,
+                size_t* last_id,
                 zce::mysql::result* sqlresult,
                 bool bstore);
+
+    //!SQL 执行命令，这个事一个基础函数，内部调用
+    int stmt_query_i(size_t* num_affect,
+                     size_t* last_id);
 public:
 
     /*!
@@ -255,10 +308,12 @@ public:
 private:
 
     ///MYSQL的句柄
-    MYSQL       mysql_handle_;
+    MYSQL      mysql_handle_;
 
     ///STMT 的Handle
-    MYSQL_STMT* mysql_stmt_ = nullptr;
+    MYSQL_STMT* stmt_ = nullptr;
+    ///
+    bool is_bind_result_ = false;
 };
 }
 #endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

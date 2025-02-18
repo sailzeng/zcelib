@@ -120,17 +120,6 @@ public:
         return prepared_statement_;
     }
 
-    //!错误语句Str
-    inline const char* error_message()
-    {
-        return sqlite_hdl_->error_message();
-    }
-    //!DB返回的错误ID
-    inline  unsigned int error_code()
-    {
-        return sqlite_hdl_->error_code();
-    }
-
     /*!
     * @brief      得到当前返回列的长度
     * @return     int 长度
@@ -160,27 +149,27 @@ public:
 
     /*!
     * @brief      对于SQL语句的?参数，进行绑定，
-    * @tparam     bind_type 绑定的参数类型
+    * @tparam     T 绑定的参数类型
     * @return     int       返回 0 表示成功，
-    * @param      bind_index 绑定的下标，从1开始
+    * @param      bind_col 绑定的下标，从1开始
     * @param      val       SQL语句绑定的参数
     * @note       SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
     *             SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
     *             如需要bind blob数据，使用BLOB_bind
     */
-    template <class bind_type>
-    int bind(int bind_col, bind_type val);
+    template <class T>
+    int bind(int bind_col, T val);
 
     /*!
     * @brief      取得列的结果
-    * @tparam     column_type 结果的类型
+    * @tparam     T 结果的类型
     * @param      result_col 列号，从0开始
     * @param      val 取出的结果
     * @note       文本数据自己看看末尾的'\0',而二进制数据不要这样考虑
     *             如需要column blob数据,使用BLOB_column
     */
-    template <class column_type>
-    void column(int result_col, column_type val);
+    template <class T>
+    void column(int result_col, T val);
 
     //!导出结果,列号自动++
     template <class value_type>

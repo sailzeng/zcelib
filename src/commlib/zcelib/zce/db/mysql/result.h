@@ -221,6 +221,8 @@ public:
     /// >> 操作符号,用于将结果输出到val中
     ///早年为了安全，>>操作前还做了各种防止溢出的检查，结果反而导致一个bug，
     ///所以后来改为还是由调用者包装边界安全把
+    result& operator >> (bool& val);
+
     result& operator >> (char& val);
     result& operator >> (short& val);
     result& operator >> (int& val);
@@ -236,14 +238,15 @@ public:
     result& operator >> (float& val);
     result& operator >> (double& val);
 
-    result& operator >> (bool& val);
-
     result& operator >> (char* val);
     result& operator >> (unsigned char* val);
     result& operator >> (std::string& val);
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
     result& operator >> (BINARY*);
+
+    template <typename T>
+    result& operator >> (T &val);
 
 private:
     ///结果集合

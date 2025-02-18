@@ -43,9 +43,9 @@ result::~result()
 }
 
 //放入结果集合
-void result::set_mysql_result(MYSQL_RES* sqlresult)
+void result::set_mysql_result(MYSQL_RES* res)
 {
-    ZCE_ASSERT(sqlresult);
+    ZCE_ASSERT(res);
 
     //如果已经有结果集, 释放原有的结果集,
     if (nullptr != mysql_result_)
@@ -66,7 +66,7 @@ void result::set_mysql_result(MYSQL_RES* sqlresult)
     //列属性指针清0
     mysql_fields_ = 0;
 
-    mysql_result_ = sqlresult;
+    mysql_result_ = res;
 
     //如果不是一个空的结果集合
     if (mysql_result_)
@@ -254,6 +254,19 @@ int result::field_define_size(const char* fname, unsigned int& fdefsz) const
 
     fdefsz = mysql_fields_[fid].length;
     return 0;
+}
+
+result& result::operator >> (bool& val)
+{
+    val = false;
+
+    int fields = sscanf(current_row_[current_field_], "%c", (char*)&val);
+    if (fields != 1)
+    {
+        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+    }
+    ++current_field_;
+    return *this;
 }
 
 //>>操作是给C++的爱好者准备的，但是其在发生问题是无法报错(参数限制),除非你用异常

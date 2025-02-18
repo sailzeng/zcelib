@@ -61,7 +61,7 @@
 #include <zce/string/format.h>
 #include <zce/string/extend.h>
 
-#include <zce/db/mysql/connect.h>
+#include <zce/db/mysql/handle.h>
 #include <zce/util/id_to_string.h>
 #include <zce/util/mpl.h>
 
@@ -92,9 +92,9 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 
-#include <zce/sqlite/sqlite_hdl.h>
-#include <zce/sqlite/sqlite_stmt.h>
-#include <zce/sqlite/sqlite_result.h>
+#include <zce/db/sqlite/sqlite_hdl.h>
+#include <zce/db/sqlite/sqlite_stmt.h>
+#include <zce/db/sqlite/sqlite_result.h>
 
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>
