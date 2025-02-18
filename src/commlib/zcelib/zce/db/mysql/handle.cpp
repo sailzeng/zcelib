@@ -8,13 +8,13 @@
 
 namespace zce::mysql
 {
-handle::handle()
+handle::handle() noexcept
 {
     //置开始状态
     if_connected_ = false;
 }
 
-handle::~handle()
+handle::~handle() noexcept
 {
     // disconnect if if_connected_ to handle
     disconnect();
@@ -77,6 +77,7 @@ int handle::connect_i(CONNECT_BY by,
                                    port,
                                    nullptr,
                                    client_flag);
+        break;
     case SOCKET_FILE:
         //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为nullptr，
         // 是先进行命名管道连接，如果不行用TCP/IP连接本地
@@ -89,6 +90,7 @@ int handle::connect_i(CONNECT_BY by,
                                    port,
                                    socket_file,
                                    client_flag);
+        break;
     case OPTION_FILE:
         if (optfile != nullptr)
         {
@@ -105,7 +107,6 @@ int handle::connect_i(CONNECT_BY by,
                 return -1;
             }
         }
-
         ret = ::mysql_real_connect(&mysql_handle_,
                                    nullptr,
                                    nullptr,
@@ -114,6 +115,7 @@ int handle::connect_i(CONNECT_BY by,
                                    0,
                                    nullptr,
                                    0);
+        break;
     default:
         ZCE_ASSERT(false);
         return -1;

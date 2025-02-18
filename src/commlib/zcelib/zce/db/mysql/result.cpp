@@ -8,7 +8,7 @@
 namespace zce::mysql
 {
 //构造函数
-result::result() :
+result::result() noexcept :
     mysql_result_(nullptr),
     current_row_(nullptr),
     current_field_(0),
@@ -20,7 +20,7 @@ result::result() :
 }
 
 //构造函数
-result::result(MYSQL_RES* sqlresult) :
+result::result(MYSQL_RES* sqlresult) noexcept :
     mysql_result_(nullptr),
     current_row_(nullptr),
     current_field_(0),
@@ -33,12 +33,12 @@ result::result(MYSQL_RES* sqlresult) :
 }
 
 //析构函数
-result::~result()
+result::~result() noexcept
 {
     // 释放结果集合的内存资源
     if (mysql_result_ != nullptr)
     {
-        mysql_free_result(mysql_result_);
+        ::mysql_free_result(mysql_result_);
     }
 }
 
@@ -94,7 +94,7 @@ void result::free_result()
 }
 
 //检索一个结果集合的下一行,最开始从0行开始
-bool result::fetch_row_next()
+bool result::fetch_row()
 {
     if (mysql_result_ == nullptr)
     {
@@ -207,7 +207,7 @@ int result::field_type(const char* fname, enum_field_types& ftype) const
 }
 
 //根据Field Name 得到此列值的实际长度
-int result::field_length(const char* fname, unsigned int& flength) const
+int result::field_length(const char* fname, unsigned long& flength) const
 {
     //根据列的名字得到Field ID
     size_t fid = 0;
@@ -225,16 +225,16 @@ int result::field_length(const char* fname, unsigned int& flength) const
 }
 
 //根据字段顺序ID,得到表结构定义的字段长度
-int result::field_define_size(unsigned int fieldid, unsigned int& flength) const
+int result::field_define_size(unsigned int colum, unsigned int& flength) const
 {
-    //检查结果集合为空,或者参数fieldid错误
-    if (mysql_result_ == nullptr && fieldid >= num_result_field_)
+    //检查结果集合为空,或者参数colum错误
+    if (mysql_result_ == nullptr && colum >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
     }
 
-    flength = mysql_fields_[fieldid].length;
+    flength = mysql_fields_[colum].length;
     return 0;
 }
 
@@ -255,241 +255,228 @@ int result::field_define_size(const char* fname, unsigned int& fdefsz) const
     fdefsz = mysql_fields_[fid].length;
     return 0;
 }
-
-result& result::operator >> (bool& val)
+//>>操作是给C++的爱好者准备的，但是其在发生问题是无法报错(参数限制),除非你用异常
+//用于结果集合中的当前行，当前列数据输出，输出晚后列值加+1
+template<>
+void result::field(size_t colum, bool& val) const
 {
     val = false;
 
-    int fields = sscanf(current_row_[current_field_], "%c", (char*)&val);
+    int fields = sscanf(current_row_[colum], "%c", (char*)&val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-//>>操作是给C++的爱好者准备的，但是其在发生问题是无法报错(参数限制),除非你用异常
-//用于结果集合中的当前行，当前列数据输出，输出晚后列值加+1
-result& result::operator >> (char& val)
+template<>
+void result::field(size_t colum, char& val) const
 {
     val = 0;
 
-    int fields = sscanf(current_row_[current_field_], "%c", &val);
+    int fields = sscanf(current_row_[colum], "%c", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (short& val)
+template<>
+void result::field(size_t colum, short& val) const
 {
     val = 0;
 
-    int fields = sscanf(current_row_[current_field_], "%hd", &val);
+    int fields = sscanf(current_row_[colum], "%hd", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (int& val)
+template<>
+void result::field(size_t colum, int& val) const
 {
     val = 0;
 
-    int fields = sscanf(current_row_[current_field_], "%d", &val);
+    int fields = sscanf(current_row_[colum], "%d", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (long& val)
+template<>
+void result::field(size_t colum, long& val) const
 {
     val = 0;
     //如果结果集为空
-    int fields = sscanf(current_row_[current_field_], "%ld", &val);
+    int fields = sscanf(current_row_[colum], "%ld", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (long long& val)
+template<>
+void result::field(size_t colum, long long& val) const
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%lld", &val);
+    int fields = sscanf(current_row_[colum], "%lld", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (unsigned char& val)
+template<>
+void result::field(size_t colum, unsigned char& val) const
 {
     val = 0;
     //如果结果集为空
-    int fields = sscanf(current_row_[current_field_], "%c", &val);
+    int fields = sscanf(current_row_[colum], "%c", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (unsigned short& val)
+template<>
+void result::field(size_t colum, unsigned short& val) const
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%hu", &val);
+    int fields = sscanf(current_row_[colum], "%hu", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (unsigned long& val)
+template<>
+void result::field(size_t colum, unsigned long& val) const
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%lu", &val);
+    int fields = sscanf(current_row_[colum], "%lu", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (unsigned int& val)
+template<>
+void result::field(size_t colum, unsigned int& val) const
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%u", &val);
+    int fields = sscanf(current_row_[colum], "%u", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (unsigned long long& val)
+template<>
+void result::field(size_t colum, unsigned long long& val) const
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%llu", &val);
+    int fields = sscanf(current_row_[colum], "%llu", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (float& val)
+template<>
+void result::field(size_t colum, float& val) const
 {
     val = 0.0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%f", &val);
+    int fields = sscanf(current_row_[colum], "%f", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (double& val)
+template<>
+void result::field(size_t colum, double& val) const
 {
     val = 0.0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%lf", &val);
+    int fields = sscanf(current_row_[colum], "%lf", &val);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    ++current_field_;
-    return *this;
+    return;
 }
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
-result& result::operator >> (char* val)
+template<>
+void result::field(size_t colum, char* &val) const
 {
     ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
 
     //长度不包括结束符号
-    memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
-    val[fields_length_[current_field_]] = '\0';
+    memcpy(val, current_row_[colum], fields_length_[colum]);
+    val[fields_length_[colum]] = '\0';
 
-    ++current_field_;
-    return *this;
+    return;
 }
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 //考虑过对于unsigned char *做一些特别处理，后来还是算了,用BINARY去考虑了
-result& result::operator >> (unsigned char* val)
+template<>
+void result::field(size_t colum, unsigned char* &val) const
 {
     ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
 
     //长度不包括结束符号
-    memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
-    val[fields_length_[current_field_]] = '\0';
+    memcpy(val, current_row_[colum], fields_length_[colum]);
+    val[fields_length_[colum]] = '\0';
 
-    ++current_field_;
-    return *this;
+    return;
 }
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-result& result::operator >> (result::BINARY* val)
+template<>
+void result::field(size_t colum, result::BINARY*& val) const
 {
-    ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
+    ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[colum]));
 
     //长度不包括结束符号
-    memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
+    memcpy(val, current_row_[colum], fields_length_[colum]);
 
-    ++current_field_;
-    return *this;
+    return;
 }
 
-result& result::operator >> (std::string& val)
+template<>
+void result::field(size_t colum, std::string& val) const
 {
     if (current_row_[current_field_])
     {
-        val.assign(current_row_[current_field_], fields_length_[current_field_]);
+        val.assign(current_row_[colum], fields_length_[colum]);
     }
     else
     {
         val = "";
     }
-
-    ++current_field_;
-    return *this;
-}
-
-//Description     : 查询结果集合是否为空
-inline bool result::is_null()
-{
-    if (mysql_result_)
-    {
-        return false;
-    }
-
-    return true;
+    return;
 }
 
 //根据列名得到列ID,从0开始排序
@@ -511,16 +498,16 @@ inline int result::field_index(const char* fname, size_t& field_id) const
 
 //根据列Field ID 返回表定义列域名,列域名字,可能为空
 //计算得到的列的列名字也可能是空,
-char* result::field_name(size_t fieldid) const
+char* result::field_name(size_t colum) const
 {
     //检查结果集合为空,或者参数nfield错误
-    if (mysql_result_ == nullptr || fieldid >= num_result_field_)
+    if (mysql_result_ == nullptr || colum >= num_result_field_)
     {
         return nullptr;
     }
 
     //直接得到列域的名字
-    return mysql_fields_[fieldid].name;
+    return mysql_fields_[colum].name;
 }
 
 //返回结果集的行数目,num_result_row_ 结果在execute函数中也可以得到
@@ -536,84 +523,84 @@ unsigned int result::num_of_fields() const
 }
 
 //根据字段列ID,得到字段值
-const char* result::field_data(size_t fieldid) const
+const char* result::field_data(size_t colum) const
 {
-    if (current_row_ == nullptr || fieldid >= num_result_field_)
+    if (current_row_ == nullptr || colum >= num_result_field_)
     {
         return nullptr;
     }
 
-    return current_row_[fieldid];
+    return current_row_[colum];
 }
 
 //根据字段列ID,得到字段值的指针，长度你自己保证
-int result::field_data(size_t fieldid, char* pfdata) const
+int result::field_data(size_t colum, char* pfdata) const
 {
-    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
-    if (current_row_ == nullptr || fieldid >= num_result_field_ || pfdata == nullptr)
+    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数colum错误
+    if (current_row_ == nullptr || colum >= num_result_field_ || pfdata == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
     }
 
-    memcpy(pfdata, current_row_[fieldid], fields_length_[fieldid]);
+    memcpy(pfdata, current_row_[colum], fields_length_[colum]);
     return 0;
 }
 
 //根据字段顺序ID,得到字段表结构定义的类型
-int result::field_type(size_t fieldid, enum_field_types& ftype) const
+int result::field_type(size_t colum, enum_field_types& ftype) const
 {
     //检查结果集合为空,或者参数nfield错误
-    if (current_row_ == nullptr || fieldid >= num_result_field_)
+    if (current_row_ == nullptr || colum >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
     }
 
-    ftype = mysql_fields_[fieldid].type;
+    ftype = mysql_fields_[colum].type;
     return 0;
 }
 
 //根据Field ID 得到此列值的实际长度
-int result::field_length(size_t fieldid, unsigned int& flength) const
+int result::field_length(size_t colum, unsigned long& flength) const
 {
-    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数fieldid错误
-    if (current_row_ == nullptr && fieldid >= num_result_field_)
+    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数colum错误
+    if (current_row_ == nullptr && colum >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
     }
 
-    flength = fields_length_[fieldid];
+    flength = fields_length_[colum];
     return 0;
 }
 
-unsigned int result::get_cur_field_length()
+unsigned long result::get_cur_field_length()
 {
-    return static_cast<unsigned int>(fields_length_[current_field_]);
+    return static_cast<unsigned long>(fields_length_[current_field_]);
 }
 
 //根据字段的序列值得到字段值
-int result::get_field(size_t fieldid, zce::mysql::field& ffield) const
+int result::get_field(size_t colum, zce::mysql::field& ffield) const
 {
     //进行安全检查，如果错误返回
-    if (current_row_ == nullptr || fieldid >= num_result_field_)
+    if (current_row_ == nullptr || colum >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
     }
 
-    ffield.set_field(current_row_[fieldid], fields_length_[fieldid], mysql_fields_[fieldid].type);
+    ffield.set_field(current_row_[colum], fields_length_[colum], mysql_fields_[colum].type);
     return 0;
 }
 
 //根据列序号ID得到字段FIELD，
 //[]操作符号函数不检查检查列ID,自己保证参数
-zce::mysql::field result::operator[](size_t fieldid) const
+zce::mysql::field result::operator[](size_t colum) const
 {
-    zce::mysql::field ffield(current_row_[fieldid],
-                             fields_length_[fieldid],
-                             mysql_fields_[fieldid].type);
+    zce::mysql::field ffield(current_row_[colum],
+                             fields_length_[colum],
+                             mysql_fields_[colum].type);
     return ffield;
 }
 }

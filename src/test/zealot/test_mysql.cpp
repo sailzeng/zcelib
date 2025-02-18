@@ -2,20 +2,20 @@
 DROP TABLE IF EXISTS benchmark.test1;
 CREATE TABLE IF NOT EXISTS benchmark.test1
 (
-F1      INT   NOT nullptr ,
-F2      INT   NOT nullptr DEFAULT 0,
-F3      INT   NOT nullptr DEFAULT 0,
-F4      INT   NOT nullptr DEFAULT 0,
-F5      INT   NOT nullptr DEFAULT 0,
-F6      INT   NOT nullptr DEFAULT 0,
-F7      INT   NOT nullptr DEFAULT 0,
-F8      INT   NOT nullptr DEFAULT 0,
-F9      INT   NOT nullptr DEFAULT 0,
-F10     INT   NOT nullptr DEFAULT 0,
-F11     FLOAT(10,4) NOT nullptr DEFAULT 0,
-F12     DOUBLE(10,4) NOT nullptr DEFAULT 0,
-F13     VARCHAR(64) NOT nullptr DEFAULT '',
-F14     DATETIME   NOT nullptr DEFAULT '0',
+F1      INT   NOT NULL ,
+F2      INT   NOT NULL DEFAULT 0,
+F3      INT   NOT NULL DEFAULT 0,
+F4      INT   NOT NULL DEFAULT 0,
+F5      INT   NOT NULL DEFAULT 0,
+F6      INT   NOT NULL DEFAULT 0,
+F7      INT   NOT NULL DEFAULT 0,
+F8      INT   NOT NULL DEFAULT 0,
+F9      INT   NOT NULL DEFAULT 0,
+F10     INT   NOT NULL DEFAULT 0,
+F11     FLOAT(10,4) NOT NULL DEFAULT 0,
+F12     DOUBLE(10,4) NOT NULL DEFAULT 0,
+F13     VARCHAR(64) NOT NULL DEFAULT '',
+F14     DATETIME   NOT NULL DEFAULT '0',
 PRIMARY KEY (F1)
 );
 */
@@ -31,6 +31,24 @@ const char* DB_BENCHMARK_IP = "192.168.1.90";
 const char* DB_BENCHMARK_USER = "root";
 ////社团数据库用户密码
 const char* DB_BENCHMARK_PASSWORD = "";
+
+struct TEST1_TABLE
+{
+    int f1_;
+    int f2_;
+    int f3_;
+    int f4_;
+    int f5_;
+    int f6_;
+    int f7_;
+    int f8_;
+    int f9_;
+    int f10_;
+    float f11_;
+    double f12_;
+    std::string f13_;
+    time_t f14_;
+};
 
 //MYSQL数据库连接对象
 static zce::mysql::handle g_db_connect;
@@ -232,8 +250,25 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
         if (num_affect == 0)
         {
         }
+        while (db_result.fetch_row())
+        {
+            TEST1_TABLE t1_res;
+            db_result >> t1_res.f1_;
+            db_result >> t1_res.f2_;
+            db_result >> t1_res.f3_;
+            db_result >> t1_res.f4_;
+            db_result >> t1_res.f5_;
+            db_result >> t1_res.f6_;
+            db_result >> t1_res.f7_;
+            db_result >> t1_res.f8_;
+            db_result >> t1_res.f9_;
+            db_result >> t1_res.f10_;
+            db_result >> t1_res.f11_;
+            db_result >> t1_res.f12_;
+            db_result >> t1_res.f13_;
+            db_result >> t1_res.f14_;
+        }
     }
-
     return RETURN_SUCC;
 }
 

@@ -33,8 +33,8 @@ class handle :public zce::db::handle_base
 public:
 
     //构造函数,析构函数
-    handle();
-    ~handle();
+    handle() noexcept;
+    ~handle() noexcept;
 
     //避免拷贝
     handle(handle &&) noexcept = delete;

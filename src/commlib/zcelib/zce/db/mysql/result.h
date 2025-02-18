@@ -51,16 +51,19 @@ public:
 
 public:
     ///构造函数,析构函数
-    result();
-    result(MYSQL_RES* sqlresult);
-    ~result();
+    result() noexcept;
+    result(MYSQL_RES* sqlresult) noexcept;
+    ~result() noexcept;
 
     //避免拷贝
     result(const result &) = delete;
     result& operator=(const result&) = delete;
 
     ///结果集合是否为空
-    inline bool is_null();
+    inline bool is_null()
+    {
+        return mysql_result_ ? true : false;
+    }
 
     /*!
     * @brief      设置结果集合
@@ -70,16 +73,16 @@ public:
     void set_mysql_result(MYSQL_RES* sqlresult);
 
     ///根据Field ID返回表定义列域名,注意计算得到的列的名字也可能是空
-    inline char* field_name(size_t fieldid) const;
+    inline char* field_name(size_t colum) const;
 
     /*!
     * @brief      根据Field Name得到Field ID,列号
     * @return     inline int 0成功，-1失败
     * @param[in]  fname      列名称,
-    * @param[out] fieldid    返回的列名称对应列ID
+    * @param[out] colum    返回的列名称对应列ID
     */
     inline int field_index(const char* fname,
-                           size_t& fieldid) const;
+                           size_t& colum) const;
 
     /*!
     * @brief      返回结果集的行数目
@@ -95,109 +98,72 @@ public:
 
     /*!
     * @brief      根据列序号ID得到字段FIELD，[]操作符号函数不检查检查列ID,自己保证参数
-    * @return     ZCE_MySQL_Field
-    * @param[in]  fieldid          取的字段下标
+    * @return     zce::mysql::field
+    * @param[in]  colum          取的字段下标
     */
-    zce::mysql::field operator[](size_t fieldid) const;
+    zce::mysql::field operator[](size_t colum) const;
 
     /*!
     * @brief      通过列ID，查询当前行的字段，性能好，下标定位
     * @return     int      0成功，-1失败
-    * @param[in]  fieldid  列ID，从0开始
+    * @param[in]  colum  列ID，从0开始 fname  列名称，SELECT字段名称
     * @param[out] ffield   返回列的值
     */
-    int get_field(size_t fieldid, zce::mysql::field& ffield) const;
+    int get_field(size_t colum, zce::mysql::field& ffield) const;
 
-    /*!
-    * @brief      通过列名称查询当前行的某个字段的值，但性能并不好
-    * @return     int     0成功，-1失败
-    * @param      fname   列字段的名称，SQL中的名称，如果是复杂的SQL SELECT，列名字会比较怪异，
-    * @param      ffield  返回参数，列数据的封装
-    */
     int get_field(const char*, zce::mysql::field& ffield) const;
 
     /*!
     * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
     * @return     const char* 数据的指针，返回nullptr表示取错误
-    * @param      fieldid     下标
-    * @note
+    * @param      colum     下标 fname       列（字段）名称
     */
-    inline const char* field_data(size_t fieldid) const;
+    const char* field_data(size_t colum) const;
 
-    /*!
-    * @brief      在当前行，当前列，得到字段值,将数据的指针作为作为返回值
-    * @return     const char* 数据的指针，返回nullptr表示取错误
-    * @param      fname       列（字段）名称
-    */
     const char* field_data(const char* fname) const;
 
     /*!
     * @brief      根据列序号ID得到当前行的字段值,
     * @return     int       0成功，-1失败
-    * @param      fieldid   列ID
+    * @param      colum   列ID  fname   列名称
     * @param      pfdata    列数据的指针
     */
-    inline int field_data(size_t fieldid, char* pfdata) const;
+    int field_data(size_t colum, char* pfdata) const;
 
-    /*!
-    * @brief      根据列名字得到字段值
-    * @return     int      0成功，-1失败
-    * @param      fname    列名称
-    * @param      pfdata   列数据的指针
-    */
-    int field_data(const char* fname, char* pfdata) const;
+    int field_data(const char*, char* pfdata) const;
 
     /*!
     * @brief      根据列序号得到字段的长度
     * @return     int
-    * @param      fieldid
+    * @param      colum   列ID  fname   列名称
     * @param      flength
     * @note
     */
-    inline int field_length(size_t fieldid, unsigned int& flength) const;
+    int field_length(size_t colum, unsigned long& flength) const;
 
-    /*!
-    * @brief      根据列名字得到字段的长度
-    * @return     int      0成功，-1失败
-    * @param      fname    列名称，SELECT字段名称
-    * @param      flength  列数据的长度
-    */
-    int field_length(const char* fname, unsigned int& flength) const;
+    int field_length(const char* fname, unsigned long& flength) const;
 
     ///取得当前的字段的长度
-    inline unsigned int get_cur_field_length();
+    unsigned long get_cur_field_length();
 
     /*!
     * @brief      根据列序号ID得到字段的类型
     * @return     inline int   0成功，-1失败
-    * @param      fieldid      列字段ID
+    * @param      colum      列字段ID,  fname  列名称，SELECT字段名称
     * @param      ftype        列数据的长度，要参考MYSQL CAPI 的enum_field_types
     */
-    inline int field_type(size_t fieldid, enum_field_types& ftype) const;
+    int field_type(size_t colum, enum_field_types& ftype) const;
 
-    /*!
-    * @brief      根据列名字得到字段的类型
-    * @return     int    0成功，-1失败
-    * @param      fname  列名称，SELECT字段名称
-    * @param      ftype  列类型，要参考MYSQL CAPI 的enum_field_types
-    */
     int field_type(const char* fname, enum_field_types& ftype) const;
 
     /*!
     * @brief      得到字段表结构定义的长度
     * @return     int
-    * @param      fieldid 列字段ID
+    * @param      colum 列字段ID  fname  列名称，SELECT字段名称
     * @param      flength 列定义的长度，
     */
-    int field_define_size(unsigned int fieldid, unsigned int& flength) const;
+    int field_define_size(unsigned int colum, unsigned int& flength) const;
 
-    /*!
-    * @brief      得到字段表结构定义的长度
-    * @return     int
-    * @param      name
-    * @param      flength
-    * @note
-    */
     int field_define_size(const char* name, unsigned int& flength) const;
 
     /*!
@@ -211,42 +177,26 @@ public:
     * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
     * @return     bool true还有结果集合，false没有结果集合了
     */
-    bool fetch_row_next();
+    bool fetch_row();
 
     /*!
     * @brief      如果已经有结果集, 释放原有的结果集,
     */
     void free_result();
 
-    /// >> 操作符号,用于将结果输出到val中
-    ///早年为了安全，>>操作前还做了各种防止溢出的检查，结果反而导致一个bug，
-    ///所以后来改为还是由调用者包装边界安全把
-    result& operator >> (bool& val);
-
-    result& operator >> (char& val);
-    result& operator >> (short& val);
-    result& operator >> (int& val);
-    result& operator >> (long& val);
-    result& operator >> (long long& val);
-
-    result& operator >> (unsigned char& val);
-    result& operator >> (unsigned short& val);
-    result& operator >> (unsigned int& val);
-    result& operator >> (unsigned long& val);
-    result& operator >> (unsigned long long& val);
-
-    result& operator >> (float& val);
-    result& operator >> (double& val);
-
-    result& operator >> (char* val);
-    result& operator >> (unsigned char* val);
-    result& operator >> (std::string& val);
-
-    ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-    result& operator >> (BINARY*);
-
+    /// 字符串 用char * ,unsigned char*,字符串都特别+1了,帮忙做了结尾
+    /// 二进制数据用 BINARY*,维持原长度
     template <typename T>
-    result& operator >> (T &val);
+    void field(size_t colum, T &val) const;
+
+    /// >> 操作符号,用于将结果输出到val中,如果使用>>,请按顺序，不要跳过
+    template <typename T>
+    result& operator >> (T &&val)
+    {
+        field(current_field_, std::forward<T>(val));
+        ++current_field_;
+        return *this;
+    }
 
 private:
     ///结果集合
@@ -261,10 +211,10 @@ private:
     unsigned long* fields_length_;
 
     ///结果集的行数
-    unsigned int     num_result_row_;
+    unsigned int    num_result_row_;
 
     ///结果集的列数
-    unsigned int     num_result_field_;
+    unsigned int    num_result_field_;
 
     ///MYSQL_FIELD数组指针,指向结果集合的所有Field说明.
     MYSQL_FIELD* mysql_fields_;
