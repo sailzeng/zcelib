@@ -88,7 +88,7 @@ void result::free_result()
     //如果已经有结果集, 释放原有的结果集,
     if (nullptr != mysql_result_)
     {
-        mysql_free_result(mysql_result_);
+        ::mysql_free_result(mysql_result_);
         mysql_result_ = nullptr;
     }
 }
@@ -127,7 +127,7 @@ int result::seek_row(size_t row_id)
         return -1;
     }
 
-    mysql_data_seek(mysql_result_, row_id);
+    ::mysql_data_seek(mysql_result_, row_id);
     current_row_ = ::mysql_fetch_row(mysql_result_);
     fields_length_ = ::mysql_fetch_lengths(mysql_result_);
     current_field_ = 0;
@@ -255,228 +255,41 @@ int result::field_define_size(const char* fname, unsigned int& fdefsz) const
     fdefsz = mysql_fields_[fid].length;
     return 0;
 }
-//>>操作是给C++的爱好者准备的，但是其在发生问题是无法报错(参数限制),除非你用异常
-//用于结果集合中的当前行，当前列数据输出，输出晚后列值加+1
-template<>
-void result::field(size_t colum, bool& val) const
-{
-    val = false;
-
-    int fields = sscanf(current_row_[colum], "%c", (char*)&val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, char& val) const
-{
-    val = 0;
-
-    int fields = sscanf(current_row_[colum], "%c", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, short& val) const
-{
-    val = 0;
-
-    int fields = sscanf(current_row_[colum], "%hd", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, int& val) const
-{
-    val = 0;
-
-    int fields = sscanf(current_row_[colum], "%d", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, long& val) const
-{
-    val = 0;
-    //如果结果集为空
-    int fields = sscanf(current_row_[colum], "%ld", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, long long& val) const
-{
-    val = 0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%lld", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, unsigned char& val) const
-{
-    val = 0;
-    //如果结果集为空
-    int fields = sscanf(current_row_[colum], "%c", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, unsigned short& val) const
-{
-    val = 0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%hu", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, unsigned long& val) const
-{
-    val = 0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%lu", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, unsigned int& val) const
-{
-    val = 0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%u", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, unsigned long long& val) const
-{
-    val = 0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%llu", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, float& val) const
-{
-    val = 0.0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%f", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
-
-template<>
-void result::field(size_t colum, double& val) const
-{
-    val = 0.0;
-    //转换以及检查
-    int fields = sscanf(current_row_[colum], "%lf", &val);
-    if (fields != 1)
-    {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
-    }
-    return;
-}
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 template<>
-void result::field(size_t colum, char* &val) const
+int result::field(size_t colum, char* &val) const
 {
     ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
-
     //长度不包括结束符号
     memcpy(val, current_row_[colum], fields_length_[colum]);
     val[fields_length_[colum]] = '\0';
-
-    return;
+    return 0;
 }
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 //考虑过对于unsigned char *做一些特别处理，后来还是算了,用BINARY去考虑了
 template<>
-void result::field(size_t colum, unsigned char* &val) const
+int result::field(size_t colum, unsigned char* &val) const
 {
     ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[current_field_]));
 
     //长度不包括结束符号
     memcpy(val, current_row_[colum], fields_length_[colum]);
     val[fields_length_[colum]] = '\0';
-
-    return;
+    return 0;
 }
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 template<>
-void result::field(size_t colum, result::BINARY*& val) const
+int result::field(size_t colum, result::BINARY*& val) const
 {
     ZCE_ASSERT((nullptr != val) && (nullptr != current_row_[colum]));
 
     //长度不包括结束符号
     memcpy(val, current_row_[colum], fields_length_[colum]);
 
-    return;
-}
-
-template<>
-void result::field(size_t colum, std::string& val) const
-{
-    if (current_row_[current_field_])
-    {
-        val.assign(current_row_[colum], fields_length_[colum]);
-    }
-    else
-    {
-        val = "";
-    }
-    return;
+    return 0;
 }
 
 //根据列名得到列ID,从0开始排序
@@ -590,7 +403,9 @@ int result::get_field(size_t colum, zce::mysql::field& ffield) const
         return -1;
     }
 
-    ffield.set_field(current_row_[colum], fields_length_[colum], mysql_fields_[colum].type);
+    ffield.set_field(current_row_[colum],
+                     fields_length_[colum],
+                     mysql_fields_[colum].type);
     return 0;
 }
 

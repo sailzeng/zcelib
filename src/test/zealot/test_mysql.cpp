@@ -47,7 +47,7 @@ struct TEST1_TABLE
     float f11_;
     double f12_;
     std::string f13_;
-    time_t f14_;
+    MYSQL_TIME f14_;
 };
 
 //MYSQL数据库连接对象

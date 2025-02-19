@@ -76,6 +76,13 @@ struct UUID64_16_48
     uint64_t       data2_ : 48;
 };
 
+struct UUID64_16_16_32
+{
+    uint64_t       data1_ : 16;
+    uint64_t       data2_ : 16;
+    uint64_t       data3_ : 32;
+};
+
 /*!
 * @brief      64位的UUID，内部分成3种表示方法，也提供了比较==，<等操作
 *             @li 64位的整数
@@ -113,6 +120,8 @@ public:
         uint32_t      u_2uint32_[2];
         ///16bit+48Bit的表示方法
         UUID64_16_48  u_16_48_;
+        ///16+16+32bit的表示方法
+        UUID64_16_16_32 u_16_16_32_;
     };
 
 public:

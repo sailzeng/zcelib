@@ -33,6 +33,7 @@
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/string.h"
 #include "zce/db/mysql/field.h"
+#include "zce/string/from_string.h"
 
 /*!
 * @brief      MYSQL的结果集封装
@@ -184,10 +185,20 @@ public:
     */
     void free_result();
 
-    /// 字符串 用char * ,unsigned char*,字符串都特别+1了,帮忙做了结尾
-    /// 二进制数据用 BINARY*,维持原长度
+    /*!
+    * @brief      普通情况的使用 from_str 进行转换，有几种情况进行了特化
+    *             字符串 用char * ,unsigned char*,字符串都特别+1了,帮忙做了结尾
+    *             二进制数据用 BINARY*,维持原长度
+    * @return     int 表示成功转换
+    * @param      colum 列ID
+    * @param      val   取得的列数据
+    */
     template <typename T>
-    void field(size_t colum, T &val) const;
+    int field(size_t colum, T &val) const
+    {
+        //ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        return zce::from_str(current_row_[colum], val);
+    }
 
     /// >> 操作符号,用于将结果输出到val中,如果使用>>,请按顺序，不要跳过
     template <typename T>

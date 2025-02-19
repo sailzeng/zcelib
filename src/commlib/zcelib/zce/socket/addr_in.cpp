@@ -94,7 +94,7 @@ int addr_in::set(uint32_t ip_addr,
 }
 
 //根据字符串设置IP地址，如果有#会提取端口号
-int addr_in::set(const char* ip_addr_str)
+int addr_in::from_str(const char* ip_addr_str)
 {
     int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr_str);
 

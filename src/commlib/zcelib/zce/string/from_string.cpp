@@ -11,120 +11,153 @@
 namespace zce
 {
 //将c str 转换为很多数值类型，作为返回值返回
+
 template<>
-int8_t from_str(const char* str)
+int from_str(const char* str, signed char &to_val)
 {
     //10表示10进制，
     char* stopstring = nullptr;
-    return static_cast<int8_t>(::strtol(str, &stopstring, 10));
+    to_val = static_cast<signed char>(::strtol(str, &stopstring, 10));
+    return 0;
 }
-
 template<>
-uint8_t from_str(const char* str)
+int from_str(const char* str, unsigned char &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<uint8_t>(::strtol(str, &stopstring, 10));
+    to_val = static_cast<unsigned char>(::strtoul(str, &stopstring, 10));
+    return 0;
+}
+template<>
+int from_str(const char* str, char &to_val)
+{
+    char* stopstring = nullptr;
+    to_val = static_cast<char>(::strtol(str, &stopstring, 10));
+    return 0;
 }
 
 template<>
-int16_t from_str(const char* str)
+int from_str(const char* str, signed short &to_val)
 {
     //10表示10进制，
     char* stopstring = nullptr;
-    return static_cast<int16_t>(::strtol(str, &stopstring, 10));
+    to_val = static_cast<signed short>(::strtol(str, &stopstring, 10));
+    return 0;
+}
+template<>
+int from_str(const char* str, unsigned short &to_val)
+{
+    //10表示10进制，
+    char* stopstring = nullptr;
+    to_val = static_cast<unsigned short>(::strtoul(str, &stopstring, 10));
+    return 0;
 }
 
 template<>
-uint16_t from_str(const char* str)
+int from_str(const char* str, signed int &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<uint16_t>(::strtol(str, &stopstring, 10));
+    to_val = static_cast<signed int>(::strtol(str, &stopstring, 10));
+    return 0;
 }
-
 template<>
-int32_t from_str(const char* str)
+int from_str(const char* str, unsigned int &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<int32_t>(::strtol(str, &stopstring, 10));
+    to_val = static_cast<unsigned int>(::strtoul(str, &stopstring, 10));
+    return 0;
 }
 
 template<>
-uint32_t from_str(const char* str)
+int from_str(const char* str, signed long &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<uint32_t>(::strtoul(str, &stopstring, 10));
+    to_val = static_cast<signed long>(::strtol(str, &stopstring, 10));
+    return 0;
 }
-
 template<>
-int64_t from_str(const char* str)
+int from_str(const char* str, unsigned long &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<int64_t>(::strtoll(str, &stopstring, 10));
+    to_val = static_cast<unsigned long>(::strtoul(str, &stopstring, 10));
+    return 0;
 }
 
 template<>
-uint64_t from_str(const char* str)
+int from_str(const char* str, signed long long &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<uint64_t>(::strtoull(str, &stopstring, 10));
+    to_val = static_cast<signed long long>(::strtoll(str, &stopstring, 10));
+    return 0;
 }
-
 template<>
-double from_str(const char* str)
+int from_str(const char* str, unsigned long long &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<double>(::strtod(str, &stopstring));
+    to_val = static_cast<unsigned long long>(::strtoull(str, &stopstring, 10));
+    return 0;
 }
 
 template<>
-float from_str(const char* str)
+int from_str(const char* str, double &to_val)
 {
     char* stopstring = nullptr;
-    return static_cast<float>(::strtod(str, &stopstring));
+    to_val = static_cast<double>(::strtod(str, &stopstring));
+    return 0;
 }
 
 template<>
-bool from_str(const char* str)
+int from_str(const char* str, float &to_val)
+{
+    char* stopstring = nullptr;
+    to_val = static_cast<float>(::strtod(str, &stopstring));
+    return 0;
+}
+
+template<>
+int from_str(const char* str, bool &to_val)
 {
     if (0 == strcasecmp("TRUE", str))
     {
-        return true;
+        to_val = true;
     }
     else if (1 == ::atoi(str))
     {
-        return true;
+        to_val = true;
     }
-    return false;
-}
-
-//
-template<>
-zce::skt::addr_in from_str(const char* str)
-{
-    zce::skt::addr_in val;
-    val.set(str);
-    return val;
+    return -1;
 }
 
 template<>
-zce::skt::addr_in6 from_str(const char* str)
+int from_str(const char* str, zce::skt::addr_in &to_val)
 {
-    zce::skt::addr_in6 val;
-    val.set(str);
-    return val;
+    return to_val.from_str(str);
 }
 
 template<>
-zce::time_value from_str(const char* str)
+int from_str(const char* str, zce::skt::addr_in6 &to_val)
 {
-    zce::time_value val;
-    val.from_string(str, false, zce::TIME_STR_FORMAT::ISO_USEC);
-    return val;
+    return to_val.from_str(str);
 }
 
 template<>
-std::string from_str(const char* str)
+int from_str(const char* str, zce::time_value &to_val)
 {
-    return std::string(str);
+    return to_val.from_string(str, false, zce::TIME_STR_FORMAT::ISO_USEC);
 }
+
+template<>
+int from_str(const char* str, std::string &to_val)
+{
+    to_val = std::string(str);
+    return 0;
+}
+
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
+
+template<>
+int from_str(const char* str, MYSQL_TIME& mytm)
+{
+    return zce::str_to_MYSQL_TIME(str, &mytm);
+}
+#endif
 }

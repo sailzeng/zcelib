@@ -487,7 +487,7 @@ public:
     void add_unit(uint32_t c)
     {
         uint64_t result = 0;
-        uint32_t cc = c;
+        uint64_t cc = c;
         for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
         {
             result = cc + bn_[i];

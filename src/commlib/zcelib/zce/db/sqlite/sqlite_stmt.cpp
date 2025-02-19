@@ -160,7 +160,7 @@ int sqlite_stmt::bind(int bind_index, int val)
 template<>
 int sqlite_stmt::bind(int bind_index, long val)
 {
-    int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
+    int ret = ::sqlite3_bind_int64(prepared_statement_, bind_index, static_cast<int64_t>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
@@ -233,7 +233,7 @@ int sqlite_stmt::bind(int bind_index, unsigned int val)
 template<>
 int sqlite_stmt::bind(int bind_index, unsigned long val)
 {
-    int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
+    int ret = ::sqlite3_bind_int64(prepared_statement_, bind_index, static_cast<uint64_t>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",

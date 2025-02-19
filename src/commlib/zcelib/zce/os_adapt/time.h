@@ -238,11 +238,11 @@ const char* timeval_to_str(const timeval* timeval,
 * @param[out] usec    返回的的微秒的时间，默认为nullptr，表示不需要返回，
 * @param[out] tz      返回的的时区,默认为nullptr，表示不需要返回，很多种格式里面没有时区信息
 */
-void str_to_tm(const char* strtm,
-               TIME_STR_FORMAT fmt,
-               tm* ptr_tm,
-               time_t* usec = nullptr,
-               int* tz = nullptr);
+int str_to_tm(const char* strtm,
+              TIME_STR_FORMAT fmt,
+              tm* ptr_tm,
+              time_t* usec = nullptr,
+              int* tz = nullptr);
 
 /*!
 * @brief      从字符串转换得到本地时间timeval函数
@@ -251,13 +251,18 @@ void str_to_tm(const char* strtm,
 * @param[in]  uct_time 将strtm字符串视为UCT/GMT时间还是本地时间Local Time
 *                      true表示视为UCT/GMT时间，false表示视为本地时间
 * @param[in]  fmt      字符串的格式，参考枚举值 @ref TIME_STR_FORMAT,
-
 * @param[out] tval     返回的时间,
 */
 int str_to_timeval(const char* strtm,
                    TIME_STR_FORMAT fmt,
                    bool uct_time,
                    timeval* tval);
+
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
+
+int str_to_MYSQL_TIME(const char* strtm,
+                      MYSQL_TIME* ptr_tm);
+#endif
 
 ///本地时间字符串转换为time_t
 int localtimestr_to_time_t(const char* localtime_str,

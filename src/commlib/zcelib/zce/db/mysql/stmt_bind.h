@@ -86,13 +86,7 @@ public:
             assert(stmt_timetype_ == MYSQL_TYPE_TIMESTAMP ||
                    stmt_timetype_ == MYSQL_TYPE_DATE ||
                    stmt_timetype_ == MYSQL_TYPE_DATETIME ||
-                   stmt_timetype_ == MYSQL_TYPE_TIME ||
-                   stmt_timetype_ == MYSQL_TYPE_DATETIME ||
-                   stmt_timetype_ == MYSQL_TYPE_YEAR ||
-                   stmt_timetype_ == MYSQL_TYPE_NEWDATE ||
-                   stmt_timetype_ == MYSQL_TYPE_TIMESTAMP2 ||
-                   stmt_timetype_ == MYSQL_TYPE_DATETIME2 ||
-                   stmt_timetype_ == MYSQL_TYPE_TIME2);
+                   stmt_timetype_ == MYSQL_TYPE_TIME);
         };
         //
         ~timedata() = default;

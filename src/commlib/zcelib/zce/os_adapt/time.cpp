@@ -424,11 +424,11 @@ const char* zce::timeval_to_str(const timeval* timeval,
 }
 
 //通过字符串翻译得到tm时间结构
-void zce::str_to_tm(const char* strtm,
-                    TIME_STR_FORMAT fmt,
-                    tm* ptr_tm,
-                    time_t* usec,
-                    int* tz)
+int zce::str_to_tm(const char* strtm,
+                   TIME_STR_FORMAT fmt,
+                   tm* ptr_tm,
+                   time_t* usec,
+                   int* tz)
 {
     static const char* MONTH_NAME[] =
     {
@@ -445,8 +445,7 @@ void zce::str_to_tm(const char* strtm,
         ("Nov"),
         ("Dec")
     };
-    static const time_t CHARATER_ZERO_TIME_T = '0';
-
+    size_t len_str = ::strlen(strtm);
     ZCE_ASSERT(strtm && ptr_tm);
     if (usec != nullptr)
     {
@@ -461,6 +460,11 @@ void zce::str_to_tm(const char* strtm,
     if (zce::TIME_STR_FORMAT::COMPACT_DAY == fmt ||
         zce::TIME_STR_FORMAT::COMPACT_SEC == fmt)
     {
+        //字符串长度必须>=8
+        if (len_str < 8)
+        {
+            return -1;
+        }
         ptr_tm->tm_year = ((*strtm) - '0') * 1000
             + (*(strtm + 1) - '0') * 100
             + (*(strtm + 2) - '0') * 10
@@ -476,6 +480,11 @@ void zce::str_to_tm(const char* strtm,
         //如果输入字符串精度到微秒
         if (zce::TIME_STR_FORMAT::COMPACT_SEC == fmt)
         {
+            //字符串长度必须>=14
+            if (len_str < 14)
+            {
+                return -1;
+            }
             ptr_tm->tm_hour = (*(strtm + 8) - '0') * 10
                 + (*(strtm + 9) - '0');
             ptr_tm->tm_min = (*(strtm + 10) - '0') * 10
@@ -488,6 +497,10 @@ void zce::str_to_tm(const char* strtm,
              zce::TIME_STR_FORMAT::ISO_SEC == fmt ||
              zce::TIME_STR_FORMAT::ISO_USEC == fmt)
     {
+        if (len_str < 10)
+        {
+            return -1;
+        }
         ptr_tm->tm_year = ((*strtm) - '0') * 1000
             + (*(strtm + 1) - '0') * 100
             + (*(strtm + 2) - '0') * 10
@@ -506,6 +519,10 @@ void zce::str_to_tm(const char* strtm,
         if (zce::TIME_STR_FORMAT::ISO_SEC == fmt ||
             zce::TIME_STR_FORMAT::ISO_USEC == fmt)
         {
+            if (len_str < 19)
+            {
+                return -1;
+            }
             ptr_tm->tm_hour = (*(strtm + 11) - '0') * 10
                 + (*(strtm + 12) - '0');
             ptr_tm->tm_min = (*(strtm + 14) - '0') * 10
@@ -516,18 +533,26 @@ void zce::str_to_tm(const char* strtm,
         if (zce::TIME_STR_FORMAT::ISO_USEC == fmt &&
             usec != nullptr)
         {
-            *usec = ((*(strtm + 20)) - CHARATER_ZERO_TIME_T) * 100000
-                + ((*(strtm + 21) - CHARATER_ZERO_TIME_T)) * 10000
-                + ((*(strtm + 22) - CHARATER_ZERO_TIME_T)) * 1000
-                + ((*(strtm + 23) - CHARATER_ZERO_TIME_T)) * 100
-                + ((*(strtm + 24) - CHARATER_ZERO_TIME_T)) * 10
-                + ((*(strtm + 25) - CHARATER_ZERO_TIME_T));
+            if (len_str < 26)
+            {
+                return -1;
+            }
+            *usec = ((*(strtm + 20)) - '0') * 100000
+                + ((*(strtm + 21) - '0')) * 10000
+                + ((*(strtm + 22) - '0')) * 1000
+                + ((*(strtm + 23) - '0')) * 100
+                + ((*(strtm + 24) - '0')) * 10
+                + ((*(strtm + 25) - '0'));
         }
     }
     else if (zce::TIME_STR_FORMAT::US_SEC == fmt ||
              zce::TIME_STR_FORMAT::US_USEC == fmt)
     {
         //Fri Aug 24 2002 07:43:05.100190
+        if (len_str < 24)
+        {
+            return -1;
+        }
         char mon_str[4];
         mon_str[0] = strtm[4];
         mon_str[1] = strtm[5];
@@ -559,17 +584,25 @@ void zce::str_to_tm(const char* strtm,
         if (zce::TIME_STR_FORMAT::US_USEC == fmt &&
             usec != nullptr)
         {
-            *usec = (*(strtm + 25) - CHARATER_ZERO_TIME_T) * 100000
-                + (*(strtm + 26) - CHARATER_ZERO_TIME_T) * 10000
-                + (*(strtm + 27) - CHARATER_ZERO_TIME_T) * 1000
-                + (*(strtm + 28) - CHARATER_ZERO_TIME_T) * 100
-                + (*(strtm + 29) - CHARATER_ZERO_TIME_T) * 10
-                + (*(strtm + 30) - CHARATER_ZERO_TIME_T);
+            if (len_str < 31)
+            {
+                return -1;
+            }
+            *usec = (*(strtm + 25) - '0') * 100000
+                + (*(strtm + 26) - '0') * 10000
+                + (*(strtm + 27) - '0') * 1000
+                + (*(strtm + 28) - '0') * 100
+                + (*(strtm + 29) - '0') * 10
+                + (*(strtm + 30) - '0');
         }
     }
     //Thu, 26 Nov 2009 13:05:19 GMT
     else if (zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
     {
+        if (len_str < 25)
+        {
+            return -1;
+        }
         char mon_str[4];
         mon_str[0] = strtm[5];
         mon_str[1] = strtm[6];
@@ -600,6 +633,10 @@ void zce::str_to_tm(const char* strtm,
     }
     else if (zce::TIME_STR_FORMAT::EMAIL_DATE == fmt)
     {
+        if (len_str < 31)
+        {
+            return -1;
+        }
         char mon_str[4];
         mon_str[0] = strtm[5];
         mon_str[1] = strtm[6];
@@ -645,8 +682,9 @@ void zce::str_to_tm(const char* strtm,
     {
         ZCE_ASSERT(false);
         errno = EINVAL;
-        return;
+        return -1;
     }
+    return 0;
 }
 
 //从字符串转换得到时间time_t函数
@@ -655,7 +693,7 @@ int zce::str_to_timeval(const char* strtm,
                         bool uct_time,
                         timeval* tval)
 {
-    //
+    //HTTP_GMT 本身就是UTC/GMT
     if (!uct_time && zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
     {
         ZCE_ASSERT(false);
@@ -710,6 +748,94 @@ int zce::str_to_timeval(const char* strtm,
 
     return 0;
 }
+
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
+
+//
+int zce::str_to_MYSQL_TIME(const char* strtm,
+                           MYSQL_TIME* mysql_tm)
+{
+    size_t len_str = ::strlen(strtm);
+    ::memset(mysql_tm, 0, sizeof(MYSQL_TIME));
+
+    if (len_str >= 10 && *(strtm + 4) == '-')
+    {
+        mysql_tm->time_type = MYSQL_TIMESTAMP_DATE;
+
+        mysql_tm->year = (*(strtm)-'0') * 1000
+            + (*(strtm + 1) - '0') * 100
+            + (*(strtm + 2) - '0') * 10
+            + (*(strtm + 3) - '0');
+        mysql_tm->month = (*(strtm + 5) - '0') * 10
+            + (*(strtm + 6) - '0');
+        mysql_tm->day = (*(strtm + 8) - '0') * 10
+            + (*(strtm + 9) - '0');
+
+        if (len_str >= 19 && *(strtm + 13) == ':')
+        {
+            mysql_tm->time_type = MYSQL_TIMESTAMP_DATETIME;
+            mysql_tm->hour = (*(strtm + 11) - '0') * 10
+                + (*(strtm + 12) - '0');
+            mysql_tm->minute = (*(strtm + 14) - '0') * 10
+                + (*(strtm + 15) - '0');
+            mysql_tm->second = (*(strtm + 17) - '0') * 10
+                + (*(strtm + 18) - '0');
+        }
+        //如果后续还有毫秒
+        if (len_str >= 26 && *(strtm + 19) == '.')
+        {
+            mysql_tm->second_part = ((*(strtm + 20)) - '0') * 100000
+                + ((*(strtm + 21) - '0')) * 10000
+                + ((*(strtm + 22) - '0')) * 1000
+                + ((*(strtm + 23) - '0')) * 100
+                + ((*(strtm + 24) - '0')) * 10
+                + ((*(strtm + 25) - '0'));
+        }
+    }
+    else if ((len_str >= 9 && *(strtm) == '-' && *(strtm + 3) == ':') ||
+             (len_str >= 10 && *(strtm) == '-' && *(strtm + 4) == ':') ||
+             (len_str >= 8 && *(strtm + 2) == ':') ||
+             (len_str >= 9 && *(strtm + 3) == ':'))
+    {
+        //TIME values may range from '-838:59:59' to '838:59:59'.
+        mysql_tm->time_type = MYSQL_TIMESTAMP_TIME;
+        size_t offset = 0;
+        if (*(strtm + offset) == '-')
+        {
+            mysql_tm->neg = true;
+            offset = 1;
+        }
+        //
+        if (*(strtm + offset + 3) == ':')
+        {
+            mysql_tm->hour = (*(strtm + offset + 0) - '0') * 100
+                + (*(strtm + offset + 1) - '0') * 10
+                + (*(strtm + offset + 2) - '0');
+            offset += 3;
+        }
+        else if (*(strtm + offset + 2) == ':')
+        {
+            mysql_tm->hour = (*(strtm + offset + 0) - '0') * 10
+                + (*(strtm + offset + 1) - '0');
+            offset += 2;
+        }
+        else
+        {
+            return -1;
+        }
+        mysql_tm->minute = (*(strtm + offset + 0) - '0') * 10
+            + (*(strtm + offset + 1) - '0');
+        mysql_tm->second = (*(strtm + offset + 3) - '0') * 10
+            + (*(strtm + offset + 4) - '0');
+    }
+    else
+    {
+        return -1;
+    }
+    return 0;
+}
+
+#endif
 
 ///本地时间字符串转换为time_t
 int zce::localtimestr_to_time_t(const char* localtime_str,

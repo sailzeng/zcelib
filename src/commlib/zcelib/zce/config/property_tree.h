@@ -127,9 +127,8 @@ public:
         {
             return ret;
         }
-        std::string value;
-        value = leaf_iter->second;
-        if (value.empty())
+        std::string val_str(leaf_iter->second);
+        if (val_str.empty())
         {
             ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
                     path_str.c_str(), key_str.c_str());
@@ -137,7 +136,7 @@ public:
         }
         else
         {
-            val = zce::from_string<val_type>(value);
+            zce::from_string<val_type>(val_str, val);
             return 0;
         }
     }

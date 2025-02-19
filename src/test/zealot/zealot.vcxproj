@@ -119,6 +119,7 @@
     <ClCompile Include="test_math.cpp" />
     <ClCompile Include="test_net.cpp" />
     <ClCompile Include="test_rudp.cpp" />
+    <ClCompile Include="test_string.cpp" />
     <ClCompile Include="zealot_main.cpp" />
     <ClCompile Include="predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

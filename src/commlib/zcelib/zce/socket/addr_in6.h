@@ -54,7 +54,7 @@ public:
     * @param      ip_addr_str
     * @note       如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
     */
-    int set(const char* ip_addr_str);
+    int from_str(const char* ip_addr_str);
 
     //根据地址的字符串，端口号设置
     int set(const char *ip_addr_str,

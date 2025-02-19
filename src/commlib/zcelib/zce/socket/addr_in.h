@@ -76,7 +76,7 @@ public:
     * @param      ip_addr_str 地址字符串
     * @note       如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
     */
-    int set(const char* ip_addr_str);
+    int from_str(const char* ip_addr_str);
 
     ///检查端口号是否是一个安全端口
     bool check_safeport();
