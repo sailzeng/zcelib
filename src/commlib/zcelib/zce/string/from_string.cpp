@@ -98,18 +98,24 @@ int from_str(const char* str, unsigned long long &to_val)
 }
 
 template<>
+int from_str(const char* str, float &to_val)
+{
+    char* stopstring = nullptr;
+    to_val = static_cast<float>(::strtod(str, &stopstring));
+    return 0;
+}
+template<>
 int from_str(const char* str, double &to_val)
 {
     char* stopstring = nullptr;
     to_val = static_cast<double>(::strtod(str, &stopstring));
     return 0;
 }
-
 template<>
-int from_str(const char* str, float &to_val)
+int from_str(const char* str, long double &to_val)
 {
     char* stopstring = nullptr;
-    to_val = static_cast<float>(::strtod(str, &stopstring));
+    to_val = static_cast<long double>(::strtold(str, &stopstring));
     return 0;
 }
 
@@ -142,7 +148,7 @@ int from_str(const char* str, zce::skt::addr_in6 &to_val)
 template<>
 int from_str(const char* str, zce::time_value &to_val)
 {
-    return to_val.from_string(str, false, zce::TIME_STR_FORMAT::ISO_USEC);
+    return to_val.from_str(str, false, zce::TS_FMT::ISO_USEC);
 }
 
 template<>

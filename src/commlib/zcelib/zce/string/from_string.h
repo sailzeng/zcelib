@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/string/from_string.h
+* @filename   zce/string/from_str.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年5月2日
@@ -40,9 +40,9 @@ T from_str(const char* str)
 * @return     ret_type  返回的数据类型
 * @param[in]  str       字符串
 */
-template<typename to_type>
-int from_string(const std::string& stdstr, to_type& to_val)
+template<typename T>
+int from_str(const std::string& stdstr, T& to_val)
 {
-    return from_str<to_type>(stdstr.c_str(), to_val);
+    return from_str<T>(stdstr.c_str(), to_val);
 }
 }

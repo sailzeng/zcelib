@@ -265,13 +265,13 @@ public:
     * @return     const char*     打印的字符串，方便你处理
     * @param[out] str_date_time   要输出的字符串数组
     * @param[in]  datetime_strlen 字符串的长度
-    * @param[in]   fromat_type    时间格式，参考@ref TIME_STR_FORMAT 枚举，默认输出ISO格式的本地时间，精度到USEC。
+    * @param[in]   fromat_type    时间格式，参考@ref TS_FMT 枚举，默认输出ISO格式的本地时间，精度到USEC。
     */
     const char *to_str(char* buffer,
                        size_t buf_len,
                        size_t& use_buf,
                        bool uct_time = false,
-                       zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC)  const;
+                       zce::TS_FMT fromat_type = zce::TS_FMT::ISO_USEC)  const;
 
     /*!
     * @brief      根据你的格式化要求,将字符串，转换为事件
@@ -280,9 +280,9 @@ public:
     * @param[in]  uct_time    是否转换为UTC时间
     * @param[in]  fromat_type 时间格式，默认为ISO的usec
     */
-    int from_string(const char* strtm,
-                    bool uct_time = false,
-                    zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC);
+    int from_str(const char* strtm,
+                 bool uct_time = false,
+                 zce::TS_FMT fromat_type = zce::TS_FMT::ISO_USEC);
 
     ///返回一个timespec的对象
     //operator ::timespec () const;

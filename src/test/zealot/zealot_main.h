@@ -146,3 +146,5 @@ int test_aio1(int argc, char* argv[]);
 int test_aio3(int argc, char* argv[]);
 int test_msgring_condi(int argc, char* argv[]);
 int test_aio4(int argc, char* argv[]);
+
+int test_time_string1(int argc, char* argv[]);

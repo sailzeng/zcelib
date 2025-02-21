@@ -146,24 +146,37 @@ const char* timestamp(char* str_date_time,
                       size_t datetime_strlen);
 
 ///时间格式化输出的格式类型
-enum class TIME_STR_FORMAT
+enum class TS_FMT
 {
-    ///用紧凑的格式进行输出 20100910
-    COMPACT_DAY = 1,
-    ///用紧凑的格式进行输出 20100910100318
-    COMPACT_SEC = 2,
+    ///用2位年的收缩的格式进行输出 格式举例如下:
+    ///(1) 240910
+    ///(2) 240910 100318
+    ///(3) 240910 100318.100190
+    SHRINK_DAY = 1,
+    SHRINK_SEC = 2,
+    SHRINK_USEC = 3,
 
-    ///用ISO的格式进行时间输出，精度到天 2010-09-10
-    ISO_DAY = 5,
-    ///用ISO的格式进行时间输出，精度到秒，2010-09-10 10:03:18
-    ISO_SEC = 6,
-    ///用ISO的格式进行时间输出，精度到微秒，2010-09-10 10:03:18.100190
-    ISO_USEC = 7,
+    ///用紧凑的格式进行输出 格式举例如下:
+    ///(11) 20100910
+    ///(12) 20100910 100318
+    ///(13) 20100910 100318.100190
+    COMPACT_DAY = 11,
+    COMPACT_SEC = 12,
+    COMPACT_USEC = 13,
 
-    ///用美国的时间格式进行输出 Fri Aug 24 2002 07:43:05
-    US_SEC = 10,
-    ///用美国的时间格式进行输出 Fri Aug 24 2002 07:43:05.100190
-    US_USEC = 11,
+    ///用ISO的格式进行时间输出，格式举例如下:
+    ///(21) 2010-09-10
+    ///(22) 2010-09-10 10:03:18
+    ///(23) 2010-09-10 10:03:18.100190
+    ISO_DAY = 21,
+    ISO_SEC = 22,
+    ISO_USEC = 23,
+
+    ///用美国的时间格式进行输出，格式举例如下:
+    ///(32) Fri Aug 24 2002 07:43:05
+    ///(33) Fri Aug 24 2002 07:43:05.100190
+    US_SEC = 32,
+    US_USEC = 33,
 
     ///用HTTP头部GMT的时间格式进行输出, Thu, 26 Nov 2009 13:50:19 GMT
     HTTP_GMT = 1001,
@@ -172,43 +185,44 @@ enum class TIME_STR_FORMAT
 };
 
 /*
-20100910100318                            紧凑
+100910 100318.100190                      SHRINK,收缩
+20100910 100318.100190                    COMPACT,紧凑
 2010-09-10 10:03:18.100190                ISO
 Fri Aug 24 2002 07:43:05.100190           US
 Thu, 26 Nov 2009 13:50:19 GMT             GMT(GMT一般不输出毫秒，在HTTP头中应用)
-Fri, 08 Nov 2002 09:42:22 +0800
+Fri, 08 Nov 2002 09:42:22 +0800           EMail Date
 1234567890123456789012345678901234567890
 */
 
 ///注意下面的长度不包括包括'\0'，申请的空间要 + 1，最简单的记法就是保证有32字节的空间
 ///（除了GMT精确到us），不采用+1的长度记录，这样写的目的是方便某些计算，
 
-///COMPACT 紧凑时间格式字符串的长度，
-///输出字符串精度到日期的字符串长度
-static const size_t TIMESTR_COMPACT_DAY_LEN = 8;
-///输出字符串精度到秒的字符串长度
-static const size_t TIMESTR_COMPACT_SEC_LEN = 14;
+///COMPACT 紧凑时间格式字符串的长度，包括精度到DAY，SEC，USEC
+static const size_t TS_SHRINK_DAY_LEN = 6;
+static const size_t TS_SHRINK_SEC_LEN = 13;
+static const size_t TS_SHRINK_USEC_LEN = 20;
 
-///ISO 时间格式化字符串的长度，
-///输出字符串精度到日期的字符串长度
-static const size_t TIMESTR_ISO_DAY_LEN = 10;
-///输出字符串精度到秒的字符串长度
-static const size_t TIMESTR_ISO_SEC_LEN = 19;
-///[常用]精度到微秒的
-static const size_t TIMESTR_ISO_USEC_LEN = 26;
+///COMPACT 紧凑时间格式字符串的长度，包括精度到DAY，SEC，USEC
+static const size_t TS_COMPACT_DAY_LEN = 8;
+static const size_t TS_COMPACT_SEC_LEN = 15;
+static const size_t TS_COMPACT_USEC_LEN = 22;
 
-///US 米国时间格式字符串的长度，精度到秒
+///ISO 时间格式化字符串的长度，包括精度到DAY，SEC，USEC
+static const size_t TS_ISO_DAY_LEN = 10;
+static const size_t TS_ISO_SEC_LEN = 19;
+static const size_t TS_ISO_USEC_LEN = 26;  //最常用
+
+///US 米国时间格式字符串的长度，包括精度到SEC，USEC
 static const size_t TIMESTR_US_SEC_LEN = 24;
-///US 米国时间格式字符串的长度，精度到微秒
 static const size_t TIMESTR_US_USEC_LEN = 31;
 
 ///GMT 时间格式字符串的长度，精度到秒
 static const size_t TIMESTR_HTTP_GMT_LEN = 29;
 
-///GMT 时间格式字符串的长度，精度到秒
+///邮件时间格式字符串的长度，精度到秒
 static const size_t TIMESTR_EMAIL_DATE_LEN = 31;
 
-///最大格式化长度
+///最大格式化长度,一般而言32足够了
 static const size_t MAX_TIMEVAL_STRING_LEN = TIMESTR_EMAIL_DATE_LEN;
 
 /*!
@@ -219,30 +233,35 @@ static const size_t MAX_TIMEVAL_STRING_LEN = TIMESTR_EMAIL_DATE_LEN;
 * @param[in]  str_len       字符串的长度，最简单的记法就是保证有32字节的空间
 * @param[in]  uct_time      将timeval视为UCT/GMT时间还是本地时间Local Time，true
 *                           表示视为UCT/GMT时间，false表示视为本地时间
-* @param      fmt           参数清参考@ref TIME_STR_FORMAT ，
-* @note       时间戳打印格式说明,TIME_STR_FORMAT
+* @param      fmt           参数清参考@ref TS_FMT ，
+* @note       时间戳打印格式说明,TS_FMT
 */
 const char* timeval_to_str(const timeval* timeval,
                            char* str_date_time,
                            size_t str_len,
                            size_t& use_buf,
                            bool uct_time = false,
-                           TIME_STR_FORMAT fmt = zce::TIME_STR_FORMAT::ISO_USEC
+                           TS_FMT fmt = zce::TS_FMT::ISO_USEC
 );
 
 /*!
 * @brief      从字符串中高速的得到tm的结构的结果
 * @param[in]  strtm   字符串，字符串的正确性你自己要保证
-* @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STR_FORMAT
+* @param[in]  fmt     字符串的格式，参考枚举值 @ref TS_FMT
 * @param[out] ptr_tm  返回的tm结构的指针，注意，如果字符串错误，可能会导致tm错误喔
 * @param[out] usec    返回的的微秒的时间，默认为nullptr，表示不需要返回，
 * @param[out] tz      返回的的时区,默认为nullptr，表示不需要返回，很多种格式里面没有时区信息
 */
 int str_to_tm(const char* strtm,
-              TIME_STR_FORMAT fmt,
+              TS_FMT fmt,
               tm* ptr_tm,
               time_t* usec = nullptr,
               int* tz = nullptr);
+
+int fuzzy_str_to_tm(const char* strtm,
+                    tm* ptr_tm,
+                    time_t* usec,
+                    int* tz);
 
 /*!
 * @brief      从字符串转换得到本地时间timeval函数
@@ -250,11 +269,11 @@ int str_to_tm(const char* strtm,
 * @param[in]  strtm    字符串参数
 * @param[in]  uct_time 将strtm字符串视为UCT/GMT时间还是本地时间Local Time
 *                      true表示视为UCT/GMT时间，false表示视为本地时间
-* @param[in]  fmt      字符串的格式，参考枚举值 @ref TIME_STR_FORMAT,
+* @param[in]  fmt      字符串的格式，参考枚举值 @ref TS_FMT,
 * @param[out] tval     返回的时间,
 */
 int str_to_timeval(const char* strtm,
-                   TIME_STR_FORMAT fmt,
+                   TS_FMT fmt,
                    bool uct_time,
                    timeval* tval);
 
@@ -266,7 +285,7 @@ int str_to_MYSQL_TIME(const char* strtm,
 
 ///本地时间字符串转换为time_t
 int localtimestr_to_time_t(const char* localtime_str,
-                           TIME_STR_FORMAT fmt,
+                           TS_FMT fmt,
                            time_t* time_t_val);
 
 /*!

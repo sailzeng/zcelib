@@ -321,7 +321,7 @@ void log_msg::stringbuf_loghead(LOG_PRIORITY outlevel,
         timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
         //别计算了，快点
-        sz_use_len = TIMESTR_ISO_USEC_LEN;
+        sz_use_len = TS_ISO_USEC_LEN;
 
         sz_buf_len -= sz_use_len;
     }

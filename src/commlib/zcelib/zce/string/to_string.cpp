@@ -305,7 +305,7 @@ void embed_str(const zce::time_value& out_data,
     //返回成功
     if (ret_str)
     {
-        use_len = zce::TIMESTR_ISO_USEC_LEN;
+        use_len = zce::TS_ISO_USEC_LEN;
     }
     else
     {

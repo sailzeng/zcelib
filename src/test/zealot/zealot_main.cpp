@@ -30,14 +30,14 @@ int main(int argc, char* argv[])
     //    ZCE_LOG(RS_INFO, "Hallelujah");
     //}
     ////test_aio1(argc, argv);
-
-    ret = test_big_uint64(argc, argv);
+    ret = test_time_string1(argc, argv);
 
     //!需要关闭日志
     zce::log_msg::instance()->close();
     zce::log_msg::clear_inst();
     return 0;
 #if 0
+    ret = test_big_uint64(argc, argv);
     test_dns_resolve(argc, argv);
     test_rudp(argc, argv);
     return 0;

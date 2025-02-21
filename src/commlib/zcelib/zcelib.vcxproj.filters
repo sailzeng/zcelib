@@ -362,6 +362,9 @@
     <ClCompile Include="zce\aio\reactor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\uuid\uuid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -845,6 +848,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\execute.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\uuid\uuid.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -373,7 +373,7 @@ const char* time_value::to_str(char* str_date_time,
                                size_t datetime_strlen,
                                size_t& use_buf,
                                bool utc_time,
-                               zce::TIME_STR_FORMAT fmt) const
+                               zce::TS_FMT fmt) const
 {
     return zce::timeval_to_str(&(this->zce_time_value_),
                                str_date_time,
@@ -384,9 +384,9 @@ const char* time_value::to_str(char* str_date_time,
 }
 
 //从字符串中得到时间
-int time_value::from_string(const char* strtm,
-                            bool uct_time,
-                            zce::TIME_STR_FORMAT fmt)
+int time_value::from_str(const char* strtm,
+                         bool uct_time,
+                         zce::TS_FMT fmt)
 {
     return zce::str_to_timeval(strtm,
                                fmt,

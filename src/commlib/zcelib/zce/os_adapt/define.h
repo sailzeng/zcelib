@@ -30,6 +30,17 @@
 # define ZCE_INVALID_FILE_DESCRIBE  -1
 #endif
 
+#ifndef Z_ISALPHA
+#define Z_ISALPHA(c) (((c)>='a' && (c)<='z') || ((c)>='A' && (c)<='Z'))
+#endif
+
+#ifndef Z_ISAINUM
+#define Z_ISAINUM(c) (((c)>='a' && (c)<='z') || ((c)>='A' && (c)<='Z') || ((c)>='0' && (c)<='9'))
+#endif
+
+#ifndef Z_ISDIGIT
+#define Z_ISDIGIT(c) ((c)>='0' && (c)<='9')
+#endif
 //------------------------------------------------------------------------------------------
 //WINDOWS 的版本如何搞
 #if defined (ZCE_OS_WINDOWS)

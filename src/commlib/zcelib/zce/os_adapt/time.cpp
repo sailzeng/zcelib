@@ -23,7 +23,32 @@
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/time.h"
 
-//为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
+static const char* DAY_OF_WEEK_NAME[] =
+{
+    ("Sun"),
+    ("Mon"),
+    ("Tue"),
+    ("Wed"),
+    ("Thu"),
+    ("Fri"),
+    ("Sat")
+};
+
+static const char* MONTH_NAME[] =
+{
+    ("Jan"),
+    ("Feb"),
+    ("Mar"),
+    ("Apr"),
+    ("May"),
+    ("Jun"),
+    ("Jul"),
+    ("Aug"),
+    ("Sep"),
+    ("Oct"),
+    ("Nov"),
+    ("Dec")
+};
 
 //这个代码里面写了大量的long主要是为了兼容,迫不得已
 
@@ -129,7 +154,7 @@ const char* zce::timestamp(char* str_date_time, size_t datetime_strlen)
 //将参数timeval的值作为的时间格格式化后输出打印出来
 const char* zce::timestamp(const timeval* timeval, char* str_date_time, size_t datetime_strlen)
 {
-    ZCE_ASSERT(datetime_strlen > zce::TIMESTR_ISO_USEC_LEN);
+    ZCE_ASSERT(datetime_strlen > zce::TS_ISO_USEC_LEN);
 
     //转换为语句
     time_t now_time = timeval->tv_sec;
@@ -171,67 +196,91 @@ const char* zce::timeval_to_str(const timeval* timeval,
                                 size_t str_len,
                                 size_t& use_buf,
                                 bool uct_time,
-                                TIME_STR_FORMAT fmt
+                                TS_FMT fmt
 )
 {
     //这个实现没有使用strftime的原因是，我对输出精度可能有更高的要求，
-    static const char* DAY_OF_WEEK_NAME[] =
-    {
-        ("Sun"),
-        ("Mon"),
-        ("Tue"),
-        ("Wed"),
-        ("Thu"),
-        ("Fri"),
-        ("Sat")
-    };
 
-    static const char* MONTH_NAME[] =
-    {
-        ("Jan"),
-        ("Feb"),
-        ("Mar"),
-        ("Apr"),
-        ("May"),
-        ("Jun"),
-        ("Jul"),
-        ("Aug"),
-        ("Sep"),
-        ("Oct"),
-        ("Nov"),
-        ("Dec")
-    };
     time_t now_time = timeval->tv_sec;
     tm tm_data;
     use_buf = 0;
+
+    //Email Date域是带有时区的输出，不用UTC
+    if (zce::TS_FMT::EMAIL_DATE == fmt)
+    {
+        uct_time = false;
+    }
+    //HTTPHEAD只用GMT时间
+    if (zce::TS_FMT::HTTP_GMT == fmt)
+    {
+        uct_time = true;
+    }
     if (uct_time)
     {
-        //Email Date域是带有时区的输出，不用UTC
-        if (zce::TIME_STR_FORMAT::EMAIL_DATE == fmt)
-        {
-            ZCE_ASSERT(false);
-            errno = EINVAL;
-            return nullptr;
-        }
         zce::gmtime_r(&now_time, &tm_data);
     }
     else
     {
-        //HTTPHEAD只用GMT时间
-        if (zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
-        {
-            ZCE_ASSERT(false);
-            errno = EINVAL;
-            return nullptr;
-        }
         zce::localtime_r(&now_time, &tm_data);
     }
 
     //如果是压缩格式，精度到天，20100910
-    if (zce::TIME_STR_FORMAT::COMPACT_DAY == fmt)
+    if (zce::TS_FMT::SHRINK_DAY == fmt)
     {
-        ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_DAY_LEN);
-        if (str_len <= zce::TIMESTR_COMPACT_DAY_LEN)
+        ZCE_ASSERT(str_len > zce::TS_SHRINK_DAY_LEN);
+        if (str_len <= zce::TS_SHRINK_DAY_LEN)
+        {
+            return nullptr;
+        }
+        snprintf(str_date_time,
+                 str_len,
+                 "%02d%02d%02d",
+                 tm_data.tm_year > 100 ? tm_data.tm_year - 100 : tm_data.tm_year,
+                 tm_data.tm_mon + 1,
+                 tm_data.tm_mday);
+        use_buf = zce::TS_SHRINK_DAY_LEN;
+    }
+    else if (zce::TS_FMT::SHRINK_SEC == fmt)
+    {
+        ZCE_ASSERT(str_len > zce::TS_SHRINK_SEC_LEN);
+        if (str_len <= zce::TS_SHRINK_SEC_LEN)
+        {
+            return nullptr;
+        }
+        snprintf(str_date_time,
+                 str_len,
+                 "%02d%02d%02d %02d%02d%02d",
+                 tm_data.tm_year > 100 ? tm_data.tm_year - 100 : tm_data.tm_year,
+                 tm_data.tm_mon + 1,
+                 tm_data.tm_mday,
+                 tm_data.tm_hour,
+                 tm_data.tm_min,
+                 tm_data.tm_sec);
+        use_buf = zce::TS_SHRINK_SEC_LEN;
+    }
+    else if (zce::TS_FMT::SHRINK_USEC == fmt)
+    {
+        ZCE_ASSERT(str_len > zce::TS_SHRINK_USEC_LEN);
+        if (str_len <= zce::TS_SHRINK_USEC_LEN)
+        {
+            return nullptr;
+        }
+        snprintf(str_date_time,
+                 str_len,
+                 "%02d%02d%02d %02d%02d%02d.%06ld",
+                 tm_data.tm_year > 100 ? tm_data.tm_year - 100 : tm_data.tm_year,
+                 tm_data.tm_mon + 1,
+                 tm_data.tm_mday,
+                 tm_data.tm_hour,
+                 tm_data.tm_min,
+                 tm_data.tm_sec,
+                 timeval->tv_usec);
+        use_buf = zce::TS_SHRINK_USEC_LEN;
+    }
+    else if (zce::TS_FMT::COMPACT_DAY == fmt)
+    {
+        ZCE_ASSERT(str_len > zce::TS_COMPACT_DAY_LEN);
+        if (str_len <= zce::TS_COMPACT_DAY_LEN)
         {
             return nullptr;
         }
@@ -242,34 +291,56 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_year + 1900,
                  tm_data.tm_mon + 1,
                  tm_data.tm_mday);
-        use_buf = zce::TIMESTR_COMPACT_DAY_LEN;
+        use_buf = zce::TS_COMPACT_DAY_LEN;
     }
     //如果是压缩格式，精度到秒，20100910100318
-    else if (zce::TIME_STR_FORMAT::COMPACT_SEC == fmt)
+    else if (zce::TS_FMT::COMPACT_SEC == fmt)
     {
         //参数保护和检查
-        ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_SEC_LEN);
-        if (str_len <= zce::TIMESTR_COMPACT_SEC_LEN)
+        ZCE_ASSERT(str_len > zce::TS_COMPACT_SEC_LEN);
+        if (str_len <= zce::TS_COMPACT_SEC_LEN)
         {
             return nullptr;
         }
 
         snprintf(str_date_time,
                  str_len,
-                 "%4d%02d%02d%02d%02d%02d",
+                 "%4d%02d%02d %02d%02d%02d",
                  tm_data.tm_year + 1900,
                  tm_data.tm_mon + 1,
                  tm_data.tm_mday,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec);
-        use_buf = zce::TIMESTR_COMPACT_SEC_LEN;
+        use_buf = zce::TS_COMPACT_SEC_LEN;
+    }
+    //如果是压缩格式，精度到毫秒，20100910 100318.000213
+    else if (zce::TS_FMT::COMPACT_USEC == fmt)
+    {
+        //参数保护和检查
+        ZCE_ASSERT(str_len > zce::TS_COMPACT_USEC_LEN);
+        if (str_len <= zce::TS_COMPACT_USEC_LEN)
+        {
+            return nullptr;
+        }
+
+        snprintf(str_date_time,
+                 str_len,
+                 "%4d%02d%02d %02d%02d%02d.%06ld",
+                 tm_data.tm_year + 1900,
+                 tm_data.tm_mon + 1,
+                 tm_data.tm_mday,
+                 tm_data.tm_hour,
+                 tm_data.tm_min,
+                 tm_data.tm_sec,
+                 timeval->tv_usec);
+        use_buf = zce::TS_COMPACT_USEC_LEN;
     }
     //2010-09-10
-    else if (zce::TIME_STR_FORMAT::ISO_DAY == fmt)
+    else if (zce::TS_FMT::ISO_DAY == fmt)
     {
-        ZCE_ASSERT(str_len > zce::TIMESTR_ISO_DAY_LEN);
-        if (str_len <= zce::TIMESTR_ISO_DAY_LEN)
+        ZCE_ASSERT(str_len > zce::TS_ISO_DAY_LEN);
+        if (str_len <= zce::TS_ISO_DAY_LEN)
         {
             return nullptr;
         }
@@ -280,13 +351,13 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_year + 1900,
                  tm_data.tm_mon + 1,
                  tm_data.tm_mday);
-        use_buf = zce::TIMESTR_ISO_DAY_LEN;
+        use_buf = zce::TS_ISO_DAY_LEN;
     }
     //2010-09-10 10:03:18
-    else if (zce::TIME_STR_FORMAT::ISO_SEC == fmt)
+    else if (zce::TS_FMT::ISO_SEC == fmt)
     {
-        ZCE_ASSERT(str_len > zce::TIMESTR_ISO_SEC_LEN);
-        if (str_len <= zce::TIMESTR_ISO_SEC_LEN)
+        ZCE_ASSERT(str_len > zce::TS_ISO_SEC_LEN);
+        if (str_len <= zce::TS_ISO_SEC_LEN)
         {
             return nullptr;
         }
@@ -300,14 +371,14 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec);
-        use_buf = zce::TIMESTR_ISO_SEC_LEN;
+        use_buf = zce::TS_ISO_SEC_LEN;
     }
     //2010-09-10 10:03:18.100190
-    else if (zce::TIME_STR_FORMAT::ISO_USEC == fmt)
+    else if (zce::TS_FMT::ISO_USEC == fmt)
     {
         //参数保护和检查
-        ZCE_ASSERT(str_len > zce::TIMESTR_ISO_USEC_LEN);
-        if (str_len <= zce::TIMESTR_ISO_USEC_LEN)
+        ZCE_ASSERT(str_len > zce::TS_ISO_USEC_LEN);
+        if (str_len <= zce::TS_ISO_USEC_LEN)
         {
             return nullptr;
         }
@@ -322,10 +393,10 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_min,
                  tm_data.tm_sec,
                  timeval->tv_usec);
-        use_buf = zce::TIMESTR_ISO_USEC_LEN;
+        use_buf = zce::TS_ISO_USEC_LEN;
     }
     //Fri Aug 24 2002 07:43:05
-    else if (zce::TIME_STR_FORMAT::US_SEC == fmt)
+    else if (zce::TS_FMT::US_SEC == fmt)
     {
         ZCE_ASSERT(str_len > TIMESTR_US_SEC_LEN);
         if (str_len <= TIMESTR_US_SEC_LEN)
@@ -346,7 +417,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         use_buf = zce::TIMESTR_US_SEC_LEN;
     }
     //Fri Aug 24 2002 07:43:05.100190
-    else if (zce::TIME_STR_FORMAT::US_USEC == fmt)
+    else if (zce::TS_FMT::US_USEC == fmt)
     {
         ZCE_ASSERT(str_len > TIMESTR_US_USEC_LEN);
         if (str_len <= TIMESTR_US_USEC_LEN)
@@ -368,7 +439,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         use_buf = zce::TIMESTR_US_USEC_LEN;
     }
     //Thu, 26 Nov 2009 13:50:19 GMT
-    else if (zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
+    else if (zce::TS_FMT::HTTP_GMT == fmt)
     {
         ZCE_ASSERT(str_len > TIMESTR_HTTP_GMT_LEN);
         if (str_len <= TIMESTR_HTTP_GMT_LEN)
@@ -389,7 +460,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
         use_buf = zce::TIMESTR_HTTP_GMT_LEN;
     }
     //Fri, 08 Nov 2002 09:42:22 +0800
-    else if (zce::TIME_STR_FORMAT::EMAIL_DATE == fmt)
+    else if (zce::TS_FMT::EMAIL_DATE == fmt)
     {
         ZCE_ASSERT(str_len > TIMESTR_EMAIL_DATE_LEN);
         if (str_len <= TIMESTR_EMAIL_DATE_LEN)
@@ -399,6 +470,8 @@ const char* zce::timeval_to_str(const timeval* timeval,
 
         //注意timezone理论上需要tzset()函数初始化
         int tz = zce::gettimezone();
+        //显示的时区格式为+0630，西6区，30为分
+        int tzo = (tz / 3600) * 100 + tz % 3600 / 60;
         snprintf(str_date_time,
                  str_len,
                  "%3s, %2d %3s %04d %02d:%02d:%02d %+05d",
@@ -409,7 +482,7 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec,
-                 tz / 360 * 10);
+                 tzo);
         use_buf = zce::TIMESTR_EMAIL_DATE_LEN;
     }
     //没有实现，参数错误
@@ -425,26 +498,11 @@ const char* zce::timeval_to_str(const timeval* timeval,
 
 //通过字符串翻译得到tm时间结构
 int zce::str_to_tm(const char* strtm,
-                   TIME_STR_FORMAT fmt,
+                   TS_FMT fmt,
                    tm* ptr_tm,
                    time_t* usec,
                    int* tz)
 {
-    static const char* MONTH_NAME[] =
-    {
-        ("Jan"),
-        ("Feb"),
-        ("Mar"),
-        ("Apr"),
-        ("May"),
-        ("Jun"),
-        ("Jul"),
-        ("Aug"),
-        ("Sep"),
-        ("Oct"),
-        ("Nov"),
-        ("Dec")
-    };
     size_t len_str = ::strlen(strtm);
     ZCE_ASSERT(strtm && ptr_tm);
     if (usec != nullptr)
@@ -457,11 +515,67 @@ int zce::str_to_tm(const char* strtm,
     }
 
     ptr_tm->tm_isdst = 0;
-    if (zce::TIME_STR_FORMAT::COMPACT_DAY == fmt ||
-        zce::TIME_STR_FORMAT::COMPACT_SEC == fmt)
+    if (zce::TS_FMT::SHRINK_DAY == fmt ||
+        zce::TS_FMT::SHRINK_SEC == fmt ||
+        zce::TS_FMT::SHRINK_USEC == fmt)
     {
         //字符串长度必须>=8
-        if (len_str < 8)
+        if (len_str < zce::TS_SHRINK_DAY_LEN)
+        {
+            return -1;
+        }
+        ptr_tm->tm_year = ((*strtm) - '0') * 10
+            + (*(strtm + 1) - '0');
+        if (ptr_tm->tm_year < 70)
+        {
+            ptr_tm->tm_year += 100;
+        }
+        ptr_tm->tm_mon = (*(strtm + 2) - '0') * 10
+            + (*(strtm + 3) - '0') - 1;
+        ptr_tm->tm_mday = (*(strtm + 4) - '0') * 10
+            + (*(strtm + 5) - '0');
+        ptr_tm->tm_hour = 0;
+        ptr_tm->tm_min = 0;
+        ptr_tm->tm_sec = 0;
+
+        //如果输入字符串精度到秒
+        if (zce::TS_FMT::SHRINK_SEC == fmt ||
+            zce::TS_FMT::SHRINK_USEC == fmt)
+        {
+            //字符串长度必须>=15
+            if (len_str < zce::TS_SHRINK_SEC_LEN)
+            {
+                return -1;
+            }
+            ptr_tm->tm_hour = (*(strtm + 7) - '0') * 10
+                + (*(strtm + 8) - '0');
+            ptr_tm->tm_min = (*(strtm + 9) - '0') * 10
+                + (*(strtm + 10) - '0');
+            ptr_tm->tm_sec = (*(strtm + 11) - '0') * 10
+                + (*(strtm + 12) - '0');
+
+            if (zce::TS_FMT::SHRINK_USEC == fmt &&
+                usec != nullptr)
+            {
+                if (len_str < zce::TS_SHRINK_USEC_LEN)
+                {
+                    return -1;
+                }
+                *usec = ((*(strtm + 14)) - '0') * 100000
+                    + ((*(strtm + 15) - '0')) * 10000
+                    + ((*(strtm + 16) - '0')) * 1000
+                    + ((*(strtm + 17) - '0')) * 100
+                    + ((*(strtm + 18) - '0')) * 10
+                    + ((*(strtm + 19) - '0'));
+            }
+        }
+    }
+    else if (zce::TS_FMT::COMPACT_DAY == fmt ||
+             zce::TS_FMT::COMPACT_SEC == fmt ||
+             zce::TS_FMT::COMPACT_USEC == fmt)
+    {
+        //字符串长度必须>=8
+        if (len_str < zce::TS_COMPACT_DAY_LEN)
         {
             return -1;
         }
@@ -477,27 +591,43 @@ int zce::str_to_tm(const char* strtm,
         ptr_tm->tm_min = 0;
         ptr_tm->tm_sec = 0;
 
-        //如果输入字符串精度到微秒
-        if (zce::TIME_STR_FORMAT::COMPACT_SEC == fmt)
+        //如果输入字符串精度到秒
+        if (zce::TS_FMT::COMPACT_SEC == fmt ||
+            zce::TS_FMT::COMPACT_USEC == fmt)
         {
-            //字符串长度必须>=14
-            if (len_str < 14)
+            //字符串长度必须>=15
+            if (len_str < zce::TS_COMPACT_SEC_LEN)
             {
                 return -1;
             }
-            ptr_tm->tm_hour = (*(strtm + 8) - '0') * 10
-                + (*(strtm + 9) - '0');
-            ptr_tm->tm_min = (*(strtm + 10) - '0') * 10
-                + (*(strtm + 11) - '0');
-            ptr_tm->tm_sec = (*(strtm + 12) - '0') * 10
-                + (*(strtm + 13) - '0');
+            ptr_tm->tm_hour = (*(strtm + 9) - '0') * 10
+                + (*(strtm + 10) - '0');
+            ptr_tm->tm_min = (*(strtm + 11) - '0') * 10
+                + (*(strtm + 12) - '0');
+            ptr_tm->tm_sec = (*(strtm + 13) - '0') * 10
+                + (*(strtm + 14) - '0');
+
+            if (zce::TS_FMT::COMPACT_USEC == fmt &&
+                usec != nullptr)
+            {
+                if (len_str < zce::TS_COMPACT_USEC_LEN)
+                {
+                    return -1;
+                }
+                *usec = ((*(strtm + 16)) - '0') * 100000
+                    + ((*(strtm + 17) - '0')) * 10000
+                    + ((*(strtm + 18) - '0')) * 1000
+                    + ((*(strtm + 19) - '0')) * 100
+                    + ((*(strtm + 20) - '0')) * 10
+                    + ((*(strtm + 21) - '0'));
+            }
         }
     }
-    else if (zce::TIME_STR_FORMAT::ISO_DAY == fmt ||
-             zce::TIME_STR_FORMAT::ISO_SEC == fmt ||
-             zce::TIME_STR_FORMAT::ISO_USEC == fmt)
+    else if (zce::TS_FMT::ISO_DAY == fmt ||
+             zce::TS_FMT::ISO_SEC == fmt ||
+             zce::TS_FMT::ISO_USEC == fmt)
     {
-        if (len_str < 10)
+        if (len_str < zce::TS_ISO_DAY_LEN)
         {
             return -1;
         }
@@ -516,10 +646,10 @@ int zce::str_to_tm(const char* strtm,
         ptr_tm->tm_sec = 0;
 
         //如果输入字符串精度到微秒
-        if (zce::TIME_STR_FORMAT::ISO_SEC == fmt ||
-            zce::TIME_STR_FORMAT::ISO_USEC == fmt)
+        if (zce::TS_FMT::ISO_SEC == fmt ||
+            zce::TS_FMT::ISO_USEC == fmt)
         {
-            if (len_str < 19)
+            if (len_str < zce::TS_ISO_SEC_LEN)
             {
                 return -1;
             }
@@ -530,10 +660,10 @@ int zce::str_to_tm(const char* strtm,
             ptr_tm->tm_sec = (*(strtm + 17) - '0') * 10
                 + (*(strtm + 18) - '0');
         }
-        if (zce::TIME_STR_FORMAT::ISO_USEC == fmt &&
+        if (zce::TS_FMT::ISO_USEC == fmt &&
             usec != nullptr)
         {
-            if (len_str < 26)
+            if (len_str < zce::TS_ISO_USEC_LEN)
             {
                 return -1;
             }
@@ -545,11 +675,11 @@ int zce::str_to_tm(const char* strtm,
                 + ((*(strtm + 25) - '0'));
         }
     }
-    else if (zce::TIME_STR_FORMAT::US_SEC == fmt ||
-             zce::TIME_STR_FORMAT::US_USEC == fmt)
+    else if (zce::TS_FMT::US_SEC == fmt ||
+             zce::TS_FMT::US_USEC == fmt)
     {
         //Fri Aug 24 2002 07:43:05.100190
-        if (len_str < 24)
+        if (len_str < zce::TIMESTR_US_SEC_LEN)
         {
             return -1;
         }
@@ -559,17 +689,23 @@ int zce::str_to_tm(const char* strtm,
         mon_str[2] = strtm[6];
         mon_str[3] = '\0';
         ptr_tm->tm_mon = 0;
-
-        for (int i = 0; i < 12; i++)
+        int i = 0;
+        for (; i < 12; i++)
         {
             if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
+                break;
             }
+        }
+        if (i == 12)
+        {
+            errno = EINVAL;
+            return -1;
         }
         ptr_tm->tm_mday = (*(strtm + 8) - '0') * 10
             + (*(strtm + 9) - '0');
-        ptr_tm->tm_year = ((*strtm + 11) - '0') * 1000
+        ptr_tm->tm_year = (*(strtm + 11) - '0') * 1000
             + (*(strtm + 12) - '0') * 100
             + (*(strtm + 13) - '0') * 10
             + (*(strtm + 14) - '0')
@@ -581,10 +717,10 @@ int zce::str_to_tm(const char* strtm,
         ptr_tm->tm_sec = (*(strtm + 22) - '0') * 10
             + (*(strtm + 23) - '0');
         //如果输入字符串精度到微秒
-        if (zce::TIME_STR_FORMAT::US_USEC == fmt &&
+        if (zce::TS_FMT::US_USEC == fmt &&
             usec != nullptr)
         {
-            if (len_str < 31)
+            if (len_str < zce::TIMESTR_US_USEC_LEN)
             {
                 return -1;
             }
@@ -597,29 +733,35 @@ int zce::str_to_tm(const char* strtm,
         }
     }
     //Thu, 26 Nov 2009 13:05:19 GMT
-    else if (zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
+    else if (zce::TS_FMT::HTTP_GMT == fmt)
     {
-        if (len_str < 25)
+        if (len_str < zce::TIMESTR_HTTP_GMT_LEN)
         {
             return -1;
         }
         char mon_str[4];
-        mon_str[0] = strtm[5];
-        mon_str[1] = strtm[6];
-        mon_str[2] = strtm[7];
+        mon_str[0] = strtm[8];
+        mon_str[1] = strtm[9];
+        mon_str[2] = strtm[10];
         mon_str[3] = '\0';
         ptr_tm->tm_mon = 0;
-
-        for (int i = 0; i < 12; i++)
+        int i = 0;
+        for (; i < 12; i++)
         {
             if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
+                break;
             }
         }
-        ptr_tm->tm_mday = (*(strtm + 9) - '0') * 10
-            + (*(strtm + 10) - '0');
-        ptr_tm->tm_year = ((*strtm + 12) - '0') * 1000
+        if (i == 12)
+        {
+            errno = EINVAL;
+            return -1;
+        }
+        ptr_tm->tm_mday = (*(strtm + 5) - '0') * 10
+            + (*(strtm + 6) - '0');
+        ptr_tm->tm_year = (*(strtm + 12) - '0') * 1000
             + (*(strtm + 13) - '0') * 100
             + (*(strtm + 14) - '0') * 10
             + (*(strtm + 15) - '0')
@@ -630,30 +772,37 @@ int zce::str_to_tm(const char* strtm,
             + (*(strtm + 21) - '0');
         ptr_tm->tm_sec = (*(strtm + 23) - '0') * 10
             + (*(strtm + 24) - '0');
+        //尾部还有一个" GMT"
     }
-    else if (zce::TIME_STR_FORMAT::EMAIL_DATE == fmt)
+    else if (zce::TS_FMT::EMAIL_DATE == fmt)
     {
         if (len_str < 31)
         {
             return -1;
         }
         char mon_str[4];
-        mon_str[0] = strtm[5];
-        mon_str[1] = strtm[6];
-        mon_str[2] = strtm[7];
+        mon_str[0] = strtm[8];
+        mon_str[1] = strtm[9];
+        mon_str[2] = strtm[10];
         mon_str[3] = '\0';
         ptr_tm->tm_mon = 0;
-
-        for (int i = 0; i < 12; i++)
+        int i = 0;
+        for (; i < 12; i++)
         {
             if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
+                break;
             }
         }
-        ptr_tm->tm_mday = (*(strtm + 9) - '0') * 10
-            + (*(strtm + 10) - '0');
-        ptr_tm->tm_year = ((*strtm + 12) - '0') * 1000
+        if (i == 12)
+        {
+            errno = EINVAL;
+            return -1;
+        }
+        ptr_tm->tm_mday = (*(strtm + 5) - '0') * 10
+            + (*(strtm + 6) - '0');
+        ptr_tm->tm_year = (*(strtm + 12) - '0') * 1000
             + (*(strtm + 13) - '0') * 100
             + (*(strtm + 14) - '0') * 10
             + (*(strtm + 15) - '0')
@@ -667,15 +816,15 @@ int zce::str_to_tm(const char* strtm,
 
         if (tz)
         {
-            int time_zone = (*(strtm + 27) - '0') * 1000
-                + (*(strtm + 28) - '0') * 100
-                + (*(strtm + 28) - '0') * 10
-                + (*(strtm + 30) - '0');
+            int tzi = ((*(strtm + 27) - '0') * 10
+                       + (*(strtm + 28) - '0')) * 3600
+                + ((*(strtm + 29) - '0') * 10
+                   + (*(strtm + 30) - '0')) * 60;
             if (*(strtm + 26) == '-')
             {
-                time_zone = -1 * time_zone;
+                tzi = -1 * tzi;
             }
-            *tz = time_zone / 10 * 360;
+            *tz = tzi;
         }
     }
     else
@@ -687,23 +836,124 @@ int zce::str_to_tm(const char* strtm,
     return 0;
 }
 
+//模糊字符串翻译得到tm时间结构，不需要你
+int zce::fuzzy_str_to_tm(const char* strtm,
+                         tm* ptr_tm,
+                         time_t* usec,
+                         int* tz)
+{
+    size_t len_str = ::strlen(strtm);
+    if ((len_str >= TS_SHRINK_DAY_LEN &&
+        Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
+        Z_ISDIGIT(*(strtm + 2)) && Z_ISDIGIT(*(strtm + 3)) &&
+        Z_ISDIGIT(*(strtm + 4)) && Z_ISDIGIT(*(strtm + 5))))
+    {
+        if ((len_str >= TS_SHRINK_SEC_LEN && (*(strtm + 6) == ' ') &&
+            Z_ISDIGIT(*(strtm + 7)) && Z_ISDIGIT(*(strtm + 8)) &&
+            Z_ISDIGIT(*(strtm + 9)) && Z_ISDIGIT(*(strtm + 10)) &&
+            Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 12))))
+        {
+            if ((len_str >= TS_SHRINK_USEC_LEN && (*(strtm + 13) == '.') &&
+                Z_ISDIGIT(*(strtm + 14)) && Z_ISDIGIT(*(strtm + 15)) &&
+                Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
+                Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19))))
+            {
+                return str_to_tm(strtm, zce::TS_FMT::SHRINK_USEC, ptr_tm, usec, tz);
+            }
+            return str_to_tm(strtm, zce::TS_FMT::SHRINK_SEC, ptr_tm, usec, tz);
+        }
+        return str_to_tm(strtm, zce::TS_FMT::SHRINK_DAY, ptr_tm, usec, tz);
+    }
+    else if (len_str >= TS_COMPACT_DAY_LEN &&
+             Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
+             Z_ISDIGIT(*(strtm + 2)) && Z_ISDIGIT(*(strtm + 3)) &&
+             Z_ISDIGIT(*(strtm + 4)) && Z_ISDIGIT(*(strtm + 5)) &&
+             Z_ISDIGIT(*(strtm + 6)) && Z_ISDIGIT(*(strtm + 7)))
+    {
+        if ((len_str >= TS_COMPACT_SEC_LEN && (*(strtm + 8) == ' ') &&
+            Z_ISDIGIT(*(strtm + 9)) && Z_ISDIGIT(*(strtm + 10)) &&
+            Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 11)) &&
+            Z_ISDIGIT(*(strtm + 13)) && Z_ISDIGIT(*(strtm + 14))))
+        {
+            if ((len_str >= TS_COMPACT_USEC_LEN && (*(strtm + 15) == '.') &&
+                Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
+                Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19)) &&
+                Z_ISDIGIT(*(strtm + 20)) && Z_ISDIGIT(*(strtm + 21))))
+            {
+                return str_to_tm(strtm, zce::TS_FMT::COMPACT_USEC, ptr_tm, usec, tz);
+            }
+            return str_to_tm(strtm, zce::TS_FMT::COMPACT_SEC, ptr_tm, usec, tz);
+        }
+        return str_to_tm(strtm, zce::TS_FMT::COMPACT_DAY, ptr_tm, usec, tz);
+    }
+    else if (len_str >= TS_ISO_DAY_LEN &&
+             Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
+             Z_ISDIGIT(*(strtm + 2)) && Z_ISDIGIT(*(strtm + 3)) &&
+             Z_ISDIGIT(*(strtm + 5)) && Z_ISDIGIT(*(strtm + 6)) &&
+             Z_ISDIGIT(*(strtm + 8)) && Z_ISDIGIT(*(strtm + 9)))
+    {
+        if ((len_str >= TS_ISO_SEC_LEN && (*(strtm + 10) == ' ') &&
+            Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 12)) &&
+            Z_ISDIGIT(*(strtm + 14)) && Z_ISDIGIT(*(strtm + 15)) &&
+            Z_ISDIGIT(*(strtm + 17)) && Z_ISDIGIT(*(strtm + 18))))
+        {
+            if ((len_str >= TS_ISO_USEC_LEN && (*(strtm + 19) == '.') &&
+                Z_ISDIGIT(*(strtm + 20)) && Z_ISDIGIT(*(strtm + 21)) &&
+                Z_ISDIGIT(*(strtm + 22)) && Z_ISDIGIT(*(strtm + 23)) &&
+                Z_ISDIGIT(*(strtm + 24)) && Z_ISDIGIT(*(strtm + 25))))
+            {
+                return str_to_tm(strtm, zce::TS_FMT::ISO_USEC, ptr_tm, usec, tz);
+            }
+            return str_to_tm(strtm, zce::TS_FMT::ISO_SEC, ptr_tm, usec, tz);
+        }
+        return str_to_tm(strtm, zce::TS_FMT::ISO_DAY, ptr_tm, usec, tz);
+    }
+    else if (len_str >= TIMESTR_US_SEC_LEN &&
+             Z_ISALPHA(*(strtm + 0)) && Z_ISALPHA(*(strtm + 1)) &&
+             Z_ISALPHA(*(strtm + 2)))
+    {
+        char week_str[4];
+        week_str[0] = strtm[0];
+        week_str[1] = strtm[1];
+        week_str[2] = strtm[2];
+        week_str[3] = '\0';
+        size_t i = 0;
+        for (; i < 7; i++)
+        {
+            if (strncasecmp(week_str, DAY_OF_WEEK_NAME[i], 3) == 0)
+            {
+                break;
+            }
+        }
+        if (i == 7)
+        {
+            errno = EINVAL;
+            return -1;
+        }
+        return str_to_tm(strtm, zce::TS_FMT::US_SEC, ptr_tm, usec, tz);
+    }
+    else
+    {
+        errno = EINVAL;
+        return -1;
+    }
+}
+
 //从字符串转换得到时间time_t函数
 int zce::str_to_timeval(const char* strtm,
-                        TIME_STR_FORMAT fmt,
+                        TS_FMT fmt,
                         bool uct_time,
                         timeval* tval)
 {
     //HTTP_GMT 本身就是UTC/GMT
-    if (!uct_time && zce::TIME_STR_FORMAT::HTTP_GMT == fmt)
-    {
-        ZCE_ASSERT(false);
-        errno = EINVAL;
-        return -1;
-    }
-
-    if (zce::TIME_STR_FORMAT::EMAIL_DATE == fmt)
+    if (zce::TS_FMT::HTTP_GMT == fmt)
     {
         uct_time = true;
+    }
+    //EMAIL_DATE本来就是本地时间
+    if (zce::TS_FMT::EMAIL_DATE == fmt)
+    {
+        uct_time = false;
     }
     struct tm tm_value;
     time_t usec = 0;
@@ -739,11 +989,6 @@ int zce::str_to_timeval(const char* strtm,
     {
         errno = EINVAL;
         return -1;
-    }
-
-    if (zce::TIME_STR_FORMAT::EMAIL_DATE == fmt)
-    {
-        tval->tv_sec += tz;
     }
 
     return 0;
@@ -839,7 +1084,7 @@ int zce::str_to_MYSQL_TIME(const char* strtm,
 
 ///本地时间字符串转换为time_t
 int zce::localtimestr_to_time_t(const char* localtime_str,
-                                TIME_STR_FORMAT fmt,
+                                TS_FMT fmt,
                                 time_t* time_t_val)
 {
     timeval tval;
@@ -1106,7 +1351,8 @@ int zce::sleep(const timeval& tv)
 int zce::usleep(unsigned long usec)
 {
 #if defined (ZCE_OS_WINDOWS)
-    ::Sleep(usec / MSEC_PER_USEC);
+    //::Sleep(usec / MSEC_PER_USEC);
+    std::this_thread::sleep_for(std::chrono::microseconds(usec));
     return 0;
 #endif //#if defined (ZCE_OS_WINDOWS)
 

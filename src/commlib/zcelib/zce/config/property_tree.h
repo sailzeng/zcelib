@@ -136,7 +136,7 @@ public:
         }
         else
         {
-            zce::from_string<val_type>(val_str, val);
+            zce::from_str<val_type>(val_str, val);
             return 0;
         }
     }

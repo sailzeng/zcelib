@@ -251,6 +251,7 @@
     <ClCompile Include="zce\time\progress_timer.cpp" />
     <ClCompile Include="zce\time\time_value.cpp" />
     <ClCompile Include="zce\uuid\generator.cpp" />
+    <ClCompile Include="zce\uuid\uuid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\aio\reactor.h" />
@@ -412,6 +413,7 @@
     <ClInclude Include="zce\time\time_value.h" />
     <ClInclude Include="zce\util\static_list.h" />
     <ClInclude Include="zce\uuid\generator.h" />
+    <ClInclude Include="zce\uuid\uuid.h" />
     <ClInclude Include="zce\version.h" />
   </ItemGroup>
   <ItemGroup>
