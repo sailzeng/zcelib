@@ -60,8 +60,8 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-                                           DB_BENCHMARK_USER,
-                                           DB_BENCHMARK_PASSWORD);
+            DB_BENCHMARK_USER,
+            DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -77,7 +77,7 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
     }
 
     g_db_connect.set_sql(sql);
-    ret = g_db_connect.query(num_affect, insert_id);
+    ret = g_db_connect.execute(num_affect, insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -90,17 +90,17 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
 }
 
 int benchmark_db_query(const char* sql,
-                       uint64_t& num_affect,
-                       zce::mysql::result& db_result,
-                       char* szErr)
+    uint64_t& num_affect,
+    zce::mysql::result& db_result,
+    char* szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-                                           DB_BENCHMARK_USER,
-                                           DB_BENCHMARK_PASSWORD);
+            DB_BENCHMARK_USER,
+            DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -116,7 +116,7 @@ int benchmark_db_query(const char* sql,
         g_db_connect.ping();
     }
     g_db_connect.set_sql(sql);
-    ret = g_db_connect.query(num_affect, db_result);
+    ret = g_db_connect.execute(num_affect, db_result);
     //如果错误
     if (ret != 0)
     {
@@ -129,16 +129,16 @@ int benchmark_db_query(const char* sql,
 }
 
 int benchmark_db_query(const char* sql,
-                       zce::mysql::result& db_result,
-                       char* szErr)
+    zce::mysql::result& db_result,
+    char* szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-                                           DB_BENCHMARK_USER,
-                                           DB_BENCHMARK_PASSWORD);
+            DB_BENCHMARK_USER,
+            DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -154,7 +154,7 @@ int benchmark_db_query(const char* sql,
     }
 
     g_db_connect.set_sql(sql);
-    ret = g_db_connect.query(db_result);
+    ret = g_db_connect.execute(db_result);
     //如果错误
     if (ret != 0)
     {
@@ -171,27 +171,27 @@ int benchmark_insert_record(int table_id, int id, bool bexcutesql, char* szErr)
     char tmpsql[1024];
 
     sprintf(tmpsql, "INSERT INTO benchmark.test%d SET "
-            "F1=%d,"
-            "F2=%d,"
-            "F3=%d,"
-            "F4=4,"
-            "F5=5,"
-            "F6=6,"
-            "F7=7,"
-            "F8=8,"
-            "F9=9,"
-            "F9=10,"
-            "F11=11.11,"
-            "F12=12.12,"
-            "F13='%015d%015d%015d',"
-            "F14='2006-06-01 00:00:00' ",
-            table_id,
-            id,
-            id,
-            id,
-            id,
-            id,
-            id
+        "F1=%d,"
+        "F2=%d,"
+        "F3=%d,"
+        "F4=4,"
+        "F5=5,"
+        "F6=6,"
+        "F7=7,"
+        "F8=8,"
+        "F9=9,"
+        "F9=10,"
+        "F11=11.11,"
+        "F12=12.12,"
+        "F13='%015d%015d%015d',"
+        "F14='2006-06-01 00:00:00' ",
+        table_id,
+        id,
+        id,
+        id,
+        id,
+        id,
+        id
     );
     //是否执行SQL,拼
     if (bexcutesql)
@@ -211,8 +211,8 @@ int benchmark_delete_record(int table_id, int id, bool bexcutesql, char* szErr)
     char tmpsql[1024];
 
     sprintf(tmpsql, "DELETE FROM benchmark.test%d WHERE F1=%d ",
-            table_id,
-            id
+        table_id,
+        id
     );
     //是否执行SQL,拼
     if (bexcutesql)
@@ -232,9 +232,9 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
     char tmpsql[1024];
 
     sprintf(tmpsql, "SELECT F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 FROM benchmark.test%d "
-            "WHERE F1=%d ",
-            table_id,
-            id
+        "WHERE F1=%d ",
+        table_id,
+        id
     );
     if (bexcutesql)
     {
@@ -386,10 +386,10 @@ int test_sql_main(int argc, char* argv[])
         for (int i = 0; i < numprocess; i++)
         {
             int ret = benchmark_cache_record(table_id,
-                                             i,
-                                             numruncache,
-                                             bexecute,
-                                             sz_err);
+                i,
+                numruncache,
+                bexecute,
+                sz_err);
             if (ret > 0)
             {
                 return ret;

@@ -57,7 +57,7 @@ public:
     ~result() noexcept;
 
     //避免拷贝
-    result(const result &) = delete;
+    result(const result&) = delete;
     result& operator=(const result&) = delete;
 
     ///结果集合是否为空
@@ -83,7 +83,7 @@ public:
     * @param[out] colum    返回的列名称对应列ID
     */
     inline int field_index(const char* fname,
-                           size_t& colum) const;
+        size_t& colum) const;
 
     /*!
     * @brief      返回结果集的行数目
@@ -194,15 +194,14 @@ public:
     * @param      val   取得的列数据
     */
     template <typename T>
-    int field(size_t colum, T &val) const
+    int field(size_t colum, T& val) const
     {
-        //ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
         return zce::from_str(current_row_[colum], val);
     }
 
     /// >> 操作符号,用于将结果输出到val中,如果使用>>,请按顺序，不要跳过
     template <typename T>
-    result& operator >> (T &&val)
+    result& operator >> (T&& val)
     {
         field(current_field_, std::forward<T>(val));
         ++current_field_;

@@ -365,6 +365,12 @@
     <ClCompile Include="zce\uuid\uuid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\db\pq\handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\lock\win_simulate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -851,6 +857,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\uuid\uuid.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\db\pq\handle.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\lock\win_simulate.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

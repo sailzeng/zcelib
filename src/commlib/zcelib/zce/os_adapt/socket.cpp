@@ -392,7 +392,8 @@ int open_socket(ZCE_SOCKET* handle,
         if (SOCKET_ERROR == ret)
         {
             errno = ::WSAGetLastError();
-            return ret;
+            zce::close_socket(*handle);
+            return -1;
         }
     }
 #endif

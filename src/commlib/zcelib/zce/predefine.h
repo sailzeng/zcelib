@@ -495,6 +495,10 @@ extern "C"
 
 #endif
 
+#if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
+#include <libpq-pq.h>
+#endif
+
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
 #elif defined (ZCE_OS_LINUX)

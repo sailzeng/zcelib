@@ -22,16 +22,16 @@ handle::~handle() noexcept
 
 //连接数据服务器
 int handle::connect_i(CONNECT_BY by,
-                      const char* host_name,
-                      const char* socket_file,
-                      const char* user,
-                      const char* pwd,
-                      const char* db,
-                      const unsigned int port,
-                      const unsigned int timeout,
-                      bool if_multi_sql,
-                      const char* optfile,
-                      const char* group)
+    const char* host_name,
+    const char* socket_file,
+    const char* user,
+    const char* pwd,
+    const char* db,
+    const unsigned int port,
+    const unsigned int timeout,
+    bool if_multi_sql,
+    const char* optfile,
+    const char* group)
 {
     //如果已经连接,关闭原来的连接
     if (if_connected_ == true)
@@ -70,26 +70,26 @@ int handle::connect_i(CONNECT_BY by,
         using enum CONNECT_BY;
     case HOST:
         ret = ::mysql_real_connect(&mysql_handle_,
-                                   host_name,
-                                   user,
-                                   pwd,
-                                   db,
-                                   port,
-                                   nullptr,
-                                   client_flag);
+            host_name,
+            user,
+            pwd,
+            db,
+            port,
+            nullptr,
+            client_flag);
         break;
     case SOCKET_FILE:
         //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为nullptr，
         // 是先进行命名管道连接，如果不行用TCP/IP连接本地
         //如果要不保证绝对使用命名管道，则参数host_name=".",
         ret = ::mysql_real_connect(&mysql_handle_,
-                                   nullptr,
-                                   user,
-                                   pwd,
-                                   db,
-                                   port,
-                                   socket_file,
-                                   client_flag);
+            nullptr,
+            user,
+            pwd,
+            db,
+            port,
+            socket_file,
+            client_flag);
         break;
     case OPTION_FILE:
         if (optfile != nullptr)
@@ -108,13 +108,13 @@ int handle::connect_i(CONNECT_BY by,
             }
         }
         ret = ::mysql_real_connect(&mysql_handle_,
-                                   nullptr,
-                                   nullptr,
-                                   nullptr,
-                                   nullptr,
-                                   0,
-                                   nullptr,
-                                   0);
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            0,
+            nullptr,
+            0);
         break;
     default:
         ZCE_ASSERT(false);
@@ -149,37 +149,37 @@ int handle::connect_i(CONNECT_BY by,
 
 //连接数据服务器,通过IP地址，主机名称
 int handle::connect_by_host(const char* host_name,
-                            const char* user,
-                            const char* pwd,
-                            const char* db,
-                            const unsigned int port,
-                            unsigned int timeout,
-                            bool if_multi_sql)
+    const char* user,
+    const char* pwd,
+    const char* db,
+    const unsigned int port,
+    unsigned int timeout,
+    bool if_multi_sql)
 {
     return connect_i(CONNECT_BY::HOST,
-                     host_name, nullptr, user, pwd, db, port, timeout,
-                     if_multi_sql);
+        host_name, nullptr, user, pwd, db, port, timeout,
+        if_multi_sql);
 }
 
 //连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
 int handle::connect_by_socketfile(const char* socket_file,
-                                  const char* user,
-                                  const char* pwd,
-                                  const char* db,
-                                  unsigned int timeout,
-                                  bool if_multi_sql)
+    const char* user,
+    const char* pwd,
+    const char* db,
+    unsigned int timeout,
+    bool if_multi_sql)
 {
     return connect_i(CONNECT_BY::SOCKET_FILE,
-                     nullptr, socket_file, user, pwd, db, 0, timeout,
-                     if_multi_sql);
+        nullptr, socket_file, user, pwd, db, 0, timeout,
+        if_multi_sql);
 }
 
 //如果使用选项文件进行连接
 int handle::connect_by_optionfile(const char* optfile, const char* group)
 {
     return connect_i(CONNECT_BY::SOCKET_FILE,
-                     nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0,
-                     false, optfile, group);
+        nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0,
+        false, optfile, group);
 }
 
 //断开数据库服务器连接
@@ -236,30 +236,30 @@ const char* handle::get_mysql_status()
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
 unsigned int handle::escape_string(char* tostr,
-                                   const char* fromstr,
-                                   unsigned int fromlen)
+    const char* fromstr,
+    unsigned int fromlen)
 {
     return ::mysql_escape_string(tostr,
-                                 fromstr,
-                                 fromlen);
+        fromstr,
+        fromlen);
 }
 
 unsigned int handle::real_escape_string(char* tostr,
-                                        const char* fromstr,
-                                        unsigned int fromlen)
+    const char* fromstr,
+    unsigned int fromlen)
 {
     return ::mysql_real_escape_string(&mysql_handle_,
-                                      tostr,
-                                      fromstr,
-                                      fromlen);
+        tostr,
+        fromstr,
+        fromlen);
 }
 
 //int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
 //执行SQL语句，功能全集，不对外使用
 int handle::query_i(size_t* num_affect,
-                    size_t* last_id,
-                    zce::mysql::result* sql_result,
-                    bool bstore)
+    size_t* last_id,
+    zce::mysql::result* sql_result,
+    bool bstore)
 {
     //如果没有设置连接或者没有设置命令
     if (sql_cmd_.empty())
@@ -269,8 +269,8 @@ int handle::query_i(size_t* num_affect,
 
     //执行SQL命令
     int tmpret = ::mysql_real_query(&mysql_handle_,
-                                    sql_cmd_.c_str(),
-                                    (unsigned long)sql_cmd_.length());
+        sql_cmd_.c_str(),
+        (unsigned long)sql_cmd_.length());
     if (tmpret != 0)
     {
         return tmpret;
@@ -321,14 +321,14 @@ int handle::query_i(size_t* num_affect,
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
-int handle::query(size_t& num_affect, uint64_t& last_id)
+int handle::execute(size_t& num_affect, uint64_t& last_id)
 {
     return query_i(&num_affect, &last_id, nullptr, false);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
-int handle::query(size_t& num_affect, zce::mysql::result& res)
+int handle::execute(size_t& num_affect, zce::mysql::result& res)
 {
     return query_i(&num_affect, nullptr, &res, true);
 }
@@ -336,14 +336,14 @@ int handle::query(size_t& num_affect, zce::mysql::result& res)
 //再取一次结果，注意其调用的是mysql_use_result,num_affect对它无效
 
 //但不推荐使用,一次取一行,交互太多
-int handle::query(zce::mysql::result& res)
+int handle::execute(zce::mysql::result& res)
 {
     return query_i(nullptr, nullptr, &res, false);
 }
 
 //SQL 执行命令，这个事一个基础函数，内部调用
 int handle::stmt_query_i(size_t* num_affect,
-                         size_t* last_id)
+    size_t* last_id)
 {
     int tmpret = 0;
 
@@ -394,11 +394,11 @@ int handle::stmt_query(size_t& num_affect)
 
 //准备SQL,并且分析绑定的变量
 int handle::stmt_prepare_bind(zce::mysql::stmt_bind* bind_param,
-                              zce::mysql::stmt_bind* bind_result)
+    zce::mysql::stmt_bind* bind_result)
 {
     int tmpret = ::mysql_stmt_prepare(stmt_,
-                                      sql_cmd_.c_str(),
-                                      static_cast<unsigned long>(sql_cmd_.size()));
+        sql_cmd_.c_str(),
+        static_cast<unsigned long>(sql_cmd_.size()));
     if (tmpret != 0)
     {
         return tmpret;
@@ -414,7 +414,7 @@ int handle::stmt_prepare_bind(zce::mysql::stmt_bind* bind_param,
     if (bind_param)
     {
         tmpret = ::mysql_stmt_bind_param(stmt_,
-                                         bind_param->get_stmt_bind());
+            bind_param->get_stmt_bind());
         if (tmpret != 0)
         {
             return tmpret;
@@ -426,7 +426,7 @@ int handle::stmt_prepare_bind(zce::mysql::stmt_bind* bind_param,
     if (bind_result)
     {
         tmpret = ::mysql_stmt_bind_result(stmt_,
-                                          bind_result->get_stmt_bind());
+            bind_result->get_stmt_bind());
         //出错返回,或者处理
         if (tmpret != 0)
         {

@@ -83,7 +83,7 @@ public:
         }
         if (bucket_bufsize_)
         {
-            delete bucket_bufsize_;
+            delete[] bucket_bufsize_;
             bucket_bufsize_ = nullptr;
         }
         if (pools_)
@@ -98,6 +98,7 @@ public:
                       B*& buf)
     {
         bucket* node = get_bucket(expect_buf_size);
+        buf = nullptr;
         if (node)
         {
             buf = node->alloc_object();

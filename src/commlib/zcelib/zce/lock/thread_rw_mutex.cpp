@@ -21,8 +21,8 @@ thread_rw_mutex::thread_rw_mutex()
 {
     //pthread_rwlockattr_t属性的初始化
     int ret = 0;
-
-    ret = zce::pthread_rwlock_initex(&rw_lock_, false);
+    pthread_rwlockattr_t attr;
+    ret = zce::pthread_rwlock_init(&rw_lock_, &attr);
 
     if (0 != ret)
     {
@@ -75,7 +75,7 @@ bool thread_rw_mutex::try_lock_shared_until(const zce::time_value& abs_time) noe
     int ret = 0;
 
     ret = zce::pthread_rwlock_timedrdlock(&rw_lock_,
-                                          abs_time);
+        abs_time);
 
     if (0 != ret)
     {
@@ -140,7 +140,7 @@ bool thread_rw_mutex::try_lock_until(const zce::time_value& abs_time) noexcept
     int ret = 0;
 
     ret = zce::pthread_rwlock_timedwrlock(&rw_lock_,
-                                          abs_time);
+        abs_time);
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);

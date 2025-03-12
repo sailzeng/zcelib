@@ -1110,7 +1110,7 @@ const timeval zce::timeval_zero()
 void zce::timeval_clear(timeval& tv)
 {
     tv.tv_sec = 0;
-    tv.tv_sec = 0;
+    tv.tv_usec = 0;
 }
 
 //计算总计是多少毫秒
@@ -1128,7 +1128,7 @@ uint64_t zce::total_microseconds(const timeval& tv)
 }
 
 //比较时间是否一致,如果一致返回0，left大，返回整数，right大返回负数
-int zce::timeval_compare(const  timeval& left, const timeval& right)
+int zce::timeval_compare(const timeval& left, const timeval& right)
 {
     if (left.tv_sec != right.tv_sec)
     {

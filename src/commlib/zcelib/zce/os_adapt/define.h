@@ -139,70 +139,30 @@ struct pthread_condattr_t
     char cv_name_[PATH_MAX + 1];
 };
 
-struct win_simulate_cv_t
-{
-    /// 等待者的数量
-    int                  waiters_ = 0;
-
-    /// 保存进行的解锁操作是broadcast进行的还是signal进行
-    bool                 was_broadcast_ = false;
-
-    /// waiters 的计数的保护锁
-    pthread_mutex_t      waiters_lock_;
-
-    /// 信号灯，阻塞排队等待的线程直到 signaled.
-    sem_t* block_sema_ = nullptr;
-
-    ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
-    ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
-    sem_t* finish_broadcast_ = nullptr;
-};
-
 struct pthread_cond_t
 {
     ///外部锁定类型，是否需要TIMEOUT，等，PTHREAD_MUTEX_TIMEOUT
     int                      outer_lock_type_ = 0;
 
-    //两个架构，实际起作用的只有一个
-
     ///WINDOWS的条件变量在WINSERVER2008，VISTA后才支持
-    ///这个条件变量只能单进程内部使用，其外部互斥量，只支持临界区
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     CONDITION_VARIABLE   cv_object_;
 #endif
 };
 
-//读写锁的代码来自UNP V2
-
-///读写锁的属性结构，
 struct pthread_rwlockattr_t
 {
-    //
-    bool            priority_to_write_;
 };
 
 ///读写锁的对象结构，利用互斥量，条件变量实现的读写锁
 struct pthread_rwlock_t
 {
-    ///模拟的
-    ///是否是唤醒写入优先，（是就是写入优先，否则读取优先）这是一个问题，我把抉择权利给你
-    bool            priority_to_write_ = true;
-
-    ///保护这个结构在多线程中读写的互斥量，主要下面那些整数的修改
-    pthread_mutex_t rw_mutex_;
-
-    /// 读者等待的条件变量
-    pthread_cond_t  rw_condreaders_;
-    /// 写入等待的条件变量
-    pthread_cond_t  rw_condwriters_;
-
-    ///等待读的线程数量
-    int             rw_nwaitreaders_ = 0;
-    ///等待写的线程数量
-    int             rw_nwaitwriters_ = 0;
-
-    ///锁的持有状态，如果有一个写者持有锁-1 如果>0表示多少个读者持有这个锁
-    int             rw_refcount_ = 0;
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
+    //!WINSVR 2008以后，WINDOWS自己实现的读写锁
+    SRWLOCK                rwlock_slim_;
+    //!用于实现超时处理的cv
+    CONDITION_VARIABLE cv_;
+#endif
 };
 
 #ifdef ZCE_OS_WINDOWS

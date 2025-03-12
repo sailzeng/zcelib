@@ -128,6 +128,7 @@
   <ItemGroup>
     <ClCompile Include="zce\aio\reactor.cpp" />
     <ClCompile Include="zce\bytes\bytes_common.cpp" />
+    <ClCompile Include="zce\db\pq\handle.cpp" />
     <ClCompile Include="zce\encrypt\asymmetric.cpp" />
     <ClCompile Include="zce\aio\caller.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
@@ -143,6 +144,7 @@
     <ClCompile Include="zce\async\lua_thread.cpp" />
     <ClCompile Include="zce\buffer\queue_buffer.cpp" />
     <ClCompile Include="zce\lock\bit_lock.cpp" />
+    <ClCompile Include="zce\lock\win_simulate.cpp" />
     <ClCompile Include="zce\logger\log_file.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
     </ClCompile>
@@ -259,6 +261,7 @@
     <ClInclude Include="zce\buffer\varlen_buf.h" />
     <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\db\execute.h" />
+    <ClInclude Include="zce\db\pq\handle.h" />
     <ClInclude Include="zce\encrypt\asymmetric.h" />
     <ClInclude Include="zce\aio\caller.h" />
     <ClInclude Include="zce\aio\awaiter.h" />
@@ -273,6 +276,7 @@
     <ClInclude Include="zce\lockfree\ptr_ring.h" />
     <ClInclude Include="zce\lockfree\spsc_ring.h" />
     <ClInclude Include="zce\lock\spin_lock.h" />
+    <ClInclude Include="zce\lock\win_simulate.h" />
     <ClInclude Include="zce\logger\logging.h" />
     <ClInclude Include="zce\logger\log_file.h" />
     <ClInclude Include="zce\logger\log_msg.h" />

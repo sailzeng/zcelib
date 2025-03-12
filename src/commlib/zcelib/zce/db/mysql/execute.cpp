@@ -11,10 +11,10 @@ namespace zce::mysql
 
 //初始化服务器,使用hostname进行连接,可以不立即连接和立即连接，你自己控制。
 int execute::init_connect(const char* host_name,
-                          const char* user,
-                          const char* pwd,
-                          unsigned int port,
-                          bool connect_atonce)
+    const char* user,
+    const char* pwd,
+    unsigned int port,
+    bool connect_atonce)
 {
     db_hostname_ = host_name;
     db_user_name_ = user;
@@ -41,16 +41,16 @@ int execute::connect()
         if (db_hostname_.length() > 0)
         {
             ret = db_connect_.connect_by_host(db_hostname_.c_str(),
-                                              db_user_name_.c_str(),
-                                              db_password_.c_str(),
-                                              nullptr,
-                                              db_port_);
+                db_user_name_.c_str(),
+                db_password_.c_str(),
+                nullptr,
+                db_port_);
         }
         else if (db_socket_file_.length() > 0)
         {
             ret = db_connect_.connect_by_socketfile(db_socket_file_.c_str(),
-                                                    db_user_name_.c_str(),
-                                                    db_password_.c_str());
+                db_user_name_.c_str(),
+                db_password_.c_str());
         }
         else
         {
@@ -61,8 +61,8 @@ int execute::connect()
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
-                    db_connect_.error_no(),
-                    db_connect_.error_message()
+                db_connect_.error_no(),
+                db_connect_.error_message()
             );
             return -1;
         }
@@ -82,8 +82,8 @@ void execute::disconnect()
 
 //用于非SELECT语句(INSERT,UPDATE)，
 int execute::query(std::string_view sql,
-                   uint64_t& num_affect,
-                   uint64_t& insert_id)
+    uint64_t& num_affect,
+    uint64_t& insert_id)
 {
     int ret = 0;
 
@@ -102,15 +102,15 @@ int execute::query(std::string_view sql,
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql.size(), sql.data());
     db_connect_.set_sql(sql);
 
-    ret = db_connect_.query(num_affect, insert_id);
+    ret = db_connect_.execute(num_affect, insert_id);
 
     //如果错误
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                db_connect_.error_no(),
-                db_connect_.error_message(),
-                sql);
+            db_connect_.error_no(),
+            db_connect_.error_message(),
+            sql);
         return -1;
     }
     //成功
@@ -119,8 +119,8 @@ int execute::query(std::string_view sql,
 
 //执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
 int execute::query(std::string_view sql,
-                   uint64_t& num_affect,
-                   zce::mysql::result& db_result)
+    uint64_t& num_affect,
+    zce::mysql::result& db_result)
 {
     int ret = 0;
     //连接数据库
@@ -137,15 +137,15 @@ int execute::query(std::string_view sql,
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
     db_connect_.set_sql(sql);
 
-    ret = db_connect_.query(num_affect, db_result);
+    ret = db_connect_.execute(num_affect, db_result);
 
     //如果错误
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
-                db_connect_.error_no(),
-                db_connect_.error_message(),
-                sql);
+            db_connect_.error_no(),
+            db_connect_.error_message(),
+            sql);
         return -1;
     }
     //成功
@@ -154,7 +154,7 @@ int execute::query(std::string_view sql,
 
 //
 int execute::query(std::string_view sql,
-                   zce::mysql::result& db_result)
+    zce::mysql::result& db_result)
 {
     int ret = 0;
 
@@ -172,15 +172,15 @@ int execute::query(std::string_view sql,
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
     db_connect_.set_sql(sql);
 
-    ret = db_connect_.query(db_result);
+    ret = db_connect_.execute(db_result);
 
     //如果错误
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                db_connect_.error_no(),
-                db_connect_.error_message(),
-                sql);
+            db_connect_.error_no(),
+            db_connect_.error_message(),
+            sql);
         return -1;
     }
     //成功
@@ -191,8 +191,8 @@ int execute::query(std::string_view sql,
 unsigned int execute::error_message(char* szerr, size_t buflen)
 {
     snprintf(szerr, buflen, "[%d]:%s ",
-             db_connect_.error_no(),
-             db_connect_.error_message());
+        db_connect_.error_no(),
+        db_connect_.error_message());
     return db_connect_.error_no();
 }
 
@@ -211,21 +211,21 @@ unsigned int execute::error_id()
 //得到Real Escape String ,Real表示根据当前的MYSQL Connet的字符集,得到Escape String
 //Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
 unsigned int execute::make_real_escape_string(char* tostr,
-                                              const char* fromstr,
-                                              unsigned int fromlen)
+    const char* fromstr,
+    unsigned int fromlen)
 {
     return ::mysql_real_escape_string(db_connect_.get_mysql_handle(),
-                                      tostr, fromstr, fromlen);
+        tostr, fromstr, fromlen);
 }
 }//namesapce zce::mysql
 
 namespace zce::mysql::exe
 {
 int connect(zce::mysql::handle* db_connect,
-            const char* host_name,
-            const char* user,
-            const char* pwd,
-            unsigned int port)
+    const char* host_name,
+    const char* user,
+    const char* pwd,
+    unsigned int port)
 {
     int ret = 0;
 
@@ -235,17 +235,17 @@ int connect(zce::mysql::handle* db_connect,
         //如果设置过HOST，用HOST NAME进行连接
 
         ret = db_connect->connect_by_host(host_name,
-                                          user,
-                                          pwd,
-                                          nullptr,
-                                          port);
+            user,
+            pwd,
+            nullptr,
+            port);
 
         //如果错误
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
-                    db_connect->error_no(),
-                    db_connect->error_message());
+                db_connect->error_no(),
+                db_connect->error_message());
             return -1;
         }
     }
@@ -263,9 +263,9 @@ void disconnect(zce::mysql::handle* db_connect)
 
 //!查询，
 int query(zce::mysql::handle* db_connect,
-          std::string_view sql,
-          uint64_t* num_affect,
-          uint64_t* insert_id)
+    std::string_view sql,
+    uint64_t* num_affect,
+    uint64_t* insert_id)
 {
     //连接数据库
     if (db_connect->is_connected() == false)
@@ -280,14 +280,14 @@ int query(zce::mysql::handle* db_connect,
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql.size(), sql.data());
 
-    int ret = db_connect->query(*num_affect, *insert_id);
+    int ret = db_connect->execute(*num_affect, *insert_id);
     //如果错误
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                db_connect->error_no(),
-                db_connect->error_message(),
-                sql);
+            db_connect->error_no(),
+            db_connect->error_message(),
+            sql);
         return -1;
     }
 
@@ -297,9 +297,9 @@ int query(zce::mysql::handle* db_connect,
 
 //!
 int query(zce::mysql::handle* db_connect,
-          std::string_view sql,
-          uint64_t* num_affect,
-          zce::mysql::result* db_result)
+    std::string_view sql,
+    uint64_t* num_affect,
+    zce::mysql::result* db_result)
 {
     int ret = 0;
     //连接数据库
@@ -314,14 +314,14 @@ int query(zce::mysql::handle* db_connect,
     }
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
-    ret = db_connect->query(*num_affect, *db_result);
+    ret = db_connect->execute(*num_affect, *db_result);
     //如果错误
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
-                db_connect->error_no(),
-                db_connect->error_message(),
-                sql);
+            db_connect->error_no(),
+            db_connect->error_message(),
+            sql);
         return -1;
     }
 
@@ -331,8 +331,8 @@ int query(zce::mysql::handle* db_connect,
 
 //!
 int query(zce::mysql::handle* db_connect,
-          std::string_view sql,
-          zce::mysql::result* db_result)
+    std::string_view sql,
+    zce::mysql::result* db_result)
 {
     int ret = 0;
     //连接数据库
@@ -347,15 +347,15 @@ int query(zce::mysql::handle* db_connect,
     }
 
     ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
-    ret = db_connect->query(*db_result);
+    ret = db_connect->execute(*db_result);
 
     //如果错误
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
-                db_connect->error_no(),
-                db_connect->error_message(),
-                sql);
+            db_connect->error_no(),
+            db_connect->error_message(),
+            sql);
         return -1;
     }
     //成功
