@@ -86,10 +86,10 @@ int zce::pthread_rwlock_timedrdlock(pthread_rwlock_t* rwlock,
         {
             timeval now_time = zce::gettimeofday();
             timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
-            uint64_t wait_msec = zce::total_milliseconds(timeout_time);
+            DWORD wait_msec = (DWORD)zce::total_milliseconds(timeout_time);
             if (wait_msec > 0)
             {
-                ::SleepConditionVariableSRW(&rwlock->cv_,&rwlock->rwlock_slim_,1,0);
+                ::SleepConditionVariableSRW(&rwlock->cv_,&rwlock->rwlock_slim_,wait_msec,0);
             }
             else
             {
@@ -163,10 +163,10 @@ int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
         {
             timeval now_time = zce::gettimeofday();
             timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
-            uint64_t wait_msec = zce::total_milliseconds(timeout_time);
+            DWORD wait_msec = (DWORD)zce::total_milliseconds(timeout_time);
             if (wait_msec > 0)
             {
-                ::SleepConditionVariableSRW(&rwlock->cv_,&rwlock->rwlock_slim_,1,0);
+                ::SleepConditionVariableSRW(&rwlock->cv_,&rwlock->rwlock_slim_,wait_msec,0);
             }
             else
             {
@@ -195,14 +195,33 @@ int zce::pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
 int zce::pthread_rwlock_unlock(pthread_rwlock_t* rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
-    if (::TryAcquireSRWLockExclusive(&rwlock->rwlock_slim_))
-    {
-        ::ReleaseSRWLockExclusive(&rwlock->rwlock_slim_);
-    }
-    else
+    if (::TryAcquireSRWLockShared(&rwlock->rwlock_slim_))
     {
         ::ReleaseSRWLockShared(&rwlock->rwlock_slim_);
     }
+    else
+    {
+        ::ReleaseSRWLockExclusive(&rwlock->rwlock_slim_);
+    }
+    return 0;
+#elif defined (ZCE_OS_LINUX)
+    return ::pthread_rwlock_unlock(rwlock);
+#endif
+}
+
+int pthread_rwlock_wrunlock(pthread_rwlock_t* rwlock)
+{
+#if defined (ZCE_OS_WINDOWS)
+    ::ReleaseSRWLockShared(&rwlock->rwlock_slim_);
+    return 0;
+#elif defined (ZCE_OS_LINUX)
+    return ::pthread_rwlock_unlock(rwlock);
+#endif
+}
+int pthread_rwlock_rdunlock(pthread_rwlock_t* rwlock)
+{
+#if defined (ZCE_OS_WINDOWS)
+    ::ReleaseSRWLockExclusive(&rwlock->rwlock_slim_);
     return 0;
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_rwlock_unlock(rwlock);

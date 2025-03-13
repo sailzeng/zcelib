@@ -4,8 +4,6 @@
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/semaphore.h"
 
-//为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
-
 //初始化，创建一个无名（匿名）信号灯,对应的销毁函数sem_destroy
 int zce::sem_init(sem_t* sem,
                   int pshared,
@@ -152,7 +150,7 @@ int zce::sem_post(sem_t* sem) noexcept
 #endif
 }
 
-int zce::sem_post(sem_t* sem, u_int release_count) noexcept
+int zce::sem_post(sem_t* sem,u_int release_count) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -187,7 +185,7 @@ int zce::sem_trywait(sem_t* sem) noexcept
 #if defined (ZCE_OS_WINDOWS)
 
     //等待0s，相当于无阻塞，
-    DWORD result = ::WaitForSingleObject(sem->sem_hanlde_, 0);
+    DWORD result = ::WaitForSingleObject(sem->sem_hanlde_,0);
 
     if (result == WAIT_OBJECT_0)
     {
@@ -221,7 +219,7 @@ int zce::sem_wait(sem_t* sem) noexcept
 #if defined (ZCE_OS_WINDOWS)
 
     //INFINITE标识一致等待
-    const DWORD result = ::WaitForSingleObject(sem->sem_hanlde_, INFINITE);
+    const DWORD result = ::WaitForSingleObject(sem->sem_hanlde_,INFINITE);
     if (result == WAIT_OBJECT_0)
     {
         return 0;
@@ -239,7 +237,7 @@ int zce::sem_wait(sem_t* sem) noexcept
 }
 
 //信号灯超时锁定
-int zce::sem_timedwait(sem_t* sem, const ::timespec* abs_timeout_spec) noexcept
+int zce::sem_timedwait(sem_t* sem,const ::timespec* abs_timeout_spec) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -248,7 +246,7 @@ int zce::sem_timedwait(sem_t* sem, const ::timespec* abs_timeout_spec) noexcept
     //得到相对时间，这个折腾，
     const timeval now_time = zce::gettimeofday();
     const timeval abs_time = zce::make_timeval(abs_timeout_spec);
-    const timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
+    const timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
 
     //等待时间触发
     const DWORD retsult = ::WaitForSingleObject(
@@ -275,7 +273,7 @@ int zce::sem_timedwait(sem_t* sem, const ::timespec* abs_timeout_spec) noexcept
 
 #elif defined (ZCE_OS_LINUX)
 
-    int ret = ::sem_timedwait(sem, abs_timeout_spec);
+    int ret = ::sem_timedwait(sem,abs_timeout_spec);
 
     //一般的系统ETIME 和 ETIMEDOUT 的错误值都不太一样，按LINUX手册，返回的应该是ETIMEDOUT
     if (ret == -1 && errno == ETIME)
@@ -288,18 +286,18 @@ int zce::sem_timedwait(sem_t* sem, const ::timespec* abs_timeout_spec) noexcept
 }
 
 //信号灯超时锁定,非标准实现,使用timeval结构，
-int zce::sem_timedwait(sem_t* sem, const timeval* abs_timeout_val) noexcept
+int zce::sem_timedwait(sem_t* sem,const timeval* abs_timeout_val) noexcept
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::sem_timedwait(sem, &abs_timeout_spec);
+    return zce::sem_timedwait(sem,&abs_timeout_spec);
 }
 
 //返回当前信号灯的当前值, 很遗憾，WINDOWS下不支持，ReleaseSemaphore有类似功能，但是lReleaseCount参数不能为0
 //如果用ReleaseSemaphore和WaitForSingleObject拼凑一个那么可能更超级糟糕，
 //微软的API实现的真烂。Visual studio也承诺增加这个特性，但是在2010版本是不要做指望了。
-int zce::sem_getvalue(sem_t* sem, int* sval) noexcept
+int zce::sem_getvalue(sem_t* sem,int* sval) noexcept
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(sem);
@@ -307,6 +305,6 @@ int zce::sem_getvalue(sem_t* sem, int* sval) noexcept
     errno = EINVAL;
     return -1;
 #elif defined (ZCE_OS_LINUX)
-    return ::sem_getvalue(sem, sval);
+    return ::sem_getvalue(sem,sval);
 #endif
 }

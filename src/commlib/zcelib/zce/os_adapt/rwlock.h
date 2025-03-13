@@ -113,11 +113,18 @@ int pthread_rwlock_timedwrlock(pthread_rwlock_t* rwlock,
                                const timeval* abs_timeout_val);
 
 /*!
-* @brief      解锁，对读锁和写锁都是一个函数，这个地方和WINDOWS SVR 20008以后实现的读写锁实现不一样
+* @brief      解锁，对读锁和写锁都是一个函数， pthread只提供了一个函数pthread_rwlock_unlock
+*             但Windows有两个函数，一个解读锁ReleaseSRWLockShared，一个解写锁ReleaseSRWLockExclusive，
+*             所以在封装上必须做点改进。但效果不会太好，
 * @return     int     0成功，否则失败
 * @param      rwlock  读写锁对象
 */
 int pthread_rwlock_unlock(pthread_rwlock_t* rwlock);
+
+//这个两个函数非标准，但是因为Windows下的解锁函数是分开的，所以我做一个分开实现。
+//最好
+int pthread_rwlock_wrunlock(pthread_rwlock_t* rwlock);
+int pthread_rwlock_rdunlock(pthread_rwlock_t* rwlock);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_RWLOCK_H_

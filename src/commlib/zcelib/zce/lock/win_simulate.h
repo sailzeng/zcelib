@@ -16,31 +16,46 @@ namespace zce
 {
 //====================================================================================================
 /*!
-* @brief      [不要使用这个代码了，C++11 已经有了condi]
-*             条件变量快平台的封装，在WINDOWS下是模拟的，而且只能在线程中使用，
-*             推荐在在WIN SVR 2008和VISTA以后使用这个封装，这时，系统会用操作系统Windows新增的同
-*             步原语Cond，否则是用信号灯，临界区模拟的封装，
-*             对于模拟的实现，虽然我也测试过。但我实在不敢保证什么，拿来当学术研究可以，真用？还是算了把。
-*             你老上信号灯把。
+* @brief      这个代码只是在2010年以前，用于在WINDOWS下模拟条件变量的，现在已经不推荐使用了，
+*             放在这儿直至为了怀念一下过往的青春。
+*             条件变量模拟封装，在WINDOWS下是模拟的，而且只能在线程中使用，
+*             在WIN SVR 2008和VISTA之前，Windows没有提供条件变量，采用的方法是用信号灯，临界区
+*             模拟的封装。WINDOWS在VISTA，SERVER2008后也支持这个条件变量这个互斥方式了。
+*             对于模拟的实现，虽然我也测试过。但我实在不敢保证什么，拿来当学术研究可以，真用？还是算
+*             了把。你老上信号灯把。
 *
-*             条件变量其实一个毕竟难以解释的互斥方式，我觉得真能明白的人不多，
+*             另外，条件变量其实一个毕竟难以解释的互斥方式，我觉得真能明白的人并不多，
 *             如果你真懂了，请回答这样几个问题，
 *             0.条件的判断是用if还是where？
 *             1.你讲讲pthread_cond_wait的参数的外部锁传递进去的目的是什么？
 *             2.你讲讲调用signal，broadcast的时候，外部的锁是否应该加上？
 *             3.如果有一个线程broadcast了，部分线程激活，部分还在等待，另外一个线程broadcast，
 *               这时这些等待的线程会被激活几次？
+*             以上答案分别是：
+*             1.WHERE，因为可能发生虚假的唤醒
+*             2.不是加锁，恰恰是解开，让其他人通行。
+*             3.答案是看情况，系统的实现理论上如果没有处理共享的数据，是不用加的，而且理论上不加应该更快，
+*             如果有共享数据，（建议参考steven 的UNP V2 或者POSIX）
+*             系统默认实现指PTHRAD默认的实现和WINDOWS 2008的新同步原语。
+*             而对于模拟实现，目前这里面的模拟实现实现和ACE一样，要求在signal，broadcast的时候，外部
+*             的锁应该加上。但PTHREAD WIN32没有改出明确的说法，甚至说过行为未定义，所以还是加吧。
 *
-* @details    WINDOWS在VISTA，SERVER2008后也支持这个条件变量这个互斥方式了。
-*             前面的版本只能用模拟的了，仍然选择了ACE的算法。实在没辙，PTHREAD WIN32的我看不懂，
+*             4.天知道。如果是系统实现，按边缘触发的道理，应该是还在等待的部分。
+*             如果是模拟实现，由于要求外部锁要求加上，所以应该不会出现这种情况。
 *
-*             所以在XP，NT4，WINSERVER2003的服务上，我们用临界区（互斥量）+信号灯，模拟
-*             在VISTA以后，Visual studio 2008以后的环境（注意他的外部互斥量只能临界区只能用！），
-*             我们直接用WINDOLWS的临界区，
+* @details    别小瞧这个倒霉的condi模拟,我在有ACE,BOOST,PTHREAD WIN32的基础上参考下，仍然了折腾了3天
+*             这还不算我自己用Event模拟失败的一个，我只能给这些设计者跪了，的确不容易，一个细节没有想到就
+*             可能有问题，真不容易。
+*             按道理来说，用MUTEX和信号量模拟条件变量，不难实现。用一个互斥量，一个信号量，一个计数器。
+*             但是在WINDOWS下，我发现问题要复杂不少，ACE和PTHREAD WIN32的实现都用了2个信号量，但他
+*             们的实现又都有所不同。
+*             为什么要用2个信号量呢，看实现，一个用于阻塞等待线程。一个用于广播过程中等待所有线程都被激活。
+*             就是说，他们的实现都在等待所有的线程被激活，这个和LINUX的条件变量的行为不一样，但为什么他们
+*             要这样做，在10多年后和chatGPT的交流，我才明白了。这是因为Windows 的 ReleaseSemaphore()
+*             不能保证所有线程一次性被唤醒，而 WaitForMultipleObjects() 也不能完美支持广播唤醒，有数量
+*             限制。所以ACE等的实现，用另外一个信号量来进行等待。
 *
-*             别小瞧这个倒霉的condi模拟,我在有ACE,BOOST,PTHREAD WIN32的基础上参考下，仍然了折腾了3天
-*             这还不算我自己用Event模拟失败的一个，我只能给这些设计者跪了，的确不容易，一个细节没有想到就可
-*             能有问题，真不容易。
+*             仍然选择了参考ACE的算法。实在没辙，PTHREAD WIN32的我看不懂，
 *
 *             好吧，还是讲讲历史把，其实这些实现其实都是参考ACE的鼻祖的论文，
 *             http://www.cse.wustl.edu/~schmidt/win32-cv-1.html
@@ -70,24 +85,7 @@ namespace zce
 *             其的广播实现是基于broadcast或者singal后，再进行一次singal或者broadcast时会先等待上一次
 *             的等待者是否都已经被全部激活了。
 *
-*             后面我自己搞了一个简化的用事件模拟的版本，（同时只支持一种激发方式，而且外部锁要用MUTEX）
-*             结果在测试中惨遭失败，
-*
-*             以上答案分别是：
-*             1.WHERE，因为可能发生虚假的唤醒
-*             2.不是加锁，恰恰是解开，让其他人通行。
-*             3.答案是看情况，系统的实现理论上如果没有处理共享的数据，是不用加的，而且理论上不加应该更快，
-*             如果有共享数据，（建议参考steven 的UNP V2 或者POSIX）
-*             系统默认实现指PTHRAD默认的实现和WINDOWS 2008的新同步原语。
-*             而对于模拟实现，目前这里面的模拟实现实现和ACE一样，要求在signal，broadcast的时候，外部的锁
-*             应该加上。但PTHREAD WIN32没有改出明确的说法，甚至说过行为未定义，所以还是加吧。
-*
-*             4.天知道。如果是系统实现，按边缘触发的道理，应该是还在等待的部分。
-*             如果是模拟实现，由于要求外部锁要求加上，所以应该不会出现这种情况。
-*
-* @note       在WINDOWS平台，在WIN SERVER2008后，在多线程下，外部互斥量用临界区的情况下，使用条件变量，
-*
-*             ACE的模拟是否完美？我不确认，我至少知道ACE的实现是你调用broadcast和signal时，外部锁必须加上！！！
+* @note       ACE的模拟是否完美？我不确认，我至少知道ACE的实现是你调用broadcast和signal时，外部锁必须加上！！！
 *             看LINUX手册，signal 和 broadcast 并不明确是否要加锁。
 *
 *             pthread_condxxx_xxxx的函数也是在返回值中记录错误ID的，处理时注意
@@ -96,12 +94,12 @@ namespace zce
 struct ws_cv_t
 {
     ///
-    int outer_lock_type_;
+    int  outer_lock_type_ = PTHREAD_MUTEX_RECURSIVE;
     /// 等待者的数量
-    int                  waiters_ = 0;
+    int  waiters_ = 0;
 
     /// 保存进行的解锁操作是broadcast进行的还是signal进行
-    bool                 was_broadcast_ = false;
+    bool was_broadcast_ = false;
 
     /// waiters 的计数的保护锁
     pthread_mutex_t      waiters_lock_;
@@ -109,8 +107,10 @@ struct ws_cv_t
     /// 信号灯，阻塞排队等待的线程直到 signaled.
     sem_t* block_sema_ = nullptr;
 
-    ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
-    ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
+    ///完成广播后的通知，这个条件变量看起来多余
+    ///因为Windows 的 ReleaseSemaphore()，不能保证所有线程一次性被唤醒
+    ///而 WaitForMultipleObjects() 也不能完美支持广播唤醒，有数量限制。
+    ///所以ACE等的实现，用另外一个信号量来进行等待所有通知完成。
     sem_t* finish_broadcast_ = nullptr;
 };
 
@@ -137,7 +137,7 @@ int ws_cond_init(ws_cv_t* cond);
 * @param      win_mutex_or_sema 外部等待的锁，是否有句柄，如果是MUTEX，信号灯就有，如果是临界区就没有
 */
 int ws_cond_initex(ws_cv_t* cond,
-    bool win_mutex_or_sema = false);
+                   bool win_mutex_or_sema = false);
 
 /*!
 * @brief      条件变量等待，一致等待
@@ -146,7 +146,7 @@ int ws_cond_initex(ws_cv_t* cond,
 * @param      external_mutex 外部的MUTEX对象，进入wait前应该是锁定的
 */
 int ws_cond_wait(ws_cv_t* cond,
-    pthread_mutex_t* external_mutex);
+                 pthread_mutex_t* external_mutex);
 
 /*!
 * @brief      条件变量等待一段时间，超时后继续
@@ -157,8 +157,8 @@ int ws_cond_wait(ws_cv_t* cond,
 * @note
 */
 int ws_cond_timedwait(ws_cv_t* cond,
-    pthread_mutex_t* external_mutex,
-    const ::timespec* abs_timespec_out);
+                      pthread_mutex_t* external_mutex,
+                      const ::timespec* abs_timespec_out);
 
 /*!
 * @brief      非标准函数，条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
@@ -168,8 +168,8 @@ int ws_cond_timedwait(ws_cv_t* cond,
 * @param      abs_timeval_out   超时的时间，绝对值时间，timeval类型
 */
 int ws_cond_timedwait(ws_cv_t* cond,
-    pthread_mutex_t* external_mutex,
-    const timeval* abs_timeval_out);
+                      pthread_mutex_t* external_mutex,
+                      const timeval* abs_timeval_out);
 
 /*!
 * @brief      条件变量解锁广播
@@ -253,7 +253,7 @@ struct ws_rwlock_t
 * @note
 */
 int ws_rwlock_init(ws_rwlock_t* rwlock,
-    bool priority_to_write);
+                   bool priority_to_write);
 
 /*!
 * @brief      销毁读写锁的对象
@@ -285,7 +285,7 @@ int ws_rwlock_tryrdlock(ws_rwlock_t* rwlock);
 * @note
 */
 int ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
-    const ::timespec* abs_timeout_spec);
+                          const ::timespec* abs_timeout_spec);
 
 /*!
 * @brief      非标准，读取锁的超时锁定，时间参数调整成timeval，
@@ -294,7 +294,7 @@ int ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
 * @param      abs_timeout_val  等待的时间点（时间点）
 */
 int ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
-    const timeval* abs_timeout_val);
+                          const timeval* abs_timeout_val);
 
 /*!
 * @brief      获取写锁（独占锁），如果获取不到，会一直等待
@@ -317,7 +317,7 @@ int ws_rwlock_trywrlock(ws_rwlock_t* rwlock);
 * @param      abs_timeout_spec 超时时间点，绝对时间,timespec类型的，和标准一致
 */
 int ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
-    const ::timespec* abs_timeout_spec);
+                          const ::timespec* abs_timeout_spec);
 
 /*!
 @param      abs_timeout_val 超时时间点，绝对时间,timeval类型的,如果希望这个值填写nullptr，这个函数可能和上面的函数冲突，
@@ -327,7 +327,7 @@ int ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
 *                             请这样操作 timeval*time_out =nullptr,将这个time_out作为参数，
 */
 int ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
-    const timeval* abs_timeout_val);
+                          const timeval* abs_timeout_val);
 
 /*!
 * @brief      解锁，对读锁和写锁都是一个函数，这个地方和WINDOWS SVR 20008以后实现的读写锁实现不一样

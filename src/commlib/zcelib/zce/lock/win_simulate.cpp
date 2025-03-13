@@ -21,8 +21,8 @@ int zce::ws_cond_init(ws_cv_t* cond)
     cond->waiters_ = 0;
     cond->was_broadcast_ = false;
 
-    char* sem_block_ptr = NULL, * sem_finish_ptr = NULL;
-    char sem_block_name[PATH_MAX + 1], sem_finish_name[PATH_MAX + 1];
+    char* sem_block_ptr = NULL,* sem_finish_ptr = NULL;
+    char sem_block_name[PATH_MAX + 1],sem_finish_name[PATH_MAX + 1];
     sem_block_name[PATH_MAX] = '\0';
     sem_finish_name[PATH_MAX] = '\0';
 
@@ -35,7 +35,7 @@ int zce::ws_cond_init(ws_cv_t* cond)
     //初始化线程的互斥量
     int result = 0;
     result = zce::pthread_mutex_init(&cond->waiters_lock_,
-        &waiters_lock_attr);
+                                     &waiters_lock_attr);
 
     if (result != 0)
     {
@@ -43,9 +43,9 @@ int zce::ws_cond_init(ws_cv_t* cond)
     }
 
     cond->block_sema_ = zce::sem_open(sem_block_ptr,
-        O_CREAT,
-        ZCE_DEFAULT_FILE_PERMS,
-        0);
+                                      O_CREAT,
+                                      ZCE_DEFAULT_FILE_PERMS,
+                                      0);
 
     //如果失败了，要回收前面获得的资源
     if (!cond->block_sema_)
@@ -55,9 +55,9 @@ int zce::ws_cond_init(ws_cv_t* cond)
     }
 
     cond->finish_broadcast_ = zce::sem_open(sem_finish_ptr,
-        O_CREAT,
-        ZCE_DEFAULT_FILE_PERMS,
-        0);
+                                            O_CREAT,
+                                            ZCE_DEFAULT_FILE_PERMS,
+                                            0);
 
     //如果失败了，要回收前面获得的资源,这种分段申请资源最麻烦
     if (!cond->finish_broadcast_)
@@ -74,7 +74,7 @@ int zce::ws_cond_init(ws_cv_t* cond)
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_condattr_t放入共享内存
 int zce::ws_cond_initex(ws_cv_t* cond,
-    bool win_mutex_or_sema)
+                        bool win_mutex_or_sema)
 {
     //前面有错误返回，
     int result = 0;
@@ -126,8 +126,8 @@ int zce::ws_cond_destroy(ws_cv_t* cond)
 
 //条件变量等待一段时间，超时后继续
 int zce::ws_cond_timedwait(ws_cv_t* cond,
-    pthread_mutex_t* external_mutex,
-    const ::timespec* abs_timespec_out)
+                           pthread_mutex_t* external_mutex,
+                           const ::timespec* abs_timespec_out)
 {
     //如果外部的MUTEX的类型和共享方式不是我们所预期的，滚蛋
     if (external_mutex->lock_type_ != cond->outer_lock_type_)
@@ -157,7 +157,7 @@ int zce::ws_cond_timedwait(ws_cv_t* cond,
     if (abs_timespec_out)
     {
         result = zce::sem_timedwait(cond->block_sema_,
-            abs_timespec_out);
+                                    abs_timespec_out);
     }
     else
     {
@@ -175,7 +175,7 @@ int zce::ws_cond_timedwait(ws_cv_t* cond,
     //信号灯已经退出，减少等待的总数
     --(cond->waiters_);
     bool const last_waiter = (cond->was_broadcast_
-        && cond->waiters_ == 0);
+                              && cond->waiters_ == 0);
     zce::pthread_mutex_unlock(&cond->waiters_lock_);
 
     if (result == 0)
@@ -199,26 +199,26 @@ int zce::ws_cond_timedwait(ws_cv_t* cond,
 
 //条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
 int zce::ws_cond_timedwait(ws_cv_t* cond,
-    pthread_mutex_t* external_mutex,
-    const timeval* abs_timeout_val)
+                           pthread_mutex_t* external_mutex,
+                           const timeval* abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
     return zce::ws_cond_timedwait(cond,
-        external_mutex,
-        &abs_timeout_spec);
+                                  external_mutex,
+                                  &abs_timeout_spec);
 }
 
 //条件变量等待
 int zce::ws_cond_wait(ws_cv_t* cond,
-    pthread_mutex_t* external_mutex)
+                      pthread_mutex_t* external_mutex)
 {
     //这样写是为了避免函数冲突告警，
     const ::timespec* abs_timespec_out = NULL;
     return zce::ws_cond_timedwait(cond,
-        external_mutex,
-        abs_timespec_out);
+                                  external_mutex,
+                                  abs_timespec_out);
 }
 
 //
@@ -249,7 +249,7 @@ int zce::ws_cond_broadcast(ws_cv_t* cond) noexcept
     {
         //ACE比较喜欢这种if的方式，我不是特别习惯，但在多层处理的过程中这个方法也还凑合
         //唤醒所有的等待者,
-        if (zce::sem_post(cond->block_sema_, cond->waiters_) != 0)
+        if (zce::sem_post(cond->block_sema_,cond->waiters_) != 0)
         {
             result = EINVAL;
         }
@@ -302,10 +302,8 @@ int zce::ws_cond_signal(ws_cv_t* cond) noexcept
 //====================================================================================================
 //读写锁的对象的初始化
 int zce::ws_rwlock_init(ws_rwlock_t* rwlock,
-    bool priority_to_write)
+                        bool priority_to_write)
 {
-#if defined (ZCE_OS_WINDOWS)
-
     //考虑再三，我把重复初始化，是否初始化的各种判定删除了，感觉…………，没必要
 
     //其他倒霉蛋只能模拟
@@ -320,7 +318,7 @@ int zce::ws_rwlock_init(ws_rwlock_t* rwlock,
     //初始化几个同步对象
 
     //一些数据区改写的保护
-    if ((result = zce::pthread_mutex_init(&rwlock->rw_mutex_, &mutex_attr)) != 0)
+    if ((result = zce::pthread_mutex_init(&rwlock->rw_mutex_,&mutex_attr)) != 0)
     {
         return EINVAL;
     }
@@ -347,11 +345,6 @@ int zce::ws_rwlock_init(ws_rwlock_t* rwlock,
     rwlock->rw_refcount_ = 0;
 
     return 0;
-
-#elif defined (ZCE_OS_LINUX)
-
-    return ::pthread_rwlock_init(rwlock, attr);
-#endif
 }
 
 //读写锁的对象的销毁
@@ -387,12 +380,12 @@ int zce::ws_rwlock_rdlock(ws_rwlock_t* rwlock)
 
     //等待获得读写锁，如果有人在写，或者有要写入的人在等待，偏向写优先
     while ((rwlock->rw_refcount_ < 0)
-        || (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
+           || (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
     {
         rwlock->rw_nwaitreaders_++;
         //进入wait函数，rw_mutex_会被打开，让其他人活动，出来的时候会获得
         result = zce::pthread_cond_wait(&rwlock->rw_condreaders_,
-            &(rwlock->rw_mutex_));
+                                        &(rwlock->rw_mutex_));
         rwlock->rw_nwaitreaders_--;
 
         if (result != 0)
@@ -438,10 +431,10 @@ int zce::ws_rwlock_tryrdlock(ws_rwlock_t* rwlock)
 
 //读取锁的超时锁定，这个代码UNP V2并没有给出，
 int zce::ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
-    const ::timespec* abs_timeout_spec)
+                               const ::timespec* abs_timeout_spec)
 {
     int result = zce::pthread_mutex_timedlock(&rwlock->rw_mutex_,
-        abs_timeout_spec);
+                                              abs_timeout_spec);
 
     //我有点理解为啥phtread的很多函数用绝对时间了，abs_timeout_spec
     if (result != 0)
@@ -451,13 +444,13 @@ int zce::ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
 
     //等待获得读写锁，如果有人在写，或者有要写入的人在等待，偏向写优先
     while ((rwlock->rw_refcount_ < 0)
-        || (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
+           || (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
     {
         rwlock->rw_nwaitreaders_++;
         //进入wait函数，rw_mutex_会被打开，让其他人活动，出来的时候会获得
         result = zce::pthread_cond_timedwait(&rwlock->rw_condreaders_,
-            &(rwlock->rw_mutex_),
-            abs_timeout_spec);
+                                             &(rwlock->rw_mutex_),
+                                             abs_timeout_spec);
         rwlock->rw_nwaitreaders_--;
 
         if (result != 0)
@@ -478,11 +471,11 @@ int zce::ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
 
 //非标准，读取锁的超时锁定，时间参数调整成timeval，
 int zce::ws_rwlock_timedrdlock(ws_rwlock_t* rwlock,
-    const timeval* abs_timeout_val)
+                               const timeval* abs_timeout_val)
 {
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::ws_rwlock_timedrdlock(rwlock, &abs_timeout_spec);
+    return zce::ws_rwlock_timedrdlock(rwlock,&abs_timeout_spec);
 }
 
 //获取写锁
@@ -496,11 +489,11 @@ int zce::ws_rwlock_wrlock(ws_rwlock_t* rwlock)
 
     //如果有人在使用锁，无论读写，就要等待，如果读取优先，如果有人还在等待读，也等待
     while ((rwlock->rw_refcount_ != 0)
-        || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0))
+           || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0))
     {
         rwlock->rw_nwaitwriters_++;
         result = zce::pthread_cond_wait(&rwlock->rw_condwriters_,
-            &(rwlock->rw_mutex_));
+                                        &(rwlock->rw_mutex_));
         rwlock->rw_nwaitwriters_--;
 
         if (result != 0)
@@ -546,9 +539,9 @@ int zce::ws_rwlock_trywrlock(ws_rwlock_t* rwlock)
 
 //获取写锁，并且等待到超时为止，
 int zce::ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
-    const ::timespec* abs_timeout_spec)
+                               const ::timespec* abs_timeout_spec)
 {
-    int result = zce::pthread_mutex_timedlock(&rwlock->rw_mutex_, abs_timeout_spec);
+    int result = zce::pthread_mutex_timedlock(&rwlock->rw_mutex_,abs_timeout_spec);
     if (result != 0)
     {
         return (result);
@@ -556,12 +549,12 @@ int zce::ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
 
     //如果有人在使用锁，无论读写，就要等待，如果读取优先，如果有人还在等待读，也等待
     while ((rwlock->rw_refcount_ != 0)
-        || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0))
+           || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0))
     {
         rwlock->rw_nwaitwriters_++;
         result = zce::pthread_cond_timedwait(&rwlock->rw_condwriters_,
-            &(rwlock->rw_mutex_),
-            abs_timeout_spec);
+                                             &(rwlock->rw_mutex_),
+                                             abs_timeout_spec);
         rwlock->rw_nwaitwriters_--;
 
         if (result != 0)
@@ -581,11 +574,11 @@ int zce::ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
 
 //非标准，读取锁的超时锁定，时间参数调整成timeval，
 int zce::ws_rwlock_timedwrlock(ws_rwlock_t* rwlock,
-    const timeval* abs_timeout_val)
+                               const timeval* abs_timeout_val)
 {
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::ws_rwlock_timedwrlock(rwlock, &abs_timeout_spec);
+    return zce::ws_rwlock_timedwrlock(rwlock,&abs_timeout_spec);
 }
 
 //解除锁定，这个函数可以解除读取锁定和写入锁定，不需要特别指明
@@ -593,7 +586,6 @@ int zce::ws_rwlock_unlock(ws_rwlock_t* rwlock)
 {
     //上锁，
     int result = zce::pthread_mutex_lock(&rwlock->rw_mutex_);
-
     if (result != 0)
     {
         return (result);
@@ -648,7 +640,6 @@ int zce::ws_rwlock_unlock(ws_rwlock_t* rwlock)
                 result = zce::pthread_cond_signal(&rwlock->rw_condwriters_);
             }
         }
-
         //如果这时候，有读者的在等待，给读者做个广播
     }
 

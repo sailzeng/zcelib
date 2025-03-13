@@ -22,11 +22,11 @@ thread_rw_mutex::thread_rw_mutex()
     //pthread_rwlockattr_t属性的初始化
     int ret = 0;
     pthread_rwlockattr_t attr;
-    ret = zce::pthread_rwlock_init(&rw_lock_, &attr);
+    ret = zce::pthread_rwlock_init(&rw_lock_,&attr);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_init",ret);
         return;
     }
 }
@@ -37,7 +37,7 @@ thread_rw_mutex::~thread_rw_mutex()
     ret = zce::pthread_rwlock_destroy(&rw_lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_destroy", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_destroy",ret);
         return;
     }
 }
@@ -50,7 +50,7 @@ void thread_rw_mutex::lock_shared() noexcept
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_rdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_rdlock",ret);
         return;
     }
 }
@@ -75,11 +75,11 @@ bool thread_rw_mutex::try_lock_shared_until(const zce::time_value& abs_time) noe
     int ret = 0;
 
     ret = zce::pthread_rwlock_timedrdlock(&rw_lock_,
-        abs_time);
+                                          abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_timedrdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_timedrdlock",ret);
         return false;
     }
 
@@ -98,11 +98,10 @@ void thread_rw_mutex::unlock_shared() noexcept
 {
     //解锁
     int ret = 0;
-    ret = zce::pthread_rwlock_unlock(&rw_lock_);
-
+    ret = zce::pthread_rwlock_rdunlock(&rw_lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_unlock",ret);
         return;
     }
 }
@@ -115,7 +114,7 @@ void thread_rw_mutex::lock() noexcept
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_wrlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_wrlock",ret);
         return;
     }
 }
@@ -140,10 +139,10 @@ bool thread_rw_mutex::try_lock_until(const zce::time_value& abs_time) noexcept
     int ret = 0;
 
     ret = zce::pthread_rwlock_timedwrlock(&rw_lock_,
-        abs_time);
+                                          abs_time);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_timedlock",ret);
         return false;
     }
 
@@ -163,11 +162,10 @@ void thread_rw_mutex::unlock() noexcept
 {
     //解锁
     int ret = 0;
-    ret = zce::pthread_rwlock_unlock(&rw_lock_);
-
+    ret = zce::pthread_rwlock_wrunlock(&rw_lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_unlock",ret);
         return;
     }
 }
@@ -177,86 +175,4 @@ pthread_rwlock_t* thread_rw_mutex::get_lock()
 {
     return &rw_lock_;
 }
-
-/************************************************************************************************************
-Class           : thread_win_rw_mutex 轻量级的读写锁，不提供超时等函数
-************************************************************************************************************/
-
-#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
-
-//如果用WIN自带的读写锁
-
-//构造函数
-thread_win_rw_mutex::thread_win_rw_mutex()
-{
-    ::InitializeSRWLock(&(this->rwlock_slim_));
-}
-
-thread_win_rw_mutex::~thread_win_rw_mutex()
-{
-}
-
-//读取锁
-void thread_win_rw_mutex::lock_shared() noexcept
-{
-    ::AcquireSRWLockShared(&(this->rwlock_slim_));
-    return;
-}
-
-//尝试读取锁
-bool thread_win_rw_mutex::try_lock_shared() noexcept
-{
-    //如果用WIN自带的读写锁
-    BOOL bret = ::TryAcquireSRWLockShared(&(this->rwlock_slim_));
-    if (FALSE == bret)
-    {
-        errno = EBUSY;
-        return false;
-    }
-    return true;
-}
-
-//解锁,如果是读写锁也只需要这一个函数
-void thread_win_rw_mutex::unlock_shared() noexcept
-{
-    ::ReleaseSRWLockShared(&(this->rwlock_slim_));
-}
-
-//写锁定
-void thread_win_rw_mutex::lock() noexcept
-{
-    ::AcquireSRWLockExclusive(&(this->rwlock_slim_));
-    return;
-}
-
-//尝试读取锁
-bool thread_win_rw_mutex::try_lock() noexcept
-{
-    //如果用WIN自带的读写锁
-    BOOL bret = ::TryAcquireSRWLockExclusive(&(this->rwlock_slim_));
-    if (FALSE == bret)
-    {
-        errno = EBUSY;
-        return false;
-    }
-    return true;
-}
-
-//这肯定是VS2019的一个BUG。理论上不应该有这个告警
-#pragma warning (disable:26110)
-
-void thread_win_rw_mutex::unlock() noexcept
-{
-    ::ReleaseSRWLockExclusive(&(this->rwlock_slim_));
-}
-
-#pragma warning (default:26110)
-
-//取出内部的锁的指针
-SRWLOCK* thread_win_rw_mutex::get_lock()
-{
-    return &rwlock_slim_;
-}
-
-#endif
 }
