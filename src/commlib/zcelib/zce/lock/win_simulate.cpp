@@ -324,16 +324,14 @@ int zce::ws_rwlock_init(ws_rwlock_t* rwlock,
     }
 
     //等待读取的条件变量初始化
-    if ((result = zce::pthread_cond_initex(&rwlock->rw_condreaders_,
-        false)) != 0)
+    if ((result = zce::pthread_cond_initex(&rwlock->rw_condreaders_)) != 0)
     {
         zce::pthread_mutex_destroy(&rwlock->rw_mutex_);
         return EINVAL;
     }
 
     //等待写入的条件变量初始化
-    if ((result = zce::pthread_cond_initex(&rwlock->rw_condwriters_,
-        false)) != 0)
+    if ((result = zce::pthread_cond_initex(&rwlock->rw_condwriters_)) != 0)
     {
         zce::pthread_cond_destroy(&rwlock->rw_condreaders_);
         zce::pthread_mutex_destroy(&rwlock->rw_mutex_);

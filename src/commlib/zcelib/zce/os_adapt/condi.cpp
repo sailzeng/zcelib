@@ -14,9 +14,6 @@
                                                 && (ZCE_BIT_ISNOT_SET((cond)->outer_lock_type_ , PTHREAD_MUTEX_TIMEOUT)) )
 #endif
 
-//ZCE_SUPPORT_WINSVR2008 == 1里面的代码都自成一段，看代码的时候注意
-//都是WIN SERVER 2008后，WINDOWS自己的条件变量的封装，
-
 //
 int zce::pthread_condattr_init(pthread_condattr_t* attr)
 {
@@ -24,9 +21,7 @@ int zce::pthread_condattr_init(pthread_condattr_t* attr)
 
     //WINDOWS下默认就是递归的，你要我搞个非递归的我还要折腾
     attr->outer_lock_type_ = PTHREAD_MUTEX_RECURSIVE;
-    //初始化名称
-    attr->cv_name_[PATH_MAX] = '\0';
-    attr->cv_name_[0] = '\0';
+
     return 0;
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_condattr_init(attr);
@@ -67,15 +62,14 @@ int zce::pthread_cond_init(pthread_cond_t* cond,
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::pthread_cond_init(cond, attr);
+    return ::pthread_cond_init(cond,attr);
 #endif
 }
 
 //初始化条件变量对象，不同的平台给不同的默认定义
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_condattr_t放入共享内存
-int zce::pthread_cond_initex(pthread_cond_t* cond,
-                             bool win_mutex_or_sema)
+int zce::pthread_cond_initex(pthread_cond_t* cond)
 {
     //前面有错误返回，
     int result = 0;
@@ -91,22 +85,17 @@ int zce::pthread_cond_initex(pthread_cond_t* cond,
 #if defined (ZCE_OS_WINDOWS)
     //默认还是用递归的锁
     attr.outer_lock_type_ |= PTHREAD_MUTEX_RECURSIVE;
-    if (win_mutex_or_sema)
-    {
-        attr.outer_lock_type_ |= PTHREAD_MUTEX_TIMEOUT;
-    }
 
 #elif defined (ZCE_OS_LINUX)
-    ZCE_UNUSED_ARG(win_mutex_or_sema);
 
-    result = ::pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_PRIVATE);
+    result = ::pthread_condattr_setpshared(&attr,PTHREAD_PROCESS_PRIVATE);
     if (0 != result)
     {
         return result;
     }
 #endif
 
-    result = zce::pthread_cond_init(cond, &attr);
+    result = zce::pthread_cond_init(cond,&attr);
     zce::pthread_condattr_destroy(&attr);
 
     if (0 != result)
@@ -153,7 +142,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t* cond,
         timeval now_time = zce::gettimeofday();
         timeval abs_time = zce::make_timeval(abs_timespec_out);
 
-        timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
+        timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
         wait_msec = static_cast<DWORD>(zce::total_milliseconds(timeout_time));
     }
 

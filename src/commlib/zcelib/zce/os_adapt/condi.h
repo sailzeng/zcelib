@@ -55,17 +55,15 @@ int pthread_cond_destroy(pthread_cond_t* cond);
 * @param      attr    条件变量属性
 */
 int pthread_cond_init(pthread_cond_t* cond,
-    const pthread_condattr_t* attr);
+                      const pthread_condattr_t* attr);
 
 /*!
 * @brief      初始化条件变量对象，不同的平台给不同的默认定义
 *             非标准，但是建议你使用，简单多了,如果要多进程共享，麻烦你老给个名字，否则没法搞
 * @return     int            等于0标识成功
 * @param      cond              CV对象，条件变量对象
-* @param      win_mutex_or_sema 外部等待的锁，是否有句柄，如果是MUTEX，信号灯就有，如果是临界区就没有
 */
-int pthread_cond_initex(pthread_cond_t* cond,
-    bool win_mutex_or_sema = false);
+int pthread_cond_initex(pthread_cond_t* cond);
 
 /*!
 * @brief      条件变量等待，一致等待
@@ -74,7 +72,7 @@ int pthread_cond_initex(pthread_cond_t* cond,
 * @param      external_mutex 外部的MUTEX对象，进入wait前应该是锁定的
 */
 int pthread_cond_wait(pthread_cond_t* cond,
-    pthread_mutex_t* external_mutex);
+                      pthread_mutex_t* external_mutex);
 
 /*!
 * @brief      条件变量等待一段时间，超时后继续
@@ -85,8 +83,8 @@ int pthread_cond_wait(pthread_cond_t* cond,
 * @note
 */
 int pthread_cond_timedwait(pthread_cond_t* cond,
-    pthread_mutex_t* external_mutex,
-    const ::timespec* abs_timespec_out);
+                           pthread_mutex_t* external_mutex,
+                           const ::timespec* abs_timespec_out);
 
 /*!
 * @brief      非标准函数，条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
@@ -96,8 +94,8 @@ int pthread_cond_timedwait(pthread_cond_t* cond,
 * @param      abs_timeval_out   超时的时间，绝对值时间，timeval类型
 */
 int pthread_cond_timedwait(pthread_cond_t* cond,
-    pthread_mutex_t* external_mutex,
-    const timeval* abs_timeval_out);
+                           pthread_mutex_t* external_mutex,
+                           const timeval* abs_timeval_out);
 
 /*!
 * @brief      条件变量解锁广播

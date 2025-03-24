@@ -134,9 +134,6 @@ struct pthread_condattr_t
 {
     // 外部锁定类型，如果需要timeout,增加这个 PTHREAD_MUTEX_TIMEOUT，否则会使用临界区
     int outer_lock_type_;
-
-    //互斥量的名字，如果是多进程的互斥量，就必须有名字
-    char cv_name_[PATH_MAX + 1];
 };
 
 struct pthread_cond_t

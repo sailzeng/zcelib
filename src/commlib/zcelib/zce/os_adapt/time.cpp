@@ -1,54 +1,11 @@
-/*!
-* @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/os_adapt/time.cpp
-* @author     Sailzeng <sailzeng.cn@gmail.com>
-* @version
-* @date       Tuesday, December 31, 2011
-* @brief
-*
-*
-* @details    时间操作的适配器层，主要还是向LINUX下靠拢
-*
-*
-*
-* @note
-*
-*/
-
 #include "zce/predefine.h"
+#include "zce/comm/common.h"
 #include "zce/os_adapt/define.h"
 #include "zce/os_adapt/mutex.h"
 #include "zce/lock/thread_mutex.h"
 #include "zce/logger/logging.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/time.h"
-
-static const char* DAY_OF_WEEK_NAME[] =
-{
-    ("Sun"),
-    ("Mon"),
-    ("Tue"),
-    ("Wed"),
-    ("Thu"),
-    ("Fri"),
-    ("Sat")
-};
-
-static const char* MONTH_NAME[] =
-{
-    ("Jan"),
-    ("Feb"),
-    ("Mar"),
-    ("Apr"),
-    ("May"),
-    ("Jun"),
-    ("Jul"),
-    ("Aug"),
-    ("Sep"),
-    ("Oct"),
-    ("Nov"),
-    ("Dec")
-};
 
 //这个代码里面写了大量的long主要是为了兼容,迫不得已
 
@@ -65,7 +22,7 @@ int zce::steady_clock(timeval* tv)
 
     //为什么不让我用GetTickCount64 ,(Vista才支持),不打开下面注释的原因是，编译会通过了，但你也没法用,XP和WINSERVER2003都无法使用，
     //VISTA,WINSERVER2008的_WIN32_WINNT都是0x0600
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     now_cpu_tick = ::GetTickCount64();
 #else
 
@@ -103,7 +60,7 @@ int zce::steady_clock(timeval* tv)
 #elif defined (ZCE_OS_LINUX)
     //倒霉的发现LINUX很多版本都没有支持这个gethrtime函数，我靠，，，，，
     struct timespec sp;
-    int ret = ::clock_gettime(CLOCK_MONOTONIC, &sp);
+    int ret = ::clock_gettime(CLOCK_MONOTONIC,&sp);
 
     if (ret == 0)
     {
@@ -111,8 +68,8 @@ int zce::steady_clock(timeval* tv)
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d "
-                "lasterror = %d", ret, zce::last_error());
+        ZCE_LOG(RS_ERROR,"::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d "
+                "lasterror = %d",ret,zce::last_error());
         tv->tv_sec = 0;
         tv->tv_usec = 0;
     }
@@ -128,14 +85,14 @@ uint64_t zce::clock_ms(void)
     return  ::GetTickCount64();
 #elif defined (ZCE_OS_LINUX)
     struct timespec sp;
-    int ret = ::clock_gettime(CLOCK_MONOTONIC, &sp);
+    int ret = ::clock_gettime(CLOCK_MONOTONIC,&sp);
     if (ret == 0)
     {
         return (uint64_t)sp.tv_sec * SEC_PER_MSEC + (uint64_t)sp.tv_nsec / MSEC_PER_NSEC;
     }
     else
     {
-        ZCE_LOG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d",
+        ZCE_LOG(RS_ERROR,"::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d",
                 ret,
                 zce::last_error());
         return 0;
@@ -145,21 +102,21 @@ uint64_t zce::clock_ms(void)
 
 //
 //得到当前的系统时间字符串输出
-const char* zce::timestamp(char* str_date_time, size_t datetime_strlen)
+const char* zce::timestamp(char* str_date_time,size_t datetime_strlen)
 {
     timeval now_time_val(zce::gettimeofday());
-    return zce::timestamp(&now_time_val, str_date_time, datetime_strlen);
+    return zce::timestamp(&now_time_val,str_date_time,datetime_strlen);
 }
 
 //将参数timeval的值作为的时间格格式化后输出打印出来
-const char* zce::timestamp(const timeval* timeval, char* str_date_time, size_t datetime_strlen)
+const char* zce::timestamp(const timeval* timeval,char* str_date_time,size_t datetime_strlen)
 {
     ZCE_ASSERT(datetime_strlen > zce::TS_ISO_USEC_LEN);
 
     //转换为语句
     time_t now_time = timeval->tv_sec;
     tm tm_data;
-    zce::localtime_r(&now_time, &tm_data);
+    zce::localtime_r(&now_time,&tm_data);
 
     //上面的两行代码我原来用的是这一行代码，但是会出现崩溃(Windows下的断言),你知道为啥吗，呵呵
     //tm now_tm =*localtime(static_cast<time_t *>(&(timeval->tv_sec)));
@@ -217,11 +174,11 @@ const char* zce::timeval_to_str(const timeval* timeval,
     }
     if (uct_time)
     {
-        zce::gmtime_r(&now_time, &tm_data);
+        zce::gmtime_r(&now_time,&tm_data);
     }
     else
     {
-        zce::localtime_r(&now_time, &tm_data);
+        zce::localtime_r(&now_time,&tm_data);
     }
 
     //如果是压缩格式，精度到天，20100910
@@ -514,7 +471,7 @@ int zce::str_to_tm(const char* strtm,
         *tz = 0;
     }
 
-    ptr_tm->tm_isdst = 0;
+    memset(ptr_tm,0,sizeof(tm));
     if (zce::TS_FMT::SHRINK_DAY == fmt ||
         zce::TS_FMT::SHRINK_SEC == fmt ||
         zce::TS_FMT::SHRINK_USEC == fmt)
@@ -526,7 +483,7 @@ int zce::str_to_tm(const char* strtm,
         }
         ptr_tm->tm_year = ((*strtm) - '0') * 10
             + (*(strtm + 1) - '0');
-        if (ptr_tm->tm_year < 70)
+        if (ptr_tm->tm_year < 75)
         {
             ptr_tm->tm_year += 100;
         }
@@ -534,9 +491,6 @@ int zce::str_to_tm(const char* strtm,
             + (*(strtm + 3) - '0') - 1;
         ptr_tm->tm_mday = (*(strtm + 4) - '0') * 10
             + (*(strtm + 5) - '0');
-        ptr_tm->tm_hour = 0;
-        ptr_tm->tm_min = 0;
-        ptr_tm->tm_sec = 0;
 
         //如果输入字符串精度到秒
         if (zce::TS_FMT::SHRINK_SEC == fmt ||
@@ -587,9 +541,6 @@ int zce::str_to_tm(const char* strtm,
             + (*(strtm + 5) - '0') - 1;
         ptr_tm->tm_mday = (*(strtm + 6) - '0') * 10
             + (*(strtm + 7) - '0');
-        ptr_tm->tm_hour = 0;
-        ptr_tm->tm_min = 0;
-        ptr_tm->tm_sec = 0;
 
         //如果输入字符串精度到秒
         if (zce::TS_FMT::COMPACT_SEC == fmt ||
@@ -641,9 +592,6 @@ int zce::str_to_tm(const char* strtm,
             - 1;
         ptr_tm->tm_mday = (*(strtm + 8) - '0') * 10
             + (*(strtm + 9) - '0');
-        ptr_tm->tm_hour = 0;
-        ptr_tm->tm_min = 0;
-        ptr_tm->tm_sec = 0;
 
         //如果输入字符串精度到微秒
         if (zce::TS_FMT::ISO_SEC == fmt ||
@@ -692,7 +640,7 @@ int zce::str_to_tm(const char* strtm,
         int i = 0;
         for (; i < 12; i++)
         {
-            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
+            if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
             {
                 ptr_tm->tm_mon = i;
                 break;
@@ -748,7 +696,7 @@ int zce::str_to_tm(const char* strtm,
         int i = 0;
         for (; i < 12; i++)
         {
-            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
+            if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
             {
                 ptr_tm->tm_mon = i;
                 break;
@@ -789,7 +737,7 @@ int zce::str_to_tm(const char* strtm,
         int i = 0;
         for (; i < 12; i++)
         {
-            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
+            if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
             {
                 ptr_tm->tm_mon = i;
                 break;
@@ -858,11 +806,11 @@ int zce::fuzzy_str_to_tm(const char* strtm,
                 Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
                 Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19))))
             {
-                return str_to_tm(strtm, zce::TS_FMT::SHRINK_USEC, ptr_tm, usec, tz);
+                return str_to_tm(strtm,zce::TS_FMT::SHRINK_USEC,ptr_tm,usec,tz);
             }
-            return str_to_tm(strtm, zce::TS_FMT::SHRINK_SEC, ptr_tm, usec, tz);
+            return str_to_tm(strtm,zce::TS_FMT::SHRINK_SEC,ptr_tm,usec,tz);
         }
-        return str_to_tm(strtm, zce::TS_FMT::SHRINK_DAY, ptr_tm, usec, tz);
+        return str_to_tm(strtm,zce::TS_FMT::SHRINK_DAY,ptr_tm,usec,tz);
     }
     else if (len_str >= TS_COMPACT_DAY_LEN &&
              Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
@@ -880,11 +828,11 @@ int zce::fuzzy_str_to_tm(const char* strtm,
                 Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19)) &&
                 Z_ISDIGIT(*(strtm + 20)) && Z_ISDIGIT(*(strtm + 21))))
             {
-                return str_to_tm(strtm, zce::TS_FMT::COMPACT_USEC, ptr_tm, usec, tz);
+                return str_to_tm(strtm,zce::TS_FMT::COMPACT_USEC,ptr_tm,usec,tz);
             }
-            return str_to_tm(strtm, zce::TS_FMT::COMPACT_SEC, ptr_tm, usec, tz);
+            return str_to_tm(strtm,zce::TS_FMT::COMPACT_SEC,ptr_tm,usec,tz);
         }
-        return str_to_tm(strtm, zce::TS_FMT::COMPACT_DAY, ptr_tm, usec, tz);
+        return str_to_tm(strtm,zce::TS_FMT::COMPACT_DAY,ptr_tm,usec,tz);
     }
     else if (len_str >= TS_ISO_DAY_LEN &&
              Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
@@ -902,11 +850,11 @@ int zce::fuzzy_str_to_tm(const char* strtm,
                 Z_ISDIGIT(*(strtm + 22)) && Z_ISDIGIT(*(strtm + 23)) &&
                 Z_ISDIGIT(*(strtm + 24)) && Z_ISDIGIT(*(strtm + 25))))
             {
-                return str_to_tm(strtm, zce::TS_FMT::ISO_USEC, ptr_tm, usec, tz);
+                return str_to_tm(strtm,zce::TS_FMT::ISO_USEC,ptr_tm,usec,tz);
             }
-            return str_to_tm(strtm, zce::TS_FMT::ISO_SEC, ptr_tm, usec, tz);
+            return str_to_tm(strtm,zce::TS_FMT::ISO_SEC,ptr_tm,usec,tz);
         }
-        return str_to_tm(strtm, zce::TS_FMT::ISO_DAY, ptr_tm, usec, tz);
+        return str_to_tm(strtm,zce::TS_FMT::ISO_DAY,ptr_tm,usec,tz);
     }
     else if (len_str >= TIMESTR_US_SEC_LEN &&
              Z_ISALPHA(*(strtm + 0)) && Z_ISALPHA(*(strtm + 1)) &&
@@ -920,7 +868,7 @@ int zce::fuzzy_str_to_tm(const char* strtm,
         size_t i = 0;
         for (; i < 7; i++)
         {
-            if (strncasecmp(week_str, DAY_OF_WEEK_NAME[i], 3) == 0)
+            if (strncasecmp(week_str,DAY_OF_WEEK_NAME[i],3) == 0)
             {
                 break;
             }
@@ -930,7 +878,7 @@ int zce::fuzzy_str_to_tm(const char* strtm,
             errno = EINVAL;
             return -1;
         }
-        return str_to_tm(strtm, zce::TS_FMT::US_SEC, ptr_tm, usec, tz);
+        return str_to_tm(strtm,zce::TS_FMT::US_SEC,ptr_tm,usec,tz);
     }
     else
     {
@@ -1001,7 +949,7 @@ int zce::str_to_MYSQL_TIME(const char* strtm,
                            MYSQL_TIME* mysql_tm)
 {
     size_t len_str = ::strlen(strtm);
-    ::memset(mysql_tm, 0, sizeof(MYSQL_TIME));
+    ::memset(mysql_tm,0,sizeof(MYSQL_TIME));
 
     if (len_str >= 10 && *(strtm + 4) == '-')
     {
@@ -1088,7 +1036,7 @@ int zce::localtimestr_to_time_t(const char* localtime_str,
                                 time_t* time_t_val)
 {
     timeval tval;
-    int ret = str_to_timeval(localtime_str, fmt, false, &tval);
+    int ret = str_to_timeval(localtime_str,fmt,false,&tval);
     if (ret != 0)
     {
         return ret;
@@ -1128,7 +1076,7 @@ uint64_t zce::total_microseconds(const timeval& tv)
 }
 
 //比较时间是否一致,如果一致返回0，left大，返回整数，right大返回负数
-int zce::timeval_compare(const timeval& left, const timeval& right)
+int zce::timeval_compare(const timeval& left,const timeval& right)
 {
     if (left.tv_sec != right.tv_sec)
     {
@@ -1141,7 +1089,7 @@ int zce::timeval_compare(const timeval& left, const timeval& right)
 }
 
 //对两个时间进行想减,没有做复杂的溢出检查
-const timeval zce::timeval_add(const timeval& left, const timeval& right)
+const timeval zce::timeval_add(const timeval& left,const timeval& right)
 {
     timeval plus_time_val;
     plus_time_val.tv_sec = left.tv_sec + right.tv_sec;
@@ -1158,7 +1106,7 @@ const timeval zce::timeval_add(const timeval& left, const timeval& right)
 
 //对两个时间进行相加,没有做复杂的溢出检查,尽量返回>0的数值
 //safe == true保证返回值>=0,
-const  timeval zce::timeval_sub(const timeval& left, const  timeval& right, bool safe)
+const  timeval zce::timeval_sub(const timeval& left,const  timeval& right,bool safe)
 {
     int64_t left_usec_val = (int64_t)left.tv_sec * SEC_PER_USEC + left.tv_usec;
     int64_t right_usec_val = (int64_t)right.tv_sec * SEC_PER_USEC + right.tv_usec;
@@ -1206,7 +1154,7 @@ bool zce::timeval_havetime(const timeval& tv)
 }
 
 //这只timeval这个结构
-const timeval zce::make_timeval(time_t sec, time_t usec) noexcept
+const timeval zce::make_timeval(time_t sec,time_t usec) noexcept
 {
     timeval to_timeval;
 #if defined (ZCE_OS_WINDOWS)
@@ -1274,7 +1222,7 @@ const timeval zce::make_timeval(const FILETIME* file_time) noexcept
 const timeval zce::make_timeval(const SYSTEMTIME* system_time) noexcept
 {
     FILETIME ft;
-    ::SystemTimeToFileTime(system_time, &ft);
+    ::SystemTimeToFileTime(system_time,&ft);
     return make_timeval(&ft);
 }
 
@@ -1369,7 +1317,7 @@ uint64_t zce::rdtsc()
 
 #if defined (ZCE_WIN32) && !defined (ZCE_WIN64)
 
-    uint32_t hiword, loword;
+    uint32_t hiword,loword;
     //#define rdtsc __asm __emit 0fh __asm __emit 031h
     //#define cpuid __asm __emit 0fh __asm __emit 0a2h
     __asm
@@ -1381,22 +1329,22 @@ uint64_t zce::rdtsc()
         __emit 0fh
         __emit 031h
         //读取edx，eax，
-        mov hiword, edx
-        mov loword, eax
+        mov hiword,edx
+        mov loword,eax
     }
     tsc_value = (uint64_t(hiword) << 32) + loword;
     tsc_value = __rdtsc();
 #elif defined (ZCE_WIN64)
 
     int registers[4];
-    __cpuid(registers, 0);
+    __cpuid(registers,0);
     tsc_value = __rdtsc();
 
 #elif defined (ZCE_OS_LINUX)
 
-    uint32_t hiword, loword;
+    uint32_t hiword,loword;
     asm("cpuid");
-    asm volatile("rdtsc" : "=a" (hiword), "=d" (loword));
+    asm volatile("rdtsc" : "=a" (hiword),"=d" (loword));
     tsc_value = (uint64_t(hiword) << 32) + loword;
 #endif
 

@@ -41,4 +41,31 @@ enum MQW_WAIT_MODEL
     //在超时时间内等待
     MQW_WAIT_TIMEOUT,
 };
+
+static const char* DAY_OF_WEEK_NAME[] =
+{
+    ("Sun"),
+    ("Mon"),
+    ("Tue"),
+    ("Wed"),
+    ("Thu"),
+    ("Fri"),
+    ("Sat")
+};
+
+static const char* MONTH_NAME[] =
+{
+    ("Jan"),
+    ("Feb"),
+    ("Mar"),
+    ("Apr"),
+    ("May"),
+    ("Jun"),
+    ("Jul"),
+    ("Aug"),
+    ("Sep"),
+    ("Oct"),
+    ("Nov"),
+    ("Dec")
+};
 }

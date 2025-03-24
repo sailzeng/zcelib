@@ -248,6 +248,7 @@
 #include <share.h>
 #include <DbgHelp.h>
 #include <intrin.h>
+#include <Shlwapi.h>
 
 #pragma warning ( pop )
 
@@ -351,6 +352,7 @@
 #include <semaphore>
 #include <condition_variable>
 #include <bit>
+#include <regex>
 
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( pop )
@@ -680,13 +682,12 @@ constexpr std::endian __LITTE_ENDIAN = std::endian::little;
 #  pragma comment(lib, "ws2_32.lib")
 #  pragma comment(lib, "mswsock.lib")
 #  pragma comment(lib, "psapi.lib")
-#  pragma comment(lib, "dbghelp.lib")
 #  if defined (ZCE_HAS_IPV6) && (ZCE_HAS_IPV6==1)
 #    pragma comment(lib, "iphlpapi.lib")
 #  endif
 
 //这个功能到2008才支持
-#if defined ZCE_SUPPORT_WINSVR2008
+#if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
 #  pragma comment(lib, "dbghelp.lib")
 #endif
 

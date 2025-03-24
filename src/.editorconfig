@@ -1,0 +1,20 @@
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# 适用于 C++ 代码
+[*.{cpp,,cxx,c,cppm,cc,h,inc,ixx,hpp,hxx}]
+indent_style = space
+indent_size = 4
+
+# 适用于 Python 代码（Python 代码不能使用 Tab）
+[*.py]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+# 适用于 Makefile（Makefile 需要用 Tab ）
+[Makefile]
+indent_style = tab
