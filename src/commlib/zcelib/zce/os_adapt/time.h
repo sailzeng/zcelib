@@ -245,24 +245,24 @@ const char* timeval_to_str(const timeval* timeval,
                            TS_FMT fmt = zce::TS_FMT::ISO_USEC
 );
 
+struct ztm;
 /*!
-* @brief      从字符串中高速的得到tm的结构的结果
+* @brief      从字符串中高速的得到ztm的结构的结果
 * @param[in]  strtm   字符串，字符串的正确性你自己要保证
 * @param[in]  fmt     字符串的格式，参考枚举值 @ref TS_FMT
-* @param[out] ptr_tm  返回的tm结构的指针，注意，如果字符串错误，可能会导致tm错误喔
-* @param[out] usec    返回的的微秒的时间，默认为nullptr，表示不需要返回，
-* @param[out] tz      返回的的时区,默认为nullptr，表示不需要返回，很多种格式里面没有时区信息
+* @param[out] pztm    返回的ztm结构的指针，注意，如果字符串错误，可能会导致ztm错误喔
+                      包括时区，年，月，日，时，分，秒，微秒，时区，如果有尽量填充
 */
-int str_to_tm(const char* strtm,
-              TS_FMT fmt,
-              tm* ptr_tm,
-              time_t* usec = nullptr,
-              int* tz = nullptr);
+int str_to_ztm(const char* strtm,
+               TS_FMT fmt,
+               zce::ztm* pztm);
 
-int fuzzy_str_to_tm(const char* strtm,
-                    tm* ptr_tm,
-                    time_t* usec,
-                    int* tz);
+int fuzzy_str_to_ztm(const char* strtm,
+                     zce::ztm* pztm);
+
+const ::tm make_tm(const zce::ztm* pztm) noexcept;
+
+const timeval make_timeval(bool uct_time,const zce::ztm* pztm) noexcept;
 
 /*!
 * @brief      从字符串转换得到本地时间timeval函数

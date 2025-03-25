@@ -68,4 +68,16 @@ static const char* MONTH_NAME[] =
     ("Nov"),
     ("Dec")
 };
+
+struct ztm
+{
+    int tz_ = 0;    // time zone
+    int year_ = 0;  // years since 0
+    int mon_ = 0;   // months since January - [1, 12]
+    int day_ = 0;   // day of the month - [1, 31]
+    int hour_ = 0;  // hours since midnight - [0, 23]
+    int min_ = 0;   // minutes after the hour - [0, 59]
+    int sec_ = 0;   // seconds after the minute - [0, 60] including leap second
+    int usec_ = 0;  // microseconds after the second - [0, 999999]
+};
 }

@@ -12,7 +12,7 @@ namespace zce::cfg
 int read_ini(const char* file_name,
              zce::propertytree* propertytree);
 
-//! 写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
+//! 写入ini
 int write_ini(const char* file_name,
               const zce::propertytree* propertytree);
 
@@ -39,4 +39,9 @@ int read_cvs(const char* file_name,
              std::vector<std::vector<std::string> > *data,
              size_t read_line_len = 64 * 1024,
              unsigned char word_delim = ',');
+
+int write_cvs(const char* file_name,
+              const std::vector<std::vector<std::string> > *data,
+              size_t write_line_len = 64 * 1024,
+              unsigned char word_delim = ',');
 }

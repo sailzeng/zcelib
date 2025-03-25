@@ -269,7 +269,7 @@
     <ClCompile Include="zce\event\reactor_wfmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\config\file_implement.cpp">
+    <ClCompile Include="zce\config\cfg_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\config\property_tree.cpp">
@@ -703,7 +703,7 @@
     <ClInclude Include="zce\event\reactor_wfmo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\config\file_implement.h">
+    <ClInclude Include="zce\config\cfg_file.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\config\property_tree.h">

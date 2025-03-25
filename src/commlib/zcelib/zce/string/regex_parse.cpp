@@ -2,10 +2,8 @@
 #include "zce/comm/common.h"
 #include "zce/string/regex_parse.h"
 
-namespace zce
-{
-int parse_str_to_tm(const char* strtm,
-                    zce::ztm* pztm)
+int zce::parse_str_to_ztm(const char* strtm,
+                          zce::ztm* pztm)
 {
     const std::string POSIX_DATE_REGEX = R"(([ \t]*(\d{4}|\d{2})[-\/]?(\d{2})[-\/]?(\d{2})))";
     const std::string TIME_REGEX = R"(([ \t]*(\d{2})\:?(\d{2})\:?(\d{2})([.](\d{6}))?))";
@@ -28,20 +26,18 @@ int parse_str_to_tm(const char* strtm,
     } tm_fmt = RP_MFT::NONE;
 
     std::cmatch tm_cmatch0,tm_cmatch1;
-    if (std::regex_search(strtm,tm_cmatch0,tm_regex_0))
+    if(std::regex_search(strtm,tm_cmatch0,tm_regex_0))
     {
         tm_fmt = RP_MFT::POSIX;
-    }
-    else if (std::regex_search(strtm,tm_cmatch1,tm_regex_1))
+    } else if(std::regex_search(strtm,tm_cmatch1,tm_regex_1))
     {
         tm_fmt = RP_MFT::US_EURO;
-    }
-    else
+    } else
     {
         return -1;
     }
 
-    if (tm_fmt == RP_MFT::POSIX)
+    if(tm_fmt == RP_MFT::POSIX)
     {
         pztm->year_ = std::stoi(tm_cmatch0[2]);
         pztm->mon_ = std::stoi(tm_cmatch0[3]);
@@ -51,30 +47,28 @@ int parse_str_to_tm(const char* strtm,
         pztm->sec_ = std::stoi(tm_cmatch0[8]);
         pztm->usec_ = std::stoi(tm_cmatch0[10]);
         pztm->tz_ = std::stoi(tm_cmatch0[12]);
-    }
-    else if (tm_fmt == RP_MFT::US_EURO)
+    } else if(tm_fmt == RP_MFT::US_EURO)
     {
         std::string mon_str;
-        if (tm_cmatch1[5].matched)
+        if(tm_cmatch1[5].matched)
         {
             pztm->mon_ = std::stoi(tm_cmatch0[5]);
             mon_str = tm_cmatch1[6].str();
-        }
-        else if (tm_cmatch1[7].matched)
+        } else if(tm_cmatch1[7].matched)
         {
             pztm->mon_ = std::stoi(tm_cmatch0[7]);
             mon_str = tm_cmatch1[8].str();
         }
         int i = 0;
-        for (; i < 12; i++)
+        for(; i < 12; i++)
         {
-            if (strncasecmp(mon_str.c_str(),MONTH_NAME[i],3) == 0)
+            if(strncasecmp(mon_str.c_str(),MONTH_NAME[i],3) == 0)
             {
                 pztm->mon_ = i;
                 break;
             }
         }
-        if (i == 12)
+        if(i == 12)
         {
             errno = EINVAL;
             return -1;
@@ -83,24 +77,22 @@ int parse_str_to_tm(const char* strtm,
         pztm->hour_ = std::stoi(tm_cmatch1[11]);
         pztm->min_ = std::stoi(tm_cmatch1[12]);
         pztm->sec_ = std::stoi(tm_cmatch1[13]);
-        if (tm_cmatch1[15].matched)
+        if(tm_cmatch1[15].matched)
         {
             pztm->usec_ = std::stoi(tm_cmatch1[15]);
         }
-        if (tm_cmatch1[17].matched)
+        if(tm_cmatch1[17].matched)
         {
             pztm->tz_ = std::stoi(tm_cmatch1[17]);
         }
     }
 
-    if (tm_cmatch1[17].compare("GMT"))
+    if(tm_cmatch1[17].compare("GMT"))
     {
         pztm->tz_ = 0;
-    }
-    else
+    } else
     {
         pztm->tz_ = std::stoi(tm_cmatch1[17]);
     }
     return 0;
-}
 }

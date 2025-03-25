@@ -454,24 +454,14 @@ const char* zce::timeval_to_str(const timeval* timeval,
 }
 
 //通过字符串翻译得到tm时间结构
-int zce::str_to_tm(const char* strtm,
-                   TS_FMT fmt,
-                   tm* ptr_tm,
-                   time_t* usec,
-                   int* tz)
+int zce::str_to_ztm(const char* strtm,
+                    TS_FMT fmt,
+                    zce::ztm* pztm)
 {
     size_t len_str = ::strlen(strtm);
-    ZCE_ASSERT(strtm && ptr_tm);
-    if (usec != nullptr)
-    {
-        *usec = 0;
-    }
-    if (tz != nullptr)
-    {
-        *tz = 0;
-    }
+    ZCE_ASSERT(strtm && pztm);
 
-    memset(ptr_tm,0,sizeof(tm));
+    memset(pztm,0,sizeof(zce::ztm));
     if (zce::TS_FMT::SHRINK_DAY == fmt ||
         zce::TS_FMT::SHRINK_SEC == fmt ||
         zce::TS_FMT::SHRINK_USEC == fmt)
@@ -481,15 +471,20 @@ int zce::str_to_tm(const char* strtm,
         {
             return -1;
         }
-        ptr_tm->tm_year = ((*strtm) - '0') * 10
+        pztm->year_ = ((*strtm) - '0') * 10
             + (*(strtm + 1) - '0');
-        if (ptr_tm->tm_year < 75)
+        if (pztm->year_ < 75)
         {
-            ptr_tm->tm_year += 100;
+            pztm->year_ += 2000;
         }
-        ptr_tm->tm_mon = (*(strtm + 2) - '0') * 10
+        else if (pztm->year_ < 100)
+        {
+            pztm->year_ += 1900;
+        }
+
+        pztm->mon_ = (*(strtm + 2) - '0') * 10
             + (*(strtm + 3) - '0') - 1;
-        ptr_tm->tm_mday = (*(strtm + 4) - '0') * 10
+        pztm->day_ = (*(strtm + 4) - '0') * 10
             + (*(strtm + 5) - '0');
 
         //如果输入字符串精度到秒
@@ -501,21 +496,20 @@ int zce::str_to_tm(const char* strtm,
             {
                 return -1;
             }
-            ptr_tm->tm_hour = (*(strtm + 7) - '0') * 10
+            pztm->hour_ = (*(strtm + 7) - '0') * 10
                 + (*(strtm + 8) - '0');
-            ptr_tm->tm_min = (*(strtm + 9) - '0') * 10
+            pztm->min_ = (*(strtm + 9) - '0') * 10
                 + (*(strtm + 10) - '0');
-            ptr_tm->tm_sec = (*(strtm + 11) - '0') * 10
+            pztm->sec_ = (*(strtm + 11) - '0') * 10
                 + (*(strtm + 12) - '0');
 
-            if (zce::TS_FMT::SHRINK_USEC == fmt &&
-                usec != nullptr)
+            if (zce::TS_FMT::SHRINK_USEC == fmt)
             {
                 if (len_str < zce::TS_SHRINK_USEC_LEN)
                 {
                     return -1;
                 }
-                *usec = ((*(strtm + 14)) - '0') * 100000
+                pztm->usec_ = ((*(strtm + 14)) - '0') * 100000
                     + ((*(strtm + 15) - '0')) * 10000
                     + ((*(strtm + 16) - '0')) * 1000
                     + ((*(strtm + 17) - '0')) * 100
@@ -533,13 +527,13 @@ int zce::str_to_tm(const char* strtm,
         {
             return -1;
         }
-        ptr_tm->tm_year = ((*strtm) - '0') * 1000
+        pztm->year_ = ((*strtm) - '0') * 1000
             + (*(strtm + 1) - '0') * 100
             + (*(strtm + 2) - '0') * 10
-            + (*(strtm + 3) - '0') - 1900;
-        ptr_tm->tm_mon = (*(strtm + 4) - '0') * 10
-            + (*(strtm + 5) - '0') - 1;
-        ptr_tm->tm_mday = (*(strtm + 6) - '0') * 10
+            + (*(strtm + 3) - '0');
+        pztm->mon_ = (*(strtm + 4) - '0') * 10
+            + (*(strtm + 5) - '0');
+        pztm->day_ = (*(strtm + 6) - '0') * 10
             + (*(strtm + 7) - '0');
 
         //如果输入字符串精度到秒
@@ -551,21 +545,20 @@ int zce::str_to_tm(const char* strtm,
             {
                 return -1;
             }
-            ptr_tm->tm_hour = (*(strtm + 9) - '0') * 10
+            pztm->hour_ = (*(strtm + 9) - '0') * 10
                 + (*(strtm + 10) - '0');
-            ptr_tm->tm_min = (*(strtm + 11) - '0') * 10
+            pztm->min_ = (*(strtm + 11) - '0') * 10
                 + (*(strtm + 12) - '0');
-            ptr_tm->tm_sec = (*(strtm + 13) - '0') * 10
+            pztm->sec_ = (*(strtm + 13) - '0') * 10
                 + (*(strtm + 14) - '0');
 
-            if (zce::TS_FMT::COMPACT_USEC == fmt &&
-                usec != nullptr)
+            if (zce::TS_FMT::COMPACT_USEC == fmt)
             {
                 if (len_str < zce::TS_COMPACT_USEC_LEN)
                 {
                     return -1;
                 }
-                *usec = ((*(strtm + 16)) - '0') * 100000
+                pztm->usec_ = ((*(strtm + 16)) - '0') * 100000
                     + ((*(strtm + 17) - '0')) * 10000
                     + ((*(strtm + 18) - '0')) * 1000
                     + ((*(strtm + 19) - '0')) * 100
@@ -582,15 +575,13 @@ int zce::str_to_tm(const char* strtm,
         {
             return -1;
         }
-        ptr_tm->tm_year = ((*strtm) - '0') * 1000
+        pztm->year_ = ((*strtm) - '0') * 1000
             + (*(strtm + 1) - '0') * 100
             + (*(strtm + 2) - '0') * 10
-            + (*(strtm + 3) - '0')
-            - 1900;
-        ptr_tm->tm_mon = (*(strtm + 5) - '0') * 10
-            + (*(strtm + 6) - '0')
-            - 1;
-        ptr_tm->tm_mday = (*(strtm + 8) - '0') * 10
+            + (*(strtm + 3) - '0');
+        pztm->mon_ = (*(strtm + 5) - '0') * 10
+            + (*(strtm + 6) - '0');
+        pztm->day_ = (*(strtm + 8) - '0') * 10
             + (*(strtm + 9) - '0');
 
         //如果输入字符串精度到微秒
@@ -601,21 +592,20 @@ int zce::str_to_tm(const char* strtm,
             {
                 return -1;
             }
-            ptr_tm->tm_hour = (*(strtm + 11) - '0') * 10
+            pztm->hour_ = (*(strtm + 11) - '0') * 10
                 + (*(strtm + 12) - '0');
-            ptr_tm->tm_min = (*(strtm + 14) - '0') * 10
+            pztm->min_ = (*(strtm + 14) - '0') * 10
                 + (*(strtm + 15) - '0');
-            ptr_tm->tm_sec = (*(strtm + 17) - '0') * 10
+            pztm->sec_ = (*(strtm + 17) - '0') * 10
                 + (*(strtm + 18) - '0');
         }
-        if (zce::TS_FMT::ISO_USEC == fmt &&
-            usec != nullptr)
+        if (zce::TS_FMT::ISO_USEC == fmt)
         {
             if (len_str < zce::TS_ISO_USEC_LEN)
             {
                 return -1;
             }
-            *usec = ((*(strtm + 20)) - '0') * 100000
+            pztm->usec_ = ((*(strtm + 20)) - '0') * 100000
                 + ((*(strtm + 21) - '0')) * 10000
                 + ((*(strtm + 22) - '0')) * 1000
                 + ((*(strtm + 23) - '0')) * 100
@@ -636,13 +626,12 @@ int zce::str_to_tm(const char* strtm,
         mon_str[1] = strtm[5];
         mon_str[2] = strtm[6];
         mon_str[3] = '\0';
-        ptr_tm->tm_mon = 0;
         int i = 0;
         for (; i < 12; i++)
         {
             if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
             {
-                ptr_tm->tm_mon = i;
+                pztm->mon_ = i + 1;
                 break;
             }
         }
@@ -651,28 +640,26 @@ int zce::str_to_tm(const char* strtm,
             errno = EINVAL;
             return -1;
         }
-        ptr_tm->tm_mday = (*(strtm + 8) - '0') * 10
+        pztm->day_ = (*(strtm + 8) - '0') * 10
             + (*(strtm + 9) - '0');
-        ptr_tm->tm_year = (*(strtm + 11) - '0') * 1000
+        pztm->year_ = (*(strtm + 11) - '0') * 1000
             + (*(strtm + 12) - '0') * 100
             + (*(strtm + 13) - '0') * 10
-            + (*(strtm + 14) - '0')
-            - 1900;
-        ptr_tm->tm_hour = (*(strtm + 16) - '0') * 10
+            + (*(strtm + 14) - '0');
+        pztm->hour_ = (*(strtm + 16) - '0') * 10
             + (*(strtm + 17) - '0');
-        ptr_tm->tm_min = (*(strtm + 19) - '0') * 10
+        pztm->min_ = (*(strtm + 19) - '0') * 10
             + (*(strtm + 20) - '0');
-        ptr_tm->tm_sec = (*(strtm + 22) - '0') * 10
+        pztm->sec_ = (*(strtm + 22) - '0') * 10
             + (*(strtm + 23) - '0');
         //如果输入字符串精度到微秒
-        if (zce::TS_FMT::US_USEC == fmt &&
-            usec != nullptr)
+        if (zce::TS_FMT::US_USEC == fmt)
         {
             if (len_str < zce::TIMESTR_US_USEC_LEN)
             {
                 return -1;
             }
-            *usec = (*(strtm + 25) - '0') * 100000
+            pztm->usec_ = (*(strtm + 25) - '0') * 100000
                 + (*(strtm + 26) - '0') * 10000
                 + (*(strtm + 27) - '0') * 1000
                 + (*(strtm + 28) - '0') * 100
@@ -692,13 +679,12 @@ int zce::str_to_tm(const char* strtm,
         mon_str[1] = strtm[9];
         mon_str[2] = strtm[10];
         mon_str[3] = '\0';
-        ptr_tm->tm_mon = 0;
         int i = 0;
         for (; i < 12; i++)
         {
             if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
             {
-                ptr_tm->tm_mon = i;
+                pztm->mon_ = i + 1;
                 break;
             }
         }
@@ -707,18 +693,17 @@ int zce::str_to_tm(const char* strtm,
             errno = EINVAL;
             return -1;
         }
-        ptr_tm->tm_mday = (*(strtm + 5) - '0') * 10
+        pztm->day_ = (*(strtm + 5) - '0') * 10
             + (*(strtm + 6) - '0');
-        ptr_tm->tm_year = (*(strtm + 12) - '0') * 1000
+        pztm->year_ = (*(strtm + 12) - '0') * 1000
             + (*(strtm + 13) - '0') * 100
             + (*(strtm + 14) - '0') * 10
-            + (*(strtm + 15) - '0')
-            - 1900;
-        ptr_tm->tm_hour = (*(strtm + 17) - '0') * 10
+            + (*(strtm + 15) - '0');
+        pztm->hour_ = (*(strtm + 17) - '0') * 10
             + (*(strtm + 18) - '0');
-        ptr_tm->tm_min = (*(strtm + 20) - '0') * 10
+        pztm->min_ = (*(strtm + 20) - '0') * 10
             + (*(strtm + 21) - '0');
-        ptr_tm->tm_sec = (*(strtm + 23) - '0') * 10
+        pztm->sec_ = (*(strtm + 23) - '0') * 10
             + (*(strtm + 24) - '0');
         //尾部还有一个" GMT"
     }
@@ -733,13 +718,12 @@ int zce::str_to_tm(const char* strtm,
         mon_str[1] = strtm[9];
         mon_str[2] = strtm[10];
         mon_str[3] = '\0';
-        ptr_tm->tm_mon = 0;
         int i = 0;
         for (; i < 12; i++)
         {
             if (strncasecmp(mon_str,MONTH_NAME[i],3) == 0)
             {
-                ptr_tm->tm_mon = i;
+                pztm->mon_ = i;
                 break;
             }
         }
@@ -748,32 +732,29 @@ int zce::str_to_tm(const char* strtm,
             errno = EINVAL;
             return -1;
         }
-        ptr_tm->tm_mday = (*(strtm + 5) - '0') * 10
+        pztm->day_ = (*(strtm + 5) - '0') * 10
             + (*(strtm + 6) - '0');
-        ptr_tm->tm_year = (*(strtm + 12) - '0') * 1000
+        pztm->year_ = (*(strtm + 12) - '0') * 1000
             + (*(strtm + 13) - '0') * 100
             + (*(strtm + 14) - '0') * 10
             + (*(strtm + 15) - '0')
             - 1900;
-        ptr_tm->tm_hour = (*(strtm + 17) - '0') * 10
+        pztm->hour_ = (*(strtm + 17) - '0') * 10
             + (*(strtm + 18) - '0');
-        ptr_tm->tm_min = (*(strtm + 20) - '0') * 10
+        pztm->min_ = (*(strtm + 20) - '0') * 10
             + (*(strtm + 21) - '0');
-        ptr_tm->tm_sec = (*(strtm + 23) - '0') * 10
+        pztm->sec_ = (*(strtm + 23) - '0') * 10
             + (*(strtm + 24) - '0');
 
-        if (tz)
+        int tzi = ((*(strtm + 27) - '0') * 10
+                   + (*(strtm + 28) - '0')) * 3600
+            + ((*(strtm + 29) - '0') * 10
+               + (*(strtm + 30) - '0')) * 60;
+        if (*(strtm + 26) == '-')
         {
-            int tzi = ((*(strtm + 27) - '0') * 10
-                       + (*(strtm + 28) - '0')) * 3600
-                + ((*(strtm + 29) - '0') * 10
-                   + (*(strtm + 30) - '0')) * 60;
-            if (*(strtm + 26) == '-')
-            {
-                tzi = -1 * tzi;
-            }
-            *tz = tzi;
+            tzi = -1 * tzi;
         }
+        pztm->tz_ = tzi;
     }
     else
     {
@@ -785,10 +766,8 @@ int zce::str_to_tm(const char* strtm,
 }
 
 //模糊字符串翻译得到tm时间结构，不需要你
-int zce::fuzzy_str_to_tm(const char* strtm,
-                         tm* ptr_tm,
-                         time_t* usec,
-                         int* tz)
+int zce::fuzzy_str_to_ztm(const char* strtm,
+                          zce::ztm* pztm)
 {
     size_t len_str = ::strlen(strtm);
     if ((len_str >= TS_SHRINK_DAY_LEN &&
@@ -806,11 +785,11 @@ int zce::fuzzy_str_to_tm(const char* strtm,
                 Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
                 Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19))))
             {
-                return str_to_tm(strtm,zce::TS_FMT::SHRINK_USEC,ptr_tm,usec,tz);
+                return str_to_ztm(strtm,zce::TS_FMT::SHRINK_USEC,pztm);
             }
-            return str_to_tm(strtm,zce::TS_FMT::SHRINK_SEC,ptr_tm,usec,tz);
+            return str_to_ztm(strtm,zce::TS_FMT::SHRINK_SEC,pztm);
         }
-        return str_to_tm(strtm,zce::TS_FMT::SHRINK_DAY,ptr_tm,usec,tz);
+        return str_to_ztm(strtm,zce::TS_FMT::SHRINK_DAY,pztm);
     }
     else if (len_str >= TS_COMPACT_DAY_LEN &&
              Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
@@ -828,11 +807,11 @@ int zce::fuzzy_str_to_tm(const char* strtm,
                 Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19)) &&
                 Z_ISDIGIT(*(strtm + 20)) && Z_ISDIGIT(*(strtm + 21))))
             {
-                return str_to_tm(strtm,zce::TS_FMT::COMPACT_USEC,ptr_tm,usec,tz);
+                return str_to_ztm(strtm,zce::TS_FMT::COMPACT_USEC,pztm);
             }
-            return str_to_tm(strtm,zce::TS_FMT::COMPACT_SEC,ptr_tm,usec,tz);
+            return str_to_ztm(strtm,zce::TS_FMT::COMPACT_SEC,pztm);
         }
-        return str_to_tm(strtm,zce::TS_FMT::COMPACT_DAY,ptr_tm,usec,tz);
+        return str_to_ztm(strtm,zce::TS_FMT::COMPACT_DAY,pztm);
     }
     else if (len_str >= TS_ISO_DAY_LEN &&
              Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
@@ -850,11 +829,11 @@ int zce::fuzzy_str_to_tm(const char* strtm,
                 Z_ISDIGIT(*(strtm + 22)) && Z_ISDIGIT(*(strtm + 23)) &&
                 Z_ISDIGIT(*(strtm + 24)) && Z_ISDIGIT(*(strtm + 25))))
             {
-                return str_to_tm(strtm,zce::TS_FMT::ISO_USEC,ptr_tm,usec,tz);
+                return str_to_ztm(strtm,zce::TS_FMT::ISO_USEC,pztm);
             }
-            return str_to_tm(strtm,zce::TS_FMT::ISO_SEC,ptr_tm,usec,tz);
+            return str_to_ztm(strtm,zce::TS_FMT::ISO_SEC,pztm);
         }
-        return str_to_tm(strtm,zce::TS_FMT::ISO_DAY,ptr_tm,usec,tz);
+        return str_to_ztm(strtm,zce::TS_FMT::ISO_DAY,pztm);
     }
     else if (len_str >= TIMESTR_US_SEC_LEN &&
              Z_ISALPHA(*(strtm + 0)) && Z_ISALPHA(*(strtm + 1)) &&
@@ -878,13 +857,59 @@ int zce::fuzzy_str_to_tm(const char* strtm,
             errno = EINVAL;
             return -1;
         }
-        return str_to_tm(strtm,zce::TS_FMT::US_SEC,ptr_tm,usec,tz);
+        return str_to_ztm(strtm,zce::TS_FMT::US_SEC,pztm);
     }
     else
     {
         errno = EINVAL;
         return -1;
     }
+}
+
+const ::tm zce::make_tm(const zce::ztm* pztm) noexcept
+{
+    ::tm tmv;
+    tmv.tm_year = pztm->year_;
+    tmv.tm_mon = pztm->mon_;
+    tmv.tm_mday = pztm->day_;
+    tmv.tm_hour = pztm->hour_;
+    tmv.tm_min = pztm->min_;
+    tmv.tm_sec = pztm->sec_;
+    tmv.tm_wday = -1;
+    tmv.tm_yday = -1;
+    tmv.tm_isdst = -1;
+    return tmv;
+}
+
+const timeval zce::make_timeval(bool uct_time,const zce::ztm* pztm) noexcept
+{
+    timeval tv;
+    ::tm tmp_tm = zce::make_tm(pztm);
+    if (uct_time)
+    {
+#if defined ZCE_OS_WINDOWS
+        tv.tv_sec = static_cast<long>(zce::timegm(&tmp_tm));
+        tv.tv_usec = static_cast<long>(pztm->usec_);
+#else
+        tv.tv_sec = zce::timegm(&tm_value);
+        tv.tv_usec = pztm->usec_;
+#endif
+    }
+    else
+    {
+#if defined ZCE_OS_WINDOWS
+        tv.tv_sec = static_cast<long>(zce::timelocal(&tmp_tm));
+        tv.tv_usec = static_cast<long>(pztm->usec_);
+#else
+        tv.tv_sec = zce::timelocal(&tm_value);
+        tv.tv_usec = pztm->usec_;
+#endif
+    }
+    if (tv.tv_usec < 0 && tv.tv_usec > 999999)
+    {
+        tv.tv_usec = -1;
+    }
+    return tv;
 }
 
 //从字符串转换得到时间time_t函数
@@ -903,35 +928,11 @@ int zce::str_to_timeval(const char* strtm,
     {
         uct_time = false;
     }
-    struct tm tm_value;
-    time_t usec = 0;
-    int tz = 0;
-    zce::str_to_tm(strtm,
-                   fmt,
-                   &tm_value,
-                   &usec,
-                   &tz);
-
-    if (uct_time)
-    {
-#if defined ZCE_OS_WINDOWS
-        tval->tv_sec = static_cast<long>(zce::timegm(&tm_value));
-        tval->tv_usec = static_cast<long>(usec);
-#else
-        tval->tv_sec = zce::timegm(&tm_value);
-        tval->tv_usec = usec;
-#endif
-    }
-    else
-    {
-#if defined ZCE_OS_WINDOWS
-        tval->tv_sec = static_cast<long>(zce::timelocal(&tm_value));
-        tval->tv_usec = static_cast<long>(usec);
-#else
-        tval->tv_sec = zce::timelocal(&tm_value);
-        tval->tv_usec = usec;
-#endif
-    }
+    zce::ztm ztm;
+    zce::str_to_ztm(strtm,
+                    fmt,
+                    &ztm);
+    *tval = make_timeval(uct_time,&ztm);
     //转换失败，表示字符串有问题
     if (-1 == tval->tv_sec)
     {

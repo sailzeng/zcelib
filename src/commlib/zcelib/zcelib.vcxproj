@@ -174,7 +174,7 @@
     <ClCompile Include="zce\bytes\encrypt.cpp" />
     <ClCompile Include="zce\bytes\hash_value.cpp" />
     <ClCompile Include="zce\bytes\serialize.cpp" />
-    <ClCompile Include="zce\config\file_implement.cpp" />
+    <ClCompile Include="zce\config\cfg_file.cpp" />
     <ClCompile Include="zce\config\property_tree.cpp" />
     <ClCompile Include="zce\event\handle_base.cpp" />
     <ClCompile Include="zce\event\handle_inotify.cpp" />
@@ -322,7 +322,7 @@
     <ClInclude Include="zce\bytes\hash_value.h" />
     <ClInclude Include="zce\bytes\serialize.h" />
     <ClInclude Include="zce\config.h" />
-    <ClInclude Include="zce\config\file_implement.h" />
+    <ClInclude Include="zce\config\cfg_file.h" />
     <ClInclude Include="zce\config\property_tree.h" />
     <ClInclude Include="zce\event\handle_base.h" />
     <ClInclude Include="zce\event\handle_inotify.h" />
