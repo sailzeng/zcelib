@@ -135,7 +135,7 @@ int write_ini(const char* file_name,
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
 
 /******************************************************************************************
-INI文件的配置读取，写入实现器
+XML文件的配置读取，写入实现器
 ******************************************************************************************/
 
 //深度优先读写
@@ -266,7 +266,7 @@ int read_cvs(const char* file_name,
 
 int write_cvs(const char* file_name,
               const std::vector<std::vector<std::string> > *data,
-              unsigned char word_delim = ',')
+              unsigned char word_delim)
 {
     //1行的最大值
     std::string writefile_name = file_name;

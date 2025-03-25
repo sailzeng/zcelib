@@ -42,6 +42,5 @@ int read_cvs(const char* file_name,
 
 int write_cvs(const char* file_name,
               const std::vector<std::vector<std::string> > *data,
-              size_t write_line_len = 64 * 1024,
               unsigned char word_delim = ',');
 }
