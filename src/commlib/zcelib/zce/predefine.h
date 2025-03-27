@@ -458,6 +458,10 @@ typedef __int64             int64_t;
 #include <mysql.h>
 #endif
 
+#if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
+#include <libpq-fe.h>
+#endif
+
 //SQLite
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 #include <sqlite3.h>
@@ -498,7 +502,7 @@ extern "C"
 #endif
 
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
-#include <libpq-pq.h>
+#include <libpq-fe.h>
 #endif
 
 #if defined (ZCE_OS_WINDOWS)

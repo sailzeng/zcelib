@@ -98,7 +98,7 @@
     <ClCompile Include="zce\time\progress_timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\db\mysql\handle.cpp">
+    <ClCompile Include="zce\db\mysql\connect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\db\mysql\field.cpp">
@@ -374,6 +374,9 @@
     <ClCompile Include="zce\string\regex_parse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\db\pq\result.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -463,7 +466,7 @@
     <ClInclude Include="zce\time\progress_timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\db\mysql\handle.h">
+    <ClInclude Include="zce\db\mysql\connect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\mysql\field.h">
@@ -869,6 +872,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\regex_parse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\db\pq\result.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,10 +15,10 @@
 
 #pragma once
 
+#include "zce/comm/common.h"
 #include "zce/event/handle_base.h"
 #include "zce/time/time_value.h"
-#include "zce/db/mysql/handle.h"
-#include "zce/comm/common.h"
+#include "zce/db/mysql/connect.h"
 
 //前向声明
 namespace zce
@@ -153,7 +153,7 @@ public:
     char* read_bufs_ = nullptr;
     const char* write_bufs_ = nullptr;
     size_t bufs_len_ = 0;
-    size_t *result_len_ = 0;
+    size_t* result_len_ = 0;
 
     //!改名的路径
     const char* new_path_ = nullptr;
@@ -185,7 +185,7 @@ int fs_read(zce::aio::worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
-            size_t *result_len,
+            size_t* result_len,
             std::function<void(AIO_ATOM*)> call_back,
             ssize_t offset = 0,
             int whence = SEEK_CUR);
@@ -195,7 +195,7 @@ int fs_write(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
-             size_t *result_len,
+             size_t* result_len,
              std::function<void(AIO_ATOM*)> call_back,
              ssize_t offset = 0,
              int whence = SEEK_CUR);
@@ -278,7 +278,7 @@ struct MYSQL_ATOM :public AIO_ATOM
     //!
     void clear() override;
 
-    zce::mysql::handle* db_connect_ = nullptr;
+    zce::mysql::connect* db_connect_ = nullptr;
     const char* host_name_ = nullptr;
     const char* user_ = nullptr;
     const char* pwd_ = nullptr;
@@ -292,7 +292,7 @@ struct MYSQL_ATOM :public AIO_ATOM
 
 //!链接数据
 int mysql_connect(zce::aio::worker* worker,
-                  zce::mysql::handle* db_connect,
+                  zce::mysql::connect* db_connect,
                   const char* host_name,
                   const char* user,
                   const char* pwd,
@@ -301,12 +301,12 @@ int mysql_connect(zce::aio::worker* worker,
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::worker* worker,
-                     zce::mysql::handle* db_connect,
+                     zce::mysql::connect* db_connect,
                      std::function<void(AIO_ATOM*)> call_back);
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::handle* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -315,7 +315,7 @@ int mysql_query(zce::aio::worker* worker,
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::handle* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -348,16 +348,16 @@ int host_getaddr_ary(zce::aio::worker* worker,
                      const char* hostname,
                      const char* service,
                      size_t* ary_addr_num,
-                     sockaddr_in* ary_addr,
+                     ::sockaddr_in* ary_addr,
                      size_t* ary_addr6_num,
-                     sockaddr_in6* ary_addr6,
+                     ::sockaddr_in6* ary_addr6,
                      std::function<void(AIO_ATOM*)> call_back);
 
 //!获得host对应的一个地址信息，类似getaddrinfo_one
 int host_getaddr_one(zce::aio::worker* worker,
                      const char* hostname,
                      const char* service,
-                     sockaddr* addr,
+                     ::sockaddr* addr,
                      socklen_t addr_len,
                      std::function<void(AIO_ATOM*)> call_back);
 
@@ -376,7 +376,7 @@ struct SOCKET_TIMEOUT_ATOM :public AIO_ATOM
     const void* snd_buf_ = nullptr;
     void* rcv_buf_ = nullptr;
     size_t len_ = 0;
-    size_t *result_len_ = nullptr;
+    size_t* result_len_ = nullptr;
     zce::time_value* timeout_tv_ = nullptr;
 
     int flags_ = 0;
@@ -385,7 +385,7 @@ struct SOCKET_TIMEOUT_ATOM :public AIO_ATOM
     const char* host_name_ = nullptr;
     uint16_t host_port_ = 0;
     sockaddr* host_addr_ = nullptr;
-    ZCE_SOCKET *accept_hdl_ = nullptr;
+    ZCE_SOCKET* accept_hdl_ = nullptr;
 };
 
 //! ST = socket timeout
@@ -409,7 +409,7 @@ int st_connect(zce::aio::worker* worker,
 //! 等待若干时间进行accept，直至超时
 int st_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
-              ZCE_SOCKET *accept_hdl,
+              ZCE_SOCKET* accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
               zce::time_value* timeout_tv,
@@ -420,7 +420,7 @@ int st_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* buf,
             size_t len,
-            size_t *result_len,
+            size_t* result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags = 0);
@@ -430,7 +430,7 @@ int st_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* buf,
             size_t len,
-            size_t *result_len,
+            size_t* result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags = 0);
@@ -440,7 +440,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
-                size_t *result_len,
+                size_t* result_len,
                 sockaddr* from,
                 socklen_t* from_len,
                 zce::time_value* timeout_tv,
@@ -457,13 +457,13 @@ struct EVENT_ATOM :public AIO_ATOM
     virtual void clear();
 
     //!发生事件后被回调的函数
-    static int event_do(std::shared_ptr<void> &atom,
+    static int event_do(std::shared_ptr<void>& atom,
                         ZCE_HANDLE socket,
                         RECTOR_EVENT event,
                         bool connect_succ);
 
     //!参数
-    size_t *result_len_ = nullptr;
+    size_t* result_len_ = nullptr;
     //
     ZCE_SOCKET handle_ = ZCE_INVALID_SOCKET;
     const sockaddr* addr_ = nullptr;
@@ -479,7 +479,7 @@ struct EVENT_ATOM :public AIO_ATOM
     const char* host_name_ = nullptr;
     uint16_t host_port_ = 0;
     sockaddr* host_addr_ = nullptr;
-    ZCE_SOCKET *accept_hdl_ = nullptr;
+    ZCE_SOCKET* accept_hdl_ = nullptr;
 };
 
 //! 注意这儿的ZCE_SOCKET handle必须是NON_BLOCK的，切记，
@@ -492,16 +492,16 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
-               bool *alread_do,
+               bool* alread_do,
                std::function<void(AIO_ATOM*)> call_back);
 
 //! 事件模式等待间进行accept，直至超时
 int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
-              ZCE_SOCKET *accept_hdl,
+              ZCE_SOCKET* accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
-              bool *alread_do,
+              bool* alread_do,
               std::function<void(AIO_ATOM*)> call_back);
 
 //! 事件模式等待间进行进行recv，
@@ -509,8 +509,8 @@ int er_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* rcv_buf,
             size_t len,
-            size_t *result_len,
-            bool *alread_do,
+            size_t* result_len,
+            bool* alread_do,
             std::function<void(AIO_ATOM*)> call_back);
 
 //! 事件模式等待进行进行send，
@@ -518,8 +518,8 @@ int er_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* snd_buf,
             size_t len,
-            size_t *result_len,
-            bool *alread_do,
+            size_t* result_len,
+            bool* alread_do,
             std::function<void(AIO_ATOM*)> call_back);
 
 //!事件模式等待进行recvfrom数据，
@@ -527,10 +527,10 @@ int er_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* rcv_buf,
                 size_t len,
-                size_t *result_len,
+                size_t* result_len,
                 sockaddr* from,
                 socklen_t* from_len,
-                bool *alread_do,
+                bool* alread_do,
                 std::function<void(AIO_ATOM*)> call_back);
 
 //!sendto,直接上手干活，无需等待，不做什么事件
@@ -541,21 +541,21 @@ struct TIMER_ATOM :public AIO_ATOM
 {
     virtual void clear();
 
-    static int time_out(std::shared_ptr<void> &atom,
-                        const zce::time_value &,
+    static int time_out(std::shared_ptr<void>& atom,
+                        const zce::time_value&,
                         int time_id);
     //!
     zce::time_value timeout_tv_;
     //!
-    int *timer_id_ = nullptr;
+    int* timer_id_ = nullptr;
     //!
-    zce::time_value *trigger_tv_ = nullptr;
+    zce::time_value* trigger_tv_ = nullptr;
 };
 
 int tmo_schedule(zce::aio::worker* worker,
                  const zce::time_value& timeout_tv,
-                 int *timer_id,
-                 zce::time_value *trigger_tv,
+                 int* timer_id,
+                 zce::time_value* trigger_tv,
                  std::function<void(AIO_ATOM*)> call_back);
 
 int tmo_cancel(zce::aio::worker* worker,

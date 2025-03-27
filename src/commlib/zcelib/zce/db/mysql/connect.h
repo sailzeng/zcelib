@@ -28,19 +28,19 @@ class result;
 /*!
 * @brief      MYSQL的Handle,负责连接，命令执行等
 */
-class handle :public zce::db::handle_base
+class connect
 {
 public:
 
     //构造函数,析构函数
-    handle() noexcept;
-    ~handle() noexcept;
+    connect() noexcept;
+    ~connect() noexcept;
 
     //避免拷贝
-    handle(handle&&) noexcept = delete;
-    handle& operator=(handle&&) noexcept = delete;
-    handle(const handle&) = delete;
-    handle& operator=(const handle&) = delete;
+    connect(connect&&) noexcept = delete;
+    connect& operator=(connect&&) noexcept = delete;
+    connect(const connect&) = delete;
+    connect& operator=(const connect&) = delete;
 
     /*!
     * @brief      连接数据服务器,通过IP地址，主机名称
@@ -54,12 +54,12 @@ public:
     * @param[in]  if_multi_sql 是否使用MULTI SQL语句
     */
     int connect_by_host(const char* host_name,
-        const char* user = "mysql",
-        const char* pwd = "",
-        const char* db = nullptr,
-        const unsigned int port = MYSQL_PORT,
-        unsigned int timeout = 0,
-        bool if_multi_sql = false);
+                        const char* user = "mysql",
+                        const char* pwd = "",
+                        const char* db = nullptr,
+                        const unsigned int port = MYSQL_PORT,
+                        unsigned int timeout = 0,
+                        bool if_multi_sql = false);
 
     /*!
     * @brief      连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
@@ -72,11 +72,11 @@ public:
     * @param      if_multi_sql  是否使用MULTI SQL语句
     */
     int connect_by_socketfile(const char* socket_file,
-        const char* user = "mysql",
-        const char* pwd = "",
-        const char* db = nullptr,
-        unsigned int timeout = 0,
-        bool if_multi_sql = false);
+                              const char* user = "mysql",
+                              const char* pwd = "",
+                              const char* db = nullptr,
+                              unsigned int timeout = 0,
+                              bool if_multi_sql = false);
 
     /*!
     * @brief      使用配置文件连接数据库服务器
@@ -85,7 +85,7 @@ public:
     * @param      group
     */
     int connect_by_optionfile(const char* optfile,
-        const char* group);
+                              const char* group);
 
     /*!
     * @brief      断开数据服务器
@@ -148,7 +148,9 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
     */
-    int execute(size_t& num_affect, uint64_t& last_id);
+    int execute(std::string_view sqlcmd,
+                size_t& num_affect,
+                uint64_t& last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -156,7 +158,9 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      sqlresult   返回的结果集合
     */
-    int execute(size_t& num_affect, zce::mysql::result& res);
+    int execute(std::string_view sqlcmd,
+                size_t& num_affect,
+                zce::mysql::result& res);
 
     /*!
     * @brief      再取一次结果，USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
@@ -189,10 +193,10 @@ public:
     * @brief      如果一次执行多行SQL语句，这个方法用于取回结果集合
     * @return     int       0表示成功，否则标识失败
     * @param[out] res 返回的MySQL结果集合
-    * @param[out] bstore    使用mysql_store_result取回结果集合，还是mysql_use_result
+    * @param[out] store    使用mysql_store_result取回结果集合，还是mysql_use_result
     */
     int fetch_next_result(zce::mysql::result& res,
-        bool bstore = true);
+                          bool store = true);
 
     /*!
     * @brief      编码转换，得到Real Escape String ,Real表示根据
@@ -205,8 +209,8 @@ public:
     * @param      fromlen      转换的字符串长度
     */
     unsigned int real_escape_string(char* tostr,
-        const char* fromstr,
-        unsigned int fromlen);
+                                    const char* fromstr,
+                                    unsigned int fromlen);
 
     /*!
     * @brief      执行SQL语句,不用输出结果集合的那种
@@ -231,8 +235,9 @@ public:
     * @param      bind_result   绑定的结果
     * @note
     */
-    int stmt_prepare_bind(stmt_bind* bind_param,
-        stmt_bind* bind_result);
+    int stmt_prepare_bind(std::string_view sqlcmd,
+                          stmt_bind* bind_param,
+                          stmt_bind* bind_result);
 
     //
     void stmt_param_2_metadata(result* res) const
@@ -263,16 +268,16 @@ protected:
     * @param      by 连接方式
     */
     int connect_i(CONNECT_BY by,
-        const char* host_name,
-        const char* socket_file,
-        const char* user = "mysql",
-        const char* pwd = "",
-        const char* db = nullptr,
-        const unsigned int port = MYSQL_PORT,
-        unsigned int timeout = 0,
-        bool bmultisql = false,
-        const char* optfile = nullptr,
-        const char* group = nullptr);
+                  const char* host_name,
+                  const char* socket_file,
+                  const char* user = "mysql",
+                  const char* pwd = "",
+                  const char* db = nullptr,
+                  const unsigned int port = MYSQL_PORT,
+                  unsigned int timeout = 0,
+                  bool bmultisql = false,
+                  const char* optfile = nullptr,
+                  const char* group = nullptr);
 
     /*!
     * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
@@ -282,14 +287,15 @@ protected:
     * @param[out] sqlresult   SQL执行后的结果集合
     * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
     */
-    int query_i(size_t* num_affect,
-        size_t* last_id,
-        zce::mysql::result* sqlresult,
-        bool bstore);
+    int execute_i(std::string_view sqlcmd,
+                  size_t* num_affect,
+                  size_t* last_id,
+                  zce::mysql::result* sqlresult,
+                  bool bstore);
 
     //!SQL 执行命令，这个事一个基础函数，内部调用
     int stmt_query_i(size_t* num_affect,
-        size_t* last_id);
+                     size_t* last_id);
 public:
 
     /*!
@@ -302,13 +308,16 @@ public:
     * @param      fromlen      转换的字符串长度
     */
     static unsigned int escape_string(char* tostr,
-        const char* fromstr,
-        unsigned int fromlen);
+                                      const char* fromstr,
+                                      unsigned int fromlen);
 
 private:
 
     ///MYSQL的句柄
-    MYSQL      mysql_handle_;
+    MYSQL mysql_handle_;
+
+    ///是否连接MYSQL数据库
+    bool if_connected_ = false;
 
     ///STMT 的Handle
     MYSQL_STMT* stmt_ = nullptr;

@@ -36,14 +36,13 @@ struct awaiter_aio
 {
     template<typename T>
     awaiter_aio(zce::aio::worker* worker,
-                std::shared_ptr<T> &request_atom) :
+                std::shared_ptr<T>& request_atom) :
         worker_(worker),
         request_atom_(request_atom)
-    {
-    }
+    {}
     ~awaiter_aio()
     {
-        if (request_atom_)
+        if(request_atom_)
         {
             request_atom_ = nullptr;
         }
@@ -115,7 +114,7 @@ awaiter_aio co_fs_read(zce::aio::worker* worker,
                        ZCE_HANDLE handle,
                        char* read_bufs,
                        size_t nbufs,
-                       size_t *result_len,
+                       size_t* result_len,
                        ssize_t offset = 0,
                        int whence = SEEK_CUR);
 
@@ -124,7 +123,7 @@ awaiter_aio co_fs_write(zce::aio::worker* worker,
                         ZCE_HANDLE handle,
                         const char* write_bufs,
                         size_t nbufs,
-                        size_t *result_len,
+                        size_t* result_len,
                         ssize_t offset = 0,
                         int whence = SEEK_CUR);
 
@@ -138,14 +137,14 @@ awaiter_aio co_fs_readfile(zce::aio::worker* worker,
                            const char* path,
                            char* read_bufs,
                            size_t nbufs,
-                           size_t *result_len,
+                           size_t* result_len,
                            ssize_t offset = 0);
 //!协程co_await AIO写入文件
 awaiter_aio co_fs_writefile(zce::aio::worker* worker,
                             const char* path,
                             const char* write_bufs,
                             size_t nbufs,
-                            size_t *result_len,
+                            size_t* result_len,
                             ssize_t offset = 0);
 
 //!协程co_await异步删除文件
@@ -244,7 +243,7 @@ awaiter_aio co_st_connect(zce::aio::worker* worker,
 //! 等待若干时间进行accept，直至超时
 awaiter_aio co_st_accept(zce::aio::worker* worker,
                          ZCE_SOCKET handle,
-                         ZCE_SOCKET *accept_hdl,
+                         ZCE_SOCKET* accept_hdl,
                          sockaddr* addr,
                          socklen_t* addr_len,
                          zce::time_value* timeout_tv);
@@ -285,7 +284,7 @@ awaiter_aio co_er_connect(zce::aio::worker* worker,
 //!异步进行accept，直至超时
 awaiter_aio co_er_accept(zce::aio::worker* worker,
                          ZCE_SOCKET handle,
-                         ZCE_SOCKET *accept_hdl,
+                         ZCE_SOCKET* accept_hdl,
                          sockaddr* from,
                          socklen_t* from_len);
 
@@ -294,21 +293,21 @@ awaiter_aio co_er_recv(zce::aio::worker* worker,
                        ZCE_SOCKET handle,
                        void* rcv_buf,
                        size_t len,
-                       size_t *result_len);
+                       size_t* result_len);
 
 //!异步进行send，
 awaiter_aio co_er_send(zce::aio::worker* worker,
                        ZCE_SOCKET handle,
                        const void* snd_buf,
                        size_t len,
-                       size_t *result_len);
+                       size_t* result_len);
 
 //!异步进行recv数据，
 awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
                            ZCE_SOCKET handle,
                            void* rcv_buf,
                            size_t len,
-                           size_t *result_len,
+                           size_t* result_len,
                            sockaddr* from,
                            socklen_t* from_len);
 
@@ -317,7 +316,7 @@ awaiter_aio co_er_recvfrom(zce::aio::worker* worker,
 //!
 awaiter_aio  co_timeout_schedule(zce::aio::worker* worker,
                                  const zce::time_value& timeout_tv,
-                                 int *timer_id,
+                                 int* timer_id,
                                  zce::time_value* trigger_tv);
 
 //!

@@ -50,7 +50,7 @@
     <CodeAnalysisRuleSet>zcelib.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <LibraryPath>$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.49.1;$(SolutionDir)../third_party/include/postgresql-17.4;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)../../../lib/win/$(Configuration)/</OutDir>
@@ -129,6 +129,7 @@
     <ClCompile Include="zce\aio\reactor.cpp" />
     <ClCompile Include="zce\bytes\bytes_common.cpp" />
     <ClCompile Include="zce\db\pq\handle.cpp" />
+    <ClCompile Include="zce\db\pq\result.cpp" />
     <ClCompile Include="zce\encrypt\asymmetric.cpp" />
     <ClCompile Include="zce\aio\caller.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
@@ -192,7 +193,7 @@
     <ClCompile Include="zce\lock\thread_rw_mutex.cpp" />
     <ClCompile Include="zce\lock\thread_semaphore.cpp" />
     <ClCompile Include="zce\lock\thread_spin.cpp" />
-    <ClCompile Include="zce\db\mysql\handle.cpp" />
+    <ClCompile Include="zce\db\mysql\connect.cpp" />
     <ClCompile Include="zce\db\mysql\field.cpp" />
     <ClCompile Include="zce\db\mysql\execute.cpp" />
     <ClCompile Include="zce\db\mysql\result.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\db\execute.h" />
     <ClInclude Include="zce\db\pq\handle.h" />
+    <ClInclude Include="zce\db\pq\result.h" />
     <ClInclude Include="zce\encrypt\asymmetric.h" />
     <ClInclude Include="zce\aio\caller.h" />
     <ClInclude Include="zce\aio\awaiter.h" />
@@ -348,7 +350,7 @@
     <ClInclude Include="zce\lock\thread_spin.h" />
     <ClInclude Include="zce\log\logging.h" />
     <ClInclude Include="zce\log\priority.h" />
-    <ClInclude Include="zce\db\mysql\handle.h" />
+    <ClInclude Include="zce\db\mysql\connect.h" />
     <ClInclude Include="zce\db\mysql\field.h" />
     <ClInclude Include="zce\db\mysql\execute.h" />
     <ClInclude Include="zce\db\mysql\result.h" />

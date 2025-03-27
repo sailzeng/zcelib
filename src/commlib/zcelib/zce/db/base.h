@@ -29,7 +29,7 @@ public:
         sql_cmd_ = std::vformat(rt_fmt_str, std::make_format_args(args...));
     }
 
-    void get_sql(std::string &sql_cmd) const
+    void get_sql(std::string& sql_cmd) const
     {
         sql_cmd = sql_cmd_;
     }

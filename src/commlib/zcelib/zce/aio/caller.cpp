@@ -50,7 +50,7 @@ int fs_open(zce::aio::worker* worker,
     aio_atom->mode_ = mode;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -67,7 +67,7 @@ int fs_close(zce::aio::worker* worker,
     aio_atom->handle_ = handle;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -88,7 +88,7 @@ int fs_lseek(zce::aio::worker* worker,
     aio_atom->whence_ = whence;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -100,7 +100,7 @@ int fs_read(zce::aio::worker* worker,
             ZCE_HANDLE handle,
             char* read_bufs,
             size_t nbufs,
-            size_t *result_len,
+            size_t* result_len,
             std::function<void(AIO_ATOM*)> call_back,
             ssize_t offset,
             int whence)
@@ -115,7 +115,7 @@ int fs_read(zce::aio::worker* worker,
     aio_atom->whence_ = whence;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -127,7 +127,7 @@ int fs_write(zce::aio::worker* worker,
              ZCE_HANDLE handle,
              const char* write_bufs,
              size_t nbufs,
-             size_t *result_len,
+             size_t* result_len,
              std::function<void(AIO_ATOM*)> call_back,
              ssize_t offset,
              int whence)
@@ -142,7 +142,7 @@ int fs_write(zce::aio::worker* worker,
     aio_atom->whence_ = whence;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -161,7 +161,7 @@ int fs_ftruncate(zce::aio::worker* worker,
     aio_atom->offset_ = offset;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -184,7 +184,7 @@ int fs_readfile(zce::aio::worker* worker,
     aio_atom->offset_ = offset;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -207,7 +207,7 @@ int fs_writefile(zce::aio::worker* worker,
     aio_atom->offset_ = offset;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -224,7 +224,7 @@ int fs_unlink(zce::aio::worker* worker,
     aio_atom->path_ = path;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -243,7 +243,7 @@ int fs_rename(zce::aio::worker* worker,
     aio_atom->new_path_ = new_path;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -262,7 +262,7 @@ int fs_stat(zce::aio::worker* worker,
     aio_atom->file_stat_ = file_stat;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -290,7 +290,7 @@ int dir_scandir(zce::aio::worker* worker,
     aio_atom->namelist_ = namelist;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -309,7 +309,7 @@ int dir_mkdir(zce::aio::worker* worker,
     aio_atom->mode_ = mode;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -326,7 +326,7 @@ int dir_rmdir(zce::aio::worker* worker,
     aio_atom->dirname_ = dirname;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -352,7 +352,7 @@ void MYSQL_ATOM::clear()
 
 //!链接数据
 int mysql_connect(zce::aio::worker* worker,
-                  zce::mysql::handle* db_connect,
+                  zce::mysql::connect* db_connect,
                   const char* host_name,
                   const char* user,
                   const char* pwd,
@@ -368,7 +368,7 @@ int mysql_connect(zce::aio::worker* worker,
     aio_atom->port_ = port;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -377,7 +377,7 @@ int mysql_connect(zce::aio::worker* worker,
 
 //!断开数据库链接
 int mysql_disconnect(zce::aio::worker* worker,
-                     zce::mysql::handle* db_connect,
+                     zce::mysql::connect* db_connect,
                      std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<MYSQL_ATOM>();
@@ -385,7 +385,7 @@ int mysql_disconnect(zce::aio::worker* worker,
     aio_atom->db_connect_ = db_connect;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -394,7 +394,7 @@ int mysql_disconnect(zce::aio::worker* worker,
 
 //!查询，非SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::handle* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -411,7 +411,7 @@ int mysql_query(zce::aio::worker* worker,
     aio_atom->call_back_ = std::move(call_back);
 
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -420,7 +420,7 @@ int mysql_query(zce::aio::worker* worker,
 
 //!查询，SELECT语句
 int mysql_query(zce::aio::worker* worker,
-                zce::mysql::handle* db_connect,
+                zce::mysql::connect* db_connect,
                 const char* sql,
                 size_t sql_len,
                 uint64_t* num_affect,
@@ -437,7 +437,7 @@ int mysql_query(zce::aio::worker* worker,
     aio_atom->call_back_ = std::move(call_back);
 
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -476,7 +476,7 @@ int host_getaddr_ary(zce::aio::worker* worker,
     aio_atom->call_back_ = std::move(call_back);
 
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -499,7 +499,7 @@ int host_getaddr_one(zce::aio::worker* worker,
     aio_atom->call_back_ = std::move(call_back);
 
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -544,7 +544,7 @@ int st_connect(zce::aio::worker* worker,
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -570,7 +570,7 @@ int st_connect(zce::aio::worker* worker,
     aio_atom->timeout_tv_ = &timeout_tv;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -579,7 +579,7 @@ int st_connect(zce::aio::worker* worker,
 
 int st_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
-              ZCE_SOCKET *accept_hdl,
+              ZCE_SOCKET* accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
               zce::time_value* timeout_tv,
@@ -594,7 +594,7 @@ int st_accept(zce::aio::worker* worker,
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -606,7 +606,7 @@ int st_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* buf,
             size_t len,
-            size_t *result_len,
+            size_t* result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags)
@@ -621,7 +621,7 @@ int st_recv(zce::aio::worker* worker,
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -633,7 +633,7 @@ int st_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* buf,
             size_t len,
-            size_t *result_len,
+            size_t* result_len,
             zce::time_value* timeout_tv,
             std::function<void(AIO_ATOM*)> call_back,
             int flags)
@@ -648,7 +648,7 @@ int st_send(zce::aio::worker* worker,
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -659,7 +659,7 @@ int st_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* buf,
                 size_t len,
-                size_t *result_len,
+                size_t* result_len,
                 sockaddr* from,
                 socklen_t* from_len,
                 zce::time_value* timeout_tv,
@@ -678,7 +678,7 @@ int st_recvfrom(zce::aio::worker* worker,
     aio_atom->timeout_tv_ = timeout_tv;
     aio_atom->call_back_ = std::move(call_back);
     auto succ_req = worker->request(std::move(aio_atom));
-    if (!succ_req)
+    if(!succ_req)
     {
         return -1;
     }
@@ -687,27 +687,27 @@ int st_recvfrom(zce::aio::worker* worker,
 
 //=======================================================================
 
-int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
+int EVENT_ATOM::event_do(std::shared_ptr<void>& atom,
                          ZCE_HANDLE socket,
                          RECTOR_EVENT event,
                          bool connect_succ)
 {
-    auto eva = (EVENT_ATOM *)(atom.get());
+    auto eva = (EVENT_ATOM*)(atom.get());
     assert((ZCE_HANDLE)eva->handle_ == socket);
-    if ((ZCE_HANDLE)eva->handle_ != socket)
+    if((ZCE_HANDLE)eva->handle_ != socket)
     {
         return -1;
     }
-    if (event == RECTOR_EVENT::READ_MASK)
+    if(event == RECTOR_EVENT::READ_MASK)
     {
         ssize_t sz_rcv = 0;
-        if (AIO_TYPE::EVENT_RECV == eva->aio_type_)
+        if(AIO_TYPE::EVENT_RECV == eva->aio_type_)
         {
             sz_rcv = zce::recv(eva->handle_,
                                eva->rcv_buf_,
                                eva->len_);
         }
-        else if (AIO_TYPE::EVENT_RECVFROM == eva->aio_type_)
+        else if(AIO_TYPE::EVENT_RECVFROM == eva->aio_type_)
         {
             sz_rcv = zce::recvfrom(eva->handle_,
                                    eva->rcv_buf_,
@@ -717,7 +717,7 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
                                    eva->from_len_);
         }
 
-        if (sz_rcv >= 0)
+        if(sz_rcv >= 0)
         {
             eva->result_ = 0;
             *eva->result_len_ = sz_rcv;
@@ -728,12 +728,12 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
             *eva->result_len_ = 0;
         }
     }
-    else if (event == RECTOR_EVENT::WRITE_MASK)
+    else if(event == RECTOR_EVENT::WRITE_MASK)
     {
         ssize_t sz_rcv = zce::recv(eva->handle_,
                                    eva->rcv_buf_,
                                    eva->len_);
-        if (sz_rcv >= 0)
+        if(sz_rcv >= 0)
         {
             eva->result_ = 0;
             *eva->result_len_ = sz_rcv;
@@ -744,9 +744,9 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
             *eva->result_len_ = 0;
         }
     }
-    else if (event == RECTOR_EVENT::CONNECT_MASK)
+    else if(event == RECTOR_EVENT::CONNECT_MASK)
     {
-        if (connect_succ)
+        if(connect_succ)
         {
             eva->result_ = 0;
         }
@@ -755,12 +755,12 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
             eva->result_ = -1;
         }
     }
-    else if (event == RECTOR_EVENT::ACCEPT_MASK)
+    else if(event == RECTOR_EVENT::ACCEPT_MASK)
     {
         *eva->accept_hdl_ = zce::accept(eva->handle_,
                                         eva->from_,
                                         eva->from_len_);
-        if (*eva->accept_hdl_ != ZCE_INVALID_SOCKET)
+        if(*eva->accept_hdl_ != ZCE_INVALID_SOCKET)
         {
             eva->result_ = 0;
         }
@@ -769,11 +769,11 @@ int EVENT_ATOM::event_do(std::shared_ptr<void> &atom,
             eva->result_ = -1;
         }
     }
-    else if (event == RECTOR_EVENT::EXCEPTION_MASK)
+    else if(event == RECTOR_EVENT::EXCEPTION_MASK)
     {
         //暂时没哟
     }
-    else if (event == RECTOR_EVENT::INOTIFY_MASK)
+    else if(event == RECTOR_EVENT::INOTIFY_MASK)
     {
         //暂时没哟
     }
@@ -812,21 +812,21 @@ int er_connect(zce::aio::worker* worker,
                ZCE_SOCKET handle,
                const sockaddr* addr,
                socklen_t addr_len,
-               bool *alread_do,
+               bool* alread_do,
                std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
     //使用非阻塞的方式搞一次
     ret = zce::connect(handle, addr, addr_len);
-    if (ret == 0)
+    if(ret == 0)
     {
         *alread_do = true;
         return 0;
     }
     else
     {
-        if (zce::last_error() != EWOULDBLOCK)
+        if(zce::last_error() != EWOULDBLOCK)
         {
             return -1;
         }
@@ -843,7 +843,7 @@ int er_connect(zce::aio::worker* worker,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
-    if (ret != 0)
+    if(ret != 0)
     {
         return 0;
     }
@@ -852,24 +852,24 @@ int er_connect(zce::aio::worker* worker,
 
 int er_accept(zce::aio::worker* worker,
               ZCE_SOCKET handle,
-              ZCE_SOCKET *accept_hdl,
+              ZCE_SOCKET* accept_hdl,
               sockaddr* from,
               socklen_t* from_len,
-              bool *alread_do,
+              bool* alread_do,
               std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
     //使用非阻塞的方式搞一次
     *accept_hdl = zce::accept(handle, from, from_len);
-    if (*accept_hdl != ZCE_INVALID_SOCKET)
+    if(*accept_hdl != ZCE_INVALID_SOCKET)
     {
         *alread_do = true;
         return 0;
     }
     else
     {
-        if (zce::last_error() != EWOULDBLOCK)
+        if(zce::last_error() != EWOULDBLOCK)
         {
             return -1;
         }
@@ -889,7 +889,7 @@ int er_accept(zce::aio::worker* worker,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
-    if (ret != 0)
+    if(ret != 0)
     {
         return 0;
     }
@@ -900,15 +900,15 @@ int er_recv(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             void* rcv_buf,
             size_t len,
-            size_t *result_len,
-            bool *alread_do,
+            size_t* result_len,
+            bool* alread_do,
             std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
     //使用非阻塞的方式搞一次
     ssize_t sz_rcv = zce::recv(handle, rcv_buf, len);
-    if (sz_rcv > 0)
+    if(sz_rcv > 0)
     {
         *alread_do = true;
         *result_len = sz_rcv;
@@ -916,7 +916,7 @@ int er_recv(zce::aio::worker* worker,
     }
     else
     {
-        if (zce::last_error() != EWOULDBLOCK)
+        if(zce::last_error() != EWOULDBLOCK)
         {
             return -1;
         }
@@ -936,7 +936,7 @@ int er_recv(zce::aio::worker* worker,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
-    if (ret != 0)
+    if(ret != 0)
     {
         return 0;
     }
@@ -947,15 +947,15 @@ int er_send(zce::aio::worker* worker,
             ZCE_SOCKET handle,
             const void* snd_buf,
             size_t len,
-            size_t *result_len,
-            bool *alread_do,
+            size_t* result_len,
+            bool* alread_do,
             std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
     *alread_do = false;
     //使用非阻塞的方式搞一次
     ssize_t sz_rcv = zce::send(handle, snd_buf, len);
-    if (sz_rcv > 0)
+    if(sz_rcv > 0)
     {
         *alread_do = true;
         *result_len = sz_rcv;
@@ -963,7 +963,7 @@ int er_send(zce::aio::worker* worker,
     }
     else
     {
-        if (zce::last_error() != EWOULDBLOCK)
+        if(zce::last_error() != EWOULDBLOCK)
         {
             return -1;
         }
@@ -983,7 +983,7 @@ int er_send(zce::aio::worker* worker,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
-    if (ret != 0)
+    if(ret != 0)
     {
         return 0;
     }
@@ -994,10 +994,10 @@ int er_recvfrom(zce::aio::worker* worker,
                 ZCE_SOCKET handle,
                 void* rcv_buf,
                 size_t len,
-                size_t *result_len,
+                size_t* result_len,
                 sockaddr* from,
                 socklen_t* from_len,
-                bool *alread_do,
+                bool* alread_do,
                 std::function<void(AIO_ATOM*)> call_back)
 {
     int ret = 0;
@@ -1009,7 +1009,7 @@ int er_recvfrom(zce::aio::worker* worker,
                                    0,
                                    from,
                                    from_len);
-    if (sz_rcv > 0)
+    if(sz_rcv > 0)
     {
         *alread_do = true;
         *result_len = sz_rcv;
@@ -1017,7 +1017,7 @@ int er_recvfrom(zce::aio::worker* worker,
     }
     else
     {
-        if (zce::last_error() != EWOULDBLOCK)
+        if(zce::last_error() != EWOULDBLOCK)
         {
             return -1;
         }
@@ -1039,7 +1039,7 @@ int er_recvfrom(zce::aio::worker* worker,
         std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3));
-    if (ret != 0)
+    if(ret != 0)
     {
         return 0;
     }
@@ -1053,11 +1053,11 @@ void TIMER_ATOM::clear()
     timer_id_ = nullptr;
 }
 
-int TIMER_ATOM::time_out(std::shared_ptr<void> &atom,
-                         const zce::time_value &trigger_tv,
+int TIMER_ATOM::time_out(std::shared_ptr<void>& atom,
+                         const zce::time_value& trigger_tv,
                          int timer_id)
 {
-    auto toa = (TIMER_ATOM *)(atom.get());
+    auto toa = (TIMER_ATOM*)(atom.get());
     *(toa->trigger_tv_) = trigger_tv;
     *(toa->timer_id_) = timer_id;
     toa->call_back_(toa);
@@ -1066,8 +1066,8 @@ int TIMER_ATOM::time_out(std::shared_ptr<void> &atom,
 
 int tmo_schedule(zce::aio::worker* worker,
                  const zce::time_value& timeout_tv,
-                 int *timer_id,
-                 zce::time_value *trigger_tv,
+                 int* timer_id,
+                 zce::time_value* trigger_tv,
                  std::function<void(AIO_ATOM*)> call_back)
 {
     auto aio_atom = worker->alloc_handle<TIMER_ATOM>();
@@ -1084,7 +1084,7 @@ int tmo_schedule(zce::aio::worker* worker,
                                      std::placeholders::_2),
                                      t_id,
                                      timeout_tv);
-    if (ret != 0)
+    if(ret != 0)
     {
         return ret;
     }

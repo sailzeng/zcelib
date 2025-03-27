@@ -2,8 +2,11 @@
 
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
 
+#include "zce/db/base.h"
+
 namespace zce::pq
 {
+class result;
 /*!
 @brief
 */
@@ -24,38 +27,40 @@ public:
     int connect_by_info(const char* conninfo);
 
     int connect_by_params(const char* const* keywords,
-        const char* const* values,
-        int expand_dbname);
+                          const char* const* values,
+                          int expand_dbname);
+
+    void disconnect();
 
     int connect_by_host(const char* pghost,
-        const char* pgport,
-        const char* pgoptions,
-        const char* pgtty,
-        const char* dbName,
-        const char* login,
-        const char* pwd);
+                        const char* pgport,
+                        const char* pgoptions,
+                        const char* dbname,
+                        const char* user,
+                        const char* pwd);
 
     const char* error_message()
     {
-        return mysql_error(&mysql_handle_);
+        return ::PQerrorMessage(conn_);
     }
 
     unsigned int error_no()
     {
-        return mysql_errno(&mysql_handle_);
+        return 0;
     }
+
+    int execute(size_t& num_affect, uint64_t* last_id);
+
+    int execute(size_t& num_affect, zce::pq::result* pq_res);
 
     PGconn* get_handle()
     {
         return conn_;
     }
-protected:
-
-    int connect_i();
 
 protected:
     //
-    PGconn* conn_ = nullptr;
+    ::PGconn* conn_ = nullptr;
 };
 }
 
