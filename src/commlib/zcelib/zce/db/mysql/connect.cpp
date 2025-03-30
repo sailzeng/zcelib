@@ -226,32 +226,6 @@ int connect::set_auto_commit(bool bauto)
     }
     return 0;
 }
-
-//提交事务Commit Transaction
-int connect::trans_commit()
-{
-    int ret = ::mysql_commit(&mysql_handle_);
-
-    //检查结果,
-    if(0 != ret)
-    {
-        return ret;
-    }
-    return 0;
-}
-
-//回滚事务Rollback Transaction
-int connect::trans_rollback()
-{
-    int ret = ::mysql_rollback(&mysql_handle_);
-
-    //检查结果,
-    if(0 != ret)
-    {
-        return ret;
-    }
-    return 0;
-}
 }
 
 //如果你要用MYSQL的库

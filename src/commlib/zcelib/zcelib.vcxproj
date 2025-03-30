@@ -129,7 +129,8 @@
     <ClCompile Include="zce\aio\reactor.cpp" />
     <ClCompile Include="zce\bytes\bytes_common.cpp" />
     <ClCompile Include="zce\db\mysql\command.cpp" />
-    <ClCompile Include="zce\db\pq\handle.cpp" />
+    <ClCompile Include="zce\db\pq\command.cpp" />
+    <ClCompile Include="zce\db\pq\connect.cpp" />
     <ClCompile Include="zce\db\pq\result.cpp" />
     <ClCompile Include="zce\encrypt\asymmetric.cpp" />
     <ClCompile Include="zce\aio\caller.cpp">
@@ -264,7 +265,8 @@
     <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\db\execute.h" />
     <ClInclude Include="zce\db\mysql\command.h" />
-    <ClInclude Include="zce\db\pq\handle.h" />
+    <ClInclude Include="zce\db\pq\command.h" />
+    <ClInclude Include="zce\db\pq\connect.h" />
     <ClInclude Include="zce\db\pq\result.h" />
     <ClInclude Include="zce\encrypt\asymmetric.h" />
     <ClInclude Include="zce\aio\caller.h" />

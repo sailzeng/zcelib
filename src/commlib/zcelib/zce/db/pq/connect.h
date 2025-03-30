@@ -6,23 +6,22 @@
 
 namespace zce::pq
 {
-class result;
 /*!
 @brief
 */
-class handle :public zce::db::handle_base
+class connect
 {
 public:
 
     //构造函数,析构函数
-    handle() noexcept;
-    ~handle() noexcept;
+    connect() noexcept;
+    ~connect() noexcept;
 
     //避免拷贝
-    handle(handle&&) noexcept = delete;
-    handle& operator=(handle&&) noexcept = delete;
-    handle(const handle&) = delete;
-    handle& operator=(const handle&) = delete;
+    connect(connect&&) noexcept = delete;
+    connect& operator=(connect&&) noexcept = delete;
+    connect(const connect&) = delete;
+    connect& operator=(const connect&) = delete;
 
     int connect_by_info(const char* conninfo);
 
@@ -49,11 +48,7 @@ public:
         return 0;
     }
 
-    int execute(size_t& num_affect, uint64_t* last_id);
-
-    int execute(size_t& num_affect, zce::pq::result* pq_res);
-
-    PGconn* get_handle()
+    ::PGconn* get_handle()
     {
         return conn_;
     }

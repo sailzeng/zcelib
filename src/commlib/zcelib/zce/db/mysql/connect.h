@@ -144,18 +144,6 @@ public:
     */
     int set_auto_commit(bool bauto);
 
-    /*!
-    * @brief      提交事务Commit Transaction
-    * @return     int 返回0标识成功
-    */
-    int trans_commit();
-
-    /*!
-    * @brief      回滚事务Rollback Transaction
-    * @return     int 返回0标识成功
-    */
-    int trans_rollback();
-
 protected:
 
     enum class CONNECT_BY

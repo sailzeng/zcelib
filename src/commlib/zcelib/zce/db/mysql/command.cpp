@@ -332,6 +332,28 @@ size_t command::real_escape_string(char* tostr,
         fromlen));
 }
 
+//提交事务Commit Transaction
+int command::trans_commit()
+{
+    int ret = ::mysql_commit(mysql_);
+    if(0 != ret)
+    {
+        return ret;
+    }
+    return 0;
+}
+
+//回滚事务Rollback Transaction
+int command::trans_rollback()
+{
+    int ret = ::mysql_rollback(mysql_);
+    if(0 != ret)
+    {
+        return ret;
+    }
+    return 0;
+}
+
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
 int command::execute(std::string_view sqlcmd,
@@ -562,7 +584,7 @@ int command::stmt_fetch_next_row() const
     return 0;
 }
 
-//
+//用bind_data取出一列的数据
 int command::stmt_fetch_column(size_t column,
                                size_t offset,
                                zce::mysql::bind_data* bind_colum) const

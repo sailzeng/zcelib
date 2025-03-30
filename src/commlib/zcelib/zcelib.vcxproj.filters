@@ -362,7 +362,7 @@
     <ClCompile Include="zce\uuid\uuid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\db\pq\handle.cpp">
+    <ClCompile Include="zce\db\pq\connect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\lock\win_simulate.cpp">
@@ -375,6 +375,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\db\mysql\command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\db\pq\command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -862,7 +865,7 @@
     <ClInclude Include="zce\uuid\uuid.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\db\pq\handle.h">
+    <ClInclude Include="zce\db\pq\connect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\lock\win_simulate.h">
@@ -875,6 +878,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\mysql\command.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\db\pq\command.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

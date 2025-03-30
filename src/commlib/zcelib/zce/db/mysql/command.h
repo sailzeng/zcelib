@@ -201,6 +201,12 @@ public:
         return stmt_;
     }
 
+    //!提交事务Commit Transaction,返回0标识成功
+    int trans_commit();
+
+    //!回滚事务Rollback Transaction,返回0标识成功
+    int trans_rollback();
+
     /*!
     * @brief      执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
     * @return     int         0成功，-1失败
