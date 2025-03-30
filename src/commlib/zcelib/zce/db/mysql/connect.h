@@ -33,7 +33,7 @@ class connect
 public:
 
     //构造函数,析构函数
-    connect() noexcept;
+    connect();
     ~connect() noexcept;
 
     //避免拷贝
@@ -132,43 +132,10 @@ public:
     }
 
     //!得到MYSQL的句柄
-    inline MYSQL* get_mysql_handle()
+    inline MYSQL* get_handle()
     {
         return &mysql_handle_;
     }
-    //!得到STMT的句柄
-    inline MYSQL_STMT* get_stmt_handle()
-    {
-        return stmt_;
-    }
-
-    /*!
-    * @brief      执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
-    * @return     int         0成功，-1失败
-    * @param      num_affect  查询得到的条数
-    * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
-    */
-    int execute(std::string_view sqlcmd,
-                size_t& num_affect,
-                uint64_t& last_id);
-
-    /*!
-    * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
-    * @return     int         0成功，-1失败
-    * @param      num_affect  查询得到的条数
-    * @param      sqlresult   返回的结果集合
-    */
-    int execute(std::string_view sqlcmd,
-                size_t& num_affect,
-                zce::mysql::result& res);
-
-    /*!
-    * @brief      再取一次结果，USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
-    *             用于结果集太多的处理,一次处理会占用太多内存的的处理,否则不推荐使用
-    * @return     int
-    * @param      sqlresult 返回的结果集合
-    */
-    int execute(zce::mysql::result& res);
 
     /*!
     * @brief      设置是否自动提交
@@ -189,71 +156,6 @@ public:
     */
     int trans_rollback();
 
-    /*!
-    * @brief      如果一次执行多行SQL语句，这个方法用于取回结果集合
-    * @return     int       0表示成功，否则标识失败
-    * @param[out] res 返回的MySQL结果集合
-    * @param[out] store    使用mysql_store_result取回结果集合，还是mysql_use_result
-    */
-    int fetch_next_result(zce::mysql::result& res,
-                          bool store = true);
-
-    /*!
-    * @brief      编码转换，得到Real Escape String ,Real表示根据
-    *             当前的MYSQL Connet的字符集,得到Escape String
-    *             Escape String 为将字符传中的相关字符进行转义后的语
-    *             句,比如',",\等字符
-    * @return     unsigned int 编码后字符串的长度
-    * @param      tostr        转换得到的字符串,最好保证有fromlen *2的长度
-    * @param      fromstr      进行转换的字符串
-    * @param      fromlen      转换的字符串长度
-    */
-    unsigned int real_escape_string(char* tostr,
-                                    const char* fromstr,
-                                    unsigned int fromlen);
-
-    /*!
-    * @brief      执行SQL语句,不用输出结果集合的那种
-    * @return     int
-    * @param      num_affect  返回的影响记录条数
-    * @param      lastid      返回的LASTID
-    */
-    int stmt_query(size_t& num_affect, size_t& lastid);
-
-    /*!
-    * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,
-    *             注意这个函数条用的是mysql_stmt_store_result.
-    * @return     int
-    * @param      num_affect 返回的影响记录条数
-    */
-    int stmt_query(size_t& num_affect);
-
-    /*!
-    * @brief      预处理SQL,并且分析绑定的变量
-    * @return     int
-    * @param      bind_param    绑定的参数
-    * @param      bind_result   绑定的结果
-    * @note
-    */
-    int stmt_prepare_bind(std::string_view sqlcmd,
-                          stmt_bind* bind_param,
-                          stmt_bind* bind_result);
-
-    //
-    void stmt_param_2_metadata(result* res) const
-    {
-        MYSQL_RES* myres = ::mysql_stmt_param_metadata(stmt_);
-        res->set_mysql_result(myres);
-        return;
-    }
-
-    //
-    void stmt_result_2_metadata(result* res) const
-    {
-        MYSQL_RES* myres = ::mysql_stmt_result_metadata(stmt_);
-        res->set_mysql_result(myres);
-        return;
-    }
 protected:
 
     enum class CONNECT_BY
@@ -279,38 +181,6 @@ protected:
                   const char* optfile = nullptr,
                   const char* group = nullptr);
 
-    /*!
-    * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
-    * @return     int         int  0成功，-1失败
-    * @param[out] num_affect  影响的数据条数，或者返回结果的条数
-    * @param[out] lastid      最后的插入ID是什么，
-    * @param[out] sqlresult   SQL执行后的结果集合
-    * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
-    */
-    int execute_i(std::string_view sqlcmd,
-                  size_t* num_affect,
-                  size_t* last_id,
-                  zce::mysql::result* sqlresult,
-                  bool bstore);
-
-    //!SQL 执行命令，这个事一个基础函数，内部调用
-    int stmt_query_i(size_t* num_affect,
-                     size_t* last_id);
-public:
-
-    /*!
-    * @brief      得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
-    *             Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
-    *             为什么采用这样的奇怪参数顺序,因为mysql_escape_string
-    * @return     unsigned int 编码后字符串的长度
-    * @param      tostr        转换得到的字符串,最好保证有fromlen *2的长度
-    * @param      fromstr      进行转换的字符串
-    * @param      fromlen      转换的字符串长度
-    */
-    static unsigned int escape_string(char* tostr,
-                                      const char* fromstr,
-                                      unsigned int fromlen);
-
 private:
 
     ///MYSQL的句柄
@@ -319,8 +189,6 @@ private:
     ///是否连接MYSQL数据库
     bool if_connected_ = false;
 
-    ///STMT 的Handle
-    MYSQL_STMT* stmt_ = nullptr;
     ///
     bool is_bind_result_ = false;
 };
