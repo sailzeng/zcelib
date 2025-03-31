@@ -1,8 +1,87 @@
 #include "zce/predefine.h"
+#include "zce/logger/logging.h"
 #include "zce/db/pq/connect.h"
+#include "zce/db/pq/result.h"
 
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
 namespace zce::pq
 {
+result::result(::PGresult* res) noexcept
+{
+    set_pq_result(res);
+}
+
+result::~result() noexcept
+{
+    if (pq_result_ != nullptr)
+    {
+        ::PQclear(pq_result_);
+    }
+}
+
+//放入结果集合
+void result::set_pq_result(::PGresult* res)
+{
+    ZCE_ASSERT(res);
+
+    //如果已经有结果集, 释放原有的结果集,
+    if (nullptr != res)
+    {
+        ::PQclear(pq_result_);
+        pq_result_ = nullptr;
+    }
+
+    //行数目，列数目清0
+    num_result_row_ = 0;
+    num_result_field_ = 0;
+
+    pq_result_ = res;
+    //如果不是一个空的结果集合
+    if (pq_result_)
+    {
+        //得到行数,列数
+        num_result_row_ = (size_t)::PQntuples(res);
+        num_result_field_ = (size_t)::PQnfields(res);
+    }
+    return;
+}
+
+//! @brief 根据colum返回表定义列域名,注意计算得到的列的名字也可能是空
+const char* result::field_name(size_t colum) const
+{
+    if (colum >= num_result_field_)
+    {
+        ZCE_ASSERT(false);
+        return nullptr;
+    }
+    return ::PQfname(pq_result_, (int)colum);
+}
+
+//! @brief 根据Field Name得到Field ID,列号 返回-1表示没有找到
+size_t result::field_index(const char* fname) const
+{
+    return (size_t)::PQfnumber(pq_result_, fname);
+}
+
+size_t result::field_define_size(size_t colum) const
+{
+    if (colum >= num_result_field_)
+    {
+        ZCE_ASSERT(false);
+        return (size_t)-1;
+    }
+    return (size_t)::PQfsize(pq_result_, (int)colum);
+}
+
+//! 根据列ID （colum）或者列名称（fname）取得字段的（实际）长度
+size_t result::field_length(size_t row, size_t colum) const
+{
+    if (colum >= num_result_field_)
+    {
+        ZCE_ASSERT(false);
+        return (size_t)-1;
+    }
+    return (size_t)::PQgetlength(pq_result_, (int)row, (int)colum);
+}
 }
 #endif //#if defined ZCE_USE_PQ && ZCE_USE_PQ == 1

@@ -196,7 +196,6 @@
     <ClCompile Include="zce\lock\thread_semaphore.cpp" />
     <ClCompile Include="zce\lock\thread_spin.cpp" />
     <ClCompile Include="zce\db\mysql\connect.cpp" />
-    <ClCompile Include="zce\db\mysql\field.cpp" />
     <ClCompile Include="zce\db\mysql\execute.cpp" />
     <ClCompile Include="zce\db\mysql\result.cpp" />
     <ClCompile Include="zce\net\http_client.cpp" />
@@ -354,7 +353,6 @@
     <ClInclude Include="zce\log\logging.h" />
     <ClInclude Include="zce\log\priority.h" />
     <ClInclude Include="zce\db\mysql\connect.h" />
-    <ClInclude Include="zce\db\mysql\field.h" />
     <ClInclude Include="zce\db\mysql\execute.h" />
     <ClInclude Include="zce\db\mysql\result.h" />
     <ClInclude Include="zce\net\http_client.h" />

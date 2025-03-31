@@ -9,7 +9,10 @@ namespace zce::mysql
 /// class command
 ///****************************************************************************************
 //构造函数
-
+bind_data::bind_data(size_t num_bind)
+{
+    initialize(num_bind);
+}
 //析构函数
 bind_data::~bind_data()
 {
@@ -38,7 +41,7 @@ bind_data::bind_data(const bind_data& bind) :
     num_bind_(bind.num_bind_)
 {
     stmt_bind_ = new MYSQL_BIND[num_bind_];
-    memcpy(stmt_bind_, bind.stmt_bind_, sizeof(MYSQL_BIND) * num_bind_);
+    memcpy(stmt_bind_,bind.stmt_bind_,sizeof(MYSQL_BIND) * num_bind_);
 }
 
 bind_data& bind_data::operator=(const bind_data& bind)
@@ -46,13 +49,13 @@ bind_data& bind_data::operator=(const bind_data& bind)
     clear();
     num_bind_ = bind.num_bind_;
     stmt_bind_ = new MYSQL_BIND[num_bind_];
-    memcpy(stmt_bind_, bind.stmt_bind_, sizeof(MYSQL_BIND) * num_bind_);
+    memcpy(stmt_bind_,bind.stmt_bind_,sizeof(MYSQL_BIND) * num_bind_);
     return *this;
 }
 
 void bind_data::clear()
 {
-    if(stmt_bind_)
+    if (stmt_bind_)
     {
         delete[] stmt_bind_;
         stmt_bind_ = nullptr;
@@ -64,12 +67,12 @@ void bind_data::initialize(size_t num_bind)
 {
     clear();
     num_bind_ = num_bind;
-    if(num_bind_ == 0)
+    if (num_bind_ == 0)
     {
         return;
     }
     stmt_bind_ = new MYSQL_BIND[num_bind_];
-    memset(stmt_bind_, 0, sizeof(MYSQL_BIND) * num_bind_);
+    memset(stmt_bind_,0,sizeof(MYSQL_BIND) * num_bind_);
 }
 
 //绑定一个参数
@@ -80,7 +83,7 @@ int bind_data::bind_one_param(size_t col,
                               unsigned long szparam)
 {
     ZCE_ASSERT(col < num_bind_);
-    if(col >= num_bind_)
+    if (col >= num_bind_)
     {
         return -1;
     }
@@ -100,7 +103,7 @@ int bind_data::bind_one_result(size_t col,
                                unsigned long* szparam)
 {
     ZCE_ASSERT(col < num_bind_);
-    if(col >= num_bind_)
+    if (col >= num_bind_)
     {
         return -1;
     }
@@ -115,7 +118,7 @@ int bind_data::bind_one_result(size_t col,
 }
 
 template<>
-void bind_data::bind(size_t col, bool& val)
+void bind_data::bind(size_t col,bool& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -126,7 +129,7 @@ void bind_data::bind(size_t col, bool& val)
 
 //绑定一个char
 template<>
-void bind_data::bind(size_t col, char& val)
+void bind_data::bind(size_t col,char& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -136,7 +139,7 @@ void bind_data::bind(size_t col, char& val)
 }
 
 template<>
-void bind_data::bind(size_t col, short& val)
+void bind_data::bind(size_t col,short& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -145,7 +148,7 @@ void bind_data::bind(size_t col, short& val)
 }
 
 template<>
-void bind_data::bind(size_t col, int& val)
+void bind_data::bind(size_t col,int& val)
 {
     //MYSQL_TYPE_LONG 长度为4
     stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
@@ -155,7 +158,7 @@ void bind_data::bind(size_t col, int& val)
 }
 
 template<>
-void bind_data::bind(size_t col, long& val)
+void bind_data::bind(size_t col,long& val)
 {
 #if defined (ZCE_OS_WINDOWS)
     stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
@@ -167,7 +170,7 @@ void bind_data::bind(size_t col, long& val)
 }
 
 template<>
-void bind_data::bind(size_t col, long long& val)
+void bind_data::bind(size_t col,long long& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -176,7 +179,7 @@ void bind_data::bind(size_t col, long long& val)
 }
 
 template<>
-void bind_data::bind(size_t col, unsigned char& val)
+void bind_data::bind(size_t col,unsigned char& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -188,7 +191,7 @@ void bind_data::bind(size_t col, unsigned char& val)
 }
 
 template<>
-void bind_data::bind(size_t col, unsigned short& val)
+void bind_data::bind(size_t col,unsigned short& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -200,7 +203,7 @@ void bind_data::bind(size_t col, unsigned short& val)
 }
 
 template<>
-void bind_data::bind(size_t col, unsigned int& val)
+void bind_data::bind(size_t col,unsigned int& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[col].buffer = (void*)(&val);
@@ -212,7 +215,7 @@ void bind_data::bind(size_t col, unsigned int& val)
 }
 
 template<>
-void bind_data::bind(size_t col, unsigned long& val)
+void bind_data::bind(size_t col,unsigned long& val)
 {
 #if defined (ZCE_OS_WINDOWS)
     stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
@@ -228,7 +231,7 @@ void bind_data::bind(size_t col, unsigned long& val)
 }
 
 template<>
-void bind_data::bind(size_t col, unsigned long long& val)
+void bind_data::bind(size_t col,unsigned long long& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[col].buffer = reinterpret_cast<void*>(&val);
@@ -240,7 +243,7 @@ void bind_data::bind(size_t col, unsigned long long& val)
 }
 
 template<>
-void bind_data::bind(size_t col, float& val)
+void bind_data::bind(size_t col,float& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_FLOAT;
     stmt_bind_[col].buffer = reinterpret_cast<void*>(&val);
@@ -249,7 +252,7 @@ void bind_data::bind(size_t col, float& val)
 }
 
 template<>
-void bind_data::bind(size_t col, double& val)
+void bind_data::bind(size_t col,double& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_DOUBLE;
     stmt_bind_[col].buffer = reinterpret_cast<void*>(&val);
@@ -258,7 +261,7 @@ void bind_data::bind(size_t col, double& val)
 }
 
 template<>
-void bind_data::bind(size_t col, zce::mysql::blob& blob_data)
+void bind_data::bind(size_t col,zce::mysql::blob& blob_data)
 {
     stmt_bind_[col].buffer_type = blob_data.bind_type_;
     stmt_bind_[col].buffer = blob_data.blob_ptr_;
@@ -271,7 +274,7 @@ void bind_data::bind(size_t col, zce::mysql::blob& blob_data)
 }
 
 template<>
-void bind_data::bind(size_t col, zce::mysql::time& val)
+void bind_data::bind(size_t col,zce::mysql::time& val)
 {
     stmt_bind_[col].buffer_type = val.stmt_timetype_;
     stmt_bind_[col].buffer = reinterpret_cast<void*>(val.stmt_ptime_);
@@ -284,7 +287,7 @@ void bind_data::bind(size_t col, zce::mysql::time& val)
 
 //绑定一个空参数
 template<>
-void bind_data::bind(size_t col, zce::mysql::null& val)
+void bind_data::bind(size_t col,zce::mysql::null& val)
 {
     stmt_bind_[col].buffer_type = MYSQL_TYPE_NULL;
     stmt_bind_[col].is_null = val.is_null_;
@@ -302,7 +305,7 @@ command::command(zce::mysql::connect& conn)
 }
 command::~command() noexcept
 {
-    if(nullptr != stmt_)
+    if (nullptr != stmt_)
     {
         [[maybe_unused]]
         int ret = ::mysql_stmt_free_result(stmt_);
@@ -312,8 +315,8 @@ command::~command() noexcept
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
 size_t command::escape_string(char* tostr,
-                                    const char* fromstr,
-                                    unsigned int fromlen)
+                              const char* fromstr,
+                              unsigned int fromlen)
 {
     return static_cast<size_t>(
         ::mysql_escape_string(tostr,
@@ -322,8 +325,8 @@ size_t command::escape_string(char* tostr,
 }
 
 size_t command::real_escape_string(char* tostr,
-                                         const char* fromstr,
-                                         unsigned int fromlen)
+                                   const char* fromstr,
+                                   unsigned int fromlen)
 {
     return static_cast<size_t>(
         ::mysql_real_escape_string(mysql_,
@@ -336,7 +339,7 @@ size_t command::real_escape_string(char* tostr,
 int command::trans_commit()
 {
     int ret = ::mysql_commit(mysql_);
-    if(0 != ret)
+    if (0 != ret)
     {
         return ret;
     }
@@ -347,7 +350,7 @@ int command::trans_commit()
 int command::trans_rollback()
 {
     int ret = ::mysql_rollback(mysql_);
-    if(0 != ret)
+    if (0 != ret)
     {
         return ret;
     }
@@ -361,9 +364,9 @@ int command::execute(std::string_view sqlcmd,
                      uint64_t& last_id)
 {
     int ret = 0;
-    if((ret = query(sqlcmd)) == 0)
+    if ((ret = query(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect, &last_id, nullptr, false);
+        ret = get_result(&num_affect,&last_id,nullptr,false);
     }
     return ret;
 }
@@ -375,9 +378,9 @@ int command::execute(std::string_view sqlcmd,
                      zce::mysql::result& my_res)
 {
     int ret = 0;
-    if((ret = query(sqlcmd)) == 0)
+    if ((ret = query(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect, nullptr, &my_res, false);
+        ret = get_result(&num_affect,nullptr,&my_res,false);
     }
     return ret;
 }
@@ -386,7 +389,7 @@ int command::execute(std::string_view sqlcmd,
 int command::query(std::string_view sqlcmd)
 {
     //如果没有设置连接或者没有设置命令
-    if(if_connected_ == false || sqlcmd.empty())
+    if (if_connected_ == false || sqlcmd.empty())
     {
         return -1;
     }
@@ -395,7 +398,7 @@ int command::query(std::string_view sqlcmd)
     int ret = ::mysql_real_query(mysql_,
                                  sqlcmd.data(),
                                  (unsigned long)sqlcmd.length());
-    if(ret != 0)
+    if (ret != 0)
     {
         return ret;
     }
@@ -408,10 +411,10 @@ int command::get_result(size_t* num_affect,
                         bool use_result)
 {
     //如果用户要求转储结果集
-    if(my_res)
+    if (my_res)
     {
         MYSQL_RES* res = nullptr;
-        if(use_result)
+        if (use_result)
         {
             //转储结果,但只能一次取一行
             res = ::mysql_use_result(mysql_);
@@ -426,21 +429,21 @@ int command::get_result(size_t* num_affect,
         //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回nullptr? "
         //如果是INSERT语句，那么mysql_store_result就是返回nullptr，mysql_field_count也应该等于0，
         //如果MYSQL内部发生某个错误，那么mysql_store_result 返回nullptr，但mysql_field_count 会大于0，此时是个错误
-        if(res == nullptr && mysql_field_count(mysql_) > 0)
+        if (res == nullptr && mysql_field_count(mysql_) > 0)
         {
             return -1;
         }
 
         //得到结果集,查询结果集信息
-        my_res->set_mysql_result(res);
+        my_res->save_result(res);
     }
     //执行SQL命令影响了多少行,如果是查询语句，mysql_affected_rows 必须在转储结果集后,所以你要注意输入的参数
-    if(num_affect)
+    if (num_affect)
     {
         *num_affect = (uint64_t) ::mysql_affected_rows(mysql_);
         //注意如果调用的是mysql_use_result,num_affect 不是总数，而只是1
     }
-    if(last_id)
+    if (last_id)
     {
         *last_id = (uint64_t) ::mysql_insert_id(mysql_);
     }
@@ -451,29 +454,29 @@ int command::get_result(size_t* num_affect,
 int command::fetch_next_row(zce::mysql::result& res)
 {
     MYSQL_RES* my_res = ::mysql_use_result(mysql_);
-    if(my_res == nullptr)
+    if (my_res == nullptr)
     {
         return -1;
     }
 
     //得到结果集,查询结果集信息
-    res.set_mysql_result(my_res);
+    res.save_result(my_res);
     return 0;
 }
 
 //用于 multiple-statement executions 中得到多个
 int command::fetch_next_result(zce::mysql::result& res,
-                                bool use_result)
+                               bool use_result)
 {
     int ret = ::mysql_next_result(mysql_);
     //ret == -1表示没有结果集,其他<0的值表示错误
-    if(ret < 0)
+    if (ret < 0)
     {
         return -1;
     }
 
     MYSQL_RES* my_res = nullptr;
-    if(use_result)
+    if (use_result)
     {
         //转储一行结果
         my_res = ::mysql_use_result(mysql_);
@@ -486,22 +489,22 @@ int command::fetch_next_result(zce::mysql::result& res,
 
     //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
     //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回nullptr? "
-    if(my_res == nullptr && ::mysql_field_count(mysql_) > 0)
+    if (my_res == nullptr && ::mysql_field_count(mysql_) > 0)
     {
         return -1;
     }
     //得到结果集,查询结果集信息
-    res.set_mysql_result(my_res);
+    res.save_result(my_res);
 
     return 0;
 }
 
 int command::stmt_query(std::string_view sqlcmd,
-               zce::mysql::bind_data* bind_param,
-               zce::mysql::bind_data* bind_result)
+                        zce::mysql::bind_data* bind_param,
+                        zce::mysql::bind_data* bind_result)
 {
     //如果没有设置连接或者没有设置命令
-    if(sqlcmd.empty())
+    if (sqlcmd.empty())
     {
         return -1;
     }
@@ -509,26 +512,26 @@ int command::stmt_query(std::string_view sqlcmd,
     int ret = ::mysql_stmt_prepare(stmt_,
                                    sqlcmd.data(),
                                    static_cast<unsigned long>(sqlcmd.length()));
-    if(ret != 0)
+    if (ret != 0)
     {
         return ret;
     }
     //绑定参数
-    if(bind_param)
+    if (bind_param)
     {
         bind_param_ = std::move(*bind_param);
-        ret = ::mysql_stmt_bind_param(stmt_, bind_param_.get_stmt_bind());
-        if(ret != 0)
+        ret = ::mysql_stmt_bind_param(stmt_,bind_param_.get_stmt_bind());
+        if (ret != 0)
         {
             return ret;
         }
     }
     //绑定结果
-    if(bind_result)
+    if (bind_result)
     {
         bind_result_ = std::move(*bind_result);
-        ret = ::mysql_stmt_bind_result(stmt_, bind_result_.get_stmt_bind());
-        if(ret != 0)
+        ret = ::mysql_stmt_bind_result(stmt_,bind_result_.get_stmt_bind());
+        if (ret != 0)
         {
             return ret;
         }
@@ -536,7 +539,7 @@ int command::stmt_query(std::string_view sqlcmd,
     }
     //执行SQL命令
     ret = ::mysql_stmt_execute(stmt_);
-    if(ret != 0)
+    if (ret != 0)
     {
         return ret;
     }
@@ -545,14 +548,14 @@ int command::stmt_query(std::string_view sqlcmd,
 
 //SQL 执行命令，这个事一个基础函数，内部调用
 int command::stmt_get_result(size_t* num_affect,
-                          size_t* last_id)
+                             size_t* last_id)
 {
     int ret = 0;
     //如果要返回结果,进行转储
-    if(is_bind_result_)
+    if (is_bind_result_)
     {
         ret = ::mysql_stmt_store_result(stmt_);
-        if(ret != 0)
+        if (ret != 0)
         {
             return ret;
         }
@@ -560,12 +563,12 @@ int command::stmt_get_result(size_t* num_affect,
 
     //执行SQL命令影响了多少行,mysql_affected_rows
     //必须在转储结果集后,所以你要注意输入的参数
-    if(num_affect)
+    if (num_affect)
     {
         *num_affect = (uint64_t) ::mysql_stmt_affected_rows(stmt_);
     }
 
-    if(last_id)
+    if (last_id)
     {
         *last_id = (uint64_t)::mysql_stmt_insert_id(stmt_);
     }
@@ -577,7 +580,7 @@ int command::stmt_get_result(size_t* num_affect,
 int command::stmt_fetch_next_row() const
 {
     int tmpret = ::mysql_stmt_fetch(stmt_);
-    if(tmpret != 0)
+    if (tmpret != 0)
     {
         return -1;
     }
@@ -593,7 +596,7 @@ int command::stmt_fetch_column(size_t column,
                                            bind_colum->get_stmt_bind(),
                                            static_cast<unsigned int>(column),
                                            static_cast<unsigned long>(offset));
-    if(0 != tmpret)
+    if (0 != tmpret)
     {
         return -1;
     }
@@ -605,9 +608,9 @@ int command::stmt_fetch_column(size_t column,
 int command::stmt_seek_result_row(size_t nrow) const
 {
     //检查结果集合为空,或者参数row错误
-    ::mysql_stmt_data_seek(stmt_, nrow);
+    ::mysql_stmt_data_seek(stmt_,nrow);
     int tmpret = ::mysql_stmt_fetch(stmt_);
-    if(0 != tmpret)
+    if (0 != tmpret)
     {
         return -1;
     }

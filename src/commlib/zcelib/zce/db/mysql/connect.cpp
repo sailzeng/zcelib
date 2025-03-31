@@ -68,56 +68,56 @@ int connect::connect_i(CONNECT_BY by,
     {
         using enum CONNECT_BY;
     case HOST:
-    ret = ::mysql_real_connect(&mysql_handle_,
-                               host_name,
-                               user,
-                               pwd,
-                               db,
-                               port,
-                               nullptr,
-                               client_flag);
-    break;
+        ret = ::mysql_real_connect(&mysql_handle_,
+                                   host_name,
+                                   user,
+                                   pwd,
+                                   db,
+                                   port,
+                                   nullptr,
+                                   client_flag);
+        break;
     case SOCKET_FILE:
-    //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为nullptr，
-    // 是先进行命名管道连接，如果不行用TCP/IP连接本地
-    //如果要不保证绝对使用命名管道，则参数host_name=".",
-    ret = ::mysql_real_connect(&mysql_handle_,
-                               nullptr,
-                               user,
-                               pwd,
-                               db,
-                               port,
-                               socket_file,
-                               client_flag);
-    break;
+        //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为nullptr，
+        // 是先进行命名管道连接，如果不行用TCP/IP连接本地
+        //如果要不保证绝对使用命名管道，则参数host_name=".",
+        ret = ::mysql_real_connect(&mysql_handle_,
+                                   nullptr,
+                                   user,
+                                   pwd,
+                                   db,
+                                   port,
+                                   socket_file,
+                                   client_flag);
+        break;
     case OPTION_FILE:
-    if(optfile != nullptr)
-    {
-        int opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
-
-        //如果使group==nullptr,将读写optfile的[client]配置,否则读写group下的配置
-        if(group != nullptr)
+        if(optfile != nullptr)
         {
-            opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
-        }
+            int opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
 
-        if(opret != 0)
-        {
-            return -1;
+            //如果使group==nullptr,将读写optfile的[client]配置,否则读写group下的配置
+            if(group != nullptr)
+            {
+                opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
+            }
+
+            if(opret != 0)
+            {
+                return -1;
+            }
         }
-    }
-    ret = ::mysql_real_connect(&mysql_handle_,
-                               nullptr,
-                               nullptr,
-                               nullptr,
-                               nullptr,
-                               0,
-                               nullptr,
-                               0);
-    break;
+        ret = ::mysql_real_connect(&mysql_handle_,
+                                   nullptr,
+                                   nullptr,
+                                   nullptr,
+                                   nullptr,
+                                   0,
+                                   nullptr,
+                                   0);
+        break;
     default:
-    ZCE_ASSERT(false);
-    return -1;
+        ZCE_ASSERT(false);
+        return -1;
     }
 
     //检查结果,

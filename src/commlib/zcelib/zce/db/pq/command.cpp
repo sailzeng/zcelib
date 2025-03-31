@@ -13,19 +13,19 @@ int command::execute(std::string_view sql_cmd,
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
     ::ExecStatusType status = ::PQresultStatus(res);
-    if(status != ::PGRES_TUPLES_OK && status != ::PGRES_COMMAND_OK)
+    if (status != ::PGRES_TUPLES_OK && status != ::PGRES_COMMAND_OK)
     {
         ::PQclear(res);
         return -1;
     }
-    if(status == ::PGRES_TUPLES_OK)
+    if (status == ::PGRES_TUPLES_OK)
     {
         auto s_num = ::PQcmdTuples(res);
         num_affect = std::stoull(s_num);
     }
-    if(last_id)
+    if (last_id)
     {
-        if(PQresultStatus(res) == PGRES_TUPLES_OK)
+        if (PQresultStatus(res) == PGRES_TUPLES_OK)
         {
             char* id_str = PQgetvalue(res, 0, 0);
             *last_id = atoll(id_str);
@@ -49,12 +49,12 @@ int command::execute(std::string_view sql_cmd,
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
     ::ExecStatusType status = ::PQresultStatus(res);
-    if(status != ::PGRES_TUPLES_OK && status != ::PGRES_COMMAND_OK)
+    if (status != ::PGRES_TUPLES_OK && status != ::PGRES_COMMAND_OK)
     {
         ::PQclear(res);
         return -1;
     }
-    if(status == ::PGRES_TUPLES_OK)
+    if (status == ::PGRES_TUPLES_OK)
     {
         auto s_num = ::PQcmdTuples(res);
         num_affect = std::stoull(s_num);

@@ -21,7 +21,7 @@ class bind_data;
 class result;
 class connect;
 
-/*!
+/*! ======================================================================
 * @brief      仅仅是为了适配 stmt_bind << 的操作符号
 *             绑定2进制参数数据，用于 mysql_stmt_bind_param
 */
@@ -36,8 +36,8 @@ public:
     * @param[in/out] blob_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
     */
     blob(enum_field_types data_type,
-           void* blob_ptr,
-           unsigned long* blob_len) :
+         void* blob_ptr,
+         unsigned long* blob_len) :
         bind_type_(data_type),
         blob_ptr_(blob_ptr),
         blob_len_(blob_len)
@@ -59,7 +59,7 @@ protected:
     unsigned long* blob_len_ = 0;
 };
 
-/*!
+/*!  ======================================================================
 @brief      仅仅是为了适配 zce::mysql::bind_data 的bind
 */
 class time
@@ -86,7 +86,7 @@ protected:
     MYSQL_TIME* stmt_ptime_ = nullptr;
 };
 
-/*!
+/*! ======================================================================
 * @brief      仅仅是为了适配 zce::mysql::bind_data 的bind
 *             绑定一个空参数
 * @note
@@ -97,13 +97,14 @@ class null
 public:
     null(my_bool* is_null) :
         is_null_(is_null)
-    {};
+    {
+    };
     ~null() = default;
 protected:
     my_bool* is_null_ = nullptr;
 };
 
-/*!
+/*! ======================================================================
 * @brief MYSQL_BIND 的包装封装累，
 *
 * @note  STMT_Bind里面bind的变量数据，是否为nullptr，返回长度，都是指针，
@@ -114,6 +115,7 @@ class bind_data
 public:
 
     bind_data() = default;
+    bind_data(size_t num_bind);
     ~bind_data();
     //拷贝构造，拷贝赋值，和移动构造，移动赋值
     bind_data(bind_data&& bind) noexcept;
@@ -269,8 +271,8 @@ public:
     * @param      fromlen      转换的字符串长度
     */
     size_t real_escape_string(char* tostr,
-                                    const char* fromstr,
-                                    unsigned int fromlen);
+                              const char* fromstr,
+                              unsigned int fromlen);
 
     ///stmt 的函数-----------------------------------------------------
 
@@ -302,9 +304,9 @@ public:
         ZCE_ASSERT(param_num <= sizeof...(Args));
         size_t result_num = sizeof...(Args) - param_num;
         int ret = ::mysql_stmt_prepare(stmt_,
-                                          sqlcmd.data(),
-                                          static_cast<unsigned long>(sqlcmd.size()));
-        if(ret != 0)
+                                       sqlcmd.data(),
+                                       static_cast<unsigned long>(sqlcmd.size()));
+        if (ret != 0)
         {
             return ret;
         }
@@ -312,30 +314,30 @@ public:
         bind_result_.initialize(result_num);
         (_bind_i(args..., param_num, std::index_sequence_for<Args...>{}));
         //绑定的参数
-        if(param_num > 0)
+        if (param_num > 0)
         {
             ret = ::mysql_stmt_bind_param(stmt_,
                                           bind_param_.get_stmt_bind());
-            if(ret != 0)
+            if (ret != 0)
             {
                 return ret;
             }
         }
 
         //绑定的结果
-        if(result_num > 0)
+        if (result_num > 0)
         {
             ret = ::mysql_stmt_bind_result(stmt_,
                                            bind_result_.get_stmt_bind());
             //出错返回,或者处理
-            if(ret != 0)
+            if (ret != 0)
             {
                 return ret;
             }
             is_bind_result_ = true;
         }
         ret = ::mysql_stmt_execute(stmt_);
-        if(ret != 0)
+        if (ret != 0)
         {
             return ret;
         }
@@ -376,7 +378,7 @@ public:
     void stmt_param_2_metadata(result* res) const
     {
         MYSQL_RES* myres = ::mysql_stmt_param_metadata(stmt_);
-        res->set_mysql_result(myres);
+        res->save_result(myres);
         return;
     }
 
@@ -384,7 +386,7 @@ public:
     void stmt_result_2_metadata(result* res) const
     {
         MYSQL_RES* myres = ::mysql_stmt_result_metadata(stmt_);
-        res->set_mysql_result(myres);
+        res->save_result(myres);
         return;
     }
 public:
@@ -399,15 +401,15 @@ public:
     * @param      fromlen      转换的字符串长度
     */
     static size_t escape_string(char* tostr,
-                                      const char* fromstr,
-                                      unsigned int fromlen);
+                                const char* fromstr,
+                                unsigned int fromlen);
 
 protected:
 
     template<typename T, std::size_t... Is>
     void _bind_i(T&& bind_data, size_t param_num, std::index_sequence<Is...>)
     {
-        if(Is <= param_num)
+        if (Is <= param_num)
         {
             bind_param_.bind(Is, std::forward<T>(bind_data));
         }

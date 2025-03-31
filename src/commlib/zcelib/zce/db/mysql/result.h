@@ -32,15 +32,120 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/string.h"
-#include "zce/db/mysql/field.h"
 #include "zce/string/from_string.h"
 
-/*!
-* @brief      MYSQL的结果集封装
-*             考虑一下，也让这个东东NO Copyable了，
-*/
 namespace zce::mysql
 {
+/*! //============================================================================
+* @brief      MYSQL的结果的字段
+*/
+class field
+{
+public:
+    //! 数据
+    const char* data_ = nullptr;
+    //! 数据长度
+    unsigned long length_ = 0;
+    //! 数据类型
+    enum_field_types type_ = MYSQL_TYPE_NULL;
+};
+
+class result;
+//============================================================================
+/*!
+* @brief      MYSQL的结果的游标,
+*             注意游标其实是通过mysql_fetch_row获得的，再次调用mysql_fetch_row
+*             或者 mysql_data_seek后，游标的数据就失效了
+*/
+class cursor
+{
+    friend zce::mysql::result;
+public:
+    ///构造函数,析构函数
+    cursor() noexcept = default;
+    ~cursor() noexcept = default;
+
+    /*!
+     * @brief 在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
+     * @param colum 列号
+     * @return 将数据的指针作为作为返回值 const char *
+     */
+    const char* field_data(size_t colum) const;
+
+    /*!
+     * @brief  根据列序号ID得到当前行的字段值,
+     * @param colum  列号
+     * @param pfdata 将数据拷贝到pfdata
+     * @return 0成功，-1失败
+     */
+    int field_data(size_t colum, char* pfdata) const;
+
+    /*!
+     * @brief 根据列ID （colum）取得字段的（实际）长度
+     * @param colum 列号
+     * @return 字段的（实际）长度
+     */
+    size_t field_length(size_t colum) const;
+
+    /*!
+     * @brief 根据列ID （colum）取得当前行（游标的）字段类型
+     * @param colum  列号
+     * @return 返回类型要参考MYSQL CAPI 的enum_field_types
+     */
+    enum_field_types field_type(size_t colum) const;
+
+    /*!
+     * @brief 根据列ID （colum）取得当前行（游标的）字段值
+     * @param colum 列ID
+     * @return 列数据
+     */
+    zce::mysql::field get_field(size_t colum) const;
+
+    /*!
+     * @brief      普通情况的使用 from_str 进行转换，有几种情况进行了特化
+     *             字符串 用char * ,unsigned char*,字符串都特别+1了,帮忙做了结尾
+     *             二进制数据用 BINARY*,维持原长度
+     * @return     int 表示成功转换
+     * @param      colum 列ID
+     * @param      val   取得的列数据
+     */
+    template <typename T>
+    int field(size_t colum, T& val) const
+    {
+        return zce::from_str(cursor_row_[colum], val);
+    }
+
+    /*!
+     * @brief 根据列序号ID得到字段FIELD，[]操作符号函数不检查检查列ID,自己保证参数
+     * @param colum 列ID
+     * @return zce::mysql::field 字段
+     */
+    zce::mysql::field  operator[](size_t colum) const;
+
+    //! 清理
+    void clear();
+
+protected:
+
+    //! 游标对应的行号
+    size_t cursor_rowid_ = (size_t)-1;
+
+    //! 游标的当前行
+    MYSQL_ROW  cursor_row_ = nullptr;
+
+    //! 数组指针,指向结果集合的当前行的各个字段数据的长度
+    unsigned long* fields_len_ = nullptr;
+
+    //! 列数量
+    size_t num_field_ = 0;
+    //! 列定义
+    MYSQL_FIELD* mysql_fields_ = nullptr;
+};
+
+//============================================================================
+/*!
+* @brief      MYSQL的结果集封装
+*/
 class result
 {
 public:
@@ -52,13 +157,15 @@ public:
 
 public:
     ///构造函数,析构函数
-    result() noexcept;
-    result(MYSQL_RES* sqlresult) noexcept;
+    result() noexcept = default;
+    result(::MYSQL_RES* res) noexcept;
     ~result() noexcept;
 
     //避免拷贝
     result(const result&) = delete;
     result& operator=(const result&) = delete;
+    result(result&&) noexcept = delete;
+    result& operator=(result&&) = delete;
 
     ///结果集合是否为空
     inline bool is_null()
@@ -71,163 +178,108 @@ public:
     * @return     void
     * @param      sqlresult 放入结果集合
     */
-    void set_mysql_result(MYSQL_RES* sqlresult);
-
-    ///根据Field ID返回表定义列域名,注意计算得到的列的名字也可能是空
-    inline char* field_name(size_t colum) const;
-
-    /*!
-    * @brief      根据Field Name得到Field ID,列号
-    * @return     inline int 0成功，-1失败
-    * @param[in]  fname      列名称,
-    * @param[out] colum    返回的列名称对应列ID
-    */
-    inline int field_index(const char* fname,
-        size_t& colum) const;
-
-    /*!
-    * @brief      返回结果集的行数目
-    * @return     unsigned int 行的数量
-    */
-    inline unsigned int num_of_rows() const;
-
-    /*!
-    * @brief      返回结果集的列数目
-    * @return     unsigned int 列的数量
-    */
-    inline unsigned int num_of_fields() const;
-
-    /*!
-    * @brief      根据列序号ID得到字段FIELD，[]操作符号函数不检查检查列ID,自己保证参数
-    * @return     zce::mysql::field
-    * @param[in]  colum          取的字段下标
-    */
-    zce::mysql::field operator[](size_t colum) const;
-
-    /*!
-    * @brief      通过列ID，查询当前行的字段，性能好，下标定位
-    * @return     int      0成功，-1失败
-    * @param[in]  colum  列ID，从0开始 fname  列名称，SELECT字段名称
-    * @param[out] ffield   返回列的值
-    */
-    int get_field(size_t colum, zce::mysql::field& ffield) const;
-
-    int get_field(const char*, zce::mysql::field& ffield) const;
-
-    /*!
-    * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
-    * @return     const char* 数据的指针，返回nullptr表示取错误
-    * @param      colum     下标 fname       列（字段）名称
-    */
-    const char* field_data(size_t colum) const;
-
-    const char* field_data(const char* fname) const;
-
-    /*!
-    * @brief      根据列序号ID得到当前行的字段值,
-    * @return     int       0成功，-1失败
-    * @param      colum   列ID  fname   列名称
-    * @param      pfdata    列数据的指针
-    */
-    int field_data(size_t colum, char* pfdata) const;
-
-    int field_data(const char*, char* pfdata) const;
-
-    /*!
-    * @brief      根据列序号得到字段的长度
-    * @return     int
-    * @param      colum   列ID  fname   列名称
-    * @param      flength
-    * @note
-    */
-    int field_length(size_t colum, unsigned long& flength) const;
-
-    int field_length(const char* fname, unsigned long& flength) const;
-
-    ///取得当前的字段的长度
-    unsigned long get_cur_field_length();
-
-    /*!
-    * @brief      根据列序号ID得到字段的类型
-    * @return     inline int   0成功，-1失败
-    * @param      colum      列字段ID,  fname  列名称，SELECT字段名称
-    * @param      ftype        列数据的长度，要参考MYSQL CAPI 的enum_field_types
-    */
-    int field_type(size_t colum, enum_field_types& ftype) const;
-
-    int field_type(const char* fname, enum_field_types& ftype) const;
-
-    /*!
-    * @brief      得到字段表结构定义的长度
-    * @return     int
-    * @param      colum 列字段ID  fname  列名称，SELECT字段名称
-    * @param      flength 列定义的长度，
-    */
-    int field_define_size(unsigned int colum, unsigned int& flength) const;
-
-    int field_define_size(const char* name, unsigned int& flength) const;
-
-    /*!
-    * @brief      将结果集处理的行，检索移动到某行
-    * @return     int  0成功，-1失败
-    * @param      row_id 行ID
-    */
-    int seek_row(size_t row_id);
-
-    /*!
-    * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
-    * @return     bool true还有结果集合，false没有结果集合了
-    */
-    bool fetch_row();
+    void save_result(MYSQL_RES* res);
 
     /*!
     * @brief      如果已经有结果集, 释放原有的结果集,
     */
     void free_result();
 
+    //! @brief 将结果集处理的行，检索移动到某行
+    int cursor_seek(size_t row_id);
+
     /*!
-    * @brief      普通情况的使用 from_str 进行转换，有几种情况进行了特化
-    *             字符串 用char * ,unsigned char*,字符串都特别+1了,帮忙做了结尾
-    *             二进制数据用 BINARY*,维持原长度
-    * @return     int 表示成功转换
-    * @param      colum 列ID
-    * @param      val   取得的列数据
+    * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
+    * @return     bool true还有结果集合，false没有结果集合了
     */
-    template <typename T>
-    int field(size_t colum, T& val) const
+    bool cursor_fetch();
+
+    //! @brief 取得当前的游标
+    zce::mysql::cursor get_cursor()
     {
-        return zce::from_str(current_row_[colum], val);
+        return cursor_;
     }
 
-    /// >> 操作符号,用于将结果输出到val中,如果使用>>,请按顺序，不要跳过
-    template <typename T>
-    result& operator >> (T&& val)
+    /// @brief 根据Field ID返回表定义列域名,注意计算得到的列的名字也可能是空
+    const char* field_name(size_t colum) const;
+
+    //! @brief 根据Field Name得到Field ID,列号 返回-1表示没有找到
+    size_t field_index(const char* fname) const;
+
+    //! 根据列ID （colum）取得当前行（游标的）字段定义长度
+    size_t field_def_size(size_t colum) const;
+
+    //! 根据列ID （colum）取得当前行（游标的）字段类型
+    //! 返回类型要参考MYSQL CAPI 的enum_field_types
+    enum_field_types field_type(size_t colum) const;
+
+    //! @brief      返回结果集的行数目
+    inline size_t num_of_rows() const
     {
-        field(current_field_, std::forward<T>(val));
-        ++current_field_;
-        return *this;
+        return num_result_row_;
+    }
+
+    //! @brief      返回结果集的列数目
+    inline size_t num_of_fields() const
+    {
+        return num_result_field_;
+    }
+
+    //! 警告：MySQL 其实是希望使用光标获取结果集的数据，所以没有提供直接用行号，列号
+    //! 处理数据，但为了方便，我提供下面这些API，但因为一但处理的行发生变化，就要调用
+    //! mysql_data_seek 和 mysql_fetch_row，重新定位游标，所以，还是建议一行行的
+    //! 处理数据，处理完成一行后，再处理下一行。
+
+    /*!
+    * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
+    * @return     const char* 数据的指针，返回nullptr表示取错误
+    * @param      colum     下标
+    */
+    const char* field_data(size_t row, size_t colum);
+
+    /*!
+    * @brief      根据列序号ID得到当前行的字段值,
+    * @return     int       0成功，-1失败
+    * @param      row, colum   行，列ID
+    * @param      pfdata    列数据的指针
+    */
+    int field_data(size_t row, size_t colum, char* pfdata);
+
+    //! 根据列ID （colum）或者列名称（fname）取得字段的（实际）长度
+    size_t field_length(size_t row, size_t colum);
+
+    //! 根据列ID （colum）取得当前行（游标的）字段值
+    zce::mysql::field get_field(size_t row, size_t colum);
+
+    template <typename T>
+    int field(size_t row, size_t colum, T& val) const
+    {
+        if (row != cursor_.cursor_rowid_)
+        {
+            int ret = cursor_seek(row);
+            if (ret != 0)
+            {
+                return ret;
+            }
+        }
+        return cursor_.field(colum, val);
     }
 
 private:
     ///结果集合
-    MYSQL_RES* mysql_result_;
-
-    ///结果集合的当前行
-    MYSQL_ROW        current_row_;
-    ///当前列，
-    unsigned int     current_field_;
-
-    ///数组指针,指向结果集合的当前行的各个字段数据的长度
-    unsigned long* fields_length_;
+    MYSQL_RES* mysql_result_ = nullptr;
 
     ///结果集的行数
-    unsigned int    num_result_row_;
+    size_t  num_result_row_ = 0;
 
     ///结果集的列数
-    unsigned int    num_result_field_;
+    size_t  num_result_field_ = 0;
 
     ///MYSQL_FIELD数组指针,指向结果集合的所有Field说明.
-    MYSQL_FIELD* mysql_fields_;
+    MYSQL_FIELD* mysql_fields_ = nullptr;
+
+    ///游标，包括MYSQL_ROW等数据。
+    zce::mysql::cursor  cursor_;
 };
 
 //如果你要用MYSQL的库
