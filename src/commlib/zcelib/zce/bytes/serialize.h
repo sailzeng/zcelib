@@ -111,8 +111,10 @@ public:
     void write_arithmetic(const unsigned short& val);
     void write_arithmetic(const int& val);
     void write_arithmetic(const unsigned int& val);
-    void write_arithmetic(const int64_t& val);
-    void write_arithmetic(const uint64_t& val);
+    void write_arithmetic(const long& val);
+    void write_arithmetic(const unsigned long& val);
+    void write_arithmetic(const long long& val);
+    void write_arithmetic(const unsigned long long& val);
     void write_arithmetic(const float& val);
     void write_arithmetic(const double& val);
 
@@ -201,17 +203,17 @@ public:
 protected:
 
     ///状态是否正确，如果写入位置超出缓冲区的结尾，会置为false
-    bool is_good_;
+    bool is_good_ = true;
 
     ///保存数据，被写的buffer，
-    char* write_buf_;
+    char* write_buf_ = nullptr;
     ///buf的长度
-    size_t buf_len_;
+    size_t buf_len_ = 0;
 
     ///buf的最后的位置，用于判断加快处理
-    char* end_pos_;
+    char* end_pos_ = nullptr;
     ///当前写入的pos位置，
-    char* write_pos_;
+    char* write_pos_ = nullptr;
 };
 
 //辅助类，write_help 函数的实现
@@ -326,7 +328,6 @@ public:
     * @param      buf_len  数据的长度
     */
     decode(const char* read_buf, size_t buf_len);
-
     ///析构函数
     ~decode() = default;
 
@@ -386,8 +387,10 @@ public:
     void read_arithmetic(unsigned short& val);
     void read_arithmetic(int& val);
     void read_arithmetic(unsigned int& val);
-    void read_arithmetic(int64_t& val);
-    void read_arithmetic(uint64_t& val);
+    void read_arithmetic(long& val);
+    void read_arithmetic(unsigned long& val);
+    void read_arithmetic(long long& val);
+    void read_arithmetic(unsigned long long& val);
     void read_arithmetic(float& val);
     void read_arithmetic(double& val);
 

@@ -63,7 +63,7 @@ size_t result::field_index(const char* fname) const
     return (size_t)::PQfnumber(pq_result_, fname);
 }
 
-size_t result::field_define_size(size_t colum) const
+size_t result::field_def_size(size_t colum) const
 {
     if (colum >= num_result_field_)
     {
@@ -73,15 +73,43 @@ size_t result::field_define_size(size_t colum) const
     return (size_t)::PQfsize(pq_result_, (int)colum);
 }
 
-//! 根据列ID （colum）或者列名称（fname）取得字段的（实际）长度
-size_t result::field_length(size_t row, size_t colum) const
+//! 根据列号取得其格式，返回0文本，1二进制
+int result::field_format(size_t colum) const
+{
+    return ::PQfformat(pq_result_, (int)colum);
+}
+
+//! 根据列号取得类型Oid
+::Oid result::field_type(size_t colum) const
 {
     if (colum >= num_result_field_)
+    {
+        ZCE_ASSERT(false);
+        return InvalidOid;
+    }
+    return ::PQftype(pq_result_, (int)colum);
+}
+
+//取得字段的（实际）长度
+size_t result::field_length(size_t row, size_t colum) const
+{
+    if (row > num_result_row_ || colum >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
     }
     return (size_t)::PQgetlength(pq_result_, (int)row, (int)colum);
+}
+
+//取得字段的数据
+const char* result::field_data(size_t row, size_t colum) const
+{
+    if (row > num_result_row_ || colum >= num_result_field_)
+    {
+        ZCE_ASSERT(false);
+        return nullptr;
+    }
+    return ::PQgetvalue(pq_result_, (int)row, (int)colum);
 }
 }
 #endif //#if defined ZCE_USE_PQ && ZCE_USE_PQ == 1

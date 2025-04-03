@@ -850,9 +850,6 @@
     <ClInclude Include="zce\buffer\varlen_buf.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\buffer\buf_view.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\db\execute.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -875,6 +872,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\pq\command.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\buffer\char_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

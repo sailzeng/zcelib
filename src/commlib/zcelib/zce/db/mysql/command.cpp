@@ -6,7 +6,7 @@
 namespace zce::mysql
 {
 ///****************************************************************************************
-/// class command
+/// class bind_data
 ///****************************************************************************************
 //构造函数
 bind_data::bind_data(size_t num_bind)
@@ -41,7 +41,7 @@ bind_data::bind_data(const bind_data& bind) :
     num_bind_(bind.num_bind_)
 {
     stmt_bind_ = new MYSQL_BIND[num_bind_];
-    memcpy(stmt_bind_,bind.stmt_bind_,sizeof(MYSQL_BIND) * num_bind_);
+    memcpy(stmt_bind_, bind.stmt_bind_, sizeof(MYSQL_BIND) * num_bind_);
 }
 
 bind_data& bind_data::operator=(const bind_data& bind)
@@ -49,7 +49,7 @@ bind_data& bind_data::operator=(const bind_data& bind)
     clear();
     num_bind_ = bind.num_bind_;
     stmt_bind_ = new MYSQL_BIND[num_bind_];
-    memcpy(stmt_bind_,bind.stmt_bind_,sizeof(MYSQL_BIND) * num_bind_);
+    memcpy(stmt_bind_, bind.stmt_bind_, sizeof(MYSQL_BIND) * num_bind_);
     return *this;
 }
 
@@ -72,225 +72,225 @@ void bind_data::initialize(size_t num_bind)
         return;
     }
     stmt_bind_ = new MYSQL_BIND[num_bind_];
-    memset(stmt_bind_,0,sizeof(MYSQL_BIND) * num_bind_);
+    memset(stmt_bind_, 0, sizeof(MYSQL_BIND) * num_bind_);
 }
 
 //绑定一个参数
-int bind_data::bind_one_param(size_t col,
+int bind_data::bind_one_param(size_t id,
                               ::enum_field_types paramtype,
                               my_bool* is_null,
                               void* paramdata,
                               unsigned long szparam)
 {
-    ZCE_ASSERT(col < num_bind_);
-    if (col >= num_bind_)
+    ZCE_ASSERT(id < num_bind_);
+    if (id >= num_bind_)
     {
         return -1;
     }
 
-    stmt_bind_[col].buffer_type = paramtype;
-    stmt_bind_[col].buffer = paramdata;
+    stmt_bind_[id].buffer_type = paramtype;
+    stmt_bind_[id].buffer = paramdata;
 
-    stmt_bind_[col].is_null = is_null;
-    stmt_bind_[col].length = nullptr;
-    stmt_bind_[col].buffer_length = szparam;
+    stmt_bind_[id].is_null = is_null;
+    stmt_bind_[id].length = nullptr;
+    stmt_bind_[id].buffer_length = szparam;
     return 0;
 }
 
-int bind_data::bind_one_result(size_t col,
+int bind_data::bind_one_result(size_t id,
                                ::enum_field_types paramtype,
-                               void* paramdata,
-                               unsigned long* szparam)
+                               void* resdata,
+                               unsigned long* szres)
 {
-    ZCE_ASSERT(col < num_bind_);
-    if (col >= num_bind_)
+    ZCE_ASSERT(id < num_bind_);
+    if (id >= num_bind_)
     {
         return -1;
     }
 
-    stmt_bind_[col].buffer_type = paramtype;
-    stmt_bind_[col].buffer = paramdata;
+    stmt_bind_[id].buffer_type = paramtype;
+    stmt_bind_[id].buffer = resdata;
 
-    stmt_bind_[col].buffer_length = *szparam;
+    stmt_bind_[id].buffer_length = *szres;
     //长度指针保存返回值
-    stmt_bind_[col].length = szparam;
+    stmt_bind_[id].length = szres;
     return 0;
 }
 
 template<>
-void bind_data::bind(size_t col,bool& val)
+void bind_data::bind(size_t id, bool& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_TINY;
-    stmt_bind_[col].buffer = (void*)(&val);
-    stmt_bind_[col].buffer_length = sizeof(char);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_TINY;
+    stmt_bind_[id].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_length = sizeof(char);
 
     return;
 }
 
 //绑定一个char
 template<>
-void bind_data::bind(size_t col,char& val)
+void bind_data::bind(size_t id, char& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_TINY;
-    stmt_bind_[col].buffer = (void*)(&val);
-    stmt_bind_[col].buffer_length = sizeof(char);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_TINY;
+    stmt_bind_[id].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_length = sizeof(char);
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,short& val)
+void bind_data::bind(size_t id, short& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_SHORT;
-    stmt_bind_[col].buffer = (void*)(&val);
-    stmt_bind_[col].buffer_length = sizeof(short);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_SHORT;
+    stmt_bind_[id].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_length = sizeof(short);
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,int& val)
+void bind_data::bind(size_t id, int& val)
 {
     //MYSQL_TYPE_LONG 长度为4
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
-    stmt_bind_[col].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
+    stmt_bind_[id].buffer = (void*)(&val);
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,long& val)
+void bind_data::bind(size_t id, long& val)
 {
 #if defined (ZCE_OS_WINDOWS)
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
 #elif defined (ZCE_OS_LINUX)
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONGLONG;
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
 #endif
-    stmt_bind_[col].buffer = (void*)(&val);
+    stmt_bind_[id].buffer = (void*)(&val);
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,long long& val)
+void bind_data::bind(size_t id, long long& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONGLONG;
-    stmt_bind_[col].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
+    stmt_bind_[id].buffer = (void*)(&val);
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,unsigned char& val)
+void bind_data::bind(size_t id, unsigned char& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_TINY;
-    stmt_bind_[col].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_TINY;
+    stmt_bind_[id].buffer = (void*)(&val);
 
     //无符号,绑定结果时应该不用
-    stmt_bind_[col].is_unsigned = 1;
+    stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,unsigned short& val)
+void bind_data::bind(size_t id, unsigned short& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_SHORT;
-    stmt_bind_[col].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_SHORT;
+    stmt_bind_[id].buffer = (void*)(&val);
 
     //无符号,绑定结果时应该不用
-    stmt_bind_[col].is_unsigned = 1;
+    stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,unsigned int& val)
+void bind_data::bind(size_t id, unsigned int& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
-    stmt_bind_[col].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
+    stmt_bind_[id].buffer = (void*)(&val);
 
     //无符号,绑定结果时应该不用
-    stmt_bind_[col].is_unsigned = 1;
+    stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,unsigned long& val)
+void bind_data::bind(size_t id, unsigned long& val)
 {
 #if defined (ZCE_OS_WINDOWS)
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONG;
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
 #elif defined (ZCE_OS_LINUX)
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONGLONG;
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
 #endif
-    stmt_bind_[col].buffer = (void*)(&val);
-    stmt_bind_[col].buffer_length = sizeof(unsigned long);
+    stmt_bind_[id].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_length = sizeof(unsigned long);
     //无符号,绑定结果时应该不用
-    stmt_bind_[col].is_unsigned = 1;
+    stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,unsigned long long& val)
+void bind_data::bind(size_t id, unsigned long long& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_LONGLONG;
-    stmt_bind_[col].buffer = reinterpret_cast<void*>(&val);
-    stmt_bind_[col].buffer_length = sizeof(unsigned long long);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
+    stmt_bind_[id].buffer = reinterpret_cast<void*>(&val);
+    stmt_bind_[id].buffer_length = sizeof(unsigned long long);
     //无符号,绑定结果时应该不用
-    stmt_bind_[col].is_unsigned = 1;
+    stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,float& val)
+void bind_data::bind(size_t id, float& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_FLOAT;
-    stmt_bind_[col].buffer = reinterpret_cast<void*>(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_FLOAT;
+    stmt_bind_[id].buffer = reinterpret_cast<void*>(&val);
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,double& val)
+void bind_data::bind(size_t id, double& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_DOUBLE;
-    stmt_bind_[col].buffer = reinterpret_cast<void*>(&val);
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_DOUBLE;
+    stmt_bind_[id].buffer = reinterpret_cast<void*>(&val);
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,zce::mysql::blob& blob_data)
+void bind_data::bind(size_t id, zce::mysql::blob& blob_data)
 {
-    stmt_bind_[col].buffer_type = blob_data.bind_type_;
-    stmt_bind_[col].buffer = blob_data.blob_ptr_;
+    stmt_bind_[id].buffer_type = blob_data.bind_type_;
+    stmt_bind_[id].buffer = blob_data.blob_ptr_;
 
     //这个可能既是绑定参数,也是绑定结果
-    stmt_bind_[col].buffer_length = *blob_data.blob_len_;
-    stmt_bind_[col].length = blob_data.blob_len_;
+    stmt_bind_[id].buffer_length = *blob_data.blob_len_;
+    stmt_bind_[id].length = blob_data.blob_len_;
 
     return;
 }
 
 template<>
-void bind_data::bind(size_t col,zce::mysql::time& val)
+void bind_data::bind(size_t id, zce::mysql::time& val)
 {
-    stmt_bind_[col].buffer_type = val.stmt_timetype_;
-    stmt_bind_[col].buffer = reinterpret_cast<void*>(val.stmt_ptime_);
+    stmt_bind_[id].buffer_type = val.stmt_timetype_;
+    stmt_bind_[id].buffer = reinterpret_cast<void*>(val.stmt_ptime_);
 
-    stmt_bind_[col].buffer_length = sizeof(MYSQL_TIME);
-    stmt_bind_[col].length = nullptr;
+    stmt_bind_[id].buffer_length = sizeof(MYSQL_TIME);
+    stmt_bind_[id].length = nullptr;
 
     return;
 }
 
 //绑定一个空参数
 template<>
-void bind_data::bind(size_t col,zce::mysql::null& val)
+void bind_data::bind(size_t id, zce::mysql::null& val)
 {
-    stmt_bind_[col].buffer_type = MYSQL_TYPE_NULL;
-    stmt_bind_[col].is_null = val.is_null_;
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_NULL;
+    stmt_bind_[id].is_null = val.is_null_;
     return;
 }
 
@@ -366,7 +366,7 @@ int command::execute(std::string_view sqlcmd,
     int ret = 0;
     if ((ret = query(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect,&last_id,nullptr,false);
+        ret = get_result(&num_affect, &last_id, nullptr, false);
     }
     return ret;
 }
@@ -380,7 +380,7 @@ int command::execute(std::string_view sqlcmd,
     int ret = 0;
     if ((ret = query(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect,nullptr,&my_res,false);
+        ret = get_result(&num_affect, nullptr, &my_res, false);
     }
     return ret;
 }
@@ -520,7 +520,7 @@ int command::stmt_query(std::string_view sqlcmd,
     if (bind_param)
     {
         bind_param_ = std::move(*bind_param);
-        ret = ::mysql_stmt_bind_param(stmt_,bind_param_.get_stmt_bind());
+        ret = ::mysql_stmt_bind_param(stmt_, bind_param_.get_stmt_bind());
         if (ret != 0)
         {
             return ret;
@@ -530,7 +530,7 @@ int command::stmt_query(std::string_view sqlcmd,
     if (bind_result)
     {
         bind_result_ = std::move(*bind_result);
-        ret = ::mysql_stmt_bind_result(stmt_,bind_result_.get_stmt_bind());
+        ret = ::mysql_stmt_bind_result(stmt_, bind_result_.get_stmt_bind());
         if (ret != 0)
         {
             return ret;
@@ -608,7 +608,7 @@ int command::stmt_fetch_column(size_t column,
 int command::stmt_seek_result_row(size_t nrow) const
 {
     //检查结果集合为空,或者参数row错误
-    ::mysql_stmt_data_seek(stmt_,nrow);
+    ::mysql_stmt_data_seek(stmt_, nrow);
     int tmpret = ::mysql_stmt_fetch(stmt_);
     if (0 != tmpret)
     {

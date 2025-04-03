@@ -118,9 +118,9 @@ void encode::write_arithmetic(const double& val)
     return;
 }
 
-void encode::write_arithmetic(const int64_t& val)
+void encode::write_arithmetic(const long& val)
 {
-    const size_t SIZE_OF_VALUE = sizeof(int64_t);
+    const size_t SIZE_OF_VALUE = sizeof(long);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
@@ -131,9 +131,43 @@ void encode::write_arithmetic(const int64_t& val)
     return;
 }
 
-void encode::write_arithmetic(const uint64_t& val)
+void encode::write_arithmetic(const unsigned long& val)
 {
-    const size_t SIZE_OF_VALUE = sizeof(uint64_t);
+    const size_t SIZE_OF_VALUE = sizeof(unsigned long);
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+#if defined ZCE_OS_WINDOWS
+    ZBEUINT32_TO_BYTE(write_pos_, val);
+#elif defined ZCE_OS_LINUX
+    ZBEUINT64_TO_BYTE(write_pos_, val);
+#endif
+    write_pos_ += SIZE_OF_VALUE;
+    return;
+}
+
+void encode::write_arithmetic(const long long& val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(long long);
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+#if defined ZCE_OS_WINDOWS
+    ZBEUINT32_TO_BYTE(write_pos_, val);
+#elif defined ZCE_OS_LINUX
+    ZBEUINT64_TO_BYTE(write_pos_, val);
+#endif
+    write_pos_ += SIZE_OF_VALUE;
+    return;
+}
+
+void encode::write_arithmetic(const unsigned long long& val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(unsigned long long);
     if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
@@ -254,9 +288,42 @@ void decode::read_arithmetic(unsigned int& val)
     return;
 }
 
-void decode::read_arithmetic(int64_t& val)
+void decode::read_arithmetic(long& val)
 {
-    const size_t SIZE_OF_VALUE = sizeof(int64_t);
+    const size_t SIZE_OF_VALUE = sizeof(long);
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+#if defined ZCE_OS_WINDOWS
+    val = ZBYTE_TO_BEUINT32(read_pos_);
+#elif defined ZCE_OS_LINUX
+    val = ZBYTE_TO_BEUINT64(read_pos_);
+#endif
+    read_pos_ += SIZE_OF_VALUE;
+    return;
+}
+void decode::read_arithmetic(unsigned long& val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(unsigned long);
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+#if defined ZCE_OS_WINDOWS
+    val = ZBYTE_TO_BEUINT32(read_pos_);
+#elif defined ZCE_OS_LINUX
+    val = ZBYTE_TO_BEUINT64(read_pos_);
+#endif
+    read_pos_ += SIZE_OF_VALUE;
+    return;
+}
+
+void decode::read_arithmetic(long long& val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(long long);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
@@ -266,9 +333,9 @@ void decode::read_arithmetic(int64_t& val)
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
-void decode::read_arithmetic(uint64_t& val)
+void decode::read_arithmetic(unsigned long long& val)
 {
-    const size_t SIZE_OF_VALUE = sizeof(uint64_t);
+    const size_t SIZE_OF_VALUE = sizeof(unsigned long long);
     if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;

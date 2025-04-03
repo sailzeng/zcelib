@@ -104,7 +104,8 @@ protected:
     my_bool* is_null_ = nullptr;
 };
 
-/*! ======================================================================
+//======================================================================
+/*!
 * @brief MYSQL_BIND 的包装封装累，
 *
 * @note  STMT_Bind里面bind的变量数据，是否为nullptr，返回长度，都是指针，
@@ -128,13 +129,13 @@ public:
     /*!
     * @brief      绑定一个参数
     * @return     int
-    * @param      col       参数的列号
+    * @param      id        参数的下标
     * @param      paramtype 参数类型
     * @param      bisnull   是否为nullptr,
     * @param      paramdata 参数的数据的指针
     * @param      szparam   参数的长度
     */
-    int bind_one_param(size_t col,
+    int bind_one_param(size_t id,
                        ::enum_field_types paramtype,
                        my_bool* is_null,
                        void* paramdata,
@@ -143,15 +144,15 @@ public:
     /*!
     * @brief
     * @return     int
-    * @param[in]     col
+    * @param[in]     id        参数的下标
     * @param[in]     paramtype
-    * @param[in]     paramdata
-    * @param[in,out] szparam
+    * @param[in]     resdata
+    * @param[in,out] szres
     */
-    int bind_one_result(size_t col,
+    int bind_one_result(size_t id,
                         ::enum_field_types res_type,
-                        void* paramdata,
-                        unsigned long* szparam);
+                        void* resdata,
+                        unsigned long* szres);
 
     ///得到STMT HANDLE
     inline MYSQL_BIND* get_stmt_bind()
@@ -159,13 +160,13 @@ public:
         return stmt_bind_;
     }
 
-    inline MYSQL_BIND* operator[](size_t paramno) const
+    inline MYSQL_BIND* operator[](size_t id) const
     {
-        return &stmt_bind_[paramno];
+        return &stmt_bind_[id];
     }
 
     template <class T>
-    void bind(size_t col, T& val);
+    void bind(size_t id, T& val);
 
 protected:
 

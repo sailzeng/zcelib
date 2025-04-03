@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce\aio\reactor.cpp" />
+    <ClInclude Include="zce\buffer\char_buffer.h" />
     <ClCompile Include="zce\bytes\bytes_common.cpp" />
     <ClCompile Include="zce\db\mysql\command.cpp" />
     <ClCompile Include="zce\db\pq\command.cpp" />
@@ -259,7 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\aio\reactor.h" />
-    <ClInclude Include="zce\buffer\buf_view.h" />
     <ClInclude Include="zce\buffer\varlen_buf.h" />
     <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\db\execute.h" />

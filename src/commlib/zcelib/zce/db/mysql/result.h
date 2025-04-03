@@ -30,7 +30,6 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
-#include "zce/util/non_copyable.h"
 #include "zce/os_adapt/string.h"
 #include "zce/string/from_string.h"
 
@@ -148,13 +147,6 @@ protected:
 */
 class result
 {
-public:
-
-    ///一个空结构，由于二进制数据的的转换，用于>>操作区分char *和2进制数据，
-    struct BINARY
-    {
-    };
-
 public:
     ///构造函数,析构函数
     result() noexcept = default;
