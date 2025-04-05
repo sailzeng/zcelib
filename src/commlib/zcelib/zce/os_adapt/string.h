@@ -274,9 +274,9 @@ int strncasecmp(const char* string1, const char* string2, size_t maxlen);
 * @param[out] name        名字的buffer
 * @param[in]  length      buffer的长度
 */
-char* object_unique_name(const void* object_ptr,
-                         char* name,
-                         size_t length);
+char* unique_name(const void* object_ptr,
+                  char* name,
+                  size_t length);
 
 /*!
 * @brief      通过前缀式，得到一个唯一的名称,唯一名称包括，前缀+进程ID+内部计数器
@@ -285,9 +285,9 @@ char* object_unique_name(const void* object_ptr,
 * @param[out] name         名字的buffer
 * @param[in]  length       buffer的长度
 */
-char* prefix_unique_name(const char* prefix_name,
-                         char* name,
-                         size_t length);
+char* unique_name(const char* prefix,
+                  char* name,
+                  size_t length);
 
 //==========================================================================================================
 

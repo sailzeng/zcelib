@@ -8,32 +8,44 @@ namespace zce::pq
 {
 result::result(::PGresult* res) noexcept
 {
-    set_pq_result(res);
+    set_result(res);
 }
 
 result::~result() noexcept
 {
-    if (pq_result_ != nullptr)
-    {
-        ::PQclear(pq_result_);
-    }
+    clear();
+}
+
+result::result(result&& res) noexcept
+{
+    pq_result_ = res.pq_result_;
+    num_result_row_ = res.num_result_row_;
+    num_result_field_ = res.num_result_field_;
+
+    res.pq_result_ = nullptr;
+    res.num_result_row_ = 0;
+    res.num_result_field_ = 0;
+}
+result& result::operator=(result&& res) noexcept
+{
+    clear();
+    pq_result_ = res.pq_result_;
+    num_result_row_ = res.num_result_row_;
+    num_result_field_ = res.num_result_field_;
+
+    res.pq_result_ = nullptr;
+    res.num_result_row_ = 0;
+    res.num_result_field_ = 0;
+    return *this;
 }
 
 //放入结果集合
-void result::set_pq_result(::PGresult* res)
+void result::set_result(::PGresult* res)
 {
     ZCE_ASSERT(res);
 
     //如果已经有结果集, 释放原有的结果集,
-    if (nullptr != res)
-    {
-        ::PQclear(pq_result_);
-        pq_result_ = nullptr;
-    }
-
-    //行数目，列数目清0
-    num_result_row_ = 0;
-    num_result_field_ = 0;
+    clear();
 
     pq_result_ = res;
     //如果不是一个空的结果集合
@@ -44,6 +56,18 @@ void result::set_pq_result(::PGresult* res)
         num_result_field_ = (size_t)::PQnfields(res);
     }
     return;
+}
+
+void result::clear()
+{
+    if (nullptr != pq_result_)
+    {
+        ::PQclear(pq_result_);
+        pq_result_ = nullptr;
+    }
+    //行数目，列数目清0
+    num_result_row_ = 0;
+    num_result_field_ = 0;
 }
 
 //! @brief 根据colum返回表定义列域名,注意计算得到的列的名字也可能是空

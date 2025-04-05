@@ -14,49 +14,49 @@ namespace soar
 //将所有的uint16_t,uint32_t转换为网络序
 void zerg_head::hton()
 {
-    length_ = htonl(length_);
-    u32_option_ = htonl(u32_option_);
-    command_ = htonl(command_);
-    user_id_ = htonl(user_id_);
+    length_ = ::htonl(length_);
+    u32_option_ = ::htonl(u32_option_);
+    command_ = ::htonl(command_);
+    user_id_ = ::htonl(user_id_);
 
-    fsm_id_ = htonl(fsm_id_);
-    backfill_fsm_id_ = htonl(backfill_fsm_id_);
+    fsm_id_ = ::htonl(fsm_id_);
+    backfill_fsm_id_ = ::htonl(backfill_fsm_id_);
 
-    serial_number_ = htonl(serial_number_);
-    business_id_ = htons(business_id_);
+    serial_number_ = ::htonl(serial_number_);
+    business_id_ = ::htons(business_id_);
     //
-    recv_service_.services_type_ = htons(recv_service_.services_type_);
-    recv_service_.services_id_ = htonl(recv_service_.services_id_);
+    recv_service_.services_type_ = ::htons(recv_service_.services_type_);
+    recv_service_.services_id_ = ::htonl(recv_service_.services_id_);
 
-    send_service_.services_type_ = htons(send_service_.services_type_);
-    send_service_.services_id_ = htonl(send_service_.services_id_);
+    send_service_.services_type_ = ::htons(send_service_.services_type_);
+    send_service_.services_id_ = ::htonl(send_service_.services_id_);
     //
-    proxy_service_.services_type_ = htons(proxy_service_.services_type_);
-    proxy_service_.services_id_ = htonl(proxy_service_.services_id_);
+    proxy_service_.services_type_ = ::htons(proxy_service_.services_type_);
+    proxy_service_.services_id_ = ::htonl(proxy_service_.services_id_);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
 void zerg_head::ntoh()
 {
-    length_ = ntohl(length_);
-    u32_option_ = ntohl(u32_option_);
-    command_ = ntohl(command_);
-    user_id_ = ntohl(user_id_);
+    length_ = ::ntohl(length_);
+    u32_option_ = ::ntohl(u32_option_);
+    command_ = ::ntohl(command_);
+    user_id_ = ::ntohl(user_id_);
 
-    fsm_id_ = ntohl(fsm_id_);
-    backfill_fsm_id_ = ntohl(backfill_fsm_id_);
+    fsm_id_ = ::ntohl(fsm_id_);
+    backfill_fsm_id_ = ::ntohl(backfill_fsm_id_);
 
-    serial_number_ = ntohl(serial_number_);
-    business_id_ = ntohs(business_id_);
+    serial_number_ = ::ntohl(serial_number_);
+    business_id_ = ::ntohs(business_id_);
     //
-    recv_service_.services_type_ = ntohs(recv_service_.services_type_);
-    recv_service_.services_id_ = ntohl(recv_service_.services_id_);
+    recv_service_.services_type_ = ::ntohs(recv_service_.services_type_);
+    recv_service_.services_id_ = ::ntohl(recv_service_.services_id_);
 
-    send_service_.services_type_ = ntohs(send_service_.services_type_);
-    send_service_.services_id_ = ntohl(send_service_.services_id_);
+    send_service_.services_type_ = ::ntohs(send_service_.services_type_);
+    send_service_.services_id_ = ::ntohl(send_service_.services_id_);
     //
-    proxy_service_.services_type_ = ntohs(proxy_service_.services_type_);
-    proxy_service_.services_id_ = ntohl(proxy_service_.services_id_);
+    proxy_service_.services_type_ = ::ntohs(proxy_service_.services_type_);
+    proxy_service_.services_id_ = ::ntohl(proxy_service_.services_id_);
 }
 
 //---------------------------------------------------------------------------------------------------------

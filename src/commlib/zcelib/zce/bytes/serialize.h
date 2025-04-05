@@ -24,6 +24,13 @@ public:
     void write_help(encode* ssave, const std::string& val);
 };
 
+template<>
+class en_class_help<std::string_view>
+{
+public:
+    void write_help(encode* ssave, const std::string_view& val);
+};
+
 template<typename vector_type >
 class en_class_help<std::vector<vector_type> >
 {
@@ -95,28 +102,28 @@ public:
     template<typename enum_type >
     void save_enum(const enum_type& val)
     {
-        write_arithmetic(static_cast<const int&>(val));
+        write_i(static_cast<const int&>(val));
     }
 
     ///保存数值类型
     template<typename val_type >
     typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const val_type& val)
     {
-        return write_arithmetic(val);
+        return write_i(val);
     }
-    void write_arithmetic(const bool& val);
-    void write_arithmetic(const char& val);
-    void write_arithmetic(const unsigned char& val);
-    void write_arithmetic(const short& val);
-    void write_arithmetic(const unsigned short& val);
-    void write_arithmetic(const int& val);
-    void write_arithmetic(const unsigned int& val);
-    void write_arithmetic(const long& val);
-    void write_arithmetic(const unsigned long& val);
-    void write_arithmetic(const long long& val);
-    void write_arithmetic(const unsigned long long& val);
-    void write_arithmetic(const float& val);
-    void write_arithmetic(const double& val);
+    void write_i(const bool& val);
+    void write_i(const char& val);
+    void write_i(const unsigned char& val);
+    void write_i(const short& val);
+    void write_i(const unsigned short& val);
+    void write_i(const int& val);
+    void write_i(const unsigned int& val);
+    void write_i(const long& val);
+    void write_i(const unsigned long& val);
+    void write_i(const long long& val);
+    void write_i(const unsigned long long& val);
+    void write_i(const float& val);
+    void write_i(const double& val);
 
     ///保存数组
     template<typename val_type >
@@ -135,7 +142,7 @@ public:
         //其实用下面注释的这个代码会更酷一点，但不知道为啥有告警，放弃，
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
         assert(count < 0xFFFFFFFFll);
-        this->write_arithmetic(static_cast<unsigned int>(count));
+        this->write_i(static_cast<unsigned int>(count));
         for (size_t i = 0; i < count && is_good_; ++i)
         {
             this->write(*(ary + i));
@@ -147,7 +154,7 @@ public:
     void write_array(const char* ary, size_t count)
     {
         assert(count < 0xFFFFFFFFll);
-        this->write_arithmetic(static_cast<unsigned int>(count));
+        this->write_i(static_cast<unsigned int>(count));
         if (is_good_)
         {
             if (write_pos_ + count > end_pos_)
@@ -164,7 +171,7 @@ public:
     void write_array(const unsigned char* ary, size_t count)
     {
         assert(count < 0xFFFFFFFFll);
-        this->write_arithmetic(static_cast<unsigned int>(count));
+        this->write_i(static_cast<unsigned int>(count));
         if (is_good_)
         {
             if (write_pos_ + count > end_pos_)
@@ -234,7 +241,7 @@ void en_class_help<std::vector<vector_type> >::write_help(encode* ssave,
     //长度用unsigned int保存
     size_t v_size = val.size();
     assert(v_size < 0xFFFFFFFFll);
-    ssave->write_arithmetic(static_cast<unsigned int>(v_size));
+    ssave->write_i(static_cast<unsigned int>(v_size));
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i)
     {
         ssave->write<vector_type>(val[i]);
@@ -248,7 +255,7 @@ void en_class_help<std::list<list_type> >::write_help(encode* ssave,
 {
     size_t v_size = val.size();
     assert(v_size < 0xFFFFFFFFll);
-    ssave->write_arithmetic(static_cast<unsigned int>(v_size));
+    ssave->write_i(static_cast<unsigned int>(v_size));
     typename std::list<list_type>::const_iterator iter = val.begin();
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
     {
@@ -263,7 +270,7 @@ void en_class_help<std::map<key_type, data_type> >::write_help(encode* ssave,
 {
     size_t v_size = val.size();
     assert(v_size < 0xFFFFFFFFll);
-    ssave->write_arithmetic(static_cast<unsigned int>(v_size));
+    ssave->write_i(static_cast<unsigned int>(v_size));
     typename std::map<key_type, data_type>::const_iterator iter = val.begin();
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
     {
@@ -371,28 +378,28 @@ public:
     template<typename enum_type >
     void load_enum(const enum_type& val)
     {
-        read_arithmetic(static_cast<int&>(val));
+        read_i(static_cast<int&>(val));
     }
 
     ///保存数值类型
     template<typename val_type >
     typename std::enable_if<std::is_arithmetic<val_type>::value>::type read(val_type& val)
     {
-        return read_arithmetic(val);
+        return read_i(val);
     }
-    void read_arithmetic(bool& val);
-    void read_arithmetic(char& val);
-    void read_arithmetic(unsigned char& val);
-    void read_arithmetic(short& val);
-    void read_arithmetic(unsigned short& val);
-    void read_arithmetic(int& val);
-    void read_arithmetic(unsigned int& val);
-    void read_arithmetic(long& val);
-    void read_arithmetic(unsigned long& val);
-    void read_arithmetic(long long& val);
-    void read_arithmetic(unsigned long long& val);
-    void read_arithmetic(float& val);
-    void read_arithmetic(double& val);
+    void read_i(bool& val);
+    void read_i(char& val);
+    void read_i(unsigned char& val);
+    void read_i(short& val);
+    void read_i(unsigned short& val);
+    void read_i(int& val);
+    void read_i(unsigned int& val);
+    void read_i(long& val);
+    void read_i(unsigned long& val);
+    void read_i(long long& val);
+    void read_i(unsigned long long& val);
+    void read_i(float& val);
+    void read_i(double& val);
 
     ///写入数组
     template<typename val_type >
@@ -419,7 +426,7 @@ public:
     {
         //读取数组长度
         uint32_t ui_load_count = 0;
-        this->read_arithmetic(ui_load_count);
+        this->read_i(ui_load_count);
         load_count = ui_load_count;
         //
         if (!is_good_ || load_count > ary_count || read_pos_ + load_count * sizeof(ary[0]) > end_pos_)
@@ -437,7 +444,7 @@ public:
     void read_array(char* ary, size_t ary_count, size_t& load_count)
     {
         uint32_t ui_load_count;
-        this->read_arithmetic(ui_load_count);
+        this->read_i(ui_load_count);
         load_count = ui_load_count;
 
         if (!is_good_ || load_count > ary_count || read_pos_ + load_count > end_pos_)
@@ -454,7 +461,7 @@ public:
     void read_array(unsigned char* ary, size_t ary_count, size_t& load_count)
     {
         uint32_t ui_load_count;
-        this->read_arithmetic(ui_load_count);
+        this->read_i(ui_load_count);
         load_count = ui_load_count;
 
         if (!is_good_ || load_count > ary_count || read_pos_ + load_count > end_pos_)
@@ -521,7 +528,7 @@ void de_class_help<std::vector<vector_type> >::read_help(decode* sload,
                                                          std::vector<vector_type>& val)
 {
     unsigned int v_size = 0;
-    sload->read_arithmetic(v_size);
+    sload->read_i(v_size);
     bool is_ok = sload->is_good();
     for (size_t i = 0; i < v_size && is_ok; ++i)
     {
@@ -541,7 +548,7 @@ void de_class_help<std::list<list_type> >::read_help(decode* sload,
                                                      std::list<list_type>& val)
 {
     size_t v_size = val.size();
-    sload->read_arithmetic(v_size);
+    sload->read_i(v_size);
     bool is_ok = sload->is_good();
     for (size_t i = 0; i < v_size && is_ok; ++i)
     {
@@ -561,7 +568,7 @@ void de_class_help<std::map<key_type, data_type> >::read_help(decode* sload,
                                                               std::map<key_type, data_type>& val)
 {
     size_t v_size = val.size();
-    sload->read_arithmetic(v_size);
+    sload->read_i(v_size);
     bool is_ok = sload->is_good();
     for (size_t i = 0; i < v_size && is_ok; ++i)
     {

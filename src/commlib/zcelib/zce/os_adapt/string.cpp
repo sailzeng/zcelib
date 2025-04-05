@@ -10,24 +10,23 @@
 
 //==========================================================================================================
 //取得一个唯一的名称,用于一些需要取唯一名字的地方，object一般选取一些指针考虑
-char* zce::object_unique_name(const void* object_ptr,
-                              char* name,
-                              size_t length)
+char* zce::unique_name(const void* object_ptr,
+                       char* name,
+                       size_t length)
 {
     snprintf(name,
              length,
-             "%u.%p",
+             "%u.%p.%x",
              static_cast <int> (zce::getpid()),
-             object_ptr
-    );
-
+             object_ptr,
+             rand());
     return name;
 }
 
 //通过前缀式，得到一个唯一的名称,
-char* zce::prefix_unique_name(const char* prefix_name,
-                              char* name,
-                              size_t length)
+char* zce::unique_name(const char* prefix,
+                       char* name,
+                       size_t length)
 {
     thread_mutex id_lock;
     lock_guard<thread_mutex> id_guard(id_lock);
@@ -37,11 +36,11 @@ char* zce::prefix_unique_name(const char* prefix_name,
 
     snprintf(name,
              length,
-             "%s.%u.%x",
-             prefix_name,
+             "%s.%u.%x.%x",
+             prefix,
              static_cast <int> (zce::getpid()),
-             uniqueid_builder
-    );
+             uniqueid_builder,
+             rand());
 
     return name;
 }
@@ -244,12 +243,12 @@ void zce::memory_debug(const unsigned char* mem_ptr,
     //一行输出的字符数量
     const size_t LINE_OUT_NUM = 32;
     const size_t SPEARATOR_LEN = 2;
-    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = { 0 };
+    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = {0};
     ascii_str[LINE_OUT_NUM + SPEARATOR_LEN] = '\0';
     const size_t HEX_STR_LEN = 4;
-    char hex_str[HEX_STR_LEN] = { 0 };
+    char hex_str[HEX_STR_LEN] = {0};
     const size_t ADDR_STR_LEN = 32;
-    char addr_str[ADDR_STR_LEN] = { 0 };
+    char addr_str[ADDR_STR_LEN] = {0};
     //头部用4个空格作为分割富豪
 
     ascii_str[0] = ' ';

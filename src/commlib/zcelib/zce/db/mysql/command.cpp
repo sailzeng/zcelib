@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/buffer/char_buffer.h"
 #include "zce/db/mysql/connect.h"
 #include "zce/db/mysql/command.h"
 
@@ -9,17 +10,17 @@ namespace zce::mysql
 /// class bind_data
 ///****************************************************************************************
 //构造函数
-bind_data::bind_data(size_t num_bind)
+bind::bind(size_t num_bind)
 {
     initialize(num_bind);
 }
 //析构函数
-bind_data::~bind_data()
+bind::~bind()
 {
     clear();
 }
 
-bind_data::bind_data(bind_data&& bind) noexcept :
+bind::bind(bind&& bind) noexcept :
     num_bind_(bind.num_bind_),
     stmt_bind_(bind.stmt_bind_)
 {
@@ -27,7 +28,7 @@ bind_data::bind_data(bind_data&& bind) noexcept :
     bind.stmt_bind_ = nullptr;
 }
 
-bind_data& bind_data::operator=(bind_data&& bind) noexcept
+bind& bind::operator=(bind&& bind) noexcept
 {
     clear();
     num_bind_ = bind.num_bind_;
@@ -37,14 +38,14 @@ bind_data& bind_data::operator=(bind_data&& bind) noexcept
     return *this;
 }
 
-bind_data::bind_data(const bind_data& bind) :
+bind::bind(const bind& bind) :
     num_bind_(bind.num_bind_)
 {
     stmt_bind_ = new MYSQL_BIND[num_bind_];
     memcpy(stmt_bind_, bind.stmt_bind_, sizeof(MYSQL_BIND) * num_bind_);
 }
 
-bind_data& bind_data::operator=(const bind_data& bind)
+bind& bind::operator=(const bind& bind)
 {
     clear();
     num_bind_ = bind.num_bind_;
@@ -53,7 +54,7 @@ bind_data& bind_data::operator=(const bind_data& bind)
     return *this;
 }
 
-void bind_data::clear()
+void bind::clear()
 {
     if (stmt_bind_)
     {
@@ -63,7 +64,7 @@ void bind_data::clear()
     }
 }
 
-void bind_data::initialize(size_t num_bind)
+void bind::initialize(size_t num_bind)
 {
     clear();
     num_bind_ = num_bind;
@@ -76,11 +77,11 @@ void bind_data::initialize(size_t num_bind)
 }
 
 //绑定一个参数
-int bind_data::bind_one_param(size_t id,
-                              ::enum_field_types paramtype,
-                              my_bool* is_null,
-                              void* paramdata,
-                              unsigned long szparam)
+int bind::tie_one_param(size_t id,
+                        ::enum_field_types paramtype,
+                        my_bool* is_null,
+                        void* paramdata,
+                        unsigned long szparam)
 {
     ZCE_ASSERT(id < num_bind_);
     if (id >= num_bind_)
@@ -97,10 +98,10 @@ int bind_data::bind_one_param(size_t id,
     return 0;
 }
 
-int bind_data::bind_one_result(size_t id,
-                               ::enum_field_types paramtype,
-                               void* resdata,
-                               unsigned long* szres)
+int bind::tie_one_result(size_t id,
+                         ::enum_field_types restype,
+                         void* resdata,
+                         unsigned long* szres)
 {
     ZCE_ASSERT(id < num_bind_);
     if (id >= num_bind_)
@@ -108,7 +109,7 @@ int bind_data::bind_one_result(size_t id,
         return -1;
     }
 
-    stmt_bind_[id].buffer_type = paramtype;
+    stmt_bind_[id].buffer_type = restype;
     stmt_bind_[id].buffer = resdata;
 
     stmt_bind_[id].buffer_length = *szres;
@@ -117,8 +118,7 @@ int bind_data::bind_one_result(size_t id,
     return 0;
 }
 
-template<>
-void bind_data::bind(size_t id, bool& val)
+void bind::tie(size_t id, bool& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[id].buffer = (void*)(&val);
@@ -128,8 +128,7 @@ void bind_data::bind(size_t id, bool& val)
 }
 
 //绑定一个char
-template<>
-void bind_data::bind(size_t id, char& val)
+void bind::tie(size_t id, char& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[id].buffer = (void*)(&val);
@@ -138,8 +137,7 @@ void bind_data::bind(size_t id, char& val)
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, short& val)
+void bind::tie(size_t id, short& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[id].buffer = (void*)(&val);
@@ -147,18 +145,16 @@ void bind_data::bind(size_t id, short& val)
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, int& val)
+void bind::tie(size_t id, int& val)
 {
     //MYSQL_TYPE_LONG 长度为4
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[id].buffer = (void*)(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(int);
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, long& val)
+void bind::tie(size_t id, long& val)
 {
 #if defined (ZCE_OS_WINDOWS)
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
@@ -166,56 +162,51 @@ void bind_data::bind(size_t id, long& val)
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
 #endif
     stmt_bind_[id].buffer = (void*)(&val);
+    stmt_bind_[id].buffer_length = sizeof(long);
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, long long& val)
+void bind::tie(size_t id, long long& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[id].buffer = (void*)(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(long long);
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, unsigned char& val)
+void bind::tie(size_t id, unsigned char& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[id].buffer = (void*)(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(unsigned char);
     //无符号,绑定结果时应该不用
     stmt_bind_[id].is_unsigned = 1;
-
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, unsigned short& val)
+void bind::tie(size_t id, unsigned short& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[id].buffer = (void*)(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(unsigned short);
     //无符号,绑定结果时应该不用
     stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, unsigned int& val)
+void bind::tie(size_t id, unsigned int& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[id].buffer = (void*)(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(unsigned int);
     //无符号,绑定结果时应该不用
     stmt_bind_[id].is_unsigned = 1;
 
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, unsigned long& val)
+void bind::tie(size_t id, unsigned long& val)
 {
 #if defined (ZCE_OS_WINDOWS)
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONG;
@@ -230,8 +221,7 @@ void bind_data::bind(size_t id, unsigned long& val)
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, unsigned long long& val)
+void bind::tie(size_t id, unsigned long long& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[id].buffer = reinterpret_cast<void*>(&val);
@@ -242,26 +232,24 @@ void bind_data::bind(size_t id, unsigned long long& val)
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, float& val)
+void bind::tie(size_t id, float& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_FLOAT;
     stmt_bind_[id].buffer = reinterpret_cast<void*>(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(float);
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, double& val)
+void bind::tie(size_t id, double& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_DOUBLE;
     stmt_bind_[id].buffer = reinterpret_cast<void*>(&val);
-
+    stmt_bind_[id].buffer_length = sizeof(double);
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, zce::mysql::blob& blob_data)
+//! 绑定文本，二进制用
+void bind::tie(size_t id, zce::mysql::bind::blob& blob_data)
 {
     stmt_bind_[id].buffer_type = blob_data.bind_type_;
     stmt_bind_[id].buffer = blob_data.blob_ptr_;
@@ -273,24 +261,41 @@ void bind_data::bind(size_t id, zce::mysql::blob& blob_data)
     return;
 }
 
-template<>
-void bind_data::bind(size_t id, zce::mysql::time& val)
+void bind::tie(size_t id, zce::mysql::bind::time& val)
 {
     stmt_bind_[id].buffer_type = val.stmt_timetype_;
     stmt_bind_[id].buffer = reinterpret_cast<void*>(val.stmt_ptime_);
-
     stmt_bind_[id].buffer_length = sizeof(MYSQL_TIME);
     stmt_bind_[id].length = nullptr;
-
     return;
 }
 
 //绑定一个空参数
-template<>
-void bind_data::bind(size_t id, zce::mysql::null& val)
+void bind::tie(size_t id, zce::mysql::bind::null& val)
 {
     stmt_bind_[id].buffer_type = MYSQL_TYPE_NULL;
     stmt_bind_[id].is_null = val.is_null_;
+    return;
+}
+
+//! 绑定string 作为参数，只能作为参数绑定，不能作为结果绑定
+void bind::tie(size_t id, const std::string& val)
+{
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_VARCHAR;
+    stmt_bind_[id].buffer = (void*)(val.c_str());
+    stmt_bind_[id].buffer_length = (long)val.length();
+    //!不能取返回值
+    stmt_bind_[id].length = nullptr;
+    return;
+}
+//! 绑定string_view 作为参数，只能作为参数绑定，不能作为结果绑定
+void bind::tie(size_t id, const std::string_view& val)
+{
+    stmt_bind_[id].buffer_type = MYSQL_TYPE_VARCHAR;
+    stmt_bind_[id].buffer = (void*)(val.data());
+    stmt_bind_[id].buffer_length = (long)val.length();
+    //!不能取返回值
+    stmt_bind_[id].length = nullptr;
     return;
 }
 
@@ -305,12 +310,7 @@ command::command(zce::mysql::connect& conn)
 }
 command::~command() noexcept
 {
-    if (nullptr != stmt_)
-    {
-        [[maybe_unused]]
-        int ret = ::mysql_stmt_free_result(stmt_);
-        ret = ::mysql_stmt_close(stmt_);
-    }
+    stmt_clear();
 }
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
@@ -499,9 +499,9 @@ int command::fetch_next_result(zce::mysql::result& res,
     return 0;
 }
 
-int command::stmt_query(std::string_view sqlcmd,
-                        zce::mysql::bind_data* bind_param,
-                        zce::mysql::bind_data* bind_result)
+int command::stmt_prepare(std::string_view sqlcmd,
+                          const zce::mysql::bind* bind_param,
+                          zce::mysql::bind* bind_result)
 {
     //如果没有设置连接或者没有设置命令
     if (sqlcmd.empty())
@@ -537,20 +537,21 @@ int command::stmt_query(std::string_view sqlcmd,
         }
         is_bind_result_ = true;
     }
+
+    return 0;
+}
+
+//SQL 执行命令，这个事一个基础函数，内部调用
+int command::stmt_execute(size_t* num_affect,
+                          size_t* last_id)
+{
+    int ret = 0;
     //执行SQL命令
     ret = ::mysql_stmt_execute(stmt_);
     if (ret != 0)
     {
         return ret;
     }
-    return 0;
-}
-
-//SQL 执行命令，这个事一个基础函数，内部调用
-int command::stmt_get_result(size_t* num_affect,
-                             size_t* last_id)
-{
-    int ret = 0;
     //如果要返回结果,进行转储
     if (is_bind_result_)
     {
@@ -590,7 +591,7 @@ int command::stmt_fetch_next_row() const
 //用bind_data取出一列的数据
 int command::stmt_fetch_column(size_t column,
                                size_t offset,
-                               zce::mysql::bind_data* bind_colum) const
+                               zce::mysql::bind* bind_colum) const
 {
     int tmpret = ::mysql_stmt_fetch_column(stmt_,
                                            bind_colum->get_stmt_bind(),
@@ -616,5 +617,17 @@ int command::stmt_seek_result_row(size_t nrow) const
     }
 
     return 0;
+}
+
+void command::stmt_clear()
+{
+    if (nullptr != stmt_)
+    {
+        [[maybe_unused]]
+        int ret = ::mysql_stmt_free_result(stmt_);
+        ret = ::mysql_stmt_close(stmt_);
+    }
+    bind_param_.clear();
+    bind_result_.clear();
 }
 }

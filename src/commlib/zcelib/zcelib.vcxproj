@@ -262,6 +262,7 @@
     <ClInclude Include="zce\aio\reactor.h" />
     <ClInclude Include="zce\buffer\varlen_buf.h" />
     <ClInclude Include="zce\db\base.h" />
+    <ClInclude Include="zce\db\result_set.h" />
     <ClInclude Include="zce\db\execute.h" />
     <ClInclude Include="zce\db\mysql\command.h" />
     <ClInclude Include="zce\db\pq\command.h" />

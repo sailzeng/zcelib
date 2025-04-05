@@ -47,7 +47,7 @@ public:
     {
         return capacity_;
     }
-    size_t use() const
+    size_t size() const
     {
         return use_;
     }
@@ -61,11 +61,12 @@ public:
 
     void push(CharT* buf, size_t len)
     {
-        ZCE_ASSERT(capacity_ - use >= len);
+        ZCE_ASSERT(capacity_ - use_ >= len);
         memcpy(buf_ + sizeof(CharT) * use_, buf, sizeof(CharT) * len);
         use_ += len;
     }
-protected:
+
+public:
 
     //!
     CharT* buf_ = nullptr;

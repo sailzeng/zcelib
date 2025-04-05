@@ -114,27 +114,27 @@ socklen_t sockaddr_any::socklen()
     }
 }
 
-sockaddr_any::operator sockaddr *()
+sockaddr_any::operator sockaddr* ()
 {
-    return (sockaddr *)(&in_);
+    return (sockaddr*)(&in_);
 }
-sockaddr_any::operator sockaddr_in *()
+sockaddr_any::operator sockaddr_in* ()
 {
     return (&in_);
 }
-sockaddr_any::operator sockaddr_in6 *()
+sockaddr_any::operator sockaddr_in6* ()
 {
     return (&in6_);
 }
-sockaddr_any::operator const sockaddr *() const
+sockaddr_any::operator const sockaddr* () const
 {
-    return (const sockaddr *)(&in_);
+    return (const sockaddr*)(&in_);
 }
-sockaddr_any::operator const sockaddr_in *()const
+sockaddr_any::operator const sockaddr_in* ()const
 {
     return (&in_);
 }
-sockaddr_any::operator const sockaddr_in6 *() const
+sockaddr_any::operator const sockaddr_in6* () const
 {
     return (&in6_);
 }
@@ -160,7 +160,7 @@ void sockaddr_any::set(const ::sockaddr* sa, socklen_t sa_len)
 }
 
 //!
-void sockaddr_any::get(::sockaddr* sa, socklen_t *sa_len) const
+void sockaddr_any::get(::sockaddr* sa, socklen_t* sa_len) const
 {
     if (in_.sin_family == AF_INET)
     {
@@ -351,7 +351,7 @@ int open_socket(ZCE_SOCKET* handle,
         type |= SOCK_NONBLOCK;
     }
 #endif
-    *handle = socket(family, type, protocol);
+    * handle = socket(family, type, protocol);
     if (ZCE_INVALID_SOCKET == *handle)
     {
         int last_err = last_error();
@@ -1087,7 +1087,7 @@ int connect_timeout(ZCE_SOCKET handle,
 }
 
 int accept_timeout(ZCE_SOCKET handle,
-                   ZCE_SOCKET *apt_hdl,
+                   ZCE_SOCKET* apt_hdl,
                    sockaddr* from,
                    socklen_t* from_len,
                    zce::time_value& timeout_tv)
@@ -1593,7 +1593,7 @@ int inet_pton(int family,
 
         //为什么不直接用in_val->S_un.S_un_b.s_b1？你猜
         const int NUM_FIELDS_AF_INET = 4;
-        uint32_t u[NUM_FIELDS_AF_INET] = { 0 };
+        uint32_t u[NUM_FIELDS_AF_INET] = {0};
         get_fields_num = sscanf(strptr,
                                 "%u%.%u%.%u%.%u",
                                 &(u[0]),
@@ -1625,7 +1625,7 @@ int inet_pton(int family,
         //输入的字符串不合乎标准
         const int NUM_FIELDS_AF_INET6 = 8;
 
-        const char INET6_STR_UP_CHAR[] = { "1234567890ABCDEF" };
+        const char INET6_STR_UP_CHAR[] = {"1234567890ABCDEF"};
 
         //先请0
         memset(addrptr, 0, sizeof(in_addr6));
@@ -1642,8 +1642,8 @@ int inet_pton(int family,
         //
         size_t word_start_pos = 0;
 
-        uint16_t for_word[NUM_FIELDS_AF_INET6] = { 0 };
-        uint16_t back_word[NUM_FIELDS_AF_INET6] = { 0 };
+        uint16_t for_word[NUM_FIELDS_AF_INET6] = {0};
+        uint16_t back_word[NUM_FIELDS_AF_INET6] = {0};
 
         size_t forword_num = 0, backword_num = 0;
 
@@ -1732,7 +1732,7 @@ int inet_pton(int family,
         if (havedot_ipv4_mapped > 0)
         {
             const int NUM_FIELDS_AF_INET = 4;
-            uint32_t u[NUM_FIELDS_AF_INET] = { 0 };
+            uint32_t u[NUM_FIELDS_AF_INET] = {0};
             get_fields_num = sscanf(strptr + word_start_pos,
                                     "%u%.%u%.%u%.%u",
                                     &(u[0]),
@@ -2328,8 +2328,8 @@ int set_sockaddr_in(sockaddr_in* sock_addr_ipv4,
 {
     ::memset(sock_addr_ipv4, 0, sizeof(sockaddr_in));
     sock_addr_ipv4->sin_family = AF_INET;
-    sock_addr_ipv4->sin_port = htons(ipv4_port);
-    sock_addr_ipv4->sin_addr.s_addr = htonl(ipv4_addr_val);
+    sock_addr_ipv4->sin_port = ::htons(ipv4_port);
+    sock_addr_ipv4->sin_addr.s_addr = ::htonl(ipv4_addr_val);
 
     //在某些平台的sockaddr_in有一个长度标识，比如BSD体系？
 #if 0
@@ -2346,7 +2346,7 @@ int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
 {
     ::memset(sock_addr_ipv6, 0, sizeof(sockaddr_in6));
     sock_addr_ipv6->sin6_family = AF_INET6;
-    sock_addr_ipv6->sin6_port = htons(ipv6_port);
+    sock_addr_ipv6->sin6_port = ::htons(ipv6_port);
 
     int ret = zce::inet_pton(AF_INET6,
                              ipv6_addr_str,
@@ -2383,7 +2383,7 @@ int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
         {
             ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
         }
-        sock_addr_ipv6->sin6_port = htons(read_port);
+        sock_addr_ipv6->sin6_port = ::htons(read_port);
     }
     return 0;
 }
@@ -2398,7 +2398,7 @@ int set_sockaddr_in6(sockaddr_in6* sock_addr_ipv6,
     const size_t IPV6_INET6_LEN = 16;
 
     sock_addr_ipv6->sin6_family = AF_INET6;
-    sock_addr_ipv6->sin6_port = htons(ipv6_port);
+    sock_addr_ipv6->sin6_port = ::htons(ipv6_port);
     ::memcpy(sock_addr_ipv6->sin6_addr.s6_addr, s6_addr_val, IPV6_INET6_LEN);
     return 0;
 }

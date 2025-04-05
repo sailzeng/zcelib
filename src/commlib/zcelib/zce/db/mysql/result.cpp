@@ -142,6 +142,32 @@ result::~result() noexcept
     }
 }
 
+result::result(result&& res) noexcept
+{
+    //移动资源
+    move_result(std::move(res));
+}
+
+result& result::operator=(result&& res) noexcept
+{
+    //清理
+    free_result();
+    move_result(std::move(res));
+    return *this;
+}
+
+void result::move_result(result&& res) noexcept
+{
+    mysql_result_ = res.mysql_result_;
+    num_result_row_ = res.num_result_row_;
+    num_result_field_ = res.num_result_field_;
+    mysql_fields_ = res.mysql_fields_;
+    res.mysql_result_ = nullptr;
+    res.num_result_row_ = 0;
+    res.num_result_field_ = 0;
+    res.mysql_fields_ = nullptr;
+}
+
 //放入结果集合
 void result::save_result(MYSQL_RES* res)
 {

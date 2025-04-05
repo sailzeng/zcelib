@@ -113,6 +113,11 @@ public:
     {
         return zce::from_str(cursor_row_[colum], val);
     }
+    template <typename T>
+    int field(size_t colum) const
+    {
+        return zce::from_str<T>(cursor_row_[colum]);
+    }
 
     /*!
      * @brief 根据列序号ID得到字段FIELD，[]操作符号函数不检查检查列ID,自己保证参数
@@ -124,6 +129,20 @@ public:
     //! 清理
     void clear();
 
+    //将光标的数据全部转化一个tuple
+    template <typename... Types>
+    std::tuple<Types...> make_tuple(Types&&... args)
+    {
+        return _make_tuple_i(std::index_sequence_for<Types...>{}, args...);
+    }
+
+protected:
+
+    template<std::size_t... Is, typename... Types>
+    std::tuple<Types...> _make_tuple_i(std::index_sequence<Is...>, Types&&... args)
+    {
+        return std::make_tuple(field<Types>(cursor_row_[Is])...);
+    }
 protected:
 
     //! 游标对应的行号
@@ -153,12 +172,18 @@ public:
     result(::MYSQL_RES* res) noexcept;
     ~result() noexcept;
 
-    //避免拷贝
+    //拷贝构造函数，不使用
     result(const result&) = delete;
     result& operator=(const result&) = delete;
-    result(result&&) noexcept = delete;
-    result& operator=(result&&) = delete;
+    //移动构造函数
+    result(result&&) noexcept;
+    result& operator=(result&&) noexcept;
 
+protected:
+
+    void move_result(result&& res) noexcept;
+
+public:
     ///结果集合是否为空
     inline bool is_null()
     {
@@ -255,6 +280,21 @@ public:
             }
         }
         return cursor_.field(colum, val);
+    }
+
+    //将row行数据全部转化一个tuple
+    template <typename... Types>
+    std::tuple<Types...> make_tuple(size_t row, Types&&... args)
+    {
+        if (row != cursor_.cursor_rowid_)
+        {
+            int ret = cursor_seek(row);
+            if (ret != 0)
+            {
+                return ret;
+            }
+        }
+        return cursor_.make_tuple(args...);
     }
 
 private:

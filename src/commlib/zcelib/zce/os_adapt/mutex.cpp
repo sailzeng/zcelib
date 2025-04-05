@@ -74,7 +74,7 @@ int zce::pthread_mutexattr_setpshared(pthread_mutexattr_t* attr,
     if ('\0' == attr->mutex_name_[0] && PTHREAD_PROCESS_SHARED == pshared)
     {
         const char* MUTEX_PREFIX = "MUTEX";
-        zce::prefix_unique_name(MUTEX_PREFIX, attr->mutex_name_, PATH_MAX);
+        zce::unique_name(MUTEX_PREFIX, attr->mutex_name_, PATH_MAX);
     }
 
     return 0;

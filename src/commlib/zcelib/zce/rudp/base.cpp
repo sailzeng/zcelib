@@ -13,27 +13,27 @@ namespace zce::rudp
 
 void RUDP_HEAD::hton()
 {
-    u32_1_copy_ = htonl(u32_1_copy_);
-    session_id_ = htonl(session_id_);
-    sequence_num_ = htonl(sequence_num_);
-    ack_id_ = htonl(ack_id_);
-    windows_size_ = htonl(windows_size_);
-    una_[0] = htonl(una_[0]);
-    una_[1] = htonl(una_[1]);
-    una_[2] = htonl(una_[2]);
+    u32_1_copy_ = ::htonl(u32_1_copy_);
+    session_id_ = ::htonl(session_id_);
+    sequence_num_ = ::htonl(sequence_num_);
+    ack_id_ = ::htonl(ack_id_);
+    windows_size_ = ::htonl(windows_size_);
+    una_[0] = ::htonl(una_[0]);
+    una_[1] = ::htonl(una_[1]);
+    una_[2] = ::htonl(una_[2]);
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
 void RUDP_HEAD::ntoh()
 {
-    u32_1_copy_ = ntohl(u32_1_copy_);
-    session_id_ = ntohl(session_id_);
-    sequence_num_ = ntohl(sequence_num_);
-    ack_id_ = ntohl(ack_id_);
-    windows_size_ = ntohl(windows_size_);
-    una_[0] = ntohl(una_[0]);
-    una_[1] = ntohl(una_[1]);
-    una_[2] = ntohl(una_[2]);
+    u32_1_copy_ = ::ntohl(u32_1_copy_);
+    session_id_ = ::ntohl(session_id_);
+    sequence_num_ = ::ntohl(sequence_num_);
+    ack_id_ = ::ntohl(ack_id_);
+    windows_size_ = ::ntohl(windows_size_);
+    una_[0] = ::ntohl(una_[0]);
+    una_[1] = ::ntohl(una_[1]);
+    una_[2] = ::ntohl(una_[2]);
 }
 
 void RUDP_HEAD::clear()
@@ -57,16 +57,16 @@ int RUDP_FRAME::fill_data(const size_t szdata, const char* vardata)
     return 0;
 }
 
-RUDP_FRAME *RUDP_FRAME::new_frame(size_t frame_len)
+RUDP_FRAME* RUDP_FRAME::new_frame(size_t frame_len)
 {
     assert(frame_len > sizeof(RUDP_HEAD));
-    return (RUDP_FRAME *)new char[frame_len];
+    return (RUDP_FRAME*)new char[frame_len];
 }
 
 ///删除回收一个new的frame
-void RUDP_FRAME::delete_frame(RUDP_FRAME *frame)
+void RUDP_FRAME::delete_frame(RUDP_FRAME* frame)
 {
-    delete[](char *)frame;
+    delete[](char*)frame;
 }
 
 //=================================================================================================

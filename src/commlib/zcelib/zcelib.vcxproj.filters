@@ -877,6 +877,9 @@
     <ClInclude Include="zce\buffer\char_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce\db\result_set.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

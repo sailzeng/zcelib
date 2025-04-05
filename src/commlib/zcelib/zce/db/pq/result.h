@@ -7,6 +7,12 @@
 
 namespace zce::pq
 {
+const int FMT_BINARY = 1;
+const int FMT_TEXT = 0;
+
+/*!
+ * @brief PQ 的结果集
+ */
 class result
 {
 public:
@@ -16,14 +22,19 @@ public:
     result(::PGresult* res) noexcept;
     ~result() noexcept;
 
-    //避免拷贝
+    //拷贝构造函数，不使用
     result(const result&) = delete;
     result& operator=(const result&) = delete;
-    result(result&&) noexcept = delete;
-    result& operator=(result&&) = delete;
+    //移动构造函数
+    result(result&&) noexcept;
+    result& operator=(result&&) noexcept;
 
+public:
     //! @brief   设置PQ的结果集
-    void set_pq_result(::PGresult* res);
+    void set_result(::PGresult* res);
+
+    //! @brief   释放结果集
+    void clear();
 
     ///结果集合是否为空
     inline bool is_null()
@@ -57,11 +68,11 @@ public:
     {
         //返回字段为文本类型
         auto ffmt = field_format(colum) == 0;
-        if (ffmt == 0)
+        if (ffmt == FMT_TEXT)
         {
             return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)colum), val);
         }
-        else if (ffmt == 1)
+        else if (ffmt == FMT_BINARY)
         {
             zce::serialize::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
                                       (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
@@ -73,9 +84,42 @@ public:
         }
     }
 
+    template <typename T>
+    T field(size_t row, size_t colum) const
+    {
+        //返回字段为文本类型
+        auto ffmt = field_format(colum) == 0;
+        if (ffmt == FMT_TEXT)
+        {
+            return zce::from_str<T>(::PQgetvalue(pq_result_, (int)row, (int)colum));
+        }
+        else
+        {
+            zce::serialize::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
+                                      (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
+            return dc.read<T>();
+        }
+    }
+
+    //将光标的数据全部转化一个tuple
+    template <typename... Types>
+    std::tuple<Types...> make_tuple(size_t row)
+    {
+        size_t colum = sizeof...(Types);
+        return _make_tuple_i<colum..., Types...>(std::index_sequence_for<Types...>{});
+    }
+
 protected:
 
-    //
+    template<std::size_t... Is, typename ...Types>
+    std::tuple<Types...> _make_tuple_i(size_t row)
+    {
+        return std::make_tuple(field<Types>(row, Is)...);
+    }
+
+protected:
+
+    ///PG 结果集
     ::PGresult* pq_result_ = nullptr;
 
     ///结果集的行数
