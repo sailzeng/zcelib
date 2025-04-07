@@ -1,8 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
 #include "zce/buffer/char_buffer.h"
-#include "zce/db/pq/connect.h"
-#include "zce/db/pq/result.h"
 #include "zce/db/pq/command.h"
 
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
@@ -304,6 +302,37 @@ command::command(zce::pq::connect& conn) :
 command::~command() noexcept
 {
     stmt_clear();
+}
+
+//! 开始一个事务，Begin Transaction，返回0标识成功
+int command::trans_begin()
+{
+    return execute("BEGIN");
+}
+//! 提交事务Commit Transaction
+int command::trans_commit()
+{
+    return execute("COMMIT");
+}
+//回滚事务Rollback Transaction
+int command::trans_rollback()
+{
+    return execute("ROLLBACK");
+}
+
+int command::execute(std::string_view sqlcmd)
+{
+    int ret = 0;
+    ::PGresult* res = ::PQexec(conn_, sqlcmd.data());
+    if (PQresultStatus(res) != PGRES_COMMAND_OK)
+    {
+        ZCE_LOG(RS_ERROR,
+                "[pq] commit transaction failed : %s\n",
+                ::PQerrorMessage(conn_));
+        ret = -1;
+    }
+    ::PQclear(res);
+    return ret;
 }
 
 int command::execute(std::string_view sql_cmd,

@@ -1,11 +1,11 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/db/execute.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/dirent.h"
 #include "zce/os_adapt/socket.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/netdb.h"
-#include "zce/db/mysql/execute.h"
 #include "zce/aio/worker.h"
 
 namespace zce::aio
@@ -118,7 +118,7 @@ void worker::process_response(zce::time_value* wait_time,
         }
         if (go)
         {
-            AIO_ATOM *atom_base = (AIO_ATOM *)base.get();
+            AIO_ATOM* atom_base = (AIO_ATOM*)base.get();
             //调用回调函数
             atom_base->call_back_(atom_base);
             ++num_rsp;
@@ -128,9 +128,9 @@ void worker::process_response(zce::time_value* wait_time,
 }
 
 //!
-void worker::thread_aio(const std::shared_ptr<void> &atom)
+void worker::thread_aio(const std::shared_ptr<void>& atom)
 {
-    AIO_ATOM *base = (AIO_ATOM *)atom.get();
+    AIO_ATOM* base = (AIO_ATOM*)atom.get();
     if (base->aio_type_ > AIO_TYPE::FS_BEGIN &&
         base->aio_type_ < AIO_TYPE::FS_END)
     {
@@ -253,36 +253,36 @@ void worker::thread_mysql(zce::aio::MYSQL_ATOM* atom)
     switch (atom->aio_type_)
     {
     case AIO_TYPE::MYSQL_CONNECT:
-        atom->result_ = zce::mysql::exe::connect(
+        atom->result_ = zce::mysql::exec::connect(
             atom->db_connect_,
             atom->host_name_,
+            atom->port_,
             atom->user_,
-            atom->pwd_,
-            atom->port_);
+            atom->pwd_);
         break;
     case AIO_TYPE::MYSQL_DISCONNECT:
         atom->result_ = 0;
-        zce::mysql::exe::disconnect(
+        zce::mysql::exec::disconnect(
             atom->db_connect_);
         break;
     case AIO_TYPE::MYSQL_QUERY_NOSELECT:
     {
         std::string_view sql_view(atom->sql_, atom->sql_len_);
-        atom->result_ = zce::mysql::exe::query(
+        atom->result_ = zce::mysql::exec::execute(
             atom->db_connect_,
             sql_view,
-            atom->num_affect_,
+            *atom->num_affect_,
             atom->insert_id_);
         break;
     }
     case AIO_TYPE::MYSQL_QUERY_SELECT:
     {
         std::string_view sql_view(atom->sql_, atom->sql_len_);
-        atom->result_ = zce::mysql::exe::query(
+        atom->result_ = zce::mysql::exec::execute(
             atom->db_connect_,
             sql_view,
-            atom->num_affect_,
-            atom->db_result_);
+            *atom->num_affect_,
+            *atom->db_result_);
         break;
     }
     default:
@@ -417,7 +417,7 @@ void worker::thread_socket_timeout(zce::aio::SOCKET_TIMEOUT_ATOM* atom)
 }
 
 int worker::schedule_timer(timeout_callback_t call_fun,
-                           int &time_id,
+                           int& time_id,
                            const zce::time_value& delay_time)
 {
     timer_queue_->schedule_timer(call_fun,

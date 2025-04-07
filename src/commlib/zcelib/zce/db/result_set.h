@@ -22,13 +22,13 @@ public:
         row_(row)
     {
     }
-    result_set_iterator(const result_set_iterator&) = default;
-    result_set_iterator& operator=(const result_set_iterator&) = default;
+    iterator_type(const iterator_type&) = default;
+    iterator_type& operator=(const result_set_iterator&) = default;
     //移动构造函数
-    result_set_iterator(result_set_iterator&&) noexcept = default;
-    result_set_iterator& operator=(result_set_iterator&&) noexcept = default;
+    iterator_type(iterator_type&&) noexcept = default;
+    iterator_type& operator=(iterator_type&&) noexcept = default;
 
-    result_set_iterator& operator++()
+    iterator_type& operator++()
     {
         ++row_;
         return *this;
@@ -41,7 +41,7 @@ public:
     }
     bool operator==(const iterator_type& other) const
     {
-        return (row_ == other.row_) && (result_ == other.result_);
+        return ((row_ == other.row_) && (result_ == other.result_));
     }
     bool operator!=(const iterator_type& other) const
     {

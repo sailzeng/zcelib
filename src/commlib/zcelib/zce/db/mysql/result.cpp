@@ -116,15 +116,6 @@ int cursor::field(size_t colum, zce::char_buf& val) const
     return 0;
 }
 
-//根据列序号ID得到字段FIELD，
-//[]操作符号函数不检查检查列ID,自己保证参数
-zce::mysql::field cursor::operator[](size_t colum) const
-{
-    return zce::mysql::field(cursor_row_[colum],
-                             fields_len_[colum],
-                             mysql_fields_[colum].type);
-}
-
 //=====================================================================================
 //构造函数
 result::result(MYSQL_RES* sqlresult) noexcept

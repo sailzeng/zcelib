@@ -53,15 +53,16 @@ struct TEST1_TABLE
 //MYSQL数据库连接对象
 static zce::mysql::connect g_db_connect;
 
-int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_id, char* szErr)
+int benchmark_db_query(const char* sql, size_t& num_affect, uint64_t* insert_id, char* szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-            DB_BENCHMARK_USER,
-            DB_BENCHMARK_PASSWORD);
+                                           MYSQL_PORT,
+                                           DB_BENCHMARK_USER,
+                                           DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -75,9 +76,9 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
     {
         g_db_connect.ping();
     }
-
-    g_db_connect.set_sql(sql);
-    ret = g_db_connect.execute(num_affect, insert_id);
+    std::string_view sql_str(sql);
+    zce::mysql::command cmd(g_db_connect);
+    ret = cmd.execute(sql_str, num_affect, insert_id);
     //如果错误
     if (ret != 0)
     {
@@ -90,17 +91,18 @@ int benchmark_db_query(const char* sql, uint64_t& num_affect, uint64_t& insert_i
 }
 
 int benchmark_db_query(const char* sql,
-    uint64_t& num_affect,
-    zce::mysql::result& db_result,
-    char* szErr)
+                       uint64_t& num_affect,
+                       zce::mysql::result& db_result,
+                       char* szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-            DB_BENCHMARK_USER,
-            DB_BENCHMARK_PASSWORD);
+                                           MYSQL_PORT,
+                                           DB_BENCHMARK_USER,
+                                           DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -115,8 +117,9 @@ int benchmark_db_query(const char* sql,
     {
         g_db_connect.ping();
     }
-    g_db_connect.set_sql(sql);
-    ret = g_db_connect.execute(num_affect, db_result);
+    std::string_view sql_str(sql);
+    zce::mysql::command cmd(g_db_connect);
+    ret = cmd.execute(sql_str, num_affect, db_result);
     //如果错误
     if (ret != 0)
     {
@@ -129,16 +132,17 @@ int benchmark_db_query(const char* sql,
 }
 
 int benchmark_db_query(const char* sql,
-    zce::mysql::result& db_result,
-    char* szErr)
+                       zce::mysql::result& db_result,
+                       char* szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-            DB_BENCHMARK_USER,
-            DB_BENCHMARK_PASSWORD);
+                                           MYSQL_PORT,
+                                           DB_BENCHMARK_USER,
+                                           DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -152,17 +156,21 @@ int benchmark_db_query(const char* sql,
     {
         g_db_connect.ping();
     }
-
-    g_db_connect.set_sql(sql);
-    ret = g_db_connect.execute(db_result);
+    std::string_view sql_str(sql);
+    zce::mysql::command cmd(g_db_connect);
+    ret = cmd.query(sql_str);
     //如果错误
     if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.error_no(), g_db_connect.error_message());
         return RETURN_DB_ERROR;
     }
-
-    //成功
+    ret = cmd.get_result(0, 0, &db_result, true);
+    if (ret != 0)
+    {
+        sprintf(szErr, "[%d]:%s", g_db_connect.error_no(), g_db_connect.error_message());
+        return RETURN_DB_ERROR;
+    }
     return  RETURN_SUCC;
 }
 
@@ -171,33 +179,33 @@ int benchmark_insert_record(int table_id, int id, bool bexcutesql, char* szErr)
     char tmpsql[1024];
 
     sprintf(tmpsql, "INSERT INTO benchmark.test%d SET "
-        "F1=%d,"
-        "F2=%d,"
-        "F3=%d,"
-        "F4=4,"
-        "F5=5,"
-        "F6=6,"
-        "F7=7,"
-        "F8=8,"
-        "F9=9,"
-        "F9=10,"
-        "F11=11.11,"
-        "F12=12.12,"
-        "F13='%015d%015d%015d',"
-        "F14='2006-06-01 00:00:00' ",
-        table_id,
-        id,
-        id,
-        id,
-        id,
-        id,
-        id
+            "F1=%d,"
+            "F2=%d,"
+            "F3=%d,"
+            "F4=4,"
+            "F5=5,"
+            "F6=6,"
+            "F7=7,"
+            "F8=8,"
+            "F9=9,"
+            "F9=10,"
+            "F11=11.11,"
+            "F12=12.12,"
+            "F13='%015d%015d%015d',"
+            "F14='2006-06-01 00:00:00' ",
+            table_id,
+            id,
+            id,
+            id,
+            id,
+            id,
+            id
     );
     //是否执行SQL,拼
     if (bexcutesql)
     {
-        uint64_t num_affect, insert_id;
-        int ret = benchmark_db_query(tmpsql, num_affect, insert_id, szErr);
+        size_t num_affect = 0; uint64_t insert_id = 0;
+        int ret = benchmark_db_query(tmpsql, num_affect, &insert_id, szErr);
         if (ret != RETURN_SUCC)
         {
             return ret;
@@ -211,14 +219,15 @@ int benchmark_delete_record(int table_id, int id, bool bexcutesql, char* szErr)
     char tmpsql[1024];
 
     sprintf(tmpsql, "DELETE FROM benchmark.test%d WHERE F1=%d ",
-        table_id,
-        id
+            table_id,
+            id
     );
     //是否执行SQL,拼
     if (bexcutesql)
     {
-        uint64_t num_affect, insert_id;
-        int ret = benchmark_db_query(tmpsql, num_affect, insert_id, szErr);
+        size_t num_affect = 0;
+        uint64_t insert_id = 0;
+        int ret = benchmark_db_query(tmpsql, num_affect, &insert_id, szErr);
         if (ret != RETURN_SUCC)
         {
             return ret;
@@ -232,9 +241,9 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
     char tmpsql[1024];
 
     sprintf(tmpsql, "SELECT F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 FROM benchmark.test%d "
-        "WHERE F1=%d ",
-        table_id,
-        id
+            "WHERE F1=%d ",
+            table_id,
+            id
     );
     if (bexcutesql)
     {
@@ -249,24 +258,45 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
         //一个也没有查询到
         if (num_affect == 0)
         {
+            return -1;
         }
-        while (db_result.fetch_row())
+        size_t rowid = 0;
+        while (db_result.cursor_fetch())
         {
-            TEST1_TABLE t1_res;
-            db_result >> t1_res.f1_;
-            db_result >> t1_res.f2_;
-            db_result >> t1_res.f3_;
-            db_result >> t1_res.f4_;
-            db_result >> t1_res.f5_;
-            db_result >> t1_res.f6_;
-            db_result >> t1_res.f7_;
-            db_result >> t1_res.f8_;
-            db_result >> t1_res.f9_;
-            db_result >> t1_res.f10_;
-            db_result >> t1_res.f11_;
-            db_result >> t1_res.f12_;
-            db_result >> t1_res.f13_;
-            db_result >> t1_res.f14_;
+            TEST1_TABLE r1;
+            db_result.field(rowid, 0, r1.f1_);
+            db_result.field(rowid, 1, r1.f2_);
+            db_result.field(rowid, 2, r1.f3_);
+            db_result.field(rowid, 3, r1.f4_);
+            db_result.field(rowid, 4, r1.f5_);
+            db_result.field(rowid, 5, r1.f6_);
+            db_result.field(rowid, 6, r1.f7_);
+            db_result.field(rowid, 7, r1.f8_);
+            db_result.field(rowid, 8, r1.f9_);
+            db_result.field(rowid, 9, r1.f10_);
+            db_result.field(rowid, 10, r1.f11_);
+            db_result.field(rowid, 11, r1.f12_);
+            db_result.field(rowid, 12, r1.f13_);
+            db_result.field(rowid, 13, r1.f14_);
+            rowid++;
+
+            db_result.cursor_field(0, r1.f1_);
+            db_result.cursor_field(1, r1.f2_);
+            db_result.cursor_field(2, r1.f3_);
+            db_result.cursor_field(3, r1.f4_);
+            db_result.cursor_field(4, r1.f5_);
+            db_result.cursor_field(5, r1.f6_);
+            db_result.cursor_field(6, r1.f7_);
+            db_result.cursor_field(7, r1.f8_);
+            db_result.cursor_field(8, r1.f9_);
+            db_result.cursor_field(9, r1.f10_);
+            db_result.cursor_field(10, r1.f11_);
+            db_result.cursor_field(11, r1.f12_);
+            db_result.cursor_field(12, r1.f13_);
+            db_result.cursor_field(13, r1.f14_);
+
+            //[r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_, r1.f9_, r1.f10_, r1.f11_, r1.f12_, r1.f13_, r1.f14_]
+            auto tuple_r = db_result.make_tuple<int, int, int, int, int, int, int, int, int, int, float, double, std::string, MYSQL_TIME>(rowid);
         }
     }
     return RETURN_SUCC;
@@ -386,10 +416,10 @@ int test_sql_main(int argc, char* argv[])
         for (int i = 0; i < numprocess; i++)
         {
             int ret = benchmark_cache_record(table_id,
-                i,
-                numruncache,
-                bexecute,
-                sz_err);
+                                             i,
+                                             numruncache,
+                                             bexecute,
+                                             sz_err);
             if (ret > 0)
             {
                 return ret;

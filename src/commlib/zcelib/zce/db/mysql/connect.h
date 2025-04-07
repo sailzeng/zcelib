@@ -17,7 +17,6 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
-#include "zce/db/base.h"
 #include "zce/db/mysql/result.h"
 
 namespace zce::mysql
@@ -33,7 +32,7 @@ class connect
 public:
 
     //构造函数,析构函数
-    connect();
+    connect() noexcept;
     ~connect() noexcept;
 
     //避免拷贝
@@ -54,10 +53,10 @@ public:
     * @param[in]  if_multi_sql 是否使用MULTI SQL语句
     */
     int connect_by_host(const char* host_name,
+                        const unsigned int port = MYSQL_PORT,
                         const char* user = "mysql",
                         const char* pwd = "",
                         const char* db = nullptr,
-                        const unsigned int port = MYSQL_PORT,
                         unsigned int timeout = 0,
                         bool if_multi_sql = false);
 
@@ -91,6 +90,15 @@ public:
     * @brief      断开数据服务器
     */
     void disconnect();
+
+    bool is_connected()
+    {
+        if (if_connected_)
+        {
+            ping();
+        }
+        return if_connected_;
+    }
 
     /*!
     * @brief      选择一个默认数据库
@@ -140,9 +148,9 @@ public:
     /*!
     * @brief      设置是否自动提交
     * @return     int
-    * @param      bauto
+    * @param      if_auto
     */
-    int set_auto_commit(bool bauto);
+    int set_auto_commit(bool if_auto);
 
 protected:
 
@@ -172,13 +180,10 @@ protected:
 private:
 
     ///MYSQL的句柄
-    MYSQL mysql_handle_;
+    MYSQL mysql_handle_ = {};
 
     ///是否连接MYSQL数据库
     bool if_connected_ = false;
-
-    ///
-    bool is_bind_result_ = false;
 };
 }
 #endif //#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

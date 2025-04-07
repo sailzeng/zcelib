@@ -143,6 +143,12 @@
 #define  ZCE_SUPPORT_CPP20  0
 #endif
 
+#if __cplusplus >= 202300L
+#define  ZCE_SUPPORT_CPP23  1
+#else
+#define  ZCE_SUPPORT_CPP23  0
+#endif
+
 //我懒了，我不想倒退回去支持非C11的编译器了，我努力拥抱CPP20，如果你要向更低的VS编译器靠近，要修改
 //一些auto或者默认非静态成员初始化，
 #if (!defined ZCE_SUPPORT_CPP20) && (ZCE_SUPPORT_CPP20 == 0)

@@ -114,34 +114,27 @@ public:
         return zce::from_str(cursor_row_[colum], val);
     }
     template <typename T>
-    int field(size_t colum) const
+    T field(size_t colum) const
     {
         return zce::from_str<T>(cursor_row_[colum]);
     }
-
-    /*!
-     * @brief 根据列序号ID得到字段FIELD，[]操作符号函数不检查检查列ID,自己保证参数
-     * @param colum 列ID
-     * @return zce::mysql::field 字段
-     */
-    zce::mysql::field  operator[](size_t colum) const;
 
     //! 清理
     void clear();
 
     //将光标的数据全部转化一个tuple
     template <typename... Types>
-    std::tuple<Types...> make_tuple(Types&&... args)
+    std::tuple<Types...> make_tuple()
     {
-        return _make_tuple_i(std::index_sequence_for<Types...>{}, args...);
+        return _make_tuple_i<Types...>(std::index_sequence_for<Types...>{});
     }
 
 protected:
 
-    template<std::size_t... Is, typename... Types>
-    std::tuple<Types...> _make_tuple_i(std::index_sequence<Is...>, Types&&... args)
+    template<typename ...Types, std::size_t... Is>
+    std::tuple<Types...> _make_tuple_i(std::index_sequence<Is...>)
     {
-        return std::make_tuple(field<Types>(cursor_row_[Is])...);
+        return std::make_tuple(field<Types>(Is)...);
     }
 protected:
 
@@ -269,7 +262,7 @@ public:
     zce::mysql::field get_field(size_t row, size_t colum);
 
     template <typename T>
-    int field(size_t row, size_t colum, T& val) const
+    int field(size_t row, size_t colum, T& val)
     {
         if (row != cursor_.cursor_rowid_)
         {
@@ -282,19 +275,22 @@ public:
         return cursor_.field(colum, val);
     }
 
+    template <typename T>
+    int cursor_field(size_t colum, T& val)
+    {
+        return cursor_.field(colum, val);
+    }
+
     //将row行数据全部转化一个tuple
     template <typename... Types>
-    std::tuple<Types...> make_tuple(size_t row, Types&&... args)
+    std::tuple<Types...> make_tuple(size_t row)
     {
         if (row != cursor_.cursor_rowid_)
         {
+            [[maybe_unused]]
             int ret = cursor_seek(row);
-            if (ret != 0)
-            {
-                return ret;
-            }
         }
-        return cursor_.make_tuple(args...);
+        return cursor_.make_tuple<Types...>();
     }
 
 private:

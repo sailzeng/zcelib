@@ -1,5 +1,8 @@
 #pragma once
 
+//C++ 23 以及支持back trace 功能，
+//https://en.cppreference.com/w/cpp/utility/program/backtrace
+
 namespace zce
 {
 /*!

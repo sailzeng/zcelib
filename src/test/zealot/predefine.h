@@ -61,7 +61,10 @@
 #include <zce/string/format.h>
 #include <zce/string/extend.h>
 
-#include <zce/db/mysql/handle.h>
+#include <zce/db/mysql/connect.h>
+#include <zce/db/mysql/command.h>
+#include <zce/db/mysql/result.h>
+
 #include <zce/util/id_to_string.h>
 #include <zce/util/mpl.h>
 
@@ -90,7 +93,7 @@
 #include <zce/server/get_option.h>
 
 #include <zce/config/property_tree.h>
-#include <zce/config/file_implement.h>
+#include <zce/config/cfg_file.h>
 
 #include <zce/db/sqlite/sqlite_hdl.h>
 #include <zce/db/sqlite/sqlite_stmt.h>
@@ -117,9 +120,12 @@
 #include <zce/lockfree/ring.h>
 #include <zce/lockfree/queue.h>
 #include <zce/lockfree/ptr_ring.h>
+
 #include <thread>
 #include <mutex>
 #include <functional>
+
+#include <gtest/gtest.h>
 
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS

@@ -66,7 +66,7 @@
 #include <zce/util/id_to_string.h>
 #include <zce/time/time_value.h>
 #include <zce/db/mysql/connect.h>
-#include <zce/db/mysql/execute.h>
+#include <zce/db/execute.h>
 #include <zce/lockfree/kfifo.h>
 #include <zce/server/server_base.h>
 #include <zce/util/non_copyable.h>
@@ -86,7 +86,7 @@
 #include <zce/lock/null_lock.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/config/property_tree.h>
-#include <zce/config/file_implement.h>
+#include <zce/config/cfg_file.h>
 #include <zce/thread/msgque_sema.h>
 #include <zce/timer/timer_handler.h>
 #include <zce/timer/queue_base.h>

@@ -335,38 +335,33 @@ size_t command::real_escape_string(char* tostr,
         fromlen));
 }
 
+//开始一个事务，Begin Transaction
+int command::trans_begin()
+{
+    return execute("BEGIN");
+}
 //提交事务Commit Transaction
 int command::trans_commit()
 {
-    int ret = ::mysql_commit(mysql_);
-    if (0 != ret)
-    {
-        return ret;
-    }
-    return 0;
+    return ::mysql_commit(mysql_);
 }
 
 //回滚事务Rollback Transaction
 int command::trans_rollback()
 {
-    int ret = ::mysql_rollback(mysql_);
-    if (0 != ret)
-    {
-        return ret;
-    }
-    return 0;
+    return ::mysql_rollback(mysql_);
 }
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
 int command::execute(std::string_view sqlcmd,
                      size_t& num_affect,
-                     uint64_t& last_id)
+                     uint64_t* last_id)
 {
     int ret = 0;
-    if ((ret = query(sqlcmd)) == 0)
+    if ((ret = execute(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect, &last_id, nullptr, false);
+        ret = get_result(&num_affect, last_id, nullptr, false);
     }
     return ret;
 }
@@ -378,15 +373,15 @@ int command::execute(std::string_view sqlcmd,
                      zce::mysql::result& my_res)
 {
     int ret = 0;
-    if ((ret = query(sqlcmd)) == 0)
+    if ((ret = execute(sqlcmd)) == 0)
     {
         ret = get_result(&num_affect, nullptr, &my_res, false);
     }
     return ret;
 }
 
-//但不推荐使用,一次取一行,交互太多
-int command::query(std::string_view sqlcmd)
+// 执行SQL命令
+int command::execute(std::string_view sqlcmd)
 {
     //如果没有设置连接或者没有设置命令
     if (if_connected_ == false || sqlcmd.empty())

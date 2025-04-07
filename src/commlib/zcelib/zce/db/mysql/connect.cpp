@@ -7,10 +7,10 @@
 
 namespace zce::mysql
 {
-connect::connect()
+connect::connect() noexcept
 {
-    //置开始状态
-    if_connected_ = false;
+    //初始化MYSQL句柄
+    ::memset(&mysql_handle_, 0, sizeof(MYSQL));
 }
 
 connect::~connect() noexcept
@@ -33,7 +33,7 @@ int connect::connect_i(CONNECT_BY by,
                        const char* group)
 {
     //如果已经连接,关闭原来的连接
-    if(if_connected_ == true)
+    if (if_connected_ == true)
     {
         disconnect();
     }
@@ -41,7 +41,7 @@ int connect::connect_i(CONNECT_BY by,
     //初始化MYSQL句柄
     ::mysql_init(&mysql_handle_);
     //设置连接的timeout
-    if(timeout != 0)
+    if (timeout != 0)
     {
         ::mysql_options(&mysql_handle_, MYSQL_OPT_CONNECT_TIMEOUT, (char*)(&timeout));
     }
@@ -55,7 +55,7 @@ int connect::connect_i(CONNECT_BY by,
 
 #if MYSQL_VERSION_ID > 40100
 
-    if(if_multi_sql)
+    if (if_multi_sql)
     {
         client_flag |= CLIENT_MULTI_STATEMENTS;
     }
@@ -64,7 +64,7 @@ int connect::connect_i(CONNECT_BY by,
 
     //连接数据库
     MYSQL* ret = nullptr;
-    switch(by)
+    switch (by)
     {
         using enum CONNECT_BY;
     case HOST:
@@ -91,17 +91,17 @@ int connect::connect_i(CONNECT_BY by,
                                    client_flag);
         break;
     case OPTION_FILE:
-        if(optfile != nullptr)
+        if (optfile != nullptr)
         {
             int opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
 
             //如果使group==nullptr,将读写optfile的[client]配置,否则读写group下的配置
-            if(group != nullptr)
+            if (group != nullptr)
             {
                 opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
             }
 
-            if(opret != 0)
+            if (opret != 0)
             {
                 return -1;
             }
@@ -121,7 +121,7 @@ int connect::connect_i(CONNECT_BY by,
     }
 
     //检查结果,
-    if(ret != nullptr)
+    if (ret != nullptr)
     {
         return -1;
     }
@@ -132,10 +132,10 @@ int connect::connect_i(CONNECT_BY by,
 
 //连接数据服务器,通过IP地址，主机名称
 int connect::connect_by_host(const char* host_name,
+                             const unsigned int port,
                              const char* user,
                              const char* pwd,
                              const char* db,
-                             const unsigned int port,
                              unsigned int timeout,
                              bool if_multi_sql)
 {
@@ -169,7 +169,7 @@ int connect::connect_by_optionfile(const char* optfile, const char* group)
 void connect::disconnect()
 {
     //没有连接
-    if(if_connected_ == false)
+    if (if_connected_ == false)
     {
         return;
     }
@@ -183,7 +183,7 @@ int connect::select_database(const char* db)
     int ret = ::mysql_select_db(&mysql_handle_, db);
 
     //检查结果,
-    if(0 != ret)
+    if (0 != ret)
     {
         return ret;
     }
@@ -197,7 +197,7 @@ int connect::ping()
     int ret = ::mysql_ping(&mysql_handle_);
 
     //检查结果,
-    if(0 != ret)
+    if (0 != ret)
     {
         return ret;
     }
@@ -212,15 +212,12 @@ const char* connect::get_mysql_status()
 }
 
 //设置是否自动提交
-int connect::set_auto_commit(bool bauto)
+int connect::set_auto_commit(bool if_auto)
 {
-    //my_bool其实是char
-    my_bool mode = (bauto == true) ? 1 : 0;
-
-    int ret = ::mysql_autocommit(&mysql_handle_, mode);
-
+    int ret = ::mysql_autocommit(&mysql_handle_,
+                                 if_auto);
     //检查结果,
-    if(0 != ret)
+    if (0 != ret)
     {
         return ret;
     }

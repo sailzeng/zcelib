@@ -805,7 +805,7 @@ int test_die_variance_t()
     fangcai = fangcai / TEST_SIZE;
     std::cout << "fangda die " << typeid(rand_gen_t).name() << " variance " << (uint32_t)fangcai << " max caizhi :" << max_caizhi << std::endl;
 
-    delete coverage_chart;
+    delete[]coverage_chart;
     coverage_chart = nullptr;
 
     return 0;

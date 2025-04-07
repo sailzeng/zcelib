@@ -185,7 +185,7 @@ int zce::backtrace_stack(size_t level_num,
     return 0;
 }
 
-//调试打印内存信息，就是简单的内存翻译为16进制字符串
+//!
 int zce::backtrace_stack(size_t level_num,
                          FILE* stream)
 {

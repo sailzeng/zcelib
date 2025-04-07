@@ -22,11 +22,11 @@ thread_rw_mutex::thread_rw_mutex()
     //pthread_rwlockattr_t属性的初始化
     int ret = 0;
     pthread_rwlockattr_t attr;
-    ret = zce::pthread_rwlock_init(&rw_lock_,&attr);
+    ret = zce::pthread_rwlock_init(&rw_lock_, &attr);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_init",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_init", ret);
         return;
     }
 }
@@ -37,7 +37,7 @@ thread_rw_mutex::~thread_rw_mutex()
     ret = zce::pthread_rwlock_destroy(&rw_lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_destroy",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_destroy", ret);
         return;
     }
 }
@@ -50,7 +50,7 @@ void thread_rw_mutex::lock_shared() noexcept
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_rdlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_rdlock", ret);
         return;
     }
 }
@@ -79,7 +79,7 @@ bool thread_rw_mutex::try_lock_shared_until(const zce::time_value& abs_time) noe
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_timedrdlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_timedrdlock", ret);
         return false;
     }
 
@@ -101,7 +101,7 @@ void thread_rw_mutex::unlock_shared() noexcept
     ret = zce::pthread_rwlock_rdunlock(&rw_lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_unlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_unlock", ret);
         return;
     }
 }
@@ -114,7 +114,7 @@ void thread_rw_mutex::lock() noexcept
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_wrlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_wrlock", ret);
         return;
     }
 }
@@ -142,7 +142,7 @@ bool thread_rw_mutex::try_lock_until(const zce::time_value& abs_time) noexcept
                                           abs_time);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_timedlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);
         return false;
     }
 
@@ -165,7 +165,7 @@ void thread_rw_mutex::unlock() noexcept
     ret = zce::pthread_rwlock_wrunlock(&rw_lock_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_unlock",ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_unlock", ret);
         return;
     }
 }

@@ -2,37 +2,36 @@
 
 namespace zce::db
 {
-template <typename DBHANDLE, typename RESULT, typename STMT>
-class execute
+template <typename CONNECT, typename COMMAND, typename RESULT>
+class exec
 {
 public:
-    //!ππ‘Ï∫Ø ˝£¨≤ª”√¥¶¿Ì ≤√¥£¨œ‡πÿµƒ≥…‘±±‰¡øµƒŒˆππ∂ºΩ¯––¡À¥¶¿Ì
-    execute() = delete;
-    ~execute() = delete;
-    execute(const execute &) = delete;
-    execute& operator=(const execute&) = delete;
+    //!ÊûÑÈÄ†ÂáΩÊï∞Ôºå‰∏çÁî®Â§ÑÁêÜ‰ªÄ‰πàÔºåÁõ∏ÂÖ≥ÁöÑÊàêÂëòÂèòÈáèÁöÑÊûêÊûÑÈÉΩËøõË°å‰∫ÜÂ§ÑÁêÜ
+    exec() = delete;
+    ~exec() = delete;
+    exec(const exec&) = delete;
+    exec& operator=(const exec&) = delete;
 
-    //!¡¥Ω”MYSQL ˝æ›ø‚
-    static int connect(DBHANDLE *db_connect,
+    //!ÈìæÊé•MYSQLÊï∞ÊçÆÂ∫ì
+    static int connect(CONNECT* db_connect,
                        const char* host_name,
+                       unsigned int port,
                        const char* user,
-                       const char* pwd,
-                       unsigned int port)
+                       const char* pwd)
     {
         int ret = 0;
 
-        //¡¨Ω” ˝æ›ø‚
+        //ËøûÊé•Êï∞ÊçÆÂ∫ì
         if (db_connect->is_connected() == false)
         {
-            //»Áπ˚…Ë÷√π˝HOST£¨”√HOST NAMEΩ¯––¡¨Ω”
-
+            //Â¶ÇÊûúËÆæÁΩÆËøáHOSTÔºåÁî®HOST NAMEËøõË°åËøûÊé•
             ret = db_connect->connect_by_host(host_name,
+                                              port,
                                               user,
                                               pwd,
-                                              nullptr,
-                                              port);
+                                              nullptr);
 
-            //»Áπ˚¥ÌŒÛ
+            //Â¶ÇÊûúÈîôËØØ
             if (ret != 0)
             {
                 ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
@@ -44,8 +43,8 @@ public:
         return 0;
     }
 
-    //!∂œø™¡¥Ω”
-    void disconnect(CONNECT *db_connect)
+    //!Êñ≠ÂºÄÈìæÊé•
+    static void disconnect(CONNECT* db_connect)
     {
         if (db_connect->is_connected() == true)
         {
@@ -53,104 +52,68 @@ public:
         }
     }
 
-    //!≤È—Ø£¨∑«SELECT”Ôæ‰
-    static int query(CONNECT *db_connect,
-                     std::string_view sql,
-                     uint64_t* num_affect,
-                     uint64_t* insert_id)
+    //!Êü•ËØ¢ÔºåÈùûSELECTËØ≠Âè•
+    static int execute(CONNECT* db_connect,
+                       std::string_view sql,
+                       size_t& num_affect,
+                       uint64_t* insert_id)
     {
-        //¡¨Ω” ˝æ›ø‚
+        //ËøûÊé•Êï∞ÊçÆÂ∫ì
         if (db_connect->is_connected() == false)
         {
             return -1;
         }
-        //»Áπ˚“—æ≠¡¨Ω”π˝ ˝æ›ø‚,‘Ú≤ª”√‘Ÿ¥Œ¡¨Ω”,ping“ª¥ŒæÕOK¡À,≥…±æµÕ
-        else
-        {
-            db_connect->ping();
-        }
 
         ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql.size(), sql.data());
-
-        int ret = db_connect->query(*num_affect, *insert_id);
-        //»Áπ˚¥ÌŒÛ
+        COMMAND cmd(*db_connect);
+        int ret = cmd.execute(sql, num_affect, insert_id);
+        //Â¶ÇÊûúÈîôËØØ
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                     db_connect->error_no(),
                     db_connect->error_message(),
-                    sql);
+                    sql.data());
             return -1;
         }
 
-        //≥…π¶
+        //ÊàêÂäü
         return 0;
     }
 
-    //!≤È—Ø£¨SELECT”Ôæ‰
-    static int query(CONNECT* db_connect,
-                     std::string_view sql,
-                     uint64_t* num_affect,
-                     RESULT* db_result)
+    //!Êü•ËØ¢ÔºåSELECTËØ≠Âè•
+    static int execute(CONNECT* db_connect,
+                       std::string_view sql,
+                       size_t& num_affect,
+                       RESULT& db_result)
     {
         int ret = 0;
-        //¡¨Ω” ˝æ›ø‚
+        //ËøûÊé•Êï∞ÊçÆÂ∫ì
         if (db_connect->is_connected() == false)
         {
             return -1;
         }
-        //»Áπ˚“—æ≠¡¨Ω”π˝ ˝æ›ø‚,‘Ú≤ª”√‘Ÿ¥Œ¡¨Ω”,ping“ª¥ŒæÕOK¡À,≥…±æµÕ
+        //Â¶ÇÊûúÂ∑≤ÁªèËøûÊé•ËøáÊï∞ÊçÆÂ∫ì,Âàô‰∏çÁî®ÂÜçÊ¨°ËøûÊé•,ping‰∏ÄÊ¨°Â∞±OK‰∫Ü,ÊàêÊú¨‰Ωé
         else
         {
             db_connect->ping();
         }
 
         ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
-        ret = db_connect->query(*num_affect, *db_result);
-        //»Áπ˚¥ÌŒÛ
+
+        COMMAND cmd(*db_connect);
+        ret = cmd.execute(sql, num_affect, db_result);
+        //Â¶ÇÊûúÈîôËØØ
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
                     db_connect->error_no(),
                     db_connect->error_message(),
-                    sql);
+                    sql.data());
             return -1;
         }
 
-        //≥…π¶
-        return 0;
-    }
-
-    //!≤È—Ø,SELECT”Ôæ‰£¨”√USE resultµƒ∑Ω ΩΩ¯––≤È—Ø
-    static int query(CONNECT* db_connect,
-                     std::string_view sql,
-                     RESULT* db_result)
-    {
-        int ret = 0;
-        //¡¨Ω” ˝æ›ø‚
-        if (db_connect->is_connected() == false)
-        {
-            return -1;
-        }
-        //»Áπ˚“—æ≠¡¨Ω”π˝ ˝æ›ø‚,‘Ú≤ª”√‘Ÿ¥Œ¡¨Ω”,ping“ª¥ŒæÕOK¡À,≥…±æµÕ
-        else
-        {
-            db_connect->ping();
-        }
-
-        ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
-        ret = db_connect->query(*db_result);
-
-        //»Áπ˚¥ÌŒÛ
-        if (ret != 0)
-        {
-            ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
-                    db_connect->error_no(),
-                    db_connect->error_message(),
-                    sql);
-            return -1;
-        }
-        //≥…π¶
+        //ÊàêÂäü
         return 0;
     }
 };
@@ -159,10 +122,27 @@ public:
 #if defined ZCE_USE_MYSQL
 
 #include "zce/db/mysql/connect.h"
+#include "zce/db/mysql/command.h"
+#include "zce/db/mysql/result.h"
 
 namespace zce::mysql
 {
-//typedef zce::db::execute<zce::mysql::connect,
-//> mysql_exe;
+typedef zce::db::exec<zce::mysql::connect,
+    zce::mysql::command,
+    zce::mysql::result> exec;
+}
+#endif
+
+#if defined ZCE_USE_PQ
+
+#include "zce/db/pq/connect.h"
+#include "zce/db/pq/command.h"
+#include "zce/db/pq/result.h"
+
+namespace zce::pq
+{
+typedef zce::db::exec<zce::pq::connect,
+    zce::pq::command,
+    zce::pq::result> exec;
 }
 #endif

@@ -3,10 +3,12 @@
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
 
 #include "zce/os_adapt/string.h"
+#include "zce/buffer/char_buffer.h"
+#include "zce/db/pq/connect.h"
+#include "zce/db/pq/result.h"
 
 namespace zce::pq
 {
-class result;
 class command;
 
 /*!
@@ -103,6 +105,17 @@ public:
     command& operator=(command&&) noexcept = delete;
     command(const command&) = delete;
     command& operator=(const command&) = delete;
+
+    //! 注意：默认情况下，PQ默认是自动提交事务的，
+    //! 如果你要使用事务，你需要通过，BEGIN，这些SQL语句来明确要使用事务
+    //! 开始一个事务，Begin Transaction，返回0标识成功
+    int trans_begin();
+    //! 提交事务Commit Transaction,返回0标识成功
+    int trans_commit();
+    //! 回滚事务Rollback Transaction,返回0标识成功
+    int trans_rollback();
+
+    int execute(std::string_view sqlcmd);
 
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,

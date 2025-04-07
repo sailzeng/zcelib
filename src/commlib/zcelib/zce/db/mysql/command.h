@@ -4,8 +4,6 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
-#include "zce/db/base.h"
-
 namespace zce::mysql
 {
 //如果你要用MYSQL的库
@@ -238,10 +236,13 @@ public:
         return stmt_;
     }
 
-    //!提交事务Commit Transaction,返回0标识成功
+    //! 注意：默认情况下，MySQL默认是自动提交事务的，如果你要使用事务，你需要通过，
+    //! ::mysql_autocommit，关闭自动提交
+    //! 开始一个事务，Begin Transaction，返回0标识成功
+    int trans_begin();
+    //! 提交事务Commit Transaction,返回0标识成功
     int trans_commit();
-
-    //!回滚事务Rollback Transaction,返回0标识成功
+    //! 回滚事务Rollback Transaction,返回0标识成功
     int trans_rollback();
 
     /*!
@@ -252,7 +253,7 @@ public:
     */
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,
-                uint64_t& last_id);
+                uint64_t* last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -264,7 +265,7 @@ public:
                 size_t& num_affect,
                 zce::mysql::result& my_res);
 
-    int query(std::string_view sqlcmd);
+    int execute(std::string_view sqlcmd);
 
     /*!
     * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
@@ -286,6 +287,7 @@ public:
     * @return int       0表示成功，否则标识失败
     */
     int fetch_next_row(zce::mysql::result& res);
+
     /*!
     * @brief      如果一次执行多行SQL语句，这个方法用于取回结果集合
     * @return     int       0表示成功，否则标识失败

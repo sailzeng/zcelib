@@ -7,8 +7,9 @@
 
 namespace zce::pq
 {
-const int FMT_BINARY = 1;
-const int FMT_TEXT = 0;
+static const int FMT_BINARY = 0x1;
+
+static const int FMT_TEXT = 0x0;
 
 /*!
  * @brief PQ 的结果集
@@ -105,14 +106,13 @@ public:
     template <typename... Types>
     std::tuple<Types...> make_tuple(size_t row)
     {
-        size_t colum = sizeof...(Types);
-        return _make_tuple_i<colum..., Types...>(std::index_sequence_for<Types...>{});
+        return _make_tuple_i<Types...>(row, std::index_sequence_for<Types...>{});
     }
 
 protected:
 
-    template<std::size_t... Is, typename ...Types>
-    std::tuple<Types...> _make_tuple_i(size_t row)
+    template<typename ...Types, std::size_t... Is>
+    std::tuple<Types...> _make_tuple_i(size_t row, std::index_sequence<Is...>)
     {
         return std::make_tuple(field<Types>(row, Is)...);
     }

@@ -25,10 +25,7 @@ namespace zce
 * @param[out] to_val
 */
 template<typename T>
-int from_str(const char* str, T& to_val)
-{
-    return to_val.from_str(str);
-}
+int from_str(const char* str, T& to_val);
 
 template<typename T>
 T from_str(const char* str)

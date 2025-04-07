@@ -157,6 +157,8 @@ struct pthread_rwlock_t
 #if defined ZCE_DEPEND_WINVER && ZCE_DEPEND_WINVER >= 2008
     //!WINSVR 2008以后，WINDOWS自己实现的读写锁
     SRWLOCK                rwlock_slim_;
+    //!用于记录每个线程记录自己的锁状态,
+    DWORD tls_rwlock_status_ = TLS_OUT_OF_INDEXES;
     //!用于实现超时处理的cv
     CONDITION_VARIABLE cv_;
 #endif

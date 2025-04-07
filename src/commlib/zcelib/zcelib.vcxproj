@@ -76,7 +76,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <EnablePREfast>false</EnablePREfast>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>.;</AdditionalIncludeDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
@@ -104,7 +104,7 @@
       <PrecompiledHeaderFile>zce/predefine.h</PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>.;</AdditionalIncludeDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
@@ -197,7 +197,6 @@
     <ClCompile Include="zce\lock\thread_semaphore.cpp" />
     <ClCompile Include="zce\lock\thread_spin.cpp" />
     <ClCompile Include="zce\db\mysql\connect.cpp" />
-    <ClCompile Include="zce\db\mysql\execute.cpp" />
     <ClCompile Include="zce\db\mysql\result.cpp" />
     <ClCompile Include="zce\net\http_client.cpp" />
     <ClCompile Include="zce\os_adapt\backtrace.cpp" />
@@ -261,7 +260,6 @@
   <ItemGroup>
     <ClInclude Include="zce\aio\reactor.h" />
     <ClInclude Include="zce\buffer\varlen_buf.h" />
-    <ClInclude Include="zce\db\base.h" />
     <ClInclude Include="zce\db\result_set.h" />
     <ClInclude Include="zce\db\execute.h" />
     <ClInclude Include="zce\db\mysql\command.h" />
@@ -354,7 +352,6 @@
     <ClInclude Include="zce\log\logging.h" />
     <ClInclude Include="zce\log\priority.h" />
     <ClInclude Include="zce\db\mysql\connect.h" />
-    <ClInclude Include="zce\db\mysql\execute.h" />
     <ClInclude Include="zce\db\mysql\result.h" />
     <ClInclude Include="zce\net\http_client.h" />
     <ClInclude Include="zce\os_adapt\backtrace.h" />

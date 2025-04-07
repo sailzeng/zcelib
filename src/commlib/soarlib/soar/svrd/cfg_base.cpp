@@ -79,7 +79,7 @@ int svrd_cfg_base::read_start_arg(int argc, const char* argv[])
             // 主cfgsvr ip地址 端口号用#隔离
             // 指定了配置地址，则从配置服务器拉配置
             is_use_cfgsvr_ = true;
-            master_cfgsvr_ip_.set(get_opt.optarg);
+            master_cfgsvr_ip_.from_str(get_opt.optarg);
             break;
         }
 

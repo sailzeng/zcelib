@@ -125,9 +125,6 @@
     <ClCompile Include="zce\shared_mem\systemv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\db\mysql\execute.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\math\random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -496,9 +493,6 @@
     <ClInclude Include="zce\shared_mem\systemv.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\db\mysql\execute.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\util\mpl.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -842,9 +836,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\aio\reactor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\db\base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\buffer\varlen_buf.h">
