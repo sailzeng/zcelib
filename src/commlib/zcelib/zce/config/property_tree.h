@@ -41,16 +41,16 @@ class propertytree
 protected:
 
     ///叶子节点,以及相应的迭代器
-    typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
-    typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
-    typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
+    using LEAF_NOTE_TYPE = std::multimap<std::string, std::string>;
+    using leaf_iterator = LEAF_NOTE_TYPE::iterator;
+    using const_leaf_iterator = LEAF_NOTE_TYPE::const_iterator;
 
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
-    typedef std::multimap<std::string, zce::propertytree > CHILDREN_NOTE_TYPE;
-    typedef CHILDREN_NOTE_TYPE::iterator child_iterator;
-    typedef CHILDREN_NOTE_TYPE::const_iterator const_child_iterator;
+    using CHILDREN_NOTE_TYPE = std::multimap<std::string, zce::propertytree >;
+    using child_iterator = CHILDREN_NOTE_TYPE::iterator;
+    using const_child_iterator = CHILDREN_NOTE_TYPE::const_iterator;
     //
 public:
 

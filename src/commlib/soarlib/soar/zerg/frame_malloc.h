@@ -109,9 +109,9 @@ protected:
     static const size_t NUM_OF_ALLOW_LIST_IDLE_FRAME = 1024;
 
     //
-    typedef zce::lord_rings <soar::zerg_frame*>     LIST_OF_APPFRAME;
+    using LIST_OF_APPFRAME = zce::lord_rings <soar::zerg_frame*>;
     //
-    typedef std::vector< LIST_OF_APPFRAME > APPFRAME_POOL;
+    using APPFRAME_POOL = std::vector< LIST_OF_APPFRAME >;
 protected:
     //单子实例
     static zergframe_mallocor* instance_;
@@ -121,21 +121,17 @@ protected:
     //GCC的版本如果小于4，会不支持模板中的static数组成员的长度用const static成员定义。
     //理论上可以用#if (__GNUC__ < 4)屏蔽，但是实在太忙法。下面的数组长度NUM_OF_FRAMELIST
     //如果你更改是要定义。
-    size_t           size_appframe_[NUM_OF_FRAMELIST] = { 0 };
+    size_t           size_appframe_[NUM_OF_FRAMELIST] = {0};
 
     //FRAME的内存池子
     APPFRAME_POOL    frame_pool_;
 
     //池子的锁
-    std::mutex      *my_lock_ = nullptr;
+    std::mutex* my_lock_ = nullptr;
 };
 }
 
 //APPFRAME的分配器
-typedef soar::zergframe_mallocor   APPFRAME_MALLOCOR;
-
-////
-//typedef zergframe_mallocor<zce::null_lock> NULLMUTEX_APPFRAME_MALLOCOR;
-//typedef zergframe_mallocor<zce::thread_mutex> THREADMUTEX_APPFRAME_MALLOCOR;
+using APPFRAME_MALLOCOR = soar::zergframe_mallocor;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_

@@ -2,7 +2,7 @@
 
 int test_dequechunk(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::lockfree::kfifo<uint32_t> kfifo_32_t;
+    using kfifo_32_t = zce::lockfree::kfifo<uint32_t>;
     size_t dequesize = 1026;
     size_t szalloc = kfifo_32_t::alloc_size(dequesize);
     std::cout << "need mem: " << (int)szalloc << std::endl;
@@ -101,7 +101,7 @@ int thread_do_push(int push_start, size_t push_num)
 {
     for (size_t i = 0; i < push_num;)
     {
-        int *data = new int(push_start + (int)push_num + (int)i);
+        int* data = new int(push_start + (int)push_num + (int)i);
         auto ret = g_ring_ptr.push_back(data);
         if (!ret)
         {
@@ -122,7 +122,7 @@ int thread_do_pop(size_t pop_num)
 {
     for (size_t i = 0; i < pop_num;)
     {
-        int *data = nullptr;
+        int* data = nullptr;
         auto ret = g_ring_ptr.pop_front(data);
         if (ret)
         {
@@ -142,7 +142,7 @@ int thread_do_pop(size_t pop_num)
 
 int test_lockfree_ring_ptr1(int /*argc*/, char* /*argv*/[])
 {
-    int *data1 = new int(1024);
+    int* data1 = new int(1024);
     auto ret = g_ring_ptr.push_back(data1);
     if (ret)
     {
@@ -152,7 +152,7 @@ int test_lockfree_ring_ptr1(int /*argc*/, char* /*argv*/[])
     {
         ZPP_LOG(RS_INFO, "push_back data = {} fail.", *data1);
     }
-    int *data2 = nullptr;
+    int* data2 = nullptr;
     ret = g_ring_ptr.pop_front(data2);
     if (ret)
     {
@@ -334,7 +334,7 @@ zce::lockfree::queue<int> g_queue;
 
 int test_lockfree_queue2(int /*argc*/, char* /*argv*/[])
 {
-    int *data = nullptr;
+    int* data = nullptr;
     g_queue.enqueue(new int(0));
     g_queue.enqueue(data);
     return 0;

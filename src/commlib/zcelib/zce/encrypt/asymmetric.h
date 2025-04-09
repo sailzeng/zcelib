@@ -33,7 +33,7 @@ class rsa : public rsa_base
 {
 protected:
 
-    typedef zce::big_uint<L> bignumber;
+    using bignumber = zce::big_uint<L>;
 
     enum class KEY_TYPE
     {
@@ -48,7 +48,7 @@ public:
 public:
 
     template <class RANDOM_ENGINE>
-    void init(RANDOM_ENGINE & engine)
+    void init(RANDOM_ENGINE& engine)
     {
         //产生大素数p、q
         p_.create_prime(engine,
@@ -212,7 +212,7 @@ protected:
                                ssize_t remain_len,
                                unsigned char* write_ptr)
     {
-        const bignumber *key = nullptr;
+        const bignumber* key = nullptr;
         bignumber bn_in, bn_out;
         if (kt == KEY_TYPE::KEY_PRIVATE)
         {
@@ -228,7 +228,7 @@ protected:
         }
         else
         {
-            char block_in[BLOCK_SIZE] = { 0 };
+            char block_in[BLOCK_SIZE] = {0};
             ::memset(block_in, 0, BLOCK_SIZE - remain_len);
             ::memcpy(block_in + BLOCK_SIZE - remain_len, read_ptr, remain_len);
             bn_in.putin(block_in);
@@ -242,10 +242,10 @@ protected:
                                   ssize_t remain_len,
                                   unsigned char* write_ptr)
     {
-        char block_in[BLOCK_SIZE] = { 0 };
+        char block_in[BLOCK_SIZE] = {0};
         size_t padding_len = 0;
         bignumber bn_in, bn_out;
-        const bignumber *key = nullptr;
+        const bignumber* key = nullptr;
         block_in[0] = 0x0;
         if (kt == KEY_TYPE::KEY_PRIVATE)
         {
@@ -297,11 +297,11 @@ protected:
                                  ssize_t remain_len,
                                  unsigned char* write_ptr)
     {
-        char block_in[BLOCK_SIZE] = { 0 };
-        char mgf_buf[BLOCK_SIZE] = { 0 };
+        char block_in[BLOCK_SIZE] = {0};
+        char mgf_buf[BLOCK_SIZE] = {0};
         size_t padding_len = 0;
         bignumber bn_in, bn_out;
-        const bignumber *key = nullptr;
+        const bignumber* key = nullptr;
         block_in[0] = 0x0;
         if (kt == KEY_TYPE::KEY_PRIVATE)
         {
@@ -361,7 +361,7 @@ protected:
     {
         int ret = 0;
         ssize_t remain_len = cipher_len;
-        char block_in[BLOCK_SIZE] = { 0 };
+        char block_in[BLOCK_SIZE] = {0};
         const unsigned char* read_ptr = (cipher_buf);
         unsigned char* write_ptr = plain_buf;
         size_t write_len = 0;
@@ -399,9 +399,9 @@ protected:
                               const unsigned char* read_ptr,
                               ssize_t remain_len,
                               unsigned char* write_ptr,
-                              ssize_t &write_len)
+                              ssize_t& write_len)
     {
-        const bignumber *key = nullptr;
+        const bignumber* key = nullptr;
         bignumber bn_in, bn_out;
         if (kt == KEY_TYPE::KEY_PRIVATE)
         {
@@ -421,7 +421,7 @@ protected:
         }
         else
         {
-            char block_out[BLOCK_SIZE] = { 0 };
+            char block_out[BLOCK_SIZE] = {0};
             bn_in.putin(block_out);
             size_t i = 0;
             for (; i < BLOCK_SIZE; ++i)
@@ -441,11 +441,11 @@ protected:
                                  const unsigned char* read_ptr,
                                  ssize_t remain_len,
                                  unsigned char* write_ptr,
-                                 ssize_t &write_len)
+                                 ssize_t& write_len)
     {
-        const bignumber *key = nullptr;
+        const bignumber* key = nullptr;
         bignumber bn_in, bn_out;
-        char block_out[BLOCK_SIZE] = { 0 };
+        char block_out[BLOCK_SIZE] = {0};
         if (kt == KEY_TYPE::KEY_PRIVATE)
         {
             key = &d_;
@@ -493,12 +493,12 @@ protected:
                                 const unsigned char* read_ptr,
                                 ssize_t remain_len,
                                 unsigned char* write_ptr,
-                                ssize_t &write_len)
+                                ssize_t& write_len)
     {
-        const bignumber *key = nullptr;
+        const bignumber* key = nullptr;
         bignumber bn_in, bn_out;
-        char block_out[BLOCK_SIZE] = { 0 };
-        char mgf_buf[BLOCK_SIZE] = { 0 };
+        char block_out[BLOCK_SIZE] = {0};
+        char mgf_buf[BLOCK_SIZE] = {0};
         if (kt == KEY_TYPE::KEY_PRIVATE)
         {
             key = &d_;
@@ -561,12 +561,12 @@ protected:
     }
 
     //MGF1 is a mask generation function based on a hash function.
-    int mgf1(const unsigned char *mgf_seed,
+    int mgf1(const unsigned char* mgf_seed,
              size_t mgf_seed_len,
-             unsigned char *mask,
+             unsigned char* mask,
              size_t mask_len)
     {
-        unsigned char buf[BLOCK_SIZE], *p;
+        unsigned char buf[BLOCK_SIZE], * p;
 
         size_t counter, rest_len;
 
@@ -595,7 +595,7 @@ protected:
 
             if (rest_len >= OAEP_HLEN)
             {
-                zce::sha1(buf, mgf_seed_len + 4, (unsigned char *)mask);
+                zce::sha1(buf, mgf_seed_len + 4, (unsigned char*)mask);
                 rest_len -= OAEP_HLEN;
                 mask += OAEP_HLEN;
 
@@ -605,7 +605,7 @@ protected:
             else
             {
                 unsigned char digest[64]; /* 最长支持 SHA-512 */
-                zce::sha1(buf, mgf_seed_len + 4, (unsigned char *)digest);
+                zce::sha1(buf, mgf_seed_len + 4, (unsigned char*)digest);
                 memcpy(mask, digest, rest_len);
                 rest_len = 0;
             }
@@ -648,7 +648,7 @@ protected:
     bignumber ol_;
 };
 
-typedef rsa<512>  rsa512;
-typedef rsa<1024> rsa1024;
-typedef rsa<2048> rsa2048;
+using rsa512 = rsa<512>;
+using rsa1024 = rsa<1024>;
+using rsa2048 = rsa<2048>;
 }

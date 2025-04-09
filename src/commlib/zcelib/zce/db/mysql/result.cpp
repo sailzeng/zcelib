@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/buffer/char_buffer.h"
+#include "zce/buffer/string_buffer.h"
 #include "zce/db/mysql/result.h"
 
 //如果你要用MYSQL的库
@@ -106,7 +106,7 @@ int cursor::field(size_t colum, unsigned char*& val) const
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 template<>
-int cursor::field(size_t colum, zce::char_buf& val) const
+int cursor::field(size_t colum, zce::string_buf& val) const
 {
     ZCE_ASSERT(nullptr != cursor_row_ && colum <= num_field_
                && val.capacity() >= fields_len_[colum]);

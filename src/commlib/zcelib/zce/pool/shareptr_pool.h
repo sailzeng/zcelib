@@ -29,7 +29,7 @@ class shareptr_pool
 {
 public:
     //!对象池子对象
-    typedef T object;
+    using object = T;
 
     //!构造函数，析构函数，赋值函数
     shareptr_pool() = default;
@@ -63,7 +63,7 @@ public:
     }
 
     //!最后的销毁处理
-    void terminate(size_t &leak_mem)
+    void terminate(size_t& leak_mem)
     {
         std::lock_guard<LOCK> lock(lock_);
         size_t sz = obj_pool_.size();

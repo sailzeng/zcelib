@@ -70,12 +70,13 @@ protected:
 protected:
 
     //
-    typedef std::unordered_set<soar::SERVICES_INFO,
+    using SET_OF_SVC_INFO = std::unordered_set<soar::SERVICES_INFO,
         soar::HASH_OF_SVCINFO,
-        soar::EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
+        soar::EQUAL_OF_SVCINFO>;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
-    typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
+    using MAP_OF_TYPE_TO_IDARY =
+        std::unordered_map<uint16_t, std::vector<uint32_t> >;
 
 protected:
 

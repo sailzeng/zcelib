@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/buffer/char_buffer.h"
+#include "zce/buffer/string_buffer.h"
 #include "zce/db/mysql/connect.h"
 #include "zce/db/mysql/command.h"
 

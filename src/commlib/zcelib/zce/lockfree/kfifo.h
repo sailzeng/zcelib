@@ -42,7 +42,7 @@ class kfifo
 {
 public:
 
-    typedef varlen_buf<T> node;
+    using node = varlen_buf<T>;
 
 protected:
     /*!
@@ -89,7 +89,7 @@ public:
     ~kfifo() = default;
 
     ///只定义不实现
-    kfifo(const kfifo &) = delete;
+    kfifo(const kfifo&) = delete;
     const kfifo& operator=(const kfifo&) = delete;
 
 protected:

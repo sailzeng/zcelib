@@ -30,7 +30,7 @@ class fsmtask_manger : public fsm_manager
 protected:
 
     //zce::msgrings_sema底层实现用的Deque
-    typedef zce::msgrings_sema<soar::zerg_frame*>  APPFRAME_MSGQUEUE;
+    using APPFRAME_MSGQUEUE = zce::msgrings_sema<soar::zerg_frame*>;
 
     //FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，这个数量级别已经不少了
     static const size_t FRAME_QUEUE_WATER_MARK = 102400;
@@ -225,10 +225,10 @@ public:
 protected:
 
     //发送的MSG QUEUE
-    std::unique_ptr<APPFRAME_MSGQUEUE> send_msg_queue_{ new APPFRAME_MSGQUEUE(FRAME_QUEUE_WATER_MARK) };
+    std::unique_ptr<APPFRAME_MSGQUEUE> send_msg_queue_{new APPFRAME_MSGQUEUE(FRAME_QUEUE_WATER_MARK)};
 
     //接受的MSG QUEUE
-    std::unique_ptr<APPFRAME_MSGQUEUE> recv_msg_queue_{ new APPFRAME_MSGQUEUE(FRAME_QUEUE_WATER_MARK) };
+    std::unique_ptr<APPFRAME_MSGQUEUE> recv_msg_queue_{new APPFRAME_MSGQUEUE(FRAME_QUEUE_WATER_MARK)};
 
     //APPFRAME的内存分配池子
     APPFRAME_MALLOCOR* frame_mallocor_ = nullptr;

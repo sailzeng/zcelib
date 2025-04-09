@@ -35,9 +35,9 @@ class null_lock
 {
 public:
     //nullptr锁的GUARD
-    typedef lock_guard<zce::null_lock>      LOCK_GUARD;
-    typedef shared_guard<zce::null_lock>    LOCK_SHARED_GUARD;
-    typedef unique_guard<zce::null_lock>    LOCK_UNIQUE_GUARD;
+    using LOCK_GUARD = lock_guard<zce::null_lock>;
+    using LOCK_SHARED_GUARD = shared_guard<zce::null_lock>;
+    using LOCK_UNIQUE_GUARD = unique_guard<zce::null_lock>;
 
 public:
     ///构造函数
@@ -128,7 +128,7 @@ public:
 class null_semaphore
 {
     ///信号灯的GUARD
-    typedef zce::semaphore_guard<null_semaphore> LOCK_GUARD;
+    using LOCK_GUARD = zce::semaphore_guard<null_semaphore>;
 
 public:
 

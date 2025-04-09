@@ -9,8 +9,7 @@ int main(int argc, char* argv[])
     SetConsoleOutputCP(65001);
 #endif
 
-    ZCE_UNUSED_ARG(argc);
-    ZCE_UNUSED_ARG(argv);
+    ::testing::InitGoogleTest(&argc, argv);
 
     zce::log_msg::instance()->open_time_log(LOGFILE_DEVIDE::BY_TIME_DAY,
                                             "D:\\My.Log\\TEST_2",
@@ -25,12 +24,7 @@ int main(int argc, char* argv[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
     ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 
-    //for (size_t i = 0; i < 100; ++i)
-    //{
-    //    ZCE_LOG(RS_INFO, "Hallelujah");
-    //}
-    ////test_aio1(argc, argv);
-    ret = test_time_string1(argc, argv);
+    ret = RUN_ALL_TESTS();
 
     //!需要关闭日志
     zce::log_msg::instance()->close();

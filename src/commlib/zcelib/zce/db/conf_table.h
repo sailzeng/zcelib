@@ -97,7 +97,7 @@ public:
     unsigned int last_mod_time_ = 0;
 };
 
-typedef std::vector <AII_BINARY_DATA>   ARRARY_OF_AI_IIJIMA_BINARY;
+using ARRARY_OF_AI_IIJIMA_BINARY = std::vector <AII_BINARY_DATA>;
 
 /******************************************************************************************
 config_table 一个很通用的从DB中间得到通用配置信息的方法

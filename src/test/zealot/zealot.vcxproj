@@ -115,6 +115,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="test_aio.cpp" />
+    <ClCompile Include="test_db.cpp" />
     <ClCompile Include="test_hash.cpp" />
     <ClCompile Include="test_math.cpp" />
     <ClCompile Include="test_net.cpp" />
@@ -133,7 +134,7 @@
     <ClCompile Include="test_event_inotify.cpp" />
     <ClCompile Include="test_pool.cpp" />
     <ClCompile Include="test_script_lua.cpp" />
-    <ClCompile Include="test_mysql.cpp" />
+    <ClCompile Include="test_benchmark_mysql.cpp" />
     <ClCompile Include="test_lock.cpp" />
     <ClCompile Include="test_os_adapt.cpp" />
     <ClCompile Include="test_util.cpp" />

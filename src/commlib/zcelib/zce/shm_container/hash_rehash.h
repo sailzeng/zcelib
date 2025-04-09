@@ -78,9 +78,9 @@ class _ht_rehash_iter
 {
 private:
     //HASH TABLE的定义
-    typedef shm_rehash_hashtable < T, Key, Hash, Extract, KeyEqual, Washout > rehash_hashtable_t;
+    using rehash_hashtable_t = shm_rehash_hashtable < T, Key, Hash, Extract, KeyEqual, Washout >;
     //定义迭代器
-    typedef _ht_rehash_iter < T, Key, Hash, Extract, KeyEqual, Washout > iterator;
+    using iterator = _ht_rehash_iter < T, Key, Hash, Extract, KeyEqual, Washout >;
 public:
     using size_type = shmc_size_type;
     using difference_type = ptrdiff_t;
@@ -143,7 +143,7 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++* this;
+        ++*this;
         return tmp;
     }
     //
@@ -198,7 +198,7 @@ private:
     //定义自己
     using self = shm_rehash_hashtable <T, Key, Hash, Extract, KeyEqual, Washout >;
 public:
-    //定义typedef
+    //定义using
     using value_type = T;
     using key_type = Key;
     using reference = value_type&;
@@ -235,7 +235,7 @@ protected:
         size_type           row_primes_ary_ = 0;
 
         //
-        size_type           primes_ary_[MAX_PRIMES_LIST_NUM] = { 0 };
+        size_type           primes_ary_[MAX_PRIMES_LIST_NUM] = {0};
 
         //淘汰起始的位置，为了避免每次淘汰都从一个地方开始
         size_type           expire_start_ = 0;
@@ -623,7 +623,7 @@ public:
                                           prime_ary,
                                           if_expire,
                                           row_prime_ary);
-        char *mem_addr = new char[sz_alloc];
+        char* mem_addr = new char[sz_alloc];
         slef_alloc_ = true;
         return initialize_i(row_prime_ary,
                             prime_ary,
@@ -681,7 +681,7 @@ public:
                                           if_expire,
                                           real_num);
         //自己分配一个空间，自己使用
-        char *mem_addr = new char[sz_alloc];
+        char* mem_addr = new char[sz_alloc];
         slef_alloc_ = true;
         return initialize_i(row_prime_ary,
                             prime_ary,

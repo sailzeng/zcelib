@@ -865,7 +865,7 @@
     <ClInclude Include="zce\db\pq\command.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\buffer\char_buffer.h">
+    <ClInclude Include="zce\buffer\string_buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\db\result_set.h">

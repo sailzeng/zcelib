@@ -29,9 +29,9 @@ public:
 
 protected:
     //
-    typedef std::unordered_map < soar::OGRE_PEER_ID,
+    using MAP_OF_SOCKETPEER_ID = std::unordered_map < soar::OGRE_PEER_ID,
         svc_tcp*,
-        soar::HASH_OF_OGREPEERID > MAP_OF_SOCKETPEER_ID;
+        soar::HASH_OF_OGREPEERID >;
     //
     MAP_OF_SOCKETPEER_ID  peer_info_set_;
 };

@@ -303,7 +303,7 @@ protected:
 
 #if defined ZCE_OS_LINUX
     ///EINN是Event，Inotify Node的缩写
-    typedef std::unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
+    using HDL_TO_EIN_MAP = std::unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >;
     ///反应器管理的目录节点信息的MAP,
     HDL_TO_EIN_MAP     watch_event_map_;
 

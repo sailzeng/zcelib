@@ -131,6 +131,7 @@ public:
 
 protected:
 
+    //! 注意，两个模板参数的顺序是不能交换的
     template<typename ...Types, std::size_t... Is>
     std::tuple<Types...> _make_tuple_i(std::index_sequence<Is...>)
     {

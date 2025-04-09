@@ -82,7 +82,9 @@ private:
         {
             b_singleton<T>::instance();
         }
-        inline void do_nothing() const {}
+        inline void do_nothing() const
+        {
+        }
     };
 
     //利用类的静态对象object_creator的构造初始化,在进入main之前已经调用了instance
@@ -112,8 +114,9 @@ zce::b_singleton<T>::create_object_;
 template <typename T>
 class c_singleton
 {
+    using ST = T;
 public:
-    typedef T ST;
+
     ///实例函数
     inline static T* instance()
     {
@@ -134,7 +137,7 @@ private:
     static T* instance_;
 };
 
-template <typename T>  zce::c_singleton<T>::ST * \
+template <typename T>  zce::c_singleton<T>::ST* \
 zce::c_singleton<T>::instance_ = nullptr;
 
 //========================================================================================================

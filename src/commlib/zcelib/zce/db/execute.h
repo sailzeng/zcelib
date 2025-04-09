@@ -6,6 +6,10 @@ template <typename CONNECT, typename COMMAND, typename RESULT>
 class exec
 {
 public:
+    using conn = CONNECT;
+    using cmd = COMMAND;
+    using res = RESULT;
+public:
     //!构造函数，不用处理什么，相关的成员变量的析构都进行了处理
     exec() = delete;
     ~exec() = delete;
@@ -50,6 +54,25 @@ public:
         {
             db_connect->disconnect();
         }
+    }
+
+    static int execute(CONNECT* db_connect,
+                       std::string_view sql)
+    {
+        COMMAND cmd(*db_connect);
+        int ret = cmd.execute(sql);
+        //如果错误
+        if (ret != 0)
+        {
+            ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+                    db_connect->error_no(),
+                    db_connect->error_message(),
+                    sql.data());
+            return -1;
+        }
+
+        //成功
+        return 0;
     }
 
     //!查询，非SELECT语句
@@ -118,18 +141,17 @@ public:
     }
 };
 }
-
 #if defined ZCE_USE_MYSQL
 
 #include "zce/db/mysql/connect.h"
 #include "zce/db/mysql/command.h"
 #include "zce/db/mysql/result.h"
 
-namespace zce::mysql
+namespace zce::db
 {
-typedef zce::db::exec<zce::mysql::connect,
+using my_exec = exec<zce::mysql::connect,
     zce::mysql::command,
-    zce::mysql::result> exec;
+    zce::mysql::result>;
 }
 #endif
 
@@ -139,10 +161,11 @@ typedef zce::db::exec<zce::mysql::connect,
 #include "zce/db/pq/command.h"
 #include "zce/db/pq/result.h"
 
-namespace zce::pq
+namespace zce::db
 {
-typedef zce::db::exec<zce::pq::connect,
+using pq_exec = exec<zce::pq::connect,
     zce::pq::command,
-    zce::pq::result> exec;
+    zce::pq::result>;
 }
+
 #endif

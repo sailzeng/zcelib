@@ -88,10 +88,10 @@ protected:
     };
 
     ///内部的APPFRAME的消息队列，
-    typedef zce::msgring_condi<soar::zerg_frame*> Inner_Frame_Queue;
+    using Inner_Frame_Queue = zce::msgring_condi<soar::zerg_frame*>;
 
     //内部的锁的数量
-    typedef std::unordered_set<ONLYONE_LOCK, HASH_OF_LOCK, EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
+    using ONLY_ONE_LOCK_POOL = std::unordered_set<ONLYONE_LOCK, HASH_OF_LOCK, EQUAL_OF_LOCK>;
 
 public:
 

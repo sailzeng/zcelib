@@ -27,7 +27,7 @@ class process_mutex
 public:
 
     //进程锁的GUARD
-    typedef zce::lock_guard<process_mutex> LOCK_GUARD;
+    using LOCK_GUARD = zce::lock_guard<process_mutex>;
 
 public:
     ///构造函数

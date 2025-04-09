@@ -4,9 +4,10 @@
 
 namespace zce::aio
 {
-typedef
-std::function <int(ZCE_HANDLE socket, RECTOR_EVENT event,
-    bool connect_succ)> event_callback_t;
+using event_callback_t = std::function <
+    int(ZCE_HANDLE socket,
+        RECTOR_EVENT event,
+        bool connect_succ)>;
 
 /*!
 * @brief      MINI反应器
@@ -41,7 +42,7 @@ protected:
 
     struct hash_event_call
     {
-        size_t operator()(const EVENT_CALL &obj) const
+        size_t operator()(const EVENT_CALL& obj) const
         {
             return (size_t)(obj.handle_);
         }
@@ -49,7 +50,7 @@ protected:
 
     struct equal_to_event_call
     {
-        bool operator()(const EVENT_CALL &obj1, const EVENT_CALL &obj2) const
+        bool operator()(const EVENT_CALL& obj1, const EVENT_CALL& obj2) const
         {
             if (obj1.handle_ == obj2.handle_)
             {
@@ -62,9 +63,9 @@ protected:
         }
     };
 
-    typedef std::unordered_multiset<EVENT_CALL,
+    using event_call_set_t = std::unordered_multiset<EVENT_CALL,
         hash_event_call,
-        equal_to_event_call> event_call_set_t;
+        equal_to_event_call>;
 
 public:
 
@@ -104,8 +105,8 @@ public:
     */
     bool find_event(ZCE_HANDLE handle,
                     RECTOR_EVENT event_todo,
-                    event_call_set_t::const_iterator &find_iter,
-                    size_t &hdl_event_num) const;
+                    event_call_set_t::const_iterator& find_iter,
+                    size_t& hdl_event_num) const;
 
     /*!
      * @brief 注册某个句柄，事件，如果触发了调用回调函数call_back

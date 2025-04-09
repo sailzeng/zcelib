@@ -45,12 +45,12 @@ template <class T >
 class _lordrings_iterator
 {
     //定义迭代器
-    typedef _lordrings_iterator<T > iterator;
+    using iterator = _lordrings_iterator<T >;
 public:
     //迭代器萃取器所有的东东
     using difference_type = ptrdiff_t;
-    typedef T *pointer;
-    typedef T &reference;
+    using pointer = T*;
+    using reference = T&;
     using value_type = T;
     using iterator_category = std::random_access_iterator_tag;
 
@@ -66,7 +66,7 @@ public:
     ///构造函数
     _lordrings_iterator(size_t rings_start,
                         size_t rings_capacity,
-                        T *rings_value_base,
+                        T* rings_value_base,
                         size_t serial
     ) :
         ring_start_(rings_start),
@@ -81,19 +81,19 @@ public:
     }
 
     ///*提领操作，
-    T &operator*() const
+    T& operator*() const
     {
         return *(rings_value_base_ + (ring_start_ + serial_) % ring_capacity_);
     }
 
     ///->操作
-    T *operator->() const
+    T* operator->() const
     {
         return rings_value_base_ + (ring_start_ + serial_) % ring_capacity_;
     }
 
     ///前向迭代器
-    iterator &operator++()
+    iterator& operator++()
     {
         serial_++;
         return *this;
@@ -103,12 +103,12 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++ *this;
+        ++*this;
         return tmp;
     }
 
     ///前向迭代器
-    iterator &operator--()
+    iterator& operator--()
     {
         serial_--;
         return *this;
@@ -118,12 +118,12 @@ public:
     iterator operator--(int)
     {
         iterator tmp = *this;
-        -- *this;
+        --*this;
         return tmp;
     }
 
     ///迭代器判定相等
-    bool operator==(const iterator &it) const
+    bool operator==(const iterator& it) const
     {
         if (rings_value_base_ == it.rings_value_base_
             && ring_start_ == it.ring_start_
@@ -137,7 +137,7 @@ public:
     }
 
     ///迭代器判定不相等
-    bool operator!=(const iterator &it) const
+    bool operator!=(const iterator& it) const
     {
         return !(*this == it);
     }
@@ -154,7 +154,7 @@ protected:
     ///魔戒的容量
     size_t ring_capacity_;
     ///数据的指针，
-    T *rings_value_base_;
+    T* rings_value_base_;
 
     //序列号,迭代器前进，增加的就是这个值
     size_t serial_;
@@ -169,14 +169,14 @@ class lord_rings
 {
 public:
     //定义迭代器
-    typedef _lordrings_iterator<T> iterator;
+    using iterator = _lordrings_iterator<T>;
     using const_iterator = const iterator;
-    using iterator_category = iterator::iterator_category ;
+    using iterator_category = iterator::iterator_category;
     using value_type = T;
     using reference = value_type&;
     using const_reference = const value_type&;
     using pointer = value_type*;
-    typedef std::size_t size_type;
+    using size_type = std::size_t;
 
     ///构造函数，后面必须调用,initialize
     lord_rings() = default;
@@ -296,7 +296,7 @@ public:
         size_t deque_size = size();
 
         size_t new_capacity = rsv_size + 1;
-        T *new_value_ptr = (T *)::malloc(sizeof(T) * new_capacity);
+        T* new_value_ptr = (T*)::malloc(sizeof(T) * new_capacity);
         if (new_value_ptr == nullptr)
         {
             return false;
@@ -381,7 +381,7 @@ public:
     * @param      value push的数据
     * @param      lay_over  你可以将lay_over参数置位true,覆盖原有的数据
     */
-    bool push_back(const T &value, bool lay_over = false)
+    bool push_back(const T& value, bool lay_over = false)
     {
         return push_back_i(value, lay_over);
     }
@@ -391,12 +391,12 @@ public:
         return push_back_i(value, lay_over);
     }
     ///将一个数据放入队列的头部,如果队列已经满了看lay_over参数处理
-    bool push_front(const T &value, bool lay_over = false)
+    bool push_front(const T& value, bool lay_over = false)
     {
         return push_front_i(value, lay_over);
     }
     //! 右值push_front
-    bool push_front(T &&value, bool lay_over = false)
+    bool push_front(T&& value, bool lay_over = false)
     {
         return push_front_i(value, lay_over);
     }
@@ -415,7 +415,7 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(T &value)
+    bool pop_front(T& value)
     {
         //如果是空的返回错误
         if (empty())
@@ -443,7 +443,7 @@ public:
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(T &value)
+    bool pop_back(T& value)
     {
         //如果是空的返回错误
         if (empty())
@@ -471,7 +471,7 @@ public:
     }
 
     //在某个位置上插入数据，后面的数据都后移一位
-    bool insert(size_t pos, T &value)
+    bool insert(size_t pos, T& value)
     {
         if (full())
         {
@@ -512,13 +512,13 @@ public:
     }
 
     ///[]数组下标定位,pos不要越界，自己保证，我没兴趣为你干什么
-    T &operator[](size_t pos)
+    T& operator[](size_t pos)
     {
         return vptr_ptr_[(lordring_start_ + pos) % lordring_capacity_];
     }
 
     ///[]数组下标定位,pos不要越界，自己保证，我没兴趣为你干什么
-    const T &operator[](size_t pos) const
+    const T& operator[](size_t pos) const
     {
         return vptr_ptr_[(lordring_start_ + pos) % lordring_capacity_];
     }
@@ -605,6 +605,6 @@ protected:
     ///队列的长度，
     size_t                 lordring_capacity_ = 0;
     ///存放数据的指针
-    T*                     vptr_ptr_ = nullptr;
+    T* vptr_ptr_ = nullptr;
 };
 }

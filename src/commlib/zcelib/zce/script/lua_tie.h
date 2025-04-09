@@ -646,7 +646,7 @@ public:
         //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
         int para_idx = 1;
         std::tuple<typename std::decay<args_type>::type_...> para = {
-            (read_stack<typename std::decay<args_type>::type_>(state,para_idx++))... };
+            (read_stack<typename std::decay<args_type>::type_>(state,para_idx++))...};
         //使用tuple执行函数调用
         push_stack<ret_type>(state,
                              zce::g_func_tuplearg_invoke(fun_ptr, para));
@@ -771,7 +771,7 @@ private:
     {
         //push是将结果放入堆栈
         void* upvalue_1 = ::lua_touserdata(state, lua_upvalueindex(1));
-        typedef ret_type(class_type::* mem_fun)(args_type...);
+        using mem_fun = ret_type(class_type::*)(args_type...);
         mem_fun fun_ptr = *(mem_fun*)(upvalue_1);
         //第一个参数是对象指针
         class_type* obj_ptr = read_stack<class_type*>(state, 1);
@@ -802,7 +802,7 @@ private:
     {
         //push是将结果放入堆栈
         void* upvalue_1 = ::lua_touserdata(state, lua_upvalueindex(1));
-        typedef void (class_type::* mem_fun)(args_type...);
+        using mem_fun = void (class_type::*)(args_type...);
         mem_fun fun_ptr = *(mem_fun*)(upvalue_1);
         //第一个参数是对象指针
         class_type* obj_ptr = read_stack<class_type*>(state, 1);
@@ -1825,7 +1825,7 @@ protected:
         //这个类的函数指针作为upvalue_的。
         //注意这儿是类的成员指针（更加接近size_t），而不是实际的指针，所以这儿不能用light userdata
         //下面这个写法真是要了人民，非要用typedef中转一下
-        typedef ret_type(class_type::* mem_fun)(args_type...);
+        using mem_fun = ret_type(class_type::*)(args_type...);
         new (lua_newuserdata(lua_state_, sizeof(mem_fun))) mem_fun(func);
         //
         ::lua_pushcclosure(lua_state_,

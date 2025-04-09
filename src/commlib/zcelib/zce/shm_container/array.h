@@ -24,7 +24,6 @@ namespace zce
 */
 template <class T> class shm_array
 {
-    //定义typedef
 private:
     using self = shm_array<T>;
 public:
@@ -120,7 +119,7 @@ public:
     {
         std::size_t sz_alloc = alloc_size(num_node);
         //自己分配一个空间，自己使用
-        char *mem_addr = new char[sz_alloc];
+        char* mem_addr = new char[sz_alloc];
         slef_alloc_ = true;
         return initialize(num_node, mem_addr, false);
     }

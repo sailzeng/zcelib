@@ -344,8 +344,8 @@ protected:
     uint32_t* hash_lz_offset_ = nullptr;
 };
 
-//直接的ZLZ的typedef，使用zce::zlz_compress::compress ,decompress函数就可以完成功能
-typedef zce::compress_pack<zce::zlz_format> zlz_compress;
+//直接的ZLZ的using，使用zce::zlz_compress::compress ,decompress函数就可以完成功能
+using zlz_compress = zce::compress_pack<zce::zlz_format>;
 
 //=====================================================================================================
 
@@ -390,8 +390,8 @@ protected:
     uint32_t* hash_lz_offset_ = nullptr;
 };
 
-//直接的ZEN LZ4的typedef
-typedef zce::compress_pack<lz4_format> lz4_compress;
+//直接的ZEN LZ4的using
+using lz4_compress = zce::compress_pack<lz4_format>;
 
 //=====================================================================================================
 };//end of zce

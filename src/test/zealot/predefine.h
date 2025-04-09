@@ -64,6 +64,11 @@
 #include <zce/db/mysql/connect.h>
 #include <zce/db/mysql/command.h>
 #include <zce/db/mysql/result.h>
+#include <zce/db/pq/connect.h>
+#include <zce/db/pq/command.h>
+#include <zce/db/pq/result.h>
+#include <zce/db/execute.h>
+#include <zce/db/result_set.h>
 
 #include <zce/util/id_to_string.h>
 #include <zce/util/mpl.h>
@@ -132,9 +137,9 @@
 #pragma warning ( disable : 4819)
 #endif
 
-//#include <boost/cstdint.hpp>
-//#include <boost/random.hpp>
-//#include <boost/date_time/posix_time/posix_time.hpp>
-//#include <boost/date_time/posix_time/posix_time_types.hpp>
+#if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
+#pragma comment(lib, "libgtest.lib" )
+#pragma comment(lib, "libgtest_main.lib" )
+#endif
 
 #endif

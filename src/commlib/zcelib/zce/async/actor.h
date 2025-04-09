@@ -155,7 +155,7 @@ class manager : public zce::timer_handler
 protected:
 
     ///异步对象池子，
-    typedef zce::lord_rings<actor*>  ASYNC_OBJECT_POOL;
+    using ASYNC_OBJECT_POOL = zce::lord_rings<actor*>;
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {
@@ -184,9 +184,9 @@ protected:
     };
 
     //异步对象记录池子（包括异步对象和记录信息）
-    typedef std::unordered_map<uint32_t, ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
+    using ASYNC_RECORD_POOL = std::unordered_map<uint32_t, ASYNC_OBJECT_RECORD>;
     //运行中的异步对象数量
-    typedef std::unordered_map<uint32_t, zce::async::actor* > RUNNING_ASYNOBJ_MAP;
+    using RUNNING_ASYNOBJ_MAP = std::unordered_map<uint32_t, zce::async::actor* >;
 
 public:
 

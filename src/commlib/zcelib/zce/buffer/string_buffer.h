@@ -6,24 +6,24 @@ namespace zce
 template<
     class CharT,
     class Traits = std::char_traits<CharT> >
-class basic_char_buffer
+class basic_string_buffer
 {
 public:
 
-    constexpr basic_char_buffer() noexcept = default;
-    constexpr basic_char_buffer(CharT* buf, size_t capacity) noexcept :
+    constexpr basic_string_buffer() noexcept = default;
+    constexpr basic_string_buffer(CharT* buf, size_t capacity) noexcept :
         buf_(buf), capacity_(capacity), use_(0)
     {
     }
-    constexpr basic_char_buffer(CharT* buf, size_t capacity, size_t use) noexcept :
+    constexpr basic_string_buffer(CharT* buf, size_t capacity, size_t use) noexcept :
         buf_(buf), capacity_(capacity), use_(use)
     {
     }
-    constexpr basic_char_buffer(const basic_char_buffer& cptr) noexcept = default;
-    basic_char_buffer& operator=(const basic_char_buffer& cptr) = default;
-    ~basic_char_buffer() = default;
-    basic_char_buffer(basic_char_buffer&&) noexcept = delete;
-    basic_char_buffer& operator=(basic_char_buffer&&) = delete;
+    constexpr basic_string_buffer(const basic_string_buffer& cptr) noexcept = default;
+    basic_string_buffer& operator=(const basic_string_buffer& cptr) = default;
+    ~basic_string_buffer() = default;
+    basic_string_buffer(basic_string_buffer&&) noexcept = delete;
+    basic_string_buffer& operator=(basic_string_buffer&&) = delete;
 
     const CharT operator[](size_t id) const
     {
@@ -66,7 +66,7 @@ public:
         use_ += len;
     }
 
-public:
+protected:
 
     //!
     CharT* buf_ = nullptr;
@@ -76,6 +76,6 @@ public:
     size_t use_ = 0;
 };
 
-typedef basic_char_buffer<char> char_buf;
-typedef basic_char_buffer<wchar_t> wchar_buf;
+using string_buf = basic_string_buffer<char>;
+using wstring_buf = basic_string_buffer<wchar_t>;
 }

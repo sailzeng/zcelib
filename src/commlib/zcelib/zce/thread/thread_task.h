@@ -86,11 +86,11 @@ public:
     thread_task();
     ~thread_task();
 
-    thread_task(const thread_task &) = delete;
+    thread_task(const thread_task&) = delete;
     thread_task& operator=(const thread_task&) = delete;
 
     //有移动构造
-    thread_task(thread_task &&) noexcept;
+    thread_task(thread_task&&) noexcept;
     thread_task& operator=(thread_task&&) noexcept;
 
 protected:
@@ -104,23 +104,23 @@ protected:
         _invoker_helper() = default;
         ~_invoker_helper() = default;
 
-        int operator()(Fn &func,
+        int operator()(Fn& func,
                        int detachstate,
                        size_t stacksize,
-                       ZCE_THREAD_ID *threadid)
+                       ZCE_THREAD_ID* threadid)
         {
             int ret = zce::pthread_create(threadid,
                                           &thread_attr_,
                                           _invoker_helper::svc_fuc,
-                                          (void *)(&func));
+                                          (void*)(&func));
             return ret;
         }
 
-        static void svc_fuc(void *vfunc)
+        static void svc_fuc(void* vfunc)
         {
-            Fn *func = (Fn *)(vfunc);
+            Fn* func = (Fn*)(vfunc);
             (*func)();
-            void *no_use = nullptr;
+            void* no_use = nullptr;
             zce::pthread_exit(no_use);
         }
     };
@@ -143,7 +143,7 @@ public:
 
     //!激活一个线程,根据args参数，执行fp函数，
     template <class Call, class... Args >
-    int activate(Call &&fp, Args&&... args)
+    int activate(Call&& fp, Args&&... args)
     {
         int ret = 0;
         auto svc_func =
@@ -174,26 +174,26 @@ public:
 protected:
 
     template <class Fn>
-    void __invoker_helper(Fn &func,
-                          ZCE_THREAD_ID *threadid,
-                          int *int_ret)
+    void __invoker_helper(Fn& func,
+                          ZCE_THREAD_ID* threadid,
+                          int* int_ret)
     {
         ;
         //注意这儿，注意这儿，static 函数的模板函数调用，要加template
         *int_ret = zce::pthread_create(threadid,
                                        &thread_attr_,
                                        thread_task::template __svc_fuc<Fn>,
-                                       (void *)(new Fn(std::move(func))));
+                                       (void*)(new Fn(std::move(func))));
     }
 
     //包装的线程执行函数
     template <class Fn>
-    static void * __svc_fuc(void *vfunc)
+    static void* __svc_fuc(void* vfunc)
     {
         //vfunc是new的，
-        std::unique_ptr<Fn> func((Fn *)(vfunc));
+        std::unique_ptr<Fn> func((Fn*)(vfunc));
         (*func.get())();
-        void *no_use = nullptr;
+        void* no_use = nullptr;
         zce::pthread_exit(no_use);
         return no_use;
     }
@@ -252,7 +252,7 @@ public:
     thread_task_wait();
     ~thread_task_wait();
 
-    thread_task_wait(const thread_task_wait &) = delete;
+    thread_task_wait(const thread_task_wait&) = delete;
     thread_task_wait& operator=(const thread_task_wait&) = delete;
 
     //如果需要管理处理，要自己登记，
@@ -275,7 +275,7 @@ public:
 
 protected:
     //用list管理，性能不是特别好，但考虑到要中间删除因素等等，忍了
-    typedef std::list <MANAGE_WAIT_INFO>   MANAGE_WAIT_THREAD_LIST;
+    using MANAGE_WAIT_THREAD_LIST = std::list <MANAGE_WAIT_INFO>;
 
     //单子实例
     static thread_task_wait* instance_;

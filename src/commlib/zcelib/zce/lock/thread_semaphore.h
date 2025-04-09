@@ -24,7 +24,7 @@ class thread_semaphore
 {
 public:
     //线程锁的GUARD
-    typedef zce::lock_guard<thread_semaphore> LOCK_GUARD;
+    using LOCK_GUARD = zce::lock_guard<thread_semaphore>;
 
 public:
 

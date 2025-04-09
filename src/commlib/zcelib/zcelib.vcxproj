@@ -127,7 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce\aio\reactor.cpp" />
-    <ClInclude Include="zce\buffer\char_buffer.h" />
+    <ClInclude Include="zce\buffer\string_buffer.h" />
     <ClCompile Include="zce\bytes\bytes_common.cpp" />
     <ClCompile Include="zce\db\mysql\command.cpp" />
     <ClCompile Include="zce\db\pq\command.cpp" />

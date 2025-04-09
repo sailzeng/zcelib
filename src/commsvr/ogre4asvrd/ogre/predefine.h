@@ -51,9 +51,6 @@
 #include <soar/stat/monitor.h>
 #include <soar/svrd/timer_base.h>
 
-//--------------------------------------------------------------------
-typedef std::unordered_set<unsigned int> SetOfIPAddress;
-
 ////统计计数器,方便查询SVR的状态
 
 //服务统计计数器

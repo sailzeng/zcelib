@@ -35,9 +35,9 @@ class mml_cmd
     };
 
     ///命令的选项
-    typedef std::set < std::string, lessofcasestr > MMLCMD_OPTION;
+    using MMLCMD_OPTION = std::set < std::string, lessofcasestr >;
     ///命令的参数
-    typedef std::map <std::string, std::string, lessofcasestr > MMLCMD_PARAMETER;
+    using MMLCMD_PARAMETER = std::map <std::string, std::string, lessofcasestr >;
 
 public:
 

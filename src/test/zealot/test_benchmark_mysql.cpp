@@ -26,7 +26,7 @@ const static int  RETURN_SUCC = 0;
 const static int  RETURN_DB_ERROR = -1;
 
 //社团数据库
-const char* DB_BENCHMARK_IP = "192.168.1.90";
+const char* DB_BENCHMARK_IP = "127.0.0.1";
 //社团数据库用户
 const char* DB_BENCHMARK_USER = "root";
 ////社团数据库用户密码
@@ -158,7 +158,7 @@ int benchmark_db_query(const char* sql,
     }
     std::string_view sql_str(sql);
     zce::mysql::command cmd(g_db_connect);
-    ret = cmd.query(sql_str);
+    ret = cmd.execute(sql_str);
     //如果错误
     if (ret != 0)
     {
@@ -236,7 +236,10 @@ int benchmark_delete_record(int table_id, int id, bool bexcutesql, char* szErr)
     return RETURN_SUCC;
 }
 
-int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
+int benchmark_select_record(int table_id,
+                            int id,
+                            bool bexcutesql,
+                            char* szErr)
 {
     char tmpsql[1024];
 
@@ -302,7 +305,11 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char* szErr)
     return RETURN_SUCC;
 }
 
-int benchmark_cache_record(int table_id, int id, int numruncache, bool bexcutesql, char* szErr)
+int benchmark_cache_record(int table_id,
+                           int id,
+                           int numruncache,
+                           bool bexcutesql,
+                           char* szErr)
 {
     for (int i = 0; i < numruncache; i++)
     {

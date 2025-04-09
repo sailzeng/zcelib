@@ -27,9 +27,9 @@
 namespace zce
 {
 //
-typedef zce::lockfree::kfifo<uint32_t> bus_pipe;
+using bus_pipe = zce::lockfree::kfifo<uint32_t>;
 //
-typedef zce::lockfree::kfifo<uint32_t>::node bus_node;
+using bus_node = zce::lockfree::kfifo<uint32_t>::node;
 
 //MMAP的管道，你要初始化几条就初始化几条
 template<size_t MAX_PIPE>
@@ -79,7 +79,7 @@ public:
         }
     }
 
-    mmap_buspipe(const mmap_buspipe &) = delete;
+    mmap_buspipe(const mmap_buspipe&) = delete;
     mmap_buspipe& operator=(const mmap_buspipe&) = delete;
 
 public:

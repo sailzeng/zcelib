@@ -25,7 +25,7 @@ class cycbuf_rings
 {
 public:
 
-    typedef varlen_buf<T> node;
+    using node = varlen_buf<T>;
 
 public:
 
@@ -249,7 +249,7 @@ protected:
 };
 
 //node的头部标识长度的字节长度是uint16_t还是uint32_t
-typedef cycbuf_rings<uint16_t> cycbuf_rings_u16;
-typedef cycbuf_rings<uint32_t> cycbuf_rings_u32;
-typedef cycbuf_rings<uint64_t> cycbuf_rings_u64;
+using cycbuf_rings_u16 = cycbuf_rings<uint16_t>;
+using cycbuf_rings_u32 = cycbuf_rings<uint32_t>;
+using cycbuf_rings_u64 = cycbuf_rings<uint64_t>;
 }

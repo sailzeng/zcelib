@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "zce/logger/log_print.h"
 #include "zce/container/lord_rings.h"
@@ -17,7 +17,7 @@ class dataptr_pool
 {
 public:
     //!对象池子对象
-    typedef T object;
+    using object = T;
 
     //!构造函数，析构函数，赋值函数
     dataptr_pool() = default;
@@ -55,7 +55,7 @@ public:
     }
 
     //!最后的销毁处理
-    void terminate(bool *leak_mem = nullptr)
+    void terminate(bool* leak_mem = nullptr)
     {
         std::lock_guard<LOCK> lock(lock_);
         //如果内存没有全部归还
@@ -83,7 +83,7 @@ public:
     }
 
     //!分配一个对象
-    T* alloc_object(bool *extend_pool = nullptr)
+    T* alloc_object(bool* extend_pool = nullptr)
     {
         std::lock_guard<LOCK> lock(lock_);
         auto ret = false;

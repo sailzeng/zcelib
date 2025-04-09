@@ -150,7 +150,7 @@ public:
 protected:
 
     ///
-    typedef zce::lord_rings<svc_tcp*> POOL_OF_TCP_HANDLER;
+    using POOL_OF_TCP_HANDLER = zce::lord_rings<svc_tcp*>;
 
     ///一个未能连接上的Connect 最大可以等待发送的FRAME数量
     static const size_t   MAX_LEN_OF_SEND_LIST = 8;

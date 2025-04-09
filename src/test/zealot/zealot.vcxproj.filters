@@ -50,7 +50,7 @@
     <ClCompile Include="test_fmtstr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_mysql.cpp">
+    <ClCompile Include="test_benchmark_mysql.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_bytes.cpp">
@@ -93,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_string.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

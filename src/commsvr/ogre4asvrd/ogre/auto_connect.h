@@ -43,9 +43,9 @@ protected:
 
 protected:
 
-    typedef std::unordered_set < TCP_PEER_MODULE_INFO,
+    using SET_OF_TCP_PEER_MODULE = std::unordered_set < TCP_PEER_MODULE_INFO,
         HASH_OF_PEER_MODULE,
-        EQUAL_OF_PEER_MODULE > SET_OF_TCP_PEER_MODULE;
+        EQUAL_OF_PEER_MODULE >;
 
     ///连接器
     zce::skt::connector ogre_connector_;

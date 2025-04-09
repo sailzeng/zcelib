@@ -29,9 +29,9 @@ class file_lock
 public:
 
     ///读锁的GUARD
-    typedef shared_guard<file_lock> LOCK_SHARED_GUARD;
+    using LOCK_SHARED_GUARD = shared_guard<file_lock>;
     ///写锁的GUARD
-    typedef unique_guard<file_lock> LOCK_UNIQUE_GUARD;
+    using LOCK_UNIQUE_GUARD = unique_guard<file_lock>;
 
 public:
 
@@ -40,7 +40,7 @@ public:
     ~file_lock();
 
     file_lock(const file_lock&) = delete;
-    file_lock& operator=(const file_lock &) = delete;
+    file_lock& operator=(const file_lock&) = delete;
 
 public:
 

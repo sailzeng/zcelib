@@ -3,7 +3,7 @@
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
 
 #include "zce/os_adapt/string.h"
-#include "zce/buffer/char_buffer.h"
+#include "zce/buffer/string_buffer.h"
 #include "zce/db/pq/connect.h"
 #include "zce/db/pq/result.h"
 
@@ -66,7 +66,7 @@ public:
     void tie(size_t id, const std::string& val);
     void tie(size_t id, const std::string_view& val);
     //char_buf,作为二进制数据绑定
-    void tie(size_t id, const zce::char_buf& val);
+    void tie(size_t id, const zce::string_buf& val);
 
     size_t num_bind() const
     {

@@ -5,19 +5,18 @@ namespace ogre
 class buffer_storage
 {
     //
-    typedef zce::lord_rings <soar::ogre4a_frame*> SAIL_FRAME_BUFFER_POOL;
-
-protected:
-
-    //只声明不实现,避免错误
-    buffer_storage(const buffer_storage&);
-    //只声明不实现,避免错误
-    buffer_storage& operator =(const buffer_storage&);
+    using SAIL_FRAME_BUFFER_POOL = zce::lord_rings <soar::ogre4a_frame*>;
 
 public:
     //构造函数和析构函数
     buffer_storage();
     ~buffer_storage();
+
+    //只声明不实现,避免错误
+    buffer_storage(const buffer_storage&) = delete;
+    buffer_storage& operator =(const buffer_storage&) = delete;
+    buffer_storage(buffer_storage&&) = delete;
+    buffer_storage& operator =(buffer_storage&&) = delete;
 
     //初始化
     void init_buffer_list(size_t szlist);

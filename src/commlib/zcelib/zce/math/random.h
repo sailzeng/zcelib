@@ -64,7 +64,7 @@
 *
 * 这个代码的名字是BOOST，实际上对BOOST设计有借鉴和简化，我不打算搞的太复杂，我需要的随机数分布大约也就是uint16_t,uint32_t,double,01,的平均分布
 * 我不想搞的太复杂，我打算就用2个部分，随机数发生器，随机数发生器产生的数据都是uint32_t
-* 变量产生器(里面包装了各种平均分布的函数),（默认包装一个随机数发生器），你使用变量产生器的typedef就OK了。
+* 变量产生器(里面包装了各种平均分布的函数),（默认包装一个随机数发生器），你使用变量产生器的using(typedef)就OK了。
 *
 * @note
 * 代码里面有大量都魔术数字，不是我要搞这种风格，是我和你们一样，对这些数字的含义是白痴
@@ -378,7 +378,7 @@ class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
 public:
     //构造函数还是把默认种子搞出来把
     explicit random_taus88(uint32_t seed) :
-        seed_arg_{ 0 }
+        seed_arg_{0}
     {
         srand(seed);
     }
@@ -476,7 +476,7 @@ class random_mt : public t_random_base<0, 0xFFFFFFFF>
 public:
 
     explicit random_mt(uint32_t seed = DEFAULT_SEED) :
-        state_{ 0 },
+        state_{0},
         postion_(0)
     {
         srand(seed);
@@ -553,7 +553,7 @@ protected:
 
 //看不懂吧，其实我也看不懂，mt[数字]，里面的数字其实是说循环长度是2^数字
 ///后缀为A这个里面的魔术数字是我从网上爬到的 http://www.quadibloc.com/crypto/co4814.htm
-typedef random_mt<351,
+using random_mt11213a = random_mt<351,
     175,
     0xFFF80000,
     0x0007FFFF,
@@ -564,9 +564,9 @@ typedef random_mt<351,
     0x655E5280,
     15,
     0xFFD58000,
-    17>  random_mt11213a;
+    17>;
 ///为啥名字中要一个B的后缀呢，因为对应有一个A，BOOST只选择了mt11213b.
-typedef random_mt<351,
+using random_mt11213b = random_mt<351,
     175,
     0xFFF80000,
     0x0007FFFF,
@@ -577,13 +577,13 @@ typedef random_mt<351,
     0x31B6AB00,
     15,
     0xFFE50000,
-    17>  random_mt11213b;
+    17>;
 ///@brief mt19937大概是现在大家最推荐的算法，
 ///这儿要介绍一下的是我们一般默认使用的算法mt19937的算法，
 ///这种算法速度快，而且循环周期长2^19937，在不那么大（2^623,你有需要创建比这个大的数值？）的数值中平均分布能力好，
 ///所以是群众们的最爱，所以大家默认选择这算法，
 /// 我的代码居然和C++的实现在实现方式，模板参数很接近。喔喔喔。
-typedef random_mt<624,
+using random_mt19937 = random_mt<624,
     397,
     0x80000000,
     0x7FFFFFFF,
@@ -594,7 +594,7 @@ typedef random_mt<624,
     0x9D2C5680,
     15,
     0xEFC60000,
-    18>  random_mt19937;
+    18>;
 
 //==============================================================================================================
 //
@@ -742,22 +742,22 @@ protected:
 };
 
 ///ranlux223 在BOOST中间被称为ranlux3
-typedef  random_ranlux<223>  random_ranlux223;
+using random_ranlux223 = random_ranlux<223>;
 ///ranlux389 在BOOST中间被称为ranlux4
-typedef  random_ranlux<389>  random_ranlux389;
+using random_ranlux389 = random_ranlux<389>;
 
 //=======================================================================================================
 
 ///定义了不同随机数发生器的变量产生器，如果没有多线程要求，可以直接使用他们
 
-typedef   zce::singleton<random_bsdrand>      bsdrand_instance;
-typedef   zce::singleton<random_rand48>       rand48_instance;
-typedef   zce::singleton<random_taus88>       taus88_instance;
-typedef   zce::singleton<random_mt11213a>     mt11213a_instance;
-typedef   zce::singleton<random_mt11213b>     mt11213b_instance;
-typedef   zce::singleton<random_mt19937>      mt19937_instance;
-typedef   zce::singleton<random_ranlux223>    ranlux223_instance;
-typedef   zce::singleton<random_ranlux389>    ranlux389_instance;
+using bsdrand_instance = zce::singleton<random_bsdrand>;
+using rand48_instance = zce::singleton<random_rand48>;
+using taus88_instance = zce::singleton<random_taus88>;
+using mt11213a_instance = zce::singleton<random_mt11213a>;
+using mt11213b_instance = zce::singleton<random_mt11213b>;
+using mt19937_instance = zce::singleton<random_mt19937>;
+using ranlux223_instance = zce::singleton<random_ranlux223>;
+using ranlux389_instance = zce::singleton<random_ranlux389>;
 
 //=======================================================================================================
 
@@ -843,22 +843,22 @@ protected:
 
 ///定义了不同随机数发生器的变量产生器，
 ///推荐mt19937_var_gen
-typedef   random_var_gen<random_bsdrand>      bsdrand_var_gen;
-typedef   random_var_gen<random_rand48>       rand48_var_gen;
-typedef   random_var_gen<random_taus88>       taus88_var_gen;
-typedef   random_var_gen<random_mt11213a>     mt11213a_var_gen;
-typedef   random_var_gen<random_mt11213b>     mt11213b_var_gen;
-typedef   random_var_gen<random_mt19937>      mt19937_var_gen;
-typedef   random_var_gen<random_ranlux223>    ranlux223_var_gen;
-typedef   random_var_gen<random_ranlux389>    ranlux389_var_gen;
+using bsdrand_var_gen = random_var_gen<random_bsdrand>;
+using rand48_var_gen = random_var_gen<random_rand48>;
+using taus88_var_gen = random_var_gen<random_taus88>;
+using mt11213a_var_gen = random_var_gen<random_mt11213a>;
+using mt11213b_var_gen = random_var_gen<random_mt11213b>;
+using mt19937_var_gen = random_var_gen<random_mt19937>;
+using ranlux223_var_gen = random_var_gen<random_ranlux223>;
+using ranlux389_var_gen = random_var_gen<random_ranlux389>;
 
 ///发生器实例，如果没有多线程要求，可以直接使用他们
-typedef   zce::singleton<bsdrand_var_gen>      bsdrand_vargen_inst;
-typedef   zce::singleton<rand48_var_gen>       rand48_vargen_inst;
-typedef   zce::singleton<taus88_var_gen>       taus88_vargen_inst;
-typedef   zce::singleton<mt11213a_var_gen>     mt11213a_vargen_inst;
-typedef   zce::singleton<mt11213b_var_gen>     mt11213b_vargen_inst;
-typedef   zce::singleton<mt19937_var_gen>      mt19937_vargen_inst;
-typedef   zce::singleton<ranlux223_var_gen>    ranlux223_vargen_inst;
-typedef   zce::singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
+using bsdrand_vargen_inst = zce::singleton<bsdrand_var_gen>;
+using rand48_vargen_inst = zce::singleton<rand48_var_gen>;
+using taus88_vargen_inst = zce::singleton<taus88_var_gen>;
+using mt11213a_vargen_inst = zce::singleton<mt11213a_var_gen>;
+using mt11213b_vargen_inst = zce::singleton<mt11213b_var_gen>;
+using mt19937_vargen_inst = zce::singleton<mt19937_var_gen>;
+using ranlux223_vargen_inst = zce::singleton<ranlux223_var_gen>;
+using ranlux389_vargen_inst = zce::singleton<ranlux389_var_gen>;
 };//namespace zce

@@ -19,7 +19,6 @@
 #include "zce/time/progress_timer.h"
 
 //-------------------------------------------------------------------------------------
-//socks 5 代理部分
 
 namespace zce
 {
@@ -30,20 +29,20 @@ public:
     ping() = default;
     ~ping() = default;
 
-    int initialize(::sockaddr *ping_addr,
+    int initialize(::sockaddr* ping_addr,
                    socklen_t addr_len);
 
     int initialize(int svr_family,
-                   const char *ping_svr);
+                   const char* ping_svr);
 
     ZCE_SOCKET get_handle();
 
     int send_echo(uint32_t ident, uint32_t seq);
 
-    int recv_echo(uint32_t *ident,
-                  uint32_t *seq,
-                  uint64_t *take_msec,
-                  uint8_t *ttl,
+    int recv_echo(uint32_t* ident,
+                  uint32_t* seq,
+                  uint64_t* take_msec,
+                  uint8_t* ttl,
                   zce::time_value* timeout_tv);
 
     int ping_test(size_t test_num);

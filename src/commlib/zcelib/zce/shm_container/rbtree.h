@@ -29,7 +29,7 @@ enum RB_TREE_COLOR
 };
 
 //
-typedef char  color_type;
+using color_type = char;
 
 template<class T, class Key, class Extract, class Compare> class rb_tree;
 
@@ -197,7 +197,7 @@ protected:
     //序列号
     size_type          serial_ = SHMC_INVALID_POINT;
     //RBtree的实例指针
-    shm_rb_tree_t * rb_tree_instance_ = nullptr;
+    shm_rb_tree_t* rb_tree_instance_ = nullptr;
 };
 
 /*!
@@ -217,7 +217,7 @@ class rb_tree
 {
     //迭代器友元
     friend class _rb_tree_iterator<T, Key, Extract, Compare>;
-    //定义typedef
+
 private:
     using self = rb_tree<T, Key, Extract, Compare>;
 public:
@@ -940,7 +940,7 @@ public:
     {
         std::size_t sz_alloc = alloc_size(num_node);
         //自己分配一个空间，自己使用
-        char *mem_addr = new char[sz_alloc];
+        char* mem_addr = new char[sz_alloc];
         slef_alloc_ = true;
         return initialize(num_node, mem_addr, false);
     }

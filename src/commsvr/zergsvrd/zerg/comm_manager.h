@@ -22,9 +22,9 @@ class svc_udp;
 class comm_manager
 {
     //
-    typedef std::vector<zerg::svc_accept*> TCPACCEPT_HANDLER_LIST;
+    using TCPACCEPT_HANDLER_LIST = std::vector<zerg::svc_accept*>;
     //
-    typedef std::vector<zerg::svc_udp*> UDPSVC_HANDLER_LIST;
+    using UDPSVC_HANDLER_LIST = std::vector<zerg::svc_udp*>;
 
 protected:
 

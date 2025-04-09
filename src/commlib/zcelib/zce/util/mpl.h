@@ -13,7 +13,7 @@ namespace zce
 template<typename T>
 struct has_def_typehelper
 {
-    typedef void type;
+    using type = void;
 };
 
 // 检测类型T是否具有内部的名为type的typedef
@@ -43,16 +43,16 @@ struct has_def_type : has_def_type_impl < T >
 template <class container_type>
 struct container_traits
 {
-    typedef typename container_type::iterator   iterator;
-    typedef typename container_type::value_type   value_type;
+    using iterator = typename container_type::iterator;
+    using  value_type = typename container_type::value_type;
 };
 
 //对数组容器进行特化
 template <typename T>
 struct container_traits<T*>
 {
-    typedef T* iterator;
-    typedef T   value_type;
+    using iterator = T*;
+    using value_type = T;
 };
 
 //----------------------------------------------------------------------------
@@ -65,12 +65,12 @@ struct if_
 template<typename type_a, typename type_b>
 struct if_ < true, type_a, type_b >
 {
-    typedef type_a type;
+    using type = type_a;
 };
 template<typename type_a, typename type_b>
 struct if_ < false, type_a, type_b >
 {
-    typedef type_b type;
+    using type = type_b;
 };
 
 //----------------------------------------------------------------------------
@@ -84,6 +84,7 @@ struct is_random_access_iterator
 //----------------------------------------------------------------------------
 
 //关注一下 std::invoke 函数std::result_of, std::invoke_result，std::mem_fun
+//如果使用tuple作为参数，可以考虑std::apply std::make_from_tuple
 
 template<typename fun_t, typename para_tuple, std::size_t... I>
 auto g_func_invoke_impl(fun_t& f,

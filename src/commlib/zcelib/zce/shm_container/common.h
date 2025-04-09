@@ -21,7 +21,7 @@
 *             BOOST的interprocess也可作为容器内存分配器，的确可以让容器在共享内存
 *             中使用，但他的每个对象都要进行分配，而且没有预估尺寸这些方法，所以其实也
 *             不太合适在服务器开发，吐槽一下，interprocess诞生的年代应该是2008年，
-*             我的代码出现比他可找多了。
+*             我的代码出现比他可早多了。
 *
 *             而我选择了完全在内部完全不使用指针的方式，固定最大数量,所有的数据开始都
 *             分配好，通过下标保存偏移位置的方式。
@@ -128,7 +128,7 @@ namespace zce
 
 //! size_type 定义，目前使用std::size_t(32位系统32bit，64位系统64bit)，
 //! 如果您觉得不需要那么大空间，需要缩小内存占用，可以将其调整uint32_t
-typedef std::size_t  shmc_size_type;
+using shmc_size_type = std::size_t;
 
 //! 空序号指针标示,32位为0xFFFFFFFF(-1),64位为0xFFFFFFFFFFFFFFFF(-1)
 //! SHMC = Share memory CONTAINER
@@ -153,7 +153,9 @@ void hash_prime_ary(shmc_size_type node_num,
 //写这个代码的时候hashtable还不是标准STL,
 //为了能直接在.net下编译,我不得不如此,其实你可以自己定义返回size_t整数Key的函数对象
 
-template <class keytpe> struct shm_hash {};
+template <class keytpe> struct shm_hash
+{
+};
 
 //这个函数其实是BKDRHash的描述，原有的STLPort中间seed 是5，BKDRHash 推荐使用131等值
 inline size_t _shm_hash_string(const char* str)

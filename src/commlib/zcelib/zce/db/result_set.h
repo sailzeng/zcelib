@@ -5,6 +5,8 @@
 
 namespace zce::db
 {
+template < typename Dbres, typename... Types > class result_set;
+
 template <typename Dbres, typename... Types>
 class result_set_iterator
 {
@@ -17,45 +19,45 @@ public:
     using iterator_type = result_set_iterator<Dbres, Types...>;
 
     result_set_iterator() = default;
-    result_set_iterator(result_set_t* res, size_t row) :
+    result_set_iterator(Dbres* res, size_t row) :
         result_(res),
         row_(row)
     {
     }
-    iterator_type(const iterator_type&) = default;
-    iterator_type& operator=(const result_set_iterator&) = default;
+    result_set_iterator(const result_set_iterator&) = default;
+    result_set_iterator& operator=(const result_set_iterator&) = default;
     //移动构造函数
-    iterator_type(iterator_type&&) noexcept = default;
-    iterator_type& operator=(iterator_type&&) noexcept = default;
+    result_set_iterator(result_set_iterator&&) noexcept = default;
+    result_set_iterator& operator=(result_set_iterator&&) noexcept = default;
 
-    iterator_type& operator++()
+    result_set_iterator& operator++()
     {
         ++row_;
         return *this;
     }
-    iterator_type operator++(int)
+    result_set_iterator operator++(int)
     {
         result_set_iterator tmp = *this;
         ++row_;
         return tmp;
     }
-    bool operator==(const iterator_type& other) const
+    bool operator==(const result_set_iterator& other) const
     {
         return ((row_ == other.row_) && (result_ == other.result_));
     }
-    bool operator!=(const iterator_type& other) const
+    bool operator!=(const result_set_iterator& other) const
     {
         return !(*this == other);
     }
     ///提领操作
-    value_type operator*() const
+    value_type operator*()
     {
-        return result_->make_tuple(row_);
+        return result_->make_tuple<Types...>(row_);
     }
 
 protected:
 
-    result_set_t* result_ = nullptr;
+    Dbres* result_ = nullptr;
 
     size_t row_ = 0;
 };
@@ -65,7 +67,7 @@ class result_set
 {
 public:
     using result_set_t = result_set<Dbres, Types...>;
-    using iterator = result_set<Dbres, Types...>;
+    using iterator = result_set_iterator<Dbres, Types...>;
     using value_type = std::tuple<Types...>;
 
     result_set() = default;
@@ -80,12 +82,12 @@ public:
 
     iterator begin()
     {
-        return iterator(this, 0);
+        return iterator(&result_, 0);
     }
 
     iterator end()
     {
-        return iterator(this, result_.num_of_rows());
+        return iterator(&result_, result_.num_of_rows());
     }
 
 protected:
@@ -93,3 +95,24 @@ protected:
     Dbres result_;
 };
 }
+#if defined ZCE_USE_MYSQL
+
+#include "zce/db/mysql/result.h"
+
+namespace zce::mysql
+{
+template <typename... Types>
+using result_set = zce::db::result_set<zce::mysql::result, Types...>;
+}
+#endif
+
+#if defined ZCE_USE_PQ
+
+#include "zce/db/pq/result.h"
+
+namespace zce::pq
+{
+template <typename... Types>
+using result_set = zce::db::result_set<zce::pq::result, Types...>;
+}
+#endif

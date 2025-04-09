@@ -71,7 +71,7 @@ protected:
     };
 
     ///存放所有NODE的数组，会在初始化时分配好空间，避免后面分配，
-    typedef   std::vector<ZCE_WHEEL_TIMER_NODE>  ARRAY_WHEEL_TIMER_NODE;
+    using ARRAY_WHEEL_TIMER_NODE = std::vector<ZCE_WHEEL_TIMER_NODE>;
 
 protected:
 
@@ -149,7 +149,7 @@ protected:
     *                           如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
     virtual int schedule_timer_i(zce::timer_handler* timer_hdl,
-                                 std::function<int(const zce::time_value &, int) > &call_fun,
+                                 std::function<int(const zce::time_value&, int) >& call_fun,
                                  int& time_id,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) override;

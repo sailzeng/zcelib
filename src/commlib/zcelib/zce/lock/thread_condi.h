@@ -20,8 +20,7 @@
 
 namespace zce
 {
-//线程的条件变量类,为了方便用了模版类，但请你直接用两个typedef
-//!使用线程MUTEX
+//! 线程条件变量的封装
 class thread_condition
 {
 public:

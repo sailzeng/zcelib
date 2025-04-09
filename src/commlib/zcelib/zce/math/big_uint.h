@@ -27,12 +27,12 @@ class big_uint
 {
 public:
 
-    typedef uint32_t UNIT_TYPE;
-    typedef big_uint<B> self;
+    using UNIT_TYPE = uint32_t;
+    using self = big_uint<B>;
 
     big_uint() = default;
     ~big_uint() = default;
-    big_uint(size_t digits, uint32_t *b)
+    big_uint(size_t digits, uint32_t* b)
     {
         assign(digits, b);
     }
@@ -43,12 +43,12 @@ public:
     }
 
     /// *this = one_unit
-    big_uint &operator = (uint32_t one_unit)
+    big_uint& operator = (uint32_t one_unit)
     {
         this->assign(one_unit);
         return *this;
     }
-    big_uint &operator = (const big_uint &other)
+    big_uint& operator = (const big_uint& other)
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
@@ -57,7 +57,7 @@ public:
         return *this;
     }
 
-    bool operator== (const big_uint &other) const
+    bool operator== (const big_uint& other) const
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
@@ -68,78 +68,78 @@ public:
         }
         return true;
     }
-    bool operator!= (const big_uint &other) const
+    bool operator!= (const big_uint& other) const
     {
         return !(*this == other);
     }
-    bool operator< (const big_uint &other) const
+    bool operator< (const big_uint& other) const
     {
         return cmp(*this, other) < 0 ? true : false;
     }
-    bool operator<= (const big_uint &other) const
+    bool operator<= (const big_uint& other) const
     {
         return cmp(*this, other) <= 0 ? true : false;
     }
-    bool operator> (const big_uint &other) const
+    bool operator> (const big_uint& other) const
     {
         return cmp(*this, other) > 0 ? true : false;
     }
-    bool operator>= (const big_uint &other) const
+    bool operator>= (const big_uint& other) const
     {
         return cmp(*this, other) >= 0 ? true : false;
     }
 
-    big_uint operator+ (const big_uint &other) const
+    big_uint operator+ (const big_uint& other) const
     {
         uint32_t carry = 0;
         big_uint result = add(*this, other, carry);
         return result;
     }
-    big_uint operator- (const big_uint &other) const
+    big_uint operator- (const big_uint& other) const
     {
         uint32_t borrow = 0;
         big_uint result = sub(*this, other, borrow);
         return result;
     }
-    big_uint operator* (const big_uint &other) const
+    big_uint operator* (const big_uint& other) const
     {
         big_uint result = mul(*this, other);
         return result;
     }
-    big_uint operator/ (const big_uint &other) const
+    big_uint operator/ (const big_uint& other) const
     {
         big_uint result = div(*this, other);
         return result;
     }
-    big_uint operator% (const big_uint &other) const
+    big_uint operator% (const big_uint& other) const
     {
         big_uint result = mod(*this, other);
         return result;
     }
 
-    big_uint operator+= (const big_uint &other)
+    big_uint operator+= (const big_uint& other)
     {
         uint32_t carry = 0;
         *this = add(*this, other, carry);
         return *this;
     }
-    big_uint operator-= (const big_uint &other)
+    big_uint operator-= (const big_uint& other)
     {
         uint32_t borrow = 0;
         *this = sub(*this, other, borrow);
         return *this;
     }
-    big_uint operator*= (const big_uint &other)
+    big_uint operator*= (const big_uint& other)
     {
         *this = mul(*this, other);
         return *this;
     }
-    big_uint operator/= (const big_uint &other)
+    big_uint operator/= (const big_uint& other)
     {
         *this = div(*this, other);
         return *this;
     }
-    big_uint operator%= (const big_uint &other)
+    big_uint operator%= (const big_uint& other)
     {
         *this = mod(*this, other);
         return *this;
@@ -156,21 +156,21 @@ public:
     }
     operator char* ()
     {
-        return (char *)bn_;
+        return (char*)bn_;
     }
     operator const char* () const
     {
-        return (const char *)bn_;
+        return (const char*)bn_;
     }
     //
-    int decode(const char *hexarr, size_t arr_szie)
+    int decode(const char* hexarr, size_t arr_szie)
     {
         assert(arr_szie < LEN_OF_U32_ARY * 4 * 2);
         size_t out_len = sizeof(bn_);
         return zce::base16_decode(hexarr, arr_szie, bn_, out_len);
     }
 
-    int encode(char *hexarr, size_t *arr_szie)
+    int encode(char* hexarr, size_t* arr_szie)
     {
         assert(*arr_szie <= LEN_OF_U32_ARY * 4 * 2);
         size_t in_len = sizeof(bn_);
@@ -178,7 +178,7 @@ public:
     }
 
     //! 赋值函数，用数组长度digits的数组b赋值
-    void assign(size_t digits, uint32_t *b)
+    void assign(size_t digits, uint32_t* b)
     {
         assert(digits <= LEN_OF_U32_ARY);
         if (digits > LEN_OF_U32_ARY)
@@ -231,14 +231,14 @@ public:
     }
 
     //!赋值函数,将一个buffer强行复制到bn_里面，加解密能用上
-    void putin(const char *buf)
+    void putin(const char* buf)
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
             bn_[i] = ZINDEX_TO_LEUINT32(buf, i);
         }
     }
-    void takeout(char *buf) const
+    void takeout(char* buf) const
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
@@ -267,7 +267,7 @@ public:
         return true;
     }
     // return a - b
-    static int cmp(const big_uint &a, const big_uint &b)
+    static int cmp(const big_uint& a, const big_uint& b)
     {
         //考虑大小端，还是不用memcmp了，
         for (ssize_t i = LEN_OF_U32_ARY - 1; i >= 0; --i)
@@ -448,7 +448,7 @@ public:
     }
 
     //从低位lsb到高位msb，第一个二进制1 是第几位bit(仍然从0位开始计数)
-    bool scanbit_msb2lsb(size_t &index) const
+    bool scanbit_msb2lsb(size_t& index) const
     {
         size_t vu = valid_units();
         if (vu == 0)
@@ -460,7 +460,7 @@ public:
     }
 
     //！从低位lsb到高位msb数，第一个二进制1是第几个bit，如果为值为0，返回0
-    bool scanbit_lsb2msb(size_t &index)
+    bool scanbit_lsb2msb(size_t& index)
     {
         index = 0;
         size_t vu = valid_units();
@@ -511,7 +511,7 @@ public:
     }
 
     //! mul one unit
-    static big_uint mul_unit(const big_uint &b,
+    static big_uint mul_unit(const big_uint& b,
                              uint32_t c)
     {
         big_uint a;
@@ -544,9 +544,9 @@ public:
     //@note : return a = b + c 这种返回值模式的缺点就是不好调试，返回值对象a经常被VC++优化了
 
     //return a = b + c
-    static big_uint add(const big_uint &b,
-                        const big_uint &c,
-                        uint32_t &carry)
+    static big_uint add(const big_uint& b,
+                        const big_uint& c,
+                        uint32_t& carry)
     {
         big_uint a;
         uint32_t ai = 0;
@@ -572,9 +572,9 @@ public:
     }
 
     //! 加法 return a = b - c
-    static big_uint sub(const big_uint &b,
-                        const big_uint &c,
-                        uint32_t &borrow)
+    static big_uint sub(const big_uint& b,
+                        const big_uint& c,
+                        uint32_t& borrow)
     {
         big_uint a;
         uint32_t ai = 0;
@@ -599,8 +599,8 @@ public:
     }
 
     // 减法return a = b * b
-    static big_uint mul(const big_uint &b,
-                        const big_uint &c)
+    static big_uint mul(const big_uint& b,
+                        const big_uint& c)
     {
         uint32_t carry = 0;
         big_uint a, bb = b, cc = c;
@@ -619,9 +619,9 @@ public:
     //! 采用移动递减的方式实现的整数除法，如果位数相差大，也会耗时，但时间消耗可以预估，
     //! 最后，仍然采用这个函数
     //! a = b / c, m = b % c
-    static big_uint div_i(const big_uint &b,
-                          const big_uint &c,
-                          big_uint &m)
+    static big_uint div_i(const big_uint& b,
+                          const big_uint& c,
+                          big_uint& m)
     {
         big_uint a, aa;
 
@@ -659,23 +659,23 @@ public:
     }
 
     //! return a = b % c
-    static big_uint mod(const big_uint &b,
-                        const big_uint &c)
+    static big_uint mod(const big_uint& b,
+                        const big_uint& c)
     {
         big_uint t, a;
         t = div_i(b, c, a);
         return a;
     }
     //! return a = b / c
-    static big_uint div(const big_uint &b,
-                        const big_uint &c)
+    static big_uint div(const big_uint& b,
+                        const big_uint& c)
     {
         big_uint t;
         return div_i(b, c, t);
     }
 
     //!https://blog.csdn.net/u014634338/article/details/40210435
-    static void ext_euc(big_uint a, big_uint b, big_uint &x, big_uint &y)
+    static void ext_euc(big_uint a, big_uint b, big_uint& x, big_uint& y)
     {
         big_uint xi_1, yi_1, xi_2, yi_2;
         xi_2 = 1, yi_2 = 0;
@@ -701,9 +701,9 @@ public:
     }
 
     // return a = b * c mod d 幂乘
-    static big_uint mod_mul(const big_uint &b,
-                            const big_uint &c,
-                            const big_uint &d)
+    static big_uint mod_mul(const big_uint& b,
+                            const big_uint& c,
+                            const big_uint& d)
     {
         //big_uint t; t = mul(b, c); return mod(t, d);
         big_uint a, bb = b;
@@ -733,9 +733,9 @@ public:
     // https://www.desgard.com/algo/docs/part2/ch01/2-quick-pow-mod/
     // 蒙哥马利算法进行超大数字模幂运算
     // 模幂运算(为啥不叫幂模预算) a = b ^ c mod d , exp = exponentiation
-    static big_uint mod_exp(const big_uint &b,
-                            const big_uint &c,
-                            const big_uint &d)
+    static big_uint mod_exp(const big_uint& b,
+                            const big_uint& c,
+                            const big_uint& d)
     {
         big_uint a, t = 1, bb = mod(b, d);
         size_t cvb = 0;
@@ -771,7 +771,7 @@ public:
 
     //!生成一个随机数,普通填充，用一些32位数填充，但不够紧密，不能用于质数选择
     template <class random_engine>
-    void random_fill(random_engine &engine, size_t bits)
+    void random_fill(random_engine& engine, size_t bits)
     {
         assert(bits % BN_UNIT_BITS == 0);
         size_t digits = bits / BN_UNIT_BITS;
@@ -783,7 +783,7 @@ public:
 
     //!生成一个随机数，紧密填充，
     template <class random_engine>
-    void random_tight(random_engine &engine, size_t bits)
+    void random_tight(random_engine& engine, size_t bits)
     {
         assert(bits % BN_UNIT_BITS == 0);
         size_t digits = bits / BN_UNIT_BITS;
@@ -809,10 +809,10 @@ public:
      * @param [out] counter 测试的数字数量，
     */
     template <class RANDOM_ENGINE>
-    void create_prime(RANDOM_ENGINE &engine,
+    void create_prime(RANDOM_ENGINE& engine,
                       size_t bits,
                       size_t rounds,
-                      size_t &counter)
+                      size_t& counter)
     {
         counter = 0;
         random_tight(engine, bits);
@@ -852,7 +852,7 @@ public:
 
     //! 判断一个数字是质数的方法
     template <class RANDOM_ENGINE>
-    bool isprime(RANDOM_ENGINE &engine, size_t rounds) const
+    bool isprime(RANDOM_ENGINE& engine, size_t rounds) const
     {
         assert(rounds > 0);
         static const big_uint BIG_UINT_1 = 1;
@@ -893,7 +893,7 @@ public:
 
     //https://www.cnblogs.com/RioTian/p/13927952.html
     //Miller - Rabin素性测试取是否是超大素数
-    bool miller_rabin(const big_uint &a) const
+    bool miller_rabin(const big_uint& a) const
     {
         static const big_uint BIG_UINT_1 = 1;
         big_uint t = *this - BIG_UINT_1;
@@ -938,7 +938,7 @@ protected:
 protected:
 
     //
-    uint32_t  bn_[LEN_OF_U32_ARY] = { 0 };
+    uint32_t  bn_[LEN_OF_U32_ARY] = {0};
 };
 }
 

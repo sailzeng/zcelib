@@ -65,7 +65,7 @@ protected:
 protected:
 
     ///
-    typedef std::vector< svc_udp*>  ARY_OF_UDPSVC_HANDLER;
+    using ARY_OF_UDPSVC_HANDLER = std::vector< svc_udp*>;
 
     ///UPD的数组，可以有多个UDP
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;

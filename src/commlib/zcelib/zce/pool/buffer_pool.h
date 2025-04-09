@@ -21,11 +21,11 @@ class buffer_pool
 protected:
 
     //每个桶里面存放一种尺寸的B
-    typedef zce::dataptr_pool<LOCK, B>  bucket;
+    using bucket = zce::dataptr_pool<LOCK, B>;
 
 public:
     //
-    typedef B buffer;
+    using buffer = B;
 
     //! 构造函数，析构函数，赋值函数
     buffer_pool() = default;
@@ -156,13 +156,13 @@ protected:
     bucket* pools_ = nullptr;
 };
 
-typedef buffer_pool<zce::null_lock, cycle_buffer> cycle_buffer_pool;
-typedef buffer_pool<zce::null_lock, queue_buffer> queue_buffer_pool;
-typedef buffer_pool<std::recursive_mutex, cycle_buffer> cycle_buffer_pool_s;
-typedef buffer_pool<std::recursive_mutex, queue_buffer> queue_buffer_pool_s;
+using cycle_buffer_pool = buffer_pool<zce::null_lock, cycle_buffer>;
+using queue_buffer_pool = buffer_pool<zce::null_lock, queue_buffer>;
+using cycle_buffer_pool_s = buffer_pool<std::recursive_mutex, cycle_buffer>;
+using queue_buffer_pool_s = buffer_pool<std::recursive_mutex, queue_buffer>;
 
-typedef zce::singleton<cycle_buffer_pool> cycle_buffer_pool_inst;
-typedef zce::singleton<queue_buffer_pool> queue_buffer_pool_inst;
-typedef zce::singleton<cycle_buffer_pool_s> cycle_buffer_pool_s_inst;
-typedef zce::singleton<queue_buffer_pool_s> queue_buffer_pool_s_inst;
+using cycle_buffer_pool_inst = zce::singleton<cycle_buffer_pool>;
+using queue_buffer_pool_inst = zce::singleton<queue_buffer_pool>;
+using cycle_buffer_pool_s_inst = zce::singleton<cycle_buffer_pool_s>;
+using queue_buffer_pool_s_inst = zce::singleton<queue_buffer_pool_s>;
 }

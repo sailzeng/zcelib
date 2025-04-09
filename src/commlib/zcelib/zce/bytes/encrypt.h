@@ -81,7 +81,7 @@
 *             3.负数部分应该都不用看，主要可能是计时误差导致的
 *             4.RC，CAST，MARS，AES这类算法使用sub key性能应该都有提升。
 *
-* @note       1.很多算法的模板都有typedef，请直接使用typedef的类，因为不少实现是有假设的，
+* @note       1.很多算法的模板都有using（typedef），请直接使用using的类，因为不少实现是有假设的，
 *             2.实现的算法很多时候没有考虑某些平台可能出现的BUS ERROR问题，算了，我的代码能移植到
 *               RISC( SPARC)CPU上吗？(ZINDEX_TO_LEUINT32这类转换是从指针读取整数的，不考虑对齐
 *               ，这个在X86体系上OK，但在一些 SPARC 架构 CPU上是会报错。不知现在如何了，吼吼)
@@ -144,7 +144,7 @@ namespace zce
 
 /*!
 @brief      提供ECB块加密，CBC交织加密的加密方式，使用各种加密算法作为
-            策略，（一般情况大家主要就使用typedef就OK了）
+            策略，（一般情况大家主要就使用using(typedef)就OK了）
 
             其中CBC的交织算法，我们的实现和标准基本一致，
              A.)一个BLOCK长度的IV，用随机数填充
@@ -164,7 +164,7 @@ class ZCE_Crypt
 {
 public:
     //从策略类萃取SUBKEY结构
-    typedef typename ENCRYPT_STRATEGY::SUBKEY_STRUCT   CRYPT_SUBKEY_STRUCT;
+    using CRYPT_SUBKEY_STRUCT = typename ENCRYPT_STRATEGY::SUBKEY_STRUCT;
 
     /*!
     @brief
@@ -395,8 +395,8 @@ public:
         *cipher_len = cphbuf_need_len;
 
         //用于记录异或结果的数据区，+4是因为尾巴补0的时候，可能溢出一个BLOCK，免得写一堆判断代码。
-        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = { 0 };
-        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = { 0 };
+        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
+        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = {0};
 
         //用你给出的iv以及随机数算法生成IV.填补进入密文数据区，目前设计的可以填充的iv 4个字节
         unsigned char* write_ptr = cipher_buf;
@@ -761,7 +761,7 @@ class XOR_ECB : public SubKey_Is_Key_ECB
 public:
 
     //XOR算法直接使用用户的KEY，
-    typedef  SUBKEY_IS_KEY SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = SUBKEY_IS_KEY;
 
     ///异或加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT* skey,
@@ -780,8 +780,8 @@ public:
 };
 
 //简单的异或加密，主要用于测试ZCE_Crypt，
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<XOR_ECB>   XOR_Crypt_128_128_1;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using  XOR_Crypt_128_128_1 = ZCE_Crypt<XOR_ECB>;
 
 //=================================================================================================================
 //DES 和 TDES(DES3)的设计实现
@@ -830,7 +830,7 @@ public:
     };
 
     //DES的subkey定义，方便萃取
-    typedef  DES_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = DES_SUBKEY;
 
     ///生成DES算法的sub key，其加密解密的sub key不同
     static void key_setup(const unsigned char* key,
@@ -860,7 +860,7 @@ protected:
 };
 
 //DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
-typedef ZCE_Crypt<DES_ECB > DES_Crypt_64_64_16;
+using DES_Crypt_64_64_16 = ZCE_Crypt<DES_ECB >;
 
 /*!
 * @brief      DES3（或称为Triple DES 或者 3DES）是三重数据加密算法（TDEA，Triple
@@ -887,7 +887,7 @@ public:
     };
 
     //DES的subkey定义，方便萃取
-    typedef  DES3_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = DES3_SUBKEY;
 
     ///生成DES算法的sub key，其加密解密的sub key不同
     static void key_setup(const unsigned char* key,
@@ -923,7 +923,7 @@ protected:
 };
 
 //DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
-typedef ZCE_Crypt<DES3_ECB > DES3_Crypt_64_192_16;
+using DES3_Crypt_64_192_16 = ZCE_Crypt<DES3_ECB >;
 
 //=================================================================================================================
 
@@ -943,7 +943,7 @@ class TEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
 public:
 
     //使用数组作为SUB KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = SUBKEY_IS_Uint32Ary;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT* sub_key,
@@ -1003,10 +1003,10 @@ public:
 };
 
 //TEA算法，TX用的是16轮，算法作者推荐是32轮，甚至64轮，
-//typedef命名原则是，加密算法名称，，算法处理的BLOCK长度key长度，轮数(推荐的轮数往往和key长度有一定关系)，
-typedef ZCE_Crypt<TEA_ECB<16 > > TEA_Crypt_64_128_16;
-typedef ZCE_Crypt<TEA_ECB<32 > > TEA_Crypt_64_128_32;
-typedef ZCE_Crypt<TEA_ECB<64 > > TEA_Crypt_64_128_64;
+//using命名原则是，加密算法名称，，算法处理的BLOCK长度key长度，轮数(推荐的轮数往往和key长度有一定关系)，
+using TEA_Crypt_64_128_16 = ZCE_Crypt<TEA_ECB<16 > >;
+using TEA_Crypt_64_128_32 = ZCE_Crypt<TEA_ECB<32 > >;
+using TEA_Crypt_64_128_64 = ZCE_Crypt<TEA_ECB<64 > >;
 
 //=================================================================================================================
 
@@ -1024,7 +1024,7 @@ class XTEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
 public:
 
     //使用数组作为SUB KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = SUBKEY_IS_Uint32Ary;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT* sub_key,
@@ -1082,10 +1082,10 @@ public:
 };
 
 //XTEA算法，
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<XTEA_ECB<16 > > XTEA_Crypt_64_128_16;
-typedef ZCE_Crypt<XTEA_ECB<32 > > XTEA_Crypt_64_128_32;
-typedef ZCE_Crypt<XTEA_ECB<64 > > XTEA_Crypt_64_128_64;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using XTEA_Crypt_64_128_16 = ZCE_Crypt<XTEA_ECB<16 > >;
+using XTEA_Crypt_64_128_32 = ZCE_Crypt<XTEA_ECB<32 > >;
+using XTEA_Crypt_64_128_64 = ZCE_Crypt<XTEA_ECB<64 > >;
 
 //=================================================================================================================
 
@@ -1104,7 +1104,7 @@ class XXTEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
 public:
 
     //使用数组作为SUB KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = SUBKEY_IS_Uint32Ary;
 
 #define XXTEA_MX (((z>>5^y<<2) + (y>>3^z<<4)) ^ ((sum^y) + (k[(p&3)^e] ^ z)))
 
@@ -1204,8 +1204,8 @@ public:
     const static size_t KEY_SIZE = 16;
 };
 
-typedef ZCE_Crypt<XXTEA_ECB<8, 32 > >  XXTEA_Crypt_64_128_32;
-typedef ZCE_Crypt<XXTEA_ECB<16, 16 > > XXTEA_Crypt_128_128_16;
+using XXTEA_Crypt_64_128_32 = ZCE_Crypt<XXTEA_ECB<8, 32 > >;
+using XXTEA_Crypt_128_128_16 = ZCE_Crypt<XXTEA_ECB<16, 16 > >;
 
 //=================================================================================================================
 
@@ -1219,7 +1219,7 @@ class GOST_ECB : public SubKey_Is_Uint32Ary_ECB<32>
 public:
 
     //算法直接使用用户的KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = SUBKEY_IS_Uint32Ary;
 
     ///GOST加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT* sub_key,
@@ -1242,8 +1242,8 @@ public:
 };
 
 //默认GOST加密8字节的BLOCK，32字节（256bits）的key，32轮,
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < GOST_ECB > GOST_Crypt_64_256_32;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using GOST_Crypt_64_256_32 = ZCE_Crypt < GOST_ECB >;
 
 //=================================================================================================================
 
@@ -1330,7 +1330,7 @@ class RC5_ECB : public RC_ECB_Base< key_size, round_size, sbox_size >
 public:
 
     //为了方便ZCE_Crypt,定义的子KEY类型，
-    typedef typename RC_ECB_Base<key_size, round_size, sbox_size>::RC_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = typename RC_ECB_Base<key_size, round_size, sbox_size>::RC_SUBKEY;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT* sub_key,
@@ -1371,9 +1371,9 @@ public:
 
 //RC5推荐的加密算法的轮数是12轮，RC5_Crypt_16_12_8，但维基后面也写了一句
 //12-round RC5 (with 64-bit blocks) is susceptible to a differential attack using 2^44 chosen plaintexts
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < RC5_ECB < 16, 12, 12 * 2 + 2 > > RC5_Crypt_64_128_12;
-typedef ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > > RC5_Crypt_64_128_20;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using RC5_Crypt_64_128_12 = ZCE_Crypt < RC5_ECB < 16, 12, 12 * 2 + 2 > >;
+using RC5_Crypt_64_128_20 = ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > >;
 
 /*!
 @brief      RC6曾经是AES的候选方案之一。
@@ -1397,8 +1397,8 @@ public:
     c = ZCE_ROTR32(c - skey_ptr[i + 1], t ) ^ u;          \
     a = ZCE_ROTR32(a - skey_ptr[i], u ) ^ t
 
-    //为了方便ZCE_Crypt的typedef定义
-    typedef typename RC_ECB_Base<key_size, round_size, sbox_size>::RC_SUBKEY  SUBKEY_STRUCT;
+    //为了方便ZCE_Crypt的using定义
+    using SUBKEY_STRUCT = typename RC_ECB_Base<key_size, round_size, sbox_size>::RC_SUBKEY;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT* sub_key,
@@ -1458,9 +1458,9 @@ public:
 };
 
 //模版参数是加密轮数，RC6推荐的加密算法的轮数是20，如果考虑加密强度，推荐使用RC6_Crypt_16_20_16
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < RC6_ECB < 16, 12, 12 * 2 + 4 > > RC6_Crypt_128_128_12;
-typedef ZCE_Crypt < RC6_ECB < 16, 20, 20 * 2 + 4 > > RC6_Crypt_128_128_20;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using RC6_Crypt_128_128_12 = ZCE_Crypt < RC6_ECB < 16, 12, 12 * 2 + 4 > >;
+using RC6_Crypt_128_128_20 = ZCE_Crypt < RC6_ECB < 16, 20, 20 * 2 + 4 > >;
 
 //=================================================================================================================
 
@@ -1518,7 +1518,7 @@ class CAST5_ECB : public CAST_ECB_Base < round_size >
 public:
 
     //为了方便ZCE_Crypt,定义的子KEY类型，
-    typedef typename CAST_ECB_Base<round_size>::CAST_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = typename CAST_ECB_Base<round_size>::CAST_SUBKEY;
 
     //根据原始密钥，生成算法所需要的密钥
     static void key_setup(const unsigned char* key,
@@ -1731,13 +1731,13 @@ public:
 };
 
 //第一个参数是密钥长度，第二个参数是加密轮数，如果考虑加密效果，推荐CAST5_Crypt_16_16_8
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
 //注意密钥长度如果是8，
-typedef ZCE_Crypt<CAST5_ECB<8, 12>  >  CAST5_Crypt_64_64_12;
-typedef ZCE_Crypt<CAST5_ECB<12, 16> >  CAST5_Crypt_64_96_16;
-typedef ZCE_Crypt<CAST5_ECB<16, 8>  >  CAST5_Crypt_64_128_8;
-typedef ZCE_Crypt<CAST5_ECB<16, 12> >  CAST5_Crypt_64_128_12;
-typedef ZCE_Crypt<CAST5_ECB<16, 16> >  CAST5_Crypt_64_128_16;
+using CAST5_Crypt_64_64_12 = ZCE_Crypt<CAST5_ECB<8, 12>  >;
+using CAST5_Crypt_64_96_16 = ZCE_Crypt<CAST5_ECB<12, 16> >;
+using CAST5_Crypt_64_128_8 = ZCE_Crypt<CAST5_ECB<16, 8>  >;
+using CAST5_Crypt_64_128_12 = ZCE_Crypt<CAST5_ECB<16, 12> >;
+using CAST5_Crypt_64_128_16 = ZCE_Crypt<CAST5_ECB<16, 16> >;
 
 /*!
 @brief      CAST6 又被称为CAST256，也是AES的备选方案，
@@ -1754,7 +1754,7 @@ class CAST6_ECB : public CAST_ECB_Base < round_size >
 public:
 
     //为了方便ZCE_Crypt,定义的子KEY类型，
-    typedef typename CAST_ECB_Base<round_size>::CAST_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = typename CAST_ECB_Base<round_size>::CAST_SUBKEY;
 
     //根据原始密钥，生成算法所需要的密钥
     static void key_setup(const unsigned char* key,
@@ -1980,15 +1980,15 @@ public:
 #undef CAST_F3
 
 //第一个参数是密钥长度，第二个参数是加密轮数，如果考虑加密效果，48轮的都值得推荐
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<CAST6_ECB<16, 12> >  CAST6_Crypt_128_128_12;
-typedef ZCE_Crypt<CAST6_ECB<16, 24> >  CAST6_Crypt_128_128_24;
-typedef ZCE_Crypt<CAST6_ECB<16, 36> >  CAST6_Crypt_128_128_36;
-typedef ZCE_Crypt<CAST6_ECB<16, 48> >  CAST6_Crypt_128_128_48;
-typedef ZCE_Crypt<CAST6_ECB<20, 48> >  CAST6_Crypt_128_160_48;
-typedef ZCE_Crypt<CAST6_ECB<24, 48> >  CAST6_Crypt_128_192_48;
-typedef ZCE_Crypt<CAST6_ECB<28, 48> >  CAST6_Crypt_128_224_48;
-typedef ZCE_Crypt<CAST6_ECB<32, 48> >  CAST6_Crypt_128_256_48;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using CAST6_Crypt_128_128_12 = ZCE_Crypt<CAST6_ECB<16, 12> >;
+using CAST6_Crypt_128_128_24 = ZCE_Crypt<CAST6_ECB<16, 24> >;
+using CAST6_Crypt_128_128_36 = ZCE_Crypt<CAST6_ECB<16, 36> >;
+using CAST6_Crypt_128_128_48 = ZCE_Crypt<CAST6_ECB<16, 48> >;
+using CAST6_Crypt_128_160_48 = ZCE_Crypt<CAST6_ECB<20, 48> >;
+using CAST6_Crypt_128_192_48 = ZCE_Crypt<CAST6_ECB<24, 48> >;
+using CAST6_Crypt_128_224_48 = ZCE_Crypt<CAST6_ECB<28, 48> >;
+using CAST6_Crypt_128_256_48 = ZCE_Crypt<CAST6_ECB<32, 48> >;
 
 //=================================================================================================================
 //MARS算法年的定义
@@ -2027,7 +2027,7 @@ public:
         uint32_t  ll_key_[40];
     };
 
-    typedef MARS_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = MARS_SUBKEY;
 
     static void key_setup(const unsigned char* key,
                           SUBKEY_STRUCT* sub_key,
@@ -2270,10 +2270,10 @@ public:
 };
 
 //理论可以选择16，20，24，28，32，36，40，44，48，52，56作为key长度
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<MARS_ECB<16> > MARS_Crypt_128_128_1;
-typedef ZCE_Crypt<MARS_ECB<24> > MARS_Crypt_128_192_1;
-typedef ZCE_Crypt<MARS_ECB<32> > MARS_Crypt_128_256_1;
+//using命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using MARS_Crypt_128_128_1 = ZCE_Crypt<MARS_ECB<16> >;
+using MARS_Crypt_128_192_1 = ZCE_Crypt<MARS_ECB<24> >;
+using MARS_Crypt_128_256_1 = ZCE_Crypt<MARS_ECB<32> >;
 
 //=================================================================================================================
 //AES 的算法代码来自Taocrypt库，
@@ -2311,7 +2311,7 @@ public:
     };
 
     //为了方便ZCE_Crypt,定义的子KEY类型，
-    typedef AES_SUBKEY  SUBKEY_STRUCT;
+    using SUBKEY_STRUCT = AES_SUBKEY;
 
     //生成加密所需的SKEY，注意，AES的加密和解密的sub key，是不一样的，（大家终于明白为啥要有这个参数了吧）
     static void key_setup(const unsigned char* key, SUBKEY_STRUCT* sub_key, bool if_encrypt)
@@ -2682,10 +2682,10 @@ public:
 };
 
 //24字节的key（196bits),32字节的的key(256bits)的key也被称为AES2
-//typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<AES_ECB<16, 10> > AES_Crypt_128_128_10;
-typedef ZCE_Crypt<AES_ECB<24, 12> > AES_Crypt_128_192_12;
-typedef ZCE_Crypt<AES_ECB<32, 14> > AES_Crypt_128_256_14;
+//using 命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
+using AES_Crypt_128_128_10 = ZCE_Crypt<AES_ECB<16, 10> >;
+using AES_Crypt_128_192_12 = ZCE_Crypt<AES_ECB<24, 12> >;
+using AES_Crypt_128_256_14 = ZCE_Crypt<AES_ECB<32, 14> >;
 };
 
 #if defined (ZCE_OS_WINDOWS)

@@ -24,7 +24,7 @@ class process_semaphore
 public:
 
     ///线程锁的GUARD
-    typedef zce::semaphore_guard<process_semaphore> LOCK_GUARD;
+    using LOCK_GUARD = zce::semaphore_guard<process_semaphore>;
 
 public:
 

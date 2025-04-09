@@ -33,7 +33,7 @@ class thread_mutex
 {
 public:
     ///线程锁的GUARD
-    typedef zce::lock_guard<thread_mutex> LOCK_GUARD;
+    using LOCK_GUARD = zce::lock_guard<thread_mutex>;
 
 public:
 
@@ -68,7 +68,7 @@ class thread_recursive_mutex
 public:
 
     ///递归锁的GUARD
-    typedef zce::lock_guard<thread_recursive_mutex> LOCK_GUARD;
+    using LOCK_GUARD = zce::lock_guard<thread_recursive_mutex>;
 
 public:
 
@@ -108,7 +108,7 @@ class thread_nonr_mutex : public zce::lock_base
 {
 public:
     ///锁的GUARD
-    typedef zce::lock_guard<thread_nonr_mutex> LOCK_GUARD;
+    using LOCK_GUARD = zce::lock_guard<thread_nonr_mutex>;
 
 public:
 

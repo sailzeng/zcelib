@@ -129,12 +129,12 @@ protected:
     };
 
     ///
-    typedef std::unordered_map<soar::SERVICES_ID,
-        svc_tcp*, soar::HASH_OF_SVCID> MAP_OF_SVCID_TO_HDL;
+    using MAP_OF_SVCID_TO_HDL = std::unordered_map<soar::SERVICES_ID,
+        svc_tcp*, soar::HASH_OF_SVCID>;
 
     ///用于根据TYPE选择一个任意服务器，或者根据TYPE广播给所有这个类型的服务器
-    typedef std::unordered_map<uint16_t,
-        SERVICES_ID_TABLE > MAP_OF_TYPE_TO_IDTABLE;
+    using MAP_OF_TYPE_TO_IDTABLE = std::unordered_map<uint16_t,
+        SERVICES_ID_TABLE >;
 
     ///
     size_t max_peer_size_ = 0;

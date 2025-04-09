@@ -82,7 +82,7 @@ namespace zce
 class queue_buffer;
 
 template<typename L, typename B> class buffer_pool;
-typedef buffer_pool<std::recursive_mutex, queue_buffer> queue_buffer_pool_s;
+using queue_buffer_pool_s = buffer_pool<std::recursive_mutex, queue_buffer>;
 
 struct LOG_RECORD
 {
@@ -110,7 +110,7 @@ public:
     virtual ~log_file();
 
     ///
-    log_file(const log_file &) = delete;
+    log_file(const log_file&) = delete;
     log_file& operator=(const log_file&) = delete;
 
     /*!
@@ -263,9 +263,9 @@ protected:
     //!输出到文件的现场
     std::thread thread_outlog_;
     //!日志记录缓存的池子，
-    zce::queue_buffer_pool_s *buf_pool_ = nullptr;
+    zce::queue_buffer_pool_s* buf_pool_ = nullptr;
 
     //!日志记录的消息队列
-    zce::msgring_condi<LOG_RECORD> *msg_queue_ = nullptr;
+    zce::msgring_condi<LOG_RECORD>* msg_queue_ = nullptr;
 };
 }

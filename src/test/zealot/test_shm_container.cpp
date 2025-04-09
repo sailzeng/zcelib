@@ -16,19 +16,19 @@ int test_cachechunk(int /*argc*/, char* /*argv*/[])
         return -1;
     }
     char tmpbuf[512];
-    char tmpbuf1[68] = { "1234567890123456789012345678901234567890" };
+    char tmpbuf1[68] = {"1234567890123456789012345678901234567890"};
     tmpbuf1[67] = '\0';
     size_t usenode;
     pmmap.push_node(68, tmpbuf1, usenode);
     size_t szdatalen;
     pmmap.pull_node(usenode, szdatalen, tmpbuf);
-    char tmpbuf2[32] = { "12345678901234567890" };
+    char tmpbuf2[32] = {"12345678901234567890"};
     pmmap.push_node(32, tmpbuf2, usenode);
     pmmap.pull_node(usenode, szdatalen, tmpbuf);
     usenode = 0;
     pmmap.free_node(usenode);
 
-    char tmpbuf3[168] = { "12345678901234567890123456789012345678901234567890123456789012345678901234567890" };
+    char tmpbuf3[168] = {"12345678901234567890123456789012345678901234567890123456789012345678901234567890"};
     bret = pmmap.push_node(168, tmpbuf3, usenode);
     pmmap.pull_node(usenode, szdatalen, tmpbuf);
     pmmap.free_node(usenode);
@@ -40,7 +40,7 @@ int test_cachechunk(int /*argc*/, char* /*argv*/[])
     bret = pmmap.push_node(32, tmpbuf2, usenode);
     usenode = 3;
     pmmap.free_node(usenode);
-    char tmpbuf4[2048] = { ":(---)" };
+    char tmpbuf4[2048] = {":(---)"};
     bret = pmmap.push_node(2048, tmpbuf4, usenode);
     bret = pmmap.push_node(704, tmpbuf4, usenode);
     bret = pmmap.push_node(672, tmpbuf4, usenode);
@@ -203,7 +203,7 @@ int test_list(int /*argc*/, char* /*argv*/[])
 
 int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::rb_tree< int, int >  TEST_RB_TREE;
+    using TEST_RB_TREE = zce::rb_tree< int, int >;
     TEST_RB_TREE test_rb_tree;
     size_t  size_of_tree = 16;
 
@@ -312,7 +312,7 @@ int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[])
 //使用随机数测试，RB Tree
 int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::rb_tree< int, int >  TEST_RB_TREE;
+    using TEST_RB_TREE = zce::rb_tree< int, int >;
     TEST_RB_TREE test_rb_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_RB_TREE::iterator  tree_iter, tree_iter_end;
@@ -436,7 +436,7 @@ int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[])
 //测试，AVL Tree
 int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
+    using TEST_AVL_TREE = zce::shm_avltree< int, int >;
     TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -506,7 +506,7 @@ int test_mmap_avltree1(int /*argc*/, char* /*argv*/[])
 //使用随机数测试，AVL Tree
 int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
+    using TEST_AVL_TREE = zce::shm_avltree< int, int >;
     TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -641,7 +641,7 @@ int test_mmap_avltree2(int /*argc*/, char* /*argv*/[])
 int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 {
     size_t erase_count = 0;
-    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
+    using TEST_AVL_TREE = zce::shm_avltree< int, int >;
     TEST_AVL_TREE test_avl_tree;
     size_t  SIZE_OF_TREE = 16;
 
@@ -786,7 +786,7 @@ int test_mmap_avltree3(int /*argc*/, char* /*argv*/[])
 //测试4种插入情况的平衡旋转
 int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
+    using TEST_AVL_TREE = zce::shm_avltree< int, int >;
     TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -893,7 +893,7 @@ int test_mmap_avltree4(int /*argc*/, char* /*argv*/[])
 //使用随机数测试，测试equal的情况,AVL Tree
 int test_mmap_avltree5(int /*argc*/, char* /*argv*/[])
 {
-    typedef zce::shm_avltree< int, int >  TEST_AVL_TREE;
+    using TEST_AVL_TREE = zce::shm_avltree< int, int >;
     TEST_AVL_TREE test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -1284,7 +1284,7 @@ class Lux_Data_Manager : public  zce::non_copyable
 {
 protected:
     //
-    typedef zce::shm_expire_hashtable<MY_DATA, int, zce::shm_hash<int>, EXTRACT_INT_MY_DATA> HASH_TABLE_MY_DATA;
+    using HASH_TABLE_MY_DATA = zce::shm_expire_hashtable<MY_DATA, int, zce::shm_hash<int>, EXTRACT_INT_MY_DATA>;
     //
     size_t              data_number_;
     //
@@ -1505,9 +1505,9 @@ int test_lux_data_manager(int argc, char* /*argv*/[])
     return 0;
 }
 
-typedef zce::shm_rehash_hashtable<int, int> SMEM_HASH_SAFE_INT;
+using SMEM_HASH_SAFE_INT = zce::shm_rehash_hashtable<int, int>;
 
-typedef zce::shm_hashtable<int, int> SMEM_HASH_TABLE_INT;
+using SMEM_HASH_TABLE_INT = zce::shm_hashtable<int, int>;
 
 int test_hash_match(int /*argc*/, char* /*argv*/[])
 {
@@ -1633,7 +1633,7 @@ int test_hash_match(int /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-typedef zce::shm_rehash_hashtable<int, int> SMEM_HASH_SAFE_INT;
+using SMEM_HASH_SAFE_INT = zce::shm_rehash_hashtable<int, int>;
 
 int test_hash_safe(int /*argc*/, char* /*argv*/[])
 {

@@ -11,7 +11,7 @@ namespace zerg
 */
 class ip_restrict
 {
-    typedef std::unordered_set<unsigned int> Set_Of_IPAddress;
+    using SET_OF_IPADDRESS = std::unordered_set<unsigned int>;
 
 protected:
     //
@@ -39,8 +39,8 @@ protected:
 protected:
 
     //允许进行连接的IP地址
-    Set_Of_IPAddress           allow_ip_set_;
+    SET_OF_IPADDRESS           allow_ip_set_;
     //拒绝进行连接的IP地址
-    Set_Of_IPAddress           reject_ip_set_;
+    SET_OF_IPADDRESS           reject_ip_set_;
 };
 }

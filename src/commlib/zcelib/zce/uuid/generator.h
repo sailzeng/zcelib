@@ -137,7 +137,7 @@ protected:
 };
 
 //! @brief 实例
-typedef zce::singleton<uuid64_gen> uuid64_gen_inst;
+using uuid64_gen_inst = zce::singleton<uuid64_gen>;
 
 /************************************************************************************************************
 Class           : uuid128_gen UUID的发生器
@@ -198,5 +198,5 @@ protected:
 };
 
 //! @brief 实例
-typedef zce::singleton<uuid64_gen> uuid128_gen_inst;
+using uuid128_gen_inst = zce::singleton<uuid64_gen>;
 }

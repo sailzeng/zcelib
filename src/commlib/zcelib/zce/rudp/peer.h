@@ -81,7 +81,7 @@ public:
 
     peer() = default;
     peer(const peer&) = default;
-    peer& operator = (const peer & other) = default;
+    peer& operator = (const peer& other) = default;
 protected:
     virtual ~peer() = default;
 public:
@@ -98,7 +98,7 @@ public:
      * @return
     */
     int recv(char* buf,
-             size_t *recv_len);
+             size_t* recv_len);
 
     /**
      * @brief 给外部调用的发送接口，把数据让如发送窗口，（是否实际发送看情况）
@@ -108,7 +108,7 @@ public:
      * @return 返回0表示成功，如果返回-1，错误是EWOULDBLOCK表示请稍等一下发送
     */
     int send(const char* buf,
-             size_t *send_len);
+             size_t* send_len);
 
     //!可以接收的数据(窗口)尺寸
     inline size_t recv_bytes()
@@ -141,12 +141,12 @@ protected:
      * @param [out] next_call     返回下一步的操作类型是什么
      * @return 返回0表示成功
     */
-    int deliver_recv(const zce::sockaddr_any *remote_addr,
-                     RUDP_FRAME *recv_frame,
+    int deliver_recv(const zce::sockaddr_any* remote_addr,
+                     RUDP_FRAME* recv_frame,
                      size_t frame_len,
-                     bool *remote_change,
-                     zce::sockaddr_any *old_remote,
-                     RECV_NEXT_CALL *next_call);
+                     bool* remote_change,
+                     zce::sockaddr_any* old_remote,
+                     RECV_NEXT_CALL* next_call);
 
     /**
      * @brief 发送FRAME数据去远端，
@@ -160,12 +160,12 @@ protected:
     int send_frame_to(int flag,
                       bool prev_rec_ack = false,
                       bool first_send = true,
-                      const char *data = nullptr,
+                      const char* data = nullptr,
                       size_t sz_data = 0,
-                      SEND_RECORD *snd_rec = nullptr);
+                      SEND_RECORD* snd_rec = nullptr);
 
     //跟进收到ACK ID确认那些发送成功了
-    int acknowledge_send(const RUDP_FRAME *recv_frame,
+    int acknowledge_send(const RUDP_FRAME* recv_frame,
                          uint64_t now_clock);
 
     //!在收到ACK返回之后，计算RTO
@@ -173,13 +173,13 @@ protected:
                        uint64_t now_clock);
 
     ///处理接收的数据
-    int process_recv_data(const RUDP_FRAME *recv_frame,
-                          RECV_DATA_LOCATION *op);
+    int process_recv_data(const RUDP_FRAME* recv_frame,
+                          RECV_DATA_LOCATION* op);
 
     //!超时处理，大约10ms调用一次他。
     void time_out(uint64_t now_clock_ms,
-                  bool *not_alive,
-                  bool *connect_fail);
+                  bool* not_alive,
+                  bool* connect_fail);
 
     //!调整拥塞窗口
     void adjust_cwnd(CWND_EVENT event);
@@ -195,7 +195,7 @@ protected:
     void send_ack();
 
     //!DUMP信息
-    void dump_info(const char *some_thing, zce::LOG_PRIORITY log_priority);
+    void dump_info(const char* some_thing, zce::LOG_PRIORITY log_priority);
 
 protected:
 
@@ -209,7 +209,7 @@ protected:
         //!发送数据的长度
         size_t len_ = 0;
         //!记录这个数据在发送窗口的位置，
-        char *buf_pos_ = nullptr;
+        char* buf_pos_ = nullptr;
 
         //!发送的时间，需要记录，在就算RTO时使用
         uint64_t send_clock_ = 0;
@@ -219,7 +219,7 @@ protected:
         size_t send_num_ = 0;
     };
 
-    typedef zce::lord_rings<SEND_RECORD >  SEND_RECORD_LIST;
+    using SEND_RECORD_LIST = zce::lord_rings<SEND_RECORD >;
 
     //! 接收记录
     struct RECV_RECORD
@@ -273,9 +273,9 @@ protected:
     zce::cycle_buffer recv_windows_;
 
     //!接收的BUFFER,根据model不同，生成（处理）方式不同
-    char *recv_buffer_ = nullptr;
+    char* recv_buffer_ = nullptr;
     //!发送的BUFFER,根据model不同，生成（处理）方式不同
-    char *send_buffer_ = nullptr;
+    char* send_buffer_ = nullptr;
 
     //MTU的类型,从道理来说。两端的MTU可以不一样，因为走得线路都可能不一样，
     //但考虑到简单，我们先把两端的MTU约束成一样,

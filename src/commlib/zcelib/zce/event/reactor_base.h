@@ -28,8 +28,8 @@ class reactor :public zce::non_copyable
 protected:
 
     ///使用hansh map保存句柄到zce::Event_Handler的MAP ，力求最高的性能
-    typedef std::unordered_map<ZCE_HANDLE,
-        zce::event_handler* >  MAP_OF_HANDLER_TO_EVENT;
+    using MAP_OF_HANDLER_TO_EVENT = std::unordered_map<ZCE_HANDLE,
+        zce::event_handler* >;
 
 protected:
 

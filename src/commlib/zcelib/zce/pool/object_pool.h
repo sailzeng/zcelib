@@ -31,7 +31,7 @@ class object_pool
 {
 public:
     //!对象池子对象
-    typedef T object;
+    using object = T;
 
     //!构造函数，析构函数，赋值函数
     object_pool() = default;
@@ -64,7 +64,7 @@ public:
     }
 
     //!最后的销毁处理
-    void terminate(bool *leak_mem = nullptr)
+    void terminate(bool* leak_mem = nullptr)
     {
         std::lock_guard<LOCK> lock(lock_);
         //如果内存没有全部归还
@@ -94,10 +94,10 @@ public:
     //! 构造函数和销毁的方式，constructor 和 destroy 成对使用
     //! 用于你需要使用构造函数初始化指针的地方，需要析构释放资源的地方
     template<typename... Args>
-    object_pool::object *constructor(Args&&... args)
+    object_pool::object* constructor(Args&&... args)
     {
         std::lock_guard<LOCK> lock(lock_);
-        void *ptr = alloc_ptr();
+        void* ptr = alloc_ptr();
         return new(ptr) object_pool::object(args...);
     }
     //! 析构释放指针
@@ -105,7 +105,7 @@ public:
     {
         std::lock_guard<LOCK> lock(lock_);
         obj->~T();
-        free_ptr((char *)obj);
+        free_ptr((char*)obj);
     }
 
     inline size_t size()
@@ -182,7 +182,7 @@ protected:
         //
         for (size_t i = 0; i < extend_size; ++i)
         {
-            char *new_ptr = new char[sz_object];
+            char* new_ptr = new char[sz_object];
             voidptr_pool_.push_back(new_ptr);
         }
         return true;

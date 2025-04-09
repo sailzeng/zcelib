@@ -38,7 +38,7 @@ public:
 protected:
 
     ///句柄的池子，避免每次都new处理
-    typedef zce::lord_rings<svc_tcp*> POOL_OF_TCP_HANDLER;
+    using POOL_OF_TCP_HANDLER = zce::lord_rings<svc_tcp*>;
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
@@ -315,7 +315,7 @@ protected:
     soar::SERVICES_ID          peer_svr_id_;
 
     ///接收数据的缓冲
-    zce::queue_buffer*         rcv_buffer_;
+    zce::queue_buffer* rcv_buffer_;
 
     ///发送队列的大小，如果一个端口接受数据比较缓慢，则可能会先放入发送队列，等端口变为可写才能发送过去，
     ///那么发送队列就要负担缓冲这种危机的任务，发送总缓冲长度实际等于 = 发送队列的长度*每个队列成员BUFFER的大小(64K)，

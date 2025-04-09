@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/buffer/char_buffer.h"
+#include "zce/buffer/string_buffer.h"
 #include "zce/db/pq/command.h"
 
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
@@ -280,7 +280,7 @@ void bind::tie(size_t id, const std::string_view& val)
     return;
 }
 
-void bind::tie(size_t id, const zce::char_buf& val)
+void bind::tie(size_t id, const zce::string_buf& val)
 {
     param_value_[id] = (char*)(val.data());
     param_type_[id] = InvalidOid;

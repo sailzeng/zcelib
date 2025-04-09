@@ -153,7 +153,7 @@ public:
     static const size_t PROCESS_BLOCK_SIZE = 64;
 
     //算法的上下文，保存一些状态，中间数据，结果
-    typedef struct hash_fun_ctx
+    struct hash_fun_ctx
     {
         ///处理的数据的总长度
         uint64_t length_;
@@ -161,9 +161,9 @@ public:
         uint64_t unprocessed_;
         ///(中间)计算结果保存的地方
         uint32_t hash_[HASH_RESULT_SIZE / 4];
-    } hash_fun_ctx;
+    };
 
-    typedef hash_fun_ctx context;
+    using context = hash_fun_ctx;
 
     /*!
     * @brief      内部函数，处理数据的前面部分(>PROCESS_BLOCK_SIZE 65字节的部分)，每次组成一个PROCESS_BLOCK_SIZE字节的block就进行杂凑处理
@@ -245,7 +245,7 @@ public:
                          size_t buf_size,
                          char result[HASH_RESULT_SIZE])
     {
-        uint32_t message[PROCESS_BLOCK_SIZE / 4] = { 0 };
+        uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
 
         //保存剩余的数据，我们要拼出最后1个（或者两个）要处理的块，前面的算法保证了，最后一个块肯定小于64个字节
         memset(message, 0, PROCESS_BLOCK_SIZE);
@@ -388,7 +388,7 @@ public:
     //每次处理的BLOCK的大小,其实对于CRC32这个值没有啥用，主要用于文件处理。
     static const size_t PROCESS_BLOCK_SIZE = 256;
 
-    typedef uint32_t context;
+    using context = uint32_t;
 
     static void process(context* ctx,
                         const char* buf,

@@ -156,8 +156,8 @@ inline void ogre4a_frame::get_data(unsigned int& size_data, char* dest_data) con
 //从.so加载函数名称
 static const char STR_JUDGE_RECV_WHOLEFRAME[] = "JudgeRecvWholeFrame";
 //
-typedef int (*FP_JudgeRecv_WholeFrame)(const char* recv_buf,
-                                       unsigned int buf_len,
-                                       unsigned int max_buf_len,
-                                       bool& if_whole,
-                                       unsigned int& frame_len);
+using FP_JudgeRecv_WholeFrame = int (*)(const char* recv_buf,
+                                        unsigned int buf_len,
+                                        unsigned int max_buf_len,
+                                        bool& if_whole,
+                                        unsigned int& frame_len);

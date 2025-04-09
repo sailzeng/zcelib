@@ -4,7 +4,7 @@ namespace ogre
 {
 class ip_restrict
 {
-    typedef std::unordered_set<unsigned int> SET_OF_IPADDRESS;
+    using SET_OF_IPADDRESS = std::unordered_set<unsigned int>;
 
 protected:
 

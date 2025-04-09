@@ -36,7 +36,7 @@ class thread_spin_mutex : public zce::lock_base
 {
 public:
     ///线程锁的GUARD
-    typedef zce::lock_guard<zce::thread_spin_mutex> LOCK_GUARD;
+    using LOCK_GUARD = zce::lock_guard<zce::thread_spin_mutex>;
 
 public:
 

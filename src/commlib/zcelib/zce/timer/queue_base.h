@@ -21,7 +21,7 @@ namespace zce
 {
 class timer_handler;
 
-typedef std::function<int(const zce::time_value &, int) > timeout_callback_t;
+using timeout_callback_t = std::function<int(const zce::time_value&, int) >;
 
 /*!
 * @brief      定时器发生器的基础类
@@ -76,7 +76,7 @@ protected:
         int                 time_id_ = 0;
 
         ///以后每次间隔的触发等待时间
-        zce::time_value      interval_time_ = { 0,0 };
+        zce::time_value      interval_time_ = {0,0};
 
         ///回调的时候返回的指针，我只是保存他，给你用的。你自己把握好
         const void* action_ = nullptr;
@@ -84,7 +84,7 @@ protected:
         ///对应的时间句柄的的指针
         zce::timer_handler* timer_handle_ = nullptr;
         ///
-        std::function<int(const zce::time_value &, int)> timer_call_;
+        std::function<int(const zce::time_value&, int)> timer_call_;
 
         ///下一次触发点，可能是一个绝度时间，也可能是一个CPU TICK的计数,但都是一个绝对值
         uint64_t            next_trigger_point_ = 0;
@@ -149,20 +149,20 @@ public:
                                 如果参数等于zce::time_value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
     int schedule_timer(zce::timer_handler* timer_hdl,
-                       int &time_id,
+                       int& time_id,
                        const zce::time_value& delay_time,
                        const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
 
     //! @brief      设置一个定时器，接口采用std::function
     //! param[in]   call_fun 超时触发后的回调函数
-    int schedule_timer(timeout_callback_t &timer_call,
-                       int &time_id,
+    int schedule_timer(timeout_callback_t& timer_call,
+                       int& time_id,
                        const zce::time_value& delay_time,
                        const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE);
 
     template<typename Rep, typename Period>
     int schedule_timer(zce::timer_handler* timer_hdl,
-                       int &time_id,
+                       int& time_id,
                        std::chrono::duration<Rep, Period>& delay_duration,
                        std::chrono::duration<Rep, Period>& interval_duration = zce::time_value::ZERO_DURATION_VALUE)
     {
@@ -172,8 +172,8 @@ public:
     }
 
     template<typename Rep, typename Period>
-    int schedule_timer(timeout_callback_t &timer_call,
-                       int &time_id,
+    int schedule_timer(timeout_callback_t& timer_call,
+                       int& time_id,
                        std::chrono::duration<Rep, Period>& delay_duration,
                        std::chrono::duration<Rep, Period>& interval_duration = zce::time_value::ZERO_DURATION_VALUE)
     {
@@ -219,8 +219,8 @@ public:
 protected:
 
     virtual int schedule_timer_i(zce::timer_handler* timer_hdl,
-                                 timeout_callback_t &timer_call,
-                                 int &time_id,
+                                 timeout_callback_t& timer_call,
+                                 int& time_id,
                                  const zce::time_value& delay_time,
                                  const zce::time_value& interval_time = zce::time_value::ZERO_TIME_VALUE) = 0;
 
@@ -262,7 +262,7 @@ protected:
     @param[out] alloc_time_node 返回的分配的TIMER NODE的指针
     */
     int alloc_timernode(timer_handler* timer_hdl,
-                        timeout_callback_t &call_fun,
+                        timeout_callback_t& call_fun,
                         const zce::time_value& delay_time_,
                         const zce::time_value& interval_time_,
                         int& time_node_id,
