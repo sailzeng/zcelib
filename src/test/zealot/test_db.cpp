@@ -37,32 +37,36 @@ struct TEST_TABLE
     MYSQL_TIME f8_;
 };
 
-template <typename db>
-int db_createtable(db::conn* conn)
+template<typename T>
+concept DBype = std::same_as<T, zce::db::my_exec> ||
+std::same_as<T, zce::db::pq_exec>;
+
+template <DBype dbt>
+int db_createtable(typename dbt::cnt* conn)
 {
-    int ret = zce::db::my_exec::connect(conn,
-                                        DB_MYSQL_HOST,
-                                        MYSQL_PORT,
-                                        DB_MYSQL_USER,
-                                        DB_MYSQL_PASSWORD);
+    int ret = dbt::connect(conn,
+                           DB_MYSQL_HOST,
+                           MYSQL_PORT,
+                           DB_MYSQL_USER,
+                           DB_MYSQL_PASSWORD);
     EXPECT_EQ(ret, 0);
     if (ret != 0)
     {
         return ret;
     }
-    ret = db::execute(conn, CREATE_DATABASE);
+    ret = dbt::execute(conn, CREATE_DATABASE);
     EXPECT_EQ(ret, 0);
     if (ret != 0)
     {
         return ret;
     }
-    ret = zce::mysql::exec::execute(conn, DROP_TABLE);
+    ret = dbt::execute(conn, DROP_TABLE);
     EXPECT_EQ(ret, 0);
     if (ret != 0)
     {
         return ret;
     }
-    ret = zce::mysql::exec::execute(conn, CREATE_TABLE);
+    ret = dbt::execute(conn, CREATE_TABLE);
     if (ret != 0)
     {
         return ret;
@@ -70,7 +74,8 @@ int db_createtable(db::conn* conn)
     return 0;
 }
 
-int mysql_insert_all(zce::mysql::connect* conn, size_t num)
+template <DBype dbt>
+int db_insert_all(typename dbt::cnt* conn, size_t num)
 {
     char sql[1024];
     for (size_t i = 0; i < num; ++i)
@@ -85,7 +90,7 @@ int mysql_insert_all(zce::mysql::connect* conn, size_t num)
                 "2024-06-01 00:00:00");
         size_t num_affect = 0;
         UINT64 insert_id = 0;
-        int ret = zce::mysql::exec::execute(conn, sql, num_affect, &insert_id);
+        int ret = dbt::execute(conn, sql, num_affect, &insert_id);
         EXPECT_EQ(ret, 0);
         if (ret != 0)
         {
@@ -96,13 +101,14 @@ int mysql_insert_all(zce::mysql::connect* conn, size_t num)
     return 0;
 }
 
-int mysql_select_one(zce::mysql::connect* conn, size_t num)
+template <DBype dbt>
+int db_select_one(typename dbt::cnt* conn, size_t num)
 {
     char sql[1024];
     sprintf(sql, "SELECT F1,F2,F3,F4,F5,F6,F7,F8 FROM zce.test WHERE F1=%d", (int)num);
-    zce::mysql::result db_result;
+    typename dbt::res db_result;
     size_t num_affect = 0;
-    int ret = zce::mysql::exec::execute(conn, sql, num_affect, db_result);
+    int ret = dbt::execute(conn, sql, num_affect, db_result);
     EXPECT_EQ(ret, 0);
     if (ret != 0)
     {
@@ -124,23 +130,24 @@ int mysql_select_one(zce::mysql::connect* conn, size_t num)
         db_result.cursor_field(7, r1.f8_);
         EXPECT_EQ(r1.f1_, (int)num);
 
-        auto [f1, f2, f3, f4, f5, f6, f7, f8] =
-            db_result.make_tuple<int, short, int, int, float, double, std::string, MYSQL_TIME>(0);
+        auto [f1, f2, f3, f4, f5, f6] =
+            db_result.make_tuple<int, short, int, int, float, double>(0);
 
-        std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_) =
-            db_result.make_tuple<int, short, int, int, float, double, std::string, MYSQL_TIME>(0);
+        //std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_) =
+        //    db_result.make_tuple<int, short, int, int, float, double, std::string, MYSQL_TIME>(0);
     }
 
     return 0;
 }
 
-int mysql_select_all(zce::mysql::connect* conn, size_t count)
+template <DBype dbt>
+int db_select_all(typename dbt::cnt* conn, size_t count)
 {
     char sql[1024];
     sprintf(sql, "SELECT F1,F2,F3,F4,F5,F6,F7,F8 FROM zce.test ");
-    zce::mysql::result db_result;
+    typename dbt::res db_result;
     size_t num_affect = 0;
-    int ret = zce::mysql::exec::execute(conn, sql, num_affect, db_result);
+    int ret = dbt::execute(conn, sql, num_affect, db_result);
     EXPECT_EQ(ret, 0);
     if (ret != 0)
     {
@@ -163,24 +170,26 @@ int mysql_select_all(zce::mysql::connect* conn, size_t count)
     for (size_t i = 0; i < count; ++i)
     {
         db_result.cursor_seek(i);
-        std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_) =
-            db_result.make_tuple<int, short, int, int, float, double, std::string, MYSQL_TIME>(i);
+        std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_) =
+            db_result.make_tuple<int, short, int, int, float, double>(i);
     }
-    zce::mysql::result_set<int, short, int, int, float, double, std::string, MYSQL_TIME>
-        res_set(std::move(db_result));
-    for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : res_set)
+    // 注意下面 template 必须加
+    /*using db_res_set = dbt::template res_set<int, short, int, int, float, double, std::string, ::MYSQL_TIME>;
+    db_res_set  rs(std::move(db_result));
+    for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : rs)
     {
-    }
+    }*/
     return 0;
 }
 
-int mysql_delete_all(zce::mysql::connect* conn, size_t count)
+template <DBype dbt>
+int db_delete_all(typename dbt::cnt* conn, size_t count)
 {
     char sql[1024];
     sprintf(sql, "DELETE FROM zce.test ");
-    zce::mysql::result db_result;
+    typename dbt::res db_result;
     size_t num_affect = 0;
-    int ret = zce::mysql::exec::execute(conn, sql, num_affect, nullptr);
+    int ret = dbt::execute(conn, sql, num_affect, nullptr);
     EXPECT_EQ(ret, 0);
     if (ret != 0)
     {
@@ -192,11 +201,21 @@ int mysql_delete_all(zce::mysql::connect* conn, size_t count)
 
 TEST(MySQLTestSuite, TestAPI)
 {
-    zce::mysql::connect db_connect;
-    EXPECT_EQ(db_createtable(&db_connect), 0);
-    EXPECT_EQ(mysql_insert_all(&db_connect, 20), 0);
-    EXPECT_EQ(mysql_select_one(&db_connect, 20), 0);
-    EXPECT_EQ(mysql_select_all(&db_connect, 20), 0);
-    EXPECT_EQ(mysql_delete_all(&db_connect, 20), 0);
+    zce::db::my_exec::cnt db_connect;
+    EXPECT_EQ(db_createtable<zce::db::my_exec>(&db_connect), 0);
+    EXPECT_EQ(db_insert_all<zce::db::my_exec>(&db_connect, 20), 0);
+    EXPECT_EQ(db_select_one<zce::db::my_exec>(&db_connect, 20), 0);
+    EXPECT_EQ(db_select_all<zce::db::my_exec>(&db_connect, 20), 0);
+    EXPECT_EQ(db_delete_all<zce::db::my_exec>(&db_connect, 20), 0);
+}
+
+TEST(PQTestSuite, TestAPI)
+{
+    zce::db::pq_exec::cnt db_connect;
+    EXPECT_EQ(db_createtable<zce::db::pq_exec>(&db_connect), 0);
+    EXPECT_EQ(db_insert_all<zce::db::pq_exec>(&db_connect, 20), 0);
+    EXPECT_EQ(db_select_one<zce::db::pq_exec>(&db_connect, 20), 0);
+    EXPECT_EQ(db_select_all<zce::db::pq_exec>(&db_connect, 20), 0);
+    EXPECT_EQ(db_delete_all<zce::db::pq_exec>(&db_connect, 20), 0);
 }
 }

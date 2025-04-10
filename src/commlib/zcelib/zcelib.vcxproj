@@ -76,7 +76,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <EnablePREfast>false</EnablePREfast>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp23</LanguageStandard>
       <AdditionalIncludeDirectories>.;</AdditionalIncludeDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
@@ -104,7 +104,7 @@
       <PrecompiledHeaderFile>zce/predefine.h</PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp23</LanguageStandard>
       <AdditionalIncludeDirectories>.;</AdditionalIncludeDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
@@ -246,6 +246,8 @@
     <ClCompile Include="zce\db\sqlite\sqlite_stmt.cpp" />
     <ClCompile Include="zce\string\format.cpp" />
     <ClCompile Include="zce\string\regex_parse.cpp" />
+    <ClCompile Include="zce\string\time.cpp" />
+    <ClInclude Include="zce\string\time.h" />
     <ClCompile Include="zce\string\to_string.cpp" />
     <ClCompile Include="zce\thread\thread_task.cpp" />
     <ClCompile Include="zce\timer\timer_handler.cpp" />

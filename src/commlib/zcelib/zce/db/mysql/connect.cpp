@@ -15,7 +15,6 @@ connect::connect() noexcept
 
 connect::~connect() noexcept
 {
-    // disconnect if if_connected_ to handle
     disconnect();
 }
 

@@ -27,13 +27,6 @@ namespace zce
 template<typename T>
 int from_str(const char* str, T& to_val);
 
-template<typename T>
-T from_str(const char* str)
-{
-    T to_val;
-    from_str(str, to_val);
-    return to_val;
-}
 /*!
 * @brief      从std string字符串转换得到数据类型
 * @tparam     ret_type  返回的类型
@@ -44,5 +37,13 @@ template<typename T>
 int from_str(const std::string& stdstr, T& to_val)
 {
     return from_str<T>(stdstr.c_str(), to_val);
+}
+
+template<typename T>
+T from_str_to(const char* str)
+{
+    T to_val;
+    from_str(str, to_val);
+    return to_val;
 }
 }

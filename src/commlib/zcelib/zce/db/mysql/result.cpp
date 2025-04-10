@@ -241,25 +241,25 @@ bool result::cursor_fetch()
 }
 
 //检索到row_id 行,
-int result::cursor_seek(size_t row_id)
+bool result::cursor_seek(size_t row_id)
 {
     //检查结果集合为空,或者参数row错误
     if (mysql_result_ == nullptr || row_id >= num_result_row_)
     {
         ZCE_ASSERT(false);
-        return -1;
+        return false;
     }
 
     ::mysql_data_seek(mysql_result_, row_id);
     cursor_.cursor_row_ = ::mysql_fetch_row(mysql_result_);
     if (cursor_.cursor_row_ == nullptr)
     {
-        return -1;
+        return false;
     }
     cursor_.cursor_rowid_ = row_id;
     cursor_.fields_len_ = ::mysql_fetch_lengths(mysql_result_);
 
-    return 0;
+    return true;
 }
 
 //根据字段顺序ID,得到表结构定义的字段长度
@@ -326,11 +326,9 @@ const char* result::field_data(size_t row, size_t colum)
         ZCE_ASSERT(false);
         return nullptr;
     }
-    int ret = 0;
     if (row != cursor_.cursor_rowid_)
     {
-        ret = cursor_seek(row);
-        if (ret != 0)
+        if (cursor_seek(row))
         {
             return nullptr;
         }
@@ -348,13 +346,11 @@ int result::field_data(size_t row,
         ZCE_ASSERT(false);
         return -1;
     }
-    int ret = 0;
     if (row != cursor_.cursor_rowid_)
     {
-        ret = cursor_seek(row);
-        if (ret != 0)
+        if (cursor_seek(row))
         {
-            return ret;
+            return -1;
         }
     }
     memcpy(pfdata,
@@ -371,13 +367,11 @@ size_t result::field_length(size_t row, size_t colum)
         ZCE_ASSERT(false);
         return (size_t)-1;
     }
-    int ret = 0;
     if (row != cursor_.cursor_rowid_)
     {
-        ret = cursor_seek(row);
-        if (ret != 0)
+        if (cursor_seek(row))
         {
-            return ret;
+            return 0;
         }
     }
     return (size_t)cursor_.fields_len_[colum];
@@ -391,11 +385,9 @@ zce::mysql::field  result::get_field(size_t row, size_t colum)
         ZCE_ASSERT(false);
         return zce::mysql::field();
     }
-    int ret = 0;
     if (row != cursor_.cursor_rowid_)
     {
-        ret = cursor_seek(row);
-        if (ret != 0)
+        if (cursor_seek(row))
         {
             return zce::mysql::field();
         }

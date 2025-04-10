@@ -116,7 +116,7 @@ public:
     template <typename T>
     T field(size_t colum) const
     {
-        return zce::from_str<T>(cursor_row_[colum]);
+        return zce::from_str_to<T>(cursor_row_[colum]);
     }
 
     //! 清理
@@ -196,14 +196,14 @@ public:
     */
     void free_result();
 
-    //! @brief 将结果集处理的行，检索移动到某行
-    int cursor_seek(size_t row_id);
-
     /*!
     * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
     * @return     bool true还有结果集合，false没有结果集合了
     */
     bool cursor_fetch();
+
+    //! @brief 将结果集处理的行，检索移动到某行
+    bool cursor_seek(size_t row_id);
 
     //! @brief 取得当前的游标
     zce::mysql::cursor get_cursor()
@@ -267,10 +267,9 @@ public:
     {
         if (row != cursor_.cursor_rowid_)
         {
-            int ret = cursor_seek(row);
-            if (ret != 0)
+            if (cursor_seek(row))
             {
-                return ret;
+                return -1;
             }
         }
         return cursor_.field(colum, val);
@@ -289,7 +288,8 @@ public:
         if (row != cursor_.cursor_rowid_)
         {
             [[maybe_unused]]
-            int ret = cursor_seek(row);
+            bool ret = cursor_seek(row);
+            assert(ret);
         }
         return cursor_.make_tuple<Types...>();
     }

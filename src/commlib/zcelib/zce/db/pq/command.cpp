@@ -373,7 +373,7 @@ int command::execute(std::string_view sql_cmd,
 
 int command::execute(std::string_view sql_cmd,
                      size_t& num_affect,
-                     zce::pq::result* pq_res)
+                     zce::pq::result& pq_res)
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
@@ -391,7 +391,7 @@ int command::execute(std::string_view sql_cmd,
         auto s_num = ::PQcmdTuples(res);
         num_affect = std::stoull(s_num);
     }
-    pq_res->set_result(res);
+    pq_res.set_result(res);
     return 0;
 }
 

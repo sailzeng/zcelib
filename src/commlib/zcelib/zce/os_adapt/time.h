@@ -83,7 +83,7 @@ static const time_t TIMEZONE_SECONDS = timezone;
 * @note       gettimeofday 这个函数在POSIX中已经被抛弃，但是大量的LINUX还会继续使用，所以暂时留下来，
 *             POSIX推荐的clock_gettime好像还没有看见多少人呢用
 */
-inline int gettimeofday(struct timeval* tv,struct timezone* tz = nullptr);
+inline int gettimeofday(struct timeval* tv, struct timezone* tz = nullptr);
 
 //别名而已，
 inline int system_clock(struct ::timeval* tv);
@@ -145,149 +145,11 @@ const char* timestamp(const timeval* timeval,
 const char* timestamp(char* str_date_time,
                       size_t datetime_strlen);
 
-///时间格式化输出的格式类型
-enum class TS_FMT : int
-{
-    SHRINK_FMT = 10,
-    ///用2位年的收缩的格式进行输出 格式举例如下:
-    ///(10) 240910
-    ///(11) 240910 100318
-    ///(12) 240910 100318.100190
-    SHRINK_DAY = 11,
-    SHRINK_SEC = 12,
-    SHRINK_USEC = 13,
-
-    ///用紧凑的格式进行输出 格式举例如下:
-    ///(11) 20100910
-    ///(12) 20100910 100318
-    ///(13) 20100910 100318.100190
-    COMPACT_DAY = 11,
-    COMPACT_SEC = 12,
-    COMPACT_USEC = 13,
-
-    ///用ISO的格式进行时间输出，格式举例如下:
-    ///(21) 2010-09-10
-    ///(22) 2010-09-10 10:03:18
-    ///(23) 2010-09-10 10:03:18.100190
-    ISO_DAY = 21,
-    ISO_SEC = 22,
-    ISO_USEC = 23,
-
-    ///用美国的时间格式进行输出，格式举例如下:
-    ///(32) Fri Aug 24 2002 07:43:05
-    ///(33) Fri Aug 24 2002 07:43:05.100190
-    US_SEC = 32,
-    US_USEC = 33,
-
-    ///用HTTP头部GMT的时间格式进行输出, Thu, 26 Nov 2009 13:50:19 GMT
-    HTTP_GMT = 1001,
-    ///用EMAIL头部DATE的时间格式进行输出, Fri, 08 Nov 2002 09:42:22 +0800
-    EMAIL_DATE = 1002,
-};
-
-/*
-100910 100318.100190                      SHRINK,收缩
-20100910 100318.100190                    COMPACT,紧凑
-2010-09-10 10:03:18.100190                ISO
-Fri Aug 24 2002 07:43:05.100190           US
-Thu, 26 Nov 2009 13:50:19 GMT             GMT(GMT一般不输出毫秒，在HTTP头中应用)
-Fri, 08 Nov 2002 09:42:22 +0800           EMail Date
-1234567890123456789012345678901234567890
-*/
-
-///注意下面的长度不包括包括'\0'，申请的空间要 + 1，最简单的记法就是保证有32字节的空间
-///（除了GMT精确到us），不采用+1的长度记录，这样写的目的是方便某些计算，
-
-///COMPACT 紧凑时间格式字符串的长度，包括精度到DAY，SEC，USEC
-static const size_t TS_SHRINK_DAY_LEN = 6;
-static const size_t TS_SHRINK_SEC_LEN = 13;
-static const size_t TS_SHRINK_USEC_LEN = 20;
-
-///COMPACT 紧凑时间格式字符串的长度，包括精度到DAY，SEC，USEC
-static const size_t TS_COMPACT_DAY_LEN = 8;
-static const size_t TS_COMPACT_SEC_LEN = 15;
-static const size_t TS_COMPACT_USEC_LEN = 22;
-
-///ISO 时间格式化字符串的长度，包括精度到DAY，SEC，USEC
-static const size_t TS_ISO_DAY_LEN = 10;
-static const size_t TS_ISO_SEC_LEN = 19;
-static const size_t TS_ISO_USEC_LEN = 26;  //最常用
-
-///US 米国时间格式字符串的长度，包括精度到SEC，USEC
-static const size_t TIMESTR_US_SEC_LEN = 24;
-static const size_t TIMESTR_US_USEC_LEN = 31;
-
-///GMT 时间格式字符串的长度，精度到秒
-static const size_t TIMESTR_HTTP_GMT_LEN = 29;
-
-///邮件时间格式字符串的长度，精度到秒
-static const size_t TIMESTR_EMAIL_DATE_LEN = 31;
-
-///最大格式化长度,一般而言32足够了
-static const size_t MAX_TIMEVAL_STRING_LEN = TIMESTR_EMAIL_DATE_LEN;
-
-/*!
-* @brief      将参数timeval的值作为的时间格格式化后输出打印出来，可以控制各种格式输出
-* @return     const char*   返回的字符串，其实就是str_date_time
-* @param[in]  timeval       打印的时间timeval
-* @param[out] str_date_time 得到的时间字符串
-* @param[in]  str_len       字符串的长度，最简单的记法就是保证有32字节的空间
-* @param[in]  uct_time      将timeval视为UCT/GMT时间还是本地时间Local Time，true
-*                           表示视为UCT/GMT时间，false表示视为本地时间
-* @param      fmt           参数清参考@ref TS_FMT ，
-* @note       时间戳打印格式说明,TS_FMT
-*/
-const char* timeval_to_str(const timeval* timeval,
-                           char* str_date_time,
-                           size_t str_len,
-                           size_t& use_buf,
-                           bool uct_time = false,
-                           TS_FMT fmt = zce::TS_FMT::ISO_USEC
-);
-
 struct ztm;
-/*!
-* @brief      从字符串中高速的得到ztm的结构的结果
-* @param[in]  strtm   字符串，字符串的正确性你自己要保证
-* @param[in]  fmt     字符串的格式，参考枚举值 @ref TS_FMT
-* @param[out] pztm    返回的ztm结构的指针，注意，如果字符串错误，可能会导致ztm错误喔
-                      包括时区，年，月，日，时，分，秒，微秒，时区，如果有尽量填充
-*/
-int str_to_ztm(const char* strtm,
-               TS_FMT fmt,
-               zce::ztm* pztm);
-
-int fuzzy_str_to_ztm(const char* strtm,
-                     zce::ztm* pztm);
 
 const ::tm make_tm(const zce::ztm* pztm) noexcept;
 
-const timeval make_timeval(bool uct_time,const zce::ztm* pztm) noexcept;
-
-/*!
-* @brief      从字符串转换得到本地时间timeval函数
-* @return     int == 0 表示成功
-* @param[in]  strtm    字符串参数
-* @param[in]  uct_time 将strtm字符串视为UCT/GMT时间还是本地时间Local Time
-*                      true表示视为UCT/GMT时间，false表示视为本地时间
-* @param[in]  fmt      字符串的格式，参考枚举值 @ref TS_FMT,
-* @param[out] tval     返回的时间,
-*/
-int str_to_timeval(const char* strtm,
-                   TS_FMT fmt,
-                   bool uct_time,
-                   timeval* tval);
-
-#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
-
-int str_to_MYSQL_TIME(const char* strtm,
-                      MYSQL_TIME* ptr_tm);
-#endif
-
-///本地时间字符串转换为time_t
-int localtimestr_to_time_t(const char* localtime_str,
-                           TS_FMT fmt,
-                           time_t* time_t_val);
+const timeval make_timeval(bool uct_time, const zce::ztm* pztm) noexcept;
 
 /*!
 * @brief      计算timeval内部总计是多少毫秒
@@ -324,7 +186,7 @@ void timeval_clear(timeval& tv);
 * @param      right   右值
 * @note       注意他和timercmp是不一样的功能，timercmp主要是利用最后一个函数参数完成比较内容
 */
-int timeval_compare(const timeval& left,const timeval& right);
+int timeval_compare(const timeval& left, const timeval& right);
 
 /*!
 * @brief      对两个时间进行相加，将结果返回，非标准函数
@@ -333,7 +195,7 @@ int timeval_compare(const timeval& left,const timeval& right);
 * @param      right         右值
 * @note
 */
-const timeval timeval_add(const timeval& left,const timeval& right);
+const timeval timeval_add(const timeval& left, const timeval& right);
 
 /*!
 * @brief      对两个时间进行想减，将结果返回，非标准函数,safe==true如果小于0，返回0
@@ -343,7 +205,7 @@ const timeval timeval_add(const timeval& left,const timeval& right);
 * @param      safe          是否进行安全保护，如果进行保护，结果小于0时，返回0
 * @note
 */
-const timeval timeval_sub(const timeval& left,const timeval& right,bool safe = true);
+const timeval timeval_sub(const timeval& left, const timeval& right, bool safe = true);
 
 /*!
 * @brief      如果你设置的usec 总长度>1s，我帮你调整，，非标准函数
@@ -365,7 +227,7 @@ bool timeval_havetime(const timeval& tv);
 * @param      sec           秒
 * @param      usec          微秒
 */
-const timeval make_timeval(time_t sec,time_t usec) noexcept;
+const timeval make_timeval(time_t sec, time_t usec) noexcept;
 
 /*!
 * @brief      将类型为std::clock_t值 转换得到timeval这个结构
@@ -392,8 +254,8 @@ const timeval make_timeval(const ::timespec* timespec_val) noexcept;
 *             也可以是 std::literals::chrono_literals::operator""ms
 *             这类标识
 */
-template<class Rep,class Period>
-const timeval make_timeval(const std::chrono::duration<Rep,Period>& val)
+template<class Rep, class Period>
+const timeval make_timeval(const std::chrono::duration<Rep, Period>& val)
 {
     std::chrono::microseconds usec =
         std::chrono::duration_cast<std::chrono::microseconds>(val);
@@ -412,8 +274,8 @@ const timeval make_timeval(const std::chrono::duration<Rep,Period>& val)
 *             std::chrono::system_clock::time_point
 *             std::chrono::steady_clock::time_point
 */
-template<class Clock,class Duration >
-const timeval make_timeval(const std::chrono::time_point<Clock,Duration>& val)
+template<class Clock, class Duration >
+const timeval make_timeval(const std::chrono::time_point<Clock, Duration>& val)
 {
     const std::chrono::nanoseconds tval =
         std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
@@ -446,17 +308,17 @@ const timeval make_timeval2(const FILETIME* file_time) noexcept;
 
 #endif
 
-template<class Rep,class Period>
+template<class Rep, class Period>
 void make_duration(const timeval& tv,
-                   std::chrono::duration<Rep,Period>& val)
+                   std::chrono::duration<Rep, Period>& val)
 {
     std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
-    val = std::chrono::duration_cast<std::chrono::duration<Rep,Period>>(usec);
+    val = std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(usec);
 }
 
-template<class Clock,class Duration >
+template<class Clock, class Duration >
 void make_timepoint(const timeval& tv,
-                    const std::chrono::time_point<Clock,Duration>& val)
+                    const std::chrono::time_point<Clock, Duration>& val)
 {
     std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
     val = usec;
@@ -472,7 +334,7 @@ void make_timepoint(const timeval& tv,
 *                     单调（打点）计数器，其他的的不考虑
 * @param      ts      返回的时间
 */
-inline int clock_gettime(clockid_t clk_id,timespec* ts);
+inline int clock_gettime(clockid_t clk_id, timespec* ts);
 
 /*!
 * @brief      计算timespec内部总计是多少毫秒
@@ -524,7 +386,7 @@ int usleep(unsigned long usec);
 * @param      result
 * @note       重入安全
 */
-inline struct tm* localtime_r(const time_t* timep,struct tm* result);
+inline struct tm* localtime_r(const time_t* timep, struct tm* result);
 
 /*!
 * @brief      根据GM时间，得到tm结构
@@ -533,7 +395,7 @@ inline struct tm* localtime_r(const time_t* timep,struct tm* result);
 * @param      result
 * @note
 */
-inline struct tm* gmtime_r(const time_t* timep,struct tm* result);
+inline struct tm* gmtime_r(const time_t* timep, struct tm* result);
 
 /*!
 * @brief      打印TM内部的时间信息
@@ -543,7 +405,7 @@ inline struct tm* gmtime_r(const time_t* timep,struct tm* result);
 * @note       输出字符串的格式是Wed Jan 02 02:03:55 1980\n\0.强烈不建议使用,
 *             唉，我实在不知道这样的时间输出有啥用处，完全是为了兼容才写这两个函数，
 */
-inline char* asctime_r(const struct tm* tm,char* buf);
+inline char* asctime_r(const struct tm* tm, char* buf);
 
 /*!
 * @brief      打印time_t所表示的时间信息
@@ -553,7 +415,7 @@ inline char* asctime_r(const struct tm* tm,char* buf);
 * @note       输出字符串的格式是Wed Jan 02 02:03:55 1980\n\0.强烈不建议使用,
 *             唉，我实在不知道这样的时间输出有啥用处，完全是为了兼容才写这两个函数，
 */
-inline char* ctime_r(const time_t* timep,char* buf);
+inline char* ctime_r(const time_t* timep, char* buf);
 
 /*!
 * @brief      等同于mktime,将tm视为本地时间，转换为time_t
@@ -581,7 +443,7 @@ uint64_t rdtsc();
 //-------------------------------------------------------------------------------
 
 //兼容LINUX下的gettimeofday
-inline int zce::gettimeofday(struct timeval* tv,struct timezone* tz)
+inline int zce::gettimeofday(struct timeval* tv, struct timezone* tz)
 {
     //
 #if defined ZCE_OS_WINDOWS
@@ -635,7 +497,7 @@ inline int zce::gettimeofday(struct timeval* tv,struct timezone* tz)
     //LINUX下得到时间
 #if defined ZCE_OS_LINUX
     //直接掉用系统的
-    return ::gettimeofday(tv,tz);
+    return ::gettimeofday(tv, tz);
 #endif //
 }
 
@@ -645,7 +507,7 @@ inline int zce::system_clock(struct ::timeval* tv)
 }
 
 //得到时间各种时间
-inline int zce::clock_gettime(clockid_t clk_id,::timespec* ts)
+inline int zce::clock_gettime(clockid_t clk_id, ::timespec* ts)
 {
 #if defined ZCE_OS_WINDOWS
     timeval tv;
@@ -665,7 +527,7 @@ inline int zce::clock_gettime(clockid_t clk_id,::timespec* ts)
     ts->tv_nsec = tv.tv_usec * 1000;
     return 0;
 #else
-    return ::clock_gettime(clk_id,ts);
+    return ::clock_gettime(clk_id, ts);
 #endif //
 }
 
@@ -677,11 +539,11 @@ inline const timeval zce::gettimeofday()
 }
 
 //得到本地时间
-inline struct tm* zce::localtime_r(const time_t* timep,struct tm* result)
+inline struct tm* zce::localtime_r(const time_t* timep, struct tm* result)
 {
 #if defined (ZCE_OS_WINDOWS)
     //WINDOWS下使用默认的_s 系列的API
-    errno_t convert_err = ::localtime_s(result,timep);
+    errno_t convert_err = ::localtime_s(result, timep);
 
     if (convert_err)
     {
@@ -695,16 +557,16 @@ inline struct tm* zce::localtime_r(const time_t* timep,struct tm* result)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::localtime_r(timep,result);
+    return ::localtime_r(timep, result);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
 //GM时间
-inline struct tm* zce::gmtime_r(const time_t* timep,struct tm* result)
+inline struct tm* zce::gmtime_r(const time_t* timep, struct tm* result)
 {
 #if defined (ZCE_OS_WINDOWS)
     //WINDOWS下使用默认的_s 系列的API
-    errno_t convert_err = ::gmtime_s(result,timep);
+    errno_t convert_err = ::gmtime_s(result, timep);
 
     if (convert_err)
     {
@@ -718,12 +580,12 @@ inline struct tm* zce::gmtime_r(const time_t* timep,struct tm* result)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::gmtime_r(timep,result);
+    return ::gmtime_r(timep, result);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
 //打印TM内部的时间信息
-inline char* zce::asctime_r(const struct tm* tm_data,char* buf)
+inline char* zce::asctime_r(const struct tm* tm_data, char* buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -732,7 +594,7 @@ inline char* zce::asctime_r(const struct tm* tm_data,char* buf)
     const size_t I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES = 26;
 
     //WINDOWS下使用默认的_s 系列的API
-    errno_t convert_err = ::asctime_s(buf,I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES,tm_data);
+    errno_t convert_err = ::asctime_s(buf, I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES, tm_data);
 
     if (convert_err)
     {
@@ -746,12 +608,12 @@ inline char* zce::asctime_r(const struct tm* tm_data,char* buf)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::asctime_r(tm_data,buf);
+    return ::asctime_r(tm_data, buf);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
 //打印time_t锁标识的时间信息
-inline char* zce::ctime_r(const time_t* timep,char* buf)
+inline char* zce::ctime_r(const time_t* timep, char* buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -759,7 +621,7 @@ inline char* zce::ctime_r(const time_t* timep,char* buf)
     const size_t I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES = 26;
 
     //WINDOWS下使用默认的_s 系列的API
-    errno_t convert_err = ::ctime_s(buf,I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES,timep);
+    errno_t convert_err = ::ctime_s(buf, I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES, timep);
 
     if (convert_err)
     {
@@ -773,7 +635,7 @@ inline char* zce::ctime_r(const time_t* timep,char* buf)
 #endif //#if defined (ZCE_OS_WINDOWS)
 
 #if defined (ZCE_OS_LINUX)
-    return ::ctime_r(timep,buf);
+    return ::ctime_r(timep, buf);
 #endif //#if defined (ZCE_OS_LINUX)
 }
 

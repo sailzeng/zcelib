@@ -68,6 +68,27 @@ void result::clear()
     //行数目，列数目清0
     num_result_row_ = 0;
     num_result_field_ = 0;
+    cursor_row_ = (size_t)-1;
+}
+
+bool result::cursor_fetch()
+{
+    if (pq_result_ == nullptr || cursor_row_ + 1 >= num_result_row_)
+    {
+        return false;
+    }
+    ++cursor_row_;
+    return true;
+}
+
+bool result::cursor_seek(size_t row_id)
+{
+    if (pq_result_ == nullptr || row_id >= num_result_row_)
+    {
+        return false;
+    }
+    cursor_row_ = row_id;
+    return true;
 }
 
 //! @brief 根据colum返回表定义列域名,注意计算得到的列的名字也可能是空

@@ -1,3 +1,32 @@
+/*!
+* @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
+* @filename   zce_data_proc_encode.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @date       2020年
+* @brief      序列化的辅助类，
+*
+* @details    你可以通过定义函数，辅助完成结构的序列化
+*             支持int，double，数组，list，vector，map等。
+* struct A
+* {
+*     int f1;
+*     double f2;
+*     std::string f3_;
+*
+*     template<typename serialize_type>
+*     void serialize(serialize_type& ss, unsigned int ver = 0)
+*     {
+*         ss&f1_;
+*         ss&f2_;
+*         ss&f3_;
+*     }
+* };
+*
+*
+*
+*/
+
 #pragma once
 
 #include "zce/bytes/bytes_common.h"
@@ -5,52 +34,9 @@
 //===========================================================================================================
 //流编码处理的类，写入流的处理类
 
-namespace zce::serialize
+namespace zce::ser
 {
 class encode;
-
-//辅助处理保存数据的一些类
-template<typename val_type >
-class en_class_help
-{
-public:
-    void write_help(encode* ssave, const val_type& val);
-};
-
-template<>
-class en_class_help<std::string>
-{
-public:
-    void write_help(encode* ssave, const std::string& val);
-};
-
-template<>
-class en_class_help<std::string_view>
-{
-public:
-    void write_help(encode* ssave, const std::string_view& val);
-};
-
-template<typename vector_type >
-class en_class_help<std::vector<vector_type> >
-{
-public:
-    void write_help(encode* ssave, const std::vector<vector_type>& val);
-};
-
-template<typename list_type >
-class en_class_help<std::list<list_type> >
-{
-public:
-    void write_help(encode* ssave, const std::list<list_type>& val);
-};
-
-template<typename key_type, typename data_type >
-class en_class_help<std::map<key_type, data_type> >
-{
-public:
-    void write_help(encode* ssave, const std::map<key_type, data_type>& val);
-};
 
 /*!
 * @brief      对数据进行编码处理的类，将数据变成流，
@@ -102,28 +88,31 @@ public:
     template<typename enum_type >
     void save_enum(const enum_type& val)
     {
-        write_i(static_cast<const int&>(val));
+        write(static_cast<const int&>(val));
     }
 
     ///保存数值类型
-    template<typename val_type >
-    typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const val_type& val)
-    {
-        return write_i(val);
-    }
-    void write_i(const bool& val);
-    void write_i(const char& val);
-    void write_i(const unsigned char& val);
-    void write_i(const short& val);
-    void write_i(const unsigned short& val);
-    void write_i(const int& val);
-    void write_i(const unsigned int& val);
-    void write_i(const long& val);
-    void write_i(const unsigned long& val);
-    void write_i(const long long& val);
-    void write_i(const unsigned long long& val);
-    void write_i(const float& val);
-    void write_i(const double& val);
+    //template<typename val_type >
+    //typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const val_type& val)
+    //{
+    //    return write(val);
+    //}
+    void write(const bool& val);
+    void write(const char& val);
+    void write(const unsigned char& val);
+    void write(const short& val);
+    void write(const unsigned short& val);
+    void write(const int& val);
+    void write(const unsigned int& val);
+    void write(const long& val);
+    void write(const unsigned long& val);
+    void write(const long long& val);
+    void write(const unsigned long long& val);
+    void write(const float& val);
+    void write(const double& val);
+
+    void write(const std::string& val);
+    void write(const std::string_view& val);
 
     ///保存数组
     template<typename val_type >
@@ -142,7 +131,7 @@ public:
         //其实用下面注释的这个代码会更酷一点，但不知道为啥有告警，放弃，
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
         assert(count < 0xFFFFFFFFll);
-        this->write_i(static_cast<unsigned int>(count));
+        this->write(static_cast<unsigned int>(count));
         for (size_t i = 0; i < count && is_good_; ++i)
         {
             this->write(*(ary + i));
@@ -154,7 +143,7 @@ public:
     void write_array(const char* ary, size_t count)
     {
         assert(count < 0xFFFFFFFFll);
-        this->write_i(static_cast<unsigned int>(count));
+        this->write(static_cast<unsigned int>(count));
         if (is_good_)
         {
             if (write_pos_ + count > end_pos_)
@@ -171,7 +160,7 @@ public:
     void write_array(const unsigned char* ary, size_t count)
     {
         assert(count < 0xFFFFFFFFll);
-        this->write_i(static_cast<unsigned int>(count));
+        this->write(static_cast<unsigned int>(count));
         if (is_good_)
         {
             if (write_pos_ + count > end_pos_)
@@ -183,6 +172,8 @@ public:
             write_pos_ += count;
         }
     }
+
+    template<typename T> class en_class_help;
 
     ///保存类，这儿要用辅助类实现一些偏特化的能力
     template<typename val_type >
@@ -223,101 +214,83 @@ protected:
     char* write_pos_ = nullptr;
 };
 
-//辅助类，write_help 函数的实现
-
-//用保存class辅助处理的 base templates 实现
-template<typename val_type>
-void en_class_help<val_type>::write_help(encode* ssave,
-                                         const val_type& val)
+template <typename T>
+concept EecodeSerialize = requires(T obj, encode * ptr)
 {
-    val.serialize(ssave);
-}
+    {
+        obj.serialize(ptr, (uint32_t)0)
+    };
+};
+
+//辅助处理保存数据的一些类
+//用保存class辅助处理的 base templates 实现
+template<typename ST > requires EecodeSerialize<ST>
+class en_class_help
+{
+public:
+    void write_help(encode* ssave, const ST& val)
+    {
+        val.serialize(ssave);
+    }
+};
 
 //用于保存vector 辅助处理的特化
-template<typename vector_type>
-void en_class_help<std::vector<vector_type> >::write_help(encode* ssave,
-                                                          const std::vector<vector_type>& val)
-{
-    //长度用unsigned int保存
-    size_t v_size = val.size();
-    assert(v_size < 0xFFFFFFFFll);
-    ssave->write_i(static_cast<unsigned int>(v_size));
-    for (size_t i = 0; i < v_size && ssave->is_good(); ++i)
-    {
-        ssave->write<vector_type>(val[i]);
-    }
-    return;
-}
-
-template<typename list_type>
-void en_class_help<std::list<list_type> >::write_help(encode* ssave,
-                                                      const std::list<list_type>& val)
-{
-    size_t v_size = val.size();
-    assert(v_size < 0xFFFFFFFFll);
-    ssave->write_i(static_cast<unsigned int>(v_size));
-    typename std::list<list_type>::const_iterator iter = val.begin();
-    for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
-    {
-        ssave->write(*iter);
-    }
-    return;
-}
-
-template<typename key_type, typename data_type >
-void en_class_help<std::map<key_type, data_type> >::write_help(encode* ssave,
-                                                               const std::map<key_type, data_type>& val)
-{
-    size_t v_size = val.size();
-    assert(v_size < 0xFFFFFFFFll);
-    ssave->write_i(static_cast<unsigned int>(v_size));
-    typename std::map<key_type, data_type>::const_iterator iter = val.begin();
-    for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
-    {
-        ssave->write(iter->first);
-        ssave->write(iter->second);
-    }
-    return;
-}
-
-//===========================================================================================================
-
-class decode;
-//辅助处理读取数据的一些类
-template<typename val_type >
-class de_class_help
-{
-public:
-    void read_help(decode* sload, val_type& val);
-};
-
-template<>
-class de_class_help<std::string>
-{
-public:
-    void read_help(decode* sload, std::string& val);
-};
-
 template<typename vector_type >
-class de_class_help<std::vector<vector_type> >
+class en_class_help<std::vector<vector_type> >
 {
 public:
-    void read_help(decode* sload, std::vector<vector_type>& val);
+    void write_help(encode* ssave, const std::vector<vector_type>& val)
+    {
+        //长度用unsigned int保存
+        size_t v_size = val.size();
+        assert(v_size < 0xFFFFFFFFll);
+        ssave->write(static_cast<unsigned int>(v_size));
+        for (size_t i = 0; i < v_size && ssave->is_good(); ++i)
+        {
+            ssave->write<vector_type>(val[i]);
+        }
+        return;
+    }
 };
 
 template<typename list_type >
-class de_class_help<std::list<list_type> >
+class en_class_help<std::list<list_type> >
 {
 public:
-    void read_help(decode* sload, std::list<list_type>& val);
+    void write_help(encode* ssave, const std::list<list_type>& val)
+    {
+        size_t v_size = val.size();
+        assert(v_size < 0xFFFFFFFFll);
+        ssave->write(static_cast<unsigned int>(v_size));
+        typename std::list<list_type>::const_iterator iter = val.begin();
+        for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
+        {
+            ssave->write(*iter);
+        }
+        return;
+    }
 };
 
 template<typename key_type, typename data_type >
-class de_class_help<std::map<key_type, data_type> >
+class en_class_help<std::map<key_type, data_type> >
 {
 public:
-    void read_help(decode* sload, std::map<key_type, data_type>& val);
+    void write_help(encode* ssave, const std::map<key_type, data_type>& val)
+    {
+        size_t v_size = val.size();
+        assert(v_size < 0xFFFFFFFFll);
+        ssave->write(static_cast<unsigned int>(v_size));
+        typename std::map<key_type, data_type>::const_iterator iter = val.begin();
+        for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
+        {
+            ssave->write(iter->first);
+            ssave->write(iter->second);
+        }
+        return;
+    }
 };
+
+//===========================================================================================================
 
 /*!
 * @brief      对数据进行解码码处理的类，将流变成数据，
@@ -326,7 +299,6 @@ public:
 */
 class decode
 {
-    friend class de_class_help<std::string>;
 public:
 
     /*!
@@ -375,31 +347,41 @@ public:
     {
         return load_enum(val);
     }
+
+    template<typename T>
+    T read_to(const char* str)
+    {
+        T to_val;
+        read(to_val);
+        return to_val;
+    }
+
     template<typename enum_type >
     void load_enum(const enum_type& val)
     {
-        read_i(static_cast<int&>(val));
+        read(static_cast<int&>(val));
     }
 
     ///保存数值类型
-    template<typename val_type >
-    typename std::enable_if<std::is_arithmetic<val_type>::value>::type read(val_type& val)
-    {
-        return read_i(val);
-    }
-    void read_i(bool& val);
-    void read_i(char& val);
-    void read_i(unsigned char& val);
-    void read_i(short& val);
-    void read_i(unsigned short& val);
-    void read_i(int& val);
-    void read_i(unsigned int& val);
-    void read_i(long& val);
-    void read_i(unsigned long& val);
-    void read_i(long long& val);
-    void read_i(unsigned long long& val);
-    void read_i(float& val);
-    void read_i(double& val);
+    //template<typename val_type >
+    //typename std::enable_if<std::is_arithmetic<val_type>::value>::type read(val_type& val)
+    //{
+    //    return read_i(val);
+    //}
+    void read(bool& val);
+    void read(char& val);
+    void read(unsigned char& val);
+    void read(short& val);
+    void read(unsigned short& val);
+    void read(int& val);
+    void read(unsigned int& val);
+    void read(long& val);
+    void read(unsigned long& val);
+    void read(long long& val);
+    void read(unsigned long long& val);
+    void read(float& val);
+    void read(double& val);
+    void read(std::string& val);
 
     ///写入数组
     template<typename val_type >
@@ -426,7 +408,7 @@ public:
     {
         //读取数组长度
         uint32_t ui_load_count = 0;
-        this->read_i(ui_load_count);
+        this->read(ui_load_count);
         load_count = ui_load_count;
         //
         if (!is_good_ || load_count > ary_count || read_pos_ + load_count * sizeof(ary[0]) > end_pos_)
@@ -444,7 +426,7 @@ public:
     void read_array(char* ary, size_t ary_count, size_t& load_count)
     {
         uint32_t ui_load_count;
-        this->read_i(ui_load_count);
+        this->read(ui_load_count);
         load_count = ui_load_count;
 
         if (!is_good_ || load_count > ary_count || read_pos_ + load_count > end_pos_)
@@ -461,7 +443,7 @@ public:
     void read_array(unsigned char* ary, size_t ary_count, size_t& load_count)
     {
         uint32_t ui_load_count;
-        this->read_i(ui_load_count);
+        this->read(ui_load_count);
         load_count = ui_load_count;
 
         if (!is_good_ || load_count > ary_count || read_pos_ + load_count > end_pos_)
@@ -473,6 +455,8 @@ public:
         memcpy(ary, read_pos_, load_count);
         read_pos_ += load_count;
     }
+
+    template<typename T> class de_class_help;
 
     ///加载类，这儿要用辅助类实现一些偏特化的能力
     template<typename val_type >
@@ -499,6 +483,11 @@ public:
         return *this;
     }
 
+    const char* read_pos() const
+    {
+        return read_pos_;
+    }
+
 protected:
 
     ///状态是否正确，如果写入位置超出缓冲区的结尾，会置为false
@@ -515,73 +504,92 @@ protected:
     const char* read_pos_ = nullptr;
 };
 
-//辅助类，save_help 函数
-template<typename val_type>
-void de_class_help<val_type>::read_help(decode* sload,
-                                        val_type& val)
+template <typename T>
+concept DecodeSerialize = requires(T obj, decode * ptr)
 {
-    val.serialize(sload);
-}
-
-template<typename vector_type>
-void de_class_help<std::vector<vector_type> >::read_help(decode* sload,
-                                                         std::vector<vector_type>& val)
-{
-    unsigned int v_size = 0;
-    sload->read_i(v_size);
-    bool is_ok = sload->is_good();
-    for (size_t i = 0; i < v_size && is_ok; ++i)
     {
-        vector_type ve;
-        sload->read(ve);
-        is_ok = sload->is_good();
-        if (is_ok)
-        {
-            val.push_back(ve);
-        }
-    }
-    return;
-}
+        obj.serialize(ptr, (uint32_t)0)
+    };
+};
 
-template<typename list_type>
-void de_class_help<std::list<list_type> >::read_help(decode* sload,
-                                                     std::list<list_type>& val)
+template<typename ST > requires DecodeSerialize<ST>
+class de_class_help
 {
-    size_t v_size = val.size();
-    sload->read_i(v_size);
-    bool is_ok = sload->is_good();
-    for (size_t i = 0; i < v_size && is_ok; ++i)
+public:
+    void read_help(decode* sload, ST& val)
     {
-        list_type le;
-        sload->read(le);
-        is_ok = sload->is_good();
-        if (is_ok)
-        {
-            val.push_back(le);
-        }
+        val.serialize(sload);
     }
-    return;
-}
+};
+
+template<typename vector_type >
+class de_class_help<std::vector<vector_type> >
+{
+public:
+    void read_help(typename decode* sload, std::vector<vector_type>& val)
+    {
+        unsigned int v_size = 0;
+        sload->read(v_size);
+        bool is_ok = sload->is_good();
+        for (size_t i = 0; i < v_size && is_ok; ++i)
+        {
+            vector_type ve;
+            sload->read(ve);
+            is_ok = sload->is_good();
+            if (is_ok)
+            {
+                val.push_back(ve);
+            }
+        }
+        return;
+    }
+};
+
+template<typename list_type >
+class de_class_help<std::list<list_type> >
+{
+public:
+    void read_help(typename decode* sload, std::list<list_type>& val)
+    {
+        size_t v_size = val.size();
+        sload->read(v_size);
+        bool is_ok = sload->is_good();
+        for (size_t i = 0; i < v_size && is_ok; ++i)
+        {
+            list_type le;
+            sload->read(le);
+            is_ok = sload->is_good();
+            if (is_ok)
+            {
+                val.push_back(le);
+            }
+        }
+        return;
+    }
+};
 
 template<typename key_type, typename data_type >
-void de_class_help<std::map<key_type, data_type> >::read_help(decode* sload,
-                                                              std::map<key_type, data_type>& val)
+class de_class_help<std::map<key_type, data_type> >
 {
-    size_t v_size = val.size();
-    sload->read_i(v_size);
-    bool is_ok = sload->is_good();
-    for (size_t i = 0; i < v_size && is_ok; ++i)
+public:
+    void read_help(typename decode* sload, std::map<key_type, data_type>& val)
     {
-        key_type ke;
-        data_type de;
-        sload->read(ke);
-        sload->read(de);
-        is_ok = sload->is_good();
-        if (is_ok)
+        size_t v_size = val.size();
+        sload->read(v_size);
+        bool is_ok = sload->is_good();
+        for (size_t i = 0; i < v_size && is_ok; ++i)
         {
-            val[ke] = de;
+            key_type ke;
+            data_type de;
+            sload->read(ke);
+            sload->read(de);
+            is_ok = sload->is_good();
+            if (is_ok)
+            {
+                val[ke] = de;
+            }
         }
+        return;
     }
-    return;
-}
+};
 }

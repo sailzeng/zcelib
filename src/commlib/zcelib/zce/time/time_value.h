@@ -18,6 +18,7 @@
 #pragma once
 
 #include "zce/os_adapt/define.h"
+#include "zce/string/time.h"
 #include "zce/os_adapt/time.h"
 
 namespace zce
@@ -267,7 +268,7 @@ public:
     * @param[in]  datetime_strlen 字符串的长度
     * @param[in]   fromat_type    时间格式，参考@ref TS_FMT 枚举，默认输出ISO格式的本地时间，精度到USEC。
     */
-    const char *to_str(char* buffer,
+    const char* to_str(char* buffer,
                        size_t buf_len,
                        size_t& use_buf,
                        bool uct_time = false,

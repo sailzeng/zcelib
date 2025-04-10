@@ -53,7 +53,7 @@ public:
     template <typename value_type>
     value_type field_data(size_t row, size_t column)
     {
-        return zce::from_str<value_type>(result_[row * column_ + column - 1]);
+        return zce::from_str_to<value_type>(result_[row * column_ + column - 1]);
     }
 
     //!行的数量

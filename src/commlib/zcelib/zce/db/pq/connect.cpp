@@ -10,18 +10,18 @@ namespace zce::pq
 //构造函数,析构函数
 int connect::connect_by_info(const char* conninfo)
 {
-    if(conninfo == nullptr)
+    if (conninfo == nullptr)
     {
         return -1;
     }
     //连接数据库
     conn_ = ::PQconnectdb(conninfo);
-    if(conn_ == nullptr)
+    if (conn_ == nullptr)
     {
         return -1;
     }
     //检查连接状态
-    if(::PQstatus(conn_) != ::CONNECTION_OK)
+    if (::PQstatus(conn_) != ::CONNECTION_OK)
     {
         ::PQfinish(conn_);
         conn_ = nullptr;
@@ -30,31 +30,32 @@ int connect::connect_by_info(const char* conninfo)
     return 0;
 }
 
-int connect::connect_by_host(const char* pghost,
-                            const char* pgport,
-                            const char* pgoptions,
-                            const char* dbname,
-                            const char* user,
-                            const char* pwd)
+int connect::connect_by_host(const char* host_name,
+                             const unsigned int port,
+                             const char* user,
+                             const char* pwd,
+                             const char* db)
 {
-    if(pghost == nullptr)
+    if (host_name == nullptr)
     {
         return -1;
     }
+    char pq_port[16] = {0};
+    snprintf(pq_port, 16, "%u", port);
     //连接数据库
-    conn_ = ::PQsetdbLogin(pghost,
-                           pgport,
-                           pgoptions,
+    conn_ = ::PQsetdbLogin(host_name,
+                           pq_port,
                            nullptr,
-                           dbname,
+                           nullptr,
+                           db,
                            user,
                            pwd);
-    if(conn_ == nullptr)
+    if (conn_ == nullptr)
     {
         return -1;
     }
     //检查连接状态
-    if(::PQstatus(conn_) != ::CONNECTION_OK)
+    if (::PQstatus(conn_) != ::CONNECTION_OK)
     {
         ::PQfinish(conn_);
         conn_ = nullptr;
@@ -65,7 +66,7 @@ int connect::connect_by_host(const char* pghost,
 
 void connect::disconnect()
 {
-    if(conn_)
+    if (conn_)
     {
         ::PQfinish(conn_);
         conn_ = nullptr;

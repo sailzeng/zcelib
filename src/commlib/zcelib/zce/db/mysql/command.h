@@ -460,9 +460,6 @@ private:
     ///MYSQL的句柄
     MYSQL* mysql_;
 
-    ///是否连接MYSQL数据库
-    bool if_connected_ = false;
-
     ///STMT 的Handle
     MYSQL_STMT* stmt_ = nullptr;
 

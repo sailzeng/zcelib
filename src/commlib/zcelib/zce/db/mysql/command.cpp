@@ -384,7 +384,7 @@ int command::execute(std::string_view sqlcmd,
 int command::execute(std::string_view sqlcmd)
 {
     //如果没有设置连接或者没有设置命令
-    if (if_connected_ == false || sqlcmd.empty())
+    if (sqlcmd.empty())
     {
         return -1;
     }

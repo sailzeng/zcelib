@@ -123,7 +123,7 @@ public:
 
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,
-                zce::pq::result* pq_res);
+                zce::pq::result& pq_res);
 
     int stmt_prepare(std::string_view sqlcmd,
                      const zce::pq::bind* bind_para);

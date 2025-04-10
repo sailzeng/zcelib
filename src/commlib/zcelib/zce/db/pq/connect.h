@@ -29,12 +29,16 @@ public:
 
     void disconnect();
 
-    int connect_by_host(const char* pghost,
-                        const char* pgport,
-                        const char* pgoptions,
-                        const char* dbname,
-                        const char* user,
-                        const char* pwd);
+    bool is_connected()
+    {
+        return if_connected_;
+    }
+
+    int connect_by_host(const char* host_name,
+                        const unsigned int port = POSTGRESQL_PORT,
+                        const char* user = "postgres",
+                        const char* pwd = "",
+                        const char* db = nullptr);
 
     const char* error_message()
     {
@@ -51,9 +55,13 @@ public:
         return conn_;
     }
 
+    static const short POSTGRESQL_PORT = 5432;
+
 protected:
-    //
+    //!
     ::PGconn* conn_ = nullptr;
+    //!
+    bool if_connected_ = false;
 };
 }
 

@@ -1,14 +1,21 @@
 #pragma once
 
+#include "zce/db/result_set.h"
+
+//
 namespace zce::db
 {
 template <typename CONNECT, typename COMMAND, typename RESULT>
 class exec
 {
 public:
-    using conn = CONNECT;
-    using cmd = COMMAND;
-    using res = RESULT;
+    using cnt = typename CONNECT;
+    using cmd = typename COMMAND;
+    using res = typename RESULT;
+
+    template <typename... Types>
+    using res_set = typename zce::db::result_set<RESULT, Types...>;
+
 public:
     //!构造函数，不用处理什么，相关的成员变量的析构都进行了处理
     exec() = delete;
@@ -115,11 +122,6 @@ public:
         if (db_connect->is_connected() == false)
         {
             return -1;
-        }
-        //如果已经连接过数据库,则不用再次连接,ping一次就OK了,成本低
-        else
-        {
-            db_connect->ping();
         }
 
         ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());

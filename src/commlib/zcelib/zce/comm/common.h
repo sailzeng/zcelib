@@ -69,6 +69,10 @@ static const char* MONTH_NAME[] =
     ("Dec")
 };
 
+//! 为什么最后还是搞了一个自己的时间定义，因为所有的结构都有短板。
+//! tm 没有时区和微妙
+//! time_t 没有微秒
+//! MYSQL_TIME结构只能在MySQL环境下使用
 struct ztm
 {
     int tz_ = 0;    // time zone
