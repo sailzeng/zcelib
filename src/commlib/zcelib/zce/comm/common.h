@@ -41,47 +41,4 @@ enum MQW_WAIT_MODEL
     //在超时时间内等待
     MQW_WAIT_TIMEOUT,
 };
-
-static const char* DAY_OF_WEEK_NAME[] =
-{
-    ("Sun"),
-    ("Mon"),
-    ("Tue"),
-    ("Wed"),
-    ("Thu"),
-    ("Fri"),
-    ("Sat")
-};
-
-static const char* MONTH_NAME[] =
-{
-    ("Jan"),
-    ("Feb"),
-    ("Mar"),
-    ("Apr"),
-    ("May"),
-    ("Jun"),
-    ("Jul"),
-    ("Aug"),
-    ("Sep"),
-    ("Oct"),
-    ("Nov"),
-    ("Dec")
-};
-
-//! 为什么最后还是搞了一个自己的时间定义，因为所有的结构都有短板。
-//! tm 没有时区和微妙
-//! time_t 没有微秒
-//! MYSQL_TIME结构只能在MySQL环境下使用
-struct ztm
-{
-    int tz_ = 0;    // time zone
-    int year_ = 0;  // years since 0
-    int mon_ = 0;   // months since January - [1, 12]
-    int day_ = 0;   // day of the month - [1, 31]
-    int hour_ = 0;  // hours since midnight - [0, 23]
-    int min_ = 0;   // minutes after the hour - [0, 59]
-    int sec_ = 0;   // seconds after the minute - [0, 60] including leap second
-    int usec_ = 0;  // microseconds after the second - [0, 999999]
-};
 }

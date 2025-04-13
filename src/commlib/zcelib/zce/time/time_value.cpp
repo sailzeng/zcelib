@@ -372,27 +372,28 @@ time_value::operator timeval* ()
 const char* time_value::to_str(char* str_date_time,
                                size_t datetime_strlen,
                                size_t& use_buf,
-                               bool utc_time,
-                               zce::TS_FMT fmt) const
+                               zce::TMS_FMT fmt,
+                               bool out_tz,
+                               bool utc_time) const
 {
     return zce::timeval_to_str(&(this->zce_time_value_),
                                str_date_time,
                                datetime_strlen,
                                use_buf,
-                               utc_time,
-                               fmt);
+                               fmt,
+                               out_tz,
+                               utc_time);
 }
 
 //从字符串中得到时间
 int time_value::from_str(const char* strtm,
-                         bool uct_time,
-                         zce::TS_FMT fmt)
+                         zce::TMS_FMT fmt,
+                         bool uct_time)
 {
     return zce::str_to_timeval(strtm,
                                fmt,
-                               uct_time,
-                               &zce_time_value_
-    );
+                               &zce_time_value_,
+                               uct_time);
 }
 
 const char* time_value::timestamp(char* str_date_time,

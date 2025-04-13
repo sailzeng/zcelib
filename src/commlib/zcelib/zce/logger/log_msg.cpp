@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/time.h"
+#include "zce/string/time.h"
 #include "zce/os_adapt/thread.h"
 #include "zce/logger/log_file.h"
 #include "zce/logger/log_msg.h"
@@ -214,7 +215,7 @@ void log_msg::vwrite_logmsg(LOG_PRIORITY outlevel,
     timeval now_time_val(gettimeofday());
 
     //log_buffer_ 是 static thread_local变量，保证每个线程一个
-    char *log_buf = log_buffer_.get();
+    char* log_buf = log_buffer_.get();
     log_buf[log_file::SIZE_OF_LOG_BUFFER - 1] = '\0';
 
     //我要保留一个位置放'\0'，以及一个\n
@@ -321,7 +322,7 @@ void log_msg::stringbuf_loghead(LOG_PRIORITY outlevel,
         timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
         //别计算了，快点
-        sz_use_len = TS_ISO_USEC_LEN;
+        sz_use_len = TIMESTR_LEN[(size_t)zce::TMS_FMT::ISO_DATE_USEC];
 
         sz_buf_len -= sz_use_len;
     }

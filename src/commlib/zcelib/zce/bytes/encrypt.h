@@ -18,7 +18,7 @@
 *
 *             算法内部对数据的处理完全采用了LE(little end)小头编码处理方式，（就是在BE的CPU上也
 *             会转换为LE进行处理）。字节序的处理方式主要体现在如何把一个BLOCK块里面的数据视为怎样的
-*             整数。ZINDEX_TO_LEUINT32 和 ZLEUINT32_TO_INDEX
+*             整数。ZLEINDEX_TO_UINT32 和 ZUINT32_TO_LEINDEX
 *
 *             交织算法我值选择了最常用的策略CBC（其实我们的实现更接近CBC-MAC）：
 *             http://zh.wikipedia.org/zh-hant/%E5%9D%97%E5%AF%86%E7%A0%81%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F
@@ -83,9 +83,9 @@
 *
 * @note       1.很多算法的模板都有using（typedef），请直接使用using的类，因为不少实现是有假设的，
 *             2.实现的算法很多时候没有考虑某些平台可能出现的BUS ERROR问题，算了，我的代码能移植到
-*               RISC( SPARC)CPU上吗？(ZINDEX_TO_LEUINT32这类转换是从指针读取整数的，不考虑对齐
+*               RISC( SPARC)CPU上吗？(ZLEINDEX_TO_UINT32这类转换是从指针读取整数的，不考虑对齐
 *               ，这个在X86体系上OK，但在一些 SPARC 架构 CPU上是会报错。不知现在如何了，吼吼)
-*               如果真出现这种需求CRYPT_XOR_BLOCK，ZINDEX_TO_LEUINT32，ZLEUINT32_TO_INDEX
+*               如果真出现这种需求CRYPT_XOR_BLOCK，ZLEINDEX_TO_UINT32，ZUINT32_TO_LEINDEX
 *               这些宏要改进。
 *             3.所有代码在读取整数是默认采用小头序列，这个是因为我们绝绝大部分时候在小头的机器上运行
 *               而所有代码考虑过大头机器的问题，各种环境都可以正常运行，
@@ -395,8 +395,8 @@ public:
         *cipher_len = cphbuf_need_len;
 
         //用于记录异或结果的数据区，+4是因为尾巴补0的时候，可能溢出一个BLOCK，免得写一堆判断代码。
-        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
-        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = {0};
+        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = { 0 };
+        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = { 0 };
 
         //用你给出的iv以及随机数算法生成IV.填补进入密文数据区，目前设计的可以填充的iv 4个字节
         unsigned char* write_ptr = cipher_buf;
@@ -405,11 +405,11 @@ public:
         {
             if (i == 0 && iv)
             {
-                ZLEUINT32_TO_BYTE(write_ptr, *iv);
+                ZUINT32_TO_LEBYTE(write_ptr, *iv);
             }
             else
             {
-                ZLEUINT32_TO_INDEX(write_ptr, i, zce::mt19937_instance::instance()->rand());
+                ZUINT32_TO_LEINDEX(write_ptr, i, zce::mt19937_instance::instance()->rand());
             }
             write_ptr += sizeof(uint32_t);
         }
@@ -591,7 +591,7 @@ public:
         unsigned char decrypt_result[ENCRYPT_STRATEGY::BLOCK_SIZE];
         if (iv)
         {
-            *iv = ZBYTE_TO_LEUINT32(cipher_buf);
+            *iv = ZLEBYTE_TO_UINT32(cipher_buf);
         }
         while (remain_len > 0)
         {
@@ -687,10 +687,10 @@ public:
                           SUBKEY_IS_Uint32Ary* sub_key,
                           bool  /*if_encrypt*/)
     {
-        //为什么要用ZINDEX_TO_LEUINT32 这个宏，保证各个平台使用的字节序都一致
+        //为什么要用ZLEINDEX_TO_UINT32 这个宏，保证各个平台使用的字节序都一致
         for (size_t i = 0; i < key_size / sizeof(uint32_t); ++i)
         {
-            sub_key->skey_[i] = ZINDEX_TO_LEUINT32(key, i);
+            sub_key->skey_[i] = ZLEINDEX_TO_UINT32(key, i);
         }
     }
 };
@@ -713,10 +713,10 @@ public:
                           SUBKEY_IS_Uint32Ary* sub_key,
                           bool  /*if_encrypt*/)
     {
-        sub_key->skey_[0] = ZINDEX_TO_LEUINT32(key, 0);
-        sub_key->skey_[1] = ZINDEX_TO_LEUINT32(key, 1);
-        sub_key->skey_[2] = ZINDEX_TO_LEUINT32(key, 2);
-        sub_key->skey_[3] = ZINDEX_TO_LEUINT32(key, 3);
+        sub_key->skey_[0] = ZLEINDEX_TO_UINT32(key, 0);
+        sub_key->skey_[1] = ZLEINDEX_TO_UINT32(key, 1);
+        sub_key->skey_[2] = ZLEINDEX_TO_UINT32(key, 2);
+        sub_key->skey_[3] = ZLEINDEX_TO_UINT32(key, 3);
     };
 };
 
@@ -738,14 +738,14 @@ public:
                           SUBKEY_IS_Uint32Ary* sub_key,
                           bool  /*if_encrypt*/)
     {
-        sub_key->skey_[0] = ZINDEX_TO_LEUINT32(key, 0);
-        sub_key->skey_[1] = ZINDEX_TO_LEUINT32(key, 1);
-        sub_key->skey_[2] = ZINDEX_TO_LEUINT32(key, 2);
-        sub_key->skey_[3] = ZINDEX_TO_LEUINT32(key, 3);
-        sub_key->skey_[4] = ZINDEX_TO_LEUINT32(key, 4);
-        sub_key->skey_[5] = ZINDEX_TO_LEUINT32(key, 5);
-        sub_key->skey_[6] = ZINDEX_TO_LEUINT32(key, 6);
-        sub_key->skey_[7] = ZINDEX_TO_LEUINT32(key, 7);
+        sub_key->skey_[0] = ZLEINDEX_TO_UINT32(key, 0);
+        sub_key->skey_[1] = ZLEINDEX_TO_UINT32(key, 1);
+        sub_key->skey_[2] = ZLEINDEX_TO_UINT32(key, 2);
+        sub_key->skey_[3] = ZLEINDEX_TO_UINT32(key, 3);
+        sub_key->skey_[4] = ZLEINDEX_TO_UINT32(key, 4);
+        sub_key->skey_[5] = ZLEINDEX_TO_UINT32(key, 5);
+        sub_key->skey_[6] = ZLEINDEX_TO_UINT32(key, 6);
+        sub_key->skey_[7] = ZLEINDEX_TO_UINT32(key, 7);
     };
 };
 
@@ -935,7 +935,7 @@ using DES3_Crypt_64_192_16 = ZCE_Crypt<DES3_ECB >;
 *             （也就是程序中的 0×9E3779B9）
 * @tparam     round_size  加密的轮数，推荐轮数是32或者64，TX的值用了16轮，所以加密性降低，当然性能好一些，
 *                         其他数值的轮数应该也可以。
-* @note       算法中使用了ZINDEX_TO_LEUINT32，这些宏，其实是相当于我认为算法的编码是小头党
+* @note       算法中使用了ZLEINDEX_TO_UINT32，这些宏，其实是相当于我认为算法的编码是小头党
 */
 template <size_t round_size>
 class TEA_ECB : public SubKey_Is_Uint32Ary_ECB<16>
@@ -950,9 +950,9 @@ public:
                             const unsigned char* src_block,
                             unsigned char* cipher_block)
     {
-        //为什么要用ZINDEX_TO_LEUINT32,因为要保证多平台下计算一致
-        uint32_t v0 = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(src_block, 1);
+        //为什么要用ZLEINDEX_TO_UINT32,因为要保证多平台下计算一致
+        uint32_t v0 = ZLEINDEX_TO_UINT32(src_block, 0);
+        uint32_t v1 = ZLEINDEX_TO_UINT32(src_block, 1);
         uint32_t sum = 0;
 
         const uint32_t* k = sub_key->skey_;
@@ -964,16 +964,16 @@ public:
             v0 += ((v1 << 4) + k[0]) ^ (v1 + sum) ^ ((v1 >> 5) + k[1]);
             v1 += ((v0 << 4) + k[2]) ^ (v0 + sum) ^ ((v0 >> 5) + k[3]);
         }
-        ZLEUINT32_TO_INDEX(cipher_block, 0, v0);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, v1);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, v0);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, v1);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT* sub_key,
                             const unsigned char* cipher_block,
                             unsigned char* src_block)
     {
-        uint32_t v0 = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t v0 = ZLEINDEX_TO_UINT32(cipher_block, 0);
+        uint32_t v1 = ZLEINDEX_TO_UINT32(cipher_block, 1);
         uint32_t sum = DELTA;
         sum *= round_size;
 
@@ -987,8 +987,8 @@ public:
             v0 -= ((v1 << 4) + k[0]) ^ (v1 + sum) ^ ((v1 >> 5) + k[1]);
             sum -= DELTA;
         }                                              /* end cycle */
-        ZLEUINT32_TO_INDEX(src_block, 0, v0);
-        ZLEUINT32_TO_INDEX(src_block, 1, v1);
+        ZUINT32_TO_LEINDEX(src_block, 0, v0);
+        ZUINT32_TO_LEINDEX(src_block, 1, v1);
     }
 
 protected:
@@ -1031,9 +1031,9 @@ public:
                             const unsigned char* src_block,
                             unsigned char* cipher_block)
     {
-        //为什么要用ZINDEX_TO_LEUINT32,因为要保证多平台下计算一致
-        uint32_t v0 = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(src_block, 1);
+        //为什么要用ZLEINDEX_TO_UINT32,因为要保证多平台下计算一致
+        uint32_t v0 = ZLEINDEX_TO_UINT32(src_block, 0);
+        uint32_t v1 = ZLEINDEX_TO_UINT32(src_block, 1);
         uint32_t sum = 0;
 
         const uint32_t* k = sub_key->skey_;
@@ -1045,16 +1045,16 @@ public:
             sum += DELTA;
             v1 += (((v0 << 4) ^ (v0 >> 5)) + v0) ^ (sum + k[(sum >> 11) & 3]);
         }
-        ZLEUINT32_TO_INDEX(cipher_block, 0, v0);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, v1);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, v0);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, v1);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT* sub_key,
                             const unsigned char* cipher_block,
                             unsigned char* src_block)
     {
-        uint32_t v0 = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t v0 = ZLEINDEX_TO_UINT32(cipher_block, 0);
+        uint32_t v1 = ZLEINDEX_TO_UINT32(cipher_block, 1);
         uint32_t sum = DELTA;
         sum *= round_size;
 
@@ -1066,8 +1066,8 @@ public:
             sum -= DELTA;
             v0 -= (((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + k[sum & 3]);
         }
-        ZLEUINT32_TO_INDEX(src_block, 0, v0);
-        ZLEUINT32_TO_INDEX(src_block, 1, v1);
+        ZUINT32_TO_LEINDEX(src_block, 0, v0);
+        ZUINT32_TO_LEINDEX(src_block, 1, v1);
     }
 
 protected:
@@ -1123,7 +1123,7 @@ public:
         uint32_t v[block_size / sizeof(uint32_t)];
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            v[i] = ZINDEX_TO_LEUINT32(src_block, i);
+            v[i] = ZLEINDEX_TO_UINT32(src_block, i);
         }
 
         z = v[num_uint32 - 1];
@@ -1142,7 +1142,7 @@ public:
 
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            ZLEUINT32_TO_INDEX(cipher_block, i, v[i]);
+            ZUINT32_TO_LEINDEX(cipher_block, i, v[i]);
         }
     }
 
@@ -1162,7 +1162,7 @@ public:
 
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            v[i] = ZINDEX_TO_LEUINT32(cipher_block, i);
+            v[i] = ZLEINDEX_TO_UINT32(cipher_block, i);
         }
         uint32_t y, z, e, p;
         y = v[0];
@@ -1187,7 +1187,7 @@ public:
 
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            ZLEUINT32_TO_INDEX(src_block, i, v[i]);
+            ZUINT32_TO_LEINDEX(src_block, i, v[i]);
         }
     }
 
@@ -1299,7 +1299,7 @@ public:
         uint32_t lkey[KEY_SIZE / sizeof(uint32_t)];
         for (size_t i = 0; i < key_size / sizeof(uint32_t); i++)
         {
-            lkey[i] = ZINDEX_TO_LEUINT32(key, i);
+            lkey[i] = ZLEINDEX_TO_UINT32(key, i);
         }
 
         /* key_setup the S array */
@@ -1337,31 +1337,31 @@ public:
                             const unsigned char* src_block,
                             unsigned char* cipher_block)
     {
-        uint32_t  a = ZINDEX_TO_LEUINT32(src_block, 0) + sub_key->skey_[0];
-        uint32_t  b = ZINDEX_TO_LEUINT32(src_block, 1) + sub_key->skey_[1];
+        uint32_t  a = ZLEINDEX_TO_UINT32(src_block, 0) + sub_key->skey_[0];
+        uint32_t  b = ZLEINDEX_TO_UINT32(src_block, 1) + sub_key->skey_[1];
         for (size_t i = 1; i <= round_size; i++)
         {
             a = ZCE_ROTL32(a ^ b, b & 31) + sub_key->skey_[2 * i];
             b = ZCE_ROTL32(b ^ a, a & 31) + sub_key->skey_[2 * i + 1];
         }
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, a);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, b);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT* subkey,
                             const unsigned char* cipher_block,
                             unsigned char* src_block)
     {
-        uint32_t  a = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t  b = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t  a = ZLEINDEX_TO_UINT32(cipher_block, 0);
+        uint32_t  b = ZLEINDEX_TO_UINT32(cipher_block, 1);
 
         for (size_t i = round_size; i > 0; i--)
         {
             b = ZCE_ROTR32(b - subkey->skey_[2 * i + 1], a) ^ a;
             a = ZCE_ROTR32(a - subkey->skey_[2 * i], b) ^ b;
         }
-        ZLEUINT32_TO_INDEX(src_block, 0, a - subkey->skey_[0]);
-        ZLEUINT32_TO_INDEX(src_block, 1, b - subkey->skey_[1]);
+        ZUINT32_TO_LEINDEX(src_block, 0, a - subkey->skey_[0]);
+        ZUINT32_TO_LEINDEX(src_block, 1, b - subkey->skey_[1]);
     }
 
 public:
@@ -1407,10 +1407,10 @@ public:
     {
         uint32_t  t = 0, u = 0;
         const uint32_t* skey_ptr = sub_key->skey_;
-        uint32_t a = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t b = ZINDEX_TO_LEUINT32(src_block, 1) + skey_ptr[0];
-        uint32_t c = ZINDEX_TO_LEUINT32(src_block, 2);
-        uint32_t d = ZINDEX_TO_LEUINT32(src_block, 3) + skey_ptr[1];
+        uint32_t a = ZLEINDEX_TO_UINT32(src_block, 0);
+        uint32_t b = ZLEINDEX_TO_UINT32(src_block, 1) + skey_ptr[0];
+        uint32_t c = ZLEINDEX_TO_UINT32(src_block, 2);
+        uint32_t d = ZLEINDEX_TO_UINT32(src_block, 3) + skey_ptr[1];
 
         for (size_t i = 0; i < round_size / sizeof(uint32_t); ++i)
         {
@@ -1420,10 +1420,10 @@ public:
             EN_RC6_RND(i * 8 + 8, d, a, b, c);
         }
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a + skey_ptr[sbox_size - 2]);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, c + skey_ptr[sbox_size - 1]);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, d);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, a + skey_ptr[sbox_size - 2]);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, b);
+        ZUINT32_TO_LEINDEX(cipher_block, 2, c + skey_ptr[sbox_size - 1]);
+        ZUINT32_TO_LEINDEX(cipher_block, 3, d);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT* sub_key,
@@ -1432,10 +1432,10 @@ public:
     {
         uint32_t t = 0, u = 0;
         const uint32_t* skey_ptr = sub_key->skey_;
-        uint32_t a = ZINDEX_TO_LEUINT32(cipher_block, 0) - skey_ptr[sbox_size - 2];
-        uint32_t b = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t c = ZINDEX_TO_LEUINT32(cipher_block, 2) - skey_ptr[sbox_size - 1];
-        uint32_t d = ZINDEX_TO_LEUINT32(cipher_block, 3);
+        uint32_t a = ZLEINDEX_TO_UINT32(cipher_block, 0) - skey_ptr[sbox_size - 2];
+        uint32_t b = ZLEINDEX_TO_UINT32(cipher_block, 1);
+        uint32_t c = ZLEINDEX_TO_UINT32(cipher_block, 2) - skey_ptr[sbox_size - 1];
+        uint32_t d = ZLEINDEX_TO_UINT32(cipher_block, 3);
 
         for (size_t i = 0; i < round_size / sizeof(uint32_t); ++i)
         {
@@ -1444,10 +1444,10 @@ public:
             DE_RC6_RND(sbox_size - 8 * i - 8, b, c, d, a);
             DE_RC6_RND(sbox_size - 8 * i - 10, a, b, c, d);
         }
-        ZLEUINT32_TO_INDEX(src_block, 0, a);
-        ZLEUINT32_TO_INDEX(src_block, 1, b - skey_ptr[0]);
-        ZLEUINT32_TO_INDEX(src_block, 2, c);
-        ZLEUINT32_TO_INDEX(src_block, 3, d - skey_ptr[1]);
+        ZUINT32_TO_LEINDEX(src_block, 0, a);
+        ZUINT32_TO_LEINDEX(src_block, 1, b - skey_ptr[0]);
+        ZUINT32_TO_LEINDEX(src_block, 2, c);
+        ZUINT32_TO_LEINDEX(src_block, 3, d - skey_ptr[1]);
     }
 #undef EN_RC6_RND
 #undef DE_RC6_RND
@@ -1528,17 +1528,17 @@ public:
         uint32_t x[4], z[4];
         uint32_t* mkey_ptr = sub_key->mkey_;
         uint8_t* rkey_ptr = sub_key->rkey_;
-        x[0] = ZINDEX_TO_LEUINT32(key, 0);
-        x[1] = ZINDEX_TO_LEUINT32(key, 1);
+        x[0] = ZLEINDEX_TO_UINT32(key, 0);
+        x[1] = ZLEINDEX_TO_UINT32(key, 1);
         x[2] = 0;
         x[3] = 0;
         //根据不同的KEY SIZE 进行处理
         if (12 == key_size || 16 == key_size)
         {
-            x[2] = ZINDEX_TO_LEUINT32(key, 2);
+            x[2] = ZLEINDEX_TO_UINT32(key, 2);
             if (16 == key_size)
             {
-                x[3] = ZINDEX_TO_LEUINT32(key, 3);
+                x[3] = ZLEINDEX_TO_UINT32(key, 3);
             }
         }
         size_t i = 0;
@@ -1644,8 +1644,8 @@ public:
         const uint32_t* mkey_ptr = sub_key->mkey_;
         const uint8_t* rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
-        uint32_t l = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t r = ZINDEX_TO_LEUINT32(src_block, 1);
+        uint32_t l = ZLEINDEX_TO_UINT32(src_block, 0);
+        uint32_t r = ZLEINDEX_TO_UINT32(src_block, 1);
 
         CAST_F1(l, r, mkey_ptr[0], rkey_ptr[0]);
         CAST_F2(r, l, mkey_ptr[1], rkey_ptr[1]);
@@ -1676,8 +1676,8 @@ public:
         }
 
         //注意这个顺序和上面读取顺序相反
-        ZLEUINT32_TO_INDEX(cipher_block, 0, r);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, l);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, r);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, l);
     }
 
     //解密函数，密钥>80bits,所以处理16轮
@@ -1688,8 +1688,8 @@ public:
         const uint32_t* mkey_ptr = sub_key->mkey_;
         const uint8_t* rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
-        uint32_t r = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t l = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t r = ZLEINDEX_TO_UINT32(cipher_block, 0);
+        uint32_t l = ZLEINDEX_TO_UINT32(cipher_block, 1);
 
         //如果要进行16轮处理
         if (round_size > 12)
@@ -1719,8 +1719,8 @@ public:
         CAST_F1(l, r, mkey_ptr[0], rkey_ptr[0]);
 
         //注意这个顺序和上面读取顺序相反
-        ZLEUINT32_TO_INDEX(src_block, 0, l);
-        ZLEUINT32_TO_INDEX(src_block, 1, r);
+        ZUINT32_TO_LEINDEX(src_block, 0, l);
+        ZUINT32_TO_LEINDEX(src_block, 1, r);
     }
 
 public:
@@ -1765,15 +1765,15 @@ public:
         uint32_t* mkey_ptr = sub_key->mkey_;
         uint8_t* rkey_ptr = sub_key->rkey_;
 
-        x[0] = ZINDEX_TO_LEUINT32(key, 0);
-        x[1] = ZINDEX_TO_LEUINT32(key, 1);
-        x[2] = ZINDEX_TO_LEUINT32(key, 2);
-        x[3] = ZINDEX_TO_LEUINT32(key, 3);
+        x[0] = ZLEINDEX_TO_UINT32(key, 0);
+        x[1] = ZLEINDEX_TO_UINT32(key, 1);
+        x[2] = ZLEINDEX_TO_UINT32(key, 2);
+        x[3] = ZLEINDEX_TO_UINT32(key, 3);
         x[4] = x[5] = x[6] = x[7] = 0;
 
         for (size_t j = 4; j < key_size / sizeof(uint32_t); ++j)
         {
-            x[j] = ZINDEX_TO_LEUINT32(key, j);
+            x[j] = ZLEINDEX_TO_UINT32(key, j);
         }
 
         for (size_t j = 0; j < round_size; j += 4)
@@ -1816,10 +1816,10 @@ public:
         const uint8_t* rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
 
-        uint32_t a = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t b = ZINDEX_TO_LEUINT32(src_block, 1);
-        uint32_t c = ZINDEX_TO_LEUINT32(src_block, 2);
-        uint32_t d = ZINDEX_TO_LEUINT32(src_block, 3);
+        uint32_t a = ZLEINDEX_TO_UINT32(src_block, 0);
+        uint32_t b = ZLEINDEX_TO_UINT32(src_block, 1);
+        uint32_t c = ZLEINDEX_TO_UINT32(src_block, 2);
+        uint32_t d = ZLEINDEX_TO_UINT32(src_block, 3);
 
         //48轮处理
         //正向，Qi
@@ -1882,10 +1882,10 @@ public:
             CAST_F1(c, d, mkey_ptr[44], rkey_ptr[44]);
         }
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, c);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, d);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, a);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, b);
+        ZUINT32_TO_LEINDEX(cipher_block, 2, c);
+        ZUINT32_TO_LEINDEX(cipher_block, 3, d);
     }
     //CAST6解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT* sub_key,
@@ -1896,10 +1896,10 @@ public:
         const uint8_t* rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
 
-        uint32_t a = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t b = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t c = ZINDEX_TO_LEUINT32(cipher_block, 2);
-        uint32_t d = ZINDEX_TO_LEUINT32(cipher_block, 3);
+        uint32_t a = ZLEINDEX_TO_UINT32(cipher_block, 0);
+        uint32_t b = ZLEINDEX_TO_UINT32(cipher_block, 1);
+        uint32_t c = ZLEINDEX_TO_UINT32(cipher_block, 2);
+        uint32_t d = ZLEINDEX_TO_UINT32(cipher_block, 3);
 
         //48轮处理
         //反向，QBARi
@@ -1962,10 +1962,10 @@ public:
         CAST_F2(b, c, mkey_ptr[1], rkey_ptr[1]);
         CAST_F1(c, d, mkey_ptr[0], rkey_ptr[0]);
 
-        ZLEUINT32_TO_INDEX(src_block, 0, a);
-        ZLEUINT32_TO_INDEX(src_block, 1, b);
-        ZLEUINT32_TO_INDEX(src_block, 2, c);
-        ZLEUINT32_TO_INDEX(src_block, 3, d);
+        ZUINT32_TO_LEINDEX(src_block, 0, a);
+        ZUINT32_TO_LEINDEX(src_block, 1, b);
+        ZUINT32_TO_LEINDEX(src_block, 2, c);
+        ZUINT32_TO_LEINDEX(src_block, 3, d);
     }
 
 public:
@@ -2039,7 +2039,7 @@ public:
         uint32_t key_word_num = key_size / sizeof(uint32_t);
         for (uint32_t i = 0; i < key_word_num; ++i)
         {
-            t_key[i] = ZINDEX_TO_LEUINT32(key, i);
+            t_key[i] = ZLEINDEX_TO_UINT32(key, i);
         }
         //填写KEY长度
         t_key[key_word_num] = key_word_num;
@@ -2142,10 +2142,10 @@ public:
         unsigned int   a, b, c, d, l, m, r;
         const uint32_t* ll_key = sub_key->ll_key_;
 
-        a = ZINDEX_TO_LEUINT32(src_block, 0) + ll_key[0];
-        b = ZINDEX_TO_LEUINT32(src_block, 1) + ll_key[1];
-        c = ZINDEX_TO_LEUINT32(src_block, 2) + ll_key[2];
-        d = ZINDEX_TO_LEUINT32(src_block, 3) + ll_key[3];
+        a = ZLEINDEX_TO_UINT32(src_block, 0) + ll_key[0];
+        b = ZLEINDEX_TO_UINT32(src_block, 1) + ll_key[1];
+        c = ZLEINDEX_TO_UINT32(src_block, 2) + ll_key[2];
+        d = ZLEINDEX_TO_UINT32(src_block, 3) + ll_key[3];
 
         MARS_F_MIX(a, b, c, d);
         a += d;
@@ -2190,10 +2190,10 @@ public:
         d -= a;
         MARS_B_MIX(d, a, b, c);
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a - ll_key[36]);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b - ll_key[37]);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, c - ll_key[38]);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, d - ll_key[39]);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, a - ll_key[36]);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, b - ll_key[37]);
+        ZUINT32_TO_LEINDEX(cipher_block, 2, c - ll_key[38]);
+        ZUINT32_TO_LEINDEX(cipher_block, 3, d - ll_key[39]);
     }
 
     //
@@ -2204,10 +2204,10 @@ public:
         unsigned int   a, b, c, d, l, m, r;
         const uint32_t* ll_key = sub_key->ll_key_;
 
-        d = ZINDEX_TO_LEUINT32(cipher_block, 0) + ll_key[36];
-        c = ZINDEX_TO_LEUINT32(cipher_block, 1) + ll_key[37];
-        b = ZINDEX_TO_LEUINT32(cipher_block, 2) + ll_key[38];
-        a = ZINDEX_TO_LEUINT32(cipher_block, 3) + ll_key[39];
+        d = ZLEINDEX_TO_UINT32(cipher_block, 0) + ll_key[36];
+        c = ZLEINDEX_TO_UINT32(cipher_block, 1) + ll_key[37];
+        b = ZLEINDEX_TO_UINT32(cipher_block, 2) + ll_key[38];
+        a = ZLEINDEX_TO_UINT32(cipher_block, 3) + ll_key[39];
 
         MARS_F_MIX(a, b, c, d);
         a += d;
@@ -2252,10 +2252,10 @@ public:
         d -= a;
         MARS_B_MIX(d, a, b, c);
 
-        ZLEUINT32_TO_INDEX(src_block, 0, d - ll_key[0]);
-        ZLEUINT32_TO_INDEX(src_block, 1, c - ll_key[1]);
-        ZLEUINT32_TO_INDEX(src_block, 2, b - ll_key[2]);
-        ZLEUINT32_TO_INDEX(src_block, 3, a - ll_key[3]);
+        ZUINT32_TO_LEINDEX(src_block, 0, d - ll_key[0]);
+        ZUINT32_TO_LEINDEX(src_block, 1, c - ll_key[1]);
+        ZUINT32_TO_LEINDEX(src_block, 2, b - ll_key[2]);
+        ZUINT32_TO_LEINDEX(src_block, 3, a - ll_key[3]);
     }
 
 #undef MARS_F_MIX
@@ -2319,7 +2319,7 @@ public:
         uint32_t temp = 0, * rk = sub_key->skey_;
         for (size_t k = 0; k < key_size / sizeof(uint32_t); ++k)
         {
-            rk[k] = ZINDEX_TO_LEUINT32(key, k);
+            rk[k] = ZLEINDEX_TO_UINT32(key, k);
         }
         size_t p = 0;
         switch (key_size)
@@ -2457,10 +2457,10 @@ public:
                             const unsigned char* src_block,
                             unsigned char* cipher_block)
     {
-        uint32_t s0 = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t s1 = ZINDEX_TO_LEUINT32(src_block, 1);
-        uint32_t s2 = ZINDEX_TO_LEUINT32(src_block, 2);
-        uint32_t s3 = ZINDEX_TO_LEUINT32(src_block, 3);
+        uint32_t s0 = ZLEINDEX_TO_UINT32(src_block, 0);
+        uint32_t s1 = ZLEINDEX_TO_UINT32(src_block, 1);
+        uint32_t s2 = ZLEINDEX_TO_UINT32(src_block, 2);
+        uint32_t s3 = ZLEINDEX_TO_UINT32(src_block, 3);
 
         uint32_t t0, t1, t2, t3;
         const uint32_t* rk = sub_key->skey_;
@@ -2558,20 +2558,20 @@ public:
             (TE_SBOX[4][ZUINT32_0BYTE(t2)] & 0x000000ff) ^
             rk[3];
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, s0);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, s1);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, s2);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, s3);
+        ZUINT32_TO_LEINDEX(cipher_block, 0, s0);
+        ZUINT32_TO_LEINDEX(cipher_block, 1, s1);
+        ZUINT32_TO_LEINDEX(cipher_block, 2, s2);
+        ZUINT32_TO_LEINDEX(cipher_block, 3, s3);
     }
     //异或解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT* sub_key,
                             const unsigned char* cipher_block,
                             unsigned char* src_block)
     {
-        uint32_t s0 = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t s1 = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t s2 = ZINDEX_TO_LEUINT32(cipher_block, 2);
-        uint32_t s3 = ZINDEX_TO_LEUINT32(cipher_block, 3);
+        uint32_t s0 = ZLEINDEX_TO_UINT32(cipher_block, 0);
+        uint32_t s1 = ZLEINDEX_TO_UINT32(cipher_block, 1);
+        uint32_t s2 = ZLEINDEX_TO_UINT32(cipher_block, 2);
+        uint32_t s3 = ZLEINDEX_TO_UINT32(cipher_block, 3);
 
         uint32_t t0, t1, t2, t3;
         const uint32_t* rk = sub_key->skey_;
@@ -2668,10 +2668,10 @@ public:
             (TD_SBOX[4][ZUINT32_0BYTE(t0)] & 0x000000ff) ^
             rk[3];
 
-        ZLEUINT32_TO_INDEX(src_block, 0, s0);
-        ZLEUINT32_TO_INDEX(src_block, 1, s1);
-        ZLEUINT32_TO_INDEX(src_block, 2, s2);
-        ZLEUINT32_TO_INDEX(src_block, 3, s3);
+        ZUINT32_TO_LEINDEX(src_block, 0, s0);
+        ZUINT32_TO_LEINDEX(src_block, 1, s1);
+        ZUINT32_TO_LEINDEX(src_block, 2, s2);
+        ZUINT32_TO_LEINDEX(src_block, 3, s3);
     }
 
 public:

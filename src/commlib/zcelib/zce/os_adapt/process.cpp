@@ -323,8 +323,8 @@ int zce::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM* prc_perf_info)
     timeval now_time = zce::gettimeofday();
 
     prc_perf_info->running_time_ = zce::timeval_sub(now_time, start_time);
-    prc_perf_info->run_stime_ = zce::make_timeval2(&ru_stime);
-    prc_perf_info->run_utime_ = zce::make_timeval2(&ru_utime);
+    prc_perf_info->run_stime_ = zce::make_timeval(&ru_stime, zce::TIME_MODEL::TMM_DURATION);
+    prc_perf_info->run_utime_ = zce::make_timeval(&ru_utime, zce::TIME_MODEL::TMM_DURATION);
 
     //WiN32下的得到内存信息的方法
     PROCESS_MEMORY_COUNTERS psmem_counters;

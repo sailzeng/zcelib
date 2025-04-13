@@ -111,7 +111,7 @@ const char* zce::timestamp(char* str_date_time, size_t datetime_strlen)
 //将参数timeval的值作为的时间格格式化后输出打印出来
 const char* zce::timestamp(const timeval* timeval, char* str_date_time, size_t datetime_strlen)
 {
-    ZCE_ASSERT(datetime_strlen > zce::TS_ISO_USEC_LEN);
+    ZCE_ASSERT(datetime_strlen > TIMESTR_LEN[(size_t)zce::TMS_FMT::ISO_DATE_USEC]);
 
     //转换为语句
     time_t now_time = timeval->tv_sec;
@@ -142,52 +142,6 @@ int zce::gettimezone()
 #else
     return timezone;
 #endif
-}
-
-const ::tm zce::make_tm(const zce::ztm* pztm) noexcept
-{
-    ::tm tmv;
-    tmv.tm_year = pztm->year_;
-    tmv.tm_mon = pztm->mon_;
-    tmv.tm_mday = pztm->day_;
-    tmv.tm_hour = pztm->hour_;
-    tmv.tm_min = pztm->min_;
-    tmv.tm_sec = pztm->sec_;
-    tmv.tm_wday = -1;
-    tmv.tm_yday = -1;
-    tmv.tm_isdst = -1;
-    return tmv;
-}
-
-const timeval zce::make_timeval(bool uct_time, const zce::ztm* pztm) noexcept
-{
-    timeval tv;
-    ::tm tmp_tm = zce::make_tm(pztm);
-    if (uct_time)
-    {
-#if defined ZCE_OS_WINDOWS
-        tv.tv_sec = static_cast<long>(zce::timegm(&tmp_tm));
-        tv.tv_usec = static_cast<long>(pztm->usec_);
-#else
-        tv.tv_sec = zce::timegm(&tm_value);
-        tv.tv_usec = pztm->usec_;
-#endif
-    }
-    else
-    {
-#if defined ZCE_OS_WINDOWS
-        tv.tv_sec = static_cast<long>(zce::timelocal(&tmp_tm));
-        tv.tv_usec = static_cast<long>(pztm->usec_);
-#else
-        tv.tv_sec = zce::timelocal(&tm_value);
-        tv.tv_usec = pztm->usec_;
-#endif
-    }
-    if (tv.tv_usec < 0 && tv.tv_usec > 999999)
-    {
-        tv.tv_usec = -1;
-    }
-    return tv;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -276,7 +230,7 @@ const  timeval zce::timeval_sub(const timeval& left, const  timeval& right, bool
     return minus_time_val;
 }
 
-//检查这个TIMEVALUE是否还有剩余的时间
+//调整tv，如果tv的usec大于1s，调整成秒
 void zce::timeval_adjust(timeval& tv)
 {
     int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
@@ -344,9 +298,9 @@ const timeval zce::make_timeval(const ::timespec* timespec_val) noexcept
 #if defined (ZCE_OS_WINDOWS)
 
 //转换FILETIME到timeval
-const timeval zce::make_timeval(const FILETIME* file_time) noexcept
+const timeval zce::make_timeval(const FILETIME* file_time, TIME_MODEL tm_model) noexcept
 {
-    timeval to_timeval;
+    ::timeval to_timeval = { 0,0 };
 
     ULARGE_INTEGER ui;
     ui.LowPart = file_time->dwLowDateTime;
@@ -355,10 +309,23 @@ const timeval zce::make_timeval(const FILETIME* file_time) noexcept
     //The FILETIME structure is a 64-bit value representing the number of
     //100-nanosecond intervals since January 1, 1601.
 
-    //得到time_t部分
-    to_timeval.tv_sec = static_cast<long>((ui.QuadPart - 116444736000000000) / 10000000);
-    //得到微秒部分，FILETIME存放的是100-nanosecond
-    to_timeval.tv_usec = static_cast<long>(((ui.QuadPart - 116444736000000000) % 10000000) / 10);
+    if (tm_model == zce::TIME_MODEL::TMM_DURATION)
+    {
+        //得到time_t部分
+        to_timeval.tv_sec = static_cast<long>((ui.QuadPart - 116444736000000000) / 10000000);
+        //得到微秒部分，FILETIME存放的是100-nanosecond
+        to_timeval.tv_usec = static_cast<long>(((ui.QuadPart - 116444736000000000) % 10000000) / 10);
+    }
+    else if (tm_model == zce::TIME_MODEL::TMM_TIMEPOINT)
+    {
+        //FILETIME的单位是100-nanosecond
+        to_timeval.tv_sec = static_cast<long>(ui.QuadPart / 10000000);
+        to_timeval.tv_usec = static_cast<long>((ui.QuadPart % 10000000) / 10);
+    }
+    else
+    {
+        ZCE_ASSERT(0);
+    }
 
     return to_timeval;
 }
@@ -369,22 +336,6 @@ const timeval zce::make_timeval(const SYSTEMTIME* system_time) noexcept
     FILETIME ft;
     ::SystemTimeToFileTime(system_time, &ft);
     return make_timeval(&ft);
-}
-
-//转换FILETIME到timeval,这个是把FILETIME当着一个时长看待进行的
-const timeval zce::make_timeval2(const FILETIME* file_time) noexcept
-{
-    timeval to_timeval;
-
-    ULARGE_INTEGER ui;
-    ui.LowPart = file_time->dwLowDateTime;
-    ui.HighPart = file_time->dwHighDateTime;
-
-    //FILETIME的单位是100-nanosecond
-    to_timeval.tv_sec = static_cast<long>((ui.QuadPart) / 10000000);
-    to_timeval.tv_usec = static_cast<long>(((ui.QuadPart) % 10000000) / 10);
-
-    return to_timeval;
 }
 
 #endif
@@ -410,6 +361,79 @@ uint64_t zce::total_milliseconds(const ::timespec& ts)
     //这里的参数就是因为需要转换到毫秒所折腾的。
     return static_cast<uint64_t>(ts.tv_sec) * SEC_PER_MSEC + ts.tv_nsec / MSEC_PER_NSEC;
 }
+
+//----------------------------------------------------------------------------------------------------
+
+const ::tm zce::make_tm(const zce::ztm* pztm) noexcept
+{
+    ::tm tmv;
+    tmv.tm_year = pztm->year_ - 1900;
+    tmv.tm_mon = pztm->mon_ + 1;
+    tmv.tm_mday = pztm->day_;
+    tmv.tm_hour = pztm->hour_;
+    tmv.tm_min = pztm->min_;
+    tmv.tm_sec = pztm->sec_;
+    tmv.tm_wday = -1;
+    tmv.tm_yday = -1;
+    tmv.tm_isdst = -1;
+    return tmv;
+}
+
+const timeval zce::make_timeval(const zce::ztm* pztm, bool uct_time) noexcept
+{
+    // 如果要求转化UTC时间，就用UTC时间
+    // 如果ztm里面有时区tz_，就使用tz_得到时区时间，UTC-tz
+    // 否则使用本地时间
+    timeval tv;
+    ::tm tmp_tm = zce::make_tm(pztm);
+    // 如果字符串用UTC时间，或者ztm里面有tz_,
+    if (uct_time || pztm->tz_ != ztm::INVALID_TZ)
+    {
+#if defined ZCE_OS_WINDOWS
+        tv.tv_sec = static_cast<long>(zce::timegm(&tmp_tm));
+        tv.tv_usec = static_cast<long>(pztm->usec_);
+#else
+        tv.tv_sec = zce::timegm(&tm_value);
+        tv.tv_usec = pztm->usec_;
+#endif
+        if (pztm->tz_ != ztm::INVALID_TZ)
+        {
+            tv.tv_sec -= pztm->tz_;
+        }
+    }
+    else
+    {
+#if defined ZCE_OS_WINDOWS
+        tv.tv_sec = static_cast<long>(zce::timelocal(&tmp_tm));
+        tv.tv_usec = static_cast<long>(pztm->usec_);
+#else
+        tv.tv_sec = zce::timelocal(&tm_value);
+        tv.tv_usec = pztm->usec_;
+#endif
+    }
+    if (tv.tv_usec < 0 && tv.tv_usec > 999999)
+    {
+        tv.tv_usec = -1;
+    }
+    return tv;
+}
+
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
+
+MYSQL_TIME zce::make_MYSQL_TIME(const zce::ztm* pztm) noexcept
+{
+    MYSQL_TIME mysql_time;
+    mysql_time.year = pztm->year_;
+    mysql_time.month = pztm->mon_;
+    mysql_time.day = pztm->day_;
+    mysql_time.hour = pztm->hour_;
+    mysql_time.minute = pztm->min_;
+    mysql_time.second = pztm->sec_;
+    mysql_time.second_part = pztm->usec_;
+    mysql_time.neg = 0;
+    return mysql_time;
+}
+#endif
 
 //----------------------------------------------------------------------------------------------------
 //休眠函数

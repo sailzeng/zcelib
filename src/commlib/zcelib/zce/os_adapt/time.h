@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "zce/string/time.h"
 #include "zce/os_adapt/define.h"
 
 #if defined ZCE_OS_WINDOWS
@@ -145,12 +146,6 @@ const char* timestamp(const timeval* timeval,
 const char* timestamp(char* str_date_time,
                       size_t datetime_strlen);
 
-struct ztm;
-
-const ::tm make_tm(const zce::ztm* pztm) noexcept;
-
-const timeval make_timeval(bool uct_time, const zce::ztm* pztm) noexcept;
-
 /*!
 * @brief      计算timeval内部总计是多少毫秒
 * @return     uint64_t
@@ -221,6 +216,12 @@ void timeval_adjust(timeval& tv);
 */
 bool timeval_havetime(const timeval& tv);
 
+enum class TIME_MODEL
+{
+    TMM_DURATION,
+    TMM_TIMEPOINT,
+};
+
 /*!
 * @brief      生成timeval这个结构
 * @return     const timeval
@@ -285,11 +286,14 @@ const timeval make_timeval(const std::chrono::time_point<Clock, Duration>& val)
 //WINDOWS API常用的几个参数
 #if defined (ZCE_OS_WINDOWS)
 /*!
-* @brief      将FILETIME的参数视为一个时间（绝对时间 如2013-01-01 01:53:29），转换得到timeval
+* @brief      将FILETIME的参数视为一个时间（绝对时间 如2013-01-01 01:53:29
+*             或者相对时长），转换得到timeval
 * @return     const timeval
 * @param      file_time
+* @param      tm_model 转化模式，到底视file_time为一个绝对时间还是相对时间
 */
-const timeval make_timeval(const FILETIME* file_time) noexcept;
+const timeval make_timeval(const FILETIME* file_time,
+                           TIME_MODEL tm_model = zce::TIME_MODEL::TMM_DURATION) noexcept;
 
 /*!
 * @brief      转换SYSTEMTIME到timeval
@@ -304,7 +308,6 @@ const timeval make_timeval(const SYSTEMTIME* system_time) noexcept;
 * @return     const timeval
 * @param      file_time
 */
-const timeval make_timeval2(const FILETIME* file_time) noexcept;
 
 #endif
 
@@ -318,11 +321,30 @@ void make_duration(const timeval& tv,
 
 template<class Clock, class Duration >
 void make_timepoint(const timeval& tv,
-                    const std::chrono::time_point<Clock, Duration>& val)
+                    std::chrono::time_point<Clock, Duration>& val)
 {
     std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
     val = usec;
 }
+
+const ::tm make_tm(const zce::ztm* pztm) noexcept;
+
+/*!
+ * @brief  如果要求转化UTC时间(uct_time==true)，就用UTC时间
+           如果ztm里面有时区tz_，就使用tz_得到时区时间，UTC-tz
+           否则使用本地时间
+ * @param pztm
+ * @param uct_time 是否认为字符是UTC时间
+ * @return
+ */
+const timeval make_timeval(const zce::ztm* pztm,
+                           bool uct_time = true) noexcept;
+
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
+
+MYSQL_TIME make_MYSQL_TIME(const zce::ztm* pztm) noexcept;
+
+#endif
 
 //我整体对timespec不想做太多支持，
 
@@ -651,7 +673,7 @@ inline time_t zce::timelocal(struct tm* tm)
 #endif
 }
 
-//类似mktime，但是是把tm视为GMT时间，转换为世界时间time_t
+//类似mktime，但是是把tm视为GMT时间，转换为GMT时间time_t
 inline time_t zce::timegm(struct tm* tm)
 {
 #if defined (ZCE_OS_WINDOWS)

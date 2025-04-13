@@ -148,7 +148,13 @@ int from_str(const char* str, zce::skt::addr_in6& to_val)
 template<>
 int from_str(const char* str, zce::time_value& to_val)
 {
-    return to_val.from_str(str, false, zce::TS_FMT::ISO_USEC);
+    return to_val.from_str(str, zce::TMS_FMT::ISO_DATE_USEC, false);
+}
+
+template<>
+int from_str(const char* str, zce::ztm& mytm)
+{
+    return fuzzy_str_to_ztm(str, &mytm);
 }
 
 template<>

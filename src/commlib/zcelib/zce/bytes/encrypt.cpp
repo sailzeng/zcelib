@@ -168,8 +168,8 @@ const uint32_t DES_Base::DES_RHS[16] =
 //
 void DES_Base::des_setkey(const unsigned char key[8], uint32_t sk[32])
 {
-    uint32_t x = ZINDEX_TO_LEUINT32(key, 0);
-    uint32_t y = ZINDEX_TO_LEUINT32(key, 1);
+    uint32_t x = ZLEINDEX_TO_UINT32(key, 0);
+    uint32_t y = ZLEINDEX_TO_UINT32(key, 1);
     uint32_t t = 0;
 
     /*
@@ -270,8 +270,8 @@ void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT* sk,
     const uint32_t* sk_p = sk->sub_key_;
 
     //注意DES 内部数据用大头表示的
-    uint32_t x = ZINDEX_TO_LEUINT32(input, 0);
-    uint32_t y = ZINDEX_TO_LEUINT32(input, 1);
+    uint32_t x = ZLEINDEX_TO_UINT32(input, 0);
+    uint32_t y = ZLEINDEX_TO_UINT32(input, 1);
 
     DES_IP(x, y, t);
 
@@ -283,8 +283,8 @@ void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT* sk,
 
     DES_FP(y, x, t);
 
-    ZLEUINT32_TO_INDEX(output, 0, y);
-    ZLEUINT32_TO_INDEX(output, 1, x);
+    ZUINT32_TO_LEINDEX(output, 0, y);
+    ZUINT32_TO_LEINDEX(output, 1, x);
 }
 
 void DES3_ECB::des3_set3key(const unsigned char key[KEY_SIZE],
@@ -332,8 +332,8 @@ void  DES3_ECB::des3_crypt_ecb(const SUBKEY_STRUCT* subkey,
 
     const uint32_t* sk_p = subkey->sub_key_;
 
-    uint32_t x = ZINDEX_TO_LEUINT32(input, 0);
-    uint32_t y = ZINDEX_TO_LEUINT32(input, 1);
+    uint32_t x = ZLEINDEX_TO_UINT32(input, 0);
+    uint32_t y = ZLEINDEX_TO_UINT32(input, 1);
 
     DES_IP(x, y, t);
 
@@ -357,8 +357,8 @@ void  DES3_ECB::des3_crypt_ecb(const SUBKEY_STRUCT* subkey,
 
     DES_FP(y, x, t);
 
-    ZLEUINT32_TO_INDEX(output, 0, y);
-    ZLEUINT32_TO_INDEX(output, 1, x);
+    ZUINT32_TO_LEINDEX(output, 0, y);
+    ZUINT32_TO_LEINDEX(output, 1, x);
 }
 
 #undef DES_IP
@@ -401,8 +401,8 @@ void GOST_ECB::ecb_encrypt(const SUBKEY_STRUCT* sub_key,
                            const unsigned char* src_block,
                            unsigned char* cipher_block)
 {
-    uint32_t  a = ZINDEX_TO_LEUINT32(src_block, 0);
-    uint32_t  b = ZINDEX_TO_LEUINT32(src_block, 1);
+    uint32_t  a = ZLEINDEX_TO_UINT32(src_block, 0);
+    uint32_t  b = ZLEINDEX_TO_UINT32(src_block, 1);
     uint32_t temp_data = 0;
     const uint32_t* k = sub_key->skey_;
     for (size_t i = 0; i < 32; i++)
@@ -412,16 +412,16 @@ void GOST_ECB::ecb_encrypt(const SUBKEY_STRUCT* sub_key,
     }
     GOST_SWAP(a, b);
 
-    ZLEUINT32_TO_INDEX(cipher_block, 0, a);
-    ZLEUINT32_TO_INDEX(cipher_block, 1, b);
+    ZUINT32_TO_LEINDEX(cipher_block, 0, a);
+    ZUINT32_TO_LEINDEX(cipher_block, 1, b);
 }
 //解密函数
 void GOST_ECB::ecb_decrypt(const SUBKEY_STRUCT* sub_key,
                            const unsigned char* cipher_block,
                            unsigned char* src_block)
 {
-    uint32_t  a = ZINDEX_TO_LEUINT32(cipher_block, 0);
-    uint32_t  b = ZINDEX_TO_LEUINT32(cipher_block, 1);
+    uint32_t  a = ZLEINDEX_TO_UINT32(cipher_block, 0);
+    uint32_t  b = ZLEINDEX_TO_UINT32(cipher_block, 1);
     uint32_t temp_data = 0;
     const uint32_t* k = sub_key->skey_;
     for (size_t i = 0; i < 32; i++)
@@ -431,8 +431,8 @@ void GOST_ECB::ecb_decrypt(const SUBKEY_STRUCT* sub_key,
     }
     GOST_SWAP(a, b);
 
-    ZLEUINT32_TO_INDEX(src_block, 0, a);
-    ZLEUINT32_TO_INDEX(src_block, 1, b);
+    ZUINT32_TO_LEINDEX(src_block, 0, a);
+    ZUINT32_TO_LEINDEX(src_block, 1, b);
 }
 
 #undef GOST_SWAP

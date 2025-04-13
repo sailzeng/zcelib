@@ -107,11 +107,11 @@ public:
         }
         else if (srclen_type == 0x2)
         {
-            original_len = ZBYTE_TO_LEUINT16((compressed_buf + 1));
+            original_len = ZLEBYTE_TO_UINT16((compressed_buf + 1));
         }
         else if (srclen_type == 0x4)
         {
-            original_len = ZBYTE_TO_LEUINT32((compressed_buf + 1));
+            original_len = ZLEBYTE_TO_UINT32((compressed_buf + 1));
         }
         //不可能出现这种情况
         else
@@ -168,14 +168,14 @@ public:
         {
             head_size = 3;
             *head_pos |= 0x2;
-            ZLEUINT16_TO_BYTE((head_pos + 1), ((uint16_t)(original_size)));
+            ZUINT16_TO_LEBYTE((head_pos + 1), ((uint16_t)(original_size)));
         }
         //头部，1字节选项，1个4字节标识原长度字段，
         else  if (original_size <= STRATEGY::LZ_MAX_ORIGINAL_SIZE)
         {
             head_size = 5;
             *head_pos |= 0x4;
-            ZLEUINT32_TO_BYTE((head_pos + 1), ((uint32_t)(original_size)));
+            ZUINT32_TO_LEBYTE((head_pos + 1), ((uint32_t)(original_size)));
         }
         else
         {
@@ -245,12 +245,12 @@ public:
         }
         else if (srclen_type == 0x2)
         {
-            need_srclen = ZBYTE_TO_LEUINT16((head_pos + 1));
+            need_srclen = ZLEBYTE_TO_UINT16((head_pos + 1));
             head_size = 3;
         }
         else if (srclen_type == 0x4)
         {
-            need_srclen = ZBYTE_TO_LEUINT32((head_pos + 1));
+            need_srclen = ZLEBYTE_TO_UINT32((head_pos + 1));
             head_size = 5;
         }
         //不可能出现这种情况

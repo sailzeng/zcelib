@@ -29,7 +29,7 @@ o_double::o_double(double out_data,
 
 //=================================================================================================
 
-const char *to_str(::timeval& out_data,
+const char* to_str(::timeval& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -71,7 +71,7 @@ void embed_string(::timeval& out_data,
 }
 
 //IP的socket地址
-const char *to_str(::sockaddr_in& out_data,
+const char* to_str(::sockaddr_in& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -113,7 +113,7 @@ void embed_string(const ::sockaddr_in& out_data,
 }
 
 ///IPV6的socket地址
-const char *to_str(::sockaddr_in6& out_data,
+const char* to_str(::sockaddr_in6& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -154,7 +154,7 @@ void embed_string(const ::sockaddr_in6& out_data,
 }
 
 //!sockaddr *的指针类型
-const char *to_str(const ::sockaddr* out_data,
+const char* to_str(const ::sockaddr* out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -196,7 +196,7 @@ void embed_string(const ::sockaddr* out_data,
 }
 
 ///辅助IPV4的socket地址字符串
-const char *to_str(const ::in_addr* out_data,
+const char* to_str(const ::in_addr* out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -239,7 +239,7 @@ void embed_string(const ::in_addr& out_data,
 }
 
 ///辅助输出IPV6的socket地址字符串
-const char *to_str(const ::in6_addr* out_data,
+const char* to_str(const ::in6_addr* out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -284,7 +284,7 @@ void embed_string(const ::in6_addr& out_data,
 
 //=================================================================================================
 //一些zce常用的结构的字符串输出
-const char *to_str(const zce::time_value& out_data,
+const char* to_str(const zce::time_value& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -305,7 +305,7 @@ void embed_str(const zce::time_value& out_data,
     //返回成功
     if (ret_str)
     {
-        use_len = zce::TS_ISO_USEC_LEN;
+        use_len = zce::TIMESTR_LEN[zce::ISO_DATE_USEC];
     }
     else
     {
@@ -327,7 +327,7 @@ void embed_string(const zce::time_value& out_data,
 }
 
 //zce::sockaddr_any  万能的处理sockaddr_in，sockaddr_in6的类
-const char *to_str(zce::sockaddr_any& out_data,
+const char* to_str(zce::sockaddr_any& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -368,7 +368,7 @@ void embed_string(const zce::sockaddr_any& out_data,
 }
 
 ///输出zce::skt::addr_in的字符串
-const char *to_str(zce::skt::addr_in& out_data,
+const char* to_str(zce::skt::addr_in& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -408,7 +408,7 @@ void embed_string(const zce::skt::addr_in& out_data,
 }
 
 ///辅助输出zce::skt::addr_in6的字符串
-const char *to_str(zce::skt::addr_in6& out_data,
+const char* to_str(zce::skt::addr_in6& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -448,7 +448,7 @@ void embed_string(const zce::skt::addr_in6& out_data,
 }
 
 ///辅助输出uuid64的字符串
-const char *to_str(zce::uuid64& out_data,
+const char* to_str(zce::uuid64& out_data,
                    char* buffer,
                    size_t buf_len)
 {
@@ -492,7 +492,7 @@ void embed_string(const uuid64& out_data,
 }
 
 ///辅助输出uuid128的字符串
-const char *to_str(zce::uuid128& out_data,
+const char* to_str(zce::uuid128& out_data,
                    char* buffer,
                    size_t buf_len)
 {

@@ -6,8 +6,29 @@
 //#if (_MSC_VER > 1300) && (defined(CPU_IA32) || defined(CPU_X64)) /* MS VC */
 //_MSC_VER > 1300  _byteswap_ushort,_byteswap_ulong,_byteswap_uint64
 //#if defined(__GNUC__) && (__GNUC__ >= 4) && (__GNUC__ > 4 || __GNUC_MINOR__ >= 3)
-//GCC 4.3__builtin_bswap64,__builtin_bswap16,__builtin_bswap32
+//GCC 4.3 __builtin_bswap64,__builtin_bswap16,__builtin_bswap32
 
+#if defined ZCE_OS_WINDOWS && defined _MSC_VER && ( _MSC_VER> 1300)
+#ifndef ZCE_SWAP_UINT16
+#define ZCE_SWAP_UINT16(x)  (_byteswap_ushort(x))
+#endif
+#ifndef ZCE_SWAP_UINT32
+#define ZCE_SWAP_UINT32(x)  (_byteswap_ulong(x))
+#endif
+#ifndef ZCE_SWAP_UINT64
+#define ZCE_SWAP_UINT64(x)   (_byteswap_uint64(x))
+#endif
+#elif defined ZCE_OS_LINUX
+#ifndef ZCE_SWAP_UINT16
+#define ZCE_SWAP_UINT16(x)  (__builtin_bswap16(x))
+#endif
+#ifndef ZCE_SWAP_UINT32
+#define ZCE_SWAP_UINT32(x)  (__builtin_bswap32(x))
+#endif
+#ifndef ZCE_SWAP_UINT64
+#define ZCE_SWAP_UINT64(x)   (__builtin_bswap64(x))
+#endif
+#else
 #ifndef ZCE_SWAP_UINT16
 #define ZCE_SWAP_UINT16(x)  ((((x) & 0xff00) >>  8) | (((x) & 0x00ff) <<  8))
 #endif
@@ -20,6 +41,15 @@
                               (((x) & 0x0000ff0000000000ULL) >> 24) | (((x) & 0x000000ff00000000ULL) >>  8) |   \
                               (((x) & 0x00000000ff000000ULL) << 8 ) | (((x) & 0x0000000000ff0000ULL) <<  24) |  \
                               (((x) & 0x000000000000ff00ULL) << 40 ) | (((x)& 0x00000000000000ffULL) <<  56))
+#endif
+#endif
+
+#ifndef ZCE_SWAP_FLOAT
+#define ZCE_SWAP_FLOAT(x)  zce::_swap_float(x)
+#endif
+
+#ifndef ZCE_SWAP_DOUBLE
+#define ZCE_SWAP_DOUBLE(x)  zce::_swap_double(x)
 #endif
 
 //定义一组ntol ntos,nothll等，主要问题是64的转换，不是所有系统都有，
@@ -168,82 +198,113 @@ struct ZDOUBLE_STRUCT
 #if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE)
 
 ///从一个(char *)ptr指针内读取小头字节序的uint16_t(32,or64)，在小头字节序的机器上不发生改变
-# define ZBYTE_TO_LEUINT16(ptr)    ZBYTE_TO_UINT16(ptr)
-# define ZBYTE_TO_LEUINT32(ptr)    ZBYTE_TO_UINT32(ptr)
-# define ZBYTE_TO_LEUINT64(ptr)    ZBYTE_TO_UINT64(ptr)
+# define ZLEBYTE_TO_UINT16(ptr)    ZBYTE_TO_UINT16(ptr)
+# define ZLEBYTE_TO_UINT32(ptr)    ZBYTE_TO_UINT32(ptr)
+# define ZLEBYTE_TO_UINT64(ptr)    ZBYTE_TO_UINT64(ptr)
+# define ZLEBYTE_TO_FLOAT(ptr)     ZBYTE_TO_FLOAT(ptr)
+# define ZLEBYTE_TO_DOUBLE(ptr)    ZBYTE_TO_DOUBLE(ptr)
 
-///从一个(char *)ptr指针内读取小头字节序的uint16_t(32,or64)， 的数组内的ary_index单元，
+///从一个(char *)ptr指针内，按小头字节序读取uint16_t(32,or64)， 的数组内的ary_index单元，
 ///注意数组下标是相对于对于整形的下标，(而不是相对于字符型ptr的下标)
-# define ZINDEX_TO_LEUINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
-# define ZINDEX_TO_LEUINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
-# define ZINDEX_TO_LEUINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
+# define ZLEINDEX_TO_UINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
+# define ZLEINDEX_TO_UINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
+# define ZLEINDEX_TO_UINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
+# define ZLEINDEX_TO_FLOAT(ptr,ary_index)   ZINDEX_TO_FLOAT(ptr,ary_index)
+# define ZLEINDEX_TO_DOUBLE(ptr,ary_index)  ZINDEX_TO_DOUBLE(ptr,ary_index)
 
 ///向一个(char *)ptr指针内写入一个小头字节序的uint16_t(32,or64) wr_data，
 ///在小头字节序的机器上不发生改变
-# define ZLEUINT16_TO_BYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
-# define ZLEUINT32_TO_BYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
-# define ZLEUINT64_TO_BYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
+# define ZUINT16_TO_LEBYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
+# define ZUINT32_TO_LEBYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
+# define ZUINT64_TO_LEBYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
+# define ZFLOAT_TO_LEBYTE(ptr,wr_data)   ZFLOAT_TO_BYTE(ptr,wr_data)
+# define ZDOUBLE_TO_LEBYTE(ptr,wr_data)  ZDOUBLE_TO_BYTE(ptr,wr_data)
 
 ///向一个(char *)ptr指针内写入一个小头字节序的uint16_t(32,or64)wr_data
 ///注意数组下标是相对于对于整形的下标，(而不是相对于字符型ptr的下标)
-# define ZLEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
-# define ZLEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
-# define ZLEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
+# define ZUINT16_TO_LEINDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
+# define ZUINT32_TO_LEINDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
+# define ZUINT64_TO_LEINDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
+# define ZFLOAT_TO_LEINDEX(ptr,ary_index,wr_data)   ZFLOAT_TO_INDEX(ptr,ary_index,wr_data)
+# define ZDOUBLE_TO_LEINDEX(ptr,ary_index,wr_data)  ZDOUBLE_TO_INDEX(ptr,ary_index,wr_data)
 
-///从一个(char *)指针内读取大头头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上进行转换
-# define ZBYTE_TO_BEUINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
-# define ZBYTE_TO_BEUINT32(ptr)  ZCE_SWAP_UINT32(((ZU32_STRUCT *)(ptr))->value_)
-# define ZBYTE_TO_BEUINT64(ptr)  ZCE_SWAP_UINT64(((ZU64_STRUCT *)(ptr))->value_)
+///从一个(char *)指针内，按大头头字节序读取的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上进行转换
+# define ZBEBYTE_TO_UINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
+# define ZBEBYTE_TO_UINT32(ptr)  ZCE_SWAP_UINT32(((ZU32_STRUCT *)(ptr))->value_)
+# define ZBEBYTE_TO_UINT64(ptr)  ZCE_SWAP_UINT64(((ZU64_STRUCT *)(ptr))->value_)
+# define ZBEBYTE_TO_FLOAT(ptr)   ZCE_SWAP_FLOAT(((ZFLOAT_STRUCT *)(ptr))->value_)
+# define ZBEBYTE_TO_DOUBLE(ptr)  ZCE_SWAP_DOUBLE(((ZDOUBLE_STRUCT *)(ptr))->value_)
 
-///从一个(char *)指针内读取大头字节序的uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
-# define ZINDEX_TO_BEUINT16(ptr,ary_index)  ZCE_SWAP_UINT16((((ZU16_STRUCT *)(ptr))+(ary_index))->value_)
-# define ZINDEX_TO_BEUINT32(ptr,ary_index)  ZCE_SWAP_UINT32((((ZU32_STRUCT *)(ptr))+(ary_index))->value_)
-# define ZINDEX_TO_BEUINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
+///从一个(char *)指针内，按大头字节序读取uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
+# define ZBEINDEX_TO_UINT16(ptr,ary_index)  ZCE_SWAP_UINT16((((ZU16_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZBEINDEX_TO_UINT32(ptr,ary_index)  ZCE_SWAP_UINT32((((ZU32_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZBEINDEX_TO_UINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZBEINDEX_TO_FLOAT(ptr,ary_index)   ZCE_SWAP_FLOAT((((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZBEINDEX_TO_DOUBLE(ptr,ary_index)  ZCE_SWAP_DOUBLE((((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_)
 
-///向一个(char *)指针内写入一个大头(网络)字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上要进行转换
-# define ZBEUINT16_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data)
-# define ZBEUINT32_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data)
-# define ZBEUINT64_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data)
+///向一个(char *)指针内,以大头(网络)字节序的写入uint16_t,or uint32_t or uint64_t，在小头字节序的机器上要进行转换
+# define ZUINT16_TO_BEBYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data)
+# define ZUINT32_TO_BEBYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data)
+# define ZUINT64_TO_BEBYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data)
+# define ZFLOAT_TO_BEBYTE(ptr,wr_data)   ZBYTE_TO_FLOAT(ptr)  = ZCE_SWAP_FLOAT(wr_data)
+# define ZDOUBLE_TO_BEBYTE(ptr,wr_data)  ZBYTE_TO_DOUBLE(ptr) = ZCE_SWAP_DOUBLE(wr_data)
 
 //向一个(char *)指针内写入一个大头(网络)字节序的uuint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
-# define ZBEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)
-# define ZBEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT32(ptr,ary_index) = ZCE_SWAP_UINT32(wr_data)
-# define ZBEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT64(ptr,ary_index) = ZCE_SWAP_UINT64(wr_data)
-
+# define ZUINT16_TO_BEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)
+# define ZUINT32_TO_BEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT32(ptr,ary_index) = ZCE_SWAP_UINT32(wr_data)
+# define ZUINT64_TO_BEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT64(ptr,ary_index) = ZCE_SWAP_UINT64(wr_data)
+# define ZFLOAT_TO_BEINDEX(ptr,ary_index,wr_data)   ZINDEX_TO_FLOAT(ptr,ary_index)  = ZCE_SWAP_FLOAT(wr_data)
+# define ZDOUBLE_TO_BEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_DOUBLE(ptr,ary_index) = ZCE_SWAP_DOUBLE(wr_data)
 //对大头字节序进行定义
 #else
 
-# define ZBYTE_TO_LEUINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
-# define ZBYTE_TO_LEUINT32(ptr)  ZCE_SWAP_UINT32(((ZU32_STRUCT *)(ptr))->value_)
-# define ZBYTE_TO_LEUINT64(ptr)  ZCE_SWAP_UINT64(((ZU64_STRUCT *)(ptr))->value_)
+# define ZLEBYTE_TO_UINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
+# define ZLEBYTE_TO_UINT32(ptr)  ZCE_SWAP_UINT32(((ZU32_STRUCT *)(ptr))->value_)
+# define ZLEBYTE_TO_UINT64(ptr)  ZCE_SWAP_UINT64(((ZU64_STRUCT *)(ptr))->value_)
+# define ZLEBYTE_TO_FLOAT(ptr)   ZCE_SWAP_FLOAT(((ZFLOAT_STRUCT *)(ptr))->value_)
+# define ZLEBYTE_TO_DOUBLE(ptr)  ZCE_SWAP_DOUBLE(((ZDOUBLE_STRUCT *)(ptr))->value_)
 
-# define ZINDEX_TO_LEUINT16(ptr,ary_index)  ZCE_SWAP_UINT16((((ZU16_STRUCT *)(ptr))+(ary_index))->value_)
-# define ZINDEX_TO_LEUINT32(ptr,ary_index)  ZCE_SWAP_UINT32((((ZU32_STRUCT *)(ptr))+(ary_index))->value_)
-# define ZINDEX_TO_LEUINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZLEINDEX_TO_UINT16(ptr,ary_index)  ZCE_SWAP_UINT16((((ZU16_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZLEINDEX_TO_UINT32(ptr,ary_index)  ZCE_SWAP_UINT32((((ZU32_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZLEINDEX_TO_UINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZLEINDEX_TO_FLOAT(ptr,ary_index)   ZCE_SWAP_FLOAT((((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_)
+# define ZLEINDEX_TO_DOUBLE(ptr,ary_index)  ZCE_SWAP_DOUBLE((((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_)
 
-# define ZLEUINT16_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data))
-# define ZLEUINT32_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data))
-# define ZLEUINT64_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data))
+# define ZUINT16_TO_LEBYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data))
+# define ZUINT32_TO_LEBYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data))
+# define ZUINT64_TO_LEBYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data))
+# define ZFLOAT_TO_LEBYTE(ptr,wr_data)   ZBYTE_TO_FLOAT(ptr) = ZCE_SWAP_FLOAT(wr_data))
+# define ZDOUBLE_TO_LEBYTE(ptr,wr_data)  ZBYTE_TO_DOUBLE(ptr) = ZCE_SWAP_DOUBLE(wr_data))
 
-# define ZLEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)
-# define ZLEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT32(ptr,ary_index) = ZCE_SWAP_UINT32(wr_data)
-# define ZLEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT64(ptr,ary_index) = ZCE_SWAP_UINT64(wr_data)
+# define ZUINT16_TO_LEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)
+# define ZUINT32_TO_LEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT32(ptr,ary_index) = ZCE_SWAP_UINT32(wr_data)
+# define ZUINT64_TO_LEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT64(ptr,ary_index) = ZCE_SWAP_UINT64(wr_data)
+# define ZFLOAT_TO_LEINDEX(ptr,ary_index,wr_data)   ZINDEX_TO_FLOAT(ptr,ary_index) = ZCE_SWAP_FLOAT(wr_data)
+# define ZDOUBLE_TO_LEINDEX(ptr,ary_index,wr_data)  ZINDEX_TO_DOUBLE(ptr,ary_index) = ZCE_SWAP_DOUBLE(wr_data)
 
-# define ZBYTE_TO_BEUINT16(ptr)    ZBYTE_TO_UINT16(ptr)
-# define ZBYTE_TO_BEUINT32(ptr)    ZBYTE_TO_UINT32(ptr)
-# define ZBYTE_TO_BEUINT64(ptr)    ZBYTE_TO_UINT64(ptr)
+# define ZBEBYTE_TO_UINT16(ptr)    ZBYTE_TO_UINT16(ptr)
+# define ZBEBYTE_TO_UINT32(ptr)    ZBYTE_TO_UINT32(ptr)
+# define ZBEBYTE_TO_UINT64(ptr)    ZBYTE_TO_UINT64(ptr)
+# define ZBEBYTE_TO_FLOAT(ptr)     ZBYTE_TO_FLOAT(ptr)
+# define ZBEBYTE_TO_DOUBLE(ptr)    ZBYTE_TO_DOUBLE(ptr)
 
-# define ZINDEX_TO_BEUINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
-# define ZINDEX_TO_BEUINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
-# define ZINDEX_TO_BEUINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
+# define ZBEINDEX_TO_UINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
+# define ZBEINDEX_TO_UINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
+# define ZBEINDEX_TO_UINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
+# define ZBEINDEX_TO_FLOAT(ptr,ary_index)   ZINDEX_TO_FLOAT(ptr,ary_index)
+# define ZBEINDEX_TO_DOUBLE(ptr,ary_index)  ZINDEX_TO_DOUBLE(ptr,ary_index)
 
-# define ZBEUINT16_TO_BYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
-# define ZBEUINT32_TO_BYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
-# define ZBEUINT64_TO_BYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
+# define ZUINT16_TO_BEBYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
+# define ZUINT32_TO_BEBYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
+# define ZUINT64_TO_BEBYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
+# define ZFLOAT_TO_BEBYTE(ptr,wr_data)   ZFLOAT_TO_BYTE(ptr,wr_data)
+# define ZDOUBLE_TO_BEBYTE(ptr,wr_data)  ZDOUBLE_TO_BYTE(ptr,wr_data)
 
-# define ZBEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
-# define ZBEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
-# define ZBEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
+# define ZUINT16_TO_BEINDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
+# define ZUINT32_TO_BEINDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
+# define ZUINT64_TO_BEINDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
+# define ZFLOAT_TO_BEINDEX(ptr,ary_index,wr_data)   ZFLOAT_TO_INDEX(ptr,ary_index,wr_data)
+# define ZDOUBLE_TO_BEINDEX(ptr,ary_index,wr_data)  ZDOUBLE_TO_INDEX(ptr,ary_index,wr_data)
 
 #endif /* end if (ZCE_ENDIAN_ORDER == ZCE_ENDIAN_LITTLE) */
 
@@ -324,6 +385,17 @@ union ZDOUBLE_UNION
 {
     char char_data_[8];
     double value_;
+};
+union ZFLOAT_U32_UNION
+{
+    float value_;
+    uint32_t u32_;
+};
+
+union ZDOUBLE_U64_UNION
+{
+    double value_;
+    uint64_t u64_;
 };
 
 #define ZRD_U16_FROM_BYTES(bytes_ptr,rd_data)  \
@@ -478,4 +550,19 @@ void bytes_xor(char* a,
 void bytes_xor(const char* a,
                const char* b,
                size_t len);
+
+inline float _swap_float(float d)
+{
+    ZFLOAT_U32_UNION temp;
+    temp.value_ = d;
+    temp.u32_ = ZCE_SWAP_UINT32(temp.u32_);
+    return temp.value_;
+}
+inline double _swap_double(double d)
+{
+    ZDOUBLE_U64_UNION temp;
+    temp.value_ = d;
+    temp.u64_ = ZCE_SWAP_UINT64(temp.u64_);
+    return temp.value_;
+}
 }

@@ -235,14 +235,14 @@ public:
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
-            bn_[i] = ZINDEX_TO_LEUINT32(buf, i);
+            bn_[i] = ZLEINDEX_TO_UINT32(buf, i);
         }
     }
     void takeout(char* buf) const
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
-            ZLEUINT32_TO_INDEX(buf, i, bn_[i]);
+            ZUINT32_TO_LEINDEX(buf, i, bn_[i]);
         }
     }
 

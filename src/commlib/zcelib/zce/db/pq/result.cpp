@@ -58,6 +58,28 @@ void result::set_result(::PGresult* res)
     return;
 }
 
+template <>
+int result::field(size_t row, size_t colum, zce::ztm& val) const
+{
+    //返回字段为文本类型
+    auto ffmt = field_format(colum) == 0;
+    if (ffmt == FMT_TEXT)
+    {
+        return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)colum), val);
+    }
+    //else if (ffmt == FMT_BINARY)
+    //{
+    //    zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
+    //                        (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
+    //    dc.read(val);
+    //    return 0;
+    //}
+    else
+    {
+        return -1;
+    }
+}
+
 void result::clear()
 {
     if (nullptr != pq_result_)

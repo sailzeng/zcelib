@@ -117,20 +117,9 @@ public:
     template <typename T>
     T field(size_t row, size_t colum) const
     {
-        //返回字段为文本类型
-        auto ffmt = field_format(colum) == 0;
-        if (ffmt == FMT_TEXT)
-        {
-            return zce::from_str_to<T>(::PQgetvalue(pq_result_, (int)row, (int)colum));
-        }
-        else
-        {
-            zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
-                                (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
-            T val;
-            dc.read(val);
-            return val;;
-        }
+        T val;
+        field(row, colum, val);
+        return val;
     }
 
     //将光标的数据全部转化一个tuple

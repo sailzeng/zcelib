@@ -50,7 +50,7 @@ void encode::write(const short& val)
         is_good_ = false;
         return;
     }
-    ZBEUINT16_TO_BYTE(write_pos_, val);
+    ZUINT16_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -63,7 +63,7 @@ void encode::write(const unsigned short& val)
         is_good_ = false;
         return;
     }
-    ZBEUINT16_TO_BYTE(write_pos_, val);
+    ZUINT16_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -76,7 +76,7 @@ void encode::write(const int& val)
         is_good_ = false;
         return;
     }
-    ZBEUINT32_TO_BYTE(write_pos_, val);
+    ZUINT32_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -88,7 +88,7 @@ void encode::write(const unsigned int& val)
         is_good_ = false;
         return;
     }
-    ZBEUINT32_TO_BYTE(write_pos_, val);
+    ZUINT32_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -100,7 +100,7 @@ void encode::write(const float& val)
         is_good_ = false;
         return;
     }
-    ZFLOAT_TO_BYTE(write_pos_, val);
+    ZFLOAT_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
 
     return;
@@ -126,7 +126,7 @@ void encode::write(const long& val)
         is_good_ = false;
         return;
     }
-    ZBEUINT64_TO_BYTE(write_pos_, val);
+    ZUINT64_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -140,9 +140,9 @@ void encode::write(const unsigned long& val)
         return;
     }
 #if defined ZCE_OS_WINDOWS
-    ZBEUINT32_TO_BYTE(write_pos_, val);
+    ZUINT32_TO_BEBYTE(write_pos_, val);
 #elif defined ZCE_OS_LINUX
-    ZBEUINT64_TO_BYTE(write_pos_, val);
+    ZUINT64_TO_BEBYTE(write_pos_, val);
 #endif
     write_pos_ += SIZE_OF_VALUE;
     return;
@@ -156,11 +156,8 @@ void encode::write(const long long& val)
         is_good_ = false;
         return;
     }
-#if defined ZCE_OS_WINDOWS
-    ZBEUINT32_TO_BYTE(write_pos_, val);
-#elif defined ZCE_OS_LINUX
-    ZBEUINT64_TO_BYTE(write_pos_, val);
-#endif
+
+    ZUINT64_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -173,7 +170,7 @@ void encode::write(const unsigned long long& val)
         is_good_ = false;
         return;
     }
-    ZBEUINT64_TO_BYTE(write_pos_, val);
+    ZUINT64_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -248,7 +245,7 @@ void decode::read(short& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_BEUINT16(read_pos_);
+    val = ZBEBYTE_TO_UINT16(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -261,7 +258,7 @@ void decode::read(int& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_BEUINT32(read_pos_);
+    val = ZBEBYTE_TO_UINT32(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -274,7 +271,7 @@ void decode::read(unsigned short& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_BEUINT16(read_pos_);
+    val = ZBEBYTE_TO_UINT16(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -287,7 +284,7 @@ void decode::read(unsigned int& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_BEUINT32(read_pos_);
+    val = ZBEBYTE_TO_UINT32(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -301,9 +298,9 @@ void decode::read(long& val)
         return;
     }
 #if defined ZCE_OS_WINDOWS
-    val = ZBYTE_TO_BEUINT32(read_pos_);
+    val = ZBEBYTE_TO_UINT32(read_pos_);
 #elif defined ZCE_OS_LINUX
-    val = ZBYTE_TO_BEUINT64(read_pos_);
+    val = ZBEBYTE_TO_UINT64(read_pos_);
 #endif
     read_pos_ += SIZE_OF_VALUE;
     return;
@@ -317,9 +314,9 @@ void decode::read(unsigned long& val)
         return;
     }
 #if defined ZCE_OS_WINDOWS
-    val = ZBYTE_TO_BEUINT32(read_pos_);
+    val = ZBEBYTE_TO_UINT32(read_pos_);
 #elif defined ZCE_OS_LINUX
-    val = ZBYTE_TO_BEUINT64(read_pos_);
+    val = ZBEBYTE_TO_UINT64(read_pos_);
 #endif
     read_pos_ += SIZE_OF_VALUE;
     return;
@@ -333,7 +330,7 @@ void decode::read(long long& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_BEUINT64(read_pos_);
+    val = ZBEBYTE_TO_UINT64(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -345,7 +342,7 @@ void decode::read(unsigned long long& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_BEUINT64(read_pos_);
+    val = ZBEBYTE_TO_UINT64(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
