@@ -820,7 +820,7 @@
     <ClInclude Include="zce\pool\chunk_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\comm\common.h">
+    <ClInclude Include="zce\os_adapt\common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\scope_guard.h">

@@ -205,7 +205,7 @@ void log_file::open_new_logfile(const timeval& current_time) noexcept
         LOGFILE_DEVIDE::BY_TIME_MONTH == div_log_file_ ||
         LOGFILE_DEVIDE::BY_TIME_YEAR == div_log_file_)
     {
-        cur_click = current_time.tv_sec / ONE_HOUR_SECONDS;
+        cur_click = current_time.tv_sec / SEC_PER_HOUR;
 
         //降低比较频率
         if (current_click_ != cur_click)

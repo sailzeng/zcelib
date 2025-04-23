@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include "zce/comm/common.h"
+#include "zce/os_adapt/common.h"
 #include "zce/event/handle_base.h"
 #include "zce/time/time_value.h"
 #include "zce/db/mysql/connect.h"

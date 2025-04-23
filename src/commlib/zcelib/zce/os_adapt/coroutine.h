@@ -5,23 +5,28 @@
 * @date       2013年11月27日
 * @brief      协程的OS适配层，
 *
-* @details    一个简单的协程的封装
-*             最开始参考的文章是这个，
+* @details    一个简单的协程的封装, 其实与其说更像ucontext，不如说更像是一个Fiber，
+*
+*             第一次，最开始参考的文章是这个，
 *             http://www.codeproject.com/Articles/4225/Unix-ucontext_t-Operations-on-Windows-Platforms
-*             但发现其实他并不正确，
-*             1.CONTEXT根据CPU结构所不同的，
+*             但发现其实他并不正确，Windows 的 Thread CONTEXT API 和ucontext不类似。
+*             1.Windows 的 Thread CONTEXT API 是一个关于线程的上下文的，和协程没有关系，
+*             你可以把它理解Windows 底层获取，设置一个线程的寄存器的快照，和协程没有关系。
+*             用于调试器使用（查看断点、栈帧、指令指针），注入器使用：修改线程执行位置（比如
+*             DLL 注入、劫持线程），异常处理/恢复上下文
 *             2.Windows 下的API GetThreadContext,SetThreadContext ，在64位的环境
-*               下是没法用的。后面Windows 增加了Wow64GetThreadContext ，
+*               下是没法用的。后面Windows 增加了Wow64GetThreadContext ，Wow64SetThreadContext
 *             3.GetThreadContext对当前运行线程是无效的，因为当前线程是在运行的。
 *             这点最讨厌，你就不能切换会主线程了，
 *
 *             第二次，我希望用Windows 的Fibers来模拟Linux下的getcontext等函数，但发现
 *             其实Fibers和Context是有本质不同的，Fibers更像线程的对象（过程），Context
 *             更像一个堆栈（点），比如
-*             0.context API实现起来更像goto，Fibers的API更像是线程。注意：context的
-*             swapcontext会给你错觉。但其实swapcontext是先保存当前的context到第一个参数，
-*             1.Fibers是无法实现类似SwitchToFiber( GetCurrentFiber() );的调用，其
-*               只能跳入另外一个Fibers，
+*             0.ucontext是一个上下文，Fibers是一个异步执行单元
+*               ucontext API实现起来更像goto，Fibers的API更像是线程。注意：context的
+*               swapcontext会给你错觉。但其实swapcontext是先保存当前的context到第一个参数，
+*             1.Fibers是无法实现类似SwitchToFiber( GetCurrentFiber());的调
+*               用，其只能跳入另外一个Fibers，
 *             2.Fibers除了启动阶段和SwitchToFiber 点，不存在一个类似getcontext的点能
 *               切换过去，（getcontext和GetCurrentFiber不是一个东东）
 *             3.无法完全融合的差异的，比如CreateFiber 是自己构造堆栈的，而makecontext
@@ -34,6 +39,7 @@
 *             在coroutine里面，使用yeild_coroutine切换到主协程，
 *
 *             我在等待C++ 20的协程，最后我干掉这些代码。
+*             C++ 20出来了，结果是无栈协程
 *
 * @note       关于Fibers函数的说明，清参考如下文档，作者写的非常清楚。
 *             ConvertFiberToThread
@@ -41,10 +47,12 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_CORROUTINE_H_
-#define ZCE_LIB_OS_ADAPT_CORROUTINE_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
+
+//!
+typedef   void(*ZCE_COROUTINE_FUN) (void* para1);
 
 #if defined ZCE_OS_WINDOWS
 
@@ -61,6 +69,24 @@ struct  coroutine_t
     void* coroutine_;
 };
 
+///Windows的Fiber实现(CreateFiber)函数指针对应的参数只有一个，而且需要的的函数纸质是WINAPI的，
+///就是__stdcall的，而且Fiber没有返回的context指定,所以做一个转换，
+struct _FIBERS_3PARAFUN_ADAPT
+{
+    ///
+    coroutine_t* handle_ = nullptr;
+    ///是否在退出的时候返回主协程，
+    bool                exit_back_main_ = true;
+    ///函数指针
+    std::function<void()>   fun_;
+
+    //函数的第1个参数，
+    void* para1_ = nullptr;
+};
+
+//帮助完成函数适配适配
+VOID  WINAPI _fibers_adapt_fun(VOID* param);
+
 #elif defined ZCE_OS_LINUX
 
 struct  coroutine_t
@@ -69,12 +95,9 @@ struct  coroutine_t
     ucontext_t         coroutine_;
 };
 
-#endif
+void  _fibers_adapt_fun(void* param)
 
-//为什么最后选择3个参数的函数作为支持的类型，大概是因为维基的例子，（我本来一直认为2个参数足够了）
-typedef   void(*ZCE_COROUTINE_3PARA) (void* para1,
-                                      void* para2,
-                                      void* para3);
+#endif
 
 namespace zce
 {
@@ -104,17 +127,99 @@ namespace zce
 * @param      stack_size    栈大小
 * @param      back_main     携程最后是否返回main函数
 * @param      fun_ptr       函数指针，接受3个指针参数
-* @param      para1         指针参数1
-* @param      para2         指针参数2
-* @param      para3         指针参数3
+* @param      para1         函数参数1
 */
+template <class Call, class... Args >
 int make_coroutine(coroutine_t* coroutine_hdl,
                    size_t stack_size,
-                   bool back_main,
-                   ZCE_COROUTINE_3PARA fun_ptr,
-                   void* para1,
-                   void* para2,
-                   void* para3);
+                   bool exit_back_main,
+                   Call&& fp,
+                   Args&&... args)
+{
+#if defined ZCE_OS_WINDOWS
+
+    coroutine_hdl->main_ = nullptr;
+    coroutine_hdl->coroutine_ = nullptr;
+
+    //如果当前还不是纤程，进行转换，同时也到当前的纤程标识
+    if (FALSE == ::IsThreadAFiber())
+    {
+        //FIBER_FLAG_FLOAT_SWITCH XP不支持，浮点环境切换应该会耗时，有一些简化去掉了
+        coroutine_hdl->main_ = ::ConvertThreadToFiberEx(nullptr,
+                                                        FIBER_FLAG_FLOAT_SWITCH);
+        if (nullptr == coroutine_hdl->main_)
+        {
+            return -1;
+        }
+    }
+    //如果已经是纤程了，得到当前纤程的标识
+    else
+    {
+        coroutine_hdl->main_ = ::GetCurrentFiber();
+        if (nullptr == coroutine_hdl->main_)
+        {
+            return -1;
+        }
+    }
+
+    //使用这个结构完成函数适配
+    struct _FIBERS_3PARAFUN_ADAPT* fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
+    fibers_adapt->exit_back_main_ = exit_back_main;
+    fibers_adapt->fun_ = std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
+
+    //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
+    coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
+                                                stack_size,
+                                                FIBER_FLAG_FLOAT_SWITCH,
+                                                _fibers_adapt_fun,
+                                                fibers_adapt);
+
+    if (nullptr == coroutine_hdl->coroutine_)
+    {
+        return -1;
+    }
+
+    fibers_adapt->handle_ = coroutine_hdl;
+
+    return 0;
+#elif defined ZCE_OS_LINUX
+
+    //必须先getcontext才能makecontext
+    int ret = ::getcontext(&(coroutine_hdl->main_));
+    if (0 != ret)
+    {
+        return ret;
+    }
+    ret = ::getcontext(&(coroutine_hdl->coroutine_));
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //只使用一个参数，不允许使用变参，Windwos不支持
+    const int ONLY_1_ARG_COUNT = 1;
+    if (exit_back_main)
+    {
+        coroutine_hdl->coroutine_.uc_link = &(coroutine_hdl->main_);
+    }
+    else
+    {
+        coroutine_hdl->coroutine_.uc_link = nullptr;
+    }
+    auto svc_func =
+        std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
+    auto func_obj = new std::function<void()>(std::move(svc_func));
+
+    coroutine_hdl->coroutine_.uc_stack.ss_sp = new char[stack_size];
+    coroutine_hdl->coroutine_.uc_stack.ss_size = stack_size;
+
+    ::makecontext(&coroutine_hdl->coroutine_,
+                  (void(*)(void)) _fibers_adapt_fun,
+                  ONLY_1_ARG_COUNT,
+                  func_obj);
+    return 0;
+#endif
+}
 
 /*!
 * @brief      非标准函数，LINUX下的会分配对的空间
@@ -147,5 +252,3 @@ int yeild_coroutine(coroutine_t* coroutine_hdl);
 int exchage_coroutine(coroutine_t* save_hdl,
                       coroutine_t* goto_hdl);
 };
-
-#endif //ZCE_LIB_OS_ADAPT_CORROUTINE_H_

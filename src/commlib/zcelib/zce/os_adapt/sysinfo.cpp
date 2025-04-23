@@ -179,43 +179,43 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE* info)
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->user_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
-    info->user_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    info->user_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     //nice
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->nice_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
-    info->nice_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    info->nice_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     //system
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->system_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
-    info->system_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    info->system_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     //idle
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->idle_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision / cpu_config_num);
-    info->idle_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision) / cpu_config_num);
+    info->idle_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision) / cpu_config_num);
 
     //iowait
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->iowait_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
-    info->iowait_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    info->iowait_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     //hard irq
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->hardirq_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
-    info->hardirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    info->hardirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     //soft irq
     time_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     info->softirq_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
-    info->softirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    info->softirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     // 获得系统的uptime
     zce::steady_clock(&info->up_time_);
@@ -247,7 +247,7 @@ int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE* info)
     in_para = out_para;
 
     info->up_time_.tv_sec = static_cast<time_t>(::floor(uptime));
-    info->up_time_.tv_usec = static_cast<time_t>((uptime - ::floor(uptime)) * SEC_PER_USEC);
+    info->up_time_.tv_usec = static_cast<time_t>((uptime - ::floor(uptime)) * USEC_PER_SEC);
 
     return 0;
 }

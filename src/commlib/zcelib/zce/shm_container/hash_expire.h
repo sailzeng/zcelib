@@ -41,7 +41,8 @@ private:
 public:
     using size_type = shmc_size_type;
     using difference_type = ptrdiff_t;
-    using value_type = T;
+    using mapped_type = T;
+    using value_type = std::pair<const Key, T>;
     using pointer = value_type*;
     using reference = value_type&;
     //迭代器萃取器所有的东东
@@ -122,7 +123,7 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++* this;
+        ++*this;
         return tmp;
     }
     //
@@ -182,7 +183,8 @@ public:
     using iterator = _ht_expire_iterator < T, Key, Hash, Extract, keyEqual, Washout >;
     using const_iterator = const iterator;
     using iterator_category = iterator::iterator_category;
-    using value_type = T;
+    using mapped_type = T;
+    using value_type = std::pair<const Key, T>;
     using key_type = Key;
     using reference = value_type&;
     using const_reference = const value_type&;
@@ -316,7 +318,7 @@ public:
     {
         std::size_t sz_alloc = alloc_size(req_num, real_num);
         //自己分配一个空间，自己使用
-        char *mem_addr = new char[sz_alloc];
+        char* mem_addr = new char[sz_alloc];
         slef_alloc_ = true;
         return initialize(req_num, real_num, mem_addr, false);
     }

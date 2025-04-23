@@ -18,8 +18,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_STRING_H_
-#define ZCE_LIB_OS_ADAPT_STRING_H_
+#pragma once
 
 #include "zce/logger/log_comm.h"
 
@@ -480,5 +479,3 @@ void* fast_memcpy(void* dst, const void* src, size_t sz);
 
 void* fast_memcpy2(void* dst, const void* src, size_t sz);
 };
-
-#endif //ZCE_LIB_STRING_EX_H_

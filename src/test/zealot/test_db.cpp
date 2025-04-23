@@ -34,7 +34,7 @@ struct TEST_TABLE
     float f5_;
     double f6_;
     std::string f7_;
-    MYSQL_TIME f8_;
+    zce::ztm f8_;
 };
 
 template<typename T>
@@ -130,11 +130,11 @@ int db_select_one(typename dbt::cnt* conn, size_t num)
         db_result.cursor_field(7, r1.f8_);
         EXPECT_EQ(r1.f1_, (int)num);
 
-        auto [f1, f2, f3, f4, f5, f6] =
-            db_result.make_tuple<int, short, int, int, float, double>(0);
+        auto [f1, f2, f3, f4, f5, f6, f7, f8] =
+            db_result.make_tuple<int, short, int, int, float, double, std::string, zce::ztm>(0);
 
-        //std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_) =
-        //    db_result.make_tuple<int, short, int, int, float, double, std::string, MYSQL_TIME>(0);
+        std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_) =
+            db_result.make_tuple<int, short, int, int, float, double, std::string, zce::ztm>(0);
     }
 
     return 0;
@@ -170,15 +170,15 @@ int db_select_all(typename dbt::cnt* conn, size_t count)
     for (size_t i = 0; i < count; ++i)
     {
         db_result.cursor_seek(i);
-        std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_) =
-            db_result.make_tuple<int, short, int, int, float, double>(i);
+        std::tie(r1.f1_, r1.f2_, r1.f3_, r1.f4_, r1.f5_, r1.f6_, r1.f7_, r1.f8_) =
+            db_result.make_tuple<int, short, int, int, float, double, std::string, zce::ztm>(i);
     }
     // 注意下面 template 必须加
-    /*using db_res_set = dbt::template res_set<int, short, int, int, float, double, std::string, ::MYSQL_TIME>;
+    using db_res_set = dbt::template res_set<int, short, int, int, float, double, std::string, zce::ztm>;
     db_res_set  rs(std::move(db_result));
     for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : rs)
     {
-    }*/
+    }
     return 0;
 }
 

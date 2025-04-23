@@ -1,5 +1,5 @@
 #include "zce/predefine.h"
-#include "zce/comm/common.h"
+#include "zce/os_adapt/common.h"
 #include "zce/os_adapt/define.h"
 #include "zce/os_adapt/mutex.h"
 #include "zce/lock/thread_mutex.h"
@@ -52,8 +52,8 @@ int zce::steady_clock(timeval* tv)
 
 #endif //
 
-    tv->tv_sec = static_cast<long>(now_cpu_tick / SEC_PER_MSEC);
-    tv->tv_usec = static_cast<long>(now_cpu_tick % SEC_PER_MSEC * MSEC_PER_USEC);
+    tv->tv_sec = static_cast<long>(now_cpu_tick / MSEC_PER_SEC);
+    tv->tv_usec = static_cast<long>(now_cpu_tick % MSEC_PER_SEC * USEC_PER_MSEC);
 
     return 0;
 
@@ -88,7 +88,7 @@ uint64_t zce::clock_ms(void)
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &sp);
     if (ret == 0)
     {
-        return (uint64_t)sp.tv_sec * SEC_PER_MSEC + (uint64_t)sp.tv_nsec / MSEC_PER_NSEC;
+        return (uint64_t)sp.tv_sec * MSEC_PER_SEC + (uint64_t)sp.tv_nsec / MNSEC_PER_SEC;
     }
     else
     {
@@ -164,14 +164,14 @@ void zce::timeval_clear(timeval& tv)
 uint64_t zce::total_milliseconds(const timeval& tv)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
-    return static_cast<uint64_t>(tv.tv_sec) * SEC_PER_MSEC + tv.tv_usec / MSEC_PER_USEC;
+    return static_cast<uint64_t>(tv.tv_sec) * MSEC_PER_SEC + tv.tv_usec / USEC_PER_MSEC;
 }
 
 //计算timeval内部总计是多少微秒10-6
 uint64_t zce::total_microseconds(const timeval& tv)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
-    return static_cast<uint64_t>(tv.tv_sec) * SEC_PER_USEC + tv.tv_usec;
+    return static_cast<uint64_t>(tv.tv_sec) * USEC_PER_SEC + tv.tv_usec;
 }
 
 //比较时间是否一致,如果一致返回0，left大，返回整数，right大返回负数
@@ -194,10 +194,10 @@ const timeval zce::timeval_add(const timeval& left, const timeval& right)
     plus_time_val.tv_sec = left.tv_sec + right.tv_sec;
     plus_time_val.tv_usec = left.tv_usec + right.tv_usec;
 
-    if (plus_time_val.tv_usec > SEC_PER_USEC)
+    if (plus_time_val.tv_usec > USEC_PER_SEC)
     {
-        plus_time_val.tv_sec += plus_time_val.tv_usec / SEC_PER_USEC;
-        plus_time_val.tv_usec = plus_time_val.tv_usec % SEC_PER_USEC;
+        plus_time_val.tv_sec += plus_time_val.tv_usec / USEC_PER_SEC;
+        plus_time_val.tv_usec = plus_time_val.tv_usec % USEC_PER_SEC;
     }
 
     return plus_time_val;
@@ -207,8 +207,8 @@ const timeval zce::timeval_add(const timeval& left, const timeval& right)
 //safe == true保证返回值>=0,
 const  timeval zce::timeval_sub(const timeval& left, const  timeval& right, bool safe)
 {
-    int64_t left_usec_val = (int64_t)left.tv_sec * SEC_PER_USEC + left.tv_usec;
-    int64_t right_usec_val = (int64_t)right.tv_sec * SEC_PER_USEC + right.tv_usec;
+    int64_t left_usec_val = (int64_t)left.tv_sec * USEC_PER_SEC + left.tv_usec;
+    int64_t right_usec_val = (int64_t)right.tv_sec * USEC_PER_SEC + right.tv_usec;
 
     //用64位作为基准去减
     int64_t minus_usec_val = left_usec_val - right_usec_val;
@@ -218,8 +218,8 @@ const  timeval zce::timeval_sub(const timeval& left, const  timeval& right, bool
     // >0 或者标识无须调整就调整成0
     if (minus_usec_val >= 0 || (minus_usec_val < 0 && safe == false))
     {
-        minus_time_val.tv_sec = static_cast<long>(minus_usec_val / SEC_PER_USEC);
-        minus_time_val.tv_usec = static_cast<long>(minus_usec_val % SEC_PER_USEC);
+        minus_time_val.tv_sec = static_cast<long>(minus_usec_val / USEC_PER_SEC);
+        minus_time_val.tv_usec = static_cast<long>(minus_usec_val % USEC_PER_SEC);
     }
     else
     {
@@ -233,16 +233,16 @@ const  timeval zce::timeval_sub(const timeval& left, const  timeval& right, bool
 //调整tv，如果tv的usec大于1s，调整成秒
 void zce::timeval_adjust(timeval& tv)
 {
-    int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
+    int64_t tv_usec_val = (int64_t)tv.tv_sec * USEC_PER_SEC + tv.tv_usec;
 
-    tv.tv_sec = static_cast<long>(tv_usec_val / SEC_PER_USEC);
-    tv.tv_usec = static_cast<long>(tv_usec_val % SEC_PER_USEC);
+    tv.tv_sec = static_cast<long>(tv_usec_val / USEC_PER_SEC);
+    tv.tv_usec = static_cast<long>(tv_usec_val % USEC_PER_SEC);
 }
 
 //检查这个TIMEVALUE是否还有剩余的时间
 bool zce::timeval_havetime(const timeval& tv)
 {
-    int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
+    int64_t tv_usec_val = (int64_t)tv.tv_sec * USEC_PER_SEC + tv.tv_usec;
 
     if (tv_usec_val > 0)
     {
@@ -255,31 +255,31 @@ bool zce::timeval_havetime(const timeval& tv)
 //这只timeval这个结构
 const timeval zce::make_timeval(time_t sec, time_t usec) noexcept
 {
-    timeval to_timeval;
+    timeval tv;
 #if defined (ZCE_OS_WINDOWS)
-    to_timeval.tv_sec = static_cast<long>(sec);
-    to_timeval.tv_usec = static_cast<long>(usec);
+    tv.tv_sec = static_cast<long>(sec);
+    tv.tv_usec = static_cast<long>(usec);
 #elif defined (ZCE_OS_LINUX)
     to_timeval.tv_sec = sec;
     to_timeval.tv_usec = usec;
 #endif
 
-    return to_timeval;
+    return tv;
 }
 
 //转换得到timeval这个结构
 const timeval zce::make_timeval(std::clock_t clock_value) noexcept
 {
-    timeval to_timeval;
+    timeval tv;
 
-    to_timeval.tv_sec = clock_value / CLOCKS_PER_SEC;
+    tv.tv_sec = clock_value / CLOCKS_PER_SEC;
     clock_t remain_val = clock_value % CLOCKS_PER_SEC;
 
     // Windows平台下tv_sec被定义成long,所以需要转换
-    to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>(
-        (remain_val * SEC_PER_USEC / CLOCKS_PER_SEC));
+    tv.tv_usec = static_cast<decltype(tv.tv_usec)>(
+        (remain_val * USEC_PER_SEC / CLOCKS_PER_SEC));
 
-    return to_timeval;
+    return tv;
 }
 
 //转换得到timeval这个结构
@@ -291,7 +291,7 @@ const timeval zce::make_timeval(const ::timespec* timespec_val) noexcept
     timeval to_timeval;
 
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(timespec_val->tv_sec);
-    to_timeval.tv_usec = timespec_val->tv_nsec / USEC_PER_NSEC;
+    to_timeval.tv_usec = timespec_val->tv_nsec / NSEC_PER_USEC;
     return to_timeval;
 }
 
@@ -300,7 +300,7 @@ const timeval zce::make_timeval(const ::timespec* timespec_val) noexcept
 //转换FILETIME到timeval
 const timeval zce::make_timeval(const FILETIME* file_time, TIME_MODEL tm_model) noexcept
 {
-    ::timeval to_timeval = { 0,0 };
+    ::timeval tv = { 0,0 };
 
     ULARGE_INTEGER ui;
     ui.LowPart = file_time->dwLowDateTime;
@@ -312,22 +312,22 @@ const timeval zce::make_timeval(const FILETIME* file_time, TIME_MODEL tm_model) 
     if (tm_model == zce::TIME_MODEL::TMM_DURATION)
     {
         //得到time_t部分
-        to_timeval.tv_sec = static_cast<long>((ui.QuadPart - 116444736000000000) / 10000000);
+        tv.tv_sec = static_cast<decltype(tv.tv_sec)>((ui.QuadPart - 116444736000000000) / 10000000);
         //得到微秒部分，FILETIME存放的是100-nanosecond
-        to_timeval.tv_usec = static_cast<long>(((ui.QuadPart - 116444736000000000) % 10000000) / 10);
+        tv.tv_usec = static_cast<decltype(tv.tv_usec)>(((ui.QuadPart - 116444736000000000) % 10000000) / 10);
     }
     else if (tm_model == zce::TIME_MODEL::TMM_TIMEPOINT)
     {
         //FILETIME的单位是100-nanosecond
-        to_timeval.tv_sec = static_cast<long>(ui.QuadPart / 10000000);
-        to_timeval.tv_usec = static_cast<long>((ui.QuadPart % 10000000) / 10);
+        tv.tv_sec = static_cast<decltype(tv.tv_sec)>(ui.QuadPart / 10000000);
+        tv.tv_usec = static_cast<decltype(tv.tv_usec)>((ui.QuadPart % 10000000) / 10);
     }
     else
     {
         ZCE_ASSERT(0);
     }
 
-    return to_timeval;
+    return tv;
 }
 
 //转换SYSTEMTIME到timeval
@@ -350,7 +350,7 @@ const ::timespec zce::make_timespec(const ::timeval* timeval_val)
     ::timespec to_timespec;
 
     to_timespec.tv_sec = timeval_val->tv_sec;
-    to_timespec.tv_nsec = timeval_val->tv_usec * USEC_PER_NSEC;
+    to_timespec.tv_nsec = timeval_val->tv_usec * NSEC_PER_USEC;
 
     return to_timespec;
 }
@@ -359,7 +359,7 @@ const ::timespec zce::make_timespec(const ::timeval* timeval_val)
 uint64_t zce::total_milliseconds(const ::timespec& ts)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
-    return static_cast<uint64_t>(ts.tv_sec) * SEC_PER_MSEC + ts.tv_nsec / MSEC_PER_NSEC;
+    return static_cast<uint64_t>(ts.tv_sec) * MSEC_PER_SEC + ts.tv_nsec / NSEC_PER_MSEC;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -368,7 +368,7 @@ const ::tm zce::make_tm(const zce::ztm* pztm) noexcept
 {
     ::tm tmv;
     tmv.tm_year = pztm->year_ - 1900;
-    tmv.tm_mon = pztm->mon_ + 1;
+    tmv.tm_mon = pztm->mon_ - 1;
     tmv.tm_mday = pztm->day_;
     tmv.tm_hour = pztm->hour_;
     tmv.tm_min = pztm->min_;
@@ -379,61 +379,83 @@ const ::tm zce::make_tm(const zce::ztm* pztm) noexcept
     return tmv;
 }
 
-const timeval zce::make_timeval(const zce::ztm* pztm, bool uct_time) noexcept
+const timeval zce::make_timeval(const zce::ztm* pztm,
+                                bool uct_time,
+                                TIME_MODEL tm_model) noexcept
 {
-    // 如果要求转化UTC时间，就用UTC时间
-    // 如果ztm里面有时区tz_，就使用tz_得到时区时间，UTC-tz
-    // 否则使用本地时间
     timeval tv;
-    ::tm tmp_tm = zce::make_tm(pztm);
-    // 如果字符串用UTC时间，或者ztm里面有tz_,
-    if (uct_time || pztm->tz_ != ztm::INVALID_TZ)
+    if (tm_model == zce::TIME_MODEL::TMM_TIMEPOINT)
     {
-#if defined ZCE_OS_WINDOWS
-        tv.tv_sec = static_cast<long>(zce::timegm(&tmp_tm));
-        tv.tv_usec = static_cast<long>(pztm->usec_);
-#else
-        tv.tv_sec = zce::timegm(&tm_value);
-        tv.tv_usec = pztm->usec_;
-#endif
-        if (pztm->tz_ != ztm::INVALID_TZ)
+        // 如果要求转化UTC时间，就用UTC时间
+        // 如果ztm里面有时区tz_，就使用tz_得到时区时间，UTC-tz
+        // 否则使用本地时间
+        ::tm tmp_tm = zce::make_tm(pztm);
+        // 如果字符串用UTC时间，或者ztm里面有tz_,
+        if (uct_time)
         {
-            tv.tv_sec -= pztm->tz_;
+            tv.tv_sec = static_cast<decltype(tv.tv_sec)>(zce::timegm(&tmp_tm));
+            tv.tv_usec = static_cast<decltype(tv.tv_usec)>(pztm->usec_);
         }
+        else
+        {
+            tv.tv_sec = static_cast<decltype(tv.tv_sec)>(zce::timelocal(&tmp_tm));
+            tv.tv_usec = static_cast<decltype(tv.tv_usec)>(pztm->usec_);
+        }
+        if (tv.tv_usec < 0 && tv.tv_usec > 999999)
+        {
+            tv.tv_usec = -1;
+        }
+        return tv;
+    }
+    else if (tm_model == zce::TIME_MODEL::TMM_DURATION)
+    {
+        tv.tv_sec = static_cast<decltype(tv.tv_sec)>(pztm->year_ * 365 * SEC_PER_DAY +
+                                                     pztm->mon_ * 30 * SEC_PER_DAY +
+                                                     pztm->day_ * SEC_PER_DAY +
+                                                     pztm->hour_ * SEC_PER_HOUR +
+                                                     pztm->min_ * SEC_PER_MIN +
+                                                     pztm->sec_);
+        tv.tv_usec = static_cast<decltype(tv.tv_usec)>(pztm->usec_);
+        return tv;
     }
     else
     {
-#if defined ZCE_OS_WINDOWS
-        tv.tv_sec = static_cast<long>(zce::timelocal(&tmp_tm));
-        tv.tv_usec = static_cast<long>(pztm->usec_);
-#else
-        tv.tv_sec = zce::timelocal(&tm_value);
-        tv.tv_usec = pztm->usec_;
-#endif
+        ZCE_ASSERT(0);
+        tv.tv_sec = 0;
+        tv.tv_usec = 0;
+        return tv;
     }
-    if (tv.tv_usec < 0 && tv.tv_usec > 999999)
-    {
-        tv.tv_usec = -1;
-    }
-    return tv;
 }
 
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 MYSQL_TIME zce::make_MYSQL_TIME(const zce::ztm* pztm) noexcept
 {
-    MYSQL_TIME mysql_time;
-    mysql_time.year = pztm->year_;
-    mysql_time.month = pztm->mon_;
-    mysql_time.day = pztm->day_;
-    mysql_time.hour = pztm->hour_;
-    mysql_time.minute = pztm->min_;
-    mysql_time.second = pztm->sec_;
-    mysql_time.second_part = pztm->usec_;
-    mysql_time.neg = 0;
-    return mysql_time;
+    MYSQL_TIME mt;
+    mt.year = pztm->year_;
+    mt.month = pztm->mon_;
+    mt.day = pztm->day_;
+    mt.hour = pztm->hour_;
+    mt.minute = pztm->min_;
+    mt.second = pztm->sec_;
+    mt.second_part = static_cast<decltype(mt.second_part)>(pztm->usec_);
+    mt.neg = 0;
+    return mt;
 }
 #endif
+
+const zce::ztm zce::make_ztm(const MYSQL_TIME* mt) noexcept
+{
+    zce::ztm zt;
+    zt.year_ = mt->year;
+    zt.mon_ = mt->month;
+    zt.day_ = mt->day;
+    zt.hour_ = mt->hour;
+    zt.min_ = mt->minute;
+    zt.sec_ = mt->second;
+    zt.usec_ = static_cast<decltype(zt.usec_)>(mt->second_part);
+    return zt;
+}
 
 //----------------------------------------------------------------------------------------------------
 //休眠函数
@@ -441,7 +463,7 @@ MYSQL_TIME zce::make_MYSQL_TIME(const zce::ztm* pztm) noexcept
 int zce::sleep(uint32_t seconds)
 {
 #if defined (ZCE_OS_WINDOWS)
-    ::Sleep(seconds * SEC_PER_MSEC);
+    ::Sleep(seconds * MSEC_PER_SEC);
     return 0;
 #endif //#if defined (ZCE_OS_WINDOWS)
 
@@ -455,12 +477,12 @@ int zce::sleep(const timeval& tv)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
-    ::Sleep(tv.tv_sec * SEC_PER_MSEC + tv.tv_usec / MSEC_PER_USEC);
+    ::Sleep(tv.tv_sec * MSEC_PER_SEC + tv.tv_usec / USEC_PER_MSEC);
     return 0;
 #endif //
 
 #if defined (ZCE_OS_LINUX)
-    return ::usleep(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
+    return ::usleep(tv.tv_sec * USEC_PER_SEC + tv.tv_usec);
 #endif //
 }
 
@@ -468,7 +490,7 @@ int zce::sleep(const timeval& tv)
 int zce::usleep(unsigned long usec)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //::Sleep(usec / MSEC_PER_USEC);
+    //::Sleep(usec / USEC_PER_MSEC);
     std::this_thread::sleep_for(std::chrono::microseconds(usec));
     return 0;
 #endif //#if defined (ZCE_OS_WINDOWS)

@@ -15,8 +15,7 @@
 *
 */
 
-#ifndef ZCE_OS_ADOPT_STDLIB_H_
-#define ZCE_OS_ADOPT_STDLIB_H_
+#pragma once
 
 namespace zce
 {
@@ -56,5 +55,3 @@ int fcvt_r(double number,
            char* buf,
            size_t len);
 };
-
-#endif //ZCE_OS_ADOPT_STDLIB_H_

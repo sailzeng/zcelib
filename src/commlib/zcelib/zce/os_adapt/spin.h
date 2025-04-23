@@ -37,8 +37,8 @@
 *             举个例子，比如我们要等待某个多线程的消息队列里面有数据再取，用Mutex比Spin合适很多。
 *
 */
-#ifndef ZCE_LIB_OS_ADAPT_SPIN_H_
-#define ZCE_LIB_OS_ADAPT_SPIN_H_
+
+#pragma once
 
 #include "zce/os_adapt/define.h"
 
@@ -81,5 +81,3 @@ int pthread_spin_trylock(pthread_spinlock_t* lock) noexcept;
 */
 int pthread_spin_unlock(pthread_spinlock_t* lock) noexcept;
 };
-
-#endif //ZCE_LIB_OS_ADAPT_SPIN_H_

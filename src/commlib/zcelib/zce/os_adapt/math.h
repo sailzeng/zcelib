@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_MATH_H_
-#define ZCE_LIB_OS_ADAPT_MATH_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 #include "zce/bytes/base_encode.h"
@@ -125,5 +124,3 @@ inline int scanbit_msb2lsb64(uint64_t mask)
 
 #endif
 }
-
-#endif //ZCE_LIB_OS_ADAPT_MATH_H_

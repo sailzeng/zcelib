@@ -154,6 +154,69 @@ struct new_helper
         return new T(args...);
     }
 };
+
+//----------------------------------------------------------------------------
+template <typename T, typename = void>
+struct is_container : std::false_type {};
+
+template <typename T>
+struct is_container<
+    T,
+    std::void_t<
+    decltype(std::declval<T>().begin()),
+    decltype(std::declval<T>().end())
+    >
+> : std::true_type
+{
+};
+
+// -----------------------------
+// 是否是支持 push_back 的容器
+// -----------------------------
+template <typename T, typename = void>
+struct has_push_back : std::false_type {};
+
+template <typename T>
+struct has_push_back<
+    T,
+    std::void_t<
+    decltype(std::declval<T>().push_back(std::declval<typename T::value_type>()))
+    >
+> : std::true_type
+{
+};
+
+//! 是否拥有 key_type（map/set）
+template <typename T, typename = void>
+struct has_key_type : std::false_type {};
+
+template <typename T>
+struct has_key_type<
+    T,
+    std::void_t<typename T::key_type>
+> : std::true_type
+{
+};
+
+//! 是否是单类型容器（vector、list 等）
+template <typename T>
+struct is_single_type_container : std::bool_constant<
+    is_container<T>::value &&
+    !has_key_type<T>::value
+>
+{
+};
+
+// -----------------------------
+// 是否是关联容器（map、set）
+// -----------------------------
+template <typename T>
+struct is_associative_container : std::bool_constant<
+    is_container<T>::value&&
+    has_key_type<T>::value
+>
+{
+};
 }
 
 #endif //ZCE_LIB_BOOST_MPL_H_

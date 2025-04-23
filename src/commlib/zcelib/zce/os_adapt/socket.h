@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "zce/comm/common.h"
+#include "zce/os_adapt/common.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/error.h"
 
@@ -49,7 +49,7 @@ public:
     //!
     void set(const ::sockaddr* sa, socklen_t sa_len);
     //!
-    void get(::sockaddr* sa, socklen_t *sa_len) const;
+    void get(::sockaddr* sa, socklen_t* sa_len) const;
 
     //!清0整个结构,包括地址和端口，
     void zero();
@@ -60,13 +60,13 @@ public:
     socklen_t socklen();
 
     //!得到sockaddr* 等
-    operator sockaddr *();
-    operator sockaddr_in *();
-    operator sockaddr_in6 *();
+    operator sockaddr* ();
+    operator sockaddr_in* ();
+    operator sockaddr_in6* ();
 
-    operator const sockaddr *() const;
-    operator const sockaddr_in *() const;
-    operator const sockaddr_in6 *() const;
+    operator const sockaddr* () const;
+    operator const sockaddr_in* () const;
+    operator const sockaddr_in6* () const;
 
     //设置地址族family
     void set_family(int family);
@@ -546,7 +546,7 @@ int connect_timeout(ZCE_SOCKET handle,
 
 //!详见accept函数，timeout_tv为等待超时时间
 int accept_timeout(ZCE_SOCKET handle,
-                   ZCE_SOCKET *apt_hdl,
+                   ZCE_SOCKET* apt_hdl,
                    sockaddr* from,
                    socklen_t* from_len,
                    zce::time_value& timeout_tv);

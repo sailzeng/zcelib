@@ -12,7 +12,7 @@
 */
 #pragma once
 
-#include "zce/comm/common.h"
+#include "zce/os_adapt/common.h"
 #include "zce/event/reactor_base.h"
 
 namespace zce

@@ -718,6 +718,10 @@ constexpr std::endian __LITTE_ENDIAN = std::endian::little;
 #pragma comment(lib, "libmysql.lib" )
 #endif
 
+#if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
+#pragma comment(lib, "libpq.lib" )
+#endif
+
 //自动包含的包含连接，简化你的操作
 #pragma comment(lib, "zcelib.lib"  )
 

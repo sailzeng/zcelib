@@ -267,15 +267,15 @@ public:
     * @param[out] str_date_time   要输出的字符串数组
     * @param[in]  datetime_strlen 字符串的长度
     * @param[in]  fromat_type     时间格式，参考@ref TS_FMT 枚举，默认输出ISO格式的本地时间，精度到USEC。
-    * @param[in]  out_tz          输出时区信息
     * @param[in]  uct_time        是否按照UTC/GMT时间输出
+    * @param[in]  out_tz          输出时区信息
     */
     const char* to_str(char* buffer,
                        size_t buf_len,
                        size_t& use_buf,
                        zce::TMS_FMT fromat_type = zce::TMS_FMT::ISO_DATE_USEC,
-                       bool out_tz = false,
-                       bool uct_time = false)  const;
+                       bool uct_time = false,
+                       bool out_tz = false)  const;
 
     /*!
     * @brief      根据你的格式化要求,将字符串，转换为事件
@@ -287,6 +287,9 @@ public:
     int from_str(const char* strtm,
                  zce::TMS_FMT fromat_type = zce::TMS_FMT::ISO_DATE_USEC,
                  bool uct_time = false);
+
+    int from_fuzzy_str(const char* strtm,
+                       bool uct_time = false);
 
     ///返回一个timespec的对象
     //operator ::timespec () const;

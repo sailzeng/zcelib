@@ -1,6 +1,4 @@
 #include "zce/predefine.h"
-#include "zce/logger/logging.h"
-#include "zce/buffer/string_buffer.h"
 #include "zce/db/mysql/result.h"
 
 //如果你要用MYSQL的库
@@ -12,7 +10,9 @@ namespace zce::mysql
 //根据字段列ID,得到字段值
 const char* cursor::field_data(size_t colum) const
 {
-    if (cursor_row_ == nullptr && colum >= num_field_)
+    // Check if cursor_row_ is null before dereferencing
+    ZCE_ASSERT(cursor_row_ && colum < num_field_);
+    if (cursor_row_ == nullptr || colum >= num_field_)
     {
         ZCE_ASSERT(false);
         return nullptr;
@@ -36,10 +36,9 @@ int cursor::field_data(size_t colum, char* pfdata) const
 //根据字段顺序ID,得到字段表结构定义的类型
 enum_field_types cursor::field_type(size_t colum) const
 {
-    //检查结果集合为空,或者参数nfield错误
+    ZCE_ASSERT(cursor_row_ && colum < num_field_);
     if (cursor_row_ == nullptr || colum >= num_field_)
     {
-        ZCE_ASSERT(false);
         return MYSQL_TYPE_NULL;
     }
 
@@ -49,8 +48,8 @@ enum_field_types cursor::field_type(size_t colum) const
 //根据Field ID 得到此列值的实际长度
 size_t cursor::field_length(size_t colum) const
 {
-    //检查结果集合的当前行为空(可能没有fetch_row_next),或者参数colum错误
-    if (cursor_row_ == nullptr && colum >= num_field_)
+    ZCE_ASSERT(cursor_row_ && colum < num_field_);
+    if (cursor_row_ == nullptr || colum >= num_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
@@ -61,9 +60,10 @@ size_t cursor::field_length(size_t colum) const
 //根据字段的序列值得到字段值
 zce::mysql::field  cursor::get_field(size_t colum) const
 {
-    if (cursor_row_ == nullptr && colum >= num_field_)
+    ZCE_ASSERT(cursor_row_ && colum < num_field_);
+    if (cursor_row_ == nullptr || colum >= num_field_)
     {
-        ZCE_ASSERT(false);
+        return zce::mysql::field();
     }
     return zce::mysql::field(cursor_row_[colum],
                              fields_len_[colum],
@@ -108,11 +108,26 @@ int cursor::field(size_t colum, unsigned char*& val) const
 template<>
 int cursor::field(size_t colum, zce::string_buf& val) const
 {
-    ZCE_ASSERT(nullptr != cursor_row_ && colum <= num_field_
+    ZCE_ASSERT(nullptr != cursor_row_ && colum < num_field_
                && val.capacity() >= fields_len_[colum]);
 
     //长度不包括结束符号
-    val.set(cursor_row_[colum], fields_len_[colum]);
+    val.assign(cursor_row_[colum], fields_len_[colum]);
+    return 0;
+}
+
+template<>
+int cursor::field(size_t colum, zce::ztm& val) const
+{
+    //为什么不直接用ztm的字符串转换函数呢，因为MYSQL_TIME的字符串转换有一些特殊地方，比如TIME
+    //可能是HHH:MM:SS,而不是HH:MM:SS,所以直接用MYSQL_TIME的转换函数
+    MYSQL_TIME mt;
+    int ret = zce::from_str<MYSQL_TIME>(cursor_row_[colum], mt);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    val = zce::make_ztm(&mt);
     return 0;
 }
 

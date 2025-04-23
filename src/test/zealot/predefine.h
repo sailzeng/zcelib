@@ -126,20 +126,14 @@
 #include <zce/lockfree/queue.h>
 #include <zce/lockfree/ptr_ring.h>
 
-#include <thread>
-#include <mutex>
-#include <functional>
+//! 增加一些自己的代码依赖
 
 #include <gtest/gtest.h>
+#include <magic_enum/magic_enum.hpp>
 
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)
-#endif
-
-#if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
-#pragma comment(lib, "libgtest.lib" )
-#pragma comment(lib, "libgtest_main.lib" )
 #endif
 
 #endif

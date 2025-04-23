@@ -1,21 +1,20 @@
 #include "zce/predefine.h"
-#include "zce/comm/common.h"
 #include "zce/string/regex_parse.h"
 
 int zce::parse_str_to_ztm(const char* strtm,
                           zce::ztm* pztm)
 {
     const std::string POSIX_DATE_REGEX = R"(([ \t]*(\d{4}|\d{2})[-\/]?(\d{2})[-\/]?(\d{2})))";
-    const std::string TIME_REGEX = R"(([ \t]*(\d{2})\:?(\d{2})\:?(\d{2})([.](\d{6}))?))";
+    const std::string TIME_REGEX = R"(([ \tT]*(\d{2})\:?(\d{2})\:?(\d{2})([.](\d{6}))?))";
     const std::string WEEK_REGEX = R"(([ \t]*(sun|mon|tue|wed|thu|fri|sat),?))";
-    const std::string TIMEZONE_REGEX = R"(([ \t]*(GMT|[\+-]\d{4})))";
+    const std::string TIMEZONE_REGEX = R"(([ \t]*(GMT|Z|[\+-]\d{2}\:?\d{2})))";
     const std::string USEURO_DATE_REGEX = R"(([ \t]*((jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[ \t]*(\d{2})|(\d{2})[ \t]*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec))[ \t]*(\d{4})))";
     const std::string TIME_PATTERN[] =
     {
         POSIX_DATE_REGEX + TIME_REGEX + "?" + TIMEZONE_REGEX + "?",
         WEEK_REGEX + "?" + USEURO_DATE_REGEX + TIME_REGEX + "?" + TIMEZONE_REGEX + "?",
     };
-    std::regex tm_regex_0(TIME_PATTERN[0]);
+    std::regex tm_regex_0(TIME_PATTERN[0], std::regex::icase);
     std::regex tm_regex_1(TIME_PATTERN[1], std::regex::icase);
 
     enum class RP_MFT
@@ -91,13 +90,13 @@ int zce::parse_str_to_ztm(const char* strtm,
         }
     }
 
-    if (tm_cmatch1[17].compare("GMT"))
+    if (tm_cmatch1[17].compare("GMT") || tm_cmatch1[17].compare("Z"))
     {
         pztm->tz_ = 0;
     }
     else
     {
-        pztm->tz_ = std::stoi(tm_cmatch1[17]);
+        pztm->tz_ = std::stoi(tm_cmatch1[17]) * 3600 + std::stoi(tm_cmatch1[18]) * 30;
     }
     return 0;
 }

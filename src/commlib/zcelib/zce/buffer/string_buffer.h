@@ -52,14 +52,14 @@ public:
         return use_;
     }
 
-    void set(CharT* buf, size_t len)
+    void assign(const CharT* buf, size_t len)
     {
         ZCE_ASSERT(capacity_ >= len);
         memcpy(buf_, buf, sizeof(CharT) * len);
         use_ = len;
     }
 
-    void push(CharT* buf, size_t len)
+    void push(const CharT* buf, size_t len)
     {
         ZCE_ASSERT(capacity_ - use_ >= len);
         memcpy(buf_ + sizeof(CharT) * use_, buf, sizeof(CharT) * len);

@@ -98,6 +98,9 @@
     <ClCompile Include="test_db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_coroutine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="predefine.h">

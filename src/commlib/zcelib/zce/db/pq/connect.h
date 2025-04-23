@@ -12,8 +12,8 @@ class connect
 public:
 
     //构造函数,析构函数
-    connect() noexcept;
-    ~connect() noexcept;
+    connect() noexcept = default;
+    ~connect() noexcept = default;
 
     //避免拷贝
     connect(connect&&) noexcept = delete;

@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_
-#define ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 
@@ -107,5 +106,3 @@ int shmdt(const void* shmaddr) noexcept;
 */
 int shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds* buf) noexcept;
 };
-
-#endif //ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_

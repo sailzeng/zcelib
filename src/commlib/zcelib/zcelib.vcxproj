@@ -277,7 +277,7 @@
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\async\lua_thread.h" />
     <ClInclude Include="zce\buffer\queue_buffer.h" />
-    <ClInclude Include="zce\comm\common.h" />
+    <ClInclude Include="zce\os_adapt\common.h" />
     <ClInclude Include="zce\lock\bit_lock.h" />
     <ClInclude Include="zce\lockfree\ptr_ring.h" />
     <ClInclude Include="zce\lockfree\spsc_ring.h" />

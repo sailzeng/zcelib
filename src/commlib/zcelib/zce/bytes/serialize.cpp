@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
-#include "zce/bytes/serialize.h"
 #include "zce/logger/logging.h"
+#include "zce/bytes/serialize.h"
 
 //========================================================================================
 namespace zce::ser
@@ -113,7 +113,7 @@ void encode::write(const double& val)
         is_good_ = false;
         return;
     }
-    ZDOUBLE_TO_BYTE(write_pos_, val);
+    ZDOUBLE_TO_BEBYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -355,7 +355,7 @@ void decode::read(float& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_FLOAT(read_pos_);
+    val = ZBEBYTE_TO_FLOAT(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -368,12 +368,31 @@ void decode::read(double& val)
         is_good_ = false;
         return;
     }
-    val = ZBYTE_TO_DOUBLE(read_pos_);
+    val = ZBEBYTE_TO_DOUBLE(read_pos_);
     read_pos_ += SIZE_OF_VALUE;
     return;
 }
 
 void decode::read(std::string& val)
+{
+    const size_t SIZE_OF_STRINGLEN = sizeof(uint32_t);
+    if (!is_good_ || read_pos_ + SIZE_OF_STRINGLEN > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+    uint32_t v_size = ZBYTE_TO_UINT32(read_pos_);
+    read_pos_ += SIZE_OF_STRINGLEN;
+    if (!is_good_ || read_pos_ + v_size > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+    val.assign(read_pos_, v_size);
+    read_pos_ += v_size;
+}
+
+void decode::read(zce::string_buf& val)
 {
     const size_t SIZE_OF_STRINGLEN = sizeof(uint32_t);
     if (!is_good_ || read_pos_ + SIZE_OF_STRINGLEN > end_pos_)

@@ -23,8 +23,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_FLOCK_H_
-#define ZCE_LIB_OS_ADAPT_FLOCK_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 
@@ -162,5 +161,3 @@ int fcntl_unlock(file_lock_t* lock,
 */
 int flock(file_lock_t& lock_hadle, int operation);
 };
-
-#endif //ZCE_LIB_OS_ADAPT_FLOCK_H_

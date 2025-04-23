@@ -11,6 +11,42 @@ static const int FMT_BINARY = 0x1;
 
 static const int FMT_TEXT = 0x0;
 
+enum PG_OID_TYPE
+{
+    PG_BOOL = 16,
+    PG_BYTEA = 17,
+    PG_INT8 = 20,
+    PG_INT2 = 21,
+    PG_INT4 = 23,
+    PG_TEXT = 25,
+
+    PG_FLOAT4 = 700,
+    PG_FLOAT8 = 701,
+
+    PG_CHAR = 1042,
+    PG_VARCHAR = 1043,
+
+    PG_DATE = 1082,
+    PG_TIME = 1083,
+    PG_TIMESTAMP = 1114,
+    PG_TIMESTAMPTZ = 1184,
+    PG_INTERVAL = 1186,
+
+    PG_NUMERIC = 1700,
+
+    PG_JSON = 114,
+    PG_JSONB = 3802,
+
+    PG_UUID = 2950,
+
+    // 常用数组类型
+    PG_INT4_ARRAY = 1007,
+    PG_TEXT_ARRAY = 1009,
+    PG_VARCHAR_ARRAY = 1015,
+    PG_TIMESTAMP_ARRAY = 1115,
+    PG_UUID_ARRAY = 2951,
+};
+
 /*!
  * @brief PQ 的结果集
  */
@@ -31,6 +67,31 @@ public:
     result& operator=(result&&) noexcept;
 
 public:
+
+    struct interval
+    {
+        int64_t time_usec = 0;  // 微秒
+        int32_t days = 0;
+        int32_t months = 0;
+    };
+
+    //! 当结果格式为二进制时，PQ的TIME，DATE，TIMESTAMP，TIMESTAMPTZ，INTERVAL类型的值要进行特殊处理
+    class time
+    {
+    public:
+        static const time_t PG_EPOCH = 946684800; // 2000-01-01 00:00:00
+    public:
+        //! @brief 将PG的date转换为zce::ztm
+        static int parse_date(int32_t date, zce::ztm* pztm);
+        //! @brief 将PG的time转换为zce::ztm
+        static int parse_time(double time, zce::ztm* pztm);
+        //! @brief 将PG的timestamp转换为zce::ztm
+        static int parse_timestamp(int64_t timestamp, zce::ztm* pztm);
+        //! @brief 将PG的interval转换为zce::ztm
+        static int parse_interval(interval intvl_val,
+                                  zce::ztm* pztm);
+    };
+
     //! @brief   设置PQ的结果集
     void set_result(::PGresult* res);
 
@@ -105,7 +166,7 @@ public:
         {
             zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
                                 (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
-            dc.read(val);
+            //dc.read(val);
             return 0;
         }
         else
@@ -113,6 +174,9 @@ public:
             return -1;
         }
     }
+
+    template <>
+    int field(size_t row, size_t colum, zce::ztm& val) const;
 
     template <typename T>
     T field(size_t row, size_t colum) const

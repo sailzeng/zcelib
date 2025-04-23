@@ -49,7 +49,7 @@
     <CodeAnalysisRuleSet>MixedRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <LibraryPath>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(SolutionDir)../third_party/include/postgresql-17.4;$(SolutionDir)../third_party/include/googletest-1.16.0/googletest/include</IncludePath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(SolutionDir)../third_party/include/postgresql-17.4;$(SolutionDir)../third_party/include/googletest-1.16.0/googletest/include;$(SolutionDir)../third_party/include/magic_enum-v0.9.7/include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -57,7 +57,7 @@
     <OutDir>$(ProjectDir)../../../bin/$(Configuration)/</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <LibraryPath>$(SolutionDir)../lib/win/$(Configuration)/;$(SolutionDir)../third_party/lib/win/$(Configuration)/;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(SolutionDir)../third_party/include/postgresql-17.4;$(SolutionDir)../third_party/include/googletest-1.16.0/googletest/include</IncludePath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.4.3;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(SolutionDir)../third_party/include/postgresql-17.4;$(SolutionDir)../third_party/include/googletest-1.16.0/googletest/include;$(SolutionDir)../third_party/include/magic_enum-v0.9.7/include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +115,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="test_aio.cpp" />
+    <ClCompile Include="test_coroutine.cpp" />
     <ClCompile Include="test_db.cpp" />
     <ClCompile Include="test_hash.cpp" />
     <ClCompile Include="test_math.cpp" />

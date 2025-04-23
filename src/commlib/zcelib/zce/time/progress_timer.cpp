@@ -196,14 +196,14 @@ double hr_progress_timer::elapsed_usec() const
 
     ZCE_ASSERT(end_time_.QuadPart >= start_time_.QuadPart);
     return double(end_time_.QuadPart - start_time_.QuadPart + addup_time_.QuadPart) *
-        zce::SEC_PER_USEC / frequency_.QuadPart;
+        zce::USEC_PER_SEC / frequency_.QuadPart;
 #elif defined ZCE_OS_LINUX
 
-    ZCE_ASSERT((end_time_.tv_sec * zce::SEC_PER_NSEC + end_time_.tv_nsec) >
-               (start_time_.tv_sec * zce::SEC_PER_NSEC + start_time_.tv_nsec));
+    ZCE_ASSERT((end_time_.tv_sec * zce::NSEC_PER_SEC + end_time_.tv_nsec) >
+               (start_time_.tv_sec * zce::NSEC_PER_SEC + start_time_.tv_nsec));
 
-    return ((end_time_.tv_sec * zce::SEC_PER_NSEC + end_time_.tv_nsec) -
-            (start_time_.tv_sec * zce::SEC_PER_NSEC + start_time_.tv_nsec) + addup_time_) / zce::USEC_PER_NSEC;
+    return ((end_time_.tv_sec * zce::NSEC_PER_SEC + end_time_.tv_nsec) -
+            (start_time_.tv_sec * zce::NSEC_PER_SEC + start_time_.tv_nsec) + addup_time_) / zce::NSEC_PER_USEC;
 #endif
 }
 
@@ -211,9 +211,9 @@ double hr_progress_timer::elapsed_usec() const
 double hr_progress_timer::precision_usec()
 {
 #if defined ZCE_OS_WINDOWS
-    return (double)(zce::SEC_PER_USEC) / ((uint64_t)(frequency_.QuadPart));
+    return (double)(zce::USEC_PER_SEC) / ((uint64_t)(frequency_.QuadPart));
 #elif defined ZCE_OS_LINUX
-    return (precision_.tv_sec * zce::SEC_PER_NSEC + precision_.tv_nsec) * zce::USEC_PER_NSEC;
+    return (precision_.tv_sec * zce::NSEC_PER_SEC + precision_.tv_nsec) * zce::NSEC_PER_USEC;
 #endif
 }
 
@@ -293,7 +293,6 @@ double tsc_progress_timer::elapsed_usec() const
             cpu_hz_ = DEFAULT_CPU_HZ;
         }
     }
-    const uint64_t USEC_PER_SEC = 1000 * 1000;
     return double(end_time_ - start_time_ + addup_time_) / double(cpu_hz_ * USEC_PER_SEC);
 }
 
@@ -329,10 +328,9 @@ void chrono_hr_timer::addup_start()
 //计算消耗的时间(us,微妙 -6)
 double chrono_hr_timer::elapsed_usec() const
 {
-    const double NSEC_PER_USEC = 1000.0;
     if (end_time_ > start_time_)
     {
-        return std::chrono::duration_cast<std::chrono::nanoseconds>((end_time_ - start_time_) + addup_time_).count() /
+        return std::chrono::duration_cast<std::chrono::nanoseconds>((end_time_ - start_time_) + addup_time_).count() * 1.0 /
             NSEC_PER_USEC;
     }
     else
@@ -344,8 +342,7 @@ double chrono_hr_timer::elapsed_usec() const
 //精度
 double chrono_hr_timer::precision_usec()
 {
-    const double USEC_PER_SEC = 1000000.0;
-    return double(std::chrono::high_resolution_clock::time_point::duration::period::num * USEC_PER_SEC) /
+    return double(std::chrono::high_resolution_clock::time_point::duration::period::num * 1.0 * USEC_PER_SEC) /
         double(std::chrono::high_resolution_clock::time_point::duration::period::den);
 }
 }

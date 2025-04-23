@@ -6,6 +6,73 @@
 #if defined ZCE_USE_PQ && ZCE_USE_PQ == 1
 namespace zce::pq
 {
+//================================================================================
+//! @brief 将PG的时间戳转换为zce::ztm
+int result::time::parse_date(int32_t date, zce::ztm* pztm)
+{
+    ZCE_ASSERT(pztm != nullptr);
+    if (pztm == nullptr)
+    {
+        return -1;
+    }
+    pztm->fmt_ = TMS_FMT::ISO_DATE_USEC;
+    time_t epoch = PG_EPOCH + date * 86400;
+    tm mytm = { 0 };
+    zce::gmtime_r(&epoch, &mytm);
+    pztm->year_ = mytm.tm_year + 1900;
+    pztm->mon_ = mytm.tm_mon + 1;
+    pztm->day_ = mytm.tm_mday;
+    return 0;
+}
+
+int result::time::parse_time(double time, zce::ztm* pztm)
+{
+    ZCE_ASSERT(pztm != nullptr);
+    if (pztm == nullptr)
+    {
+        return -1;
+    }
+    pztm->fmt_ = TMS_FMT::ISO_TIME_USEC;
+    pztm->hour_ = static_cast<int>(time / 3600);
+    pztm->min_ = static_cast<int>(fmod(time, 3600) / 60);
+    pztm->sec_ = static_cast<int>(fmod(time, 60));
+    pztm->usec_ = static_cast<int>((time - floor(time)) * 1'000'000);
+    return 0;
+}
+
+int result::time::parse_timestamp(int64_t timestamp, zce::ztm* pztm)
+{
+    ZCE_ASSERT(pztm != nullptr);
+    if (pztm == nullptr)
+    {
+        return -1;
+    }
+    pztm->fmt_ = TMS_FMT::ISO_TIME_USEC;
+    time_t epoch = PG_EPOCH + timestamp / USEC_PER_SEC;
+    tm mytm = { 0 };
+    zce::gmtime_r(&epoch, &mytm);
+    pztm->year_ = mytm.tm_year + 1900;
+    pztm->mon_ = mytm.tm_mon + 1;
+    pztm->day_ = mytm.tm_mday;
+    pztm->usec_ = static_cast<time_t>(timestamp % USEC_PER_SEC);
+    return 0;
+}
+
+int result::time::parse_interval(interval intvl_val, zce::ztm* pztm)
+{
+    ZCE_ASSERT(pztm != nullptr);
+    if (pztm == nullptr)
+    {
+        return -1;
+    }
+    pztm->fmt_ = TMS_FMT::ISO_TIME_USEC;
+    pztm->usec_ = intvl_val.time_usec;
+    pztm->day_ = intvl_val.days;
+    pztm->mon_ = intvl_val.months;
+    return 0;
+}
+
+//================================================================================
 result::result(::PGresult* res) noexcept
 {
     set_result(res);
@@ -67,13 +134,43 @@ int result::field(size_t row, size_t colum, zce::ztm& val) const
     {
         return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)colum), val);
     }
-    //else if (ffmt == FMT_BINARY)
-    //{
-    //    zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
-    //                        (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
-    //    dc.read(val);
-    //    return 0;
-    //}
+    else if (ffmt == FMT_BINARY)
+    {
+        zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
+                            (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
+        PG_OID_TYPE pg_oid = (PG_OID_TYPE)field_type(colum);
+
+        if (pg_oid == PG_DATE)
+        {
+            int32_t date_val = 0;
+            dc.read(date_val);
+            return time::parse_date(date_val, &val);
+        }
+        else if (pg_oid == PG_TIME)
+        {
+            double time_val = 0;
+            dc.read(time_val);
+            return time::parse_time(time_val, &val);
+        }
+        else if (pg_oid == PG_TIMESTAMP || pg_oid == PG_TIMESTAMPTZ)
+        {
+            int64_t timestamp_val = 0;
+            dc.read(timestamp_val);
+            return time::parse_timestamp(timestamp_val, &val);
+        }
+        else if (pg_oid == PG_INTERVAL)
+        {
+            interval intvl_val;
+            dc.read(intvl_val.time_usec);
+            dc.read(intvl_val.days);
+            dc.read(intvl_val.months);
+            return time::parse_interval(intvl_val, &val);
+        }
+        else
+        {
+            return -1;
+        }
+    }
     else
     {
         return -1;

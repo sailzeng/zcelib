@@ -424,14 +424,14 @@ void server_status::check_overtime(time_t now_time)
         clear_type = STATUS_STATICS::PER_FIVE_MINTUES;
 
         //如果5分钟都没有变化，小时不会变化
-        if (last_clear_time / zce::ONE_HOUR_SECONDS !=
-            now_time / zce::ONE_HOUR_SECONDS)
+        if (last_clear_time / zce::SEC_PER_HOUR !=
+            now_time / zce::SEC_PER_HOUR)
         {
             clear_type = STATUS_STATICS::PER_HOUR;
 
             //如果小时都没有变化，天不会变化
-            if (last_clear_time / zce::ONE_DAY_SECONDS !=
-                now_time / zce::ONE_DAY_SECONDS)
+            if (last_clear_time / zce::SEC_PER_DAY !=
+                now_time / zce::SEC_PER_DAY)
             {
                 clear_type = STATUS_STATICS::PER_DAYS;
             }

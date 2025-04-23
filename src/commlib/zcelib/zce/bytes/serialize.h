@@ -30,6 +30,8 @@
 #pragma once
 
 #include "zce/bytes/bytes_common.h"
+#include "zce/buffer/string_buffer.h"
+#include "zce/util/mpl.h"
 
 //===========================================================================================================
 //流编码处理的类，写入流的处理类
@@ -37,6 +39,21 @@
 namespace zce::ser
 {
 class encode;
+class decode;
+
+template <typename T>
+concept HasSerialize = requires(T obj, encode * ptr, decode * rtp)
+{
+    { obj.template serialize<encode*>(ptr, (uint32_t)0) };
+    { obj.template serialize<decode*>(rtp, (uint32_t)0) };
+};
+
+template<typename ST >
+class en_class_help
+{
+public:
+    void write_help(encode* ssave, const ST& val);
+};
 
 /*!
 * @brief      对数据进行编码处理的类，将数据变成流，
@@ -173,7 +190,7 @@ public:
         }
     }
 
-    template<typename T> class en_class_help;
+    //template<typename T> class en_class_help;
 
     ///保存类，这儿要用辅助类实现一些偏特化的能力
     template<typename val_type >
@@ -214,83 +231,54 @@ protected:
     char* write_pos_ = nullptr;
 };
 
-template <typename T>
-concept EecodeSerialize = requires(T obj, encode * ptr)
+template<typename ST>
+void en_class_help<ST>::write_help(encode* ssave,
+                                   const ST& val)
 {
-    {
-        obj.serialize(ptr, (uint32_t)0)
-    };
-};
-
-//辅助处理保存数据的一些类
-//用保存class辅助处理的 base templates 实现
-template<typename ST > requires EecodeSerialize<ST>
-class en_class_help
-{
-public:
-    void write_help(encode* ssave, const ST& val)
-    {
-        val.serialize(ssave);
-    }
-};
-
-//用于保存vector 辅助处理的特化
-template<typename vector_type >
-class en_class_help<std::vector<vector_type> >
-{
-public:
-    void write_help(encode* ssave, const std::vector<vector_type>& val)
-    {
-        //长度用unsigned int保存
-        size_t v_size = val.size();
-        assert(v_size < 0xFFFFFFFFll);
-        ssave->write(static_cast<unsigned int>(v_size));
-        for (size_t i = 0; i < v_size && ssave->is_good(); ++i)
-        {
-            ssave->write<vector_type>(val[i]);
-        }
-        return;
-    }
-};
-
-template<typename list_type >
-class en_class_help<std::list<list_type> >
-{
-public:
-    void write_help(encode* ssave, const std::list<list_type>& val)
+    if constexpr (is_single_type_container<ST>::value)
     {
         size_t v_size = val.size();
         assert(v_size < 0xFFFFFFFFll);
-        ssave->write(static_cast<unsigned int>(v_size));
-        typename std::list<list_type>::const_iterator iter = val.begin();
+        ssave->write((unsigned int)v_size);
+        typename ST::const_iterator iter = val.begin();
         for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
         {
             ssave->write(*iter);
         }
-        return;
     }
-};
-
-template<typename key_type, typename data_type >
-class en_class_help<std::map<key_type, data_type> >
-{
-public:
-    void write_help(encode* ssave, const std::map<key_type, data_type>& val)
+    else if constexpr (is_associative_container<ST>::value)
     {
         size_t v_size = val.size();
         assert(v_size < 0xFFFFFFFFll);
-        ssave->write(static_cast<unsigned int>(v_size));
-        typename std::map<key_type, data_type>::const_iterator iter = val.begin();
+        ssave->write((unsigned int)v_size);
+        typename ST::const_iterator iter = val.begin();
         for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
         {
             ssave->write(iter->first);
             ssave->write(iter->second);
         }
-        return;
     }
-};
+    else if constexpr (HasSerialize<ST>::value)
+    {
+        val.serialize(ssave);
+    }
+    else
+    {
+        //其他的类型，直接用默认的处理
+        ssave->write(val);
+    }
+}
 
 //===========================================================================================================
+
+class decode;
+//辅助处理读取数据的一些类
+template<typename ST >
+class de_class_help
+{
+public:
+    void read_help(decode* sload, ST& val);
+};
 
 /*!
 * @brief      对数据进行解码码处理的类，将流变成数据，
@@ -363,11 +351,6 @@ public:
     }
 
     ///保存数值类型
-    //template<typename val_type >
-    //typename std::enable_if<std::is_arithmetic<val_type>::value>::type read(val_type& val)
-    //{
-    //    return read_i(val);
-    //}
     void read(bool& val);
     void read(char& val);
     void read(unsigned char& val);
@@ -382,6 +365,7 @@ public:
     void read(float& val);
     void read(double& val);
     void read(std::string& val);
+    void read(zce::string_buf& val);
 
     ///写入数组
     template<typename val_type >
@@ -456,8 +440,6 @@ public:
         read_pos_ += load_count;
     }
 
-    template<typename T> class de_class_help;
-
     ///加载类，这儿要用辅助类实现一些偏特化的能力
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value>::type read(val_type& val)
@@ -504,36 +486,19 @@ protected:
     const char* read_pos_ = nullptr;
 };
 
-template <typename T>
-concept DecodeSerialize = requires(T obj, decode * ptr)
+//辅助类，save_help 函数
+template<typename ST>
+void de_class_help<ST>::read_help(decode* sload,
+                                  ST& val)
 {
-    {
-        obj.serialize(ptr, (uint32_t)0)
-    };
-};
-
-template<typename ST > requires DecodeSerialize<ST>
-class de_class_help
-{
-public:
-    void read_help(decode* sload, ST& val)
-    {
-        val.serialize(sload);
-    }
-};
-
-template<typename vector_type >
-class de_class_help<std::vector<vector_type> >
-{
-public:
-    void read_help(typename decode* sload, std::vector<vector_type>& val)
+    if constexpr (is_single_type_container<ST>::value)
     {
         unsigned int v_size = 0;
         sload->read(v_size);
         bool is_ok = sload->is_good();
         for (size_t i = 0; i < v_size && is_ok; ++i)
         {
-            vector_type ve;
+            typename ST::value_type ve;
             sload->read(ve);
             is_ok = sload->is_good();
             if (is_ok)
@@ -541,55 +506,33 @@ public:
                 val.push_back(ve);
             }
         }
-        return;
     }
-};
-
-template<typename list_type >
-class de_class_help<std::list<list_type> >
-{
-public:
-    void read_help(typename decode* sload, std::list<list_type>& val)
+    else if constexpr (is_associative_container<ST>::value)
     {
-        size_t v_size = val.size();
+        unsigned int v_size = 0;
         sload->read(v_size);
         bool is_ok = sload->is_good();
-        for (size_t i = 0; i < v_size && is_ok; ++i)
+        for (size_t i = 0; i < v_size && sload->is_good(); ++i)
         {
-            list_type le;
-            sload->read(le);
+            typename ST::key_type vk;
+            typename ST::mapped_type vv;
+            sload->read(vk);
+            sload->read(vv);
             is_ok = sload->is_good();
             if (is_ok)
             {
-                val.push_back(le);
+                val[vk] = vv;
             }
         }
-        return;
     }
-};
-
-template<typename key_type, typename data_type >
-class de_class_help<std::map<key_type, data_type> >
-{
-public:
-    void read_help(typename decode* sload, std::map<key_type, data_type>& val)
+    else if constexpr (HasSerialize<ST>::value)
     {
-        size_t v_size = val.size();
-        sload->read(v_size);
-        bool is_ok = sload->is_good();
-        for (size_t i = 0; i < v_size && is_ok; ++i)
-        {
-            key_type ke;
-            data_type de;
-            sload->read(ke);
-            sload->read(de);
-            is_ok = sload->is_good();
-            if (is_ok)
-            {
-                val[ke] = de;
-            }
-        }
-        return;
+        val.serialize(sload);
     }
-};
+    else
+    {
+        //其他的类型，直接用默认的处理
+        sload->read(val);
+    }
+}
 }

@@ -55,6 +55,11 @@ public:
         return result_->make_tuple<Types...>(row_);
     }
 
+    value_type* operator->() const
+    {
+        //
+        return &(operator*());
+    }
 protected:
 
     Dbres* result_ = nullptr;

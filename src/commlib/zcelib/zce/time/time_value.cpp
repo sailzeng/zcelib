@@ -136,13 +136,13 @@ void time_value::set_by_clock_t(clock_t time)
 uint64_t time_value::total_sec() const
 {
     return static_cast<uint64_t>(this->zce_time_value_.tv_sec) +
-        this->zce_time_value_.tv_usec / zce::SEC_PER_USEC;
+        this->zce_time_value_.tv_usec / zce::USEC_PER_SEC;
 }
 //得到总共多少毫秒
 uint64_t time_value::total_msec() const
 {
-    return static_cast<uint64_t>(this->zce_time_value_.tv_sec) * zce::SEC_PER_MSEC
-        + this->zce_time_value_.tv_usec / zce::MSEC_PER_USEC;
+    return static_cast<uint64_t>(this->zce_time_value_.tv_sec) * zce::MSEC_PER_SEC
+        + this->zce_time_value_.tv_usec / zce::USEC_PER_MSEC;
 }
 
 //四舍五入得到总共多少毫秒，其实不是真正的四舍五入，而是如果微秒有数据，就返回1毫秒，
@@ -161,18 +161,18 @@ uint64_t time_value::total_msec_round() const
 void time_value::total_msec(uint64_t set_msec)
 {
 #if defined ZCE_OS_WINDOWS
-    zce_time_value_.tv_sec = static_cast<long>(set_msec / zce::SEC_PER_MSEC);
-    zce_time_value_.tv_usec = static_cast<long>((set_msec % zce::SEC_PER_MSEC) * zce::MSEC_PER_USEC);
+    zce_time_value_.tv_sec = static_cast<long>(set_msec / zce::MSEC_PER_SEC);
+    zce_time_value_.tv_usec = static_cast<long>((set_msec % zce::MSEC_PER_SEC) * zce::USEC_PER_MSEC);
 #elif defined ZCE_OS_LINUX
-    zce_time_value_.tv_sec = static_cast<time_t>(set_msec / zce::SEC_PER_MSEC);
-    zce_time_value_.tv_usec = static_cast<time_t>((set_msec % zce::SEC_PER_MSEC) * zce::MSEC_PER_USEC);
+    zce_time_value_.tv_sec = static_cast<time_t>(set_msec / zce::MSEC_PER_SEC);
+    zce_time_value_.tv_usec = static_cast<time_t>((set_msec % zce::MSEC_PER_SEC) * zce::USEC_PER_MSEC);
 #endif
 }
 
 //得到总共多少微秒
 uint64_t time_value::total_usec() const
 {
-    return static_cast<uint64_t>(zce_time_value_.tv_sec) * zce::SEC_PER_USEC + zce_time_value_.tv_usec;
+    return static_cast<uint64_t>(zce_time_value_.tv_sec) * zce::USEC_PER_SEC + zce_time_value_.tv_usec;
 }
 
 //用微秒作为单位，设置Time_Value，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
@@ -373,16 +373,16 @@ const char* time_value::to_str(char* str_date_time,
                                size_t datetime_strlen,
                                size_t& use_buf,
                                zce::TMS_FMT fmt,
-                               bool out_tz,
-                               bool utc_time) const
+                               bool utc_time,
+                               bool out_tz) const
 {
     return zce::timeval_to_str(&(this->zce_time_value_),
                                str_date_time,
                                datetime_strlen,
                                use_buf,
                                fmt,
-                               out_tz,
-                               utc_time);
+                               utc_time,
+                               out_tz);
 }
 
 //从字符串中得到时间
@@ -396,9 +396,16 @@ int time_value::from_str(const char* strtm,
                                uct_time);
 }
 
+int time_value::from_fuzzy_str(const char* strtm,
+                               bool uct_time)
+{
+    return zce::fuzzy_str_to_timeval(strtm,
+                                     &zce_time_value_,
+                                     uct_time);
+}
+
 const char* time_value::timestamp(char* str_date_time,
-                                  size_t datetime_strlen
-) const
+                                  size_t datetime_strlen) const
 {
     return zce::timestamp(&(this->zce_time_value_),
                           str_date_time,

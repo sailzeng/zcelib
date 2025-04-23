@@ -61,7 +61,7 @@ int test_bytes_hash(int /*argc*/, char* /*argv*/[])
         {0x57,0xed,0xf4,0xa2,0x2b,0xe3,0xc9,0x55,0xac,0x49,0xda,0x2e,0x21,0x07,0xb6,0x7a},
         {0x35,0x9c,0x47,0x1e,0x86,0x20,0xe2,0x7a,0x41,0xb9,0x64,0x83,0x4c,0x4d,0x5e,0xb2},
     };
-    char result[32] = {0};
+    char result[32] = { 0 };
 
     zce::md5(test_buf[2], test_buflen[2], result);
 
@@ -221,7 +221,7 @@ int test_bytes_crc32(int /*argc*/, char* /*argv*/[])
     memcpy(buffer, test_string, str_len + 1);
     {
         zce::auto_progress_timer<zce::hr_progress_timer> auto_timer;
-        char result[32] = {0};
+        char result[32] = { 0 };
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
             buffer[0] += 1;
@@ -1204,8 +1204,8 @@ struct DR_DATA_1
     static const size_t D1_C3_LEN = 6;
     static const size_t D1_C4_LEN = 8;
 
-    char d1_c3_[D1_C3_LEN] = {0};
-    int d1_c4_[D1_C4_LEN] = {0};
+    char d1_c3_[D1_C3_LEN] = { 0 };
+    int d1_c4_[D1_C4_LEN] = { 0 };
 
     std::vector<int> d1_d1_;
 
@@ -1238,18 +1238,37 @@ struct DR_DATA_1
 struct DR_DATA_2
 {
     static const size_t ARY_SIZE = 2048;
-    int a1_ = 1;
-    float b1_ = 2.0;
-    double b2_ = 3.001;
+    int d2_a1_ = 1;
+    float d2_b1_ = 2.0;
+    double d2_b2_ = 3.001;
 
-    char c1_[ARY_SIZE];
-    double c2_[ARY_SIZE];
-    int c3_[ARY_SIZE];
+    char d2_c1_[ARY_SIZE];
+    double d2_c2_[ARY_SIZE];
+    int d2_c3_[ARY_SIZE];
 
-    unsigned int d_num_ = 0;
-    unsigned short d_ary_[ARY_SIZE];
+    unsigned int d2_c4_ = 0;
+    unsigned short d2_c5_[ARY_SIZE];
 
-    std::vector<int> e_vector_;
+    std::vector<int> d2_d1_;
+
+    DR_DATA_1 d2_f1_;
+
+    template<typename serialize_type>
+    void serialize(serialize_type& ss, unsigned int /*version*/ = 0)
+    {
+        ss& d2_a1_;
+        ss& d2_b1_;
+        ss& d2_b2_;
+        ss& d2_c1_;
+
+        ss& d2_c2_;
+        ss& d2_c3_;
+
+        ss& d2_c4_;
+        ss& d2_c5_;
+        ss& d2_d1_;
+        ss& d2_f1_;
+    }
 };
 
 int test_bytes_data_represent(int /*argc*/, char* /*argv */[])

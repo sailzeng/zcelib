@@ -47,7 +47,7 @@ public:
     static const unsigned int DEFAULT_TIMER_PRECISION_MSEC = 100;
 
     //gethrtime返回的原来是纳秒，我只需要毫秒
-    static const uint64_t MSEC_PER_NSEC = 1000000ll;
+    static const uint64_t MNSEC_PER_SEC = 1000000ll;
 
     //如果自动扩张，一次扩张的NODE数量
     static const size_t     ONCE_EXTEND_NODE_NUMBER = 1024 * 8;

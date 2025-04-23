@@ -393,7 +393,7 @@ protected:
     //一小时的秒数
     static constexpr time_t ONE_HOURS_SECONDS = 3600;
     //一天的时间
-    static constexpr time_t ONE_DAY_SECONDS = 86400;
+    static constexpr time_t SEC_PER_DAY = 86400;
 
     //统计项目数值增加1
     static constexpr uint64_t INCREASE_VALUE_ONCE = 1;

@@ -17,14 +17,5 @@ namespace zce
 int parse_str_to_ztm(const char* strtm,
                      zce::ztm* pztm);
 
-/*!
-* @brief      将参数timeval的值作为的时间格式化后输出打印出来，可以控制各种格式输出
-* @return     int
-* @param[in]  strtm    打印的时间字符串
-* @param[in]  uct_time 将timeval视为UCT/GMT时间还是本地时间Local Time，true表示视为UCT/GMT时间，false表示视为本地时间
-* @param[out] tval     转化得到的timeval结构体
-*/
-int parse_str_to_timeval(const char* strtm,
-                         bool uct_time,
-                         timeval* tval);
+int parse_url();
 }

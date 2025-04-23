@@ -72,7 +72,7 @@ int ip_restrict::check_iprestrict(const zce::skt::addr_in& remoteaddress)
     //如果允许的连接的服务器地址中间没有... kill
     if (allow_ip_set_.empty() == false)
     {
-        Set_Of_IPAddress::iterator iter = allow_ip_set_.find(remoteaddress.get_ip_address());
+        SET_OF_IPADDRESS::iterator iter = allow_ip_set_.find(remoteaddress.get_ip_address());
 
         if (iter == allow_ip_set_.end())
         {
@@ -85,7 +85,7 @@ int ip_restrict::check_iprestrict(const zce::skt::addr_in& remoteaddress)
     //如果是要被拒绝连接的IP地址...kill
     if (reject_ip_set_.empty() == false)
     {
-        Set_Of_IPAddress::iterator iter = reject_ip_set_.find(remoteaddress.get_ip_address());
+        SET_OF_IPADDRESS::iterator iter = reject_ip_set_.find(remoteaddress.get_ip_address());
 
         if (iter != reject_ip_set_.end())
         {

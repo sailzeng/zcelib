@@ -1,5 +1,4 @@
 #include "zce/predefine.h"
-#include "zce/comm/common.h"
 #include "zce/os_adapt/time.h"
 #include "zce/string/time.h"
 #include "zce/logger/logging.h"
@@ -13,11 +12,10 @@ const char* zce::timeval_to_str(const timeval* timeval,
                                 size_t str_len,
                                 size_t& use_buf,
                                 TMS_FMT fmt,
-                                bool out_tz,
-                                bool utc_time)
+                                bool utc_time,
+                                bool out_tz)
 {
-    //这个实现没有使用strftime的原因是，我对输出精度可能有更高的要求，
-
+    //这个实现没有使用strftime的原因是，我会输出us等一些字段
     time_t now_time = timeval->tv_sec;
     tm tm_data;
     use_buf = 0;
@@ -43,8 +41,8 @@ const char* zce::timeval_to_str(const timeval* timeval,
         zce::localtime_r(&now_time, &tm_data);
     }
 
-    ZCE_ASSERT(fmt < SHRINK_DAY && fmt >= TMS_FMT_COUNT && str_len > TIMESTR_LEN[fmt]);
-    if (fmt >= SHRINK_DAY && fmt < TMS_FMT_COUNT && str_len <= TIMESTR_LEN[fmt])
+    ZCE_ASSERT(fmt >= SHRINK_DAY && fmt < TMS_FMT_COUNT && str_len > TIMESTR_LEN[fmt]);
+    if (fmt < SHRINK_DAY && fmt >= TMS_FMT_COUNT && str_len <= TIMESTR_LEN[fmt])
     {
         errno = EINVAL;
         return nullptr;
@@ -125,16 +123,6 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_sec,
                  timeval->tv_usec);
     }
-    //2010-09-10
-    else if (zce::TMS_FMT::ISO_TIME_SEC == fmt)
-    {
-        snprintf(str_date_time,
-                 str_len,
-                 "%4d-%02d-%02d",
-                 tm_data.tm_year + 1900,
-                 tm_data.tm_mon + 1,
-                 tm_data.tm_mday);
-    }
     //10:03:18
     else if (zce::TMS_FMT::ISO_TIME_SEC == fmt)
     {
@@ -155,6 +143,16 @@ const char* zce::timeval_to_str(const timeval* timeval,
                  tm_data.tm_min,
                  tm_data.tm_sec,
                  timeval->tv_usec);
+    }
+    //2010-09-10
+    else if (zce::TMS_FMT::ISO_DATE_DAY == fmt)
+    {
+        snprintf(str_date_time,
+                 str_len,
+                 "%4d-%02d-%02d",
+                 tm_data.tm_year + 1900,
+                 tm_data.tm_mon + 1,
+                 tm_data.tm_mday);
     }
     //2010-09-10 10:03:18
     else if (zce::TMS_FMT::ISO_DATE_SEC == fmt)
@@ -301,7 +299,7 @@ int zce::str_to_ztm(const char* strtm,
         }
 
         pztm->mon_ = (*(strtm + 2) - '0') * 10
-            + (*(strtm + 3) - '0') - 1;
+            + (*(strtm + 3) - '0');
         pztm->day_ = (*(strtm + 4) - '0') * 10
             + (*(strtm + 5) - '0');
 
@@ -371,7 +369,7 @@ int zce::str_to_ztm(const char* strtm,
             + (*(strtm + 4) - '0');
         pztm->sec_ = (*(strtm + 6) - '0') * 10
             + (*(strtm + 7) - '0');
-        if (zce::TMS_FMT::ISO_DATE_USEC == pztm->fmt_)
+        if (zce::TMS_FMT::ISO_TIME_USEC == pztm->fmt_)
         {
             pztm->usec_ = ((*(strtm + 9)) - '0') * 100000
                 + ((*(strtm + 10) - '0')) * 10000
@@ -415,6 +413,7 @@ int zce::str_to_ztm(const char* strtm,
             }
         }
     }
+    // Fri Aug 24 2002 07:43:05.100190
     else if (zce::TMS_FMT::US_SEC == pztm->fmt_ ||
              zce::TMS_FMT::US_USEC == pztm->fmt_)
     {
@@ -497,6 +496,7 @@ int zce::str_to_ztm(const char* strtm,
         //尾部还有一个" GMT"
         pztm->tz_ = 0;
     }
+    //Fri, 08 Nov 2002 09:42:22 +0800
     else if (zce::TMS_FMT::EMAIL_DATE == pztm->fmt_)
     {
         char mon_str[4];
@@ -509,7 +509,7 @@ int zce::str_to_ztm(const char* strtm,
         {
             if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
-                pztm->mon_ = i;
+                pztm->mon_ = i + 1;
                 break;
             }
         }
@@ -523,8 +523,7 @@ int zce::str_to_ztm(const char* strtm,
         pztm->year_ = (*(strtm + 12) - '0') * 1000
             + (*(strtm + 13) - '0') * 100
             + (*(strtm + 14) - '0') * 10
-            + (*(strtm + 15) - '0')
-            - 1900;
+            + (*(strtm + 15) - '0');
         pztm->hour_ = (*(strtm + 17) - '0') * 10
             + (*(strtm + 18) - '0');
         pztm->min_ = (*(strtm + 20) - '0') * 10
@@ -578,57 +577,54 @@ int zce::str_to_ztm(const char* strtm,
     return 0;
 }
 
-//模糊字符串翻译得到tm时间结构，不需要你
-int zce::fuzzy_str_to_ztm(const char* strtm,
-                          zce::ztm* pztm)
+zce::TMS_FMT zce::fuzzy_str_fmt(const char* strtm)
 {
-    if (pztm->fmt_ != zce::TMS_FMT::TMS_FMT_INVALID)
-    {
-        return str_to_ztm(strtm, pztm);
-    }
+    zce::TMS_FMT fmt = zce::TMS_FMT::TMS_FMT_INVALID;
     size_t len_str = ::strlen(strtm);
-    if ((len_str >= zce::TIMESTR_LEN[SHRINK_DAY] &&
+
+    //! 必须先处理COMPACT 格式，否则会被误认为SHRINK
+    if (len_str >= TIMESTR_LEN[COMPACT_DAY] &&
         Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
         Z_ISDIGIT(*(strtm + 2)) && Z_ISDIGIT(*(strtm + 3)) &&
-        Z_ISDIGIT(*(strtm + 4)) && Z_ISDIGIT(*(strtm + 5))))
+        Z_ISDIGIT(*(strtm + 4)) && Z_ISDIGIT(*(strtm + 5)) &&
+        Z_ISDIGIT(*(strtm + 6)) && Z_ISDIGIT(*(strtm + 7)))
     {
-        pztm->fmt_ = zce::TMS_FMT::SHRINK_DAY;
-        if ((len_str >= TIMESTR_LEN[SHRINK_SEC] &&
-            ((*(strtm + 6) == ' ') || (*(strtm + 6) == 'T')) &&
-            Z_ISDIGIT(*(strtm + 7)) && Z_ISDIGIT(*(strtm + 8)) &&
-            Z_ISDIGIT(*(strtm + 9)) && Z_ISDIGIT(*(strtm + 10)) &&
-            Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 12))))
-        {
-            pztm->fmt_ = zce::TMS_FMT::SHRINK_SEC;
-            if ((len_str >= TIMESTR_LEN[SHRINK_USEC] && (*(strtm + 13) == '.') &&
-                Z_ISDIGIT(*(strtm + 14)) && Z_ISDIGIT(*(strtm + 15)) &&
-                Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
-                Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19))))
-            {
-                pztm->fmt_ = zce::TMS_FMT::SHRINK_USEC;
-            }
-        }
-    }
-    else if (len_str >= TIMESTR_LEN[COMPACT_DAY] &&
-             Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
-             Z_ISDIGIT(*(strtm + 2)) && Z_ISDIGIT(*(strtm + 3)) &&
-             Z_ISDIGIT(*(strtm + 4)) && Z_ISDIGIT(*(strtm + 5)) &&
-             Z_ISDIGIT(*(strtm + 6)) && Z_ISDIGIT(*(strtm + 7)))
-    {
-        pztm->fmt_ = zce::TMS_FMT::COMPACT_DAY;
+        fmt = zce::TMS_FMT::COMPACT_DAY;
         if ((len_str >= TIMESTR_LEN[COMPACT_SEC] &&
             ((*(strtm + 8) == ' ') || (*(strtm + 8) == 'T')) &&
             Z_ISDIGIT(*(strtm + 9)) && Z_ISDIGIT(*(strtm + 10)) &&
             Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 11)) &&
             Z_ISDIGIT(*(strtm + 13)) && Z_ISDIGIT(*(strtm + 14))))
         {
-            pztm->fmt_ = zce::TMS_FMT::COMPACT_SEC;
+            fmt = zce::TMS_FMT::COMPACT_SEC;
             if ((len_str >= TIMESTR_LEN[COMPACT_USEC] && (*(strtm + 15) == '.') &&
                 Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
                 Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19)) &&
                 Z_ISDIGIT(*(strtm + 20)) && Z_ISDIGIT(*(strtm + 21))))
             {
-                pztm->fmt_ = zce::TMS_FMT::COMPACT_USEC;
+                fmt = zce::TMS_FMT::COMPACT_USEC;
+            }
+        }
+    }
+    else if ((len_str >= zce::TIMESTR_LEN[SHRINK_DAY] &&
+             Z_ISDIGIT(*(strtm + 0)) && Z_ISDIGIT(*(strtm + 1)) &&
+             Z_ISDIGIT(*(strtm + 2)) && Z_ISDIGIT(*(strtm + 3)) &&
+             Z_ISDIGIT(*(strtm + 4)) && Z_ISDIGIT(*(strtm + 5))))
+    {
+        fmt = zce::TMS_FMT::SHRINK_DAY;
+        if ((len_str >= TIMESTR_LEN[SHRINK_SEC] &&
+            ((*(strtm + 6) == ' ') || (*(strtm + 6) == 'T')) &&
+            Z_ISDIGIT(*(strtm + 7)) && Z_ISDIGIT(*(strtm + 8)) &&
+            Z_ISDIGIT(*(strtm + 9)) && Z_ISDIGIT(*(strtm + 10)) &&
+            Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 12))))
+        {
+            fmt = zce::TMS_FMT::SHRINK_SEC;
+            if ((len_str >= TIMESTR_LEN[SHRINK_USEC] && (*(strtm + 13) == '.') &&
+                Z_ISDIGIT(*(strtm + 14)) && Z_ISDIGIT(*(strtm + 15)) &&
+                Z_ISDIGIT(*(strtm + 16)) && Z_ISDIGIT(*(strtm + 17)) &&
+                Z_ISDIGIT(*(strtm + 18)) && Z_ISDIGIT(*(strtm + 19))))
+            {
+                fmt = zce::TMS_FMT::SHRINK_USEC;
             }
         }
     }
@@ -638,13 +634,13 @@ int zce::fuzzy_str_to_ztm(const char* strtm,
              Z_ISDIGIT(*(strtm + 6)) && Z_ISDIGIT(*(strtm + 7)) &&
              (*(strtm + 2) == ':') && (*(strtm + 5) == ':'))
     {
-        pztm->fmt_ = zce::TMS_FMT::ISO_TIME_SEC;
+        fmt = zce::TMS_FMT::ISO_TIME_SEC;
         if ((len_str >= TIMESTR_LEN[ISO_TIME_USEC] && (*(strtm + 8) == '.') &&
             Z_ISDIGIT(*(strtm + 9)) && Z_ISDIGIT(*(strtm + 10)) &&
             Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 12)) &&
             Z_ISDIGIT(*(strtm + 13)) && Z_ISDIGIT(*(strtm + 14))))
         {
-            pztm->fmt_ = zce::TMS_FMT::ISO_TIME_USEC;
+            fmt = zce::TMS_FMT::ISO_TIME_USEC;
         }
     }
     else if (len_str >= TIMESTR_LEN[ISO_DATE_DAY] &&
@@ -655,7 +651,7 @@ int zce::fuzzy_str_to_ztm(const char* strtm,
              ((*(strtm + 4) == '-') || (*(strtm + 4) == '/')) &&
              ((*(strtm + 7) == '-') || (*(strtm + 7) == '/')))
     {
-        pztm->fmt_ = zce::TMS_FMT::ISO_DATE_DAY;
+        fmt = zce::TMS_FMT::ISO_DATE_DAY;
         if (len_str >= TIMESTR_LEN[ISO_DATE_SEC] &&
             ((*(strtm + 10) == ' ') || (*(strtm + 10) == 'T')) &&
             Z_ISDIGIT(*(strtm + 11)) && Z_ISDIGIT(*(strtm + 12)) &&
@@ -663,13 +659,13 @@ int zce::fuzzy_str_to_ztm(const char* strtm,
             Z_ISDIGIT(*(strtm + 17)) && Z_ISDIGIT(*(strtm + 18)) &&
             (*(strtm + 13) == ':') && (*(strtm + 16) == ':'))
         {
-            pztm->fmt_ = zce::TMS_FMT::ISO_DATE_SEC;
+            fmt = zce::TMS_FMT::ISO_DATE_SEC;
             if ((len_str >= TIMESTR_LEN[ISO_DATE_USEC] && (*(strtm + 19) == '.') &&
                 Z_ISDIGIT(*(strtm + 20)) && Z_ISDIGIT(*(strtm + 21)) &&
                 Z_ISDIGIT(*(strtm + 22)) && Z_ISDIGIT(*(strtm + 23)) &&
                 Z_ISDIGIT(*(strtm + 24)) && Z_ISDIGIT(*(strtm + 25))))
             {
-                pztm->fmt_ = zce::TMS_FMT::ISO_DATE_USEC;
+                fmt = zce::TMS_FMT::ISO_DATE_USEC;
             }
         }
     }
@@ -677,15 +673,10 @@ int zce::fuzzy_str_to_ztm(const char* strtm,
              Z_ISALPHA(*(strtm + 0)) && Z_ISALPHA(*(strtm + 1)) &&
              Z_ISALPHA(*(strtm + 2)))
     {
-        char week_str[4];
-        week_str[0] = strtm[0];
-        week_str[1] = strtm[1];
-        week_str[2] = strtm[2];
-        week_str[3] = '\0';
         size_t i = 0;
         for (; i < 7; i++)
         {
-            if (strncasecmp(week_str, DAY_OF_WEEK_NAME[i], 3) == 0)
+            if (strncasecmp(strtm, DAY_OF_WEEK_NAME[i], 3) == 0)
             {
                 break;
             }
@@ -693,17 +684,55 @@ int zce::fuzzy_str_to_ztm(const char* strtm,
         if (i == 7)
         {
             errno = EINVAL;
-            return -1;
+            return zce::TMS_FMT::TMS_FMT_INVALID;
         }
-        pztm->fmt_ = zce::TMS_FMT::US_SEC;
-        if (len_str >= TIMESTR_LEN[US_USEC] && (*(strtm + 24) == '.'))
+        if (*(strtm + 3) == ',' && *(strtm + 4) == ' ')
         {
-            pztm->fmt_ = zce::TMS_FMT::US_USEC;
+            fmt = zce::TMS_FMT::US_SEC;
+            if (len_str >= TIMESTR_LEN[HTTP_GMT] && strncasecmp(strtm + 26, "GMT", 3) == 0)
+            {
+                fmt = zce::TMS_FMT::HTTP_GMT;
+            }
+            else if (len_str >= TIMESTR_LEN[EMAIL_DATE] &&
+                     ((*(strtm + 26) == '+') || (*(strtm + 26) == '-')))
+            {
+                fmt = zce::TMS_FMT::EMAIL_DATE;
+            }
+            else
+            {
+                errno = EINVAL;
+                return zce::TMS_FMT::TMS_FMT_INVALID;
+            }
+        }
+        else if (*(strtm + 3) == ' ')
+        {
+            fmt = zce::TMS_FMT::US_SEC;
+            if (len_str >= TIMESTR_LEN[US_USEC] && (*(strtm + 24) == '.'))
+            {
+                fmt = zce::TMS_FMT::US_USEC;
+            }//如果是空格，跳过
+        }
+        else
+        {
+            errno = EINVAL;
+            return zce::TMS_FMT::TMS_FMT_INVALID;
         }
     }
     else
     {
         errno = EINVAL;
+        return zce::TMS_FMT::TMS_FMT_INVALID;
+    }
+    return fmt;
+}
+
+//模糊字符串翻译得到tm时间结构，不需要你
+int zce::fuzzy_str_to_ztm(const char* strtm,
+                          zce::ztm* pztm)
+{
+    pztm->fmt_ = zce::fuzzy_str_fmt(strtm);
+    if (pztm->fmt_ == zce::TMS_FMT::TMS_FMT_INVALID)
+    {
         return -1;
     }
     return str_to_ztm(strtm, pztm);
@@ -803,27 +832,59 @@ int zce::str_to_timeval(const char* strtm,
                         timeval* tval,
                         bool uct_time)
 {
+    zce::ztm ztm;
+    ztm.fmt_ = fmt;
+    int ret = zce::str_to_ztm(strtm,
+                              &ztm);
+    if (ret != 0)
+    {
+        return ret;
+    }
     //HTTP_GMT 本身就是UTC/GMT
     if (zce::TMS_FMT::HTTP_GMT == fmt)
     {
         uct_time = true;
     }
-    //EMAIL_DATE本来就是本地时间
-    if (zce::TMS_FMT::EMAIL_DATE == fmt)
+    //EMAIL_DATE 格式里面本来就有时区
+    if (zce::TMS_FMT::EMAIL_DATE == fmt || ztm.tz_ != ztm::INVALID_TZ)
     {
-        uct_time = false;
+        uct_time = true;
     }
-    zce::ztm ztm;
-    ztm.fmt_ = fmt;
-    zce::str_to_ztm(strtm,
-                    &ztm);
-    *tval = make_timeval(&ztm, uct_time);
+
+    if (fmt == zce::TMS_FMT::ISO_TIME_SEC ||
+        fmt == zce::TMS_FMT::ISO_TIME_USEC)
+    {
+        *tval = make_timeval(&ztm, uct_time, zce::TIME_MODEL::TMM_DURATION);
+    }
+    else
+    {
+        *tval = make_timeval(&ztm, uct_time, zce::TIME_MODEL::TMM_TIMEPOINT);
+    }
+
     //转换失败，表示字符串有问题
-    if (-1 == tval->tv_sec)
+    auto tv_sec = tval->tv_sec;
+    if (-1 == tv_sec)
     {
         errno = EINVAL;
         return -1;
     }
-
+    // EMAIL_DATE格式视为本地时间，
+    if (zce::TMS_FMT::EMAIL_DATE == fmt || ztm.tz_ != ztm::INVALID_TZ)
+    {
+        tv_sec += ztm.tz_;
+        tval->tv_sec = tv_sec;
+    }
     return 0;
+}
+
+int zce::fuzzy_str_to_timeval(const char* strtm,
+                              ::timeval* tval,
+                              bool uct_time)
+{
+    TMS_FMT fmt = zce::fuzzy_str_fmt(strtm);
+    if (fmt == zce::TMS_FMT::TMS_FMT_INVALID)
+    {
+        return -1;
+    }
+    return str_to_timeval(strtm, fmt, tval, uct_time);
 }

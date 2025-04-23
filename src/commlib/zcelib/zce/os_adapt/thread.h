@@ -6,7 +6,8 @@
 * @date       2011年9月16日
 * @brief
 *
-* @details    目的是站在ACE巨人的肩膀上，得到一个更加简单的封装
+* @details
+*             目的是站在ACE巨人的肩膀上，得到一个更加简单的封装
 *             ACE的线程是依据与SUN平台的基础上实现的，和pthread还真有区别。
 *             另外部分函数我没有保留，因为为了兼容，而且很多代码在两个平台不同，
 *             有些是为了REAL TIME系统准备的
@@ -15,8 +16,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_THREAD_H_
-#define ZCE_LIB_OS_ADAPT_THREAD_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 
@@ -82,7 +82,7 @@ int pthread_attr_getex(const pthread_attr_t* attr,
 */
 int pthread_create(ZCE_THREAD_ID* threadid,
                    const pthread_attr_t* attr,
-                   void *(*start_routine)(void*),
+                   void* (*start_routine)(void*),
                    void* arg);
 
 /*!
@@ -109,7 +109,7 @@ int pthread_createex(void* (*start_routine)(void*),
 * @brief      退出线程，注意这儿没有任何参数让你作为返回值，
 *             注意，WINDOWS和LINUX下返回值不同，所以我放弃不使用返回值参数，
 */
-void pthread_exit(void *return_data);
+void pthread_exit(void* return_data);
 
 /*!
 * @brief      等待某个JOIN的线程结束,并且得到线程回调函数的返回值
@@ -191,5 +191,3 @@ int pthread_setspecific(pthread_key_t key,
 */
 void* pthread_getspecific(pthread_key_t key);
 };
-
-#endif //ZCE_LIB_OS_ADAPT_THREAD_H_

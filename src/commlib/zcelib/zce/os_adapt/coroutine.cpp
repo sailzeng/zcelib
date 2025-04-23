@@ -5,146 +5,35 @@
 
 #if defined ZCE_OS_WINDOWS
 
-///Windows的Fiber实现(CreateFiber)函数指针对应的参数只有一个，而且需要的的函数纸质是WINAPI的，
-///就是__stdcall的，而且Fiber没有返回的context指定,所以做一个转换，
-struct _FIBERS_3PARAFUN_ADAPT
+VOID  WINAPI _fibers_adapt_fun(VOID* param)
 {
-    ///
-    coroutine_t* handle_;
-    ///是否在退出的时候返回主协程，
-    bool                  exit_back_main_;
-    ///函数指针
-    ZCE_COROUTINE_3PARA   fun_ptr_;
-
-    //函数的第1个参数，
-    void* para1_;
-    //函数的第2个参数
-    void* para2_;
-    //函数的第3个参数
-    void* para3_;
-};
-
-//帮助完成函数适配适配
-VOID  WINAPI _fibers_adapt_fun(VOID* fun_para)
-{
-    _FIBERS_3PARAFUN_ADAPT* fun_adapt = (_FIBERS_3PARAFUN_ADAPT*)fun_para;
+    _FIBERS_3PARAFUN_ADAPT* fun_adapt = (_FIBERS_3PARAFUN_ADAPT*)param;
 
     coroutine_t* handle = fun_adapt->handle_;
     bool exit_back_main = fun_adapt->exit_back_main_;
-
-    ZCE_COROUTINE_3PARA treepara_fun = fun_adapt->fun_ptr_;
-    void* para1 = fun_adapt->para1_;
-    void* para2 = fun_adapt->para2_;
-    void* para3 = fun_adapt->para3_;
-
+    std::function<void()> fun_call(std::move(fun_adapt->fun_));
     //这个函数是堆分配的，要清理掉释放
     delete fun_adapt;
 
-    treepara_fun(para1, para2, para3);
-
+    fun_call();
     if (exit_back_main)
     {
         ::SwitchToFiber(handle->main_);
     }
 }
 
-#endif
-
-//兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
-int zce::make_coroutine(coroutine_t* coroutine_hdl,
-                        size_t stack_size,
-                        bool exit_back_main,
-                        ZCE_COROUTINE_3PARA fun_ptr,
-                        void* para1,
-                        void* para2,
-                        void* para3)
-{
-#if defined ZCE_OS_WINDOWS
-
-    coroutine_hdl->main_ = nullptr;
-    coroutine_hdl->coroutine_ = nullptr;
-
-    //如果当前还不是纤程，进行转换，同时也到当前的纤程标识
-    if (FALSE == ::IsThreadAFiber())
-    {
-        //FIBER_FLAG_FLOAT_SWITCH XP不支持，浮点环境切换应该会耗时，有一些简化去掉了
-        coroutine_hdl->main_ = ::ConvertThreadToFiberEx(nullptr,
-                                                        FIBER_FLAG_FLOAT_SWITCH);
-        if (nullptr == coroutine_hdl->main_)
-        {
-            return -1;
-        }
-    }
-    //如果已经是纤程了，得到当前纤程的标识
-    else
-    {
-        coroutine_hdl->main_ = ::GetCurrentFiber();
-        if (nullptr == coroutine_hdl->main_)
-        {
-            return -1;
-        }
-    }
-
-    //使用这个结构完成函数适配
-    struct _FIBERS_3PARAFUN_ADAPT* fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
-    fibers_adapt->exit_back_main_ = exit_back_main;
-    fibers_adapt->fun_ptr_ = fun_ptr;
-    fibers_adapt->para1_ = para1;
-    fibers_adapt->para2_ = para2;
-    fibers_adapt->para3_ = para3;
-
-    //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
-    coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
-                                                stack_size,
-                                                FIBER_FLAG_FLOAT_SWITCH,
-                                                _fibers_adapt_fun,
-                                                fibers_adapt);
-
-    if (nullptr == coroutine_hdl->coroutine_)
-    {
-        return -1;
-    }
-
-    fibers_adapt->handle_ = coroutine_hdl;
-
-    return 0;
 #elif defined ZCE_OS_LINUX
 
-    //必须先getcontext才能makecontext
-    int ret = ::getcontext(&(coroutine_hdl->main_));
-    if (0 != ret)
-    {
-        return ret;
-    }
-    ret = ::getcontext(&(coroutine_hdl->coroutine_));
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    //只使用一个参数，不允许使用变参，Windwos不支持
-    const int ONLY_3_ARG_COUNT = 3;
-    if (exit_back_main)
-    {
-        coroutine_hdl->coroutine_.uc_link = &(coroutine_hdl->main_);
-    }
-    else
-    {
-        coroutine_hdl->coroutine_.uc_link = nullptr;
-    }
-    coroutine_hdl->coroutine_.uc_stack.ss_sp = new char[stack_size];
-    coroutine_hdl->coroutine_.uc_stack.ss_size = stack_size;
-
-    ::makecontext(&coroutine_hdl->coroutine_,
-                  (void(*)(void)) fun_ptr,
-                  ONLY_3_ARG_COUNT,
-                  para1,
-                  para2,
-                  para3
-    );
-    return 0;
-#endif
+void  _fibers_adapt_fun(void* param)
+{
+    auto func = static_cast<std::function<void()>*>(param);
+    // 清理内存
+    delete func;
+    // 调用真正的函数
+    (*func)();
 }
+
+#endif
 
 //非标准函数，
 void zce::delete_coroutine(coroutine_t* coroutine_hdl)

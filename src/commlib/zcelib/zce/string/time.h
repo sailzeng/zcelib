@@ -105,7 +105,7 @@ struct ztm
     int hour_ = 0;  // hours since midnight - [0, 23]
     int min_ = 0;   // minutes after the hour - [0, 59]
     int sec_ = 0;   // seconds after the minute - [0, 60] including leap second
-    int usec_ = 0;  // microseconds after the second - [0, 999999]
+    time_t usec_ = 0;  // microseconds after the second - [0, 999999]
 };
 
 /*
@@ -153,8 +153,8 @@ struct ::timeval;
 * @param[out] str_date_time 得到的时间字符串
 * @param[in]  str_len       字符串的长度，最简单的记法就是保证有32字节的空间
 * @param[in]  fmt           参数清参考@ref TS_FMT ，
+* @param[in]  uct_time      视字符串为UCT/GMT时间还是本地时间Local Time，
 * @param[in]  out_tz        是否输出时区信息
-* @param[in]  uct_time      输出UCT/GMT时间还是本地时间Local Time，
 *                           true表示视为UCT/GMT时间，false表示视为本地时间
 * @note       时间戳打印格式说明,TS_FMT
 */
@@ -163,8 +163,11 @@ const char* timeval_to_str(const ::timeval* timeval,
                            size_t str_len,
                            size_t& use_buf,
                            TMS_FMT fmt = zce::TMS_FMT::ISO_DATE_USEC,
-                           bool out_tz = false,
-                           bool utc_time = false);
+                           bool utc_time = false,
+                           bool out_tz = false);
+
+//! 尝试取得fuzzy str 的时间格式类型
+TMS_FMT fuzzy_str_fmt(const char* strtm);
 
 struct ztm;
 /*!
@@ -200,6 +203,11 @@ int str_to_timeval(const char* strtm,
                    TMS_FMT fmt,
                    ::timeval* tval,
                    bool uct_time = false);
+
+//! @brief   采用模糊识别的方式，从字符串转换得到本地时间timeval函数,
+int fuzzy_str_to_timeval(const char* strtm,
+                         ::timeval* tval,
+                         bool uct_time = false);
 
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
 

@@ -19,8 +19,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_RWLOCK_H_
-#define ZCE_LIB_OS_ADAPT_RWLOCK_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 #include "zce/os_adapt/mutex.h"
@@ -125,5 +124,3 @@ int pthread_rwlock_unlock(pthread_rwlock_t* rwlock);
 int pthread_rwlock_wrunlock(pthread_rwlock_t* rwlock);
 int pthread_rwlock_rdunlock(pthread_rwlock_t* rwlock);
 };
-
-#endif //ZCE_LIB_OS_ADAPT_RWLOCK_H_

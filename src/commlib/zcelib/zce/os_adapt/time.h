@@ -31,27 +31,30 @@ struct timezone
 
 namespace zce
 {
-//一个小时的时间
-static const time_t ONE_HOUR_SECONDS = 3600;
 //一分钟的秒数
 static const time_t ONE_MINUTE_SECONDS = 60;
 //
 static const time_t ONE_QUARTER_SECONDS = 15 * 60;
-
+//
 static const time_t FIVE_MINUTE_SECONDS = 5 * 60;
-//一天的秒数86400
-static const time_t ONE_DAY_SECONDS = 86400;
-//各种关于时间的定义
-static const time_t ONE_WEEK_DAYS = 7;
-//一周的秒数
-static const time_t ONE_WEEK_SECONDS = 604800;
 
-static const time_t SEC_PER_MSEC = 1000;
-static const time_t USEC_PER_NSEC = 1000;
-static const time_t MSEC_PER_USEC = 1000;
-static const time_t SEC_PER_USEC = 1000000;
-static const time_t SEC_PER_NSEC = 1000000000;
-static const time_t MSEC_PER_NSEC = 1000000;
+//一个小时的时间
+static const time_t SEC_PER_HOUR = 3600;
+//
+static const time_t SEC_PER_MIN = 60;
+//一天的秒数86400
+static const time_t SEC_PER_DAY = 86400;
+//各种关于时间的定义
+static const time_t DAY_PER_WEEK = 7;
+//一周的秒数
+static const time_t SEC_PER_WEEK = 604800;
+
+static const time_t MSEC_PER_SEC = 1000;
+static const time_t NSEC_PER_USEC = 1000;
+static const time_t USEC_PER_MSEC = 1000;
+static const time_t USEC_PER_SEC = 1000000;
+static const time_t NSEC_PER_SEC = 1000000000;
+static const time_t NSEC_PER_MSEC = 1000000;
 
 #if defined ZCE_OS_WINDOWS
 static const time_t TIMEZONE_SECONDS = _timezone;
@@ -65,15 +68,15 @@ static const time_t TIMEZONE_SECONDS = timezone;
 #endif
 //在时区的角度，取从1970.1.1到现在的天数量,用于判断是不是同一天之类的问题
 #ifndef HOW_MANY_DAYS_TZ
-#define HOW_MANY_DAYS_TZ(x)  (HOW_MANY_SECONDS_TZ(x)/zce::ONE_DAY_SECONDS)
+#define HOW_MANY_DAYS_TZ(x)  (HOW_MANY_SECONDS_TZ(x)/zce::SEC_PER_DAY)
 #endif
 //在时区的角度，取从1970.1.1到现在的小时数量
 #ifndef HOW_MANY_HOURS_TZ
-#define HOW_MANY_HOURS_TZ(x) (HOW_MANY_SECONDS_TZ(x) / zce::ONE_HOUR_SECONDS)
+#define HOW_MANY_HOURS_TZ(x) (HOW_MANY_SECONDS_TZ(x) / zce::SEC_PER_HOUR)
 #endif
 //在时区的角度，取从1970.1.1到现在的小时数量 这里为啥要+3，因为19700101是礼拜四。还是注释清楚吧，从周一到现在
 #ifndef HOW_MANY_WEEKS_TZ
-#define HOW_MANY_WEEKS_TZ(x)  (( HOW_MANY_SECONDS_TZ(x) + zce::ONE_DAY_SECONDS * 3)/zce::ONE_WEEK_SECONDS)
+#define HOW_MANY_WEEKS_TZ(x)  (( HOW_MANY_SECONDS_TZ(x) + zce::SEC_PER_DAY * 3)/zce::SEC_PER_WEEK)
 #endif
 
 /*!
@@ -218,8 +221,8 @@ bool timeval_havetime(const timeval& tv);
 
 enum class TIME_MODEL
 {
-    TMM_DURATION,
     TMM_TIMEPOINT,
+    TMM_DURATION,
 };
 
 /*!
@@ -262,9 +265,9 @@ const timeval make_timeval(const std::chrono::duration<Rep, Period>& val)
         std::chrono::duration_cast<std::chrono::microseconds>(val);
     timeval to_timeval;
     to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>
-        (usec.count() / zce::SEC_PER_USEC);
+        (usec.count() / zce::USEC_PER_SEC);
     to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>
-        (usec.count() % zce::SEC_PER_USEC);
+        (usec.count() % zce::USEC_PER_SEC);
     return to_timeval;
 }
 
@@ -293,7 +296,7 @@ const timeval make_timeval(const std::chrono::time_point<Clock, Duration>& val)
 * @param      tm_model 转化模式，到底视file_time为一个绝对时间还是相对时间
 */
 const timeval make_timeval(const FILETIME* file_time,
-                           TIME_MODEL tm_model = zce::TIME_MODEL::TMM_DURATION) noexcept;
+                           TIME_MODEL tm_model = zce::TIME_MODEL::TMM_TIMEPOINT) noexcept;
 
 /*!
 * @brief      转换SYSTEMTIME到timeval
@@ -315,7 +318,7 @@ template<class Rep, class Period>
 void make_duration(const timeval& tv,
                    std::chrono::duration<Rep, Period>& val)
 {
-    std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
+    std::chrono::microseconds usec(tv.tv_sec * USEC_PER_SEC + tv.tv_usec);
     val = std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(usec);
 }
 
@@ -323,7 +326,7 @@ template<class Clock, class Duration >
 void make_timepoint(const timeval& tv,
                     std::chrono::time_point<Clock, Duration>& val)
 {
-    std::chrono::microseconds usec(tv.tv_sec * SEC_PER_USEC + tv.tv_usec);
+    std::chrono::microseconds usec(tv.tv_sec * USEC_PER_SEC + tv.tv_usec);
     val = usec;
 }
 
@@ -338,13 +341,16 @@ const ::tm make_tm(const zce::ztm* pztm) noexcept;
  * @return
  */
 const timeval make_timeval(const zce::ztm* pztm,
-                           bool uct_time = true) noexcept;
+                           bool uct_time = true,
+                           TIME_MODEL tm_model = zce::TIME_MODEL::TMM_TIMEPOINT) noexcept;
 
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
 
 MYSQL_TIME make_MYSQL_TIME(const zce::ztm* pztm) noexcept;
 
 #endif
+
+const zce::ztm make_ztm(const MYSQL_TIME* mt) noexcept;
 
 //我整体对timespec不想做太多支持，
 

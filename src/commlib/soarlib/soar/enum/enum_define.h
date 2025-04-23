@@ -155,7 +155,7 @@ static const unsigned short ADD_400_MENTEL_BENCH_MARK = 400;
 static const double  EPSILON = 1E-6;
 
 //各种关于时间的定义
-static const unsigned int   ONE_WEEK_DAYS = 7;
+static const unsigned int   DAY_PER_WEEK = 7;
 
 //一分钟的秒数
 static const unsigned int   ONE_MINUTE_SECOND = 60;
@@ -165,7 +165,7 @@ static const unsigned int   ONE_HOUR_SECOND = 3600;
 static const unsigned int   ONE_DAY_SECOND = ONE_HOUR_SECOND * 24;
 //
 //一周的秒数
-static const unsigned int   ONE_WEEK_SECONDS = ONE_DAY_SECOND * ONE_WEEK_DAYS;
+static const unsigned int   SEC_PER_WEEK = ONE_DAY_SECOND * DAY_PER_WEEK;
 
 //定义2个宏
 //取从1970到现在当前的日期
@@ -181,6 +181,6 @@ static const unsigned int   ONE_WEEK_SECONDS = ONE_DAY_SECOND * ONE_WEEK_DAYS;
 #define TIMESTAMP_NOW(X) ( (X) + (ONE_HOUR_SECOND * 8) )
 
 //当前周的秒数 这里为啥要+3，因为19700101是礼拜四。还是注释清楚吧，从周一到现在
-#define  WEEKDAY_NOW(x)  (( TIMESTAMP_NOW(x) + ONE_DAY_SECOND * 3)%ONE_WEEK_SECONDS)
+#define  WEEKDAY_NOW(x)  (( TIMESTAMP_NOW(x) + ONE_DAY_SECOND * 3)%SEC_PER_WEEK)
 
 #endif //_SOARING_LIB_PER_DEFINE_BASE_H_

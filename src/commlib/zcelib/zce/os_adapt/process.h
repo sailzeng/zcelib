@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_PROCESS_H_
-#define ZCE_LIB_OS_ADAPT_PROCESS_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 
@@ -80,5 +79,3 @@ int get_self_perf(ZCE_PROCESS_PERFORM* prc_perf_info);
 ///取得谋个进程的性能信息
 int get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM* prc_perf_info);
 };
-
-#endif //ZCE_LIB_OS_ADAPT_TIME_H_

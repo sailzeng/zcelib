@@ -10,8 +10,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_DLFCN_H_
-#define ZCE_LIB_OS_ADAPT_DLFCN_H_
+#pragma once
 
 #include "zce/os_adapt/define.h"
 
@@ -51,5 +50,3 @@ void* dlsym(ZCE_SHLIB_HANDLE handle,
 */
 const char* dlerror(void);
 };
-
-#endif //ZCE_LIB_OS_ADAPT_DLFCN_H_

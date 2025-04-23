@@ -31,6 +31,8 @@
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 
 #include "zce/os_adapt/string.h"
+#include "zce/logger/logging.h"
+#include "zce/buffer/string_buffer.h"
 #include "zce/string/from_string.h"
 
 namespace zce::mysql
@@ -118,6 +120,16 @@ public:
     {
         return zce::from_str_to<T>(cursor_row_[colum]);
     }
+
+    //若干特化实现
+    template<>
+    int field(size_t colum, zce::string_buf& val) const;
+    template<>
+    int field(size_t colum, zce::ztm& val) const;
+    template<>
+    int field(size_t colum, char*& val) const;
+    template<>
+    int field(size_t colum, unsigned char*& val) const;
 
     //! 清理
     void clear();

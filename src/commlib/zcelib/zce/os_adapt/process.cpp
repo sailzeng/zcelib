@@ -188,13 +188,13 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_pe
     read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->run_utime_.tv_sec = static_cast<time_t>(read_data / cpu_tick_precision);
-    prc_perf_info->run_utime_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    prc_perf_info->run_utime_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     // stime
     read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->run_stime_.tv_sec = static_cast<time_t>(read_data / cpu_tick_precision);
-    prc_perf_info->run_stime_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    prc_perf_info->run_stime_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     in_para = skip_token(in_para);              /* skip cutime */
     in_para = skip_token(in_para);              /* skip cstime */
@@ -213,7 +213,7 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM* prc_pe
     read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->start_time_.tv_sec = static_cast<time_t>(read_data / cpu_tick_precision);
-    prc_perf_info->start_time_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
+    prc_perf_info->start_time_.tv_usec = static_cast<time_t>((read_data % cpu_tick_precision) * (USEC_PER_SEC / cpu_tick_precision));
 
     // 计算running_time，uptime可以读取/proc/uptime得到, 这里使用系统zcelib自带的zce::get_uptime()
     timeval up_time;
