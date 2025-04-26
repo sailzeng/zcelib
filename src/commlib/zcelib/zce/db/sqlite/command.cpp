@@ -4,30 +4,30 @@
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
 #include "zce/logger/logging.h"
-#include "zce/db/sqlite/sqlite_hdl.h"
-#include "zce/db/sqlite/sqlite_stmt.h"
+#include "zce/db/sqlite/connect.h"
+#include "zce/db/sqlite/command.h"
 
 /*
-* sqlite_stmt
+* command
 */
 
-namespace zce
+namespace zce::sqlite
 {
 //构造函数,从很细小的地方就可以看出SQLITE的设计有不足，一个INDEX从1开始，1个从0
-sqlite_stmt::sqlite_stmt(sqlite_handle* sqlite3_handler) :
+command::command(connect* sqlite3_handler) :
     sqlite_hdl_(sqlite3_handler)
 {
     assert(sqlite3_handler != nullptr &&
            sqlite3_handler->get_sqlite_handler() != nullptr);
 }
 
-sqlite_stmt::~sqlite_stmt()
+command::~command()
 {
     terminate();
 }
 
 //销毁SQLITE3的STMT HANDLER，恢复初始化值等。
-int sqlite_stmt::terminate()
+int command::terminate()
 {
     //销毁SQLITE3的STMT HANDLER
     int ret = ::sqlite3_finalize(prepared_statement_);
@@ -43,7 +43,7 @@ int sqlite_stmt::terminate()
 }
 
 //
-int sqlite_stmt::reset()
+int command::reset()
 {
     int ret = ::sqlite3_reset(prepared_statement_);
     if (SQLITE_OK != ret)
@@ -57,7 +57,7 @@ int sqlite_stmt::reset()
 }
 
 //分析SQL语句，检查是否能够正确执行
-int sqlite_stmt::prepare(const char* sql_string)
+int command::prepare(const char* sql_string)
 {
     if (prepared_statement_)
     {
@@ -85,7 +85,7 @@ int sqlite_stmt::prepare(const char* sql_string)
 }
 
 //执行一次stmt SQL，如果执行成功，返回0，如果SQL有结果返回，has_result置为true
-int sqlite_stmt::step(bool& has_result)
+int command::step(bool& has_result)
 {
     has_result = false;
     //
@@ -114,7 +114,7 @@ int sqlite_stmt::step(bool& has_result)
 
 //Bind 函数群
 template<>
-int sqlite_stmt::bind(int bind_index, char val)
+int command::bind(int bind_index, char val)
 {
     int ret = ::sqlite3_bind_int(prepared_statement_,
                                  bind_index,
@@ -130,7 +130,7 @@ int sqlite_stmt::bind(int bind_index, char val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, short val)
+int command::bind(int bind_index, short val)
 {
     int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
     if (SQLITE_OK != ret)
@@ -144,7 +144,7 @@ int sqlite_stmt::bind(int bind_index, short val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, int val)
+int command::bind(int bind_index, int val)
 {
     int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, val);
     if (SQLITE_OK != ret)
@@ -158,7 +158,7 @@ int sqlite_stmt::bind(int bind_index, int val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, long val)
+int command::bind(int bind_index, long val)
 {
     int ret = ::sqlite3_bind_int64(prepared_statement_, bind_index, static_cast<int64_t>(val));
     if (SQLITE_OK != ret)
@@ -172,7 +172,7 @@ int sqlite_stmt::bind(int bind_index, long val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, long long val)
+int command::bind(int bind_index, long long val)
 {
     int ret = ::sqlite3_bind_int64(prepared_statement_, bind_index, val);
     if (SQLITE_OK != ret)
@@ -186,7 +186,7 @@ int sqlite_stmt::bind(int bind_index, long long val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, unsigned char val)
+int command::bind(int bind_index, unsigned char val)
 {
     int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
     if (SQLITE_OK != ret)
@@ -200,7 +200,7 @@ int sqlite_stmt::bind(int bind_index, unsigned char val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, unsigned short val)
+int command::bind(int bind_index, unsigned short val)
 {
     int ret = ::sqlite3_bind_int(prepared_statement_, bind_index, static_cast<int>(val));
     if (SQLITE_OK != ret)
@@ -215,7 +215,7 @@ int sqlite_stmt::bind(int bind_index, unsigned short val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, unsigned int val)
+int command::bind(int bind_index, unsigned int val)
 {
     int ret = sqlite3_bind_int(prepared_statement_, bind_index, val);
     if (SQLITE_OK != ret)
@@ -231,7 +231,7 @@ int sqlite_stmt::bind(int bind_index, unsigned int val)
 
 //注意long这儿bind的是32位的喔
 template<>
-int sqlite_stmt::bind(int bind_index, unsigned long val)
+int command::bind(int bind_index, unsigned long val)
 {
     int ret = ::sqlite3_bind_int64(prepared_statement_, bind_index, static_cast<uint64_t>(val));
     if (SQLITE_OK != ret)
@@ -246,7 +246,7 @@ int sqlite_stmt::bind(int bind_index, unsigned long val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, unsigned long long val)
+int command::bind(int bind_index, unsigned long long val)
 {
     int ret = ::sqlite3_bind_int64(prepared_statement_, bind_index, val);
     if (SQLITE_OK != ret)
@@ -261,7 +261,7 @@ int sqlite_stmt::bind(int bind_index, unsigned long long val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, float val)
+int command::bind(int bind_index, float val)
 {
     int ret = ::sqlite3_bind_double(prepared_statement_, bind_index, static_cast<double>(val));
     if (SQLITE_OK != ret)
@@ -276,7 +276,7 @@ int sqlite_stmt::bind(int bind_index, float val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, double val)
+int command::bind(int bind_index, double val)
 {
     int ret = ::sqlite3_bind_double(prepared_statement_,
                                     bind_index,
@@ -292,7 +292,7 @@ int sqlite_stmt::bind(int bind_index, double val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, const char* val)
+int command::bind(int bind_index, const char* val)
 {
     //从参数上看，SQLite的STMT不是bind变量，而是取了数据
     int ret = ::sqlite3_bind_text(prepared_statement_,
@@ -312,7 +312,7 @@ int sqlite_stmt::bind(int bind_index, const char* val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, const  std::string& val)
+int command::bind(int bind_index, const  std::string& val)
 {
     //
     int ret = ::sqlite3_bind_text(prepared_statement_,
@@ -333,7 +333,7 @@ int sqlite_stmt::bind(int bind_index, const  std::string& val)
 }
 
 template<>
-int sqlite_stmt::bind(int bind_index, const sqlite_stmt::BLOB_bind& val)
+int command::bind(int bind_index, const command::BLOB_bind& val)
 {
     //SQLITE_TRANSIENT 是要求SQLite对数据进行复制处理
     //SQLITE_STATIC 是告诉SQLite，数据我管理
@@ -352,13 +352,13 @@ int sqlite_stmt::bind(int bind_index, const sqlite_stmt::BLOB_bind& val)
     return 0;
 }
 
-sqlite_stmt& sqlite_stmt::operator << (const sqlite_stmt::BLOB_bind& val)
+command& command::operator << (const command::BLOB_bind& val)
 {
-    bind<const sqlite_stmt::BLOB_bind&>(current_bind_, val);
+    bind<const command::BLOB_bind&>(current_bind_, val);
     ++current_bind_;
     return *this;
 }
-sqlite_stmt& sqlite_stmt::operator << (const std::string& val)
+command& command::operator << (const std::string& val)
 {
     bind<const std::string&>(current_bind_, val);
     ++current_bind_;
@@ -366,14 +366,14 @@ sqlite_stmt& sqlite_stmt::operator << (const std::string& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, char& val)
+void command::column(int result_col, char& val)
 {
     val = static_cast<char>(::sqlite3_column_int(prepared_statement_, result_col));
     return;
 }
 
 template<>
-void sqlite_stmt::column(int result_col, short& val)
+void command::column(int result_col, short& val)
 {
     val = static_cast<short>(::sqlite3_column_int(prepared_statement_,
                              result_col));
@@ -381,7 +381,7 @@ void sqlite_stmt::column(int result_col, short& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, int& val)
+void command::column(int result_col, int& val)
 {
     val = ::sqlite3_column_int(prepared_statement_,
                                result_col);
@@ -389,7 +389,7 @@ void sqlite_stmt::column(int result_col, int& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, long& val)
+void command::column(int result_col, long& val)
 {
     val = ::sqlite3_column_int(prepared_statement_,
                                result_col);
@@ -397,7 +397,7 @@ void sqlite_stmt::column(int result_col, long& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, long long& val)
+void command::column(int result_col, long long& val)
 {
     val = ::sqlite3_column_int64(prepared_statement_,
                                  result_col);
@@ -405,7 +405,7 @@ void sqlite_stmt::column(int result_col, long long& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, unsigned char& val)
+void command::column(int result_col, unsigned char& val)
 {
     val = static_cast<unsigned char>(::sqlite3_column_int(prepared_statement_,
                                      result_col));
@@ -413,7 +413,7 @@ void sqlite_stmt::column(int result_col, unsigned char& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, unsigned short& val)
+void command::column(int result_col, unsigned short& val)
 {
     val = static_cast<unsigned short>(::sqlite3_column_int(prepared_statement_,
                                       result_col));
@@ -421,7 +421,7 @@ void sqlite_stmt::column(int result_col, unsigned short& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, unsigned int& val)
+void command::column(int result_col, unsigned int& val)
 {
     val = static_cast<unsigned int>(sqlite3_column_int(prepared_statement_,
                                     result_col));
@@ -429,7 +429,7 @@ void sqlite_stmt::column(int result_col, unsigned int& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, unsigned long& val)
+void command::column(int result_col, unsigned long& val)
 {
     val = static_cast<unsigned long>(sqlite3_column_int(prepared_statement_,
                                      result_col));
@@ -438,7 +438,7 @@ void sqlite_stmt::column(int result_col, unsigned long& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, unsigned long long& val)
+void command::column(int result_col, unsigned long long& val)
 {
     val = static_cast<unsigned long long> (sqlite3_column_int64(prepared_statement_,
                                            result_col));
@@ -446,7 +446,7 @@ void sqlite_stmt::column(int result_col, unsigned long long& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, float& val)
+void command::column(int result_col, float& val)
 {
     val = static_cast<float> (sqlite3_column_double(prepared_statement_,
                               result_col));
@@ -455,7 +455,7 @@ void sqlite_stmt::column(int result_col, float& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, double& val)
+void command::column(int result_col, double& val)
 {
     val = sqlite3_column_double(prepared_statement_,
                                 result_col);
@@ -463,7 +463,7 @@ void sqlite_stmt::column(int result_col, double& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, char* val)
+void command::column(int result_col, char* val)
 {
     //Fisk这个变态让我改了地方，为了安全检查。
     strncpy(val,
@@ -475,7 +475,7 @@ void sqlite_stmt::column(int result_col, char* val)
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 template<>
-void sqlite_stmt::column(int result_col, sqlite_stmt::BLOB_column& val)
+void command::column(int result_col, command::BLOB_column& val)
 {
     *val.binary_len_ = ::sqlite3_column_bytes(prepared_statement_, result_col);
     //为了获取二进制数据，与zce::mysql::Result相对应,长度不+1
@@ -485,7 +485,7 @@ void sqlite_stmt::column(int result_col, sqlite_stmt::BLOB_column& val)
 }
 
 template<>
-void sqlite_stmt::column(int result_col, std::string& val)
+void command::column(int result_col, std::string& val)
 {
     val.assign(reinterpret_cast<const char*>(sqlite3_column_text(prepared_statement_,
                result_col)),

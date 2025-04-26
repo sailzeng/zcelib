@@ -35,8 +35,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 
 #pragma once
 
-#include "zce/db/sqlite/sqlite_hdl.h"
-#include "zce/db/sqlite/sqlite_stmt.h"
+#include "zce/db/sqlite/connect.h"
+#include "zce/db/sqlite/command.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3035000
@@ -224,7 +224,7 @@ public:
     //! SQL语句
     char* sql_string_ = nullptr;
     //!
-    zce::sqlite_handle* sqlite_hdl_;
+    zce::sqlite::connect* sqlite_hdl_ = nullptr;
 };
 } //namespace zce
 

@@ -100,9 +100,9 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/cfg_file.h>
 
-#include <zce/db/sqlite/sqlite_hdl.h>
-#include <zce/db/sqlite/sqlite_stmt.h>
-#include <zce/db/sqlite/sqlite_result.h>
+#include <zce/db/sqlite/connect.h>
+#include <zce/db/sqlite/command.h>
+#include <zce/db/sqlite/result.h>
 
 #include <zce/net/dns_resolve.h>
 #include <zce/net/ping.h>

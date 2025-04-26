@@ -1,31 +1,31 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/db/sqlite/sqlite_hdl.h"
-#include "zce/db/sqlite/sqlite_result.h"
+#include "zce/db/sqlite/connect.h"
+#include "zce/db/sqlite/result.h"
 
 //对于SQLITE的最低版本限制
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
-namespace zce
+namespace zce::sqlite
 {
 /******************************************************************************************
 SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
 ******************************************************************************************/
-sqlite_handle::sqlite_handle() :
+connect::connect() :
     sqlite3_handler_(nullptr)
 {
 }
 
-sqlite_handle::~sqlite_handle()
+connect::~connect()
 {
     close_db();
 }
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
 //int == 0表示成功，否则失败
-int sqlite_handle::open_db(const char* db_file,
-                           bool read_only,
-                           bool create_db)
+int connect::open_db(const char* db_file,
+                     bool read_only,
+                     bool create_db)
 {
     int flags = SQLITE_OPEN_READWRITE;
     if (create_db)
@@ -57,7 +57,7 @@ int sqlite_handle::open_db(const char* db_file,
 }
 
 //关闭数据库。
-void sqlite_handle::close_db()
+void connect::close_db()
 {
     if (sqlite3_handler_)
     {
@@ -67,37 +67,37 @@ void sqlite_handle::close_db()
 }
 
 //错误语句Str
-const char* sqlite_handle::error_message()
+const char* connect::error_message()
 {
     return ::sqlite3_errmsg(sqlite3_handler_);
 }
 
 //DB返回的错误ID
-int sqlite_handle::error_code()
+int connect::error_code()
 {
     return ::sqlite3_errcode(sqlite3_handler_);
 }
 
 //开始一个事务
-int sqlite_handle::begin_transaction()
+int connect::begin_transaction()
 {
     return exe("BEGIN TRANSACTION;");
 }
 
 //提交一个事务
-int sqlite_handle::commit_transction()
+int connect::commit_transction()
 {
     return exe("COMMIT TRANSACTION;");
 }
 
 //将同步选项关闭，可以适当的提高insert的速度，但是为了安全起见，建议不要使用
-int sqlite_handle::turn_off_synch()
+int connect::turn_off_synch()
 {
     return exe("PRAGMA synchronous=OFF;");
 }
 
 //!执行DDL等不需要结果的SQL
-int sqlite_handle::exe(const char* sql_string)
+int connect::exe(const char* sql_string)
 {
     int ret = 0;
     char* err_msg = nullptr;
@@ -122,8 +122,8 @@ int sqlite_handle::exe(const char* sql_string)
 }
 
 //执行SQL 查询，取得结果
-int sqlite_handle::get_table(const char* sql_string,
-                             zce::sqlite_result* result)
+int connect::get_table(const char* sql_string,
+                       zce::sqlite::result* result)
 {
     int ret = SQLITE_OK;
     char* err_msg = nullptr;

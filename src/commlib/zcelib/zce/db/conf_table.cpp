@@ -58,7 +58,7 @@ int AII_BINARY_DATA::protobuf_encode(unsigned int index_1,
 {
     if (!msg->IsInitialized())
     {
-        ZCE_LOG(RS_ERROR,"class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
+        ZCE_LOG(RS_ERROR, "class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
                 msg->GetTypeName().c_str(),
                 msg->InitializationErrorString().c_str());
         return -1;
@@ -70,7 +70,7 @@ int AII_BINARY_DATA::protobuf_encode(unsigned int index_1,
     int protobuf_len = msg->ByteSize();
     if (protobuf_len > MAX_LEN_OF_AI_IIJIMA_DATA)
     {
-        ZCE_LOG(RS_ERROR,"Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
+        ZCE_LOG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
                 " MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
                 index_1,
                 index_2,
@@ -79,10 +79,10 @@ int AII_BINARY_DATA::protobuf_encode(unsigned int index_1,
         return -1;
     }
 
-    bool bret = msg->SerializeToArray(ai_iijima_data_,MAX_LEN_OF_AI_IIJIMA_DATA);
+    bool bret = msg->SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
     if (!bret)
     {
-        ZCE_LOG(RS_ERROR,"Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.",
+        ZCE_LOG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.",
                 index_1,
                 index_2,
                 typeid(msg).name());
@@ -97,18 +97,18 @@ int AII_BINARY_DATA::protobuf_decode(unsigned int* index_1,
                                      unsigned int* index_2,
                                      google::protobuf::MessageLite* msg)
 {
-    bool bret = msg->ParseFromArray(ai_iijima_data_,ai_data_length_);
+    bool bret = msg->ParseFromArray(ai_iijima_data_, ai_data_length_);
 
     if (false == bret)
     {
-        ZCE_LOG(RS_ERROR,"Class [%s] protobuf decode fail,ParseFromArray return false.",msg->GetTypeName().c_str());
+        ZCE_LOG(RS_ERROR, "Class [%s] protobuf decode fail,ParseFromArray return false.", msg->GetTypeName().c_str());
         return -1;
     }
     *index_1 = index_1_;
     *index_2 = index_2_;
     if (!msg->IsInitialized())
     {
-        ZCE_LOG(RS_ERROR,"class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
+        ZCE_LOG(RS_ERROR, "class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
                 msg->GetTypeName().c_str(),
                 msg->InitializationErrorString().c_str());
         return -1;
@@ -124,7 +124,7 @@ struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信�
 config_table::config_table()
 {
     sql_string_ = new char[MAX_SQLSTRING_LEN];
-    sqlite_hdl_ = new zce::sqlite_handle();
+    sqlite_hdl_ = new zce::sqlite::connect();
 }
 
 config_table::~config_table()
@@ -148,7 +148,7 @@ int config_table::open_dbfile(const char* db_file,
                               bool read_only,
                               bool create_db)
 {
-    int ret = sqlite_hdl_->open_db(db_file,read_only,create_db);
+    int ret = sqlite_hdl_->open_db(db_file, read_only, create_db);
     if (ret != 0)
     {
         return ret;
@@ -168,7 +168,7 @@ void config_table::sql_create_table(unsigned  int table_id)
     char* ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    int len = snprintf(ptmppoint,buflen,
+    int len = snprintf(ptmppoint, buflen,
                        "DROP TABLE IF EXISTS config_table_%u;"
                        "DROP INDEX IF EXISTS cfg_table_idx_%u;"
                        "CREATE TABLE IF NOT EXISTS config_table_%u(index_1 INTEGER,"
@@ -192,7 +192,7 @@ void config_table::sql_replace_bind(unsigned int table_id)
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //注意里面的?
-    int len = snprintf(ptmppoint,buflen,"REPLACE INTO config_table_%u "
+    int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(?,?,?,?) ;",
                        table_id
@@ -216,7 +216,7 @@ void config_table::sql_replace_one(unsigned int table_id,
 
     //对于空间，我们是预留了足够的空间的，就不检查边界了
     //对于x,x的作用是说明里面的数据''用base 16的编码处理，视作二进制
-    int len = snprintf(ptmppoint,buflen,"REPLACE INTO config_table_%u "
+    int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(%u,%u,x'",
                        table_id,
@@ -234,7 +234,7 @@ void config_table::sql_replace_one(unsigned int table_id,
     ptmppoint += out_len;
     buflen -= out_len;
 
-    len = snprintf(ptmppoint,buflen,"',%u);",last_mod_time);
+    len = snprintf(ptmppoint, buflen, "',%u);", last_mod_time);
     ptmppoint += out_len;
     buflen -= out_len;
 }
@@ -281,7 +281,7 @@ void config_table::sql_select_one(unsigned int table_id,
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
-    int len = snprintf(ptmppoint,buflen,"SELECT conf_data,last_mod_time "
+    int len = snprintf(ptmppoint, buflen, "SELECT conf_data,last_mod_time "
                        "FROM config_table_%u WHERE ((index_1=%u) AND (index_2=%u)) ",
                        table_id,
                        index_1,
@@ -317,7 +317,7 @@ void config_table::sql_counter(unsigned int table_id,
     char* ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    int len = snprintf(ptmppoint,buflen,"SELECT COUNT(*) FROM config_table_%u ",
+    int len = snprintf(ptmppoint, buflen, "SELECT COUNT(*) FROM config_table_%u ",
                        table_id);
     ptmppoint += len;
     buflen -= len;
@@ -325,7 +325,7 @@ void config_table::sql_counter(unsigned int table_id,
     //如果要查询LIMIT的数目
     if (numquery != 0)
     {
-        len = snprintf(ptmppoint,buflen,"LIMIT %u,%u ",startno,numquery);
+        len = snprintf(ptmppoint, buflen, "LIMIT %u,%u ", startno, numquery);
         ptmppoint += len;
         buflen -= len;
     }
@@ -340,7 +340,7 @@ void config_table::sql_select_array(unsigned int table_id,
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
-    int len = snprintf(ptmppoint,buflen,"SELECT index_1,index_2,conf_data,last_mod_time "
+    int len = snprintf(ptmppoint, buflen, "SELECT index_1,index_2,conf_data,last_mod_time "
                        "FROM config_table_%u ",
                        table_id);
     ptmppoint += len;
@@ -349,7 +349,7 @@ void config_table::sql_select_array(unsigned int table_id,
     //如果要查询LIMIT的数目
     if (numquery != 0)
     {
-        len = snprintf(ptmppoint,buflen,"LIMIT %u,%u ",startno,numquery);
+        len = snprintf(ptmppoint, buflen, "LIMIT %u,%u ", startno, numquery);
         ptmppoint += len;
         buflen -= len;
     }
@@ -377,24 +377,24 @@ int config_table::replace_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
+    zce::sqlite::command cmd(sqlite_hdl_);
     int ret = 0;
 
-    ret = stmt_handler.prepare(sql_string_);
+    ret = cmd.prepare(sql_string_);
     if (ret != 0)
     {
         return ret;
     }
 
-    zce::sqlite_stmt::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
-                                            conf_data->ai_data_length_);
-    stmt_handler << conf_data->index_1_;
-    stmt_handler << conf_data->index_2_;
-    stmt_handler << binary_data;
-    stmt_handler << conf_data->last_mod_time_;
+    zce::sqlite::command::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
+                                                conf_data->ai_data_length_);
+    cmd << conf_data->index_1_;
+    cmd << conf_data->index_2_;
+    cmd << binary_data;
+    cmd << conf_data->last_mod_time_;
 
     bool has_result = false;
-    ret = stmt_handler.step(has_result);
+    ret = cmd.step(has_result);
     if (ret != 0)
     {
         return ret;
@@ -408,7 +408,7 @@ int config_table::replace_array(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
+    zce::sqlite::command stmt_handler(sqlite_hdl_);
     int ret = 0;
 
     ret = sqlite_hdl_->begin_transaction();
@@ -427,8 +427,8 @@ int config_table::replace_array(unsigned int table_id,
             return ret;
         }
 
-        zce::sqlite_stmt::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                                (*ary_ai_iijma)[i].ai_data_length_);
+        zce::sqlite::command::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                                    (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
@@ -458,7 +458,7 @@ int config_table::select_one(unsigned int table_id,
     sql_select_one(table_id,
                    conf_data->index_1_,
                    conf_data->index_2_);
-    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
+    zce::sqlite::command stmt_handler(sqlite_hdl_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -477,8 +477,8 @@ int config_table::select_one(unsigned int table_id,
         return -1;
     }
 
-    zce::sqlite_stmt::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
-                                              &(conf_data->ai_data_length_));
+    zce::sqlite::command::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
+                                                  &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -491,8 +491,8 @@ int config_table::delete_one(unsigned int table_id,
                              unsigned int index_2)
 {
     //构造后面的SQL
-    sql_delete_one(table_id,index_1,index_2);
-    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
+    sql_delete_one(table_id, index_1, index_2);
+    zce::sqlite::command stmt_handler(sqlite_hdl_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -514,8 +514,8 @@ int config_table::counter(unsigned int table_id,
                           unsigned int numquery,
                           unsigned int* rec_count)
 {
-    sql_counter(table_id,startno,numquery);
-    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
+    sql_counter(table_id, startno, numquery);
+    zce::sqlite::command stmt_handler(sqlite_hdl_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -549,7 +549,7 @@ int config_table::select_array(unsigned int table_id,
 
     //先计算数量
     unsigned int  num_counter = 0;
-    ret = counter(table_id,startno,numquery,&num_counter);
+    ret = counter(table_id, startno, numquery, &num_counter);
     if (0 != ret)
     {
         return ret;
@@ -562,8 +562,8 @@ int config_table::select_array(unsigned int table_id,
     }
     ary_ai_iijma->resize(num_counter);
 
-    sql_select_array(table_id,startno,numquery);
-    zce::sqlite_stmt stmt_handler(sqlite_hdl_);
+    sql_select_array(table_id, startno, numquery);
+    zce::sqlite::command stmt_handler(sqlite_hdl_);
 
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -582,14 +582,14 @@ int config_table::select_array(unsigned int table_id,
         int blob_len = stmt_handler.cur_column_bytes();
         if (blob_len > AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
         {
-            ZCE_LOG(RS_ERROR,"Error current column bytes length [%u] > "
+            ZCE_LOG(RS_ERROR, "Error current column bytes length [%u] > "
                     "AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u].",
-                    blob_len,AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
+                    blob_len, AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
             return -1;
         }
 
-        zce::sqlite_stmt::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                                  &((*ary_ai_iijma)[i].ai_data_length_));
+        zce::sqlite::command::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                                      &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
@@ -615,7 +615,7 @@ int config_table::compare_table(const char* old_db,
     int ret = 0;
 
     //读取旧数据
-    ret = open_dbfile(old_db,true,false);
+    ret = open_dbfile(old_db, true, false);
     if (0 != ret)
     {
         return ret;
@@ -631,7 +631,7 @@ int config_table::compare_table(const char* old_db,
     }
 
     //读取新数据
-    ret = open_dbfile(new_db,true,false);
+    ret = open_dbfile(new_db, true, false);
     if (0 != ret)
     {
         return ret;
@@ -647,13 +647,13 @@ int config_table::compare_table(const char* old_db,
     }
 
     //把新旧数据排序，方便比较
-    std::sort(old_ai_iijma.begin(),old_ai_iijma.end());
-    std::sort(new_ai_iijma.begin(),new_ai_iijma.end());
+    std::sort(old_ai_iijma.begin(), old_ai_iijma.end());
+    std::sort(new_ai_iijma.begin(), new_ai_iijma.end());
 
     update_sql->reserve(1024 * 1024 * 8);
 
     //两个都有序，找出差异的元素
-    size_t p = 0,q = 0;
+    size_t p = 0, q = 0;
     for (; p < old_ai_iijma.size();)
     {
         //如果对比的两者相等
@@ -728,7 +728,7 @@ int config_table::compare_table(const char* old_db,
             //old[p] 是多出的，DELETE
             else
             {
-                sql_delete_one(table_id,old_ai_iijma[p].index_1_,old_ai_iijma[p].index_2_);
+                sql_delete_one(table_id, old_ai_iijma[p].index_1_, old_ai_iijma[p].index_2_);
                 *update_sql += sql_string_;
                 ++p;
             }

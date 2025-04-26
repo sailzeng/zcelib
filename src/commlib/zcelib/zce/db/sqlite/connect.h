@@ -29,22 +29,22 @@
 
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
-namespace zce
+namespace zce::sqlite
 {
 //==============================================================================================
-class sqlite_result;
+class result;
 /*!
 @brief      连接处理一个SQLite3数据库的，打开一个SQLite3数据库就得到Handler
             用Handler完成后面各种数据库操作。
 */
-class sqlite_handle
+class connect
 {
 public:
 
     //!构造函数，
-    sqlite_handle();
+    connect();
     //!析构函数
-    ~sqlite_handle();
+    ~connect();
 
     /*!
     @brief      打开数据库，注意文件名称的路径要用UTF8编码，所以最好不要用中文?
@@ -95,7 +95,7 @@ public:
     *             另外，这个函数应该不能处理二进制数据，因为你无法得知结果长度
     */
     int get_table(const char* sql_string,
-                  zce::sqlite_result* result);
+                  zce::sqlite::result* result);
 
 protected:
 

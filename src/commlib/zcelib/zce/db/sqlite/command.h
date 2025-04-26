@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
-* @filename   sqlite_stmt.h
+* @filename   command.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2021年5月4日
@@ -16,17 +16,17 @@
 */
 #pragma once
 
-#include "zce/db/sqlite/sqlite_hdl.h"
+#include "zce/db/sqlite/connect.h"
 
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
-namespace zce
+namespace zce::sqlite
 {
 /*!
 @brief      SQlite STMT的句柄
             用于SQL的处理等，STMT是个好东东，就是理解上麻烦一点。
 */
-class sqlite_stmt
+class command
 {
 public:
 
@@ -79,11 +79,11 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    sqlite_stmt(sqlite_handle* sqlite3_handler);
+    command(connect* sqlite3_handler);
     /*!
     * @brief      析构函数
     */
-    ~sqlite_stmt();
+    ~command();
 
 public:
 
@@ -173,7 +173,7 @@ public:
 
     //!导出结果,列号自动++
     template <class value_type>
-    sqlite_stmt& operator >> (value_type& val)
+    command& operator >> (value_type& val)
     {
         column<value_type&>(current_col_, val);
         ++current_col_;
@@ -182,7 +182,7 @@ public:
 
     //!bind绑定参数,列号自动++
     template <class bind_type>
-    sqlite_stmt& operator << (bind_type val)
+    command& operator << (bind_type val)
     {
         bind<bind_type>(current_bind_, val);
         ++current_bind_;
@@ -190,13 +190,13 @@ public:
     }
 
     //这两个类型的<<函数使用的是引用，所以重载一下，
-    sqlite_stmt& operator << (const sqlite_stmt::BLOB_bind& val);
-    sqlite_stmt& operator << (const std::string& val);
+    command& operator << (const command::BLOB_bind& val);
+    command& operator << (const std::string& val);
 
 protected:
 
     //!SQLite的DB句柄
-    sqlite_handle* sqlite_hdl_ = nullptr;
+    connect* sqlite_hdl_ = nullptr;
 
     //!SQLite原声的STMT的句柄
     sqlite3_stmt* prepared_statement_ = nullptr;

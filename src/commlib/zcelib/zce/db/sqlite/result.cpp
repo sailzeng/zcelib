@@ -1,33 +1,33 @@
 //=========================================================================================
 #include "zce/predefine.h"
-#include "zce/db/sqlite/sqlite_result.h"
+#include "zce/db/sqlite/result.h"
 
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
-namespace zce
+namespace zce::sqlite
 {
-sqlite_result::~sqlite_result()
+result::~result()
 {
     free_result();
 }
 
-bool sqlite_result::is_null()
+bool result::is_null()
 {
     return (result_ == nullptr);
 }
 
-const char* sqlite_result::field_name(size_t column)
+const char* result::field_name(size_t column)
 {
     return result_[column - 1];
 }
 
-const char* sqlite_result::field_cstr(size_t row, size_t column)
+const char* result::field_cstr(size_t row, size_t column)
 {
     return result_[row * column_ + column - 1];
 }
 
 //释放结果集合
-void sqlite_result::free_result()
+void result::free_result()
 {
     if (result_)
     {

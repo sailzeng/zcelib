@@ -167,7 +167,7 @@
     <ClCompile Include="zce\rudp\server.cpp" />
     <ClCompile Include="zce\script\javascript.cpp" />
     <ClCompile Include="zce\socket\addr_any.cpp" />
-    <ClCompile Include="zce\db\sqlite\sqlite_result.cpp" />
+    <ClCompile Include="zce\db\sqlite\result.cpp" />
     <ClCompile Include="zce\string\extend.cpp" />
     <ClCompile Include="zce\string\from_string.cpp" />
     <ClCompile Include="zce\buffer\cycle_buffer.cpp" />
@@ -242,8 +242,8 @@
     <ClCompile Include="zce\socket\datagram.cpp" />
     <ClCompile Include="zce\socket\stream.cpp" />
     <ClCompile Include="zce\db\conf_table.cpp" />
-    <ClCompile Include="zce\db\sqlite\sqlite_hdl.cpp" />
-    <ClCompile Include="zce\db\sqlite\sqlite_stmt.cpp" />
+    <ClCompile Include="zce\db\sqlite\connect.cpp" />
+    <ClCompile Include="zce\db\sqlite\command.cpp" />
     <ClCompile Include="zce\string\format.cpp" />
     <ClCompile Include="zce\string\regex_parse.cpp" />
     <ClCompile Include="zce\string\time.cpp" />
@@ -305,7 +305,7 @@
     <ClInclude Include="zce\script\javascript.h" />
     <ClInclude Include="zce\shm_container\vector.h" />
     <ClInclude Include="zce\socket\addr_any.h" />
-    <ClInclude Include="zce\db\sqlite\sqlite_result.h" />
+    <ClInclude Include="zce\db\sqlite\result.h" />
     <ClInclude Include="zce\string\from_string.h" />
     <ClInclude Include="zce\string\regex_parse.h" />
     <ClInclude Include="zce\util\algorithm.h" />
@@ -405,8 +405,8 @@
     <ClInclude Include="zce\socket\datagram.h" />
     <ClInclude Include="zce\socket\stream.h" />
     <ClInclude Include="zce\db\conf_table.h" />
-    <ClInclude Include="zce\db\sqlite\sqlite_hdl.h" />
-    <ClInclude Include="zce\db\sqlite\sqlite_stmt.h" />
+    <ClInclude Include="zce\db\sqlite\connect.h" />
+    <ClInclude Include="zce\db\sqlite\command.h" />
     <ClInclude Include="zce\string\extend.h" />
     <ClInclude Include="zce\string\format.h" />
     <ClInclude Include="zce\string\to_string.h" />

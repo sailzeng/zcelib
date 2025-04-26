@@ -18,11 +18,15 @@ int connect::connect_by_info(const char* conninfo)
     conn_ = ::PQconnectdb(conninfo);
     if (conn_ == nullptr)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] PQconnectdb fail return nullptr.conninfo:[%s]",
+                conninfo);
         return -1;
     }
     //检查连接状态
     if (::PQstatus(conn_) != ::CONNECTION_OK)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] ::PQstatus(conn_) != ::CONNECTION_OK:[%s]",
+                error_message());
         ::PQfinish(conn_);
         conn_ = nullptr;
         return -1;
@@ -40,7 +44,7 @@ int connect::connect_by_host(const char* host_name,
     {
         return -1;
     }
-    char pq_port[16] = {0};
+    char pq_port[16] = { 0 };
     snprintf(pq_port, 16, "%u", port);
     //连接数据库
     conn_ = ::PQsetdbLogin(host_name,
@@ -52,11 +56,19 @@ int connect::connect_by_host(const char* host_name,
                            pwd);
     if (conn_ == nullptr)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] PQconnectdb fail return nullptr."
+                "host:[%s][%u][%s][%s]",
+                host_name,
+                port,
+                user,
+                db);
         return -1;
     }
     //检查连接状态
     if (::PQstatus(conn_) != ::CONNECTION_OK)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] ::PQstatus(conn_) != ::CONNECTION_OK:[%s]",
+                error_message());
         ::PQfinish(conn_);
         conn_ = nullptr;
         return -1;

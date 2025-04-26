@@ -207,9 +207,6 @@ struct is_single_type_container : std::bool_constant<
 {
 };
 
-// -----------------------------
-// 是否是关联容器（map、set）
-// -----------------------------
 template <typename T>
 struct is_associative_container : std::bool_constant<
     is_container<T>::value&&

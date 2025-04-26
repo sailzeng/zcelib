@@ -42,17 +42,30 @@ class encode;
 class decode;
 
 template <typename T>
-concept HasSerialize = requires(T obj, encode * ptr, decode * rtp)
+concept HasMemberSerialize = requires(T obj, encode & en, decode & de)
 {
-    { obj.template serialize<encode*>(ptr, (uint32_t)0) };
-    { obj.template serialize<decode*>(rtp, (uint32_t)0) };
+    { obj.template serialize<encode&>(en, (uint32_t)0) };
+    { obj.template serialize<decode&>(de, (uint32_t)0) };
 };
 
-template<typename ST >
-class en_class_help
+// Add a global serialize function template to resolve the error.
+template <typename ST, typename T>
+void serialize([[maybe_unused]] ST& serializer,
+               [[maybe_unused]] T& obj,
+               [[maybe_unused]] uint32_t  version = 0)
 {
-public:
-    void write_help(encode* ssave, const ST& val);
+    // This is a placeholder function to resolve the error.
+    // Actual serialization logic should be implemented in the class or global function.
+    std::cout << "Global serialize function not implemented for this type: "
+        << typeid(T).name() << std::endl;
+    assert(false && "Global serialize function not implemented for this type.");
+}
+
+template <typename T>
+concept HasGlobalSerialize = requires(encode & en, decode & de, T & obj)
+{
+    { zce::ser::serialize<encode&>(en, obj, (uint32_t)0) };
+    { zce::ser::serialize<decode&>(de, obj, (uint32_t)0) };
 };
 
 /*!
@@ -96,24 +109,6 @@ public:
         return write_pos_ - write_buf_;
     }
 
-    ///保存枚举值,利用SFINA的原则，进行重载
-    template<typename val_type  >
-    void write(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type& val)
-    {
-        return save_enum(val);
-    }
-    template<typename enum_type >
-    void save_enum(const enum_type& val)
-    {
-        write(static_cast<const int&>(val));
-    }
-
-    ///保存数值类型
-    //template<typename val_type >
-    //typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const val_type& val)
-    //{
-    //    return write(val);
-    //}
     void write(const bool& val);
     void write(const char& val);
     void write(const unsigned char& val);
@@ -131,19 +126,39 @@ public:
     void write(const std::string& val);
     void write(const std::string_view& val);
 
-    ///保存数组
-    template<typename val_type >
-    typename std::enable_if<std::is_array<val_type>::value >::type write(const val_type& val)
+    template<typename T>
+    void write(const T& val)
     {
-        // consider alignment
-        std::size_t count = sizeof(val) / (
-            static_cast<const char*>(static_cast<const void*>(&val[1]))
-            - static_cast<const char*>(static_cast<const void*>(&val[0]))
-            );
-        return write_array(val, count);
+        if constexpr (std::is_array<T>::value)
+        {
+            std::size_t count = sizeof(val) / (
+                static_cast<const char*>(static_cast<const void*>(&val[1]))
+                - static_cast<const char*>(static_cast<const void*>(&val[0]))
+                );
+            write_array(val, count);
+        }
+        else if constexpr (std::is_enum<T>::value)
+        {
+            write_enum(val.data(), val.size());
+        }
+        else if constexpr (std::is_class<T>::value)
+        {
+            write_class(val);
+        }
+        else
+        {
+            assert(false);
+        }
     }
-    template<typename array_type >
-    void write_array(const array_type* ary, size_t count)
+
+    template<typename ET >
+    void write_enum(const ET& val)
+    {
+        write(static_cast<const int&>(val));
+    }
+
+    template<typename AT >
+    void write_array(const AT* ary, size_t count)
     {
         //其实用下面注释的这个代码会更酷一点，但不知道为啥有告警，放弃，
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
@@ -190,27 +205,76 @@ public:
         }
     }
 
-    //template<typename T> class en_class_help;
-
-    ///保存类，这儿要用辅助类实现一些偏特化的能力
-    template<typename val_type >
-    typename std::enable_if<std::is_class<val_type>::value >::type write(const val_type& val)
+    template<typename CT>
+    void write_class(const CT& val)
     {
-        en_class_help<val_type> ssave;
-        ssave.write_help(this, val);
-        return;
+        //std::cout << typeid(CT).name() << std::endl;
+        //std::cout << zce::is_container<CT>::value << std::endl;
+        //std::cout << zce::has_key_type<CT>::value << std::endl;
+        //std::cout << zce::is_single_type_container<CT>::value << std::endl;
+        //std::cout << zce::is_associative_container<CT>::value << std::endl;
+
+        if constexpr (zce::is_single_type_container<CT>::value)
+        {
+            size_t v_size = val.size();
+            assert(v_size < 0xFFFFFFFFll);
+            write((unsigned int)v_size);
+            typename CT::const_iterator iter = val.begin();
+            for (size_t i = 0; i < v_size && is_good(); ++i, ++iter)
+            {
+                write(*iter);
+            }
+        }
+        else if constexpr (zce::is_associative_container<CT>::value)
+        {
+            size_t v_size = val.size();
+            assert(v_size < 0xFFFFFFFFll);
+            write((unsigned int)v_size);
+            typename CT::const_iterator iter = val.begin();
+            for (size_t i = 0; i < v_size && is_good(); ++i, ++iter)
+            {
+                write(iter->first);
+                write(iter->second);
+            }
+        }
+        else if constexpr (HasMemberSerialize<CT>)
+        {
+            const_cast<CT&>(val).serialize(*this);
+        }
+        else if constexpr (HasGlobalSerialize<CT>)
+        {
+            zce::ser::serialize(*this, const_cast<CT&>(val));
+        }
+        else
+        {
+            //其他的类型，直接用默认的处理
+            write(val);
+        }
+    }
+
+    template<class BC, class DC>
+    void base_class(const DC& val)
+    {
+        if constexpr (std::is_base_of<BC, DC>::value)
+        {
+            write_class(static_cast<const BC&>(val));
+        }
+        else
+        {
+            assert(false);
+        }
     }
 
     ///使用& 操作符号写入数据，
-    template<typename val_type>
-    encode& operator &(const val_type& val)
+    template<typename T>
+    encode& operator &(const T& val)
     {
         this->write(val);
         return *this;
     }
 
-    template<typename val_type>
-    encode& ptr(val_type* p, size_t ary_sz)
+    template<typename T>
+    encode& ptr(T* p, size_t ary_sz)
     {
         this->write_array(p, ary_sz);
         return *this;
@@ -231,54 +295,7 @@ protected:
     char* write_pos_ = nullptr;
 };
 
-template<typename ST>
-void en_class_help<ST>::write_help(encode* ssave,
-                                   const ST& val)
-{
-    if constexpr (is_single_type_container<ST>::value)
-    {
-        size_t v_size = val.size();
-        assert(v_size < 0xFFFFFFFFll);
-        ssave->write((unsigned int)v_size);
-        typename ST::const_iterator iter = val.begin();
-        for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
-        {
-            ssave->write(*iter);
-        }
-    }
-    else if constexpr (is_associative_container<ST>::value)
-    {
-        size_t v_size = val.size();
-        assert(v_size < 0xFFFFFFFFll);
-        ssave->write((unsigned int)v_size);
-        typename ST::const_iterator iter = val.begin();
-        for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
-        {
-            ssave->write(iter->first);
-            ssave->write(iter->second);
-        }
-    }
-    else if constexpr (HasSerialize<ST>::value)
-    {
-        val.serialize(ssave);
-    }
-    else
-    {
-        //其他的类型，直接用默认的处理
-        ssave->write(val);
-    }
-}
-
 //===========================================================================================================
-
-class decode;
-//辅助处理读取数据的一些类
-template<typename ST >
-class de_class_help
-{
-public:
-    void read_help(decode* sload, ST& val);
-};
 
 /*!
 * @brief      对数据进行解码码处理的类，将流变成数据，
@@ -344,12 +361,6 @@ public:
         return to_val;
     }
 
-    template<typename enum_type >
-    void load_enum(const enum_type& val)
-    {
-        read(static_cast<int&>(val));
-    }
-
     ///保存数值类型
     void read(bool& val);
     void read(char& val);
@@ -367,40 +378,111 @@ public:
     void read(std::string& val);
     void read(zce::string_buf& val);
 
-    ///写入数组
-    template<typename val_type >
-    typename std::enable_if<std::is_array<val_type>::value>::type read(val_type& val)
+    template<typename T>
+    void read(T& val)
     {
-        // consider alignment
-        std::size_t ary_count = sizeof(val) / (
-            static_cast<const char*>(static_cast<const void*>(&val[1]))
-            - static_cast<const char*>(static_cast<const void*>(&val[0]))
-            );
-        size_t load_count;
-        return read_array(val, ary_count, load_count);
+        if constexpr (std::is_array<T>::value)
+        {
+            std::size_t ary_count = sizeof(val) / (
+                static_cast<const char*>(static_cast<const void*>(&val[1]))
+                - static_cast<const char*>(static_cast<const void*>(&val[0]))
+                );
+            size_t read_count;
+            return read_array(val, ary_count, read_count);
+        }
+        else if constexpr (std::is_enum<T>::value)
+        {
+            read_enum(val.data(), val.size());
+        }
+        else if constexpr (std::is_class<T>::value)
+        {
+            read_class(val);
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    template<typename ET >
+    void read_enum(const ET& val)
+    {
+        read(static_cast<int&>(val));
+    }
+
+    template<typename CT>
+    void read_class(CT& val)
+    {
+        if constexpr (zce::is_single_type_container<CT>::value)
+        {
+            uint32_t v_size = 0;
+            read(v_size);
+            bool is_ok = is_good();
+            for (size_t i = 0; i < v_size && is_ok; ++i)
+            {
+                typename CT::value_type ve;
+                read(ve);
+                is_ok = is_good();
+                if (is_ok)
+                {
+                    val.push_back(ve);
+                }
+            }
+        }
+        else if constexpr (zce::is_associative_container<CT>::value)
+        {
+            uint32_t v_size = 0;
+            read(v_size);
+            bool is_ok = is_good();
+            for (size_t i = 0; i < v_size && is_good(); ++i)
+            {
+                typename CT::key_type vk;
+                typename CT::mapped_type vv;
+                read(vk);
+                read(vv);
+                is_ok = is_good();
+                if (is_ok)
+                {
+                    val[vk] = vv;
+                }
+            }
+        }
+        else if constexpr (HasMemberSerialize<CT>)
+        {
+            val.serialize(*this);
+        }
+        else if constexpr (HasGlobalSerialize<CT>)
+        {
+            zce::ser::serialize(*this, val);
+        }
+        else
+        {
+            //其他的类型，直接用默认的处理
+            read(val);
+        }
     }
 
     /**
      * @brief 从BUF种读取array_type类型的队列数据
      * @tparam array_type 队列类型
      * @param ary 队列
-     * @param ary_count 读取的类型
-     * @param load_count
+     * @param ary_count 队列数量
+     * @param read_count 读取的数量
     */
-    template<typename array_type >
-    void read_array(array_type ary, size_t ary_count, size_t& load_count)
+    template<typename AT >
+    void read_array(AT ary, size_t ary_count, size_t& read_count)
     {
         //读取数组长度
         uint32_t ui_load_count = 0;
         this->read(ui_load_count);
-        load_count = ui_load_count;
+        read_count = ui_load_count;
         //
-        if (!is_good_ || load_count > ary_count || read_pos_ + load_count * sizeof(ary[0]) > end_pos_)
+        if (!is_good_ || read_count > ary_count || read_pos_ + read_count * sizeof(ary[0]) > end_pos_)
         {
             is_good_ = false;
             return;
         }
-        for (size_t i = 0; i < load_count && is_good_; ++i)
+        for (size_t i = 0; i < read_count && is_good_; ++i)
         {
             this->read(*(ary + i));
         }
@@ -440,25 +522,29 @@ public:
         read_pos_ += load_count;
     }
 
-    ///加载类，这儿要用辅助类实现一些偏特化的能力
-    template<typename val_type >
-    typename std::enable_if<std::is_class<val_type>::value>::type read(val_type& val)
+    template<class BC, class DC>
+    void base_class(DC& val)
     {
-        de_class_help<val_type> sload;
-        sload.read_help(this, val);
-        return;
+        if constexpr (std::is_base_of<BC, DC>::value)
+        {
+            read_class(static_cast<BC&>(val));
+        }
+        else
+        {
+            assert(false);
+        }
     }
 
     ///使用&操作符号写入数据，
-    template<typename val_type>
-    decode& operator &(val_type& val)
+    template<typename T>
+    decode& operator &(T& val)
     {
         this->read(val);
         return *this;
     }
 
-    template<typename val_type>
-    decode& ptr(val_type* p, size_t ary_sz)
+    template<typename T>
+    decode& ptr(T* p, size_t ary_sz)
     {
         size_t load_sz = 0;
         this->read_array(p, ary_sz, &load_sz);
@@ -485,54 +571,4 @@ protected:
     ///当前读取的位置
     const char* read_pos_ = nullptr;
 };
-
-//辅助类，save_help 函数
-template<typename ST>
-void de_class_help<ST>::read_help(decode* sload,
-                                  ST& val)
-{
-    if constexpr (is_single_type_container<ST>::value)
-    {
-        unsigned int v_size = 0;
-        sload->read(v_size);
-        bool is_ok = sload->is_good();
-        for (size_t i = 0; i < v_size && is_ok; ++i)
-        {
-            typename ST::value_type ve;
-            sload->read(ve);
-            is_ok = sload->is_good();
-            if (is_ok)
-            {
-                val.push_back(ve);
-            }
-        }
-    }
-    else if constexpr (is_associative_container<ST>::value)
-    {
-        unsigned int v_size = 0;
-        sload->read(v_size);
-        bool is_ok = sload->is_good();
-        for (size_t i = 0; i < v_size && sload->is_good(); ++i)
-        {
-            typename ST::key_type vk;
-            typename ST::mapped_type vv;
-            sload->read(vk);
-            sload->read(vv);
-            is_ok = sload->is_good();
-            if (is_ok)
-            {
-                val[vk] = vv;
-            }
-        }
-    }
-    else if constexpr (HasSerialize<ST>::value)
-    {
-        val.serialize(sload);
-    }
-    else
-    {
-        //其他的类型，直接用默认的处理
-        sload->read(val);
-    }
-}
 }

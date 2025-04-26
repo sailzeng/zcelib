@@ -381,7 +381,7 @@ void decode::read(std::string& val)
         is_good_ = false;
         return;
     }
-    uint32_t v_size = ZBYTE_TO_UINT32(read_pos_);
+    uint32_t v_size = ZBEBYTE_TO_UINT32(read_pos_);
     read_pos_ += SIZE_OF_STRINGLEN;
     if (!is_good_ || read_pos_ + v_size > end_pos_)
     {
@@ -400,7 +400,7 @@ void decode::read(zce::string_buf& val)
         is_good_ = false;
         return;
     }
-    uint32_t v_size = ZBYTE_TO_UINT32(read_pos_);
+    uint32_t v_size = ZBEBYTE_TO_UINT32(read_pos_);
     read_pos_ += SIZE_OF_STRINGLEN;
     if (!is_good_ || read_pos_ + v_size > end_pos_)
     {

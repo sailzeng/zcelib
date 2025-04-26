@@ -4,22 +4,22 @@
 
 #include "zce/string/from_string.h"
 
-namespace zce
+namespace zce::sqlite
 {
-class sqlite_handle;
+class connect;
 /*!
 * @brief      get_table 函数返回的结果参数
 *             其实就是sqlite3_get_table 的结果参数的封装
 * @note       请注意，sqlite3_get_table 只是应该向后兼容的函数
 */
-class sqlite_result
+class result
 {
-    friend class zce::sqlite_handle;
+    friend class zce::sqlite::connect;
 
 public:
 
-    sqlite_result() = default;
-    ~sqlite_result();
+    result() = default;
+    ~result();
 
     //!结果集合释放为nullptr
     bool is_null();

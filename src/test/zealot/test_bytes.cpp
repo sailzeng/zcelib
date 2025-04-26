@@ -1180,14 +1180,13 @@ int benchmark_compress(const char* file_name)
 
 #endif
 
+//===========================================================================
+//! test serialization and deserialization of data structures
+
 struct DR_DATA_1
 {
-    DR_DATA_1()
-    {
-    }
-    ~DR_DATA_1()
-    {
-    }
+    DR_DATA_1() = default;
+    ~DR_DATA_1() = default;
 
     int d1_a1_ = 1;
     short d1_a2_ = 2;
@@ -1213,6 +1212,23 @@ struct DR_DATA_1
 
     std::map<int, int> d1_f1_;
 
+    bool operator == (DR_DATA_1& other)
+    {
+        return (d1_a1_ == other.d1_a1_) &&
+            (d1_a2_ == other.d1_a2_) &&
+            (d1_a3_ == other.d1_a3_) &&
+            (d1_a4_ == other.d1_a4_) &&
+            (d1_b1_ == other.d1_b1_) &&
+            (d1_b2_ == other.d1_b2_) &&
+            (d1_c1_ == other.d1_c1_) &&
+            (d1_c2_ == other.d1_c2_) &&
+            (memcmp(d1_c3_, other.d1_c3_, D1_C3_LEN) == 0) &&
+            (memcmp(d1_c4_, other.d1_c4_, D1_C4_LEN * sizeof(int)) == 0) &&
+            (d1_d1_ == other.d1_d1_) &&
+            (d1_e1_ == other.d1_e1_) &&
+            (d1_f1_ == other.d1_f1_);
+    }
+
     template<typename serialize_type>
     void serialize(serialize_type& ss, unsigned int /*version*/ = 0)
     {
@@ -1235,9 +1251,80 @@ struct DR_DATA_1
     }
 };
 
+int test_serialize_1()
+{
+    DR_DATA_1 data1_1;
+    data1_1.d1_a1_ = 1;
+    data1_1.d1_a1_ = 2;
+
+    data1_1.d1_b1_ = 2.02f;
+    data1_1.d1_b2_ = 3.03;
+
+    data1_1.d1_c1_ = "I love beijing tiananmen.";
+    data1_1.d1_c2_ = "I'll stand before the lord of song With nothing on my tongue but Hallelujah";
+    for (size_t i = 0; i < DR_DATA_1::D1_C3_LEN; ++i)
+    {
+        data1_1.d1_c3_[i] = static_cast<char>('A' + i);
+    }
+
+    for (size_t i = 0; i < DR_DATA_1::D1_C4_LEN; ++i)
+    {
+        data1_1.d1_c4_[i] = 100000 + (int)i;
+    }
+
+    data1_1.d1_d1_.push_back(888);
+    data1_1.d1_d1_.push_back(8888);
+    data1_1.d1_d1_.push_back(88888);
+
+    data1_1.d1_e1_.push_back(66);
+    data1_1.d1_e1_.push_back(666);
+    data1_1.d1_e1_.push_back(6666);
+
+    data1_1.d1_f1_[3] = 555;
+    data1_1.d1_f1_[33] = 5555;
+    data1_1.d1_f1_[333] = 55555;
+
+    const size_t SIZE_OF_BUFFER = 1024;
+    char buffer_data1[SIZE_OF_BUFFER];
+    zce::ser::encode ssave(buffer_data1, SIZE_OF_BUFFER);
+    data1_1.serialize(ssave);
+    EXPECT_EQ(ssave.is_good(), true);
+    if (ssave.is_good())
+    {
+    }
+    else
+    {
+        return -1;
+    }
+
+    DR_DATA_1 data1_2;
+    zce::ser::decode sload(buffer_data1, SIZE_OF_BUFFER);
+    data1_2.serialize(sload);
+    EXPECT_EQ(sload.is_good(), true);
+    if (sload.is_good())
+    {
+        std::cout << "Use len " << sload.read_len() << std::endl;
+    }
+    else
+    {
+        return -1;
+    }
+    EXPECT_EQ(data1_1 == data1_2, true);
+    if (data1_1 == data1_2)
+    {
+        std::cout << "DR_DATA_1 serialize and deserialize test success." << std::endl;
+    }
+    else
+    {
+        std::cout << "DR_DATA_1 serialize and deserialize test fail." << std::endl;
+        return -1;
+    }
+    return 0;
+}
+
 struct DR_DATA_2
 {
-    static const size_t ARY_SIZE = 2048;
+    static const size_t ARY_SIZE = 512;
     int d2_a1_ = 1;
     float d2_b1_ = 2.0;
     double d2_b2_ = 3.001;
@@ -1269,46 +1356,153 @@ struct DR_DATA_2
         ss& d2_d1_;
         ss& d2_f1_;
     }
+    bool operator == (DR_DATA_2& other)
+    {
+        return (d2_a1_ == other.d2_a1_) &&
+            (d2_b1_ == other.d2_b1_) &&
+            (d2_b2_ == other.d2_b2_) &&
+            (memcmp(d2_c1_, other.d2_c1_, ARY_SIZE) == 0) &&
+            (memcmp(d2_c2_, other.d2_c2_, ARY_SIZE * sizeof(double)) == 0) &&
+            (memcmp(d2_c3_, other.d2_c3_, ARY_SIZE * sizeof(int)) == 0) &&
+            (d2_c4_ == other.d2_c4_) &&
+            (memcmp(d2_c5_, other.d2_c5_, ARY_SIZE * sizeof(unsigned short)) == 0) &&
+            (d2_d1_ == other.d2_d1_) &&
+            (d2_f1_ == other.d2_f1_);
+    }
 };
 
-int test_bytes_data_represent(int /*argc*/, char* /*argv */[])
+int test_serialize_2()
 {
-    const size_t SIZE_OF_BUFFER = 1024;
-    char buffer_data1[SIZE_OF_BUFFER];
+    DR_DATA_2 data2_1;
+    data2_1.d2_a1_ = 1;
+    data2_1.d2_b1_ = 2.02f;
+    data2_1.d2_b2_ = 3.03;
+    for (size_t i = 0; i < DR_DATA_2::ARY_SIZE; ++i)
+    {
+        data2_1.d2_c1_[i] = static_cast<char>('A' + (i % 26));
+        data2_1.d2_c2_[i] = static_cast<double>(i);
+        data2_1.d2_c3_[i] = static_cast<int>(i * 1000);
+        data2_1.d2_c5_[i] = static_cast<unsigned short>(i % 100);
+    }
+    data2_1.d2_c4_ = 123456789;
+    data2_1.d2_d1_.push_back(888);
+    data2_1.d2_d1_.push_back(8888);
+    data2_1.d2_d1_.push_back(88888);
+    data2_1.d2_f1_.d1_a1_ = 11;
+    data2_1.d2_f1_.d1_a3_ = 33;
+    data2_1.d2_f1_.d1_b1_ = 22.22f;
+    data2_1.d2_f1_.d1_b2_ = 44.44;
 
-    DR_DATA_1 data1;
-    data1.d1_a1_ = 1;
-    data1.d1_a1_ = 2;
+    const size_t SIZE_OF_BUFFER_1 = 1024;
+    std::unique_ptr<char[]> buffer_1(new char[SIZE_OF_BUFFER_1]);
+    zce::ser::encode ssave_1(buffer_1.get(), SIZE_OF_BUFFER_1);
+    data2_1.serialize(ssave_1);
+    EXPECT_EQ(ssave_1.is_good(), false);
+    std::cout << "Use len " << ssave_1.write_len() << std::endl;
 
-    data1.d1_b1_ = 2.02f;
-    data1.d1_b2_ = 3.03;
+    const size_t SIZE_OF_BUFFER_2 = 102400;
+    std::unique_ptr<char[]> buffer_2(new char[SIZE_OF_BUFFER_2]);
+    zce::ser::encode ssave_2(buffer_2.get(), SIZE_OF_BUFFER_2);
+    data2_1.serialize(ssave_2);
+    EXPECT_EQ(ssave_2.is_good(), true);
+    if (ssave_2.is_good())
+    {
+        std::cout << "Use len " << ssave_2.write_len() << std::endl;
+    }
+    else
+    {
+        return -1;
+    }
+    DR_DATA_2 data2_2;
+    zce::ser::decode sload_2(buffer_2.get(), SIZE_OF_BUFFER_2);
+    data2_2.serialize(sload_2);
+    EXPECT_EQ(sload_2.is_good(), true);
+    if (sload_2.is_good())
+    {
+        std::cout << "Use len " << sload_2.read_len() << std::endl;
+    }
+    else
+    {
+        return -1;
+    }
+    EXPECT_EQ(data2_1 == data2_2, true);
+    if (data2_1 == data2_2)
+    {
+        std::cout << "DR_DATA_2 serialize and deserialize test success." << std::endl;
+    }
+    else
+    {
+        std::cout << "DR_DATA_2 serialize and deserialize test fail." << std::endl;
+        return -1;
+    }
+    return 0;
+}
 
-    data1.d1_c1_ = "I love beijing tiananmen.";
-    data1.d1_c2_ = "I'll stand before the lord of song With nothing on my tongue but Hallelujah";
+struct DR_DATA_3 :public DR_DATA_1
+{
+    int d3_a1_ = 1;
+    float d3_b1_ = 2.0;
+    double d3_b2_ = 3.001;
+
+    template<typename serialize_type>
+    void serialize(serialize_type& ss, unsigned int /*version*/ = 0)
+    {
+        ss.base_class<DR_DATA_1>(*this);
+        ss& d3_a1_;
+        ss& d3_b1_;
+        ss& d3_b2_;
+    }
+
+    bool operator == (DR_DATA_3& other)
+    {
+        return (DR_DATA_1::operator==(other)) &&
+            (d3_a1_ == other.d3_a1_) &&
+            (d3_b1_ == other.d3_b1_) &&
+            (d3_b2_ == other.d3_b2_);
+    }
+};
+
+int test_serialize_3()
+{
+    DR_DATA_3 data3_1;
+    data3_1.d1_a1_ = 1;
+    data3_1.d1_a1_ = 2;
+
+    data3_1.d1_b1_ = 2.02f;
+    data3_1.d1_b2_ = 3.03;
+
+    data3_1.d1_c1_ = "I love beijing tiananmen.";
+    data3_1.d1_c2_ = "I'll stand before the lord of song With nothing on my tongue but Hallelujah";
     for (size_t i = 0; i < DR_DATA_1::D1_C3_LEN; ++i)
     {
-        data1.d1_c3_[i] = static_cast<char>('A' + i);
+        data3_1.d1_c3_[i] = static_cast<char>('A' + i);
     }
 
     for (size_t i = 0; i < DR_DATA_1::D1_C4_LEN; ++i)
     {
-        data1.d1_c4_[i] = 100000 + (int)i;
+        data3_1.d1_c4_[i] = 100000 + (int)i;
     }
 
-    data1.d1_d1_.push_back(888);
-    data1.d1_d1_.push_back(8888);
-    data1.d1_d1_.push_back(88888);
+    data3_1.d1_d1_.push_back(888);
+    data3_1.d1_d1_.push_back(8888);
+    data3_1.d1_d1_.push_back(88888);
 
-    data1.d1_e1_.push_back(66);
-    data1.d1_e1_.push_back(666);
-    data1.d1_e1_.push_back(6666);
+    data3_1.d1_e1_.push_back(66);
+    data3_1.d1_e1_.push_back(666);
+    data3_1.d1_e1_.push_back(6666);
 
-    data1.d1_f1_[3] = 555;
-    data1.d1_f1_[33] = 5555;
-    data1.d1_f1_[333] = 55555;
+    data3_1.d1_f1_[3] = 555;
+    data3_1.d1_f1_[33] = 5555;
+    data3_1.d1_f1_[333] = 55555;
+    data3_1.d3_a1_ = 1;
+    data3_1.d3_b1_ = 2.02f;
+    data3_1.d3_b2_ = 3.03;
 
-    zce::ser::encode ssave(buffer_data1, SIZE_OF_BUFFER);
-    data1.serialize(ssave);
+    const size_t SIZE_OF_BUFFER = 2048;
+    std::unique_ptr<char[]> buffer_1(new char[SIZE_OF_BUFFER]);
+    zce::ser::encode ssave(buffer_1.get(), SIZE_OF_BUFFER);
+    data3_1.serialize(ssave);
+    EXPECT_EQ(ssave.is_good(), true);
     if (ssave.is_good())
     {
         std::cout << "Use len " << ssave.write_len() << std::endl;
@@ -1317,12 +1511,36 @@ int test_bytes_data_represent(int /*argc*/, char* /*argv */[])
     {
         return -1;
     }
-
-    DR_DATA_1 data2;
-    zce::ser::decode sload(buffer_data1, SIZE_OF_BUFFER);
-    data2.serialize(sload);
-
+    DR_DATA_3 data3_2;
+    zce::ser::decode sload(buffer_1.get(), SIZE_OF_BUFFER);
+    data3_2.serialize(sload);
+    EXPECT_EQ(sload.is_good(), true);
+    if (sload.is_good())
+    {
+        std::cout << "Use len " << sload.read_len() << std::endl;
+    }
+    else
+    {
+        return -1;
+    }
+    EXPECT_EQ(data3_1 == data3_2, true);
+    if (data3_1 == data3_2)
+    {
+        std::cout << "DR_DATA_3 serialize and deserialize test success." << std::endl;
+    }
+    else
+    {
+        std::cout << "DR_DATA_3 serialize and deserialize test fail." << std::endl;
+        return -1;
+    }
     return 0;
+}
+
+TEST(SerializeTestSuite, TestAPI)
+{
+    EXPECT_EQ(test_serialize_1(), 0);
+    EXPECT_EQ(test_serialize_2(), 0);
+    EXPECT_EQ(test_serialize_3(), 0);
 }
 
 int test_memory_debug(int /*argc*/, char* /*argv */[])
