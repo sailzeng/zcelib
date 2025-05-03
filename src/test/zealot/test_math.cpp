@@ -1,93 +1,214 @@
 #include "predefine.h"
 
-int test_big_uint64(int /*argc*/, char* /*argv*/[])
+namespace ztest
 {
-    zce::big_uint<64> a;
-    zce::big_uint<64> b;
-    zce::big_uint<64> c, d;
+using big_uint64 = zce::big_uint<64>;
+using big_uint128 = zce::big_uint<128>;
+using big_uint256 = zce::big_uint<256>;
+using big_uint1024 = zce::big_uint<1024>;
 
-    c.assign(2, 0x1, 0x2);
-    b.assign(2, 0x2, 0x1);
+int test_big_uint64()
+{
+    big_uint64 a, b, c, d, e;
+    c.assign(0x1u, 0x2u);
+    b.assign(0x2u, 0x1u);
+    e.assign(0x3u, 0x3u);
     a = c + b;
+    EXPECT_EQ(a == e, true);
     a.print();
-    b.print();
-    c.print();
-    zce::big_uint<64> c1 = c;
+
+    big_uint64 c1 = c;
     c = a - b;
     a.print();
     b.print();
     c.print();
 
-    if (c != c1)
-    {
-        return 0;
-    }
-    c.assign(1, 0xF001F001);
+    EXPECT_EQ(c1 == c, true);
+
+    c.assign(0xF001F001u);
     c1 = c;
-    b.assign(1, 0x2);
+    b.assign(0x2u);
     a = b * c;
     a.print();
     b.print();
     c.print();
     c = a / b;
-    if (c != c1)
-    {
-        return 0;
-    }
+    EXPECT_EQ(c1 == c, true);
+
+    c.assign(0xF001F001u);
+    c1 = c;
+    b.assign(0x82Fu);
+    a = b * c;
+    a.print();
+    b.print();
+    c.print();
+    c = a / b;
+    EXPECT_EQ(c1 == c, true);
+
     a.zero();
     b = 1;
     c = a - b;
     c.print();
     a = c + b;
     a.print();
+    e.zero();
+    EXPECT_EQ(a == e, true);
 
-    a.assign(2, 0xFFFF0101, 0xFFFF0101);
+    a.assign(0xFFFF0101u, 0xFFFF0101u);
+    b.assign(0xFFFF0101u, 0x0u);
     a.print();
     a.shift_bits_r(8);
     a.print();
-    a.shift_bits_r(2);
+    a.shift_bits_r(8);
     a.print();
+    a.shift_bits_r(8);
+    a.print();
+    a.shift_bits_r(8);
+    a.print();
+    EXPECT_EQ(a == b, true);
+    a.assign(0x0u, 0x0010u);
+    a.print();
+    size_t l2m_bit, m2l_bit = 0;
+    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(l2m_bit) << ":" << l2m_bit << std::endl;
+    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(m2l_bit) << ":" << m2l_bit << std::endl;
+    EXPECT_EQ(l2m_bit == m2l_bit, true);
+    EXPECT_EQ(l2m_bit == 36, true);
+    a.assign(12u);
+    a.print();
+    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(l2m_bit) << ":" << l2m_bit << std::endl;
+    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(m2l_bit) << ":" << m2l_bit << std::endl;
+    EXPECT_EQ(l2m_bit == 2, true);
+    EXPECT_EQ(m2l_bit == 3, true);
+    a.assign(0u, 12u);
+    a.print();
+    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(l2m_bit) << ":" << l2m_bit << std::endl;
+    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(m2l_bit) << ":" << m2l_bit << std::endl;
+    EXPECT_EQ(l2m_bit == 34, true);
+    EXPECT_EQ(m2l_bit == 35, true);
+    std::cout << "252x+198y=18" << std::endl;
+    //252x+198y=18
+    a = 252;
+    b = 198;
+    big_uint64::ext_euc(a, b, c, d);
+    c.print();
+    d.print();
+    return 0;
+}
 
-    zce::big_uint<256> w, x, y, z;
+int test_big_uint128()
+{
+    big_uint128 a, b, c, d, e;
+    big_uint128 a1 = a;
+    big_uint128 c1 = c;
+    big_uint128 b1 = b;
+    big_uint128 d1 = d;
+
+    c.assign(0x1u, 0x2u, 0x3u, 0x4u);
+    b.assign(0x4u, 0x3u, 0x2u, 0x1u);
+    e.assign(0x5u, 0x5u, 0x5u, 0x5u);
+    a = c + b;
+    EXPECT_EQ(a == e, true);
+    a.print();
+    b.print();
+    c.print();
+    c1 = c;
+    c = a - b;
+    a.print();
+    b.print();
+    c.print();
+    EXPECT_EQ(c == c1, true);
+    if (c != c1)
+    {
+        return 0;
+    }
+    c.assign(0xFFFFFFFFu, 0xFFFFFFFFu, 0xFFFFFFFFu, 0x1u);
+    b.assign(0x1u, 0x0u, 0x0u, 0x1u);
+    e.assign(0x0u, 0x0u, 0x0u, 0x3u);
+    a = c + b;
+    EXPECT_EQ(a == e, true);
+    c1 = c;
+    c = a - b;
+    a.print();
+    b.print();
+    c.print();
+    EXPECT_EQ(c == c1, true);
+    if (c != c1)
+    {
+        return 0;
+    }
+    c.assign(0xF001F001u, 0xF001F001u);
+    c1 = c;
+    b.assign(0xF001F001u, 0xF001F001u);
+    a = b * c;
+    a.print();
+    b.print();
+    c.print();
+    c = a / b;
+    EXPECT_EQ(c1 == c, true);
+
+    b.assign(0x4u);
+    a = b * c;
+    a.print();
+    b.print();
+    c.print();
+    a1 = a;
+    c = a / b;
+    a.print();
+    b.print();
+    c.print();
+    if (c != c1)
+    {
+        return 0;
+    }
+    d.assign(0x3u);
+    a += d;
+    d1 = d;
+    d = a % b;
+    a.print();
+    d.print();
+    c.print();
+    if (d != d1)
+    {
+        return 0;
+    }
+    d.assign(0x112233u);
+    d1 = d;
+    a = a1;
+    a += d;
+    d = a % c;
+    a.print();
+    d.print();
+    c.print();
+    if (d != d1)
+    {
+        return 0;
+    }
+    big_uint256 w, x, y, z;
     x = 100;
     y = 100;
     z = 33;
-    w = zce::big_uint<256>::mod_mul(x, y, z);
+    w = big_uint256::mod_mul(x, y, z);
     w.print();
 
     x = 3;
     y = 32;
     z = 6123;
-    w = zce::big_uint<256>::mod_exp(x, y, z);
+    w = big_uint256::mod_exp(x, y, z);
     w.print();
 
     x = 5612001;
     y = 365123;
     z = 31346;
-    w = zce::big_uint<256>::mod_mul(x, y, z);
+    w = big_uint256::mod_mul(x, y, z);
     w.print();
 
     x = 199;
     y = 100;
-    z.assign(4, 0xFF01, 0xFF0201, 0xABC, 0x113);
-    w = zce::big_uint<256>::mod_exp(x, y, z);
+    z.assign(0xFF01u, 0xFF0201u, 0xABCu, 0x113u);
+    w = big_uint256::mod_exp(x, y, z);
     w.print();
 
-    a.assign(2, 0x0, 0x0012);
-    a.print();
-    size_t bits = 0;
-    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(bits) << ":" << bits << std::endl;
-    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(bits) << ":" << bits << std::endl;
-    a.assign(1, 12);
-    a.print();
-    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(bits) << ":" << bits << std::endl;
-    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(bits) << ":" << bits << std::endl;
-    a.assign(2, 0, 12);
-    a.print();
-    std::cout << "scanbit_lsb2msb a " << a.scanbit_lsb2msb(bits) << ":" << bits << std::endl;
-    std::cout << "scanbit_msb2lsb a " << a.scanbit_msb2lsb(bits) << ":" << bits << std::endl;
-
-    x.assign(1, 0x00FFFF00);
+    x.assign(0x00FFFF00u);
     x.print();
     x.shift_bits_l(4);
     x.print();
@@ -117,124 +238,45 @@ int test_big_uint64(int /*argc*/, char* /*argv*/[])
     x.print();
     x.shift_bits_r(236);
     x.print();
-
-    std::cout << "252x+198y=18" << std::endl;
-    //252x+198y=18
-    a = 252;
-    b = 198;
-    zce::big_uint<64>::ext_euc(a, b, c, d);
-    c.print();
-    d.print();
     return 0;
 }
 
-int test_big_uint128(int /*argc*/, char* /*argv*/[])
-{
-    zce::big_uint<128> a;
-    zce::big_uint<128> b;
-    zce::big_uint<128> c;
-    zce::big_uint<128> d;
-    zce::big_uint<128> a1 = a;
-    zce::big_uint<128> c1 = c;
-    zce::big_uint<128> b1 = b;
-    zce::big_uint<128> d1 = d;
-
-    c.assign(4, 0x1, 0x2, 0x3, 0x4);
-    b.assign(4, 0x4, 0x3, 0x2, 0x1);
-    a = c + b;
-    a.print();
-    b.print();
-    c.print();
-    c1 = c;
-    c = a - b;
-    a.print();
-    b.print();
-    c.print();
-
-    if (c != c1)
-    {
-        return 0;
-    }
-    c.assign(4, 0xF001F001, 0xF001F001, 0xF001F001, 0);
-    c1 = c;
-
-    b.assign(1, 0x4);
-    a = b * c;
-    a.print();
-    b.print();
-    c.print();
-    a1 = a;
-    c = a / b;
-    a.print();
-    b.print();
-    c.print();
-    if (c != c1)
-    {
-        return 0;
-    }
-    d.assign(1, 0x3);
-    a += d;
-    d1 = d;
-    d = a % b;
-    a.print();
-    d.print();
-    c.print();
-    if (d != d1)
-    {
-        return 0;
-    }
-    d.assign(1, 0x112233);
-    d1 = d;
-    a = a1;
-    a += d;
-    d = a % c;
-    a.print();
-    d.print();
-    c.print();
-    if (d != d1)
-    {
-        return 0;
-    }
-
-    return 0;
-}
-
-int test_big_uint1024(int /*argc*/, char* /*argv*/[])
+int test_big_uint1024()
 {
     zce::random_mt19937   mt19937_gen((unsigned int)time(NULL));
 
-    zce::big_uint<256> a, b, c, d, e;
-    zce::big_uint<256> w, x, y, z;
+    big_uint256 a, b, c, d, e;
+    big_uint256 w, x, y, z;
 
-    c.assign(4, 0x3F787645, 0xAE9E2035, 0xEB9E13DC, 0x97FF30F1);
+    c.assign(0x3F787645u, 0xAE9E2035u, 0xEB9E13DCu, 0x97FF30F1u);
     a.assign((uint32_t)0x32341342);
     e.assign((uint32_t)1);
     b = c - e;
-    d = zce::big_uint<256>::mod_exp(a, b, c);
+    d = big_uint256::mod_exp(a, b, c);
     d.print();
 
     c.miller_rabin(a);
 
-    x.assign(2, 0xFFFFFFFE, 0x1FFFFFFF);
-    y.assign(2, 0xFFFFFFFE, 0x1FFFFFFF);
-    z.assign(2, 0xFFFFFFFF, 0x1FFFFFFF);
-    w = zce::big_uint<256>::mod_mul(x, y, z);
+    x.assign(0xFFFFFFFEu, 0x1FFFFFFFu);
+    y.assign(0xFFFFFFFEu, 0x1FFFFFFFu);
+    z.assign(0xFFFFFFFFu, 0x1FFFFFFFu);
+    w = big_uint256::mod_mul(x, y, z);
 
-    b.assign(2, 0xFFFFFFFF, 0x1FFFFFFF);
+    b.assign(0xFFFFFFFFu, 0x1FFFFFFFu);
     if (b.isprime(mt19937_gen, 10))
     {
         std::cout << "miller rabin" << std::endl;
     }
 
-    c.assign(1, 97);
-    a.assign((uint32_t)13);
+    c.assign(97u);
+    a.assign(13u);
     b = c - e;
-    d = zce::big_uint<256>::mod_exp(a, b, c);
+    d = big_uint256::mod_exp(a, b, c);
 
-    c.assign(2, 0xAAAAAAAB, 0x2AA);
-    a.assign((uint32_t)13);
+    c.assign(0xAAAAAAABu, 0x2AAu);
+    a.assign(13u);
     b = c - e;
-    d = zce::big_uint<256>::mod_exp(a, b, c);
+    d = big_uint256::mod_exp(a, b, c);
 
     if (b.isprime(mt19937_gen, 10))
     {
@@ -267,6 +309,13 @@ int test_big_uint1024(int /*argc*/, char* /*argv*/[])
     }
 
     return 0;
+}
+
+TEST(BigUintTestSuite, TestAPI)
+{
+    EXPECT_EQ(test_big_uint64(), 0);
+    EXPECT_EQ(test_big_uint128(), 0);
+    EXPECT_EQ(test_big_uint1024(), 0);
 }
 
 //仅仅用于测试，不实现完全了
@@ -1074,4 +1123,5 @@ int test_fifo_cycbuf1(int /*argc*/, char* /*argv*/[])
         }
     }
     return 0;
+}
 }

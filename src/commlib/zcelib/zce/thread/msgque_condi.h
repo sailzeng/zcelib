@@ -5,8 +5,11 @@
 * @version
 * @date       2011年6月17日
 * @brief      多线程使用的Message Queue，内部的同步对象使用了条件变量
-*             这个类暂时不要使用，他和整个体系是脱节的，完全是为了测试条件变量写的类
-*             同时支持list，deque,和自己的一个容器zce::lord_rings 环形队列
+*             请使用 zce::msgqueue_condi<T, C> 这个类，其内部使用的是
+*             std的各种容器以及锁。
+*             而zce::MsgQueue_Condi这个类（注意大小写）暂时不要使用，他内部使用
+*             std的容器以及zce的锁，完全是为了测试条件变量写的类
+*             容器同时支持list，deque,和自己的一个容器zce::lord_rings 环形队列
 * @details
 *
 *

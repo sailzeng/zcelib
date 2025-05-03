@@ -124,8 +124,7 @@
 *             L O V E  L O V E   L O V E GO GO GO
 */
 
-#ifndef ZCE_LIB_BYTES_ENCRYPT_H_
-#define ZCE_LIB_BYTES_ENCRYPT_H_
+#pragma once
 
 #include "zce/bytes/bytes_common.h"
 #include "zce/math/random.h"
@@ -2691,5 +2690,3 @@ using AES_Crypt_128_256_14 = ZCE_Crypt<AES_ECB<32, 14> >;
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
 #endif
-
-#endif //#ifndef ZCE_LIB_BYTES_ENCRYPT_H_

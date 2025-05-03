@@ -1,4 +1,4 @@
-﻿#include "zce/predefine.h"
+#include "zce/predefine.h"
 #include "zce/bytes/bytes_common.h"
 #include "zce/time/time_value.h"
 #include "zce/logger/logging.h"
@@ -296,8 +296,8 @@ int ping::recv_echo(uint32_t* ident,
     }
     else if (addr_family_ == AF_INET6)
     {
-        //这儿有个缺陷，无法收取IPV6头部，所以TTL获取不了，Linux下可以用recvmsg改进。
-        //windows可能就要用IPV6_HDRINCL ，但这个需要admin的权限才能跑
+        // Windows 要用SOCK_RAW  IPV6_HDRINCL ，但这个需要admin的权限才能跑
+        // Windows下无法收取ICMPv6 Header头部，所以TTL获取不了，Linux下可以用recvmsg改进。
         //对我来说没有必要，放弃
         icmp = (struct _ICMP_ECHO*)(buffer);
         *ttl = 0;

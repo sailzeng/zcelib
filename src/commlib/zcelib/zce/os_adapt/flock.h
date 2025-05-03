@@ -15,9 +15,27 @@
 *             文件锁使用的是flock函数，但不足是，其实Windows下仍然是用的记录锁实现的
 *
 * @note       而对于记录锁，其其实也是操作系统中有趣的一部分，而且其实个个平台差别不小。
-*             LINUX下，记录锁是劝告性的锁（默认是），你想干坏事还是能干的。
+*
+*             WINDOWS下，记录锁锁定是区域级别的，作用于整个系统（所有进程、所有句柄），
+*             但锁操作和“谁持有这个锁”的状态由具体的句柄决定。
+*             比如：
+*             HANDLE hFile = CreateFile(...); // 获得句柄
+*             // 第一次加独占锁  成功
+*             LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, 100, 0, &ol1);
+*             // 第二次尝试再加独占锁，非阻塞   失败（锁已存在）
+*             LockFileEx(hFile, LOCKFILE_FAIL_IMMEDIATELY | LOCKFILE_EXCLUSIVE_LOCK, 0, 100, 0, &ol2);
+*             // 第三次尝试加共享锁，非阻塞     成功！同一进程同一句柄共享锁
+*             LockFileEx(hFile, LOCKFILE_FAIL_IMMEDIATELY, 0, 100, 0, &ol3);
+*             注意，第三次加锁成功是因为共享锁和独占锁是可以共存的。这个和POSIX的锁是不同的。
+*
+*             HANDLE h1 = CreateFile(...);
+*             HANDLE h2 = CreateFile(...);
+*             LockFileEx(h1, LOCKFILE_EXCLUSIVE_LOCK, ...); // 成功
+*             LockFileEx(h2, LOCKFILE_FAIL_IMMEDIATELY, ...); // 会失败！因为是另一个 HANDLE
+*
+*             另外：
 *             WINDOWS下是，记录锁是强制的，
-*             http://www.ibm.com/developerworks/cn/linux/l-cn-filelock/index.html
+*             LINUX下，记录锁是劝告性的锁（默认是），你想干坏事还是能干的。
 *             http://www.cnblogs.com/hustcat/archive/2009/03/10/1408208.html
 *             但如果要看UNP V2就会明白，其实最好大家还是遵从相互的约定，使用锁。
 *
@@ -61,25 +79,6 @@ int file_lock_init(file_lock_t* lock,
 
 //----------------------------------------------------------------------------------------
 // 记录锁的功能，模仿的是fcntl的功能
-
-//
-
-/*!
-* @brief      调整参数，主要是让他在Windows平台也能使用 内部函数,外部不要使用，
-*             两个平台在参数的使用上并不太相同，WINDOWS的API没有考虑相对位置这些概念，
-*             所以必须在使用前进行一下调整，比如，开始位置SEEK_SET,0,长度0，其实是锁定
-*             整个文件，但LockFileEx没有这样的表示方法，必须调整
-* @param[in,out] lock    文件锁对象
-* @param[in]     whence  计算的起始根源位置，如SEEK_SET，SEEK_CUR，SEEK_END
-* @param[in]     start   从根源开始的相对位置
-* @param[in]     len     锁定区域的长度，
-* @note          平台的不兼容会带来某种风险，Windows下一旦文件大小调整，锁锁定的区域就不对了，
-*                所以在需要兼容的环境，最好文件大小是不调整的，
-*/
-void fcntl_lock_adjust_params(file_lock_t* lock,
-                              int whence,
-                              ssize_t& start,
-                              ssize_t& len);
 
 /*!
 * @brief   加文件读取锁，共享锁，如果不能加上锁，会阻塞等待，共享锁不会阻止其他人读取

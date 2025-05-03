@@ -20,11 +20,40 @@
 
 #include "zce/os_adapt/define.h"
 
+struct _THREAD_FUN_ADAPT
+{
+public:
+#if defined (ZCE_OS_WINDOWS)
+    //Windows 下必须使用__stdcall
+    static unsigned int WINAPI adapt_fun(void* adapt_svc)
+    {
+        _THREAD_FUN_ADAPT* fun_adapt = (_THREAD_FUN_ADAPT*)(adapt_svc);
+        std::function<void()> fun_call(std::move(fun_adapt->fun_));
+        //this parameter is heap allocated, need to delete it
+        delete fun_adapt;
+        fun_call();
+        return 0;
+    }
+
+#elif defined (ZCE_OS_LINUX)
+    static void* adapt_fun(void* adapt_svc)
+    {
+        _THREAD_FUN_ADAPT* fun_adapt = (_THREAD_FUN_ADAPT*)(adapt_svc);
+        std::function<void()> fun_call(std::move(fun_adapt->fun_));
+        //this parameter is heap allocated, need to delete it
+        delete fun_adapt;
+        fun_call();
+        return nullptr;
+    }
+#endif
+
+    //线程启动函数
+    std::function<void()>   fun_;
+};
+
 //由于
 namespace zce
 {
-//------------------------------------------------------------------------------------------------------
-
 /*!
 * @brief      初始化线程属性
 * @return     int       0成功，-1失败
@@ -71,6 +100,10 @@ int pthread_attr_getex(const pthread_attr_t* attr,
                        size_t* stacksize,
                        int* threadpriority);
 
+int _thread_create(ZCE_THREAD_ID* threadid,
+                   const pthread_attr_t* attr,
+                   _THREAD_FUN_ADAPT* adapt_obj);
+
 /*!
 * @brief      创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值，但你在各个平台定义不同的回调函数
 * @return     int           0成功，-1失败
@@ -87,23 +120,90 @@ int pthread_create(ZCE_THREAD_ID* threadid,
 
 /*!
 * @brief      创建线程，简单一点的封装，直接调用，不用处理pthread_attr_t
+*             支持变参的函数
 *             这个不是POSIX的封装，但推荐使用
 * @return     int                0成功，-1失败
-* @param[in]  start_routine 线程调用的启动，函数指针
-* @param[in]  arg           start_routine函数 的参数
 * @param[out] threadid      返回的线程ID
 * @param[in]  detachstate   分离的属性 PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
 * @param[in]  stacksize     堆栈大小  =0 表示默认
 * @param[in]  policy        调度策略 =0 表示默认
 * @param[in]  priority      线程优先级 = 0 表示默认
+* @param[in]  fp            线程调用的启动，函数指针
+* @param[in]  arg           fp函数 的参数
 */
-int pthread_createex(void* (*start_routine)(void*),
-                     void* arg,
-                     ZCE_THREAD_ID* threadid,
-                     int detachstate = PTHREAD_CREATE_JOINABLE,
-                     size_t stacksize = 0,
-                     int policy = 0,
-                     int priority = 0);
+template <class Call, class... Args >
+int pthread_createex(ZCE_THREAD_ID* threadid,
+                     int detachstate,
+                     size_t stacksize,
+                     int policy,
+                     int priority,
+                     Call&& fp,
+                     Args&&... args)
+{
+    int ret = 0;
+    pthread_attr_t attr;
+    ret = zce::pthread_attr_init(&attr);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //设置线程参数
+    ret = zce::pthread_attr_setex(&attr,
+                                  detachstate,
+                                  stacksize,
+                                  policy,
+                                  priority);
+
+    if (0 != ret)
+    {
+        zce::pthread_attr_destroy(&attr);
+        return ret;
+    }
+
+    ret = pthread_createex(threadid,
+                           &attr,
+                           std::forward<Call>(fp),
+                           std::forward<Args>(args)...);
+
+    if (0 != ret)
+    {
+        zce::pthread_attr_destroy(&attr);
+        return ret;
+    }
+    return 0;
+}
+
+template <class Call, class... Args >
+int pthread_createex(ZCE_THREAD_ID* threadid,
+                     int detachstate,
+                     size_t stacksize,
+                     Call&& fp,
+                     Args&&... args)
+{
+    return pthread_createex(threadid,
+                            detachstate,
+                            stacksize,
+                            0, //默认调度策略
+                            0, //默认优先级
+                            std::forward<Call>(fp),
+                            std::forward<Args>(args)...);
+}
+
+template <class Call, class... Args >
+int pthread_createex(ZCE_THREAD_ID* threadid,
+                     const pthread_attr_t* attr,
+                     Call&& fp,
+                     Args&&... args)
+{
+    auto adapt_object = new _THREAD_FUN_ADAPT();
+    adapt_object->fun_ = std::bind(std::forward<Call>(fp),
+                                   std::forward<Args>(args)...);
+    //创建线程
+    return zce::_thread_create(threadid,
+                               attr,
+                               adapt_object);
+}
 
 /*!
 * @brief      退出线程，注意这儿没有任何参数让你作为返回值，

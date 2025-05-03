@@ -98,7 +98,6 @@ int zce::pthread_attr_setex(pthread_attr_t* attr,
 #elif defined (ZCE_OS_LINUX)
     int ret = 0;
     ret = ::pthread_attr_setdetachstate(attr, detachstate);
-
     if (ret != 0)
     {
         return ret;
@@ -167,57 +166,17 @@ int zce::pthread_attr_setex(pthread_attr_t* attr,
 }
 
 //==========================================================================================
-//注意，WINDOWS和LINUX下返回值不同，所以我非常非常不建议你用这个传递返回值，
-//WINDOWS 可以传递unsigned int ，LINUX传递void *，
-
-#if defined (ZCE_OS_WINDOWS)
-
-class WIN_STARTFUN_ADAPT
-{
-public:
-    //构造函数和析构函数
-    WIN_STARTFUN_ADAPT(void *(*start_routine)(void*), void* arg) :
-        start_routine_(start_routine),
-        arg_(arg)
-    {
-    }
-
-    ~WIN_STARTFUN_ADAPT()
-    {
-    }
-
-    //Windows 下必须使用__stdcall
-    static unsigned int __stdcall adapt_svc_run(void* adapt_svc)
-    {
-        WIN_STARTFUN_ADAPT* my_adapt = static_cast<WIN_STARTFUN_ADAPT*>(adapt_svc);
-        my_adapt->start_routine_(my_adapt->arg_);
-        return 0;
-    }
-protected:
-    typedef void * (*start_routine_fun)(void*);
-
-    //线程启动函数
-    start_routine_fun start_routine_;
-    //线程启动参数
-    void* arg_;
-};
-
-#endif //
-
-//创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值
-int zce::pthread_create(ZCE_THREAD_ID* threadid,
+int zce::_thread_create(ZCE_THREAD_ID* threadid,
                         const pthread_attr_t* attr,
-                        void *(*start_routine)(void*),
-                        void* arg)
+                        _THREAD_FUN_ADAPT* adapt_object)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    WIN_STARTFUN_ADAPT adapt_object(start_routine, arg);
     //用CRT的线程创建函数创建线程
     HANDLE thread_handle = (HANDLE)::_beginthreadex(nullptr,
                                                     static_cast<unsigned int>(attr->stacksize),
-                                                    WIN_STARTFUN_ADAPT::adapt_svc_run,
-                                                    &adapt_object,
+                                                    _THREAD_FUN_ADAPT::adapt_fun,
+                                                    adapt_object,
                                                     0,
                                                     threadid);
     //注意_beginthreadex的返回值0表示错误，和_beginthread不一样
@@ -245,60 +204,30 @@ int zce::pthread_create(ZCE_THREAD_ID* threadid,
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_create(threadid,
                             attr,
-                            start_routine,
-                            arg);
+                            _THREAD_FUN_ADAPT::adapt_fun,
+                            adapt_object);
 
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//这个不是POSIX的封装，但推荐使用
-//还是提供一个简单一点的封装吧，这个不用处理pthread_attr_t
-int zce::pthread_createex(void* (*start_routine)(void*),
-                          void* arg,
-                          ZCE_THREAD_ID* threadid,
-                          int detachstate,
-                          size_t stacksize,
-                          int policy,
-                          int priority)
+//注意，WINDOWS和LINUX下返回值不同，所以我非常非常不建议你用这个传递返回值，
+//WINDOWS 可以传递unsigned int ，LINUX传递void *，
+
+//创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值
+int zce::pthread_create(ZCE_THREAD_ID* threadid,
+                        const pthread_attr_t* attr,
+                        void* (*start_routine)(void*),
+                        void* arg)
 {
-    int ret = 0;
-    pthread_attr_t attr;
-    ret = zce::pthread_attr_init(&attr);
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    //设置线程参数
-    ret = zce::pthread_attr_setex(&attr,
-                                  detachstate,
-                                  stacksize,
-                                  policy,
-                                  priority);
-
-    if (0 != ret)
-    {
-        zce::pthread_attr_destroy(&attr);
-        return ret;
-    }
-
-    //创建线程
-    ret = zce::pthread_create(threadid,
-                              &attr,
-                              start_routine,
-                              arg);
-
-    if (0 != ret)
-    {
-        zce::pthread_attr_destroy(&attr);
-        return ret;
-    }
-
-    return 0;
+    auto adapt_object = new _THREAD_FUN_ADAPT();
+    adapt_object->fun_ = std::bind(start_routine, arg);
+    return zce::_thread_create(threadid,
+                               attr,
+                               adapt_object);
 }
 
 //退出，传递void，各个平台不兼容，所以干脆什么都不传递出来
-void zce::pthread_exit(void *return_data)
+void zce::pthread_exit(void* return_data)
 {
 #if defined (ZCE_OS_WINDOWS)
 

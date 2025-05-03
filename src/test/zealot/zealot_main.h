@@ -22,17 +22,10 @@ int test_hash_safe(int argc, char* argv[]);
 int test_hash_safe2(int argc, char* argv[]);
 int test_hash_match(int argc, char* argv[]);
 
-int test_osadapt_file(int argc, char* argv[]);
-int test_osadapt_perf(int argc, char* argv[]);
-
-int test_big_uint64(int /*argc*/, char* /*argv*/[]);
-int test_big_uint128(int /*argc*/, char* /*argv*/[]);
-int test_big_uint1024(int /*argc*/, char* /*argv*/[]);
-
 int test_nonr_thread_mutex(int argc, char* argv[]);
 int test_msgqueue_condi(int argc, char* argv[]);
 
-int test_host_name_fun(int, char*[]);
+int test_host_name_fun(int, char* []);
 
 int test_rw_lock1(int argc, char* argv[]);
 int test_rw_lock2(int argc, char* argv[]);
@@ -76,9 +69,6 @@ int test_timer_expire2(int /*argc*/, char* /*argv*/[]);
 int test_os_time(int /*argc*/, char* /*argv*/[]);
 
 int test_server_status(int /*argc*/, char* /*argv*/[]);
-
-int test_coroutine1(int /*argc*/, char* /*argv*/[]);
-int test_coroutine2(int /*argc*/, char* /*argv*/[]);
 
 int test_mmap_rbtree1(int /*argc*/, char* /*argv*/[]);
 int test_mmap_rbtree2(int /*argc*/, char* /*argv*/[]);
@@ -146,5 +136,3 @@ int test_aio1(int argc, char* argv[]);
 int test_aio3(int argc, char* argv[]);
 int test_msgring_condi(int argc, char* argv[]);
 int test_aio4(int argc, char* argv[]);
-
-int test_time_string1(int argc, char* argv[]);

@@ -66,7 +66,7 @@ int test_rw_lock1(int /*argc*/, char* /*argv*/[])
     Task_Write b1;
     Task_Write b2;
 
-    zce::thread_task t_a1, t_a2, t_b1, t_b2;
+    zce::thread t_a1, t_a2, t_b1, t_b2;
     t_a1.activate(&Task_Read::svc, &a1);
     t_a2.activate(&Task_Read::svc, &a2);
 
@@ -142,7 +142,7 @@ int test_rw_lock2(int /*argc*/, char* /*argv*/[])
     Task_Write_1 b1;
     Task_Write_1 b2;
 
-    zce::thread_task t_a1, t_a2, t_b1, t_b2;
+    zce::thread t_a1, t_a2, t_b1, t_b2;
 
     t_a1.activate(&Task_Read_1::svc, &a1);
     t_a2.activate(&Task_Read_1::svc, &a2);

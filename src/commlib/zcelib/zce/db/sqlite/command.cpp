@@ -18,7 +18,7 @@ command::command(connect* sqlite3_handler) :
     sqlite_hdl_(sqlite3_handler)
 {
     assert(sqlite3_handler != nullptr &&
-           sqlite3_handler->get_sqlite_handler() != nullptr);
+           sqlite3_handler->get_handler() != nullptr);
 }
 
 command::~command()
@@ -64,7 +64,7 @@ int command::prepare(const char* sql_string)
         terminate();
     }
 
-    int ret = ::sqlite3_prepare_v2(sqlite_hdl_->get_sqlite_handler(),
+    int ret = ::sqlite3_prepare_v2(sqlite_hdl_->get_handler(),
                                    sql_string,
                                    -1,                                      //注意这个参数，必须小于0
                                    &prepared_statement_,

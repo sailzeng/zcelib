@@ -245,7 +245,7 @@ public:
                          size_t buf_size,
                          char result[HASH_RESULT_SIZE])
     {
-        uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
+        uint32_t message[PROCESS_BLOCK_SIZE / 4] = { 0 };
 
         //保存剩余的数据，我们要拼出最后1个（或者两个）要处理的块，前面的算法保证了，最后一个块肯定小于64个字节
         memset(message, 0, PROCESS_BLOCK_SIZE);
@@ -444,7 +444,7 @@ int hash_file(const char* file_name,
               char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
     //打开文件
-    zce::auto_handle  fd(zce::open(file_name, O_RDONLY));
+    zce::safe_handle  fd(zce::open(file_name, O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         return -1;

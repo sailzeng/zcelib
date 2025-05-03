@@ -68,7 +68,7 @@ public:
     int error_code();
 
     //!取得SQLite的句柄
-    inline sqlite3* get_sqlite_handler()
+    inline sqlite3* get_handler()
     {
         return sqlite3_handler_;
     };

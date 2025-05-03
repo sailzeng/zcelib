@@ -5,34 +5,32 @@
 
 #if defined ZCE_OS_WINDOWS
 
-VOID  WINAPI _fibers_adapt_fun(VOID* param)
+VOID  WINAPI _FIBERS_FUN_ADAPT::adapt_fun(VOID* param)
 {
-    _FIBERS_3PARAFUN_ADAPT* fun_adapt = (_FIBERS_3PARAFUN_ADAPT*)param;
+    _FIBERS_FUN_ADAPT* fun_adapt = (_FIBERS_FUN_ADAPT*)param;
 
-    coroutine_t* handle = fun_adapt->handle_;
-    bool exit_back_main = fun_adapt->exit_back_main_;
+    //coroutine_t* handle = fun_adapt->handle_;
+    //bool exit_back_main = fun_adapt->exit_back_main_;
     std::function<void()> fun_call(std::move(fun_adapt->fun_));
-    //这个函数是堆分配的，要清理掉释放
+    //this parameter is heap allocated, need to delete it
     delete fun_adapt;
 
     fun_call();
-    if (exit_back_main)
-    {
-        ::SwitchToFiber(handle->main_);
-    }
+
+    //Fiber function exits, switch to SwitchToFiber main fiber
 }
 
 #elif defined ZCE_OS_LINUX
 
-void  _fibers_adapt_fun(void* param)
+void  _FIBERS_FUN_ADAPT::adapt_fun(void* param)
 {
-    auto func = static_cast<std::function<void()>*>(param);
-    // 清理内存
-    delete func;
-    // 调用真正的函数
-    (*func)();
+    _FIBERS_FUN_ADAPT* fun_adapt = (_FIBERS_FUN_ADAPT*)param;
+    coroutine_t* handle = fun_adapt->handle_;
+    bool exit_back_main = fun_adapt->exit_back_main_;
+    std::function<void()> fun_call(std::move(fun_adapt->fun_));
+    //this adapt function is heap allocated, need to delete it
+    delete fun_adapt;
 }
-
 #endif
 
 //非标准函数，

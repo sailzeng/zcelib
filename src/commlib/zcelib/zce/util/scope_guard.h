@@ -146,23 +146,23 @@ private:
 //!辅助类，利用析构关闭ZCE_HANDLE,ZCE_HANDLE 不能用unique_ptr
 
 //! 自动释放的ZCE_HANDLE
-//! 这样使用 zce::auto_file fd(::fopen("xxx"));
-using auto_handle = auto_close<ZCE_HANDLE>;
+//! 这样使用 zce::safe_file fd(::fopen("xxx"));
+using safe_handle = auto_close<ZCE_HANDLE>;
 
 //! 辅助SOCKET自动关闭类 自动释放SOCKET指针
-using auto_socket = auto_close<ZCE_SOCKET>;
+using safe_socket = auto_close<ZCE_SOCKET>;
 
 //FILE* 用unique_ptr也能实现
-using auto_file = auto_close<FILE*>;
+using safe_file = auto_close<FILE*>;
 
-using auto_stdfile = auto_close<std::FILE *>;
+using safe_stdfile = auto_close<std::FILE*>;
 
-using auto_dir = auto_close<DIR *>;
+using safe_dir = auto_close<DIR*>;
 
 //! 下面使用unique_ptr怎么写的教程，
-//! 这样使用 zce::auto_file fd(::fopen("xxx"),::fclose);,::fclose必须写
-//using auto_file =
+//! 这样使用 zce::safe_file fd(::fopen("xxx"),::fclose);,::fclose必须写
+//using safe_file =
 //std::unique_ptr<FILE, decltype(::fclose)*>;
-//using auto_stdfile =
+//using safe_stdfile =
 //std::unique_ptr<std::FILE, decltype(std::fclose)*>;
 }

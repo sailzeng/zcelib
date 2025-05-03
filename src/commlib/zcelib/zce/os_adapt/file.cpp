@@ -391,7 +391,7 @@ int truncate(const char* filename,
              size_t offset)
 {
 #if defined (ZCE_OS_WINDOWS)
-    auto_handle fh(zce::open(filename, (O_WRONLY)));
+    safe_handle fh(zce::open(filename, (O_WRONLY)));
     if (ZCE_INVALID_HANDLE == fh.get())
     {
         return -1;
@@ -405,7 +405,7 @@ int truncate(const char* filename,
 //根据文件名称，判断文件的尺寸,如果文件不存在，打不开等，返回-1
 int filelen(const char* filename, size_t* file_size)
 {
-    auto_handle fh(zce::open(filename, (O_RDONLY)));
+    safe_handle fh(zce::open(filename, (O_RDONLY)));
     if (ZCE_INVALID_HANDLE == fh.get())
     {
         return -1;
@@ -621,7 +621,7 @@ std::pair<int, std::shared_ptr<char> > read_file(const char* filename,
     int ret = -1;
     std::shared_ptr<char> null_ptr;
     //打开文件
-    zce::auto_handle fd(zce::open(filename, O_RDONLY));
+    zce::safe_handle fd(zce::open(filename, O_RDONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "read_file open file [%s]  fail ,error =%d", filename, zce::last_error());
@@ -671,7 +671,7 @@ int write_file(const char* filename,
     ZCE_ASSERT(filename && buff && buf_len >= 1);
     *write_len = 0;
     //打开文件
-    zce::auto_handle  fd(zce::open(filename, O_CREAT | O_WRONLY));
+    zce::safe_handle  fd(zce::open(filename, O_CREAT | O_WRONLY));
     if (ZCE_INVALID_HANDLE == fd.get())
     {
         ZCE_LOG(RS_ERROR, "write_file open file [%s]  fail ,error =%d",

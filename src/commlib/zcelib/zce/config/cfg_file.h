@@ -36,11 +36,11 @@ int write_xml(const char* file_name,
 //! @param word_delim
 //! @return
 int read_cvs(const char* file_name,
-             std::vector<std::vector<std::string> > *data,
+             std::vector<std::vector<std::string> >* data,
              size_t read_line_len = 64 * 1024,
              unsigned char word_delim = ',');
 
 int write_cvs(const char* file_name,
-              const std::vector<std::vector<std::string> > *data,
+              const std::vector<std::vector<std::string> >* data,
               unsigned char word_delim = ',');
 }

@@ -1,6 +1,6 @@
 /**
 * @copyright 2004-2012  Apache License, Version 2.0 FULLSAIL
-* @filename  zce/thread/thread_task.h
+* @filename  zce/thread/thread.h
 * @author    Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date      2011年6月18日
@@ -78,52 +78,20 @@ namespace zce
 *             为什么保留这个类，这个类实现的线程可以设置堆栈大小，
 * @note       对象不可拷贝复制，只能移动拷贝
 */
-class thread_task
+class thread
 {
 public:
 
     ///构造函数,析构函数
-    thread_task();
-    ~thread_task();
+    thread();
+    ~thread();
 
-    thread_task(const thread_task&) = delete;
-    thread_task& operator=(const thread_task&) = delete;
+    thread(const thread&) = delete;
+    thread& operator=(const thread&) = delete;
 
     //有移动构造
-    thread_task(thread_task&&) noexcept;
-    thread_task& operator=(thread_task&&) noexcept;
-
-protected:
-
-    //_invoker_helper 是一个辅助的调用类，因为activate有不同的函数，
-    //必须进行不同的适配
-    template <class Fn>
-    class _invoker_helper
-    {
-    public:
-        _invoker_helper() = default;
-        ~_invoker_helper() = default;
-
-        int operator()(Fn& func,
-                       int detachstate,
-                       size_t stacksize,
-                       ZCE_THREAD_ID* threadid)
-        {
-            int ret = zce::pthread_create(threadid,
-                                          &thread_attr_,
-                                          _invoker_helper::svc_fuc,
-                                          (void*)(&func));
-            return ret;
-        }
-
-        static void svc_fuc(void* vfunc)
-        {
-            Fn* func = (Fn*)(vfunc);
-            (*func)();
-            void* no_use = nullptr;
-            zce::pthread_exit(no_use);
-        }
-    };
+    thread(thread&&) noexcept;
+    thread& operator=(thread&&) noexcept;
 
 public:
 
@@ -145,15 +113,10 @@ public:
     template <class Call, class... Args >
     int activate(Call&& fp, Args&&... args)
     {
-        int ret = 0;
-        auto svc_func =
-            std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
-        group_id_ = INVALID_GROUP_ID;
-
-        thread_task::__invoker_helper<decltype(svc_func)>(svc_func,
-                                                          &thread_id_,
-                                                          &ret);
-        return ret;
+        return zce::pthread_createex(&thread_id_,
+                                     &thread_attr_,
+                                     std::forward<Call>(fp),
+                                     std::forward<Args>(args)...);
     }
 
     //!得到group id
@@ -170,33 +133,6 @@ public:
 
     //!线程让出CPU的时间
     int yield();
-
-protected:
-
-    template <class Fn>
-    void __invoker_helper(Fn& func,
-                          ZCE_THREAD_ID* threadid,
-                          int* int_ret)
-    {
-        ;
-        //注意这儿，注意这儿，static 函数的模板函数调用，要加template
-        *int_ret = zce::pthread_create(threadid,
-                                       &thread_attr_,
-                                       thread_task::template __svc_fuc<Fn>,
-                                       (void*)(new Fn(std::move(func))));
-    }
-
-    //包装的线程执行函数
-    template <class Fn>
-    static void* __svc_fuc(void* vfunc)
-    {
-        //vfunc是new的，
-        std::unique_ptr<Fn> func((Fn*)(vfunc));
-        (*func.get())();
-        void* no_use = nullptr;
-        zce::pthread_exit(no_use);
-        return no_use;
-    }
 
 public:
 
@@ -223,7 +159,7 @@ protected:
 * @note       本来是在线程ZCE_Thread_Base 内部处理的，但是嵌入过多，而且用大量的static 变量，
 *             也影响ZCE_Thread_Base的性能
 */
-class thread_task_wait
+class thread_wait
 {
 protected:
 
@@ -249,16 +185,16 @@ protected:
 
 public:
     //构造函数，允许你拥有实例，但推荐你用单件处理
-    thread_task_wait();
-    ~thread_task_wait();
+    thread_wait();
+    ~thread_wait();
 
-    thread_task_wait(const thread_task_wait&) = delete;
-    thread_task_wait& operator=(const thread_task_wait&) = delete;
+    thread_wait(const thread_wait&) = delete;
+    thread_wait& operator=(const thread_wait&) = delete;
 
     //如果需要管理处理，要自己登记，
     void record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id = 0);
     //登记一个要进行等待处理等待线程
-    void record_wait_thread(const zce::thread_task* wait_thr_task);
+    void record_wait_thread(const zce::thread* wait_thr_task);
 
     //等所有的线程退出
     void wait_all();
@@ -269,7 +205,7 @@ public:
 public:
 
     //单子函数
-    static thread_task_wait* instance();
+    static thread_wait* instance();
     //清理单子的函数
     static void clear_inst();
 
@@ -278,7 +214,7 @@ protected:
     using MANAGE_WAIT_THREAD_LIST = std::list <MANAGE_WAIT_INFO>;
 
     //单子实例
-    static thread_task_wait* instance_;
+    static thread_wait* instance_;
 
 protected:
 

@@ -105,7 +105,7 @@ int readdir_r(DIR* dir_handle,
 
 ///* @param[in]  selector 选择器，
 int readdir_direntary(const char* dirname,
-                      std::function<bool(const ::dirent&)> *selector,
+                      std::function<bool(const ::dirent&)>* selector,
                       std::vector<::dirent>& dirent_ary);
 
 /*!
@@ -236,5 +236,10 @@ int rmdir(const char* pathname);
 */
 int remove(const char* pathname);
 
+/*!
+* @brief      采用递归的方法删除所有文件
+* @return     int == 0标识成功，
+* @param      pathname 文件名称
+*/
 int remove_all(const char* pathname);
 }

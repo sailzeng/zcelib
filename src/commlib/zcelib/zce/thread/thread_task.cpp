@@ -4,18 +4,18 @@
 namespace zce
 {
 /************************************************************************************************************
-Class           : thread_task
+Class           : thread
 ************************************************************************************************************/
-thread_task::thread_task()
+thread::thread()
 {
     zce::pthread_attr_init(&thread_attr_);
 }
-thread_task::~thread_task()
+thread::~thread()
 {
     zce::pthread_attr_destroy(&thread_attr_);
 }
 
-thread_task::thread_task(thread_task &&other) noexcept
+thread::thread(thread&& other) noexcept
 {
     this->thread_id_ = other.thread_id_;
     this->group_id_ = other.group_id_;
@@ -23,7 +23,7 @@ thread_task::thread_task(thread_task &&other) noexcept
     other.thread_id_ = 0;
     other.group_id_ = INVALID_GROUP_ID;
 }
-thread_task& thread_task::operator=(thread_task&&other) noexcept
+thread& thread::operator=(thread&& other) noexcept
 {
     this->thread_id_ = other.thread_id_;
     this->group_id_ = other.group_id_;
@@ -35,11 +35,11 @@ thread_task& thread_task::operator=(thread_task&&other) noexcept
 
 //有移动构造
 
-int thread_task::attr_init(int detachstate,
-                           size_t stacksize,
-                           int group_id,
-                           int policy,
-                           int priority)
+int thread::attr_init(int detachstate,
+                      size_t stacksize,
+                      int group_id,
+                      int policy,
+                      int priority)
 {
     group_id_ = group_id;
     return zce::pthread_attr_setex(&thread_attr_,
@@ -50,31 +50,31 @@ int thread_task::attr_init(int detachstate,
 }
 
 //得到group id
-int thread_task::group_id() const
+int thread::group_id() const
 {
     return group_id_;
 }
 
-ZCE_THREAD_ID thread_task::thread_id() const
+ZCE_THREAD_ID thread::thread_id() const
 {
     return thread_id_;
 }
 
 //脱离绑定关系
-int thread_task::detach()
+int thread::detach()
 {
     return zce::pthread_detach(thread_id_);
 }
 
 //
-int thread_task::wait_join()
+int thread::wait_join()
 {
-    void *no_use = nullptr;
+    void* no_use = nullptr;
     return zce::pthread_join(thread_id_, no_use);
 }
 
 //让出CPU时间
-int thread_task::yield()
+int thread::yield()
 {
     return zce::pthread_yield();
 }
@@ -82,21 +82,21 @@ int thread_task::yield()
 //========================================================================================
 
 //单子实例
-thread_task_wait* thread_task_wait::instance_ = nullptr;
+thread_wait* thread_wait::instance_ = nullptr;
 
 //构造函数等
-thread_task_wait::thread_task_wait()
+thread_wait::thread_wait()
 {
 }
 
 //
-thread_task_wait::~thread_task_wait()
+thread_wait::~thread_wait()
 {
 }
 
 //如果需要管理处理，要自己登记，
-void thread_task_wait::record_wait_thread(ZCE_THREAD_ID wait_thr_id,
-                                          int wait_group_id)
+void thread_wait::record_wait_thread(ZCE_THREAD_ID wait_thr_id,
+                                     int wait_group_id)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_id, wait_group_id);
 
@@ -104,7 +104,7 @@ void thread_task_wait::record_wait_thread(ZCE_THREAD_ID wait_thr_id,
 }
 
 //登记一个要进行等待处理等待线程
-void thread_task_wait::record_wait_thread(const zce::thread_task* wait_thr_task)
+void thread_wait::record_wait_thread(const zce::thread* wait_thr_task)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_task->thread_id(),
                                  wait_thr_task->group_id());
@@ -112,14 +112,14 @@ void thread_task_wait::record_wait_thread(const zce::thread_task* wait_thr_task)
 }
 
 //等所有的线程退出
-void thread_task_wait::wait_all()
+void thread_wait::wait_all()
 {
     //注意下面每次都是干begin
     while (wait_thread_list_.size() > 0)
     {
         MANAGE_WAIT_INFO wait_thread = *wait_thread_list_.begin();
         //等待这个线程退出
-        void *no_use = nullptr;
+        void* no_use = nullptr;
         zce::pthread_join(wait_thread.wait_thr_id_,
                           no_use);
         //
@@ -128,7 +128,7 @@ void thread_task_wait::wait_all()
 }
 
 //等待一个GROUP的线程退出
-void thread_task_wait::wait_group(int group_id)
+void thread_wait::wait_group(int group_id)
 {
     //注意下面每次都是干begin
     MANAGE_WAIT_THREAD_LIST::iterator iter_temp = wait_thread_list_.begin();
@@ -139,7 +139,7 @@ void thread_task_wait::wait_group(int group_id)
         {
             MANAGE_WAIT_INFO wait_thread = *iter_temp;
             //等待这个线程退出
-            void *no_use = nullptr;
+            void* no_use = nullptr;
             zce::pthread_join(wait_thread.wait_thr_id_,
                               no_use);
 
@@ -155,18 +155,18 @@ void thread_task_wait::wait_group(int group_id)
 }
 
 //得到唯一的单子实例
-thread_task_wait* thread_task_wait::instance()
+thread_wait* thread_wait::instance()
 {
     if (instance_ == nullptr)
     {
-        instance_ = new thread_task_wait();
+        instance_ = new thread_wait();
     }
 
     return instance_;
 }
 
 //清除单子实例
-void thread_task_wait::clear_inst()
+void thread_wait::clear_inst()
 {
     if (instance_)
     {

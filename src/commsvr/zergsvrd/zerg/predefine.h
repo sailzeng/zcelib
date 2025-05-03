@@ -30,7 +30,7 @@
 #include <zce/os_adapt/shm.h>
 #include <zce/bus/mmap_pipe.h>
 #include <zce/bus/twoway_pipe.h>
-#include <zce/thread/thread_task.h>
+#include <zce/thread/thread.h>
 #include <zce/event/handle_base.h>
 #include <zce/event/reactor_base.h>
 #include <zce/os_adapt/getopt.h>

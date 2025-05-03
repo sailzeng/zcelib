@@ -26,10 +26,22 @@ int zce::file_lock_init(zce::file_lock_t* lock,
     return 0;
 }
 
-void zce::fcntl_lock_adjust_params(zce::file_lock_t* lock,
-                                   int whence,
-                                   ssize_t& start,
-                                   ssize_t& len)
+/*!
+* @brief      调整参数，主要是让他在Windows平台也能使用 内部函数,外部不要使用，
+*             两个平台在参数的使用上并不太相同，WINDOWS的API没有考虑相对位置这些概念，
+*             所以必须在使用前进行一下调整，比如，开始位置SEEK_SET,0,长度0，其实是锁定
+*             整个文件，但LockFileEx没有这样的表示方法，必须调整
+* @param[in,out] lock    文件锁对象
+* @param[in]     whence  计算的起始根源位置，如SEEK_SET，SEEK_CUR，SEEK_END
+* @param[in]     start   从根源开始的相对位置
+* @param[in]     len     锁定区域的长度，
+* @note          平台的不兼容会带来某种风险，Windows下一旦文件大小调整，锁锁定的区域就不对了，
+*                所以在需要兼容的环境，最好文件大小是不调整的，
+*/
+void _fcntl_lock_adjust_params(zce::file_lock_t* lock,
+                               int whence,
+                               ssize_t& start,
+                               ssize_t& len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -111,7 +123,7 @@ int zce::fcntl_unlock(zce::file_lock_t* lock,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart = len;
@@ -125,6 +137,7 @@ int zce::fcntl_unlock(zce::file_lock_t* lock,
 
     if (!ret_bool)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] UnlockFileEx fail. error =%d", ::GetLastError());
         return -1;
     }
 
@@ -132,7 +145,7 @@ int zce::fcntl_unlock(zce::file_lock_t* lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
     // Unlock file.
     lock->lock_.l_type = F_UNLCK;
     return ::fcntl(lock->handle_,
@@ -147,7 +160,7 @@ int zce::fcntl_rdlock(zce::file_lock_t* lock,
                       ssize_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart = len;
@@ -162,6 +175,7 @@ int zce::fcntl_rdlock(zce::file_lock_t* lock,
     //出现错误
     if (!ret_bool)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] LockFileEx fail. error =%d", ::GetLastError());
         return -1;
     }
 
@@ -169,7 +183,7 @@ int zce::fcntl_rdlock(zce::file_lock_t* lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
     // set read lock
     lock->lock_.l_type = F_RDLCK;
     //block, if no access 注意F_SETLKW和F_SETLK的区别
@@ -189,7 +203,7 @@ int zce::fcntl_tryrdlock(::zce::file_lock_t* lock,
 #if defined (ZCE_OS_WINDOWS)
 
     //调整参数，因为WINDOWS参数的一些麻烦
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart = len;
@@ -204,6 +218,7 @@ int zce::fcntl_tryrdlock(::zce::file_lock_t* lock,
     //出现错误
     if (!ret_bool)
     {
+        //ZCE_LOG(RS_ERROR, "[zcelib] LockFileEx fail. error =%d", ::GetLastError());
         return -1;
     }
 
@@ -211,7 +226,7 @@ int zce::fcntl_tryrdlock(::zce::file_lock_t* lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
     lock->lock_.l_type = F_RDLCK;         // set read lock
 
     int result = 0;
@@ -237,7 +252,7 @@ int zce::fcntl_trywrlock(zce::file_lock_t* lock,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart = len;
@@ -252,6 +267,7 @@ int zce::fcntl_trywrlock(zce::file_lock_t* lock,
     //出现错误
     if (!ret_bool)
     {
+        //ZCE_LOG(RS_ERROR, "[zcelib] LockFileEx fail. error =%d", ::GetLastError());
         return -1;
     }
 
@@ -259,7 +275,7 @@ int zce::fcntl_trywrlock(zce::file_lock_t* lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
     lock->lock_.l_type = F_WRLCK;         // set write lock
 
     int result = 0;
@@ -284,7 +300,7 @@ int zce::fcntl_wrlock(zce::file_lock_t* lock,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart = len;
@@ -299,6 +315,7 @@ int zce::fcntl_wrlock(zce::file_lock_t* lock,
     //出现错误
     if (!ret_bool)
     {
+        ZCE_LOG(RS_ERROR, "[zcelib] LockFileEx fail. error =%d", ::GetLastError());
         return -1;
     }
 
@@ -306,7 +323,7 @@ int zce::fcntl_wrlock(zce::file_lock_t* lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    zce::fcntl_lock_adjust_params(lock, whence, start, len);
+    _fcntl_lock_adjust_params(lock, whence, start, len);
     // set write lock
     lock->lock_.l_type = F_WRLCK;
     // block, if no access

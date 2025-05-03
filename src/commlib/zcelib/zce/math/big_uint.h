@@ -20,8 +20,11 @@
 namespace zce
 {
 //! B是bignumber的bit为数，必须为32的倍数
+//! 内部采用uin32_t数组保存，因为一些预算的算法是基于uint32_t的，运算时
+//! 会使用uint64_t的位运算，避免溢出
 //! 必须要考虑溢出风险，比如128bits * 128 bits的数字需要256bits保存，
 //! 如果您希望使用2048bit的big number，那么您要使用4096的长度，
+//!
 template <std::size_t B>
 class big_uint
 {
@@ -163,72 +166,69 @@ public:
         return (const char*)bn_;
     }
     //
-    int decode(const char* hexarr, size_t arr_szie)
+    int from_str(const char* buffer, size_t buf_len)
     {
-        assert(arr_szie < LEN_OF_U32_ARY * 4 * 2);
-        size_t out_len = sizeof(bn_);
-        return zce::base16_decode(hexarr, arr_szie, bn_, out_len);
+        assert(buf_len >= LEN_OF_BYTES * 2);
+        size_t out_len = LEN_OF_BYTES;
+        return zce::base16_decode(buffer, buf_len, bn_, out_len);
     }
 
-    int encode(char* hexarr, size_t* arr_szie)
+    const char* to_str(char* buffer, size_t buf_len, size_t& use_buf) const
     {
-        assert(*arr_szie <= LEN_OF_U32_ARY * 4 * 2);
-        size_t in_len = sizeof(bn_);
-        return zce::base16_encode(bn_, in_len, hexarr, arr_szie);
+        assert(buf_len > LEN_OF_BYTES * 2);
+        if (buf_len <= LEN_OF_BYTES * 2)
+        {
+            return nullptr;
+        }
+        size_t in_len = LEN_OF_BYTES;
+        zce::base16_encode(bn_, in_len, buffer, buf_len);
+        use_buf = LEN_OF_BYTES * 2;
+        return buffer;
     }
 
-    //! 赋值函数，用数组长度digits的数组b赋值
-    void assign(size_t digits, uint32_t* b)
+    //! 赋值函数，可以一次填写多个uint32_t，例子，assign(0x1234u,0x4321u,0x3412u,0x2143u)
+    //! 不够的用0填充
+    template<typename... Args>
+    void assign(Args... args)
     {
-        assert(digits <= LEN_OF_U32_ARY);
-        if (digits > LEN_OF_U32_ARY)
-        {
-            return;
-        }
-        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
-        {
-            if (i < digits)
-            {
-                this->bn_[i] = b[i];
-            }
-            else
-            {
-                this->bn_[i] = 0;
-            }
-        }
+        static_assert((std::is_same_v<Args, uint32_t> && ...), "All arguments must be uint32_t");
+        static_assert(sizeof...(args) <= LEN_OF_U32_ARY, "Too many arguments");
+        bn_ = { static_cast<uint32_t>(args)... };
     }
+
     //!赋值函数，动态填充digits个uint32_t，例子，assign(4, 0x1234,0x4321,0x3412,0x2143)
-    void assign(size_t digits...)
-    {
-        assert(digits <= LEN_OF_U32_ARY);
-        if (digits > LEN_OF_U32_ARY)
-        {
-            return;
-        }
-        va_list argptr;
-        va_start(argptr, digits);
-        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
-        {
-            if (i < digits)
-            {
-                uint32_t ai = va_arg(argptr, uint32_t);
-                this->bn_[i] = ai;
-            }
-            else
-            {
-                this->bn_[i] = 0;
-            }
-        }
-    }
-    //!赋值函数,赋值一个整数
-    void assign(uint32_t one_unit)
-    {
-        this->bn_[0] = one_unit;
-        for (size_t i = 1; i < LEN_OF_U32_ARY; ++i)
-        {
-            this->bn_[i] = 0;
-        }
-    }
+    //void assign(size_t digits...)
+    //{
+    //    assert(digits <= LEN_OF_U32_ARY);
+    //    if (digits > LEN_OF_U32_ARY)
+    //    {
+    //        return;
+    //    }
+    //    va_list argptr;
+    //    va_start(argptr, digits);
+    //    for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
+    //    {
+    //        if (i < digits)
+    //        {
+    //            uint32_t ai = va_arg(argptr, uint32_t);
+    //            this->bn_[i] = ai;
+    //        }
+    //        else
+    //        {
+    //            this->bn_[i] = 0;
+    //        }
+    //    }
+    //}
+
+    ////!赋值函数,赋值一个整数
+    //void assign(uint32_t one_unit)
+    //{
+    //    this->bn_[0] = one_unit;
+    //    for (size_t i = 1; i < LEN_OF_U32_ARY; ++i)
+    //    {
+    //        this->bn_[i] = 0;
+    //    }
+    //}
 
     //!赋值函数,将一个buffer强行复制到bn_里面，加解密能用上
     void putin(const char* buf)
@@ -247,15 +247,13 @@ public:
     }
 
     // a(*this) = 0
-    void zero()
+    void zero() noexcept
     {
-        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
-        {
-            bn_[i] = 0;
-        }
+        bn_.fill(0);
+        //memset(bn_, 0, sizeof(bn_));
     }
     // a(*this) == 0
-    bool is_zero()
+    bool is_zero() noexcept
     {
         for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
@@ -447,7 +445,7 @@ public:
         return (i + 1);
     }
 
-    //从低位lsb到高位msb，第一个二进制1 是第几位bit(仍然从0位开始计数)
+    //从高位msb到低位lsb，第一个二进制1 是第几位bit(仍然从0位开始计数)
     bool scanbit_msb2lsb(size_t& index) const
     {
         size_t vu = valid_units();
@@ -460,24 +458,22 @@ public:
     }
 
     //！从低位lsb到高位msb数，第一个二进制1是第几个bit，如果为值为0，返回0
-    bool scanbit_lsb2msb(size_t& index)
+    bool scanbit_lsb2msb(size_t& index) const
     {
         index = 0;
         size_t vu = valid_units();
         for (size_t i = 0; i < vu; ++i)
         {
             uint32_t ai = bn_[i];
-            for (size_t v = 0; v < BN_UNIT_BITS; ++v)
+            if (ai == 0)
             {
-                if (!(ai & 0x1))
-                {
-                    index++;
-                    ai >>= 1;
-                }
-                else
-                {
-                    return true;
-                }
+                index += BN_UNIT_BITS;
+                continue;
+            }
+            else
+            {
+                index += zce::scanbit_lsb2msb32(ai);
+                return true;
             }
         }
         return false;
@@ -761,8 +757,7 @@ public:
 
     void print()
     {
-        size_t digits = valid_units();
-        for (size_t i = 0; i < digits; ++i)
+        for (size_t i = 0; i < LEN_OF_U32_ARY; ++i)
         {
             printf("0x%08X,", bn_[i]);
         }
@@ -923,22 +918,32 @@ public:
         }
         return true;
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const big_uint& num)
+    {
+        for (size_t i = 0; i < LEN_OF_U32_ARY; i++)
+        {
+            os << std::hex << std::setw(8) << std::setfill('0') << num.bn_[i] << ",";
+        }
+        return os;
+    }
+
 protected:
     //! bits 长度
-    static const size_t BN_ALL_BITS = B;
+    static constexpr size_t BN_ALL_BITS = B;
     //! 每个存储单元都是32bit
-    static const size_t BN_UNIT_BITS = 32;
+    static constexpr size_t BN_UNIT_BITS = 32;
     //! 数组的长度是32
-    static const size_t LEN_OF_U32_ARY = B / 32;
+    static constexpr size_t LEN_OF_U32_ARY = B / 32;
     //
-    static const size_t LEN_OF_BYTES = B / 8;
+    static constexpr size_t LEN_OF_BYTES = B / 8;
     //! 每个单元的最大长度
-    static const size_t BN_UNIT_MAX_NUM = 0xFFFFFFFF;
+    static constexpr size_t BN_UNIT_MAX_NUM = 0xFFFFFFFF;
 
 protected:
 
-    //
-    uint32_t  bn_[LEN_OF_U32_ARY] = {0};
+    //use uint32_t array to store the big number，
+    std::array<uint32_t, LEN_OF_U32_ARY> bn_ = { 0 };
 };
 }
 

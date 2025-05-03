@@ -1,5 +1,7 @@
 #include "predefine.h"
 
+namespace ztest
+{
 int test_windows_handle(int  /*argc*/, char* /*argv*/[])
 {
 #if defined ZCE_OS_WINDOWS
@@ -46,7 +48,7 @@ int test_osadapt_file(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-int test_osadapt_perf(int  /*argc*/, char* /*argv*/[])
+int test_osadapt_perf()
 {
     int ret = 0;
     ZCE_PROCESS_PERFORM prc_perf_info;
@@ -75,8 +77,6 @@ int test_osadapt_perf(int  /*argc*/, char* /*argv*/[])
 
     return 0;
 }
-
-#include "predefine.h"
 
 //选取所有的.h .c .cpp .hpp .cxx文件
 int hfile_selector(const struct dirent* dir_info)
@@ -117,7 +117,7 @@ int hfile_selector(const struct dirent* dir_info)
     return 0;
 }
 
-int test_scandir(int /*argc*/, char /*argv*/*[])
+int test_scandir(int /*argc*/, char /*argv*/* [])
 {
     const char* TEST_PATH = "D:\\Courage\\v8\\v8\\include";
     zce::clear_last_error();
@@ -173,7 +173,7 @@ struct Zealot_SVC : public zce::server_base
 };
 
 Zealot_SVC svc;
-int test_pid_file(int /*argc*/, char /*argv*/*[])
+int test_pid_file(int /*argc*/, char /*argv*/* [])
 {
     svc.out_pid_file("C:\\1");
     return 0;
@@ -280,7 +280,7 @@ int test_container_performance(int  /*argc*/, char* /*argv*/[])
     return 0;
 }
 
-int test_progress_timer(int  /*argc*/, char* /*argv*/[])
+int test_progress_timer()
 {
     zce::chrono_hr_timer hr_timer;
     zce::time_value sleep_len(2, 5000);
@@ -323,7 +323,162 @@ static int test_stack1()
     return 0;
 }
 
-int test_back_stack(int  /*argc*/, char* /*argv*/[])
+int test_back_stack()
 {
     return test_stack1();
+}
+
+int task_fcntl_unlock_1(zce::file_lock_t* lock,
+                        int  whence,
+                        ssize_t start,
+                        ssize_t len)
+{
+    zce::sleep(zce::time_value(0, 1000));
+    int ret = zce::fcntl_unlock(lock, whence, start, len);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+int test_flock()
+{
+    static const unsigned char BASE64_CHAR[65] =
+    {
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz"
+        "0123456789+/"
+    };
+
+    const size_t FILE_SIZE = 640 * 1024;
+    std::unique_ptr<char[] > buff(new char[FILE_SIZE]);
+    std::cout << zce::getcwd(buff.get(), FILE_SIZE - 1) << std::endl;
+    memset(buff.get(), 0, FILE_SIZE);
+    for (size_t i = 0; i < FILE_SIZE / 64; ++i)
+    {
+        memcpy(buff.get() + i * 64, BASE64_CHAR, 64);
+    }
+
+    ZCE_HANDLE fh = zce::open("../testdir/flock.lock", O_CREAT | O_RDWR);
+    EXPECT_EQ(fh != ZCE_INVALID_HANDLE, true);
+    if (fh == ZCE_INVALID_HANDLE)
+    {
+        return -1;
+    }
+    zce::safe_handle safe_fh(fh);
+    ssize_t ssz = zce::write(fh, buff.get(), FILE_SIZE);
+    if (ssz != FILE_SIZE)
+    {
+        return -1;
+    }
+    zce::file_lock_t lock;
+    int ret = zce::file_lock_init(&lock, fh);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_rdlock(&lock, SEEK_SET, 0, 0);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_unlock(&lock, SEEK_SET, 0, 0);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+
+    ret = zce::fcntl_rdlock(&lock, SEEK_SET, 10, 20);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_rdlock(&lock, SEEK_SET, 15, 20);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_trywrlock(&lock, SEEK_SET, 15, 30);
+    EXPECT_EQ(ret != 0, true);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    else
+    {
+        std::cout << "fcntl_trywrlock fail,SEEK_SET,15,30." << std::endl;
+    }
+
+    ret = zce::fcntl_unlock(&lock, SEEK_SET, 15, 20);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+
+    ZCE_THREAD_ID task1;
+    ret = zce::pthread_createex(&task1,
+                                PTHREAD_CREATE_DETACHED,
+                                8192 * 10,
+                                task_fcntl_unlock_1,
+                                &lock,
+                                SEEK_SET,
+                                10,
+                                20);
+    EXPECT_EQ(ret, 0);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_wrlock(&lock, SEEK_SET, 15, 20);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_trywrlock(&lock, SEEK_SET, 20, 30);
+    EXPECT_EQ(ret != 0, true);
+
+    //! Windows 允许“锁类型不同”的重复加锁（句柄维度的锁重入）
+    // ret = zce::fcntl_tryrdlock(&lock, SEEK_SET, 20, 30);
+    // EXPECT_EQ(ret != 0, true);
+
+    ZCE_THREAD_ID task2;
+    ret = zce::pthread_createex(&task2,
+                                PTHREAD_CREATE_DETACHED,
+                                8192 * 10,
+                                task_fcntl_unlock_1,
+                                &lock,
+                                SEEK_SET,
+                                15,
+                                20);
+    EXPECT_EQ(ret, 0);
+    if (ret != 0)
+    {
+        return -1;
+    }
+    ret = zce::fcntl_wrlock(&lock, SEEK_SET, 20, 30);
+    EXPECT_EQ(ret == 0, true);
+    if (ret != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+TEST(OsadaptTestSuite, TestAPI)
+{
+    EXPECT_EQ(test_back_stack(), 0);
+    EXPECT_EQ(test_progress_timer(), 0);
+    EXPECT_EQ(test_osadapt_perf(), 0);
+    EXPECT_EQ(test_flock(), 0);
+}
 }

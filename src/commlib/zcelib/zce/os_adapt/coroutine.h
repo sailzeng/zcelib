@@ -69,24 +69,6 @@ struct  coroutine_t
     void* coroutine_;
 };
 
-///Windows的Fiber实现(CreateFiber)函数指针对应的参数只有一个，而且需要的的函数纸质是WINAPI的，
-///就是__stdcall的，而且Fiber没有返回的context指定,所以做一个转换，
-struct _FIBERS_3PARAFUN_ADAPT
-{
-    ///
-    coroutine_t* handle_ = nullptr;
-    ///是否在退出的时候返回主协程，
-    bool                exit_back_main_ = true;
-    ///函数指针
-    std::function<void()>   fun_;
-
-    //函数的第1个参数，
-    void* para1_ = nullptr;
-};
-
-//帮助完成函数适配适配
-VOID  WINAPI _fibers_adapt_fun(VOID* param);
-
 #elif defined ZCE_OS_LINUX
 
 struct  coroutine_t
@@ -95,9 +77,25 @@ struct  coroutine_t
     ucontext_t         coroutine_;
 };
 
-void  _fibers_adapt_fun(void* param)
-
 #endif
+
+///Windows的Fiber实现(CreateFiber)函数指针对应的参数只有一个，而且需要的的函数纸质是WINAPI的，
+///就是__stdcall的，而且Fiber没有返回的context指定,所以做一个转换，
+struct _FIBERS_FUN_ADAPT
+{
+    //help adapt function to call the function object
+#if defined ZCE_OS_WINDOWS
+    static VOID  WINAPI adapt_fun(VOID* param);
+#elif defined ZCE_OS_LINUX
+    void  adapt_fun(void* param);
+#endif
+    ///
+    coroutine_t* handle_ = nullptr;
+    ///是否在退出的时候返回主协程，
+    bool                exit_back_main_ = true;
+    ///函数指针
+    std::function<void()>   fun_;
+};
 
 namespace zce
 {
@@ -126,8 +124,8 @@ namespace zce
 * @param      coroutine_hdl ucontext_t，生成的CONTEXT句柄，
 * @param      stack_size    栈大小
 * @param      back_main     携程最后是否返回main函数
-* @param      fun_ptr       函数指针，接受3个指针参数
-* @param      para1         函数参数1
+* @param      fp            函数对象，
+* @param      args          函数参数，变参
 */
 template <class Call, class... Args >
 int make_coroutine(coroutine_t* coroutine_hdl,
@@ -163,15 +161,15 @@ int make_coroutine(coroutine_t* coroutine_hdl,
     }
 
     //使用这个结构完成函数适配
-    struct _FIBERS_3PARAFUN_ADAPT* fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
+    struct _FIBERS_FUN_ADAPT* fibers_adapt = new _FIBERS_FUN_ADAPT();
     fibers_adapt->exit_back_main_ = exit_back_main;
     fibers_adapt->fun_ = std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
 
-    //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
+    //caution: flag FIBER_FLAG_FLOAT_SWITCH don't support at Windows XP and earlier versions
     coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
                                                 stack_size,
                                                 FIBER_FLAG_FLOAT_SWITCH,
-                                                _fibers_adapt_fun,
+                                                _FIBERS_FUN_ADAPT::adapt_fun,
                                                 fibers_adapt);
 
     if (nullptr == coroutine_hdl->coroutine_)
@@ -206,9 +204,9 @@ int make_coroutine(coroutine_t* coroutine_hdl,
     {
         coroutine_hdl->coroutine_.uc_link = nullptr;
     }
-    auto svc_func =
-        std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
-    auto func_obj = new std::function<void()>(std::move(svc_func));
+    struct _FIBERS_FUN_ADAPT* fibers_adapt = new _FIBERS_FUN_ADAPT();
+    fibers_adapt->exit_back_main_ = exit_back_main;
+    fibers_adapt->fun_ = std::bind(std::forward<Call>(fp), std::forward<Args>(args)...);
 
     coroutine_hdl->coroutine_.uc_stack.ss_sp = new char[stack_size];
     coroutine_hdl->coroutine_.uc_stack.ss_size = stack_size;

@@ -187,7 +187,7 @@ int readdir_direntary(const char* dirname,
                       std::function<bool(const ::dirent&)> *selector,
                       std::vector<::dirent>& dirent_ary)
 {
-    auto_dir dir_hdl(zce::opendir(dirname));
+    safe_dir dir_hdl(zce::opendir(dirname));
     if (dir_hdl.get() == nullptr)
     {
         return -1;
@@ -322,7 +322,7 @@ int scandir(const char* dirname,
     ZCE_ASSERT(namelist);
     int once_nfiles = 0;
 
-    auto_dir dir_hdl(zce::opendir(dirname));
+    safe_dir dir_hdl(zce::opendir(dirname));
     if (dir_hdl.get() == nullptr)
     {
         return -1;
@@ -659,7 +659,7 @@ int remove_all(const char* pathname)
     }
     else if (buf.st_mode == S_IFDIR)
     {
-        zce::auto_dir dir_hdl(zce::opendir(pathname));
+        zce::safe_dir dir_hdl(zce::opendir(pathname));
         if (dir_hdl.get() == nullptr)
         {
             return -1;

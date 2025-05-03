@@ -73,7 +73,7 @@ int fsmtask_manger::active_notify_task(fsmtask_taskbase* clone_task,
     clone_task_ = clone_task;
 
     task_list_ = new fsmtask_taskbase * [task_number_];
-    thread_list_ = new zce::thread_task * [task_number_];
+    thread_list_ = new zce::thread * [task_number_];
     //初始化
     for (size_t i = 0; i < task_number_; ++i)
     {
@@ -87,7 +87,7 @@ int fsmtask_manger::active_notify_task(fsmtask_taskbase* clone_task,
         {
             return ret;
         }
-        thread_list_[i] = new zce::thread_task();
+        thread_list_[i] = new zce::thread();
         thread_list_[i]->attr_init(PTHREAD_CREATE_JOINABLE,
                                    task_stack_size,
                                    ACTIVATE_TASK_GROUP);

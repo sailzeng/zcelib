@@ -245,9 +245,11 @@ typedef unsigned int          mode_t;
 #define ZCE_DIRECTORY_SEPARATOR_STR  "\\"
 #define ZCE_CURRENT_DIRECTORY_STR    ".\\"
 
-//Windows下的POSOX文件统一放一个目录,
-
+//! Windows下的POSIX文件统一放一个目录,你自己可以定义
+//! Posix shared memory directory ,defined in windows.
+#ifndef ZCE_POSIX_MMAP_DIRECTORY
 #define ZCE_POSIX_MMAP_DIRECTORY   "C:\\dev.shm\\"
+#endif
 
 //The file type is unknown.
 #ifndef DT_UNKNOWN

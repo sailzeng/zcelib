@@ -83,7 +83,7 @@ int test_msgqueue_condi(int /*argc*/, char* /*argv*/[])
     Task_Consumer b1;
     Task_Consumer b2;
 
-    zce::thread_task t1, t2, t3;
+    zce::thread t1, t2, t3;
     t1.activate(&Task_Producer::svc, &a1);
 
     t2.activate(&Task_Consumer::svc, &b1);

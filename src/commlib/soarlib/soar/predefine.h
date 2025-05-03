@@ -92,7 +92,7 @@
 #include <zce/timer/queue_base.h>
 #include <zce/timer/queue_wheel.h>
 #include <zce/bus/twoway_pipe.h>
-#include <zce/thread/thread_task.h>
+#include <zce/thread/thread.h>
 #include <zce/socket/addr_base.h>
 #include <zce/socket/addr_in.h>
 #include <zce/socket/socket_base.h>
@@ -103,7 +103,7 @@
 #include <zce/event/reactor_base.h>
 #include <zce/event/reactor_select.h>
 #include <zce/event/reactor_epoll.h>
-#include <zce/thread/thread_task.h>
+#include <zce/thread/thread.h>
 #include <zce/shm_container/hash_table.h>
 #include <zce/thread/msgque_condi.h>
 #include <zce/server/mml_command.h>

@@ -24,8 +24,8 @@ int main(int argc, char* argv[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
     ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 
-    //::testing::GTEST_FLAG(filter) = "UtilTestSuite.TestAPI";
-    ::testing::GTEST_FLAG(filter) = "CoroutineTestSuite.TestAPI:SerializeTestSuite.TestAPI";
+    //::testing::GTEST_FLAG(filter) = "UtilTestSuite.TestAPI:CoroutineTestSuite.TestAPI:SerializeTestSuite.TestAPI:";
+    ::testing::GTEST_FLAG(filter) = "OsadaptTestSuite.TestAPI";
     ret = RUN_ALL_TESTS();
 
     //!需要关闭日志

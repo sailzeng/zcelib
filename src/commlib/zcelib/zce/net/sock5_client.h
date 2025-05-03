@@ -117,7 +117,7 @@ protected:
 protected:
 
     //连接SOCKS5服务器的Socket句柄,必须先连接 connect
-    zce::auto_socket socks5_hdl_ = INVALID_SOCKET;
+    zce::safe_socket socks5_hdl_ = INVALID_SOCKET;
     //!socks5代理的地址
     zce::sockaddr_any socks5_addr_;
     //!命令传送的buf
@@ -218,7 +218,7 @@ protected:
 
 protected:
     //! 穿透的UDP句柄
-    zce::auto_socket associate_hdl_ = INVALID_SOCKET;
+    zce::safe_socket associate_hdl_ = INVALID_SOCKET;
     //! socks5 代理服务器返回的绑定地址，穿透请求通过这个端口服务
     zce::sockaddr_any bind_addr_;
 
