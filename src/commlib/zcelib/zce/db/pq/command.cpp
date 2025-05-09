@@ -341,34 +341,10 @@ int command::execute(std::string_view sql_cmd,
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
-    ::ExecStatusType status = ::PQresultStatus(res);
-    if (status != ::PGRES_TUPLES_OK && status != ::PGRES_COMMAND_OK)
-    {
-        ::PQclear(res);
-        return -1;
-    }
-    if (status == ::PGRES_TUPLES_OK)
-    {
-        auto s_num = ::PQcmdTuples(res);
-        num_affect = std::stoull(s_num);
-    }
-    if (last_id)
-    {
-        if (PQresultStatus(res) == PGRES_TUPLES_OK)
-        {
-            char* id_str = PQgetvalue(res, 0, 0);
-            *last_id = atoll(id_str);
-        }
-        else
-        {
-            ZCE_LOG(RS_ALERT,
-                    "[pq] execute sql don't have last id [%s].",
-                    ::PQresultErrorMessage(res));
-            return -1;
-        }
-    }
-    PQclear(res);
-    return 0;
+    return get_result(res,
+                      num_affect,
+                      last_id,
+                      nullptr);
 }
 
 int command::execute(std::string_view sql_cmd,
@@ -377,22 +353,10 @@ int command::execute(std::string_view sql_cmd,
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
-    ::ExecStatusType status = ::PQresultStatus(res);
-    if (status != ::PGRES_TUPLES_OK && status != ::PGRES_COMMAND_OK)
-    {
-        ZCE_LOG(RS_ERROR,
-                "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
-                ::PQerrorMessage(conn_));
-        ::PQclear(res);
-        return -1;
-    }
-    if (status == ::PGRES_TUPLES_OK)
-    {
-        auto s_num = ::PQcmdTuples(res);
-        num_affect = std::stoull(s_num);
-    }
-    pq_res.set_result(res);
-    return 0;
+    return get_result(res,
+                      num_affect,
+                      nullptr,
+                      &pq_res);
 }
 
 int command::stmt_prepare(std::string_view sqlcmd,
@@ -419,18 +383,10 @@ int command::stmt_prepare(std::string_view sqlcmd,
     return 0;
 }
 
-int command::stmt_execute(size_t* num_affect,
+int command::stmt_execute(size_t& num_affect,
                           size_t* last_id,
                           int res_fmt)
 {
-    if (num_affect)
-    {
-        *num_affect = 0;
-    }
-    if (last_id)
-    {
-        *last_id = 0;
-    }
     PGresult* res = ::PQexecPrepared(conn_,
                                      stmt_name_,
                                      (int)bind_param_.num_bind_,
@@ -438,30 +394,69 @@ int command::stmt_execute(size_t* num_affect,
                                      bind_param_.param_len_,
                                      bind_param_.param_fmt_,
                                      res_fmt);
+    return get_result(res,
+                      num_affect,
+                      last_id,
+                      nullptr);
+}
+
+int command::stmt_execute(size_t& num_affect,
+                          zce::pq::result& pq_res,
+                          int res_fmt)
+{
+    PGresult* res = ::PQexecPrepared(conn_,
+                                     stmt_name_,
+                                     (int)bind_param_.num_bind_,
+                                     bind_param_.param_value_,
+                                     bind_param_.param_len_,
+                                     bind_param_.param_fmt_,
+                                     res_fmt);
+    return get_result(res,
+                      num_affect,
+                      nullptr,
+                      &pq_res);
+}
+
+int command::get_result(PGresult* res,
+                        size_t& num_affect,
+                        size_t* last_id,
+                        zce::pq::result* pq_res)
+{
+    num_affect = 0;
+    if (last_id)
+    {
+        *last_id = 0;
+    }
+    int ret = 0;
     ExecStatusType status = ::PQresultStatus(res);
     if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
     {
         ZCE_LOG(RS_ERROR,
                 "Failed to prepare SQL : %s : %s\n", stmt_name_,
                 ::PQerrorMessage(conn_));
-        ::PQclear(res);
-        return -1;
+        ret = -1;
     }
-    if (status == PGRES_TUPLES_OK)
+    else
     {
-        auto s_num = ::PQcmdTuples(res);
-        if (num_affect)
+        if (status == PGRES_TUPLES_OK)
         {
-            *num_affect = std::stoull(s_num);
+            auto s_num = ::PQcmdTuples(res);
+            num_affect = std::stoull(s_num);
         }
+        //如果想得到sequence id，请使用RETURNING子句
+        //INSERT INTO example_table (name) VALUES ('Sample Name') RETURNING id;
         if (last_id)
         {
-            char* id_str = PQgetvalue(res, 0, 0);
+            char* id_str = ::PQgetvalue(res, 0, 0);
             *last_id = atoll(id_str);
+        }
+        if (pq_res)
+        {
+            pq_res->set_result(res);
         }
     }
     PQclear(res);
-    return 0;
+    return ret;
 }
 
 void command::stmt_clear()

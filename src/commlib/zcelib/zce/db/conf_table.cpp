@@ -121,26 +121,10 @@ int AII_BINARY_DATA::protobuf_decode(unsigned int* index_1,
 /*****************************************************************************************************************
 struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信息的方法
 *****************************************************************************************************************/
-config_table::config_table()
-{
-    sql_string_ = new char[MAX_SQLSTRING_LEN];
-    sqlite_hdl_ = new zce::sqlite::connect();
-}
 
 config_table::~config_table()
 {
-    if (sql_string_)
-    {
-        delete sql_string_;
-        sql_string_ = nullptr;
-    }
-
-    sqlite_hdl_->close_db();
-    if (sqlite_hdl_)
-    {
-        delete sqlite_hdl_;
-        sqlite_hdl_ = nullptr;
-    }
+    sqlite_hdl_.close_db();
 }
 
 //打开一个通用的数据库
@@ -148,24 +132,25 @@ int config_table::open_dbfile(const char* db_file,
                               bool read_only,
                               bool create_db)
 {
-    int ret = sqlite_hdl_->open_db(db_file, read_only, create_db);
+    int ret = sqlite_hdl_.open_db(db_file, read_only, create_db);
     if (ret != 0)
     {
         return ret;
     }
+    sqlite_cmd_.reset(&sqlite_hdl_);
     return 0;
 }
 
 void config_table::close_dbfile()
 {
-    sqlite_hdl_->close_db();
+    sqlite_hdl_.close_db();
 }
 
 //创建TABLE SQL语句
 void config_table::sql_create_table(unsigned  int table_id)
 {
     //构造后面的SQL
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     int len = snprintf(ptmppoint, buflen,
@@ -188,7 +173,7 @@ void config_table::sql_create_table(unsigned  int table_id)
 void config_table::sql_replace_bind(unsigned int table_id)
 {
     //构造后面的SQL
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //注意里面的?
@@ -211,7 +196,7 @@ void config_table::sql_replace_one(unsigned int table_id,
                                    unsigned int last_mod_time)
 {
     //构造后面的SQL
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //对于空间，我们是预留了足够的空间的，就不检查边界了
@@ -277,7 +262,7 @@ void config_table::sql_select_one(unsigned int table_id,
                                   unsigned int index_1,
                                   unsigned int index_2)
 {
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
@@ -295,7 +280,7 @@ void config_table::sql_delete_one(unsigned int table_id,
                                   unsigned int index_1,
                                   unsigned int index_2)
 {
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     int len = snprintf(ptmppoint,
@@ -314,7 +299,7 @@ void config_table::sql_counter(unsigned int table_id,
                                unsigned int numquery)
 {
     //构造SQL
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     int len = snprintf(ptmppoint, buflen, "SELECT COUNT(*) FROM config_table_%u ",
@@ -336,7 +321,7 @@ void config_table::sql_select_array(unsigned int table_id,
                                     unsigned int startno,
                                     unsigned int numquery)
 {
-    char* ptmppoint = sql_string_;
+    char* ptmppoint = sql_string_.get();
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
@@ -362,7 +347,7 @@ int config_table::create_table(unsigned int table_id)
     sql_create_table(table_id);
 
     int ret = 0;
-    ret = sqlite_hdl_->exe(sql_string_);
+    ret = sqlite_cmd_.execute(sql_string_.get());
     if (ret != 0)
     {
         return ret;
@@ -377,24 +362,23 @@ int config_table::replace_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite::command cmd(sqlite_hdl_);
     int ret = 0;
 
-    ret = cmd.prepare(sql_string_);
+    ret = sqlite_cmd_.stmt_prepare(sql_string_.get());
     if (ret != 0)
     {
         return ret;
     }
 
-    zce::sqlite::command::BLOB_bind binary_data((void*)conf_data->ai_iijima_data_,
-                                                conf_data->ai_data_length_);
-    cmd << conf_data->index_1_;
-    cmd << conf_data->index_2_;
-    cmd << binary_data;
-    cmd << conf_data->last_mod_time_;
+    zce::string_buf binary_data((char*)conf_data->ai_iijima_data_,
+                                conf_data->ai_data_length_);
+    sqlite_cmd_ << conf_data->index_1_;
+    sqlite_cmd_ << conf_data->index_2_;
+    sqlite_cmd_ << binary_data;
+    sqlite_cmd_ << conf_data->last_mod_time_;
 
     bool has_result = false;
-    ret = cmd.step(has_result);
+    ret = sqlite_cmd_.step(has_result);
     if (ret != 0)
     {
         return ret;
@@ -408,10 +392,7 @@ int config_table::replace_array(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    zce::sqlite::command stmt_handler(sqlite_hdl_);
-    int ret = 0;
-
-    ret = sqlite_hdl_->begin_transaction();
+    int ret = sqlite_cmd_.trans_begin();
     if (ret != 0)
     {
         return ret;
@@ -421,29 +402,29 @@ int config_table::replace_array(unsigned int table_id,
     for (size_t i = 0; i < ary_size; ++i)
     {
         //感觉SQLite3的 STMT欠火候，第二次使用还要prepare
-        ret = stmt_handler.prepare(sql_string_);
+        ret = sqlite_cmd_.stmt_prepare(sql_string_.get());
         if (ret != 0)
         {
             return ret;
         }
 
-        zce::sqlite::command::BLOB_bind binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                                    (*ary_ai_iijma)[i].ai_data_length_);
-        stmt_handler << (*ary_ai_iijma)[i].index_1_;
-        stmt_handler << (*ary_ai_iijma)[i].index_2_;
-        stmt_handler << binary_data;
-        stmt_handler << (*ary_ai_iijma)[i].last_mod_time_;
+        zce::string_buf binary_data((char*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                    (*ary_ai_iijma)[i].ai_data_length_);
+        sqlite_cmd_ << (*ary_ai_iijma)[i].index_1_;
+        sqlite_cmd_ << (*ary_ai_iijma)[i].index_2_;
+        sqlite_cmd_ << binary_data;
+        sqlite_cmd_ << (*ary_ai_iijma)[i].last_mod_time_;
 
         bool has_result = false;
-        ret = stmt_handler.step(has_result);
+        ret = sqlite_cmd_.step(has_result);
         if (ret != 0)
         {
             return ret;
         }
-        stmt_handler.reset();
+        sqlite_cmd_.reset_stmt();
     }
 
-    ret = sqlite_hdl_->commit_transction();
+    ret = sqlite_cmd_.trans_commit();
     if (ret != 0)
     {
         return ret;
@@ -458,16 +439,15 @@ int config_table::select_one(unsigned int table_id,
     sql_select_one(table_id,
                    conf_data->index_1_,
                    conf_data->index_2_);
-    zce::sqlite::command stmt_handler(sqlite_hdl_);
     int ret = 0;
-    ret = stmt_handler.prepare(sql_string_);
+    ret = sqlite_cmd_.stmt_prepare(sql_string_.get());
     if (ret != 0)
     {
         return ret;
     }
 
     bool has_result = false;
-    ret = stmt_handler.step(has_result);
+    ret = sqlite_cmd_.step(has_result);
     if (ret != 0)
     {
         return ret;
@@ -479,8 +459,8 @@ int config_table::select_one(unsigned int table_id,
 
     zce::sqlite::command::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
                                                   &(conf_data->ai_data_length_));
-    stmt_handler >> binary_data;
-    stmt_handler >> conf_data->last_mod_time_;
+    sqlite_cmd_ >> binary_data;
+    sqlite_cmd_ >> conf_data->last_mod_time_;
 
     return 0;
 }
@@ -492,15 +472,14 @@ int config_table::delete_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_delete_one(table_id, index_1, index_2);
-    zce::sqlite::command stmt_handler(sqlite_hdl_);
     int ret = 0;
-    ret = stmt_handler.prepare(sql_string_);
+    ret = sqlite_cmd_.stmt_prepare(sql_string_.get());
     if (ret != 0)
     {
         return ret;
     }
     bool hash_result = false;
-    ret = stmt_handler.step(hash_result);
+    ret = sqlite_cmd_.step(hash_result);
     if (ret != 0)
     {
         return ret;
@@ -515,16 +494,14 @@ int config_table::counter(unsigned int table_id,
                           unsigned int* rec_count)
 {
     sql_counter(table_id, startno, numquery);
-    zce::sqlite::command stmt_handler(sqlite_hdl_);
-    int ret = 0;
-    ret = stmt_handler.prepare(sql_string_);
+    int ret = sqlite_cmd_.stmt_prepare(sql_string_.get());
     if (ret != 0)
     {
         return ret;
     }
 
     bool hash_result = false;
-    ret = stmt_handler.step(hash_result);
+    ret = sqlite_cmd_.step(hash_result);
     if (ret != 0)
     {
         return ret;
@@ -535,7 +512,7 @@ int config_table::counter(unsigned int table_id,
         return -1;
     }
 
-    stmt_handler >> *rec_count;
+    sqlite_cmd_ >> *rec_count;
     return 0;
 }
 
@@ -563,23 +540,22 @@ int config_table::select_array(unsigned int table_id,
     ary_ai_iijma->resize(num_counter);
 
     sql_select_array(table_id, startno, numquery);
-    zce::sqlite::command stmt_handler(sqlite_hdl_);
 
-    ret = stmt_handler.prepare(sql_string_);
+    ret = sqlite_cmd_.stmt_prepare(sql_string_.get());
     if (ret != 0)
     {
         return ret;
     }
 
     bool hash_result;
-    ret = stmt_handler.step(hash_result);
+    ret = sqlite_cmd_.step(hash_result);
 
     for (size_t i = 0; ret == 0 && hash_result == true; ++i)
     {
-        stmt_handler >> (*ary_ai_iijma)[i].index_1_;
-        stmt_handler >> (*ary_ai_iijma)[i].index_2_;
+        sqlite_cmd_ >> (*ary_ai_iijma)[i].index_1_;
+        sqlite_cmd_ >> (*ary_ai_iijma)[i].index_2_;
 
-        int blob_len = stmt_handler.cur_column_bytes();
+        int blob_len = sqlite_cmd_.cur_column_bytes();
         if (blob_len > AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
         {
             ZCE_LOG(RS_ERROR, "Error current column bytes length [%u] > "
@@ -591,10 +567,10 @@ int config_table::select_array(unsigned int table_id,
         zce::sqlite::command::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
                                                       &((*ary_ai_iijma)[i].ai_data_length_));
 
-        stmt_handler >> binary_data;
-        stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
+        sqlite_cmd_ >> binary_data;
+        sqlite_cmd_ >> (*ary_ai_iijma)[i].last_mod_time_;
 
-        ret = stmt_handler.step(hash_result);
+        ret = sqlite_cmd_.step(hash_result);
     }
 
     //出现错误或者没有找到
@@ -678,7 +654,7 @@ int config_table::compare_table(const char* old_db,
                                 new_ai_iijma[q].ai_data_length_,
                                 new_ai_iijma[q].ai_iijima_data_,
                                 new_ai_iijma[q].last_mod_time_);
-                *update_sql += sql_string_;
+                *update_sql += sql_string_.get();
 
                 ++p;
                 ++q;
@@ -713,7 +689,7 @@ int config_table::compare_table(const char* old_db,
                                         new_ai_iijma[s].ai_data_length_,
                                         new_ai_iijma[s].ai_iijima_data_,
                                         new_ai_iijma[s].last_mod_time_);
-                        *update_sql += sql_string_;
+                        *update_sql += sql_string_.get();
                     }
 
                     break;
@@ -729,7 +705,7 @@ int config_table::compare_table(const char* old_db,
             else
             {
                 sql_delete_one(table_id, old_ai_iijma[p].index_1_, old_ai_iijma[p].index_2_);
-                *update_sql += sql_string_;
+                *update_sql += sql_string_.get();
                 ++p;
             }
         }
@@ -745,7 +721,7 @@ int config_table::compare_table(const char* old_db,
                         new_ai_iijma[q].ai_data_length_,
                         new_ai_iijma[q].ai_iijima_data_,
                         new_ai_iijma[q].last_mod_time_);
-        *update_sql += sql_string_;
+        *update_sql += sql_string_.get();
     }
 
     return 0;

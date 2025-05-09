@@ -159,6 +159,7 @@
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
+    <ClCompile Include="zce\string\url.cpp" />
     <ClCompile Include="zce\os_adapt\netdb.cpp" />
     <ClCompile Include="zce\pool\chunk_pool.cpp" />
     <ClCompile Include="zce\rudp\client.cpp" />
@@ -245,11 +246,11 @@
     <ClCompile Include="zce\db\sqlite\connect.cpp" />
     <ClCompile Include="zce\db\sqlite\command.cpp" />
     <ClCompile Include="zce\string\format.cpp" />
-    <ClCompile Include="zce\string\regex_parse.cpp" />
     <ClCompile Include="zce\string\time.cpp" />
+    <ClInclude Include="zce\string\url.h" />
     <ClInclude Include="zce\string\time.h" />
     <ClCompile Include="zce\string\to_string.cpp" />
-    <ClCompile Include="zce\thread\thread_task.cpp" />
+    <ClCompile Include="zce\thread\thread.cpp" />
     <ClCompile Include="zce\timer\timer_handler.cpp" />
     <ClCompile Include="zce\timer\queue_base.cpp" />
     <ClCompile Include="zce\timer\queue_heap.cpp" />
@@ -307,7 +308,6 @@
     <ClInclude Include="zce\socket\addr_any.h" />
     <ClInclude Include="zce\db\sqlite\result.h" />
     <ClInclude Include="zce\string\from_string.h" />
-    <ClInclude Include="zce\string\regex_parse.h" />
     <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\buffer\cycle_buffer.h" />
     <ClInclude Include="zce\buffer\cycbuf_rings.h" />
@@ -412,7 +412,7 @@
     <ClInclude Include="zce\string\to_string.h" />
     <ClInclude Include="zce\thread\msgque_condi.h" />
     <ClInclude Include="zce\thread\msgque_sema.h" />
-    <ClInclude Include="zce\thread\thread_task.h" />
+    <ClInclude Include="zce\thread\thread.h" />
     <ClInclude Include="zce\timer\timer_handler.h" />
     <ClInclude Include="zce\timer\queue_base.h" />
     <ClInclude Include="zce\timer\queue_heap.h" />

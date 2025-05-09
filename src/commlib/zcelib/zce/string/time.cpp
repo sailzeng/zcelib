@@ -3,17 +3,19 @@
 #include "zce/string/time.h"
 #include "zce/logger/logging.h"
 
+namespace zce
+{
 //将参数timeval的值作为的时间格格式化后输出打印出来
 //可以控制各种格式输出
 //如果成功，返回参数字符串str_date_time，如果失败返回nullptr
 //timeval->tv_usec 千万不要溢出，会导致不可以预期问题
-const char* zce::timeval_to_str(const timeval* timeval,
-                                char* str_date_time,
-                                size_t str_len,
-                                size_t& use_buf,
-                                TMS_FMT fmt,
-                                bool utc_time,
-                                bool out_tz)
+const char* timeval_to_str(const timeval* timeval,
+                           char* str_date_time,
+                           size_t str_len,
+                           size_t& use_buf,
+                           TMS_FMT fmt,
+                           bool utc_time,
+                           bool out_tz)
 {
     //这个实现没有使用strftime的原因是，我会输出us等一些字段
     time_t now_time = timeval->tv_sec;
@@ -577,7 +579,7 @@ int zce::str_to_ztm(const char* strtm,
     return 0;
 }
 
-zce::TMS_FMT zce::fuzzy_str_fmt(const char* strtm)
+zce::TMS_FMT fuzzy_str_fmt(const char* strtm)
 {
     zce::TMS_FMT fmt = zce::TMS_FMT::TMS_FMT_INVALID;
     size_t len_str = ::strlen(strtm);
@@ -741,8 +743,8 @@ int zce::fuzzy_str_to_ztm(const char* strtm,
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL ==1
 
 //
-int zce::str_to_MYSQL_TIME(const char* strtm,
-                           MYSQL_TIME* mysql_tm)
+int str_to_MYSQL_TIME(const char* strtm,
+                      MYSQL_TIME* mysql_tm)
 {
     size_t len_str = ::strlen(strtm);
     ::memset(mysql_tm, 0, sizeof(MYSQL_TIME));
@@ -827,10 +829,10 @@ int zce::str_to_MYSQL_TIME(const char* strtm,
 #endif
 
 //从字符串转换得到时间time_t函数
-int zce::str_to_timeval(const char* strtm,
-                        TMS_FMT fmt,
-                        timeval* tval,
-                        bool uct_time)
+int str_to_timeval(const char* strtm,
+                   TMS_FMT fmt,
+                   timeval* tval,
+                   bool uct_time)
 {
     zce::ztm ztm;
     ztm.fmt_ = fmt;
@@ -877,9 +879,9 @@ int zce::str_to_timeval(const char* strtm,
     return 0;
 }
 
-int zce::fuzzy_str_to_timeval(const char* strtm,
-                              ::timeval* tval,
-                              bool uct_time)
+int fuzzy_str_to_timeval(const char* strtm,
+                         ::timeval* tval,
+                         bool uct_time)
 {
     TMS_FMT fmt = zce::fuzzy_str_fmt(strtm);
     if (fmt == zce::TMS_FMT::TMS_FMT_INVALID)
@@ -887,4 +889,119 @@ int zce::fuzzy_str_to_timeval(const char* strtm,
         return -1;
     }
     return str_to_timeval(strtm, fmt, tval, uct_time);
+}
+
+int regex_time_str(const char* strtm,
+                   zce::ztm* pztm)
+{
+    const std::string POSIX_DATE_REGEX = R"((?:[ \t]*(\d{4}|\d{2})[-\/]?(\d{2})[-\/]?(\d{2})))";
+    const std::string TIME_REGEX = R"((?:[ \tT]*(\d{2}):?(\d{2}):?(\d{2})(?:.(\d{6}))?))";
+    const std::string WEEK_REGEX = R"((?:[ \t]*(sun|mon|tue|wed|thu|fri|sat),?))";
+    const std::string TIMEZONE_REGEX = R"((?:[ \t]*(GMT|Z|[\+-]\d{2}\:?\d{2})))";
+    const std::string USEURO_DATE_REGEX = R"((?:[ \t]*((jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[ \t]*(\d{2})|(\d{2})[ \t]*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec))[ \t]*(\d{4})))";
+    const std::string TIME_PATTERN[] =
+    {
+        POSIX_DATE_REGEX + TIME_REGEX + "?" + TIMEZONE_REGEX + "?",
+        WEEK_REGEX + "?" + USEURO_DATE_REGEX + TIME_REGEX + "?" + TIMEZONE_REGEX + "?",
+    };
+    enum RP_MFT
+    {
+        NONE = -1,
+        POSIX,
+        US_EURO
+    } tm_fmt = RP_MFT::NONE;
+    std::regex tm_regex_0(TIME_PATTERN[POSIX], std::regex::icase);
+    std::regex tm_regex_1(TIME_PATTERN[US_EURO], std::regex::icase);
+
+    std::cmatch tm_cmatch0, tm_cmatch1;
+    if (std::regex_match(strtm, tm_cmatch0, tm_regex_0))
+    {
+        tm_fmt = RP_MFT::POSIX;
+    }
+    else if (std::regex_match(strtm, tm_cmatch1, tm_regex_1))
+    {
+        tm_fmt = RP_MFT::US_EURO;
+    }
+    else
+    {
+        return -1;
+    }
+
+    size_t tz_index = 0;
+    if (tm_fmt == RP_MFT::POSIX)
+    {
+        pztm->year_ = std::stoi(tm_cmatch0[1]);
+        pztm->mon_ = std::stoi(tm_cmatch0[2]);
+        pztm->day_ = std::stoi(tm_cmatch0[3]);
+        pztm->hour_ = std::stoi(tm_cmatch0[4]);
+        pztm->min_ = std::stoi(tm_cmatch0[5]);
+        pztm->sec_ = std::stoi(tm_cmatch0[6]);
+        pztm->usec_ = std::stoi(tm_cmatch0[7]);
+        tz_index = 8;
+    }
+    else if (tm_fmt == RP_MFT::US_EURO)
+    {
+        std::string mon_str;
+        if (tm_cmatch1[3].matched)
+        {
+            pztm->day_ = std::stoi(tm_cmatch0[4]);
+            mon_str = tm_cmatch1[3].str();
+        }
+        else if (tm_cmatch1[5].matched)
+        {
+            pztm->day_ = std::stoi(tm_cmatch0[6]);
+            mon_str = tm_cmatch1[5].str();
+        }
+        int i = 0;
+        for (; i < 12; i++)
+        {
+            if (strncasecmp(mon_str.c_str(), MONTH_NAME[i], 3) == 0)
+            {
+                pztm->mon_ = i;
+                break;
+            }
+        }
+        if (i == 12)
+        {
+            errno = EINVAL;
+            return -1;
+        }
+        pztm->year_ = std::stoi(tm_cmatch1[7]);
+        pztm->hour_ = std::stoi(tm_cmatch1[8]);
+        pztm->min_ = std::stoi(tm_cmatch1[9]);
+        pztm->sec_ = std::stoi(tm_cmatch1[10]);
+        if (tm_cmatch1[11].matched)
+        {
+            pztm->usec_ = std::stoi(tm_cmatch1[11]);
+        }
+        tz_index = 12;
+    }
+    else
+    {
+        return -1;
+    }
+
+    auto tz_str = tm_cmatch1[tz_index].str();
+    if (tz_str.compare("GMT") || tz_str.compare("Z"))
+    {
+        pztm->tz_ = 0;
+    }
+    else if (tz_str[0] == '+' || tz_str[0] == '-' && tz_str.length() >= 5)
+    {
+        pztm->tz_ = ((tz_str[1] - '0') * 10 + (tz_str[2] - '0')) * 3600 +
+            ((tz_str[3] - '0') * 10 + (tz_str[4] - '0')) * 60;
+        // GMT+0800 , tz = -8*3600
+        if (tz_str[0] == '+')
+        {
+            pztm->tz_ = -pztm->tz_;
+        }
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+
+    return 0;
+}
 }

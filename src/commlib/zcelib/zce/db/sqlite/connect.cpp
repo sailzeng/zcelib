@@ -1,7 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
 #include "zce/db/sqlite/connect.h"
-#include "zce/db/sqlite/result.h"
 
 //对于SQLITE的最低版本限制
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
@@ -12,7 +11,7 @@ namespace zce::sqlite
 SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
 ******************************************************************************************/
 connect::connect() :
-    sqlite3_handler_(nullptr)
+    sqlite3_(nullptr)
 {
 }
 
@@ -41,7 +40,7 @@ int connect::open_db(const char* db_file,
     }
 
     int ret = ::sqlite3_open_v2(db_file,
-                                &sqlite3_handler_,
+                                &sqlite3_,
                                 flags,
                                 nullptr);
     if (ret != SQLITE_OK)
@@ -59,88 +58,23 @@ int connect::open_db(const char* db_file,
 //关闭数据库。
 void connect::close_db()
 {
-    if (sqlite3_handler_)
+    if (sqlite3_)
     {
-        ::sqlite3_close_v2(sqlite3_handler_);
-        sqlite3_handler_ = nullptr;
+        ::sqlite3_close_v2(sqlite3_);
+        sqlite3_ = nullptr;
     }
 }
 
 //错误语句Str
 const char* connect::error_message()
 {
-    return ::sqlite3_errmsg(sqlite3_handler_);
+    return ::sqlite3_errmsg(sqlite3_);
 }
 
 //DB返回的错误ID
 int connect::error_code()
 {
-    return ::sqlite3_errcode(sqlite3_handler_);
-}
-
-//开始一个事务
-int connect::begin_transaction()
-{
-    return exe("BEGIN TRANSACTION;");
-}
-
-//提交一个事务
-int connect::commit_transction()
-{
-    return exe("COMMIT TRANSACTION;");
-}
-
-//将同步选项关闭，可以适当的提高insert的速度，但是为了安全起见，建议不要使用
-int connect::turn_off_synch()
-{
-    return exe("PRAGMA synchronous=OFF;");
-}
-
-//!执行DDL等不需要结果的SQL
-int connect::exe(const char* sql_string)
-{
-    int ret = 0;
-    char* err_msg = nullptr;
-    ret = ::sqlite3_exec(sqlite3_handler_,
-                         sql_string,
-                         nullptr,
-                         nullptr,
-                         &err_msg);
-    if (ret == SQLITE_OK)
-    {
-        return 0;
-    }
-    else
-    {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_exec exe sql [%s] fail.:[%d][%s].",
-                sql_string,
-                ret,
-                err_msg);
-        ::sqlite3_free(err_msg);
-        return -1;
-    }
-}
-
-//执行SQL 查询，取得结果
-int connect::get_table(const char* sql_string,
-                       zce::sqlite::result* result)
-{
-    int ret = SQLITE_OK;
-    char* err_msg = nullptr;
-    ret = ::sqlite3_get_table(sqlite3_handler_, sql_string,
-                              &(result->result_),
-                              &(result->row_),
-                              &(result->column_),
-                              &(err_msg));
-    if (ret != SQLITE_OK)
-    {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_get_table exe fail:[%d][%s]",
-                ret,
-                err_msg);
-        ::sqlite3_free(err_msg);
-        return -1;
-    }
-    return 0;
+    return ::sqlite3_errcode(sqlite3_);
 }
 }
 

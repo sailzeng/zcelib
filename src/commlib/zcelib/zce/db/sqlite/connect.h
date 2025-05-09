@@ -70,37 +70,13 @@ public:
     //!取得SQLite的句柄
     inline sqlite3* get_handler()
     {
-        return sqlite3_handler_;
+        return sqlite3_;
     };
-
-    //!开始一个事务
-    int begin_transaction();
-    //!提交一个事务，或者说结束一个事务
-    int commit_transction();
-
-    //!将同步选项关闭，建议不要使用
-    int turn_off_synch();
-
-    //!执行DDL等不需要结果的SQL
-    int exe(const char* sql_string);
-
-    /*!
-    * @brief      执行SQL查下的封装,（二进制的不行）
-    * @return     int 返回0表示成功，
-    * @param      sql_string SQL语句
-    * @param      执行的结果，返回值
-    * @note       内部会调用sqlite3_get_table,sqlite3_free_table，
-    *             这个函数在SQLite中不是被推荐的函数，建议使用时考虑一下，虽然其
-    *             执行查询，确实比sqlite3_exec，方便
-    *             另外，这个函数应该不能处理二进制数据，因为你无法得知结果长度
-    */
-    int get_table(const char* sql_string,
-                  zce::sqlite::result* result);
 
 protected:
 
     //!sqlite3的处理Handler
-    sqlite3* sqlite3_handler_;
+    sqlite3* sqlite3_;
 };
 }
 

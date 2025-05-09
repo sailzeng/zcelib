@@ -51,7 +51,7 @@
 
 #include <zce/thread/msgque_condi.h>
 #include <zce/thread/msgque_sema.h>
-#include <zce/thread/thread_task.h>
+#include <zce/thread/thread.h>
 
 #include <zce/timer/timer_handler.h>
 #include <zce/timer/queue_heap.h>

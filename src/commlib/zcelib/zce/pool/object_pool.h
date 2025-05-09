@@ -217,8 +217,8 @@ public:
     multiobjs_pool() = default;
     ~multiobjs_pool() = default;
 
-    //============================
-    //!对某个对象池子进行初始化,使用对象名称作为模板参数
+    //====================================================================================
+    //!对某个对象池子进行初始化,使用对象类型作为模板参数，会导致编译速度变慢，但使用仍然是零开销
     template<typename O>
     bool initialize(size_t init_node_size,
                     size_t extend_node_size)
@@ -264,8 +264,8 @@ public:
         return std::get<zce::object_pool<LOCK, O> >(pools_).destroy(ptr);
     }
 
-    //============================
-    //!对某个对象池子进行初始化,使用对象在tuple的序号作为模板参数
+    //====================================================================================
+    //!对某个对象池子进行初始化,使用对象在tuple的序号作为模板参数，
     template<size_t I>
     bool initialize(size_t init_node_size,
                     size_t extend_node_size)
@@ -317,6 +317,7 @@ public:
     }
 
 protected:
+
     //!对象池子堆
     std::tuple<object_pool<LOCK, T>... > pools_;
 };

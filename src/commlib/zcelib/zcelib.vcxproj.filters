@@ -221,7 +221,7 @@
     <ClCompile Include="zce\string\format.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\thread\thread_task.cpp">
+    <ClCompile Include="zce\thread\thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\uuid\generator.cpp">
@@ -362,9 +362,6 @@
     <ClCompile Include="zce\lock\win_simulate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\string\regex_parse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\db\pq\result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -375,6 +372,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\string\time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\string\url.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -658,7 +658,7 @@
     <ClInclude Include="zce\thread\msgque_sema.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\thread\thread_task.h">
+    <ClInclude Include="zce\thread\thread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\uuid\generator.h">
@@ -856,9 +856,6 @@
     <ClInclude Include="zce\lock\win_simulate.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\string\regex_parse.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\db\pq\result.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -875,6 +872,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\time.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\string\url.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

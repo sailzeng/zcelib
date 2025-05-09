@@ -115,12 +115,13 @@ public:
     //! 回滚事务Rollback Transaction,返回0标识成功
     int trans_rollback();
 
+    //! 执行SQL语句，什么都不管的那种，DDL
     int execute(std::string_view sqlcmd);
-
+    //! 执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,
                 uint64_t* last_id);
-
+    //! 执行SQL语句,SELECT语句,转储结果集合的那种,
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,
                 zce::pq::result& pq_res);
@@ -169,12 +170,23 @@ public:
     }
 
     //! STMT 的执行，可以修改绑定参数，然后多次调用这个函数
-    int stmt_execute(size_t* num_affect,
+    int stmt_execute(size_t& num_affect,
                      size_t* last_id,
+                     int res_fmt = FMT_TEXT);
+
+    int stmt_execute(size_t& num_affect,
+                     zce::pq::result& pq_res,
                      int res_fmt = FMT_TEXT);
 
     //! STMT 的清理
     void stmt_clear();
+
+    void reset(zce::pq::connect& conn)
+    {
+        conn_ = conn.get_handle();
+        stmt_clear();
+        stmt_name_[0] = 0;
+    }
 
 protected:
 
@@ -184,13 +196,18 @@ protected:
         //用,运算符展开参数 fold expression
         (bind_param_.tie(Is, std::forward<Args>(args)), ...);
     }
+
+    int get_result(PGresult* res,
+                   size_t& num_affect,
+                   size_t* last_id,
+                   zce::pq::result* pq_res);
 protected:
     //
     ::PGconn* conn_ = nullptr;
     //! 绑定的参数
     zce::pq::bind bind_param_;
     //! 绑定的结果
-    char stmt_name_[64] = {0};
+    char stmt_name_[64] = { 0 };
 };
 }
 

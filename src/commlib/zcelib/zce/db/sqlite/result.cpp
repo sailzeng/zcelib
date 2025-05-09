@@ -8,7 +8,7 @@ namespace zce::sqlite
 {
 result::~result()
 {
-    free_result();
+    free();
 }
 
 bool result::is_null()
@@ -18,16 +18,16 @@ bool result::is_null()
 
 const char* result::field_name(size_t column)
 {
-    return result_[column - 1];
+    return result_[column];
 }
 
-const char* result::field_cstr(size_t row, size_t column)
+const char* result::field_data(size_t row, size_t column)
 {
-    return result_[row * column_ + column - 1];
+    return result_[(row + 1) * column_ + column];
 }
 
 //释放结果集合
-void result::free_result()
+void result::free()
 {
     if (result_)
     {

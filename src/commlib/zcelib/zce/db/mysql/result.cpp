@@ -157,7 +157,7 @@ result::result(result&& res) noexcept
 result& result::operator=(result&& res) noexcept
 {
     //清理
-    free_result();
+    free();
     move_result(std::move(res));
     return *this;
 }
@@ -216,7 +216,7 @@ void result::save_result(MYSQL_RES* res)
 }
 
 //如果已经有结果集, 释放原有的结果集,
-void result::free_result()
+void result::free()
 {
     //如果已经有结果集, 释放原有的结果集,
     if (nullptr != mysql_result_)

@@ -108,7 +108,7 @@ class config_table
 {
 public:
 
-    config_table();
+    config_table() = default;
     ~config_table();
 
 protected:
@@ -222,9 +222,11 @@ protected:
 public:
 
     //! SQL语句
-    char* sql_string_ = nullptr;
+    std::unique_ptr<char[]> sql_string_{ new char[MAX_SQLSTRING_LEN] };
     //!
-    zce::sqlite::connect* sqlite_hdl_ = nullptr;
+    zce::sqlite::connect sqlite_hdl_;
+    //!
+    zce::sqlite::command sqlite_cmd_;
 };
 } //namespace zce
 

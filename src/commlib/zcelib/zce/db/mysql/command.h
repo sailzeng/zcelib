@@ -170,7 +170,7 @@ public:
     }
 
     //! bind 函数，如果没有特殊说明，既可以用于绑定参数，也可以用于绑定结果,
-    //! 绑定数值类型
+    //! 绑定数值类型 id 从0开始，
     void tie(size_t id, bool& val);
     void tie(size_t id, char& val);
     void tie(size_t id, short& val);
@@ -265,21 +265,8 @@ public:
                 size_t& num_affect,
                 zce::mysql::result& my_res);
 
+    //! 执行SQL语句，什么都不管的那种，DDL
     int execute(std::string_view sqlcmd);
-
-    /*!
-    * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
-    * @return     int         int  0成功，-1失败
-    * @param[out] num_affect  影响的数据条数，或者返回结果的条数
-    * @param[out] lastid      最后的插入ID是什么，
-    * @param[out] my_res      SQL执行后的结果集合
-    * @param[out] use_result  是否使用mysql_use_result 取结果，默认为false，（需要多次交互）
-    *                         默认使用store mysql_store_result 方式使用什么方式获得结果，,
-    */
-    int get_result(size_t* num_affect,
-                   size_t* last_id,
-                   zce::mysql::result* my_res,
-                   bool use_result = false);
 
     /*!
     * @brief 使用mysql_use_result取回结果集合，一次取一行
@@ -429,6 +416,21 @@ public:
     //! STMT 的清理
     void stmt_clear();
 
+protected:
+
+    /*!
+    * @brief      执行SQL语句,内部的基础函数,让大家共同调用的基础函数
+    * @return     int         int  0成功，-1失败
+    * @param[out] num_affect  影响的数据条数，或者返回结果的条数
+    * @param[out] lastid      最后的插入ID是什么，
+    * @param[out] my_res      SQL执行后的结果集合
+    * @param[out] use_result  是否使用mysql_use_result 取结果，默认为false，（需要多次交互）
+    *                         默认使用store mysql_store_result 方式使用什么方式获得结果，,
+    */
+    int get_result(size_t& num_affect,
+                   size_t* last_id,
+                   zce::mysql::result* my_res,
+                   bool use_result = false);
 public:
 
     /*!

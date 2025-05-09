@@ -361,7 +361,7 @@ int command::execute(std::string_view sqlcmd,
     int ret = 0;
     if ((ret = execute(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect, last_id, nullptr, false);
+        ret = get_result(num_affect, last_id, nullptr, false);
     }
     return ret;
 }
@@ -375,7 +375,7 @@ int command::execute(std::string_view sqlcmd,
     int ret = 0;
     if ((ret = execute(sqlcmd)) == 0)
     {
-        ret = get_result(&num_affect, nullptr, &my_res, false);
+        ret = get_result(num_affect, nullptr, &my_res, false);
     }
     return ret;
 }
@@ -400,7 +400,7 @@ int command::execute(std::string_view sqlcmd)
     return 0;
 }
 
-int command::get_result(size_t* num_affect,
+int command::get_result(size_t& num_affect,
                         size_t* last_id,
                         zce::mysql::result* my_res,
                         bool use_result)
@@ -433,14 +433,11 @@ int command::get_result(size_t* num_affect,
         my_res->save_result(res);
     }
     //执行SQL命令影响了多少行,如果是查询语句，mysql_affected_rows 必须在转储结果集后,所以你要注意输入的参数
-    if (num_affect)
-    {
-        *num_affect = (uint64_t) ::mysql_affected_rows(mysql_);
-        //注意如果调用的是mysql_use_result,num_affect 不是总数，而只是1
-    }
+    num_affect = (size_t) ::mysql_affected_rows(mysql_);
+    //注意如果调用的是mysql_use_result,num_affect 不是总数，而只是1
     if (last_id)
     {
-        *last_id = (uint64_t) ::mysql_insert_id(mysql_);
+        *last_id = (size_t) ::mysql_insert_id(mysql_);
     }
     return 0;
 }

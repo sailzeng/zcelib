@@ -206,7 +206,7 @@ public:
     /*!
     * @brief      如果已经有结果集, 释放原有的结果集,
     */
-    void free_result();
+    void free();
 
     /*!
     * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵

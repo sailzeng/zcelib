@@ -60,7 +60,7 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
         return -1;
     }
     zce::sqlite::command stmt(&hdl);
-    ret = stmt.prepare("REPLACE INTO ofo(id,name,age,address,salary) VALUES(?,?,?,?,?)");
+    ret = stmt.stmt_prepare("REPLACE INTO ofo(id,name,age,address,salary) VALUES(?,?,?,?,?)");
     if (ret != 0)
     {
         return -1;
@@ -97,7 +97,7 @@ int test_sqlite_stmt(int /*argc*/, char* /*argv */[])
     }
 
     stmt.reset();
-    ret = stmt.prepare("SELECT id,name,age,address,salary FROM ofo");
+    ret = stmt.stmt_prepare("SELECT id,name,age,address,salary FROM ofo");
     if (ret != 0)
     {
         return -1;

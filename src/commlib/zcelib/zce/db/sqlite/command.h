@@ -17,39 +17,36 @@
 #pragma once
 
 #include "zce/db/sqlite/connect.h"
+#include "zce/buffer/string_buffer.h"
 
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 
 namespace zce::sqlite
 {
 /*!
-@brief      SQlite STMT的句柄
+@brief      SQlite 的命令类，主要用于SQL的预处理和绑定参数
+@note       这个类是对sqlite3_stmt的封装，主要用于SQL的预处理和绑定参数，
             用于SQL的处理等，STMT是个好东东，就是理解上麻烦一点。
 */
 class command
 {
 public:
+    /*!
+    * @brief      构造函数
+    * @param      sqlite3_handler  SQlite3的DB封装句柄。
+    */
+    command(connect* sqlite3_handler);
+    ~command();
 
-    //!定义二进制数据结构，用于辅助绑定BLOB类型的参数数据
-    struct BLOB_bind
-    {
-        /*!
-        * @brief
-        * @param      bind_data 二进制数据BUFFER,const 常量数据
-        * @param      bind_size  数据长度，
-        */
-        BLOB_bind(const void* bind_data, int bind_size) :
-            bind_data_(bind_data)
-            , bind_size_(bind_size)
-        {
-        }
-        ~BLOB_bind() = default;
+    //避免拷贝
+    command(command&&) noexcept = delete;
+    command& operator=(command&&) noexcept = delete;
+    command(const command&) = delete;
+    command& operator=(const command&) = delete;
 
-        //!2进制数据的指针
-        const void* bind_data_;
-        //!二进制数据的长度,
-        int   bind_size_;
-    };
+public:
+
+    void reset(connect* sqlite3);
 
     //!定义二进制数据结构，用于辅助绑定BLOB类型的数据结果
     struct BLOB_column
@@ -64,47 +61,152 @@ public:
             , binary_len_(binary_len)
         {
         }
-        ~BLOB_column()
-        {
-        }
+        ~BLOB_column() = default;
 
         //!2进制数据的指针
-        void* binary_data_;
+        void* binary_data_ = nullptr;
         //!二进制数据的长度,注意绑定结果时，这个数值座位结果绑定的时候，会辅助返回长度
-        int* binary_len_;
+        int* binary_len_ = nullptr;
     };
 
-public:
     /*!
-    * @brief      构造函数
-    * @param      sqlite3_handler  SQlite3的DB封装句柄。
+    * @brief      对于SQL语句的?参数，进行绑定，
+    * @tparam     T 绑定的参数类型
+    * @return     int       返回 0 表示成功，
+    * @param      id        绑定的下标，从0开始,注意从0开始是为了内部统一，以及和C语言的习惯，
+                            而SQLite的sqlite3_bind_xxx函数都是从1开始的，我们内部统一+1
+    * @param      val       SQL语句绑定的参数  id 0->$1 , id 1->$2
+    * @note       SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
+    *             SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
+    *             如需要bind blob数据，使用string_buf
     */
-    command(connect* sqlite3_handler);
-    /*!
-    * @brief      析构函数
-    */
-    ~command();
-
-public:
+    int bind(size_t id, const bool& val);
+    int bind(size_t id, const char& val);
+    int bind(size_t id, const short& val);
+    int bind(size_t id, const int& val);
+    int bind(size_t id, const long& val);
+    int bind(size_t id, const long long& val);
+    int bind(size_t id, const unsigned char& val);
+    int bind(size_t id, const unsigned short& val);
+    int bind(size_t id, const unsigned int& val);
+    int bind(size_t id, const unsigned long& val);
+    int bind(size_t id, const unsigned long long& val);
+    int bind(size_t id, const float& val);
+    int bind(size_t id, const double& val);
+    int bind(size_t id, const char* val);
+    //string , string_view 作为文本绑定
+    int bind(size_t id, const std::string& val);
+    int bind(size_t id, const std::string_view& val);
+    //char_buf,作为二进制数据绑定
+    int bind(size_t id, const zce::string_buf& val);
 
     /*!
     * @brief      预处理SQL语句
     * @return     int
-    * @param      sql_string
+    * @param      sqlcmd
     */
-    int prepare(const char* sql_string);
+    int stmt_prepare(std::string_view sqlcmd);
+
+    /*!
+    * @brief      STMT 分析SQL，绑定参数和结果，
+    * @return     int
+    * @param      sql_cmd 执行的SQL
+    * @param      param_num 绑定参数数量，bind_data的数量必须大于等于param_num，
+    *                       多出部分视为绑定的结果
+    * @param      bind_data 绑定的参数和结果
+    * @note
+    */
+    template <typename... Args>
+    int stmt_prepare(std::string_view sql_cmd,
+                     size_t param_num,
+                     Args && ...args)
+    {
+        int ret = stmt_prepare(sql_cmd);
+        if (ret != 0)
+        {
+            return ret;
+        }
+
+        size_t args_num = sizeof...(Args);
+        assert(args_num == num_bind_);
+        if (args_num != num_bind_)
+        {
+            ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_stmt prepare error, args_num[%zu] != num_bind_[%zu].",
+                    args_num,
+                    num_bind_);
+            return -1;
+        }
+        if (num_bind_ > 0)
+        {
+            _tie_all_i(std::index_sequence_for<Args...>{}, args...);
+        }
+        return 0;
+    }
+
+    //!bind绑定参数,列号自动++
+    template <class bind_type>
+    command& operator << (bind_type val)
+    {
+        bind(current_bind_, val);
+        ++current_bind_;
+        return *this;
+    }
 
     /*!
     * @brief      重新初始化STMT的Handler
     * @return     int
     */
-    int reset();
+    int reset_stmt();
 
     /*!
     * @brief      销毁SQLITE3的STMT HANDLER,恢复初始化值等。
     * @return     int
     */
     int terminate();
+
+    //! 执行SQL语句，什么都不管的那种，DDL
+    int execute(std::string_view sqlcmd);
+
+    //! 执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
+    int execute(std::string_view sqlcmd,
+                size_t& num_affect,
+                uint64_t* last_id);
+
+    /*!
+    * @brief     执行SQL语句,SELECT语句,转储结果集合的那种,,（二进制的不行）
+    * @return     int 返回0表示成功，
+    * @param      sqlcmd SQL语句
+    * @param      num_affect 查询得到的条数
+    * @param      sqlite_res 执行的结果，返回值
+    * @note       内部会调用sqlite3_get_table,sqlite3_free_table，
+    *             这个函数在SQLite中不是被推荐的函数，建议使用时考虑一下，虽然其
+    *             执行查询，确实比sqlite3_exec，方便
+    *             另外，这个函数应该不能处理二进制数据，因为你无法得知结果长度
+    */
+    int execute(std::string_view sqlcmd,
+                size_t& num_affect,
+                zce::sqlite::result& sqlite_res);
+
+    const char* error_message()
+    {
+        return ::sqlite3_errmsg(sqlite3_);
+    }
+
+    //DB返回的错误ID
+    int error_code()
+    {
+        return ::sqlite3_errcode(sqlite3_);
+    }
+
+    //! 开始一个事务，Begin Transaction，返回0标识成功
+    int trans_begin();
+    //! 提交事务Commit Transaction,返回0标识成功
+    int trans_commit();
+    //! 回滚事务Rollback Transaction,返回0标识成功
+    int trans_rollback();
+
+    //! 关闭同步
+    int turn_off_synch();
 
     /*!
     * @brief      执行一次stmt SQL，，如果执行成功，返回0，
@@ -117,7 +219,7 @@ public:
     //!
     sqlite3_stmt* get_sqlite3_stmt_handler()
     {
-        return prepared_statement_;
+        return statement_;
     }
 
     /*!
@@ -128,7 +230,7 @@ public:
     */
     inline int column_bytes(int result_col)
     {
-        return ::sqlite3_column_bytes(prepared_statement_, result_col);
+        return ::sqlite3_column_bytes(statement_, result_col);
     }
 
     /*!
@@ -138,27 +240,14 @@ public:
     */
     int column_count()
     {
-        return ::sqlite3_column_count(prepared_statement_);
+        return ::sqlite3_column_count(statement_);
     }
 
     //!当前column的数据长度
     inline int cur_column_bytes()
     {
-        return ::sqlite3_column_bytes(prepared_statement_, current_col_);
+        return ::sqlite3_column_bytes(statement_, current_col_);
     }
-
-    /*!
-    * @brief      对于SQL语句的?参数，进行绑定，
-    * @tparam     T 绑定的参数类型
-    * @return     int       返回 0 表示成功，
-    * @param      bind_col 绑定的下标，从1开始
-    * @param      val       SQL语句绑定的参数
-    * @note       SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
-    *             SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
-    *             如需要bind blob数据，使用BLOB_bind
-    */
-    template <class T>
-    int bind(int bind_col, T val);
 
     /*!
     * @brief      取得列的结果
@@ -180,32 +269,31 @@ public:
         return *this;
     }
 
-    //!bind绑定参数,列号自动++
-    template <class bind_type>
-    command& operator << (bind_type val)
-    {
-        bind<bind_type>(current_bind_, val);
-        ++current_bind_;
-        return *this;
-    }
+protected:
 
-    //这两个类型的<<函数使用的是引用，所以重载一下，
-    command& operator << (const command::BLOB_bind& val);
-    command& operator << (const std::string& val);
+    template<std::size_t... Is, typename... Args>
+    void _tie_all_i(std::index_sequence<Is...>, Args && ...args)
+    {
+        //用,运算符展开参数 fold expression
+        (this->bind(Is, std::forward<Args>(args)), ...);
+    }
 
 protected:
 
-    //!SQLite的DB句柄
-    connect* sqlite_hdl_ = nullptr;
+    //! SQLite的DB句柄
+    sqlite3* sqlite3_ = nullptr;
 
-    //!SQLite原声的STMT的句柄
-    sqlite3_stmt* prepared_statement_ = nullptr;
+    //! SQLite原声的STMT的句柄
+    sqlite3_stmt* statement_ = nullptr;
+
+    //! 绑定的变量个数
+    size_t      num_bind_ = 0;
+
+    //!当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
+    int current_bind_ = 0;
 
     //!当前取结果的列,用于>>函数,从0开始
     int current_col_ = 0;
-
-    //!当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
-    int current_bind_ = 1;
 };
 }
 

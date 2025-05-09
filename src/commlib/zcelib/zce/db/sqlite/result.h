@@ -6,7 +6,7 @@
 
 namespace zce::sqlite
 {
-class connect;
+class command;
 /*!
 * @brief      get_table 函数返回的结果参数
 *             其实就是sqlite3_get_table 的结果参数的封装
@@ -14,7 +14,7 @@ class connect;
 */
 class result
 {
-    friend class zce::sqlite::connect;
+    friend class zce::sqlite::command;
 
 public:
 
@@ -25,45 +25,45 @@ public:
     bool is_null();
 
     //!释放结果集合
-    void free_result();
+    void free();
 
     /*!
     * @brief      返回一个字段的名称
     * @return     const char* 字段的名称
-    * @param      column 字段的列号,从1开始
+    * @param      column 字段的列号,从0开始
     */
     const char* field_name(size_t column);
 
     /*!
     * @brief      返回一个字段的数据，
     * @return     const char* 字段的数据
-    * @param      row    字段的列号,从1开始
-    * @param      column 字段的行号,从1开始
+    * @param      row    字段的列号,从0开始
+    * @param      column 字段的行号,从0开始
     */
-    const char* field_cstr(size_t row, size_t column);
+    const char* field_data(size_t row, size_t column);
 
     /*!
     * @brief      根据类型，返回一个字段的数据，
     * @tparam     value_type
     * @return     value_type
-    * @param      row    字段的列号,从1开始
-    * @param      column 字段的行号,从1开始
+    * @param      row    字段的列号,从0开始
+    * @param      column 字段的行号,从0开始
     * @note
     */
     template <typename value_type>
-    value_type field_data(size_t row, size_t column)
+    value_type field(size_t row, size_t column)
     {
-        return zce::from_str_to<value_type>(result_[row * column_ + column - 1]);
+        return zce::from_str_to<value_type>(result_[(row + 1) * column_ + column]);
     }
 
     //!行的数量
-    inline int row_number()
+    inline size_t num_of_rows()
     {
         return row_;
     }
 
     //!列的数量
-    inline int column_number()
+    inline size_t num_of_fields()
     {
         return column_;
     }
@@ -72,11 +72,11 @@ protected:
 
     //! Results of the query
     char** result_ = nullptr;
-    //! Number of result rows written here ，row_也是从1开始
+    //! Number of result rows written here ，
     //! 使用int的原因是内部函数用的int
     int row_ = 0;
 
-    //! Number of result columns written here ,column_ 从1开始
+    //! Number of result columns written here ,
     int column_ = 0;
 };
 }
