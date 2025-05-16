@@ -5,14 +5,14 @@ ZCE_HANDLE file_handle = ZCE_INVALID_HANDLE;
 void on_writefile(zce::aio::AIO_ATOM* ahdl)
 {
     auto fhdl = (zce::aio::FS_ATOM*)(ahdl);
-    std::cout << "on_writefile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_len_ << std::endl;
+    std::cout << "on_writefile,reuslt:" << fhdl->sq_result_ << " count:" << fhdl->result_len_ << std::endl;
 }
 
 void on_readfile(zce::aio::AIO_ATOM* ahdl)
 {
     auto fhdl = (zce::aio::FS_ATOM*)(ahdl);
-    std::cout << "on_readfile,reuslt:" << fhdl->result_ << " count:" << fhdl->result_len_ << std::endl;
-    if (fhdl->result_ == 0 && *fhdl->result_len_ > 0)
+    std::cout << "on_readfile,reuslt:" << fhdl->sq_result_ << " count:" << fhdl->result_len_ << std::endl;
+    if (fhdl->sq_result_ == 0 && *fhdl->result_len_ > 0)
     {
         if (*fhdl->result_len_ < 1024)
         {

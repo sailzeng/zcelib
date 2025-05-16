@@ -1,10 +1,11 @@
 #include "zce/predefine.h"
 #include "zce/string/url.h"
 
-namespace
+namespace zce
 {
+
 // URL编码函数：将保留字符转换为 %XX 格式
-std::string url_encode(const std::string& input)
+std::string url::url_encode(const std::string& input)
 {
     std::ostringstream oss;
     for (unsigned char c : input)
@@ -24,7 +25,7 @@ std::string url_encode(const std::string& input)
 }
 
 // URL解码函数：将 %XX 转换为原字符
-std::string url_decode(const std::string& input)
+std::string url::url_decode(const std::string& input)
 {
     std::ostringstream oss;
     for (size_t i = 0; i < input.length(); ++i)
@@ -57,25 +58,27 @@ std::string url_decode(const std::string& input)
     return oss.str();
 }
 
-std::map<std::string, std::string> regex_queryparams(const std::string& query)
+int url::regex_queryparams(std::string_view query)
 {
-    std::map<std::string, std::string> result;
-    std::regex pair_regex(R"(([^=&]+)=?([^&]*)?)");
-    auto begin = std::sregex_iterator(query.begin(), query.end(), pair_regex);
-    auto end = std::sregex_iterator();
 
-    for (auto it = begin; it != end; ++it)
-    {
-        std::string key = url_decode((*it)[1]);
-        std::string value = url_decode((*it)[2]);
-        result[key] = value;
+    std::istringstream query_stream(query.data());
+    std::string key_value_pair;
+
+    while (std::getline(query_stream, key_value_pair, '&')) {
+        auto pos = key_value_pair.find('=');
+        if (pos != std::string::npos) {
+            std::string key = url_decode(key_value_pair.substr(0, pos));
+            std::string value = url_decode(key_value_pair.substr(pos + 1));
+            query_params_[key] = value;
+        } else {
+            query_params_[url_decode(key_value_pair)] = "";
+        }
     }
 
-    return result;
+    return 0;
 }
 
-int regex_url_str(const char* strurl,
-                  zce::url purl)
+int url::regex_urlstr(std::string_view strurl)
 {
     const std::string URL_SCHEME_REGEX = R"((^(\w+):\/\/)";
     const std::string URL_AUTHORITY_REGEX = R"((?:([^:@\/\[\]]+)(?::([^@\/\[\]]*))?@))";
@@ -91,33 +94,33 @@ int regex_url_str(const char* strurl,
 
     std::regex url_regex(URL_PATTERN);
     std::cmatch match;
-    if (!std::regex_match(strurl, match, url_regex))
+    if (!std::regex_match(strurl.data(), match, url_regex))
     {
         return -1;
     }
 
-    purl.scheme_ = match[1];
+    scheme_ = match[1];
     if (match[2].matched)
     {
-        purl.user_ = match[2].str();
+        user_ = match[2].str();
     }
     if (match[3].matched)
     {
-        purl.authority_ = match[3].str();
+        authority_ = match[3].str();
     }
-    purl.host_ = match[4];
+    host_ = match[4];
     if (match[5].matched)
     {
-        purl.port = std::stoi(match[5].str());
+        port = std::stoi(match[5].str());
     }
-    purl.path_ = match[6].matched ? match[6].str() : "/";
+    path_ = match[6].matched ? match[6].str() : "/";
     if (match[7].matched)
     {
-        purl.query_ = match[7].str();
+        query_ = match[7].str();
     }
     if (match[8].matched)
     {
-        purl.fragment_ = match[8].str();
+        fragment_ = match[8].str();
     }
     return 0;
 }

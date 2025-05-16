@@ -581,13 +581,13 @@ int command::stmt_fetch_next_row() const
 }
 
 //用bind_data取出一列的数据
-int command::stmt_fetch_column(size_t column,
+int command::stmt_fetch_column(size_t field,
                                size_t offset,
                                zce::mysql::bind* bind_colum) const
 {
     int tmpret = ::mysql_stmt_fetch_column(stmt_,
                                            bind_colum->get_stmt_bind(),
-                                           static_cast<unsigned int>(column),
+                                           static_cast<unsigned int>(field),
                                            static_cast<unsigned long>(offset));
     if (0 != tmpret)
     {

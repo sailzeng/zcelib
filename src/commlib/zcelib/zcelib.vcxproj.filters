@@ -377,6 +377,9 @@
     <ClCompile Include="zce\string\url.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\string\string_map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -875,6 +878,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\url.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\string\string_map.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

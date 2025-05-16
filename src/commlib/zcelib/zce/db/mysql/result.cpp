@@ -8,66 +8,66 @@ namespace zce::mysql
 {
 //=====================================================================================
 //根据字段列ID,得到字段值
-const char* cursor::field_data(size_t colum) const
+const char* cursor::field_data(size_t col) const
 {
     // Check if cursor_row_ is null before dereferencing
-    ZCE_ASSERT(cursor_row_ && colum < num_field_);
-    if (cursor_row_ == nullptr || colum >= num_field_)
+    ZCE_ASSERT(cursor_row_ && col < num_field_);
+    if (cursor_row_ == nullptr || col >= num_field_)
     {
         ZCE_ASSERT(false);
         return nullptr;
     }
-    return cursor_row_[colum];
+    return cursor_row_[col];
 }
 
 //根据字段列ID,得到字段值的指针，长度你自己保证
-int cursor::field_data(size_t colum, char* pfdata) const
+int cursor::field_data(size_t col, char* pfdata) const
 {
-    if (cursor_row_ == nullptr || colum >= num_field_ || pfdata == nullptr)
+    if (cursor_row_ == nullptr || col >= num_field_ || pfdata == nullptr)
     {
         ZCE_ASSERT(false);
         return -1;
     }
 
-    memcpy(pfdata, cursor_row_[colum], fields_len_[colum]);
+    memcpy(pfdata, cursor_row_[col], fields_len_[col]);
     return 0;
 }
 
 //根据字段顺序ID,得到字段表结构定义的类型
-enum_field_types cursor::field_type(size_t colum) const
+enum_field_types cursor::field_type(size_t col) const
 {
-    ZCE_ASSERT(cursor_row_ && colum < num_field_);
-    if (cursor_row_ == nullptr || colum >= num_field_)
+    ZCE_ASSERT(cursor_row_ && col < num_field_);
+    if (cursor_row_ == nullptr || col >= num_field_)
     {
         return MYSQL_TYPE_NULL;
     }
 
-    return mysql_fields_[colum].type;
+    return mysql_fields_[col].type;
 }
 
 //根据Field ID 得到此列值的实际长度
-size_t cursor::field_length(size_t colum) const
+size_t cursor::field_length(size_t col) const
 {
-    ZCE_ASSERT(cursor_row_ && colum < num_field_);
-    if (cursor_row_ == nullptr || colum >= num_field_)
+    ZCE_ASSERT(cursor_row_ && col < num_field_);
+    if (cursor_row_ == nullptr || col >= num_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
     }
-    return (size_t)fields_len_[colum];
+    return (size_t)fields_len_[col];
 }
 
 //根据字段的序列值得到字段值
-zce::mysql::field  cursor::get_field(size_t colum) const
+zce::mysql::field  cursor::get_field(size_t col) const
 {
-    ZCE_ASSERT(cursor_row_ && colum < num_field_);
-    if (cursor_row_ == nullptr || colum >= num_field_)
+    ZCE_ASSERT(cursor_row_ && col < num_field_);
+    if (cursor_row_ == nullptr || col >= num_field_)
     {
         return zce::mysql::field();
     }
-    return zce::mysql::field(cursor_row_[colum],
-                             fields_len_[colum],
-                             mysql_fields_[colum].type);
+    return zce::mysql::field(cursor_row_[col],
+                             fields_len_[col],
+                             mysql_fields_[col].type);
 }
 
 //! 清理
@@ -82,47 +82,47 @@ void cursor::clear()
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 template<>
-int cursor::field(size_t colum, char*& val) const
+int cursor::field(size_t col, char*& val) const
 {
-    ZCE_ASSERT(nullptr != cursor_row_ && colum <= num_field_ && nullptr != val);
+    ZCE_ASSERT(nullptr != cursor_row_ && col <= num_field_ && nullptr != val);
     //长度不包括结束符号
-    memcpy(val, cursor_row_[colum], fields_len_[colum]);
-    val[fields_len_[colum]] = '\0';
+    memcpy(val, cursor_row_[col], fields_len_[col]);
+    val[fields_len_[col]] = '\0';
     return 0;
 }
 
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 //考虑过对于unsigned char *做一些特别处理，后来还是算了,用BINARY去考虑了
 template<>
-int cursor::field(size_t colum, unsigned char*& val) const
+int cursor::field(size_t col, unsigned char*& val) const
 {
-    ZCE_ASSERT(nullptr != cursor_row_ && colum <= num_field_ && nullptr != val);
+    ZCE_ASSERT(nullptr != cursor_row_ && col <= num_field_ && nullptr != val);
 
     //长度不包括结束符号
-    memcpy(val, cursor_row_[colum], fields_len_[colum]);
-    val[fields_len_[colum]] = '\0';
+    memcpy(val, cursor_row_[col], fields_len_[col]);
+    val[fields_len_[col]] = '\0';
     return 0;
 }
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 template<>
-int cursor::field(size_t colum, zce::string_buf& val) const
+int cursor::field(size_t col, zce::string_buf& val) const
 {
-    ZCE_ASSERT(nullptr != cursor_row_ && colum < num_field_
-               && val.capacity() >= fields_len_[colum]);
+    ZCE_ASSERT(nullptr != cursor_row_ && col < num_field_
+               && val.capacity() >= fields_len_[col]);
 
     //长度不包括结束符号
-    val.assign(cursor_row_[colum], fields_len_[colum]);
+    val.assign(cursor_row_[col], fields_len_[col]);
     return 0;
 }
 
 template<>
-int cursor::field(size_t colum, zce::ztm& val) const
+int cursor::field(size_t col, zce::ztm& val) const
 {
     //为什么不直接用ztm的字符串转换函数呢，因为MYSQL_TIME的字符串转换有一些特殊地方，比如TIME
     //可能是HHH:MM:SS,而不是HH:MM:SS,所以直接用MYSQL_TIME的转换函数
     MYSQL_TIME mt;
-    int ret = zce::from_str<MYSQL_TIME>(cursor_row_[colum], mt);
+    int ret = zce::from_str<MYSQL_TIME>(cursor_row_[col], mt);
     if (ret != 0)
     {
         return ret;
@@ -227,7 +227,7 @@ void result::free()
 }
 
 //检索一个结果集合的下一行,最开始从0行开始
-bool result::cursor_fetch()
+bool result::cursor_next()
 {
     if (mysql_result_ == nullptr)
     {
@@ -278,29 +278,29 @@ bool result::cursor_seek(size_t row_id)
 }
 
 //根据字段顺序ID,得到表结构定义的字段长度
-size_t result::field_def_size(size_t colum) const
+size_t result::field_def_size(size_t col) const
 {
-    //检查结果集合为空,或者参数colum错误
-    if (mysql_result_ == nullptr && colum >= num_result_field_)
+    //检查结果集合为空,或者参数col错误
+    if (mysql_result_ == nullptr && col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
     }
 
-    return (size_t)mysql_fields_[colum].length;
+    return (size_t)mysql_fields_[col].length;
 }
 
 //根据字段顺序ID,得到字段表结构定义的类型
-enum_field_types result::field_type(size_t colum) const
+enum_field_types result::field_type(size_t col) const
 {
     //检查结果集合为空,或者参数nfield错误
-    if (mysql_fields_ == nullptr || colum >= num_result_field_)
+    if (mysql_fields_ == nullptr || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return MYSQL_TYPE_NULL;
     }
 
-    return mysql_fields_[colum].type;
+    return mysql_fields_[col].type;
 }
 
 //根据列名得到列ID,从0开始排序
@@ -321,22 +321,22 @@ size_t result::field_index(const char* fname) const
 
 //根据列Field ID 返回表定义列域名,列域名字,可能为空
 //计算得到的列的列名字也可能是空,
-const char* result::field_name(size_t colum) const
+const char* result::field_name(size_t col) const
 {
     //检查结果集合为空,或者参数nfield错误
-    if (mysql_result_ == nullptr || colum >= num_result_field_)
+    if (mysql_result_ == nullptr || col >= num_result_field_)
     {
         return nullptr;
     }
 
     //直接得到列域的名字
-    return mysql_fields_[colum].name;
+    return mysql_fields_[col].name;
 }
 
 //根据字段列ID,得到字段值
-const char* result::field_data(size_t row, size_t colum)
+const char* result::field_data(size_t row, size_t col)
 {
-    if (row >= num_result_row_ || colum >= num_result_field_)
+    if (row >= num_result_row_ || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return nullptr;
@@ -348,15 +348,15 @@ const char* result::field_data(size_t row, size_t colum)
             return nullptr;
         }
     }
-    return cursor_.cursor_row_[colum];
+    return cursor_.cursor_row_[col];
 }
 
 //根据字段列ID,得到字段值的指针，长度你自己保证
 int result::field_data(size_t row,
-                       size_t colum,
+                       size_t col,
                        char* pfdata)
 {
-    if (row >= num_result_row_ || colum >= num_result_field_)
+    if (row >= num_result_row_ || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -369,15 +369,15 @@ int result::field_data(size_t row,
         }
     }
     memcpy(pfdata,
-           cursor_.cursor_row_[colum],
-           cursor_.fields_len_[colum]);
+           cursor_.cursor_row_[col],
+           cursor_.fields_len_[col]);
     return 0;
 }
 
 //根据Field ID 得到此列值的实际长度
-size_t result::field_length(size_t row, size_t colum)
+size_t result::field_length(size_t row, size_t col)
 {
-    if (row >= num_result_row_ || colum >= num_result_field_)
+    if (row >= num_result_row_ || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
@@ -389,13 +389,13 @@ size_t result::field_length(size_t row, size_t colum)
             return 0;
         }
     }
-    return (size_t)cursor_.fields_len_[colum];
+    return (size_t)cursor_.fields_len_[col];
 }
 
 //根据字段的序列值得到字段值
-zce::mysql::field  result::get_field(size_t row, size_t colum)
+zce::mysql::field  result::get_field(size_t row, size_t col)
 {
-    if (row >= num_result_row_ || colum >= num_result_field_)
+    if (row >= num_result_row_ || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return zce::mysql::field();
@@ -408,9 +408,9 @@ zce::mysql::field  result::get_field(size_t row, size_t colum)
         }
     }
 
-    return zce::mysql::field(cursor_.cursor_row_[colum],
-                             cursor_.fields_len_[colum],
-                             mysql_fields_[colum].type);
+    return zce::mysql::field(cursor_.cursor_row_[col],
+                             cursor_.fields_len_[col],
+                             mysql_fields_[col].type);
 }
 }
 

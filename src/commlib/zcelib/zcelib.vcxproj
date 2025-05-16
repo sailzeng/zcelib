@@ -159,6 +159,7 @@
     <ClCompile Include="zce\net\dns_resolve.cpp" />
     <ClCompile Include="zce\net\ping.cpp" />
     <ClCompile Include="zce\net\sock5_client.cpp" />
+    <ClCompile Include="zce\string\string_map.cpp" />
     <ClCompile Include="zce\string\url.cpp" />
     <ClCompile Include="zce\os_adapt\netdb.cpp" />
     <ClCompile Include="zce\pool\chunk_pool.cpp" />
@@ -247,6 +248,7 @@
     <ClCompile Include="zce\db\sqlite\command.cpp" />
     <ClCompile Include="zce\string\format.cpp" />
     <ClCompile Include="zce\string\time.cpp" />
+    <ClInclude Include="zce\string\string_map.h" />
     <ClInclude Include="zce\string\url.h" />
     <ClInclude Include="zce\string\time.h" />
     <ClCompile Include="zce\string\to_string.cpp" />

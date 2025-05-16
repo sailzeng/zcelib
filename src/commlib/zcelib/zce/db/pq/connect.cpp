@@ -34,11 +34,11 @@ int connect::connect_by_info(const char* conninfo)
     return 0;
 }
 
-int connect::connect_by_host(const char* host_name,
-                             const unsigned int port,
-                             const char* user,
-                             const char* pwd,
-                             const char* db)
+int connect::connect_host(const char* host_name,
+                          const unsigned int port,
+                          const char* user,
+                          const char* pwd,
+                          const char* db)
 {
     if (host_name == nullptr)
     {

@@ -124,7 +124,7 @@ public:
     //!
     std::function<void(AIO_ATOM*)> call_back_;
     //!结果
-    int result_ = -1;
+    int sq_result_ = -1;
 };
 
 //=========================================================================

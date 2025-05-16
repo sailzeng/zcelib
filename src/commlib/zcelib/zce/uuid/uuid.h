@@ -18,11 +18,11 @@ struct UUID64_16_48
     uint64_t       data2_ : 48;
 };
 
-struct UUID64_16_16_32
+struct UUID64_16_32_16
 {
     uint64_t       data1_ : 16;
-    uint64_t       data2_ : 16;
-    uint64_t       data3_ : 32;
+    uint64_t       data2_ : 32;
+    uint64_t       data3_ : 16;
 };
 
 /*!
@@ -35,6 +35,26 @@ struct UUID64_16_16_32
 class uuid64
 {
 public:
+
+    enum FMT
+    {
+        FMT_INVALID = -1,
+        FMT_64,
+        FMT_32_32,
+        FMT_16_48,
+        FMT_16_32_16,
+        FMT_COUNTER
+    };
+
+    /// UUID64 string lengths for different formats
+    static constexpr size_t UUID64_STR_LEN[(size_t)FMT_COUNTER] =
+    {
+        16, // FMT_64
+        17, // FMT_32_32
+        17, // FMT_16_48
+        18  // FMT_16_32_16
+    };
+
     ///构造函数
     uuid64() = default;
     ///析构函数
@@ -48,8 +68,14 @@ public:
     /// 转移成一个uint64_t的结构
     operator uint64_t();
 
-    /// 转换为字符串
-    const char* to_str(char* buffer, size_t buf_len, size_t& use_buf) const;
+    //! 转换为字符串
+    const char* to_str(char* buffer,
+                       size_t buf_len,
+                       size_t& use_buf,
+                       zce::uuid64::FMT fmt = FMT_16_32_16) const;
+
+    //! 从字符串转换为UUID64，返回EOF表示失败
+    int from_str(char* buffer);
 
 public:
 
@@ -63,12 +89,12 @@ public:
         ///16bit+48Bit的表示方法
         UUID64_16_48  u_16_48_;
         ///16+16+32bit的表示方法
-        UUID64_16_16_32 u_16_16_32_;
+        UUID64_16_32_16 u_16_32_16_;
     };
 
 public:
 
-    ///UUID输出字符串的最大长度，不包括'\0',格式XXXXXXXX-XXXXXXXX
+    
     static const size_t   LEN_OF_ZCE_UUID64_STR = 17;
 };
 
@@ -116,6 +142,27 @@ struct UUID128_32_16_16_64
 class uuid128
 {
 public:
+    enum FMT
+    {
+        FMT_INVALID = -1,
+        FMT_32_32_32_32,
+        FMT_64_64,
+        FMT_32_32_64,
+        FMT_32_16_16_16_48,
+        FMT_32_16_16_64,
+        FMT_COUNTER
+    };
+
+    /// UUID64 string lengths for different formats
+    static constexpr size_t UUID128_STR_LEN[(size_t)FMT_COUNTER] =
+    {
+        35, // FMT_32_32_32_32
+        33, // FMT_64_64
+        34, // FMT_32_32_64
+        36,  // FMT_32_16_16_16_48
+        35, // FMT_32_16_16_64
+    };
+
     ///构造函数
     uuid128();
     ///析构函数
@@ -127,7 +174,11 @@ public:
     bool operator == (const uuid128& others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
-    const char* to_str(char* buffer, size_t buf_len, size_t& use_buf) const;
+    const char* to_str(char* buffer, size_t buf_len, size_t& use_buf,
+                       zce::uuid128::FMT fmt = FMT_32_16_16_16_48) const;
+
+    //! 以UUID8-4-4-4-12的格式读取字符串,返回EOF表示失败
+    int from_str(char* buffer);
 
 public:
     ///UUID的字符串表示的长度
@@ -142,13 +193,13 @@ public:
         uint8_t                  u_16uint8_[16];
         ///4个32为字节的组成
         uint32_t                 u_4uint32_[4];
-        ///2个64为字节的组成
+        ///2个64为字节的组成 32+1
         uint64_t                 u_2uint64_[2];
         ///32位整数+32位整数+64位整数
         UUID128_32_32_64         u_32_32_64_;
-        ///标准的UUID的标识方法
+        ///标准的UUID的标识方法 32+ 4
         UUID128_32_16_16_16_48   u_32_16_16_16_48_;
-        ///微软的GUID的标识方法
+        ///微软的GUID的格式，（非标准）
         UUID128_32_16_16_64      u_32_16_16_64_;
     };
 };

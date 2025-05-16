@@ -59,10 +59,10 @@ int benchmark_db_query(const char* sql, size_t& num_affect, uint64_t* insert_id,
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
-        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-                                           MYSQL_PORT,
-                                           DB_BENCHMARK_USER,
-                                           DB_BENCHMARK_PASSWORD);
+        ret = g_db_connect.connect_host(DB_BENCHMARK_IP,
+                                        MYSQL_PORT,
+                                        DB_BENCHMARK_USER,
+                                        DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -99,10 +99,10 @@ int benchmark_db_query(const char* sql,
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
-        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-                                           MYSQL_PORT,
-                                           DB_BENCHMARK_USER,
-                                           DB_BENCHMARK_PASSWORD);
+        ret = g_db_connect.connect_host(DB_BENCHMARK_IP,
+                                        MYSQL_PORT,
+                                        DB_BENCHMARK_USER,
+                                        DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -139,10 +139,10 @@ int benchmark_db_query(const char* sql,
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
-        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,
-                                           MYSQL_PORT,
-                                           DB_BENCHMARK_USER,
-                                           DB_BENCHMARK_PASSWORD);
+        ret = g_db_connect.connect_host(DB_BENCHMARK_IP,
+                                        MYSQL_PORT,
+                                        DB_BENCHMARK_USER,
+                                        DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
@@ -264,7 +264,7 @@ int benchmark_select_record(int table_id,
             return -1;
         }
         size_t rowid = 0;
-        while (db_result.cursor_fetch())
+        while (db_result.cursor_next())
         {
             TEST1_TABLE r1;
             db_result.field(rowid, 0, r1.f1_);

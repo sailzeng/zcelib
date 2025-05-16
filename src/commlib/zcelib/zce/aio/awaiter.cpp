@@ -6,17 +6,17 @@ namespace zce::aio
 bool awaiter_aio::await_ready()
 {
     AIO_ATOM* atom_base = (AIO_ATOM*)request_atom_.get();
-    if(atom_base->aio_type_ >= AIO_TYPE::AIO_THREAD_BEGIN &&
+    if (atom_base->aio_type_ >= AIO_TYPE::AIO_THREAD_BEGIN &&
         atom_base->aio_type_ <= AIO_TYPE::AIO_THREAD_END)
     {
         return aio_thread_await_ready();
     }
-    else if(atom_base->aio_type_ >= AIO_TYPE::AIO_EVENT_BEGIN &&
+    else if (atom_base->aio_type_ >= AIO_TYPE::AIO_EVENT_BEGIN &&
              atom_base->aio_type_ <= AIO_TYPE::AIO_EVENT_END)
     {
         return event_await_ready();
     }
-    else if(atom_base->aio_type_ >= AIO_TYPE::AIO_TIMER_BEGIN &&
+    else if (atom_base->aio_type_ >= AIO_TYPE::AIO_TIMER_BEGIN &&
              atom_base->aio_type_ <= AIO_TYPE::AIO_TIMER_END)
     {
         return timer_out_ready();
@@ -37,14 +37,14 @@ bool awaiter_aio::aio_thread_await_ready()
                                       std::placeholders::_1);
     //将一个文件操作句柄放入请求队列
     bool succ_req = worker_->request(std::move(request_atom_));
-    if(succ_req)
+    if (succ_req)
     {
         return false;
     }
     else
     {
         ret_result_ = -1;
-        atom_base->result_ = -1;
+        atom_base->sq_result_ = -1;
         return true;
     }
 }
@@ -58,7 +58,7 @@ bool awaiter_aio::event_await_ready()
                                     std::placeholders::_1));
     int ret = 0;
     bool alread_do = false;
-    if(ev_atom->aio_type_ == AIO_TYPE::EVENT_CONNECT)
+    if (ev_atom->aio_type_ == AIO_TYPE::EVENT_CONNECT)
     {
         ret = er_connect(worker_,
                          ev_atom->handle_,
@@ -67,7 +67,7 @@ bool awaiter_aio::event_await_ready()
                          &alread_do,
                          ev_atom->call_back_);
     }
-    else if(ev_atom->aio_type_ == AIO_TYPE::EVENT_ACCEPT)
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_ACCEPT)
     {
         ret = er_accept(worker_,
                         ev_atom->handle_,
@@ -77,7 +77,7 @@ bool awaiter_aio::event_await_ready()
                         &alread_do,
                         ev_atom->call_back_);
     }
-    else if(ev_atom->aio_type_ == AIO_TYPE::EVENT_RECV)
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_RECV)
     {
         ret = er_recv(worker_,
                       ev_atom->handle_,
@@ -87,7 +87,7 @@ bool awaiter_aio::event_await_ready()
                       &alread_do,
                       ev_atom->call_back_);
     }
-    else if(ev_atom->aio_type_ == AIO_TYPE::EVENT_SEND)
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_SEND)
     {
         ret = er_send(worker_,
                       ev_atom->handle_,
@@ -97,7 +97,7 @@ bool awaiter_aio::event_await_ready()
                       &alread_do,
                       ev_atom->call_back_);
     }
-    else if(ev_atom->aio_type_ == AIO_TYPE::EVENT_RECVFROM)
+    else if (ev_atom->aio_type_ == AIO_TYPE::EVENT_RECVFROM)
     {
         ret = er_recvfrom(worker_,
                           ev_atom->handle_,
@@ -110,10 +110,10 @@ bool awaiter_aio::event_await_ready()
                           ev_atom->call_back_);
     }
 
-    if(ret != 0 || (ret == 0 && alread_do == true))
+    if (ret != 0 || (ret == 0 && alread_do == true))
     {
         ret_result_ = -1;
-        ev_atom->result_ = -1;
+        ev_atom->sq_result_ = -1;
         //返回true其实是表示已经完成，不挂起
         return true;
     }
@@ -131,7 +131,7 @@ bool awaiter_aio::timer_out_ready()
                                     this,
                                     std::placeholders::_1));
     int ret = 0;
-    if(to_atom->aio_type_ == AIO_TYPE::TIMER_SCHEDULE)
+    if (to_atom->aio_type_ == AIO_TYPE::TIMER_SCHEDULE)
     {
         ret = tmo_schedule(worker_,
                            to_atom->timeout_tv_,
@@ -139,10 +139,10 @@ bool awaiter_aio::timer_out_ready()
                            to_atom->trigger_tv_,
                            to_atom->call_back_);
     }
-    if(ret != 0)
+    if (ret != 0)
     {
         ret_result_ = -1;
-        to_atom->result_ = -1;
+        to_atom->sq_result_ = -1;
         //返回true其实是表示已经完成，不挂起
         return true;
     }

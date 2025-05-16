@@ -115,13 +115,13 @@ public:
     //! 回滚事务Rollback Transaction,返回0标识成功
     int trans_rollback();
 
-    //! 执行SQL语句，什么都不管的那种，DDL
+    //! 执行DDL SQL语句，什么都不管的那种，
     int execute(std::string_view sqlcmd);
-    //! 执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
+    //! 执行DML SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,
                 uint64_t* last_id);
-    //! 执行SQL语句,SELECT语句,转储结果集合的那种,
+    //! 执行DQL SQL语句,SELECT语句,转储结果集合的那种,
     int execute(std::string_view sqlcmd,
                 size_t& num_affect,
                 zce::pq::result& pq_res);

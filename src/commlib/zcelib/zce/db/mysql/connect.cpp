@@ -130,13 +130,13 @@ int connect::connect_i(CONNECT_BY by,
 }
 
 //连接数据服务器,通过IP地址，主机名称
-int connect::connect_by_host(const char* host_name,
-                             const unsigned int port,
-                             const char* user,
-                             const char* pwd,
-                             const char* db,
-                             unsigned int timeout,
-                             bool if_multi_sql)
+int connect::connect_host(const char* host_name,
+                          const unsigned int port,
+                          const char* user,
+                          const char* pwd,
+                          const char* db,
+                          unsigned int timeout,
+                          bool if_multi_sql)
 {
     return connect_i(CONNECT_BY::HOST,
                      host_name, nullptr, user, pwd, db, port, timeout,
@@ -144,12 +144,12 @@ int connect::connect_by_host(const char* host_name,
 }
 
 //连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
-int connect::connect_by_socketfile(const char* socket_file,
-                                   const char* user,
-                                   const char* pwd,
-                                   const char* db,
-                                   unsigned int timeout,
-                                   bool if_multi_sql)
+int connect::connect_socketfile(const char* socket_file,
+                                const char* user,
+                                const char* pwd,
+                                const char* db,
+                                unsigned int timeout,
+                                bool if_multi_sql)
 {
     return connect_i(CONNECT_BY::SOCKET_FILE,
                      nullptr, socket_file, user, pwd, db, 0, timeout,

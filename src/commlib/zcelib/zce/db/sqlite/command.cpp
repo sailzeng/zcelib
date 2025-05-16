@@ -340,10 +340,6 @@ int command::reset_stmt()
 int command::execute(std::string_view sqlcmd)
 {
     int ret = 0;
-    if (sqlcmd.empty())
-    {
-        return -1;
-    }
     char* err_msg = nullptr;
     ret = ::sqlite3_exec(sqlite3_,
                          sqlcmd.data(),
@@ -365,40 +361,22 @@ int command::execute(std::string_view sqlcmd)
     }
 }
 
-//! 执行SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
+//! 执行DML SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
 int command::execute(std::string_view sqlcmd,
                      size_t& num_affect,
                      uint64_t* last_id)
 {
-    int ret = 0;
-    if (sqlcmd.empty())
+    int ret = execute(sqlcmd);
+    if (ret != SQLITE_OK)
     {
-        return -1;
+        return ret;
     }
-    char* err_msg = nullptr;
-    ret = ::sqlite3_exec(sqlite3_,
-                         sqlcmd.data(),
-                         nullptr,
-                         nullptr,
-                         &err_msg);
-    if (ret == SQLITE_OK)
+    num_affect = sqlite3_changes(sqlite3_);
+    if (last_id)
     {
-        num_affect = sqlite3_changes(sqlite3_);
-        if (last_id)
-        {
-            *last_id = ::sqlite3_last_insert_rowid(sqlite3_);
-        }
-        return 0;
+        *last_id = ::sqlite3_last_insert_rowid(sqlite3_);
     }
-    else
-    {
-        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_exec exe sql [%s] fail.:[%d][%s].",
-                sqlcmd.data(),
-                ret,
-                err_msg);
-        ::sqlite3_free(err_msg);
-        return -1;
-    }
+    return 0;
 }
 
 //! 执行SQL语句,SELECT语句,转储结果集合的那种,
@@ -406,13 +384,18 @@ int command::execute(std::string_view sqlcmd,
                      size_t& num_affect,
                      zce::sqlite::result& sqlite_res)
 {
-    int ret = SQLITE_OK;
+    int ret = execute(sqlcmd);
+    if (ret != SQLITE_OK)
+    {
+        return ret;
+    }
+    zce::sqlite::result result;
     char* err_msg = nullptr;
     ret = ::sqlite3_get_table(sqlite3_,
                               sqlcmd.data(),
-                              &(sqlite_res.result_),
-                              &(sqlite_res.row_),
-                              &(sqlite_res.column_),
+                              &(result.sq_result_),
+                              &(result.num_result_row_),
+                              &(result.num_result_column_),
                               &(err_msg));
     if (ret != SQLITE_OK)
     {
@@ -422,7 +405,8 @@ int command::execute(std::string_view sqlcmd,
         ::sqlite3_free(err_msg);
         return -1;
     }
-    num_affect = sqlite_res.row_;
+    sqlite_res = std::move(result);
+    num_affect = result.num_result_row_;
     return 0;
 }
 
@@ -478,8 +462,46 @@ int command::stmt_prepare(std::string_view sqlcmd)
     return 0;
 }
 
+int command::stmt_execute(size_t& num_affect,
+                          uint64_t* last_id)
+{
+    //执行SQL
+    bool has_result = false;
+    int ret = stmt_execute(has_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    num_affect = sqlite3_changes(sqlite3_);
+    if (last_id)
+    {
+        *last_id = ::sqlite3_last_insert_rowid(sqlite3_);
+    }
+    return 0;
+}
+
+int command::stmt_execute(size_t& num_affect,
+                          zce::sqlite::stmt_result& sq_stmt_res)
+{   //执行SQL
+    bool has_result = false;
+    int ret = stmt_execute(has_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    num_affect = sqlite3_changes(sqlite3_);
+    if (has_result)
+    {
+        sq_stmt_res = statement_;
+    }
+    else
+    {
+    }
+    return 0;
+}
+
 //执行一次stmt SQL，如果执行成功，返回0，如果SQL有结果返回，has_result置为true
-int command::step(bool& has_result)
+int command::stmt_execute(bool& has_result)
 {
     has_result = false;
     //
@@ -498,12 +520,14 @@ int command::step(bool& has_result)
         has_result = false;
         return 0;
     }
-
-    //其他返回错误
-    ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",
-            error_code(),
-            error_message());
-    return -1;
+    else
+    {
+        //其他返回错误
+        ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",
+                error_code(),
+                error_message());
+        return -1;
+    }
 }
 
 //command& command::operator << (const command::BLOB_bind& val)
@@ -518,134 +542,6 @@ int command::step(bool& has_result)
 //    ++current_bind_;
 //    return *this;
 //}
-
-template<>
-void command::column(int result_col, char& val)
-{
-    val = static_cast<char>(::sqlite3_column_int(statement_, result_col));
-    return;
-}
-
-template<>
-void command::column(int result_col, short& val)
-{
-    val = static_cast<short>(::sqlite3_column_int(statement_,
-                             result_col));
-    return;
-}
-
-template<>
-void command::column(int result_col, int& val)
-{
-    val = ::sqlite3_column_int(statement_,
-                               result_col);
-    return;
-}
-
-template<>
-void command::column(int result_col, long& val)
-{
-    val = ::sqlite3_column_int(statement_,
-                               result_col);
-    return;
-}
-
-template<>
-void command::column(int result_col, long long& val)
-{
-    val = ::sqlite3_column_int64(statement_,
-                                 result_col);
-    return;
-}
-
-template<>
-void command::column(int result_col, unsigned char& val)
-{
-    val = static_cast<unsigned char>(::sqlite3_column_int(statement_,
-                                     result_col));
-    return;
-}
-
-template<>
-void command::column(int result_col, unsigned short& val)
-{
-    val = static_cast<unsigned short>(::sqlite3_column_int(statement_,
-                                      result_col));
-    return;
-}
-
-template<>
-void command::column(int result_col, unsigned int& val)
-{
-    val = static_cast<unsigned int>(sqlite3_column_int(statement_,
-                                    result_col));
-    return;
-}
-
-template<>
-void command::column(int result_col, unsigned long& val)
-{
-    val = static_cast<unsigned long>(sqlite3_column_int(statement_,
-                                     result_col));
-
-    return;
-}
-
-template<>
-void command::column(int result_col, unsigned long long& val)
-{
-    val = static_cast<unsigned long long> (sqlite3_column_int64(statement_,
-                                           result_col));
-    return;
-}
-
-template<>
-void command::column(int result_col, float& val)
-{
-    val = static_cast<float> (sqlite3_column_double(statement_,
-                              result_col));
-
-    return;
-}
-
-template<>
-void command::column(int result_col, double& val)
-{
-    val = sqlite3_column_double(statement_,
-                                result_col);
-    return;
-}
-
-template<>
-void command::column(int result_col, char* val)
-{
-    //Fisk这个变态让我改了地方，为了安全检查。
-    strncpy(val,
-            reinterpret_cast<const char*>(sqlite3_column_text(statement_,
-            result_col)),
-            static_cast<size_t>(sqlite3_column_bytes(statement_, result_col)));
-    return;
-}
-
-//二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-template<>
-void command::column(int result_col, command::BLOB_column& val)
-{
-    *val.binary_len_ = ::sqlite3_column_bytes(statement_, result_col);
-    //为了获取二进制数据，与zce::mysql::Result相对应,长度不+1
-    memcpy(val.binary_data_, ::sqlite3_column_blob(statement_, result_col),
-           *val.binary_len_);
-    return;
-}
-
-template<>
-void command::column(int result_col, std::string& val)
-{
-    val.assign(reinterpret_cast<const char*>(sqlite3_column_text(statement_,
-               result_col)),
-               ::sqlite3_column_bytes(statement_, result_col));
-    return;
-}
 }
 
 #endif //#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1

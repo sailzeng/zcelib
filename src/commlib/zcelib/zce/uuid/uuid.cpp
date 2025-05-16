@@ -30,21 +30,98 @@ bool uuid64::operator == (const uuid64& others) const
 }
 
 //转换为字符串
-const char* uuid64::to_str(char* buffer, size_t buf_len, size_t& use_buf) const
+const char* uuid64::to_str(char* buf, size_t buf_len, size_t& use_buf,
+                           zce::uuid64::FMT fmt) const
 {
+    static_assert(sizeof(uuid64) == 8);
     //如果传递的BUFFER空间不够，直接返回nullptr
-    if (buf_len < LEN_OF_ZCE_UUID64_STR + 1)
+    if (fmt < zce::uuid64::FMT_INVALID || fmt >= zce::uuid64::FMT_COUNTER)
     {
         return nullptr;
     }
+    if (buf_len < UUID64_STR_LEN[fmt] + 1)
+    {
+        return nullptr;
+    }
+    use_buf = 0;
+    int ret = 0;
+    if (fmt == zce::uuid64::FMT_64)
+    {
+        ret = snprintf(buf, buf_len, "%016" PRIx64,
+                       this->u_uint64_);
+    }
+    else if (fmt == zce::uuid64::FMT_32_32)
+    {
+        ret = snprintf(buf, buf_len, "%08x-%08x",
+                       this->u_2uint32_[1],
+                       this->u_2uint32_[0]);
+    }
+    else if (fmt == zce::uuid64::FMT_16_48)
+    {
+        ret = snprintf(buf, buf_len, "%04" PRIx64 "-%012" PRIx64,
+                       this->u_16_48_.data1_,
+                       this->u_16_48_.data2_);
+    }
+    else if (fmt == zce::uuid64::FMT_16_32_16)
+    {
+        ret = snprintf(buf, buf_len, "%04" PRIx64 "-%08" PRIx64 "-%04" PRIx64,
+                       this->u_16_32_16_.data1_,
+                       this->u_16_32_16_.data2_,
+                       this->u_16_32_16_.data3_);
+    }
+    else
+    {
+        assert(false);
+    }
 
-    int ret = snprintf(buffer, buf_len, "%08x-%08x", this->u_2uint32_[1], this->u_2uint32_[0]);
     if (ret < 0 || ret > static_cast<int>(buf_len))
     {
         return nullptr;
     }
-    use_buf = LEN_OF_ZCE_UUID64_STR;
-    return buffer;
+    use_buf = UUID64_STR_LEN[fmt];
+    return buf;
+}
+
+int uuid64::from_str(char* buf)
+{
+    size_t len = strlen(buf);
+    int ret = 0;
+    if (len >= UUID64_STR_LEN[zce::uuid64::FMT_16_32_16] && buf[4] == '-' &&
+        buf[13] == '-')
+    {
+        uint64_t data1 = 0, data2 = 0,data3= 0;
+        ret = sscanf(buf, "%04" PRIx64 "-%08" PRIx64 "-%04" PRIx64,
+                     &data1, &data2, &data3);
+        if (ret == 3)
+        {
+            this->u_16_32_16_.data1_ = data1;
+            this->u_16_32_16_.data2_ = data2;
+            this->u_16_32_16_.data3_ = data3;
+        }
+    }
+    else if (len >= UUID64_STR_LEN[zce::uuid64::FMT_16_48] && buf[4] == '-' )
+    {
+        uint64_t data1 = 0, data2 = 0;
+        ret = sscanf(buf, "%04" PRIx64 "-%012" PRIx64,
+               &data1,&data2);
+        if (ret == 2)
+        {
+            this->u_16_48_.data1_ = data1;
+            this->u_16_48_.data2_ = data2;
+        }
+    }
+    else if (len >= UUID64_STR_LEN[zce::uuid64::FMT_32_32] && buf[8] == '-')
+    {
+        ret = sscanf(buf, "%08x-%08x",
+                      &(this->u_2uint32_[1]),
+                      &(this->u_2uint32_[0]));
+    }
+    else
+    {
+        ret = sscanf(buf, "%016" PRIx64,
+                      &(this->u_uint64_));
+    }
+    return ret;
 }
 
 // 转移成一个uint64_t的结构
@@ -136,40 +213,139 @@ bool uuid128::operator == (const uuid128& others) const
 }
 
 //转换为字符串,这儿采用的格式是标准的8-4-4-4-12，而不是GUID的8-4-4-16的格式
-const char* uuid128::to_str(char* buffer,
+const char* uuid128::to_str(char* buf,
                             size_t buf_len,
-                            size_t& use_buf) const
+                            size_t& use_buf,
+                            zce::uuid128::FMT fmt) const
 {
-    //如果传递的BUFFER空间不够，干脆什么都不做,直接返回nullptr,长度要考虑'\0'
-    if (buf_len < LEN_OF_ZCE_UUID128_STR + 1)
+
+    static_assert(sizeof(uuid128) == 16);
+    //如果传递的BUFFER空间不够，直接返回nullptr
+    if (fmt < zce::uuid128::FMT_INVALID || fmt >= zce::uuid128::FMT_COUNTER)
     {
         return nullptr;
     }
-
-    //输出8-4-4-4-12的格式
-    int ret = snprintf(buffer, buf_len, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-                       this->u_16uint8_[15],
-                       this->u_16uint8_[14],
-                       this->u_16uint8_[13],
-                       this->u_16uint8_[12],
-                       this->u_16uint8_[11],
-                       this->u_16uint8_[10],
-                       this->u_16uint8_[9],
-                       this->u_16uint8_[8],
-                       this->u_16uint8_[7],
-                       this->u_16uint8_[6],
-                       this->u_16uint8_[5],
-                       this->u_16uint8_[4],
-                       this->u_16uint8_[3],
-                       this->u_16uint8_[2],
-                       this->u_16uint8_[1],
-                       this->u_16uint8_[0]);
+    if (buf_len < UUID128_STR_LEN[fmt] + 1)
+    {
+        return nullptr;
+    }
+    use_buf = 0;
+    int ret = 0;
+    if (fmt == zce::uuid128::FMT_32_32_32_32)
+    {
+        ret = snprintf(buf, buf_len, "%08x-%08x-%08x-%08x",
+                       this->u_4uint32_[3],
+                       this->u_4uint32_[2],
+                       this->u_4uint32_[1],
+                       this->u_4uint32_[0]);
+    }
+    else if (fmt == zce::uuid128::FMT_64_64)
+    {
+        ret = snprintf(buf, buf_len, "%016" PRIx64 "-%016" PRIx64,
+                       this->u_2uint64_[1],
+                       this->u_2uint64_[0]);
+    }
+    else if (fmt == zce::uuid128::FMT_32_32_64)
+    {
+        ret = snprintf(buf, buf_len, "%08x-%08x-%016" PRIx64,
+                       this->u_32_32_64_.data1_,
+                       this->u_32_32_64_.data2_,
+                       this->u_32_32_64_.data3_);
+    }
+    else if (fmt == zce::uuid128::FMT_32_16_16_16_48)
+    {
+        ret = snprintf(buf, buf_len, "%08" PRIx64 "-%04" PRIx64 "-%04" PRIx64 "-%04" PRIx64 "-%012" PRIx64,
+                       this->u_32_16_16_16_48_.data1_,
+                       this->u_32_16_16_16_48_.data2_,
+                       this->u_32_16_16_16_48_.data3_,
+                       this->u_32_16_16_16_48_.data4_,
+                       this->u_32_16_16_16_48_.data5_);
+    }
+    else if (fmt == zce::uuid128::FMT_32_16_16_64)
+    {
+        ret = snprintf(buf, buf_len, "%08" PRIx64 "-%04" PRIx64 "-%04" PRIx64 "-%016" PRIx64,
+                       this->u_32_16_16_64_.data1_,
+                       this->u_32_16_16_64_.data2_,
+                       this->u_32_16_16_64_.data3_,
+                       this->u_32_16_16_64_.data4_);
+    }
+    else
+    {
+        assert(false);
+    }
 
     if (ret < 0 || ret > static_cast<int>(buf_len))
     {
         return nullptr;
     }
-    use_buf = LEN_OF_ZCE_UUID128_STR;
-    return buffer;
+    use_buf = UUID128_STR_LEN[fmt];
+    return buf;
+
+
 }
+
+//! 以UUID8-4-4-4-12的格式读取字符串
+int uuid128::from_str(char* buf)
+{
+    size_t len = strlen(buf);
+    int ret = 0;
+    if (len >= UUID128_STR_LEN[zce::uuid128::FMT_32_16_16_16_48] && buf[8] == '-' &&
+        buf[13] == '-' && buf[18] == '-' && buf[23] == '-')
+    {
+        uint64_t data1 = 0, data2 = 0, data3 = 0, data4=0, data5 = 0;
+        ret = sscanf(buf, "%08" PRIx64 "-%04" PRIx64 "-%04" PRIx64 "-%04" PRIx64 "-%012" PRIx64,
+                     &data1, &data2, &data3, &data4, &data5);
+        if (ret == 5)
+        {
+            this->u_32_16_16_16_48_.data1_ = data1;
+            this->u_32_16_16_16_48_.data2_ = data2;
+            this->u_32_16_16_16_48_.data3_ = data3;
+            this->u_32_16_16_16_48_.data4_ = data4;
+            this->u_32_16_16_16_48_.data5_ = data5;
+        }
+    }
+    else if (len >= UUID128_STR_LEN[zce::uuid128::FMT_32_16_16_64] && buf[8] == '-' &&
+        buf[13] == '-' && buf[18] == '-' )
+    {
+        uint64_t data1 = 0, data2 = 0, data3 = 0, data4 = 0;
+        ret = sscanf(buf, "%08" PRIx64 "-%04" PRIx64 "-%04" PRIx64 "-%016" PRIx64,
+                     &data1, &data2, &data3, &data4);
+        if (ret == 4)
+        {
+            this->u_32_16_16_64_.data1_ = data1;
+            this->u_32_16_16_64_.data2_ = data2;
+            this->u_32_16_16_64_.data3_ = data3;
+            this->u_32_16_16_64_.data4_ = data4;
+        }
+    }
+    else if (len >= UUID128_STR_LEN[zce::uuid128::FMT_32_32_32_32] && buf[8] == '-' &&
+        buf[17] == '-')
+    {
+        ret = sscanf(buf, "%08x-%08x-%08x-%08x",
+                     &(this->u_4uint32_[3]),
+                     &(this->u_4uint32_[2]),
+                     &(this->u_4uint32_[1]),
+                     &(this->u_4uint32_[0]));
+    }
+    if (len >= UUID128_STR_LEN[zce::uuid128::FMT_32_32_64] && buf[8] == '-' &&
+        buf[17] == '-')
+    {
+        ret = sscanf(buf, "%08x-%08x-%016" PRIx64,
+                     &(this->u_32_32_64_.data1_),
+                     &(this->u_32_32_64_.data2_),
+                     &(this->u_32_32_64_.data3_));
+    }
+    if (len >= UUID128_STR_LEN[zce::uuid128::FMT_64_64] && buf[16] == '-')
+    {
+        ret = sscanf(buf, "%016" PRIx64 "-%016" PRIx64,
+                     &(this->u_2uint64_[1]),
+                     &(this->u_2uint64_[0]));
+    }
+    else
+    {
+        
+    }
+    return ret;
+}
+
 }

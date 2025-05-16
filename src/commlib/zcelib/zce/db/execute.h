@@ -5,13 +5,14 @@
 //
 namespace zce::db
 {
-template <typename CONNECT, typename COMMAND, typename RESULT>
+template <typename CONNECT, typename COMMAND, typename RESULT, typename STMT_RES = RESULT>
 class exec
 {
 public:
     using cnt = typename CONNECT;
     using cmd = typename COMMAND;
     using res = typename RESULT;
+    using stmt_res = typename STMT_RES;
 
     template <typename... Types>
     using res_set = typename zce::db::result_set<RESULT, Types...>;
@@ -36,11 +37,11 @@ public:
         if (db_connect->is_connected() == false)
         {
             //如果设置过HOST，用HOST NAME进行连接
-            ret = db_connect->connect_by_host(host_name,
-                                              port,
-                                              user,
-                                              pwd,
-                                              nullptr);
+            ret = db_connect->connect_host(host_name,
+                                           port,
+                                           user,
+                                           pwd,
+                                           nullptr);
 
             //如果错误
             if (ret != 0)
@@ -168,6 +169,22 @@ namespace zce::db
 using pq_exec = exec<zce::pq::connect,
     zce::pq::command,
     zce::pq::result>;
+}
+
+#endif
+
+#if defined ZCE_USE_SQLITE
+
+#include "zce/db/sqlite/connect.h"
+#include "zce/db/sqlite/command.h"
+#include "zce/db/sqlite/result.h"
+
+namespace zce::db
+{
+using sqlite_exec = exec<zce::sqlite::connect,
+    zce::sqlite::command,
+    zce::sqlite::result,
+    zce::sqlite::stmt_result>;
 }
 
 #endif

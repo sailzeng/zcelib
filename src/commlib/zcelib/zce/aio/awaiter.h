@@ -39,10 +39,11 @@ struct awaiter_aio
                 std::shared_ptr<T>& request_atom) :
         worker_(worker),
         request_atom_(request_atom)
-    {}
+    {
+    }
     ~awaiter_aio()
     {
-        if(request_atom_)
+        if (request_atom_)
         {
             request_atom_ = nullptr;
         }
@@ -64,7 +65,7 @@ struct awaiter_aio
     //!回调函数，AIO操作完成后恢复时调用
     void resume(AIO_ATOM* return_hdl)
     {
-        ret_result_ = return_hdl->result_;
+        ret_result_ = return_hdl->sq_result_;
         awaiting_.resume();
 
         return;

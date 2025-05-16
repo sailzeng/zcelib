@@ -68,68 +68,70 @@ public:
 
     /*!
      * @brief 在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
-     * @param colum 列号
+     * @param col 列号
      * @return 将数据的指针作为作为返回值 const char *
      */
-    const char* field_data(size_t colum) const;
+    const char* field_data(size_t col) const;
 
     /*!
      * @brief  根据列序号ID得到当前行的字段值,
-     * @param colum  列号
+     * @param col  列号
      * @param pfdata 将数据拷贝到pfdata
      * @return 0成功，-1失败
      */
-    int field_data(size_t colum, char* pfdata) const;
+    int field_data(size_t col, char* pfdata) const;
 
     /*!
-     * @brief 根据列ID （colum）取得字段的（实际）长度
-     * @param colum 列号
+     * @brief 根据列ID （col）取得字段的（实际）长度
+     * @param col 列号
      * @return 字段的（实际）长度
      */
-    size_t field_length(size_t colum) const;
+    size_t field_length(size_t col) const;
 
     /*!
-     * @brief 根据列ID （colum）取得当前行（游标的）字段类型
-     * @param colum  列号
+     * @brief 根据列ID （col）取得当前行（游标的）字段类型
+     * @param col  列号
      * @return 返回类型要参考MYSQL CAPI 的enum_field_types
      */
-    enum_field_types field_type(size_t colum) const;
+    enum_field_types field_type(size_t col) const;
 
     /*!
-     * @brief 根据列ID （colum）取得当前行（游标的）字段值
-     * @param colum 列ID
+     * @brief 根据列ID （col）取得当前行（游标的）字段值
+     * @param col 列ID
      * @return 列数据
      */
-    zce::mysql::field get_field(size_t colum) const;
+    zce::mysql::field get_field(size_t col) const;
 
     /*!
      * @brief      普通情况的使用 from_str 进行转换，有几种情况进行了特化
      *             字符串 用char * ,unsigned char*,字符串都特别+1了,帮忙做了结尾
      *             二进制数据用 BINARY*,维持原长度
      * @return     int 表示成功转换
-     * @param      colum 列ID
+     * @param      col 列ID
      * @param      val   取得的列数据
      */
     template <typename T>
-    int field(size_t colum, T& val) const
+    int field(size_t col, T& val) const
     {
-        return zce::from_str(cursor_row_[colum], val);
+        return zce::from_str(cursor_row_[col], val);
     }
     template <typename T>
-    T field(size_t colum) const
+    T field(size_t row, size_t col) const
     {
-        return zce::from_str_to<T>(cursor_row_[colum]);
+        T val;
+        field(row, col, val);
+        return val;
     }
 
     //若干特化实现
     template<>
-    int field(size_t colum, zce::string_buf& val) const;
+    int field(size_t col, zce::string_buf& val) const;
     template<>
-    int field(size_t colum, zce::ztm& val) const;
+    int field(size_t col, zce::ztm& val) const;
     template<>
-    int field(size_t colum, char*& val) const;
+    int field(size_t col, char*& val) const;
     template<>
-    int field(size_t colum, unsigned char*& val) const;
+    int field(size_t col, unsigned char*& val) const;
 
     //! 清理
     void clear();
@@ -193,7 +195,7 @@ public:
     ///结果集合是否为空
     inline bool is_null()
     {
-        return mysql_result_ ? true : false;
+        return mysql_result_ == nullptr ? true : false;
     }
 
     /*!
@@ -212,10 +214,22 @@ public:
     * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
     * @return     bool true还有结果集合，false没有结果集合了
     */
-    bool cursor_fetch();
+    bool cursor_next();
 
     //! @brief 将结果集处理的行，检索移动到某行
     bool cursor_seek(size_t row_id);
+
+    template <typename T>
+    int cursor_field(size_t col, T& val)
+    {
+        return cursor_.field(col, val);
+    }
+
+    template <typename... Types>
+    std::tuple<Types...> cursor_make_tuple()
+    {
+        return cursor_.make_tuple<Types...>();
+    }
 
     //! @brief 取得当前的游标
     zce::mysql::cursor get_cursor()
@@ -224,17 +238,17 @@ public:
     }
 
     /// @brief 根据Field ID返回表定义列域名,注意计算得到的列的名字也可能是空
-    const char* field_name(size_t colum) const;
+    const char* field_name(size_t col) const;
 
     //! @brief 根据Field Name得到Field ID,列号 返回-1表示没有找到
     size_t field_index(const char* fname) const;
 
-    //! 根据列ID （colum）取得当前行（游标的）字段定义长度
-    size_t field_def_size(size_t colum) const;
+    //! 根据列ID （col）取得当前行（游标的）字段定义长度
+    size_t field_def_size(size_t col) const;
 
-    //! 根据列ID （colum）取得当前行（游标的）字段类型
+    //! 根据列ID （col）取得当前行（游标的）字段类型
     //! 返回类型要参考MYSQL CAPI 的enum_field_types
-    enum_field_types field_type(size_t colum) const;
+    enum_field_types field_type(size_t col) const;
 
     //! @brief      返回结果集的行数目
     inline size_t num_of_rows() const
@@ -243,7 +257,7 @@ public:
     }
 
     //! @brief      返回结果集的列数目
-    inline size_t num_of_fields() const
+    inline size_t num_of_columns() const
     {
         return num_result_field_;
     }
@@ -256,26 +270,26 @@ public:
     /*!
     * @brief      在当前行，根据列序号ID得到字段值,将数据的指针作为作为返回值
     * @return     const char* 数据的指针，返回nullptr表示取错误
-    * @param      colum     下标
+    * @param      col     下标
     */
-    const char* field_data(size_t row, size_t colum);
+    const char* field_data(size_t row, size_t col);
 
     /*!
     * @brief      根据列序号ID得到当前行的字段值,
     * @return     int       0成功，-1失败
-    * @param      row, colum   行，列ID
+    * @param      row, col   行，列ID
     * @param      pfdata    列数据的指针
     */
-    int field_data(size_t row, size_t colum, char* pfdata);
+    int field_data(size_t row, size_t col, char* pfdata);
 
-    //! 根据列ID （colum）或者列名称（fname）取得字段的（实际）长度
-    size_t field_length(size_t row, size_t colum);
+    //! 根据列ID （col）或者列名称（fname）取得字段的（实际）长度
+    size_t field_length(size_t row, size_t col);
 
-    //! 根据列ID （colum）取得当前行（游标的）字段值
-    zce::mysql::field get_field(size_t row, size_t colum);
+    //! 根据列ID （col）取得当前行（游标的）字段值
+    zce::mysql::field get_field(size_t row, size_t col);
 
     template <typename T>
-    int field(size_t row, size_t colum, T& val)
+    int field(size_t row, size_t col, T& val)
     {
         if (row != cursor_.cursor_rowid_)
         {
@@ -284,13 +298,7 @@ public:
                 return -1;
             }
         }
-        return cursor_.field(colum, val);
-    }
-
-    template <typename T>
-    int cursor_field(size_t colum, T& val)
-    {
-        return cursor_.field(colum, val);
+        return cursor_.field(col, val);
     }
 
     //将row行数据全部转化一个tuple
@@ -301,7 +309,7 @@ public:
         {
             [[maybe_unused]]
             bool ret = cursor_seek(row);
-            assert(ret);
+            assert(ret == 0);
         }
         return cursor_.make_tuple<Types...>();
     }

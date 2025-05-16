@@ -79,7 +79,7 @@ public:
 public:
 
     //!动态编解码的数据区长度
-    static const int MAX_LEN_OF_AI_IIJIMA_DATA = 32 * 1024 - 1;
+    static const size_t MAX_LEN_OF_AI_IIJIMA_DATA = 32 * 1024 - 1;
 
 public:
 
@@ -89,7 +89,7 @@ public:
     unsigned int index_2_ = 0;
 
     //!数据区长度
-    int ai_data_length_ = 0;
+    size_t ai_data_length_ = 0;
     //!动态数据取
     char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA + 1];
 

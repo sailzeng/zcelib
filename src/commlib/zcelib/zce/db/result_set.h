@@ -20,8 +20,8 @@ public:
 
     result_set_iterator() = default;
     result_set_iterator(Dbres* res, size_t row) :
-        result_(res),
-        row_(row)
+        sq_result_(res),
+        num_result_row_(row)
     {
     }
     result_set_iterator(const result_set_iterator&) = default;
@@ -32,18 +32,18 @@ public:
 
     result_set_iterator& operator++()
     {
-        ++row_;
+        ++num_result_row_;
         return *this;
     }
     result_set_iterator operator++(int)
     {
         result_set_iterator tmp = *this;
-        ++row_;
+        ++num_result_row_;
         return tmp;
     }
     bool operator==(const result_set_iterator& other) const
     {
-        return ((row_ == other.row_) && (result_ == other.result_));
+        return ((num_result_row_ == other.num_result_row_) && (sq_result_ == other.sq_result_));
     }
     bool operator!=(const result_set_iterator& other) const
     {
@@ -52,7 +52,7 @@ public:
     ///提领操作
     value_type operator*()
     {
-        return result_->make_tuple<Types...>(row_);
+        return sq_result_->make_tuple<Types...>(num_result_row_);
     }
 
     value_type* operator->() const
@@ -62,9 +62,9 @@ public:
     }
 protected:
 
-    Dbres* result_ = nullptr;
+    Dbres* sq_result_ = nullptr;
 
-    size_t row_ = 0;
+    size_t num_result_row_ = 0;
 };
 
 template <typename Dbres, typename... Types>
@@ -76,7 +76,7 @@ public:
     using value_type = std::tuple<Types...>;
 
     result_set() = default;
-    result_set(Dbres&& res) : result_(std::move(res))
+    result_set(Dbres&& res) : sq_result_(std::move(res))
     {
     }
     result_set(const result_set&) = delete;
@@ -87,17 +87,17 @@ public:
 
     iterator begin()
     {
-        return iterator(&result_, 0);
+        return iterator(&sq_result_, 0);
     }
 
     iterator end()
     {
-        return iterator(&result_, result_.num_of_rows());
+        return iterator(&sq_result_, sq_result_.num_of_rows());
     }
 
 protected:
     //
-    Dbres result_;
+    Dbres sq_result_;
 };
 }
 #if defined ZCE_USE_MYSQL

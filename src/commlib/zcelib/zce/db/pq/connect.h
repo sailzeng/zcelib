@@ -21,11 +21,16 @@ public:
     connect(const connect&) = delete;
     connect& operator=(const connect&) = delete;
 
-    int connect_by_info(const char* conninfo);
+    //!
+    int connect_host(const char* host_name,
+                     const unsigned int port = POSTGRESQL_PORT,
+                     const char* user = "postgres",
+                     const char* pwd = "",
+                     const char* db = nullptr);
 
-    int connect_by_params(const char* const* keywords,
-                          const char* const* values,
-                          int expand_dbname);
+    int connect_url(const char* url);
+
+    int connect_by_info(const char* conninfo);
 
     void disconnect();
 
@@ -33,12 +38,6 @@ public:
     {
         return if_connected_;
     }
-
-    int connect_by_host(const char* host_name,
-                        const unsigned int port = POSTGRESQL_PORT,
-                        const char* user = "postgres",
-                        const char* pwd = "",
-                        const char* db = nullptr);
 
     const char* error_message()
     {

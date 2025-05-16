@@ -101,7 +101,7 @@ public:
     ///结果集合是否为空
     inline bool is_null()
     {
-        return pq_result_ ? true : false;
+        return pq_result_ == nullptr ? true : false;
     }
 
     //! @brief      返回结果集的行数目
@@ -111,7 +111,7 @@ public:
     }
 
     //! @brief      返回结果集的列数目
-    inline size_t num_of_fields() const
+    inline size_t num_of_columns() const
     {
         return num_result_field_;
     }
@@ -121,51 +121,57 @@ public:
     * @return     bool true还有结果集合，false没有结果集合了
     * @note       PQ 其实没有光标概念，我们增加了一个当前行作为匹配。
     */
-    bool cursor_fetch();
+    bool cursor_next();
 
     //! @brief 将结果集处理的行，检索移动到某行
     bool cursor_seek(size_t row_id);
 
     template <typename T>
-    int cursor_field(size_t colum, T& val)
+    int cursor_field(size_t col, T& val)
     {
-        return field(cursor_row_, colum, val);
+        return field(cursor_row_, col, val);
     }
 
-    //! @brief 根据colum返回表定义列域名,注意计算得到的列的名字也可能是空
-    const char* field_name(size_t colum) const;
+    template <typename... Types>
+    std::tuple<Types...> cursor_make_tuple(size_t row)
+    {
+        return make_tuple<Types...>(cursor_row_);
+    }
+
+    //! @brief 根据col返回表定义列域名,注意计算得到的列的名字也可能是空
+    const char* field_name(size_t col) const;
 
     //! @brief 根据Field Name得到Field ID,列号 返回-1表示没有找到
     size_t field_index(const char* fname) const;
 
-    //! 根据列号 （colum）取得字段定义长度
-    size_t field_def_size(size_t colum) const;
+    //! 根据列号 （col）取得字段定义长度
+    size_t field_def_size(size_t col) const;
 
     //! 根据列号取得其格式，返回0文本，1二进制
-    int field_format(size_t colum) const;
+    int field_format(size_t col) const;
 
     //! 根据列号取得类型Oid
-    ::Oid field_type(size_t colum) const;
+    ::Oid field_type(size_t col) const;
 
     //! 根据行号，列号，取得字段的（实际）长度
-    size_t field_length(size_t row, size_t colum) const;
+    size_t field_length(size_t row, size_t col) const;
 
     //! 根据行号，列号，取得字段的的数据
-    const char* field_data(size_t row, size_t colum) const;
+    const char* field_data(size_t row, size_t col) const;
 
     template <typename T>
-    int field(size_t row, size_t colum, T& val) const
+    int field(size_t row, size_t col, T& val) const
     {
         //返回字段为文本类型
-        auto ffmt = field_format(colum) == 0;
+        auto ffmt = field_format(col) == 0;
         if (ffmt == FMT_TEXT)
         {
-            return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)colum), val);
+            return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)col), val);
         }
         else if (ffmt == FMT_BINARY)
         {
-            zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
-                                (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
+            zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)col),
+                                (size_t)::PQgetlength(pq_result_, (int)row, (int)col));
             //dc.read(val);
             return 0;
         }
@@ -176,13 +182,13 @@ public:
     }
 
     template <>
-    int field(size_t row, size_t colum, zce::ztm& val) const;
+    int field(size_t row, size_t col, zce::ztm& val) const;
 
     template <typename T>
-    T field(size_t row, size_t colum) const
+    T field(size_t row, size_t col) const
     {
         T val;
-        field(row, colum, val);
+        field(row, col, val);
         return val;
     }
 
@@ -203,16 +209,16 @@ protected:
 
 protected:
 
-    ///PG 结果集
+    //! PG 结果集
     ::PGresult* pq_result_ = nullptr;
 
-    ///结果集的行数
+    //! 结果集的行数
     size_t  num_result_row_ = 0;
 
-    ///结果集的列数
+    //! 结果集的列数
     size_t  num_result_field_ = 0;
 
-    /// 光标所在行
+    //! 光标所在行
     size_t  cursor_row_ = (size_t)-1;
 };
 }

@@ -116,7 +116,7 @@ int db_select_one(typename dbt::cnt* conn, size_t num)
     }
     EXPECT_EQ(num_affect, 1);
     TEST_TABLE r1;
-    bool has_one = db_result.cursor_fetch();
+    bool has_one = db_result.cursor_next();
     EXPECT_TRUE(has_one);
     if (has_one)
     {
@@ -155,7 +155,7 @@ int db_select_all(typename dbt::cnt* conn, size_t count)
     }
     EXPECT_EQ(num_affect, count);
     TEST_TABLE r1;
-    while (db_result.cursor_fetch())
+    while (db_result.cursor_next())
     {
         db_result.cursor_field(0, r1.f1_);
         db_result.cursor_field(1, r1.f2_);

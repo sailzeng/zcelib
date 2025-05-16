@@ -126,19 +126,19 @@ void result::set_result(::PGresult* res)
 }
 
 template <>
-int result::field(size_t row, size_t colum, zce::ztm& val) const
+int result::field(size_t row, size_t col, zce::ztm& val) const
 {
     //返回字段为文本类型
-    auto ffmt = field_format(colum) == 0;
+    auto ffmt = field_format(col) == 0;
     if (ffmt == FMT_TEXT)
     {
-        return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)colum), val);
+        return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)col), val);
     }
     else if (ffmt == FMT_BINARY)
     {
-        zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)colum),
-                            (size_t)::PQgetlength(pq_result_, (int)row, (int)colum));
-        PG_OID_TYPE pg_oid = (PG_OID_TYPE)field_type(colum);
+        zce::ser::decode dc(::PQgetvalue(pq_result_, (int)row, (int)col),
+                            (size_t)::PQgetlength(pq_result_, (int)row, (int)col));
+        PG_OID_TYPE pg_oid = (PG_OID_TYPE)field_type(col);
 
         if (pg_oid == PG_DATE)
         {
@@ -190,7 +190,7 @@ void result::clear()
     cursor_row_ = (size_t)-1;
 }
 
-bool result::cursor_fetch()
+bool result::cursor_next()
 {
     if (pq_result_ == nullptr || cursor_row_ + 1 >= num_result_row_)
     {
@@ -210,15 +210,15 @@ bool result::cursor_seek(size_t row_id)
     return true;
 }
 
-//! @brief 根据colum返回表定义列域名,注意计算得到的列的名字也可能是空
-const char* result::field_name(size_t colum) const
+//! @brief 根据col返回表定义列域名,注意计算得到的列的名字也可能是空
+const char* result::field_name(size_t col) const
 {
-    if (colum >= num_result_field_)
+    if (col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return nullptr;
     }
-    return ::PQfname(pq_result_, (int)colum);
+    return ::PQfname(pq_result_, (int)col);
 }
 
 //! @brief 根据Field Name得到Field ID,列号 返回-1表示没有找到
@@ -227,53 +227,53 @@ size_t result::field_index(const char* fname) const
     return (size_t)::PQfnumber(pq_result_, fname);
 }
 
-size_t result::field_def_size(size_t colum) const
+size_t result::field_def_size(size_t col) const
 {
-    if (colum >= num_result_field_)
+    if (col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
     }
-    return (size_t)::PQfsize(pq_result_, (int)colum);
+    return (size_t)::PQfsize(pq_result_, (int)col);
 }
 
 //! 根据列号取得其格式，返回0文本，1二进制
-int result::field_format(size_t colum) const
+int result::field_format(size_t col) const
 {
-    return ::PQfformat(pq_result_, (int)colum);
+    return ::PQfformat(pq_result_, (int)col);
 }
 
 //! 根据列号取得类型Oid
-::Oid result::field_type(size_t colum) const
+::Oid result::field_type(size_t col) const
 {
-    if (colum >= num_result_field_)
+    if (col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return InvalidOid;
     }
-    return ::PQftype(pq_result_, (int)colum);
+    return ::PQftype(pq_result_, (int)col);
 }
 
 //取得字段的（实际）长度
-size_t result::field_length(size_t row, size_t colum) const
+size_t result::field_length(size_t row, size_t col) const
 {
-    if (row > num_result_row_ || colum >= num_result_field_)
+    if (row > num_result_row_ || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return (size_t)-1;
     }
-    return (size_t)::PQgetlength(pq_result_, (int)row, (int)colum);
+    return (size_t)::PQgetlength(pq_result_, (int)row, (int)col);
 }
 
 //取得字段的数据
-const char* result::field_data(size_t row, size_t colum) const
+const char* result::field_data(size_t row, size_t col) const
 {
-    if (row > num_result_row_ || colum >= num_result_field_)
+    if (row > num_result_row_ || col >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return nullptr;
     }
-    return ::PQgetvalue(pq_result_, (int)row, (int)colum);
+    return ::PQgetvalue(pq_result_, (int)row, (int)col);
 }
 }
 #endif //#if defined ZCE_USE_PQ && ZCE_USE_PQ == 1

@@ -52,13 +52,13 @@ public:
     * @param[in]  timeout      链接的超时时间，s
     * @param[in]  if_multi_sql 是否使用MULTI SQL语句
     */
-    int connect_by_host(const char* host_name,
-                        const unsigned int port = MYSQL_PORT,
-                        const char* user = "mysql",
-                        const char* pwd = "",
-                        const char* db = nullptr,
-                        unsigned int timeout = 0,
-                        bool if_multi_sql = false);
+    int connect_host(const char* host_name,
+                     const unsigned int port = MYSQL_PORT,
+                     const char* user = "mysql",
+                     const char* pwd = "",
+                     const char* db = nullptr,
+                     unsigned int timeout = 0,
+                     bool if_multi_sql = false);
 
     /*!
     * @brief      连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
@@ -70,12 +70,12 @@ public:
     * @param      timeout       链接的超时时间，s
     * @param      if_multi_sql  是否使用MULTI SQL语句
     */
-    int connect_by_socketfile(const char* socket_file,
-                              const char* user = "mysql",
-                              const char* pwd = "",
-                              const char* db = nullptr,
-                              unsigned int timeout = 0,
-                              bool if_multi_sql = false);
+    int connect_socketfile(const char* socket_file,
+                           const char* user = "mysql",
+                           const char* pwd = "",
+                           const char* db = nullptr,
+                           unsigned int timeout = 0,
+                           bool if_multi_sql = false);
 
     /*!
     * @brief      使用配置文件连接数据库服务器

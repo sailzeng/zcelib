@@ -382,7 +382,7 @@ public:
     int stmt_seek_result_row(size_t nrow) const;
 
     //取得一个列的MYSQL_BIND
-    int  stmt_fetch_column(size_t column,
+    int  stmt_fetch_column(size_t field,
                            size_t offset,
                            zce::mysql::bind* bind_colum) const;
 

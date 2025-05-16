@@ -23,6 +23,9 @@
 
 namespace zce::sqlite
 {
+class stmt_result;
+class result;
+
 /*!
 @brief      SQlite 的命令类，主要用于SQL的预处理和绑定参数
 @note       这个类是对sqlite3_stmt的封装，主要用于SQL的预处理和绑定参数，
@@ -47,27 +50,6 @@ public:
 public:
 
     void reset(connect* sqlite3);
-
-    //!定义二进制数据结构，用于辅助绑定BLOB类型的数据结果
-    struct BLOB_column
-    {
-        /*!
-        * @brief
-        * @param      binary_data 二进制数据BUFFER
-        * @param      binary_len  数据长度，初始化为数据长度，使用后记录数据结果长度
-        */
-        BLOB_column(void* binary_data, int* binary_len)
-            : binary_data_(binary_data)
-            , binary_len_(binary_len)
-        {
-        }
-        ~BLOB_column() = default;
-
-        //!2进制数据的指针
-        void* binary_data_ = nullptr;
-        //!二进制数据的长度,注意绑定结果时，这个数值座位结果绑定的时候，会辅助返回长度
-        int* binary_len_ = nullptr;
-    };
 
     /*!
     * @brief      对于SQL语句的?参数，进行绑定，
@@ -164,6 +146,35 @@ public:
     */
     int terminate();
 
+    //!
+    sqlite3* get_sqlite3_handler()
+    {
+        return sqlite3_;
+    };
+    //!
+    sqlite3_stmt* get_sqlite3_stmt()
+    {
+        return statement_;
+    }
+
+    const char* error_message()
+    {
+        return ::sqlite3_errmsg(sqlite3_);
+    }
+
+    //DB返回的错误ID
+    int error_code()
+    {
+        return ::sqlite3_errcode(sqlite3_);
+    }
+
+    //! 开始一个事务，Begin Transaction，返回0标识成功
+    int trans_begin();
+    //! 提交事务Commit Transaction,返回0标识成功
+    int trans_commit();
+    //! 回滚事务Rollback Transaction,返回0标识成功
+    int trans_rollback();
+
     //! 执行SQL语句，什么都不管的那种，DDL
     int execute(std::string_view sqlcmd);
 
@@ -187,87 +198,14 @@ public:
                 size_t& num_affect,
                 zce::sqlite::result& sqlite_res);
 
-    const char* error_message()
-    {
-        return ::sqlite3_errmsg(sqlite3_);
-    }
-
-    //DB返回的错误ID
-    int error_code()
-    {
-        return ::sqlite3_errcode(sqlite3_);
-    }
-
-    //! 开始一个事务，Begin Transaction，返回0标识成功
-    int trans_begin();
-    //! 提交事务Commit Transaction,返回0标识成功
-    int trans_commit();
-    //! 回滚事务Rollback Transaction,返回0标识成功
-    int trans_rollback();
-
     //! 关闭同步
     int turn_off_synch();
 
-    /*!
-    * @brief      执行一次stmt SQL，，如果执行成功，返回0，
-    * @return     int  0成功，否则失败
-    * @param[out] has_result 返回值,如果有结果返回，置为true
-    * note        要执行多次，第一次得到结果集合，后面移动游标。
-    */
-    int step(bool& has_result);
+    int stmt_execute(size_t& num_affect,
+                     uint64_t* last_id);
 
-    //!
-    sqlite3_stmt* get_sqlite3_stmt_handler()
-    {
-        return statement_;
-    }
-
-    /*!
-    * @brief      得到当前返回列的长度
-    * @return     int 长度
-    * @param[in]  result_col
-    * @note
-    */
-    inline int column_bytes(int result_col)
-    {
-        return ::sqlite3_column_bytes(statement_, result_col);
-    }
-
-    /*!
-    * @brief      取得列的数量
-    * @return     int
-    * @param      num_col
-    */
-    int column_count()
-    {
-        return ::sqlite3_column_count(statement_);
-    }
-
-    //!当前column的数据长度
-    inline int cur_column_bytes()
-    {
-        return ::sqlite3_column_bytes(statement_, current_col_);
-    }
-
-    /*!
-    * @brief      取得列的结果
-    * @tparam     T 结果的类型
-    * @param      result_col 列号，从0开始
-    * @param      val 取出的结果
-    * @note       文本数据自己看看末尾的'\0',而二进制数据不要这样考虑
-    *             如需要column blob数据,使用BLOB_column
-    */
-    template <class T>
-    void column(int result_col, T val);
-
-    //!导出结果,列号自动++
-    template <class value_type>
-    command& operator >> (value_type& val)
-    {
-        column<value_type&>(current_col_, val);
-        ++current_col_;
-        return *this;
-    }
+    int stmt_execute(size_t& num_affect,
+                     zce::sqlite::stmt_result& sq_stmt_res);
 
 protected:
 
@@ -277,6 +215,10 @@ protected:
         //用,运算符展开参数 fold expression
         (this->bind(Is, std::forward<Args>(args)), ...);
     }
+
+    //!* @brief      执行一次stmt SQL，，如果执行成功，返回0，
+    //!* @param[out] has_result 返回值,如果有结果返回，置为true
+    int stmt_execute(bool& has_result);
 
 protected:
 
@@ -289,10 +231,10 @@ protected:
     //! 绑定的变量个数
     size_t      num_bind_ = 0;
 
-    //!当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
+    //!当前bind绑定SQL语句参数的下标，用于<<函数,,从0开始
     int current_bind_ = 0;
 
-    //!当前取结果的列,用于>>函数,从0开始
+    //!当前取结果的列,用于>>函数,从0开始技术
     int current_col_ = 0;
 };
 }

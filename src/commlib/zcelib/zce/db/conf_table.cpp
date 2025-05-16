@@ -1,5 +1,7 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/db/sqlite/command.h"
+#include "zce/db/sqlite/result.h"
 #include "zce/db/conf_table.h"
 
 //目前版本限制只加这一个
@@ -97,7 +99,7 @@ int AII_BINARY_DATA::protobuf_decode(unsigned int* index_1,
                                      unsigned int* index_2,
                                      google::protobuf::MessageLite* msg)
 {
-    bool bret = msg->ParseFromArray(ai_iijima_data_, ai_data_length_);
+    bool bret = msg->ParseFromArray(ai_iijima_data_, (int)ai_data_length_);
 
     if (false == bret)
     {
@@ -377,8 +379,8 @@ int config_table::replace_one(unsigned int table_id,
     sqlite_cmd_ << binary_data;
     sqlite_cmd_ << conf_data->last_mod_time_;
 
-    bool has_result = false;
-    ret = sqlite_cmd_.step(has_result);
+    size_t num_affect = 0;
+    ret = sqlite_cmd_.stmt_execute(num_affect, nullptr);
     if (ret != 0)
     {
         return ret;
@@ -415,8 +417,8 @@ int config_table::replace_array(unsigned int table_id,
         sqlite_cmd_ << binary_data;
         sqlite_cmd_ << (*ary_ai_iijma)[i].last_mod_time_;
 
-        bool has_result = false;
-        ret = sqlite_cmd_.step(has_result);
+        size_t num_affect = 0;
+        ret = sqlite_cmd_.stmt_execute(num_affect, nullptr);
         if (ret != 0)
         {
             return ret;
@@ -446,21 +448,19 @@ int config_table::select_one(unsigned int table_id,
         return ret;
     }
 
-    bool has_result = false;
-    ret = sqlite_cmd_.step(has_result);
+    size_t num_affect = 0;
+    zce::sqlite::stmt_result sqlite_res;
+    ret = sqlite_cmd_.stmt_execute(num_affect, sqlite_res);
     if (ret != 0)
     {
         return ret;
     }
-    if (false == has_result)
-    {
-        return -1;
-    }
 
-    zce::sqlite::command::BLOB_column binary_data((void*)conf_data->ai_iijima_data_,
-                                                  &(conf_data->ai_data_length_));
-    sqlite_cmd_ >> binary_data;
-    sqlite_cmd_ >> conf_data->last_mod_time_;
+    zce::string_buf binary_data(conf_data->ai_iijima_data_,
+                                AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
+    sqlite_res >> binary_data;
+    conf_data->ai_data_length_ = binary_data.size();
+    sqlite_res >> conf_data->last_mod_time_;
 
     return 0;
 }
@@ -478,8 +478,8 @@ int config_table::delete_one(unsigned int table_id,
     {
         return ret;
     }
-    bool hash_result = false;
-    ret = sqlite_cmd_.step(hash_result);
+    size_t num_affect = 0;
+    ret = sqlite_cmd_.stmt_execute(num_affect, nullptr);
     if (ret != 0)
     {
         return ret;
@@ -500,19 +500,15 @@ int config_table::counter(unsigned int table_id,
         return ret;
     }
 
-    bool hash_result = false;
-    ret = sqlite_cmd_.step(hash_result);
+    size_t num_affect = 0;
+    zce::sqlite::stmt_result sqlite_res;
+    ret = sqlite_cmd_.stmt_execute(num_affect, sqlite_res);
     if (ret != 0)
     {
         return ret;
     }
 
-    if (false == hash_result)
-    {
-        return -1;
-    }
-
-    sqlite_cmd_ >> *rec_count;
+    sqlite_res >> *rec_count;
     return 0;
 }
 
@@ -547,15 +543,19 @@ int config_table::select_array(unsigned int table_id,
         return ret;
     }
 
-    bool hash_result;
-    ret = sqlite_cmd_.step(hash_result);
-
-    for (size_t i = 0; ret == 0 && hash_result == true; ++i)
+    size_t num_affect = 0;
+    zce::sqlite::stmt_result sqlite_res;
+    ret = sqlite_cmd_.stmt_execute(num_affect, sqlite_res);
+    if (0 != ret)
     {
-        sqlite_cmd_ >> (*ary_ai_iijma)[i].index_1_;
-        sqlite_cmd_ >> (*ary_ai_iijma)[i].index_2_;
+        return ret;
+    }
+    for (size_t i = 0; sqlite_res.cursor_next(); ++i)
+    {
+        sqlite_res >> (*ary_ai_iijma)[i].index_1_;
+        sqlite_res >> (*ary_ai_iijma)[i].index_2_;
 
-        int blob_len = sqlite_cmd_.cur_column_bytes();
+        size_t blob_len = sqlite_res.cur_field_length();
         if (blob_len > AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
         {
             ZCE_LOG(RS_ERROR, "Error current column bytes length [%u] > "
@@ -564,13 +564,11 @@ int config_table::select_array(unsigned int table_id,
             return -1;
         }
 
-        zce::sqlite::command::BLOB_column binary_data((void*)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                                      &((*ary_ai_iijma)[i].ai_data_length_));
-
-        sqlite_cmd_ >> binary_data;
-        sqlite_cmd_ >> (*ary_ai_iijma)[i].last_mod_time_;
-
-        ret = sqlite_cmd_.step(hash_result);
+        zce::string_buf binary_data((char*)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                    AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
+        (*ary_ai_iijma)[i].ai_data_length_ = blob_len;
+        sqlite_res >> binary_data;
+        sqlite_res >> (*ary_ai_iijma)[i].last_mod_time_;
     }
 
     //出现错误或者没有找到

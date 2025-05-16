@@ -4,6 +4,7 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年10月2日
+* @brief      废弃代码
 */
 
 #pragma once
@@ -91,6 +92,7 @@ namespace zce
 *             pthread_condxxx_xxxx的函数也是在返回值中记录错误ID的，处理时注意
 *
 */
+
 struct ws_cv_t
 {
     ///
