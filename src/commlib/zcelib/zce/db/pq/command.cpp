@@ -359,27 +359,27 @@ int command::execute(std::string_view sql_cmd,
                       &pq_res);
 }
 
-int command::stmt_prepare(std::string_view sqlcmd,
-                          const zce::pq::bind* bind_para)
+int command::stmt_prepare(std::string_view sql_cmd)
 {
     stmt_clear();
     zce::unique_name("STMT",
                      stmt_name_,
                      sizeof(stmt_name_));
+    size_t param_num = count_sql_param(sql_cmd);
     PGresult* res = ::PQprepare(conn_,
                                 stmt_name_,
-                                sqlcmd.data(),
-                                (int)bind_para->num_bind(),
+                                sql_cmd.data(),
+                                (int)param_num,
                                 nullptr);
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {
         ZCE_LOG(RS_ERROR,
-                "Failed to prepare SQL : %s : %s\n", sqlcmd.data(),
+                "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
                 ::PQerrorMessage(conn_));
         return -1;
     }
     ::PQclear(res);
-    bind_param_ = std::move(*bind_para);
+    bind_param_.initialize(param_num);
     return 0;
 }
 
@@ -467,6 +467,78 @@ void command::stmt_clear()
         stmt_name_[0] = 0;
     }
     bind_param_.clear();
+}
+
+
+size_t command::count_sql_param(const std::string_view& sql)
+{
+    size_t max_param = 0;
+    size_t i = 0;
+    const size_t len = sql.length();
+
+    while (i < len)
+    {
+        char ch = sql[i];
+
+        // 跳过单引号字符串
+        if (ch == '\'')
+        {
+            i++;
+            while (i < len) {
+                if (sql[i] == '\'')
+                {
+                    if (i + 1 < len && sql[i + 1] == '\'')
+                    {
+                        i += 2; // 跳过转义的 ''
+                    }
+                    else
+                    {
+                        i++;
+                        break;
+                    }
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+        // 跳过 -- 注释
+        else if (ch == '-' && i + 1 < len && sql[i + 1] == '-')
+        {
+            i += 2;
+            while (i < len && sql[i] != '\n') i++;
+        }
+        // 跳过 /* ... */ 注释
+        else if (ch == '/' && i + 1 < len && sql[i + 1] == '*')
+        {
+            i += 2;
+            while (i + 1 < len && !(sql[i] == '*' && sql[i + 1] == '/'))
+            {
+                i++;
+            }
+            i += 2; // skip */
+        }
+
+        // 查找 $n 参数
+        else if (ch == '$' && i + 1 < len && isdigit(sql[i + 1]))
+        {
+            size_t start = i + 1;
+            while (start < len && isdigit(sql[start])) start++;
+            int param = atoi(sql.substr(i + 1, start - (i + 1)).data());
+            if (param > max_param)
+            {
+                max_param = param;
+            }
+            i = start;
+        }
+        else
+        {
+            i++;
+        }
+    }
+
+    return max_param;
 }
 
 int test()

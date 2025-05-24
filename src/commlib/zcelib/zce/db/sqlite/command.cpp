@@ -59,7 +59,7 @@ int command::bind(size_t id, const bool& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -74,7 +74,7 @@ int command::bind(size_t id, const char& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -89,7 +89,7 @@ int command::bind(size_t id, const short& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -104,7 +104,7 @@ int command::bind(size_t id, const int& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -117,7 +117,7 @@ int command::bind(size_t id, const long& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -132,7 +132,7 @@ int command::bind(size_t id, const long long& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int64 error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -147,7 +147,7 @@ int command::bind(size_t id, const unsigned char& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -162,7 +162,7 @@ int command::bind(size_t id, const unsigned short& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -178,7 +178,7 @@ int command::bind(size_t id, const unsigned int& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -194,7 +194,7 @@ int command::bind(size_t id, const unsigned long& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -210,7 +210,7 @@ int command::bind(size_t id, const unsigned long long& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_int64 error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -226,7 +226,7 @@ int command::bind(size_t id, const float& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_double error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -242,7 +242,7 @@ int command::bind(size_t id, const double& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_double error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -260,7 +260,7 @@ int command::bind(size_t id, const char* val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_text error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -279,7 +279,7 @@ int command::bind(size_t id, const  std::string& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_text error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -296,7 +296,7 @@ int command::bind(size_t id, const  std::string_view& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_text error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -315,7 +315,7 @@ int command::bind(size_t id, const zce::string_buf& val)
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_bind_blob error :[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return ret;
     }
@@ -452,7 +452,7 @@ int command::stmt_prepare(std::string_view sqlcmd)
     {
         //其他返回错误
         ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return -1;
     }
@@ -524,7 +524,7 @@ int command::stmt_execute(bool& has_result)
     {
         //其他返回错误
         ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",
-                error_code(),
+                error_no(),
                 error_message());
         return -1;
     }

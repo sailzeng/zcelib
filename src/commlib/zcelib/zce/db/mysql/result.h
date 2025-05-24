@@ -116,10 +116,10 @@ public:
         return zce::from_str(cursor_row_[col], val);
     }
     template <typename T>
-    T field(size_t row, size_t col) const
+    T field(size_t col) const
     {
         T val;
-        field(row, col, val);
+        field(col, val);
         return val;
     }
 

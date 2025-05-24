@@ -164,62 +164,62 @@ bool stmt_result::cursor_next()
     }
 }
 
-void stmt_result::field(size_t col, char& val)
+void stmt_result::field(size_t col, char& val) const
 {
     val = static_cast<char>(::sqlite3_column_int(statement_, (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, short& val)
+void stmt_result::field(size_t col, short& val) const
 {
     val = static_cast<short>(::sqlite3_column_int(statement_,
                              (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, int& val)
+void stmt_result::field(size_t col, int& val) const
 {
     val = ::sqlite3_column_int(statement_,
                                (int)col);
     return;
 }
 
-void stmt_result::field(size_t col, long& val)
+void stmt_result::field(size_t col, long& val) const
 {
     val = ::sqlite3_column_int(statement_,
                                (int)col);
     return;
 }
 
-void stmt_result::field(size_t col, long long& val)
+void stmt_result::field(size_t col, long long& val) const
 {
     val = ::sqlite3_column_int64(statement_,
                                  (int)col);
     return;
 }
 
-void stmt_result::field(size_t col, unsigned char& val)
+void stmt_result::field(size_t col, unsigned char& val) const
 {
     val = static_cast<unsigned char>(::sqlite3_column_int(statement_,
                                      (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, unsigned short& val)
+void stmt_result::field(size_t col, unsigned short& val) const
 {
     val = static_cast<unsigned short>(::sqlite3_column_int(statement_,
                                       (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, unsigned int& val)
+void stmt_result::field(size_t col, unsigned int& val) const
 {
     val = static_cast<unsigned int>(sqlite3_column_int(statement_,
                                     (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, unsigned long& val)
+void stmt_result::field(size_t col, unsigned long& val) const
 {
     val = static_cast<unsigned long>(sqlite3_column_int(statement_,
                                      (int)col));
@@ -227,14 +227,14 @@ void stmt_result::field(size_t col, unsigned long& val)
     return;
 }
 
-void stmt_result::field(size_t col, unsigned long long& val)
+void stmt_result::field(size_t col, unsigned long long& val) const
 {
     val = static_cast<unsigned long long> (sqlite3_column_int64(statement_,
                                            (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, float& val)
+void stmt_result::field(size_t col, float& val) const
 {
     val = static_cast<float> (sqlite3_column_double(statement_,
                               (int)col));
@@ -242,14 +242,14 @@ void stmt_result::field(size_t col, float& val)
     return;
 }
 
-void stmt_result::field(size_t col, double& val)
+void stmt_result::field(size_t col, double& val) const
 {
     val = sqlite3_column_double(statement_,
                                 (int)col);
     return;
 }
 
-void stmt_result::field(size_t col, char* val)
+void stmt_result::field(size_t col, char* val) const
 {
     //Fisk这个变态让我改了地方，为了安全检查。
     strncpy(val,
@@ -260,14 +260,14 @@ void stmt_result::field(size_t col, char* val)
 }
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-void stmt_result::field(size_t col, zce::string_buf& val)
+void stmt_result::field(size_t col, zce::string_buf& val) const
 {
     val.assign((char*)::sqlite3_column_blob(statement_, (int)col),
                ::sqlite3_column_bytes(statement_, (int)col));
     return;
 }
 
-void stmt_result::field(size_t col, std::string& val)
+void stmt_result::field(size_t col, std::string& val) const
 {
     val.assign(reinterpret_cast<const char*>(sqlite3_column_text(statement_,
                (int)col)),

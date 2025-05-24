@@ -60,6 +60,8 @@ public:
                      unsigned int timeout = 0,
                      bool if_multi_sql = false);
 
+    int connect_url(const char* url);
+
     /*!
     * @brief      连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
     * @return     int           返回0标识成功
@@ -83,7 +85,7 @@ public:
     * @param      optfile
     * @param      group
     */
-    int connect_by_optionfile(const char* optfile,
+    int connect_optionfile(const char* optfile,
                               const char* group);
 
     /*!
@@ -127,22 +129,22 @@ public:
     */
     const char* error_message()
     {
-        return mysql_error(&mysql_handle_);
+        return ::mysql_error(&mysql_);
     }
 
     /*!
     * @brief      返回错误号
-    * @return     unsigned int 返回的错误ID
+    * @return     int 返回的错误ID
     */
-    unsigned int error_no()
+    int error_no()
     {
-        return mysql_errno(&mysql_handle_);
+        return ::mysql_errno(&mysql_);
     }
 
     //!得到MYSQL的句柄
     inline MYSQL* get_handle()
     {
-        return &mysql_handle_;
+        return &mysql_;
     }
 
     /*!
@@ -180,7 +182,7 @@ protected:
 private:
 
     ///MYSQL的句柄
-    MYSQL mysql_handle_ = {};
+    MYSQL mysql_ = {};
 
     ///是否连接MYSQL数据库
     bool if_connected_ = false;

@@ -106,6 +106,16 @@ public:
     command(const command&) = delete;
     command& operator=(const command&) = delete;
 
+    const char* error_message()
+    {
+        return ::PQerrorMessage(conn_);
+    }
+
+    int error_no()
+    {
+        return 0;
+    }
+
     //! 注意：默认情况下，PQ默认是自动提交事务的，
     //! 如果你要使用事务，你需要通过，BEGIN，这些SQL语句来明确要使用事务
     //! 开始一个事务，Begin Transaction，返回0标识成功
@@ -126,27 +136,26 @@ public:
                 size_t& num_affect,
                 zce::pq::result& pq_res);
 
-    int stmt_prepare(std::string_view sqlcmd,
-                     const zce::pq::bind* bind_para);
+    
+
+    int stmt_prepare(std::string_view sqlcmd);
 
     /*!
     * @brief      STMT 分析SQL，绑定参数和结果，
     * @return     int
     * @param      sql_cmd 执行的SQL
-    * @param      param_num 绑定参数数量，bind_data的数量必须大于等于param_num，
-    *                       多出部分视为绑定的结果
     * @param      bind_data 绑定的参数和结果
     * @note
     */
     template <typename... Args>
     int stmt_prepare(std::string_view sql_cmd,
-                     size_t param_num,
                      Args && ...args)
     {
         stmt_clear();
         zce::unique_name("STMT",
                          stmt_name_,
                          sizeof(stmt_name_));
+        size_t param_num = count_sql_param(sql_cmd);
         PGresult* res = ::PQprepare(conn_,
                                     stmt_name_,
                                     sql_cmd.data(),
@@ -187,6 +196,8 @@ public:
         stmt_clear();
         stmt_name_[0] = 0;
     }
+
+    static size_t count_sql_param(const std::string_view& sql);
 
 protected:
 

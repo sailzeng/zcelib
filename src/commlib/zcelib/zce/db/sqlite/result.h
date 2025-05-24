@@ -178,21 +178,21 @@ public:
     //! while(cursor_next()) { dosomesth; }
     bool cursor_next();
 
-    void field(size_t col, char& val);
-    void field(size_t col, short& val);
-    void field(size_t col, int& val);
-    void field(size_t col, long& val);
-    void field(size_t col, long long& val);
-    void field(size_t col, unsigned char& val);
-    void field(size_t col, unsigned short& val);
-    void field(size_t col, unsigned int& val);
-    void field(size_t col, unsigned long& val);
-    void field(size_t col, unsigned long long& val);
-    void field(size_t col, float& val);
-    void field(size_t col, double& val);
-    void field(size_t col, char* val);
-    void field(size_t col, zce::string_buf& val);
-    void field(size_t col, std::string& val);
+    void field(size_t col, char& val) const;
+    void field(size_t col, short& val) const;
+    void field(size_t col, int& val) const;
+    void field(size_t col, long& val) const;
+    void field(size_t col, long long& val) const;
+    void field(size_t col, unsigned char& val) const;
+    void field(size_t col, unsigned short& val) const;
+    void field(size_t col, unsigned int& val) const;
+    void field(size_t col, unsigned long& val) const;
+    void field(size_t col, unsigned long long& val) const;
+    void field(size_t col, float& val) const;
+    void field(size_t col, double& val) const;
+    void field(size_t col, char* val) const;
+    void field(size_t col, zce::string_buf& val) const;
+    void field(size_t col, std::string& val) const;
 
     /*!
     * @brief      返回一个字段的名称

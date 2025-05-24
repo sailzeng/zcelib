@@ -26,7 +26,7 @@ public:
 
     //!链接MYSQL数据库
     static int connect(CONNECT* db_connect,
-                       const char* host_name,
+                       const char* host,
                        unsigned int port,
                        const char* user,
                        const char* pwd)
@@ -37,11 +37,35 @@ public:
         if (db_connect->is_connected() == false)
         {
             //如果设置过HOST，用HOST NAME进行连接
-            ret = db_connect->connect_host(host_name,
+            ret = db_connect->connect_host(host,
                                            port,
                                            user,
                                            pwd,
                                            nullptr);
+
+            //如果错误
+            if (ret != 0)
+            {
+                ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
+                        db_connect->error_no(),
+                        db_connect->error_message());
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    static int connect(CONNECT* db_connect,
+                       const char* url)
+    {
+
+        int ret = 0;
+
+        //连接数据库
+        if (db_connect->is_connected() == false)
+        {
+            //使用URL进行连接
+            ret = db_connect->connect_url(url);
 
             //如果错误
             if (ret != 0)
@@ -132,7 +156,7 @@ public:
         //如果错误
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
+            ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%d]:[%s]. SQL:%s.",
                     db_connect->error_no(),
                     db_connect->error_message(),
                     sql.data());
@@ -140,6 +164,51 @@ public:
         }
 
         //成功
+        return 0;
+    }
+
+    static int stmt_prepare(COMMAND &stmt_cmd,
+                            std::string_view sqlcmd)
+    {
+        int ret = stmt_cmd.stmt_prepare(sqlcmd);
+        if (ret != 0)
+        {
+            ZCE_LOG(RS_ERROR, "[zcelib] DB stmt_prepare:[%d]:[%s]. SQL:%s.",
+                    stmt_cmd.error_no(),
+                    stmt_cmd.error_message(),
+                    sqlcmd.data());
+            return -1;
+        }
+        return 0;
+    }
+
+    static int stmt_execute(COMMAND &stmt_cmd,
+                            size_t& num_affect,
+                            uint64_t* last_id)
+    {
+        int ret = stmt_cmd.stmt_execute(num_affect, last_id);
+        if (ret != 0)
+        {
+            ZCE_LOG(RS_ERROR, "[zcelib] DB stmt_execute:[%d]:[%s].",
+                    stmt_cmd.error_no(),
+                    stmt_cmd.error_message());
+            return -1;
+        }
+        return 0;
+    }
+
+    static int stmt_execute(COMMAND &stmt_cmd,
+                            size_t& num_affect,
+                            STMT_RES& stmt_res)
+    {
+        int ret = stmt_cmd.stmt_execute(num_affect, stmt_res);
+        if (ret != 0)
+        {
+            ZCE_LOG(RS_ERROR, "[zcelib] DB stmt_execute:[%d]:[%s].",
+                    stmt_cmd.error_no(),
+                    stmt_cmd.error_message());
+            return -1;
+        }
         return 0;
     }
 };

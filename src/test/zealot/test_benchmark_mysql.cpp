@@ -158,19 +158,15 @@ int benchmark_db_query(const char* sql,
     }
     std::string_view sql_str(sql);
     zce::mysql::command cmd(g_db_connect);
-    ret = cmd.execute(sql_str);
+    size_t num_affect = 0;
+    ret = cmd.execute(sql_str, num_affect,db_result);
     //如果错误
     if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.error_no(), g_db_connect.error_message());
         return RETURN_DB_ERROR;
     }
-    ret = cmd.get_result(0, 0, &db_result, true);
-    if (ret != 0)
-    {
-        sprintf(szErr, "[%d]:%s", g_db_connect.error_no(), g_db_connect.error_message());
-        return RETURN_DB_ERROR;
-    }
+
     return  RETURN_SUCC;
 }
 

@@ -44,7 +44,7 @@ public:
         return ::PQerrorMessage(conn_);
     }
 
-    unsigned int error_no()
+    int error_no()
     {
         return 0;
     }

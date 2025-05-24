@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/string/url.h"
 #include "zce/db/mysql/connect.h"
 
 //如果你要用MYSQL的库
@@ -10,7 +11,7 @@ namespace zce::mysql
 connect::connect() noexcept
 {
     //初始化MYSQL句柄
-    ::memset(&mysql_handle_, 0, sizeof(MYSQL));
+    ::memset(&mysql_, 0, sizeof(MYSQL));
 }
 
 connect::~connect() noexcept
@@ -38,16 +39,16 @@ int connect::connect_i(CONNECT_BY by,
     }
 
     //初始化MYSQL句柄
-    ::mysql_init(&mysql_handle_);
+    ::mysql_init(&mysql_);
     //设置连接的timeout
     if (timeout != 0)
     {
-        ::mysql_options(&mysql_handle_, MYSQL_OPT_CONNECT_TIMEOUT, (char*)(&timeout));
+        ::mysql_options(&mysql_, MYSQL_OPT_CONNECT_TIMEOUT, (char*)(&timeout));
     }
 
     //50013,版本后，提供了这个选项，而原来的版本，这个选项是默认打开的。
 #if MYSQL_VERSION_ID >= 50013
-    ::mysql_options(&mysql_handle_, MYSQL_OPT_RECONNECT, "1");
+    ::mysql_options(&mysql_, MYSQL_OPT_RECONNECT, "1");
 #endif
 
     unsigned long client_flag = 0;
@@ -67,7 +68,7 @@ int connect::connect_i(CONNECT_BY by,
     {
         using enum CONNECT_BY;
     case HOST:
-        ret = ::mysql_real_connect(&mysql_handle_,
+        ret = ::mysql_real_connect(&mysql_,
                                    host_name,
                                    user,
                                    pwd,
@@ -80,7 +81,7 @@ int connect::connect_i(CONNECT_BY by,
         //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为nullptr，
         // 是先进行命名管道连接，如果不行用TCP/IP连接本地
         //如果要不保证绝对使用命名管道，则参数host_name=".",
-        ret = ::mysql_real_connect(&mysql_handle_,
+        ret = ::mysql_real_connect(&mysql_,
                                    nullptr,
                                    user,
                                    pwd,
@@ -92,12 +93,12 @@ int connect::connect_i(CONNECT_BY by,
     case OPTION_FILE:
         if (optfile != nullptr)
         {
-            int opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
+            int opret = ::mysql_options(&mysql_, MYSQL_READ_DEFAULT_FILE, optfile);
 
             //如果使group==nullptr,将读写optfile的[client]配置,否则读写group下的配置
             if (group != nullptr)
             {
-                opret = ::mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
+                opret = ::mysql_options(&mysql_, MYSQL_READ_DEFAULT_GROUP, group);
             }
 
             if (opret != 0)
@@ -105,7 +106,7 @@ int connect::connect_i(CONNECT_BY by,
                 return -1;
             }
         }
-        ret = ::mysql_real_connect(&mysql_handle_,
+        ret = ::mysql_real_connect(&mysql_,
                                    nullptr,
                                    nullptr,
                                    nullptr,
@@ -156,8 +157,32 @@ int connect::connect_socketfile(const char* socket_file,
                      if_multi_sql);
 }
 
+int connect::connect_url(const char* url)
+{
+    zce::url url_obj;
+    int ret = url_obj.regex_urlstr(url);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = connect_i(CONNECT_BY::HOST,
+                     url_obj.host().c_str(),
+                     nullptr,
+                     url_obj.user().c_str(),
+                     url_obj.authority().c_str(),
+                     nullptr,
+                     url_obj.port(),
+                     0,
+                     false);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
+
 //如果使用选项文件进行连接
-int connect::connect_by_optionfile(const char* optfile, const char* group)
+int connect::connect_optionfile(const char* optfile, const char* group)
 {
     return connect_i(CONNECT_BY::SOCKET_FILE,
                      nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0,
@@ -172,14 +197,14 @@ void connect::disconnect()
     {
         return;
     }
-    ::mysql_close(&mysql_handle_);
+    ::mysql_close(&mysql_);
     if_connected_ = false;
 }
 
 //选择一个默认数据库,参数是数据库的名称
 int connect::select_database(const char* db)
 {
-    int ret = ::mysql_select_db(&mysql_handle_, db);
+    int ret = ::mysql_select_db(&mysql_, db);
 
     //检查结果,
     if (0 != ret)
@@ -193,7 +218,7 @@ int connect::select_database(const char* db)
 //如果连接断开，重新连接，低成本的好方法,否则什么都不做，
 int connect::ping()
 {
-    int ret = ::mysql_ping(&mysql_handle_);
+    int ret = ::mysql_ping(&mysql_);
 
     //检查结果,
     if (0 != ret)
@@ -207,13 +232,13 @@ int connect::ping()
 //得到当前数据服务器的状态
 const char* connect::get_mysql_status()
 {
-    return ::mysql_stat(&mysql_handle_);
+    return ::mysql_stat(&mysql_);
 }
 
 //设置是否自动提交
 int connect::set_auto_commit(bool if_auto)
 {
-    int ret = ::mysql_autocommit(&mysql_handle_,
+    int ret = ::mysql_autocommit(&mysql_,
                                  if_auto);
     //检查结果,
     if (0 != ret)

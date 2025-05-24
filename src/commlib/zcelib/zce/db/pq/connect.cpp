@@ -76,6 +76,30 @@ int connect::connect_host(const char* host_name,
     return 0;
 }
 
+int connect::connect_url(const char* url)
+{
+    if (url == nullptr)
+    {
+        return -1;
+    }
+    conn_ = ::PQconnectdb(url);
+    if (conn_ == nullptr)
+    {
+        ZCE_LOG(RS_ERROR, "[zcelib] PQconnectdb fail return nullptr.url:[%s]",
+                url);
+        return -1;
+    }
+    if (::PQstatus(conn_) != ::CONNECTION_OK)
+    {
+        ZCE_LOG(RS_ERROR, "[zcelib] ::PQstatus(conn_) != ::CONNECTION_OK:[%s]",
+                error_message());
+        ::PQfinish(conn_);
+        conn_ = nullptr;
+        return -1;
+    }
+    return 0;
+}
+
 void connect::disconnect()
 {
     if (conn_)

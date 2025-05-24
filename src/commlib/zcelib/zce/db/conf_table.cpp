@@ -134,7 +134,7 @@ int config_table::open_dbfile(const char* db_file,
                               bool read_only,
                               bool create_db)
 {
-    int ret = sqlite_hdl_.open_db(db_file, read_only, create_db);
+    int ret = sqlite_hdl_.connect_db(db_file, read_only, create_db);
     if (ret != 0)
     {
         return ret;

@@ -12,7 +12,8 @@ public:
     url() = default;
     ~url() = default;
 
-    int regex_urlstr(std::string_view strurl);
+    int regex_urlstr(std::string_view strurl,
+                     bool parse_query = false);
 
     int regex_queryparams(std::string_view query);
 
@@ -20,7 +21,48 @@ public:
     
     static std::string url_decode(const std::string& input);
 
-public:
+    auto scheme(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.scheme_);
+    }
+    
+    auto authority(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.authority_);
+    }
+    
+    auto user(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.user_);
+    }
+
+    auto host(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.host_);
+    }
+
+    auto port(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.port_);
+    }
+
+    auto path(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.path_);
+    }
+
+    auto query(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.query_);
+    }
+
+    auto fragment(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.fragment_);
+    }
+    
+
+protected:
 
     //!
     std::string scheme_;
@@ -31,7 +73,7 @@ public:
     //!
     std::string host_;
     //!
-    int port = -1;
+    int port_ = -1;
     //!
     std::string path_;
     //!

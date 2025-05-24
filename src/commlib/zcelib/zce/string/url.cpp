@@ -78,7 +78,8 @@ int url::regex_queryparams(std::string_view query)
     return 0;
 }
 
-int url::regex_urlstr(std::string_view strurl)
+int url::regex_urlstr(std::string_view strurl,
+                      bool parse_query)
 {
     const std::string URL_SCHEME_REGEX = R"((^(\w+):\/\/)";
     const std::string URL_AUTHORITY_REGEX = R"((?:([^:@\/\[\]]+)(?::([^@\/\[\]]*))?@))";
@@ -111,7 +112,7 @@ int url::regex_urlstr(std::string_view strurl)
     host_ = match[4];
     if (match[5].matched)
     {
-        port = std::stoi(match[5].str());
+        port_ = std::stoi(match[5].str());
     }
     path_ = match[6].matched ? match[6].str() : "/";
     if (match[7].matched)
@@ -121,6 +122,10 @@ int url::regex_urlstr(std::string_view strurl)
     if (match[8].matched)
     {
         fragment_ = match[8].str();
+    }
+    if (parse_query)
+    {
+        query_params_.parse(query_,'&');
     }
     return 0;
 }

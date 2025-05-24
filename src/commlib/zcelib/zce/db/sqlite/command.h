@@ -93,14 +93,11 @@ public:
     * @brief      STMT 分析SQL，绑定参数和结果，
     * @return     int
     * @param      sql_cmd 执行的SQL
-    * @param      param_num 绑定参数数量，bind_data的数量必须大于等于param_num，
-    *                       多出部分视为绑定的结果
     * @param      bind_data 绑定的参数和结果
     * @note
     */
     template <typename... Args>
     int stmt_prepare(std::string_view sql_cmd,
-                     size_t param_num,
                      Args && ...args)
     {
         int ret = stmt_prepare(sql_cmd);
@@ -163,7 +160,7 @@ public:
     }
 
     //DB返回的错误ID
-    int error_code()
+    int error_no()
     {
         return ::sqlite3_errcode(sqlite3_);
     }

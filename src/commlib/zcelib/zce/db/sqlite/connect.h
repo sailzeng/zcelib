@@ -46,6 +46,8 @@ public:
     //!析构函数
     ~connect();
 
+    int connect_url(const char* url);
+
     /*!
     @brief      打开数据库，注意文件名称的路径要用UTF8编码，所以最好不要用中文?
     @return     int      打开数据库是否成功 0 成功，其他失败
@@ -55,9 +57,9 @@ public:
     @param      read_only 只读
     @param      create_db 是否需要创建数据库，(db不存在时)
     */
-    int open_db(const char* db_file,
-                bool read_only,
-                bool create_db);
+    int connect_db(const char* db_file,
+                   bool read_only,
+                   bool create_db);
 
     //!关闭数据库
     void close_db();
@@ -71,7 +73,7 @@ public:
     inline sqlite3* get_handler()
     {
         return sqlite3_;
-    };
+    }
 
 protected:
 

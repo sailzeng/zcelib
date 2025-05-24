@@ -1,5 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
+#include "zce/string/url.h"
 #include "zce/db/sqlite/connect.h"
 
 //对于SQLITE的最低版本限制
@@ -8,7 +9,7 @@
 namespace zce::sqlite
 {
 /******************************************************************************************
-SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
+connect SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
 ******************************************************************************************/
 connect::connect() :
     sqlite3_(nullptr)
@@ -22,7 +23,7 @@ connect::~connect()
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
 //int == 0表示成功，否则失败
-int connect::open_db(const char* db_file,
+int connect::connect_db(const char* db_file,
                      bool read_only,
                      bool create_db)
 {
@@ -53,6 +54,18 @@ int connect::open_db(const char* db_file,
     }
 
     return 0;
+}
+
+int connect::connect_url(const char* db_url)
+{
+    zce::url url_obj;
+    int ret = url_obj.regex_urlstr(db_url);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return connect_db(url_obj.path().c_str(), false, false);
 }
 
 //关闭数据库。

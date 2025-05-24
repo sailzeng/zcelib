@@ -491,9 +491,7 @@ int command::fetch_next_result(zce::mysql::result& res,
     return 0;
 }
 
-int command::stmt_prepare(std::string_view sqlcmd,
-                          const zce::mysql::bind* bind_param,
-                          zce::mysql::bind* bind_result)
+int command::stmt_prepare(std::string_view sqlcmd)
 {
     //如果没有设置连接或者没有设置命令
     if (sqlcmd.empty())
@@ -509,24 +507,16 @@ int command::stmt_prepare(std::string_view sqlcmd,
         return ret;
     }
     //绑定参数
-    if (bind_param)
+    unsigned long param_count = ::mysql_stmt_param_count(stmt_);
+    if (param_count > 0) 
     {
-        bind_param_ = std::move(*bind_param);
-        ret = ::mysql_stmt_bind_param(stmt_, bind_param_.get_stmt_bind());
-        if (ret != 0)
-        {
-            return ret;
-        }
+        bind_param_.initialize(param_count);
     }
     //绑定结果
-    if (bind_result)
+    unsigned long field_count = ::mysql_stmt_field_count(stmt_);
+    if (field_count > 0)
     {
-        bind_result_ = std::move(*bind_result);
-        ret = ::mysql_stmt_bind_result(stmt_, bind_result_.get_stmt_bind());
-        if (ret != 0)
-        {
-            return ret;
-        }
+        bind_result_.initialize(field_count);
         is_bind_result_ = true;
     }
 
@@ -538,6 +528,16 @@ int command::stmt_execute(size_t* num_affect,
                           size_t* last_id)
 {
     int ret = 0;
+    ret = ::mysql_stmt_bind_param(stmt_, bind_param_.get_stmt_bind());
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = ::mysql_stmt_bind_result(stmt_, bind_result_.get_stmt_bind());
+    if (ret != 0)
+    {
+        return ret;
+    }
     //执行SQL命令
     ret = ::mysql_stmt_execute(stmt_);
     if (ret != 0)

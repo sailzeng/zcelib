@@ -30,27 +30,16 @@ public:
     template<typename T>
     bool set_value(const std::string& key, T& value);
 
-    const std::string& operator[](const std::string& key) const
-    {
-        auto it = map_string_.find(key);
-        if (it != map_string_.end())
-        {
-            return it->second;
-        }
-        else
-        {
-            static std::string empty_str;
-            return empty_str;
-        }
-    }
+    const std::string& operator[](const std::string& key) const;
 
-    std::string& operator[](const std::string& key)
-    {
-        return map_string_[key];
-    }
+    std::string& operator[](const std::string& key);
+
+    int parse(std::string_view query,
+              char delimiter);
+
 protected:  
     // Ignore case  
-    struct lessofcasestr  
+    struct lessofcasestr
     {  
     public:  
         bool operator()(const std::string& src, const std::string& dst) const  

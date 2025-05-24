@@ -236,6 +236,16 @@ public:
         return stmt_;
     }
 
+    const char* error_message()
+    {
+        return ::mysql_error(mysql_);
+    }
+
+    int error_no()
+    {
+        return ::mysql_errno(mysql_);
+    }
+
     //! 注意：默认情况下，MySQL默认是自动提交事务的，如果你要使用事务，你需要通过，
     //! ::mysql_autocommit，关闭自动提交
     //! 开始一个事务，Begin Transaction，返回0标识成功
@@ -302,14 +312,9 @@ public:
 
     /*!
     * @brief      预处理SQL,并且分析绑定的变量
-    * @return     int
-    * @param      bind_param    绑定的参数
-    * @param      bind_result   绑定的结果
-    * @note
+    * @note       会初始化 bind_param_，bind_result_
     */
-    int stmt_prepare(std::string_view sqlcmd,
-                     const zce::mysql::bind* bind_param,
-                     zce::mysql::bind* bind_result = nullptr);
+    int stmt_prepare(std::string_view sqlcmd);
 
     /*!
     * @brief      STMT 分析SQL，绑定参数和结果，然后执行
@@ -322,11 +327,9 @@ public:
     */
     template <typename... Args>
     int stmt_prepare(std::string_view sqlcmd,
-                     size_t param_num,
                      Args && ...args)
     {
-        ZCE_ASSERT(param_num <= sizeof...(Args));
-        size_t result_num = sizeof...(Args) - param_num;
+
         int ret = ::mysql_stmt_prepare(stmt_,
                                        sqlcmd.data(),
                                        static_cast<unsigned long>(sqlcmd.size()));
@@ -334,32 +337,22 @@ public:
         {
             return ret;
         }
-        bind_param_.initialize(param_num);
-        bind_result_.initialize(result_num);
-        _tie_all_i(param_num, std::index_sequence_for<Args...>{}, args...);
-        //绑定的参数
-        if (param_num > 0)
-        {
-            ret = ::mysql_stmt_bind_param(stmt_,
-                                          bind_param_.get_stmt_bind());
-            if (ret != 0)
-            {
-                return ret;
-            }
-        }
 
-        //绑定的结果
-        if (result_num > 0)
+        unsigned long param_count = ::mysql_stmt_param_count(stmt_);
+        if (param_count > 0) 
         {
-            ret = ::mysql_stmt_bind_result(stmt_,
-                                           bind_result_.get_stmt_bind());
-            //出错返回,或者处理
-            if (ret != 0)
-            {
-                return ret;
-            }
+            bind_param_.initialize(param_count);
+        }
+        //绑定结果
+        unsigned long field_count = ::mysql_stmt_field_count(stmt_);
+        if (field_count > 0)
+        {
+            bind_result_.initialize(field_count);
             is_bind_result_ = true;
         }
+        ZCE_ASSERT(param_count + field_count <= sizeof...(Args));
+
+        _tie_all_i(param_count, std::index_sequence_for<Args...>{}, args...);
 
         return 0;
     }
@@ -453,7 +446,7 @@ protected:
     {
         //用,运算符展开参数 fold expression
         //在展开过程，Is如果小于param_num,就绑定参数，否则绑定结果
-        ((Is <= param_num ? bind_param_.tie(Is, std::forward<Args>(args)) :
+        ((Is < param_num ? bind_param_.tie(Is, std::forward<Args>(args)) :
          bind_result_.tie(Is - param_num, std::forward<Args>(args))), ...);
     }
 
