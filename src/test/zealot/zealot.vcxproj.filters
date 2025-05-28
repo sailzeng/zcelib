@@ -20,85 +20,85 @@
     <ClCompile Include="zealot_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_pool.cpp">
+    <ClCompile Include="pool_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_shm_container.cpp">
+    <ClCompile Include="shm_container_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_util.cpp">
+    <ClCompile Include="util_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_os_adapt.cpp">
+    <ClCompile Include="os_adapt_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_thread.cpp">
+    <ClCompile Include="thread_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_socket.cpp">
+    <ClCompile Include="socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_lock.cpp">
+    <ClCompile Include="lock_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_timer_expire.cpp">
+    <ClCompile Include="timer_expire_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_fmtstr.cpp">
+    <ClCompile Include="fmtstr_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_benchmark_mysql.cpp">
+    <ClCompile Include="mysql_benchmark_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_bytes.cpp">
+    <ClCompile Include="bytes_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_event_inotify.cpp">
+    <ClCompile Include="event_inotify_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_server.cpp">
+    <ClCompile Include="server_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_script_lua.cpp">
+    <ClCompile Include="script_lua_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_async.cpp">
+    <ClCompile Include="async_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_config.cpp">
+    <ClCompile Include="config_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_sqlite.cpp">
+    <ClCompile Include="sqlite_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_lookfree.cpp">
+    <ClCompile Include="lookfree_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_rudp.cpp">
+    <ClCompile Include="rudp_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_aio.cpp">
+    <ClCompile Include="aio_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_hash.cpp">
+    <ClCompile Include="hash_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_net.cpp">
+    <ClCompile Include="net_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_math.cpp">
+    <ClCompile Include="math_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_string.cpp">
+    <ClCompile Include="string_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_db.cpp">
+    <ClCompile Include="db_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_coroutine.cpp">
+    <ClCompile Include="coroutine_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

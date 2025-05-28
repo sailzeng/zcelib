@@ -59,13 +59,21 @@ int connect::connect_db(const char* db_file,
 int connect::connect_url(const char* db_url)
 {
     zce::url url_obj;
-    int ret = url_obj.regex_urlstr(db_url);
+    int ret = url_obj.regex_urlstr(db_url,true);
     if (ret != 0)
     {
         return ret;
     }
+    if (url_obj.scheme() != "sqlite")
+    {
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3 connect_url db url [%s] scheme is not sqlite",
+                db_url);
+        return -1;
+	}
+    bool read_only = url_obj.query_params().get_value<bool>("READONLY");
+    bool create_db = url_obj.query_params().get_value<bool>("CREATEDB");
 
-    return connect_db(url_obj.path().c_str(), false, false);
+    return connect_db(url_obj.path().c_str(), read_only, create_db);
 }
 
 //关闭数据库。

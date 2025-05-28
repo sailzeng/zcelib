@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-namespace ztest
+namespace zeal
 {
 using big_uint64 = zce::big_uint<64>;
 using big_uint128 = zce::big_uint<128>;

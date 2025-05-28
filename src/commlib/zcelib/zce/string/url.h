@@ -61,7 +61,10 @@ public:
         return std::forward_like<decltype(self)>(self.fragment_);
     }
     
-
+    auto query_params(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.query_params_);
+    }
 protected:
 
     //!

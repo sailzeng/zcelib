@@ -3,6 +3,38 @@
 #include "predefine.h"
 #include "zealot_main.h"
 
+
+namespace zeal {
+
+    // 用于收集多个测试过滤项
+    static std::vector<std::string>& GetFilterList() {
+        static std::vector<std::string> filters;
+        return filters;
+    }
+
+    // 添加一个过滤项，如 "Suite.Test" 或 "Suite.*"
+    void AddTestFilter(const std::string& filter) {
+        GetFilterList().push_back(filter);
+    }
+
+    // 应用过滤项：构造并设置 ::testing::GTEST_FLAG(filter)
+    void ApplyTestFilters() {
+        const auto& filters = GetFilterList();
+        std::string final_filter;
+        for (const auto& f : filters) {
+            if (!final_filter.empty()) {
+                final_filter += ":";
+            }
+            final_filter += f;
+        }
+        if (!final_filter.empty()) {
+            ::testing::GTEST_FLAG(filter) = final_filter;
+        }
+    }
+
+}
+
+
 int main(int argc, char* argv[])
 {
 #if defined ZCE_OS_WINDOWS
@@ -24,8 +56,12 @@ int main(int argc, char* argv[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
     ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 
-    //::testing::GTEST_FLAG(filter) = "UtilTestSuite.TestAPI:CoroutineTestSuite.TestAPI:SerializeTestSuite.TestAPI:";
-    ::testing::GTEST_FLAG(filter) = "OsadaptTestSuite.TestAPI";
+    zeal::AddTestFilter("SQLiteTestSuite.TestAPI");
+    //zeal::AddTestFilter("UtilTestSuite.TestAPI");
+    //zeal::AddTestFilter("CoroutineTestSuite.TestAPI");
+    //zeal::AddTestFilter("SerializeTestSuite.TestAPI");
+    //zeal::AddTestFilter("OsadaptTestSuite.TestAPI");
+    zeal::ApplyTestFilters();
     ret = RUN_ALL_TESTS();
 
     //!需要关闭日志
@@ -37,8 +73,7 @@ int main(int argc, char* argv[])
     test_dns_resolve(argc, argv);
     test_rudp(argc, argv);
     return 0;
-    test_sqlite_handle(argc, argv);
-    test_sqlite_stmt(argc, argv);
+
 
     test_memory_debug(argc, argv);
     test_back_stack(argc, argv);

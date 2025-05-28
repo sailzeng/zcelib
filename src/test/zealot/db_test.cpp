@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-namespace ztest
+namespace zeal
 {
 //社团数据库
 const char* DB_MYSQL_HOST = "127.0.0.1";

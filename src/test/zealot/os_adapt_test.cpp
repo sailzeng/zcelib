@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-namespace ztest
+namespace zeal
 {
 int test_windows_handle(int  /*argc*/, char* /*argv*/[])
 {

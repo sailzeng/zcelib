@@ -74,8 +74,8 @@ public:
 
     /*!
     * @brief      根据类型，返回一个字段的数据，
-    * @tparam     value_type
-    * @return     value_type
+    * @tparam     T
+    * @return     T
     * @param      row    字段的列号,从0开始
     * @param      col 字段的行号,从0开始
     * @note
@@ -96,7 +96,9 @@ public:
         {
             return -1;
         }
+		//! sq_result_ 第0行是列名，所以从1行开始
         val = zce::from_str_to<T>(sq_result_[(row + 1) * num_result_column_ + col]);
+		return 0;
     }
 
     //!行的数量

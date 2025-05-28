@@ -106,6 +106,13 @@ public:
     command(const command&) = delete;
     command& operator=(const command&) = delete;
 
+    void reset(zce::pq::connect& conn)
+    {
+        conn_ = conn.get_handle();
+        stmt_clear();
+        stmt_name_[0] = 0;
+    }
+
     const char* error_message()
     {
         return ::PQerrorMessage(conn_);
@@ -137,6 +144,11 @@ public:
                 zce::pq::result& pq_res);
 
     
+    ///stmt 的函数=============================================================
+    auto bind_param(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.bind_param_);
+    }
 
     int stmt_prepare(std::string_view sqlcmd);
 
@@ -155,7 +167,7 @@ public:
         zce::unique_name("STMT",
                          stmt_name_,
                          sizeof(stmt_name_));
-        size_t param_num = count_sql_param(sql_cmd);
+        size_t param_num = stmt_count_sql_param(sql_cmd);
         PGresult* res = ::PQprepare(conn_,
                                     stmt_name_,
                                     sql_cmd.data(),
@@ -190,14 +202,9 @@ public:
     //! STMT 的清理
     void stmt_clear();
 
-    void reset(zce::pq::connect& conn)
-    {
-        conn_ = conn.get_handle();
-        stmt_clear();
-        stmt_name_[0] = 0;
-    }
 
-    static size_t count_sql_param(const std::string_view& sql);
+    //! 获取当前STMT SQL绑定的参数个数
+    static size_t stmt_count_sql_param(const std::string_view& sql);
 
 protected:
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "zce/string/from_string.h"
+
 namespace zce
 {
 
@@ -18,14 +20,27 @@ public:
     bool get_value(const std::string& key, std::string& value) const;
 
     //!  
-    const char* get_value(const std::string& key) const;
+    const char* get_value_data(const std::string& key) const;
 
     template<typename T>  
-    T get_value(const std::string& key) const;
+    T get_value(const std::string& key) const
+    {
+        T value;
+        get_value(key, value);
+        return value;
+    }
 
 
     template<typename T>  
-    bool get_value(const std::string& key, T& value) const;
+    int get_value(const std::string& key, T& value) const
+    {
+		const char* value_str = get_value_data(key);
+        if (value_str)
+        {
+			return zce::from_str(value_str, value);
+        }
+		return -1;
+    }
 
     template<typename T>
     bool set_value(const std::string& key, T& value);

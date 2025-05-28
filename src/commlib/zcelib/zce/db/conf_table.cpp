@@ -423,7 +423,6 @@ int config_table::replace_array(unsigned int table_id,
         {
             return ret;
         }
-        sqlite_cmd_.reset_stmt();
     }
 
     ret = sqlite_cmd_.trans_commit();

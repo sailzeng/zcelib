@@ -25,7 +25,7 @@ bool string_map::get_value(const std::string& key, std::string& value)  const
 }
 
 //!
-const char* string_map::get_value(const std::string& key)  const
+const char* string_map::get_value_data(const std::string& key)  const
 {
     
     auto iter = map_string_.find(key);

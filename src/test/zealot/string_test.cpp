@@ -1,6 +1,6 @@
 #include "predefine.h"
 
-namespace ztest
+namespace zeal
 {
 int test_from_string()
 {

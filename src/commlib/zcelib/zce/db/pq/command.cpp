@@ -365,7 +365,7 @@ int command::stmt_prepare(std::string_view sql_cmd)
     zce::unique_name("STMT",
                      stmt_name_,
                      sizeof(stmt_name_));
-    size_t param_num = count_sql_param(sql_cmd);
+    size_t param_num = stmt_count_sql_param(sql_cmd);
     PGresult* res = ::PQprepare(conn_,
                                 stmt_name_,
                                 sql_cmd.data(),
@@ -470,7 +470,7 @@ void command::stmt_clear()
 }
 
 
-size_t command::count_sql_param(const std::string_view& sql)
+size_t command::stmt_count_sql_param(const std::string_view& sql)
 {
     size_t max_param = 0;
     size_t i = 0;

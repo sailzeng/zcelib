@@ -1,5 +1,8 @@
 #include "predefine.h"
 
+namespace zeal
+{
+
 class RunTest
 {
 public:
@@ -80,4 +83,6 @@ TEST(UtilTestSuite, TestAPI)
     EXPECT_EQ(test_util_001(), 0);
     EXPECT_EQ(test_singleton(), 0);
     EXPECT_EQ(test_mpl_001(), 0);
+}
+
 }

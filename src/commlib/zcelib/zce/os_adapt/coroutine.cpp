@@ -9,14 +9,17 @@ VOID  WINAPI _FIBERS_FUN_ADAPT::adapt_fun(VOID* param)
 {
     _FIBERS_FUN_ADAPT* fun_adapt = (_FIBERS_FUN_ADAPT*)param;
 
-    //coroutine_t* handle = fun_adapt->handle_;
-    //bool exit_back_main = fun_adapt->exit_back_main_;
+    coroutine_t* handle = fun_adapt->handle_;
+    bool exit_back_main = fun_adapt->exit_back_main_;
     std::function<void()> fun_call(std::move(fun_adapt->fun_));
     //this parameter is heap allocated, need to delete it
     delete fun_adapt;
 
     fun_call();
-
+    if (exit_back_main)
+    {
+        ::SwitchToFiber(handle->main_);
+    }
     //Fiber function exits, switch to SwitchToFiber main fiber
 }
 

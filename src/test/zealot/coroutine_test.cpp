@@ -1,6 +1,9 @@
 #include "predefine.h"
 #include "zealot_main.h"
 
+namespace zeal
+{
+
 int co_coroutine1(int* count,
                   int num)
 {
@@ -109,4 +112,6 @@ int test_coroutine1()
 TEST(CoroutineTestSuite, TestAPI)
 {
     EXPECT_EQ(test_coroutine1(), 0);
+}
+
 }

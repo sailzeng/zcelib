@@ -308,7 +308,16 @@ public:
                               const char* fromstr,
                               unsigned int fromlen);
 
-    ///stmt 的函数-----------------------------------------------------
+    ///stmt 的函数=============================================================
+
+    auto bind_param(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.bind_param_);
+    }
+    auto bind_result(this auto&& self)
+    {
+        return std::forward_like<decltype(self)>(self.bind_result_);
+    }
 
     /*!
     * @brief      预处理SQL,并且分析绑定的变量
@@ -380,12 +389,12 @@ public:
                            zce::mysql::bind* bind_colum) const;
 
     //返回结果集的行数目
-    size_t result_rows_num() const
+    size_t stmt_result_rows_num() const
     {
         return static_cast <size_t>(::mysql_stmt_num_rows(stmt_));
     }
     //返回结果集的列数目
-    size_t result_fields_num() const
+    size_t stmt_result_fields_num() const
     {
         return static_cast <size_t>(::mysql_stmt_field_count(stmt_));
     }
@@ -430,10 +439,10 @@ public:
     * @brief      得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
     *             Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
     *             为什么采用这样的奇怪参数顺序,因为mysql_escape_string
-    * @return     unsigned int 编码后字符串的长度
-    * @param      tostr        转换得到的字符串,最好保证有fromlen *2的长度
-    * @param      fromstr      进行转换的字符串
-    * @param      fromlen      转换的字符串长度
+    * @return     size_t   编码后字符串的长度
+    * @param      tostr    转换得到的字符串,最好保证有fromlen *2的长度
+    * @param      fromstr  进行转换的字符串
+    * @param      fromlen  转换的字符串长度
     */
     static size_t escape_string(char* tostr,
                                 const char* fromstr,
