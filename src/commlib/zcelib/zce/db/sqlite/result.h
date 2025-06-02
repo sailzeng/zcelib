@@ -83,7 +83,7 @@ public:
     template <typename T>
     T field(size_t row, size_t col) const
     {
-        T val;
+        T val = T{};
         field(row, col, val);
         return val;
     }
@@ -206,7 +206,7 @@ public:
     template <typename T>
     T field(size_t col) const
     {
-        T val;
+        T val = T{};
         field(col, val);
         return val;
     }

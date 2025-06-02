@@ -21,7 +21,7 @@ public:
     connect(const connect&) = delete;
     connect& operator=(const connect&) = delete;
 
-    //!
+	//! 注意，PQ的 DATABASE 概念和 MySQL 的 DATABASE 概念不同， 
     int connect_host(const char* host_name,
                      const unsigned int port = POSTGRESQL_PORT,
                      const char* user = "postgres",

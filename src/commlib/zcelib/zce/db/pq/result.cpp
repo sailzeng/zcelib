@@ -125,6 +125,19 @@ void result::set_result(::PGresult* res)
     return;
 }
 
+void result::clear()
+{
+    if (nullptr != pq_result_)
+    {
+        ::PQclear(pq_result_);
+        pq_result_ = nullptr;
+    }
+    //行数目，列数目清0
+    num_result_row_ = 0;
+    num_result_field_ = 0;
+    cursor_row_ = (size_t)-1;
+}
+
 template <>
 int result::field(size_t row, size_t col, zce::ztm& val) const
 {
@@ -175,19 +188,6 @@ int result::field(size_t row, size_t col, zce::ztm& val) const
     {
         return -1;
     }
-}
-
-void result::clear()
-{
-    if (nullptr != pq_result_)
-    {
-        ::PQclear(pq_result_);
-        pq_result_ = nullptr;
-    }
-    //行数目，列数目清0
-    num_result_row_ = 0;
-    num_result_field_ = 0;
-    cursor_row_ = (size_t)-1;
 }
 
 bool result::cursor_next()

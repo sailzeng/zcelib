@@ -17,7 +17,7 @@ bind::bind(size_t num_bind)
 //析构函数
 bind::~bind()
 {
-    clear();
+    terminate();
 }
 
 bind::bind(bind&& bind) noexcept :
@@ -30,7 +30,7 @@ bind::bind(bind&& bind) noexcept :
 
 bind& bind::operator=(bind&& bind) noexcept
 {
-    clear();
+    terminate();
     num_bind_ = bind.num_bind_;
     stmt_bind_ = bind.stmt_bind_;
     bind.num_bind_ = 0;
@@ -47,14 +47,14 @@ bind::bind(const bind& bind) :
 
 bind& bind::operator=(const bind& bind)
 {
-    clear();
+    terminate();
     num_bind_ = bind.num_bind_;
     stmt_bind_ = new MYSQL_BIND[num_bind_];
     memcpy(stmt_bind_, bind.stmt_bind_, sizeof(MYSQL_BIND) * num_bind_);
     return *this;
 }
 
-void bind::clear()
+void bind::terminate()
 {
     if (stmt_bind_)
     {
@@ -66,7 +66,7 @@ void bind::clear()
 
 void bind::initialize(size_t num_bind)
 {
-    clear();
+    terminate();
     num_bind_ = num_bind;
     if (num_bind_ == 0)
     {
@@ -78,10 +78,10 @@ void bind::initialize(size_t num_bind)
 
 //绑定一个参数
 int bind::tie_one_param(size_t id,
-                        ::enum_field_types paramtype,
-                        my_bool* is_null,
-                        void* paramdata,
-                        unsigned long szparam)
+    ::enum_field_types paramtype,
+    my_bool* is_null,
+    void* paramdata,
+    unsigned long szparam)
 {
     ZCE_ASSERT(id < num_bind_);
     if (id >= num_bind_)
@@ -99,9 +99,9 @@ int bind::tie_one_param(size_t id,
 }
 
 int bind::tie_one_result(size_t id,
-                         ::enum_field_types restype,
-                         void* resdata,
-                         unsigned long* szres)
+    ::enum_field_types restype,
+    void* resdata,
+    unsigned long* szres)
 {
     ZCE_ASSERT(id < num_bind_);
     if (id >= num_bind_)
@@ -315,24 +315,24 @@ command::~command() noexcept
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
 size_t command::escape_string(char* tostr,
-                              const char* fromstr,
-                              unsigned int fromlen)
+    const char* fromstr,
+    unsigned int fromlen)
 {
     return static_cast<size_t>(
         ::mysql_escape_string(tostr,
-        fromstr,
-        fromlen));
+            fromstr,
+            fromlen));
 }
 
 size_t command::real_escape_string(char* tostr,
-                                   const char* fromstr,
-                                   unsigned int fromlen)
+    const char* fromstr,
+    unsigned int fromlen)
 {
     return static_cast<size_t>(
         ::mysql_real_escape_string(mysql_,
-        tostr,
-        fromstr,
-        fromlen));
+            tostr,
+            fromstr,
+            fromlen));
 }
 
 //开始一个事务，Begin Transaction
@@ -355,8 +355,8 @@ int command::trans_rollback()
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
 int command::execute(std::string_view sqlcmd,
-                     size_t& num_affect,
-                     uint64_t* last_id)
+    size_t& num_affect,
+    uint64_t* last_id)
 {
     int ret = 0;
     if ((ret = execute(sqlcmd)) == 0)
@@ -369,8 +369,8 @@ int command::execute(std::string_view sqlcmd,
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
 int command::execute(std::string_view sqlcmd,
-                     size_t& num_affect,
-                     zce::mysql::result& my_res)
+    size_t& num_affect,
+    zce::mysql::result& my_res)
 {
     int ret = 0;
     if ((ret = execute(sqlcmd)) == 0)
@@ -391,8 +391,8 @@ int command::execute(std::string_view sqlcmd)
 
     //执行SQL命令
     int ret = ::mysql_real_query(mysql_,
-                                 sqlcmd.data(),
-                                 (unsigned long)sqlcmd.length());
+        sqlcmd.data(),
+        (unsigned long)sqlcmd.length());
     if (ret != 0)
     {
         return ret;
@@ -401,9 +401,9 @@ int command::execute(std::string_view sqlcmd)
 }
 
 int command::get_result(size_t& num_affect,
-                        size_t* last_id,
-                        zce::mysql::result* my_res,
-                        bool use_result)
+    size_t* last_id,
+    zce::mysql::result* my_res,
+    bool use_result)
 {
     //如果用户要求转储结果集
     if (my_res)
@@ -458,7 +458,7 @@ int command::fetch_next_row(zce::mysql::result& res)
 
 //用于 multiple-statement executions 中得到多个
 int command::fetch_next_result(zce::mysql::result& res,
-                               bool use_result)
+    bool use_result)
 {
     int ret = ::mysql_next_result(mysql_);
     //ret == -1表示没有结果集,其他<0的值表示错误
@@ -491,6 +491,24 @@ int command::fetch_next_result(zce::mysql::result& res,
     return 0;
 }
 
+void command::stmt_clear()
+{
+    if (nullptr != stmt_)
+    {
+        [[maybe_unused]]
+        int ret = ::mysql_stmt_free_result(stmt_);
+        ret = ::mysql_stmt_close(stmt_);
+    }
+    current_bind_ = 0;
+    bind_param_.terminate();
+    bind_result_.terminate();
+}
+
+void command::bind_reset()
+{
+    current_bind_ = 0;
+}
+
 int command::stmt_prepare(std::string_view sqlcmd)
 {
     //如果没有设置连接或者没有设置命令
@@ -500,15 +518,15 @@ int command::stmt_prepare(std::string_view sqlcmd)
     }
     //执行SQL命令
     int ret = ::mysql_stmt_prepare(stmt_,
-                                   sqlcmd.data(),
-                                   static_cast<unsigned long>(sqlcmd.length()));
+        sqlcmd.data(),
+        static_cast<unsigned long>(sqlcmd.length()));
     if (ret != 0)
     {
         return ret;
     }
     //绑定参数
     unsigned long param_count = ::mysql_stmt_param_count(stmt_);
-    if (param_count > 0) 
+    if (param_count > 0)
     {
         bind_param_.initialize(param_count);
     }
@@ -525,7 +543,7 @@ int command::stmt_prepare(std::string_view sqlcmd)
 
 //SQL 执行命令，这个事一个基础函数，内部调用
 int command::stmt_execute(size_t* num_affect,
-                          size_t* last_id)
+    size_t* last_id)
 {
     int ret = 0;
     ret = ::mysql_stmt_bind_param(stmt_, bind_param_.get_stmt_bind());
@@ -582,13 +600,13 @@ int command::stmt_fetch_next_row() const
 
 //用bind_data取出一列的数据
 int command::stmt_fetch_column(size_t field,
-                               size_t offset,
-                               zce::mysql::bind* bind_colum) const
+    size_t offset,
+    zce::mysql::bind* bind_colum) const
 {
     int tmpret = ::mysql_stmt_fetch_column(stmt_,
-                                           bind_colum->get_stmt_bind(),
-                                           static_cast<unsigned int>(field),
-                                           static_cast<unsigned long>(offset));
+        bind_colum->get_stmt_bind(),
+        static_cast<unsigned int>(field),
+        static_cast<unsigned long>(offset));
     if (0 != tmpret)
     {
         return -1;
@@ -609,17 +627,5 @@ int command::stmt_seek_result_row(size_t nrow) const
     }
 
     return 0;
-}
-
-void command::stmt_clear()
-{
-    if (nullptr != stmt_)
-    {
-        [[maybe_unused]]
-        int ret = ::mysql_stmt_free_result(stmt_);
-        ret = ::mysql_stmt_close(stmt_);
-    }
-    bind_param_.clear();
-    bind_result_.clear();
 }
 }

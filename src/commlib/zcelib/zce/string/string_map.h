@@ -25,7 +25,7 @@ public:
     template<typename T>  
     T get_value(const std::string& key) const
     {
-        T value;
+        T value = T{};
         get_value(key, value);
         return value;
     }

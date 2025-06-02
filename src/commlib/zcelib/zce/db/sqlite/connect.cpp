@@ -18,7 +18,7 @@ connect::connect() :
 
 connect::~connect()
 {
-    close_db();
+    disconnect();
 }
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
@@ -48,7 +48,7 @@ int connect::connect_db(const char* db_file,
     {
         ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
                 db_file,
-                error_code(),
+                error_no(),
                 error_message());
         return -1;
     }
@@ -72,12 +72,12 @@ int connect::connect_url(const char* db_url)
 	}
     bool read_only = url_obj.query_params().get_value<bool>("READONLY");
     bool create_db = url_obj.query_params().get_value<bool>("CREATEDB");
-
-    return connect_db(url_obj.path().c_str(), read_only, create_db);
+    std::string db_file = "./" + url_obj.path();
+    return connect_db(db_file.c_str(), read_only, create_db);
 }
 
 //关闭数据库。
-void connect::close_db()
+void connect::disconnect()
 {
     if (sqlite3_)
     {
@@ -93,7 +93,7 @@ const char* connect::error_message()
 }
 
 //DB返回的错误ID
-int connect::error_code()
+int connect::error_no()
 {
     return ::sqlite3_errcode(sqlite3_);
 }

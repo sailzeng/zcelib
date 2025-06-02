@@ -81,7 +81,7 @@ int url::regex_queryparams(std::string_view query)
 int url::regex_urlstr(std::string_view strurl,
                       bool parse_query)
 {
-    const std::string URL_SCHEME_REGEX = R"((^(\w+):\/\/)";
+    const std::string URL_SCHEME_REGEX = R"((\w+):\/\/)";
     const std::string URL_AUTHORITY_REGEX = R"((?:([^:@\/\[\]]+)(?::([^@\/\[\]]*))?@))";
     const std::string URL_HOST_REGEX = R"((\[[^\]]+\]|[^:/?#]+))";
     const std::string URL_PORT_REGEX = R"((?::(\d+)))";

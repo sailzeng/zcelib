@@ -118,7 +118,7 @@ public:
     template <typename T>
     T field(size_t col) const
     {
-        T val;
+        T val = T{};
         field(col, val);
         return val;
     }

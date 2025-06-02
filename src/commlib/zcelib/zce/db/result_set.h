@@ -1,3 +1,24 @@
+/*!
+* @copyright  2004-2024  Apache License, Version 2.0 FULLSAIL
+* @filename   zce_sqlite_conf_table.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version
+* @brief      这是一个数据库结果集的迭代器类和结果集类
+*             你可以通过使用它对数据库的查询结果进行迭代和访问。
+*
+* @details  使用方法大致如下：
+*           1. 首先，你需要定义一个结果集类型，指定你要提取的字段类型。
+*           using db_res_set = dbt::template res_set<int, short, int, int, float, double, std::string, zce::ztm>;
+* 		    2. 然后，你可以使用数据库查询结果来初始化这个结果集。
+*           db_res_set  rs(std::move(mysql_result));
+*  	        3. 最后，你可以使用范围基于的for循环，迭代器，来迭代结果集。
+*           for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : rs)
+*    
+* @note       
+*/
+
+
+
 #pragma once
 
 #include "zce/db/mysql/result.h"
@@ -49,7 +70,11 @@ public:
     {
         return !(*this == other);
     }
-    ///提领操作
+
+	///提领操作，通过这个方法可以获取当前迭代器指向的结果集行数据。
+    ///using db_res_set = dbt::template res_set<int, short, int, int, float, double, std::string, zce::ztm>;
+    ///db_res_set  rs(std::move(mysql_result));
+    ///for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : rs)
     value_type operator*()
     {
         return sq_result_->make_tuple<Types...>(num_result_row_);

@@ -206,10 +206,49 @@ int test_time_string2()
     return 0;
 }
 
-TEST(StringTestSuite, TestAPI)
+TEST(StringTestSuite, TimeString)
 {
     EXPECT_EQ(test_from_string(), 0);
     EXPECT_EQ(test_time_string(), 0);
     EXPECT_EQ(test_time_string2(), 0);
 }
+
+int test_url_string()
+{
+    const char URL_STR[] = "http://user:password@www.zealot.com.cn:8080/hello?name=zealot&age=18#anchor";
+    zce::url url_1;
+    int ret = url_1.regex_urlstr(URL_STR);
+	EXPECT_EQ(ret, 0);
+    if (ret != 0)
+    {
+        std::cerr << "Failed to parse URL: " << URL_STR << std::endl;
+        return ret;
+	}
+	std::cout << "Parsed URL: " << URL_STR << std::endl;
+    std::cout << "URL scheme: " << url_1.scheme() << std::endl;
+    std::cout << "URL user: " << url_1.user() << std::endl;
+    std::cout << "URL authority: " << url_1.authority() << std::endl;
+    std::cout << "URL host: " << url_1.host() << std::endl;
+    std::cout << "URL port: " << url_1.port() << std::endl;
+    std::cout << "URL path: " << url_1.path() << std::endl;
+    std::cout << "URL query: " << url_1.query() << std::endl;
+    std::cout << "URL fragment: " << url_1.fragment() << std::endl;
+
+    EXPECT_EQ(url_1.scheme(), "http");
+    EXPECT_EQ(url_1.user(), "user");
+    EXPECT_EQ(url_1.authority(), "password");
+    EXPECT_EQ(url_1.host(), "www.zealot.com.cn");
+    EXPECT_EQ(url_1.port(), 8080);
+    EXPECT_EQ(url_1.path(), "/hello");
+    EXPECT_EQ(url_1.query(), "name=zealot&age=18");
+    EXPECT_EQ(url_1.fragment(), "anchor");
+
+    return 0;
+}
+
+TEST(StringTestSuite, UrlString)
+{
+    EXPECT_EQ(test_url_string(), 0);
+}
+
 }

@@ -47,19 +47,19 @@ public:
         * @param[in/out] blob_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
         */
         blob(enum_field_types data_type,
-             void* blob_ptr,
-             unsigned long* blob_len) :
+            void* blob_ptr,
+            unsigned long* blob_len) :
             bind_type_(data_type),
             blob_ptr_(blob_ptr),
             blob_len_(blob_len)
         {
             assert(MYSQL_TYPE_VARCHAR == bind_type_
-                   || MYSQL_TYPE_BLOB == bind_type_
-                   || MYSQL_TYPE_TINY_BLOB == bind_type_
-                   || MYSQL_TYPE_MEDIUM_BLOB == bind_type_
-                   || MYSQL_TYPE_LONG_BLOB == bind_type_
-                   || MYSQL_TYPE_VAR_STRING == bind_type_
-                   || MYSQL_TYPE_STRING == bind_type_);
+                || MYSQL_TYPE_BLOB == bind_type_
+                || MYSQL_TYPE_TINY_BLOB == bind_type_
+                || MYSQL_TYPE_MEDIUM_BLOB == bind_type_
+                || MYSQL_TYPE_LONG_BLOB == bind_type_
+                || MYSQL_TYPE_VAR_STRING == bind_type_
+                || MYSQL_TYPE_STRING == bind_type_);
         };
         //
         ~blob() = default;
@@ -85,9 +85,9 @@ public:
             stmt_ptime_(pstmttime)
         {
             assert(stmt_timetype_ == MYSQL_TYPE_TIMESTAMP ||
-                   stmt_timetype_ == MYSQL_TYPE_DATE ||
-                   stmt_timetype_ == MYSQL_TYPE_DATETIME ||
-                   stmt_timetype_ == MYSQL_TYPE_TIME);
+                stmt_timetype_ == MYSQL_TYPE_DATE ||
+                stmt_timetype_ == MYSQL_TYPE_DATETIME ||
+                stmt_timetype_ == MYSQL_TYPE_TIME);
         };
         //
         ~time() = default;
@@ -129,7 +129,7 @@ public:
     bind& operator=(const bind& bind);
 
     void initialize(size_t num_bind);
-    void clear();
+    void terminate();
     /*!
     * @brief      绑定一个参数
     * @return     int
@@ -140,10 +140,10 @@ public:
     * @param      szparam   参数的长度
     */
     int tie_one_param(size_t id,
-                      ::enum_field_types paramtype,
-                      my_bool* is_null,
-                      void* paramdata,
-                      unsigned long szparam = 0);
+        ::enum_field_types paramtype,
+        my_bool* is_null,
+        void* paramdata,
+        unsigned long szparam = 0);
 
     /*!
     * @brief
@@ -154,9 +154,9 @@ public:
     * @param[in,out] szres
     */
     int tie_one_result(size_t id,
-                       ::enum_field_types res_type,
-                       void* resdata,
-                       unsigned long* szres);
+        ::enum_field_types res_type,
+        void* resdata,
+        unsigned long* szres);
 
     ///得到STMT HANDLE
     inline MYSQL_BIND* get_stmt_bind()
@@ -262,8 +262,8 @@ public:
     * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
     */
     int execute(std::string_view sqlcmd,
-                size_t& num_affect,
-                uint64_t* last_id);
+        size_t& num_affect,
+        uint64_t* last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -272,8 +272,8 @@ public:
     * @param      sqlresult   返回的结果集合
     */
     int execute(std::string_view sqlcmd,
-                size_t& num_affect,
-                zce::mysql::result& my_res);
+        size_t& num_affect,
+        zce::mysql::result& my_res);
 
     //! 执行SQL语句，什么都不管的那种，DDL
     int execute(std::string_view sqlcmd);
@@ -292,7 +292,7 @@ public:
     * @param[out] use_result 是否使用mysql_use_result取回结果集合，默认false，使用mysql_store_result
     */
     int fetch_next_result(zce::mysql::result& res,
-                          bool use_result = false);
+        bool use_result = false);
 
     /*!
     * @brief      编码转换，得到Real Escape String ,Real表示根据
@@ -305,8 +305,8 @@ public:
     * @param      fromlen      转换的字符串长度
     */
     size_t real_escape_string(char* tostr,
-                              const char* fromstr,
-                              unsigned int fromlen);
+        const char* fromstr,
+        unsigned int fromlen);
 
     ///stmt 的函数=============================================================
 
@@ -318,6 +318,12 @@ public:
     {
         return std::forward_like<decltype(self)>(self.bind_result_);
     }
+
+    //! STMT 的清理
+    void stmt_clear();
+
+    //! 绑定重置，可以重新绑定参数
+    void bind_reset();
 
     /*!
     * @brief      预处理SQL,并且分析绑定的变量
@@ -336,19 +342,18 @@ public:
     */
     template <typename... Args>
     int stmt_prepare(std::string_view sqlcmd,
-                     Args && ...args)
+        Args && ...args)
     {
-
         int ret = ::mysql_stmt_prepare(stmt_,
-                                       sqlcmd.data(),
-                                       static_cast<unsigned long>(sqlcmd.size()));
+            sqlcmd.data(),
+            static_cast<unsigned long>(sqlcmd.size()));
         if (ret != 0)
         {
             return ret;
         }
 
         unsigned long param_count = ::mysql_stmt_param_count(stmt_);
-        if (param_count > 0) 
+        if (param_count > 0)
         {
             bind_param_.initialize(param_count);
         }
@@ -374,7 +379,7 @@ public:
     * @param      lastid      返回的LASTID
     */
     int stmt_execute(size_t* num_affect,
-                     size_t* last_id);
+        size_t* last_id);
 
     //! 从STMT 返回的结果取出下一行数据，因为已经bind了结果，相当于将结果集的
     //! 数据写入bind_data
@@ -385,8 +390,8 @@ public:
 
     //取得一个列的MYSQL_BIND
     int  stmt_fetch_column(size_t field,
-                           size_t offset,
-                           zce::mysql::bind* bind_colum) const;
+        size_t offset,
+        zce::mysql::bind* bind_colum) const;
 
     //返回结果集的行数目
     size_t stmt_result_rows_num() const
@@ -415,8 +420,13 @@ public:
         return;
     }
 
-    //! STMT 的清理
-    void stmt_clear();
+    template <class bind_type>
+    command& operator << (bind_type val)
+    {
+        bind_param_.tie(current_bind_, val);
+        ++current_bind_;
+        return *this;
+    }
 
 protected:
 
@@ -430,9 +440,9 @@ protected:
     *                         默认使用store mysql_store_result 方式使用什么方式获得结果，,
     */
     int get_result(size_t& num_affect,
-                   size_t* last_id,
-                   zce::mysql::result* my_res,
-                   bool use_result = false);
+        size_t* last_id,
+        zce::mysql::result* my_res,
+        bool use_result = false);
 public:
 
     /*!
@@ -445,8 +455,8 @@ public:
     * @param      fromlen  转换的字符串长度
     */
     static size_t escape_string(char* tostr,
-                                const char* fromstr,
-                                unsigned int fromlen);
+        const char* fromstr,
+        unsigned int fromlen);
 
 protected:
 
@@ -456,7 +466,7 @@ protected:
         //用,运算符展开参数 fold expression
         //在展开过程，Is如果小于param_num,就绑定参数，否则绑定结果
         ((Is < param_num ? bind_param_.tie(Is, std::forward<Args>(args)) :
-         bind_result_.tie(Is - param_num, std::forward<Args>(args))), ...);
+            bind_result_.tie(Is - param_num, std::forward<Args>(args))), ...);
     }
 
 private:
@@ -471,9 +481,11 @@ private:
     zce::mysql::bind bind_param_;
     ///
     zce::mysql::bind bind_result_;
-
     ///
     bool is_bind_result_ = false;
+
+    //!当前bind绑定SQL语句参数的下标，用于<<函数,,从0开始
+    int current_bind_ = 0;
 };
 }
 

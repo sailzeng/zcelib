@@ -56,7 +56,13 @@ int main(int argc, char* argv[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
     ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::main", ret);
 
-    zeal::AddTestFilter("SQLiteTestSuite.TestAPI");
+    ::testing::GTEST_FLAG(color) = "yes";
+    
+    //zeal::AddTestFilter("PQTestSuite.TestAPI");
+    zeal::AddTestFilter("SQLiteSuite.TestAPI");
+	zeal::AddTestFilter("StringTestSuite.UrlString");
+    //zeal::AddTestFilter("StringTestSuite.TimeString");
+    //zeal::AddTestFilter("SQLiteTestSuite.TestAPI");
     //zeal::AddTestFilter("UtilTestSuite.TestAPI");
     //zeal::AddTestFilter("CoroutineTestSuite.TestAPI");
     //zeal::AddTestFilter("SerializeTestSuite.TestAPI");
@@ -93,10 +99,6 @@ int main(int argc, char* argv[])
 
     test_async_coroutine(argc, argv);
 
-    //bytes_encrypt_perf(argc, argv);
-    //test_lua_script1(argc, argv);
-    //test_lua_script3(argc, argv);
-
     printf("%s", "----------------------------------------------------------------------------\n");
     test_lua_script1(argc, argv);
     test_lua_script2(argc, argv);
@@ -121,16 +123,6 @@ int main(int argc, char* argv[])
     printf("%s", "----------------------------------------------------------------------------\n");
 
     test_mmap_avltree5(argc, argv);
-    //test_mmap_avltree2(argc, argv);
 
-    //std::cin.ignore().get();
-
-    //rc_stab();
-    //bytes_encrypt_right(argc, argv);
-    //bytes_encrypt_perf(argc, argv);
-    //system("pause");
-    //test_rw_lock2(argc, argv);
-    //system("pause");
-    //test_rw_lock1(argc, argv);
 #endif
 }

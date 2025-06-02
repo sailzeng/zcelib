@@ -25,7 +25,7 @@ public:
     exec& operator=(const exec&) = delete;
 
     //!链接MYSQL数据库
-    static int connect(CONNECT* db_connect,
+    static int connect(CONNECT& db_connect,
                        const char* host,
                        unsigned int port,
                        const char* user,
@@ -34,45 +34,44 @@ public:
         int ret = 0;
 
         //连接数据库
-        if (db_connect->is_connected() == false)
+        if (db_connect.is_connected() == false)
         {
             //如果设置过HOST，用HOST NAME进行连接
-            ret = db_connect->connect_host(host,
-                                           port,
-                                           user,
-                                           pwd,
-                                           nullptr);
+            ret = db_connect.connect_host(host,
+                                          port,
+                                          user,
+                                          pwd,
+                                          nullptr);
 
             //如果错误
             if (ret != 0)
             {
                 ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
-                        db_connect->error_no(),
-                        db_connect->error_message());
+                        db_connect.error_no(),
+                        db_connect.error_message());
                 return -1;
             }
         }
         return 0;
     }
 
-    static int connect(CONNECT* db_connect,
+    static int connect(CONNECT& db_connect,
                        const char* url)
     {
-
         int ret = 0;
 
         //连接数据库
-        if (db_connect->is_connected() == false)
+        if (db_connect.is_connected() == false)
         {
             //使用URL进行连接
-            ret = db_connect->connect_url(url);
+            ret = db_connect.connect_url(url);
 
             //如果错误
             if (ret != 0)
             {
                 ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
-                        db_connect->error_no(),
-                        db_connect->error_message());
+                        db_connect.error_no(),
+                        db_connect.error_message());
                 return -1;
             }
         }
@@ -80,25 +79,25 @@ public:
     }
 
     //!断开链接
-    static void disconnect(CONNECT* db_connect)
+    static void disconnect(CONNECT& db_connect)
     {
-        if (db_connect->is_connected() == true)
+        if (db_connect.is_connected() == true)
         {
-            db_connect->disconnect();
+            db_connect.disconnect();
         }
     }
 
-    static int execute(CONNECT* db_connect,
+    static int execute(CONNECT& db_connect,
                        std::string_view sql)
     {
-        COMMAND cmd(*db_connect);
+        COMMAND cmd(db_connect);
         int ret = cmd.execute(sql);
         //如果错误
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                    db_connect->error_no(),
-                    db_connect->error_message(),
+                    db_connect.error_no(),
+                    db_connect.error_message(),
                     sql.data());
             return -1;
         }
@@ -108,26 +107,26 @@ public:
     }
 
     //!查询，非SELECT语句
-    static int execute(CONNECT* db_connect,
+    static int execute(CONNECT& db_connect,
                        std::string_view sql,
                        size_t& num_affect,
                        uint64_t* insert_id)
     {
         //连接数据库
-        if (db_connect->is_connected() == false)
+        if (db_connect.is_connected() == false)
         {
             return -1;
         }
 
         ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sql.size(), sql.data());
-        COMMAND cmd(*db_connect);
+        COMMAND cmd(db_connect);
         int ret = cmd.execute(sql, num_affect, insert_id);
         //如果错误
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                    db_connect->error_no(),
-                    db_connect->error_message(),
+                    db_connect.error_no(),
+                    db_connect.error_message(),
                     sql.data());
             return -1;
         }
@@ -137,28 +136,28 @@ public:
     }
 
     //!查询，SELECT语句
-    static int execute(CONNECT* db_connect,
+    static int execute(CONNECT& db_connect,
                        std::string_view sql,
                        size_t& num_affect,
                        RESULT& db_result)
     {
         int ret = 0;
         //连接数据库
-        if (db_connect->is_connected() == false)
+        if (db_connect.is_connected() == false)
         {
             return -1;
         }
 
         ZCE_LOG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sql.size(), sql.data());
 
-        COMMAND cmd(*db_connect);
+        COMMAND cmd(db_connect);
         ret = cmd.execute(sql, num_affect, db_result);
         //如果错误
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%d]:[%s]. SQL:%s.",
-                    db_connect->error_no(),
-                    db_connect->error_message(),
+                    db_connect.error_no(),
+                    db_connect.error_message(),
                     sql.data());
             return -1;
         }
@@ -167,7 +166,7 @@ public:
         return 0;
     }
 
-    static int stmt_prepare(COMMAND &stmt_cmd,
+    static int stmt_prepare(COMMAND& stmt_cmd,
                             std::string_view sqlcmd)
     {
         int ret = stmt_cmd.stmt_prepare(sqlcmd);
@@ -182,7 +181,7 @@ public:
         return 0;
     }
 
-    static int stmt_execute(COMMAND &stmt_cmd,
+    static int stmt_execute(COMMAND& stmt_cmd,
                             size_t& num_affect,
                             uint64_t* last_id)
     {
@@ -197,7 +196,7 @@ public:
         return 0;
     }
 
-    static int stmt_execute(COMMAND &stmt_cmd,
+    static int stmt_execute(COMMAND& stmt_cmd,
                             size_t& num_affect,
                             STMT_RES& stmt_res)
     {

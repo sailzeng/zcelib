@@ -73,6 +73,7 @@ int connect::connect_host(const char* host_name,
         conn_ = nullptr;
         return -1;
     }
+    if_connected_ = true;
     return 0;
 }
 
@@ -97,6 +98,7 @@ int connect::connect_url(const char* url)
         conn_ = nullptr;
         return -1;
     }
+    if_connected_ = true;
     return 0;
 }
 

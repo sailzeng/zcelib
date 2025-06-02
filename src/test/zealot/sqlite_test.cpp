@@ -15,7 +15,7 @@ int test_sqlite_cmd()
 		return -1;
 	}
 
-	zce::sqlite::command cmd(&hdl);
+	zce::sqlite::command cmd(hdl);
 	ret = cmd.execute("CREATE TABLE IF NOT EXISTS foo(id INTEGER PRIMARY KEY,name TEXT,age INTEGER,address TEXT,salary REAL)");
 	EXPECT_EQ(ret, 0);
 	if (ret != 0)
@@ -66,7 +66,7 @@ int test_sqlite_cmd()
 			<< " address=" << address
 			<< " salary=" << salary << std::endl;
 	}
-	hdl.close_db();
+	hdl.disconnect();
 
 	return 0;
 }
@@ -80,7 +80,7 @@ int test_sqlite_stmt()
 	{
 		return -1;
 	}
-	zce::sqlite::command cmd(&hdl);
+	zce::sqlite::command cmd(hdl);
 	ret = cmd.execute("CREATE TABLE IF NOT EXISTS ofo(id INTEGER PRIMARY KEY,name TEXT,age INTEGER,address TEXT,salary REAL)");
 	if (ret != 0)
 	{

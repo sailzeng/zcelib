@@ -28,3 +28,4 @@ indent_style = spaces
 indent_size = 4
 tab_width= 4
 
+format_on_save = true

@@ -60,6 +60,7 @@
 #include <zce/string/to_string.h>
 #include <zce/string/format.h>
 #include <zce/string/extend.h>
+#include <zce/string/url.h>
 
 #include <zce/db/mysql/connect.h>
 #include <zce/db/mysql/command.h>

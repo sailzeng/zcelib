@@ -126,7 +126,7 @@ struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信�
 
 config_table::~config_table()
 {
-    sqlite_hdl_.close_db();
+    sqlite_hdl_.disconnect();
 }
 
 //打开一个通用的数据库
@@ -145,7 +145,7 @@ int config_table::open_dbfile(const char* db_file,
 
 void config_table::close_dbfile()
 {
-    sqlite_hdl_.close_db();
+    sqlite_hdl_.disconnect();
 }
 
 //创建TABLE SQL语句

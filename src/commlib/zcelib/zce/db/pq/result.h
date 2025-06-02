@@ -163,7 +163,7 @@ public:
     int field(size_t row, size_t col, T& val) const
     {
         //返回字段为文本类型
-        auto ffmt = field_format(col) == 0;
+        auto ffmt = field_format(col);
         if (ffmt == FMT_TEXT)
         {
             return zce::from_str(::PQgetvalue(pq_result_, (int)row, (int)col), val);
@@ -187,7 +187,7 @@ public:
     template <typename T>
     T field(size_t row, size_t col) const
     {
-        T val;
+        T val = T{};
         field(row, col, val);
         return val;
     }

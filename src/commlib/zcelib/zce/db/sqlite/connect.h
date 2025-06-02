@@ -61,13 +61,18 @@ public:
                    bool read_only,
                    bool create_db);
 
+    bool is_connected()
+    {
+        return sqlite3_ != nullptr;
+    }
+
     //!关闭数据库
-    void close_db();
+    void disconnect();
 
     //!取得错误语句Str
     const char* error_message();
     //!取得DB返回的错误ID
-    int error_code();
+    int error_no();
 
     //!取得SQLite的句柄
     inline sqlite3* get_handler()
@@ -78,7 +83,7 @@ public:
 protected:
 
     //!sqlite3的处理Handler
-    sqlite3* sqlite3_;
+    sqlite3* sqlite3_ = nullptr;
 };
 }
 

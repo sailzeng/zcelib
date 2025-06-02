@@ -18,7 +18,7 @@ bind::bind(size_t num_bind)
 //析构函数
 bind::~bind()
 {
-    clear();
+    terminate();
 }
 
 bind::bind(bind&& bind) noexcept :
@@ -37,7 +37,7 @@ bind::bind(bind&& bind) noexcept :
 
 bind& bind::operator=(bind&& bind) noexcept
 {
-    clear();
+    terminate();
     num_bind_ = bind.num_bind_;
     param_value_ = bind.param_value_;
     param_type_ = bind.param_type_;
@@ -66,7 +66,7 @@ bind::bind(const bind& bind) :
 
 bind& bind::operator=(const bind& bind)
 {
-    clear();
+    terminate();
     num_bind_ = bind.num_bind_;
     param_value_ = new char* [num_bind_];
     param_type_ = new ::Oid[num_bind_];
@@ -79,7 +79,7 @@ bind& bind::operator=(const bind& bind)
     return *this;
 }
 
-void bind::clear()
+void bind::terminate()
 {
     delete[] param_value_;
     param_value_ = nullptr;
@@ -94,7 +94,7 @@ void bind::clear()
 
 void bind::initialize(size_t num_bind)
 {
-    clear();
+    terminate();
     num_bind_ = num_bind;
     if (num_bind_ == 0)
     {
@@ -111,10 +111,10 @@ void bind::initialize(size_t num_bind)
 }
 
 int bind::tie_one_param(size_t id,
-                        char* paramdata,
-                        Oid type,
-                        int len,
-                        int fmt)
+    char* paramdata,
+    Oid type,
+    int len,
+    int fmt)
 {
     if (id > num_bind_)
     {
@@ -327,8 +327,8 @@ int command::execute(std::string_view sqlcmd)
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {
         ZCE_LOG(RS_ERROR,
-                "[pq] commit transaction failed : %s\n",
-                ::PQerrorMessage(conn_));
+            "[pq] commit transaction failed : %s\n",
+            ::PQerrorMessage(conn_));
         ret = -1;
     }
     ::PQclear(res);
@@ -336,127 +336,27 @@ int command::execute(std::string_view sqlcmd)
 }
 
 int command::execute(std::string_view sql_cmd,
-                     size_t& num_affect,
-                     uint64_t* last_id)
+    size_t& num_affect,
+    uint64_t* last_id)
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
     return get_result(res,
-                      num_affect,
-                      last_id,
-                      nullptr);
+        num_affect,
+        last_id,
+        nullptr);
 }
 
 int command::execute(std::string_view sql_cmd,
-                     size_t& num_affect,
-                     zce::pq::result& pq_res)
+    size_t& num_affect,
+    zce::pq::result& pq_res)
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
     return get_result(res,
-                      num_affect,
-                      nullptr,
-                      &pq_res);
-}
-
-int command::stmt_prepare(std::string_view sql_cmd)
-{
-    stmt_clear();
-    zce::unique_name("STMT",
-                     stmt_name_,
-                     sizeof(stmt_name_));
-    size_t param_num = stmt_count_sql_param(sql_cmd);
-    PGresult* res = ::PQprepare(conn_,
-                                stmt_name_,
-                                sql_cmd.data(),
-                                (int)param_num,
-                                nullptr);
-    if (PQresultStatus(res) != PGRES_COMMAND_OK)
-    {
-        ZCE_LOG(RS_ERROR,
-                "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
-                ::PQerrorMessage(conn_));
-        return -1;
-    }
-    ::PQclear(res);
-    bind_param_.initialize(param_num);
-    return 0;
-}
-
-int command::stmt_execute(size_t& num_affect,
-                          size_t* last_id,
-                          int res_fmt)
-{
-    PGresult* res = ::PQexecPrepared(conn_,
-                                     stmt_name_,
-                                     (int)bind_param_.num_bind_,
-                                     bind_param_.param_value_,
-                                     bind_param_.param_len_,
-                                     bind_param_.param_fmt_,
-                                     res_fmt);
-    return get_result(res,
-                      num_affect,
-                      last_id,
-                      nullptr);
-}
-
-int command::stmt_execute(size_t& num_affect,
-                          zce::pq::result& pq_res,
-                          int res_fmt)
-{
-    PGresult* res = ::PQexecPrepared(conn_,
-                                     stmt_name_,
-                                     (int)bind_param_.num_bind_,
-                                     bind_param_.param_value_,
-                                     bind_param_.param_len_,
-                                     bind_param_.param_fmt_,
-                                     res_fmt);
-    return get_result(res,
-                      num_affect,
-                      nullptr,
-                      &pq_res);
-}
-
-int command::get_result(PGresult* res,
-                        size_t& num_affect,
-                        size_t* last_id,
-                        zce::pq::result* pq_res)
-{
-    num_affect = 0;
-    if (last_id)
-    {
-        *last_id = 0;
-    }
-    int ret = 0;
-    ExecStatusType status = ::PQresultStatus(res);
-    if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
-    {
-        ZCE_LOG(RS_ERROR,
-                "Failed to prepare SQL : %s : %s\n", stmt_name_,
-                ::PQerrorMessage(conn_));
-        ret = -1;
-    }
-    else
-    {
-        if (status == PGRES_TUPLES_OK)
-        {
-            auto s_num = ::PQcmdTuples(res);
-            num_affect = std::stoull(s_num);
-        }
-        //如果想得到sequence id，请使用RETURNING子句
-        //INSERT INTO example_table (name) VALUES ('Sample Name') RETURNING id;
-        if (last_id)
-        {
-            char* id_str = ::PQgetvalue(res, 0, 0);
-            *last_id = atoll(id_str);
-        }
-        if (pq_res)
-        {
-            pq_res->set_result(res);
-        }
-    }
-    PQclear(res);
-    return ret;
+        num_affect,
+        nullptr,
+        &pq_res);
 }
 
 void command::stmt_clear()
@@ -466,10 +366,120 @@ void command::stmt_clear()
         ::PQclear(::PQprepare(conn_, stmt_name_, nullptr, 0, nullptr));
         stmt_name_[0] = 0;
     }
-    bind_param_.clear();
+    bind_param_.terminate();
+    current_bind_ = 0;
 }
 
+void command::bind_reset()
+{
+    current_bind_ = 0;
+}
 
+int command::stmt_prepare(std::string_view sql_cmd)
+{
+    stmt_clear();
+    zce::unique_name("STMT",
+        stmt_name_,
+        sizeof(stmt_name_));
+    size_t param_num = stmt_count_sql_param(sql_cmd);
+    PGresult* res = ::PQprepare(conn_,
+        stmt_name_,
+        sql_cmd.data(),
+        (int)param_num,
+        nullptr);
+    if (PQresultStatus(res) != PGRES_COMMAND_OK)
+    {
+        ZCE_LOG(RS_ERROR,
+            "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
+            ::PQerrorMessage(conn_));
+        return -1;
+    }
+    ::PQclear(res);
+    bind_param_.initialize(param_num);
+    return 0;
+}
+
+int command::stmt_execute(size_t& num_affect,
+    size_t* last_id,
+    int res_fmt)
+{
+    PGresult* res = ::PQexecPrepared(conn_,
+        stmt_name_,
+        (int)bind_param_.num_bind_,
+        bind_param_.param_value_,
+        bind_param_.param_len_,
+        bind_param_.param_fmt_,
+        res_fmt);
+    return get_result(res,
+        num_affect,
+        last_id,
+        nullptr);
+}
+
+int command::stmt_execute(size_t& num_affect,
+    zce::pq::result& pq_res,
+    int res_fmt)
+{
+    PGresult* res = ::PQexecPrepared(conn_,
+        stmt_name_,
+        (int)bind_param_.num_bind_,
+        bind_param_.param_value_,
+        bind_param_.param_len_,
+        bind_param_.param_fmt_,
+        res_fmt);
+    return get_result(res,
+        num_affect,
+        nullptr,
+        &pq_res);
+}
+
+int command::get_result(PGresult* res,
+    size_t& num_affect,
+    size_t* last_id,
+    zce::pq::result* pq_res)
+{
+    num_affect = 0;
+    int ret = 0;
+    ExecStatusType status = ::PQresultStatus(res);
+    if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
+    {
+        ZCE_LOG(RS_ERROR,
+            "Failed to prepare SQL : %s : %s\n", stmt_name_,
+            ::PQerrorMessage(conn_));
+        ret = -1;
+    }
+    else
+    {
+        if (status == PGRES_TUPLES_OK || status == PGRES_COMMAND_OK)
+        {
+            auto s_num = ::PQcmdTuples(res);
+            num_affect = std::stoull(s_num);
+        }
+        //如果想得到sequence id，请使用RETURNING子句
+        //INSERT INTO example_table (name) VALUES ('Sample Name') RETURNING id;
+        if (last_id)
+        {
+            *last_id = 0;
+            char* id_str = ::PQgetvalue(res, 0, 0);
+            if (id_str != nullptr)
+            {
+                *last_id = atoll(id_str);
+            }
+        }
+        if (pq_res)
+        {
+            pq_res->set_result(res);
+        }
+    }
+    //如果不需要结果集，直接清理掉结果集
+    if (pq_res == nullptr && res != nullptr)
+    {
+        ::PQclear(res);
+    }
+    return ret;
+}
+
+//得到SQL语句中的参数个数
 size_t command::stmt_count_sql_param(const std::string_view& sql)
 {
     size_t max_param = 0;
@@ -539,23 +549,6 @@ size_t command::stmt_count_sql_param(const std::string_view& sql)
     }
 
     return max_param;
-}
-
-int test()
-{
-    int a = 0;
-    double b = 0.0;
-    zce::pq::connect conn;
-    zce::pq::command cmd(conn);
-    int ret = 0;
-    ret = cmd.stmt_prepare("SELECT * FROM test WHERE id = $1",
-                           a,
-                           b);
-    if (ret != 0)
-    {
-        return ret;
-    }
-    return 0;
 }
 }
 
