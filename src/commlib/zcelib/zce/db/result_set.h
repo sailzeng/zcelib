@@ -13,16 +13,17 @@
 *           db_res_set  rs(std::move(mysql_result));
 *  	        3. 最后，你可以使用范围基于的for循环，迭代器，来迭代结果集。
 *           for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : rs)
-*    
-* @note       
+*
+* @note     这玩意的使用也有一个禁忌，就是DB的数据别动，因为有的数据库的
+*           结果集是和数据库连接绑定的，如果你在迭代过程中修改了数据库，
+*           可能会导致迭代器失效。
 */
-
-
 
 #pragma once
 
 #include "zce/db/mysql/result.h"
 #include "zce/db/pq/result.h"
+#include "zce/db/sqlite/result.h"
 
 namespace zce::db
 {
@@ -41,8 +42,8 @@ public:
 
     result_set_iterator() = default;
     result_set_iterator(Dbres* res, size_t row) :
-        sq_result_(res),
-        num_result_row_(row)
+        db_result_(res),
+        iter_row_(row)
     {
     }
     result_set_iterator(const result_set_iterator&) = default;
@@ -53,31 +54,65 @@ public:
 
     result_set_iterator& operator++()
     {
-        ++num_result_row_;
+        if constexpr (std::is_same_v<Dbres, zce::sqlite::stmt_result>)
+        {
+            db_result_->cursor_next();
+        }
+        else
+        {
+            ++iter_row_;
+        }
         return *this;
     }
-    result_set_iterator operator++(int)
+
+    //! @brief 后置++操作符重载。不返回迭代器的原因是，某些数据库的结果集不支持
+    void operator++(int)
     {
-        result_set_iterator tmp = *this;
-        ++num_result_row_;
-        return tmp;
+        ++(*this);
+        return;
     }
     bool operator==(const result_set_iterator& other) const
     {
-        return ((num_result_row_ == other.num_result_row_) && (sq_result_ == other.sq_result_));
+        if constexpr (std::is_same_v<Dbres, zce::sqlite::stmt_result>)
+        {
+            //iter_row_ == -1 表示end()的状态
+            if (iter_row_ == -1 && (db_result_ == other.db_result_) && db_result_.is_end() == true)
+            {
+                return true;
+            }
+            else if (other.iter_row_ == -1 && db_result_.is_end() == true)
+            {
+                return true;
+            }
+            else
+            {
+                return ((iter_row_ == other.iter_row_) && (db_result_ == other.db_result_));
+            }
+        }
+        else
+        {
+            return ((iter_row_ == other.iter_row_) && (db_result_ == other.db_result_));
+        }
     }
     bool operator!=(const result_set_iterator& other) const
     {
         return !(*this == other);
     }
 
-	///提领操作，通过这个方法可以获取当前迭代器指向的结果集行数据。
+    ///提领操作，通过这个方法可以获取当前迭代器指向的结果集行数据。
     ///using db_res_set = dbt::template res_set<int, short, int, int, float, double, std::string, zce::ztm>;
     ///db_res_set  rs(std::move(mysql_result));
     ///for (auto [f1, f2, f3, f4, f5, f6, f7, f8] : rs)
     value_type operator*()
     {
-        return sq_result_->make_tuple<Types...>(num_result_row_);
+        if constexpr (std::is_same_v<Dbres, zce::sqlite::stmt_result>)
+        {
+            return db_result_->make_tuple<Types...>();
+        }
+        else
+        {
+            return db_result_->make_tuple<Types...>(iter_row_);
+        }
     }
 
     value_type* operator->() const
@@ -86,10 +121,10 @@ public:
         return &(operator*());
     }
 protected:
+    //! @brief 指向数据库结果集的指针。
+    Dbres* db_result_ = nullptr;
 
-    Dbres* sq_result_ = nullptr;
-
-    size_t num_result_row_ = 0;
+    size_t iter_row_ = 0;
 };
 
 template <typename Dbres, typename... Types>
@@ -101,7 +136,7 @@ public:
     using value_type = std::tuple<Types...>;
 
     result_set() = default;
-    result_set(Dbres&& res) : sq_result_(std::move(res))
+    result_set(Dbres&& res) : db_result_(std::move(res))
     {
     }
     result_set(const result_set&) = delete;
@@ -112,17 +147,24 @@ public:
 
     iterator begin()
     {
-        return iterator(&sq_result_, 0);
+        return iterator(&db_result_, 0);
     }
 
     iterator end()
     {
-        return iterator(&sq_result_, sq_result_.num_of_rows());
+        if constexpr (std::is_same_v<Dbres, zce::sqlite::stmt_result>)
+        {
+            return iterator(&db_result_, (size_t)-1);
+        }
+        else
+        {
+            return iterator(&db_result_, db_result_.num_of_rows());
+        }
     }
 
 protected:
     //
-    Dbres sq_result_;
+    Dbres db_result_;
 };
 }
 #if defined ZCE_USE_MYSQL
@@ -145,4 +187,20 @@ namespace zce::pq
 template <typename... Types>
 using result_set = zce::db::result_set<zce::pq::result, Types...>;
 }
+
+#endif
+
+#if defined ZCE_USE_SQLITE
+
+#include "zce/db/sqlite/result.h"
+
+namespace zce::sqlite
+{
+template <typename... Types>
+using result_set = zce::db::result_set<zce::sqlite::result, Types...>;
+
+template <typename... Types>
+using stmt_resset = zce::db::result_set<zce::sqlite::stmt_result, Types...>;
+}
+
 #endif

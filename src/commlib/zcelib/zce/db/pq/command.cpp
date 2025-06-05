@@ -111,10 +111,10 @@ void bind::initialize(size_t num_bind)
 }
 
 int bind::tie_one_param(size_t id,
-    char* paramdata,
-    Oid type,
-    int len,
-    int fmt)
+                        char* paramdata,
+                        Oid type,
+                        int len,
+                        int fmt)
 {
     if (id > num_bind_)
     {
@@ -327,8 +327,8 @@ int command::execute(std::string_view sqlcmd)
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {
         ZCE_LOG(RS_ERROR,
-            "[pq] commit transaction failed : %s\n",
-            ::PQerrorMessage(conn_));
+                "[pq] commit transaction failed : %s\n",
+                ::PQerrorMessage(conn_));
         ret = -1;
     }
     ::PQclear(res);
@@ -336,27 +336,27 @@ int command::execute(std::string_view sqlcmd)
 }
 
 int command::execute(std::string_view sql_cmd,
-    size_t& num_affect,
-    uint64_t* last_id)
+                     size_t& num_affect,
+                     uint64_t* last_id)
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
     return get_result(res,
-        num_affect,
-        last_id,
-        nullptr);
+                      num_affect,
+                      last_id,
+                      nullptr);
 }
 
 int command::execute(std::string_view sql_cmd,
-    size_t& num_affect,
-    zce::pq::result& pq_res)
+                     size_t& num_affect,
+                     zce::pq::result& pq_res)
 {
     num_affect = 0;
     ::PGresult* res = ::PQexec(conn_, sql_cmd.data());
     return get_result(res,
-        num_affect,
-        nullptr,
-        &pq_res);
+                      num_affect,
+                      nullptr,
+                      &pq_res);
 }
 
 void command::stmt_clear()
@@ -379,19 +379,19 @@ int command::stmt_prepare(std::string_view sql_cmd)
 {
     stmt_clear();
     zce::unique_name("STMT",
-        stmt_name_,
-        sizeof(stmt_name_));
+                     stmt_name_,
+                     sizeof(stmt_name_));
     size_t param_num = stmt_count_sql_param(sql_cmd);
     PGresult* res = ::PQprepare(conn_,
-        stmt_name_,
-        sql_cmd.data(),
-        (int)param_num,
-        nullptr);
+                                stmt_name_,
+                                sql_cmd.data(),
+                                (int)param_num,
+                                nullptr);
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {
         ZCE_LOG(RS_ERROR,
-            "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
-            ::PQerrorMessage(conn_));
+                "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
+                ::PQerrorMessage(conn_));
         return -1;
     }
     ::PQclear(res);
@@ -400,43 +400,43 @@ int command::stmt_prepare(std::string_view sql_cmd)
 }
 
 int command::stmt_execute(size_t& num_affect,
-    size_t* last_id,
-    int res_fmt)
+                          size_t* last_id,
+                          int res_fmt)
 {
     PGresult* res = ::PQexecPrepared(conn_,
-        stmt_name_,
-        (int)bind_param_.num_bind_,
-        bind_param_.param_value_,
-        bind_param_.param_len_,
-        bind_param_.param_fmt_,
-        res_fmt);
+                                     stmt_name_,
+                                     (int)bind_param_.num_bind_,
+                                     bind_param_.param_value_,
+                                     bind_param_.param_len_,
+                                     bind_param_.param_fmt_,
+                                     res_fmt);
     return get_result(res,
-        num_affect,
-        last_id,
-        nullptr);
+                      num_affect,
+                      last_id,
+                      nullptr);
 }
 
 int command::stmt_execute(size_t& num_affect,
-    zce::pq::result& pq_res,
-    int res_fmt)
+                          zce::pq::result& pq_res,
+                          int res_fmt)
 {
     PGresult* res = ::PQexecPrepared(conn_,
-        stmt_name_,
-        (int)bind_param_.num_bind_,
-        bind_param_.param_value_,
-        bind_param_.param_len_,
-        bind_param_.param_fmt_,
-        res_fmt);
+                                     stmt_name_,
+                                     (int)bind_param_.num_bind_,
+                                     bind_param_.param_value_,
+                                     bind_param_.param_len_,
+                                     bind_param_.param_fmt_,
+                                     res_fmt);
     return get_result(res,
-        num_affect,
-        nullptr,
-        &pq_res);
+                      num_affect,
+                      nullptr,
+                      &pq_res);
 }
 
 int command::get_result(PGresult* res,
-    size_t& num_affect,
-    size_t* last_id,
-    zce::pq::result* pq_res)
+                        size_t& num_affect,
+                        size_t* last_id,
+                        zce::pq::result* pq_res)
 {
     num_affect = 0;
     int ret = 0;
@@ -444,8 +444,8 @@ int command::get_result(PGresult* res,
     if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
     {
         ZCE_LOG(RS_ERROR,
-            "Failed to prepare SQL : %s : %s\n", stmt_name_,
-            ::PQerrorMessage(conn_));
+                "Failed to prepare SQL : %s : %s\n", stmt_name_,
+                ::PQerrorMessage(conn_));
         ret = -1;
     }
     else

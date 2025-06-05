@@ -227,7 +227,7 @@ void result::free()
 }
 
 //检索一个结果集合的下一行,最开始从0行开始
-bool result::cursor_next()
+bool result::fetch_next()
 {
     if (mysql_result_ == nullptr)
     {

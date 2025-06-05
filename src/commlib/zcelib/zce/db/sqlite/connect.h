@@ -46,6 +46,7 @@ public:
     //!析构函数
     ~connect();
 
+    //! 根据url连接一个SQLite数据库
     int connect_url(const char* url);
 
     /*!

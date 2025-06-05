@@ -213,8 +213,9 @@ public:
     /*!
     * @brief      检索到下一行，返回true,其实有点类似Orale的光标处理，呵呵
     * @return     bool true还有结果集合，false没有结果集合了
+    * @note       while(fetch_next()) { do something; }
     */
-    bool cursor_next();
+    bool fetch_next();
 
     //! @brief 将结果集处理的行，检索移动到某行
     bool cursor_seek(size_t row_id);

@@ -39,10 +39,10 @@ public:
     * @param      fmt  参数的数据的指针
     */
     int tie_one_param(size_t id,
-        char* paramdata,
-        Oid type,
-        int len,
-        int fmt);
+                      char* paramdata,
+                      Oid type,
+                      int len,
+                      int fmt);
 
     //! bind 函数，PQ绑定只能作为参数
     //! 绑定数值类型
@@ -104,7 +104,7 @@ public:
     command(const command&) = delete;
     command& operator=(const command&) = delete;
 
-    void reset(zce::pq::connect& conn)
+    void initialize(zce::pq::connect& conn)
     {
         conn_ = conn.get_handle();
         stmt_clear();
@@ -134,12 +134,12 @@ public:
     int execute(std::string_view sqlcmd);
     //! 执行DML SQL语句,不用输出结果集合的那种，INSERT,UPDATE语句等
     int execute(std::string_view sqlcmd,
-        size_t& num_affect,
-        uint64_t* last_id);
+                size_t& num_affect,
+                uint64_t* last_id);
     //! 执行DQL SQL语句,SELECT语句,转储结果集合的那种,
     int execute(std::string_view sqlcmd,
-        size_t& num_affect,
-        zce::pq::result& pq_res);
+                size_t& num_affect,
+                zce::pq::result& pq_res);
 
     ///stmt 的函数=============================================================
     auto bind_param(this auto&& self)
@@ -165,23 +165,23 @@ public:
     */
     template <typename... Args>
     int stmt_prepare(std::string_view sql_cmd,
-        Args && ...args)
+                     Args && ...args)
     {
         stmt_clear();
         zce::unique_name("STMT",
-            stmt_name_,
-            sizeof(stmt_name_));
+                         stmt_name_,
+                         sizeof(stmt_name_));
         size_t param_num = stmt_count_sql_param(sql_cmd);
         PGresult* res = ::PQprepare(conn_,
-            stmt_name_,
-            sql_cmd.data(),
-            (int)param_num,
-            nullptr);
+                                    stmt_name_,
+                                    sql_cmd.data(),
+                                    (int)param_num,
+                                    nullptr);
         if (::PQresultStatus(res) != PGRES_COMMAND_OK)
         {
             ZCE_LOG(RS_ERROR,
-                "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
-                ::PQerrorMessage(conn_));
+                    "Failed to prepare SQL : %s : %s\n", sql_cmd.data(),
+                    ::PQerrorMessage(conn_));
             return -1;
         }
         ::PQclear(res);
@@ -196,12 +196,12 @@ public:
 
     //! STMT 的执行，可以修改绑定参数，然后多次调用这个函数
     int stmt_execute(size_t& num_affect,
-        size_t* last_id,
-        int res_fmt = FMT_TEXT);
+                     size_t* last_id,
+                     int res_fmt = FMT_TEXT);
 
     int stmt_execute(size_t& num_affect,
-        zce::pq::result& pq_res,
-        int res_fmt = FMT_TEXT);
+                     zce::pq::result& pq_res,
+                     int res_fmt = FMT_TEXT);
 
     template <class bind_type>
     command& operator << (bind_type val)
@@ -224,9 +224,9 @@ protected:
     }
 
     int get_result(PGresult* res,
-        size_t& num_affect,
-        size_t* last_id,
-        zce::pq::result* pq_res);
+                   size_t& num_affect,
+                   size_t* last_id,
+                   zce::pq::result* pq_res);
 protected:
     //
     ::PGconn* conn_ = nullptr;

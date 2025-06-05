@@ -177,6 +177,11 @@ int socket_base::connect(const zce::skt::addr_base* addr) const
                         addr->sockaddr_size_);
 }
 
+int socket_base::connect_url(const char* /*url*/)
+{
+    return 0;
+}
+
 //接收数据，根据阻塞状态决定行为
 ssize_t socket_base::recv(void* buf,
                           size_t len,

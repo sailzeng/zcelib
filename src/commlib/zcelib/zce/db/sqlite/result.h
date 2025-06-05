@@ -37,13 +37,21 @@ public:
     bool is_null();
 
     //!释放结果集合
-    void free();
+    void release();
 
-    //! @brief      取下一行作为光标
+    void clear();
+
+    //! @brief      采用do while的方式取下一行作为光标
+    //! do{ dosomesth; }while(cursor_next())
     bool cursor_next();
 
     //! @brief 将结果集处理的行，检索移动到某行
     bool cursor_seek(size_t row_id);
+
+    //! @brief    采用while循环方式，获取下一行数据
+    //!           提供这个函数主要是兼容其他结果集的处理方式，
+    //! @note     while(fetch_next()) { dosomesth; }
+    bool fetch_next();
 
     template <typename T>
     int cursor_field(size_t col, T& val)
@@ -96,9 +104,9 @@ public:
         {
             return -1;
         }
-		//! sq_result_ 第0行是列名，所以从1行开始
+        //! sq_result_ 第0行是列名，所以从1行开始
         val = zce::from_str_to<T>(sq_result_[(row + 1) * num_result_column_ + col]);
-		return 0;
+        return 0;
     }
 
     //!行的数量
@@ -139,7 +147,9 @@ protected:
     int num_result_column_ = 0;
 
     //! 光标所在行
-    size_t  cursor_row_ = (size_t)-1;
+    size_t  cursor_row_ = 0;
+    //! 已经调用过fetch_next函数
+    bool already_fetched_ = false;
 };
 
 /*!
@@ -151,7 +161,7 @@ protected:
 */
 class stmt_result
 {
-    friend class command;
+    //friend class command;
 public:
     stmt_result() = default;
     stmt_result(zce::sqlite::command& cmd);
@@ -164,21 +174,27 @@ public:
     stmt_result(stmt_result&&) noexcept;
     stmt_result& operator=(stmt_result&&) noexcept;
 
-    stmt_result& operator=(sqlite3_stmt* statement) noexcept;
+    void initialize(zce::sqlite::command& cmd);
 
     //!结果集合释放为nullptr
     bool is_null()
     {
-        return statement_ == nullptr ? true : false;
+        return cmd_ == nullptr ? true : false;
     }
 
-    //! 取下一行数据
-    //! do { dosomesth; }while(fectch_next());
-    bool fectch_next();
+    void clear();
 
-    //! 将光标至于下一行
-    //! while(cursor_next()) { dosomesth; }
+    //!
+    bool reset();
+
+    //! @brief      采用do while的方式取下一行作为光标
+    //! do{ dosomesth; }while(cursor_next())
     bool cursor_next();
+
+    //! @brief    采用while循环方式，获取下一行数据
+    //!           提供这个函数主要是兼容其他结果集的处理方式，
+    //! @note     while(fetch_next()) { dosomesth; }
+    bool fetch_next();
 
     void field(size_t col, char& val) const;
     void field(size_t col, short& val) const;
@@ -259,8 +275,11 @@ protected:
     }
 
 protected:
-    //! SQLite原声的STMT的句柄
-    sqlite3_stmt* statement_ = nullptr;
+    //! SQLite的STMT的句柄
+    zce::sqlite::command* cmd_ = nullptr;
+
+    //! SQLite3 stmt 查询，是无法直到结果集的行数的，必须多次调用sqlite3_step
+    //! [[no use]]size_t num_result_row_ = 0;
 
     //! Number of result columns written here ,
     size_t num_result_column_ = 0;
@@ -269,7 +288,9 @@ protected:
     size_t current_col_ = 0;
 
     //! 光标所在行
-    size_t  cursor_row_ = (size_t)-1;
+    size_t  cursor_row_ = 0;
+    //! 已经调用过fetch_next函数
+    bool already_fetched_ = false;
 };
 }
 

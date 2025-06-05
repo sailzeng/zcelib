@@ -33,6 +33,7 @@ class result;
 */
 class command
 {
+    friend class stmt_result;
 public:
     /*!
     * @brief      构造函数

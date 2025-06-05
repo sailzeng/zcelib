@@ -97,8 +97,11 @@ public:
     //然后可以直接调用send or recv，而不明确要通信的地址
     //所以将connect，send，recv 3个函数放到了base里面，大家都可以使用
 
-    //connect某个地址
+    //! @brief connect某个地址
     int connect(const zce::skt::addr_base* addr) const;
+
+    //! @brief      连接到某个URL地址
+    int connect_url(const char* url);
 
     //接受数据，根据阻塞状态决定行为
     ssize_t recv(void* buf,
